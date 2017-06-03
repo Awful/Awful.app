@@ -124,7 +124,7 @@ public final class ForumsClient {
 
         let tuple = urlSession.fetch(method: method, urlString: urlString, parameters: parameters, redirectBlock: redirectBlock)
 
-        _ = tuple.promise.then { (data, response) -> Void in
+        _ = tuple.promise.then { data, response -> Void in
             if !self.isLoggedIn, let block = self.didRemotelyLogOut {
                 DispatchQueue.main.async(execute: block)
             }
@@ -153,12 +153,12 @@ public final class ForumsClient {
             .promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global(), execute: ProfileScrapeResult.init)
-            .then(on: backgroundContext) { (scrapeResult, context) -> NSManagedObjectID in
+            .then(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
                 let profile = try scrapeResult.upsert(into: context)
                 try context.save()
                 return profile.user.objectID
             }
-            .then(on: mainContext) { (objectID, context) in
+            .then(on: mainContext) { objectID, context in
                 guard let user = context.object(with: objectID) as? User else {
                     throw PromiseError.failedTransferToMainContext
                 }
@@ -180,7 +180,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "forumdisplay.php", parameters: ["forumid": "48"])
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+            .then(on: backgroundContext) { document, context -> [NSManagedObjectID] in
                 let scraper = AwfulForumHierarchyScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
@@ -195,7 +195,7 @@ public final class ForumsClient {
 
                 return forums.map { $0.objectID }
             }
-            .then(on: mainContext) { (objectIDs, context) -> [Forum] in
+            .then(on: mainContext) { objectIDs, context -> [Forum] in
                 return objectIDs.flatMap { context.object(with: $0) as? Forum }
         }
     }
@@ -222,7 +222,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+            .then(on: backgroundContext) { document, context -> [NSManagedObjectID] in
                 let scraper = AwfulThreadListScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
@@ -245,7 +245,7 @@ public final class ForumsClient {
 
                 return threads.map { $0.objectID }
             }
-            .then(on: mainContext) { (objectIDs, context) -> [AwfulThread] in
+            .then(on: mainContext) { objectIDs, context -> [AwfulThread] in
                 return objectIDs.flatMap { context.object(with: $0) as? AwfulThread }
         }
     }
@@ -266,7 +266,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "bookmarkthreads.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+            .then(on: backgroundContext) { document, context -> [NSManagedObjectID] in
                 let scraper = AwfulThreadListScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
@@ -289,7 +289,7 @@ public final class ForumsClient {
 
                 return threads.map { $0.objectID }
             }
-            .then(on: mainContext) { (objectIDs, context) -> [AwfulThread] in
+            .then(on: mainContext) { objectIDs, context -> [AwfulThread] in
                 return objectIDs.flatMap { context.object(with: $0) as? AwfulThread }
         }
     }
@@ -306,7 +306,7 @@ public final class ForumsClient {
 
         return fetch(method: .post, urlString: "bookmarkthreads.php", parameters: parameters)
             .promise
-            .then(on: mainContext) { (response, context) in
+            .then(on: mainContext) { response, context in
                 thread.bookmarked = isBookmarked
                 if isBookmarked, thread.bookmarkListPage <= 0 {
                     thread.bookmarkListPage = 1
@@ -362,7 +362,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "newthread.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: mainContext) { (document, context) -> AwfulForm in
+            .then(on: mainContext) { document, context -> AwfulForm in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
                     let form = AwfulForm(element: htmlForm) else
@@ -393,7 +393,7 @@ public final class ForumsClient {
         let formAndParameters = fetch(method: .get, urlString: "newthread.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> (AwfulForm, [String: Any]) in
+            .then(on: backgroundContext) { document, context -> (AwfulForm, [String: Any]) in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
                     let form = AwfulForm(element: htmlForm),
@@ -424,7 +424,7 @@ public final class ForumsClient {
 
 
         let submitParameters = formAndParameters
-            .then(on: backgroundContext) { (formAndParameters, context) -> [String: Any] in
+            .then(on: backgroundContext) { formAndParameters, context -> [String: Any] in
                 let (form, _) = formAndParameters
                 var (_, parameters) = formAndParameters
                 parameters["subject"] = subject
@@ -459,7 +459,7 @@ public final class ForumsClient {
         let threadID = submitParameters
             .then { self.fetch(method: .post, urlString: "newthread.php", parameters: $0).promise }
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> String in
+            .then(on: .global()) { document -> String in
                 guard
                     let link = document.firstNode(matchingSelector: "a[href *= 'showthread']"),
                     let href = link["href"],
@@ -476,7 +476,7 @@ public final class ForumsClient {
         }
 
         return threadID
-            .then(on: mainContext) { (threadID, context) -> AwfulThread in
+            .then(on: mainContext) { threadID, context -> AwfulThread in
                 let key = ThreadKey(threadID: threadID)
                 guard let thread = AwfulThread.objectForKey(objectKey: key, inManagedObjectContext: context) as? AwfulThread else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
@@ -499,7 +499,7 @@ public final class ForumsClient {
         let (promise, cancellable) = fetch(method: .post, urlString: "newthread.php", parameters: parameters)
         let html = promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> String in
+            .then(on: .global()) { document -> String in
                 if let postbody = document.firstNode(matchingSelector: ".postbody") {
                     workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
                     return postbody.innerHTML
@@ -520,7 +520,7 @@ public final class ForumsClient {
      - Parameter updateLastReadPost: If `true`, the "last read post" marker on the Forums is updated to include the posts loaded on the page (which is probably what you want). If `false`, the next time the user asks for "next unread post" they'll get the same answer again.
      */
     public func listPosts(in thread: AwfulThread, writtenBy author: User?, page: Int, updateLastReadPost: Bool)
-        -> (promise: Promise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String?)>, cancellable: Cancellable)
+        -> (promise: Promise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)>, cancellable: Cancellable)
     {
         guard
             let backgroundContext = backgroundManagedObjectContext,
@@ -566,43 +566,38 @@ public final class ForumsClient {
         let (promise, cancellable) = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
 
         let parsed = promise
-            .then(on: backgroundContext) { (dataAndResponse, context)
-                -> (objectIDs: [NSManagedObjectID], firstUnreadPostIndex: Int?, advertisementHTML: String?) in
-                let (data, response) = dataAndResponse
-                let document = try parseHTML(data: data, response: response)
-                let scraper = AwfulPostsPageScraper.scrape(document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-                guard let posts = scraper.posts else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find posts"])
-                }
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global(), execute: PostsPageScrapeResult.init)
 
+        let posts = parsed
+            .then(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
+                let posts = try scrapeResult.upsert(into: context)
                 try context.save()
-
-                let firstUnreadPostIndex: Int? = {
-                    guard page == AwfulThreadPage.nextUnread.rawValue else { return nil }
-                    guard let fragment = response.url?.fragment, !fragment.isEmpty else { return nil }
-
-                    let scanner = Scanner.awful_scanner(with: fragment)
-                    guard scanner.scanString("pti", into: nil) else { return nil }
-
-                    var scannedInt: Int = 0
-                    guard scanner.scanInt(&scannedInt), scannedInt != 0 else { return nil }
-                    return scannedInt
-                }()
-
-                return (posts.map { $0.objectID }, firstUnreadPostIndex, scraper.advertisementHTML)
+                return posts.map { $0.objectID }
             }
-            .then(on: mainContext) { (parsed: (objectIDs: [NSManagedObjectID], firstUnreadPostIndex: Int?, advertisementHTML: String?), context: NSManagedObjectContext)
-                -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String?) in
-                let (objectIDs: objectIDs, firstUnreadPostIndex: firstUnreadPostIndex, advertisementHTML: advertisementHTML) = parsed
-                let posts = objectIDs.flatMap { context.object(with: $0) as? Post }
-                return (posts: posts, firstUnreadPost: firstUnreadPostIndex, advertisementHTML: advertisementHTML)
+            .then(on: mainContext) { objectIDs, context -> [Post] in
+                return objectIDs.flatMap { context.object(with: $0) as? Post }
+            }
+
+        let firstUnreadPostIndex = promise
+            .then(on: .global()) { data, response -> Int? in
+            guard page == AwfulThreadPage.nextUnread.rawValue else { return nil }
+            guard let fragment = response.url?.fragment, !fragment.isEmpty else { return nil }
+
+            let scanner = Scanner.awful_scanner(with: fragment)
+            guard scanner.scanString("pti", into: nil) else { return nil }
+
+            var scannedInt: Int = 0
+            guard scanner.scanInt(&scannedInt), scannedInt != 0 else { return nil }
+            return scannedInt
         }
 
-        return (parsed, cancellable)
+        let altogether = when(fulfilled: posts, firstUnreadPostIndex, parsed)
+            .then { posts, firstUnreadPostIndex, scrapeResult in
+                return (posts: posts, firstUnreadPost: firstUnreadPostIndex, advertisementHTML: scrapeResult.advertisement)
+        }
+
+        return (altogether, cancellable)
     }
 
     /**
@@ -623,7 +618,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> Void in
+            .then(on: backgroundContext) { document, context -> Void in
                 let scraper = AwfulPostScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
@@ -660,7 +655,7 @@ public final class ForumsClient {
         let formParameters = fetch(method: .get, urlString: "newreply.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> [String: Any] in
+            .then(on: backgroundContext) { document, context -> [String: Any] in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
                     let form = AwfulForm(element: htmlForm),
@@ -681,7 +676,7 @@ public final class ForumsClient {
         let postID = formParameters
             .then { self.fetch(method: .post, urlString: "newreply.php", parameters: $0).promise }
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document: HTMLDocument) -> String? in
+            .then(on: .global()) { document -> String? in
                 let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
                     ?? document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
                 let queryItems = link
@@ -701,7 +696,7 @@ public final class ForumsClient {
         }
 
         return postID
-            .then(on: mainContext) { (postID, context) -> ReplyLocation in
+            .then(on: mainContext) { postID, context -> ReplyLocation in
                 if let postID = postID {
                     let key = PostKey(postID: postID)
                     guard let post = Post.objectForKey(objectKey: key, inManagedObjectContext: context) as? Post else {
@@ -728,7 +723,7 @@ public final class ForumsClient {
 
         let parsed = promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> String in
+            .then(on: .global()) { document -> String in
                 guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "Could not find previewed post"])
@@ -749,7 +744,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> String in
+            .then(on: .global()) { document -> String in
                 let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
                 guard let message = form?.allParameters?["message"] else {
@@ -775,7 +770,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "newreply.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> String in
+            .then(on: .global()) { document -> String in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
                     let form = AwfulForm(element: htmlForm),
@@ -806,7 +801,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> [String: Any] in
+            .then(on: .global()) { document -> [String: Any] in
                 guard
                     let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']"),
                     let form = AwfulForm(element: htmlForm),
@@ -876,19 +871,19 @@ public final class ForumsClient {
 
         fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
             .promise
-            .then { (data, response) -> Void in
+            .then { data, response -> Void in
                 // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
                 redirectURL.reject(
                     NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "The post could not be found"]))
             }
-            .catch { (error) -> Void in
+            .catch { error -> Void in
                 // This catch excludes cancellation, so we've legitimately failed.
                 redirectURL.reject(error)
         }
 
         return redirectURL.promise
-            .then(on: .global()) { (url) -> (threadID: String, page: Int) in
+            .then(on: .global()) { url -> (threadID: String, page: Int) in
                 guard
                     let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                     let threadID = components.queryItems?.first(where: { $0.name == "threadid" })?.value,
@@ -902,7 +897,7 @@ public final class ForumsClient {
 
                 return (threadID: threadID, page: pagenumber)
             }
-            .then(on: mainContext) { (parsed, context) -> (post: Post, page: Int) in
+            .then(on: mainContext) { parsed, context -> (post: Post, page: Int) in
                 let (threadID: threadID, page: page) = parsed
                 let postKey = PostKey(postID: postID)
                 let threadKey = ThreadKey(threadID: threadID)
@@ -933,7 +928,7 @@ public final class ForumsClient {
 
         let parsed = promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> String in
+            .then(on: .global()) { document -> String in
                 guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "Could not find previewed post"])
@@ -957,9 +952,8 @@ public final class ForumsClient {
 
         return fetch(method: .post, urlString: "modalert.php", parameters: parameters)
             .promise.asVoid()
-            .recover { (error) -> Promise<Void> in
+            .recover { error -> Void in
                 print("error reporting post \(post.postID): \(error)")
-                return Promise(value: ())
         }
     }
 
@@ -974,7 +968,7 @@ public final class ForumsClient {
             .promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global(), execute: ProfileScrapeResult.init)
-            .then(on: backgroundContext) { (scrapeResult, context) -> NSManagedObjectID in
+            .then(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
                 let profile = try scrapeResult.upsert(into: context)
                 try context.save()
                 return profile.objectID
@@ -987,7 +981,7 @@ public final class ForumsClient {
         }
 
         return profile(parameters: ["action": "getinfo"])
-            .then(on: mainContext) { (objectID, context) -> User in
+            .then(on: mainContext) { objectID, context -> User in
                 guard let profile = context.object(with: objectID) as? Profile else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "Could not save profile"])
@@ -1017,7 +1011,7 @@ public final class ForumsClient {
         }
 
         return profile(parameters: parameters)
-            .then(on: mainContext) { (objectID, context) -> Profile in
+            .then(on: mainContext) { objectID, context -> Profile in
                 guard let profile = context.object(with: objectID) as? Profile else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "Could not save profile"])
@@ -1035,7 +1029,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "banlist.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: mainContext) { (document, context) -> [Punishment] in
+            .then(on: mainContext) { document, context -> [Punishment] in
                 let scraper = LepersColonyPageScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
@@ -1070,7 +1064,7 @@ public final class ForumsClient {
         }
 
         return userID
-            .then { (userID) -> Promise<[Punishment]> in
+            .then { userID -> Promise<[Punishment]> in
                 let parameters = [
                     "pagenumber": "\(page)",
                     "userid": userID]
@@ -1084,7 +1078,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "private.php", parameters: nil)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> Int in
+            .then(on: .global()) { document -> Int in
                 return try UnreadPrivateMessageCountScrapeResult(document).unreadPrivateMessageCount
         }
     }
@@ -1100,7 +1094,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "private.php", parameters: nil)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+            .then(on: backgroundContext) { document, context -> [NSManagedObjectID] in
                 let scraper = PrivateMessageFolderScraper.scrape(document, into: context)
                 if let error = scraper.error {
                     throw error
@@ -1145,12 +1139,12 @@ public final class ForumsClient {
             .promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global(), execute: PrivateMessageScrapeResult.init)
-            .then(on: backgroundContext) { (scrapeResult, context) -> NSManagedObjectID in
+            .then(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
                 let message = try scrapeResult.upsert(into: context)
                 try context.save()
                 return message.objectID
             }
-            .then(on: mainContext) { (objectID, context) -> PrivateMessage in
+            .then(on: mainContext) { objectID, context -> PrivateMessage in
                 guard let privateMessage = context.object(with: objectID) as? PrivateMessage else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "Could not save message"])
@@ -1167,7 +1161,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { (document) -> String in
+            .then(on: .global()) { document -> String in
                 let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
                 guard let message = form?.allParameters?["message"] else {
@@ -1192,7 +1186,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { (document, context) -> [NSManagedObjectID] in
+            .then(on: backgroundContext) { document, context -> [NSManagedObjectID] in
                 let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']")
                 let form = htmlForm.flatMap { AwfulForm(element: $0) }
                 form?.scrapeThreadTags(into: context)
@@ -1212,7 +1206,7 @@ public final class ForumsClient {
 
                 return threadTags.map { $0.objectID }
             }
-            .then(on: mainContext) { (managedObjectIDs, context) -> [ThreadTag] in
+            .then(on: mainContext) { managedObjectIDs, context -> [ThreadTag] in
                 return managedObjectIDs.flatMap { context.object(with: $0) as? ThreadTag }
         }
     }
@@ -1286,8 +1280,8 @@ private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElemen
 
 extension Promise {
     fileprivate func then<U>(on context: NSManagedObjectContext, execute body: @escaping (T, _ context: NSManagedObjectContext) throws -> U) -> Promise<U> {
-        return then(on: .global()) { (value) -> Promise<U> in
-            return Promise<U> { (fulfill, reject) in
+        return then(on: .global()) { value -> Promise<U> in
+            return Promise<U> { fulfill, reject in
                 context.perform {
                     do {
                         try fulfill(body(value, context))

@@ -2,122 +2,123 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@testable import AwfulCore
 import XCTest
-import AwfulCore
 
-final class PostsPageScrapingTests: ScrapingTestCase {
-    override class func scraperClass() -> AnyClass {
-        return AwfulPostsPageScraper.self
-    }
-    
+final class PostsPageScrapingTests: XCTestCase {
+    private var defaultTimeZone: TimeZone?
+
     override func setUp() {
         super.setUp()
-        
+
+        defaultTimeZone = NSTimeZone.default
         NSTimeZone.default = TimeZone(abbreviation: "UTC")!
     }
 
+    override func tearDown() {
+        if let defaultTimeZone = defaultTimeZone {
+            NSTimeZone.default = defaultTimeZone
+        }
+
+        super.tearDown()
+    }
+
     func testCanadianPoliticsThread() {
-        let scraper = scrapeFixtureNamed("showthread") as! AwfulPostsPageScraper
-        XCTAssertEqual(scraper.posts?.count, 40)
-        let allThreads = fetchAll(AwfulThread.self, inContext: managedObjectContext)
-        XCTAssertEqual(allThreads.count, 1)
-        let canpolThread = allThreads.first
-        XCTAssertEqual(canpolThread?.threadID, "3507451")
-        XCTAssertEqual(canpolThread?.title, "Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe")
-        XCTAssertEqual(canpolThread?.closed, false)
-        XCTAssertEqual(fetchAll(Forum.self, inContext: managedObjectContext).count, 1)
-        XCTAssertEqual(canpolThread?.forum?.name, "Debate & Discussion")
-        let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
-        XCTAssertEqual(allGroups.count, 1)
-        let group = allGroups[0]
-        XCTAssertEqual(group.name, "Discussion")
+        let result = try! scrapeFixture(named: "showthread") as PostsPageScrapeResult
+        XCTAssertEqual(result.posts.count, 40)
+
+        XCTAssertEqual(result.threadID?.rawValue, "3507451")
+        XCTAssertEqual(result.threadTitle, "Canadian Politics Thread: Revenge of Trudeaumania: Brawl Me, Maybe")
+        XCTAssertFalse(result.threadIsClosed)
+
+        XCTAssertEqual(result.breadcrumbs?.forums.last?.name, "Debate & Discussion")
+        XCTAssertEqual(result.breadcrumbs?.forums.first?.name, "Discussion")
         
-        let firstPost = scraper.posts?[0]
-        XCTAssertEqual(firstPost?.postID, "407741839")
-        XCTAssertNotNil(firstPost?.innerHTML?.range(of: "more I think about it"))
-        XCTAssertEqual(firstPost?.threadIndex, 161)
-        XCTAssertEqual(firstPost?.postDate?.timeIntervalSince1970, 1348139760)
-        XCTAssertEqual(firstPost?.beenSeen, true)
-        XCTAssertEqual(firstPost?.editable, false)
-        XCTAssertEqual(firstPost?.thread, canpolThread)
-        let majuju = firstPost?.author
-        XCTAssertEqual(majuju?.username, "Majuju")
-        XCTAssertEqual(majuju?.userID, "108110")
-        XCTAssertEqual(majuju?.canReceivePrivateMessages, true)
-        XCTAssertEqual(majuju?.regdate?.timeIntervalSince1970, 1167350400)
-        XCTAssertNotNil(majuju?.customTitleHTML?.range(of: "AAA"))
+        let firstPost = result.posts[0]
+        XCTAssertEqual(firstPost.id.rawValue, "407741839")
+        XCTAssert(firstPost.authorCanReceivePrivateMessages)
+        XCTAssert(firstPost.body.contains("more I think about it"))
+        XCTAssertEqual(firstPost.indexInThread, 161)
+        XCTAssertEqual(firstPost.postDate?.timeIntervalSince1970, 1348139760)
+        XCTAssert(firstPost.hasBeenSeen)
+        XCTAssertFalse(firstPost.isEditable)
+
+        let majuju = firstPost.author
+        XCTAssertEqual(majuju.username, "Majuju")
+        XCTAssertEqual(majuju.userID.rawValue, "108110")
+        XCTAssertEqual(majuju.regdate?.timeIntervalSince1970, 1167350400)
+        XCTAssert(majuju.customTitle.contains("AAA"))
         
-        let accentAiguPost = scraper.posts?[10]
-        XCTAssertEqual(accentAiguPost?.postID, "407751664")
-        XCTAssertNotNil(accentAiguPost?.innerHTML?.range(of: "Québec"))
+        let accentAiguPost = result.posts[10]
+        XCTAssertEqual(accentAiguPost.id.rawValue, "407751664")
+        XCTAssert(accentAiguPost.body.contains("Québec"))
         
-        let opPost = scraper.posts?[12]
-        XCTAssert(opPost?.postID == "407751956")
-        XCTAssert(opPost?.author?.username == "Dreylad")
-        XCTAssertEqual(opPost?.author, canpolThread?.author)
+        let opPost = result.posts[12]
+        XCTAssertEqual(opPost.id.rawValue, "407751956")
+        XCTAssertEqual(opPost.author.username, "Dreylad")
+        XCTAssert(opPost.authorIsOriginalPoster)
         
-        let adminPost = scraper.posts?[14]
-        XCTAssertEqual(adminPost?.postID, "407753032")
-        XCTAssertEqual(adminPost?.author?.username, "angerbot")
-        XCTAssertEqual(adminPost?.author?.administrator, true)
-        XCTAssertEqual(adminPost?.author?.moderator, false)
+        let adminPost = result.posts[14]
+        XCTAssertEqual(adminPost.id.rawValue, "407753032")
+        XCTAssertEqual(adminPost.author.username, "angerbot")
+        XCTAssert(adminPost.author.isAdministrator)
+        XCTAssertFalse(adminPost.author.isModerator)
         
-        let lastPost = scraper.posts?.last
-        XCTAssertEqual(lastPost?.postID, "407769816")
-        XCTAssertEqual(lastPost?.threadIndex, 200)
+        let lastPost = result.posts.last
+        XCTAssertEqual(lastPost?.id.rawValue, "407769816")
+        XCTAssertEqual(lastPost?.indexInThread, 200)
         
-        XCTAssertEqual(canpolThread?.numberOfPages, 151)
-        XCTAssert((canpolThread?.totalReplies ?? 0) >= 6000, "number of replies should reflect number of pages")
+        XCTAssertEqual(result.pageCount, 151)
     }
     
     func testWeirdSizeTags() {
         // Some posts have a tag that looks like `<size:8>`. Once upon a time, all subsequent posts went missing. In this fixture, Ganker's custom title has a `<size:8>` tag.
-        let scraper = scrapeFixtureNamed("showthread2") as! AwfulPostsPageScraper
-        XCTAssertEqual(scraper.posts?.count, 40)
-        let ganker = scraper.posts?[24]
-        XCTAssertEqual(ganker?.author?.username, "Ganker")
-        XCTAssertNotNil(ganker?.author?.customTitleHTML?.range(of: "forced meme"))
-        let brylcreem = scraper.posts?[25]
-        XCTAssertEqual(brylcreem?.author?.username, "brylcreem")
+        let result = try! scrapeFixture(named: "showthread2") as PostsPageScrapeResult
+        XCTAssertEqual(result.posts.count, 40)
+        let ganker = result.posts[24]
+        XCTAssertEqual(ganker.author.username, "Ganker")
+        XCTAssertEqual(ganker.author.customTitle.contains("forced meme"), true)
+        let brylcreem = result.posts[25]
+        XCTAssertEqual(brylcreem.author.username, "brylcreem")
     }
     
     func testFYADThreadIndex() {
-        let scraper = scrapeFixtureNamed("showthread-fyad") as! AwfulPostsPageScraper
-        XCTAssertEqual(scraper.posts?.count, 10)
-        let last = scraper.posts?.last
-        XCTAssertEqual(last?.page, 2)
+        let result = try! scrapeFixture(named: "showthread-fyad") as PostsPageScrapeResult
+        XCTAssertEqual(result.posts.count, 10)
+        XCTAssertEqual(result.pageNumber, 2)
     }
     
     func testFYADThreadPageOne() {
-        let scraper = scrapeFixtureNamed("showthread-fyad2") as! AwfulPostsPageScraper
-        XCTAssertEqual(scraper.posts?.count, 40)
-        let first = scraper.posts?[0]
-        XCTAssertEqual(first?.author?.username, "BiG TrUcKs !!!")
-        XCTAssertEqual(first?.postDate?.timeIntervalSince1970, 1388525460)
-        XCTAssertNotNil(first?.innerHTML?.range(of: "twitter assholes"))
-        XCTAssertEqual(first?.threadIndex,  1)
-        let second = scraper.posts?[1]
-        XCTAssertEqual(second?.author?.username, "syxxcowz")
-        XCTAssertEqual(second?.postDate?.timeIntervalSince1970, 1388525580)
-        XCTAssertNotNil(second?.innerHTML?.range(of: "hate twiter"))
-        XCTAssertEqual(second?.threadIndex, 2)
+        let result = try! scrapeFixture(named: "showthread-fyad2") as PostsPageScrapeResult
+        XCTAssertEqual(result.posts.count, 40)
+
+        let first = result.posts[0]
+        XCTAssertEqual(first.author.username, "BiG TrUcKs !!!")
+        XCTAssertEqual(first.postDate?.timeIntervalSince1970, 1388525460)
+        XCTAssert(first.body.contains("twitter assholes"))
+        XCTAssertNil(first.indexInThread)
+
+        let second = result.posts[1]
+        XCTAssertEqual(second.author.username, "syxxcowz")
+        XCTAssertEqual(second.postDate?.timeIntervalSince1970, 1388525580)
+        XCTAssert(second.body.contains("hate twiter"))
+        XCTAssertNil(second.indexInThread)
     }
     
     func testLastPage() {
-        let _ = scrapeFixtureNamed("showthread-last")
-        let thread = fetchAll(AwfulThread.self, inContext: managedObjectContext)[0]
-        XCTAssert(thread.lastPostAuthorName == "Ashmole")
-        XCTAssertEqual(thread.lastPostDate!.timeIntervalSince1970, 1357586460)
+        let result = try! scrapeFixture(named: "showthread-last") as PostsPageScrapeResult
+        XCTAssertEqual(result.posts.last?.author.username, "Ashmole")
+        XCTAssertEqual(result.posts.last?.postDate?.timeIntervalSince1970, 1357586460)
     }
     
     func testIgnoredPost() {
-        let _ = scrapeFixtureNamed("showthread2")
-        let post = fetchOne(Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID = %@", "428957756"))!
-        XCTAssert(post.ignored)
-        let others = fetchAll(Post.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "postID != %@", "428957756"))
-        XCTAssert(others.count > 0)
-        let ignored = (others as NSArray).value(forKeyPath: "@distinctUnionOfObjects.ignored") as! [Bool]
-        XCTAssert(ignored.count == 1);
-        XCTAssert(ignored[0] == false)
+        let result = try! scrapeFixture(named: "showthread2") as PostsPageScrapeResult
+        XCTAssertEqual(result.posts.count, 40)
+
+        let ignored = result.posts.filter { $0.isIgnored }
+        XCTAssertEqual(ignored.count, 1)
+
+        let post = ignored[0]
+        XCTAssertEqual(post.id.rawValue, "428957756")
     }
 }

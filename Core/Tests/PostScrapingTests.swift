@@ -2,18 +2,13 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@testable import AwfulCore
 import XCTest
-import AwfulCore
 
-final class PostScrapingTests: ScrapingTestCase {
-    override class func scraperClass() -> AnyClass {
-        return AwfulPostScraper.self
-    }
-    
+final class PostScrapingTests: XCTestCase {
     func testIgnoredPost() {
-        let scraper = scrapeFixtureNamed("showpost") as! AwfulPostScraper
-        let post = scraper.post
-        XCTAssert(post?.innerHTML!.range(of: "Which command?") != nil)
-        XCTAssert(post?.author!.username == "The Dave")
+        let result = try! scrapeFixture(named: "showpost") as PostScrapeResult
+        XCTAssert(result.body.contains("Which command?"))
+        XCTAssertEqual(result.author.username, "The Dave")
     }
 }

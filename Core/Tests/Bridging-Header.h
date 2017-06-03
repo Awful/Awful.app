@@ -5,7 +5,6 @@
 #import "AuthorScraper.h"
 #import "AwfulForumHierarchyScraper.h"
 #import "AwfulPostScraper.h"
-#import "AwfulPostsPageScraper.h"
 #import "AwfulScraper.h"
 #import "AwfulThreadListScraper.h"
 #import "LepersColonyPageScraper.h"

@@ -43,7 +43,6 @@
 		1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C31A94C4A60045DDF7 /* LepersColonyPageScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C41A94C4A60045DDF7 /* AwfulPostScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C14A4C51A94C4A60045DDF7 /* AwfulPostsPageScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C61A94C4A60045DDF7 /* AwfulScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE985B18297255003DBBC2 /* AwfulScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C1ADC3318E625BF00E865BF /* AwfulScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C81A94C4A60045DDF7 /* AwfulThreadListScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -53,7 +52,6 @@
 		1C14A4D01A94C4BF0045DDF7 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
 		1C14A4D11A94C4BF0045DDF7 /* LepersColonyPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */; };
 		1C14A4D21A94C4BF0045DDF7 /* AwfulPostScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */; };
-		1C14A4D31A94C4BF0045DDF7 /* AwfulPostsPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */; };
 		1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		1C14A4D51A94C4BF0045DDF7 /* AwfulScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3418E625BF00E865BF /* AwfulScraper.m */; };
 		1C14A4D61A94C4BF0045DDF7 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
@@ -307,6 +305,11 @@
 		1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */; };
 		1CF7AB8C1EDB64F60089EF0C /* AuthorPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */; };
 		1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */; };
+		1CF7AB921EDB6C340089EF0C /* PostsPageScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB911EDB6C340089EF0C /* PostsPageScrapeResult.swift */; };
+		1CF7AB941EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */; };
+		1CF7AB961EDB71640089EF0C /* PostScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB951EDB71640089EF0C /* PostScrapeResult.swift */; };
+		1CF7AB981EDD0F4D0089EF0C /* PostPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */; };
+		1CF7AB9A1EDD0FDE0089EF0C /* ForumPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */; };
 		1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */; };
 		1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
@@ -786,14 +789,17 @@
 		1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapeResult.swift; sourceTree = "<group>"; };
 		1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorPersistence.swift; sourceTree = "<group>"; };
 		1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessagePersistence.swift; sourceTree = "<group>"; };
+		1CF7AB911EDB6C340089EF0C /* PostsPageScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapeResult.swift; sourceTree = "<group>"; };
+		1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumBreadcrumbsScrapeResult.swift; sourceTree = "<group>"; };
+		1CF7AB951EDB71640089EF0C /* PostScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostScrapeResult.swift; sourceTree = "<group>"; };
+		1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPersistence.swift; sourceTree = "<group>"; };
+		1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumPersistence.swift; sourceTree = "<group>"; };
 		1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTableViewCell.swift; sourceTree = "<group>"; };
 		1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadTableViewCell.xib; sourceTree = "<group>"; };
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
 		1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListScraper.h; sourceTree = "<group>"; };
 		1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListScraper.m; sourceTree = "<group>"; };
 		1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadListScrapingTests.swift; sourceTree = "<group>"; };
-		1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsPageScraper.h; sourceTree = "<group>"; };
-		1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsPageScraper.m; sourceTree = "<group>"; };
 		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
 		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1000,8 +1006,6 @@
 				1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */,
 				1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */,
 				1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */,
-				1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */,
-				1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */,
 				1CFE985B18297255003DBBC2 /* AwfulScanner.h */,
 				1CFE985C18297255003DBBC2 /* AwfulScanner.m */,
 				1C1ADC3318E625BF00E865BF /* AwfulScraper.h */,
@@ -1009,10 +1013,13 @@
 				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
 				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
 				1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */,
+				1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */,
 				1CF0F8E11ED8F43400C16099 /* Helpers.swift */,
 				1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */,
 				1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */,
 				1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */,
+				1CF7AB951EDB71640089EF0C /* PostScrapeResult.swift */,
+				1CF7AB911EDB6C340089EF0C /* PostsPageScrapeResult.swift */,
 				1C6D2EB0182FDCBC00785766 /* PrivateMessageFolderScraper.h */,
 				1C6D2EB1182FDCBC00785766 /* PrivateMessageFolderScraper.m */,
 				1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */,
@@ -1603,6 +1610,8 @@
 			isa = PBXGroup;
 			children = (
 				1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */,
+				1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */,
+				1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */,
 				1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */,
 				1CF0F8EA1ED8F83100C16099 /* ProfilePersistence.swift */,
 			);
@@ -1744,7 +1753,6 @@
 				1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */,
 				1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */,
 				1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */,
-				1C14A4C51A94C4A60045DDF7 /* AwfulPostsPageScraper.h in Headers */,
 				1C14A4C81A94C4A60045DDF7 /* AwfulThreadListScraper.h in Headers */,
 				1C14A4C01A94C4A60045DDF7 /* AuthorScraper.h in Headers */,
 				1C14A4C41A94C4A60045DDF7 /* AwfulPostScraper.h in Headers */,
@@ -2468,10 +2476,12 @@
 				1C14A4AE1A94C0A70045DDF7 /* AwfulManagedObject.swift in Sources */,
 				1C14A4B51A94C0BA0045DDF7 /* Post.swift in Sources */,
 				1CF0F8EB1ED8F83100C16099 /* ProfilePersistence.swift in Sources */,
+				1CF7AB961EDB71640089EF0C /* PostScrapeResult.swift in Sources */,
 				1C14A4BB1A94C1A20045DDF7 /* ThreadTag.swift in Sources */,
 				1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */,
 				1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */,
 				1C14A4B81A94C0BA0045DDF7 /* Punishment.swift in Sources */,
+				1CF7AB941EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift in Sources */,
 				1CF0F8E01ED8F3CB00C16099 /* AuthorSidebarScrapeResult.swift in Sources */,
 				1C4154E11ED1D53D009686E4 /* ProfileScrapeResult.swift in Sources */,
 				1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */,
@@ -2482,14 +2492,16 @@
 				1C14A4D51A94C4BF0045DDF7 /* AwfulScraper.m in Sources */,
 				1C14A4B61A94C0BA0045DDF7 /* PrivateMessage.swift in Sources */,
 				1CF7AB8C1EDB64F60089EF0C /* AuthorPersistence.swift in Sources */,
+				1CF7AB921EDB6C340089EF0C /* PostsPageScrapeResult.swift in Sources */,
 				1C14A4CE1A94C4BF0045DDF7 /* AuthorScraper.m in Sources */,
+				1CF7AB981EDD0F4D0089EF0C /* PostPersistence.swift in Sources */,
 				1C14A4B91A94C19E0045DDF7 /* User.swift in Sources */,
 				1CF0F8EF1ED9E20A00C16099 /* StandardErrorScrapeResult.swift in Sources */,
 				1C14A4D81A94C4BF0045DDF7 /* PrivateMessageFolderScraper.m in Sources */,
+				1CF7AB9A1EDD0FDE0089EF0C /* ForumPersistence.swift in Sources */,
 				1CF0F8E61ED8F62D00C16099 /* ScrapingError.swift in Sources */,
 				1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */,
 				1CF0F8E21ED8F43400C16099 /* Helpers.swift in Sources */,
-				1C14A4D31A94C4BF0045DDF7 /* AwfulPostsPageScraper.m in Sources */,
 				1C16FBEC1CBDBA8000C88BD1 /* NSURL-QueryDictionary.swift in Sources */,
 				1C14A4D01A94C4BF0045DDF7 /* AwfulForumHierarchyScraper.m in Sources */,
 				1CF0F8E41ED8F49900C16099 /* ScrapeResult.swift in Sources */,

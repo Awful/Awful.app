@@ -23,6 +23,13 @@ internal extension HTMLNode {
 
         return parent.child(at: i + 1)
     }
+
+    func requiredNode(matchingSelector selector: String) throws -> HTMLElement {
+        guard let node = firstNode(matchingSelector: selector) else {
+            throw ScrapingError.missingExpectedElement(selector)
+        }
+        return node
+    }
 }
 
 
