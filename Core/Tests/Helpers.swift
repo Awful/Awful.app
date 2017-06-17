@@ -51,3 +51,7 @@ func fixtureNamed(_ basename: String) -> HTMLDocument {
 func scrapeFixture<T: ScrapeResult>(named fixtureName: String) throws -> T {
     return try T(fixtureNamed(fixtureName), url: URL(string: "https://example.com/?perpage=40"))
 }
+
+func makeUTCDefaultTimeZone() {
+    NSTimeZone.default = TimeZone(secondsFromGMT: 0)!
+}

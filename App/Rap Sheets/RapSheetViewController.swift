@@ -145,34 +145,71 @@ final class RapSheetViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! PunishmentCell
-        let punishment = punishments[indexPath.row] as! Punishment
+        let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
         
         switch punishment.sentence {
-        case .Probation:
+        case .probation?:
             cell.imageView?.image = UIImage(named: "title-probation")
             
-        case .Permaban:
+        case .permaban?:
             cell.imageView?.image = UIImage(named: "title-permabanned.gif")
             
-        case .Ban, .Autoban:
+        case .ban?, .autoban?:
             cell.imageView?.image = UIImage(named: "title-banned.gif")
             
-        case .Unknown:
+        case .none:
             cell.imageView?.image = nil
         }
         
-        cell.textLabel?.text = punishment.subject.username
-        let date = banDateFormatter.string(from: punishment.date as Date)
-        cell.detailTextLabel?.text = "\(date) by \(punishment.requester?.username ?? "")"
-        cell.reasonLabel.text = punishment.reasonHTML
+        cell.textLabel?.text = punishment.subjectUsername
+
+        let formattedDate = punishment.date.map(banDateFormatter.string)
+        cell.detailTextLabel?.text = {
+            var components: [String] = []
+            if let formattedDate = formattedDate {
+                components.append(formattedDate)
+            }
+            if !punishment.requesterUsername.isEmpty {
+                components.append("by \(punishment.requesterUsername)")
+            }
+            return components.joined(separator: " ")
+        }()
+        cell.reasonLabel.text = punishment.reason
         
         let description: String
         switch punishment.sentence {
-        case .Probation: description = "probated"
-        case .Permaban: description = "permabanned"
-        default: description = "banned"
+        case .probation?:
+            description = "probated"
+
+        case .permaban?:
+            description = "permabanned"
+
+        case .autoban?, .ban?, .none:
+            description = "banned"
         }
-        cell.accessibilityLabel = "\(String(describing: punishment.subject.username)) was \(description) by \(punishment.requester?.username ?? "") on \(date): \(punishment.reasonHTML ?? "")"
+
+        cell.accessibilityLabel = {
+            var components: [String] = []
+
+            if !punishment.subjectUsername.isEmpty {
+                components.append(punishment.subjectUsername)
+            }
+
+            components.append("was \(description)")
+
+            if !punishment.requesterUsername.isEmpty {
+                components.append("by \(punishment.requesterUsername)")
+            }
+
+            if let formattedDate = formattedDate {
+                components.append("on \(formattedDate)")
+            }
+
+            components.append(":")
+            components.append(punishment.reason)
+
+            return components.joined(separator: " ")
+        }()
         
         cell.textLabel?.textColor = theme["listTextColor"]
         cell.detailTextLabel?.textColor = theme["listSecondaryTextColor"]
@@ -185,18 +222,17 @@ final class RapSheetViewController: TableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let punishment = punishments[indexPath.row] as! Punishment
-        return PunishmentCell.rowHeightWithBanReason(punishment.reasonHTML ?? "", width: tableView.bounds.width)
+        let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
+        return PunishmentCell.rowHeightWithBanReason(punishment.reason, width: tableView.bounds.width)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let punishment = punishments[indexPath.row] as! Punishment
-        guard punishment.post?.postID.isEmpty == false else { return }
-        guard let
-            postID = punishment.post?.postID,
-            let URL = URL(string: "awful://posts/\(postID)")
+        let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
+        guard
+            let postID = punishment.post?.rawValue,
+            let url = URL(string: "awful://posts/\(postID)")
             else { return }
-        AppDelegate.instance.openAwfulURL(URL)
+        AppDelegate.instance.openAwfulURL(url)
         if presentingViewController != nil {
             dismiss(animated: true, completion: nil)
         }

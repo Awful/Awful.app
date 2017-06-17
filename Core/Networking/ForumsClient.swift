@@ -1001,30 +1001,17 @@ public final class ForumsClient {
         }
     }
 
-    private func lepersColony(parameters: [String: Any]) -> Promise<[Punishment]> {
-        guard let mainContext = managedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
-
+    private func lepersColony(parameters: [String: Any]) -> Promise<[LepersColonyScrapeResult.Punishment]> {
         return fetch(method: .get, urlString: "banlist.php", parameters: parameters)
             .promise
-            .then(on: .global(), execute: parseHTML)
-            .then(on: mainContext) { parsed, context -> [Punishment] in
-                let scraper = LepersColonyPageScraper.scrape(parsed.document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-                guard let punishments = scraper.punishments else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find punishments"])
-                }
-
-                try context.save()
-                return punishments
+            .then(on: .global()) { data, response -> [LepersColonyScrapeResult.Punishment] in
+                let (document, url) = try parseHTML(data: data, response: response)
+                let result = try LepersColonyScrapeResult(document, url: url)
+                return result.punishments
         }
     }
 
-    public func listPunishments(of user: User?, page: Int) -> Promise<[Punishment]> {
+    public func listPunishments(of user: User?, page: Int) -> Promise<[LepersColonyScrapeResult.Punishment]> {
         guard let user = user else {
             return lepersColony(parameters: ["pagenumber": "\(page)"])
         }
@@ -1044,7 +1031,7 @@ public final class ForumsClient {
         }
 
         return userID
-            .then { userID -> Promise<[Punishment]> in
+            .then { userID -> Promise<[LepersColonyScrapeResult.Punishment]> in
                 let parameters = [
                     "pagenumber": "\(page)",
                     "userid": userID]

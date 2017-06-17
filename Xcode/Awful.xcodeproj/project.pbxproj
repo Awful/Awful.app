@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0105581EAC0F450084B343 /* ForumsClient.swift */; };
+		1C07B8AE1EF568100044B8AF /* LepersColonyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */; };
@@ -32,19 +33,16 @@
 		1C14A4B51A94C0BA0045DDF7 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FC21A0D80A1001BD898 /* Post.swift */; };
 		1C14A4B61A94C0BA0045DDF7 /* PrivateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */; };
 		1C14A4B71A94C0BA0045DDF7 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9F1A16F8D700F81EA2 /* Profile.swift */; };
-		1C14A4B81A94C0BA0045DDF7 /* Punishment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */; };
 		1C14A4B91A94C19E0045DDF7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1E5161A0F53130076F0B5 /* User.swift */; };
 		1C14A4BA1A94C1A20045DDF7 /* Thread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FCE1A0E27E2001BD898 /* Thread.swift */; };
 		1C14A4BB1A94C1A20045DDF7 /* ThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */; };
 		1C14A4BC1A94C2460045DDF7 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C14A4BD1A94C24A0045DDF7 /* AwfulForm.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C35FB7A1832A5A900B52724 /* AwfulForm.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */; };
-		1C14A4C31A94C4A60045DDF7 /* LepersColonyPageScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C61A94C4A60045DDF7 /* AwfulScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE985B18297255003DBBC2 /* AwfulScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C1ADC3318E625BF00E865BF /* AwfulScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4C81A94C4A60045DDF7 /* AwfulThreadListScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C14A4CF1A94C4BF0045DDF7 /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
-		1C14A4D11A94C4BF0045DDF7 /* LepersColonyPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */; };
 		1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
 		1C14A4D51A94C4BF0045DDF7 /* AwfulScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3418E625BF00E865BF /* AwfulScraper.m */; };
 		1C14A4D61A94C4BF0045DDF7 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
@@ -467,6 +465,7 @@
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
 		1C051C9F1A16F8D700F81EA2 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyScrapeResult.swift; sourceTree = "<group>"; };
 		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C097A971A97B5DD00425EEF /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
@@ -754,8 +753,6 @@
 		1CE55A751A10674B00E474A6 /* CompoundDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompoundDataSource.swift; sourceTree = "<group>"; };
 		1CE55A771A10675700E474A6 /* FetchedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedDataSource.swift; sourceTree = "<group>"; };
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
-		1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LepersColonyPageScraper.h; sourceTree = "<group>"; };
-		1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LepersColonyPageScraper.m; sourceTree = "<group>"; };
 		1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyPageScrapingTests.swift; sourceTree = "<group>"; };
 		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
 		1CF0E9C81A191A950067511E /* DatabaseUnavailableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableTests.swift; sourceTree = "<group>"; };
@@ -772,7 +769,6 @@
 		1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableScrapeResult.swift; sourceTree = "<group>"; };
 		1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadPrivateMessageCountScrapeResult.swift; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
-		1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Punishment.swift; sourceTree = "<group>"; };
 		1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulManagedObject.swift; sourceTree = "<group>"; };
 		1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapeResult.swift; sourceTree = "<group>"; };
 		1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorPersistence.swift; sourceTree = "<group>"; };
@@ -998,8 +994,7 @@
 				1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */,
 				1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */,
 				1CF0F8E11ED8F43400C16099 /* Helpers.swift */,
-				1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */,
-				1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */,
+				1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */,
 				1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */,
 				1CF7AB951EDB71640089EF0C /* PostScrapeResult.swift */,
 				1CF7AB911EDB6C340089EF0C /* PostsPageScrapeResult.swift */,
@@ -1055,7 +1050,6 @@
 				1C442FC21A0D80A1001BD898 /* Post.swift */,
 				1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */,
 				1C051C9F1A16F8D700F81EA2 /* Profile.swift */,
-				1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */,
 				1C442FCE1A0E27E2001BD898 /* Thread.swift */,
 				1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */,
 				1CA1E5161A0F53130076F0B5 /* User.swift */,
@@ -1735,7 +1729,6 @@
 				1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */,
 				1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */,
 				1C14A4C81A94C4A60045DDF7 /* AwfulThreadListScraper.h in Headers */,
-				1C14A4C31A94C4A60045DDF7 /* LepersColonyPageScraper.h in Headers */,
 				1C7994AB1E0F101E0016BEAE /* NSString+Undeprecation.h in Headers */,
 				1C3CF96B1A94B9B40065C964 /* AwfulCore.h in Headers */,
 			);
@@ -2445,7 +2438,6 @@
 				1C14A4B71A94C0BA0045DDF7 /* Profile.swift in Sources */,
 				1C7994AC1E0F101E0016BEAE /* NSString+Undeprecation.m in Sources */,
 				1C14A4BC1A94C2460045DDF7 /* AwfulForm.m in Sources */,
-				1C14A4D11A94C4BF0045DDF7 /* LepersColonyPageScraper.m in Sources */,
 				1C14A4BA1A94C1A20045DDF7 /* Thread.swift in Sources */,
 				1CF0F8ED1ED91B7600C16099 /* ForumsURLSession.swift in Sources */,
 				1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */,
@@ -2459,9 +2451,9 @@
 				1C14A4BB1A94C1A20045DDF7 /* ThreadTag.swift in Sources */,
 				1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */,
 				1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */,
-				1C14A4B81A94C0BA0045DDF7 /* Punishment.swift in Sources */,
 				1CF7AB941EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift in Sources */,
 				1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */,
+				1C07B8AE1EF568100044B8AF /* LepersColonyScrapeResult.swift in Sources */,
 				1CF0F8E01ED8F3CB00C16099 /* AuthorSidebarScrapeResult.swift in Sources */,
 				1C4154E11ED1D53D009686E4 /* ProfileScrapeResult.swift in Sources */,
 				1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */,

@@ -6,23 +6,12 @@
 import XCTest
 
 final class PrivateMessageScrapingTests: XCTestCase {
-    private var oldDefaultTimeZone: TimeZone?
-
-    override func setUp() {
+    override class func setUp() {
         super.setUp()
 
-        oldDefaultTimeZone = NSTimeZone.default
-        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
+        makeUTCDefaultTimeZone()
     }
-
-    override func tearDown() {
-        if let oldDefaultTimeZone = oldDefaultTimeZone {
-            NSTimeZone.default = oldDefaultTimeZone
-        }
-
-        super.tearDown()
-    }
-
+    
     func testFolder() {
         let result = try! scrapeFixture(named: "private-list") as PrivateMessageFolderScrapeResult
 

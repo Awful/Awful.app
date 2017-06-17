@@ -6,23 +6,12 @@
 import XCTest
 
 final class PostsPageScrapingTests: XCTestCase {
-    private var defaultTimeZone: TimeZone?
-
-    override func setUp() {
+    override class func setUp() {
         super.setUp()
 
-        defaultTimeZone = NSTimeZone.default
-        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
+        makeUTCDefaultTimeZone()
     }
-
-    override func tearDown() {
-        if let defaultTimeZone = defaultTimeZone {
-            NSTimeZone.default = defaultTimeZone
-        }
-
-        super.tearDown()
-    }
-
+    
     func testCanadianPoliticsThread() {
         let result = try! scrapeFixture(named: "showthread") as PostsPageScrapeResult
         XCTAssertEqual(result.posts.count, 40)

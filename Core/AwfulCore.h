@@ -10,7 +10,6 @@ FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
 // Private bits (so Swift can call the methods)
 #import <AwfulCore/AwfulScanner.h>
 #import <AwfulCore/AwfulThreadListScraper.h>
-#import <AwfulCore/LepersColonyPageScraper.h>
 #import <AwfulCore/NSString+Undeprecation.h>
 
 // Model

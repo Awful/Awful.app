@@ -2,35 +2,30 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@testable import AwfulCore
 import XCTest
-import AwfulCore
 
-final class LepersColonyPageScrapingTests: ScrapingTestCase {
-    override class func scraperClass() -> AnyClass {
-        return LepersColonyPageScraper.self
-    }
-    
-    override func setUp() {
+final class LepersColonyPageScrapingTests: XCTestCase {
+    override class func setUp() {
         super.setUp()
-        
-        NSTimeZone.default = TimeZone(abbreviation: "UTC")!
+
+        makeUTCDefaultTimeZone()
     }
 
     func testFirstPage() {
-        let scraper = scrapeFixtureNamed("banlist") as! LepersColonyPageScraper
-        XCTAssert(scraper.punishments?.count == 50)
-        XCTAssert(fetchAll(User.self, inContext: managedObjectContext).count == 71)
-        XCTAssert(fetchAll(Post.self, inContext: managedObjectContext).count == 46)
+        let result = try! scrapeFixture(named: "banlist") as LepersColonyScrapeResult
+        XCTAssertEqual(result.punishments.count, 50)
         
-        let first = scraper.punishments?[0]
-        XCTAssert(first?.sentence == PunishmentSentence.Probation)
-        XCTAssert(first?.post?.postID == "421665753")
-        XCTAssertEqual(first?.date.timeIntervalSince1970, 1384078200)
-        XCTAssert(first?.subject.username == "Kheldragar")
-        XCTAssert(first?.subject.userID == "202925")
-        XCTAssert(first?.reasonHTML?.range(of: "shitty as you") != nil)
-        XCTAssert(first?.requester?.username == "Ralp")
-        XCTAssert(first?.requester?.userID == "61644")
-        XCTAssert(first?.approver == first?.requester)
+        let first = result.punishments[0]
+        XCTAssertEqual(first.sentence, .probation)
+        XCTAssertEqual(first.post?.rawValue, "421665753")
+        XCTAssertEqual(first.date?.timeIntervalSince1970, 1384078200)
+        XCTAssertEqual(first.subjectUsername, "Kheldragar")
+        XCTAssertEqual(first.subject?.rawValue, "202925")
+        XCTAssert(first.reason.contains("shitty as you"))
+        XCTAssertEqual(first.requesterUsername, "Ralp")
+        XCTAssertEqual(first.requester?.rawValue, "61644")
+        XCTAssertEqual(first.approver, first.requester)
+        XCTAssertEqual(first.approverUsername, first.requesterUsername)
     }
 }
