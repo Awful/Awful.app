@@ -5,4 +5,3 @@
 #import "AwfulScraper.h"
 #import "AwfulThreadListScraper.h"
 #import "LepersColonyPageScraper.h"
-#import "PrivateMessageFolderScraper.h"

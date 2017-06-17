@@ -15,14 +15,13 @@ public class ThreadTag: AwfulManagedObject {
 }
 
 extension ThreadTag {
-    func setURL(URL: NSURL) {
-        imageName = imageNameFromURL(URL: URL)
+    func setURL(url: URL) {
+        imageName = ThreadTag.imageName(from: url)
     }
-}
 
-private func imageNameFromURL(URL: NSURL) -> String {
-    // This silly casting works around an API change between Xcode 6.1 and Xcode 6.1.1, wherein NSURL.lastPathComponent went from returning `String` to returning `String?`. The cast allows compilation on either version.
-    return (URL.lastPathComponent as NSString!).deletingPathExtension
+    public static func imageName(from url: URL) -> String {
+        return url.deletingPathExtension().lastPathComponent
+    }
 }
 
 @objc(ThreadTagKey)
@@ -40,8 +39,8 @@ public final class ThreadTagKey: AwfulObjectKey {
         super.init(entityName: ThreadTag.entityName())
     }
     
-    public convenience init(imageURL: NSURL, threadTagID: String?) {
-        self.init(imageName: imageNameFromURL(URL: imageURL), threadTagID: threadTagID)
+    public convenience init(imageURL: URL, threadTagID: String?) {
+        self.init(imageName: ThreadTag.imageName(from: imageURL), threadTagID: threadTagID)
     }
     
     public required init?(coder: NSCoder) {

@@ -23,6 +23,29 @@ final class PrivateMessageScrapingTests: XCTestCase {
         super.tearDown()
     }
 
+    func testFolder() {
+        let result = try! scrapeFixture(named: "private-list") as PrivateMessageFolderScrapeResult
+
+        XCTAssertEqual(result.allFolders.map { $0.id.rawValue }, ["0", "-1"])
+        XCTAssertEqual(result.allFolders.map { $0.name }, ["Inbox", "Sent Items"])
+
+        XCTAssertEqual(result.folder?.id.rawValue, "0")
+        XCTAssertEqual(result.folder?.name, "Inbox")
+
+        XCTAssertFalse(result.isOnlyShowingLastFiftyMessages)
+
+        XCTAssertEqual(result.messages.count, 4)
+
+        let first = result.messages[0]
+        XCTAssert(first.hasBeenSeen)
+        XCTAssertEqual(first.id.rawValue, "4601204")
+        XCTAssertEqual(first.senderUsername, "InFlames235")
+        XCTAssertEqual(first.sentDate?.timeIntervalSinceReferenceDate, 374103000)
+        XCTAssertEqual(first.subject, "Re: Awful app")
+        XCTAssertFalse(first.wasForwarded)
+        XCTAssertFalse(first.wasRepliedTo)
+    }
+
     func testSingleMessage() {
         let result = try! scrapeFixture(named: "private-one") as PrivateMessageScrapeResult
 
