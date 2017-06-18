@@ -32,7 +32,7 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { $0.firstNode(matchingSelector: "p:first-of-type") }
                 .map { $0.textContent }
                 .flatMap { (info) -> String? in
-                    let scanner = Scanner.awful_scanner(with: info)
+                    let scanner = Scanner.makeForScraping(info)
                     guard scanner.scanUpToAndPast("claims to be a ") else { return nil }
                     return scanner.scanCharacters(from: .letters)
                 }
@@ -86,7 +86,7 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap { (text) -> Int? in
-                    let scanner = Scanner.awful_scanner(with: text)
+                    let scanner = Scanner.makeForScraping(text)
                     return scanner.scanInt()
             }
 
@@ -95,7 +95,7 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap { (text) -> String? in
-                    let scanner = Scanner.awful_scanner(with: text)
+                    let scanner = Scanner.makeForScraping(text)
                     guard scanner.scanFloat(nil) else { return nil }
                     return scanner.scanned
                 }

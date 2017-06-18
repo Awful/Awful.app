@@ -209,25 +209,18 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { parsed, context -> [NSManagedObjectID] in
-                let scraper = AwfulThreadListScraper.scrape(parsed.document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-
-                guard let threads = scraper.threads as? [AwfulThread] else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Couldn't find threads"])
-                }
+            .then(on: .global(), execute: ThreadListScrapeResult.init)
+            .then(on: backgroundContext) { result, context -> [NSManagedObjectID] in
+                let threads = try result.upsert(into: context)
 
                 if
                     page == 1,
-                    var threadsToForget = scraper.forum?.threads as? Set<AwfulThread>
+                    var threadsToForget = threads.first?.forum?.threads as? Set<AwfulThread>
                 {
                     threadsToForget.subtract(threads)
                     threadsToForget.forEach { $0.threadListPage = 0 }
                 }
-                threads.forEach { $0.threadListPage = Int32(page) }
+
                 try context.save()
 
                 return threads.map { $0.objectID }
@@ -253,24 +246,15 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "bookmarkthreads.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { parsed, context -> [NSManagedObjectID] in
-                let scraper = AwfulThreadListScraper.scrape(parsed.document, into: context)
-                if let error = scraper.error {
-                    throw error
-                }
-
-                guard let threads = scraper.threads as? [AwfulThread] else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Couldn't find threads"])
-                }
-                threads.forEach { $0.bookmarked = true }
+            .then(on: .global(), execute: ThreadListScrapeResult.init)
+            .then(on: backgroundContext) { result, context -> [NSManagedObjectID] in
+                let threads = try result.upsert(into: context)
 
                 let threadIDsToIgnore = threads.map { $0.threadID }
                 let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
                 fetchRequest.predicate = NSPredicate(format: "bookmarked = YES && bookmarkListPage >= %ld && NOT(threadID IN %@)", Int64(page), threadIDsToIgnore)
                 let threadsToForget = try context.fetch(fetchRequest)
                 threadsToForget.forEach { $0.bookmarkListPage = 0 }
-                threads.forEach { $0.bookmarkListPage = Int32(page) }
 
                 try context.save()
 
@@ -571,7 +555,7 @@ public final class ForumsClient {
             guard page == AwfulThreadPage.nextUnread.rawValue else { return nil }
             guard let fragment = response.url?.fragment, !fragment.isEmpty else { return nil }
 
-            let scanner = Scanner.awful_scanner(with: fragment)
+            let scanner = Scanner.makeForScraping(fragment)
             guard scanner.scanString("pti", into: nil) else { return nil }
 
             var scannedInt: Int = 0

@@ -2,10 +2,37 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@testable import AwfulCore
+import CoreData
 import XCTest
-import AwfulCore
 
-final class FormScrapingTests: ScrapingTestCase {
+final class FormScrapingTests: XCTestCase {
+    private lazy var storeCoordinator: NSPersistentStoreCoordinator = {
+        let modelURL = Bundle(for: AwfulManagedObject.self).url(forResource: "Awful", withExtension: "momd")!
+        let model = NSManagedObjectModel(contentsOf: modelURL)!
+        return NSPersistentStoreCoordinator(managedObjectModel: model)
+    }()
+    private var memoryStore: NSPersistentStore!
+    private var managedObjectContext: NSManagedObjectContext!
+
+    override func setUp() {
+        super.setUp()
+
+        memoryStore = try! storeCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
+
+        managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        managedObjectContext.persistentStoreCoordinator = storeCoordinator
+    }
+
+    override func tearDown() {
+        managedObjectContext = nil
+
+        try! storeCoordinator.remove(memoryStore)
+        memoryStore = nil
+
+        super.tearDown()
+    }
+
     fileprivate func scrapeFormFixtureNamed(_ fixtureName: String) -> AwfulForm {
         let document = fixtureNamed(fixtureName)
         let formElement = document.firstNode(matchingSelector: "form[name='vbform']")

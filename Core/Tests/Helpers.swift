@@ -2,7 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AwfulCore
+@testable import AwfulCore
 
 // Without import UIKit somewhere in this test bundle, it refuses to load. Nothing here actually needs UIKit.
 import UIKit
@@ -36,7 +36,7 @@ func fetchOne<T: AwfulManagedObject>(_ type: T.Type, inContext context: NSManage
 }
 
 func fixtureNamed(_ basename: String) -> HTMLDocument {
-    let fixtureURL = Bundle(for: ScrapingTestCase.self).url(forResource: basename, withExtension: "html", subdirectory: "Fixtures")!
+    let fixtureURL = Bundle(for: FormScrapingTests.self).url(forResource: basename, withExtension: "html", subdirectory: "Fixtures")!
     var fixtureHTML : NSString = NSString()
     do {
         fixtureHTML = try NSString(contentsOf: fixtureURL, encoding: String.Encoding.windowsCP1252.rawValue)

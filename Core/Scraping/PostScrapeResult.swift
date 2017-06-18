@@ -28,7 +28,7 @@ public struct PostScrapeResult {
                 throw ScrapingError.missingExpectedElement("table.post[id]")
             }
 
-            let scanner = Scanner.awful_scanner(with: rawestID)
+            let scanner = Scanner.makeForScraping(rawestID)
             scanner.scanString("post", into: nil)
             guard
                 let rawID = scanner.scanCharacters(from: .decimalDigits),

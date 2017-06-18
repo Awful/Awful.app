@@ -19,7 +19,7 @@ public struct ShowPostScrapeResult: ScrapeResult {
         threadID = html.firstNode(matchingSelector: "#thread")
             .flatMap { $0["class"] }
             .flatMap { cls in
-                let scanner = Scanner.awful_scanner(with: cls)
+                let scanner = Scanner.makeForScraping(cls)
                 guard scanner.scanString("thread:", into: nil) else { return nil }
                 return scanner.scanCharacters(from: .decimalDigits)
             }
@@ -27,7 +27,7 @@ public struct ShowPostScrapeResult: ScrapeResult {
 
         threadTitle = html.firstNode(matchingSelector: "title")
             .flatMap { title in
-                let scanner = Scanner.awful_scanner(with: title.textContent)
+                let scanner = Scanner.makeForScraping(title.textContent)
                 guard scanner.scanUpToAndPast(" - ") else { return nil }
                 return scanner.remainder
             }

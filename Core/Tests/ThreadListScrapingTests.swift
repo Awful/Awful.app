@@ -2,14 +2,10 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+@testable import AwfulCore
 import XCTest
-import AwfulCore
 
-final class ThreadListScrapingTests: ScrapingTestCase {
-    override class func scraperClass() -> AnyClass {
-        return AwfulThreadListScraper.self
-    }
-    
+final class ThreadListScrapingTests: XCTestCase {
     override class func setUp() {
         super.setUp()
 
@@ -17,173 +13,159 @@ final class ThreadListScrapingTests: ScrapingTestCase {
     }
     
     func testAskTellThreadList() {
-        let scraper = scrapeFixtureNamed("showthread-asktell") as! AwfulThreadListScraper
-        let stupidQuestions = scraper.threads?.first as! AwfulCore.AwfulThread
-        let askTag = stupidQuestions.secondaryThreadTag!
-        XCTAssert(askTag.imageName == "ama")
+        let result = try! scrapeFixture(named: "showthread-asktell") as ThreadListScrapeResult
+        XCTAssertFalse(result.isBookmarkedThreadsPage)
+        let stupidQuestions = result.threads[0]
+        let askIconURL = stupidQuestions.secondaryIcon?.url
+        XCTAssertEqual(askIconURL.map(ThreadTag.imageName), "ama")
     }
     
     func testBookmarkedThreadList() {
-        let scraper = scrapeFixtureNamed("bookmarkthreads") as! AwfulThreadListScraper
-        let scrapedThreads = scraper.threads
-        XCTAssert(scrapedThreads?.count == 11)
-        XCTAssert(scrapedThreads!.count == fetchAll(AwfulThread.self, inContext: managedObjectContext).count)
-        XCTAssert(fetchAll(ForumGroup.self, inContext: managedObjectContext).isEmpty)
-        XCTAssert(fetchAll(Forum.self, inContext: managedObjectContext).isEmpty)
-        let allUsers = fetchAll(User.self, inContext: managedObjectContext)
-        let allUsernames = allUsers.map { $0.username! }.sorted()
-        XCTAssert(allUsernames == ["Choochacacko", "Dreylad", "Ferg", "I am in", "Ranma4703", "Salaminizer", "Scaevolus", "Sir Davey", "csammis", "escape artist", "pokeyman"])
+        let result = try! scrapeFixture(named: "bookmarkthreads") as ThreadListScrapeResult
+        XCTAssertEqual(result.threads.count, 11)
+        XCTAssert(result.isBookmarkedThreadsPage)
+
+        XCTAssertEqual(result.breadcrumbs?.forums.count, 0)
+
+        let allUsernames = (result.announcements.map { $0.authorUsername }
+            + result.threads.map { $0.authorUsername }
+            + result.threads.map { $0.lastPostAuthorUsername})
+            .filter { !$0.isEmpty }
+            .sorted()
+
+        XCTAssertEqual(allUsernames, [
+            "Captain Vittles", "Choochacacko", "Dreylad", "Ferg", "Gazpacho", "I am in", "MC Fruit Stripe",
+            "ManicJason", "Mug", "Ranma4703", "Salaminizer", "Scaevolus", "Scaevolus", "Sir Davey",
+            "Suspicious Dish", "cougar cub", "csammis", "escape artist", "multigl", "pokeyman", "spankmeister",
+            "sund"])
         
-        let wireThread = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'The Wire'"))!
-        XCTAssert(wireThread.starCategory == .Orange)
-        XCTAssert(wireThread.threadTag!.imageName == "tava-vintage")
-        XCTAssert(!wireThread.sticky)
-        XCTAssert(wireThread.title == "The Wire: The Rewatch... and all the pieces matter.")
-        XCTAssert(wireThread.seenPosts == 435)
-        XCTAssert(wireThread.author!.username == "escape artist")
-        XCTAssert(wireThread.totalReplies == 434)
-        XCTAssert(wireThread.numberOfVotes == 0)
-        XCTAssert(wireThread.rating == 0)
-        XCTAssertEqual(wireThread.lastPostDate!.timeIntervalSince1970, 1357964700)
-        XCTAssert(wireThread.lastPostAuthorName == "MC Fruit Stripe")
+        let wireThread = result.threads.first { $0.title.hasPrefix("The Wire") }!
+        XCTAssertEqual(wireThread.bookmark, .orange)
+        XCTAssertEqual(wireThread.icon?.url.map(ThreadTag.imageName), "tava-vintage")
+        XCTAssertEqual(wireThread.id.rawValue, "3522091")
+        XCTAssertFalse(wireThread.isSticky)
+        XCTAssertEqual(wireThread.title, "The Wire: The Rewatch... and all the pieces matter.")
+        XCTAssertFalse(wireThread.isUnread)
+        XCTAssertNil(wireThread.unreadPostCount)
+        XCTAssertEqual(wireThread.authorUsername, "escape artist")
+        XCTAssertEqual(wireThread.replyCount, 434)
+        XCTAssertNil(wireThread.ratingAverage)
+        XCTAssertNil(wireThread.ratingCount)
+        XCTAssertEqual(wireThread.lastPostDate?.timeIntervalSince1970, 1357964700)
+        XCTAssertEqual(wireThread.lastPostAuthorUsername, "MC Fruit Stripe")
         
-        let CoCFAQ = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title CONTAINS 'FAQ'"))!
-        XCTAssert(CoCFAQ.starCategory == .Orange)
-        XCTAssert(CoCFAQ.threadTag!.imageName == "help")
-        XCTAssert(CoCFAQ.sticky)
-        XCTAssert(CoCFAQ.stickyIndex == 0)
-        XCTAssert(CoCFAQ.title == "Cavern of Cobol FAQ (Read this first)")
-        XCTAssert(CoCFAQ.seenPosts == 1)
-        XCTAssert(CoCFAQ.author!.username == "Scaevolus")
-        XCTAssert(CoCFAQ.totalReplies == 0)
-        XCTAssert(CoCFAQ.rating == 0)
-        XCTAssertEqual(CoCFAQ.lastPostDate!.timeIntervalSince1970, 1209381240)
-        XCTAssert(CoCFAQ.lastPostAuthorName == "Scaevolus")
+        let cocfaq = result.threads.first { $0.title.contains("FAQ") }!
+        XCTAssertEqual(cocfaq.bookmark, .orange)
+        XCTAssertEqual(cocfaq.icon?.url.map(ThreadTag.imageName), "help")
+        XCTAssertEqual(cocfaq.id.rawValue, "2836504")
+        XCTAssert(cocfaq.isSticky)
+        XCTAssertEqual(cocfaq.title, "Cavern of Cobol FAQ (Read this first)")
+        XCTAssertNil(cocfaq.unreadPostCount)
+        XCTAssertFalse(cocfaq.isUnread)
+        XCTAssertEqual(cocfaq.authorUsername, "Scaevolus")
+        XCTAssertEqual(cocfaq.replyCount, 0)
+        XCTAssertNil(cocfaq.ratingAverage)
+        XCTAssertEqual(cocfaq.lastPostDate?.timeIntervalSince1970, 1209381240)
+        XCTAssertEqual(cocfaq.lastPostAuthorUsername, "Scaevolus")
         
-        let androidAppThread = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "author.username = 'Ferg'"))!
-        XCTAssert(androidAppThread.starCategory == .Red)
-        XCTAssert(androidAppThread.numberOfVotes == 159)
-        XCTAssert(androidAppThread.rating == 4.79)
+        let androidAppThread = result.threads.first { $0.authorUsername == "Ferg" }!
+        XCTAssertEqual(androidAppThread.bookmark, .red)
+        XCTAssertEqual(androidAppThread.ratingCount, 159)
+        XCTAssertEqual(androidAppThread.ratingAverage, 4.79)
     }
     
     func testDebateAndDiscussionThreadList() {
-        let scraper = scrapeFixtureNamed("forumdisplay") as! AwfulThreadListScraper
-        let scrapedThreads = scraper.threads
-        XCTAssert(scrapedThreads?.count == 40)
-        let allThreads = fetchAll(AwfulThread.self, inContext: managedObjectContext)
-        XCTAssert(allThreads.count == scrapedThreads?.count);
-        let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
-        XCTAssert(allGroups.count == 1)
-        let discussion = allGroups.first!
-        XCTAssert(discussion.name == "Discussion")
-        XCTAssert(discussion.forums.count == 1)
-        let allForums = fetchAll(Forum.self, inContext: managedObjectContext)
-        XCTAssert(allForums.count == 1)
-        let debateAndDiscussion = allForums.first!
-        XCTAssert(debateAndDiscussion.name == "Debate & Discussion")
-        XCTAssert(debateAndDiscussion.forumID == "46")
-        let threadForums = NSSet(array: allThreads.map{$0.forum!})
-        XCTAssert(threadForums == NSSet(object: debateAndDiscussion))
-        let allUsers = fetchAll(User.self, inContext: managedObjectContext)
-        let allUsernames = allUsers.map{$0.username!}.sorted { $0.caseInsensitiveCompare($1) == ComparisonResult.orderedAscending }
-        XCTAssert(allUsernames == [
-            "a bad enough dude",
-            "Bedlamdan",
-            "BiggerBoat",
-            "blackguy32",
-            "CatCannons",
-            "Chamale",
-            "coolskillrex remix",
-            "Dreylad",
-            "evilweasel",
-            "Fire",
-            "Fluo",
-            "Fried Chicken",
-            "GAS CURES KIKES",
-            "hambeet",
-            "Helsing",
-            "Joementum",
-            "Landsknecht",
-            "Lascivious Sloth",
-            "lonelywurm",
-            "MiracleMouse",
-            "Pesmerga",
-            "Petey",
-            "Pobama",
-            "Salaminizer",
-            "showbiz_liz",
-            "Sir Kodiak",
-            "Solkanar512",
-            "Stefu",
-            "The Selling Wizard",
-            "TheOtherContraGuy",
-            "tonelok",
-            "UltimoDragonQuest",
-            "Vilerat",
-            "WYA",
-            "XyloJW",
-            "Zikan"])
-        let tags = debateAndDiscussion.threadTags.array as! [ThreadTag]
-        XCTAssert(tags.count == 106)
-        let firstTag = tags.first!
-        XCTAssert(firstTag.threadTagID == "357")
-        XCTAssert(firstTag.imageName == "dd-offmeds")
-        let lastTag = tags.last!
-        XCTAssert(lastTag.threadTagID == "245")
-        XCTAssert(lastTag.imageName == "tcc-weed")
+        let result = try! scrapeFixture(named: "forumdisplay") as ThreadListScrapeResult
+        XCTAssertEqual(result.threads.count, 40)
+        XCTAssertFalse(result.isBookmarkedThreadsPage)
+
+        XCTAssertEqual(result.breadcrumbs?.forums.count, 2)
+        XCTAssertEqual(result.breadcrumbs?.forums[0].name, "Discussion")
+        XCTAssertEqual(result.breadcrumbs?.forums[1].name, "Debate & Discussion")
+        XCTAssertEqual(result.breadcrumbs?.forums[1].id.rawValue, "46")
+
+        let allUsernames = (result.threads.map { $0.authorUsername }
+            + result.threads.map { $0.lastPostAuthorUsername }
+            + result.announcements.map { $0.authorUsername })
+            .filter { !$0.isEmpty }
+            .sorted { $0.caseInsensitiveCompare($1) == .orderedAscending }
+        XCTAssertEqual(allUsernames, [
+            ".Edward Penischin", "a bad enough dude", "Amarkov", "Bedlamdan", "BiggerBoat", "blackguy32",
+            "CatCannons", "Chamale", "Charliegrs", "Chopstix", "Cleretic", "coolskillrex remix",
+            "cougar cub", "d3c0y2", "Delta-Wye", "Deteriorata", "Doc Hawkins", "Dreylad", "evilweasel",
+            "Fire", "Fire", "Fluo", "Fluo", "Fried Chicken", "front wing flexing", "FUCK SNEEP", "FViral",
+            "GAS CURES KIKES", "hambeet", "Helsing", "Helsing", "Helsing", "Install Gentoo", "Install Gentoo",
+            "jeffersonlives", "Job Truniht", "Joementum", "Joementum", "Joementum", "Joementum", "Landsknecht",
+            "Lascivious Sloth", "lonelywurm", "Lowtax", "MaterialConceptual", "MiracleMouse",
+            "Moist von Lipwig", "MonsterUnderYourBed", "Mr. Wynand", "NovemberMike", "Pesmerga", "Petey",
+            "Pobama", "Pobama", "Rexroom", "richardfun", "rudatron", "Salaminizer", "shots shots shots",
+            "showbiz_liz", "SilentD", "Sir Kodiak", "Solkanar512", "Stefu", "SubponticatePoster",
+            "TerminalSaint", "The Entire Universe", "The Selling Wizard", "thefncrow", "TheOtherContraGuy",
+            "tonelok", "UltimoDragonQuest", "UltimoDragonQuest", "Vilerat", "watt par", "Wolfsheim", "WYA",
+            "Xachariah", "Xandu", "XyloJW", "Zikan"])
+
+        XCTAssertEqual(result.filterableIcons.count, 106)
+        let firstIcon = result.filterableIcons[0]
+        XCTAssertEqual(firstIcon.id, "357")
+        XCTAssertEqual(firstIcon.url.map(ThreadTag.imageName), "dd-offmeds")
+        let lastTag = result.filterableIcons.last!
+        XCTAssertEqual(lastTag.id, "245")
+        XCTAssertEqual(lastTag.url.map(ThreadTag.imageName), "tcc-weed")
         
-        let rulesThread = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title CONTAINS 'Improved Rules'"))!
-        XCTAssert(rulesThread.starCategory == .None)
-        XCTAssert(rulesThread.threadTag!.imageName == "icon23-banme")
-        XCTAssert(rulesThread.sticky)
-        XCTAssert(rulesThread.stickyIndex != 0)
-        XCTAssert(rulesThread.title == "The Improved Rules of Debate and Discussion - New Update")
-        XCTAssert(rulesThread.seenPosts == 12)
-        XCTAssert(rulesThread.author!.username == "tonelok")
-        XCTAssert(rulesThread.totalReplies == 11)
-        XCTAssert(rulesThread.numberOfVotes == 0)
-        XCTAssert(rulesThread.rating == 0)
-        XCTAssertEqual(rulesThread.lastPostDate!.timeIntervalSince1970, 1330198920)
-        XCTAssert(rulesThread.lastPostAuthorName == "Xandu")
+        let rulesThread = result.threads.first { $0.title.contains("Improved Rules") }!
+        XCTAssertEqual(rulesThread.bookmark, .none)
+        XCTAssertEqual(rulesThread.icon?.url.map(ThreadTag.imageName), "icon23-banme")
+        XCTAssertEqual(rulesThread.id.rawValue, "3332697")
+        XCTAssert(rulesThread.isSticky)
+        XCTAssertEqual(rulesThread.title, "The Improved Rules of Debate and Discussion - New Update")
+        XCTAssertNil(rulesThread.unreadPostCount)
+        XCTAssertEqual(rulesThread.authorUsername, "tonelok")
+        XCTAssertEqual(rulesThread.replyCount, 11)
+        XCTAssertNil(rulesThread.ratingCount)
+        XCTAssertNil(rulesThread.ratingAverage)
+        XCTAssertEqual(rulesThread.lastPostDate?.timeIntervalSince1970, 1330198920)
+        XCTAssertEqual(rulesThread.lastPostAuthorUsername, "Xandu")
         
-        let venezuelanThread = fetchOne(AwfulThread.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "title BEGINSWITH 'Venezuelan'"))!
-        XCTAssert(venezuelanThread.starCategory == .None)
-        XCTAssert(venezuelanThread.threadTag!.imageName == "lf-marx")
-        XCTAssertFalse(venezuelanThread.sticky)
-        XCTAssert(venezuelanThread.title == "Venezuelan elections")
-        XCTAssert(venezuelanThread.seenPosts == 0)
-        XCTAssert(venezuelanThread.author!.username == "a bad enough dude")
-        XCTAssert(venezuelanThread.totalReplies == 410)
-        XCTAssert(venezuelanThread.numberOfVotes == 0)
-        XCTAssert(venezuelanThread.rating == 0)
-        XCTAssertEqual(venezuelanThread.lastPostDate!.timeIntervalSince1970, 1357082460)
-        XCTAssert(venezuelanThread.lastPostAuthorName == "d3c0y2")
+        let venezuelanThread = result.threads.first { $0.title.hasPrefix("Venezuelan") }!
+        XCTAssertEqual(venezuelanThread.bookmark, .none)
+        XCTAssertEqual(venezuelanThread.icon?.url.map(ThreadTag.imageName), "lf-marx")
+        XCTAssertEqual(venezuelanThread.id.rawValue, "3510719")
+        XCTAssertFalse(venezuelanThread.isSticky)
+        XCTAssertEqual(venezuelanThread.title, "Venezuelan elections")
+        XCTAssertNil(venezuelanThread.unreadPostCount)
+        XCTAssert(venezuelanThread.isUnread)
+        XCTAssertEqual(venezuelanThread.authorUsername, "a bad enough dude")
+        XCTAssertEqual(venezuelanThread.replyCount, 410)
+        XCTAssertNil(venezuelanThread.ratingCount)
+        XCTAssertNil(venezuelanThread.ratingAverage)
+        XCTAssertEqual(venezuelanThread.lastPostDate?.timeIntervalSince1970, 1357082460)
+        XCTAssertEqual(venezuelanThread.lastPostAuthorUsername, "d3c0y2")
     }
     
     func testSubforumHierarchy() {
-        let _ = scrapeFixtureNamed("forumdisplay2")
-        let allForums = fetchAll(Forum.self, inContext: managedObjectContext)
-        XCTAssert(allForums.count == 2)
-        let allForumNames = allForums.map{$0.name!}.sorted()
-        XCTAssert(allForumNames == ["Games", "Let's Play!"])
-        let allGroups = fetchAll(ForumGroup.self, inContext: managedObjectContext)
-        XCTAssert(allGroups.count == 1)
-        let discussion = allGroups.first!
-        XCTAssert(discussion.forums.count == allForums.count)
-        let games = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "name = 'Games'"))!
-        XCTAssert(games.childForums.count == 1)
-        let letsPlay = games.childForums.anyObject() as! Forum
-        XCTAssert(letsPlay.name == "Let's Play!")
+        let result = try! scrapeFixture(named: "forumdisplay2") as ThreadListScrapeResult
+        let breadcrumbs = result.breadcrumbs!
+        XCTAssertEqual(breadcrumbs.forums.count, 3)
+
+        let discussion = breadcrumbs.forums[0]
+        XCTAssertEqual(discussion.name, "Discussion")
+
+        let games = breadcrumbs.forums[1]
+        XCTAssertEqual(games.name, "Games")
+
+        let lp = breadcrumbs.forums[2]
+        XCTAssertEqual(lp.name, "Let's Play!")
     }
     
     func testAcceptsNewThreads() {
-        let _ = scrapeFixtureNamed("forumdisplay2")
-        let _ = scrapeFixtureNamed("forumdisplay-goldmine")
-        
-        let LP = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '191'"))!
-        XCTAssert(LP.canPost)
-        
-        let goldmine = fetchOne(Forum.self, inContext: managedObjectContext, matchingPredicate: NSPredicate(format: "forumID = '21'"))!
-        XCTAssertFalse(goldmine.canPost)
+        do {
+            let result = try! scrapeFixture(named: "forumdisplay2") as ThreadListScrapeResult
+            XCTAssert(result.canPostNewThread)
+        }
+
+        do {
+            let result = try! scrapeFixture(named: "forumdisplay-goldmine") as ThreadListScrapeResult
+            XCTAssertFalse(result.canPostNewThread)
+        }
     }
 }

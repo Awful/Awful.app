@@ -10,7 +10,7 @@ public struct ForumBreadcrumbsScrapeResult: ScrapeResult {
     public init(_ html: HTMLNode, url: URL?) throws {
         forums = try html
             .requiredNode(matchingSelector: "div.breadcrumbs")
-            .nodes(matchingSelector: "a[href *= 'forumid']")
+            .nodes(matchingSelector: "a[href *= 'forumdisplay.php']")
             .enumerated()
             .map { try ForumBreadcrumb($1, depth: $0) }
     }

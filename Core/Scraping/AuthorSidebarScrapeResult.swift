@@ -74,7 +74,7 @@ private func isSuperfluousLineBreak(_ node: HTMLNode) -> Bool {
 }
 
 private func parseUserID(_ htmlClass: String) -> UserID? {
-    let scanner = Scanner.awful_scanner(with: htmlClass)
+    let scanner = Scanner.makeForScraping(htmlClass)
     while scanner.scanUpToAndPast("userid-") {
         if
             let id = scanner.scanCharacters(from: .decimalDigits),

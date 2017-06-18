@@ -49,6 +49,13 @@ internal func parsePostDate(_ string: String) -> Date? {
 
 
 internal extension Scanner {
+    class func makeForScraping(_ string: String) -> Scanner {
+        let scanner = self.init(string: string)
+        scanner.charactersToBeSkipped = nil
+        scanner.caseSensitive = true
+        return scanner
+    }
+
     var remainder: String {
         return String(string.utf16.dropFirst(scanLocation)) ?? ""
     }
@@ -61,6 +68,12 @@ internal extension Scanner {
         var result: NSString?
         guard scanCharacters(from: cs, into: &result) else { return nil }
         return result as String?
+    }
+
+    func scanFloat() -> Float? {
+        var result: Float = 0
+        guard scanFloat(&result) else { return nil }
+        return result
     }
 
     func scanInt() -> Int? {

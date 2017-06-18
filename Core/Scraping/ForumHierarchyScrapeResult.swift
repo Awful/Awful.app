@@ -39,7 +39,7 @@ public struct ForumHierarchyNode: Hashable {
         }
 
         do {
-            let scanner = Scanner.awful_scanner(with: value)
+            let scanner = Scanner.makeForScraping(value)
             guard
                 let rawID = scanner.scanCharacters(from: .decimalDigits),
                 let id = ForumID(rawValue: rawID)
@@ -48,7 +48,7 @@ public struct ForumHierarchyNode: Hashable {
         }
 
         do {
-            let scanner = Scanner.awful_scanner(with: html.textContent)
+            let scanner = Scanner.makeForScraping(html.textContent)
             var depth = 0
             while scanner.scanString("--", into: nil) {
                 depth += 1
