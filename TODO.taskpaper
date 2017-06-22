@@ -450,6 +450,7 @@ Medium priority:
 		"when I'm scrolling down through the list of threads in a forum and i get to the point where it has to load more the list will jump up when the additional threads are loaded. Then I have to scroll up a little to see what I missed before scrolling down the list again."
 New features:
 	- Scrape and, well, announce announcements.
+		"The forum wide stickies don't show up in awful. Not that anyone probably worries about missing them"
 	- Add/remove users from ignore list.
 		Apparently if a mod gets on the ignore list, the only valid change is to remove the mod. So maybe don't try to bulk add/remove in one request, or check for "errors" where nothing changes, or something.
 		"Is there a reason you can't block someone from the app?"
@@ -768,9 +769,14 @@ New features:
 		Could rotate throbbers? Or use certain ones in certain places?
 	- Move sidebar to right side of screen, for left-handed folk?
 		"Is there any way an option to move the side bar to the right on ipad could be added? Left handed here and I loading a different thread with my pinky when scrolling with the index"
+	- A toggle button for the sidebar in the in-page settings popover.
+		"can you wonderful devs add a toggle for the sidebar in an easier spot on the 7 plus landscape view? i had my team throw together a mock-up https://i.imgur.com/JToXpmG_d.jpg?maxwidth=640&shape=thumb&fidelity=high"
+	- Forum rules.
+		Just load the webpage in a safari vc or w/e.
 Needs verification:
-	- Weird rendering error in posts web view, only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
+	- Weird rendering error in posts web view, e.g. only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
+		"Every now and then I get a bug where parts of the page are just pure black for a screen length or more. There are generally a few such spaces per page, at irregular intervals. The points where they start and stop have no relation to the posts, or the lines of text. This is on an iPhone 5, with dark mode enabled. After a few minutes of this, the app crashes back to the main screen, and when I go back in, it's on whatever page I started the last session on (although otherwise all my page views and bookmarks update appropriately). There doesn't seem to be any way to force the crashes, I just need to wait around a minute after finding a blank patch. Anyway, just now it happened again, with a new twist: the back button, and then the five buttons at the bottom of the screen all disappeared. They were still functional, just not visible. Anyway this bug seriously sucks, every few days I'll load up the app and know, just KNOW, that it's going to crash soon, and in the meantime I just need to wait around and read the visible half of the thread."
 	- State restoration falls apart when the app crashes.
 		"I've noticed that when the app crashes it doesn't have the latest last-read value, I usually have to jump 2-3 pages ahead"
 		Using standard UIKit state restoration. Something custom/else might fare better.
@@ -971,6 +977,7 @@ Needs verification:
 		"Every time I back out of a thread the forum page is scrolled down by a lot from when I actually clicked on the thread and it's really annoying"
 	- Page numbering gets screwy when failing to load a posts page.
 		"Also when the internet connection crashes, and it doesn't load the new posts in a thread, and then you make a post with the regained connection, the page numbering goes wild, like "137/136""
+		"Trying to go pull for next page on a poor connection (causing the alert “specified hostname could not be found”) will remain on the current page as expected but still increment the page counter at the bottom. This can be done multiple times. Not sure how it behaves after this when connection is restored, I force killed the app expecting that it’d get into a wacky core data state." @ipad @ios11b1
 	- Viewing certain users' rap sheets fails and can get stuck in infinite loop.
 		"I noticed a user that had a name referencing another user named Aatrek, and when I saw a post by this Aatrek guy I decided to check out his rap sheet to see what got him permabanned. I tried to view the post via rapsheet but nothing would happen when I selected it. Then I tried looking at some of his older (archived) probations and got a 'post not found' dialog box and hit close, then tried tapping the topmost post again (which I think should still be viewable because it's in the gas chamber) and got stuck in a loop of 'post not found' dialog boxes that would pop up again as soon as they were dismissed. Pressing the back arrow got me out of it, though. Edit: oh... Ah... Hmm. Well, I never go to TVIV so I guess I wouldn't know. Edit 2: went to safari and saw that the permabanned post isn't linked or doesn't exist. So now I know why I couldn't view it."
 	- Crash deleting multiple PMs in quick succession.
@@ -996,3 +1003,7 @@ Needs verification:
 			Wonder if there's some error state we failed to check, so we sail right through to "let me show you your new post" without actually throwing an error?
 			"Yeah, I'm guessing this. Is there a timeout error when replying to a thread multiple times in a short period of time or when lots of people are replying to a thread and maybe the app can't figure out where the post should be?"
 		"Pretty sure this [server-side post throttling] is correct and the only reason people are noticing it more and more recently is because of some weird fuckshit with the server clocks happening lately. It's supposed to be a 10 second limit in between posts but sometimes it'll arbitrarily reject a post when it's been more like 60 seconds since your last. I don't think that's a problem on the Awful app's end but it would be nice if it held onto your post and it didn't just disappear into the void"
+	- "Image upload failed" error when posting without an image.
+		"Occasionally I get this error when trying to make a post. I wasn't uploading an image. https://i.imgur.com/O0WjBrU.jpg"
+	- PiP messes with touches somehow.
+		"iPad 10.5" Pro, 10.3.4, Awful thread with Picture in Picture (running Plex if it matters.) Touch is 'janky'. Scrolling a thread up and down jitters a lot. Trying to select a thread from the list view is hit or miss, sometimes doesn't register touches sometmies the wrong thread is selected. Location of where the PIP is matters for how this is effected. I think something in the new size + PIP is causing weird misscalculations. I've noticed something similar in a Unity game where if PIP was on the right, then a touch on the right registered several inches lower than where it really touched (Maybe trying to subtract the PIP window size.) My 'workaround' is to basically constantly move the PIP window based on where I'm reading / scrolling / tapping but it's pretty egregious."
