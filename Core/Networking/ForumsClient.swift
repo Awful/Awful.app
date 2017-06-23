@@ -252,7 +252,10 @@ public final class ForumsClient {
 
                 let threadIDsToIgnore = threads.map { $0.threadID }
                 let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
-                fetchRequest.predicate = NSPredicate(format: "bookmarked = YES && bookmarkListPage >= %ld && NOT(threadID IN %@)", Int64(page), threadIDsToIgnore)
+                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[
+                    NSPredicate(format: "%K = YES", #keyPath(AwfulThread.bookmarked)),
+                    NSPredicate(format: "%K >= %@", #keyPath(AwfulThread.bookmarkListPage), NSNumber(value: page)),
+                    NSPredicate(format: "NOT(%K IN %@)", #keyPath(AwfulThread.threadID), threadIDsToIgnore)])
                 let threadsToForget = try context.fetch(fetchRequest)
                 threadsToForget.forEach { $0.bookmarkListPage = 0 }
 
