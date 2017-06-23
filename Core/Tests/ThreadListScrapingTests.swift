@@ -24,6 +24,8 @@ final class ThreadListScrapingTests: XCTestCase {
         let result = try! scrapeFixture(named: "bookmarkthreads") as ThreadListScrapeResult
         XCTAssertEqual(result.threads.count, 11)
         XCTAssert(result.isBookmarkedThreadsPage)
+        XCTAssertEqual(result.pageCount, 1)
+        XCTAssertEqual(result.pageNumber, 1)
 
         XCTAssertEqual(result.breadcrumbs?.forums.count, 0)
 
