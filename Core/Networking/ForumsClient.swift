@@ -104,6 +104,7 @@ public final class ForumsClient {
         case invalidBaseURL
         case missingDataAndError
         case missingManagedObjectContext
+        case requestSerializationError(String)
         case unexpectedContentType(String, expected: String)
     }
 

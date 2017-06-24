@@ -7,7 +7,9 @@ import OMGHTTPURLRQ
 import PromiseKit
 
 /**
- We need to use a URLSessionDelegate method or two that requires being a URLSessionDelegate. Since that means we can't use the completion block-based URLSessionTask methods, might as well wrap some promise-making and request-serializing functionality here too
+ A promise-based interface to URLSession with block-based redirect handlers and win1252 request serialization.
+ 
+ We need to use a URLSessionDelegate method or two that requires being a URLSessionDelegate. Since that means we can't use the completion block-based URLSessionTask methods, might as well wrap some promise-making and request-serializing functionality here too.
  */
 internal final class ForumsURLSession {
     private let baseURL: URL
@@ -60,8 +62,14 @@ internal final class ForumsURLSession {
         let request: URLRequest
         do {
             switch method {
-            case .get: request = try OMGHTTPURLRQ.get(url.absoluteString, parameters) as URLRequest
-            case .post: request = try OMGHTTPURLRQ.post(url.absoluteString, parameters) as URLRequest
+            case .get:
+                request = try OMGHTTPURLRQ.get(url.absoluteString, parameters) as URLRequest
+
+            case .post:
+                var mutableRequest = URLRequest(url: url)
+                mutableRequest.httpMethod = "POST"
+                try mutableRequest.setMultipartFormData(parameters ?? [:], encoding: .windowsCP1252)
+                request = mutableRequest
             }
         }
         catch {
@@ -178,6 +186,66 @@ private class SessionDelegate: NSObject, URLSessionDataDelegate {
             data.append(component)
         }
         fulfill((data, response))
+    }
+}
+
+private struct EncodingError: Error {
+    let what: String
+}
+
+private extension URLRequest {
+
+    /**
+     Configures the URL request for `multipart/form-data`. The request's `httpBody` is set, and a value is set for the HTTP header field `Content-Type`.
+     
+     - Parameter parameters: The form data to set.
+     - Parameter encoding: The encoding to use for the keys and values.
+     
+     - Throws: `EncodingError` if any keys or values in `parameters` are not entirely in `encoding`.
+     
+     - Note: The default `httpMethod` is `GET`, and `GET` requests do not typically have a response body. Remember to set the `httpMethod` to e.g. `POST` before sending the request.
+     */
+    mutating func setMultipartFormData(_ parameters: [String: String], encoding: String.Encoding) throws {
+        let boundary = String(format: "------------------------%08X%08X", arc4random(), arc4random())
+
+        let contentType: String = try {
+            guard let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(encoding.rawValue)) else {
+                throw EncodingError(what: "charset")
+            }
+            return "multipart/form-data; charset=\(charset); boundary=\(boundary)"
+        }()
+        addValue(contentType, forHTTPHeaderField: "Content-Type")
+
+        httpBody = try {
+            var body = Data()
+
+            for (rawName, rawValue) in parameters {
+                if !body.isEmpty {
+                    body.append("\r\n".data(using: .utf8)!)
+                }
+
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+
+                guard
+                    rawName.canBeConverted(to: encoding),
+                    let disposition = "Content-Disposition: form-data; name=\"\(rawName)\"\r\n".data(using: .utf8) else {
+                    throw EncodingError(what: "name")
+                }
+                body.append(disposition)
+
+                body.append("\r\n".data(using: .utf8)!)
+
+                guard let value = rawValue.data(using: encoding) else {
+                    throw EncodingError(what: "value")
+                }
+
+                body.append(value)
+            }
+
+            body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+
+            return body
+        }()
     }
 }
 
