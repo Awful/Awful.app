@@ -99,7 +99,7 @@ class PostPreviewViewController: ViewController {
                     }
                 }
             } else {
-                self?.fakePost?.postDate = Date() as NSDate?
+                self?.fakePost?.postDate = Date()
                 self?.fakePost?.author = loggedInUser
             }
             

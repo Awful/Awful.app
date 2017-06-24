@@ -28,9 +28,9 @@ public class AwfulThread: AwfulManagedObject {
     
     @NSManaged public var author: User?
     @NSManaged public var forum: Forum?
-    @NSManaged var posts: NSMutableSet /* Post */
+    @NSManaged var posts: Set<Post>
     @NSManaged public var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
-    @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
+    @NSManaged var threadFilters: Set<ThreadFilter>
     @NSManaged public var threadTag: ThreadTag? /* via threads */
 }
 

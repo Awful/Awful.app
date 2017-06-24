@@ -16,7 +16,7 @@ internal extension PostScrapeResult {
         if id.rawValue != post.postID { post.postID = id.rawValue }
         if isEditable != post.editable { post.editable = isEditable }
         if isIgnored != post.ignored { post.ignored = isIgnored }
-        if let postDate = postDate, postDate != post.postDate as Date? { post.postDate = postDate as NSDate }
+        if let postDate = postDate, postDate != post.postDate { post.postDate = postDate }
     }
 }
 

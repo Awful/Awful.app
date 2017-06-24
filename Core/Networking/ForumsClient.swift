@@ -216,7 +216,7 @@ public final class ForumsClient {
 
                 if
                     page == 1,
-                    var threadsToForget = threads.first?.forum?.threads as? Set<AwfulThread>
+                    var threadsToForget = threads.first?.forum?.threads
                 {
                     threadsToForget.subtract(threads)
                     threadsToForget.forEach { $0.threadListPage = 0 }

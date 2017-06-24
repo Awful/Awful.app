@@ -67,7 +67,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
             sself.fakePost?.thread = fakeThread
             sself.fakePost?.author = fakeThread.author
             sself.fakePost?.innerHTML = postHTML
-            sself.fakePost?.postDate = NSDate()
+            sself.fakePost?.postDate = Date()
             sself.renderPreview()
             }
             .catch { [weak self] (error) -> Void in

@@ -7,11 +7,11 @@ public class ThreadTag: AwfulManagedObject {
     @NSManaged public var imageName: String?
     @NSManaged public var threadTagID: String?
     
-    @NSManaged var forums: NSMutableSet /* AwfulForum via threadTags */
-    @NSManaged var messages: NSMutableSet /* PrivateMessage */
-    @NSManaged var secondaryForums: NSMutableSet /* AwfulForum via secondaryThreadTags */
-    @NSManaged var secondaryThreads: NSMutableSet /* AwfulThread via secondaryThreadTag */
-    @NSManaged var threads: NSMutableSet /* AwfulThread via threadTag */
+    @NSManaged var forums: Set<Forum> /* via threadTags */
+    @NSManaged var messages: Set<PrivateMessage>
+    @NSManaged var secondaryForums: Set<Forum> /* via secondaryThreadTags */
+    @NSManaged var secondaryThreads: Set<AwfulThread> /* via secondaryThreadTag */
+    @NSManaged var threads: Set<AwfulThread> /* via threadTag */
 }
 
 extension ThreadTag {

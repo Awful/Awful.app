@@ -2,17 +2,19 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Foundation
+
 @objc(PrivateMessage)
 public class PrivateMessage: AwfulManagedObject {
     @NSManaged public var forwarded: Bool
     @NSManaged public var innerHTML: String?
-    @NSManaged var lastModifiedDate: NSDate
+    @NSManaged var lastModifiedDate: Date
     @NSManaged public var messageID: String
     // When we scrape a folder of messages, we can't get at the "from" user's userID. rawFromUsername holds this unhelpful bit of data until we learn of the user's ID and can use the `from` relationship.
     @NSManaged public var rawFromUsername: String?
     @NSManaged public var replied: Bool
     @NSManaged public var seen: Bool
-    @NSManaged public var sentDate: NSDate?
+    @NSManaged public var sentDate: Date?
     @NSManaged public var subject: String?
     
     @NSManaged internal var primitiveFrom: User? /* via sentPrivateMessages */

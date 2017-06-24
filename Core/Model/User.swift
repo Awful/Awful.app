@@ -10,18 +10,18 @@ public class User: AwfulManagedObject {
     @NSManaged public var authorClasses: String?
     @NSManaged public var canReceivePrivateMessages: Bool
     @NSManaged public var customTitleHTML: String?
-    @NSManaged var lastModifiedDate: NSDate
+    @NSManaged var lastModifiedDate: Date
     @NSManaged public var moderator: Bool
-    @NSManaged public var regdate: NSDate?
+    @NSManaged public var regdate: Date?
     @NSManaged public var userID: String
     @NSManaged public var username: String?
     
-    @NSManaged var posts: NSMutableSet /* Post */
+    @NSManaged var posts: Set<Post>
     @NSManaged public var profile: Profile?
-    @NSManaged var receivedPrivateMessages: NSMutableSet /* PrivateMessage via to */
-    @NSManaged var sentPrivateMessages: NSMutableSet /* PrivateMessage via from */
-    @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
-    @NSManaged var threads: NSMutableSet /* Thread */
+    @NSManaged var receivedPrivateMessages: Set<PrivateMessage> /* via to */
+    @NSManaged var sentPrivateMessages: Set<PrivateMessage> /* via from */
+    @NSManaged var threadFilters: Set<ThreadFilter>
+    @NSManaged var threads: Set<AwfulThread>
 }
 
 extension User {

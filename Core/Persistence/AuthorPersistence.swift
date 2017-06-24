@@ -9,7 +9,7 @@ internal extension AuthorSidebarScrapeResult {
         if isAdministrator != user.administrator { user.administrator = isAdministrator }
         if customTitle != user.customTitleHTML { user.customTitleHTML = customTitle }
         if isModerator != user.moderator { user.moderator = isModerator }
-        if let regdate = regdate, user.regdate as Date? != regdate { user.regdate = regdate as NSDate }
+        if let regdate = regdate, user.regdate != regdate { user.regdate = regdate }
         if userID.rawValue != user.userID { user.userID = userID.rawValue }
         if !username.isEmpty, username != user.username { user.username = username }
 
@@ -44,16 +44,25 @@ internal extension AuthorSidebarScrapeResult {
     }
 }
 
-
 /// Merges to-many relationships into the first user in the array, then deletes all but the first user.
 internal func merge(_ users: [User]) -> User {
     precondition(!users.isEmpty)
     let user = users.dropFirst().reduce(users[0]) { (winner, donor) in
-        donor.posts.forEach(winner.posts.add)
-        donor.receivedPrivateMessages.forEach(winner.receivedPrivateMessages.add)
-        donor.sentPrivateMessages.forEach(winner.sentPrivateMessages.add)
-        donor.threadFilters.forEach(winner.threadFilters.add)
-        donor.threads.forEach(winner.threads.add)
+        for post in donor.posts {
+            winner.posts.insert(post)
+        }
+        for message in donor.receivedPrivateMessages {
+            winner.receivedPrivateMessages.insert(message)
+        }
+        for message in donor.sentPrivateMessages {
+            winner.sentPrivateMessages.insert(message)
+        }
+        for filter in donor.threadFilters {
+            winner.threadFilters.insert(filter)
+        }
+        for thread in donor.threads {
+            winner.threads.insert(thread)
+        }
         return winner
     }
 

@@ -13,11 +13,11 @@ public class Forum: AwfulManagedObject {
     @NSManaged public var lastRefresh: NSDate?
     @NSManaged public var name: String?
     
-    @NSManaged public var childForums: NSMutableSet /* Forum via parentForum */
+    @NSManaged public var childForums: Set<Forum> /* via parentForum */
     @NSManaged public var group: ForumGroup?
     @NSManaged public var parentForum: Forum? /* via childForums */
     @NSManaged var secondaryThreadTags: NSMutableOrderedSet /* ThreadTag via secondaryForums */
-    @NSManaged public var threads: NSMutableSet /* Thread */
+    @NSManaged public var threads: Set<AwfulThread>
     @NSManaged public var threadTags: NSMutableOrderedSet /* ThreadTag via forums */
     @NSManaged public private(set) var metadata: ForumMetadata
     
@@ -59,7 +59,7 @@ public class ForumGroup: AwfulManagedObject {
     @NSManaged public var index: Int32
     @NSManaged public var name: String?
     
-    @NSManaged public var forums: NSMutableSet /* Forum */
+    @NSManaged public var forums: Set<Forum>
 }
 
 @objc(ForumGroupKey)

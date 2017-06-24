@@ -9,15 +9,15 @@ internal extension ProfileScrapeResult {
         if about != profile.aboutMe { profile.aboutMe = about }
         if aimName != profile.aimName { profile.aimName = aimName }
         if gender != profile.gender { profile.gender = gender }
-        if homepage != profile.homepageURL as URL? { profile.homepageURL = homepage as NSURL? }
+        if homepage != profile.homepageURL { profile.homepageURL = homepage }
         if icqName != profile.icqName { profile.icqName = icqName }
         if interests != profile.interests { profile.interests = interests }
-        if lastPostDate != profile.lastPostDate as Date? { profile.lastPostDate = lastPostDate as NSDate? }
+        if lastPostDate != profile.lastPostDate { profile.lastPostDate = lastPostDate }
         if location != profile.location { profile.location = location }
         if occupation != profile.occupation { profile.occupation = occupation }
         if let postCount = postCount, postCount != Int(profile.postCount) { profile.postCount = Int32(postCount) }
         if postRate != profile.postRate { profile.postRate = postRate }
-        if profilePicture != profile.profilePictureURL as URL? { profile.profilePictureURL = profilePicture as NSURL? }
+        if profilePicture != profile.profilePictureURL { profile.profilePictureURL = profilePicture }
         if yahooName != profile.yahooName { profile.yahooName = yahooName }
     }
 

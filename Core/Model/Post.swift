@@ -2,6 +2,8 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Foundation
+
 /// A single reply to a thread.
 @objc(Post)
 public class Post: AwfulManagedObject {
@@ -18,10 +20,10 @@ public class Post: AwfulManagedObject {
     @NSManaged public var innerHTML: String?
     
     /// The last time the cached post data changed.
-    @NSManaged var lastModifiedDate: NSDate
+    @NSManaged var lastModifiedDate: Date
     
     /// When the post appeared.
-    @NSManaged public var postDate: NSDate?
+    @NSManaged public var postDate: Date?
     
     /// An ID assigned by the Forums that presumably uniquely identifies it.
     @NSManaged public var postID: String
