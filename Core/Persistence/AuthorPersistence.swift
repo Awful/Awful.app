@@ -46,7 +46,7 @@ internal extension AuthorSidebarScrapeResult {
 
 
 /// Merges to-many relationships into the first user in the array, then deletes all but the first user.
-private func merge(_ users: [User]) -> User {
+internal func merge(_ users: [User]) -> User {
     precondition(!users.isEmpty)
     let user = users.dropFirst().reduce(users[0]) { (winner, donor) in
         donor.posts.forEach(winner.posts.add)

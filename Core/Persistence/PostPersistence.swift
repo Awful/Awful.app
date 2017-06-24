@@ -159,17 +159,22 @@ internal extension PostsPageScrapeResult {
     }
 
     private func upsertUsers(into context: NSManagedObjectContext) throws -> [UserID: User] {
-        var users: [UserID: User] = [:]
+        var unmergedUsers: [UserID: [User]] = [:]
 
         let authors = posts.map { $0.author }
-        let userIDs = authors.map { $0.userID }
+        let userIDs = Set(authors.map { $0.userID.rawValue })
         let request = NSFetchRequest<User>(entityName: User.entityName())
         request.predicate = NSPredicate(format: "%K in %@", #keyPath(User.userID), userIDs)
         request.returnsObjectsAsFaults = false
 
         for user in try context.fetch(request) {
             guard let id = UserID(rawValue: user.userID) else { continue }
-            users[id] = user
+            unmergedUsers[id] = (unmergedUsers[id] ?? []) + [user]
+        }
+
+        var users: [UserID: User] = [:]
+        for (id, unmerged) in unmergedUsers {
+            users[id] = merge(unmerged)
         }
 
         for author in authors {
