@@ -56,6 +56,7 @@ Medium priority:
 		Especially bad for mods http://forums.somethingawful.com/showthread.php?threadid=3510131&userid=0&perpage=40&pagenumber=224#post461295184
 		"if you edit a post, then hit cancel, then go quote a post, you will actually end up editing the post you were editing earlier. (rather than making a new post with quote as intended )"
 		"So this is really minor but it would be nice if the "Cancel" button to the top and left of me right now didn't say Cancel but instead said something like "Back" since its not really a cancel button. For the longest time I didn't know I could hit that button mid post in order to grab another quote or re-read a post before posting cause I always thought it would cancel and delete my entry."
+		"Just encountered a fun bug...I accidentally tapped Edit on one of my own posts, so I backed out with Cancel and tapped Quote instead. Was presented with my post in Quote markup...but when I posted..it edited the original post instead of making a new one."
 	- Only trigger the "pull for next page of posts" gesture if scrolling started near the bottom.
 		"Would it be possible to make the "keep scrolling at the bottom of the page to go to the next one" thing less sensitive? Or maybe put in some sort of delay (something like, when you're scrolling and you hit the end of the page, it doesn't trigger until it comes to a stop and you pull up again?) I keep missing the last couple posts on every page, because I apparently scroll too fast :( If neither of those are doable, could we at least get an option to turn it off in settings?"
 		"My dream is to not make pull to load a new page activate the first time I hit the bottom of a page. Sometimes I'm trying to back track to the end of a page and after everything loads I find I hit the bottom too hard and it loaded the next."
@@ -72,6 +73,7 @@ Medium priority:
 		"when composing a post, the "[/..]" button still fixates onto trying to re-close closing tags as well as not-actually-tags, so pressing it 3 times here inserts: [//..][///..][////..]"
 		Was recently ported to Swift, very possible that introduced an error.
 		"Closing tags with the "[/..]" key still duplicates the most recent square brackets instead of actually closing the most recent open tag (e.g. "[//..]" if I hit that here.)"
+		"I haven't seen any new bugs myself, but I just wanted to bump an issue I first reported back in August, where closing the "[/..]" button to close a BBCode tag when composing a post. This issue is still present as of the current App Store Awful v3.23, under iOS 10.3.2 on an iPhone 6+."
 	- Only enable [/..] auto-close button after finishing a BBcode tag that takes a parameter.
 		"If you have a parametrized opener like "[quote=" then the button activates as soon as you enter the "=", before the tag is actually finished with the "]"."
 	- Ensure pull-for-next-page does that, and does not refresh the current page.
@@ -448,6 +450,9 @@ Medium priority:
 	- "when composing a post and a new line begins with a colon cuz of a smilie can the app suppress wanting to capitalize the first alpha character? :Getin:"
 	- Load more in a thread list is too jumpy, hides some new threads.
 		"when I'm scrolling down through the list of threads in a forum and i get to the point where it has to load more the list will jump up when the additional threads are loaded. Then I have to scroll up a little to see what I missed before scrolling down the list again."
+	- Setting to upload images using img/timg?
+		Currently we decide based on the image dimensions.
+		"would it be possible to have a settings choice as to whether the imgur uploaded images appear in img or timg tags?" "mostly just in the yospos cat thread"
 New features:
 	- Scrape and, well, announce announcements.
 		"The forum wide stickies don't show up in awful. Not that anyone probably worries about missing them"
@@ -773,6 +778,8 @@ New features:
 		"can you wonderful devs add a toggle for the sidebar in an easier spot on the 7 plus landscape view? i had my team throw together a mock-up https://i.imgur.com/JToXpmG_d.jpg?maxwidth=640&shape=thumb&fidelity=high"
 	- Forum rules.
 		Just load the webpage in a safari vc or w/e.
+	- Menu option to paste URL in [img] tag.
+		"Can you make it an option to insert whatever URL is in your clipboard if you pick the [img] tag option"
 Needs verification:
 	- Weird rendering error in posts web view, e.g. only a half-height square in the middle of the screen is rendered, with a black border around it. @ipad
 		"This happened :wtf: http://i.imgur.com/TsidRn2.png"
@@ -855,6 +862,7 @@ Needs verification:
 		"If you have embedded image autoloading set "off", the new "freeze animated gifs till you click them" overlay never appears even after tapping the image URL to load it, and animated gifs stay frozen forever."
 	- Nothing loads in Awful Browser.
 		"I'm having an issue with the app on my 6S+. I can't seem to open any links in the built in browser. When I first click on the link it shows a blank page and when I hit the refresh the load bar stalls at about 10%. I've tried uninstalling and reinstalling."
+		"The built-in browser only seems to work like 10% of the time for me now. Most of the time it just shows a blank page with a blank URL. Opening the link in Safari works fine."
 	- Long-pressing a YouTube embed on an unread post and pressing "Open in Safari" makes app non-interactive. @youtube
 		"If you encounter an unread post containing an embedded YouTube video (use "Mark Read" on a previous post if necessary), long-press the video's title and hit "Open in Safari". When you return to Awful app, all interactive elements within the thread become non-interactive -- I'm guessing they're occluded by the invisible remnants of the long-press menu. You can scroll around and select text, but you can't open anyone's profile, quote/"mark as read" any posts, follow any links or load any embedded images, etc.
 			While in this glitched state, the app's UI surrounding the thread view works except for a few things
