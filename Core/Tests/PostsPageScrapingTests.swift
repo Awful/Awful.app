@@ -110,4 +110,10 @@ final class PostsPageScrapingTests: XCTestCase {
         let post = ignored[0]
         XCTAssertEqual(post.id.rawValue, "428957756")
     }
+
+    func testOneUserOnepage() {
+        let result = try! scrapeFixture(named: "showthread-oneuser") as PostsPageScrapeResult
+        XCTAssertEqual(result.pageCount, 1)
+        XCTAssertEqual(result.pageNumber, 1)
+    }
 }

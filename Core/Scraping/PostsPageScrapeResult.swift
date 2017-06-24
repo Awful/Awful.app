@@ -32,23 +32,7 @@ public struct PostsPageScrapeResult: ScrapeResult {
 
         isSingleUserFilterEnabled = body.firstNode(matchingSelector: "table.post a.user_jump[title *= 'Remove']") != nil
 
-        if let pages = body.firstNode(matchingSelector: "div.pages") {
-            let select = pages.firstNode(matchingSelector: "select")
-
-            pageCount = select
-                .flatMap { $0.firstNode(matchingSelector: "option:last-of-type[value]") }
-                .flatMap { $0["value"] }
-                .flatMap { Int($0) }
-
-            pageNumber = select
-                .flatMap { $0.firstNode(matchingSelector: "option[selected][value]") }
-                .flatMap { $0["value"] }
-                .flatMap { Int($0) }
-        }
-        else {
-            pageCount = 1
-            pageNumber = 1
-        }
+        (pageNumber: pageNumber, pageCount: pageCount) = scrapePageDropdown(body)
 
         posts = try body
             .nodes(matchingSelector: "table.post")

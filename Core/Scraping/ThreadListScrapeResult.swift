@@ -92,20 +92,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
 
         isBookmarkedThreadsPage = body.firstNode(matchingSelector: "form[name='bookmarks']") != nil
 
-        let pages = body.firstNode(matchingSelector: "div.pages")
-        let pageSelect = pages.flatMap { $0.firstNode(matchingSelector: "select") }
-
-        pageCount = pageSelect
-            .flatMap { $0.firstNode(matchingSelector: "option:last-of-type") }
-            .flatMap { $0["value"] }
-            .flatMap { Int($0) }
-            ?? pages.map { _ in 1 }
-
-        pageNumber = pageSelect
-            .flatMap { $0.firstNode(matchingSelector: "option[selected]") }
-            .flatMap { $0["value"] }
-            .flatMap { Int($0) }
-            ?? pages.map { _ in 1 }
+        (pageNumber: pageNumber, pageCount: pageCount) = scrapePageDropdown(body)
     }
 }
 
