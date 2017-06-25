@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0105581EAC0F450084B343 /* ForumsClient.swift */; };
-		1C07B8AE1EF568100044B8AF /* LepersColonyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */; };
-		1C07B8B01EF5848A0044B8AF /* ThreadListScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */; };
-		1C07B8B21EF5C2600044B8AF /* ThreadPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8B11EF5C2600044B8AF /* ThreadPersistence.swift */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */; };
@@ -35,11 +32,38 @@
 		1C14A4B51A94C0BA0045DDF7 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FC21A0D80A1001BD898 /* Post.swift */; };
 		1C14A4B61A94C0BA0045DDF7 /* PrivateMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */; };
 		1C14A4B71A94C0BA0045DDF7 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C051C9F1A16F8D700F81EA2 /* Profile.swift */; };
+		1C14A4B81A94C0BA0045DDF7 /* Punishment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */; };
 		1C14A4B91A94C19E0045DDF7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1E5161A0F53130076F0B5 /* User.swift */; };
 		1C14A4BA1A94C1A20045DDF7 /* Thread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FCE1A0E27E2001BD898 /* Thread.swift */; };
 		1C14A4BB1A94C1A20045DDF7 /* ThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */; };
 		1C14A4BC1A94C2460045DDF7 /* AwfulForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C35FB7B1832A5A900B52724 /* AwfulForm.m */; };
 		1C14A4BD1A94C24A0045DDF7 /* AwfulForm.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C35FB7A1832A5A900B52724 /* AwfulForm.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C01A94C4A60045DDF7 /* AuthorScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EAC182EB37A00785766 /* AuthorScraper.h */; };
+		1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */; };
+		1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C31A94C4A60045DDF7 /* LepersColonyPageScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C41A94C4A60045DDF7 /* AwfulPostScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C51A94C4A60045DDF7 /* AwfulPostsPageScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C61A94C4A60045DDF7 /* AwfulScanner.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE985B18297255003DBBC2 /* AwfulScanner.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C1ADC3318E625BF00E865BF /* AwfulScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C81A94C4A60045DDF7 /* AwfulThreadListScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4C91A94C4A60045DDF7 /* AwfulUnreadPrivateMessageCountScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C9A745F18EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4CA1A94C4A60045DDF7 /* PrivateMessageFolderScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EB0182FDCBC00785766 /* PrivateMessageFolderScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4CB1A94C4A60045DDF7 /* PrivateMessageScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2EA6182E81B000785766 /* PrivateMessageScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4CC1A94C4A60045DDF7 /* ProfileScraper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6D2E97182C5F6900785766 /* ProfileScraper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C14A4CE1A94C4BF0045DDF7 /* AuthorScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EAD182EB37A00785766 /* AuthorScraper.m */; };
+		1C14A4CF1A94C4BF0045DDF7 /* AwfulCompoundDateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */; };
+		1C14A4D01A94C4BF0045DDF7 /* AwfulForumHierarchyScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */; };
+		1C14A4D11A94C4BF0045DDF7 /* LepersColonyPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */; };
+		1C14A4D21A94C4BF0045DDF7 /* AwfulPostScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */; };
+		1C14A4D31A94C4BF0045DDF7 /* AwfulPostsPageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */; };
+		1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE985C18297255003DBBC2 /* AwfulScanner.m */; };
+		1C14A4D51A94C4BF0045DDF7 /* AwfulScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1ADC3418E625BF00E865BF /* AwfulScraper.m */; };
+		1C14A4D61A94C4BF0045DDF7 /* AwfulThreadListScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */; };
+		1C14A4D71A94C4BF0045DDF7 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */; };
+		1C14A4D81A94C4BF0045DDF7 /* PrivateMessageFolderScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EB1182FDCBC00785766 /* PrivateMessageFolderScraper.m */; };
+		1C14A4D91A94C4BF0045DDF7 /* PrivateMessageScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA7182E81B000785766 /* PrivateMessageScraper.m */; };
+		1C14A4DA1A94C4BF0045DDF7 /* ProfileScraper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E98182C5F6900785766 /* ProfileScraper.m */; };
 		1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C14A4DB1A94C7260045DDF7 /* Errors.swift */; };
 		1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */; };
 		1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */; };
@@ -94,9 +118,6 @@
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
-		1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */; };
-		1C2894991EE3091C00843C6B /* ShowPostScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */; };
-		1C28949B1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
@@ -143,17 +164,18 @@
 		1C3CF99C1A94BE190065C964 /* ForumHierarchyScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.swift */; };
 		1C3CF99D1A94BE190065C964 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0E9CF1A191EF10067511E /* Helpers.swift */; };
 		1C3CF99E1A94BE190065C964 /* LepersColonyPageScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */; };
+		1C3CF99F1A94BE190065C964 /* MessageFolderScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EB3182FE1E400785766 /* MessageFolderScrapingTests.swift */; };
 		1C3CF9A01A94BE190065C964 /* PostScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1EFFD1910468100E85DB2 /* PostScrapingTests.swift */; };
 		1C3CF9A11A94BE190065C964 /* PostsPageScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */; };
 		1C3CF9A21A94BE190065C964 /* PrivateMessageScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */; };
 		1C3CF9A31A94BE190065C964 /* ProfileScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */; };
+		1C3CF9A41A94BE190065C964 /* ScrapingTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */; };
 		1C3CF9A51A94BE190065C964 /* ThreadListScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */; };
 		1C3CF9A61A94BE1E0065C964 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
 		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
 		1C40D4AA1A85F57400D9F793 /* Acknowledgements.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */; };
 		1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
-		1C4154E11ED1D53D009686E4 /* ProfileScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4154E01ED1D53D009686E4 /* ProfileScrapeResult.swift */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
@@ -202,6 +224,8 @@
 		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C7994AB1E0F101E0016BEAE /* NSString+Undeprecation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7994A91E0F101E0016BEAE /* NSString+Undeprecation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C7994AC1E0F101E0016BEAE /* NSString+Undeprecation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7994AA1E0F101E0016BEAE /* NSString+Undeprecation.m */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
@@ -273,26 +297,8 @@
 		1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A771A10675700E474A6 /* FetchedDataSource.swift */; };
 		1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */; };
 		1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */; };
-		1CF0F8E01ED8F3CB00C16099 /* AuthorSidebarScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8DF1ED8F3CA00C16099 /* AuthorSidebarScrapeResult.swift */; };
-		1CF0F8E21ED8F43400C16099 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8E11ED8F43400C16099 /* Helpers.swift */; };
-		1CF0F8E41ED8F49900C16099 /* ScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8E31ED8F49900C16099 /* ScrapeResult.swift */; };
-		1CF0F8E61ED8F62D00C16099 /* ScrapingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8E51ED8F62D00C16099 /* ScrapingError.swift */; };
-		1CF0F8E81ED8F65F00C16099 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0F8E71ED8F65F00C16099 /* Localizable.strings */; };
-		1CF0F8EB1ED8F83100C16099 /* ProfilePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8EA1ED8F83100C16099 /* ProfilePersistence.swift */; };
 		1CF0F8ED1ED91B7600C16099 /* ForumsURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8EC1ED91B7600C16099 /* ForumsURLSession.swift */; };
-		1CF0F8EF1ED9E20A00C16099 /* StandardErrorScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */; };
-		1CF0F8F11ED9E46600C16099 /* StandardErrorScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */; };
-		1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */; };
-		1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
-		1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */; };
-		1CF7AB8C1EDB64F60089EF0C /* AuthorPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */; };
-		1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */; };
-		1CF7AB921EDB6C340089EF0C /* PostsPageScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB911EDB6C340089EF0C /* PostsPageScrapeResult.swift */; };
-		1CF7AB941EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */; };
-		1CF7AB961EDB71640089EF0C /* PostScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB951EDB71640089EF0C /* PostScrapeResult.swift */; };
-		1CF7AB981EDD0F4D0089EF0C /* PostPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */; };
-		1CF7AB9A1EDD0FDE0089EF0C /* ForumPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */; };
 		1CF7FACD1BB60C3000A077F2 /* ThreadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */; };
 		1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
@@ -456,10 +462,8 @@
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
 		1C051C9F1A16F8D700F81EA2 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
-		1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyScrapeResult.swift; sourceTree = "<group>"; };
-		1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadListScrapeResult.swift; sourceTree = "<group>"; };
-		1C07B8B11EF5C2600044B8AF /* ThreadPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPersistence.swift; sourceTree = "<group>"; };
 		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
+		1C097A971A97B5DD00425EEF /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = 1Password.xcassets; sourceTree = "<group>"; };
@@ -526,13 +530,12 @@
 		1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposeViewController.swift; sourceTree = "<group>"; };
 		1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextViewController.swift; sourceTree = "<group>"; };
 		1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPreviewViewController.swift; sourceTree = "<group>"; };
+		1C1ADC3318E625BF00E865BF /* AwfulScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScraper.h; sourceTree = "<group>"; };
+		1C1ADC3418E625BF00E865BF /* AwfulScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScraper.m; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C23C7041A7AB8940089BD5C /* SlopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlopButton.swift; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
-		1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapeResult.swift; sourceTree = "<group>"; };
-		1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowPostScrapeResult.swift; sourceTree = "<group>"; };
-		1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageFolderScrapeResult.swift; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -587,7 +590,6 @@
 		1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Acknowledgements.mustache; sourceTree = "<group>"; };
 		1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Acknowledgements.swift; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
-		1C4154E01ED1D53D009686E4 /* ProfileScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileScrapeResult.swift; sourceTree = "<group>"; };
 		1C4191901763C8BD00EADE07 /* posts-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "posts-view.js"; sourceTree = "<group>"; };
 		1C41B8A416CD573D00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-banned.gif"; sourceTree = "<group>"; };
 		1C41B8A516CD573D00718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-permabanned.gif"; sourceTree = "<group>"; };
@@ -651,11 +653,27 @@
 		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C66E34719E78B83007FC27C /* SmilieListType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieListType.h; sourceTree = "<group>"; };
+		1C6D2E97182C5F6900785766 /* ProfileScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileScraper.h; sourceTree = "<group>"; };
+		1C6D2E98182C5F6900785766 /* ProfileScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileScraper.m; sourceTree = "<group>"; };
 		1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileScrapingTests.swift; sourceTree = "<group>"; };
+		1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulForumHierarchyScraper.h; sourceTree = "<group>"; };
+		1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulForumHierarchyScraper.m; sourceTree = "<group>"; };
 		1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapingTests.swift; sourceTree = "<group>"; };
+		1C6D2EA6182E81B000785766 /* PrivateMessageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivateMessageScraper.h; sourceTree = "<group>"; };
+		1C6D2EA7182E81B000785766 /* PrivateMessageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageScraper.m; sourceTree = "<group>"; };
 		1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapingTests.swift; sourceTree = "<group>"; };
+		1C6D2EAC182EB37A00785766 /* AuthorScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthorScraper.h; sourceTree = "<group>"; };
+		1C6D2EAD182EB37A00785766 /* AuthorScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthorScraper.m; sourceTree = "<group>"; };
+		1C6D2EB0182FDCBC00785766 /* PrivateMessageFolderScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivateMessageFolderScraper.h; sourceTree = "<group>"; };
+		1C6D2EB1182FDCBC00785766 /* PrivateMessageFolderScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateMessageFolderScraper.m; sourceTree = "<group>"; };
+		1C6D2EB3182FE1E400785766 /* MessageFolderScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageFolderScrapingTests.swift; sourceTree = "<group>"; };
+		1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulCompoundDateParser.h; sourceTree = "<group>"; };
+		1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulCompoundDateParser.m; sourceTree = "<group>"; };
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapingTests.swift; sourceTree = "<group>"; };
+		1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingTestCase.swift; sourceTree = "<group>"; };
+		1C7994A91E0F101E0016BEAE /* NSString+Undeprecation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+Undeprecation.h"; path = "Categories/NSString+Undeprecation.h"; sourceTree = "<group>"; };
+		1C7994AA1E0F101E0016BEAE /* NSString+Undeprecation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Undeprecation.m"; path = "Categories/NSString+Undeprecation.m"; sourceTree = "<group>"; };
 		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
 		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
 		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
@@ -685,12 +703,16 @@
 		1C94386A1C2875810029DFB1 /* ForumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForumTableViewCell.xib; sourceTree = "<group>"; };
 		1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFetchedDataSource.h; sourceTree = "<group>"; };
 		1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFetchedDataSource.m; sourceTree = "<group>"; };
+		1C9A745F18EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulUnreadPrivateMessageCountScraper.h; sourceTree = "<group>"; };
+		1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulUnreadPrivateMessageCountScraper.m; sourceTree = "<group>"; };
 		1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulErrorDomain.h; sourceTree = "<group>"; };
 		1C9FDE5A16E9CF5A00C665B5 /* AwfulErrorDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulErrorDomain.m; sourceTree = "<group>"; };
 		1C9FDE5F16EA030700C665B5 /* newpm.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newpm.gif; sourceTree = "<group>"; };
 		1C9FDE6016EA030700C665B5 /* pmforwarded.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmforwarded.gif; sourceTree = "<group>"; };
 		1C9FDE6116EA030700C665B5 /* pmreplied.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pmreplied.gif; sourceTree = "<group>"; };
 		1CA1E5161A0F53130076F0B5 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostScraper.h; sourceTree = "<group>"; };
+		1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostScraper.m; sourceTree = "<group>"; };
 		1CA1EFFD1910468100E85DB2 /* PostScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostScrapingTests.swift; sourceTree = "<group>"; };
 		1CA1F0461910AEBA00E85DB2 /* zepto.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = zepto.min.js; path = zepto/zepto.min.js; sourceTree = "<group>"; };
 		1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Potentially-Objectionable.xcdatamodel"; sourceTree = "<group>"; };
@@ -738,35 +760,26 @@
 		1CE55A751A10674B00E474A6 /* CompoundDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompoundDataSource.swift; sourceTree = "<group>"; };
 		1CE55A771A10675700E474A6 /* FetchedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedDataSource.swift; sourceTree = "<group>"; };
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
+		1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LepersColonyPageScraper.h; sourceTree = "<group>"; };
+		1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LepersColonyPageScraper.m; sourceTree = "<group>"; };
 		1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyPageScrapingTests.swift; sourceTree = "<group>"; };
 		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
 		1CF0E9C81A191A950067511E /* DatabaseUnavailableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableTests.swift; sourceTree = "<group>"; };
 		1CF0E9CF1A191EF10067511E /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		1CF0F8DF1ED8F3CA00C16099 /* AuthorSidebarScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorSidebarScrapeResult.swift; sourceTree = "<group>"; };
-		1CF0F8E11ED8F43400C16099 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		1CF0F8E31ED8F49900C16099 /* ScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapeResult.swift; sourceTree = "<group>"; };
-		1CF0F8E51ED8F62D00C16099 /* ScrapingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrapingError.swift; sourceTree = "<group>"; };
-		1CF0F8E71ED8F65F00C16099 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		1CF0F8EA1ED8F83100C16099 /* ProfilePersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePersistence.swift; sourceTree = "<group>"; };
 		1CF0F8EC1ED91B7600C16099 /* ForumsURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsURLSession.swift; sourceTree = "<group>"; };
-		1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardErrorScrapeResult.swift; sourceTree = "<group>"; };
-		1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardErrorScrapingTests.swift; sourceTree = "<group>"; };
-		1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableScrapeResult.swift; sourceTree = "<group>"; };
-		1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadPrivateMessageCountScrapeResult.swift; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
+		1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Punishment.swift; sourceTree = "<group>"; };
 		1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulManagedObject.swift; sourceTree = "<group>"; };
-		1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapeResult.swift; sourceTree = "<group>"; };
-		1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorPersistence.swift; sourceTree = "<group>"; };
-		1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessagePersistence.swift; sourceTree = "<group>"; };
-		1CF7AB911EDB6C340089EF0C /* PostsPageScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapeResult.swift; sourceTree = "<group>"; };
-		1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumBreadcrumbsScrapeResult.swift; sourceTree = "<group>"; };
-		1CF7AB951EDB71640089EF0C /* PostScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostScrapeResult.swift; sourceTree = "<group>"; };
-		1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPersistence.swift; sourceTree = "<group>"; };
-		1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumPersistence.swift; sourceTree = "<group>"; };
 		1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTableViewCell.swift; sourceTree = "<group>"; };
 		1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadTableViewCell.xib; sourceTree = "<group>"; };
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
+		1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulThreadListScraper.h; sourceTree = "<group>"; };
+		1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulThreadListScraper.m; sourceTree = "<group>"; };
 		1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadListScrapingTests.swift; sourceTree = "<group>"; };
+		1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulPostsPageScraper.h; sourceTree = "<group>"; };
+		1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulPostsPageScraper.m; sourceTree = "<group>"; };
+		1CFE985B18297255003DBBC2 /* AwfulScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulScanner.h; sourceTree = "<group>"; };
+		1CFE985C18297255003DBBC2 /* AwfulScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulScanner.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27F783E9D241CF6339BFCF0B /* Pods_CoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		28A3FC5A7AC8D23753D1611D /* Pods-SmilieExtractor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieExtractor.release.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor.release.xcconfig"; sourceTree = "<group>"; };
@@ -960,26 +973,35 @@
 		1C05EDAD16230BFE00FE567F /* Scraping */ = {
 			isa = PBXGroup;
 			children = (
-				1CF0F8DF1ED8F3CA00C16099 /* AuthorSidebarScrapeResult.swift */,
+				1C6D2EAC182EB37A00785766 /* AuthorScraper.h */,
+				1C6D2EAD182EB37A00785766 /* AuthorScraper.m */,
+				1C6FFED5182A67210014311C /* AwfulCompoundDateParser.h */,
+				1C6FFED6182A67210014311C /* AwfulCompoundDateParser.m */,
 				1C35FB7A1832A5A900B52724 /* AwfulForm.h */,
 				1C35FB7B1832A5A900B52724 /* AwfulForm.m */,
-				1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */,
-				1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */,
-				1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */,
-				1CF0F8E11ED8F43400C16099 /* Helpers.swift */,
-				1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */,
+				1C6D2EA0182D5DFB00785766 /* AwfulForumHierarchyScraper.h */,
+				1C6D2EA1182D5DFB00785766 /* AwfulForumHierarchyScraper.m */,
+				1CA1EFFA1910424D00E85DB2 /* AwfulPostScraper.h */,
+				1CA1EFFB1910424D00E85DB2 /* AwfulPostScraper.m */,
+				1CFE985718296CD7003DBBC2 /* AwfulPostsPageScraper.h */,
+				1CFE985818296CD7003DBBC2 /* AwfulPostsPageScraper.m */,
+				1CFE985B18297255003DBBC2 /* AwfulScanner.h */,
+				1CFE985C18297255003DBBC2 /* AwfulScanner.m */,
+				1C1ADC3318E625BF00E865BF /* AwfulScraper.h */,
+				1C1ADC3418E625BF00E865BF /* AwfulScraper.m */,
+				1CFE98421827F082003DBBC2 /* AwfulThreadListScraper.h */,
+				1CFE98431827F082003DBBC2 /* AwfulThreadListScraper.m */,
+				1C9A745F18EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.h */,
+				1C9A746018EA62F900093E33 /* AwfulUnreadPrivateMessageCountScraper.m */,
+				1CE694A9182FF0E500B24928 /* LepersColonyPageScraper.h */,
+				1CE694AA182FF0E500B24928 /* LepersColonyPageScraper.m */,
 				1C16FBEA1CBDBA7B00C88BD1 /* NSURL-QueryDictionary.swift */,
-				1CF7AB951EDB71640089EF0C /* PostScrapeResult.swift */,
-				1CF7AB911EDB6C340089EF0C /* PostsPageScrapeResult.swift */,
-				1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */,
-				1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */,
-				1C4154E01ED1D53D009686E4 /* ProfileScrapeResult.swift */,
-				1CF0F8E31ED8F49900C16099 /* ScrapeResult.swift */,
-				1CF0F8E51ED8F62D00C16099 /* ScrapingError.swift */,
-				1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */,
-				1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */,
-				1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */,
-				1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */,
+				1C6D2EB0182FDCBC00785766 /* PrivateMessageFolderScraper.h */,
+				1C6D2EB1182FDCBC00785766 /* PrivateMessageFolderScraper.m */,
+				1C6D2EA6182E81B000785766 /* PrivateMessageScraper.h */,
+				1C6D2EA7182E81B000785766 /* PrivateMessageScraper.m */,
+				1C6D2E97182C5F6900785766 /* ProfileScraper.h */,
+				1C6D2E98182C5F6900785766 /* ProfileScraper.m */,
 			);
 			path = Scraping;
 			sourceTree = "<group>";
@@ -1024,6 +1046,7 @@
 				1C442FC21A0D80A1001BD898 /* Post.swift */,
 				1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */,
 				1C051C9F1A16F8D700F81EA2 /* Profile.swift */,
+				1CF6BFE41A1E3B0D006AE9FE /* Punishment.swift */,
 				1C442FCE1A0E27E2001BD898 /* Thread.swift */,
 				1C442FCC1A0E1C77001BD898 /* ThreadTag.swift */,
 				1CA1E5161A0F53130076F0B5 /* User.swift */,
@@ -1164,13 +1187,12 @@
 			isa = PBXGroup;
 			children = (
 				1C3CF96A1A94B9B40065C964 /* AwfulCore.h */,
+				1C7994A81E0F0FEB0016BEAE /* Categories */,
 				1C14A4BF1A94C3C50045DDF7 /* Data */,
 				1C14A4DB1A94C7260045DDF7 /* Errors.swift */,
 				1C3CF9691A94B9B40065C964 /* Info.plist */,
-				1CF0F8E71ED8F65F00C16099 /* Localizable.strings */,
 				1C14A4BE1A94C3640045DDF7 /* Model */,
 				1C097A8C1A97AE9100425EEF /* Networking */,
-				1CF0F8E91ED8F81F00C16099 /* Persistence */,
 				1C05EDAD16230BFE00FE567F /* Scraping */,
 				1C3CF9761A94B9B50065C964 /* Tests */,
 			);
@@ -1181,6 +1203,7 @@
 		1C3CF9761A94B9B50065C964 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				1C097A971A97B5DD00425EEF /* Bridging-Header.h */,
 				1CF0E9C81A191A950067511E /* DatabaseUnavailableTests.swift */,
 				1C6FFED9182A74A00014311C /* Fixtures */,
 				1C35FB7718329D3400B52724 /* FormScrapingTests.swift */,
@@ -1188,12 +1211,13 @@
 				1CF0E9CF1A191EF10067511E /* Helpers.swift */,
 				1C3CF9781A94B9B50065C964 /* Info.plist */,
 				1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */,
+				1C6D2EB3182FE1E400785766 /* MessageFolderScrapingTests.swift */,
 				1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */,
 				1CA1EFFD1910468100E85DB2 /* PostScrapingTests.swift */,
 				1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */,
 				1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */,
 				1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */,
-				1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */,
+				1C6FFEDF182AA5AA0014311C /* ScrapingTestCase.swift */,
 				1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */,
 			);
 			name = Tests;
@@ -1302,6 +1326,15 @@
 				1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */,
 			);
 			path = Profiles;
+			sourceTree = "<group>";
+		};
+		1C7994A81E0F0FEB0016BEAE /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				1C7994A91E0F101E0016BEAE /* NSString+Undeprecation.h */,
+				1C7994AA1E0F101E0016BEAE /* NSString+Undeprecation.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		1C7C60C018FCA4D7009BF4BB /* Web View Junk */ = {
@@ -1544,19 +1577,6 @@
 			path = Theming;
 			sourceTree = "<group>";
 		};
-		1CF0F8E91ED8F81F00C16099 /* Persistence */ = {
-			isa = PBXGroup;
-			children = (
-				1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */,
-				1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */,
-				1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */,
-				1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */,
-				1CF0F8EA1ED8F83100C16099 /* ProfilePersistence.swift */,
-				1C07B8B11EF5C2600044B8AF /* ThreadPersistence.swift */,
-			);
-			path = Persistence;
-			sourceTree = "<group>";
-		};
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
@@ -1686,8 +1706,22 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C14A4C61A94C4A60045DDF7 /* AwfulScanner.h in Headers */,
 				1C14A4BD1A94C24A0045DDF7 /* AwfulForm.h in Headers */,
 				1C14A4B01A94C0AF0045DDF7 /* AwfulThreadPage.h in Headers */,
+				1C14A4C11A94C4A60045DDF7 /* AwfulCompoundDateParser.h in Headers */,
+				1C14A4C21A94C4A60045DDF7 /* AwfulForumHierarchyScraper.h in Headers */,
+				1C14A4CC1A94C4A60045DDF7 /* ProfileScraper.h in Headers */,
+				1C14A4C71A94C4A60045DDF7 /* AwfulScraper.h in Headers */,
+				1C14A4C91A94C4A60045DDF7 /* AwfulUnreadPrivateMessageCountScraper.h in Headers */,
+				1C14A4C51A94C4A60045DDF7 /* AwfulPostsPageScraper.h in Headers */,
+				1C14A4CB1A94C4A60045DDF7 /* PrivateMessageScraper.h in Headers */,
+				1C14A4C81A94C4A60045DDF7 /* AwfulThreadListScraper.h in Headers */,
+				1C14A4C01A94C4A60045DDF7 /* AuthorScraper.h in Headers */,
+				1C14A4C41A94C4A60045DDF7 /* AwfulPostScraper.h in Headers */,
+				1C14A4C31A94C4A60045DDF7 /* LepersColonyPageScraper.h in Headers */,
+				1C14A4CA1A94C4A60045DDF7 /* PrivateMessageFolderScraper.h in Headers */,
+				1C7994AB1E0F101E0016BEAE /* NSString+Undeprecation.h in Headers */,
 				1C3CF96B1A94B9B40065C964 /* AwfulCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1892,7 +1926,7 @@
 				CLASSPREFIX = "";
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
 					1C3A143219DFC5D10022C44C = {
@@ -1900,12 +1934,12 @@
 					};
 					1C3CF9651A94B9B40065C964 = {
 						CreatedOnToolsVersion = 6.1.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 					1C3CF96F1A94B9B40065C964 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 					1C66A9BF19DD304D001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -1913,10 +1947,13 @@
 					1C66A9C919DD304E001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = 9RR6L9X39A;
+						LastSwiftMigration = 0900;
 					};
 					1C66A9EE19DD3939001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = 9RR6L9X39A;
+						LastSwiftMigration = 0900;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1926,11 +1963,12 @@
 					1CBBAAB41D949EE000A847EC = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 9RR6L9X39A;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -1986,7 +2024,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CF0F8E81ED8F65F00C16099 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2394,42 +2431,34 @@
 			files = (
 				1C14A4B21A94C0B50045DDF7 /* CachePruner.swift in Sources */,
 				1C14A4B71A94C0BA0045DDF7 /* Profile.swift in Sources */,
+				1C7994AC1E0F101E0016BEAE /* NSString+Undeprecation.m in Sources */,
+				1C14A4D91A94C4BF0045DDF7 /* PrivateMessageScraper.m in Sources */,
 				1C14A4BC1A94C2460045DDF7 /* AwfulForm.m in Sources */,
+				1C14A4D11A94C4BF0045DDF7 /* LepersColonyPageScraper.m in Sources */,
+				1C14A4D21A94C4BF0045DDF7 /* AwfulPostScraper.m in Sources */,
 				1C14A4BA1A94C1A20045DDF7 /* Thread.swift in Sources */,
 				1CF0F8ED1ED91B7600C16099 /* ForumsURLSession.swift in Sources */,
 				1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */,
 				1C14A4B31A94C0B50045DDF7 /* DataStore.swift in Sources */,
 				1C14A4AE1A94C0A70045DDF7 /* AwfulManagedObject.swift in Sources */,
 				1C14A4B51A94C0BA0045DDF7 /* Post.swift in Sources */,
-				1CF0F8EB1ED8F83100C16099 /* ProfilePersistence.swift in Sources */,
-				1C2894991EE3091C00843C6B /* ShowPostScrapeResult.swift in Sources */,
-				1CF7AB961EDB71640089EF0C /* PostScrapeResult.swift in Sources */,
-				1C28949B1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift in Sources */,
+				1C14A4DA1A94C4BF0045DDF7 /* ProfileScraper.m in Sources */,
 				1C14A4BB1A94C1A20045DDF7 /* ThreadTag.swift in Sources */,
-				1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */,
-				1CF7AB941EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift in Sources */,
-				1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */,
-				1C07B8AE1EF568100044B8AF /* LepersColonyScrapeResult.swift in Sources */,
-				1CF0F8E01ED8F3CB00C16099 /* AuthorSidebarScrapeResult.swift in Sources */,
-				1C4154E11ED1D53D009686E4 /* ProfileScrapeResult.swift in Sources */,
-				1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */,
+				1C14A4D41A94C4BF0045DDF7 /* AwfulScanner.m in Sources */,
+				1C14A4B81A94C0BA0045DDF7 /* Punishment.swift in Sources */,
+				1C14A4D61A94C4BF0045DDF7 /* AwfulThreadListScraper.m in Sources */,
 				1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */,
+				1C14A4CF1A94C4BF0045DDF7 /* AwfulCompoundDateParser.m in Sources */,
 				1C14A4AD1A94C0880045DDF7 /* Awful.xcdatamodeld in Sources */,
+				1C14A4D51A94C4BF0045DDF7 /* AwfulScraper.m in Sources */,
 				1C14A4B61A94C0BA0045DDF7 /* PrivateMessage.swift in Sources */,
-				1CF7AB8C1EDB64F60089EF0C /* AuthorPersistence.swift in Sources */,
-				1CF7AB921EDB6C340089EF0C /* PostsPageScrapeResult.swift in Sources */,
-				1CF7AB981EDD0F4D0089EF0C /* PostPersistence.swift in Sources */,
-				1C07B8B01EF5848A0044B8AF /* ThreadListScrapeResult.swift in Sources */,
+				1C14A4D71A94C4BF0045DDF7 /* AwfulUnreadPrivateMessageCountScraper.m in Sources */,
+				1C14A4CE1A94C4BF0045DDF7 /* AuthorScraper.m in Sources */,
 				1C14A4B91A94C19E0045DDF7 /* User.swift in Sources */,
-				1CF0F8EF1ED9E20A00C16099 /* StandardErrorScrapeResult.swift in Sources */,
-				1C07B8B21EF5C2600044B8AF /* ThreadPersistence.swift in Sources */,
-				1CF7AB9A1EDD0FDE0089EF0C /* ForumPersistence.swift in Sources */,
-				1CF0F8E61ED8F62D00C16099 /* ScrapingError.swift in Sources */,
-				1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */,
-				1CF0F8E21ED8F43400C16099 /* Helpers.swift in Sources */,
+				1C14A4D81A94C4BF0045DDF7 /* PrivateMessageFolderScraper.m in Sources */,
+				1C14A4D31A94C4BF0045DDF7 /* AwfulPostsPageScraper.m in Sources */,
 				1C16FBEC1CBDBA8000C88BD1 /* NSURL-QueryDictionary.swift in Sources */,
-				1CF0F8E41ED8F49900C16099 /* ScrapeResult.swift in Sources */,
-				1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */,
+				1C14A4D01A94C4BF0045DDF7 /* AwfulForumHierarchyScraper.m in Sources */,
 				1C14A4B41A94C0B50045DDF7 /* Forum.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2440,11 +2469,12 @@
 			files = (
 				1C3CF99B1A94BE190065C964 /* FormScrapingTests.swift in Sources */,
 				1C3CF99A1A94BE140065C964 /* DatabaseUnavailableTests.swift in Sources */,
+				1C3CF9A41A94BE190065C964 /* ScrapingTestCase.swift in Sources */,
+				1C3CF99F1A94BE190065C964 /* MessageFolderScrapingTests.swift in Sources */,
 				1C3CF99C1A94BE190065C964 /* ForumHierarchyScrapingTests.swift in Sources */,
 				1C3CF99D1A94BE190065C964 /* Helpers.swift in Sources */,
 				1C3CF9A51A94BE190065C964 /* ThreadListScrapingTests.swift in Sources */,
 				1C3CF9A01A94BE190065C964 /* PostScrapingTests.swift in Sources */,
-				1CF0F8F11ED9E46600C16099 /* StandardErrorScrapingTests.swift in Sources */,
 				1C3CF9A21A94BE190065C964 /* PrivateMessageScrapingTests.swift in Sources */,
 				1C16FBEF1CBDBB4500C88BD1 /* NSURLQueryDictionaryTests.swift in Sources */,
 				1C3CF99E1A94BE190065C964 /* LepersColonyPageScrapingTests.swift in Sources */,
@@ -2803,6 +2833,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SKIP_INSTALL = YES;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2824,6 +2856,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SKIP_INSTALL = YES;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2843,6 +2877,9 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Core/Tests/Bridging-Header.h";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(PROJECT_DIR)\"/../Core/Scraping";
 			};
 			name = Debug;
@@ -2859,6 +2896,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Core/Tests/Bridging-Header.h";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(PROJECT_DIR)\"/../Core/Scraping";
 			};
 			name = Release;
@@ -2991,6 +3031,8 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -3029,6 +3071,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -3067,7 +3111,11 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful$(AWFUL_BUNDLE_ID_SUFFIX).SmilieKeyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -3105,8 +3153,12 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful$(AWFUL_BUNDLE_ID_SUFFIX).SmilieKeyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -3131,6 +3183,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful${AWFUL_BUNDLE_ID_SUFFIX}.SmiliesStickers";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -3154,6 +3208,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful${AWFUL_BUNDLE_ID_SUFFIX}.SmiliesStickers";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -3168,7 +3224,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 9RR6L9X39A;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
@@ -3180,8 +3236,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful${AWFUL_BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -3212,7 +3272,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful${AWFUL_BUNDLE_ID_SUFFIX}";
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = "Awful${AWFUL_BUNDLE_DISPLAY_NAME_SUFFIX}";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3229,19 +3293,25 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 32501;
-				DYLIB_CURRENT_VERSION = 32501;
+				CURRENT_PROJECT_VERSION = 32402;
+				DYLIB_CURRENT_VERSION = 32402;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -3257,7 +3327,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
@@ -3283,18 +3353,24 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 32501;
-				DYLIB_CURRENT_VERSION = 32501;
+				CURRENT_PROJECT_VERSION = 32402;
+				DYLIB_CURRENT_VERSION = 32402;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3308,7 +3384,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LLVM_LTO = YES;
 				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;

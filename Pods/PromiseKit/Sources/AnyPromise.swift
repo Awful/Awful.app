@@ -37,7 +37,7 @@ import Foundation
      - Note: A “void” `AnyPromise` has a value of `nil`.
     */
     convenience public init(_ bridge: Promise<Void>) {
-        self.init(force: bridge.then(on: zalgo) { nil })
+        self.init(force: bridge.then(on: zalgo) { _ in nil })
     }
 
     /**

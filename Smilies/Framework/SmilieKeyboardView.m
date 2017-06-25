@@ -268,7 +268,7 @@ static NSString * const CellIdentifier = @"SmilieCell";
     
     // For aesthetics, ensure each key width is a multiple of the minimumWidth (while also considering interitem spacing).
     CGFloat interitemSpacing = collectionViewLayout.minimumInteritemSpacing;
-    CGFloat (^sizer)() = ^(NSUInteger multiple) { return minimumWidth * multiple + interitemSpacing * (multiple - 1); };
+    CGFloat (^sizer)(NSUInteger) = ^(NSUInteger multiple) { return minimumWidth * multiple + interitemSpacing * (multiple - 1); };
     NSUInteger multiple = 1;
     while (targetSize.width > sizer(multiple)) {
         multiple++;
