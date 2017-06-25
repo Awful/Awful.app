@@ -13,6 +13,7 @@ import UIKit
  */
 public final class SpriteSheetView: UIView {
     private let spriteLayer = CALayer()
+    private var colorFollowsTheme = false
     
     /// An image of multiple frames stacked in a single column. Each frame is assumed to be a square.
     public var spriteSheet: UIImage? {
@@ -36,11 +37,19 @@ public final class SpriteSheetView: UIView {
     }
     
     /// Initializes the view with an appropriate size for the sprite sheet.
-    public convenience init(spriteSheet: UIImage) {
+    // Optionally, provide a color to tint the
+    public convenience init(spriteSheet: UIImage, followsTheme: Bool = false, tint color: UIColor? = nil) {
         let size = CGSize(width: spriteSheet.size.width, height: spriteSheet.size.width)
         self.init(frame: CGRect(origin: .zero, size: size))
+        
+        var chosenColor = color
+        
+        if (followsTheme) {
+            chosenColor = Theme.currentTheme["tintColor"]
+            colorFollowsTheme = true
+        }
 
-        if let sheet = tintImage(spriteSheet, as: Theme.currentTheme["tintColor"]!) {
+        if let tintColor = chosenColor, let sheet = tintImage(spriteSheet, as: tintColor) {
             self.spriteSheet = sheet
         } else {
             self.spriteSheet = spriteSheet
@@ -53,7 +62,7 @@ public final class SpriteSheetView: UIView {
     
     @objc func settingsDidChange(_ notification: Notification) {
         guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
-        if key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String || key.hasPrefix("theme") {
+        if colorFollowsTheme && (key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String || key.hasPrefix("theme")) {
             if let sheet = tintImage(self.spriteSheet!, as: Theme.currentTheme["tintColor"]!) {
                 self.spriteSheet = sheet
             }

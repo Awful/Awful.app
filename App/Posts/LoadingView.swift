@@ -50,7 +50,7 @@ class LoadingView: UIView {
 private class DefaultLoadingView: LoadingView {
     lazy var spinner: SpriteSheetView = {
         let image = UIImage(named: "v-throbber")!
-        let view = SpriteSheetView(spriteSheet: image)
+        let view = SpriteSheetView(spriteSheet: image, followsTheme: true)
         view.frameRate = 30
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
