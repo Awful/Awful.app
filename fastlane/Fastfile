@@ -13,16 +13,6 @@ before_all do
 end
 
 
-error do |lane, exception, options|
-  
-  first_two_lines = exception.message.split("\n").slice(0, 2)
-  notification(
-    subtitle: "Awful Build Error",
-    message: first_two_lines.join(" "),
-  )
-end
-
-
 desc "Build and upload a binary to iTunes Connect and release via TestFlight, bumping the build number too"
 desc ""
 desc "Options:"
@@ -91,11 +81,6 @@ lane :beta do |options|
   )
   
   push_to_git_remote
-  
-  notification(
-    subtitle: "Job Done",
-    message: "Awful has been sent to testers",
-  )
 end
 
 
