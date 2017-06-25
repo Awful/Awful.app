@@ -39,9 +39,25 @@ public final class SpriteSheetView: UIView {
     public convenience init(spriteSheet: UIImage) {
         let size = CGSize(width: spriteSheet.size.width, height: spriteSheet.size.width)
         self.init(frame: CGRect(origin: .zero, size: size))
+
+        if let sheet = tintImage(spriteSheet, as: Theme.currentTheme["tintColor"]!) {
+            self.spriteSheet = sheet
+        } else {
+            self.spriteSheet = spriteSheet
+        }
         
-        self.spriteSheet = spriteSheet
+        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
+        
         updateForSpriteSheet()
+    }
+    
+    @objc func settingsDidChange(_ notification: Notification) {
+        guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
+        if key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String || key.hasPrefix("theme") {
+            if let sheet = tintImage(self.spriteSheet!, as: Theme.currentTheme["tintColor"]!) {
+                self.spriteSheet = sheet
+            }
+        }
     }
     
     /// How quickly to play the animation, in number of frames per second.
@@ -199,6 +215,32 @@ public final class SpriteSheetView: UIView {
         guard let image = spriteSheet else { return super.intrinsicContentSize }
         let width = image.size.width
         return CGSize(width: width, height: width)
+    }
+    
+    // Consult https://stackoverflow.com/questions/5423210/how-do-i-change-a-partially-transparent-images-color-in-ios/20750373#20750373
+    // for the original source for this algorithm
+    private func tintImage(_ image: UIImage, as color: UIColor) -> UIImage? {
+        guard let cgImage = image.cgImage else { return nil }
+        
+        let width: Int = Int(image.scale * image.size.width)
+        let height: Int = Int(image.scale * image.size.height)
+        let bounds = CGRect(x: 0, y: 0, width: width, height: height)
+        
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let context = CGContext.init(data: nil,
+                                     width: width,
+                                     height: height,
+                                     bitsPerComponent: 8,
+                                     bytesPerRow: 0,
+                                     space: colorSpace,
+                                     bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue).rawValue)!
+        
+        context.clip(to: bounds, mask: cgImage)
+        context.setFillColor(color.cgColor)
+        context.fill(bounds)
+        
+        guard let spriteSheetBitmapContext = context.makeImage() else { return nil }
+        return UIImage(cgImage: spriteSheetBitmapContext, scale: image.scale, orientation: UIImageOrientation.up)
     }
 }
 
