@@ -48,6 +48,9 @@ internal func parsePostDate(_ string: String) -> Date? {
 }
 
 
+internal let regdateFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy")
+
+
 internal extension Scanner {
     class func makeForScraping(_ string: String) -> Scanner {
         let scanner = self.init(string: string)
@@ -87,6 +90,22 @@ internal extension Scanner {
         return scanString(s, into: nil)
     }
 }
+
+
+internal func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
+    func isSuperfluousLineBreak(_ node: HTMLNode) -> Bool {
+        guard let element = node as? HTMLElement else { return false }
+        return element.tagName == "br" && element.hasClass("pb")
+    }
+
+    return html
+        .firstNode(matchingSelector: "dl.userinfo dd.title")
+        .flatMap { $0.children.array as? [HTMLNode] }?
+        .filter { !isSuperfluousLineBreak($0) }
+        .map { $0.serializedFragment }
+        .joined()
+}
+
 
 internal func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?) {
     let pages = node.firstNode(matchingSelector: "div.pages")

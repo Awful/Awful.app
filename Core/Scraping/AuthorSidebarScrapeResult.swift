@@ -58,19 +58,8 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
             .map { $0.textContent }
             .flatMap(regdateFormatter.date)
 
-        customTitle = html
-            .firstNode(matchingSelector: "dl.userinfo dd.title")
-            .flatMap { $0.children.array as? [HTMLNode] }?
-            .filter { !isSuperfluousLineBreak($0) }
-            .map { $0.serializedFragment }
-            .joined()
-            ?? ""
+        customTitle = scrapeCustomTitle(html) ?? ""
     }
-}
-
-private func isSuperfluousLineBreak(_ node: HTMLNode) -> Bool {
-    guard let element = node as? HTMLElement else { return false }
-    return element.tagName == "br" && element.hasClass("pb")
 }
 
 private func parseUserID(_ htmlClass: String) -> UserID? {
@@ -85,5 +74,3 @@ private func parseUserID(_ htmlClass: String) -> UserID? {
     }
     return nil
 }
-
-private let regdateFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy")
