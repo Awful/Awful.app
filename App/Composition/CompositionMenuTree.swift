@@ -327,7 +327,7 @@ fileprivate func wrapSelectionInTag(_ tagspec: NSString) -> (_ tree: Composition
         } else if equalsPart.length == 1 {
             selectedRange.location += NSMaxRange(equalsPart)
         } else if selectedRange.length == 0 {
-            selectedRange.location += NSMaxRange(equalsPart) + 1
+            selectedRange.location += NSMaxRange(end) + 1
         } else {
             selectedRange.location += selectedRange.length + tagspec.length + closingTag.length
             selectedRange.length = 0
