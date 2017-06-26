@@ -13,6 +13,9 @@ import CoreData
  */
 @objc(Announcement)
 public final class Announcement: AwfulManagedObject {
+    @NSManaged var authorCustomTitleHTML: String
+    @NSManaged var authorRegdate: Date?
+    @NSManaged var authorUsername: String
     @NSManaged var bodyHTML: String
     @NSManaged var listIndex: Int32
     @NSManaged var postedDate: Date?

@@ -14,6 +14,8 @@
 		1C07B8BA1F0074B50044B8AF /* AnnouncementScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8B71F0072A90044B8AF /* AnnouncementScrapingTests.swift */; };
 		1C07B8BB1F0074C00044B8AF /* AnnouncementListScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8B51F0071630044B8AF /* AnnouncementListScrapeResult.swift */; };
 		1C07B8BE1F0098E50044B8AF /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8BD1F0098E50044B8AF /* Announcement.swift */; };
+		1C07B8C01F009F260044B8AF /* AnnouncementPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8BF1F009F260044B8AF /* AnnouncementPersistence.swift */; };
+		1C07B8C41F07D73F0044B8AF /* AnnouncementPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8C31F07D73F0044B8AF /* AnnouncementPersistenceTests.swift */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
 		1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */; };
@@ -472,6 +474,8 @@
 		1C07B8B71F0072A90044B8AF /* AnnouncementScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementScrapingTests.swift; sourceTree = "<group>"; };
 		1C07B8BC1F0097580044B8AF /* Awful 3.26-beta0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.26-beta0.xcdatamodel"; sourceTree = "<group>"; };
 		1C07B8BD1F0098E50044B8AF /* Announcement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Announcement.swift; sourceTree = "<group>"; };
+		1C07B8BF1F009F260044B8AF /* AnnouncementPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementPersistence.swift; sourceTree = "<group>"; };
+		1C07B8C31F07D73F0044B8AF /* AnnouncementPersistenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementPersistenceTests.swift; sourceTree = "<group>"; };
 		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
@@ -1003,6 +1007,32 @@
 			path = Scraping;
 			sourceTree = "<group>";
 		};
+		1C07B8C11F07D6DC0044B8AF /* Scraping */ = {
+			isa = PBXGroup;
+			children = (
+				1C07B8B71F0072A90044B8AF /* AnnouncementScrapingTests.swift */,
+				1CF0E9C81A191A950067511E /* DatabaseUnavailableTests.swift */,
+				1C35FB7718329D3400B52724 /* FormScrapingTests.swift */,
+				1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.swift */,
+				1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */,
+				1CA1EFFD1910468100E85DB2 /* PostScrapingTests.swift */,
+				1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */,
+				1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */,
+				1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */,
+				1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */,
+				1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */,
+			);
+			name = Scraping;
+			sourceTree = "<group>";
+		};
+		1C07B8C21F07D6F30044B8AF /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				1C07B8C31F07D73F0044B8AF /* AnnouncementPersistenceTests.swift */,
+			);
+			name = Persistence;
+			sourceTree = "<group>";
+		};
 		1C097A8C1A97AE9100425EEF /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1202,21 +1232,12 @@
 		1C3CF9761A94B9B50065C964 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				1C07B8B71F0072A90044B8AF /* AnnouncementScrapingTests.swift */,
-				1CF0E9C81A191A950067511E /* DatabaseUnavailableTests.swift */,
 				1C6FFED9182A74A00014311C /* Fixtures */,
-				1C35FB7718329D3400B52724 /* FormScrapingTests.swift */,
-				1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.swift */,
 				1CF0E9CF1A191EF10067511E /* Helpers.swift */,
 				1C3CF9781A94B9B50065C964 /* Info.plist */,
-				1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */,
 				1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */,
-				1CA1EFFD1910468100E85DB2 /* PostScrapingTests.swift */,
-				1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */,
-				1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */,
-				1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */,
-				1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */,
-				1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */,
+				1C07B8C21F07D6F30044B8AF /* Persistence */,
+				1C07B8C11F07D6DC0044B8AF /* Scraping */,
 			);
 			name = Tests;
 			path = ../Core/Tests;
@@ -1575,6 +1596,7 @@
 		1CF0F8E91ED8F81F00C16099 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				1C07B8BF1F009F260044B8AF /* AnnouncementPersistence.swift */,
 				1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */,
 				1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */,
 				1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */,
@@ -2426,6 +2448,7 @@
 				1C14A4B71A94C0BA0045DDF7 /* Profile.swift in Sources */,
 				1C14A4BC1A94C2460045DDF7 /* AwfulForm.m in Sources */,
 				1C14A4BA1A94C1A20045DDF7 /* Thread.swift in Sources */,
+				1C07B8C01F009F260044B8AF /* AnnouncementPersistence.swift in Sources */,
 				1CF0F8ED1ED91B7600C16099 /* ForumsURLSession.swift in Sources */,
 				1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */,
 				1C14A4B31A94C0B50045DDF7 /* DataStore.swift in Sources */,
@@ -2478,6 +2501,7 @@
 				1C3CF9A51A94BE190065C964 /* ThreadListScrapingTests.swift in Sources */,
 				1C3CF9A01A94BE190065C964 /* PostScrapingTests.swift in Sources */,
 				1CF0F8F11ED9E46600C16099 /* StandardErrorScrapingTests.swift in Sources */,
+				1C07B8C41F07D73F0044B8AF /* AnnouncementPersistenceTests.swift in Sources */,
 				1C3CF9A21A94BE190065C964 /* PrivateMessageScrapingTests.swift in Sources */,
 				1C16FBEF1CBDBB4500C88BD1 /* NSURLQueryDictionaryTests.swift in Sources */,
 				1C3CF99E1A94BE190065C964 /* LepersColonyPageScrapingTests.swift in Sources */,

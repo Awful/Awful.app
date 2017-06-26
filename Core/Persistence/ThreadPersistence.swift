@@ -6,6 +6,8 @@ import CoreData
 
 internal extension ThreadListScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [AwfulThread] {
+        _ = try? upsertAnnouncements(into: context)
+
         let (group: _, forums: forums) = try breadcrumbs?.upsert(into: context) ?? (nil, [])
         let forum = forums.last
 
