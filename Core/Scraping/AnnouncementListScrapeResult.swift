@@ -1,10 +1,6 @@
-//
 //  AnnouncementListScrapeResult.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2017-06-25.
-//  Copyright © 2017 Awful Contributors. All rights reserved.
-//
+//  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
 import HTMLReader
