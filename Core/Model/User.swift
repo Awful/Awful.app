@@ -15,7 +15,8 @@ public class User: AwfulManagedObject {
     @NSManaged public var regdate: Date?
     @NSManaged public var userID: String
     @NSManaged public var username: String?
-    
+
+    @NSManaged var announcements: Set<Announcement>
     @NSManaged var posts: Set<Post>
     @NSManaged public var profile: Profile?
     @NSManaged var receivedPrivateMessages: Set<PrivateMessage> /* via to */

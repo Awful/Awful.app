@@ -6,7 +6,8 @@
 public class ThreadTag: AwfulManagedObject {
     @NSManaged public var imageName: String?
     @NSManaged public var threadTagID: String?
-    
+
+    @NSManaged var announcements: Set<Announcement>
     @NSManaged var forums: Set<Forum> /* via threadTags */
     @NSManaged var messages: Set<PrivateMessage>
     @NSManaged var secondaryForums: Set<Forum> /* via secondaryThreadTags */
