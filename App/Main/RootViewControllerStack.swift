@@ -120,13 +120,8 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 		} else {
 			self.tabBarController.tabBar.barTintColor = nil
 		}
-        
-        if AwfulSettings.shared().alternateTheme {
-            self.tabBarController.tabBar.tintColor = UIColor(red: 0.0, green: 0.275, blue: 0.588, alpha: 1.0)
-        } else {
-            self.tabBarController.tabBar.tintColor = UIColor(red: 0.078, green: 0.514, blue: 0.694, alpha: 1.0)
 
-        }
+        self.tabBarController.tabBar.tintColor = Theme.currentTheme["tintColor"]
         
 	}
 	
