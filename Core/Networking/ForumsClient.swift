@@ -488,6 +488,35 @@ public final class ForumsClient {
         return (html, cancellable)
     }
 
+    // MARK: Announcements
+
+    /**
+     Populates already-scraped announcements with their `bodyHTML`.
+     
+     - Note: Announcements must first be scraped as part of a thread list for this method to do anything.
+     */
+    public func listAnnouncements() -> Promise<[Announcement]> {
+        guard
+            let backgroundContext = backgroundManagedObjectContext,
+            let mainContext = managedObjectContext else
+        {
+            return Promise(error: PromiseError.missingManagedObjectContext)
+        }
+
+        return fetch(method: .get, urlString: "announcement.php", parameters: ["forumid": "1"])
+            .promise
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global(), execute: AnnouncementListScrapeResult.init)
+            .then(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
+                let announcements = try scrapeResult.upsert(into: context)
+                try context.save()
+                return announcements.map { $0.objectID }
+            }
+            .then(on: mainContext) { objectIDs, context -> [Announcement] in
+                return objectIDs.flatMap { context.object(with: $0) as? Announcement }
+        }
+    }
+
     // MARK: Posts
 
     /**
