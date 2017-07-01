@@ -153,7 +153,7 @@
 		<key>descriptiveColor</key>
 		<string>#151515</string>
 		<key>tintColor</key>
-		<string>#0f4f70</string>
+		<string>#1e84af</string>
 		<key>backgroundColor</key>
 		<string>#060606</string>
 		<key>scrollIndicatorStyle</key>
@@ -337,7 +337,7 @@
 		<key>descriptiveColor</key>
 		<string>#151515</string>
 		<key>tintColor</key>
-		<string>#006ae3</string>
+		<string>#005ad3</string>
 		<key>backgroundColor</key>
 		<string>#060606</string>
 		<key>scrollIndicatorStyle</key>
