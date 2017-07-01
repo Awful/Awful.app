@@ -44,6 +44,12 @@ import UIKit
         starButton.addTarget(self, action: #selector(ForumTableViewCell.didTapStarButton), for: .touchUpInside)
         disclosureButton.addTarget(self, action: #selector(ForumTableViewCell.didTapDisclosureButton), for: .touchUpInside)
         
+        starButton.setImage(starButton.image(for: .normal)?.withRenderingMode(.alwaysTemplate), for: .normal)
+        starButton.tintColor = Theme.currentTheme["tintColor"]
+        disclosureButton.setImage(disclosureButton.image(for: .normal)?.withRenderingMode(.alwaysTemplate), for: .normal)
+        disclosureButton.setImage(disclosureButton.image(for: .selected)?.withRenderingMode(.alwaysTemplate), for: .selected)
+        disclosureButton.tintColor = Theme.currentTheme["tintColor"]
+        
         baseNameLeadingConstant = nameLeadingConstraint.constant
         
         NotificationCenter.default.addObserver(self, selector: #selector(ForumTableViewCell.contentSizeCategoryDidChange(_:)), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
@@ -167,6 +173,9 @@ import UIKit
         separator.backgroundColor = theme.separatorColor
         backgroundColor = theme.backgroundColor
         selectedBackgroundColor = theme.selectedBackgroundColor
+        
+        starButton.tintColor = Theme.currentTheme["tintColor"]
+        disclosureButton.tintColor = Theme.currentTheme["tintColor"]
     }
 }
 
