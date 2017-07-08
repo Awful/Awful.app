@@ -61,8 +61,10 @@ final class ForumsTableViewController: TableViewController {
         navigationController?.pushViewController(threadList, animated: animated)
     }
 
-    func openAnnouncement(_ announcement: Announcement, animated: Bool) {
-        // TODO: this
+    func openAnnouncement(_ announcement: Announcement) {
+        let vc = AnnouncementViewController(announcement: announcement)
+        vc.restorationIdentifier = "Announcement"
+        showDetailViewController(vc, sender: self)
     }
     
     fileprivate func updateEditButtonPresence(animated: Bool) {
@@ -149,7 +151,7 @@ extension ForumsTableViewController {
             openForum(forum, animated: true)
         }
         else if let announcement = dataSource.objectAtIndexPath(indexPath) as? Announcement {
-            openAnnouncement(announcement, animated: true)
+            openAnnouncement(announcement)
         }
         else {
             fatalError("shouldn't be selecting whatever this is")

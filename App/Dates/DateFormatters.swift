@@ -5,6 +5,7 @@
 import Foundation
 
 extension DateFormatter {
+    class var announcementDateFormatter: DateFormatter { return _regDateFormatter }
     class var postDateFormatter: DateFormatter { return _postDateFormatter }
     class var regDateFormatter: DateFormatter { return _regDateFormatter }
 }

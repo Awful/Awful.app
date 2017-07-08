@@ -8,7 +8,7 @@ extension UIAlertController {
 
     // MARK: Convenience initializers
     
-    convenience init(title: String, error: Error, handler: ((_ action: UIAlertAction?) -> Void)!) {
+    convenience init(title: String, error: Error, handler: ((_ action: UIAlertAction?) -> Void)?) {
         self.init(title: title, message: messageForError(error), handler: handler)
     }
 
@@ -20,21 +20,19 @@ extension UIAlertController {
         return UIAlertController(title: title, error: error)
     }
 
-    convenience init(networkError error: Error, handler: ((_ action: UIAlertAction?) -> Void)!) {
-        self.init(title: "Network Error", error: error, handler: handler )
+    convenience init(networkError error: Error, handler: ((_ action: UIAlertAction?) -> Void)? = nil) {
+        self.init(title: "Network Error", error: error, handler: handler)
     }
     
     class func alertWithNetworkError(_ error: Error) -> UIAlertController {
         return UIAlertController(networkError: error, handler: nil)
     }
 
-    @objc(initAlertWithTitle:message:handler:)
-    convenience init(title: String, message: String, handler: ((_ action: UIAlertAction?) -> Void)!) {
+    convenience init(title: String, message: String, handler: ((_ action: UIAlertAction?) -> Void)?) {
         self.init(title: title, message: message, preferredStyle: .alert)
         addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
     }
 
-    @objc(initAlertWithTitle:message:)
     convenience init(title: String, message: String) {
         self.init(title: title, message: message, handler: nil)
     }
@@ -45,14 +43,16 @@ extension UIAlertController {
 
     // MARK: Convenient actions
 
-    func addActionWithTitle(_ title: String, handler: (() -> Void)!) {
-        addAction(UIAlertAction(title: title, style: .default) { _ in
-            if handler != nil { handler() } })
+    func addActionWithTitle(_ title: String, handler: (() -> Void)?) {
+        addAction(UIAlertAction(title: title, style: .default) { action in
+            handler?()
+        })
     }
 
-    func addCancelActionWithHandler(_ handler: (() -> Void)!) {
-        addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            if handler != nil { handler() } })
+    func addCancelActionWithHandler(_ handler: (() -> Void)?) {
+        addAction(UIAlertAction(title: "Cancel", style: .cancel) { action in
+            handler?()
+        })
     }
 
     func addActions(_ actions: [UIAlertAction]) {

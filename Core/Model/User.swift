@@ -26,27 +26,20 @@ public class User: AwfulManagedObject {
 }
 
 extension User {
-    // TODO this is very stupid, just handle it during scraping
     public var avatarURL: URL? {
-        if let HTML = customTitleHTML {
-            if let element = avatarImageElement(customTitleHTML: HTML) {
-                if let url = element["data-cfsrc"] {
-                    return URL(string: url)
-                } else if let url = element["src"] {
-                    return URL(string: url)
-                }
-                return nil
-            }
-        }
-        return nil
+        return customTitleHTML.flatMap(extractAvatarURL)
     }
 }
 
-private func avatarImageElement(customTitleHTML HTML: String) -> HTMLElement? {
-    let document = HTMLDocument(string: HTML)
-    return document.firstNode(matchingSelector: "div > img:first-child") ??
+// TODO: this is very stupid, just handle it during scraping
+public func extractAvatarURL(fromCustomTitleHTML customTitleHTML: String) -> URL? {
+    let document = HTMLDocument(string: customTitleHTML)
+    let img = document.firstNode(matchingSelector: "div > img:first-child") ??
         document.firstNode(matchingSelector: "body > img:first-child") ??
         document.firstNode(matchingSelector: "a > img:first-child")
+
+    let src = img?["data-cfsrc"] ?? img?["src"]
+    return src.flatMap { URL(string: $0) }
 }
 
 @objc(UserKey)

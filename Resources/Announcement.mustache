@@ -1,0 +1,52 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+
+<style>
+  /* Allow click event delegation for everything. */
+  * { cursor: pointer; }
+</style>
+
+<style id="awful-inline-style">
+    {{{ stylesheet }}}
+</style>
+
+<style id="awful-font-scale-style">
+    {{> FontScale }}
+</style>
+
+
+<body class="{{ userInterfaceIdiom }}">
+
+<post
+    class="
+        {{# beenSeen }}seen{{/ }}
+        {{# roles }} {{ . }}{{/ }}
+        {{^ visibleAvatarURL }}no-avatar{{/ }}">
+
+    <header
+        class="userid-{{ authorUserID }}"
+        {{# hiddenAvatarURL }}data-awful-avatar="{{ . }}"{{/ }}>
+
+        {{# visibleAvatarURL }}<img class="avatar" src="{{ . }}" alt="">{{/ }}
+
+        <section class="nameanddate">
+            <h1 class="username">{{ authorUsername }}</h1>
+
+            {{# authorRolesDescription }}<span class="voiceover-only">{{ . }}</span>{{/ }}
+
+            <time class="regdate">Joined {{ formatters.regdate(authorRegdate) }}</time>
+        </section>
+    </header>
+
+    <section class="postbody">
+        {{{ innerHTML }}}
+    </section>
+
+    <footer>
+        <span class="postdate">
+            {{ formatters.announcementDate(postedDate) }}
+        </span>
+    </footer>
+</post>

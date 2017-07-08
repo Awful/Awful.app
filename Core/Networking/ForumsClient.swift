@@ -207,8 +207,7 @@ public final class ForumsClient {
             parameters["posticon"] = threadTagID
         }
 
-        return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
-            .promise
+        return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters).promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global(), execute: ThreadListScrapeResult.init)
             .then(on: backgroundContext) { result, context -> [NSManagedObjectID] in
@@ -495,16 +494,17 @@ public final class ForumsClient {
      
      - Note: Announcements must first be scraped as part of a thread list for this method to do anything.
      */
-    public func listAnnouncements() -> Promise<[Announcement]> {
+    public func listAnnouncements() -> (promise: Promise<[Announcement]>, cancellable: Cancellable) {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
         {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+            return (promise: Promise(error: PromiseError.missingManagedObjectContext), cancellable: Operation())
         }
 
-        return fetch(method: .get, urlString: "announcement.php", parameters: ["forumid": "1"])
-            .promise
+        let (promise, cancellable) = fetch(method: .get, urlString: "announcement.php", parameters: ["forumid": "1"])
+
+        let result = promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global(), execute: AnnouncementListScrapeResult.init)
             .then(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
@@ -515,6 +515,8 @@ public final class ForumsClient {
             .then(on: mainContext) { objectIDs, context -> [Announcement] in
                 return objectIDs.flatMap { context.object(with: $0) as? Announcement }
         }
+
+        return (promise: result, cancellable: cancellable)
     }
 
     // MARK: Posts

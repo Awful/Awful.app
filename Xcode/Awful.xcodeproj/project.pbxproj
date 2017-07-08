@@ -206,6 +206,7 @@
 		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
@@ -239,7 +240,12 @@
 		1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6016EA030700C665B5 /* pmforwarded.gif */; };
 		1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C9FDE6116EA030700C665B5 /* pmreplied.gif */; };
 		1CA1F0481910AEF400E85DB2 /* zepto.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA1F0461910AEBA00E85DB2 /* zepto.min.js */; };
+		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
+		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
+		1CA887AB1F3954550059FEEC /* Announcement.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CA887AA1F3954550059FEEC /* Announcement.mustache */; };
+		1CA887AD1F3958F00059FEEC /* Announcement.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA887AC1F3958F00059FEEC /* Announcement.js */; };
+		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
 		1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CB0607A1936CADC005263EA /* PostPreview.mustache */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
@@ -668,6 +674,7 @@
 		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C66E34719E78B83007FC27C /* SmilieListType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieListType.h; sourceTree = "<group>"; };
+		1C6821A81F113A760083F204 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
 		1C6D2E9A182C6F8C00785766 /* ProfileScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileScrapingTests.swift; sourceTree = "<group>"; };
 		1C6D2EA4182D622D00785766 /* ForumHierarchyScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapingTests.swift; sourceTree = "<group>"; };
 		1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapingTests.swift; sourceTree = "<group>"; };
@@ -710,8 +717,13 @@
 		1CA1E5161A0F53130076F0B5 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CA1EFFD1910468100E85DB2 /* PostScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostScrapingTests.swift; sourceTree = "<group>"; };
 		1CA1F0461910AEBA00E85DB2 /* zepto.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = zepto.min.js; path = zepto/zepto.min.js; sourceTree = "<group>"; };
+		1CA45D931F2C0AD1005BEEC5 /* RenderView.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = RenderView.js; sourceTree = "<group>"; };
+		1CA45D951F2C19AA005BEEC5 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Potentially-Objectionable.xcdatamodel"; sourceTree = "<group>"; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
+		1CA887AA1F3954550059FEEC /* Announcement.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Announcement.mustache; sourceTree = "<group>"; };
+		1CA887AC1F3958F00059FEEC /* Announcement.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Announcement.js; sourceTree = "<group>"; };
+		1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Presentation.swift"; sourceTree = "<group>"; };
 		1CB0607A1936CADC005263EA /* PostPreview.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostPreview.mustache; sourceTree = "<group>"; };
 		1CB15BCE1A9CEB8800176E73 /* Themes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLMenuPresenter.swift; sourceTree = "<group>"; };
@@ -1168,6 +1180,7 @@
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1CB6010616D826DA00CBEE22 /* Messages */,
 				1C25AC1F1F532EC400977D6F /* Misc */,
+				1CA887AE1F40ADFE0059FEEC /* Model Presentation */,
 				1C00E0AB173A006B008895E7 /* Navigation */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
@@ -1413,6 +1426,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		1CA887AE1F40ADFE0059FEEC /* Model Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */,
+			);
+			path = "Model Presentation";
+			sourceTree = "<group>";
+		};
 		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
 			isa = PBXGroup;
 			children = (
@@ -1526,6 +1547,7 @@
 		1CD005CD1BB734C900232FFD /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
 				1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */,
 				1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */,
 				1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */,
@@ -1688,10 +1710,14 @@
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1CA887AC1F3958F00059FEEC /* Announcement.js */,
+				1CA887AA1F3954550059FEEC /* Announcement.mustache */,
 				8CCD503B15B783FC00E5893B /* Images */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
+				1CA45D951F2C19AA005BEEC5 /* Localizable.strings */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
+				1CA45D931F2C0AD1005BEEC5 /* RenderView.js */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
 			name = Resources;
@@ -2152,6 +2178,7 @@
 				8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */,
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
+				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
@@ -2162,6 +2189,8 @@
 				1C9FDE6216EA030800C665B5 /* newpm.gif in Resources */,
 				1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
+				1CA887AB1F3954550059FEEC /* Announcement.mustache in Resources */,
+				1CA887AD1F3958F00059FEEC /* Announcement.js in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
 				8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */,
 				1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */,
@@ -2170,6 +2199,7 @@
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
+				1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
 				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
 				1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */,
@@ -2691,6 +2721,7 @@
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */,
 				1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */,
+				1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */,
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
@@ -2767,6 +2798,7 @@
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
+				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

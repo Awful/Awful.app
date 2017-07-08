@@ -166,6 +166,16 @@ extension UIPasteboard {
     }
 }
 
+extension UIScrollView {
+
+    /// The scroll view's content offset as a proportion of the content size (where content size does not include any content inset).
+    var fractionalContentOffset: CGPoint {
+        return CGPoint(
+            x: contentSize.width != 0 ? contentOffset.x / contentSize.width : 0,
+            y: contentSize.height != 0 ? contentOffset.y / contentSize.height : 0)
+    }
+}
+
 extension UISplitViewController {
     /// Animates the primary view controller into view if it is not already visible.
     func showPrimaryViewController() {
