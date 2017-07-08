@@ -60,6 +60,10 @@ final class ForumsTableViewController: TableViewController {
         threadList.restorationIdentifier = "Thread"
         navigationController?.pushViewController(threadList, animated: animated)
     }
+
+    func openAnnouncement(_ announcement: Announcement, animated: Bool) {
+        // TODO: this
+    }
     
     fileprivate func updateEditButtonPresence(animated: Bool) {
         navigationItem.setRightBarButton(dataSource.hasFavorites ? editButtonItem : nil, animated: animated)
@@ -76,7 +80,7 @@ final class ForumsTableViewController: TableViewController {
         tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
         tableView.separatorStyle = .none
         
-        let cellConfigurator: (ForumTableViewCell, Forum, ForumTableViewCell.ViewModel) -> Void = { [weak self] cell, forum, viewModel in
+        let cellConfigurator: (ForumTableViewCell, ForumTableViewCell.ViewModel) -> Void = { [weak self] cell, viewModel in
             cell.viewModel = viewModel
             cell.starButtonAction = self?.didTapStarButton
             cell.disclosureButtonAction = self?.didTapDisclosureButton
@@ -120,7 +124,7 @@ final class ForumsTableViewController: TableViewController {
     
     fileprivate func didTapStarButton(_ cell: ForumTableViewCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("tapped star button in header?") }
+        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { fatalError("tapped star button in header?") }
         forum.metadata.favoriteIndex = dataSource.lastFavoriteIndex.map { Int32($0.advanced(by: 1)) } ?? 0
         forum.metadata.favorite = !forum.metadata.favorite
         try! forum.managedObjectContext!.save()
@@ -128,7 +132,7 @@ final class ForumsTableViewController: TableViewController {
     
     fileprivate func didTapDisclosureButton(_ cell: ForumTableViewCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("tapped disclosure button in header?") }
+        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { fatalError("tapped disclosure button in header?") }
         forum.metadata.showsChildrenInForumList = !forum.metadata.showsChildrenInForumList
         try! forum.managedObjectContext!.save()
     }
@@ -141,13 +145,23 @@ extension ForumsTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let forum = dataSource.objectAtIndexPath(indexPath) else { fatalError("shouldn't be selecting a header cell") }
-        openForum(forum, animated: true)
+        if let forum = dataSource.objectAtIndexPath(indexPath) as? Forum {
+            openForum(forum, animated: true)
+        }
+        else if let announcement = dataSource.objectAtIndexPath(indexPath) as? Announcement {
+            openAnnouncement(announcement, animated: true)
+        }
+        else {
+            fatalError("shouldn't be selecting whatever this is")
+        }
     }
     
     override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath toIndexPath: IndexPath) -> IndexPath {
-        guard let lastFavoriteIndex = dataSource.lastFavoriteIndex else { fatalError("asking for target index path for non-favorite") }
-        let targetRow = max(1, min((toIndexPath as NSIndexPath).row, lastFavoriteIndex))
+        guard
+            let firstFavoriteIndex = dataSource.firstFavoriteIndex,
+            let lastFavoriteIndex = dataSource.lastFavoriteIndex
+            else { fatalError("asking for target index path for non-favorite") }
+        let targetRow = max(firstFavoriteIndex, min(toIndexPath.row, lastFavoriteIndex))
         return IndexPath(row: targetRow, section: 0)
     }
 }

@@ -8,14 +8,16 @@ import UIKit
 
 final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDataManagerDelegate {
     fileprivate let tableView: UITableView
-    fileprivate let cellConfigurator: (ForumTableViewCell, Forum, ViewModel) -> Void
+    fileprivate let cellConfigurator: (ForumTableViewCell, ViewModel) -> Void
     fileprivate let headerThemer: (UITableViewCell) -> Void
-    
+
+    fileprivate let announcementsData: FetchedDataManager<Announcement>
     fileprivate let favouritesData: FetchedDataManager<ForumMetadata>
     fileprivate let forumsData: FetchedDataManager<Forum>
     fileprivate var observer: CollapseExpandObserver!
     
     fileprivate var models: [Model] = []
+    fileprivate(set) var firstFavoriteIndex: Int?
     fileprivate(set) var lastFavoriteIndex: Int?
     fileprivate var skipTableUpdate = false
     var isEmpty: Bool {
@@ -26,10 +28,19 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
     }
     var didReload: (() -> Void)?
     
-    init(tableView: UITableView, managedObjectContext: NSManagedObjectContext, cellConfigurator: @escaping (ForumTableViewCell, Forum, ForumTableViewCell.ViewModel) -> Void, headerThemer: @escaping (UITableViewCell) -> Void) {
+    init(
+        tableView: UITableView,
+        managedObjectContext: NSManagedObjectContext,
+        cellConfigurator: @escaping (ForumTableViewCell, ForumTableViewCell.ViewModel) -> Void,
+        headerThemer: @escaping (UITableViewCell) -> Void)
+    {
         self.tableView = tableView
         self.cellConfigurator = cellConfigurator
         self.headerThemer = headerThemer
+
+        let fetchAnnouncements = NSFetchRequest<Announcement>(entityName: Announcement.entityName())
+        fetchAnnouncements.sortDescriptors = [NSSortDescriptor(key: #keyPath(Announcement.listIndex), ascending: true)]
+        announcementsData = FetchedDataManager(managedObjectContext: managedObjectContext, fetchRequest: fetchAnnouncements)
         
         let fetchFavourites = NSFetchRequest<ForumMetadata>(entityName: ForumMetadata.entityName())
         fetchFavourites.predicate = NSPredicate(format: "favorite == YES")
@@ -48,7 +59,8 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
         observer = CollapseExpandObserver(managedObjectContext: managedObjectContext) { [weak self] in
             self?.reloadModels()
         }
-        
+
+        announcementsData.delegate = self
         favouritesData.delegate = self
         forumsData.delegate = self
         
@@ -61,9 +73,22 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
         let oldModels = models
         
         models = []
+
+        let announcements = announcementsData.contents
+        if !announcements.isEmpty {
+            models.append(.header("Announcements"))
+            models += announcements[0 ..< announcements.endIndex - 1]
+                .map { .announcement(ViewModel(announcement: $0), $0) }
+            let last = announcements.last!
+            models.append(.announcement(ViewModel(announcement: last, showSeparator: false), last))
+        }
+
         let favourites = favouritesData.contents
         if !favourites.isEmpty {
             models.append(.header("Favorites"))
+
+            firstFavoriteIndex = models.count
+
             models += favourites[0 ..< favourites.endIndex - 1].map { .favorite(ViewModel(favorite: $0.forum), $0.forum) }
             let last = favourites.last!
             models.append(.favorite(ViewModel(favorite: last.forum, showSeparator: false), last.forum))
@@ -114,16 +139,17 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
         skipTableUpdate = false
     }
     
-    func objectAtIndexPath(_ indexPath: IndexPath) -> Forum? {
+    func objectAtIndexPath(_ indexPath: IndexPath) -> NSManagedObject? {
         switch models[indexPath.row] {
-        case let .forum(_, forum):
-            return forum
-            
-        case let .favorite(_, forum):
-            return forum
-            
         case .header:
             return nil
+
+        case .announcement(_, let announcement):
+            return announcement
+
+        case .favorite(_, let forum),
+             .forum(_, let forum):
+            return forum
         }
     }
     
@@ -149,21 +175,24 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let model = models[(indexPath as NSIndexPath).row]
-        if case let .header(title) = model {
+        let model = models[indexPath.row]
+
+        switch model {
+        case .header(let title):
             let cell = tableView.dequeueReusableCell(withIdentifier: ForumTableViewDataSource.headerReuseIdentifier, for: indexPath)
             cell.textLabel?.text = title
             headerThemer(cell)
             return cell
+
+        case .announcement(let viewModel, _),
+             .favorite(let viewModel, _),
+             .forum(let viewModel, _):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ForumTableViewCell.identifier, for: indexPath) as? ForumTableViewCell else {
+                fatalError("wrong cell type for forum")
+            }
+            cellConfigurator(cell, viewModel)
+            return cell
         }
-        
-        guard let viewModel = model.viewModel else { fatalError("forum model missing view model") }
-        guard let forum = model.forum else { fatalError("forum model missing view forum") }
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ForumTableViewCell.identifier, for: indexPath) as? ForumTableViewCell else {
-            fatalError("wrong cell type for forum")
-        }
-        cellConfigurator(cell, forum, viewModel)
-        return cell
     }
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -183,10 +212,14 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
     }
     
     func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to toIndexPath: IndexPath) {
+        guard let firstFavoriteIndex = firstFavoriteIndex else {
+            fatalError("dunno how to move this favorite from \(fromIndexPath) to \(toIndexPath)")
+        }
+
         withoutInformingTable {
             var favorites = favouritesData.contents
-            let moved = favorites.remove(at: fromIndexPath.row - 1)
-            favorites.insert(moved, at: toIndexPath.row - 1)
+            let moved = favorites.remove(at: fromIndexPath.row - firstFavoriteIndex)
+            favorites.insert(moved, at: toIndexPath.row - firstFavoriteIndex)
             for (i, metadata) in favorites.enumerated() {
                 metadata.favoriteIndex = Int32(i)
             }
@@ -199,18 +232,19 @@ private typealias ViewModel = ForumTableViewCell.ViewModel
 
 private enum Model: Equatable {
     case header(String)
-    case forum(ViewModel, AwfulCore.Forum)
+    case announcement(ViewModel, Announcement)
     case favorite(ViewModel, AwfulCore.Forum)
+    case forum(ViewModel, AwfulCore.Forum)
 
     var forum: AwfulCore.Forum? {
         switch self {
-        case .header:
+        case .header, .announcement:
             return nil
-            
-        case let .forum(_, forum):
+
+        case .favorite(_, let forum):
             return forum
             
-        case let .favorite(_, forum):
+        case .forum(_, let forum):
             return forum
         }
     }
@@ -219,29 +253,29 @@ private enum Model: Equatable {
         switch self {
         case .header:
             return nil
-            
-        case let .forum(viewModel, _):
-            return viewModel
-            
-        case let .favorite(viewModel, _):
+
+        case .announcement(let viewModel, _),
+             .favorite(let viewModel, _),
+             .forum(let viewModel, _):
             return viewModel
         }
     }
-}
 
-private func ==(lhs: Model, rhs: Model) -> Bool {
-    switch (lhs, rhs) {
-    case let (.header(lhsName), .header(rhsName)):
-        return lhsName == rhsName
-        
-    case let (.favorite(lhsForum, _), .favorite(rhsForum, _)):
-        return lhsForum == rhsForum
-        
-    case let (.forum(lhsForum, _), .forum(rhsForum, _)):
-        return lhsForum == rhsForum
-        
-    default:
-        return false
+    static func ==(lhs: Model, rhs: Model) -> Bool {
+        switch (lhs, rhs) {
+        case (.header(let lhs), .header(let rhs)):
+            return lhs == rhs
+
+        case (.announcement(let lhs, _), .announcement(let rhs, _)):
+            return lhs == rhs
+
+        case (.favorite(let lhs, _), .favorite(let rhs, _)),
+             (.forum(let lhs, _), .forum(let rhs, _)):
+            return lhs == rhs
+            
+        default:
+            return false
+        }
     }
 }
 
@@ -263,6 +297,15 @@ extension Forum {
 }
 
 extension ForumTableViewCell.ViewModel {
+    fileprivate init(announcement: Announcement, showSeparator: Bool = true) {
+        favorite = .hidden
+        name = announcement.title
+        childSubforumCount = 0
+        canExpand = .hidden
+        indentationLevel = 0
+        self.showSeparator = showSeparator
+    }
+
     fileprivate init(forum: Forum, showSeparator: Bool) {
         favorite = forum.metadata.favorite ? .hidden : .off
         name = forum.name ?? ""

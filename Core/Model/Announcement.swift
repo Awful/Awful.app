@@ -13,14 +13,25 @@ import CoreData
  */
 @objc(Announcement)
 public final class Announcement: AwfulManagedObject {
-    @NSManaged var authorCustomTitleHTML: String
-    @NSManaged var authorRegdate: Date?
-    @NSManaged var authorUsername: String
-    @NSManaged var bodyHTML: String
-    @NSManaged var listIndex: Int32
-    @NSManaged var postedDate: Date?
-    @NSManaged var title: String
+    @NSManaged public var authorCustomTitleHTML: String
+    @NSManaged public var authorRegdate: Date?
+    @NSManaged public var authorUsername: String
+    @NSManaged public var bodyHTML: String
+    @NSManaged public var listIndex: Int32
+    @NSManaged public var postedDate: Date?
+    @NSManaged public var title: String
 
-    @NSManaged var author: User?
-    @NSManaged var threadTag: ThreadTag?
+    @NSManaged public var author: User?
+    @NSManaged public var threadTag: ThreadTag?
+
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+
+        for property in entity.properties {
+            guard let attribute = property as? NSAttributeDescription else { continue }
+            if !attribute.isOptional, case .stringAttributeType = attribute.attributeType, attribute.defaultValue == nil {
+                setPrimitiveValue("", forKey: attribute.name)
+            }
+        }
+    }
 }
