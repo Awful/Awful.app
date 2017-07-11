@@ -86,11 +86,12 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(result.breadcrumbs?.forums[1].name, "Debate & Discussion")
         XCTAssertEqual(result.breadcrumbs?.forums[1].id.rawValue, "46")
 
-        let allUsernames = (result.threads.map { $0.authorUsername }
+        let unsortedUsernames = (result.threads.map { $0.authorUsername }
             + result.threads.map { $0.lastPostAuthorUsername }
             + result.announcements.map { $0.authorUsername })
             .filter { !$0.isEmpty }
-            .sorted { $0.caseInsensitiveCompare($1) == .orderedAscending }
+        
+        let allUsernames = unsortedUsernames.sorted { $0.caseInsensitiveCompare($1) == .orderedAscending }
         XCTAssertEqual(allUsernames, [
             ".Edward Penischin", "a bad enough dude", "Amarkov", "Bedlamdan", "BiggerBoat", "blackguy32",
             "CatCannons", "Chamale", "Charliegrs", "Chopstix", "Cleretic", "coolskillrex remix",

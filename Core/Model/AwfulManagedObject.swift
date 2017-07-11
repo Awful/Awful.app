@@ -122,7 +122,7 @@ private extension AwfulObjectKey {
 }
 
 extension AwfulManagedObject {
-    public var objectKey: AwfulObjectKey {
+    @objc public var objectKey: AwfulObjectKey {
         fatalError("subclass implementation please")
     }
     

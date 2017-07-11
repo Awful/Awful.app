@@ -5,7 +5,7 @@
 import Foundation
 
 public extension NSURL {
-    var awful_queryDictionary: [String: String] {
+    @objc var awful_queryDictionary: [String: String] {
         guard let absoluteString = absoluteString else { return [:] }
         return extractQueryDictionary(from: absoluteString)
     }

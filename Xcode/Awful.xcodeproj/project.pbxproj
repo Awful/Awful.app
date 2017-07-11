@@ -2807,7 +2807,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SKIP_INSTALL = YES;
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -2830,7 +2830,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SKIP_INSTALL = YES;
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -2851,6 +2851,9 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
+				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = "compile-time";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(PROJECT_DIR)\"/../Core/Scraping";
 			};
 			name = Debug;
@@ -2867,8 +2870,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
-				SWIFT_OBJC_BRIDGING_HEADER = "../Core/Tests/Bridging-Header.h";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = "compile-time";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.0;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) \"$(PROJECT_DIR)\"/../Core/Scraping";
 			};
