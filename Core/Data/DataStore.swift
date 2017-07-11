@@ -174,7 +174,10 @@ public final class LastModifiedContextObserver: NSObject {
         let insertedOrUpdated = context.insertedObjects.union(context.updatedObjects)
         context.performAndWait {
             let relevantObjects = insertedOrUpdated.filter() { self.relevantEntities.contains(($0 as NSManagedObject).entity) }
-            (relevantObjects as NSArray).setValue(lastModifiedDate, forKey: "lastModifiedDate")
+            //(relevantObjects as NSArray).setValue(lastModifiedDate, forKey: "lastModifiedDate")
+            relevantObjects.forEach({item in
+                item.setValue(lastModifiedDate, forKey: "lastModifiedDate")
+            })
         }
     }
 }

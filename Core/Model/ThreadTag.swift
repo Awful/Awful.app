@@ -26,10 +26,10 @@ extension ThreadTag {
 
 @objc(ThreadTagKey)
 public final class ThreadTagKey: AwfulObjectKey {
-    public let imageName: String?
-    public let threadTagID: String?
+    @objc public let imageName: String?
+    @objc public let threadTagID: String?
     
-    public init(imageName: String!, threadTagID: String!) {
+    @objc public init(imageName: String!, threadTagID: String!) {
         let imageName = nilIfEmpty(s: imageName)
         let threadTagID = nilIfEmpty(s: threadTagID)
         precondition(imageName != nil || threadTagID != nil)
@@ -39,7 +39,7 @@ public final class ThreadTagKey: AwfulObjectKey {
         super.init(entityName: ThreadTag.entityName())
     }
     
-    public convenience init(imageURL: URL, threadTagID: String?) {
+    @objc public convenience init(imageURL: URL, threadTagID: String?) {
         self.init(imageName: ThreadTag.imageName(from: imageURL), threadTagID: threadTagID)
     }
     

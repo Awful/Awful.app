@@ -163,7 +163,7 @@ extension AwfulManagedObject {
     
     New objects are inserted as necessary, and only a single fetch is executed by the managedObjectContext. The returned array is sorted in the same order as objectKeys. Duplicate (or effectively duplicate) items in objectKeys is no problem and are maintained in the returned array.
     */
-    public class func objectsForKeys(objectKeys: [AwfulObjectKey], inManagedObjectContext context: NSManagedObjectContext) -> [AwfulManagedObject] {
+    @objc public class func objectsForKeys(objectKeys: [AwfulObjectKey], inManagedObjectContext context: NSManagedObjectContext) -> [AwfulManagedObject] {
         guard !objectKeys.isEmpty else { return [] }
         
         let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName())
