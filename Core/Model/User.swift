@@ -50,8 +50,8 @@ private func avatarImageElement(customTitleHTML HTML: String) -> HTMLElement? {
 
 @objc(UserKey)
 public final class UserKey: AwfulObjectKey {
-    public let userID: String
-    let username: String?
+    @objc public let userID: String
+    @objc let username: String?
     
     public init(userID: String, username: String?) {
         precondition(!userID.isEmpty)
