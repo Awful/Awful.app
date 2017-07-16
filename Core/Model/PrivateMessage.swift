@@ -47,7 +47,7 @@ extension PrivateMessage {
 
 @objc(PrivateMessageKey)
 public final class PrivateMessageKey: AwfulObjectKey {
-    public let messageID: String
+    @objc public let messageID: String
     
     public init(messageID: String) {
         self.messageID = messageID

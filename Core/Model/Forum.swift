@@ -28,7 +28,7 @@ public class Forum: AwfulManagedObject {
 
 @objc(ForumKey)
 public final class ForumKey: AwfulObjectKey {
-    let forumID: String
+    @objc let forumID: String
     
     public init(forumID: String) {
         assert(!forumID.isEmpty)

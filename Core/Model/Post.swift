@@ -68,7 +68,7 @@ private func pageForIndex(index: Int32) -> Int {
 
 @objc(PostKey)
 public final class PostKey: AwfulObjectKey {
-    public let postID: String
+    @objc public let postID: String
     
     public init(postID: String) {
         assert(!postID.isEmpty)
