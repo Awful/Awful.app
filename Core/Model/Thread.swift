@@ -131,7 +131,7 @@ extension AwfulThread {
 
 @objc(ThreadKey)
 public final class ThreadKey: AwfulObjectKey {
-    let threadID: String
+    @objc let threadID: String
     
     public init(threadID: String) {
         assert(!threadID.isEmpty)
