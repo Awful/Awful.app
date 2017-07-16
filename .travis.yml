@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode8.3
+osx_image: xcode9
 install: true # skip pod install; all dependencies are already in the repo
 script:
   - bundle install --path vendor/bundle
