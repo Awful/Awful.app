@@ -72,7 +72,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     fileprivate func updateSelectedThemeInPicker() {
         let names = themes.map { $0.name }
         if var themeName = AwfulSettings.shared().themeName(forForumID: forum.forumID) {
-            if themeName == "default" || themeName == "dark" {
+            if themeName == "default" || themeName == "dark" || themeName == "alternate" || themeName == "alternateDark" {
                 themeName = Theme.currentTheme.name
             }
             if let i = names.index(of: themeName) {

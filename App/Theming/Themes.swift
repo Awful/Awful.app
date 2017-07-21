@@ -236,6 +236,11 @@ extension Theme {
             return false
         }
         
+        if ((themeName == "dark" && AwfulSettings.shared().alternateTheme)
+            || (themeName == "alternateDark" && !AwfulSettings.shared().alternateTheme)) {
+            return false
+        }
+        
         return true
     }
 }
