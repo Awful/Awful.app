@@ -123,8 +123,9 @@ header:after {
 .platinum .username:before {
   background-image: url('awful-resource://platinum-member.png');
   content: "";
-  background-size: 12px 15px;
-  width: 12px;
+  background-size: 100%;
+  margin-bottom: .25em;
+  width: 15px;
   height: 15px;
   display: inline-block;
   vertical-align: middle;

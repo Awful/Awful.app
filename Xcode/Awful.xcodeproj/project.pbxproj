@@ -111,8 +111,6 @@
 		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; };
 		1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */; };
 		1C397CA91BCC473A00CA7FD5 /* post-dots.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CA81BCC473A00CA7FD5 /* post-dots.png */; };
-		1C397CAC1BCC474C00CA7FD5 /* post-dots@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CAA1BCC474C00CA7FD5 /* post-dots@2x.png */; };
-		1C397CAD1BCC474C00CA7FD5 /* post-dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CAB1BCC474C00CA7FD5 /* post-dots@3x.png */; };
 		1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */; };
 		1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A13FA19DF78610022C44C /* SmilieMetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3A13FD19DF78610022C44C /* SmilieMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13FB19DF78610022C44C /* SmilieMetadata.m */; };
@@ -299,11 +297,17 @@
 		2A28EF11810F46A1AA802F96 /* Pods_SmilieExtractor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */; };
 		7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */; };
 		7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */; };
+		7B502E011F222D7B00B1B305 /* platinum-member-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E001F222C5300B1B305 /* platinum-member-white.png */; };
+		7B502E021F222D7B00B1B305 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */; };
+		7B502E031F222D7B00B1B305 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */; };
+		7B8E9C981F1EF1A3008F98E5 /* platinum-member@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9C971F1EF1A3008F98E5 /* platinum-member@2x.png */; };
+		7B8E9C9A1F1EF1AF008F98E5 /* platinum-member@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9C991F1EF1AF008F98E5 /* platinum-member@3x.png */; };
+		7B8E9CA11F1F8755008F98E5 /* post-dots@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9C9F1F1F8755008F98E5 /* post-dots@2x.png */; };
+		7B8E9CA21F1F8755008F98E5 /* post-dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9CA01F1F8755008F98E5 /* post-dots@3x.png */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
-		8C235D7419CBC73A00E2697F /* platinum-member-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C235D7319CBC73A00E2697F /* platinum-member-white.png */; };
 		8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */; };
 		8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */; };
 		8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C299D7116877AE9001B9D96 /* winpos95-heading.png */; };
@@ -549,8 +553,6 @@
 		1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
 		1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceURLProtocol.swift; sourceTree = "<group>"; };
 		1C397CA81BCC473A00CA7FD5 /* post-dots.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots.png"; sourceTree = "<group>"; };
-		1C397CAA1BCC474C00CA7FD5 /* post-dots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@2x.png"; sourceTree = "<group>"; };
-		1C397CAB1BCC474C00CA7FD5 /* post-dots@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@3x.png"; sourceTree = "<group>"; };
 		1C3A13FA19DF78610022C44C /* SmilieMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieMetadata.h; sourceTree = "<group>"; };
 		1C3A13FB19DF78610022C44C /* SmilieMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieMetadata.m; sourceTree = "<group>"; };
 		1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieManagedObject.h; sourceTree = "<group>"; };
@@ -777,13 +779,19 @@
 		7846FF6DDA37B81D34DE2AE5 /* Pods-Core.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Core.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Core/Pods-Core.release.xcconfig"; sourceTree = "<group>"; };
 		7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSliderCell.swift; sourceTree = "<group>"; };
 		7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsSliderCell.xib; sourceTree = "<group>"; };
+		7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@2x.png"; sourceTree = "<group>"; };
+		7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@3x.png"; sourceTree = "<group>"; };
+		7B502E001F222C5300B1B305 /* platinum-member-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white.png"; sourceTree = "<group>"; };
+		7B8E9C971F1EF1A3008F98E5 /* platinum-member@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "platinum-member@2x.png"; path = "../../../../../Downloads/@2x/platinum-member@2x.png"; sourceTree = "<group>"; };
+		7B8E9C991F1EF1AF008F98E5 /* platinum-member@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "platinum-member@3x.png"; path = "../../../../../Downloads/@3x/platinum-member@3x.png"; sourceTree = "<group>"; };
+		7B8E9C9F1F1F8755008F98E5 /* post-dots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-dots@2x.png"; path = "../../../../../Downloads/post-dots@2x.png"; sourceTree = "<group>"; };
+		7B8E9CA01F1F8755008F98E5 /* post-dots@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-dots@3x.png"; path = "../../../../../Downloads/post-dots@3x.png"; sourceTree = "<group>"; };
 		7F808380CDED09B0AA159709 /* Pods-Smilies.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.debug.xcconfig"; sourceTree = "<group>"; };
 		81509004C66DEC651654490F /* Pods-Core.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Core.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Core/Pods-Core.debug.xcconfig"; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		837D67ED1861C25000464055 /* ForumTweaks.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ForumTweaks.plist; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
-		8C235D7319CBC73A00E2697F /* platinum-member-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white.png"; sourceTree = "<group>"; };
 		8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-left.png"; sourceTree = "<group>"; };
 		8C299D7016877AE9001B9D96 /* winpos95-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading-right.png"; sourceTree = "<group>"; };
 		8C299D7116877AE9001B9D96 /* winpos95-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "winpos95-heading.png"; sourceTree = "<group>"; };
@@ -1505,11 +1513,15 @@
 				8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */,
 				8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */,
 				8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */,
-				8C235D7319CBC73A00E2697F /* platinum-member-white.png */,
+				7B502E001F222C5300B1B305 /* platinum-member-white.png */,
+				7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */,
+				7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */,
 				8C8FA47B19AD7CA300B67AAA /* platinum-member.png */,
+				7B8E9C971F1EF1A3008F98E5 /* platinum-member@2x.png */,
+				7B8E9C991F1EF1AF008F98E5 /* platinum-member@3x.png */,
 				1C397CA81BCC473A00CA7FD5 /* post-dots.png */,
-				1C397CAA1BCC474C00CA7FD5 /* post-dots@2x.png */,
-				1C397CAB1BCC474C00CA7FD5 /* post-dots@3x.png */,
+				7B8E9C9F1F1F8755008F98E5 /* post-dots@2x.png */,
+				7B8E9CA01F1F8755008F98E5 /* post-dots@3x.png */,
 				8C8FA47C19AD7CA300B67AAA /* redpill.png */,
 				8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */,
 				8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */,
@@ -2036,6 +2048,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B502E011F222D7B00B1B305 /* platinum-member-white.png in Resources */,
+				7B502E021F222D7B00B1B305 /* platinum-member-white@2x.png in Resources */,
+				7B502E031F222D7B00B1B305 /* platinum-member-white@3x.png in Resources */,
 				1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */,
 				1C8E104C1916F92F0010007B /* profile.js in Resources */,
 				1C8E104A1916F7970010007B /* common.js in Resources */,
@@ -2070,14 +2085,15 @@
 				1C8E10441914AA730010007B /* profile.css in Resources */,
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
+				7B8E9CA21F1F8755008F98E5 /* post-dots@3x.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
-				1C397CAD1BCC474C00CA7FD5 /* post-dots@3x.png in Resources */,
 				1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
-				8C235D7419CBC73A00E2697F /* platinum-member-white.png in Resources */,
 				8C89FAF41CAA0F4200640F3D /* widgets.js in Resources */,
+				7B8E9C981F1EF1A3008F98E5 /* platinum-member@2x.png in Resources */,
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
+				7B8E9CA11F1F8755008F98E5 /* post-dots@2x.png in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */,
@@ -2096,7 +2112,6 @@
 				1C098AE919C77B430031C12A /* MessageCell.xib in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				1C9FDE6216EA030800C665B5 /* newpm.gif in Resources */,
-				1C397CAC1BCC474C00CA7FD5 /* post-dots@2x.png in Resources */,
 				1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
@@ -2104,6 +2119,7 @@
 				1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */,
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
+				7B8E9C9A1F1EF1AF008F98E5 /* platinum-member@3x.png in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
