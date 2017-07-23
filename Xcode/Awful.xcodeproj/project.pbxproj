@@ -300,10 +300,10 @@
 		7B502E011F222D7B00B1B305 /* platinum-member-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E001F222C5300B1B305 /* platinum-member-white.png */; };
 		7B502E021F222D7B00B1B305 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */; };
 		7B502E031F222D7B00B1B305 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */; };
-		7B8E9C981F1EF1A3008F98E5 /* platinum-member@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9C971F1EF1A3008F98E5 /* platinum-member@2x.png */; };
-		7B8E9C9A1F1EF1AF008F98E5 /* platinum-member@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9C991F1EF1AF008F98E5 /* platinum-member@3x.png */; };
-		7B8E9CA11F1F8755008F98E5 /* post-dots@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9C9F1F1F8755008F98E5 /* post-dots@2x.png */; };
-		7B8E9CA21F1F8755008F98E5 /* post-dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B8E9CA01F1F8755008F98E5 /* post-dots@3x.png */; };
+		7B502E261F2513B400B1B305 /* post-dots@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E251F25139600B1B305 /* post-dots@2x.png */; };
+		7B502E271F2513B400B1B305 /* post-dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E241F25139600B1B305 /* post-dots@3x.png */; };
+		7B502E2C1F25140F00B1B305 /* platinum-member@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E2A1F25140200B1B305 /* platinum-member@2x.png */; };
+		7B502E2D1F25140F00B1B305 /* platinum-member@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E2B1F25140200B1B305 /* platinum-member@3x.png */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */ = {isa = PBXBuildFile; fileRef = 837D67ED1861C25000464055 /* ForumTweaks.plist */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
@@ -782,10 +782,10 @@
 		7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@2x.png"; sourceTree = "<group>"; };
 		7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@3x.png"; sourceTree = "<group>"; };
 		7B502E001F222C5300B1B305 /* platinum-member-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white.png"; sourceTree = "<group>"; };
-		7B8E9C971F1EF1A3008F98E5 /* platinum-member@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "platinum-member@2x.png"; path = "../../../../../Downloads/@2x/platinum-member@2x.png"; sourceTree = "<group>"; };
-		7B8E9C991F1EF1AF008F98E5 /* platinum-member@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "platinum-member@3x.png"; path = "../../../../../Downloads/@3x/platinum-member@3x.png"; sourceTree = "<group>"; };
-		7B8E9C9F1F1F8755008F98E5 /* post-dots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-dots@2x.png"; path = "../../../../../Downloads/post-dots@2x.png"; sourceTree = "<group>"; };
-		7B8E9CA01F1F8755008F98E5 /* post-dots@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "post-dots@3x.png"; path = "../../../../../Downloads/post-dots@3x.png"; sourceTree = "<group>"; };
+		7B502E241F25139600B1B305 /* post-dots@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@3x.png"; sourceTree = "<group>"; };
+		7B502E251F25139600B1B305 /* post-dots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@2x.png"; sourceTree = "<group>"; };
+		7B502E2A1F25140200B1B305 /* platinum-member@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member@2x.png"; sourceTree = "<group>"; };
+		7B502E2B1F25140200B1B305 /* platinum-member@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member@3x.png"; sourceTree = "<group>"; };
 		7F808380CDED09B0AA159709 /* Pods-Smilies.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.debug.xcconfig"; sourceTree = "<group>"; };
 		81509004C66DEC651654490F /* Pods-Core.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Core.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Core/Pods-Core.debug.xcconfig"; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
@@ -1517,11 +1517,11 @@
 				7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */,
 				7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */,
 				8C8FA47B19AD7CA300B67AAA /* platinum-member.png */,
-				7B8E9C971F1EF1A3008F98E5 /* platinum-member@2x.png */,
-				7B8E9C991F1EF1AF008F98E5 /* platinum-member@3x.png */,
+				7B502E2A1F25140200B1B305 /* platinum-member@2x.png */,
+				7B502E2B1F25140200B1B305 /* platinum-member@3x.png */,
 				1C397CA81BCC473A00CA7FD5 /* post-dots.png */,
-				7B8E9C9F1F1F8755008F98E5 /* post-dots@2x.png */,
-				7B8E9CA01F1F8755008F98E5 /* post-dots@3x.png */,
+				7B502E251F25139600B1B305 /* post-dots@2x.png */,
+				7B502E241F25139600B1B305 /* post-dots@3x.png */,
 				8C8FA47C19AD7CA300B67AAA /* redpill.png */,
 				8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */,
 				8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */,
@@ -2052,6 +2052,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B502E2C1F25140F00B1B305 /* platinum-member@2x.png in Resources */,
+				7B502E2D1F25140F00B1B305 /* platinum-member@3x.png in Resources */,
+				7B502E261F2513B400B1B305 /* post-dots@2x.png in Resources */,
+				7B502E271F2513B400B1B305 /* post-dots@3x.png in Resources */,
 				7B502E011F222D7B00B1B305 /* platinum-member-white.png in Resources */,
 				7B502E021F222D7B00B1B305 /* platinum-member-white@2x.png in Resources */,
 				7B502E031F222D7B00B1B305 /* platinum-member-white@3x.png in Resources */,
@@ -2089,15 +2093,12 @@
 				1C8E10441914AA730010007B /* profile.css in Resources */,
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
-				7B8E9CA21F1F8755008F98E5 /* post-dots@3x.png in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1CF7FACF1BB60F0F00A077F2 /* ThreadTableViewCell.xib in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C89FAF41CAA0F4200640F3D /* widgets.js in Resources */,
-				7B8E9C981F1EF1A3008F98E5 /* platinum-member@2x.png in Resources */,
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
-				7B8E9CA11F1F8755008F98E5 /* post-dots@2x.png in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C94386B1C2875810029DFB1 /* ForumTableViewCell.xib in Resources */,
@@ -2123,7 +2124,6 @@
 				1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */,
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
-				7B8E9C9A1F1EF1AF008F98E5 /* platinum-member@3x.png in Resources */,
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
