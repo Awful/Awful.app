@@ -68,9 +68,10 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.textColor = textView.textColor
         fieldView.subjectField.textField.keyboardAppearance = textView.keyboardAppearance
         
-        let attributes = [NSForegroundColorAttributeName: theme["placeholderTextColor"] ?? .gray]
+        let attributes = [NSForegroundColorAttributeName: theme["listSecondaryTextColor"] ?? .gray]
         let themedString = NSAttributedString(string: "Subject", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = themedString
+        updateThreadTagButtonImage()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -100,7 +101,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         if let imageName = threadTag?.imageName {
             image = ThreadTagLoader.imageNamed(imageName)
         } else {
-            image = ThreadTagLoader.unsetThreadTagImage
+            image = ThreadTagLoader.unsetThreadTagImage(for: forum)
         }
         fieldView.threadTagButton.setImage(image, for: UIControlState())
         

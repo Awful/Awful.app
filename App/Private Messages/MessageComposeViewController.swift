@@ -81,7 +81,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         {
             image = loadedImage
         } else {
-            image = ThreadTagLoader.unsetThreadTagImage
+            image = ThreadTagLoader.unsetThreadTagImage()
         }
         fieldView.threadTagButton.setImage(image, for: UIControlState())
     }

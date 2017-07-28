@@ -4,6 +4,7 @@
 
 import AFNetworking
 import UIKit
+import AwfulCore
 
 /// Loads thread tag images, both those shipped with the app and those updated at the GitHub repository.
 final class ThreadTagLoader: NSObject {
@@ -27,8 +28,15 @@ final class ThreadTagLoader: NSObject {
     }
     
     /// A placeholder image representing "no selection".
-    static var unsetThreadTagImage: UIImage {
-        return UIImage(named: unsetThreadTagImageName)!
+    static func unsetThreadTagImage(for forum: Forum? = nil) -> UIImage {
+        let theme:  Theme
+        if let forum = forum {
+            theme = Theme.currentThemeForForum(forum: forum)
+        } else {
+            theme = Theme.currentTheme
+        }
+        return ImageTinting.tintImage(UIImage(named: unsetThreadTagImageName)!, as: theme["listTextColor"]!)!
+        //return UIImage(named: unsetThreadTagImageName)!
     }
     
     /// A placeholder image representing "no filter".
