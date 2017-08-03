@@ -216,22 +216,6 @@ extension UITableViewCell {
 }
 
 extension UITextView {
-    func withoutSmartQuotes(execute block: (_ textView: UITextView) -> Void) {
-        // TODO: when building against iOS 11 SDK make this an `if #available`.
-        let key = "smartQuotesType"
-        var oldValue: Int?
-        if responds(to: Selector(key)) {
-            oldValue = value(forKey: key) as? Int
-            setValue(1, forKey: key)
-        }
-
-        block(self)
-
-        if let oldValue = oldValue {
-            setValue(oldValue, forKey: key)
-        }
-    }
-
     /// Returns a rectangle that encompasses the current selection in the text view, or nil if there is no selection.
     var selectedRect: CGRect? {
         switch selectedTextRange {
