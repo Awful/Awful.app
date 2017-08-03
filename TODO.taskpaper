@@ -36,6 +36,7 @@ High priority:
 Medium priority:
 	- Smilie keyboard got real small.
 		"So what happened to cause the emoticon keyboard to get so small?  It used to be twice as tall but now you can only see just one or two rows which makes it frustrating to scroll through."
+		"For some reason the emoji keyboard isn't full size, what's the fix for that? http://i.imgur.com/pbavk0B.png"
 	- Vimeo embeds can hijack the posts webview.
 		"If you click on the little V in the bottom-right of an embedded Vimeo video, you can open the Vimeo page inside of the Awful app."
 	- Mark-thread-as-unread-to-here is throwing an "unacceptable response content type" error even though it's succeeding.
@@ -224,9 +225,10 @@ Medium priority:
 		"…scrolling through the list of threads is really choppy occasionally." iPhone 4S @awful3.6 @ios9
 		"5s, latest iOS. The new versions seem to be...jittery. Whenever I scroll through threads, the scrolling is very stilted. Awful was completely smooth before this updafe. It's slight, and not a deal breaker, but I've never seen this in any iOS app. Anybody else seeing this?"
 		"It is pretty bad on my 5S. Every time a page is loading scrolling leads to stutters. If I wait about 10 seconds when loading a page it clears up. Definitely has something to do with loading a new page."
-	- Update unread message badge on Messages tab immediately after reading messages.
+	- Update unread private message badge on Messages tab immediately after reading messages.
 		Currently does its own network request to update, so it'll only update when it periodically refreshes.
 		"the messages icon is still flagged even after reading the new PM."
+		"The notification for PM's sticks around after you've read all the PM's"
 	- Make "Open in <app>" work from Safari View Controller.
 		Dunno if this is possible.
 		"I notice that things like "Open in App" on Kickstarter's site don't work in the Awful browser. Not sure how hard that is to do."
@@ -445,6 +447,7 @@ Medium priority:
 		"if you select a thread icon after writing your subject and op, it appears the Preview button activeness validation doesn't fire until you make another edit to the op text."
 	- Timeout message when posting mentions image upload when there's no image.
 		"the error message when you you try to post and it times out says that the image upload failed, even when no image is being upload. This is affecting production."
+		"I've done double posts a couple times now where I lose connection while posting, get an error, assume it hasn't posted and post again but then find I've double posted. The error said something about an image. Is this a known issue?"
 	- Thread compose text view isn't getting out from under the keyboard?
 		"Also if your op is too long it hides the bottom lines under your keyboard so you have no idea what you're typing."
 	- "when composing a post and a new line begins with a colon cuz of a smilie can the app suppress wanting to capitalize the first alpha character? :Getin:"
@@ -461,6 +464,8 @@ New features:
 		"Is there a reason you can't block someone from the app?"
 		"I found out today that there's no way to add a user to your ignore list from within the app. I am apparently getting crotchety in my old age, because this is something I'd like to do. Diabolik900 suggested I request the feature here, so here I am. Thanks for listening!"
 		"Can you ignore people from in the app?"
+		"Is adding the ignore feature to the app something you guys are willing/able to do? I would appreciate that feature."
+		"How do I put a user on ignore while using the app?"
 	- Set last-read post to last-visible post instead of marking the whole page as read.
 		"Would it be possible to set the last read post only when I exit the thread, and only to the last post I have seen? I think current behavior matches the website, where last read is set to the end of the current page as soon as you open the thread. The app has the ability to be smarter I would think."
 	- Make SAclopedia available for browsing.
@@ -489,6 +494,7 @@ New features:
 	- Browse avatar history.
 		http://muddledmuse.com/saars/ and http://esarahpalinonline.com/soap/ (not sure if these do anything special, or just hit up some mystery page on SA or something else we can replicate directly)
 		Apparently it's "Scraping and guessing". "I believe it grabs the current av URL and backtracks based on that; that's why SOAP won't show avs that are mod-given (like the big BYOB ones) because those are hosted elsewhere on the server and therefore outside the normal SA avatar schema."
+		Not sure this is a good thing to add. Seems pretty niche, hard to imagine uses other than shaming.
 	- Scrape and show buddy list.
 	- Show moderators of a forum.
 		Forum pages (i.e. thread lists) put moderators in the markup, though they're hidden by CSS.
@@ -517,6 +523,7 @@ New features:
 		"Any plans on adding images to the leper colony btw?"
 		"Oh yeah +1 from me on this one."
 		"I don't know if this is a bug or if it's just not a thing yet, but gifs don't show up in leper's colony for me. "
+		"Images don't seem to be displaying in the lepers colony. Is that new in 3.25?"
 	- Allow backing out of all posts views in split view, leaving the main pane empty. @ipad
 		"I wish there were a way in the iPad app to get out of a thread view and just leave the main pane empty. I'm used to the phone version where you can go back to the bookmark list and so when I come back to the iPad app I have to figure out if I am in the middle of reading whatever thread is open or if I already read it."
 	- Open embedded tweets in Twitter.app. @twitter
@@ -583,6 +590,7 @@ New features:
 		Maybe phrase it as "embed youtube/twitter" with an "only on wi-fi" option.
 	- Button to close/reopen a thread.
 		"Lock/Open threads. This isn't particularly important to me [a mod] but users generally might actually use this feature and the fact that it would work for mods is really just a bonus, like editing."
+		"I am the OP of a thread. Is there a way to close it through the awful app?"
 	- Setting to turn off FYAD flags.
 		"Flags are showing up in Fyad threads which is cool but having an option to turn them off would be cool too. Peace."
 	- Get the Forums to host a site association file so the app is launched when tapping http:// links.
@@ -1015,3 +1023,14 @@ Needs verification:
 		"Occasionally I get this error when trying to make a post. I wasn't uploading an image. https://i.imgur.com/O0WjBrU.jpg"
 	- PiP messes with touches somehow.
 		"iPad 10.5" Pro, 10.3.4, Awful thread with Picture in Picture (running Plex if it matters.) Touch is 'janky'. Scrolling a thread up and down jitters a lot. Trying to select a thread from the list view is hit or miss, sometimes doesn't register touches sometmies the wrong thread is selected. Location of where the PIP is matters for how this is effected. I think something in the new size + PIP is causing weird misscalculations. I've noticed something similar in a Unity game where if PIP was on the right, then a touch on the right registered several inches lower than where it really touched (Maybe trying to subtract the PIP window size.) My 'workaround' is to basically constantly move the PIP window based on where I'm reading / scrolling / tapping but it's pretty egregious."
+	"For the last couple months, can't pin down exactly when it started but it continues today after updating to the latest version, clicking youtube links open in safari. Even if I long press and use the "Open in YouTube" popup button. Not a huuuugggee issue but sometimes It leads to me having a ton of tabs open. "
+	- Seeing HTML in the Leper's Colony.
+		"I'm not sure if this is app or SA related, but I'm seeing HTML in the lepers colony. That's been going on since the last Awful patch." (Awful 3.24 probs)
+	- Truncated forum list after restoring from backup.
+		"Think something might be wrong with fetching the forum list. Restored on a new device from backup today and this is the forum list now: http://i.imgur.com/D3tXEUE.png"
+	- Missing avatars.
+		"A couple of avatars are not showing up for me even after clearing cache."
+		"The avatar for forums user PinkoBastard doesn't render at all. Latest iOS, iPhone 7+" (iOS 10.3.3 or so, Awful 3.24)
+	- Empty tag list in filter screen.
+		"I logged out today to try to fix this phantom sticky thread that still thought it was sticky even though it wasn't, and now no thread tags show up when I try to filter by thread tag. Awful 7.25, iPhone 9.3.5" (Awful 3.25 probs)
+		"Can't seem to filter by tag... http://i.imgur.com/JB7BwJO.png"
