@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
     // I tried `valueForKey:` first (from Swift) but that throws an exception. Let's try NSInvocation!
     
     NSMethodSignature *getterSignature = [self methodSignatureForSelector:NSSelectorFromString(@"smartQuotesType")];
-    NSMethodSignature *setterSignature = [self methodSignatureForSelector:NSSelectorFromString(@"setSmartQuotesType")];
+    NSMethodSignature *setterSignature = [self methodSignatureForSelector:NSSelectorFromString(@"setSmartQuotesType:")];
     if (!getterSignature || !setterSignature) {
         return block(self);
     }
