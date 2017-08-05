@@ -54,13 +54,7 @@ There are unit tests for the HTML scraping, to help us find problems when markup
 Contribute
 ----------
 
-You can help! Head over to [Awful's thread][current thread] and tell us about any issues you're having. Send in some lovingly crafted [thread tags][]. Or [fork the code][fork] and send [pull requests][]. Once a pull request is accepted, you get the commit bit!
-
-If you're curious about anything at all, stop by the [thread][current thread] and say hi.
-
-[thread tags]: https://github.com/Awful/thread-tags#readme
-[fork]: https://github.com/Awful/Awful.app/fork_select
-[pull requests]: https://github.com/Awful/Awful.app/pulls
+You can help! See our [contribution guidelines](CONTRIBUTING.md).
 
 Project Structure
 -----------------
