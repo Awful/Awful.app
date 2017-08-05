@@ -16,6 +16,10 @@ If you don't see your issue, please [open a new one](https://github.com/awful/Aw
 
 Please post in [the development thread][awful-dev-thread], or heck even in [the main thread][awful-thread]. We really don't mind duplicate requests! It helps us prioritize.
 
+## I got a new square thread tag for ya
+
+Awesome! Thread tags aren't exclusive to the iOS app so [they're in a separate repo](https://github.com/Awful/thread-tags#readme).
+
 ## Someone mentioned a bug in [the thread](awful-thread)
 
 Please check [the Issues list on GitHub](github-issues) to see if it's been reported. Search around a little bit.
