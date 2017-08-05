@@ -14,20 +14,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)withoutSmartQuotes:(void (^)(UITextView *textView))block {
     // I tried `valueForKey:` first (from Swift) but that throws an exception. Let's try NSInvocation!
-    
-    NSMethodSignature *getterSignature = [self methodSignatureForSelector:NSSelectorFromString(@"smartQuotesType")];
-    NSMethodSignature *setterSignature = [self methodSignatureForSelector:NSSelectorFromString(@"setSmartQuotesType:")];
+
+    SEL getterSelector = NSSelectorFromString(@"smartQuotesType");
+    NSMethodSignature *getterSignature = [self methodSignatureForSelector:getterSelector];
+    SEL setterSelector = NSSelectorFromString(@"setSmartQuotesType:");
+    NSMethodSignature *setterSignature = [self methodSignatureForSelector:setterSelector];
     if (!getterSignature || !setterSignature) {
         return block(self);
     }
 
     NSInteger oldSmartQuotesType;
     NSInvocation *getter = [NSInvocation invocationWithMethodSignature:getterSignature];
+    getter.selector = getterSelector;
     [getter invokeWithTarget:self];
     [getter getReturnValue:&oldSmartQuotesType];
 
     NSInteger noSmartQuotes = 1;
     NSInvocation *setter = [NSInvocation invocationWithMethodSignature:setterSignature];
+    setter.selector = setterSelector;
     [setter setArgument:&noSmartQuotes atIndex:2];
     [setter invokeWithTarget:self];
 
