@@ -9,7 +9,7 @@ import XCTest
 final class FormScrapingTests: XCTestCase {
     private lazy var storeCoordinator: NSPersistentStoreCoordinator = {
         let modelURL = Bundle(for: AwfulManagedObject.self).url(forResource: "Awful", withExtension: "momd")!
-        let model = NSManagedObjectModel(contentsOf: modelURL)!
+        let model = NSManagedObjectModel(contentsOf: modelURL)
         return NSPersistentStoreCoordinator(managedObjectModel: model)
     }()
     private var memoryStore: NSPersistentStore!

@@ -21,7 +21,7 @@ public final class DataStore: NSObject {
     public init(storeDirectoryURL: URL, modelURL: URL) {
         self.storeDirectoryURL = storeDirectoryURL
         mainManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        let model = NSManagedObjectModel(contentsOf: modelURL)!
+        let model = NSManagedObjectModel(contentsOf: modelURL)
         storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
         mainManagedObjectContext.persistentStoreCoordinator = storeCoordinator
         lastModifiedObserver = LastModifiedContextObserver(managedObjectContext: mainManagedObjectContext)
