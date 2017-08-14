@@ -15,8 +15,8 @@ final class NavigationBar: UINavigationBar {
         // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
         barStyle = .black
         
-        backIndicatorImage = UIImage(named: "back-padded")
-        backIndicatorTransitionMaskImage = UIImage(named: "back-padded")
+        backIndicatorImage = UIImage(named: "back")
+        backIndicatorTransitionMaskImage = UIImage(named: "back")
         
         titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17, weight: UIFontWeightRegular)]
         
