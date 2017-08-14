@@ -68,6 +68,19 @@ final class PostsPageRefreshControl: UIView {
         case waiting(triggeredFraction: CGFloat)
         case triggered
         case refreshing
+        
+        static func ==(lhs: State, rhs: State) -> Bool {
+            switch (lhs, rhs) {
+            case (.waiting(let fraction), .waiting(let otherFraction)):
+                return fraction == otherFraction
+            case (.triggered, .triggered):
+                return true
+            case (.refreshing, .refreshing):
+                return true
+            default:
+                return false
+            }
+        }
     }
     
     fileprivate var state: State = .waiting(triggeredFraction: 0) {
@@ -77,7 +90,7 @@ final class PostsPageRefreshControl: UIView {
     // MARK: Actions
     
     @objc fileprivate func didPan(_ sender: UIPanGestureRecognizer) {
-        let maxVisibleY = scrollView.bounds.maxY - scrollView.contentInset.bottom + bottomInset
+        let maxVisibleY = scrollView.bounds.maxY - frame.height + bottomInset
         
         switch sender.state {
         case .began, .changed:
@@ -94,7 +107,7 @@ final class PostsPageRefreshControl: UIView {
                 break
             }
             
-        case .ended where maxVisibleY > frame.maxY:
+        case .ended where state == .triggered:
             state = .refreshing
             
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
