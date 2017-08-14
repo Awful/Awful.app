@@ -18,7 +18,8 @@ desc ""
 desc "Options:"
 desc "  skip_bump:true – don't bump the build number"
 desc "  skip_gitclean:true - ignore dirty git repo"
-desc "  skip_testflight:true - don't release via TestFlight"
+desc "  skip_testflight:true - don't send to TestFlight"
+desc "  skip_testflight_external:true - don't send to external TestFlight testers"
 lane :beta do |options|
   
   ensure_git_status_clean unless options[:skip_gitclean]
@@ -31,8 +32,7 @@ lane :beta do |options|
     commit_version_bump(
       message: "Bump build number to #{build_number}.",
       xcodeproj: "Xcode/Awful.xcodeproj", # absolute path aka XCODE_PROJECT doesn't work here, gj
-      force: options[:skip_gitclean],
-    )
+      force: options[:skip_gitclean])
   end
 
   xcargs = []  
@@ -49,23 +49,21 @@ lane :beta do |options|
     configuration: "Release",
     output_directory: "build/",
     output_name: "Awful",
-    xcargs: xcargs.join(" "),
-  )
+    xcargs: xcargs.join(" "))
   
   if crashlytics_api_token
     upload_symbols_to_crashlytics
   end
   
-  if ENV["PILOT_USERNAME"]
+  unless options[:skip_testflight]
     params = {
-      distribute_external: !options[:skip_testflight],
+      distribute_external: !options[:skip_testflight_external]
     }
     
-    unless options[:skip_testflight]
+    if params[:distribute_external]
       params[:changelog] = prompt(
         text: "Change log: ",
-        multi_line_end_keyword: "END"
-      )
+        multi_line_end_keyword: "END")
     end
     
     testflight(params)
@@ -77,8 +75,7 @@ lane :beta do |options|
   beta_count = get_build_number.to_i % 100
   add_git_tag(
     tag: "#{major}.#{minor}-beta#{beta_count}",
-    force: true,
-  )
+    force: true)
   
   push_to_git_remote
 end
@@ -129,8 +126,7 @@ lane :bump_version do |options|
   
   commit_version_bump(
     message: "Bump version to #{new_version}",
-    xcodeproj: "Xcode/Awful.xcodeproj", # absolute path aka XCODE_PROJECT doesn't work here, gj
-  )
+    xcodeproj: "Xcode/Awful.xcodeproj") # absolute path aka XCODE_PROJECT doesn't work here, gj
 end
 
 

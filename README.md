@@ -3,7 +3,7 @@ Awful
 
 [Awful][App Store] is an iOS 9 app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
-Development talk usually ends up in the [project.log][] thread, but we're not fussy. There's also a [todo list](TODO.taskpaper).
+Development talk usually ends up in the [project.log][] thread, but we're not fussy. There's also a [list of issues](https://github.com/awful/Awful.app/issues).
 
 <p align="center">
   <img src="Screenshots/iPhone 4.7in retina.png" width="375" height="667" alt="Screenshot of Awful as it appears on an iPhone">
@@ -54,13 +54,7 @@ There are unit tests for the HTML scraping, to help us find problems when markup
 Contribute
 ----------
 
-You can help! Head over to [Awful's thread][current thread] and tell us about any issues you're having. Send in some lovingly crafted [thread tags][]. Or [fork the code][fork] and send [pull requests][]. Once a pull request is accepted, you get the commit bit!
-
-If you're curious about anything at all, stop by the [thread][current thread] and say hi.
-
-[thread tags]: https://github.com/Awful/thread-tags#readme
-[fork]: https://github.com/Awful/Awful.app/fork_select
-[pull requests]: https://github.com/Awful/Awful.app/pulls
+You can help! See our [contribution guidelines](CONTRIBUTING.md).
 
 Project Structure
 -----------------
