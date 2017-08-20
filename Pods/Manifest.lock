@@ -27,6 +27,7 @@ PODS:
   - FLAnimatedImage (1.0.12)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
+  - GRMustache.swift (2.0.0)
   - HTMLReader (2.0.2)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
@@ -77,21 +78,22 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
-  - ARChromeActivity (~> 1.0.6)
+  - ARChromeActivity
   - Crashlytics
-  - FLAnimatedImage (~> 1.0)
-  - GRMustache (~> 7.3.2)
-  - HTMLReader (~> 2.0)
-  - ImgurAnonymousAPIClient (~> 0.3)
-  - JLRoutes (~> 1.5)
-  - KVOController (~> 1.0)
-  - MRProgress/Overlay (~> 0.8.0)
-  - OMGHTTPURLRQ (~> 3.0)
-  - PromiseKit (~> 4.0)
+  - FLAnimatedImage
+  - GRMustache
+  - GRMustache.swift
+  - HTMLReader
+  - ImgurAnonymousAPIClient
+  - JLRoutes
+  - KVOController
+  - MRProgress/Overlay
+  - OMGHTTPURLRQ
+  - PromiseKit
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/marlontojal/PullToRefresh`, commit `f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0`)
-  - TUSafariActivity (~> 1.0)
-  - WebViewJavascriptBridge (~> 4.1)
+  - TUSafariActivity
+  - WebViewJavascriptBridge
 
 EXTERNAL SOURCES:
   PSMenuItem:
@@ -116,6 +118,7 @@ SPEC CHECKSUMS:
   Fabric: 5911403591946b8228ab1c51d98f1d7137e863c6
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
+  GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
   HTMLReader: e58462a84fe1840cbe4706a8a705524052806081
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
   JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
@@ -129,6 +132,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: 731e1cf5f3e7a58e801571bde9dab6177c8b44d5
+PODFILE CHECKSUM: 34422ca497bc8fc4c21a0eab5c4d132636c7a747
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.3.1
