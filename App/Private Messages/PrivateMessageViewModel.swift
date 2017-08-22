@@ -48,11 +48,11 @@ final class PrivateMessageViewModel: NSObject {
     }
     
     var regDateFormat: DateFormatter {
-        return DateFormatter.regDateFormatter()
+        return DateFormatter.regDateFormatter
     }
     
     var sentDateFormat: DateFormatter {
-        return DateFormatter.postDateFormatter()
+        return DateFormatter.postDateFormatter
     }
     
     var javascript: String? {

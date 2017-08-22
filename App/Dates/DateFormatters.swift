@@ -5,8 +5,8 @@
 import Foundation
 
 extension DateFormatter {
-    class func postDateFormatter() -> DateFormatter { return _postDateFormatter }
-	class func regDateFormatter() -> DateFormatter { return _regDateFormatter }
+    class var postDateFormatter: DateFormatter { return _postDateFormatter }
+    class var regDateFormatter: DateFormatter { return _regDateFormatter }
 }
 
 private let _postDateFormatter: DateFormatter = {
