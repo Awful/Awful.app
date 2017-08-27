@@ -99,6 +99,7 @@
 		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
+		1C25AC211F532EE600977D6F /* LocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC201F532EE600977D6F /* LocalizedString.swift */; };
 		1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */; };
 		1C2894991EE3091C00843C6B /* ShowPostScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */; };
 		1C28949B1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */; };
@@ -547,6 +548,7 @@
 		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C23C7041A7AB8940089BD5C /* SlopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlopButton.swift; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
+		1C25AC201F532EE600977D6F /* LocalizedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalizedString.swift; path = Misc/LocalizedString.swift; sourceTree = "<group>"; };
 		1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapeResult.swift; sourceTree = "<group>"; };
 		1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowPostScrapeResult.swift; sourceTree = "<group>"; };
 		1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageFolderScrapeResult.swift; sourceTree = "<group>"; };
@@ -1113,6 +1115,14 @@
 			path = URLs;
 			sourceTree = "<group>";
 		};
+		1C25AC1F1F532EC400977D6F /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				1C25AC201F532EE600977D6F /* LocalizedString.swift */,
+			);
+			name = Misc;
+			sourceTree = "<group>";
+		};
 		1C28B34A1729DC9700254EE7 /* In-App Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1157,6 +1167,7 @@
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1CB6010616D826DA00CBEE22 /* Messages */,
+				1C25AC1F1F532EC400977D6F /* Misc */,
 				1C00E0AB173A006B008895E7 /* Navigation */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
@@ -1645,7 +1656,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA = {
+		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -2000,7 +2011,7 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2698,6 +2709,7 @@
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
 				1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */,
+				1C25AC211F532EE600977D6F /* LocalizedString.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* NewMessageChecker.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
