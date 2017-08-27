@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Announcement" representedClassName="Announcement" syncable="YES">
         <attribute name="authorCustomTitleHTML" attributeType="String" syncable="YES"/>
         <attribute name="authorRegdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="authorUsername" attributeType="String" syncable="YES"/>
         <attribute name="bodyHTML" attributeType="String" syncable="YES"/>
+        <attribute name="hasBeenSeen" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="listIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="postedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
@@ -154,6 +155,7 @@
         <relationship name="threads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Thread" inverseName="author" inverseEntity="Thread" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Announcement" positionX="36" positionY="162" width="128" height="195"/>
         <element name="Forum" positionX="0" positionY="0" width="128" height="240"/>
         <element name="ForumGroup" positionX="27" positionY="171" width="128" height="103"/>
         <element name="ForumMetadata" positionX="45" positionY="180" width="128" height="120"/>
@@ -164,6 +166,5 @@
         <element name="ThreadFilter" positionX="0" positionY="0" width="128" height="88"/>
         <element name="ThreadTag" positionX="0" positionY="0" width="128" height="165"/>
         <element name="User" positionX="0" positionY="0" width="128" height="285"/>
-        <element name="Announcement" positionX="36" positionY="162" width="128" height="180"/>
     </elements>
 </model>

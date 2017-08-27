@@ -16,6 +16,7 @@ final class AnnouncementViewController: ViewController {
     private var announcementObserver: ManagedObjectObserver?
     private var clientCancellable: Cancellable?
     private var desiredFractionalContentOffsetAfterRendering: CGFloat?
+    private let hadBeenSeenAlready: Bool
 
     fileprivate lazy var loadingView: LoadingView = {
         return LoadingView.loadingViewWithTheme(self.theme)
@@ -66,6 +67,7 @@ final class AnnouncementViewController: ViewController {
 
     init(announcement: Announcement) {
         self.announcement = announcement
+        hadBeenSeenAlready = announcement.hasBeenSeen
         super.init(nibName: nil, bundle: nil)
 
         hidesBottomBarWhenPushed = true
@@ -123,7 +125,7 @@ final class AnnouncementViewController: ViewController {
                 _ = sself.navigationController?.popViewController(animated: true)
 
             case .update:
-                switch (sself.state, RenderModel(announcement: sself.announcement, theme: sself.theme)) {
+                switch (sself.state, RenderModel(announcement: sself.announcement, theme: sself.theme, hadBeenSeenAlready: sself.hadBeenSeenAlready)) {
                 case (.loading, let model?):
                     sself.state = .renderingFirstTime(model)
 
@@ -162,7 +164,7 @@ final class AnnouncementViewController: ViewController {
 
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
 
-        switch (state, RenderModel(announcement: announcement, theme: theme)) {
+        switch (state, RenderModel(announcement: announcement, theme: theme, hadBeenSeenAlready: hadBeenSeenAlready)) {
         case (.initialized, nil):
             state = .loading
 
@@ -214,14 +216,14 @@ final class AnnouncementViewController: ViewController {
                 renderView.render(html: "<h1>Rendering Error</h1><pre>\(error)</pre>", baseURL: nil)
             }
 
-        case (.renderingFirstTime, .rendered):
-            hideLoadingView()
-
-            if let fractionalOffset = desiredFractionalContentOffsetAfterRendering {
-                scrollToFractionalOffset(fractionalOffset)
+        case (.renderingFirstTime, .rendered), (.rerendering, .rendered):
+            if !announcement.hasBeenSeen {
+                announcement.hasBeenSeen = true
+                try! announcement.managedObjectContext?.save()
             }
 
-        case (.rerendering, .rendered):
+            hideLoadingView()
+
             if let fractionalOffset = desiredFractionalContentOffsetAfterRendering {
                 scrollToFractionalOffset(fractionalOffset)
             }
@@ -235,6 +237,8 @@ final class AnnouncementViewController: ViewController {
     }
 
     private func hideLoadingView() {
+        guard loadingView.superview != nil else { return }
+
         UIView.animate(withDuration: 0.2, animations: {
             self.loadingView.alpha = 0
         }, completion: { didFinish in
@@ -350,14 +354,14 @@ fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, Mustach
     let authorUserID: String?
     let authorUsername: String
     private let avatarURL: URL?
-    let beenSeen: Bool
     let css: String
+    let hasBeenSeen: Bool
     let innerHTML: String
     let postedDate: Date?
     let roles: [String]
     private let showsAvatar: Bool
 
-    init?(announcement: Announcement, theme: Theme) {
+    init?(announcement: Announcement, theme: Theme, hadBeenSeenAlready: Bool) {
         guard !announcement.bodyHTML.isEmpty else { return nil }
 
         authorRegdate = announcement.author?.regdate ?? announcement.authorRegdate
@@ -372,9 +376,9 @@ fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, Mustach
         avatarURL = announcement.author?.avatarURL
             ?? extractAvatarURL(fromCustomTitleHTML: announcement.authorCustomTitleHTML)
 
-        beenSeen = false // TODO: legit
-
         css = theme["postsViewCSS"] as String? ?? ""
+
+        hasBeenSeen = announcement.hasBeenSeen && hadBeenSeenAlready
 
         innerHTML = {
             let document = HTMLDocument(string: announcement.bodyHTML)
@@ -425,8 +429,8 @@ fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, Mustach
             && lhs.authorRolesDescription == rhs.authorRolesDescription
             && lhs.authorUsername == rhs.authorUsername
             && lhs.avatarURL == rhs.avatarURL
-            && lhs.beenSeen == rhs.beenSeen
             && lhs.css == rhs.css
+            && lhs.hasBeenSeen == rhs.hasBeenSeen
             && lhs.innerHTML == rhs.innerHTML
             && lhs.postedDate == rhs.postedDate
             && lhs.roles == rhs.roles
@@ -439,7 +443,7 @@ fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, Mustach
             "authorRolesDescription": authorRolesDescription,
             "authorUserID": authorUserID as Any,
             "authorUsername": authorUsername,
-            "beenSeen": beenSeen,
+            "hasBeenSeen": hasBeenSeen,
             "hiddenAvatarURL": hiddenAvatarURL as Any,
             "innerHTML": innerHTML,
             "postedDate": postedDate as Any,

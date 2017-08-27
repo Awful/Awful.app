@@ -52,6 +52,13 @@ internal extension AnnouncementListScrapeResult {
             context.delete(toDelete)
         }
 
+        // No IDs means we don't really know what's been seen except by content. So if there's any new content, assume it hasn't been seen.
+        for announcement in announcements {
+            if announcement.contentDidChange, announcement.hasBeenSeen {
+                announcement.hasBeenSeen = false
+            }
+        }
+
         return announcements
     }
 }
