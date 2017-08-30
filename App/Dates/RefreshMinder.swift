@@ -93,7 +93,7 @@ final class RefreshMinder: NSObject {
     
     func suggestedRefreshDate(_ r: Refresh) -> Date {
         guard let lastRefresh = userDefaults.object(forKey: r.key) as? Date else {
-            return Date().addingTimeInterval(r.timeBetweenRefreshes)
+            return Date().addingTimeInterval(timeBetweenInitialRefreshes())
         }
         let sinceLastRefresh = -lastRefresh.timeIntervalSinceNow
         if sinceLastRefresh > r.timeBetweenRefreshes + 1 {
@@ -113,3 +113,7 @@ final class RefreshMinder: NSObject {
 }
 
 private let forumTimeBetweenRefreshes: TimeInterval = 60 * 15
+
+private func timeBetweenInitialRefreshes() -> TimeInterval {
+    return 120 + TimeInterval(arc4random_uniform(120))
+}
