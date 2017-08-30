@@ -101,15 +101,6 @@ final class RefreshMinder: NSObject {
         }
         return Date().addingTimeInterval(r.timeBetweenRefreshes - sinceLastRefresh)
     }
-    
-    // MARK: Objective-C bridging
-    
-    var shouldRefreshLoggedInUser: Bool {
-        return shouldRefresh(.loggedInUser)
-    }
-    func didRefreshLoggedInUser() {
-        didRefresh(.loggedInUser)
-    }
 }
 
 private let forumTimeBetweenRefreshes: TimeInterval = 60 * 15
