@@ -42,6 +42,7 @@ final class RefreshMinder: NSObject {
     }
     
     enum Refresh {
+        case announcements
         case avatar
         case bookmarks
         case externalStylesheet
@@ -52,6 +53,7 @@ final class RefreshMinder: NSObject {
         
         fileprivate var key: String {
             switch self {
+            case .announcements: return "com.awfulapp.Awful.LastAnnouncementsRefreshDate"
             case .avatar: return "LastLoggedInUserAvatarRefreshDate"
             case .bookmarks: return "com.awfulapp.Awful.LastBookmarksRefreshDate"
             case .externalStylesheet: return "LastExternalStylesheetRefreshDate"
@@ -64,6 +66,7 @@ final class RefreshMinder: NSObject {
         
         fileprivate var timeBetweenRefreshes: TimeInterval {
             switch self {
+            case .announcements: return 60 * 60 * 20
             case .avatar: return 60 * 10
             case .bookmarks: return 60 * 10
             case .externalStylesheet: return 60 * 60
@@ -75,7 +78,7 @@ final class RefreshMinder: NSObject {
         }
         
         static var all: [Refresh] {
-            return [.avatar, .bookmarks, .externalStylesheet, .forumList, .loggedInUser, .newPrivateMessages, .privateMessagesInbox]
+            return [.announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .loggedInUser, .newPrivateMessages, .privateMessagesInbox]
         }
     }
     

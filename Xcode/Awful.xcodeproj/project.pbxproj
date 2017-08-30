@@ -108,6 +108,7 @@
 		1C25AC4B1F537A9600977D6F /* WebViewAntiHijacking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */; };
 		1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */; };
 		1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */; };
+		1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC511F57784A00977D6F /* AnnouncementListRefresher.swift */; };
 		1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */; };
 		1C2894991EE3091C00843C6B /* ShowPostScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */; };
 		1C28949B1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */; };
@@ -571,6 +572,7 @@
 		1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewAntiHijacking.swift; sourceTree = "<group>"; };
 		1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObjectCountObserver.swift; sourceTree = "<group>"; };
 		1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
+		1C25AC511F57784A00977D6F /* AnnouncementListRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementListRefresher.swift; sourceTree = "<group>"; };
 		1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapeResult.swift; sourceTree = "<group>"; };
 		1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowPostScrapeResult.swift; sourceTree = "<group>"; };
 		1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageFolderScrapeResult.swift; sourceTree = "<group>"; };
@@ -1158,6 +1160,15 @@
 			path = Misc;
 			sourceTree = "<group>";
 		};
+		1C25AC501F5777EC00977D6F /* Refreshers */ = {
+			isa = PBXGroup;
+			children = (
+				1C25AC511F57784A00977D6F /* AnnouncementListRefresher.swift */,
+				1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */,
+			);
+			path = Refreshers;
+			sourceTree = "<group>";
+		};
 		1C28B34A1729DC9700254EE7 /* In-App Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1209,6 +1220,7 @@
 				1CC780241612D9DD002AF958 /* Posts */,
 				1C6ED634169103FE0015CDD5 /* Profiles */,
 				1C4981F319C5389500502134 /* Rap Sheets */,
+				1C25AC501F5777EC00977D6F /* Refreshers */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1C098AE519C6B38E0031C12A /* Tables */,
 				1CDD51951542949600326C7B /* Theming */,
@@ -1474,7 +1486,6 @@
 				1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
 				1C2C1F111CE547A600CD27DD /* MessageViewController.swift */,
-				1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */,
 				1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */,
 				1C8E10471914D1010010007B /* private-message.js */,
 				1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */,
@@ -2776,6 +2787,7 @@
 				1C16FBFE1CBF237800C88BD1 /* NewMessageChecker.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
+				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				1C16FBE31CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift in Sources */,

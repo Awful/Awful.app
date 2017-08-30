@@ -14,6 +14,8 @@ import UIKit
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate(set) static var instance: AppDelegate!
+
+    private var announcementListRefresher: AnnouncementListRefresher?
     fileprivate var dataStore: DataStore!
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
     var window: UIWindow?
@@ -77,7 +79,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
         
         showPromptIfLoginCookieExpiresSoon()
-        
+
+        announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         NewMessageChecker.sharedChecker.refreshIfNecessary()
         PostsViewExternalStylesheetLoader.sharedLoader.refreshIfNecessary()
         

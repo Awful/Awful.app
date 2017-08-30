@@ -78,6 +78,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
                     RefreshMinder.sharedMinder.didRefreshFilteredForum(self.forum)
                 }
 
+                // Announcements appear in all thread lists.
+                RefreshMinder.sharedMinder.didRefresh(.announcements)
+
                 self.updateComposeBarButtonItem()
             }
             .catch { (error) in
