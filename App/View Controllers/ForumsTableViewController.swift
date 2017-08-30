@@ -3,10 +3,13 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import CoreData
+import Foundation
 
 final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
     fileprivate var dataSource: ForumTableViewDataSource!
+    private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -15,6 +18,18 @@ final class ForumsTableViewController: TableViewController {
         title = "Forums"
         tabBarItem.image = UIImage(named: "forum-list")
         tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
+
+        let updateBadgeValue: (Int) -> Void = { [weak self] unreadCount in
+            self?.tabBarItem?.badgeValue = unreadCount > 0
+                ? NumberFormatter.localizedString(from: unreadCount as NSNumber, number: .none)
+                : nil
+        }
+        unreadAnnouncementCountObserver = ManagedObjectCountObserver(
+            context: managedObjectContext,
+            entityName: Announcement.entityName(),
+            predicate: NSPredicate(format: "%K == NO", #keyPath(Announcement.hasBeenSeen)),
+            didChange: updateBadgeValue)
+        updateBadgeValue(unreadAnnouncementCountObserver.count)
     }
 
     required init?(coder: NSCoder) {

@@ -54,37 +54,3 @@ private extension ManagedObjectObserver.Change {
         }
     }
 }
-
-
-struct ContextObjectsDidChangeNotification {
-    private let notification: Notification
-
-    init(_ notification: Notification) {
-        assert(notification.name == .NSManagedObjectContextObjectsDidChange)
-        self.notification = notification
-    }
-
-    private func objects(forKey key: String) -> Set<NSManagedObject> {
-        return notification.userInfo?[key] as? Set<NSManagedObject> ?? []
-    }
-
-    var deletedObjects: Set<NSManagedObject> {
-        return objects(forKey: NSDeletedObjectsKey)
-    }
-
-    var didInvalidateAllObjects: Bool {
-        return notification.userInfo?[NSInvalidatedAllObjectsKey] != nil
-    }
-
-    var invalidatedObjects: Set<NSManagedObject> {
-        return objects(forKey: NSInvalidatedObjectsKey)
-    }
-
-    var refreshedObjects: Set<NSManagedObject> {
-        return objects(forKey: NSRefreshedObjectsKey)
-    }
-
-    var updatedObjects: Set<NSManagedObject> {
-        return objects(forKey: NSUpdatedObjectsKey)
-    }
-}
