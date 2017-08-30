@@ -298,7 +298,7 @@ extension Forum {
 
 extension ForumTableViewCell.ViewModel {
     fileprivate init(announcement: Announcement, showSeparator: Bool = true) {
-        favorite = .hidden
+        favorite = announcement.hasBeenSeen ? .hidden : .on
         name = announcement.title
         childSubforumCount = 0
         canExpand = .hidden
