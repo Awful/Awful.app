@@ -51,9 +51,16 @@ final class ImageViewController: UIViewController {
         } else {
             self.dismiss(animated: true, completion: nil)
         }
+        
+        UIApplication.shared.isStatusBarHidden = false
     }
     
     override var prefersStatusBarHidden : Bool {
+        // As of iOS 11, this only seems to be consulted when the preview first appears, and image is always nil.
+        // This works fine because the overlay should always be visible when the image pops up, and giving the honest answer
+        // about when the status bar should appear is good in case the behavior ever changes.
+        // Nevertheless, the view will have to manually show and hide the status bar with the rest of the overlay
+        // because this var isn't currently consulted after the initial load.
         return image != nil && rootView.overlayHidden
     }
     
@@ -285,11 +292,16 @@ final class ImageViewController: UIViewController {
                 for view in self.overlayViews {
                     view.alpha = hidden ? 0 : 1
                 }
+                
+                UIApplication.shared.isStatusBarHidden = hidden
+                
                 }, completion: nil)
         }
         
         func hideOverlayAfterDelay() {
-            hideOverlayTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(RootView.hideOverlayTimerDidFire(_:)), userInfo: nil, repeats: false)
+            if hideOverlayTimer == nil {
+                hideOverlayTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(RootView.hideOverlayTimerDidFire(_:)), userInfo: nil, repeats: false)
+            }
         }
         
         @objc fileprivate func hideOverlayTimerDidFire(_ timer: Timer) {
