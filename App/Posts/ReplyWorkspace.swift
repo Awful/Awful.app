@@ -214,9 +214,7 @@ final class ReplyWorkspace: NSObject {
                     }
                 }
 
-                textView.withoutSmartQuotes {
-                    $0.replace(selectedRange, withText: replacement)
-                }
+                textView.replace(selectedRange, withText: replacement)
 
                 completion(nil)
             }
