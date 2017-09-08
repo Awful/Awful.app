@@ -68,11 +68,11 @@ final class PostViewModel: NSObject {
     }
     
     var postDateFormat: DateFormatter {
-        return DateFormatter.postDateFormatter()
+        return DateFormatter.postDateFormatter
     }
     
     var regDateFormat: DateFormatter {
-        return DateFormatter.regDateFormatter()
+        return DateFormatter.regDateFormatter
     }
     
     var author: User? {

@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+
+  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+
+/* MARK: Actions */
+
+/* Title of the share URL action for an announcement, post, or thread. */
+"action.share-url" = "Share URL";
+
+/* MARK: Announcements */
+
+/* Fallback title of an announcement screen (the announcement's title is used when available). */
+"announcement.title" = "Announcement";

@@ -73,10 +73,10 @@ final class SettingsViewController: TableViewController {
     }
     
     fileprivate func refreshIfNecessary() {
-        guard RefreshMinder.sharedMinder.shouldRefreshLoggedInUser else { return }
+        guard RefreshMinder.sharedMinder.shouldRefresh(.loggedInUser) else { return }
         _ = ForumsClient.shared.profileLoggedInUser()
             .then { [weak self] (user) -> Void in
-                RefreshMinder.sharedMinder.didRefreshLoggedInUser()
+                RefreshMinder.sharedMinder.didRefresh(.loggedInUser)
 
                 AwfulSettings.shared().userID = user.userID
                 AwfulSettings.shared().username = user.username
