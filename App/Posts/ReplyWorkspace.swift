@@ -79,7 +79,7 @@ final class ReplyWorkspace: NSObject {
             let textView = compositionViewController.textView
             textView.attributedText = draft.text
             kvoController.observe(draft, keyPath: "thread.title", options: [.initial, .new], block: { [unowned self] (observer: Any?, object: Any?, change: [String: Any]) -> Void in
-                self.compositionViewController.title = change[NSKeyValueChangeKey.newKey.rawValue] as? String
+                self.compositionViewController.title = self.draft.title
             })
             
             textViewNotificationToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
@@ -261,6 +261,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
 @objc protocol ReplyDraft: StorableDraft, SubmittableDraft, ReplyUI {
     var thread: AwfulThread { get }
     var text: NSAttributedString? { get set }
+    var title: String { get }
 }
 
 @objc protocol SubmittableDraft {
@@ -302,6 +303,10 @@ final class NewReplyDraft: NSObject, ReplyDraft {
     var storePath: String {
         return "replies/\(thread.threadID)"
     }
+
+    var title: String {
+        return "Re: \(thread.title ?? "")"
+    }
 }
 
 final class EditReplyDraft: NSObject, ReplyDraft {
@@ -334,6 +339,10 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     var thread: AwfulThread {
         // TODO can we assume an edited post always has a thread?
         return post.thread!
+    }
+
+    var title: String {
+        return "Edit: \(thread.title ?? "")"
     }
     
     var storePath: String {
