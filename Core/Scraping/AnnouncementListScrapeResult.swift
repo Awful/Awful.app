@@ -21,20 +21,28 @@ public struct AnnouncementListScrapeResult: ScrapeResult {
     }
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        announcements = try html
-            .nodes(matchingSelector: "table.post")
-            .map(Announcement.init)
+        let tableBody = html.firstNode(matchingSelector: "table.post tbody")
+        let rows = (tableBody?.childElementNodes ?? []).filter { $0.tagName == "tr" }
+
+        let bodyRows = stride(from: rows.startIndex, to: rows.endIndex, by: 2).map { rows[$0] }
+        let dateRows = stride(from: rows.index(after: rows.startIndex), to: rows.endIndex, by: 2).map { rows[$0] }
+
+        guard bodyRows.count == dateRows.count else {
+            throw ScrapingError.missingExpectedElement("table.post tbody > tr (even count)")
+        }
+
+        announcements = try zip(bodyRows, dateRows).map(Announcement.init)
     }
 }
 
 private extension AnnouncementListScrapeResult.Announcement {
-    init(_ html: HTMLNode) throws {
-        author = try html.firstNode(matchingSelector: "dl.userinfo")
+    init(bodyRow: HTMLNode, dateRow: HTMLNode) throws {
+        author = try bodyRow.firstNode(matchingSelector: "dl.userinfo")
             .map(AnnouncementListScrapeResult.Author.init)
 
-        body = try html.requiredNode(matchingSelector: "td.postbody").innerHTML
+        body = try bodyRow.requiredNode(matchingSelector: "td.postbody").innerHTML
 
-        date = html.firstNode(matchingSelector: "td.postdate")
+        date = dateRow.firstNode(matchingSelector: "td.postdate")
             .map { $0.textContent }
             .flatMap(dateFormatter.date)
     }
