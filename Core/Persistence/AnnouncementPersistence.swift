@@ -56,7 +56,9 @@ internal extension AnnouncementListScrapeResult {
 
         // No IDs means we don't really know what's been seen except by content. So if there's any new content, assume it hasn't been seen.
         for announcement in announcements {
-            if announcement.contentDidChange, announcement.hasBeenSeen {
+            if announcement.hasBeenSeen, announcement.contentDidChange {
+                Log.d("marking announcement as new because of changed attributes: \(announcement.changedValues().keys.joined(separator: ", "))")
+
                 announcement.hasBeenSeen = false
             }
         }
@@ -179,7 +181,7 @@ private extension ThreadListScrapeResult.Announcement {
         if !title.isEmpty, title != announcement.title {
             announcement.title = title
 
-            // Title mismatch probably means the announcement body has changed, possibly because it's a different announcement than the last time we scraped.
+            Log.d("announcement title mismatch, assuming it's a different announcement and clearing the body HTML")
             announcement.bodyHTML = ""
         }
     }
