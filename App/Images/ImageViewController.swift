@@ -4,6 +4,8 @@
 
 import FLAnimatedImage
 
+private let Log = Logger.get()
+
 /// Downloads an image and shows it in a zoomable scroll view.
 final class ImageViewController: UIViewController {
     fileprivate let imageURL: URL
@@ -51,16 +53,10 @@ final class ImageViewController: UIViewController {
         } else {
             self.dismiss(animated: true, completion: nil)
         }
-        
-        UIApplication.shared.isStatusBarHidden = false
     }
     
-    override var prefersStatusBarHidden : Bool {
-        // As of iOS 11, this only seems to be consulted when the preview first appears, and image is always nil.
-        // This works fine because the overlay should always be visible when the image pops up, and giving the honest answer
-        // about when the status bar should appear is good in case the behavior ever changes.
-        // Nevertheless, the view will have to manually show and hide the status bar with the rest of the overlay
-        // because this var isn't currently consulted after the initial load.
+    override var prefersStatusBarHidden: Bool {
+        Log.d("hello, image is \(String(describing: image)) and overlayHidden = \(rootView.overlayHidden)")
         return image != nil && rootView.overlayHidden
     }
     
@@ -284,7 +280,6 @@ final class ImageViewController: UIViewController {
             
             let duration = animated ? 0.3 : 0
             UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .beginFromCurrentState, animations: {
-                self.nearestViewController?.setNeedsStatusBarAppearanceUpdate()
                 UIView.performWithoutAnimation {
                     self.layoutOverlay()
                 }
@@ -293,9 +288,9 @@ final class ImageViewController: UIViewController {
                     view.alpha = hidden ? 0 : 1
                 }
                 
-                UIApplication.shared.isStatusBarHidden = hidden
-                
-                }, completion: nil)
+                self.nearestViewController?.setNeedsStatusBarAppearanceUpdate()
+
+                })
         }
         
         func hideOverlayAfterDelay() {
