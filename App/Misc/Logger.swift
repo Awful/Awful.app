@@ -33,7 +33,7 @@
      * Use `Log.e` for errors that we tell the user about.
      * When in doubt, just log something and sort it out later!
  
- Note that nothing here is meant to replace any Swift error handling and condition checking (e.g. `try`/`catch`, `assert`, `fatalError`). When those are the right tool for the job, please use them!
+ Note that nothing here is meant to replace any Swift error handling and condition checking (e.g. `try`/`catch`, `assert`, `precondition`, `fatalError`). When that's the right tool for the job, please use it!
  */
 final class Logger {
     var level: Level

@@ -260,6 +260,7 @@
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
+		1CB8FA661F68BD73008A7875 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC401F5371CC00977D6F /* Logger.swift */; };
 		1CBBAAB81D949EE200A847EC /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CBBAAB71D949EE200A847EC /* Stickers.xcassets */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
@@ -2605,6 +2606,7 @@
 				1CF7AB961EDB71640089EF0C /* PostScrapeResult.swift in Sources */,
 				1C28949B1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift in Sources */,
 				1C07B8BE1F0098E50044B8AF /* Announcement.swift in Sources */,
+				1CB8FA661F68BD73008A7875 /* Logger.swift in Sources */,
 				1C14A4BB1A94C1A20045DDF7 /* ThreadTag.swift in Sources */,
 				1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */,
 				1CF7AB941EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift in Sources */,
