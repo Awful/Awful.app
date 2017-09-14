@@ -141,7 +141,7 @@ final class ForumsTableViewController: TableViewController {
     
     fileprivate func didTapStarButton(_ cell: ForumTableViewCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { fatalError("tapped star button in header?") }
+        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { return }
         forum.metadata.favoriteIndex = dataSource.lastFavoriteIndex.map { Int32($0.advanced(by: 1)) } ?? 0
         forum.metadata.favorite = !forum.metadata.favorite
         try! forum.managedObjectContext!.save()
@@ -149,7 +149,7 @@ final class ForumsTableViewController: TableViewController {
     
     fileprivate func didTapDisclosureButton(_ cell: ForumTableViewCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { fatalError("tapped disclosure button in header?") }
+        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { return }
         forum.metadata.showsChildrenInForumList = !forum.metadata.showsChildrenInForumList
         try! forum.managedObjectContext!.save()
     }
