@@ -5,7 +5,7 @@
 import AwfulCore
 import UIKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 /// Periodically scrapes an updated list of announcements.
 final class AnnouncementListRefresher {

@@ -9,7 +9,7 @@ import Mustache
 import UIKit
 import WebKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 final class AnnouncementViewController: ViewController {
     fileprivate let announcement: Announcement

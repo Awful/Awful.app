@@ -5,7 +5,7 @@
 import UIKit
 import WebKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 
 /**

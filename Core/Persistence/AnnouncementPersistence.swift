@@ -4,7 +4,7 @@
 
 import CoreData
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 internal extension AnnouncementListScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [AwfulCore.Announcement] {
