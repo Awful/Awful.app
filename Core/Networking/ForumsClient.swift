@@ -212,6 +212,7 @@ public final class ForumsClient {
             .then(on: .global(), execute: ThreadListScrapeResult.init)
             .then(on: backgroundContext) { result, context -> [NSManagedObjectID] in
                 let threads = try result.upsert(into: context)
+                _ = try result.upsertAnnouncements(into: context)
 
                 if
                     page == 1,
