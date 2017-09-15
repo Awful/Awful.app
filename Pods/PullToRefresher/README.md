@@ -4,19 +4,20 @@ This component implements pure pull-to-refresh logic and you can use it for deve
 
 [![Yalantis](https://raw.githubusercontent.com/Yalantis/PullToRefresh/develop/PullToRefreshDemo/Resources/badge_dark.png)](https://yalantis.com/?utm_source=github)
 
-##Requirements
-- iOS 8.0+
-- Xcode 7
-- Swift 2
+## Requirements
 
-##Installing with [CocoaPods](https://cocoapods.org)
+- iOS 8.0+
+- Swift 3 (v. 2.0+)
+- Swift 2 (v. 1.4)
+
+## Installing with [CocoaPods](https://cocoapods.org)
 
 ```ruby
 use_frameworks!
-pod 'PullToRefresher', '~> 1.4.0'
+pod 'PullToRefresher', '~> 2.0'
 ```
 
-##Usage
+## Usage
 
 At first, import PullToRefresh:
 
@@ -33,19 +34,18 @@ let refresher = PullToRefresh()
 It will create a default pull-to-refresh with a simple view which has single *UIActivitiIndicatorView*. To add refresher to your *UIScrollView* subclass:
 
 ```swift
-tableView.addPullToRefresh(refresher, action: {
+tableView.addPullToRefresh(refresher) {
     // action to be performed (pull data from some source)
-})
+}
 ```
 
 ⚠️ Don't forget to remove pull to refresh when your view controller is releasing. ⚠️
 
 ```swift
-    deinit {
-        tableView.removePullToRefresh(tableView.topPullToRefresh!)
-    }
+deinit {
+tableView.removePullToRefresh(tableView.topPullToRefresh!)
+}
 ```
-
 
 After the action is completed and you want to hide the refresher:
 
@@ -62,7 +62,7 @@ tableView.startRefreshing()
 But you probably won’t use this component, though. *UITableViewController* and *UICollectionViewController* already have a simple type of refresher.
 It’s much more interesting to develop your own pull-to-refresh control.
 
-##Creating custom PullToRefresh
+## Creating custom PullToRefresh
 
 To create a custom refresher you would need to initialize *PullToRefresh* class with two objects:
 
@@ -70,16 +70,17 @@ To create a custom refresher you would need to initialize *PullToRefresh* class 
 - **animator** is an object which will animate elements on refreshView depending on the state of PullToRefresh.
 
 ```swift
-let awesomeRefrehser = PullToRefresh(refresherView: yourView, animator: yourAnimator)
+let awesomeRefresher = PullToRefresh(refresherView: yourView, animator: yourAnimator)
 ```
-###Steps for creating custom PullToRefresh
+
+### Steps for creating custom PullToRefresh
 
 1) Create a custom *UIView* with *.xib and add all images that you want to animate as subviews. Pin them with outlets:
 
 ```swift
 class RefreshView: UIView {
-    @IBOutlet
-    private var imageView: UIImageView!
+
+    @IBOutlet private var imageView: UIImageView!
   
     // and others
 }
@@ -89,13 +90,14 @@ class RefreshView: UIView {
 
 ```swift
 class Animator: RefreshViewAnimator {
+
     private let refreshView: RefreshView
     
     init(refreshView: RefreshView) {
         self.refreshView = refreshView
     }
 
-    func animateState(state: State) {
+    func animate(state: State) {
         // animate refreshView according to state
     }
 }
@@ -104,9 +106,12 @@ class Animator: RefreshViewAnimator {
 3) According to RefreshViewAnimator protocol, your animator should implement *animateState* method. This method is get called by *PullToRefresh* object every time its state is changed. There are four states:
 
 ```swift
-enum State:Equatable {
-    case Inital, Loading, Finished
-    case Releasing(progress: double)
+public enum State: Equatable, CustomStringConvertible {
+    
+    case initial
+    case releasing(progress: CGFloat)
+    case loading
+    case finished
 }
 ```
 
@@ -118,12 +123,12 @@ enum State:Equatable {
 Depending on the state that your animator gets from the *PullToRefresh*, it has to animate elements in *refreshView*:
 
 ```swift
-func animateState(state: State) {
+func animate(state: State) {
     switch state {
-      case .Inital: // do inital layout for elements
-      case .Releasing(let progress): // animate elements according to progress
-      case .Loading: // start loading animations
-      case .Finished: // show some finished state if needed
+      case .initial: // do inital layout for elements
+      case .releasing(let progress): // animate elements according to progress
+      case .loading: // start loading animations
+      case .finished: // show some finished state if needed
     }
 }
 ```
@@ -134,9 +139,10 @@ Place the magic of animations insted of commented lines.
 
 ```swift
 class AwesomePullToRefresh: PullToRefresh {
+
     convenience init() {
-        let refreshView =  NSBundle.mainBundle().loadNibNamed("RefreshView", owner: nil, options: nil).first as! RefreshView
-        let animator =  Animator(refreshView: refreshView)
+        let refreshView = Bundle(for: type(of: self)).loadNibNamed("RefreshView", owner: nil, options: nil)!.first as! RefreshView
+        let animator = Animator(refreshView: refreshView)
         self.init(refreshView: refreshView, animator: animator)
     }
 }
@@ -145,9 +151,9 @@ class AwesomePullToRefresh: PullToRefresh {
 5) Finally, add a refresher to a UIScrollView subclass:
 
 ```swift
-tableView.addPullToRefresh(refresher, action: {
+tableView.addPullToRefresh(refresher) {
     // action to be performed (pull data from some source)
-})
+}
 ```
 
 Have fun! :)
@@ -163,7 +169,7 @@ P.S. We’re going to publish more awesomeness wrapped in code and a tutorial on
 
 	The MIT License (MIT)
 
-	Copyright © 2015 Yalantis
+	Copyright © 2017 Yalantis
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal

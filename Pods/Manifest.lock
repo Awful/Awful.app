@@ -72,7 +72,7 @@ PODS:
   - PromiseKit/UIKit (4.4.0):
     - PromiseKit/CorePromise
   - PSMenuItem (1.0.0)
-  - PullToRefresher (1.4.0)
+  - PullToRefresher (2.0.2)
   - TUSafariActivity (1.0.4)
   - WebViewJavascriptBridge (4.1.4)
 
@@ -91,7 +91,7 @@ DEPENDENCIES:
   - OMGHTTPURLRQ
   - PromiseKit
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
-  - PullToRefresher (from `https://github.com/marlontojal/PullToRefresh`, commit `f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0`)
+  - PullToRefresher (from `https://github.com/goodeggs/PullToRefresh`, commit `dfa73b3f443dd4a9f658597e5329e4744f8471df`)
   - TUSafariActivity
   - WebViewJavascriptBridge
 
@@ -100,16 +100,16 @@ EXTERNAL SOURCES:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
   PullToRefresher:
-    :commit: f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0
-    :git: https://github.com/marlontojal/PullToRefresh
+    :commit: dfa73b3f443dd4a9f658597e5329e4744f8471df
+    :git: https://github.com/goodeggs/PullToRefresh
 
 CHECKOUT OPTIONS:
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
   PullToRefresher:
-    :commit: f740b9e3e7a7497f81b2e2ef5acea7d15d4d91b0
-    :git: https://github.com/marlontojal/PullToRefresh
+    :commit: dfa73b3f443dd4a9f658597e5329e4744f8471df
+    :git: https://github.com/goodeggs/PullToRefresh
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
@@ -128,10 +128,10 @@ SPEC CHECKSUMS:
   OMGHTTPURLRQ: edb14c7d28add69226b79d826f930805927a0ffa
   PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
-  PullToRefresher: c4629a459f305c14a66d35f52c2feeaccf85c49e
+  PullToRefresher: 9d66e6a86fb9e1d8fa861c4bbd263e88f5dfc0bd
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: 34422ca497bc8fc4c21a0eab5c4d132636c7a747
+PODFILE CHECKSUM: 3b0be8e66b7a3df9e41d061ec90afd3c8b67f0e4
 
 COCOAPODS: 1.3.1

@@ -10,27 +10,27 @@ import Foundation
 
 class DefaultViewAnimator: RefreshViewAnimator {
     
-    private let refreshView: DefaultRefreshView
+    fileprivate let refreshView: DefaultRefreshView
     
     init(refreshView: DefaultRefreshView) {
         self.refreshView = refreshView
     }
     
-    func animateState(_ state: State) {
+    func animate(_ state: State) {
         switch state {
         case .initial:
-            refreshView.activityIndicator?.stopAnimating()
+            refreshView.activityIndicator.stopAnimating()
             
         case .releasing(let progress):
-            refreshView.activityIndicator?.isHidden = false
+            refreshView.activityIndicator.isHidden = false
             
             var transform = CGAffineTransform.identity
             transform = transform.scaledBy(x: progress, y: progress)
-            transform = transform.rotated(by: CGFloat(M_PI) * progress * 2)
-            refreshView.activityIndicator?.transform = transform
+            transform = transform.rotated(by: CGFloat(Double.pi) * progress * 2)
+            refreshView.activityIndicator.transform = transform
             
         case .loading:
-            refreshView.activityIndicator?.startAnimating()
+            refreshView.activityIndicator.startAnimating()
             
         default: break
         }
