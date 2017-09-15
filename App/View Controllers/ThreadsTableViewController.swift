@@ -229,7 +229,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             if let thread = self.threadComposeViewController.thread , success {
                 let postsPage = PostsPageViewController(thread: thread)
                 postsPage.restorationIdentifier = "Posts"
-                postsPage.loadPage(1, updatingCache: true, updatingLastReadPost: true)
+                postsPage.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
                 self.showDetailViewController(postsPage, sender: self)
             }
             
@@ -334,7 +334,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-        let targetPage = thread.beenSeen ? AwfulThreadPage.nextUnread.rawValue : 1
+        let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
         tableView.deselectRow(at: indexPath, animated: true)

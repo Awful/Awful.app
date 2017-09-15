@@ -58,7 +58,7 @@ final class AwfulURLRouter: NSObject {
                 , post.page > 0
             {
                 let postsVC = PostsPageViewController(thread: thread)
-                postsVC.loadPage(post.page, updatingCache: true, updatingLastReadPost: true)
+                postsVC.loadPage(.specific(post.page), updatingCache: true, updatingLastReadPost: true)
                 postsVC.scrollPostToVisible(post)
                 return self?.showPostsViewController(postsVC) ?? false
             }
@@ -238,28 +238,28 @@ final class AwfulURLRouter: NSObject {
         
         try! managedObjectContext.save()
         
-        var rawPage = AwfulThreadPage.none.rawValue
+        var page = ThreadPage.first
         let pageString = parameters["page"] as? String
         if
             let userID = userID , userID.isEmpty,
             let pageString = pageString
         {
             if pageString.caseInsensitiveCompare("last") == .orderedSame {
-                rawPage = AwfulThreadPage.last.rawValue
+                page = .last
             } else if pageString.caseInsensitiveCompare("unread") == .orderedSame {
-                rawPage = AwfulThreadPage.nextUnread.rawValue
+                page = .nextUnread
             }
         }
-        if rawPage == AwfulThreadPage.none.rawValue {
+        if case .first = page {
             if let pageNumber = pageString.flatMap({ Int($0) }) {
-                rawPage = pageNumber
+                page = .specific(pageNumber)
             } else if thread.beenSeen {
-                rawPage = AwfulThreadPage.nextUnread.rawValue
+                page = .nextUnread
             } else {
-                rawPage = 1
+                page = .first
             }
         }
-        postsVC.loadPage(rawPage, updatingCache: true, updatingLastReadPost: true)
+        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
         
         if let postID = parameters["post"] as? String , !postID.isEmpty {
             let postKey = PostKey(postID: postID)

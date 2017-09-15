@@ -250,7 +250,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-        let targetPage = thread.beenSeen ? AwfulThreadPage.nextUnread.rawValue : 1
+        let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)

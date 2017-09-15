@@ -15,7 +15,7 @@ extension InAppActionViewController {
             return IconActionItem(itemType) {
                 let postsViewController = PostsPageViewController(thread: thread)
                 postsViewController.restorationIdentifier = "Posts"
-                let page = itemType == .jumpToLastPage ? AwfulThreadPage.last.rawValue : 1
+                let page = itemType == .jumpToLastPage ? ThreadPage.last : .first
                 postsViewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
                 viewController.showDetailViewController(postsViewController, sender: self)
             }

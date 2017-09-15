@@ -13,7 +13,7 @@ import WebViewJavascriptBridge
 final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     fileprivate let author: User?
-    fileprivate(set) var page = 0
+    fileprivate(set) var page: ThreadPage?
     fileprivate var hiddenPosts = 0 {
         didSet { updateUserInterface() }
     }
@@ -105,11 +105,11 @@ final class PostsPageViewController: ViewController {
     /**
         Changes the page.
      
-        - parameter page: The page to load. Values of AwfulThreadPage are allowed here too (but it's typed NSInteger for Swift compatibility).
+        - parameter page: The page to load.
         - parameter updateCache: Whether to fetch posts from the client, or simply render any posts that are cached.
         - parameter updateLastReadPost: Whether to advance the "last-read post" marker on the Forums.
      */
-    func loadPage(_ rawPage: Int, updatingCache: Bool, updatingLastReadPost updateLastReadPost: Bool) {
+    func loadPage(_ newPage: ThreadPage, updatingCache: Bool, updatingLastReadPost updateLastReadPost: Bool) {
         networkOperation?.cancel()
         networkOperation = nil
         
@@ -120,20 +120,13 @@ final class PostsPageViewController: ViewController {
         jumpToLastPost = false
         
         // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
-        var rawPage = rawPage
-        if let
-            author = author,
-            let page = AwfulThreadPage(rawValue: rawPage)
-            , page == .last
-        {
-            rawPage = Int(thread.filteredNumberOfPagesForAuthor(author: author))
-            if rawPage == 0 {
-                rawPage = 1
-            }
+        var newPage = newPage
+        if let author = author, case .last? = page {
+            newPage = .specific(Int(thread.filteredNumberOfPagesForAuthor(author: author)))
         }
         
-        let reloadingSamePage = page == rawPage
-        page = rawPage
+        let reloadingSamePage = page == newPage
+        page = newPage
         
         if posts.isEmpty || !reloadingSamePage {
             refreshControl?.endRefreshing()
@@ -162,29 +155,34 @@ final class PostsPageViewController: ViewController {
             return
         }
 
-        let (promise, cancellable) = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: rawPage, updateLastReadPost: updateLastReadPost)
+        let (promise, cancellable) = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
         networkOperation = cancellable
 
         promise.then { [weak self] (posts, firstUnreadPost, advertisementHTML) -> Void in
             guard let sself = self else { return }
 
             // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
-            guard sself.page == rawPage else { return }
+            guard sself.page == newPage else { return }
 
             if !posts.isEmpty {
                 sself.posts = posts
 
                 let anyPost = posts[0]
                 if sself.author != nil {
-                    sself.page = anyPost.singleUserPage
+                    sself.page = .specific(anyPost.singleUserPage)
                 } else {
-                    sself.page = anyPost.page
+                    sself.page = .specific(anyPost.page)
                 }
             }
 
-            if sself.posts.isEmpty && rawPage < 0 {
+            switch newPage {
+            case .last where sself.posts.isEmpty,
+                 .nextUnread where sself.posts.isEmpty:
                 let pageCount = sself.numberOfPages > 0 ? "\(sself.numberOfPages)" : "?"
                 sself.currentPageItem.title = "Page ? of \(pageCount)"
+
+            case .last, .nextUnread, .specific:
+                break
             }
 
             sself.configureUserActivityIfPossible()
@@ -214,7 +212,7 @@ final class PostsPageViewController: ViewController {
                 guard let sself = self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
-                if sself.page != rawPage { return }
+                if sself.page != newPage { return }
 
                 sself.clearLoadingMessage()
 
@@ -229,9 +227,14 @@ final class PostsPageViewController: ViewController {
                     }
                 }
 
-                if sself.posts.isEmpty && rawPage < 0 {
+                switch newPage {
+                case .last where sself.posts.isEmpty,
+                     .nextUnread where sself.posts.isEmpty:
                     let pageCount = sself.numberOfPages > 0 ? "\(sself.numberOfPages)" : "?"
                     sself.currentPageItem.title = "Page ? of \(pageCount)"
+
+                case .last, .nextUnread, .specific:
+                    break
                 }
         }
     }
@@ -251,7 +254,7 @@ final class PostsPageViewController: ViewController {
     }
     
     func goToLastPost() {
-        loadPage(AwfulThreadPage.last.rawValue, updatingCache: true, updatingLastReadPost: true)
+        loadPage(.last, updatingCache: true, updatingLastReadPost: true)
         jumpToLastPost = true
     }
     
@@ -287,7 +290,7 @@ final class PostsPageViewController: ViewController {
             context["advertisementHTML"] = ad as AnyObject?
         }
         
-        if context["posts"] != nil && page > 0 && page >= numberOfPages {
+        if context["posts"] != nil, case .specific(let pageNumber)? = page, pageNumber >= numberOfPages {
             context["endMessage"] = true as AnyObject?
         }
         
@@ -352,7 +355,7 @@ final class PostsPageViewController: ViewController {
             }
             
             if didSucceed {
-                self?.loadPage(AwfulThreadPage.nextUnread.rawValue, updatingCache: true, updatingLastReadPost: true)
+                self?.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
             }
             
             self?.dismiss(animated: true, completion: nil)
@@ -379,8 +382,8 @@ final class PostsPageViewController: ViewController {
         let item = UIBarButtonItem(image: UIImage(named: "arrowleft"), style: .plain, target: nil, action: nil)
         item.accessibilityLabel = "Previous page"
         item.actionBlock = { [unowned self] (sender) in
-            guard self.page > 1 else { return }
-            self.loadPage(self.page - 1, updatingCache: true, updatingLastReadPost: true)
+            guard case .specific(let pageNumber)? = self.page, pageNumber > 1 else { return }
+            self.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
         }
         return item
     }()
@@ -405,8 +408,8 @@ final class PostsPageViewController: ViewController {
         let item = UIBarButtonItem(image: UIImage(named: "arrowright"), style: .plain, target: nil, action: nil)
         item.accessibilityLabel = "Next page"
         item.actionBlock = { [unowned self] (sender) in
-            guard self.page < self.numberOfPages && self.page > 0 else { return }
-            self.loadPage(self.page + 1, updatingCache: true, updatingLastReadPost: true)
+            guard case .specific(let pageNumber)? = self.page, pageNumber < self.numberOfPages, pageNumber > 0 else { return }
+            self.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
         }
         return item
     }()
@@ -423,8 +426,8 @@ final class PostsPageViewController: ViewController {
                     URLQueryItem(name: "threadid", value: self.thread.threadID),
                     URLQueryItem(name: "perpage", value: "40"),
                 ]
-                if self.page > 1 {
-                    queryItems.append(URLQueryItem(name: "pagenumber", value: "\(self.page)"))
+                if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
+                    queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
                 }
                 components.queryItems = queryItems
                 let url = components.url!
@@ -527,7 +530,7 @@ final class PostsPageViewController: ViewController {
     }
     
     fileprivate func refetchPosts() {
-        guard page >= 1 else {
+        guard case .specific(let pageNumber)? = page else {
             posts = []
             return
         }
@@ -535,7 +538,7 @@ final class PostsPageViewController: ViewController {
         let request = NSFetchRequest<Post>(entityName: Post.entityName())
         
         let indexKey = author == nil ? "threadIndex" : "filteredThreadIndex"
-        let predicate = NSPredicate(format: "thread = %@ AND %d <= %K AND %K <= %d", thread, (page - 1) * 40 + 1, indexKey, indexKey, page * 40)
+        let predicate = NSPredicate(format: "thread = %@ AND %d <= %K AND %K <= %d", thread, (pageNumber - 1) * 40 + 1, indexKey, indexKey, pageNumber * 40)
         if let author = author {
             let restOfPredicate = NSPredicate(format: "author.userID = %@", author.userID)
             request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, restOfPredicate])
@@ -556,7 +559,7 @@ final class PostsPageViewController: ViewController {
     fileprivate func updateUserInterface() {
         title = (thread.title as NSString?)?.stringByCollapsingWhitespace
         
-        if page == AwfulThreadPage.last.rawValue || page == AwfulThreadPage.nextUnread.rawValue || posts.isEmpty {
+        if page == .last || page == .nextUnread || posts.isEmpty {
             showLoadingView()
         } else {
             clearLoadingMessage()
@@ -564,8 +567,8 @@ final class PostsPageViewController: ViewController {
         
         postsView.topBar.scrollToBottomButton.isEnabled = !posts.isEmpty
         postsView.topBar.previousPostsButton.isEnabled = hiddenPosts > 0
-        
-        if numberOfPages > page {
+
+        if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
             if !(refreshControl?.contentView is PostsPageRefreshArrowView) {
                 refreshControl?.contentView = PostsPageRefreshArrowView()
             }
@@ -575,17 +578,31 @@ final class PostsPageViewController: ViewController {
             }
         }
         
-        backItem.isEnabled = page > 1
+        backItem.isEnabled = {
+            switch page {
+            case .specific(let pageNumber)?:
+                return pageNumber > 1
+            case .last?, .nextUnread?, nil:
+                return false
+            }
+        }()
         
-        if page > 0 && numberOfPages > 0 {
-            currentPageItem.title = "\(page) / \(numberOfPages)"
-            currentPageItem.accessibilityLabel = "Page \(page) of \(numberOfPages)"
+        if case .specific(let pageNumber)? = page, numberOfPages > 0 {
+            currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
+            currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
         } else {
             currentPageItem.title = ""
             currentPageItem.accessibilityLabel = nil
         }
         
-        forwardItem.isEnabled = page > 0 && page < numberOfPages
+        forwardItem.isEnabled = {
+            switch page {
+            case .specific(let pageNumber)?:
+                return pageNumber < numberOfPages
+            case .last?, .nextUnread?, nil:
+                return false
+            }
+        }()
         
         composeItem.isEnabled = !thread.closed
     }
@@ -600,18 +617,22 @@ final class PostsPageViewController: ViewController {
     }
     
     fileprivate func loadNextPageOrRefresh() {
-        let nextPage: Int
+        guard let page = page else { return }
+
+        let nextPage: ThreadPage
         
         // There's surprising sublety in figuring out what "next page" means.
         if posts.count < 40 {
             // When we're showing a partial page, just fill in the rest by reloading the current page.
             nextPage = page
-        } else if page == numberOfPages {
+        } else if page == .specific(numberOfPages) {
             // When we've got a full page but we're not sure there's another, just reload. The next page arrow will light up if we've found more pages. This is pretty subtle and not at all ideal. (Though doing something like going to the next unread page is even more confusing!)
             nextPage = page
-        } else {
+        } else if case .specific(let pageNumber) = page {
             // Otherwise we know there's another page, so fire away.
-            nextPage = page + 1
+            nextPage = .specific(pageNumber + 1)
+        } else {
+            return
         }
         
         loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
@@ -623,11 +644,13 @@ final class PostsPageViewController: ViewController {
     }
     
     @objc fileprivate func loadPreviousPage(_ sender: UIKeyCommand) {
-        loadPage(page - 1, updatingCache: true, updatingLastReadPost: true)
+        guard case .specific(let pageNumber)? = page, pageNumber > 1 else { return }
+        loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
     }
     
     @objc fileprivate func loadNextPage(_ sender: UIKeyCommand) {
-        loadPage(page + 1, updatingCache: true, updatingLastReadPost: true)
+        guard case .specific(let pageNumber)? = page else { return }
+        loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
     }
     
     @objc fileprivate func goToParentForum() {
@@ -756,7 +779,7 @@ final class PostsPageViewController: ViewController {
             items.append(IconActionItem(.singleUsersPosts, block: {
                 let postsVC = PostsPageViewController(thread: self.thread, author: user)
                 postsVC.restorationIdentifier = "Just their posts"
-                postsVC.loadPage(1, updatingCache: true, updatingLastReadPost: true)
+                postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
                 self.navigationController?.pushViewController(postsVC, animated: true)
             }))
         }
@@ -817,8 +840,8 @@ final class PostsPageViewController: ViewController {
                 URLQueryItem(name: "threadid", value: self.thread.threadID),
                 URLQueryItem(name: "perpage", value: "40"),
             ]
-            if self.page > 1 {
-                queryItems.append(URLQueryItem(name: "pagenumber", value: "\(self.page)"))
+            if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
+                queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
             }
             components.queryItems = queryItems
             components.fragment = "post\(post.postID)"
@@ -925,7 +948,7 @@ final class PostsPageViewController: ViewController {
     }
     
     fileprivate func configureUserActivityIfPossible() {
-        guard page >= 1 && AwfulSettings.shared().handoffEnabled else {
+        guard case .specific? = page, AwfulSettings.shared().handoffEnabled else {
             userActivity = nil
             return
         }
@@ -935,10 +958,12 @@ final class PostsPageViewController: ViewController {
     }
     
     override func updateUserActivityState(_ activity: NSUserActivity) {
+        guard case .specific(let pageNumber)? = page else { return }
+
         activity.title = thread.title
         activity.addUserInfoEntries(from: [
             Handoff.InfoThreadIDKey: thread.threadID,
-            Handoff.InfoPageKey: page,
+            Handoff.InfoPageKey: pageNumber,
             ])
         
         if let author = author {
@@ -954,9 +979,7 @@ final class PostsPageViewController: ViewController {
             URLQueryItem(name: "threadid", value: thread.threadID),
             URLQueryItem(name: "perpage", value: "\(40)"),
         ]
-        if page >= 1 {
-            queryItems.append(URLQueryItem(name: "pagenumber", value: "\(page)"))
-        }
+        queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
         if let author = author {
             queryItems.append(URLQueryItem(name: "userid", value: author.userID))
         }
@@ -1091,7 +1114,8 @@ final class PostsPageViewController: ViewController {
         messageViewController?.delegate = self
         
         hiddenPosts = coder.decodeInteger(forKey: Keys.HiddenPosts.rawValue)
-        page = coder.decodeInteger(forKey: Keys.Page.rawValue)
+        let page = ThreadPage.specific(coder.decodeInteger(forKey: Keys.Page.rawValue))
+        self.page = page
         loadPage(page, updatingCache: false, updatingLastReadPost: true)
         if posts.isEmpty {
             loadPage(page, updatingCache: true, updatingLastReadPost: true)
@@ -1244,11 +1268,11 @@ extension PostsPageViewController {
             UIKeyCommand(input: UIKeyInputDownArrow, modifierFlags: .command, action: #selector(scrollToBottom(_:)), discoverabilityTitle: "Scroll to Bottom"),
         ]
         
-        if page > 1 {
+        if case .specific(let pageNumber)? = page, pageNumber > 1 {
             keyCommands.append(UIKeyCommand(input: "[", modifierFlags: .command, action: #selector(loadPreviousPage), discoverabilityTitle: "Previous Page"))
         }
         
-        if page < numberOfPages {
+        if case .specific(let pageNumber)? = page, pageNumber < numberOfPages {
             keyCommands.append(UIKeyCommand(input: "]", modifierFlags: .command, action: #selector(loadNextPage), discoverabilityTitle: "Next Page"))
         }
         

@@ -7,8 +7,5 @@
 FOUNDATION_EXPORT double AwfulCoreVersionNumber;
 FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
 
-// Model
-#import <AwfulCore/AwfulThreadPage.h>
-
 // Scraping
 #import <AwfulCore/AwfulForm.h>

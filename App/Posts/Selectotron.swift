@@ -23,12 +23,12 @@ final class Selectotron : ViewController {
     }
     
     @IBAction func firstPostButtonTapped() {
-        dismissAndLoadPage(1)
+        dismissAndLoadPage(.first)
     }
     
     @IBAction func jumpButtonTapped() {
-        let page = picker.selectedRow(inComponent: 0) + 1
-        dismissAndLoadPage(page)
+        let pageNumber = picker.selectedRow(inComponent: 0) + 1
+        dismissAndLoadPage(.specific(pageNumber))
     }
     
     @IBAction func lastPostButtonTapped() {
@@ -36,7 +36,7 @@ final class Selectotron : ViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    fileprivate func dismissAndLoadPage(_ page: Int) {
+    fileprivate func dismissAndLoadPage(_ page: ThreadPage) {
         postsViewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
         dismiss(animated: true, completion: nil)
     }
@@ -70,19 +70,18 @@ final class Selectotron : ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let page = postsViewController.page
-        switch page {
-        case AwfulThreadPage.last.rawValue:
+        switch postsViewController.page {
+        case .last?:
             selectedPage = picker.numberOfRows(inComponent: 0)
-        case AwfulThreadPage.nextUnread.rawValue, AwfulThreadPage.none.rawValue:
+        case .specific(let pageNumber)?:
+            selectedPage = pageNumber
+        case .nextUnread?, nil:
             break
-        default:
-            selectedPage = page
         }
     }
     
     public func updateJumpButtonTitle() {
-        let title = selectedPage == postsViewController.page ? "Reload" : "Jump"
+        let title = .specific(selectedPage) == postsViewController.page ? "Reload" : "Jump"
         jumpButton.setTitle(title, for: .normal)
     }
     

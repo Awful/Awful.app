@@ -526,7 +526,7 @@ public final class ForumsClient {
      - Parameter writtenBy: A `User` whose posts should be the only ones listed. If `nil`, posts from all authors are listed.
      - Parameter updateLastReadPost: If `true`, the "last read post" marker on the Forums is updated to include the posts loaded on the page (which is probably what you want). If `false`, the next time the user asks for "next unread post" they'll get the same answer again.
      */
-    public func listPosts(in thread: AwfulThread, writtenBy author: User?, page: Int, updateLastReadPost: Bool)
+    public func listPosts(in thread: AwfulThread, writtenBy author: User?, page: ThreadPage, updateLastReadPost: Bool)
         -> (promise: Promise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)>, cancellable: Cancellable)
     {
         guard
@@ -541,12 +541,12 @@ public final class ForumsClient {
             "perpage": "40"]
 
         switch page {
-        case AwfulThreadPage.nextUnread.rawValue:
+        case .nextUnread:
             parameters["goto"] = "newpost"
-        case AwfulThreadPage.last.rawValue:
+        case .last:
             parameters["goto"] = "lastpost"
-        default:
-            parameters["pagenumber"] = "\(page)"
+        case .specific(let pageNumber):
+            parameters["pagenumber"] = "\(pageNumber)"
         }
 
         if !updateLastReadPost {
@@ -588,7 +588,7 @@ public final class ForumsClient {
 
         let firstUnreadPostIndex = promise
             .then(on: .global()) { data, response -> Int? in
-            guard page == AwfulThreadPage.nextUnread.rawValue else { return nil }
+            guard case .nextUnread = page else { return nil }
             guard let fragment = response.url?.fragment, !fragment.isEmpty else { return nil }
 
             let scanner = Scanner.makeForScraping(fragment)
@@ -833,7 +833,7 @@ public final class ForumsClient {
      - Parameter postID: The post's ID. Specified directly in case no such post exists, which would make for a useless `Post`.
      - Returns: The promise of a post (with its `thread` set) and the page containing the post (may be `AwfulThreadPage.last`).
      */
-    public func locatePost(id postID: String) -> Promise<(post: Post, page: Int)> {
+    public func locatePost(id postID: String) -> Promise<(post: Post, page: ThreadPage)> {
         guard let mainContext = managedObjectContext else {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
@@ -883,21 +883,21 @@ public final class ForumsClient {
         }
 
         return redirectURL.promise
-            .then(on: .global()) { url -> (threadID: String, page: Int) in
+            .then(on: .global()) { url -> (threadID: String, page: ThreadPage) in
                 guard
                     let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
                     let threadID = components.queryItems?.first(where: { $0.name == "threadid" })?.value,
                     !threadID.isEmpty,
                     let rawPagenumber = components.queryItems?.first(where: { $0.name == "pagenumber" })?.value,
-                    let pagenumber = Int(rawPagenumber) else
+                    let pageNumber = Int(rawPagenumber) else
                 {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "The thread ID or page number could not be found"])
                 }
 
-                return (threadID: threadID, page: pagenumber)
+                return (threadID: threadID, page: .specific(pageNumber))
             }
-            .then(on: mainContext) { parsed, context -> (post: Post, page: Int) in
+            .then(on: mainContext) { parsed, context -> (post: Post, page: ThreadPage) in
                 let (threadID: threadID, page: page) = parsed
                 let postKey = PostKey(postID: postID)
                 let threadKey = ThreadKey(threadID: threadID)
