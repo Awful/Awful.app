@@ -337,7 +337,7 @@ fileprivate func wrapSelectionInTag(_ tagspec: NSString) -> (_ tree: Composition
     }
 }
 
-fileprivate func isPickerAvailable(_ sourceType: UIImagePickerControllerSourceType) -> (Void) -> Bool {
+fileprivate func isPickerAvailable(_ sourceType: UIImagePickerControllerSourceType) -> () -> Bool {
     return {
         return UIImagePickerController.isSourceTypeAvailable(sourceType)
     }

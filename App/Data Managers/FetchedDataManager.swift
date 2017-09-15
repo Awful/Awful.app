@@ -62,5 +62,5 @@ final class FetchedDataManager<Object: NSManagedObject>: NSObject, NSFetchedResu
 }
 
 protocol FetchedDataManagerDelegate: class {
-    func dataManagerDidChangeContent<Object: NSManagedObject>(_ dataManager: FetchedDataManager<Object>)
+    func dataManagerDidChangeContent<Object>(_ dataManager: FetchedDataManager<Object>)
 }

@@ -71,7 +71,7 @@ private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
         hash = url.pathComponents[1]
     }
     guard hash.utf8.count >= 2 else { return nil }
-    guard let hashPrefix = String(hash.utf8[hash.utf8.startIndex..<hash.utf8.index(hash.utf8.startIndex, offsetBy: 2)]) else { return nil }
+    guard let hashPrefix = String(hash.utf8[..<hash.utf8.index(hash.utf8.startIndex, offsetBy: 2)]) else { return nil }
     var pathExtension = url.pathExtension
     if pathExtension.caseInsensitiveCompare("jpeg") == .orderedSame {
         pathExtension = "jpg"

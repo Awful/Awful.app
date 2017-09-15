@@ -164,7 +164,7 @@ final class ForumTableViewDataSource: NSObject, UITableViewDataSource, FetchedDa
     
     // MARK: FetchedDataManagerDelegate
     
-    func dataManagerDidChangeContent<Object: NSManagedObject>(_ dataManager: FetchedDataManager<Object>) {
+    func dataManagerDidChangeContent<Object>(_ dataManager: FetchedDataManager<Object>) {
         reloadModels()
     }
     

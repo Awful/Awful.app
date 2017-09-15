@@ -70,7 +70,7 @@ void StopGifAutoplay(HTMLDocument *document)
                 NSMutableOrderedSet *imgSiblings = [img.parentNode mutableChildren];
                 if ([imgParent.tagName isEqualToString:@"a"]) {
                     NSURL *linkUrl = [NSURL URLWithString:imgParent[@"href"]];
-                    HTMLElement *externalLink = [[HTMLElement alloc] initWithTagName:@"a" attributes:@{@"href": linkUrl}];
+                    HTMLElement *externalLink = [[HTMLElement alloc] initWithTagName:@"a" attributes:@{@"href": linkUrl.absoluteString ?: @""}];
                     externalLink.textContent = linkUrl.absoluteString;
                     [imgSiblings insertObject:externalLink atIndex:[imgSiblings indexOfObject:img]];
                     
