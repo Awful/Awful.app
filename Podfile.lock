@@ -60,16 +60,16 @@ PODS:
     - OMGHTTPURLRQ/FormURLEncode
     - OMGHTTPURLRQ/UserAgent
   - OMGHTTPURLRQ/UserAgent (3.2.2)
-  - PromiseKit (4.1.7):
-    - PromiseKit/Foundation (= 4.1.7)
-    - PromiseKit/QuartzCore (= 4.1.7)
-    - PromiseKit/UIKit (= 4.1.7)
-  - PromiseKit/CorePromise (4.1.7)
-  - PromiseKit/Foundation (4.1.7):
+  - PromiseKit (4.4.0):
+    - PromiseKit/Foundation (= 4.4.0)
+    - PromiseKit/QuartzCore (= 4.4.0)
+    - PromiseKit/UIKit (= 4.4.0)
+  - PromiseKit/CorePromise (4.4.0)
+  - PromiseKit/Foundation (4.4.0):
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.1.7):
+  - PromiseKit/QuartzCore (4.4.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.1.7):
+  - PromiseKit/UIKit (4.4.0):
     - PromiseKit/CorePromise
   - PSMenuItem (1.0.0)
   - PullToRefresher (1.4.0)
@@ -126,7 +126,7 @@ SPEC CHECKSUMS:
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   OMGHTTPURLRQ: edb14c7d28add69226b79d826f930805927a0ffa
-  PromiseKit: 779f2e41faf62d854e7593026ddbcb0bb5c5002d
+  PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   PullToRefresher: c4629a459f305c14a66d35f52c2feeaccf85c49e
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
