@@ -14,6 +14,8 @@ import UIKit
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate(set) static var instance: AppDelegate!
+
+    private var announcementListRefresher: AnnouncementListRefresher?
     fileprivate var dataStore: DataStore!
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
     var window: UIWindow?
@@ -77,7 +79,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
         
         showPromptIfLoginCookieExpiresSoon()
-        
+
+        announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         NewMessageChecker.sharedChecker.refreshIfNecessary()
         PostsViewExternalStylesheetLoader.sharedLoader.refreshIfNecessary()
         
@@ -268,10 +271,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate lazy var loginViewController: LoginViewController! = {
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
-            guard let stack = self?.rootViewControllerStack else { return }
-            self?.setRootViewController(stack.rootViewController, animated: true, completion: { [weak self] in
-                self?.rootViewControllerStack.didAppear()
-                self?.loginViewController = nil
+            guard let sself = self else { return }
+            sself.setRootViewController(sself.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
+                guard let sself = self else { return }
+                sself.rootViewControllerStack.didAppear()
+                sself.loginViewController = nil
             })
         }
         return loginVC

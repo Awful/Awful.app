@@ -207,12 +207,12 @@ public final class ForumsClient {
             parameters["posticon"] = threadTagID
         }
 
-        return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
-            .promise
+        return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters).promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global(), execute: ThreadListScrapeResult.init)
             .then(on: backgroundContext) { result, context -> [NSManagedObjectID] in
                 let threads = try result.upsert(into: context)
+                _ = try result.upsertAnnouncements(into: context)
 
                 if
                     page == 1,
@@ -486,6 +486,38 @@ public final class ForumsClient {
         }
 
         return (html, cancellable)
+    }
+
+    // MARK: Announcements
+
+    /**
+     Populates already-scraped announcements with their `bodyHTML`.
+     
+     - Note: Announcements must first be scraped as part of a thread list for this method to do anything.
+     */
+    public func listAnnouncements() -> (promise: Promise<[Announcement]>, cancellable: Cancellable) {
+        guard
+            let backgroundContext = backgroundManagedObjectContext,
+            let mainContext = managedObjectContext else
+        {
+            return (promise: Promise(error: PromiseError.missingManagedObjectContext), cancellable: Operation())
+        }
+
+        let (promise, cancellable) = fetch(method: .get, urlString: "announcement.php", parameters: ["forumid": "1"])
+
+        let result = promise
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global(), execute: AnnouncementListScrapeResult.init)
+            .then(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
+                let announcements = try scrapeResult.upsert(into: context)
+                try context.save()
+                return announcements.map { $0.objectID }
+            }
+            .then(on: mainContext) { objectIDs, context -> [Announcement] in
+                return objectIDs.flatMap { context.object(with: $0) as? Announcement }
+        }
+
+        return (promise: result, cancellable: cancellable)
     }
 
     // MARK: Posts

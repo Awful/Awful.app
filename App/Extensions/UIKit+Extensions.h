@@ -10,16 +10,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, AwfulUITextSmartQuotesType) {
+    AwfulUITextSmartQuotesTypeDefault,
+    AwfulUITextSmartQuotesTypeNo,
+    AwfulUITextSmartQuotesTypeYes,
+};
+
 @interface UITextView (AwfulExtensions)
 
 /**
- Executes `block` with smart quotes turned off, then restores `smartQuotesType` to its original value.
-
- `smartQuotesType` is introduced in iOS 11 but we're still building with the iOS 10 SDK, yet smart quotes wreak havoc with BBcode on iOS 11 beta. So here we do runtime magic to temporarily turn off smart quotes if we're on iOS 11, and if we're on iOS 10 we simply execute `block`.
+ Sets smart quotes type on iOS 11. Does nothing on iOS 10.
  
- TODO: If you're building with the iOS 11 SDK and this code still exists, please delete it and use an `if @available` in Swift.
+ @todo If you're building with the iOS 11 SDK and this code still exists, please delete it and use an `if @available` in Swift.
  */
-- (void)withoutSmartQuotes:(__attribute__((noescape)) void (^)(UITextView *textView))block;
+- (void)setSmartQuotesType_awful_iOS10Safe:(AwfulUITextSmartQuotesType)smartQuotesType;
 
 @end
 

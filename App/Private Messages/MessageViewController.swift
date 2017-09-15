@@ -33,7 +33,7 @@ final class MessageViewController: ViewController {
     }
     
     fileprivate lazy var replyButtonItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .reply, target: self, action: #selector(didTapReplyButtonItem))
+        return UIBarButtonItem(image: UIImage(named: "reply"), style: .plain, target: self, action: #selector(didTapReplyButtonItem))
     }()
     
     override var title: String? {
