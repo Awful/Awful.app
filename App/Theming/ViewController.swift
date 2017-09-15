@@ -118,8 +118,8 @@ class TableViewController: UITableViewController {
     }
     
     deinit {
-        if isViewLoaded, let pullToRefresh = tableView.topPullToRefresh {
-            tableView.removePullToRefresh(pullToRefresh)
+        if isViewLoaded {
+            tableView.removePullToRefresh(at: .top)
         }
     }
     
@@ -137,8 +137,8 @@ class TableViewController: UITableViewController {
             if pullToRefreshBlock != nil {
                 createRefreshControl()
             } else {
-                if isViewLoaded, let pullToRefresh = tableView.topPullToRefresh {
-                    tableView.removePullToRefresh(pullToRefresh)
+                if isViewLoaded {
+                    tableView.removePullToRefresh(at: .top)
                 }
             }
         }

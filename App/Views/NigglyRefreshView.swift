@@ -54,7 +54,7 @@ extension NigglyRefreshView {
             self.view = view
         }
         
-        func animateState(_ state: State) {
+        func animate(_ state: State) {
             switch state {
             case .initial:
                 view.spriteSheetView.startAnimating()
