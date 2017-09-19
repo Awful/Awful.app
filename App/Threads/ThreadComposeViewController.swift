@@ -149,11 +149,11 @@ final class ThreadComposeViewController: ComposeTextViewController {
         
         updatingThreadTags = true
         _ = ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
-            .then { [weak self] (form) -> Void in
+            .then { [weak self] tags -> Void in
                 guard let sself = self else { return }
                 sself.updatingThreadTags = false
-                sself.availableThreadTags = form.threadTags
-                sself.availableSecondaryThreadTags = form.secondaryThreadTags
+                sself.availableThreadTags = tags.primary
+                sself.availableSecondaryThreadTags = tags.secondary
                 guard let tags = sself.availableThreadTags else { return }
 
                 let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.flatMap { $0.imageName }

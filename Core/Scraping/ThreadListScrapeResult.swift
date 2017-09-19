@@ -9,7 +9,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
     public let announcements: [Announcement]
     public let breadcrumbs: ForumBreadcrumbsScrapeResult?
     public let canPostNewThread: Bool
-    public let filterableIcons: [Icon]
+    public let filterableIcons: [PostIcon]
     public let forum: ForumID?
     public let isBookmarkedThreadsPage: Bool
     public let pageCount: Int?
@@ -24,16 +24,11 @@ public struct ThreadListScrapeResult: ScrapeResult {
         public let title: String
     }
 
-    public struct Icon {
-        public let id: String
-        public let url: URL?
-    }
-
     public struct Thread {
         public let author: UserID?
         public let authorUsername: String
         public let bookmark: Bookmark
-        public let icon: Icon?
+        public let icon: PostIcon?
         public let id: ThreadID
         public let isClosed: Bool
         public let isSticky: Bool
@@ -47,7 +42,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
         public let replyCount: Int?
 
         /// A forum-specific icon alongside the usual icon. Not all forums include this. e.g. Ask/Tell has "Ask" and "Tell" secondary tags.
-        public let secondaryIcon: Icon?
+        public let secondaryIcon: PostIcon?
 
         public let title: String
 
@@ -84,7 +79,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
         filterableIcons = body
             .firstNode(matchingSelector: "div.thread_tags")
             .map { $0.nodes(matchingSelector: "a[href*='posticon']") }
-            .map { links in return links.flatMap { try? Icon($0) } }
+            .map { links in return links.flatMap { try? PostIcon($0) } }
             ?? []
 
         forum = (body["data-forum"] as String?)
@@ -131,7 +126,7 @@ private extension ThreadListScrapeResult.Announcement {
     }
 }
 
-private extension ThreadListScrapeResult.Icon {
+private extension PostIcon {
     init(_ html: HTMLElement) throws {
         let idFromLink = html
             .firstNode(matchingSelector: "a[href]")
@@ -209,7 +204,7 @@ private extension ThreadListScrapeResult.Thread {
 
         let iconImage = html.firstNode(matchingSelector: "td.icon")?.firstNode(matchingSelector: "img")
             ?? ratingCell?.firstNode(matchingSelector: "img[src *= '/rate/reviews']")
-        icon = iconImage.flatMap { try? ThreadListScrapeResult.Icon($0) }
+        icon = iconImage.flatMap { try? PostIcon($0) }
 
         isClosed = html.hasClass("closed")
 
@@ -256,7 +251,7 @@ private extension ThreadListScrapeResult.Thread {
 
         secondaryIcon = html.firstNode(matchingSelector: "td.icon2")
             .flatMap { $0.firstNode(matchingSelector: "img") }
-            .flatMap { try? ThreadListScrapeResult.Icon($0) }
+            .flatMap { try? PostIcon($0) }
 
         title = titleCell
             .flatMap { $0.firstNode(matchingSelector: "a.thread_title") }

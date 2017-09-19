@@ -325,8 +325,11 @@ public final class ForumsClient {
             .promise.asVoid()
     }
 
-    public func listAvailablePostIcons(inForumIdentifiedBy forumID: String) -> Promise<AwfulForm> {
-        guard let mainContext = managedObjectContext else {
+    public func listAvailablePostIcons(inForumIdentifiedBy forumID: String) -> Promise<(primary: [ThreadTag], secondary: [ThreadTag])> {
+        guard
+            let backgroundContext = backgroundManagedObjectContext,
+            let mainContext = managedObjectContext else
+        {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
@@ -337,19 +340,17 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "newthread.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: mainContext) { parsed, context -> AwfulForm in
-                guard
-                    let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']"),
-                    let form = AwfulForm(element: htmlForm) else
-                {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find new thread form"])
-                }
-
-                form.scrapeThreadTags(into: context)
+            .then(on: .global(), execute: PostIconListScrapeResult.init)
+            .then(on: backgroundContext) { parsed, context -> (primary: [NSManagedObjectID], secondary: [NSManagedObjectID]) in
+                let managed = try parsed.upsert(into: context)
                 try context.save()
-
-                return form
+                return (primary: managed.primary.map { $0.objectID },
+                        secondary: managed.secondary.map { $0.objectID })
+            }
+            .then(on: mainContext) { objectIDs, context -> (primary: [ThreadTag], secondary: [ThreadTag]) in
+                return (
+                    primary: objectIDs.primary.flatMap { context.object(with: $0) as? ThreadTag },
+                    secondary: objectIDs.secondary.flatMap { context.object(with: $0) as? ThreadTag })
         }
     }
 
@@ -1166,25 +1167,11 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
+            .then(on: .global(), execute: PostIconListScrapeResult.init)
             .then(on: backgroundContext) { parsed, context -> [NSManagedObjectID] in
-                let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']")
-                let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                form?.scrapeThreadTags(into: context)
-                guard let threadTags = form?.threadTags else {
-                    let description: String
-                    if form == nil {
-                        description = "Could not find new private message form"
-                    }
-                    else {
-                        description = "Failed scraping thread tags from new private message form"
-                    }
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: description])
-                }
-
+                let managed = try parsed.upsert(into: context)
                 try context.save()
-
-                return threadTags.map { $0.objectID }
+                return managed.primary.map { $0.objectID }
             }
             .then(on: mainContext) { managedObjectIDs, context -> [ThreadTag] in
                 return managedObjectIDs.flatMap { context.object(with: $0) as? ThreadTag }
