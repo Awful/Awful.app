@@ -94,6 +94,7 @@
 		1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */; };
 		1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */; };
 		1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */; };
+		1C19CA351F6D56520060F4DE /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA341F6D56520060F4DE /* Form.swift */; };
 		1C19CA461F70A2700060F4DE /* PostIconListScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA451F70A2700060F4DE /* PostIconListScrapeResult.swift */; };
 		1C19CA481F70AB0A0060F4DE /* PostIconListScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA471F70AB0A0060F4DE /* PostIconListScrapingTests.swift */; };
 		1C19CA4A1F70AD740060F4DE /* PostIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA491F70AD740060F4DE /* PostIcon.swift */; };
@@ -564,6 +565,7 @@
 		1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposeViewController.swift; sourceTree = "<group>"; };
 		1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextViewController.swift; sourceTree = "<group>"; };
 		1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPreviewViewController.swift; sourceTree = "<group>"; };
+		1C19CA341F6D56520060F4DE /* Form.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
 		1C19CA451F70A2700060F4DE /* PostIconListScrapeResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostIconListScrapeResult.swift; sourceTree = "<group>"; };
 		1C19CA471F70AB0A0060F4DE /* PostIconListScrapingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostIconListScrapingTests.swift; sourceTree = "<group>"; };
 		1C19CA491F70AD740060F4DE /* PostIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostIcon.swift; sourceTree = "<group>"; };
@@ -1028,6 +1030,7 @@
 				1C35FB7A1832A5A900B52724 /* AwfulForm.h */,
 				1C35FB7B1832A5A900B52724 /* AwfulForm.m */,
 				1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */,
+				1C19CA341F6D56520060F4DE /* Form.swift */,
 				1CF7AB931EDB713C0089EF0C /* ForumBreadcrumbsScrapeResult.swift */,
 				1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */,
 				1CF0F8E11ED8F43400C16099 /* Helpers.swift */,
@@ -2639,6 +2642,7 @@
 				1CF7AB921EDB6C340089EF0C /* PostsPageScrapeResult.swift in Sources */,
 				1CF7AB981EDD0F4D0089EF0C /* PostPersistence.swift in Sources */,
 				1C07B8B01EF5848A0044B8AF /* ThreadListScrapeResult.swift in Sources */,
+				1C19CA351F6D56520060F4DE /* Form.swift in Sources */,
 				1C14A4B91A94C19E0045DDF7 /* User.swift in Sources */,
 				1C19CA4A1F70AD740060F4DE /* PostIcon.swift in Sources */,
 				1CF0F8EF1ED9E20A00C16099 /* StandardErrorScrapeResult.swift in Sources */,

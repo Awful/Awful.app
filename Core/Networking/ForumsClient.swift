@@ -745,22 +745,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> String in
-                let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']")
-                let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                guard let message = form?.allParameters?["message"] else {
-                    if form != nil {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Could not find post contents in edit post form"])
-                    }
-                    else {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Could not find edit post form"])
-                    }
-                }
-
-                return message
-        }
+            .then(on: .global(), execute: findMessageText)
     }
 
     public func quoteBBcodeContents(of post: Post) -> Promise<String> {
@@ -771,27 +756,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "newreply.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> String in
-                guard
-                    let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']"),
-                    let form = AwfulForm(element: htmlForm),
-                    let bbcode = form.allParameters?["message"] else
-                {
-                    if
-                        let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
-                        specialMessage.textContent.contains("permission")
-                    {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
-                            NSLocalizedDescriptionKey: "You're not allowed to post in this thread"])
-                    }
-                    else {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Failed to quote post; could not find form"])
-                    }
-                }
-
-                return bbcode
-        }
+            .then(on: .global(), execute: findMessageText)
     }
 
     public func edit(_ post: Post, bbcode: String) -> Promise<Void> {
@@ -1026,7 +991,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "banlist.php", parameters: parameters)
             .promise
             .then(on: .global()) { data, response -> [LepersColonyScrapeResult.Punishment] in
-                let (document, url) = try parseHTML(data: data, response: response)
+                let (document: document, url: url) = try parseHTML(data: data, response: response)
                 let result = try LepersColonyScrapeResult(document, url: url)
                 return result.punishments
         }
@@ -1216,14 +1181,16 @@ extension Operation: Cancellable {}
 extension URLSessionTask: Cancellable {}
 
 
-private func parseHTML(data: Data, response: URLResponse) throws -> (document: HTMLDocument, url: URL?) {
+private typealias ParsedDocument = (document: HTMLDocument, url: URL?)
+
+private func parseHTML(data: Data, response: URLResponse) throws -> ParsedDocument {
     let contentType: String? = {
         guard let response = response as? HTTPURLResponse else { return nil }
         return response.allHeaderFields["Content-Type"] as? String
     }()
     let document = HTMLDocument(data: data, contentTypeHeader: contentType)
     try checkServerErrors(document)
-    return (document, response.url)
+    return (document: document, url: response.url)
 }
 
 private func parseJSONDict(data: Data, response: URLResponse) throws -> [String: Any] {
@@ -1283,4 +1250,13 @@ private func checkServerErrors(_ document: HTMLDocument) throws {
     else if let result = try? StandardErrorScrapeResult(document, url: nil) {
         throw ServerError.standard(title: result.title, message: result.message)
     }
+}
+
+
+private func findMessageText(in parsed: ParsedDocument) throws -> String {
+    let form = try Form(parsed.document.requiredNode(matchingSelector: "form[name='vbform']"), url: parsed.url)
+    guard let message = form.controls.first(where: { $0.name == "message" }) else {
+        throw ScrapingError.missingExpectedElement("textarea[name = 'message']")
+    }
+    return (message.value as NSString).html_stringByUnescapingHTML
 }
