@@ -109,7 +109,7 @@ desc "Increments the minor version number by one"
 desc ""
 desc "Options:"
 desc "  major:true – instead increments the major number by one and sets minor to 0"
-lane :bump_version do |options|
+private_lane :bump_version do |options|
   
   major, minor = get_version_number_components
   
@@ -126,6 +126,18 @@ lane :bump_version do |options|
   commit_version_bump(
     message: "Bump version to #{new_version}",
     xcodeproj: "Xcode/Awful.xcodeproj") # absolute path aka XCODE_PROJECT doesn't work here, gj
+end
+
+
+desc "Increments the major version number by one and sets the minor version to 0"
+lane :bump_major_version do
+  bump_version(major: true)
+end
+
+
+desc "Increments the minor version number by one"
+lane :bump_minor_version do
+  bump_version
 end
 
 
