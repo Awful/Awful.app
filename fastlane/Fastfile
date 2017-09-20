@@ -45,9 +45,9 @@ lane :beta do |options|
   end
 
   xcargs = []  
-  crashlytics_api_token = ENV["CRASHLYTICS_API_TOKEN"]
-  if crashlytics_api_token
-    xcargs << %Q[CRASHLYTICS_API_TOKEN="#{crashlytics_api_token}"]
+  crashlytics_api_key = ENV["CRASHLYTICS_API_KEY"]
+  if crashlytics_api_key
+    xcargs << %Q[CRASHLYTICS_API_KEY="#{crashlytics_api_key}"]
   end
   
   app_group_entitlements
@@ -60,8 +60,8 @@ lane :beta do |options|
     output_name: "Awful",
     xcargs: xcargs.join(" "))
   
-  if crashlytics_api_token
-    upload_symbols_to_crashlytics
+  if crashlytics_api_key
+    upload_symbols_to_crashlytics(api_token: crashlytics_api_key)
   end
   
   unless options[:skip_testflight]

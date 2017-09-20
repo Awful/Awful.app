@@ -44,7 +44,7 @@
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>$(CRASHLYTICS_API_TOKEN)</string>
+		<string>$(CRASHLYTICS_API_KEY)</string>
 		<key>Kits</key>
 		<array>
 			<dict>
