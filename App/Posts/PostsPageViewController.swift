@@ -1096,7 +1096,9 @@ final class PostsPageViewController: ViewController {
         super.encodeRestorableState(with: coder)
         
         coder.encode(thread.objectKey, forKey: Keys.ThreadKey.rawValue)
-        coder.encode(page, forKey: Keys.Page.rawValue)
+        if let page = page {
+            coder.encode(page.nsCoderIntValue, forKey: Keys.Page.rawValue)
+        }
         coder.encode(author?.objectKey, forKey: Keys.AuthorUserKey.rawValue)
         coder.encode(hiddenPosts, forKey: Keys.HiddenPosts.rawValue)
         coder.encode(messageViewController, forKey: Keys.MessageViewController.rawValue)
@@ -1114,7 +1116,13 @@ final class PostsPageViewController: ViewController {
         messageViewController?.delegate = self
         
         hiddenPosts = coder.decodeInteger(forKey: Keys.HiddenPosts.rawValue)
-        let page = ThreadPage.specific(coder.decodeInteger(forKey: Keys.Page.rawValue))
+        let page: ThreadPage = {
+            guard
+                coder.containsValue(forKey: Keys.Page.rawValue),
+                let page = ThreadPage(nsCoderIntValue: coder.decodeInteger(forKey: Keys.Page.rawValue))
+                else { return .specific(1) }
+            return page
+        }()
         self.page = page
         loadPage(page, updatingCache: false, updatingLastReadPost: true)
         if posts.isEmpty {
@@ -1132,6 +1140,32 @@ final class PostsPageViewController: ViewController {
         super.applicationFinishedRestoringState()
         
         restoringState = false
+    }
+}
+
+private extension ThreadPage {
+    init?(nsCoderIntValue: Int) {
+        switch nsCoderIntValue {
+        case -2:
+            self = .last
+        case -1:
+            self = .nextUnread
+        case 1...Int.max:
+            self = .specific(nsCoderIntValue)
+        default:
+            return nil
+        }
+    }
+
+    var nsCoderIntValue: Int {
+        switch self {
+        case .last:
+            return -2
+        case .nextUnread:
+            return -1
+        case .specific(let pageNumber):
+            return pageNumber
+        }
     }
 }
 
