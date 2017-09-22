@@ -14,6 +14,24 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIcons</key>
 	<dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>v</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+                    <string>AppIcon-v-20x20</string>
+                    <string>AppIcon-v-29x29</string>
+                    <string>AppIcon-v-40x40</string>
+                    <string>AppIcon-v-60x60</string>
+                    <string>AppIcon-v-76x76</string>
+                    <string>AppIcon-v-83.5x83.5</string>
+                    <string>AppIcon-v-1024x1024</string>
+                </array>
+                <key>UIPrerenderedIcon</key>
+                <false/>
+			</dict>
+		</dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
 			<key>CFBundleIconFiles</key>
