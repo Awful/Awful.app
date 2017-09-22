@@ -12,6 +12,24 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>AppIcon-Bars-20x20</string>
+				<string>AppIcon-Bars-29x29</string>
+				<string>AppIcon-Bars-40x40</string>
+				<string>AppIcon-Bars-60x60</string>
+				<string>AppIcon-Bars-76x76</string>
+				<string>AppIcon-Bars-83.5x83.5</string>
+				<string>AppIcon-Bars-1024x1024</string>
+			</array>
+			<key>UIPrerenderedIcon</key>
+			<false/>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
