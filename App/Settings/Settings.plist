@@ -318,6 +318,21 @@
                 </dict>
 			</array>
 		</dict>
+        <dict>
+            <key>Title</key>
+            <string>App Icon</string>
+            <key>Explanation</key>
+            <string>Choose your favorite app icon.</string>
+            <key>Settings</key>
+            <array>
+                <dict>
+                    <key>Type</key>
+                    <string>Collection</string>
+                    <key>Key</key>
+                    <string>app_icon</string>
+                </dict>
+            </array>
+        </dict>
 		<dict>
 			<key>Title</key>
 			<string>Thank You</string>

@@ -106,6 +106,7 @@ final class SettingsViewController: TableViewController {
         
         tableView.separatorStyle = .singleLine
         tableView.register(UINib(nibName: "SettingsSliderCell", bundle: nil), forCellReuseIdentifier: SettingType.Slider.rawValue)
+        tableView.register(UINib(nibName: "IconTableViewCell", bundle: nil), forCellReuseIdentifier: SettingType.Collection.rawValue)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -133,6 +134,15 @@ final class SettingsViewController: TableViewController {
         return settings.count
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let setting = self.setting(at: indexPath)
+        if let typeString = setting["Type"] as? String, typeString == "Collection" {
+            return 120
+        } else {
+            return 44
+        }
+    }
+    
     fileprivate enum SettingType: String {
         case Immutable = "ImmutableSetting"
         case OnOff = "Switch"
@@ -141,6 +151,7 @@ final class SettingsViewController: TableViewController {
         case Disclosure = "Disclosure"
         case DisclosureDetail = "DisclosureDetail"
         case Slider = "Slider"
+        case Collection = "Collection"
         
         var cellStyle: UITableViewCellStyle {
             switch self {
@@ -152,6 +163,10 @@ final class SettingsViewController: TableViewController {
             
             case .Slider:
                 return .default
+            
+            case .Collection:
+                return .default
+            
             }
         }
         
@@ -177,6 +192,8 @@ final class SettingsViewController: TableViewController {
             }
         } else if let typeString = setting["Type"] as? String, typeString == "Slider" {
             settingType = .Slider
+        } else if let typeString = setting["Type"] as? String, typeString == "Collection" {
+            settingType = .Collection
         } else {
             settingType = .Immutable
         }
@@ -186,7 +203,8 @@ final class SettingsViewController: TableViewController {
             cell = dequeued
         } else if settingType == .Slider {
             cell = SettingsSliderCell(style:settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
-            
+        } else if settingType == .Collection {
+            cell = IconTableViewCell(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
         } else {
             cell = UITableViewCell(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
             switch settingType {
@@ -208,7 +226,7 @@ final class SettingsViewController: TableViewController {
                 cell.accessibilityTraits |= UIAccessibilityTraitButton
                 cell.accessoryType = .none
                 
-            case .Immutable, .Slider:
+            case .Immutable, .Slider, .Collection:
                 break
             }
         }
@@ -227,7 +245,7 @@ final class SettingsViewController: TableViewController {
             case .Immutable, .OnOff, .Disclosure, .Stepper, .Button:
                 cell.textLabel?.text = transformer.transformedValue(AwfulSettings.shared()) as? String
                 
-            case .Slider:
+            case .Slider, .Collection:
                 break
             }
         } else if setting["ShowValue"] as? Bool == true {
@@ -267,13 +285,17 @@ final class SettingsViewController: TableViewController {
             if slider.awful_setting == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
                 slider.addAwful_overridingSetting(AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String)
             }
-            
+        }
+        
+        if settingType == .Collection {
+            guard let collection = (cell as! IconTableViewCell).collection as UICollectionView? else { fatalError("setting should have collection view") }
+            collection.awful_setting = setting["Key"] as? String
         }
         switch settingType {
         case .Button, .Disclosure, .DisclosureDetail:
             cell.selectionStyle = .blue
             
-        case .Immutable, .OnOff, .Stepper, .Slider:
+        case .Immutable, .OnOff, .Stepper, .Slider, .Collection:
             cell.selectionStyle = .none
         }
         

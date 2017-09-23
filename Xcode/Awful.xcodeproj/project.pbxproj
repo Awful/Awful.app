@@ -351,6 +351,9 @@
 		2A28EF11810F46A1AA802F96 /* Pods_SmilieExtractor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */; };
 		7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */; };
 		7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */; };
+		7B1FF1291F76C3A3000B64DA /* IconTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1FF1271F76C3A3000B64DA /* IconTableViewCell.swift */; };
+		7B1FF12A1F76C3A3000B64DA /* IconTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B1FF1281F76C3A3000B64DA /* IconTableViewCell.xib */; };
+		7B1FF12C1F76E690000B64DA /* IconCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1FF12B1F76E690000B64DA /* IconCollectionViewLayout.swift */; };
 		7B502E011F222D7B00B1B305 /* platinum-member-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E001F222C5300B1B305 /* platinum-member-white.png */; };
 		7B502E021F222D7B00B1B305 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */; };
 		7B502E031F222D7B00B1B305 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */; };
@@ -887,6 +890,9 @@
 		7846FF6DDA37B81D34DE2AE5 /* Pods-Core.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Core.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Core/Pods-Core.release.xcconfig"; sourceTree = "<group>"; };
 		7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSliderCell.swift; sourceTree = "<group>"; };
 		7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsSliderCell.xib; sourceTree = "<group>"; };
+		7B1FF1271F76C3A3000B64DA /* IconTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconTableViewCell.swift; sourceTree = "<group>"; };
+		7B1FF1281F76C3A3000B64DA /* IconTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IconTableViewCell.xib; sourceTree = "<group>"; };
+		7B1FF12B1F76E690000B64DA /* IconCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconCollectionViewLayout.swift; sourceTree = "<group>"; };
 		7B502DFE1F2224B100B1B305 /* platinum-member-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@2x.png"; sourceTree = "<group>"; };
 		7B502DFF1F2224B100B1B305 /* platinum-member-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@3x.png"; sourceTree = "<group>"; };
 		7B502E001F222C5300B1B305 /* platinum-member-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white.png"; sourceTree = "<group>"; };
@@ -1557,6 +1563,9 @@
 				1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */,
 				7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */,
 				7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */,
+				7B1FF1271F76C3A3000B64DA /* IconTableViewCell.swift */,
+				7B1FF1281F76C3A3000B64DA /* IconTableViewCell.xib */,
+				7B1FF12B1F76E690000B64DA /* IconCollectionViewLayout.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2336,6 +2345,7 @@
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1C5B834B1F74B1F200BE7517 /* AppIcon-v-20x20@2x.png in Resources */,
+				7B1FF12A1F76C3A3000B64DA /* IconTableViewCell.xib in Resources */,
 				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
 				1C5B83301F74B1DD00BE7517 /* AppIcon-Bars-40x40.png in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
@@ -2915,6 +2925,7 @@
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
+				7B1FF1291F76C3A3000B64DA /* IconTableViewCell.swift in Sources */,
 				1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */,
 				1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */,
 				1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */,
@@ -2989,6 +3000,7 @@
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
 				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
+				7B1FF12C1F76E690000B64DA /* IconCollectionViewLayout.swift in Sources */,
 				1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */,
