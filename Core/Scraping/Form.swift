@@ -37,6 +37,9 @@ public struct Form: ScrapeResult {
         /// `<input type=checkbox>`. A missing `value` attribute results in a `value` of `"on"`.
         case checkbox(name: String, value: String, isChecked: Bool, isDisabled: Bool)
 
+        /// `<input type=file>` without a `value` attribute. Adding a `value` attribute turns it into a `Control.text`.
+        case file(name: String, isDisabled: Bool)
+
         /// `<input type=hidden>`
         case hidden(name: String, value: String, isDisabled: Bool)
 
@@ -61,6 +64,7 @@ public struct Form: ScrapeResult {
         public var isDisabled: Bool {
             switch self {
             case .checkbox(name: _, value: _, isChecked: _, isDisabled: let isDisabled),
+                 .file(name: _, isDisabled: let isDisabled),
                  .hidden(name: _, value: _, isDisabled: let isDisabled),
                  .radioButton(name: _, value: _, isChecked: _, isDisabled: let isDisabled),
                  .selectMany(name: _, value: _, isDisabled: let isDisabled, isSelected: _),
@@ -77,6 +81,7 @@ public struct Form: ScrapeResult {
         public var name: String {
             switch self {
             case .checkbox(name: let name, value: _, isChecked: _, isDisabled: _),
+                 .file(name: let name, isDisabled: _),
                  .hidden(name: let name, value: _, isDisabled: _),
                  .radioButton(name: let name, value: _, isChecked: _, isDisabled: _),
                  .selectMany(name: let name, value: _, isDisabled: _, isSelected: _),
@@ -100,6 +105,9 @@ public struct Form: ScrapeResult {
                  .text(name: _, value: let value, isDisabled: _),
                  .textarea(name: _, value: let value, isDisabled: _):
                 return value
+
+            case .file:
+                return ""
 
             case .submit(let button):
                 return button.value
@@ -226,6 +234,9 @@ private extension Form.Control {
                 value: element["value"] ?? "on",
                 isChecked: element["checked"] != nil,
                 isDisabled: isDisabled)]
+
+        case ("input", "file"?) where element["value"] == nil:
+            return [.file(name: name, isDisabled: isDisabled)]
 
         case ("input", _) where !name.isEmpty:
             return [.text(name: name, value: element["value"] ?? "", isDisabled: isDisabled)]

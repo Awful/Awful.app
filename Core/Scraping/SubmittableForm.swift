@@ -48,7 +48,7 @@ public final class SubmittableForm {
             case .checkbox, .radioButton, .selectMany, .selectOne, .text, .textarea:
                 break
 
-            case .hidden, .submit:
+            case .file, .hidden, .submit:
                 break
             }
         }
@@ -60,7 +60,7 @@ public final class SubmittableForm {
             switch control {
             case .text, .textarea:
                 return !control.isDisabled && control.name == name
-            case .checkbox, .hidden, .radioButton, .selectMany, .selectOne, .submit:
+            case .checkbox, .file, .hidden, .radioButton, .selectMany, .selectOne, .submit:
                 return false
             }
         }) else {
@@ -98,7 +98,7 @@ public final class SubmittableForm {
         case .radioButton, .selectOne:
             _select(value: value, for: name, allowsMultiple: false)
 
-        case .hidden, .submit, .text, .textarea:
+        case .file, .hidden, .submit, .text, .textarea:
             fatalError("controls of this type type should not make it this far: \(control)")
         }
     }
@@ -122,7 +122,7 @@ public final class SubmittableForm {
             selectedValues[name]?.remove(value)
         case .radioButton, .selectOne:
             break
-        case .hidden, .submit, .text, .textarea:
+        case .file, .hidden, .submit, .text, .textarea:
             fatalError("controls of this type type should not make it this far: \(control)")
         }
     }
@@ -140,6 +140,9 @@ public final class SubmittableForm {
                  .selectOne(name: let name, value: let value, isDisabled: _, isSelected: _):
                 guard selectedValues[name]?.contains(value) == true else { return [] }
                 return [(name: name, value: value)]
+
+            case .file:
+                return []
 
             case .hidden(name: let name, value: let value, isDisabled: _):
                 return [(name: name, value: value)]
@@ -179,7 +182,7 @@ private func isSelectable(name: String, value: String) -> (_ control: Form.Contr
         switch control {
         case .checkbox, .radioButton, .selectMany, .selectOne:
             return !control.isDisabled && control.name == name && control.value == value
-        case .hidden, .submit, .text, .textarea:
+        case .file, .hidden, .submit, .text, .textarea:
             return false
         }
     }
