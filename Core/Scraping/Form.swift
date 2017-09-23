@@ -196,6 +196,18 @@ public struct Form: ScrapeResult {
         submissionStringEncoding = scrapeSubmissionStringEncoding(document: html.document, form: form) ?? .utf8
         submissionURL = scrapeSubmissionURL(form["action"] ?? "")
     }
+
+    // MARK: - Helpers
+
+    /// - Returns: The first submit button whose `name` attribute equals `named`, or `nil` if no such button is found.
+    public func submitButton(named name: String) -> SubmitButton? {
+        for control in controls {
+            if case .submit(let button) = control, control.name == name {
+                return button
+            }
+        }
+        return nil
+    }
 }
 
 private extension Form.Control {

@@ -372,8 +372,8 @@ public final class ForumsClient {
 
             let form = SubmittableForm(formData.form)
 
-            form.enter(text: subject, for: "subject")
-            form.enter(text: bbcode, for: "message")
+            try form.enter(text: subject, for: "subject")
+            try form.enter(text: bbcode, for: "message")
 
             if
                 let objectID = threadTagObjectID,
@@ -382,7 +382,7 @@ public final class ForumsClient {
                 let icon = formData.postIcons.primaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == imageName }),
                 !formData.postIcons.selectedPrimaryIconFormName.isEmpty
             {
-                form.select(value: icon.id, for: formData.postIcons.selectedPrimaryIconFormName)
+                try form.select(value: icon.id, for: formData.postIcons.selectedPrimaryIconFormName)
             }
 
             if
@@ -392,18 +392,10 @@ public final class ForumsClient {
                 let icon = formData.postIcons.secondaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == imageName }),
                 !formData.postIcons.selectedSecondaryIconFormName.isEmpty
             {
-                form.select(value: icon.id, for: formData.postIcons.selectedSecondaryIconFormName)
+                try form.select(value: icon.id, for: formData.postIcons.selectedSecondaryIconFormName)
             }
 
-            let submitButton = formData.form.controls.lazy.flatMap { control -> Form.SubmitButton? in
-                if case .submit(let button) = control, button.name != "preview" {
-                    return button
-                }
-                else {
-                    return nil
-                }
-            }
-            let submission = form.submit(button: submitButton.first)
+            let submission = form.submit(button: formData.form.submitButton(named: "submit"))
             return Dictionary(submission.entries.map { ($0.name, $0.value )}, uniquingKeysWith: { curr, new -> Array<Any> in
                 switch curr {
                 case let accum as Array<Any>:
@@ -476,17 +468,9 @@ public final class ForumsClient {
                 let form = try Form(htmlForm, url: parsed.url)
                 let submittable = SubmittableForm(form)
 
-                submittable.enter(text: bbcode, for: "message")
+                try submittable.enter(text: bbcode, for: "message")
 
-                let buttons = form.controls.lazy.flatMap { control -> Form.SubmitButton? in
-                    if case .submit(let button) = control, button.name == "preview" {
-                        return button
-                    }
-                    else {
-                        return nil
-                    }
-                }
-                let submission = submittable.submit(button: buttons.first)
+                let submission = submittable.submit(button: form.submitButton(named: "preview"))
                 return Dictionary(submission.entries.map { ($0.name, $0.value) }, uniquingKeysWith: { existing, new -> Array<Any> in
                     switch existing {
                     case let accum as Array<Any>:

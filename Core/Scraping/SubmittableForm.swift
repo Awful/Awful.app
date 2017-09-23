@@ -16,6 +16,10 @@ public final class SubmittableForm {
     private var enteredText: [String: String] = [:]
     private var selectedValues: [String: Set<String>] = [:]
 
+    public enum Error: Swift.Error {
+        case missingControl(type: String, named: String)
+    }
+
     public struct PreparedSubmission {
         public let encodingType: Form.EncodingType
         public let entries: [Entry]
@@ -55,7 +59,7 @@ public final class SubmittableForm {
     }
 
     /// Set the text value of a text field or text box in the form.
-    public func enter(text: String, for name: String) {
+    public func enter(text: String, for name: String) throws {
         guard let control = form.controls.first(where: { control in
             switch control {
             case .text, .textarea:
@@ -64,7 +68,7 @@ public final class SubmittableForm {
                 return false
             }
         }) else {
-            return // TODO: error? assert? log?
+            throw Error.missingControl(type: "text, textarea", named: name)
         }
 
         if case .textarea = control {
@@ -86,9 +90,9 @@ public final class SubmittableForm {
         }()
     }
 
-    public func select(value: String, for name: String) {
+    public func select(value: String, for name: String) throws {
         guard let control = form.controls.first(where: isSelectable(name: name, value: value)) else {
-            return // TODO: error? assert? log?
+            throw Error.missingControl(type: "checkbox, radio, select", named: name)
         }
 
         switch control {
@@ -112,9 +116,9 @@ public final class SubmittableForm {
         }
     }
 
-    public func deselect(value: String, for name: String) {
+    public func deselect(value: String, for name: String) throws {
         guard let control = form.controls.first(where: isSelectable(name: name, value: value)) else {
-            return // TODO: error? assert? log?
+            throw Error.missingControl(type: "checkbox, radio, select", named: name)
         }
 
         switch control {
