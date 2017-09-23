@@ -31,6 +31,7 @@ final class AnnouncementPersistenceTests: XCTestCase {
     private func scrapeThreadList(named basename: String) throws {
         let fixture = try scrapeFixture(named: basename) as ThreadListScrapeResult
         try _ = fixture.upsert(into: context)
+        try _ = fixture.upsertAnnouncements(into: context)
     }
 
     private func scrapeAnnouncementList(named basename: String) throws {
