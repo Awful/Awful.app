@@ -6,6 +6,3 @@
 
 FOUNDATION_EXPORT double AwfulCoreVersionNumber;
 FOUNDATION_EXPORT const unsigned char AwfulCoreVersionString[];
-
-// Scraping
-#import <AwfulCore/AwfulForm.h>

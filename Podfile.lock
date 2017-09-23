@@ -28,7 +28,7 @@ PODS:
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
   - GRMustache.swift (2.0.0)
-  - HTMLReader (2.0.2)
+  - HTMLReader (2.1)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.6.4)
@@ -119,7 +119,7 @@ SPEC CHECKSUMS:
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
   GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
-  HTMLReader: e58462a84fe1840cbe4706a8a705524052806081
+  HTMLReader: dd75279b0532ff5d005ffe1c6512e33d1d52f861
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
   JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3

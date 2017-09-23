@@ -21,6 +21,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     fileprivate var updatingThreadTags = false
     fileprivate var onAppearBlock: (() -> Void)?
     fileprivate var threadTagPicker: ThreadTagPickerViewController?
+    private var formData: ForumsClient.PostNewThreadFormData?
     
     /// - parameter forum: The forum in which the new thread is posted.
     init(forum: Forum) {
@@ -149,11 +150,11 @@ final class ThreadComposeViewController: ComposeTextViewController {
         
         updatingThreadTags = true
         _ = ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
-            .then { [weak self] (form) -> Void in
+            .then { [weak self] tags -> Void in
                 guard let sself = self else { return }
                 sself.updatingThreadTags = false
-                sself.availableThreadTags = form.threadTags
-                sself.availableSecondaryThreadTags = form.secondaryThreadTags
+                sself.availableThreadTags = tags.primary
+                sself.availableSecondaryThreadTags = tags.secondary
                 guard let tags = sself.availableThreadTags else { return }
 
                 let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.flatMap { $0.imageName }
@@ -188,7 +189,12 @@ final class ThreadComposeViewController: ComposeTextViewController {
             let threadTag = threadTag
             else { return handler(false) }
         let preview = ThreadPreviewViewController(forum: forum, subject: subject, threadTag: threadTag, secondaryThreadTag: secondaryThreadTag, BBcode: textView.attributedText)
-        preview.submitBlock = { handler(true) }
+        preview.submitBlock = { [weak preview, weak self] in
+            if let preview = preview, let sself = self {
+                sself.formData = preview.formData
+            }
+            handler(true)
+        }
         onAppearBlock = { handler(false) }
         navigationController?.pushViewController(preview, animated: true)
     }
@@ -200,10 +206,11 @@ final class ThreadComposeViewController: ComposeTextViewController {
     override func submit(_ composition: String, completion: @escaping (Bool) -> Void) {
         guard
             let subject = fieldView.subjectField.textField.text,
-            let threadTag = threadTag
+            let threadTag = threadTag,
+            let formData = formData
             else { return completion(false) }
         
-        _ = ForumsClient.shared.postThread(in: forum, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition)
+        _ = ForumsClient.shared.postThread(using: formData, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition)
             .then { [weak self] (thread) -> Void in
                 self?.thread = thread
                 completion(true)

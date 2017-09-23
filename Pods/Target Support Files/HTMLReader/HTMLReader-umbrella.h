@@ -11,6 +11,7 @@
 #endif
 
 #import "HTMLComment.h"
+#import "HTMLDocument+Private.h"
 #import "HTMLDocument.h"
 #import "HTMLDocumentType.h"
 #import "HTMLElement.h"

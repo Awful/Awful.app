@@ -12,7 +12,7 @@ internal extension ThreadListScrapeResult {
         let icons = self.threads.flatMap { $0.icon }
             + self.threads.flatMap { $0.secondaryIcon }
             + self.filterableIcons
-        let iconHelper = IconHelper(context: context, icons: icons)
+        let iconHelper = PostIconPersistenceHelper(context: context, icons: icons)
         try iconHelper.performFetch()
 
         for icon in filterableIcons {
@@ -96,63 +96,6 @@ internal extension ThreadListScrapeResult {
         }
 
         return threads
-    }
-}
-
-private class IconHelper {
-    private let context: NSManagedObjectContext
-    private let icons: [ThreadListScrapeResult.Icon]
-    private var byID: [String: ThreadTag] = [:]
-    private var byImageName: [String: ThreadTag] = [:]
-
-    init(context: NSManagedObjectContext, icons: [ThreadListScrapeResult.Icon]) {
-        self.context = context
-        self.icons = icons
-    }
-
-    func performFetch() throws {
-        let request = NSFetchRequest<ThreadTag>(entityName: ThreadTag.entityName())
-        let threadTagIDs = icons
-            .map { $0.id }
-            .filter { !$0.isEmpty }
-        let imageNames = icons
-            .flatMap { $0.url }
-            .map(ThreadTag.imageName)
-            .filter { !$0.isEmpty }
-        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
-            NSPredicate(format: "%K IN %@", #keyPath(ThreadTag.threadTagID), threadTagIDs),
-            NSPredicate(format: "%K IN %@", #keyPath(ThreadTag.imageName), imageNames)])
-        request.returnsObjectsAsFaults = false
-
-        for tag in try context.fetch(request) {
-            if let id = tag.threadTagID {
-                byID[id] = tag
-            }
-
-            if let imageName = tag.imageName {
-                byImageName[imageName] = tag
-            }
-        }
-    }
-
-    func upsert(_ icon: ThreadListScrapeResult.Icon) -> ThreadTag {
-        let fromID = icon.id.isEmpty ? nil : byID[icon.id]
-        let imageName = icon.url.map(ThreadTag.imageName)
-        let fromImageName = imageName.flatMap { byImageName[$0] }
-        let tag = fromID ?? fromImageName ?? ThreadTag.insertIntoManagedObjectContext(context: context)
-        icon.update(tag)
-
-        if fromID == nil, let id = tag.threadTagID { byID[id] = tag }
-        if fromImageName == nil, let imageName = imageName { byImageName[imageName] = tag }
-
-        return tag
-    }
-}
-
-internal extension ThreadListScrapeResult.Icon {
-    func update(_ tag: ThreadTag) {
-        if !id.isEmpty, id != tag.threadTagID { tag.threadTagID = id }
-        if let imageName = url.map(ThreadTag.imageName), imageName != tag.imageName { tag.imageName = imageName }
     }
 }
 
