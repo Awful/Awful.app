@@ -195,6 +195,7 @@
 		1C588D4319EA9785004C7809 /* CleanupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4119EA974C004C7809 /* CleanupTests.m */; };
 		1C588D4619EA9909004C7809 /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4519EA9909004C7809 /* Helpers.m */; };
 		1C588D4819EAB0B6004C7809 /* ScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4719EAB0B6004C7809 /* ScrapingTests.m */; };
+		1C5B835A1F75F88700BE7517 /* SubmittableForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B83591F75F88700BE7517 /* SubmittableForm.swift */; };
 		1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */; };
 		1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3317F20BB800D4981D /* posts-view-fyad.css */; };
 		1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3417F20BB800D4981D /* posts-view-gas-chamber.css */; };
@@ -672,6 +673,7 @@
 		1C588D4419EA9909004C7809 /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
 		1C588D4519EA9909004C7809 /* Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Helpers.m; sourceTree = "<group>"; };
 		1C588D4719EAB0B6004C7809 /* ScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrapingTests.m; sourceTree = "<group>"; };
+		1C5B83591F75F88700BE7517 /* SubmittableForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmittableForm.swift; sourceTree = "<group>"; };
 		1C5B9C3217F20BB800D4981D /* posts-view-amberpos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-amberpos.css"; sourceTree = "<group>"; };
 		1C5B9C3317F20BB800D4981D /* posts-view-fyad.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-fyad.css"; sourceTree = "<group>"; };
 		1C5B9C3417F20BB800D4981D /* posts-view-gas-chamber.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-gas-chamber.css"; sourceTree = "<group>"; };
@@ -1047,6 +1049,7 @@
 				1CF0F8E51ED8F62D00C16099 /* ScrapingError.swift */,
 				1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */,
 				1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */,
+				1C5B83591F75F88700BE7517 /* SubmittableForm.swift */,
 				1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */,
 				1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */,
 			);
@@ -2638,6 +2641,7 @@
 				1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */,
 				1C14A4AD1A94C0880045DDF7 /* Awful.xcdatamodeld in Sources */,
 				1C14A4B61A94C0BA0045DDF7 /* PrivateMessage.swift in Sources */,
+				1C5B835A1F75F88700BE7517 /* SubmittableForm.swift in Sources */,
 				1CF7AB8C1EDB64F60089EF0C /* AuthorPersistence.swift in Sources */,
 				1CF7AB921EDB6C340089EF0C /* PostsPageScrapeResult.swift in Sources */,
 				1CF7AB981EDD0F4D0089EF0C /* PostPersistence.swift in Sources */,
