@@ -354,7 +354,8 @@ public final class ForumsClient {
         }
     }
 
-    public func postThread(in forum: Forum, subject: String, threadTag: ThreadTag?, secondaryTag: ThreadTag?, bbcode: String) -> Promise<AwfulThread> {
+    /// - Parameter postData: A `PostNewThreadFormData` returned by `previewOriginalPostForThread(in:bbcode:)`.
+    public func postThread(using formData: PostNewThreadFormData, subject: String, threadTag: ThreadTag?, secondaryTag: ThreadTag?, bbcode: String) -> Promise<AwfulThread> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
@@ -362,77 +363,58 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = [
-            "action": "newthread",
-            "forumid": forum.forumID]
-
-        let formAndParameters = fetch(method: .get, urlString: "newthread.php", parameters: parameters)
-            .promise
-            .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { parsed, context -> (AwfulForm, [String: Any]) in
-                guard
-                    let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']"),
-                    let form = AwfulForm(element: htmlForm),
-                    let parameters = form.recommendedParameters() as? [String: Any] else
-                {
-                    let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard")
-                    if
-                        let specialMessage = specialMessage,
-                        specialMessage.textContent.contains("accepting")
-                    {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
-                            NSLocalizedDescriptionKey: "You're not allowed to post threads in this forum"])
-                    }
-                    else {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Could not find new thread form"])
-                    }
-                }
-
-                form.scrapeThreadTags(into: backgroundContext)
-                try backgroundContext.save()
-
-                return (form, parameters)
-        }
-
         let threadTagObjectID = threadTag?.objectID
         let secondaryTagObjectID = secondaryTag?.objectID
 
+        let params = Promise<Void>(value: ()).then(on: backgroundContext) { _, context -> [String: Any] in
+            _ = try formData.postIcons.upsert(into: context)
+            try context.save()
 
-        let submitParameters = formAndParameters
-            .then(on: backgroundContext) { formAndParameters, context -> [String: Any] in
-                let (form, _) = formAndParameters
-                var (_, parameters) = formAndParameters
-                parameters["subject"] = subject
+            let form = SubmittableForm(formData.form)
 
-                if
-                    let objectID = threadTagObjectID,
-                    let threadTag = context.object(with: objectID) as? ThreadTag,
-                    let imageName = threadTag.imageName,
-                    let threadTagID = form.threadTagID(withImageName: imageName),
-                    let key = form.selectedThreadTagKey
-                {
-                    parameters[key] = threadTagID
+            form.enter(text: subject, for: "subject")
+            form.enter(text: bbcode, for: "message")
+
+            if
+                let objectID = threadTagObjectID,
+                let threadTag = context.object(with: objectID) as? ThreadTag,
+                let imageName = threadTag.imageName,
+                let icon = formData.postIcons.primaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == imageName }),
+                !formData.postIcons.selectedPrimaryIconFormName.isEmpty
+            {
+                form.select(value: icon.id, for: formData.postIcons.selectedPrimaryIconFormName)
+            }
+
+            if
+                let objectID = secondaryTagObjectID,
+                let threadTag = context.object(with: objectID) as? ThreadTag,
+                let imageName = threadTag.imageName,
+                let icon = formData.postIcons.secondaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == imageName }),
+                !formData.postIcons.selectedSecondaryIconFormName.isEmpty
+            {
+                form.select(value: icon.id, for: formData.postIcons.selectedSecondaryIconFormName)
+            }
+
+            let submitButton = formData.form.controls.lazy.flatMap { control -> Form.SubmitButton? in
+                if case .submit(let button) = control, button.name != "preview" {
+                    return button
                 }
-
-                parameters["message"] = bbcode
-
-                if
-                    let objectID = secondaryTagObjectID,
-                    let threadTag = context.object(with: objectID) as? ThreadTag,
-                    let imageName = threadTag.imageName,
-                    let threadTagID = form.secondaryThreadTagID(withImageName: imageName),
-                    let key = form.selectedSecondaryThreadTagKey
-                {
-                    parameters[key] = threadTagID
+                else {
+                    return nil
                 }
-
-                parameters.removeValue(forKey: "preview")
-
-                return parameters
+            }
+            let submission = form.submit(button: submitButton.first)
+            return Dictionary(submission.entries.map { ($0.name, $0.value )}, uniquingKeysWith: { curr, new -> Array<Any> in
+                switch curr {
+                case let accum as Array<Any>:
+                    return accum + [new]
+                default:
+                    return [curr, new]
+                }
+            })
         }
 
-        let threadID = submitParameters
+        let threadID = params
             .then { self.fetch(method: .post, urlString: "newthread.php", parameters: $0).promise }
             .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { parsed -> String in
@@ -463,30 +445,76 @@ public final class ForumsClient {
         }
     }
 
-    /// - Returns: The promise of the previewed post's HTML.
-    public func previewOriginalPostForThread(in forum: Forum, bbcode: String) -> (Promise<String>, Cancellable) {
-        let parameters = [
-            "forumid": forum.forumID,
-            "action": "postthread",
-            "message": bbcode,
-            "parseurl": "yes",
-            "preview": "Preview Post"]
+    public struct PostNewThreadFormData {
+        fileprivate let form: Form
+        fileprivate let postIcons: PostIconListScrapeResult
+    }
 
-        let (promise, cancellable) = fetch(method: .post, urlString: "newthread.php", parameters: parameters)
-        let html = promise
+    /// - Returns: The promise of the previewed post's HTML.
+    public func previewOriginalPostForThread(in forum: Forum, bbcode: String) -> (Promise<(previewHTML: String, formData: PostNewThreadFormData)>, Cancellable) {
+        let (previewForm, cancellable) = fetch(method: .get, urlString: "newthread.php", parameters: [
+            "action": "newthread",
+            "forumid": forum.forumID])
+
+        let previewParameters = previewForm
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> String in
-                if let postbody = parsed.document.firstNode(matchingSelector: ".postbody") {
-                    workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
-                    return postbody.innerHTML
+            .then(on: .global()) { parsed -> [String: Any] in
+                guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name = 'vbform']") else {
+                    if
+                        let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
+                        specialMessage.textContent.contains("accepting")
+                    {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
+                            NSLocalizedDescriptionKey: "You're not allowed to post threads in this forum"])
+                    }
+                    else {
+                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
+                            NSLocalizedDescriptionKey: "Could not find new thread form"])
+                    }
                 }
-                else {
+
+                let form = try Form(htmlForm, url: parsed.url)
+                let submittable = SubmittableForm(form)
+
+                submittable.enter(text: bbcode, for: "message")
+
+                let buttons = form.controls.lazy.flatMap { control -> Form.SubmitButton? in
+                    if case .submit(let button) = control, button.name == "preview" {
+                        return button
+                    }
+                    else {
+                        return nil
+                    }
+                }
+                let submission = submittable.submit(button: buttons.first)
+                return Dictionary(submission.entries.map { ($0.name, $0.value) }, uniquingKeysWith: { existing, new -> Array<Any> in
+                    switch existing {
+                    case let accum as Array<Any>:
+                        return accum + [new]
+                    default:
+                        return [existing, new]
+                    }
+                })
+        }
+
+        let htmlAndFormData = previewParameters
+            .then { self.fetch(method: .post, urlString: "newthread.php", parameters: $0).promise }
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global()) { parsed -> (previewHTML: String, formData: PostNewThreadFormData) in
+                guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
                     throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
                         NSLocalizedDescriptionKey: "Could not find previewed original post"])
                 }
+                workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+
+                let htmlForm = try parsed.document.requiredNode(matchingSelector: "form[name = 'vbform']")
+                let form = try Form(htmlForm, url: parsed.url)
+                let postIcons = try PostIconListScrapeResult(htmlForm, url: parsed.url)
+                let postData = PostNewThreadFormData(form: form, postIcons: postIcons)
+                return (previewHTML: postbody.innerHTML, formData: postData)
         }
 
-        return (html, cancellable)
+        return (htmlAndFormData, cancellable)
     }
 
     // MARK: Announcements

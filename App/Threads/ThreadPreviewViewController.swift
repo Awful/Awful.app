@@ -17,6 +17,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
     }()
     fileprivate weak var networkOperation: Cancellable?
     fileprivate var imageInterpolator: SelfHostingAttachmentInterpolator?
+    private(set) var formData: ForumsClient.PostNewThreadFormData?
     
     init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, BBcode: NSAttributedString) {
         self.forum = forum
@@ -52,7 +53,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
         let (html, cancellable) = ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode)
         networkOperation = cancellable
-        html.then { [weak self] (postHTML) -> Void in
+        html.then { [weak self] (previewAndForm) -> Void in
             guard let sself = self else { return }
 
             sself.networkOperation = nil
@@ -66,8 +67,9 @@ final class ThreadPreviewViewController: PostPreviewViewController {
             sself.fakePost = Post.objectForKey(objectKey: postKey, inManagedObjectContext: context) as? Post
             sself.fakePost?.thread = fakeThread
             sself.fakePost?.author = fakeThread.author
-            sself.fakePost?.innerHTML = postHTML
+            sself.fakePost?.innerHTML = previewAndForm.previewHTML
             sself.fakePost?.postDate = Date()
+            sself.formData = previewAndForm.formData
             sself.renderPreview()
             }
             .catch { [weak self] (error) -> Void in
