@@ -761,14 +761,28 @@ public final class ForumsClient {
     }
 
     public func edit(_ post: Post, bbcode: String) -> Promise<Void> {
+        return editForm(for: post)
+            .promise
+            .then(on: .global()) { parsedForm -> [String: Any] in
+                let form = SubmittableForm(parsedForm)
+                try form.enter(text: bbcode, for: "message")
+                let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+                return dictifyFormEntries(submission)
+            }
+            .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
+            .asVoid()
+    }
+
+    private func editForm(for post: Post) -> (promise: Promise<Form>, cancellable: Cancellable) {
         let startParams = [
             "action": "editpost",
             "postid": post.postID]
 
-        let formParams = fetch(method: .get, urlString: "editpost.php", parameters: startParams)
-            .promise
+        let (promise: promise, cancellable: cancellable) = fetch(method: .get, urlString: "editpost.php", parameters: startParams)
+
+        let parsed = promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> [String: Any] in
+            .then(on: .global()) { parsed -> Form in
                 guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']") else {
                     if
                         let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
@@ -783,16 +797,10 @@ public final class ForumsClient {
                     }
                 }
 
-                let parsedForm = try Form(htmlForm, url: parsed.url)
-                let form = SubmittableForm(parsedForm)
-                try form.enter(text: bbcode, for: "message")
-                let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
-                return dictifyFormEntries(submission)
-            }
+                return try Form(htmlForm, url: parsed.url)
+        }
 
-        return formParams
-            .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
-            .asVoid()
+        return (promise: parsed, cancellable: cancellable)
     }
 
     /**
@@ -883,16 +891,18 @@ public final class ForumsClient {
     }
 
     public func previewEdit(to post: Post, bbcode: String) -> (promise: Promise<String>, cancellable: Cancellable) {
-        let parameters = [
-            "action": "updatepost",
-            "postid": post.postID,
-            "message": bbcode,
-            "parseurl": "yes",
-            "preview": "Preview Post"]
+        let (promise, cancellable) = editForm(for: post)
 
-        let (promise, cancellable) = fetch(method: .post, urlString: "editpost.php", parameters: parameters)
+        let params = promise
+            .then(on: .global()) { parsedForm -> [String: Any] in
+                let form = SubmittableForm(parsedForm)
+                try form.enter(text: bbcode, for: "message")
+                let submission = form.submit(button: parsedForm.submitButton(named: "preview"))
+                return dictifyFormEntries(submission)
+        }
 
-        let parsed = promise
+        let parsed = params
+            .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
             .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { parsed -> String in
                 guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
