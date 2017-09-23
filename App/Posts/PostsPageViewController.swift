@@ -4,6 +4,7 @@
 
 import ARChromeActivity
 import AwfulCore
+import CoreData
 import GRMustache
 import MRProgress
 import TUSafariActivity
