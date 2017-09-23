@@ -396,14 +396,7 @@ public final class ForumsClient {
             }
 
             let submission = form.submit(button: formData.form.submitButton(named: "submit"))
-            return Dictionary(submission.entries.map { ($0.name, $0.value )}, uniquingKeysWith: { curr, new -> Array<Any> in
-                switch curr {
-                case let accum as Array<Any>:
-                    return accum + [new]
-                default:
-                    return [curr, new]
-                }
-            })
+            return dictifyFormEntries(submission)
         }
 
         let threadID = params
@@ -471,14 +464,7 @@ public final class ForumsClient {
                 try submittable.enter(text: bbcode, for: "message")
 
                 let submission = submittable.submit(button: form.submitButton(named: "preview"))
-                return Dictionary(submission.entries.map { ($0.name, $0.value) }, uniquingKeysWith: { existing, new -> Array<Any> in
-                    switch existing {
-                    case let accum as Array<Any>:
-                        return accum + [new]
-                    default:
-                        return [existing, new]
-                    }
-                })
+                return dictifyFormEntries(submission)
         }
 
         let htmlAndFormData = previewParameters
@@ -1262,6 +1248,18 @@ private func checkServerErrors(_ document: HTMLDocument) throws {
     else if let result = try? StandardErrorScrapeResult(document, url: nil) {
         throw ServerError.standard(title: result.title, message: result.message)
     }
+}
+
+
+private func dictifyFormEntries(_ submission: SubmittableForm.PreparedSubmission) -> [String: Any] {
+    return Dictionary(submission.entries.map { ($0.name, $0.value )}, uniquingKeysWith: { curr, new -> Array<Any> in
+        switch curr {
+        case let accum as Array<Any>:
+            return accum + [new]
+        default:
+            return [curr, new]
+        }
+    })
 }
 
 
