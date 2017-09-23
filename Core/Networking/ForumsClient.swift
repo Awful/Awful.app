@@ -640,26 +640,17 @@ public final class ForumsClient {
     }
 
     public func reply(to thread: AwfulThread, bbcode: String) -> Promise<ReplyLocation> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
+        guard let mainContext = managedObjectContext else {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = [
-            "action": "newreply",
-            "threadid": thread.threadID]
         let wasThreadClosed = thread.closed
-        let formParameters = fetch(method: .get, urlString: "newreply.php", parameters: parameters)
+
+        let params = fetch(method: .get, urlString: "newreply.php", parameters: ["action": "newreply", "threadid": thread.threadID])
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: backgroundContext) { parsed, context -> [String: Any] in
-                guard
-                    let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']"),
-                    let form = AwfulForm(element: htmlForm),
-                    var parameters = form.recommendedParameters() as? [String: Any] else
-                {
+            .then(on: .global()) { parsed -> [String: Any] in
+                guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']") else {
                     let description = wasThreadClosed
                         ? "Could not reply; the thread may be closed."
                         : "Could not reply; failed to find the form."
@@ -667,12 +658,14 @@ public final class ForumsClient {
                         NSLocalizedDescriptionKey: description])
                 }
 
-                parameters["message"] = bbcode
-                parameters.removeValue(forKey: "preview")
-                return parameters
+                let parsedForm = try Form(htmlForm, url: parsed.url)
+                let form = SubmittableForm(parsedForm)
+                try form.enter(text: bbcode, for: "message")
+                let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+                return dictifyFormEntries(submission)
         }
 
-        let postID = formParameters
+        let postID = params
             .then { self.fetch(method: .post, urlString: "newreply.php", parameters: $0).promise }
             .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { parsed -> String? in
@@ -711,16 +704,23 @@ public final class ForumsClient {
     }
 
     public func previewReply(to thread: AwfulThread, bbcode: String) -> (promise: Promise<String>, cancellable: Cancellable) {
-        let parameters = [
-            "action": "postreply",
-            "threadid": thread.threadID,
-            "message": bbcode,
-            "parseurl": "yes",
-            "preview": "Preview Reply"]
+        let (promise, cancellable) = fetch(method: .get, urlString: "newreply.php", parameters: [
+            "action": "newreply",
+            "threadid": thread.threadID])
 
-        let (promise, cancellable) = fetch(method: .post, urlString: "newreply.php", parameters: parameters)
+        let params = promise
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global()) { parsed -> [String: Any] in
+                let htmlForm = try parsed.document.requiredNode(matchingSelector: "form[name = 'vbform']")
+                let scrapedForm = try Form(htmlForm, url: parsed.url)
+                let form = SubmittableForm(scrapedForm)
+                try form.enter(text: bbcode, for: "message")
+                let submission = form.submit(button: scrapedForm.submitButton(named: "preview"))
+                return dictifyFormEntries(submission)
+        }
 
-        let parsed = promise
+        let parsed = params
+            .then { self.fetch(method: .post, urlString: "newreply.php", parameters: $0).promise }
             .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { parsed -> String in
                 guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
