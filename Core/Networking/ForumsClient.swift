@@ -646,7 +646,10 @@ public final class ForumsClient {
 
         let wasThreadClosed = thread.closed
 
-        let params = fetch(method: .get, urlString: "newreply.php", parameters: ["action": "newreply", "threadid": thread.threadID])
+        let startParams = [
+            "action": "newreply",
+            "threadid": thread.threadID]
+        let params = fetch(method: .get, urlString: "newreply.php", parameters: startParams)
             .promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { parsed -> [String: Any] in
@@ -758,20 +761,15 @@ public final class ForumsClient {
     }
 
     public func edit(_ post: Post, bbcode: String) -> Promise<Void> {
-        let parameters = [
+        let startParams = [
             "action": "editpost",
             "postid": post.postID]
 
-        return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
+        let formParams = fetch(method: .get, urlString: "editpost.php", parameters: startParams)
             .promise
             .then(on: .global(), execute: parseHTML)
             .then(on: .global()) { parsed -> [String: Any] in
-                guard
-                    let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']"),
-                    let form = AwfulForm(element: htmlForm),
-                    var parameters = form.recommendedParameters() as? [String: Any],
-                    parameters["postid"] != nil else
-                {
+                guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']") else {
                     if
                         let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
                         specialMessage.textContent.contains("permission")
@@ -785,10 +783,14 @@ public final class ForumsClient {
                     }
                 }
 
-                parameters["message"] = bbcode
-                parameters.removeValue(forKey: "preview")
-                return parameters
+                let parsedForm = try Form(htmlForm, url: parsed.url)
+                let form = SubmittableForm(parsedForm)
+                try form.enter(text: bbcode, for: "message")
+                let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+                return dictifyFormEntries(submission)
             }
+
+        return formParams
             .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
             .asVoid()
     }
@@ -1105,16 +1107,7 @@ public final class ForumsClient {
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> String in
-                let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']")
-                let form = htmlForm.flatMap { AwfulForm(element: $0) }
-                guard let message = form?.allParameters?["message"] else {
-                    let missingBit = form == nil ? "form" : "text box"
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Failed quoting private message; could not find \(missingBit)"])
-                }
-                return message
-        }
+            .then(on: .global(), execute: findMessageText)
     }
 
     public func listAvailablePrivateMessageThreadTags() -> Promise<[ThreadTag]> {
