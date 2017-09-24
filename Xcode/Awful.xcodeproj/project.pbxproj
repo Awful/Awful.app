@@ -309,6 +309,8 @@
 		1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */; };
 		1CF140001F33EBA90091F462 /* UIKit+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF13FFF1F33EBA90091F462 /* UIKit+Extensions.m */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
+		1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */; };
+		1CF264CA1F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */; };
 		1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */; };
 		1CF7AB8C1EDB64F60089EF0C /* AuthorPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */; };
 		1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */; };
@@ -808,6 +810,8 @@
 		1CF13FFE1F33EBA90091F462 /* UIKit+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIKit+Extensions.h"; sourceTree = "<group>"; };
 		1CF13FFF1F33EBA90091F462 /* UIKit+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIKit+Extensions.m"; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
+		1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar_FixiOS11iPadLayout.swift; sourceTree = "<group>"; };
+		1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBarController_FixiOS11iPadLayout.storyboard; sourceTree = "<group>"; };
 		1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulManagedObject.swift; sourceTree = "<group>"; };
 		1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapeResult.swift; sourceTree = "<group>"; };
 		1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorPersistence.swift; sourceTree = "<group>"; };
@@ -1717,6 +1721,8 @@
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
 				1C25AC461F53788900977D6F /* RenderView.swift */,
 				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
+				1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */,
+				1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */,
 				1CF7FACC1BB60C3000A077F2 /* ThreadTableViewCell.swift */,
 				1CF7FACE1BB60F0F00A077F2 /* ThreadTableViewCell.xib */,
 			);
@@ -2229,6 +2235,7 @@
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */,
+				1CF264CA1F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
 				F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */,
@@ -2764,6 +2771,7 @@
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */,
+				1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,

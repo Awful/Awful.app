@@ -20,7 +20,7 @@ class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         splitViewController = AwfulSplitViewController()
-        tabBarController = UITabBarController()
+        tabBarController = UITabBarController.makeWithTabBarFixedForiOS11iPadLayout()
         super.init()
         
         let forums = ForumsTableViewController(managedObjectContext: managedObjectContext)
