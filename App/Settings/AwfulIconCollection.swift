@@ -18,13 +18,19 @@ class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let collection = collection else { Logger.get().e("No collection in view"); return UICollectionViewCell() }
+        
         let cell = collection.dequeueReusableCell(withReuseIdentifier: "appIcon", for: indexPath) as! AwfulIcon
-        cell.imageView.image = UIImage(named: "AppIcon-\(selectedIconName)-60x60", in: Bundle(for: type(of: self)), compatibleWith: nil)
+        if indexPath.row == 0 {
+            cell.iconName = "Bars"
+        } else {
+            cell.iconName = "v"
+        }
+        
         return cell
     }
 }
