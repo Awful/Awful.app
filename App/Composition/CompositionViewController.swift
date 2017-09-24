@@ -34,7 +34,6 @@ final class CompositionViewController: ViewController {
     override func loadView() {
         let textView = CompositionTextView()
         textView.restorationIdentifier = "Composition text view"
-        textView.setSmartQuotesType_awful_iOS10Safe(.no)
         view = textView
         
         BBcodeBar = CompositionInputAccessoryView(textView: textView)

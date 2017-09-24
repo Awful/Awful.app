@@ -215,7 +215,7 @@ final class ReplyWorkspace: NSObject {
                     }
                 }
 
-                textView.replace(selectedRange, withText: replacement)
+                textView.replaceSelection(with: replacement)
 
                 completion(nil)
             }
