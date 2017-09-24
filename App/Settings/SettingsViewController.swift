@@ -106,7 +106,7 @@ final class SettingsViewController: TableViewController {
         
         tableView.separatorStyle = .singleLine
         tableView.register(UINib(nibName: "SettingsSliderCell", bundle: nil), forCellReuseIdentifier: SettingType.Slider.rawValue)
-        tableView.register(UINib(nibName: "IconTableViewCell", bundle: nil), forCellReuseIdentifier: SettingType.Collection.rawValue)
+        tableView.register(UINib(nibName: "AwfulIconCollection", bundle: nil), forCellReuseIdentifier: SettingType.Collection.rawValue)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -204,7 +204,7 @@ final class SettingsViewController: TableViewController {
         } else if settingType == .Slider {
             cell = SettingsSliderCell(style:settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
         } else if settingType == .Collection {
-            cell = IconTableViewCell(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
+            cell = AwfulIconCollection(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
         } else {
             cell = UITableViewCell(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
             switch settingType {
@@ -288,7 +288,7 @@ final class SettingsViewController: TableViewController {
         }
         
         if settingType == .Collection {
-            guard let collection = (cell as! IconTableViewCell).collection as UICollectionView? else { fatalError("setting should have collection view") }
+            guard let collection = (cell as! AwfulIconCollection).collection as UICollectionView? else { fatalError("setting should have collection view") }
             collection.awful_setting = setting["Key"] as? String
         }
         switch settingType {

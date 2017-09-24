@@ -8,14 +8,13 @@
 
 import UIKit
 
-class IconCollectionViewLayout: UICollectionViewFlowLayout {
+class AwfulIconCollectionLayout: UICollectionViewFlowLayout {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         self.scrollDirection = .horizontal
         self.minimumInteritemSpacing = 10
-        self.itemSize = CGSize(width: 70, height: 120)
+        self.estimatedItemSize = CGSize(width: 70, height: 120)
+        self.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10)
     }
-    
-    
 }
