@@ -235,16 +235,16 @@
 			<string>Choose the alternate app theme for a tweaked, but not authentic, look. Optionally, Awful can automatically switch between light and dark themes based on screen brightness. Use the slider to set when to use which theme.</string>
 			<key>Settings</key>
 			<array>
-                <dict>
-                    <key>Title</key>
-                    <string>Alternate App Theme</string>
-                    <key>Type</key>
-                    <string>Switch</string>
-                    <key>Default</key>
-                    <false/>
-                    <key>Key</key>
-                    <string>alternate_theme</string>
-                </dict>
+				<dict>
+					<key>Title</key>
+					<string>Alternate App Theme</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>alternate_theme</string>
+				</dict>
 				<dict>
 					<key>Title</key>
 					<string>Automatic Dark Mode</string>
@@ -306,33 +306,33 @@
 					<key>Key</key>
 					<string>handoff_enabled</string>
 				</dict>
-                <dict>
-                    <key>Title</key>
-                    <string>Check Clipboard for URL</string>
-                    <key>Type</key>
-                    <string>Switch</string>
-                    <key>Default</key>
-                    <true/>
-                    <key>Key</key>
-                    <string>clipboard_url_enabled</string>
-                </dict>
+				<dict>
+					<key>Title</key>
+					<string>Check Clipboard for URL</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>clipboard_url_enabled</string>
+				</dict>
 			</array>
 		</dict>
-        <dict>
-            <key>Title</key>
-            <string>App Icon</string>
-            <key>Explanation</key>
-            <string>Choose your favorite app icon.</string>
-            <key>Settings</key>
-            <array>
-                <dict>
-                    <key>Type</key>
-                    <string>Collection</string>
-                    <key>Key</key>
-                    <string>app_icon</string>
-                </dict>
-            </array>
-        </dict>
+		<dict>
+			<key>Title</key>
+			<string>App Icon</string>
+			<key>Explanation</key>
+			<string>Choose your favorite app icon.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Type</key>
+					<string>Collection</string>
+					<key>Key</key>
+					<string>app_icon_name</string>
+				</dict>
+			</array>
+		</dict>
 		<dict>
 			<key>Title</key>
 			<string>Thank You</string>

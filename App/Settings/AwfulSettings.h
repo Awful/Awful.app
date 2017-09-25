@@ -80,6 +80,10 @@
 
 @property (assign, nonatomic) BOOL openTwitterLinksInTwitter;
 
+- (NSString *)appIconName;
+
+- (void)setAppIconName: (NSString *)iconName;
+
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -131,6 +135,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *defaultBrowser;
     __unsafe_unretained NSString *openYouTubeLinksInYouTube;
     __unsafe_unretained NSString *openTwitterLinksInTwitter;
+    __unsafe_unretained NSString *appIconName;
 } AwfulSettingsKeys;
 
 #pragma mark Possible values for the defaultBrowser setting

@@ -117,7 +117,7 @@ final class SettingsViewController: TableViewController {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        
+        print("viewWillTransition")
         coordinator.animate(alongsideTransition: nil) { (context) in
             self.tableView.reloadData()
         }
@@ -320,7 +320,7 @@ final class SettingsViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         defer { tableView.deselectRow(at: indexPath, animated: true) }
-        
+        print("Selected row")
         let setting = self.setting(at: indexPath)
         switch (setting["Action"] as? String, setting["ViewController"] as? String) {
         case ("LogOut"?, _):

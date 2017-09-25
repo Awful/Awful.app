@@ -10,11 +10,18 @@ import UIKit
 
 class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     @IBOutlet weak var collection: UICollectionView?
-    var selectedIconName: String = "v"
+    open var selectedIconName: String?
     
     override func awakeFromNib() {
         collection?.dataSource = self
+        collection?.delegate = self
         collection?.register(UINib(nibName: "AwfulIcon", bundle: nil), forCellWithReuseIdentifier: "appIcon")
+        
+        if #available(iOS 10.3, *) {
+            selectedIconName = UIApplication.shared.alternateIconName ?? "Bars"
+        } else {
+            selectedIconName = "Bars"
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -32,5 +39,12 @@ class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollec
         }
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! AwfulIcon
+        print("Selected \(cell.iconName)")
+        selectedIconName = cell.iconName
+        AwfulSettings.shared().setAppIconName(selectedIconName)
     }
 }
