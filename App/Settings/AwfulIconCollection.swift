@@ -41,10 +41,26 @@ class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollec
         return cell
     }
     
+    static var iconDidChangeNotification: String {
+        return "AwfulPostsViewExternalStylesheetDidUpdate"
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! AwfulIcon
         print("Selected \(cell.iconName)")
         selectedIconName = cell.iconName
-        AwfulSettings.shared().setAppIconName(selectedIconName)
+
+        if #available(iOS 10.3, *) {
+            if (selectedIconName == "Bars") {
+                UIApplication.shared.setAlternateIconName(nil, completionHandler: nil)
+            } else {
+                UIApplication.shared.setAlternateIconName(selectedIconName, completionHandler: nil)
+            }
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue:AwfulIconCollection.iconDidChangeNotification), object: nil)
+        } else {
+            let unsupportedAlert = UIAlertController(title: "Unsupported Feature", message: "Changing app icons isn't supported in iOS before 10.3. We really should hide this whole setting!")
+            unsupportedAlert.present(self.nearestViewController!, animated: true, completion: nil)
+        }
     }
 }

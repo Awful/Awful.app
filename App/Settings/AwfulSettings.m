@@ -292,23 +292,6 @@ BOOL_PROPERTY(openYouTubeLinksInYouTube, setOpenYouTubeLinksInYouTube)
 
 BOOL_PROPERTY(openTwitterLinksInTwitter, setOpenTwitterLinksInTwitter)
 
-- (NSString *)appIconName {
-    return self[AwfulSettingsKeys.appIconName];
-}
-
-- (void)setAppIconName:(NSString *)iconName {
-    NSLog(@"setAppIconName %@", iconName);
-    if (@available(iOS 10.3, *)) {
-        NSLog(@"Available on this device");
-        if ([iconName isEqualToString:@"Bars"]) {
-            NSLog(@"Default icon");
-            [[UIApplication sharedApplication] setAlternateIconName:nil completionHandler:nil];
-        } else {
-            [[UIApplication sharedApplication] setAlternateIconName:iconName completionHandler:nil];
-        }
-    }
-}
-
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];

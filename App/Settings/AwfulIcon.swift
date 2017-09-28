@@ -13,7 +13,7 @@ class AwfulIcon: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(AwfulIcon.settingsDidChange(_:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AwfulIcon.iconDidChange(_:)), name: NSNotification.Name(rawValue: AwfulIconCollection.iconDidChangeNotification), object: nil)
     }
     
     deinit {
@@ -51,14 +51,8 @@ class AwfulIcon: UICollectionViewCell {
         }
     }
     
-    @objc fileprivate func settingsDidChange(_ notification: Notification) {
+    @objc fileprivate func iconDidChange(_ notification: Notification) {
         print("Setting did change")
-        let userInfo = (notification).userInfo!
-        let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]! as! String
-        print(changeKey)
-        if changeKey == AwfulSettingsKeys.appIconName.takeUnretainedValue() as String {
-            print("Updating selection highlight")
-            updateSelectionHighlight()
-        }
+        updateSelectionHighlight()
     }
 }

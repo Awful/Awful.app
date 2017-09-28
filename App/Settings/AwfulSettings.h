@@ -80,10 +80,6 @@
 
 @property (assign, nonatomic) BOOL openTwitterLinksInTwitter;
 
-- (NSString *)appIconName;
-
-- (void)setAppIconName: (NSString *)iconName;
-
 - (id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
