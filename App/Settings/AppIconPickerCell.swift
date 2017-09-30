@@ -1,5 +1,5 @@
 //
-//  AwfulIconCellTableViewCell.swift
+//  AppIconPickerCell.swift
 //  Awful
 //
 //  Created by Liam Westby on 9/23/17.
@@ -8,14 +8,18 @@
 
 import UIKit
 
-class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
-    @IBOutlet weak var collection: UICollectionView?
-    open var selectedIconName: String?
+private let Log = Logger.get(level: .debug)
+
+final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
+    @IBOutlet weak var collection: UICollectionView!
+    var selectedIconName: String?
     
     override func awakeFromNib() {
-        collection?.dataSource = self
-        collection?.delegate = self
-        collection?.register(UINib(nibName: "AwfulIcon", bundle: nil), forCellWithReuseIdentifier: "appIcon")
+        super.awakeFromNib()
+
+        collection.dataSource = self
+        collection.delegate = self
+        collection.register(UINib(nibName: "AppIconCell", bundle: nil), forCellWithReuseIdentifier: "AppIcon")
         
         if #available(iOS 10.3, *) {
             selectedIconName = UIApplication.shared.alternateIconName ?? "Bars"
@@ -29,9 +33,12 @@ class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let collection = collection else { Logger.get().e("No collection in view"); return UICollectionViewCell() }
+        guard let collection = collection else {
+            Log.e("No collection in view")
+            return UICollectionViewCell()
+        }
         
-        let cell = collection.dequeueReusableCell(withReuseIdentifier: "appIcon", for: indexPath) as! AwfulIcon
+        let cell = collection.dequeueReusableCell(withReuseIdentifier: "AppIcon", for: indexPath) as! AppIconCell
         if indexPath.row == 0 {
             cell.iconName = "Bars"
         } else {
@@ -46,7 +53,7 @@ class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = collectionView.cellForItem(at: indexPath) as! AwfulIcon
+        let cell = collectionView.cellForItem(at: indexPath) as! AppIconCell
         print("Selected \(cell.iconName)")
         selectedIconName = cell.iconName
 
@@ -57,7 +64,7 @@ class AwfulIconCollection: UITableViewCell, UICollectionViewDataSource, UICollec
                 UIApplication.shared.setAlternateIconName(selectedIconName, completionHandler: nil)
             }
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue:AwfulIconCollection.iconDidChangeNotification), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue:AppIconPickerCell.iconDidChangeNotification), object: nil)
         } else {
             let unsupportedAlert = UIAlertController(title: "Unsupported Feature", message: "Changing app icons isn't supported in iOS before 10.3. We really should hide this whole setting!")
             unsupportedAlert.present(self.nearestViewController!, animated: true, completion: nil)

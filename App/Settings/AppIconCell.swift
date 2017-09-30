@@ -1,5 +1,5 @@
 //
-//  AwfulIcon.swift
+//  AppIconCell.swift
 //  Awful
 //
 //  Created by Liam Westby on 9/24/17.
@@ -8,12 +8,12 @@
 
 import UIKit
 
-class AwfulIcon: UICollectionViewCell {
+final class AppIconCell: UICollectionViewCell {
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(AwfulIcon.iconDidChange(_:)), name: NSNotification.Name(rawValue: AwfulIconCollection.iconDidChangeNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(iconDidChange), name: NSNotification.Name(rawValue: AppIconPickerCell.iconDidChangeNotification), object: nil)
     }
     
     deinit {

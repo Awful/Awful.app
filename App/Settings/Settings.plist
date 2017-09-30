@@ -321,13 +321,13 @@
 		<dict>
 			<key>Title</key>
 			<string>App Icon</string>
-			<key>Explanation</key>
-			<string>Choose your favorite app icon.</string>
+			<key>DeviceCapability</key>
+			<string>AppIconChange</string>
 			<key>Settings</key>
 			<array>
 				<dict>
 					<key>Type</key>
-					<string>Collection</string>
+					<string>AppIconPicker</string>
 					<key>Key</key>
 					<string>app_icon_name</string>
 				</dict>

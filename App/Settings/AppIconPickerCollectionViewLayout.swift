@@ -1,5 +1,5 @@
 //
-//  IconCollectionViewLayout.swift
+//  AppIconPickerCollectionViewLayout.swift
 //  Awful
 //
 //  Created by Liam Westby on 9/23/17.
@@ -8,13 +8,13 @@
 
 import UIKit
 
-class AwfulIconCollectionLayout: UICollectionViewFlowLayout {
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+final class AppIconPickerCollectionViewLayout: UICollectionViewFlowLayout {
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
         
         self.scrollDirection = .horizontal
         self.minimumInteritemSpacing = 10
         self.estimatedItemSize = CGSize(width: 70, height: 120)
-        self.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10)
+        self.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
     }
 }

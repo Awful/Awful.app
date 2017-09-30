@@ -5,6 +5,8 @@
 import AwfulCore
 import CoreData
 
+private let Log = Logger.get(level: .debug)
+
 final class SettingsViewController: TableViewController {
     fileprivate let managedObjectContext: NSManagedObjectContext
     
@@ -37,9 +39,16 @@ final class SettingsViewController: TableViewController {
             if let device = section["Device"] as? String, !device.hasPrefix(currentDevice) {
                 return false
             }
-            if let capability = section["DeviceCapability"] as? String , capability == "Handoff" && !UIDevice.current.isHandoffCapable {
+
+            switch section["DeviceCapability"] as? String {
+            case "AppIconChange"? where !SystemCapabilities.changeAppIcon:
                 return false
+            case "Handoff"? where !SystemCapabilities.handoff:
+                return false
+            default:
+                break
             }
+
             if let visible = section["VisibleInSettingsTab"] as? Bool {
                 return visible
             }
@@ -85,7 +94,7 @@ final class SettingsViewController: TableViewController {
                 self?.tableView.reloadData()
             }
             .catch { (error) -> Void in
-                print("\(#function) failed refreshing user info: \(error)")
+                Log.i("failed refreshing user info: \(error)")
         }
     }
 
@@ -105,8 +114,8 @@ final class SettingsViewController: TableViewController {
         super.viewDidLoad()
         
         tableView.separatorStyle = .singleLine
-        tableView.register(UINib(nibName: "SettingsSliderCell", bundle: nil), forCellReuseIdentifier: SettingType.Slider.rawValue)
-        tableView.register(UINib(nibName: "AwfulIconCollection", bundle: nil), forCellReuseIdentifier: SettingType.Collection.rawValue)
+        tableView.register(UINib(nibName: "SettingsSliderCell", bundle: Bundle(for: SettingsViewController.self)), forCellReuseIdentifier: SettingType.Slider.cellIdentifier)
+        tableView.register(UINib(nibName: "AppIconPickerCell", bundle: Bundle(for: SettingsViewController.self)), forCellReuseIdentifier: SettingType.AppIconPicker.cellIdentifier)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -117,7 +126,8 @@ final class SettingsViewController: TableViewController {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        print("viewWillTransition")
+        Log.d("hello")
+
         coordinator.animate(alongsideTransition: nil) { (context) in
             self.tableView.reloadData()
         }
@@ -136,7 +146,7 @@ final class SettingsViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let setting = self.setting(at: indexPath)
-        if let typeString = setting["Type"] as? String, typeString == "Collection" {
+        if let typeString = setting["Type"] as? String, typeString == "AppIconPicker" {
             return 120
         } else {
             return 44
@@ -151,22 +161,15 @@ final class SettingsViewController: TableViewController {
         case Disclosure = "Disclosure"
         case DisclosureDetail = "DisclosureDetail"
         case Slider = "Slider"
-        case Collection = "Collection"
+        case AppIconPicker = "AppIconPicker"
         
         var cellStyle: UITableViewCellStyle {
             switch self {
-            case .OnOff, .Button, .Disclosure:
+            case .OnOff, .Button, .Disclosure, .Slider, .AppIconPicker:
                 return .default
                 
             case .Immutable, .Stepper, .DisclosureDetail:
                 return .value1
-            
-            case .Slider:
-                return .default
-            
-            case .Collection:
-                return .default
-            
             }
         }
         
@@ -192,8 +195,8 @@ final class SettingsViewController: TableViewController {
             }
         } else if let typeString = setting["Type"] as? String, typeString == "Slider" {
             settingType = .Slider
-        } else if let typeString = setting["Type"] as? String, typeString == "Collection" {
-            settingType = .Collection
+        } else if let typeString = setting["Type"] as? String, typeString == "AppIconPicker" {
+            settingType = .AppIconPicker
         } else {
             settingType = .Immutable
         }
@@ -203,8 +206,6 @@ final class SettingsViewController: TableViewController {
             cell = dequeued
         } else if settingType == .Slider {
             cell = SettingsSliderCell(style:settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
-        } else if settingType == .Collection {
-            cell = AwfulIconCollection(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
         } else {
             cell = UITableViewCell(style: settingType.cellStyle, reuseIdentifier: settingType.cellIdentifier)
             switch settingType {
@@ -225,8 +226,11 @@ final class SettingsViewController: TableViewController {
             case .Button:
                 cell.accessibilityTraits |= UIAccessibilityTraitButton
                 cell.accessoryType = .none
+
+            case .AppIconPicker:
+                assertionFailure("Please register the AppIconPickerTableViewCell nib with the table view")
                 
-            case .Immutable, .Slider, .Collection:
+            case .Immutable, .Slider:
                 break
             }
         }
@@ -245,7 +249,7 @@ final class SettingsViewController: TableViewController {
             case .Immutable, .OnOff, .Disclosure, .Stepper, .Button:
                 cell.textLabel?.text = transformer.transformedValue(AwfulSettings.shared()) as? String
                 
-            case .Slider, .Collection:
+            case .Slider, .AppIconPicker:
                 break
             }
         } else if setting["ShowValue"] as? Bool == true {
@@ -287,15 +291,15 @@ final class SettingsViewController: TableViewController {
             }
         }
         
-        if settingType == .Collection {
-            guard let collection = (cell as! AwfulIconCollection).collection as UICollectionView? else { fatalError("setting should have collection view") }
+        if settingType == .AppIconPicker {
+            guard let collection = (cell as! AppIconPickerCell).collection as UICollectionView? else { fatalError("setting should have collection view") }
             collection.awful_setting = setting["Key"] as? String
         }
         switch settingType {
         case .Button, .Disclosure, .DisclosureDetail:
             cell.selectionStyle = .blue
             
-        case .Immutable, .OnOff, .Stepper, .Slider, .Collection:
+        case .Immutable, .OnOff, .Stepper, .Slider, .AppIconPicker:
             cell.selectionStyle = .none
         }
         
