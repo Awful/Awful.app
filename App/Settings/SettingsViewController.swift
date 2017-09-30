@@ -22,16 +22,18 @@ final class SettingsViewController: TableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate let sections: [[String: AnyObject]]! = {
-        let currentDevice: String
-        // For settings purposes, we consider devices with a regular horizontal size class in landscape to be iPads. This includes iPads and also the iPhone 6 Plus.
-        let tc = UIScreen.main.traitCollection
-        if tc.horizontalSizeClass == .regular || tc.verticalSizeClass == .regular {
-            currentDevice = "iPad"
-        } else {
-            currentDevice = "iPhone"
-        }
-        
+    fileprivate let sections: [[String: AnyObject]] = {
+        // For settings purposes, we consider devices with a regular horizontal size class in landscape to be iPads. This includes iPads and the iPhones Plus.
+        let currentDevice: String = {
+            // Can't think of a way to actually test for "is horizontal regular in landscape orientation", so we'll use a display scale of 3x as a proxy.
+            if UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2 {
+                return "iPad"
+            }
+            else {
+                return "iPhone"
+            }
+        }()
+
         guard let sections = AwfulSettings.shared().sections as? [[String: AnyObject]] else { fatalError("can't interpret settings sections") }
         func validSection(_ section: [String: AnyObject]) -> Bool {
             if let device = section["Device"] as? String, !device.hasPrefix(currentDevice) {
