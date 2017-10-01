@@ -14,7 +14,7 @@ final class AppIconPickerCollectionViewLayout: UICollectionViewFlowLayout {
         
         self.scrollDirection = .horizontal
         self.minimumInteritemSpacing = 10
-        self.estimatedItemSize = CGSize(width: 70, height: 120)
+        self.itemSize = CGSize(width: 70, height: 120)
         self.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
     }
 }

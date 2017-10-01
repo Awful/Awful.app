@@ -22,12 +22,15 @@
                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" contentInsetAdjustmentBehavior="scrollableAxes" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="3TS-Nc-a90">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="120" id="gTS-pc-xsm"/>
+                        </constraints>
                         <collectionViewLayout key="collectionViewLayout" id="d05-Fg-doA" customClass="AppIconPickerCollectionViewLayout" customModule="Awful" customModuleProvider="target"/>
                     </collectionView>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="3TS-Nc-a90" secondAttribute="trailing" id="1oh-CZ-Qt8"/>
-                    <constraint firstAttribute="bottom" secondItem="3TS-Nc-a90" secondAttribute="bottom" id="6Za-SU-JAu"/>
+                    <constraint firstAttribute="bottom" secondItem="3TS-Nc-a90" secondAttribute="bottom" priority="900" id="6Za-SU-JAu"/>
                     <constraint firstItem="3TS-Nc-a90" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="HS8-J0-nh0"/>
                     <constraint firstItem="3TS-Nc-a90" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="ivQ-5y-IwR"/>
                 </constraints>
