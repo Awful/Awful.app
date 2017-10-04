@@ -6,13 +6,20 @@ import CoreData
 import UIKit
 
 /// The RootViewControllerStack initializes the logged-in root view controller, implements releated delegate methods, and handles state restoration.
-class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
+final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     
     let managedObjectContext: NSManagedObjectContext
     
-    var rootViewController: UIViewController {
-        get { return splitViewController }
-    }
+    lazy private(set) var rootViewController: UIViewController = {
+        // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
+        let container = PassthroughViewController()
+        container.addChildViewController(self.splitViewController)
+        self.splitViewController.view.frame = CGRect(origin: .zero, size: container.view.bounds.size)
+        self.splitViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        container.view.addSubview(self.splitViewController.view)
+        self.splitViewController.didMove(toParentViewController: container)
+        return container
+    }()
     
     fileprivate let splitViewController: AwfulSplitViewController
     fileprivate let tabBarController: UITabBarController
@@ -333,5 +340,39 @@ extension PostsPageViewController {
 extension MessageViewController {
     override var prefersSecondaryViewController: Bool {
         get { return true }
+    }
+}
+
+private final class PassthroughViewController: UIViewController {
+    override func childViewControllerForHomeIndicatorAutoHidden() -> UIViewController? {
+        return childViewControllers.first
+    }
+
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return childViewControllers.first?.preferredStatusBarUpdateAnimation ?? super.preferredStatusBarUpdateAnimation
+    }
+
+    override func childViewControllerForScreenEdgesDeferringSystemGestures() -> UIViewController? {
+        return childViewControllers.first
+    }
+
+    override var childViewControllerForStatusBarHidden: UIViewController? {
+        return childViewControllers.first
+    }
+
+    override var childViewControllerForStatusBarStyle: UIViewController? {
+        return childViewControllers.first
+    }
+
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return childViewControllers.first?.preferredInterfaceOrientationForPresentation ?? super.preferredInterfaceOrientationForPresentation
+    }
+
+    override var shouldAutorotate: Bool {
+        return childViewControllers.first?.shouldAutorotate ?? super.shouldAutorotate
+    }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return childViewControllers.first?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
     }
 }

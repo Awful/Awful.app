@@ -47,3 +47,9 @@
  * In addition, if the setting describes a `Minimum` and/or `Maximum`, those values are set to the `minimumValue` and `maximumValue` properties.
  */
 @interface UISlider (AwfulSettingsBinding) <SettingsBindable> @end
+
+
+/**
+ * Binds the 
+ */
+@interface UICollectionView (AwfulSettingsBinding) <SettingsBindable> @end

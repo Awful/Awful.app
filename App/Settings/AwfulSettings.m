@@ -383,6 +383,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .defaultBrowser = @"default_browser",
     .openYouTubeLinksInYouTube = @"open_youtube_links_in_youtube",
     .openTwitterLinksInTwitter = @"open_twitter_links_in_twitter",
+    .appIconName = @"app_icon_name",
 };
 
 NSArray * AwfulDefaultBrowsers(void)

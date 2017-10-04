@@ -340,3 +340,34 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 
 @end
 
+@implementation UICollectionView (AwfulSettingsBinding)
+
+- (void)setAwful_setting:(NSString *)settingsKey
+{
+    [super setAwful_setting:settingsKey];
+}
+
+- (void)addAwful_overridingSetting:(NSString *)overridingSettingKey {
+    [super addAwful_overridingSetting:overridingSettingKey];
+    if (overridingSettingKey) {
+        [self awful_overridingSettingDidChange:overridingSettingKey];
+    }
+}
+
+- (void)awful_valueChanged
+{
+    //[AwfulSettings sharedSettings][self.awful_setting] = @(self.value);
+}
+
+- (void)awful_settingDidChange:(NSNumber *)newValue
+{
+    //self.value = newValue.doubleValue;
+}
+
+- (void)awful_overridingSettingDidChange:(id)overridingSetting
+{
+    //nop
+}
+
+@end
+
