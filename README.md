@@ -1,7 +1,7 @@
 Awful
 =====
 
-[Awful][App Store] is an iOS 9 app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
+[Awful][App Store] is an iOS 9+ app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
 Development talk usually ends up in the [project.log][] thread, but we're not fussy. There's also a [list of issues](https://github.com/awful/Awful.app/issues).
 
@@ -119,6 +119,18 @@ To add a new thread tag you just made:
 [awfulapp.com.git]: https://github.com/Awful/awful.github.io
 [awfulapp.com.git README]: https://github.com/Awful/awful.github.io/blob/master/README.md#thread-tags
 [Thread Tags.git]: https://github.com/Awful/thread-tags
+
+Alternate App Icons
+-------------------
+
+As of iOS 10.3 alternate app icons are a thing. We have some lovely choices. Since support both iOS 10 and iOS 11, there's some hoops to jump through. Here's a mini checklist for adding a new alternate app icon:
+
+* Pick a name for the alternate icon. The icon picker in the Settings tab sorts icons alphabetically by this name. (e.g. the :getout: frog is called `getout`.)
+* Name the image files according to the scheme you see for the existing icons, but using your chosen name.
+* Add new key and values to *both* `CFBundleIcons` and `CFBundleIcons~ipad`. Your added key/values will be identical between those two locations, so go ahead and copypasta.
+* Add the image files to the Xcode project, and *double-check that the images get added to the target*. Seems like Xcode 9 doesn't always add everything even if you ticked the target on the sheet.
+
+The reason for this silliness: iOS 10 requires alternate icons to be loose in the app bundle, while iOS 11 supports alternate icons in an asset catalog; iTunes Connect requires all submissions built using the iOS 11 SDK to have the main app icon in an asset catalog. It seems like the asset catalog compiler merges any `CFBundleIcons` values it comes across with its own generated values so it works out ok for us.
 
 Assembling the AwfulPostsView
 -----------------------------
