@@ -3,7 +3,10 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import OnePasswordExtension
 import UIKit
+
+private let Log = Logger.get()
 
 class LoginViewController: ViewController {
     var completionBlock: ((LoginViewController) -> Void)?
@@ -68,6 +71,8 @@ class LoginViewController: ViewController {
         
         // Can't set this in the storyboard for some reason.
         nextBarButtonItem.isEnabled = false
+
+        onePasswordButton.setImage(findOnePasswordButtonImage(), for: .normal)
         
         if !OnePasswordExtension.shared().isAppExtensionAvailable() {
             onePasswordButton.removeFromSuperview()
@@ -111,8 +116,8 @@ class LoginViewController: ViewController {
         
         OnePasswordExtension.shared().findLogin(forURLString: "forums.somethingawful.com", for: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
             if loginInfo == nil {
-                if (error as NSError?)?.code != AppExtensionErrorCodeCancelledByUser {
-                    NSLog("[\(String(describing: self)) \(#function)] 1Password extension failed: \(String(describing: error))")
+                if let error = error as NSError?, error.code != AppExtensionErrorCodeCancelledByUser {
+                    Log.e("1Password extension failed: \(error)")
                 }
                 return
             }
@@ -199,4 +204,18 @@ extension LoginViewController {
             
         }, completion: nil)
     }
+}
+
+private func findOnePasswordButtonImage() -> UIImage {
+    // This seems way too buried and like I'm missing the obvious way to get this image out of the framework. If you know what that way is, please replace this junk!
+    guard
+        let resourceBundleURL = Bundle(for: OnePasswordExtension.self).url(forResource: "OnePasswordExtensionResources.bundle", withExtension: nil),
+        let resourceBundle = Bundle(url: resourceBundleURL),
+        let image = UIImage(named: "onepassword-button", in: resourceBundle, compatibleWith: nil) else
+    {
+        Log.e("where's the onepassword-button?")
+        return UIImage()
+    }
+
+    return image
 }

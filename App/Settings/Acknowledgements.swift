@@ -4,6 +4,7 @@
 
 import GRMustache
 import UIKit
+import WebKit
 
 final class AcknowledgementsViewController: ViewController {
     fileprivate var webView: WKWebView { return view as! WKWebView }
