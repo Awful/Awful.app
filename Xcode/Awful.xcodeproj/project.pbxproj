@@ -18,8 +18,6 @@
 		1C07B8C41F07D73F0044B8AF /* AnnouncementPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8C31F07D73F0044B8AF /* AnnouncementPersistenceTests.swift */; };
 		1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */; };
 		1C098AE919C77B430031C12A /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C098AE819C77B430031C12A /* MessageCell.xib */; };
-		1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */; };
-		1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */; };
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0AFAE21ECA96E6002D4003 /* posts-view-alternate-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */; };
@@ -585,9 +583,6 @@
 		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicTypeTableViewCell.swift; sourceTree = "<group>"; };
 		1C098AE819C77B430031C12A /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
-		1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = 1Password.xcassets; sourceTree = "<group>"; };
-		1C09BFE81A09B9C2007C11F5 /* OnePasswordExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnePasswordExtension.h; sourceTree = "<group>"; };
-		1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnePasswordExtension.m; sourceTree = "<group>"; };
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate-dark.css"; sourceTree = "<group>"; };
@@ -1156,7 +1151,6 @@
 			isa = PBXGroup;
 			children = (
 				8C89FAF31CAA0F4200640F3D /* widgets.js */,
-				1C09BFE51A09B9A5007C11F5 /* 1Password */,
 				1CA1F0461910AEBA00E85DB2 /* zepto.min.js */,
 			);
 			name = Vendor;
@@ -1262,16 +1256,6 @@
 				1CE55A771A10675700E474A6 /* FetchedDataSource.swift */,
 			);
 			path = Tables;
-			sourceTree = "<group>";
-		};
-		1C09BFE51A09B9A5007C11F5 /* 1Password */ = {
-			isa = PBXGroup;
-			children = (
-				1C09BFE61A09B9C2007C11F5 /* 1Password.xcassets */,
-				1C09BFE81A09B9C2007C11F5 /* OnePasswordExtension.h */,
-				1C09BFE91A09B9C2007C11F5 /* OnePasswordExtension.m */,
-			);
-			path = 1Password;
 			sourceTree = "<group>";
 		};
 		1C14A4BE1A94C3640045DDF7 /* Model */ = {
@@ -2026,7 +2010,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Awful */ = {
+		29B97314FDCFA39411CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -2389,7 +2373,7 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2614,7 +2598,6 @@
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
 				8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */,
 				1C502D4A1F817010001890AF /* AppIcon-staredog-40x40@2x.png in Resources */,
-				1C09BFEA1A09B9C2007C11F5 /* 1Password.xcassets in Resources */,
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C502D391F817004001890AF /* AppIcon-getout-40x40.png in Resources */,
@@ -2914,6 +2897,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-Awful/Pods-Awful-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/ARChromeActivity/ARChromeActivity.framework",
 				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
@@ -2934,6 +2918,7 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ARChromeActivity.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
@@ -3124,7 +3109,6 @@
 				1CDD5199154294D400326C7B /* AwfulSettings.m in Sources */,
 				1C16FC0E1CC477B200C88BD1 /* ThreadTagPickerViewController.swift in Sources */,
 				1C25AC4B1F537A9600977D6F /* WebViewAntiHijacking.swift in Sources */,
-				1C09BFEC1A09B9C2007C11F5 /* OnePasswordExtension.m in Sources */,
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */,
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,

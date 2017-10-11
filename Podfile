@@ -7,6 +7,7 @@ use_frameworks!
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 target 'Awful' do
+  pod '1PasswordExtension'
   pod 'AFNetworking', '~> 2.0'
   pod 'ARChromeActivity'
   pod 'Crashlytics'
