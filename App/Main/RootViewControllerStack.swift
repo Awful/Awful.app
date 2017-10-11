@@ -243,7 +243,10 @@ extension RootViewControllerStack {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
         let viewControllers = primaryNavigationController.viewControllers 
-        let (primaryStack, secondaryStack) = partition(viewControllers) { $0.prefersSecondaryViewController }
+        let (primaryStack, secondaryStack) = partition(viewControllers) { vc in
+            guard let vc = vc as? HasSplitViewPreference else { return false }
+            return vc.prefersSecondaryViewController
+        }
         primaryNavigationController.viewControllers = Array(primaryStack)
         let secondaryNavigationController = createEmptyDetailNavigationController()
         if secondaryStack.isEmpty {
@@ -325,21 +328,19 @@ func partition<C: Collection>(_ c: C, test: (C.Iterator.Element) -> Bool) -> (C.
     return (c.prefix(upTo: c.endIndex), c.suffix(from: c.endIndex))
 }
 
-extension UIViewController {
+protocol HasSplitViewPreference {
+    var prefersSecondaryViewController: Bool { get }
+}
+
+extension PostsPageViewController: HasSplitViewPreference {
     var prefersSecondaryViewController: Bool {
-        get { return false }
+        return true
     }
 }
 
-extension PostsPageViewController {
-    override var prefersSecondaryViewController: Bool {
-        get { return true }
-    }
-}
-
-extension MessageViewController {
-    override var prefersSecondaryViewController: Bool {
-        get { return true }
+extension MessageViewController: HasSplitViewPreference {
+    var prefersSecondaryViewController: Bool {
+        return true
     }
 }
 
