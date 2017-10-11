@@ -373,7 +373,6 @@
 		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
 		1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B76A19C2374C00FDC33E /* Login.storyboard */; };
 		1CE55A701A10552600E474A6 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A6F1A10552600E474A6 /* DataSource.swift */; };
-		1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A751A10674B00E474A6 /* CompoundDataSource.swift */; };
 		1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A771A10675700E474A6 /* FetchedDataSource.swift */; };
 		1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */; };
 		1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */; };
@@ -955,7 +954,6 @@
 		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		1CE55A6D1A0F77B800E474A6 /* Forum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Forum.swift; sourceTree = "<group>"; };
 		1CE55A6F1A10552600E474A6 /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
-		1CE55A751A10674B00E474A6 /* CompoundDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompoundDataSource.swift; sourceTree = "<group>"; };
 		1CE55A771A10675700E474A6 /* FetchedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedDataSource.swift; sourceTree = "<group>"; };
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
 		1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyPageScrapingTests.swift; sourceTree = "<group>"; };
@@ -1259,7 +1257,6 @@
 		1C098AE519C6B38E0031C12A /* Tables */ = {
 			isa = PBXGroup;
 			children = (
-				1CE55A751A10674B00E474A6 /* CompoundDataSource.swift */,
 				1CE55A6F1A10552600E474A6 /* DataSource.swift */,
 				1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */,
 				1CE55A771A10675700E474A6 /* FetchedDataSource.swift */,
@@ -3191,7 +3188,6 @@
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
-				1CE55A761A10674B00E474A6 /* CompoundDataSource.swift in Sources */,
 				1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */,
 				1C25AC211F532EE600977D6F /* LocalizedString.swift in Sources */,
 				1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */,
