@@ -59,7 +59,7 @@ final class SettingsUbiquitousThemesController: TableViewController {
         cell.textLabel?.text = theme.descriptiveName
         cell.textLabel?.textColor = theme["listTextColor"]
         let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.subheadline)
-        guard let fontName = (theme["listFontName"] as String?) ?? descriptor.object(forKey: UIFontDescriptorNameAttribute) as? String else {
+        guard let fontName = (theme["listFontName"] as String?) ?? descriptor.object(forKey: .name) as? String else {
             fatalError("\(#function) couldn't find font name")
         }
         cell.textLabel?.font = UIFont(name: fontName, size: descriptor.pointSize)
@@ -82,7 +82,7 @@ final class SettingsUbiquitousThemesController: TableViewController {
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         guard let text = tableView.dataSource?.tableView?(tableView, titleForFooterInSection: section) else { return 0 }
         let maxSize = CGSize(width: tableView.bounds.width - 40, height: .greatestFiniteMagnitude)
-        let expected = (text as NSString).boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyle.footnote)], context: nil)
+        let expected = (text as NSString).boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [.font: UIFont.preferredFont(forTextStyle: .footnote)], context: nil)
         return ceil(expected.height) + 14
     }
     

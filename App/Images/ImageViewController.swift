@@ -144,8 +144,8 @@ final class ImageViewController: UIViewController {
             
             let bodyFontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.body)
             let title = NSAttributedString(string: "Done", attributes: [
-                NSForegroundColorAttributeName: overlaidForegroundColor,
-                NSFontAttributeName: UIFont.boldSystemFont(ofSize: bodyFontDescriptor.pointSize)
+                .foregroundColor: overlaidForegroundColor,
+                .font: UIFont.boldSystemFont(ofSize: bodyFontDescriptor.pointSize)
                 ])
             doneButton.setAttributedTitle(title, for: UIControlState())
             doneButton.contentEdgeInsets = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)

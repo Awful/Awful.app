@@ -137,7 +137,7 @@ private struct ImageTag {
 private extension NSAttributedString {
     var imageTags: [ImageTag] {
         var tags: [ImageTag] = []
-        enumerateAttribute(NSAttachmentAttributeName, in: NSRange(location: 0, length: length), options: .longestEffectiveRangeNotRequired) { (attachment, range, stop) in
+        enumerateAttribute(.attachment, in: NSRange(location: 0, length: length), options: .longestEffectiveRangeNotRequired) { (attachment, range, stop) in
             guard let attachment = attachment as? TextAttachment else { return }
             tags.append(ImageTag(attachment, range: range))
         }

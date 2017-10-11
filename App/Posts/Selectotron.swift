@@ -111,8 +111,8 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
     
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let attributes = [
-            NSForegroundColorAttributeName: theme["sheetTextColor"]!,
-            NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+            NSAttributedStringKey.foregroundColor: theme["sheetTextColor"]!,
+            .font: UIFont.preferredFont(forTextStyle: .body)
         ]
         return NSAttributedString(string: "\(row + 1)", attributes: attributes)
     }

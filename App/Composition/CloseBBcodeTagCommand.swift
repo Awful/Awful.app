@@ -7,7 +7,7 @@ import UIKit
 /// Auto-closes the nearest open BBcode tag in a text view.
 final class CloseBBcodeTagCommand: NSObject {
     /// Whether the command can execute. KVO-compliant.
-    dynamic fileprivate(set) var enabled = false
+    @objc dynamic fileprivate(set) var enabled = false
     
     fileprivate let textView: UITextView
     

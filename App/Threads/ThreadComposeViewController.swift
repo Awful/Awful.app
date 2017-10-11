@@ -69,7 +69,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.textColor = textView.textColor
         fieldView.subjectField.textField.keyboardAppearance = textView.keyboardAppearance
         
-        let attributes = [NSForegroundColorAttributeName: theme["listSecondaryTextColor"] ?? .gray]
+        let attributes = [NSAttributedStringKey.foregroundColor: theme["listSecondaryTextColor"] ?? .gray]
         let themedString = NSAttributedString(string: "Subject", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = themedString
         updateThreadTagButtonImage()

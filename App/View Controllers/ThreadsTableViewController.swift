@@ -218,7 +218,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         composeBarButtonItem.isEnabled = forum.canPost && forum.lastRefresh != nil
     }
     
-    func didTapCompose() {
+    @objc func didTapCompose() {
         present(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     

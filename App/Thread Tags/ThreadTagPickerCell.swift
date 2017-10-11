@@ -94,10 +94,10 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
         
-        let titleAttributes = [
-            NSForegroundColorAttributeName: titleTextColor,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 12)] as [String : Any]
-        let titleSize = titleText.size(attributes: titleAttributes)
+        let titleAttributes: [NSAttributedStringKey: Any] = [
+            .foregroundColor: titleTextColor,
+            .font: UIFont.systemFont(ofSize: 12)]
+        let titleSize = titleText.size(withAttributes: titleAttributes)
         let titleOrigin = CGPoint(x: (bounds.width - titleSize.width) / 2, y: bounds.height - titleSize.height)
         let titleFrame = CGRect(origin: titleOrigin, size: titleSize)
         titleText.draw(in: titleFrame, withAttributes: titleAttributes)
@@ -112,9 +112,9 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
         
         let firstLetter = String(titleText.characters.first ?? "?")
         let letterAttributes = [
-            NSForegroundColorAttributeName: isSelected ? UIColor.white : drawColor,
-            NSFontAttributeName: UIFont.systemFont(ofSize: 24)]
-        let letterSize = firstLetter.size(attributes: letterAttributes)
+            NSAttributedStringKey.foregroundColor: isSelected ? UIColor.white : drawColor,
+            .font: UIFont.systemFont(ofSize: 24)]
+        let letterSize = firstLetter.size(withAttributes: letterAttributes)
         let letterOrigin = CGPoint(
             x: circleFrame.midX - letterSize.width / 2,
             y: circleFrame.midY - letterSize.height / 2)

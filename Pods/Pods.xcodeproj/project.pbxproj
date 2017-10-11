@@ -3401,6 +3401,53 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0900;
+				TargetAttributes = {
+					00E0802DA0C7B6A2D51F819B9BA65D71 = {
+						LastSwiftMigration = 0900;
+					};
+					0DA4E95AE655F5FEAC5A6F637B0CD11D = {
+						LastSwiftMigration = 0900;
+					};
+					12824388A9DDA43B83642E1F2A0D9E7E = {
+						LastSwiftMigration = 0900;
+					};
+					1ED8BE8BD6A53853974A60E1AC8B1019 = {
+						LastSwiftMigration = 0900;
+					};
+					1EEDA0FE033F983A39499C0E1E950457 = {
+						LastSwiftMigration = 0900;
+					};
+					32D9A0C6C554FC46CE3DFB0CF48CCA77 = {
+						LastSwiftMigration = 0900;
+					};
+					3867A7E5CB4A9F7D2EE936F1CF3DD7EC = {
+						LastSwiftMigration = 0900;
+					};
+					3F85584AD2134ADEE13C1CD2B2AA1947 = {
+						LastSwiftMigration = 0900;
+					};
+					66F07F520EC712A6B0118628BD4A770E = {
+						LastSwiftMigration = 0900;
+					};
+					7C101F237D878DF422E2EB73BC8FFA83 = {
+						LastSwiftMigration = 0900;
+					};
+					83B5B60C676A8D31829A6AE91CE86A75 = {
+						LastSwiftMigration = 0900;
+					};
+					8D3923E2F1F5492787C1F3BCADB31463 = {
+						LastSwiftMigration = 0900;
+					};
+					AF9F232E897A123765216E111CBD6125 = {
+						LastSwiftMigration = 0900;
+					};
+					D1DF20181FA32882B3D14DA7D4344EBA = {
+						LastSwiftMigration = 0900;
+					};
+					F1BB2FCBCF83B5DDB315512A21BC40B8 = {
+						LastSwiftMigration = 0900;
+					};
+				};
 			};
 			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";

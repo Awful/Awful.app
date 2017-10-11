@@ -13,7 +13,7 @@ final class SelfHostingAttachmentInterpolator: NSObject {
         let mutableString = string.mutableCopy() as! NSMutableAttributedString
         
         // I'm not sure how to modify the string within calls to -[NSMutableAttributedString enumerateAttribute:...] when the range has length one, unless we go in reverse. I'm not sure it's a bug either.
-        string.enumerateAttribute(NSAttachmentAttributeName, in: NSRange(0..<string.length), options: [.longestEffectiveRangeNotRequired, .reverse]) { (attachment, range, stop) in
+        string.enumerateAttribute(.attachment, in: NSRange(0..<string.length), options: [.longestEffectiveRangeNotRequired, .reverse]) { (attachment, range, stop) in
             guard let attachment = attachment as? NSTextAttachment else { return }
             let path = basePath.appendingPathComponent("\(self.URLs.count)")
             guard let URL = serve(attachment: attachment, fromPath: path) else { return }

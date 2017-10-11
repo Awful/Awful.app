@@ -13,8 +13,8 @@ final class ComposeField: UIView {
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 16)
-        label.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .horizontal)
-        label.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .horizontal)
+        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         addSubview(label)
         
         textField.translatesAutoresizingMaskIntoConstraints = false

@@ -23,7 +23,7 @@ final class CompositionViewController: ViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    func cancel(_ sender: UIKeyCommand) {
+    @objc func cancel(_ sender: UIKeyCommand) {
         self.didTapCancel()
     }
     

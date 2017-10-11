@@ -238,12 +238,12 @@ extension UITextView {
      */
     func replaceSelection(with text: String) {
         // If the text view is empty when mucking with text storage then the `font` and `textColor` properties are ignored.
-        var attributes: [String: Any] = [:]
+        var attributes: [NSAttributedStringKey: Any] = [:]
         if let font = font {
-            attributes[NSFontAttributeName] = font
+            attributes[.font] = font
         }
         if let textColor = textColor {
-            attributes[NSForegroundColorAttributeName] = textColor
+            attributes[.foregroundColor] = textColor
         }
 
         textStorage.beginEditing()

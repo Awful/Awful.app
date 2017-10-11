@@ -201,10 +201,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
         alert.message = "Would you like to open this URL in Awful?\n\n\(url.absoluteString)"
         alert.addCancelActionWithHandler(nil)
-        alert.addActionWithTitle("Open", handler: { (action) in
-            let _ = self.openAwfulURL(awfulURL)
+        alert.addActionWithTitle("Open", handler: {
+            self.openAwfulURL(awfulURL)
         })
-        window?.rootViewController?.present(alert, animated: true, completion: nil)
+        window?.rootViewController?.present(alert, animated: true)
     }
     
     /**

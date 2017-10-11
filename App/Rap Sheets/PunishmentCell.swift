@@ -18,7 +18,7 @@ final class PunishmentCell: UITableViewCell {
     class func rowHeightWithBanReason(_ banReason: String, width: CGFloat) -> CGFloat {
         let reasonInsets = UIEdgeInsets(top: 63, left: 10, bottom: 10, right: 30)
         let remainingWidth = width - reasonInsets.left - reasonInsets.right
-        let reasonRect = (banReason as NSString).boundingRect(with: CGSize(width: remainingWidth, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: reasonFontSize)], context: nil)
+        let reasonRect = (banReason as NSString).boundingRect(with: CGSize(width: remainingWidth, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [.font: UIFont.systemFont(ofSize: reasonFontSize)], context: nil)
         return ceil(reasonRect.height) + reasonInsets.top + reasonInsets.bottom
     }
     

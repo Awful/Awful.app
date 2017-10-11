@@ -68,7 +68,7 @@ import UIKit
     // MARK: Notifications
     
     @objc fileprivate func contentSizeCategoryDidChange(_ notification: Notification) {
-        guard let style = nameLabel.font.fontDescriptor.object(forKey: UIFontDescriptorTextStyleAttribute) as? String else { return }
+        guard let style = nameLabel.font.fontDescriptor.object(forKey: .textStyle) as? String else { return }
         nameLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle(rawValue: style))
     }
     
