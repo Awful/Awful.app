@@ -5,25 +5,13 @@
 import PullToRefresh
 import UIKit
 
-extension UIViewController {
-    // Called when the view controller's theme, derived or otherwise, changes. Subclass implementations should reload and/or update any views customized by the theme, and should call the superclass implementation.
-    func themeDidChange() {
-        var dependants: Set<UIViewController> = []
-        dependants.formUnion(Set(childViewControllers))
-        if let presented = presentedViewController {
-            dependants.insert(presented)
-        }
-        if
-            responds(to: #selector(getter: UINavigationController.viewControllers)),
-            let viewControllers = value(forKey: "viewControllers") as? [UIViewController]
-        {
-            dependants.formUnion(Set(viewControllers))
-        }
-        
-        for viewController in dependants where viewController.isViewLoaded {
-            viewController.themeDidChange()
-        }
-    }
+protocol Themeable {
+
+    /// The current theme.
+    var theme: Theme { get }
+
+    /// Called whenever `theme` changes.
+    func themeDidChange()
 }
 
 private func CommonInit(_ vc: UIViewController) {
@@ -35,7 +23,7 @@ private func CommonInit(_ vc: UIViewController) {
  
     Instances call `themeDidChange()` after loading their view, and they call `themeDidChange()` on all child view controllers and on the presented view controller.
  */
-class ViewController: UIViewController {
+class ViewController: UIViewController, Themeable {
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         CommonInit(self)
@@ -62,9 +50,7 @@ class ViewController: UIViewController {
         themeDidChange()
     }
     
-    override func themeDidChange() {
-        super.themeDidChange()
-        
+    func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
         let scrollView: UIScrollView?
@@ -96,7 +82,7 @@ class ViewController: UIViewController {
  
     Implements `UITableViewDelegate.tableView(_:willDisplayCell:forRowAtIndexPath:)`. If your subclass also implements this method, please call its superclass implementation at some point.
  */
-class TableViewController: UITableViewController {
+class TableViewController: UITableViewController, Themeable {
     fileprivate var viewIsLoading = false
     
     override init(nibName: String?, bundle: Bundle?) {
@@ -219,9 +205,7 @@ class TableViewController: UITableViewController {
         viewIsLoading = false
     }
     
-    override func themeDidChange() {
-        super.themeDidChange()
-        
+    func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
         pullToRefreshView?.backgroundColor = view.backgroundColor
@@ -268,7 +252,7 @@ class TableViewController: UITableViewController {
 }
 
 /// A thin customization of UICollectionViewController that extends Theme support.
-class CollectionViewController: UICollectionViewController {
+class CollectionViewController: UICollectionViewController, Themeable {
     fileprivate var viewIsLoading = false
     
     override init(nibName: String?, bundle: Bundle?) {
@@ -300,9 +284,7 @@ class CollectionViewController: UICollectionViewController {
         viewIsLoading = false
     }
     
-    override func themeDidChange() {
-        super.themeDidChange()
-        
+    func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
         collectionView?.indicatorStyle = theme.scrollIndicatorStyle

@@ -5,7 +5,7 @@
 import UIKit
 
 /// Adds theming support; hosts instances of NavigationBar and Toolbar; shows and hides the toolbar depending on whether the view controller has toolbar items; and, on iPhone, allows swiping from the *right* screen edge to unpop a view controller.
-final class NavigationController: UINavigationController {
+final class NavigationController: UINavigationController, Themeable {
     fileprivate weak var realDelegate: UINavigationControllerDelegate?
     fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return nil }
@@ -32,6 +32,10 @@ final class NavigationController: UINavigationController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    var theme: Theme {
+        return Theme.currentTheme
     }
     
     // MARK: Swipe to unpop
@@ -76,11 +80,7 @@ final class NavigationController: UINavigationController {
         interactivePopGestureRecognizer?.delegate = self
     }
     
-    override func themeDidChange() {
-        super.themeDidChange()
-        
-        let theme = Theme.currentTheme
-        
+    func themeDidChange() {
         navigationBar.tintColor = theme["navigationBarTextColor"]
         navigationBar.barTintColor = theme["navigationBarTintColor"]
         
