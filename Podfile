@@ -1,6 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '8.0'
+platform :ios, '9.0'
 project 'Xcode/Awful'
+
 inhibit_all_warnings!
 use_frameworks!
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
