@@ -13,32 +13,32 @@ final class PrivateMessageViewModel: NSObject {
         super.init()
     }
     
-    @NSCopying var stylesheet: NSString?
+    @NSCopying @objc var stylesheet: NSString?
     
-    var userInterfaceIdiom: String {
+    @objc var userInterfaceIdiom: String {
         switch UIDevice.current.userInterfaceIdiom {
         case .pad: return "ipad"
         default: return "iphone"
         }
     }
     
-    var visibleAvatarURL: URL? {
+    @objc var visibleAvatarURL: URL? {
         return showAvatars ? privateMessage.from?.avatarURL as URL? : nil
     }
     
-    var hiddenAvataruRL: URL? {
+    @objc var hiddenAvataruRL: URL? {
         return showAvatars ? nil : privateMessage.from?.avatarURL as URL?
     }
     
-    var fromUsername: String {
+    @objc var fromUsername: String {
         return privateMessage.fromUsername ?? ""
     }
     
-    var showAvatars: Bool {
+    @objc var showAvatars: Bool {
         return AwfulSettings.shared().showAvatars
     }
     
-    var HTMLContents: String? {
+    @objc var HTMLContents: String? {
         guard let originalHTML = privateMessage.innerHTML else { return nil }
         let document = HTMLDocument(string: originalHTML)
         RemoveSpoilerStylingAndEvents(document)
@@ -47,15 +47,15 @@ final class PrivateMessageViewModel: NSObject {
         return document.firstNode(matchingSelector: "body")?.innerHTML
     }
     
-    var regDateFormat: DateFormatter {
+    @objc var regDateFormat: DateFormatter {
         return DateFormatter.regDateFormatter
     }
     
-    var sentDateFormat: DateFormatter {
+    @objc var sentDateFormat: DateFormatter {
         return DateFormatter.postDateFormatter
     }
     
-    var javascript: String? {
+    @objc var javascript: String? {
         var error: NSError?
         let script = LoadJavaScriptResources(["WebViewJavascriptBridge.js.txt", "zepto.min.js", "widgets.js", "common.js", "private-message.js"], &error)
         if script == nil {
@@ -64,25 +64,25 @@ final class PrivateMessageViewModel: NSObject {
         return script
     }
     
-    var fontScalePercentage: NSNumber? {
+    @objc var fontScalePercentage: NSNumber? {
         let percentage = floor(AwfulSettings.shared().fontScale)
         if percentage == 100 { return nil }
         return percentage as NSNumber?
     }
     
-    var from: User? {
+    @objc var from: User? {
         return privateMessage.from
     }
     
-    var messageID: String {
+    @objc var messageID: String {
         return privateMessage.messageID
     }
     
-    var seen: Bool {
+    @objc var seen: Bool {
         return privateMessage.seen
     }
     
-    var sentDate: Date? {
+    @objc var sentDate: Date? {
         return privateMessage.sentDate as Date?
     }
 }

@@ -13,7 +13,7 @@ final class PostViewModel: NSObject {
         super.init()
     }
     
-    var HTMLContents: String? {
+    @objc var HTMLContents: String? {
         guard let innerHTML = post.innerHTML else { return nil }
         let document = HTMLDocument(string: innerHTML)
         RemoveSpoilerStylingAndEvents(document)
@@ -30,19 +30,19 @@ final class PostViewModel: NSObject {
         return document.firstNode(matchingSelector: "body")?.innerHTML
     }
     
-    var visibleAvatarURL: URL? {
+    @objc var visibleAvatarURL: URL? {
         return showAvatars ? post.author?.avatarURL as URL? : nil
     }
     
-    var hiddenAvatarURL: URL? {
+    @objc var hiddenAvatarURL: URL? {
         return showAvatars ? nil : post.author?.avatarURL as URL?
     }
     
-    var showAvatars: Bool {
+    @objc var showAvatars: Bool {
         return AwfulSettings.shared().showAvatars
     }
     
-    var roles: String {
+    @objc var roles: String {
         guard let author = post.author else { return "" }
         var roles = author.authorClasses ?? ""
         if post.thread?.author == author {
@@ -51,7 +51,7 @@ final class PostViewModel: NSObject {
         return roles
     }
     
-    var accessibilityRoles: String {
+    @objc var accessibilityRoles: String {
         let spokenRoles = [
             "ik": "internet knight",
             "op": "original poster",
@@ -62,32 +62,32 @@ final class PostViewModel: NSObject {
             .joined(separator: "; ")
     }
     
-    var authorIsOP: Bool {
+    @objc var authorIsOP: Bool {
         guard let thisAuthor = post.author, let op = post.thread?.author else { return false }
         return thisAuthor == op
     }
     
-    var postDateFormat: DateFormatter {
+    @objc var postDateFormat: DateFormatter {
         return DateFormatter.postDateFormatter
     }
     
-    var regDateFormat: DateFormatter {
+    @objc var regDateFormat: DateFormatter {
         return DateFormatter.regDateFormatter
     }
     
-    var author: User? {
+    @objc var author: User? {
         return post.author
     }
     
-    var beenSeen: Bool {
+    @objc var beenSeen: Bool {
         return post.beenSeen
     }
     
-    var postDate: Date? {
+    @objc var postDate: Date? {
         return post.postDate as Date?
     }
     
-    var postID: String {
+    @objc var postID: String {
         return post.postID
     }
 }
