@@ -300,26 +300,41 @@ extension UIViewController {
 }
 
 extension UIViewController {
-    func firstDescendantOfType<VC: UIViewController>(_ type: VC.Type) -> VC? {
-        if let found = self as? VC { return found }
-        if responds(to: #selector(getter: UINavigationController.viewControllers)) {
-            for child in value(forKey: "viewControllers") as! [UIViewController] {
-                if let found = child.firstDescendantOfType(type) {
-                    return found
+    var subtree: AnySequence<UIViewController> {
+        return AnySequence { () -> AnyIterator<UIViewController> in
+            var viewControllers: Set<UIViewController> = [self]
+
+            return AnyIterator {
+                guard !viewControllers.isEmpty else { return nil }
+
+                let vc = viewControllers.removeFirst()
+
+                if let presented = vc.presentedViewController {
+                    viewControllers.insert(presented)
                 }
+
+                vc.childViewControllers.forEach { viewControllers.insert($0) }
+
+                switch vc {
+                case let nav as UINavigationController:
+                    nav.viewControllers.forEach { viewControllers.insert($0) }
+                case let split as UISplitViewController:
+                    split.viewControllers.forEach { viewControllers.insert($0) }
+                case let tab as UITabBarController:
+                    tab.viewControllers?.forEach { viewControllers.insert($0) }
+                default:
+                    break
+                }
+
+                return vc
             }
         }
-        return nil
     }
-    
-    // objc version
-    func firstDescendantOfClass(_ cls: AnyClass) -> AnyObject? {
-        if isKind(of: cls) { return self }
-        if responds(to: #selector(getter: UINavigationController.viewControllers)) {
-            for child in value(forKey: "viewControllers") as! [UIViewController] {
-                if let found = child.firstDescendantOfClass(cls) {
-                    return found
-                }
+
+    func firstDescendantOfType<VC: UIViewController>(_ type: VC.Type) -> VC? {
+        for vc in subtree {
+            if let vc = vc as? VC {
+                return vc
             }
         }
         return nil

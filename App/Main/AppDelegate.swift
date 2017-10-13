@@ -293,30 +293,15 @@ private extension AppDelegate {
     }
     
     func themeDidChange() {
-        window?.tintColor = Theme.currentTheme["tintColor"]
+        guard let window = window else { return }
 
-        var viewControllers: Set<UIViewController> = [window?.rootViewController ?? UIViewController()]
-        while !viewControllers.isEmpty {
-            let viewController = viewControllers.removeFirst()
-            if viewController.isViewLoaded, let themeable = viewController as? Themeable {
-                themeable.themeDidChange()
-            }
+        window.tintColor = Theme.currentTheme["tintColor"]
 
-            viewController.childViewControllers.forEach { viewControllers.insert($0) }
-
-            if let presented = viewController.presentedViewController {
-                viewControllers.insert(presented)
-            }
-
-            switch viewController {
-            case let nav as UINavigationController:
-                nav.viewControllers.forEach { viewControllers.insert($0) }
-            case let split as UISplitViewController:
-                split.viewControllers.forEach { viewControllers.insert($0) }
-            case let tab as UITabBarController:
-                tab.viewControllers?.forEach { viewControllers.insert($0) }
-            default:
-                break
+        if let root = window.rootViewController {
+            for vc in root.subtree {
+                if vc.isViewLoaded, let themeable = vc as? Themeable {
+                    themeable.themeDidChange()
+                }
             }
         }
     }

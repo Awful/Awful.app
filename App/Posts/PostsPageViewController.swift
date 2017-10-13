@@ -656,7 +656,8 @@ final class PostsPageViewController: ViewController {
     
     @objc fileprivate func goToParentForum() {
         guard let forum = thread.forum else { return }
-        let url = URL(string: "awful://forums/\(forum.forumID)")!
+        var url = URL(string: "awful://forums/") !! "hardcoded"
+        url = url.appendingPathComponent(forum.forumID)
         AppDelegate.instance.openAwfulURL(url)
     }
     
