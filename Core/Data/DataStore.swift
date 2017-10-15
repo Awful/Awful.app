@@ -15,6 +15,9 @@ public final class DataStore: NSObject {
     private let storeCoordinator: NSPersistentStoreCoordinator
     private let lastModifiedObserver: LastModifiedContextObserver
     
+    /// A block called when the cache pruner fails.
+    public var prunerErrorObserver: ((_ error: Error) -> Void)?
+    
     /**
     :param: storeDirectoryURL A directory to save the store. Created if it doesn't already exist. The directory will be excluded from backups to iCloud or iTunes.
     */
@@ -116,6 +119,7 @@ public final class DataStore: NSObject {
     
     func prune() {
         let pruner = CachePruner(managedObjectContext: mainManagedObjectContext)
+        pruner.errorObserver = prunerErrorObserver
         operationQueue.addOperation(pruner)
     }
     

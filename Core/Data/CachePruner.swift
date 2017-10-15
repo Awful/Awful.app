@@ -5,8 +5,12 @@
 import CoreData
 import Foundation
 
+private let Log = Logger.get()
+
 final class CachePruner: Operation {
     let managedObjectContext: NSManagedObjectContext
+    
+    var errorObserver: ((_ error: Error) -> Void)?
     
     init(managedObjectContext context: NSManagedObjectContext) {
         managedObjectContext = context
@@ -36,7 +40,8 @@ final class CachePruner: Operation {
                     candidateObjectIDs.append(contentsOf: result)
                 }
                 catch {
-                    NSLog("[\(Mirror(reflecting: self)) \(#function)] error fetching: \(error)")
+                    Log.e("error fetching: \(error)")
+                    errorObserver?(error)
                 }
             }
             
@@ -52,8 +57,8 @@ final class CachePruner: Operation {
                 try context.save()
             }
             catch {
-                // Would prefer fatalError() but that doesn't show up in Crashlytics logs.
-                NSException(name: NSExceptionName.genericException, reason: "error saving: \(error)", userInfo: nil).raise()
+                Log.e("error saving: \(error)")
+                errorObserver?(error)
             }
         }
     }

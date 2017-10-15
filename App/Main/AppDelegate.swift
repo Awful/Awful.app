@@ -40,6 +40,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let storeURL = appSupport.appendingPathComponent("CachedForumData", isDirectory: true)
         let modelURL = Bundle(for: DataStore.self).url(forResource: "Awful", withExtension: "momd")!
         dataStore = DataStore(storeDirectoryURL: storeURL, modelURL: modelURL)
+        dataStore.prunerErrorObserver = { error in
+            Crashlytics.sharedInstance().recordError(error)
+        }
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async(execute: removeOldDataStores)
         
