@@ -13,6 +13,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     lazy private(set) var rootViewController: UIViewController = {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
         let container = PassthroughViewController()
+        container.restorationIdentifier = "Root container"
         container.addChildViewController(self.splitViewController)
         self.splitViewController.view.frame = CGRect(origin: .zero, size: container.view.bounds.size)
         self.splitViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -155,16 +156,17 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
                 let currentViewController = viewControllers[i]
                 if identifierComponents.count == 1 {
                     return currentViewController
-                } else if currentViewController.responds(to: #selector(getter: UINavigationController.viewControllers)) {
+                }
+                else {
                     // dropFirst(identifierComponents) did weird stuff here, so I guess let's turn up the awkwardness.
-                    let remainingPath = identifierComponents[1..<identifierComponents.count]
-                    let subsequentViewControllers = currentViewController.value(forKey: "viewControllers") as! [UIViewController]
+                    let remainingPath = identifierComponents[1...]
+                    let subsequentViewControllers = currentViewController.immediateDescendants
                     return search(Array(remainingPath), subsequentViewControllers)
                 }
             }
             return nil
         }
-        return search(identifierComponents, [splitViewController])
+        return search(identifierComponents, [rootViewController])
     }
 
     func didAppear() {
@@ -375,5 +377,16 @@ private final class PassthroughViewController: UIViewController {
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return childViewControllers.first?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
+    }
+    
+    private enum StateKeys {
+        static let childViewControllers = "childViewControllers"
+    }
+    
+    override func encodeRestorableState(with coder: NSCoder) {
+        super.encodeRestorableState(with: coder)
+        
+        // Just need to save them. No real need to decode; we'll set up the root stack outside of the state restoration system.
+        coder.encode(childViewControllers, forKey: StateKeys.childViewControllers)
     }
 }

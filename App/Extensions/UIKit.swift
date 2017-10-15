@@ -300,32 +300,52 @@ extension UIViewController {
 }
 
 extension UIViewController {
+    /**
+     Basically `childViewControllers` plus:
+     
+         * The presented view controller, if any.
+         * Any currently hidden view controllers if this is one of the common container view controllers (e.g. `UITabBarController` tabs that are not the current tab).
+     */
+    var immediateDescendants: [UIViewController] {
+        var immediateDescendants: [UIViewController] = []
+        var alreadyAdded: Set<UIViewController> = []
+        
+        let add = { (vc: UIViewController) in
+            guard !alreadyAdded.contains(vc) else { return }
+            immediateDescendants.append(vc)
+            alreadyAdded.insert(vc)
+        }
+        
+        if let presented = presentedViewController {
+            add(presented)
+        }
+        
+        childViewControllers.forEach(add)
+        
+        switch self {
+        case let nav as UINavigationController:
+            nav.viewControllers.forEach(add)
+        case let split as UISplitViewController:
+            split.viewControllers.forEach(add)
+        case let tab as UITabBarController:
+            tab.viewControllers?.forEach(add)
+        default:
+            break
+        }
+        
+        return immediateDescendants
+    }
+    
     var subtree: AnySequence<UIViewController> {
         return AnySequence { () -> AnyIterator<UIViewController> in
-            var viewControllers: Set<UIViewController> = [self]
+            var viewControllers: [UIViewController] = [self]
 
             return AnyIterator {
                 guard !viewControllers.isEmpty else { return nil }
-
                 let vc = viewControllers.removeFirst()
 
-                if let presented = vc.presentedViewController {
-                    viewControllers.insert(presented)
-                }
-
-                vc.childViewControllers.forEach { viewControllers.insert($0) }
-
-                switch vc {
-                case let nav as UINavigationController:
-                    nav.viewControllers.forEach { viewControllers.insert($0) }
-                case let split as UISplitViewController:
-                    split.viewControllers.forEach { viewControllers.insert($0) }
-                case let tab as UITabBarController:
-                    tab.viewControllers?.forEach { viewControllers.insert($0) }
-                default:
-                    break
-                }
-
+                viewControllers.insert(contentsOf: vc.immediateDescendants, at: 0)
+                
                 return vc
             }
         }
