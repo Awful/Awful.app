@@ -21,7 +21,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
     // MARK: PreviewActionItemProvider
     
     var previewActionItems: [UIPreviewActionItem] {
-        let copyAction = UIPreviewAction(title: "Copy URL", style: .default) { action, previewViewController in
+        let copyAction = UIPreviewAction(title: "Copy URL", style: .default) { action, previewViewController -> Void in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return
             }
@@ -36,12 +36,13 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
             components.queryItems = queryItems as [URLQueryItem]
             
-            let URL = components.url!
-            AwfulSettings.shared().lastOfferedPasteboardURL = URL.absoluteString
-            UIPasteboard.general.awful_URL = URL
+            if let url = components.url {
+                AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
+                UIPasteboard.general.awful_URL = url
+            }
         }
         
-        let markAsReadAction = UIPreviewAction(title: "Mark Thread As Read", style: .default) { action, previewViewController in
+        let markAsReadAction = UIPreviewAction(title: "Mark Thread As Read", style: .default) { action, previewViewController -> Void in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return
             }
@@ -49,7 +50,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
 
             _ = ForumsClient.shared.listPosts(in: thread, writtenBy: nil, page: .last, updateLastReadPost: true)
                 .promise
-                .catch { (error) -> Void in
+                .catch { error -> Void in
                     guard let previewingViewController = postsViewController.parent else {
                         return
                     }
@@ -61,7 +62,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         
         let bookmarkTitle = thread?.bookmarked == true ? "Remove Bookmark" : "Add Bookmark"
         let bookmarkStyle: UIPreviewActionStyle = thread?.bookmarked == true ? .destructive : .default
-        let bookmarkAction = UIPreviewAction(title: bookmarkTitle, style: bookmarkStyle) { action, previewViewController in
+        let bookmarkAction = UIPreviewAction(title: bookmarkTitle, style: bookmarkStyle) { action, previewViewController -> Void in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return
             }
@@ -80,7 +81,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                         overlay?.dismiss(true)
                     }
                 }
-                .catch { (error) -> Void in
+                .catch { error -> Void in
                     guard let presentingViewController = previewViewController.parent else {
                         return
                     }

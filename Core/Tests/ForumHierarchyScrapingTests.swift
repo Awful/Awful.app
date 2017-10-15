@@ -9,19 +9,21 @@ final class ForumHierarchyScrapingTests: XCTestCase {
     func testHierarchy() {
         let result = try! scrapeFixture(named: "forumdisplay") as ForumHierarchyScrapeResult
 
-        let groups = result.nodes.filter { $0.depth == 0 }
-        let groupNames = groups.map{ $0.name }.sorted()
+        let groups = result.nodes.filter { (node: ForumHierarchyNode) -> Bool in node.depth == 0 }
+        let groupNames = groups
+            .map { (group: ForumHierarchyNode) -> String in group.name }
+            .sorted()
         XCTAssertEqual(groupNames, ["Archives", "Discussion", "Main", "The Community", "The Finer Arts"])
 
-        let forums = result.nodes.filter { $0.depth > 0 }
+        let forums = result.nodes.filter { (node: ForumHierarchyNode) -> Bool in node.depth > 0 }
         XCTAssertEqual(forums.count, 66)
 
-        let en = forums.first { $0.name.hasPrefix("E/N") }!
+        let en = forums.first { (forum: ForumHierarchyNode) -> Bool in forum.name.hasPrefix("E/N") }!
         XCTAssertEqual(en.id.rawValue, "214")
         XCTAssertEqual(en.name, "E/N Bullshit")
         XCTAssertEqual(en.depth, 2)
 
-        let gbs = forums[forums.index(of: en)! - 2]
+        let gbs: ForumHierarchyNode = forums[forums.index(of: en)! - 2]
         XCTAssertEqual(gbs.id.rawValue, "1")
         XCTAssertEqual(gbs.name, "General Bullshit")
         XCTAssertEqual(gbs.depth, en.depth - 1)
@@ -31,16 +33,16 @@ final class ForumHierarchyScrapingTests: XCTestCase {
         XCTAssertEqual(main.name, "Main")
         XCTAssertEqual(main.depth, gbs.depth - 1)
 
-        let gameRoom = forums.first { $0.id.rawValue == "103"}!
+        let gameRoom: ForumHierarchyNode = forums.first { $0.id.rawValue == "103"}!
         XCTAssertEqual(gameRoom.name, "The Game Room")
         XCTAssertEqual(gameRoom.depth, 3)
 
-        let traditionalGames = forums[forums.index(of: gameRoom)! - 1]
+        let traditionalGames: ForumHierarchyNode = forums[forums.index(of: gameRoom)! - 1]
         XCTAssertEqual(traditionalGames.id.rawValue, "234")
         XCTAssertEqual(traditionalGames.name, "Traditional Games")
         XCTAssertEqual(traditionalGames.depth, gameRoom.depth - 1)
 
-        let games = forums[forums.index(of: traditionalGames)! - 7]
+        let games: ForumHierarchyNode = forums[forums.index(of: traditionalGames)! - 7]
         XCTAssertEqual(games.id.rawValue, "44")
         XCTAssertEqual(games.name, "Games")
         XCTAssertEqual(games.depth, traditionalGames.depth - 1)

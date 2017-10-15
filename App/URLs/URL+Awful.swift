@@ -10,53 +10,70 @@ extension URL {
     var awfulURL: URL? {
         if scheme?.caseInsensitiveCompare("awful") == .orderedSame { return self }
         guard verifyHost(self) else { return nil }
-        let query = awful_queryDictionary
         
         switch CaseInsensitive(path) {
         case "/showthread.php":
-            if let postID = query["postid"] , query["goto"] == "post" || query["action"] == "showpost" {
+            if
+                let postID = valueForFirstQueryItem(named: "postid"),
+                valueForFirstQueryItem(named: "goto") == "post"
+                    || valueForFirstQueryItem(named: "action") == "showpost"
+            {
                 return URL(string: "awful://posts/\(postID)")
                 
-            } else if let fragment = fragment , fragment.hasPrefix("post") && fragment.characters.count > 4 {
-                let start = fragment.characters.index(fragment.characters.startIndex, offsetBy: 4)
-                let postID = String(fragment.characters[start..<fragment.characters.endIndex])
+            }
+            else if
+                let fragment = fragment,
+                fragment.hasPrefix("post"),
+                fragment.count > 4
+            {
+                let start = fragment.index(fragment.startIndex, offsetBy: 4)
+                let postID = String(fragment[start...])
                 return URL(string: "awful://posts/\(postID)")
                 
-            } else if let threadID = query["threadid"], let pageNumber = query["pagenumber"] {
+            }
+            else if
+                let threadID = valueForFirstQueryItem(named: "threadid"),
+                let pageNumber = valueForFirstQueryItem(named: "pagenumber")
+            {
                 guard var components = URLComponents(string: "awful://threads/\(threadID)/pages/\(pageNumber)") else { return nil }
-                if let userID = query["userid"] , userID != "0" {
+                if let userID = valueForFirstQueryItem(named: "userid"), userID != "0" {
                     components.queryItems = [URLQueryItem(name: "userid", value: userID)]
                 }
                 return components.url
                 
-            } else if let threadID = query["threadid"] {
+            }
+            else if let threadID = valueForFirstQueryItem(named: "threadid") {
                 guard var components = URLComponents(string: "awful://threads/\(threadID)/pages/1") else { return nil }
-                if let userID = query["userid"] , userID != "0" {
+                if let userID = valueForFirstQueryItem("userid"), userID != "0" {
                     components.queryItems = [URLQueryItem(name: "userid", value: userID)]
                 }
                 return components.url
-            } else {
+            }
+            else {
                 return nil
             }
             
         case "/forumdisplay.php":
-            if let forumID = query["forumid"] {
+            if let forumID = valueForFirstQueryItem(named: "forumid") {
                 return URL(string: "awful://forums/\(forumID)")
-            } else {
+            }
+            else {
                 return nil
             }
             
-        case "/member.php" where query["action"] == "getinfo":
-            if let userID = query["userid"] {
+        case "/member.php" where valueForFirstQueryItem(named: "action") == "getinfo":
+            if let userID = valueForFirstQueryItem(named: "userid") {
                 return URL(string: "awful://users/\(userID)")
-            } else {
+            }
+            else {
                 return nil
             }
             
         case "/banlist.php":
-            if let userID = query["userid"] {
+            if let userID = valueForFirstQueryItem(named: "userid") {
                 return URL(string: "awful://banlist/\(userID)")
-            } else {
+            }
+            else {
                 return URL(string: "awful://banlist")
             }
             
@@ -69,8 +86,11 @@ extension URL {
 private func verifyHost(_ url: URL) -> Bool {
     guard let host = url.host else { return false }
     switch CaseInsensitive(host) {
-    case "forums.somethingawful.com", "archives.somethingawful.com", ForumsClient.shared.baseURL?.host ?? "forums.somethingawful.com":
+    case "forums.somethingawful.com",
+         "archives.somethingawful.com",
+         ForumsClient.shared.baseURL?.host ?? "forums.somethingawful.com":
         return true
+    
     default:
         return false
     }

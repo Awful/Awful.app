@@ -42,7 +42,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
         
         checkingForUpdate = true
         
-        let request = NSMutableURLRequest(url: stylesheetURL)
+        var request = URLRequest(url: stylesheetURL)
         
         if let
             oldResponse = NSKeyedUnarchiver.unarchiveObject(withFile: cachedResponseURL.path) as? HTTPURLResponse,

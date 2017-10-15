@@ -117,11 +117,12 @@ private func findAppIcons() -> [AppIcon] {
 
     let alternates = icons["CFBundleAlternateIcons"] as? [String: Any] ?? [:]
     let alternateFilenames = alternates.values
-        .flatMap { $0 as? [String: Any] }
-        .flatMap { $0["CFBundleIconFiles"] as? [String] }
-        .flatMap { $0.first(where: filenameContainsHandySize) }
-        .sorted { $0.caseInsensitiveCompare($1) == .orderedAscending }
+        .flatMap { (value: Any) -> [String: Any]? in value as? [String: Any] }
+        .flatMap { (dict: [String: Any]) -> [String]? in dict["CFBundleIconFiles"] as? [String] }
+        .flatMap { (files: [String]) -> String? in files.first(where: filenameContainsHandySize) }
+        .sorted { (lhs: String, rhs: String) -> Bool in lhs.caseInsensitiveCompare(rhs) == .orderedAscending }
 
-    let filenames = [primaryFilename] + alternateFilenames
-    return filenames.map { AppIcon(filename: $0) }
+    var filenames = [primaryFilename]
+    filenames.append(contentsOf: alternateFilenames)
+    return filenames.map { (filename: String) -> AppIcon in AppIcon(filename: filename) }
 }

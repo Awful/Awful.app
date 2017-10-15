@@ -419,7 +419,9 @@ fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, Mustach
 
     var debugDescription: String {
         func firstBit(of s: String) -> String {
-            return String(s.characters.lazy.map { $0 == "\n" ? " " : $0 }.prefix(20))
+            return String(s.characters.lazy
+                .map { (c: Character) -> Character in c == "\n" ? " " : c }
+                .prefix(20))
         }
         return "AnnouncementViewController.RenderModel(css: \(firstBit(of: css)), html: \(firstBit(of: innerHTML)))"
     }

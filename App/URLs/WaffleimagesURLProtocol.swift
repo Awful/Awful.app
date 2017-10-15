@@ -60,18 +60,21 @@ final class WaffleimagesURLProtocol: URLProtocol {
     * http://img.waffleimages.com/images/7e/7e4178f6e4d086a7f418aa66cdffb64c32cd8c4c.jpg
  */
 private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
-    guard url.scheme?.lowercased().hasPrefix("http") == true else { return nil }
+    guard let scheme = url.scheme, scheme.lowercased().hasPrefix("http") else { return nil }
     guard let host = url.host, host.lowercased().hasSuffix("waffleimages.com") else { return nil }
     guard url.pathComponents.count >= 2 else { return nil }
     guard !url.pathExtension.isEmpty else { return nil }
+    
     let hash: String
-    if url.pathComponents.count == 4 && url.pathComponents[1].lowercased() == "images" {
+    if url.pathComponents.count == 4, url.pathComponents[1].lowercased() == "images" {
         hash = (url.pathComponents[3] as NSString).deletingPathExtension
-    } else {
+    }
+    else {
         hash = url.pathComponents[1]
     }
-    guard hash.utf8.count >= 2 else { return nil }
-    guard let hashPrefix = String(hash.utf8[..<hash.utf8.index(hash.utf8.startIndex, offsetBy: 2)]) else { return nil }
+    guard hash.count >= 2 else { return nil }
+    let hashPrefix = String(hash[..<hash.index(hash.startIndex, offsetBy: 2)])
+    
     var pathExtension = url.pathExtension
     if pathExtension.caseInsensitiveCompare("jpeg") == .orderedSame {
         pathExtension = "jpg"

@@ -50,7 +50,7 @@ class SettingsAvatarHeader: UIView {
         return avatarImageView.image != nil
     }
     
-    func setAvatarImage(_ image: AnyObject?) {
+    func setAvatarImage(_ image: Any?) {
         if let image = image as? FLAnimatedImage {
             avatarImageView.animatedImage = image
         } else {

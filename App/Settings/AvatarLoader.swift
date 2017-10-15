@@ -20,17 +20,17 @@ final class AvatarLoader: NSObject {
     }
     
     /// - returns: Either a UIImage or FLAnimatedImage if a cached avatar exists, otherwise nil.
-    func cachedAvatarImageForUser(_ user: User) -> AnyObject? {
+    func cachedAvatarImageForUser(_ user: User) -> Any? {
         let URL = imageURLForUser(user)
         return loadImageAtFileURL(URL)
     }
     
     /// - parameter completionBlock: A block that takes: `modified` which is `true` iff the image changed; `image`, either an FLAnimatedImage or a UIImage or nil; `error`, an NSError if an error occurred.
-    func fetchAvatarImageForUser(_ user: User, completionBlock: @escaping (_ modified: Bool, _ image: AnyObject?, _ error: NSError?) -> Void) {
+    func fetchAvatarImageForUser(_ user: User, completionBlock: @escaping (_ modified: Bool, _ image: Any?, _ error: Error?) -> Void) {
         guard let avatarURL = user.avatarURL, !avatarURL.path.isEmpty else {
             return completionBlock(true, nil, nil)
         }
-        let request = NSMutableURLRequest(url: avatarURL as URL)
+        var request = URLRequest(url: avatarURL)
         
         if let oldResponse = NSKeyedUnarchiver.unarchiveObject(withFile: cachedResponesURLForUser(user).path) as? HTTPURLResponse,
             oldResponse.url == avatarURL
@@ -38,10 +38,10 @@ final class AvatarLoader: NSObject {
             request.setCacheHeadersWithResponse(oldResponse)
         }
         
-        sessionManager.downloadTask(with: request as URLRequest!, progress: nil, destination: { (targetPath, URLResponse) -> URL? in
-            guard let
-                response = URLResponse as? HTTPURLResponse
-                , response.statusCode >= 200 && response.statusCode < 300
+        sessionManager.downloadTask(with: request, progress: nil, destination: { (targetPath, URLResponse) -> URL? in
+            guard
+                let response = URLResponse as? HTTPURLResponse,
+                response.statusCode >= 200, response.statusCode < 300
                 else { return nil }
             
             do {
@@ -54,15 +54,17 @@ final class AvatarLoader: NSObject {
             let destinationURL = self.imageURLForUser(user)
             do {
                 try FileManager.default.removeItem(at: destinationURL)
-            } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
+            }
+            catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
                 // ok
-            } catch let error as NSError {
+            }
+            catch let error as NSError {
                 print("\(#function) error saving avatar to \(destinationURL): \(error)")
                 // let's try downloading anyway
             }
             return destinationURL
             
-            }, completionHandler: { (response, filePath, error) in
+            }, completionHandler: { (response, filePath, error) -> Void in
                 NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponesURLForUser(user).path)
                 
                 if
@@ -74,7 +76,7 @@ final class AvatarLoader: NSObject {
                 }
                 
                 let image = loadImageAtFileURL(self.imageURLForUser(user))
-                completionBlock(true, image, error as NSError?)
+                completionBlock(true, image, error)
         }).resume()
     }
     
@@ -108,15 +110,17 @@ private func defaultCacheFolder() -> URL {
     return caches.appendingPathComponent("Avatars", isDirectory: true)
 }
 
-private func loadImageAtFileURL(_ url: URL) -> AnyObject? {
+private func loadImageAtFileURL(_ url: URL) -> Any? {
     guard let
         source = CGImageSourceCreateWithURL(url as CFURL, nil),
         let type = CGImageSourceGetType(source)
         else { return nil }
+    
     if UTTypeConformsTo(type, kUTTypeGIF) {
         guard let data = try? Data(contentsOf: url) else { return nil }
         return FLAnimatedImage(animatedGIFData: data)
-    } else {
+    }
+    else {
         return UIImage(contentsOfFile: url.path)
     }
 }

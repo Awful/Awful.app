@@ -29,12 +29,13 @@ final class ThreadListScrapingTests: XCTestCase {
 
         XCTAssertEqual(result.breadcrumbs?.forums.count, 0)
 
-        let allUsernames = (result.announcements.map { $0.authorUsername }
-            + result.threads.map { $0.authorUsername }
-            + result.threads.map { $0.lastPostAuthorUsername})
-            .filter { !$0.isEmpty }
-            .sorted()
-
+        var allUsernames: [String] = []
+        allUsernames.append(contentsOf: result.announcements.map { $0.authorUsername })
+        allUsernames.append(contentsOf: result.threads.map { $0.authorUsername })
+        allUsernames.append(contentsOf: result.threads.map { $0.lastPostAuthorUsername})
+        allUsernames = allUsernames.filter { !$0.isEmpty }
+        allUsernames.sort()
+        
         XCTAssertEqual(allUsernames, [
             "Captain Vittles", "Choochacacko", "Dreylad", "Ferg", "Gazpacho", "I am in", "MC Fruit Stripe",
             "ManicJason", "Mug", "Ranma4703", "Salaminizer", "Scaevolus", "Scaevolus", "Sir Davey",
@@ -86,12 +87,12 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(result.breadcrumbs?.forums[1].name, "Debate & Discussion")
         XCTAssertEqual(result.breadcrumbs?.forums[1].id.rawValue, "46")
 
-        let unsortedUsernames = (result.threads.map { $0.authorUsername }
-            + result.threads.map { $0.lastPostAuthorUsername }
-            + result.announcements.map { $0.authorUsername })
-            .filter { !$0.isEmpty }
-        
-        let allUsernames = unsortedUsernames.sorted { $0.caseInsensitiveCompare($1) == .orderedAscending }
+        var allUsernames: [String] = []
+        allUsernames.append(contentsOf: result.threads.map { $0.authorUsername })
+        allUsernames.append(contentsOf: result.threads.map { $0.lastPostAuthorUsername })
+        allUsernames.append(contentsOf: result.announcements.map { $0.authorUsername })
+        allUsernames = allUsernames.filter { !$0.isEmpty }
+        allUsernames.sort { $0.caseInsensitiveCompare($1) == .orderedAscending }
         XCTAssertEqual(allUsernames, [
             ".Edward Penischin", "a bad enough dude", "Amarkov", "Bedlamdan", "BiggerBoat", "blackguy32",
             "CatCannons", "Chamale", "Charliegrs", "Chopstix", "Cleretic", "coolskillrex remix",

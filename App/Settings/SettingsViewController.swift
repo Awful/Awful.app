@@ -24,9 +24,9 @@ final class SettingsViewController: TableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate let sections: [[String: AnyObject]] = {
+    fileprivate let sections = { () -> [[String: Any]] in
         // For settings purposes, we consider devices with a regular horizontal size class in landscape to be iPads. This includes iPads and the iPhones Plus.
-        let currentDevice: String = {
+        let currentDevice = { () -> String in
             // Can't think of a way to actually test for "is horizontal regular in landscape orientation", so we'll use a display scale of 3x as a proxy.
             if UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2 {
                 return "iPad"
@@ -36,8 +36,11 @@ final class SettingsViewController: TableViewController {
             }
         }()
 
-        guard let sections = AwfulSettings.shared().sections as? [[String: AnyObject]] else { fatalError("can't interpret settings sections") }
-        func validSection(_ section: [String: AnyObject]) -> Bool {
+        guard let sections = AwfulSettings.shared().sections as? [[String: Any]] else {
+            fatalError("can't interpret settings sections")
+        }
+        
+        func validSection(_ section: [String: Any]) -> Bool {
             if let device = section["Device"] as? String, !device.hasPrefix(currentDevice) {
                 return false
             }
@@ -56,9 +59,10 @@ final class SettingsViewController: TableViewController {
             }
             return true
         }
+        
         return sections.lazy
             .filter(validSection)
-            .map { (section) in
+            .map { (section: [String: Any]) -> [String: Any] in
                 guard let settings = section["Settings"] as? [[String: AnyObject]] else { return section }
                 var section = section
                 
