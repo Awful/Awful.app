@@ -171,6 +171,7 @@
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
+		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
 		1C4B6DC31BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeader.swift */; };
 		1C4EAD5C1BC052BE0008BE54 /* CollectionTypeDelta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EAD5B1BC052BE0008BE54 /* CollectionTypeDelta.swift */; };
@@ -302,7 +303,6 @@
 		1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010819DE89B000542293 /* SmilieCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010919DE89B000542293 /* SmilieCell.m */; };
 		1C7C60BC18FC9EF5009BF4BB /* PrivateMessage.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */; };
-		1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
@@ -759,6 +759,7 @@
 		1C4506C31A2BAB3800767306 /* Handoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handoff.swift; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
+		1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelpers.swift; sourceTree = "<group>"; };
 		1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadDataManagerTableViewAdapter.swift; sourceTree = "<group>"; };
 		1C4E68301B32558A00FC2A02 /* ForumListSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListSectionHeader.swift; sourceTree = "<group>"; };
 		1C4EAD5B1BC052BE0008BE54 /* CollectionTypeDelta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionTypeDelta.swift; sourceTree = "<group>"; };
@@ -904,8 +905,6 @@
 		1C7B010819DE89B000542293 /* SmilieCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCell.h; sourceTree = "<group>"; };
 		1C7B010919DE89B000542293 /* SmilieCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCell.m; sourceTree = "<group>"; };
 		1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivateMessage.mustache; sourceTree = "<group>"; };
-		1C7C60C118FCA506009BF4BB /* AwfulHTMLRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulHTMLRendering.h; sourceTree = "<group>"; };
-		1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulHTMLRendering.m; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
@@ -1767,12 +1766,11 @@
 			isa = PBXGroup;
 			children = (
 				1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */,
-				1C7C60C118FCA506009BF4BB /* AwfulHTMLRendering.h */,
-				1C7C60C218FCA506009BF4BB /* AwfulHTMLRendering.m */,
 				1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */,
 				1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */,
 				1C8E10491916F78B0010007B /* common.js */,
 				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
+				1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */,
 				1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */,
 				1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */,
 			);
@@ -3286,12 +3284,12 @@
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C16FBFA1CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
+				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */,
 				7B82D6671F7809E3002291C7 /* AppIconCell.swift in Sources */,
 				1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */,
-				1C7C60C318FCA506009BF4BB /* AwfulHTMLRendering.m in Sources */,
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */,

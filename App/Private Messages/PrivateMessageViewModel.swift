@@ -4,6 +4,7 @@
 
 import AwfulCore
 import Foundation
+import HTMLReader
 
 final class PrivateMessageViewModel: NSObject {
     fileprivate let privateMessage: PrivateMessage
@@ -41,9 +42,9 @@ final class PrivateMessageViewModel: NSObject {
     @objc var HTMLContents: String? {
         guard let originalHTML = privateMessage.innerHTML else { return nil }
         let document = HTMLDocument(string: originalHTML)
-        RemoveSpoilerStylingAndEvents(document)
-        UseHTML5VimeoPlayer(document)
-        ProcessImgTags(document, !AwfulSettings.shared().showImages)
+        document.removeSpoilerStylingAndEvents()
+        document.useHTML5VimeoPlayer()
+        document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
         return document.firstNode(matchingSelector: "body")?.innerHTML
     }
     

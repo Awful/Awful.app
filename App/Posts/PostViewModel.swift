@@ -4,6 +4,7 @@
 
 import AwfulCore
 import Foundation
+import HTMLReader
 
 final class PostViewModel: NSObject {
     fileprivate let post: Post
@@ -16,13 +17,13 @@ final class PostViewModel: NSObject {
     @objc var HTMLContents: String? {
         guard let innerHTML = post.innerHTML else { return nil }
         let document = HTMLDocument(string: innerHTML)
-        RemoveSpoilerStylingAndEvents(document)
-        RemoveEmptyEditedByParagraphs(document)
-        UseHTML5VimeoPlayer(document)
-        HighlightQuotesOfPostsByUserNamed(document, AwfulSettings.shared().username)
-        ProcessImgTags(document, !AwfulSettings.shared().showImages)
+        document.removeSpoilerStylingAndEvents()
+        document.removeEmptyEditedByParagraphs()
+        document.useHTML5VimeoPlayer()
+        document.highlightQuotesOfPosts(byUserNamed: AwfulSettings.shared().username)
+        document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
         if !AwfulSettings.shared().autoplayGIFs {
-            StopGifAutoplay(document)
+            document.stopGIFAutoplay()
         }
         if post.ignored {
             document.markRevealIgnoredPostLink()

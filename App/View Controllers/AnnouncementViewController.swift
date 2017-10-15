@@ -382,13 +382,13 @@ fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, Mustach
 
         innerHTML = {
             let document = HTMLDocument(string: announcement.bodyHTML)
-            RemoveSpoilerStylingAndEvents(document)
-            RemoveEmptyEditedByParagraphs(document)
-            UseHTML5VimeoPlayer(document)
-            HighlightQuotesOfPostsByUserNamed(document, AwfulSettings.shared().username)
-            ProcessImgTags(document, !AwfulSettings.shared().showImages)
+            document.removeSpoilerStylingAndEvents()
+            document.removeEmptyEditedByParagraphs()
+            document.useHTML5VimeoPlayer()
+            document.highlightQuotesOfPosts(byUserNamed: AwfulSettings.shared().username)
+            document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
             if !AwfulSettings.shared().autoplayGIFs {
-                StopGifAutoplay(document)
+                document.stopGIFAutoplay()
             }
             return document.bodyElement?.innerHTML ?? ""
         }()
