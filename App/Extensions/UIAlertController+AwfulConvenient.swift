@@ -8,36 +8,28 @@ extension UIAlertController {
 
     // MARK: Convenience initializers
     
-    convenience init(title: String, error: Error, handler: ((_ action: UIAlertAction?) -> Void)?) {
-        self.init(title: title, message: messageForError(error), handler: handler)
+    /// Creates an alert-style alert controller with a canned message derived from the error, and adds an OK button to dismiss the alert.
+    convenience init(title: String, error: Error, handler: (() -> Void)? = nil) {
+        let error = error as NSError
+        let message = "\(error.localizedDescription) (code \(error.code))"
+        self.init(title: title, message: message, handler: handler)
     }
 
-    convenience init(title: String, error: Error) {
-        self.init(title: title, message: messageForError(error))
-    }
-    
-    class func alertWithTitle(_ title: String, error: Error) -> UIAlertController {
-        return UIAlertController(title: title, error: error)
-    }
-
-    convenience init(networkError error: Error, handler: ((_ action: UIAlertAction?) -> Void)? = nil) {
+    /// Creates an alert-style alert controller with a canned title/message derived from the network error, and adds an OK button to dismiss the alert.
+    convenience init(networkError error: Error, handler: (() -> Void)? = nil) {
         self.init(title: "Network Error", error: error, handler: handler)
     }
-    
-    class func alertWithNetworkError(_ error: Error) -> UIAlertController {
-        return UIAlertController(networkError: error, handler: nil)
-    }
 
-    convenience init(title: String, message: String, handler: ((_ action: UIAlertAction?) -> Void)?) {
+    /// Creates an alert-style alert controller with an OK button to dismiss the alert.
+    convenience init(title: String, message: String, handler: (() -> Void)? = nil) {
         self.init(title: title, message: message, preferredStyle: .alert)
-        addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
+        addAction(UIAlertAction(title: "OK", style: .default) { action in
+            handler?()
+        })
     }
 
-    convenience init(title: String, message: String) {
-        self.init(title: title, message: message, handler: nil)
-    }
-
-    class func actionSheet() -> UIAlertController {
+    /// Creates an action sheet-style alert controller.
+    class func makeActionSheet() -> UIAlertController {
         return self.init(title: nil, message: nil, preferredStyle: .actionSheet)
     }
 
@@ -49,6 +41,7 @@ extension UIAlertController {
         })
     }
 
+    /// Adds an action titled "Cancel" of style cancel.
     func addCancelActionWithHandler(_ handler: (() -> Void)?) {
         addAction(UIAlertAction(title: "Cancel", style: .cancel) { action in
             handler?()
@@ -62,7 +55,3 @@ extension UIAlertController {
     }
 }
 
-private func messageForError(_ error: Error) -> String {
-    let error = error as NSError
-    return "\(error.localizedDescription) (code \(error.code))"
-}

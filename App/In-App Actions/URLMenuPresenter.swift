@@ -74,7 +74,7 @@ private enum _URLMenuPresenter {
     }
     
     func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController.makeActionSheet()
         
         switch self {
         case let .link(linkURL, imageURL):

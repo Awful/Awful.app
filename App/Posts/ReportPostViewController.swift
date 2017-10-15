@@ -36,8 +36,8 @@ final class ReportPostViewController: ViewController {
                 self?.dismiss(animated: true, completion: nil)
             }
             .catch { [weak self] (error) -> Void in
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self?.present(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error)
+                self?.present(alert, animated: true)
             }
             .always {
                 progressView.dismiss(true)

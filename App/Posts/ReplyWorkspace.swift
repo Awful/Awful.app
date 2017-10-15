@@ -146,8 +146,7 @@ final class ReplyWorkspace: NSObject {
             if let error = error {
                 if !((error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == NSUserCancelledError) {
                     let alert = UIAlertController(title: "Image Upload Failed", error: error)
-                    alert.addAction(UIAlertAction(title: "OK", style:  .default))
-                    self.viewController.present(alert, animated: true, completion: nil)
+                    self.viewController.present(alert, animated: true)
                 }
             } else {
                 DraftStore.sharedStore().deleteDraft(self.draft)

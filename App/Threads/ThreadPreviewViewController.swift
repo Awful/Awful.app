@@ -74,7 +74,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
             sself.renderPreview()
             }
             .catch { [weak self] (error) -> Void in
-                self?.present(UIAlertController.alertWithNetworkError(error), animated: true)
+                self?.present(UIAlertController(networkError: error), animated: true)
         }
     }
     

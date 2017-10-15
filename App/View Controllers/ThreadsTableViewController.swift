@@ -84,8 +84,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
                 self.updateComposeBarButtonItem()
             }
             .catch { (error) in
-                let alert = UIAlertController(networkError: error, handler: nil)
-                self.present(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error)
+                self.present(alert, animated: true)
             }
             .always {
                 self.stopAnimatingPullToRefresh()

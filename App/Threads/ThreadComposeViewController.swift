@@ -216,10 +216,10 @@ final class ThreadComposeViewController: ComposeTextViewController {
                 completion(true)
             }
             .catch { [weak self] (error) -> Void in
-                let alert = UIAlertController(title: "Network Error", error: error, handler: { (action) in
+                let alert = UIAlertController(title: "Network Error", error: error, handler: {
                     completion(false)
                 })
-                self?.present(alert, animated: true, completion: nil)
+                self?.present(alert, animated: true)
         }
     }
     

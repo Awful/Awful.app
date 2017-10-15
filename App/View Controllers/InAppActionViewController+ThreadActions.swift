@@ -27,8 +27,8 @@ extension InAppActionViewController {
         items.append(IconActionItem(bookmarkItemType) { [weak viewController] in
             _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
             .catch { (error) -> Void in
-                let alert = UIAlertController(networkError: error, handler: nil)
-                viewController?.present(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error)
+                viewController?.present(alert, animated: true)
             }
             })
         
@@ -36,7 +36,7 @@ extension InAppActionViewController {
             items.append(IconActionItem(.userProfile) {
                 let profile = ProfileViewController(user: author)
                 if UIDevice.current.userInterfaceIdiom == .pad {
-                    viewController.present(profile.enclosingNavigationController, animated: true, completion: nil)
+                    viewController.present(profile.enclosingNavigationController, animated: true)
                 } else {
                     viewController.navigationController?.pushViewController(profile, animated: true)
                 }
@@ -59,8 +59,8 @@ extension InAppActionViewController {
                         if thread.seenPosts == 0 {
                             thread.seenPosts = oldSeen
                         }
-                        let alert = UIAlertController(networkError: error, handler: nil)
-                        viewController?.present(alert, animated: true, completion: nil)
+                        let alert = UIAlertController(networkError: error)
+                        viewController?.present(alert, animated: true)
                 }
             })
         }

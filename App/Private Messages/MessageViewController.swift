@@ -61,7 +61,7 @@ final class MessageViewController: ViewController {
     }
     
     @objc fileprivate func didTapReplyButtonItem(_ sender: UIBarButtonItem?) {
-        let actionSheet = UIAlertController.actionSheet()
+        let actionSheet = UIAlertController.makeActionSheet()
         
         actionSheet.addActionWithTitle("Reply") {
             _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
@@ -74,7 +74,7 @@ final class MessageViewController: ViewController {
                     self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
             }
                 .catch { [weak self] (error) in
-                    self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
+                    self?.present(UIAlertController(title: "Could Not Quote Message", error: error), animated: true)
             }
         }
         
@@ -89,7 +89,7 @@ final class MessageViewController: ViewController {
                     self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
                 }
                 .catch { [weak self] (error) in
-                    self?.present(UIAlertController.alertWithTitle("Could Not Quote Message", error: error), animated: true, completion: nil)
+                    self?.present(UIAlertController(title: "Could Not Quote Message", error: error), animated: true)
             }
         }
         

@@ -75,8 +75,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             }
             .catch { (error) in
                 guard self.visible else { return }
-                let alert = UIAlertController(networkError: error as NSError, handler: nil)
-                self.present(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error)
+                self.present(alert, animated: true)
             }
             .always {
                 self.stopAnimatingPullToRefresh()
@@ -239,8 +239,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         thread.bookmarked = false
         _ = ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
             .catch { [weak self] (error) -> Void in
-                let alert = UIAlertController(networkError: error as NSError, handler: nil)
-                self?.present(alert, animated: true, completion: nil)
+                let alert = UIAlertController(networkError: error)
+                self?.present(alert, animated: true)
         }
     }
     

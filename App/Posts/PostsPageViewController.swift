@@ -219,12 +219,12 @@ final class PostsPageViewController: ViewController {
 
                 if (error as NSError).code == AwfulErrorCodes.archivesRequired {
                     let alert = UIAlertController(title: "Archives Required", error: error)
-                    sself.present(alert, animated: true, completion: nil)
+                    sself.present(alert, animated: true)
                 } else {
                     let offlineMode = (error as NSError).domain == NSURLErrorDomain && (error as NSError).code != NSURLErrorCancelled
                     if sself.posts.isEmpty || !offlineMode {
                         let alert = UIAlertController(title: "Could Not Load Page", error: error)
-                        sself.present(alert, animated: true, completion: nil)
+                        sself.present(alert, animated: true)
                     }
                 }
 
@@ -439,7 +439,7 @@ final class PostsPageViewController: ViewController {
             copyURLItem.title = "Copy URL"
             
             let voteItem = IconActionItem(.vote, block: { [unowned self] in
-                let actionSheet = UIAlertController.actionSheet()
+                let actionSheet = UIAlertController.makeActionSheet()
                 for i in stride(from: 5, to: 0, by: -1) {
                     actionSheet.addActionWithTitle("\(i)", handler: {
                         let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
@@ -458,12 +458,12 @@ final class PostsPageViewController: ViewController {
                                 overlay?.dismiss(false)
 
                                 let alert = UIAlertController(title: "Vote Failed", error: error)
-                                self?.present(alert, animated: true, completion: nil)
+                                self?.present(alert, animated: true)
                         }
                     })
                 }
                 actionSheet.addCancelActionWithHandler(nil)
-                self.present(actionSheet, animated: false, completion: nil)
+                self.present(actionSheet, animated: false)
                 
                 if let popover = actionSheet.popoverPresentationController {
                     popover.barButtonItem = sender
@@ -761,7 +761,7 @@ final class PostsPageViewController: ViewController {
                 sself.webViewJavascriptBridge?.callHandler("postHTMLAtIndex", data: data)
             }
             .catch { [weak self] (error) -> Void in
-                let alert = UIAlertController.alertWithNetworkError(error)
+                let alert = UIAlertController(networkError: error)
                 self?.present(alert, animated: true)
         }
     }
@@ -881,7 +881,7 @@ final class PostsPageViewController: ViewController {
                     }
                     .catch { [weak self] (error) -> Void in
                         let alert = UIAlertController(title: "Could Not Mark Read", error: error)
-                        self?.present(alert, animated: true, completion: nil)
+                        self?.present(alert, animated: true)
                 }
             }))
         }
@@ -912,7 +912,7 @@ final class PostsPageViewController: ViewController {
                 
                 self.replyWorkspace?.quotePost(post, completion: { [weak self] (error) in
                     if let error = error {
-                        let alert = UIAlertController.alertWithNetworkError(error)
+                        let alert = UIAlertController(networkError: error)
                         self?.present(alert, animated: true, completion: nil)
                         return
                     }

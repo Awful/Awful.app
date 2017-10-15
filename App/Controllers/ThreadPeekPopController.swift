@@ -54,7 +54,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                         return
                     }
 
-                    let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                    let alert = UIAlertController(networkError: error)
                     previewingViewController.present(alert, animated: true)
             }
         }
@@ -85,7 +85,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                         return
                     }
 
-                    let alert = UIAlertController(networkError: error as NSError, handler: nil)
+                    let alert = UIAlertController(networkError: error)
                     presentingViewController.present(alert, animated: true, completion: nil)
             }
         }

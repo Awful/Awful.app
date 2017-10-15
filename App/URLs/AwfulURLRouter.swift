@@ -141,7 +141,7 @@ final class AwfulURLRouter: NSObject {
             self?.fetchUser(withUserID: userID) { (error, user) in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    self?.rootViewController.present(alert, animated: true, completion: nil)
+                    self?.rootViewController.present(alert, animated: true)
                     return
                 }
 
@@ -157,7 +157,7 @@ final class AwfulURLRouter: NSObject {
             self?.fetchUser(withUserID: userID) { (error, user) in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    self?.rootViewController.present(alert, animated: true, completion: nil)
+                    self?.rootViewController.present(alert, animated: true)
                     return
                 }
                 

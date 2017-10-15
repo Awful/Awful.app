@@ -203,7 +203,7 @@ class ComposeTextViewController: ViewController {
                 } else {
                     // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
                     let presenter = self?.navigationController ?? self
-                    presenter?.present(UIAlertController.alertWithTitle("Image Upload Failed", error: error), animated: true, completion: nil)
+                    presenter?.present(UIAlertController(title: "Image Upload Failed", error: error), animated: true)
                 }
                 
                 return

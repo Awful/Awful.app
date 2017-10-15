@@ -97,8 +97,8 @@ final class MessageListViewController: TableViewController {
             .catch { [weak self] (error) -> Void in
                 guard let sself = self else { return }
                 if sself.visible {
-                    let alert = UIAlertController(networkError: error, handler: nil)
-                    sself.present(alert, animated: true, completion: nil)
+                    let alert = UIAlertController(networkError: error)
+                    sself.present(alert, animated: true)
                 }
             }
             .always { [weak self] in

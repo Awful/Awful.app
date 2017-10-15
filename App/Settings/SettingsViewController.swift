@@ -335,7 +335,7 @@ final class SettingsViewController: TableViewController {
             alert.message = "Are you sure you want to log out?"
             alert.addCancelActionWithHandler(nil)
             alert.addActionWithTitle("Log Out", handler: { AppDelegate.instance.logOut() })
-            present(alert, animated: true, completion: nil)
+            present(alert, animated: true)
             
         case ("EmptyCache"?, _):
             let usageBefore = URLCache.shared.currentDiskUsage

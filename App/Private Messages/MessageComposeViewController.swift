@@ -125,7 +125,7 @@ final class MessageComposeViewController: ComposeTextViewController {
             }
             .catch { [weak self] (error) in
                 completion(false)
-                self?.present(UIAlertController.alertWithNetworkError(error), animated: true)
+                self?.present(UIAlertController(networkError: error), animated: true)
         }
     }
     

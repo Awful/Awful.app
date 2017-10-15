@@ -73,7 +73,7 @@ class PostPreviewViewController: ViewController {
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
         let callback: (Error?, String?) -> Void = { [weak self] (error, postHTML) in
             if let error = error {
-                self?.present(UIAlertController.alertWithNetworkError(error), animated: true, completion: nil)
+                self?.present(UIAlertController(networkError: error), animated: true)
                 return
             }
             

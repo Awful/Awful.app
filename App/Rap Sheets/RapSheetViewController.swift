@@ -71,7 +71,7 @@ final class RapSheetViewController: TableViewController {
                 }
             }
             .catch { [weak self] (error) -> Void in
-                self?.present(UIAlertController.alertWithNetworkError(error), animated: true)
+                self?.present(UIAlertController(networkError: error), animated: true)
             }
             .always { [weak self] in
                 self?.stopAnimatingPullToRefresh()

@@ -49,7 +49,7 @@ class LoginViewController: ViewController {
                 activityIndicator.startAnimating()
             case .failedLogin:
                 activityIndicator.stopAnimating()
-                let alert = UIAlertController(title: "Problem Logging In", message: "Double-check your username and password, then try again.") { action in
+                let alert = UIAlertController(title: "Problem Logging In", message: "Double-check your username and password, then try again.") {
                     self.state = .canAttemptLogin
                     self.passwordTextField.becomeFirstResponder()
                 }
