@@ -19,9 +19,9 @@ internal extension AnnouncementListScrapeResult {
         var users: [String: User] = [:]
         do {
             let request = NSFetchRequest<User>(entityName: User.entityName())
-            let usernames = self.announcements
-                .flatMap { $0.author?.username }
-                .filter { !$0.isEmpty }
+            let usernames: [String] = self.announcements
+                .flatMap { (announcement: Announcement) -> String? in announcement.author?.username }
+                .filter { (s: String) -> Bool in !s.isEmpty }
             request.predicate = NSPredicate(format: "%K IN %@", #keyPath(User.username), usernames)
             request.returnsObjectsAsFaults = false
             for user in try context.fetch(request) {

@@ -28,7 +28,7 @@ public struct PostsPageScrapeResult: ScrapeResult {
 
         breadcrumbs = try? ForumBreadcrumbsScrapeResult(body, url: url)
 
-        forumID = (body["data-forum"] as String?).flatMap(ForumID.init)
+        forumID = (body["data-forum"] as String?).flatMap { ForumID(rawValue: $0) }
 
         isSingleUserFilterEnabled = body.firstNode(matchingSelector: "table.post a.user_jump[title *= 'Remove']") != nil
 
@@ -36,20 +36,20 @@ public struct PostsPageScrapeResult: ScrapeResult {
 
         posts = try body
             .nodes(matchingSelector: "table.post")
-            .map { try PostScrapeResult($0, url: url) }
+            .map { (element: HTMLElement) -> PostScrapeResult in try PostScrapeResult(element, url: url) }
 
         postsPerPage = url
-            .flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
-            .flatMap { $0.queryItems }
-            .flatMap { $0.first { item in return item.name == "perpage" } }
-            .flatMap { $0.value }
-            .flatMap { Int($0) }
+            .flatMap { (url: URL) -> URLComponents? in URLComponents(url: url, resolvingAgainstBaseURL: true) }
+            .flatMap { (components: URLComponents) -> [URLQueryItem]? in components.queryItems }
+            .flatMap { (queryItems: [URLQueryItem]) -> URLQueryItem? in queryItems.first { item in return item.name == "perpage" } }
+            .flatMap { (queryItem: URLQueryItem) -> String? in queryItem.value }
+            .flatMap { (value: String) -> Int? in Int(value) }
 
-        threadID = (body["data-thread"] as String?).flatMap(ThreadID.init)
+        threadID = (body["data-thread"] as String?).flatMap { ThreadID(rawValue: $0) }
 
         threadIsBookmarked = body
             .firstNode(matchingSelector: "div.threadbar img.thread_bookmark")
-            .flatMap { (img) in
+            .flatMap { (img) -> Bool? in
                 switch (img.hasClass("unbookmark"), img.hasClass("bookmark")) {
                 case (true, false): return true
                 case (false, true): return false

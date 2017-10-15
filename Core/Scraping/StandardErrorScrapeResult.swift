@@ -22,9 +22,9 @@ public struct StandardErrorScrapeResult: ScrapeResult {
 
         // We want just enough of an error message so the user knows what's going on. But some of the error messages on the Forums are quite verbose, and unfortunately the markup isn't particularly consistent. This seems to work ok for the errors we have as text fixtures.
         message = standard
-            .flatMap { $0.firstNode(matchingSelector: "div.inner") }
-            .flatMap { Array($0.children.prefix(2)) as? [HTMLNode] }?
-            .map { $0.textContent }
+            .flatMap { (element: HTMLElement) -> HTMLElement? in element.firstNode(matchingSelector: "div.inner") }
+            .flatMap { (element: HTMLElement) -> [HTMLNode]? in Array(element.children.prefix(2)) as? [HTMLNode] }?
+            .map { (node: HTMLNode) -> String in node.textContent }
             .joined()
             .replacingOccurrences(of: "\n", with: " ")
             .trimmingCharacters(in: .whitespaces)

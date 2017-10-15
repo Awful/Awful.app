@@ -18,9 +18,10 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
     public init(_ html: HTMLNode, url: URL?) throws {
         guard
             let replyLink = html.firstNode(matchingSelector: "div.buttons a[href]"),
-            let href = replyLink["href"],
+            let href: String = replyLink["href"],
             let components = URLComponents(string: href),
-            let messageIDPair = components.queryItems?.first(where: { $0.name == "privatemessageid" }),
+            let messageIDPair: URLQueryItem = components.queryItems?
+                .first(where: { (queryItem: URLQueryItem) -> Bool in queryItem.name == "privatemessageid" }),
             let rawID = messageIDPair.value,
             let privateMessageID = PrivateMessageID(rawValue: rawID) else
         {
@@ -31,27 +32,27 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
         author = try? AuthorSidebarScrapeResult(html, url: url)
 
         subject = html.firstNode(matchingSelector: "div.breadcrumbs b")
-            .flatMap { $0.children.lastObject as? HTMLTextNode }
-            .map { $0.textContent }
+            .flatMap { (el: HTMLElement) -> HTMLTextNode? in el.children.lastObject as? HTMLTextNode }
+            .map { (node: HTMLTextNode) -> String in node.textContent }
             ?? ""
 
         do {
             let postDateCell = html.firstNode(matchingSelector: "td.postdate")
 
             let iconImageSrc = postDateCell?.firstNode(matchingSelector: "img[src]")
-                .flatMap { $0["src"] }
+                .flatMap { (el: HTMLElement) -> String? in el["src"] }
             hasBeenSeen = iconImageSrc.map { !$0.contains("newpm") } ?? false
             wasForwarded = iconImageSrc?.contains("forwarded") ?? false
             wasRepliedTo = iconImageSrc?.contains("replied") ?? false
 
             sentDate = postDateCell
-                .flatMap { $0.children.lastObject as? HTMLNode }
+                .flatMap { (cell: HTMLElement) -> HTMLNode? in cell.children.lastObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap(parsePostDate)
         }
 
         body = html.firstNode(matchingSelector: "td.postbody")
-            .map { $0.innerHTML }
+            .map { (el: HTMLElement) -> String in el.innerHTML }
             ?? ""
     }
 }

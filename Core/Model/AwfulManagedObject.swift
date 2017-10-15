@@ -75,9 +75,8 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
     
     public override var hash: Int {
         var hash = entityName.hash
-        if keys.count == 1 {
-            let value = self.value(forKey: keys[0]) as! NSObject!
-            hash ^= (value?.hash)!
+        if let key = keys.first, let value = self.value(forKey: key) as? AnyHashable {
+            hash ^= value.hashValue
         }
         return hash
     }

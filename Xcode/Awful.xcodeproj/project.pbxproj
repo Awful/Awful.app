@@ -147,7 +147,6 @@
 		1C3A147319DFD0D00022C44C /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147119DFD0D00022C44C /* showsmilies.webarchive */; };
 		1C3A147519DFDE380022C44C /* Smilies.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147419DFDE380022C44C /* Smilies.sqlite */; };
 		1C3A147719DFDEC30022C44C /* BundledSmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */; };
-		1C3CF96B1A94B9B40065C964 /* AwfulCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3CF96A1A94B9B40065C964 /* AwfulCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3CF9711A94B9B50065C964 /* AwfulCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; };
 		1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; };
 		1C3CF97E1A94B9B50065C964 /* AwfulCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -343,6 +342,7 @@
 		1CB15BF71A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
 		1CB8FA661F68BD73008A7875 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC401F5371CC00977D6F /* Logger.swift */; };
+		1CBAFB1C1F93D7F7007DAB58 /* AwfulCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CBBAAB81D949EE200A847EC /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CBBAAB71D949EE200A847EC /* Stickers.xcassets */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
@@ -734,7 +734,6 @@
 		1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundledSmiliesTests.m; sourceTree = "<group>"; };
 		1C3CF9661A94B9B40065C964 /* AwfulCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AwfulCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C3CF9691A94B9B40065C964 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1C3CF96A1A94B9B40065C964 /* AwfulCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCore.h; sourceTree = "<group>"; };
 		1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C3CF9781A94B9B50065C964 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C3DED751B6FD0AB00954CFC /* ARChromeActivity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ARChromeActivity.png; path = ../../Pods/ARChromeActivity/ARChromeActivity/ARChromeActivity.png; sourceTree = "<group>"; };
@@ -947,6 +946,7 @@
 		1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLMenuPresenter.swift; sourceTree = "<group>"; };
 		1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLMenuPresenter+WebViewJunk.swift"; sourceTree = "<group>"; };
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
+		1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCore.h; sourceTree = "<group>"; };
 		1CBBAAB51D949EE000A847EC /* Smilies Stickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Smilies Stickers.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CBBAAB71D949EE200A847EC /* Stickers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Stickers.xcassets; sourceTree = "<group>"; };
 		1CBBAAB91D949EE200A847EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1500,7 +1500,7 @@
 		1C3CF9671A94B9B40065C964 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				1C3CF96A1A94B9B40065C964 /* AwfulCore.h */,
+				1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */,
 				1C14A4BF1A94C3C50045DDF7 /* Data */,
 				1C14A4DB1A94C7260045DDF7 /* Errors.swift */,
 				1C3CF9691A94B9B40065C964 /* Info.plist */,
@@ -2214,7 +2214,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C3CF96B1A94B9B40065C964 /* AwfulCore.h in Headers */,
+				1CBAFB1C1F93D7F7007DAB58 /* AwfulCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2269,9 +2269,9 @@
 			buildConfigurationList = 1C3CF98A1A94B9B50065C964 /* Build configuration list for PBXNativeTarget "Core" */;
 			buildPhases = (
 				B96B6EC80364010FD0021B09 /* [CP] Check Pods Manifest.lock */,
+				1C3CF9631A94B9B40065C964 /* Headers */,
 				1C3CF9611A94B9B40065C964 /* Sources */,
 				1C3CF9621A94B9B40065C964 /* Frameworks */,
-				1C3CF9631A94B9B40065C964 /* Headers */,
 				1C3CF9641A94B9B40065C964 /* Resources */,
 				668D09585E84BF2285DCBD7E /* [CP] Copy Pods Resources */,
 			);
