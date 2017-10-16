@@ -44,7 +44,7 @@ extension URL {
             }
             else if let threadID = valueForFirstQueryItem(named: "threadid") {
                 guard var components = URLComponents(string: "awful://threads/\(threadID)/pages/1") else { return nil }
-                if let userID = valueForFirstQueryItem("userid"), userID != "0" {
+                if let userID = valueForFirstQueryItem(named: "userid"), userID != "0" {
                     components.queryItems = [URLQueryItem(name: "userid", value: userID)]
                 }
                 return components.url

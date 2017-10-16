@@ -71,7 +71,6 @@
 		1C16FBE31CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
 		1C16FBE91CBDB6E300C88BD1 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */; };
-		1C16FBEF1CBDBB4500C88BD1 /* NSURLQueryDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */; };
 		1C16FBF11CBDBEB600C88BD1 /* URL+Awful.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF01CBDBEB600C88BD1 /* URL+Awful.swift */; };
 		1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */; };
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
@@ -656,7 +655,6 @@
 		1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaffleimagesURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSURLQueryDictionaryTests.swift; sourceTree = "<group>"; };
 		1C16FBF01CBDBEB600C88BD1 /* URL+Awful.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Awful.swift"; sourceTree = "<group>"; };
 		1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+OpensInBrowser.swift"; sourceTree = "<group>"; };
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
@@ -1518,7 +1516,6 @@
 				1C6FFED9182A74A00014311C /* Fixtures */,
 				1CF0E9CF1A191EF10067511E /* Helpers.swift */,
 				1C3CF9781A94B9B50065C964 /* Info.plist */,
-				1C16FBED1CBDBB2000C88BD1 /* NSURLQueryDictionaryTests.swift */,
 				1C07B8C21F07D6F30044B8AF /* Persistence */,
 				1C07B8C11F07D6DC0044B8AF /* Scraping */,
 			);
@@ -3177,7 +3174,6 @@
 				1CF0F8F11ED9E46600C16099 /* StandardErrorScrapingTests.swift in Sources */,
 				1C07B8C41F07D73F0044B8AF /* AnnouncementPersistenceTests.swift in Sources */,
 				1C3CF9A21A94BE190065C964 /* PrivateMessageScrapingTests.swift in Sources */,
-				1C16FBEF1CBDBB4500C88BD1 /* NSURLQueryDictionaryTests.swift in Sources */,
 				1C3CF99E1A94BE190065C964 /* LepersColonyPageScrapingTests.swift in Sources */,
 				1C19CA481F70AB0A0060F4DE /* PostIconListScrapingTests.swift in Sources */,
 				1C3CF9A31A94BE190065C964 /* ProfileScrapingTests.swift in Sources */,
