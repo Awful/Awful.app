@@ -249,6 +249,10 @@ private extension Form.Control {
 
         case ("input", "file"?) where element["value"] == nil:
             return [.file(name: name, isDisabled: isDisabled)]
+            
+        case ("input", "reset"?):
+            // We never care about reset buttons.
+            return []
 
         case ("input", _) where !name.isEmpty:
             return [.text(name: name, value: element["value"] ?? "", isDisabled: isDisabled)]

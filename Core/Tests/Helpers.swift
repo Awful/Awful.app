@@ -25,6 +25,24 @@ func scrapeFixture<T: ScrapeResult>(named fixtureName: String) throws -> T {
     return try T(fixtureNamed(fixtureName), url: URL(string: "https://example.com/?perpage=40"))
 }
 
+func scrapeForm(matchingSelector selector: String, inFixtureNamed fixtureName: String) throws -> Form {
+    let doc = fixtureNamed(fixtureName)
+    return try Form(doc.requiredNode(matchingSelector: selector), url: URL(string: "https://example.com/?perpage=40"))
+}
+
+
 func makeUTCDefaultTimeZone() {
     NSTimeZone.default = TimeZone(secondsFromGMT: 0)!
+}
+
+
+extension Form {
+    var textboxes: [Form.Control] {
+        return controls.filter { control in
+            switch control {
+            case .text: return true
+            default: return false
+            }
+        }
+    }
 }
