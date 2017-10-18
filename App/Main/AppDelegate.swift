@@ -17,6 +17,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var announcementListRefresher: AnnouncementListRefresher?
     fileprivate var dataStore: DataStore!
+    private var inboxRefresher: PrivateMessageInboxRefresher?
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
     var window: UIWindow?
     
@@ -84,7 +85,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         showPromptIfLoginCookieExpiresSoon()
 
         announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
-        NewMessageChecker.sharedChecker.refreshIfNecessary()
+        inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         PostsViewExternalStylesheetLoader.sharedLoader.refreshIfNecessary()
         
         NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)

@@ -1037,15 +1037,6 @@ public final class ForumsClient {
 
     // MARK: Private Messages
 
-    public func countUnreadPrivateMessagesInInbox() -> Promise<Int> {
-        return fetch(method: .get, urlString: "private.php", parameters: nil)
-            .promise
-            .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { document, url -> Int in
-                return try UnreadPrivateMessageCountScrapeResult(document, url: url).unreadPrivateMessageCount
-        }
-    }
-
     public func listPrivateMessagesInInbox() -> Promise<[PrivateMessage]> {
         guard
             let mainContext = managedObjectContext,
