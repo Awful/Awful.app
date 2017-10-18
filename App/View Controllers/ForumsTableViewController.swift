@@ -4,7 +4,7 @@
 
 import AwfulCore
 import CoreData
-import Foundation
+import UIKit
 
 final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext

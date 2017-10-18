@@ -226,12 +226,13 @@ final class MessageViewController: ViewController {
             view.addSubview(loadingView)
 
             _ = ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
-                .then { [weak self] (message) -> Void in
+                .then { [weak self] message -> Void in
                     self?.title = message.subject
 
                     if message.seen == false {
-                        NewMessageChecker.sharedChecker.decrementUnreadCount()
                         message.seen = true
+                        
+                        try message.managedObjectContext?.save()
                     }
                 }
                 .catch { [weak self] (error) in

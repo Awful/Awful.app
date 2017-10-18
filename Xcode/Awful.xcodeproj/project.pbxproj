@@ -76,7 +76,7 @@
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
 		1C16FBFA1CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */; };
 		1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */; };
-		1C16FBFE1CBF237800C88BD1 /* NewMessageChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */; };
+		1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFD1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift */; };
 		1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */; };
 		1C16FC041CC3D84500C88BD1 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC031CC3D84500C88BD1 /* PostsView.swift */; };
 		1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */; };
@@ -382,7 +382,6 @@
 		1CF0F8EF1ED9E20A00C16099 /* StandardErrorScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */; };
 		1CF0F8F11ED9E46600C16099 /* StandardErrorScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */; };
 		1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */; };
-		1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */; };
 		1CF264CA1F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */; };
@@ -660,7 +659,7 @@
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
 		1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerCell.swift; sourceTree = "<group>"; };
-		1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessageChecker.swift; sourceTree = "<group>"; };
+		1C16FBFD1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageInboxRefresher.swift; sourceTree = "<group>"; };
 		1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		1C16FC031CC3D84500C88BD1 /* PostsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnpoppingViewHandler.swift; sourceTree = "<group>"; };
@@ -992,7 +991,6 @@
 		1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardErrorScrapeResult.swift; sourceTree = "<group>"; };
 		1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardErrorScrapingTests.swift; sourceTree = "<group>"; };
 		1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableScrapeResult.swift; sourceTree = "<group>"; };
-		1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadPrivateMessageCountScrapeResult.swift; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar_FixiOS11iPadLayout.swift; sourceTree = "<group>"; };
 		1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBarController_FixiOS11iPadLayout.storyboard; sourceTree = "<group>"; };
@@ -1266,7 +1264,6 @@
 				1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */,
 				1C5B83591F75F88700BE7517 /* SubmittableForm.swift */,
 				1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */,
-				1CF0F8F41ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift */,
 			);
 			path = Scraping;
 			sourceTree = "<group>";
@@ -1386,7 +1383,7 @@
 			isa = PBXGroup;
 			children = (
 				1C25AC511F57784A00977D6F /* AnnouncementListRefresher.swift */,
-				1C16FBFD1CBF237800C88BD1 /* NewMessageChecker.swift */,
+				1C16FBFD1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift */,
 			);
 			path = Refreshers;
 			sourceTree = "<group>";
@@ -3153,7 +3150,6 @@
 				1C9752561F6C75A5007C57AF /* ThreadPage.swift in Sources */,
 				1C19CA4C1F70ADC50060F4DE /* PostIconPersistence.swift in Sources */,
 				1CF0F8E61ED8F62D00C16099 /* ScrapingError.swift in Sources */,
-				1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */,
 				1CF0F8E21ED8F43400C16099 /* Helpers.swift in Sources */,
 				1CF0F8E41ED8F49900C16099 /* ScrapeResult.swift in Sources */,
 				1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */,
@@ -3310,7 +3306,7 @@
 				1C25AC211F532EE600977D6F /* LocalizedString.swift in Sources */,
 				1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
-				1C16FBFE1CBF237800C88BD1 /* NewMessageChecker.swift in Sources */,
+				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,

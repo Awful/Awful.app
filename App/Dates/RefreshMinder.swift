@@ -48,7 +48,6 @@ final class RefreshMinder: NSObject {
         case externalStylesheet
         case forumList
         case loggedInUser
-        case newPrivateMessages
         case privateMessagesInbox
         
         fileprivate var key: String {
@@ -59,7 +58,6 @@ final class RefreshMinder: NSObject {
             case .externalStylesheet: return "LastExternalStylesheetRefreshDate"
             case .forumList: return "com.awfulapp.Awful.LastForumRefreshDate"
             case .loggedInUser: return "LastLoggedInUserRefreshDate"
-            case .newPrivateMessages: return "com.awfulapp.Awful.LastMessageCheckDate"
             case .privateMessagesInbox: return "LastPrivateMessageInboxRefreshDate"
             }
         }
@@ -72,13 +70,12 @@ final class RefreshMinder: NSObject {
             case .externalStylesheet: return 60 * 60
             case .forumList: return 60 * 60 * 6
             case .loggedInUser: return 60 * 5
-            case .newPrivateMessages: return 60 * 10
             case .privateMessagesInbox: return 60 * 10
             }
         }
         
         static var all: [Refresh] {
-            return [.announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .loggedInUser, .newPrivateMessages, .privateMessagesInbox]
+            return [.announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .loggedInUser, .privateMessagesInbox]
         }
     }
     

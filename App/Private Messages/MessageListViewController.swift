@@ -4,11 +4,13 @@
 
 import AwfulCore
 import CoreData
+import UIKit
 
 @objc(MessageListViewController)
 final class MessageListViewController: TableViewController {
     fileprivate let managedObjectContext: NSManagedObjectContext
     fileprivate var dataSource: MessagesDataSource!
+    private var unreadMessageCountObserver: ManagedObjectCountObserver!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -20,24 +22,29 @@ final class MessageListViewController: TableViewController {
         tabBarItem.accessibilityLabel = "Private messages"
         tabBarItem.image = UIImage(named: "pm-icon")
         tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
-        updateUnreadMessageCountBadge()
+        
+        let updateBadgeValue = { [weak self] (unreadCount: Int) -> Void in
+            self?.tabBarItem?.badgeValue = unreadCount > 0
+                ? NumberFormatter.localizedString(from: unreadCount as NSNumber, number: .none)
+                : nil
+        }
+        unreadMessageCountObserver = ManagedObjectCountObserver(
+            context: managedObjectContext,
+            entityName: PrivateMessage.entityName(),
+            predicate: NSPredicate(format: "%K == NO", #keyPath(PrivateMessage.seen)),
+            didChange: updateBadgeValue)
+        updateBadgeValue(unreadMessageCountObserver.count)
         
         navigationItem.leftBarButtonItem = editButtonItem
         let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = "Compose"
         navigationItem.rightBarButtonItem = composeItem
         
-        let noteCenter = NotificationCenter.default
-        noteCenter.addObserver(self, selector: #selector(MessageListViewController.unreadMessageCountDidChange(_:)), name: NSNotification.Name(rawValue: NewMessageChecker.didChangeNotification), object: nil)
-        noteCenter.addObserver(self, selector: #selector(MessageListViewController.settingsDidChange(_:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: nil)
     }
 
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
     
     @objc fileprivate func settingsDidChange(_ note: Notification) {
@@ -60,19 +67,6 @@ final class MessageListViewController: TableViewController {
         if let compose = composeViewController {
             present(compose.enclosingNavigationController, animated: true, completion: nil)
         }
-    }
-    
-    fileprivate func updateUnreadMessageCountBadge() {
-        let unreadCount = NewMessageChecker.sharedChecker.unreadCount
-        if unreadCount > 0 {
-            tabBarItem.badgeValue = "\(unreadCount)"
-        } else {
-            tabBarItem.badgeValue = nil
-        }
-    }
-    
-    @objc fileprivate func unreadMessageCountDidChange(_ note: Notification) {
-        updateUnreadMessageCountBadge()
     }
     
     fileprivate func refreshIfNecessary() {
@@ -197,10 +191,16 @@ private protocol DeletesMessages: class {
 
 extension MessageListViewController: DeletesMessages {
     fileprivate func deleteMessage(_ message: PrivateMessage) {
-        message.managedObjectContext!.delete(message)
-        if !message.seen {
-            NewMessageChecker.sharedChecker.decrementUnreadCount()
+        if let context = message.managedObjectContext {
+            context.delete(message)
+            do {
+                try context.save()
+            }
+            catch {
+                fatalError("main context could not be saved! \(error)")
+            }
         }
+        
         _ = ForumsClient.shared.deletePrivateMessage(message)
             .catch { [weak self] (error) in
                 let alert = UIAlertController(title: "Could Not Delete Message", error: error)
