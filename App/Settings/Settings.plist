@@ -334,6 +334,21 @@
 			</array>
 		</dict>
 		<dict>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Unread announcements badge</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_unread_announcements_badge</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
 			<key>Title</key>
 			<string>Thank You</string>
 			<key>Settings</key>

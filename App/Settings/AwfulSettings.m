@@ -292,6 +292,8 @@ BOOL_PROPERTY(openYouTubeLinksInYouTube, setOpenYouTubeLinksInYouTube)
 
 BOOL_PROPERTY(openTwitterLinksInTwitter, setOpenTwitterLinksInTwitter)
 
+BOOL_PROPERTY(showUnreadAnnouncementsBadge, setShowUnreadAnnouncementsBadge)
+
 - (id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -384,6 +386,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .openYouTubeLinksInYouTube = @"open_youtube_links_in_youtube",
     .openTwitterLinksInTwitter = @"open_twitter_links_in_twitter",
     .appIconName = @"app_icon_name",
+    .showUnreadAnnouncementsBadge = @"show_unread_announcements_badge",
 };
 
 NSArray * AwfulDefaultBrowsers(void)

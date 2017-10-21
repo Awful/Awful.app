@@ -19,17 +19,15 @@ final class ForumsTableViewController: TableViewController {
         tabBarItem.image = UIImage(named: "forum-list")
         tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
 
-        let updateBadgeValue: (Int) -> Void = { [weak self] unreadCount in
-            self?.tabBarItem?.badgeValue = unreadCount > 0
-                ? NumberFormatter.localizedString(from: unreadCount as NSNumber, number: .none)
-                : nil
-        }
         unreadAnnouncementCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
             entityName: Announcement.entityName(),
             predicate: NSPredicate(format: "%K == NO", #keyPath(Announcement.hasBeenSeen)),
-            didChange: updateBadgeValue)
+            didChange: { [weak self] unreadCount in
+                self?.updateBadgeValue(unreadCount) })
         updateBadgeValue(unreadAnnouncementCountObserver.count)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didChangeSettings), name: .AwfulSettingsDidChange, object: AwfulSettings.shared())
     }
 
     required init?(coder: NSCoder) {
@@ -67,6 +65,25 @@ final class ForumsTableViewController: TableViewController {
                 fatalError("error saving: \(error)")
             }
         }
+    }
+    
+    @objc private func didChangeSettings(_ notification: Notification) {
+        if
+            let settingsKey = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String,
+            settingsKey == AwfulSettingsKeys.showUnreadAnnouncementsBadge.takeUnretainedValue() as String
+        {
+            updateBadgeValue(unreadAnnouncementCountObserver.count)
+        }
+    }
+    
+    private func updateBadgeValue(_ unreadCount: Int) {
+        tabBarItem?.badgeValue = {
+            guard AwfulSettings.shared().showUnreadAnnouncementsBadge else { return nil }
+            
+            return unreadCount > 0
+                ? NumberFormatter.localizedString(from: unreadCount as NSNumber, number: .none)
+                : nil
+        }()
     }
     
     func openForum(_ forum: Forum, animated: Bool) {
