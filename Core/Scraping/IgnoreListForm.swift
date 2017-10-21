@@ -12,6 +12,10 @@ public struct IgnoreListForm {
     /// The usernames currently in the ignore list. Modifications are represented in the form returned by `makeSubmittableForm()`.
     public var usernames: [String]
     
+    public var submitButton: Form.SubmitButton? {
+        return form.submitButton(named: "submit")
+    }
+    
     /// - Throws: `ScrapingError` if `form` does not appear to be an ignore list.
     public init(_ form: Form) throws {
         self.form = form

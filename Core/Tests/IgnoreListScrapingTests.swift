@@ -30,7 +30,7 @@ final class IgnoreListScrapingTests: XCTestCase {
     
     func testErrorAddingStaff() {
         let result = try! scrapeFixture(named: "ignore-staff") as IgnoreListChangeScrapeResult
-        guard case .failure(error: _, rejectedUsername: let username?) = result else {
+        guard case .failure(.rejected(problemUsername: let username?, underlyingError: _)) = result else {
             return XCTFail("expected rejected username")
         }
         
@@ -43,7 +43,7 @@ final class IgnoreListScrapingTests: XCTestCase {
         case .success:
             break // test passes
             
-        case .failure, .unknown:
+        case .failure:
             XCTFail("expected success")
         }
     }

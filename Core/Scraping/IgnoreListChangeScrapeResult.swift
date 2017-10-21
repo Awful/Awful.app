@@ -8,18 +8,12 @@ import HTMLReader
  Scrapes the page shown after submitting the ignore list form.
  
  This is the page that usually redirects you back to the user control panel after submitting the ignore list.
+ 
+ The scrape result can "succeed" by finding certain errors we expect to see, if that makes sense. For example, if we get a "user X is a moderator/admin" error, then `init(_:url:)` doesn't throw (we found something unsurprising), but the result is a `.failure` (because your ignore list didn't get updated).
  */
 public enum IgnoreListChangeScrapeResult: ScrapeResult {
-    
-    /// The ignore list changed successfully.
     case success
-    
-    /// The ignore list could not be changed, probably because at least one user in the list is a moderator or admin and thus cannot be ignored. If known, this username is available as `rejectedUsername`.
-    case failure(error: StandardErrorScrapeResult, rejectedUsername: String?)
-    
-    /// Neither the success page nor the standard error page appeared. Probably safe to assume failure here.
-    case unknown(Error)
-    
+    case failure(IgnoreListChangeError)
     
     // MARK: ScrapeResult
     
@@ -33,7 +27,7 @@ public enum IgnoreListChangeScrapeResult: ScrapeResult {
                 return scanner.scanUpTo(" is a moderator/admin and you")
             }()
             
-            self = .failure(error: error, rejectedUsername: username)
+            self = .failure(.rejected(problemUsername: username, underlyingError: error))
         }
         else {
             do {
@@ -46,8 +40,19 @@ public enum IgnoreListChangeScrapeResult: ScrapeResult {
                 }
             }
             catch {
-                self = .unknown(error)
+                self = .failure(.unknown(underlyingError: error))
             }
         }
     }
+}
+
+/**
+ Ignore list-specific errors that may be worth handling separately from e.g. `ScrapingError`.
+ */
+public enum IgnoreListChangeError: Error {
+    /// The ignore list could not be changed, probably because at least one user in the list is a moderator or admin and thus cannot be ignored. If known, this username is available as `rejectedUsername`.
+    case rejected(problemUsername: String?, underlyingError: StandardErrorScrapeResult)
+    
+    /// Neither the success page nor the standard error page appeared. Probably safe to assume failure here.
+    case unknown(underlyingError: Error)
 }
