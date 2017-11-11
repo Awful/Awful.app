@@ -439,6 +439,8 @@
 			<string>#834e83</string>
 			<key>editPostIconColor</key>
 			<string>#834e83</string>
+			<key>ignoreUserIconColor</key>
+			<string>#834e83</string>
 			<key>jumpToFirstPageIconColor</key>
 			<string>#834e83</string>
 			<key>jumpToLastPageIconColor</key>
@@ -458,6 +460,8 @@
 			<key>sendPMIconColor</key>
 			<string>#834e83</string>
 			<key>singleUserIconColor</key>
+			<string>#834e83</string>
+			<key>unignoreUserIconColor</key>
 			<string>#834e83</string>
 			<key>voteIconColor</key>
 			<string>#834e83</string>
@@ -572,6 +576,8 @@
 			<string>#57FF57</string>
 			<key>editPostIconColor</key>
 			<string>#57FF57</string>
+			<key>ignoreUserIconColor</key>
+			<string>#57FF57</string>
 			<key>jumpToFirstPageIconColor</key>
 			<string>#57FF57</string>
 			<key>jumpToLastPageIconColor</key>
@@ -591,6 +597,8 @@
 			<key>sendPMIconColor</key>
 			<string>#57FF57</string>
 			<key>singleUserIconColor</key>
+			<string>#57FF57</string>
+			<key>unignoreUserIconColor</key>
 			<string>#57FF57</string>
 			<key>voteIconColor</key>
 			<string>#57FF57</string>
@@ -656,6 +664,8 @@
 			<string>#ebd04b</string>
 			<key>editPostIconColor</key>
 			<string>#ebd04b</string>
+			<key>ignoreUserIconColor</key>
+			<string>#ebd04b</string>
 			<key>jumpToFirstPageIconColor</key>
 			<string>#ebd04b</string>
 			<key>jumpToLastPageIconColor</key>
@@ -675,6 +685,8 @@
 			<key>sendPMIconColor</key>
 			<string>#ebd04b</string>
 			<key>singleUserIconColor</key>
+			<string>#ebd04b</string>
+			<key>unignoreUserIconColor</key>
 			<string>#ebd04b</string>
 			<key>voteIconColor</key>
 			<string>#ebd04b</string>

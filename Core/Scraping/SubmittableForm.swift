@@ -13,7 +13,7 @@ import Foundation
  */
 public final class SubmittableForm {
     private let form: Form
-    private var enteredText: [String: String] = [:]
+    private var enteredText: [String: [String]] = [:]
     private var selectedValues: [String: Set<String>] = [:]
 
     public enum Error: Swift.Error {
@@ -44,10 +44,10 @@ public final class SubmittableForm {
                 _select(value: value, for: name, allowsMultiple: false)
 
             case .text(name: let name, value: let value, isDisabled: let isDisabled) where !isDisabled:
-                _enter(text: value, for: name, needsLineBreakNormalization: false)
+                _append(text: value, for: name, needsLineBreakNormalization: false)
 
             case .textarea(name: let name, value: let value, isDisabled: let isDisabled) where !isDisabled:
-                _enter(text: value, for: name, needsLineBreakNormalization: true)
+                _append(text: value, for: name, needsLineBreakNormalization: true)
 
             case .checkbox, .radioButton, .selectMany, .selectOne, .text, .textarea:
                 break
@@ -58,7 +58,11 @@ public final class SubmittableForm {
         }
     }
 
-    /// Set the text value of a text field or text box in the form.
+    /**
+     Set the text value for a text field or text box in the form.
+     
+     Note that multiple controls can have the same name. Each call to `enter(text:for:)` adds another entry for the name; if you want to be sure there's only one entry, call `clearText(for:)` before calling `enter(text:for:)`.
+     */
     public func enter(text: String, for name: String) throws {
         guard let control = form.controls.first(where: { control in
             switch control {
@@ -70,24 +74,39 @@ public final class SubmittableForm {
         }) else {
             throw Error.missingControl(type: "text, textarea", named: name)
         }
-
+        
         if case .textarea = control {
-            _enter(text: text, for: name, needsLineBreakNormalization: true)
+            _append(text: text, for: name, needsLineBreakNormalization: true)
         }
         else {
-            _enter(text: text, for: name, needsLineBreakNormalization: false)
+            _append(text: text, for: name, needsLineBreakNormalization: false)
         }
     }
-
-    private func _enter(text: String, for name: String, needsLineBreakNormalization: Bool) {
-        enteredText[name] = {
+    
+    private func _append(text: String, for name: String, needsLineBreakNormalization: Bool) {
+        enteredText[name, default: []] += { () -> [String] in
             if needsLineBreakNormalization {
-                return textareaValueTransform.stringByReplacingMatches(in: text, range: NSRange(location: 0, length: text.utf16.count), withTemplate: "\r\n")
+                return [textareaValueTransform.stringByReplacingMatches(in: text, range: NSRange(location: 0, length: text.utf16.count), withTemplate: "\r\n")]
             }
             else {
-                return text
+                return [text]
             }
-        }()
+            }()
+    }
+    
+    public func clearText(for name: String) throws {
+        guard form.controls.contains(where: { control in
+            switch control {
+            case .text, .textarea:
+                return !control.isDisabled && control.name == name
+            case .checkbox, .file, .hidden, .radioButton, .selectMany, .selectOne, .submit:
+                return false
+            }
+        }) else {
+            throw Error.missingControl(type: "text, textarea", named: name)
+        }
+        
+        enteredText.removeValue(forKey: name)
     }
 
     public func select(value: String, for name: String) throws {
@@ -133,42 +152,49 @@ public final class SubmittableForm {
 
     public func submit(button submitButton: Form.SubmitButton?) -> PreparedSubmission {
         // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-form-data-set
+        
+        var entries: [PreparedSubmission.Entry] = []
+        var enteredTextControlNames: Set<String> = []
 
-        let entries = form.controls.flatMap { control -> [PreparedSubmission.Entry] in
-            guard !control.isDisabled else { return [] }
+        for control in form.controls {
+            guard !control.isDisabled else { continue }
 
             switch control {
             case .checkbox(name: let name, value: let value, isChecked: _, isDisabled: _),
                  .radioButton(name: let name, value: let value, isChecked: _, isDisabled: _),
                  .selectMany(name: let name, value: let value, isDisabled: _, isSelected: _),
                  .selectOne(name: let name, value: let value, isDisabled: _, isSelected: _):
-                guard selectedValues[name]?.contains(value) == true else { return [] }
-                return [(name: name, value: value)]
+                guard selectedValues[name]?.contains(value) == true else { break }
+                entries.append((name: name, value: value))
 
             case .file:
-                return []
+                break
 
             case .hidden(name: let name, value: let value, isDisabled: _):
-                return [(name: name, value: value)]
+                entries.append((name: name, value: value))
 
             case .submit(let button):
-                guard button == submitButton else { return [] }
+                guard button == submitButton else { break }
 
                 switch button.kind {
                 case .image:
                     let nameX = control.name.isEmpty ? "x" : control.name + ".x"
                     let nameY = control.name.isEmpty ? "y" : control.name + ".y"
-                    return [(name: nameX, value: "0"), (name: nameY, value: "0")]
+                    entries.append((name: nameX, value: "0"))
+                    entries.append((name: nameY, value: "0"))
 
                 case .plain:
-                    guard !control.name.isEmpty else { return [] }
-                    return [(name: control.name, value: control.value)]
+                    guard !control.name.isEmpty else { break }
+                    entries.append((name: control.name, value: control.value))
                 }
 
             case .text(name: let name, value: _, isDisabled: _),
                  .textarea(name: let name, value: _, isDisabled: _):
-                guard let value = enteredText[name] else { return [] }
-                return [(name: name, value: value)]
+                guard !enteredTextControlNames.contains(name) else { break }
+                enteredTextControlNames.insert(name)
+                
+                guard let values = enteredText[name] else { break }
+                entries.append(contentsOf: values.map { (name: name, value: $0) })
             }
         }
 

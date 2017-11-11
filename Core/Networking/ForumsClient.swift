@@ -1159,6 +1159,77 @@ public final class ForumsClient {
         return fetch(method: .post, urlString: "private.php", parameters: parameters)
             .promise.asVoid()
     }
+    
+    // MARK: Ignore List
+    
+    /// - Returns: The promise of a form submittable to `updateIgnoredUsers()`.
+    public func listIgnoredUsers() -> Promise<IgnoreListForm> {
+        let parameters = [
+            "action": "viewlist",
+            "userlist": "ignore"]
+        
+        return fetch(method: .get, urlString: "member2.php", parameters: parameters)
+            .promise
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global()) { (parsed: ParsedDocument) -> IgnoreListForm in
+                let el = try parsed.document.requiredNode(matchingSelector: "form[action = 'member2.php']")
+                let form = try Form(el, url: parsed.url)
+                return try IgnoreListForm(form)
+        }
+    }
+    
+    /**
+     - Parameter form: An `IgnoreListForm` that originated from a call to `listIgnoredUsers()`.
+     - Note: The promise can fail with an `IgnoreListChangeError`, which may be useful to consider separately from the usual network-related errors and `ScrapingError`.
+     */
+    public func updateIgnoredUsers(_ form: IgnoreListForm) -> Promise<Void> {
+        let submittable: SubmittableForm
+        do {
+            submittable = try form.makeSubmittableForm()
+        }
+        catch {
+            return Promise(error: error)
+        }
+        
+        let parameters = dictifyFormEntries(submittable.submit(button: form.submitButton))
+        return fetch(method: .post, urlString: "member2.php", parameters: parameters)
+            .promise
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global(), execute: IgnoreListChangeScrapeResult.init)
+            .then(on: .global()) { (result: IgnoreListChangeScrapeResult) -> Void in
+                switch result {
+                case .success:
+                    return
+                    
+                case .failure(let error):
+                    throw error
+                }
+        }
+    }
+    
+    /// Attempts to add a user to the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
+    public func addUserToIgnoreList(username: String) -> Promise<Void> {
+        return listIgnoredUsers()
+            .then { form in
+                var form = form
+                guard !form.usernames.contains(username) else { return Promise(value: ()) }
+                
+                form.usernames.append(username)
+                return self.updateIgnoredUsers(form)
+        }
+    }
+    
+    /// Attempts to remove a user from the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
+    public func removeUserFromIgnoreList(username: String) -> Promise<Void> {
+        return listIgnoredUsers()
+            .then { form in
+                var form = form
+                guard let i = form.usernames.index(of: username) else { return Promise(value: ()) }
+                
+                form.usernames.remove(at: i)
+                return self.updateIgnoredUsers(form)
+        }
+    }
 }
 
 

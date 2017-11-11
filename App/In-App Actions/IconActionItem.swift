@@ -32,6 +32,7 @@ final class IconActionItem: NSObject {
     case addBookmark
     case copyURL
     case editPost
+    case ignoreUser
     case jumpToFirstPage
     case jumpToLastPage
     case markAsUnread
@@ -43,6 +44,7 @@ final class IconActionItem: NSObject {
     case sendPrivateMessage
     case showInThread
     case singleUsersPosts
+    case unignoreUser
     case userProfile
     case vote
     
@@ -51,6 +53,7 @@ final class IconActionItem: NSObject {
         case .addBookmark: return "Bookmark"
         case .copyURL: return "Link"
         case .editPost: return "Edit"
+        case .ignoreUser: return "Ignore User"
         case .jumpToFirstPage: return "First Page"
         case .jumpToLastPage: return "Last Page"
         case .markAsUnread: return "Mark Unread"
@@ -62,6 +65,7 @@ final class IconActionItem: NSObject {
         case .sendPrivateMessage: return "PM"
         case .showInThread: return "All Posts"
         case .singleUsersPosts: return "Their Posts"
+        case .unignoreUser: return "Unignore"
         case .userProfile: return "Profile"
         case .vote: return "Vote"
         }
@@ -72,6 +76,7 @@ final class IconActionItem: NSObject {
         case .addBookmark: return "add-bookmark"
         case .copyURL: return "copy-url"
         case .editPost: return "edit-post"
+        case .ignoreUser: return "mark-read-up-to-here"
         case .jumpToFirstPage: return "jump-to-first-page"
         case .jumpToLastPage: return "jump-to-last-page"
         case .markAsUnread: return "mark-as-unread"
@@ -83,6 +88,7 @@ final class IconActionItem: NSObject {
         case .sendPrivateMessage: return "send-private-message"
         case .showInThread: return "view-in-thread"
         case .singleUsersPosts: return "single-users-posts"
+        case .unignoreUser: return "mark-read-up-to-here"
         case .userProfile: return "user-profile"
         case .vote: return "vote"
         }
@@ -93,6 +99,7 @@ final class IconActionItem: NSObject {
         case .addBookmark: return "addBookmarkIconColor"
         case .copyURL: return "copyURLIconColor"
         case .editPost: return "editPostIconColor"
+        case .ignoreUser: return "ignoreUserIconColor"
         case .jumpToFirstPage: return "jumpToFirstPageIconColor"
         case .jumpToLastPage: return "jumpToLastPageIconColor"
         case .markAsUnread: return "markUnreadIconColor"
@@ -104,6 +111,7 @@ final class IconActionItem: NSObject {
         case .sendPrivateMessage: return "sendPMIconColor"
         case .showInThread: return "showInThreadIconColor"
         case .singleUsersPosts: return "singleUserIconColor"
+        case .unignoreUser: return "unignoreUserIconColor"
         case .userProfile: return "profileIconColor"
         case .vote: return "voteIconColor"
         }

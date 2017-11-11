@@ -84,6 +84,12 @@ internal extension Scanner {
         guard scanInt(&result) else { return nil }
         return result
     }
+    
+    func scanUpTo(_ s: String) -> String? {
+        var result: NSString?
+        guard scanUpTo(s, into: &result) else { return nil }
+        return result as String?
+    }
 
     func scanUpToAndPast(_ s: String) -> Bool {
         scanUpTo(s, into: nil)
