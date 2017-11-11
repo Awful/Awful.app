@@ -1215,6 +1215,30 @@ public final class ForumsClient {
                 }
         }
     }
+    
+    /// Attempts to add a user to the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
+    public func addUserToIgnoreList(username: String) -> Promise<Void> {
+        return listIgnoredUsers()
+            .then { form in
+                var form = form
+                guard !form.usernames.contains(username) else { return Promise(value: ()) }
+                
+                form.usernames.append(username)
+                return self.updateIgnoredUsers(form)
+        }
+    }
+    
+    /// Attempts to remove a user from the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
+    public func removeUserFromIgnoreList(username: String) -> Promise<Void> {
+        return listIgnoredUsers()
+            .then { form in
+                var form = form
+                guard let i = form.usernames.index(of: username) else { return Promise(value: ()) }
+                
+                form.usernames.remove(at: i)
+                return self.updateIgnoredUsers(form)
+        }
+    }
 }
 
 

@@ -7,6 +7,7 @@ import AwfulCore
 import CoreData
 import GRMustache
 import MRProgress
+import PromiseKit
 import TUSafariActivity
 import WebViewJavascriptBridge
 
@@ -808,6 +809,38 @@ final class PostsPageViewController: ViewController {
                 self.navigationController?.pushViewController(rapSheetVC, animated: true)
             }
         }))
+        
+        if let username = user.username {
+            let ignoreAction: IconAction
+            let ignoreBlock: (_ username: String) -> Promise<Void>
+            if post.ignored {
+                ignoreAction = .unignoreUser
+                ignoreBlock = ForumsClient.shared.removeUserFromIgnoreList
+            }
+            else {
+                ignoreAction = .ignoreUser
+                ignoreBlock = ForumsClient.shared.addUserToIgnoreList
+            }
+            items.append(IconActionItem(ignoreAction, block: {
+                let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Updating Ignore List", mode: .indeterminate, animated: true)
+                overlay?.tintColor = self.theme["tintColor"]
+                
+                ignoreBlock(username)
+                    .then { () -> Void in
+                        overlay?.mode = .checkmark
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            overlay?.dismiss(true)
+                        }
+                    }
+                    .catch { [weak self] error -> Void in
+                        overlay?.dismiss(false)
+                        
+                        let alert = UIAlertController(title: "Could Not Update Ignore List", error: error)
+                        self?.present(alert, animated: true)
+                }
+            }))
+        }
         
         actionVC.items = items
         actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
