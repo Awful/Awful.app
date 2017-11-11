@@ -278,6 +278,9 @@ final class SettingsViewController: TableViewController {
             if switchView.awful_setting == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String {
                 switchView.addAwful_overridingSetting(AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String)
             }
+            else {
+                switchView.isEnabled = true
+            }
         }
         
         if settingType == .Stepper {
