@@ -61,36 +61,36 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
-            <key>ghost</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>AppIcon-ghost-20x20</string>
-                    <string>AppIcon-ghost-29x29</string>
-                    <string>AppIcon-ghost-40x40</string>
-                    <string>AppIcon-ghost-60x60</string>
-                    <string>AppIcon-ghost-76x76</string>
-                    <string>AppIcon-ghost-83.5x83.5</string>
-                    <string>AppIcon-ghost-1024x1024</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
-            <key>greenface</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>AppIcon-greenface-20x20</string>
-                    <string>AppIcon-greenface-29x29</string>
-                    <string>AppIcon-greenface-40x40</string>
-                    <string>AppIcon-greenface-60x60</string>
-                    <string>AppIcon-greenface-76x76</string>
-                    <string>AppIcon-greenface-83.5x83.5</string>
-                    <string>AppIcon-greenface-1024x1024</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
+			<key>ghost</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-ghost-20x20</string>
+					<string>AppIcon-ghost-29x29</string>
+					<string>AppIcon-ghost-40x40</string>
+					<string>AppIcon-ghost-60x60</string>
+					<string>AppIcon-ghost-76x76</string>
+					<string>AppIcon-ghost-83.5x83.5</string>
+					<string>AppIcon-ghost-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>greenface</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-greenface-20x20</string>
+					<string>AppIcon-greenface-29x29</string>
+					<string>AppIcon-greenface-40x40</string>
+					<string>AppIcon-greenface-60x60</string>
+					<string>AppIcon-greenface-76x76</string>
+					<string>AppIcon-greenface-83.5x83.5</string>
+					<string>AppIcon-greenface-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>staredog</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -172,36 +172,36 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
-            <key>ghost</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>AppIcon-ghost-20x20</string>
-                    <string>AppIcon-ghost-29x29</string>
-                    <string>AppIcon-ghost-40x40</string>
-                    <string>AppIcon-ghost-60x60</string>
-                    <string>AppIcon-ghost-76x76</string>
-                    <string>AppIcon-ghost-83.5x83.5</string>
-                    <string>AppIcon-ghost-1024x1024</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
-            <key>greenface</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>AppIcon-greenface-20x20</string>
-                    <string>AppIcon-greenface-29x29</string>
-                    <string>AppIcon-greenface-40x40</string>
-                    <string>AppIcon-greenface-60x60</string>
-                    <string>AppIcon-greenface-76x76</string>
-                    <string>AppIcon-greenface-83.5x83.5</string>
-                    <string>AppIcon-greenface-1024x1024</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
+			<key>ghost</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-ghost-20x20</string>
+					<string>AppIcon-ghost-29x29</string>
+					<string>AppIcon-ghost-40x40</string>
+					<string>AppIcon-ghost-60x60</string>
+					<string>AppIcon-ghost-76x76</string>
+					<string>AppIcon-ghost-83.5x83.5</string>
+					<string>AppIcon-ghost-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>greenface</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-greenface-20x20</string>
+					<string>AppIcon-greenface-29x29</string>
+					<string>AppIcon-greenface-40x40</string>
+					<string>AppIcon-greenface-60x60</string>
+					<string>AppIcon-greenface-76x76</string>
+					<string>AppIcon-greenface-83.5x83.5</string>
+					<string>AppIcon-greenface-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>staredog</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -283,13 +283,13 @@
 	<string>4db466addcb5cfc</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>vlc</string>
 		<string>firefox</string>
 		<string>googlechrome</string>
 		<string>org-appextension-feature-password-management</string>
-		<string>vimeo</string>
-		<string>youtube</string>
 		<string>twitter</string>
+		<string>vimeo</string>
+		<string>vlc</string>
+		<string>youtube</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
