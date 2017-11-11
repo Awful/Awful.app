@@ -272,7 +272,9 @@ BOOL_PROPERTY(clipboardURLEnabled, setClipboardURLEnabled)
 {
     NSString *browser = self[AwfulSettingsKeys.defaultBrowser];
     
-    if ([browser isEqualToString:AwfulDefaultBrowserChrome] && !AwfulDefaultBrowserIsChromeInstalled()) {
+    if (([browser isEqualToString:AwfulDefaultBrowserChrome] && !AwfulDefaultBrowserIsChromeInstalled())
+        || ([browser isEqualToString:AwfulDefaultBrowserFirefox] && !AwfulDefaultBrowserIsFirefoxInstalled()))
+    {
         return AwfulDefaultBrowserSafari;
     }
     
@@ -391,19 +393,29 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
 
 NSArray * AwfulDefaultBrowsers(void)
 {
-    NSArray *alwaysInstalled = @[AwfulDefaultBrowserAwful, AwfulDefaultBrowserSafari];
+    NSMutableArray *installed = [@[AwfulDefaultBrowserAwful, AwfulDefaultBrowserSafari] mutableCopy];
+    
     if (AwfulDefaultBrowserIsChromeInstalled()) {
-        return [alwaysInstalled arrayByAddingObject:AwfulDefaultBrowserChrome];
-    } else {
-        return alwaysInstalled;
+        [installed addObject:AwfulDefaultBrowserChrome];
     }
+    if (AwfulDefaultBrowserIsFirefoxInstalled()) {
+        [installed addObject:AwfulDefaultBrowserFirefox];
+    }
+    
+    return installed;
 }
 
 NSString * const AwfulDefaultBrowserAwful = @"Awful";
 NSString * const AwfulDefaultBrowserSafari = @"Safari";
 NSString * const AwfulDefaultBrowserChrome = @"Chrome";
+NSString * const AwfulDefaultBrowserFirefox = @"Firefox";
 
 BOOL AwfulDefaultBrowserIsChromeInstalled(void)
 {
     return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome://"]];
+}
+
+BOOL AwfulDefaultBrowserIsFirefoxInstalled(void)
+{
+    return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"firefox://"]];
 }

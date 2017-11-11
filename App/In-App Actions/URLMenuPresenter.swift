@@ -3,6 +3,9 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import UIKit
+
+private let Log = Logger.get()
+
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -68,6 +71,8 @@ private enum _URLMenuPresenter {
             UIApplication.shared.openURL(url)
         case AwfulDefaultBrowserChrome?:
             UIApplication.shared.openURL(chromifyURL(url))
+        case AwfulDefaultBrowserFirefox?:
+            UIApplication.shared.openURL(firefoxifyURL(url))
         default:
             fatalError("unexpected browser \(String(describing: browser))")
         }
@@ -106,6 +111,12 @@ private enum _URLMenuPresenter {
                 case AwfulDefaultBrowserChrome:
                     alert.addAction(UIAlertAction(title: "Open in Chrome", style: .default, handler: { _ in
                         UIApplication.shared.openURL(chromifyURL(linkURL))
+                        return
+                    }))
+                    
+                case AwfulDefaultBrowserFirefox:
+                    alert.addAction(UIAlertAction(title: "Open in Firefox", style: .default, handler: { _ in
+                        UIApplication.shared.openURL(firefoxifyURL(linkURL))
                         return
                     }))
                     
@@ -246,6 +257,22 @@ private func chromifyURL(_ url: URL) -> URL {
         components.scheme = "googlechromes"
     }
     return components.url!
+}
+
+private func firefoxifyURL(_ url: URL) -> URL {
+    // https://github.com/mozilla-mobile/firefox-ios-open-in-client
+    switch url.scheme?.lowercased() {
+    case "http"?, "https"?:
+        break
+    default:
+        Log.w("can't make a Firefox URL for url \(url)")
+        return url
+    }
+    
+    let base = URL(string: "firefox://open-url") !! "hardcoded"
+    var components = URLComponents(url: base, resolvingAgainstBaseURL: true) !! "hardcoded"
+    components.queryItems = [URLQueryItem(name: "url", value: url.absoluteString)]
+    return components.url !! "adding query item shouldn't break anything"
 }
 
 private func canOpenInYouTube(_ url: URL) -> Bool {

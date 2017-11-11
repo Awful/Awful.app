@@ -151,5 +151,11 @@ extern NSString * const AwfulDefaultBrowserSafari;
 /// Chrome. If Chrome is not installed, Safari is returned instead.
 extern NSString * const AwfulDefaultBrowserChrome;
 
+/// Firefox. If Firefox is not installed, Safari is returned instead.
+extern NSString * const AwfulDefaultBrowserFirefox;
+
 /// Returns whether Chrome is installed.
 extern BOOL AwfulDefaultBrowserIsChromeInstalled(void);
+
+/// Returns whether Firefox is installed.
+extern BOOL AwfulDefaultBrowserIsFirefoxInstalled(void);

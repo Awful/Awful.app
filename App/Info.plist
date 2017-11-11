@@ -284,6 +284,7 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>vlc</string>
+		<string>firefox</string>
 		<string>googlechrome</string>
 		<string>org-appextension-feature-password-management</string>
 		<string>vimeo</string>
