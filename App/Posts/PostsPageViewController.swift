@@ -446,7 +446,7 @@ final class PostsPageViewController: ViewController {
                         let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
                         overlay?.tintColor = self.theme["tintColor"]
                         
-                        _ = ForumsClient.shared.rate(self.thread, as: i)
+                        ForumsClient.shared.rate(self.thread, as: i)
                             .then { () -> Void in
                                 overlay?.mode = .checkmark
 
@@ -749,7 +749,7 @@ final class PostsPageViewController: ViewController {
     
     fileprivate func readIgnoredPostAtIndex(_ i: Int) {
         let post = posts[i]
-        _ = ForumsClient.shared.readIgnoredPost(post)
+        ForumsClient.shared.readIgnoredPost(post)
             .then { [weak self] () -> Void in
                 // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
                 guard
