@@ -39,6 +39,20 @@ final class IgnoreListFormTests: XCTestCase {
         
         XCTAssertEqual(form.initialUsernames, ["carry on then"])
         
+        form.usernames += ["persistent whiner"]
+        
+        let formdata = try! form.makeSubmittableForm().submit(button: nil)
+        XCTAssertEqual(formdata.entries.filter { $0.name == "listbits[]" }.count, 2)
+        XCTAssertNotNil(formdata.entries.first { $0.name == "listbits[]" && $0.value == "carry on then" })
+        XCTAssertNotNil(formdata.entries.first { $0.name == "listbits[]" && $0.value == "persistent whiner" })
+    }
+    
+    func testFormAddingTwoIgnoredUsers() {
+        let scrapedForm = try! scrapeForm(matchingSelector: "form[action = 'member2.php']", inFixtureNamed: "ignore-one")
+        var form = try! IgnoreListForm(scrapedForm)
+        
+        XCTAssertEqual(form.initialUsernames, ["carry on then"])
+        
         form.usernames += ["persistent whiner", "surprisingly stupid newbie"]
         
         let formdata = try! form.makeSubmittableForm().submit(button: nil)

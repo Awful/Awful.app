@@ -49,7 +49,7 @@ internal final class ForumsURLSession {
     internal func fetch(
         method: Method,
         urlString: String,
-        parameters: [String: Any]?,
+        parameters: [Dictionary<String, Any>.Element]?,
         redirectBlock: WillRedirectCallback? = nil)
         -> (promise: PromiseType, cancellable: Cancellable)
     {
@@ -57,18 +57,26 @@ internal final class ForumsURLSession {
             return (Promise(error: ForumsClient.PromiseError.invalidBaseURL), Operation())
         }
 
-        let parameters = parameters.map(win1252Escaped)
+        let parameters = win1252Escaped(parameters ?? [])
 
         let request: URLRequest
         do {
             switch method {
             case .get:
-                request = try OMGHTTPURLRQ.get(url.absoluteString, parameters) as URLRequest
+                let dictParameters = Dictionary<String, Any>(parameters.map { (key: $0, value: $1 as Any) }, uniquingKeysWith: { (old: Any, new: Any) -> Any in
+                    switch old {
+                    case let old as [Any]:
+                        return old + [new]
+                    default:
+                        return [old, new]
+                    }
+                })
+                request = try OMGHTTPURLRQ.get(url.absoluteString, dictParameters) as URLRequest
 
             case .post:
                 var mutableRequest = URLRequest(url: url)
                 mutableRequest.httpMethod = "POST"
-                try mutableRequest.setMultipartFormData(parameters ?? [:], encoding: .windowsCP1252)
+                try mutableRequest.setMultipartFormData(parameters, encoding: .windowsCP1252)
                 request = mutableRequest
             }
         }
@@ -205,7 +213,7 @@ private extension URLRequest {
      
      - Note: The default `httpMethod` is `GET`, and `GET` requests do not typically have a response body. Remember to set the `httpMethod` to e.g. `POST` before sending the request.
      */
-    mutating func setMultipartFormData(_ parameters: [String: String], encoding: String.Encoding) throws {
+    mutating func setMultipartFormData(_ parameters: [Dictionary<String, String>.Element], encoding: String.Encoding) throws {
         let boundary = String(format: "------------------------%08X%08X", arc4random(), arc4random())
 
         let contentType: String = try {
@@ -250,7 +258,7 @@ private extension URLRequest {
 }
 
 /// Turns parameter values into strings, then turns everything in parameter key/values outside win1252 into HTML entities.
-private func win1252Escaped(_ parameters: [String: Any]) -> [String: String] {
+private func win1252Escaped(_ parameters: [Dictionary<String, Any>.Element]) -> [Dictionary<String, String>.Element] {
     func iswin1252(c: UnicodeScalar) -> Bool {
         // http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/bestfit1252.txt
         switch c.value {
@@ -272,9 +280,9 @@ private func win1252Escaped(_ parameters: [String: Any]) -> [String: String] {
         return String(String.UnicodeScalarView(scalars))
     }
 
-    var escapedParameters: [String: String] = [:]
+    var escapedParameters: [Dictionary<String, String>.Element] = []
     for (key, value) in parameters {
-        escapedParameters[escape(key)] = escape("\(value)")
+        escapedParameters.append((escape(key), escape("\(value)")))
     }
     return escapedParameters
 }

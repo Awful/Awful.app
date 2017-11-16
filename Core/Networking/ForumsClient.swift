@@ -115,6 +115,16 @@ public final class ForumsClient {
         redirectBlock: ForumsURLSession.WillRedirectCallback? = nil)
         -> (promise: ForumsURLSession.PromiseType, cancellable: Cancellable)
     {
+        return fetch(method: method, urlString: urlString, parameters: (parameters ?? [:]).map { (key: $0, value: "\($1)") })
+    }
+
+    private func fetch(
+        method: ForumsURLSession.Method,
+        urlString: String,
+        parameters: [Dictionary<String, Any>.Element],
+        redirectBlock: ForumsURLSession.WillRedirectCallback? = nil)
+        -> (promise: ForumsURLSession.PromiseType, cancellable: Cancellable)
+    {
         guard let urlSession = urlSession else {
             return (Promise(error: PromiseError.missingURLSession), Operation())
         }
@@ -366,7 +376,7 @@ public final class ForumsClient {
         let threadTagObjectID = threadTag?.objectID
         let secondaryTagObjectID = secondaryTag?.objectID
 
-        let params = Promise<Void>(value: ()).then(on: backgroundContext) { _, context -> [String: Any] in
+        let params = Promise<Void>(value: ()).then(on: backgroundContext) { _, context -> [Dictionary<String, Any>.Element] in
             _ = try formData.postIcons.upsert(into: context)
             try context.save()
 
@@ -396,7 +406,7 @@ public final class ForumsClient {
             }
 
             let submission = form.submit(button: formData.form.submitButton(named: "submit"))
-            return dictifyFormEntries(submission)
+            return prepareFormEntries(submission)
         }
 
         let threadID = params
@@ -443,7 +453,7 @@ public final class ForumsClient {
 
         let previewParameters = previewForm
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> [String: Any] in
+            .then(on: .global()) { parsed -> [Dictionary<String, Any>.Element] in
                 guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name = 'vbform']") else {
                     if
                         let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
@@ -464,7 +474,7 @@ public final class ForumsClient {
                 try submittable.enter(text: bbcode, for: "message")
 
                 let submission = submittable.submit(button: form.submitButton(named: "preview"))
-                return dictifyFormEntries(submission)
+                return prepareFormEntries(submission)
         }
 
         let htmlAndFormData = previewParameters
@@ -652,7 +662,7 @@ public final class ForumsClient {
         let params = fetch(method: .get, urlString: "newreply.php", parameters: startParams)
             .promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> [String: Any] in
+            .then(on: .global()) { parsed -> [Dictionary<String, Any>.Element] in
                 guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']") else {
                     let description = wasThreadClosed
                         ? "Could not reply; the thread may be closed."
@@ -665,7 +675,7 @@ public final class ForumsClient {
                 let form = SubmittableForm(parsedForm)
                 try form.enter(text: bbcode, for: "message")
                 let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
-                return dictifyFormEntries(submission)
+                return prepareFormEntries(submission)
         }
 
         let postID = params
@@ -713,13 +723,13 @@ public final class ForumsClient {
 
         let params = promise
             .then(on: .global(), execute: parseHTML)
-            .then(on: .global()) { parsed -> [String: Any] in
+            .then(on: .global()) { parsed -> [Dictionary<String, Any>.Element] in
                 let htmlForm = try parsed.document.requiredNode(matchingSelector: "form[name = 'vbform']")
                 let scrapedForm = try Form(htmlForm, url: parsed.url)
                 let form = SubmittableForm(scrapedForm)
                 try form.enter(text: bbcode, for: "message")
                 let submission = form.submit(button: scrapedForm.submitButton(named: "preview"))
-                return dictifyFormEntries(submission)
+                return prepareFormEntries(submission)
         }
 
         let parsed = params
@@ -763,11 +773,11 @@ public final class ForumsClient {
     public func edit(_ post: Post, bbcode: String) -> Promise<Void> {
         return editForm(for: post)
             .promise
-            .then(on: .global()) { parsedForm -> [String: Any] in
+            .then(on: .global()) { parsedForm -> [Dictionary<String, Any>.Element] in
                 let form = SubmittableForm(parsedForm)
                 try form.enter(text: bbcode, for: "message")
                 let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
-                return dictifyFormEntries(submission)
+                return prepareFormEntries(submission)
             }
             .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
             .asVoid()
@@ -894,11 +904,11 @@ public final class ForumsClient {
         let (promise, cancellable) = editForm(for: post)
 
         let params = promise
-            .then(on: .global()) { parsedForm -> [String: Any] in
+            .then(on: .global()) { parsedForm -> [Dictionary<String, Any>.Element] in
                 let form = SubmittableForm(parsedForm)
                 try form.enter(text: bbcode, for: "message")
                 let submission = form.submit(button: parsedForm.submitButton(named: "preview"))
-                return dictifyFormEntries(submission)
+                return prepareFormEntries(submission)
         }
 
         let parsed = params
@@ -1191,7 +1201,7 @@ public final class ForumsClient {
             return Promise(error: error)
         }
         
-        let parameters = dictifyFormEntries(submittable.submit(button: form.submitButton))
+        let parameters = prepareFormEntries(submittable.submit(button: form.submitButton))
         return fetch(method: .post, urlString: "member2.php", parameters: parameters)
             .promise
             .then(on: .global(), execute: parseHTML)
@@ -1316,15 +1326,8 @@ private func checkServerErrors(_ document: HTMLDocument) throws {
 }
 
 
-private func dictifyFormEntries(_ submission: SubmittableForm.PreparedSubmission) -> [String: Any] {
-    return Dictionary(submission.entries.map { ($0.name, $0.value )}, uniquingKeysWith: { curr, new -> Array<Any> in
-        switch curr {
-        case let accum as Array<Any>:
-            return accum + [new]
-        default:
-            return [curr, new]
-        }
-    })
+private func prepareFormEntries(_ submission: SubmittableForm.PreparedSubmission) -> [Dictionary<String, Any>.Element] {
+    return submission.entries.map { ($0.name, $0.value ) }
 }
 
 
