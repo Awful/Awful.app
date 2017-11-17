@@ -754,12 +754,12 @@ final class PostsPageViewController: ViewController {
                 // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
                 guard
                     let sself = self,
-                    var i = sself.posts.index(of: post)
+                    let i = sself.posts.index(of: post)
                     else { return }
-                i -= sself.hiddenPosts
                 guard i >= 0 else { return }
-                let data: [String: AnyObject] = ["index": i as NSNumber, "HTML": sself.renderedPostAtIndex(i) as NSString]
-                sself.webViewJavascriptBridge?.callHandler("postHTMLAtIndex", data: data)
+                sself.webViewJavascriptBridge?.callHandler("postHTMLAtIndex", data: [
+                    "index": i - sself.hiddenPosts,
+                    "HTML": sself.renderedPostAtIndex(i)])
             }
             .catch { [weak self] (error) -> Void in
                 let alert = UIAlertController(networkError: error)
