@@ -115,7 +115,7 @@ public final class ForumsClient {
         redirectBlock: ForumsURLSession.WillRedirectCallback? = nil)
         -> (promise: ForumsURLSession.PromiseType, cancellable: Cancellable)
     {
-        return fetch(method: method, urlString: urlString, parameters: (parameters ?? [:]).map { (key: $0, value: "\($1)") })
+        return fetch(method: method, urlString: urlString, parameters: (parameters ?? [:]).map { (key: $0, value: "\($1)") }, redirectBlock: redirectBlock)
     }
 
     private func fetch(
