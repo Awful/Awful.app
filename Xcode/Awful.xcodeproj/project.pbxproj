@@ -3172,7 +3172,6 @@
 				1CBAFB201F945149007DAB58 /* IgnoreListChangeScrapeResult.swift in Sources */,
 				1CF0F8E61ED8F62D00C16099 /* ScrapingError.swift in Sources */,
 				1CC2EFCA1F9BDC080059EC95 /* IgnoreListForm.swift in Sources */,
-				1CF0F8F51ED9EF4900C16099 /* UnreadPrivateMessageCountScrapeResult.swift in Sources */,
 				1CF0F8E21ED8F43400C16099 /* Helpers.swift in Sources */,
 				1CF0F8E41ED8F49900C16099 /* ScrapeResult.swift in Sources */,
 				1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */,
