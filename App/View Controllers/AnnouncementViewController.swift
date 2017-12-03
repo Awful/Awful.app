@@ -419,7 +419,7 @@ fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, Mustach
 
     var debugDescription: String {
         func firstBit(of s: String) -> String {
-            return String(s.characters.lazy
+            return String(s.lazy
                 .map { (c: Character) -> Character in c == "\n" ? " " : c }
                 .prefix(20))
         }

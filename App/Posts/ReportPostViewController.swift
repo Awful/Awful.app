@@ -45,7 +45,7 @@ final class ReportPostViewController: ViewController {
     }
     
     @IBAction @objc fileprivate func commentTextFieldDidChange(_ textField: UITextField) {
-        navigationItem.rightBarButtonItem?.isEnabled = (textField.text ?? "").characters.count <= 60
+        navigationItem.rightBarButtonItem?.isEnabled = (textField.text ?? "").count <= 60
     }
     
     fileprivate class RootView: UIView {

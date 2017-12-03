@@ -110,7 +110,7 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
         context.setLineWidth(1)
         isSelected ? context.fillEllipse(in: circleFrame) : context.strokeEllipse(in: circleFrame)
         
-        let firstLetter = String(titleText.characters.first ?? "?")
+        let firstLetter = String(titleText.first ?? "?")
         let letterAttributes = [
             NSAttributedStringKey.foregroundColor: isSelected ? UIColor.white : drawColor,
             .font: UIFont.systemFont(ofSize: 24)]

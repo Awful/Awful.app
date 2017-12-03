@@ -934,7 +934,7 @@ public final class ForumsClient {
         let parameters = [
             "action": "submit",
             "postid": post.postID,
-            "comments": String(reason.characters.prefix(60))]
+            "comments": String(reason.prefix(60))]
 
         return fetch(method: .post, urlString: "modalert.php", parameters: parameters)
             .promise.asVoid()
@@ -1278,7 +1278,7 @@ private func parseJSONDict(data: Data, response: URLResponse) throws -> [String:
 private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElement) {
     for img in postbody.nodes(matchingSelector: "img[src^='http://awful-image']") {
         if let src = img["src"] {
-            let suffix = src.characters.dropFirst("http://".characters.count)
+            let suffix = src.dropFirst("http://".count)
             img["src"] = String(suffix)
         }
     }

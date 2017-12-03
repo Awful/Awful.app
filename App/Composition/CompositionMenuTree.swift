@@ -250,7 +250,7 @@ fileprivate func videoTagURLForURL(_ url: URL) -> URL? {
         return url
     case let (host?, path) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
         return url
-    case let (host?, path) where host.hasSuffix("youtu.be") && path.characters.count > 1:
+    case let (host?, path) where host.hasSuffix("youtu.be") && path.count > 1:
         if var components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
             let videoID = url.pathComponents[1]
             components.host = "www.youtube.com"
