@@ -280,17 +280,6 @@ private enum Model: Equatable {
 }
 
 extension Forum {
-    var ancestors: AnySequence<Forum> {
-        var current = parentForum
-        return AnySequence {
-            return AnyIterator {
-                let next = current
-                current = current?.parentForum
-                return next
-            }
-        }
-    }
-    
     fileprivate var isVisible: Bool {
         return ancestors.all { $0.metadata.showsChildrenInForumList }
     }

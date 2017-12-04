@@ -165,6 +165,9 @@
 		1C4154E11ED1D53D009686E4 /* ProfileScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4154E01ED1D53D009686E4 /* ProfileScrapeResult.swift */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
+		1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */; };
+		1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */; };
+		1C42A22A1FD4D6F400F67BA1 /* Base62.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2291FD4D6F400F67BA1 /* Base62.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
@@ -749,6 +752,10 @@
 		1C4191901763C8BD00EADE07 /* posts-view.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "posts-view.js"; sourceTree = "<group>"; };
 		1C41B8A416CD573D00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-banned.gif"; sourceTree = "<group>"; };
 		1C41B8A516CD573D00718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-permabanned.gif"; sourceTree = "<group>"; };
+		1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumListDataSource.swift; sourceTree = "<group>"; };
+		1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Forum+Presentation.swift"; sourceTree = "<group>"; };
+		1C42A2281FD4CABB00F67BA1 /* Awful 3.33-beta0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.33-beta0.xcdatamodel"; sourceTree = "<group>"; };
+		1C42A2291FD4D6F400F67BA1 /* Base62.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base62.swift; sourceTree = "<group>"; };
 		1C442FC21A0D80A1001BD898 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		1C442FC51A0DE8C0001BD898 /* Awful.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Awful.xcdatamodel; sourceTree = "<group>"; };
 		1C442FC81A0E0CB1001BD898 /* PrivateMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessage.swift; sourceTree = "<group>"; };
@@ -1504,6 +1511,7 @@
 			isa = PBXGroup;
 			children = (
 				1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */,
+				1C42A2291FD4D6F400F67BA1 /* Base62.swift */,
 				1C14A4BF1A94C3C50045DDF7 /* Data */,
 				1C14A4DB1A94C7260045DDF7 /* Errors.swift */,
 				1C3CF9691A94B9B40065C964 /* Info.plist */,
@@ -1825,6 +1833,7 @@
 		1CA887AE1F40ADFE0059FEEC /* Model Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */,
 				1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */,
 			);
 			path = "Model Presentation";
@@ -1964,6 +1973,7 @@
 			children = (
 				1C4EAD5B1BC052BE0008BE54 /* CollectionTypeDelta.swift */,
 				1CD005D51BB8DA6400232FFD /* FetchedDataManager.swift */,
+				1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */,
 				1C9438661C25F3B50029DFB1 /* ForumTableViewDataSource.swift */,
 				1C4B6DC21BBF3D44005BFF08 /* ThreadDataManagerTableViewAdapter.swift */,
 			);
@@ -3169,6 +3179,7 @@
 				1CF7AB9A1EDD0FDE0089EF0C /* ForumPersistence.swift in Sources */,
 				1C9752561F6C75A5007C57AF /* ThreadPage.swift in Sources */,
 				1C19CA4C1F70ADC50060F4DE /* PostIconPersistence.swift in Sources */,
+				1C42A22A1FD4D6F400F67BA1 /* Base62.swift in Sources */,
 				1CBAFB201F945149007DAB58 /* IgnoreListChangeScrapeResult.swift in Sources */,
 				1CF0F8E61ED8F62D00C16099 /* ScrapingError.swift in Sources */,
 				1CC2EFCA1F9BDC080059EC95 /* IgnoreListForm.swift in Sources */,
@@ -3300,6 +3311,7 @@
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */,
+				1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */,
 				7B82D6671F7809E3002291C7 /* AppIconCell.swift in Sources */,
 				1C9438671C25F3B50029DFB1 /* ForumTableViewDataSource.swift in Sources */,
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
@@ -3358,6 +3370,7 @@
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
 				1C16FC041CC3D84500C88BD1 /* PostsView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
+				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CE55A701A10552600E474A6 /* DataSource.swift in Sources */,
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
@@ -4207,11 +4220,12 @@
 		1C442FC41A0DE8C0001BD898 /* Awful.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				1C42A2281FD4CABB00F67BA1 /* Awful 3.33-beta0.xcdatamodel */,
 				1C07B8BC1F0097580044B8AF /* Awful 3.26-beta0.xcdatamodel */,
 				1C6460D11A3F1037002F5CEE /* Awful 3.2-beta6.xcdatamodel */,
 				1C442FC51A0DE8C0001BD898 /* Awful.xcdatamodel */,
 			);
-			currentVersion = 1C07B8BC1F0097580044B8AF /* Awful 3.26-beta0.xcdatamodel */;
+			currentVersion = 1C42A2281FD4CABB00F67BA1 /* Awful 3.33-beta0.xcdatamodel */;
 			path = Awful.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
