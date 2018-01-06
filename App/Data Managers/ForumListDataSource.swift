@@ -120,6 +120,29 @@ extension ForumListDataSource {
 }
 
 extension ForumListDataSource {
+    func titleForSection(_ section: Int) -> String {
+        let (controller: controller, localSection: localSection) = controllerAtGlobalSection(section)
+        if controller === announcementsController {
+            return LocalizedString("forums-list.announcements-section-title")
+        }
+        else if controller === favoriteForumsController {
+            return LocalizedString("forums-list.favorite-forums.section-title")
+        }
+        else if controller === forumsController {
+            guard let sections = controller.sections else {
+                fatalError("something's wrong with the fetched results controller")
+            }
+
+            let sectionIdentifier = sections[localSection].name
+            return String(sectionIdentifier.dropFirst(ForumGroup.sectionIdentifierIndexLength + 1))
+        }
+        else {
+            fatalError("unknown results controller \(controller)")
+        }
+    }
+}
+
+extension ForumListDataSource {
     var hasFavorites: Bool {
         let count = favoriteForumsController.fetchedObjects?.count ?? 0
         return count > 0
@@ -248,27 +271,6 @@ extension ForumListDataSource: UITableViewDataSource {
             .reduce(0, +)
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let (controller: controller, localSection: localSection) = controllerAtGlobalSection(section)
-        if controller === announcementsController {
-            return LocalizedString("forums-list.announcements-section-title")
-        }
-        else if controller === favoriteForumsController {
-            return LocalizedString("forums-list.favorite-forums.section-title")
-        }
-        else if controller === forumsController {
-            guard let sections = controller.sections else {
-                fatalError("something's wrong with the fetched results controller")
-            }
-            
-            let sectionIdentifier = sections[localSection].name
-            return String(sectionIdentifier.dropFirst(ForumGroup.sectionIdentifierIndexLength + 1))
-        }
-        else {
-            fatalError("unknown results controller \(controller)")
-        }
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let (controller: controller, localSection: localSection) = controllerAtGlobalSection(section)
         return controller.sections?[localSection].numberOfObjects ?? 0
@@ -343,6 +345,5 @@ extension ForumListDataSource: UITableViewDataSource {
 }
 
 // TODO: allow deleting/reordering favorites
-// TODO: size and theme section headers
 // TODO: non-sticky headers?
 // TODO: bail on auto layout for cell

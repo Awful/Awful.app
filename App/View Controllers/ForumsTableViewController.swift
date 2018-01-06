@@ -112,6 +112,7 @@ final class ForumsTableViewController: TableViewController {
         
 //        tableView.register(UINib(nibName: ForumTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ForumTableViewCell.identifier)
 //        tableView.register(UITableViewCell.self, forCellReuseIdentifier: ForumTableViewDataSource.headerReuseIdentifier)
+        tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
         
         tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
         tableView.separatorStyle = .none
@@ -205,8 +206,23 @@ extension ForumsTableViewController {
             return 0
         }
         else {
-            return UITableViewAutomaticDimension
+            return SectionHeader.height
         }
+    }
+
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: SectionHeader.reuseIdentifier) as? ForumListSectionHeaderView else {
+            assertionFailure("where's the header")
+            return nil
+        }
+
+        header.viewModel = .init(
+            backgroundColor: theme["listHeaderBackgroundColor"],
+            font: UIFont.preferredFont(forTextStyle: .body),
+            sectionName: dataSource.titleForSection(section),
+            textColor: theme["listHeaderTextColor"])
+
+        return header
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -253,3 +269,7 @@ extension ForumsTableViewController {
 //    }
 //}
 
+private enum SectionHeader {
+    static let height: CGFloat = 44
+    static let reuseIdentifier = "Header"
+}
