@@ -100,20 +100,21 @@ final class ForumListDataSource: NSObject {
 }
 
 extension ForumListDataSource {
-    func forum(at indexPath: IndexPath) -> Forum? {
+    /// - Returns: The `Announcement` or `Forum` at `indexPath`.
+    func item(at indexPath: IndexPath) -> Any {
         let (controller, localSection: section) = controllerAtGlobalSection(indexPath.section)
         switch controller.object(at: IndexPath(row: indexPath.row, section: section)) {
-        case is Announcement:
-            return nil
-            
+        case let announcement as Announcement:
+            return announcement
+
         case let forum as Forum:
             return forum
-            
+
         case let metadata as ForumMetadata:
             return metadata.forum
-            
+
         default:
-            fatalError("unknown object type in forum list")
+            fatalError("item of unknown type in forums list")
         }
     }
 }
@@ -344,3 +345,4 @@ extension ForumListDataSource: UITableViewDataSource {
 // TODO: allow deleting/reordering favorites
 // TODO: size and theme section headers
 // TODO: non-sticky headers?
+// TODO: bail on auto layout for cell

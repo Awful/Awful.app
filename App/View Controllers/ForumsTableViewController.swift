@@ -101,6 +101,7 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func updateEditButtonPresence(animated: Bool) {
+        // TODO: move this to a managed object context observer and leave the data source out of it!
         navigationItem.setRightBarButton(dataSource.hasFavorites ? editButtonItem : nil, animated: animated)
     }
     
@@ -166,7 +167,7 @@ final class ForumsTableViewController: TableViewController {
     private func didTapStarButton(in cell: ForumTableViewCell) {
         guard
             let indexPath = tableView.indexPath(for: cell),
-            let forum = dataSource.forum(at: indexPath)
+            let forum = dataSource.item(at: indexPath) as? Forum
             else { return }
 
         if forum.metadata.favorite {
@@ -184,7 +185,7 @@ final class ForumsTableViewController: TableViewController {
     private func didTapDisclosureButton(in cell: ForumTableViewCell) {
         guard
             let indexPath = tableView.indexPath(for: cell),
-            let forum = dataSource.forum(at: indexPath)
+            let forum = dataSource.item(at: indexPath) as? Forum
             else { return }
 
         if forum.metadata.showsChildrenInForumList {
@@ -219,24 +220,20 @@ extension ForumsTableViewController {
             }
         }
     }
-    
-//    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-//        guard case .some = dataSource.objectAtIndexPath(indexPath) else { return nil }
-//        return indexPath
-//    }
-//
-//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        if let forum = dataSource.objectAtIndexPath(indexPath) as? Forum {
-//            openForum(forum, animated: true)
-//        }
-//        else if let announcement = dataSource.objectAtIndexPath(indexPath) as? Announcement {
-//            openAnnouncement(announcement)
-//        }
-//        else {
-//            fatalError("shouldn't be selecting whatever this is")
-//        }
-//    }
-//
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch dataSource.item(at: indexPath) {
+        case let announcement as Announcement:
+            openAnnouncement(announcement)
+
+        case let forum as Forum:
+            openForum(forum, animated: true)
+
+        default:
+            assertionFailure("unknown object type in forums list")
+        }
+    }
+
 //    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath toIndexPath: IndexPath) -> IndexPath {
 //        guard
 //            let firstFavoriteIndex = dataSource.firstFavoriteIndex,
