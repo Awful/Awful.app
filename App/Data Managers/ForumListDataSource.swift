@@ -10,8 +10,15 @@ import AwfulCore
 import CoreData
 import UIKit
 
+private let log = Logger.get(level: .debug)
+
 final class ForumListDataSource: NSObject {
     private let announcementsController: NSFetchedResultsController<Announcement>
+    private var deferredDeletes: [IndexPath] = []
+    private var deferredInserts: [IndexPath] = []
+    private var deferredSectionDeletes = IndexSet()
+    private var deferredSectionInserts = IndexSet()
+    private var deferredUpdates: [IndexPath] = []
     private let favoriteForumsController: NSFetchedResultsController<ForumMetadata>
     private let forumsController: NSFetchedResultsController<Forum>
     private let tableView: UITableView
@@ -80,6 +87,16 @@ final class ForumListDataSource: NSObject {
         
         fatalError("section index out of bounds: \(section)")
     }
+    
+    private func globalSectionForLocalSection(_ localSection: Int, in controller: NSFetchedResultsController<NSFetchRequestResult>) -> Int {
+        var section = localSection
+        for earlierController in resultsControllers {
+            guard controller !== earlierController else { break }
+            guard let sections = earlierController.sections else { continue }
+            section += sections.count
+        }
+        return section
+    }
 }
 
 extension ForumListDataSource {
@@ -114,9 +131,112 @@ extension ForumListDataSource {
 }
 
 extension ForumListDataSource: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        log.d("beginning to defer updates in \(controller)")
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        
+        log.d("local section \(sectionIndex) is changing…")
+        
+        let sectionIndex = globalSectionForLocalSection(sectionIndex, in: controller)
+        
+        switch type {
+        case .delete:
+            log.d("…it's global section \(sectionIndex) and it's getting deleted")
+            
+            deferredSectionDeletes.insert(sectionIndex)
+            
+        case .insert:
+            log.d("…it's global section \(sectionIndex) and it's getting inserted")
+            
+            deferredSectionInserts.insert(sectionIndex)
+            
+        case .move, .update:
+            assertionFailure("why")
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at oldIndexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        log.d("did change object at local old = \(oldIndexPath?.description ?? ""), local new = \(newIndexPath?.description ?? "")…")
+        
+        let oldIndexPath = oldIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
+        let newIndexPath = newIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
+        
+        switch type {
+        case .delete:
+            log.d("…global path = \(oldIndexPath!) and it's getting deleted")
+            
+            deferredDeletes.append(oldIndexPath!)
+            
+        case .insert:
+            log.d("…global path = \(newIndexPath!) and it's getting inserted")
+            
+            deferredInserts.append(newIndexPath!)
+            
+        case .move:
+            log.d("…global old = \(oldIndexPath!), global new = \(newIndexPath!) and it's moving")
+            
+            deferredDeletes.append(oldIndexPath!)
+            deferredInserts.append(newIndexPath!)
+            
+        case .update:
+            log.d("…global path = \(oldIndexPath!) and it's getting updated")
+            
+            deferredUpdates.append(oldIndexPath!)
+        }
+    }
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // TODO: more fine-grained than this
-        tableView.reloadData()
+        log.d("done with deferring updates in \(controller)")
+
+        /*
+         Yuck. Sorry. I hate delayed performs (or whatever this is called in the era of dispatch queues) but I'm not sure what else to do.
+
+         The problem we're trying to solve here is when multiple FRCs update because of the same change in the context (e.g. adding a favorite forum causes the Favorite Forums FRC to insert a row and also causes the Forums FRC to reload a row). This results in the following sequence of calls, all stemming from whatever call to save/processPendingChanges:
+
+             controllerWillChangeContent(favoriteForumsController)
+             controller…
+             controllerDidChangeContent(favoriteForumsController)
+             controllerWillChangeContent(forumsController)
+             controller…
+             controllerDidChangeContent(forumsController)
+
+         If we process this normally, we get two un-nested calls to tableView.beginUpdates()/endUpdates(), and that gives us some ugly animations. One way to fix this is to start an overarching tableView.beginUpdates() then nest the consecutive calls within. However, I couldn't think of a good way to tell how many FRCs we expect to update or when we're seeing the last FRC update for the currently-processing notification.
+
+         For the moment, it seems that all FRCs get processed in the same go-round of the run loop. So if we wait a tick, allowing however many FRCs to stack up their updates, then we can process them all at once.
+         */
+        DispatchQueue.main.async {
+
+            // This does avoid pointless table view calls, but it's also the other half of our workaround for multiple FRCs updating at once: this ensures that only one of multiple scheduled "next tick" calls actually calls tableView.beginUpdates()/endUpdates().
+            guard !self.deferredDeletes.isEmpty || !self.deferredInserts.isEmpty || !self.deferredUpdates.isEmpty
+                || !self.deferredSectionDeletes.isEmpty || !self.deferredSectionInserts.isEmpty
+                else {
+                    log.d("no deferred updates to handle")
+                    return
+            }
+
+            log.d("running deferred updates")
+
+            self.tableView.beginUpdates()
+
+            self.tableView.deleteSections(self.deferredSectionDeletes, with: .fade)
+            self.tableView.insertSections(self.deferredSectionInserts, with: .fade)
+
+            self.tableView.deleteRows(at: self.deferredDeletes, with: .fade)
+            self.tableView.insertRows(at: self.deferredInserts, with: .fade)
+
+            self.tableView.reloadRows(at: self.deferredUpdates, with: .none)
+
+            self.tableView.endUpdates()
+
+            self.deferredDeletes.removeAll()
+            self.deferredInserts.removeAll()
+            self.deferredSectionDeletes.removeAll()
+            self.deferredSectionInserts.removeAll()
+            self.deferredUpdates.removeAll()
+        }
     }
 }
 
