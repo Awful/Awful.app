@@ -121,6 +121,7 @@ public class ForumMetadata: AwfulManagedObject {
     @NSManaged public var favorite: Bool
     @NSManaged public var favoriteIndex: Int32
     @NSManaged public var showsChildrenInForumList: Bool
+    @NSManaged public var visibleInForumList: Bool
     
     @NSManaged public private(set) var forum: Forum
 }

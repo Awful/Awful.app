@@ -170,12 +170,21 @@ final class ForumsTableViewController: TableViewController {
 //        forum.metadata.favorite = !forum.metadata.favorite
 //        try! forum.managedObjectContext!.save()
     }
-    
-    fileprivate func didTapDisclosureButton(_ cell: ForumTableViewCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-//        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { return }
-//        forum.metadata.showsChildrenInForumList = !forum.metadata.showsChildrenInForumList
-//        try! forum.managedObjectContext!.save()
+
+    private func didTapDisclosureButton(in cell: ForumTableViewCell) {
+        guard
+            let indexPath = tableView.indexPath(for: cell),
+            let forum = dataSource.forum(at: indexPath)
+            else { return }
+
+        if forum.metadata.showsChildrenInForumList {
+            forum.collapse()
+        }
+        else {
+            forum.expand()
+        }
+        
+        try! forum.managedObjectContext!.save()
     }
 }
 
@@ -186,6 +195,14 @@ extension ForumsTableViewController {
         }
         else {
             return UITableViewAutomaticDimension
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let cell = cell as? ForumTableViewCell {
+            cell.disclosureButtonAction = { [weak self] cell in
+                self?.didTapDisclosureButton(in: cell)
+            }
         }
     }
     

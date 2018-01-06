@@ -147,6 +147,17 @@ internal extension ForumHierarchyScrapeResult {
 
                 let parentForum = forumStack.last
                 if parentForum != forum.parentForum { forum.parentForum = parentForum }
+                
+                let shouldBeVisible = parentForum
+                    .map { $0.metadata.showsChildrenInForumList && $0.metadata.visibleInForumList }
+                    ?? true
+                if forum.metadata.visibleInForumList != shouldBeVisible {
+                    forum.metadata.visibleInForumList = shouldBeVisible
+                    
+                    // Pointless set here triggers change in fetched results controller that observes only Forum objects.
+                    let index = forum.index
+                    forum.index = index
+                }
 
                 forumStack.append(forum)
             }

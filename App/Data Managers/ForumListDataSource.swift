@@ -37,6 +37,7 @@ final class ForumListDataSource: NSObject {
             cacheName: nil)
         
         let forumsRequest = NSFetchRequest<Forum>(entityName: Forum.entityName())
+        forumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(Forum.metadata.visibleInForumList))
         forumsRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(Forum.group.index), ascending: true), // section
             NSSortDescriptor(key: #keyPath(Forum.index), ascending: true)]
@@ -78,6 +79,25 @@ final class ForumListDataSource: NSObject {
         }
         
         fatalError("section index out of bounds: \(section)")
+    }
+}
+
+extension ForumListDataSource {
+    func forum(at indexPath: IndexPath) -> Forum? {
+        let (controller, localSection: section) = controllerAtGlobalSection(indexPath.section)
+        switch controller.object(at: IndexPath(row: indexPath.row, section: section)) {
+        case is Announcement:
+            return nil
+            
+        case let forum as Forum:
+            return forum
+            
+        case let metadata as ForumMetadata:
+            return metadata.forum
+            
+        default:
+            fatalError("unknown object type in forum list")
+        }
     }
 }
 
@@ -189,7 +209,6 @@ extension ForumListDataSource: UITableViewDataSource {
     }
 }
 
-// TODO: handle collapse/expand (ok by me to rethink core data model here, either consolidating ForumMetadata back into Forum or by replicating some more info (index, name) into ForumMetadata)
 // TODO: allow deleting/reordering favorites
 // TODO: size and theme section headers
 // TODO: non-sticky headers?
