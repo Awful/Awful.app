@@ -10,6 +10,7 @@ final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
 //    fileprivate var dataSource: ForumTableViewDataSource!
     private var dataSource: ForumListDataSource!
+    private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     
     init(managedObjectContext: NSManagedObjectContext) {
@@ -19,6 +20,15 @@ final class ForumsTableViewController: TableViewController {
         title = "Forums"
         tabBarItem.image = UIImage(named: "forum-list")
         tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
+
+        favoriteForumCountObserver = ManagedObjectCountObserver(
+            context: managedObjectContext,
+            entityName: ForumMetadata.entityName(),
+            predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
+            didChange: { [weak self] favoriteCount in
+                self?.updateEditButton(isPresent: favoriteCount > 0)
+        })
+        updateEditButton(isPresent: favoriteForumCountObserver.count > 0)
 
         unreadAnnouncementCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
@@ -86,6 +96,10 @@ final class ForumsTableViewController: TableViewController {
                 : nil
         }()
     }
+
+    private func updateEditButton(isPresent: Bool) {
+        navigationItem.setRightBarButton(isPresent ? editButtonItem : nil, animated: true)
+    }
     
     func openForum(_ forum: Forum, animated: Bool) {
         let threadList = ThreadsTableViewController(forum: forum)
@@ -98,11 +112,6 @@ final class ForumsTableViewController: TableViewController {
         let vc = AnnouncementViewController(announcement: announcement)
         vc.restorationIdentifier = "Announcement"
         showDetailViewController(vc, sender: self)
-    }
-    
-    fileprivate func updateEditButtonPresence(animated: Bool) {
-        // TODO: move this to a managed object context observer and leave the data source out of it!
-        navigationItem.setRightBarButton(dataSource.hasFavorites ? editButtonItem : nil, animated: animated)
     }
     
     // MARK: View lifecycle
@@ -141,8 +150,6 @@ final class ForumsTableViewController: TableViewController {
 //        tableView.dataSource = dataSource
         
 //        dataSource.didReload = { [weak self] in
-//            self?.updateEditButtonPresence(animated: false)
-//
 //            if self?.isEditing == true && self?.dataSource.hasFavorites == false {
 //                DispatchQueue.main.async {
 //                    // The docs say not to call this from an implementation of UITableViewDataSource.tableView(_:commitEditingStyle:forRowAtIndexPath:), but if you must, do a delayed perform.
@@ -150,8 +157,6 @@ final class ForumsTableViewController: TableViewController {
 //                }
 //            }
 //        }
-        
-        updateEditButtonPresence(animated: false)
         
         pullToRefreshBlock = { [weak self] in
             self?.refresh()
