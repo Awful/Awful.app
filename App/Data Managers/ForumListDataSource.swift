@@ -21,6 +21,7 @@ final class ForumListDataSource: NSObject {
     private var deferredUpdates: [IndexPath] = []
     private let favoriteForumsController: NSFetchedResultsController<ForumMetadata>
     private let forumsController: NSFetchedResultsController<Forum>
+    private var ignoreControllerUpdates = false
     private let tableView: UITableView
     
     init(managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
@@ -97,6 +98,21 @@ final class ForumListDataSource: NSObject {
         }
         return section
     }
+
+    private func performIgnoringControllerUpdates(_ block: () -> Void) {
+        ignoreControllerUpdates = true
+        block()
+        ignoreControllerUpdates = false
+    }
+
+    private var indexPathOfLastFavorite: IndexPath {
+        guard let favoriteCount = favoriteForumsController.sections?.first?.numberOfObjects else {
+            fatalError("can't figure out how many favorite forums we have")
+        }
+        let row = favoriteCount > 0 ? favoriteCount - 1 : 0
+        let section = globalSectionForLocalSection(0, in: favoriteForumsController as! NSFetchedResultsController<NSFetchRequestResult>)
+        return IndexPath(row: row, section: section)
+    }
 }
 
 extension ForumListDataSource {
@@ -165,6 +181,8 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+
+        guard !ignoreControllerUpdates else { return }
         
         Log.d("local section \(sectionIndex) is changing…")
         
@@ -187,6 +205,8 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at oldIndexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+        guard !ignoreControllerUpdates else { return }
         
         Log.d("did change object at local old = \(oldIndexPath?.description ?? ""), local new = \(newIndexPath?.description ?? "")…")
         
@@ -218,6 +238,11 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard !ignoreControllerUpdates else {
+            Log.d("done ignoring updates in \(controller)")
+            return
+        }
+
         Log.d("done with deferring updates in \(controller)")
 
         /*
@@ -280,25 +305,72 @@ extension ForumListDataSource: UITableViewDataSource {
         let (controller: controller, localSection: localSection) = controllerAtGlobalSection(section)
         return controller.sections?[localSection].numberOfObjects ?? 0
     }
+
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return controllerAtGlobalSection(indexPath.section).controller === favoriteForumsController
+    }
+
+    // This is actually a UITableViewDelegate method. Don't tell anyone…
+    func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+
+        let favoriteSection = globalSectionForLocalSection(0, in: favoriteForumsController as! NSFetchedResultsController<NSFetchRequestResult>)
+
+        let destinationIndexPath: IndexPath = {
+            if proposedDestinationIndexPath.section > favoriteSection {
+                return indexPathOfLastFavorite
+            }
+            else if proposedDestinationIndexPath.section < favoriteSection {
+                return IndexPath(row: 0, section: favoriteSection)
+            }
+            else {
+                return proposedDestinationIndexPath
+            }
+        }()
+
+        Log.d("trying to move \(sourceIndexPath), aiming at \(proposedDestinationIndexPath), ended up at \(destinationIndexPath)")
+
+        return destinationIndexPath
+    }
+
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        Log.d("saving move from \(sourceIndexPath) to \(destinationIndexPath)")
+
+        guard sourceIndexPath != destinationIndexPath else {
+            Log.d("…which isn't really a move, so we're done")
+            return
+        }
+
+        performIgnoringControllerUpdates {
+            var metadatas = favoriteForumsController.sections?.first?.objects as? [ForumMetadata] ?? []
+            let moved = metadatas.remove(at: sourceIndexPath.row)
+            metadatas.insert(moved, at: destinationIndexPath.row)
+            zip(metadatas, 1...).forEach { $0.favoriteIndex = Int32($1) }
+            try! metadatas.first?.managedObjectContext?.save()
+        }
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ForumTableViewCell.identifier, for: indexPath) as? ForumTableViewCell else {
+            fatalError("expected a ForumTableViewCell")
+        }
+
+        cell.viewModel = viewModelForCell(at: indexPath)
+        return cell
+    }
+
+    private func viewModelForCell(at indexPath: IndexPath) -> ForumTableViewCell.ViewModel {
         let (controller: controller, localSection: localSection) = controllerAtGlobalSection(indexPath.section)
         guard let sections = controller.sections else {
             fatalError("results controller isn't set up")
         }
         let item = controller.object(at: IndexPath(row: indexPath.row, section: localSection))
-        
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ForumTableViewCell.identifier, for: indexPath) as? ForumTableViewCell else {
-            fatalError("expected a ForumTableViewCell")
-        }
-        
+
         let showSeparator = indexPath.row + 1 < sections[localSection].numberOfObjects
-        let viewModel: ForumTableViewCell.ViewModel
         if controller === announcementsController {
             guard let announcement = item as? Announcement else {
                 fatalError("expected an Announcement from the announcement results controller")
             }
-            viewModel = ForumTableViewCell.ViewModel(
+            return ForumTableViewCell.ViewModel(
                 favorite: announcement.hasBeenSeen ? .hidden : .on,
                 name: announcement.title,
                 canExpand: .hidden,
@@ -310,7 +382,7 @@ extension ForumListDataSource: UITableViewDataSource {
             guard let metadata = item as? ForumMetadata else {
                 fatalError("expected a ForumMetadata from the favorite forum results controller")
             }
-            viewModel = ForumTableViewCell.ViewModel(
+            return ForumTableViewCell.ViewModel(
                 favorite: .on,
                 name: metadata.forum.name ?? "",
                 canExpand: .hidden,
@@ -322,7 +394,7 @@ extension ForumListDataSource: UITableViewDataSource {
             guard let forum = item as? Forum else {
                 fatalError("expected a Forum from the forum results controller")
             }
-            viewModel = ForumTableViewCell.ViewModel(
+            return ForumTableViewCell.ViewModel(
                 favorite: forum.metadata.favorite ? .hidden : .off,
                 name: forum.name ?? "",
                 canExpand: {
@@ -334,8 +406,7 @@ extension ForumListDataSource: UITableViewDataSource {
                     }
                     else {
                         return .off
-                    }
-                }(),
+                    }}(),
                 childSubforumCount: forum.childForums.count,
                 indentationLevel: forum.ancestors.map { _ in 1 }.reduce(0, +),
                 showSeparator: showSeparator)
@@ -343,12 +414,9 @@ extension ForumListDataSource: UITableViewDataSource {
         else {
             fatalError("unknown results controller \(controller)")
         }
-        
-        cell.viewModel = viewModel
-        return cell
     }
 }
 
-// TODO: allow deleting/reordering favorites
+// TODO: allow deleting favorites (also swipe to delete, swipe action to delete, shake to undo (drag and drop?))
 // TODO: non-sticky headers?
 // TODO: bail on auto layout for cell

@@ -242,6 +242,10 @@ extension ForumsTableViewController {
         }
     }
 
+    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        return dataSource.tableView(tableView, targetIndexPathForMoveFromRowAt: sourceIndexPath, toProposedIndexPath: proposedDestinationIndexPath)
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch dataSource.item(at: indexPath) {
         case let announcement as Announcement:
@@ -254,15 +258,6 @@ extension ForumsTableViewController {
             assertionFailure("unknown object type in forums list")
         }
     }
-
-//    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath toIndexPath: IndexPath) -> IndexPath {
-//        guard
-//            let firstFavoriteIndex = dataSource.firstFavoriteIndex,
-//            let lastFavoriteIndex = dataSource.lastFavoriteIndex
-//            else { fatalError("asking for target index path for non-favorite") }
-//        let targetRow = max(firstFavoriteIndex, min(toIndexPath.row, lastFavoriteIndex))
-//        return IndexPath(row: targetRow, section: 0)
-//    }
 }
 
 //extension ForumTableViewCell.ThemeData {
