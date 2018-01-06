@@ -101,7 +101,7 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func updateEditButtonPresence(animated: Bool) {
-//        navigationItem.setRightBarButton(dataSource.hasFavorites ? editButtonItem : nil, animated: animated)
+        navigationItem.setRightBarButton(dataSource.hasFavorites ? editButtonItem : nil, animated: animated)
     }
     
     // MARK: View lifecycle
@@ -163,12 +163,22 @@ final class ForumsTableViewController: TableViewController {
     
     // MARK: Actions
     
-    fileprivate func didTapStarButton(_ cell: ForumTableViewCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-//        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { return }
-//        forum.metadata.favoriteIndex = dataSource.lastFavoriteIndex.map { Int32($0.advanced(by: 1)) } ?? 0
-//        forum.metadata.favorite = !forum.metadata.favorite
-//        try! forum.managedObjectContext!.save()
+    private func didTapStarButton(in cell: ForumTableViewCell) {
+        guard
+            let indexPath = tableView.indexPath(for: cell),
+            let forum = dataSource.forum(at: indexPath)
+            else { return }
+
+        if forum.metadata.favorite {
+            forum.metadata.favorite = false
+        }
+        else {
+            forum.metadata.favorite = true
+            forum.metadata.favoriteIndex = dataSource.nextFavoriteIndex
+        }
+        forum.tickleForFetchedResultsController()
+        
+        try! forum.managedObjectContext!.save()
     }
 
     private func didTapDisclosureButton(in cell: ForumTableViewCell) {
@@ -202,6 +212,10 @@ extension ForumsTableViewController {
         if let cell = cell as? ForumTableViewCell {
             cell.disclosureButtonAction = { [weak self] cell in
                 self?.didTapDisclosureButton(in: cell)
+            }
+            
+            cell.starButtonAction = { [weak self] cell in
+                self?.didTapStarButton(in: cell)
             }
         }
     }

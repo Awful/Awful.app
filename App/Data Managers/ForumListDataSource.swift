@@ -101,6 +101,18 @@ extension ForumListDataSource {
     }
 }
 
+extension ForumListDataSource {
+    var hasFavorites: Bool {
+        let count = favoriteForumsController.fetchedObjects?.count ?? 0
+        return count > 0
+    }
+    
+    var nextFavoriteIndex: Int32 {
+        let last = favoriteForumsController.fetchedObjects?.last
+        return last.map { $0.favoriteIndex + 1 } ?? 1
+    }
+}
+
 extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // TODO: more fine-grained than this
