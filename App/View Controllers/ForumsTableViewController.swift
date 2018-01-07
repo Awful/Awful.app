@@ -9,7 +9,7 @@ import UIKit
 final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
 //    fileprivate var dataSource: ForumTableViewDataSource!
-    private var dataSource: ForumListDataSource!
+    private var listDataSource: ForumListDataSource!
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     
@@ -142,7 +142,7 @@ final class ForumsTableViewController: TableViewController {
 //        }
 //        dataSource = ForumTableViewDataSource(tableView: tableView, managedObjectContext: managedObjectContext, cellConfigurator: cellConfigurator, headerThemer: headerThemer)
         do {
-            dataSource = try ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
+            listDataSource = try ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
         }
         catch {
             fatalError("could not initialize forum list data source: \(error)")
@@ -173,7 +173,7 @@ final class ForumsTableViewController: TableViewController {
     private func didTapStarButton(in cell: ForumTableViewCell) {
         guard
             let indexPath = tableView.indexPath(for: cell),
-            let forum = dataSource.item(at: indexPath) as? Forum
+            let forum = listDataSource.item(at: indexPath) as? Forum
             else { return }
 
         if forum.metadata.favorite {
@@ -181,7 +181,7 @@ final class ForumsTableViewController: TableViewController {
         }
         else {
             forum.metadata.favorite = true
-            forum.metadata.favoriteIndex = dataSource.nextFavoriteIndex
+            forum.metadata.favoriteIndex = listDataSource.nextFavoriteIndex
         }
         forum.tickleForFetchedResultsController()
         
@@ -191,7 +191,7 @@ final class ForumsTableViewController: TableViewController {
     private func didTapDisclosureButton(in cell: ForumTableViewCell) {
         guard
             let indexPath = tableView.indexPath(for: cell),
-            let forum = dataSource.item(at: indexPath) as? Forum
+            let forum = listDataSource.item(at: indexPath) as? Forum
             else { return }
 
         if forum.metadata.showsChildrenInForumList {
@@ -224,7 +224,7 @@ extension ForumsTableViewController {
         header.viewModel = .init(
             backgroundColor: theme["listHeaderBackgroundColor"],
             font: UIFont.preferredFont(forTextStyle: .body),
-            sectionName: dataSource.titleForSection(section),
+            sectionName: listDataSource.titleForSection(section),
             textColor: theme["listHeaderTextColor"])
 
         return header
@@ -243,11 +243,11 @@ extension ForumsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
-        return dataSource.tableView(tableView, targetIndexPathForMoveFromRowAt: sourceIndexPath, toProposedIndexPath: proposedDestinationIndexPath)
+        return listDataSource.tableView(tableView, targetIndexPathForMoveFromRowAt: sourceIndexPath, toProposedIndexPath: proposedDestinationIndexPath)
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch dataSource.item(at: indexPath) {
+        switch listDataSource.item(at: indexPath) {
         case let announcement as Announcement:
             openAnnouncement(announcement)
 
