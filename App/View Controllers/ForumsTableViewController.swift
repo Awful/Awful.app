@@ -134,15 +134,6 @@ final class ForumsTableViewController: TableViewController {
         catch {
             fatalError("could not initialize forum list data source: \(error)")
         }
-
-//        dataSource.didReload = { [weak self] in
-//            if self?.isEditing == true && self?.dataSource.hasFavorites == false {
-//                DispatchQueue.main.async {
-//                    // The docs say not to call this from an implementation of UITableViewDataSource.tableView(_:commitEditingStyle:forRowAtIndexPath:), but if you must, do a delayed perform.
-//                    self?.setEditing(false, animated: true)
-//                }
-//            }
-//        }
         
         pullToRefreshBlock = { [weak self] in
             self?.refresh()
