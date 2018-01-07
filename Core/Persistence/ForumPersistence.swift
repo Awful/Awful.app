@@ -73,7 +73,10 @@ internal extension ForumBreadcrumbsScrapeResult {
 internal extension ForumHierarchyNode {
     func update(_ forum: Forum) {
         if id.rawValue != forum.forumID { forum.forumID = id.rawValue }
-        if name != forum.name { forum.name = name }
+        if name != forum.name {
+            forum.name = name
+            forum.metadata.tickleForFetchedResultsController()
+        }
     }
 
     func update(_ group: ForumGroup) {
@@ -164,5 +167,12 @@ internal extension ForumHierarchyScrapeResult {
         }
 
         return forums
+    }
+}
+
+internal extension ForumMetadata {
+    func tickleForFetchedResultsController() {
+        let favorite = self.favorite
+        self.favorite = favorite
     }
 }
