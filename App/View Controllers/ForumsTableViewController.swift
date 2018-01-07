@@ -14,7 +14,7 @@ final class ForumsTableViewController: TableViewController {
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(style: .plain)
+        super.init(style: .grouped)
         
         title = "Forums"
         tabBarItem.image = UIImage(named: "forum-list")
@@ -121,6 +121,7 @@ final class ForumsTableViewController: TableViewController {
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
         
         tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
+        tableView.sectionFooterHeight = 0
         tableView.separatorInset.left = 46
 
         do {

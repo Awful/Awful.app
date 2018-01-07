@@ -418,5 +418,4 @@ extension ForumListDataSource: UITableViewDataSource {
 }
 
 // TODO: allow deleting favorites (also swipe to delete, swipe action to delete, shake to undo (drag and drop?))
-// TODO: non-sticky headers?
 // TODO: bail on auto layout for cell
