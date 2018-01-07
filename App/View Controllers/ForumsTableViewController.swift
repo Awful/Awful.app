@@ -25,9 +25,9 @@ final class ForumsTableViewController: TableViewController {
             entityName: ForumMetadata.entityName(),
             predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
             didChange: { [weak self] favoriteCount in
-                self?.updateEditButton(isPresent: favoriteCount > 0)
+                self?.updateEditingState(favoriteCount: favoriteCount)
         })
-        updateEditButton(isPresent: favoriteForumCountObserver.count > 0)
+        updateEditingState(favoriteCount: favoriteForumCountObserver.count)
 
         unreadAnnouncementCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
@@ -96,8 +96,12 @@ final class ForumsTableViewController: TableViewController {
         }()
     }
 
-    private func updateEditButton(isPresent: Bool) {
-        navigationItem.setRightBarButton(isPresent ? editButtonItem : nil, animated: true)
+    private func updateEditingState(favoriteCount: Int) {
+        navigationItem.setRightBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+
+        if isEditing, favoriteCount == 0 {
+            setEditing(false, animated: true)
+        }
     }
     
     func openForum(_ forum: Forum, animated: Bool) {

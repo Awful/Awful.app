@@ -306,6 +306,25 @@ extension ForumListDataSource: UITableViewDataSource {
         return controller.sections?[localSection].numberOfObjects ?? 0
     }
 
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return controllerAtGlobalSection(indexPath.section).controller === favoriteForumsController
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+
+        let (controller: controller, localSection: localSection) = controllerAtGlobalSection(indexPath.section)
+
+        guard let metadata = controller.object(at: IndexPath(row: indexPath.row, section: localSection)) as? ForumMetadata else {
+            fatalError("can only delete favorites, expected a ForumMetadata")
+        }
+
+        Log.d("deleting favorite forum \(metadata.forum.name ?? "")")
+
+        metadata.favorite = false
+        metadata.forum.tickleForFetchedResultsController()
+        try! metadata.managedObjectContext?.save()
+    }
+
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return controllerAtGlobalSection(indexPath.section).controller === favoriteForumsController
     }
@@ -417,5 +436,5 @@ extension ForumListDataSource: UITableViewDataSource {
     }
 }
 
-// TODO: allow deleting favorites (also swipe to delete, swipe action to delete, shake to undo (drag and drop?))
+// TODO: shake to undo deleting favorites
 // TODO: bail on auto layout for cell
