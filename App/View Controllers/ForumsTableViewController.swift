@@ -124,7 +124,7 @@ final class ForumsTableViewController: TableViewController {
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
         
         tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
-        tableView.separatorStyle = .none
+        tableView.separatorInset.left = 46
         
 //        let cellConfigurator: (ForumTableViewCell, ForumTableViewCell.ViewModel) -> Void = { [weak self] cell, viewModel in
 //            cell.viewModel = viewModel
@@ -161,6 +161,12 @@ final class ForumsTableViewController: TableViewController {
         pullToRefreshBlock = { [weak self] in
             self?.refresh()
         }
+    }
+
+    override func themeDidChange() {
+        super.themeDidChange()
+
+        tableView.separatorColor = theme["listSeparatorColor"]
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -239,6 +245,12 @@ extension ForumsTableViewController {
             cell.starButtonAction = { [weak self] cell in
                 self?.didTapStarButton(in: cell)
             }
+
+            cell.themeData = ForumTableViewCell.ThemeData(
+                nameColor: theme["listTextColor"]!,
+                separatorColor: .clear,
+                backgroundColor: theme["listBackgroundColor"]!,
+                selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
         }
     }
 
