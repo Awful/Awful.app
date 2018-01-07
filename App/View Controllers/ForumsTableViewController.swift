@@ -60,6 +60,7 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func migrateFavoriteForumsFromSettings() {
+        // TODO: this shouldn't be the view controller's responsibility.
         // In Awful 3.2 favorite forums moved from AwfulSettings (i.e. NSUserDefaults) to the ForumMetadata entity in Core Data.
         if let forumIDs = AwfulSettings.shared().favoriteForums as! [String]? {
             AwfulSettings.shared().favoriteForums = nil
@@ -116,6 +117,14 @@ final class ForumsTableViewController: TableViewController {
         vc.restorationIdentifier = "Announcement"
         showDetailViewController(vc, sender: self)
     }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    override var undoManager: UndoManager? {
+        return listDataSource.undoManager
+    }
     
     // MARK: View lifecycle
     
@@ -148,7 +157,22 @@ final class ForumsTableViewController: TableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
         refreshIfNecessary()
+
+        becomeFirstResponder()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        resignFirstResponder()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        undoManager?.removeAllActions()
     }
     
     // MARK: Actions

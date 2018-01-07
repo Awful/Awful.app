@@ -23,6 +23,12 @@ final class ForumListDataSource: NSObject {
     private let forumsController: NSFetchedResultsController<Forum>
     private var ignoreControllerUpdates = false
     private let tableView: UITableView
+
+    private(set) lazy var undoManager: UndoManager = {
+        let undoManager = UndoManager()
+        undoManager.levelsOfUndo = 1
+        return undoManager
+    }()
     
     init(managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
         let announcementsRequest = NSFetchRequest<Announcement>(entityName: Announcement.entityName())
@@ -104,15 +110,6 @@ final class ForumListDataSource: NSObject {
         block()
         ignoreControllerUpdates = false
     }
-
-    private var indexPathOfLastFavorite: IndexPath {
-        guard let favoriteCount = favoriteForumsController.sections?.first?.numberOfObjects else {
-            fatalError("can't figure out how many favorite forums we have")
-        }
-        let row = favoriteCount > 0 ? favoriteCount - 1 : 0
-        let section = globalSectionForLocalSection(0, in: favoriteForumsController as! NSFetchedResultsController<NSFetchRequestResult>)
-        return IndexPath(row: row, section: section)
-    }
 }
 
 extension ForumListDataSource {
@@ -163,10 +160,37 @@ extension ForumListDataSource {
         let count = favoriteForumsController.fetchedObjects?.count ?? 0
         return count > 0
     }
+
+    private var indexPathOfLastFavorite: IndexPath {
+        guard let favoriteCount = favoriteForumsController.sections?.first?.numberOfObjects else {
+            fatalError("can't figure out how many favorite forums we have")
+        }
+        let row = favoriteCount > 0 ? favoriteCount - 1 : 0
+        let section = globalSectionForLocalSection(0, in: favoriteForumsController as! NSFetchedResultsController<NSFetchRequestResult>)
+        return IndexPath(row: row, section: section)
+    }
     
     var nextFavoriteIndex: Int32 {
         let last = favoriteForumsController.fetchedObjects?.last
         return last.map { $0.favoriteIndex + 1 } ?? 1
+    }
+}
+
+extension ForumListDataSource {
+    private func updateMetadata(_ metadata: ForumMetadata, setIsFavorite isFavorite: Bool) {
+        Log.d("\(isFavorite ? "adding" : "removing") favorite forum \(metadata.forum.name ?? "")")
+
+        metadata.favorite = isFavorite
+        metadata.forum.tickleForFetchedResultsController()
+        try! metadata.managedObjectContext?.save()
+
+        undoManager.registerUndo(withTarget: self) { dataSource in
+            dataSource.updateMetadata(metadata, setIsFavorite: !isFavorite)
+        }
+        undoManager.setActionName(
+            LocalizedString(isFavorite
+                ? "forums-list.undo-action.add-favorite"
+                : "forums-list.undo-action.remove-favorite"))
     }
 }
 
@@ -318,11 +342,7 @@ extension ForumListDataSource: UITableViewDataSource {
             fatalError("can only delete favorites, expected a ForumMetadata")
         }
 
-        Log.d("deleting favorite forum \(metadata.forum.name ?? "")")
-
-        metadata.favorite = false
-        metadata.forum.tickleForFetchedResultsController()
-        try! metadata.managedObjectContext?.save()
+        updateMetadata(metadata, setIsFavorite: false)
     }
 
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -436,5 +456,4 @@ extension ForumListDataSource: UITableViewDataSource {
     }
 }
 
-// TODO: shake to undo deleting favorites
 // TODO: bail on auto layout for cell
