@@ -8,7 +8,6 @@ import UIKit
 
 final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
-//    fileprivate var dataSource: ForumTableViewDataSource!
     private var listDataSource: ForumListDataSource!
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
@@ -118,37 +117,19 @@ final class ForumsTableViewController: TableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        tableView.register(UINib(nibName: ForumTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ForumTableViewCell.identifier)
-//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: ForumTableViewDataSource.headerReuseIdentifier)
+
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
         
         tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
         tableView.separatorInset.left = 46
-        
-//        let cellConfigurator: (ForumTableViewCell, ForumTableViewCell.ViewModel) -> Void = { [weak self] cell, viewModel in
-//            cell.viewModel = viewModel
-//            cell.starButtonAction = self?.didTapStarButton
-//            cell.disclosureButtonAction = self?.didTapDisclosureButton
-//
-//            guard let theme = self?.theme else { return }
-//            cell.themeData = ForumTableViewCell.ThemeData(theme)
-//        }
-//        let headerThemer: (UITableViewCell) -> Void = { [weak self] cell in
-//            guard let theme = self?.theme else { return }
-//            cell.textLabel?.textColor = theme["listHeaderTextColor"]
-//            cell.backgroundColor = theme["listHeaderBackgroundColor"]
-//            cell.selectedBackgroundColor = theme["listHeaderBackgroundColor"]
-//        }
-//        dataSource = ForumTableViewDataSource(tableView: tableView, managedObjectContext: managedObjectContext, cellConfigurator: cellConfigurator, headerThemer: headerThemer)
+
         do {
             listDataSource = try ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
         }
         catch {
             fatalError("could not initialize forum list data source: \(error)")
         }
-//        tableView.dataSource = dataSource
-        
+
 //        dataSource.didReload = { [weak self] in
 //            if self?.isEditing == true && self?.dataSource.hasFavorites == false {
 //                DispatchQueue.main.async {
@@ -271,15 +252,6 @@ extension ForumsTableViewController {
         }
     }
 }
-
-//extension ForumTableViewCell.ThemeData {
-//    init(_ theme: Theme) {
-//        nameColor = theme["listTextColor"]!
-//        backgroundColor = theme["listBackgroundColor"]!
-//        selectedBackgroundColor = theme["listSelectedBackgroundColor"]!
-//        separatorColor = theme["listSeparatorColor"]!
-//    }
-//}
 
 private enum SectionHeader {
     static let height: CGFloat = 44
