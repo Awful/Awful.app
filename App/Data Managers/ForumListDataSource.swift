@@ -10,7 +10,7 @@ import AwfulCore
 import CoreData
 import UIKit
 
-private let log = Logger.get(level: .debug)
+private let Log = Logger.get(level: .debug)
 
 final class ForumListDataSource: NSObject {
     private let announcementsController: NSFetchedResultsController<Announcement>
@@ -156,23 +156,28 @@ extension ForumListDataSource {
 
 extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        log.d("beginning to defer updates in \(controller)")
+        guard !ignoreControllerUpdates else {
+            Log.d("ignoring updates in \(controller)")
+            return
+        }
+
+        Log.d("beginning to defer updates in \(controller)")
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
-        log.d("local section \(sectionIndex) is changing…")
+        Log.d("local section \(sectionIndex) is changing…")
         
         let sectionIndex = globalSectionForLocalSection(sectionIndex, in: controller)
         
         switch type {
         case .delete:
-            log.d("…it's global section \(sectionIndex) and it's getting deleted")
+            Log.d("…it's global section \(sectionIndex) and it's getting deleted")
             
             deferredSectionDeletes.insert(sectionIndex)
             
         case .insert:
-            log.d("…it's global section \(sectionIndex) and it's getting inserted")
+            Log.d("…it's global section \(sectionIndex) and it's getting inserted")
             
             deferredSectionInserts.insert(sectionIndex)
             
@@ -183,37 +188,37 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at oldIndexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        log.d("did change object at local old = \(oldIndexPath?.description ?? ""), local new = \(newIndexPath?.description ?? "")…")
+        Log.d("did change object at local old = \(oldIndexPath?.description ?? ""), local new = \(newIndexPath?.description ?? "")…")
         
         let oldIndexPath = oldIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
         let newIndexPath = newIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
         
         switch type {
         case .delete:
-            log.d("…global path = \(oldIndexPath!) and it's getting deleted")
+            Log.d("…global path = \(oldIndexPath!) and it's getting deleted")
             
             deferredDeletes.append(oldIndexPath!)
             
         case .insert:
-            log.d("…global path = \(newIndexPath!) and it's getting inserted")
+            Log.d("…global path = \(newIndexPath!) and it's getting inserted")
             
             deferredInserts.append(newIndexPath!)
             
         case .move:
-            log.d("…global old = \(oldIndexPath!), global new = \(newIndexPath!) and it's moving")
+            Log.d("…global old = \(oldIndexPath!), global new = \(newIndexPath!) and it's moving")
             
             deferredDeletes.append(oldIndexPath!)
             deferredInserts.append(newIndexPath!)
             
         case .update:
-            log.d("…global path = \(oldIndexPath!) and it's getting updated")
+            Log.d("…global path = \(oldIndexPath!) and it's getting updated")
             
             deferredUpdates.append(oldIndexPath!)
         }
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        log.d("done with deferring updates in \(controller)")
+        Log.d("done with deferring updates in \(controller)")
 
         /*
          Yuck. Sorry. I hate delayed performs (or whatever this is called in the era of dispatch queues) but I'm not sure what else to do.
@@ -237,11 +242,11 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
             guard !self.deferredDeletes.isEmpty || !self.deferredInserts.isEmpty || !self.deferredUpdates.isEmpty
                 || !self.deferredSectionDeletes.isEmpty || !self.deferredSectionInserts.isEmpty
                 else {
-                    log.d("no deferred updates to handle")
+                    Log.d("no deferred updates to handle")
                     return
             }
 
-            log.d("running deferred updates")
+            Log.d("running deferred updates")
 
             self.tableView.beginUpdates()
 
