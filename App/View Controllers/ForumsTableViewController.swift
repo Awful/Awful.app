@@ -132,10 +132,10 @@ final class ForumsTableViewController: TableViewController {
         super.viewDidLoad()
 
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
-        
-        tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
+
         tableView.sectionFooterHeight = 0
-        tableView.separatorInset.left = 46
+        tableView.separatorInset.left = tableSeparatorLeftMargin
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
 
         do {
             listDataSource = try ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
@@ -176,26 +176,8 @@ final class ForumsTableViewController: TableViewController {
     }
     
     // MARK: Actions
-    
-    private func didTapStarButton(in cell: ForumTableViewCell) {
-        guard
-            let indexPath = tableView.indexPath(for: cell),
-            let forum = listDataSource.item(at: indexPath) as? Forum
-            else { return }
 
-        if forum.metadata.favorite {
-            forum.metadata.favorite = false
-        }
-        else {
-            forum.metadata.favorite = true
-            forum.metadata.favoriteIndex = listDataSource.nextFavoriteIndex
-        }
-        forum.tickleForFetchedResultsController()
-        
-        try! forum.managedObjectContext!.save()
-    }
-
-    private func didTapDisclosureButton(in cell: ForumTableViewCell) {
+    private func didTapDisclosureButton(in cell: UITableViewCell) {
         guard
             let indexPath = tableView.indexPath(for: cell),
             let forum = listDataSource.item(at: indexPath) as? Forum
@@ -210,7 +192,28 @@ final class ForumsTableViewController: TableViewController {
         
         try! forum.managedObjectContext!.save()
     }
+
+    private func didTapStarButton(in cell: UITableViewCell) {
+        guard
+            let indexPath = tableView.indexPath(for: cell),
+            let forum = listDataSource.item(at: indexPath) as? Forum
+            else { return }
+
+        if forum.metadata.favorite {
+            forum.metadata.favorite = false
+        }
+        else {
+            forum.metadata.favorite = true
+            forum.metadata.favoriteIndex = listDataSource.nextFavoriteIndex
+        }
+        forum.tickleForFetchedResultsController()
+
+        try! forum.managedObjectContext!.save()
+    }
 }
+
+private let tableBottomMargin: CGFloat = 14
+private let tableSeparatorLeftMargin: CGFloat = 46
 
 extension ForumsTableViewController {
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -236,22 +239,20 @@ extension ForumsTableViewController {
 
         return header
     }
+
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return listDataSource.tableView(tableView, heightForRowAt: indexPath)
+    }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let cell = cell as? ForumTableViewCell {
-            cell.disclosureButtonAction = { [weak self] cell in
-                self?.didTapDisclosureButton(in: cell)
+        if let cell = cell as? ForumListCell {
+            cell.didTapExpand = { [weak self] in
+                self?.didTapDisclosureButton(in: $0)
             }
             
-            cell.starButtonAction = { [weak self] cell in
-                self?.didTapStarButton(in: cell)
+            cell.didTapFavorite = { [weak self] in
+                self?.didTapStarButton(in: $0)
             }
-
-            cell.themeData = ForumTableViewCell.ThemeData(
-                nameColor: theme["listTextColor"]!,
-                separatorColor: .clear,
-                backgroundColor: theme["listBackgroundColor"]!,
-                selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
         }
     }
 

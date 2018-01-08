@@ -19,6 +19,7 @@ final class ForumListDataSource: NSObject {
     private var deferredSectionDeletes = IndexSet()
     private var deferredSectionInserts = IndexSet()
     private var deferredUpdates: [IndexPath] = []
+    weak var delegate: ForumListDataSourceDelegate?
     private let favoriteForumsController: NSFetchedResultsController<ForumMetadata>
     private let forumsController: NSFetchedResultsController<Forum>
     private var ignoreControllerUpdates = false
@@ -69,7 +70,8 @@ final class ForumListDataSource: NSObject {
         try forumsController.performFetch()
         
         tableView.dataSource = self
-        tableView.register(UINib(nibName: ForumTableViewCell.nibName, bundle: Bundle(for: ForumTableViewCell.self)), forCellReuseIdentifier: ForumTableViewCell.identifier)
+        tableView.estimatedRowHeight = ForumListCell.estimatedHeight
+        tableView.register(ForumListCell.self, forCellReuseIdentifier: forumCellIdentifier)
         
         announcementsController.delegate = self
         favoriteForumsController.delegate = self
@@ -387,73 +389,86 @@ extension ForumListDataSource: UITableViewDataSource {
             try! metadatas.first?.managedObjectContext?.save()
         }
     }
+
+    // This is actually a UITableViewDelegate method.
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let viewModel = viewModelForCell(at: indexPath)
+        return ForumListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.bounds.width)
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ForumTableViewCell.identifier, for: indexPath) as? ForumTableViewCell else {
-            fatalError("expected a ForumTableViewCell")
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: forumCellIdentifier, for: indexPath) as? ForumListCell else {
+            fatalError("expected a ForumListCell")
         }
 
         cell.viewModel = viewModelForCell(at: indexPath)
+
         return cell
     }
 
-    private func viewModelForCell(at indexPath: IndexPath) -> ForumTableViewCell.ViewModel {
-        let (controller: controller, localSection: localSection) = controllerAtGlobalSection(indexPath.section)
-        guard let sections = controller.sections else {
-            fatalError("results controller isn't set up")
-        }
-        let item = controller.object(at: IndexPath(row: indexPath.row, section: localSection))
+    private func viewModelForCell(at indexPath: IndexPath) -> ForumListCell.ViewModel {
+        let controller = controllerAtGlobalSection(indexPath.section).controller
+        let theme = delegate?.themeForCells(in: self) ?? Theme.currentTheme
 
-        let showSeparator = indexPath.row + 1 < sections[localSection].numberOfObjects
-        if controller === announcementsController {
-            guard let announcement = item as? Announcement else {
-                fatalError("expected an Announcement from the announcement results controller")
-            }
-            return ForumTableViewCell.ViewModel(
-                favorite: announcement.hasBeenSeen ? .hidden : .on,
-                name: announcement.title,
-                canExpand: .hidden,
-                childSubforumCount: 0,
+        // Using forum cells to show announcements out of sheer laziness.
+        switch item(at: indexPath) {
+        case let announcement as Announcement:
+            return ForumListCell.ViewModel(
+                backgroundColor: theme["listBackgroundColor"]!,
+                expansion: .none,
+                expansionTintColor: theme["tintColor"]!,
+                favoriteStar: announcement.hasBeenSeen ? .hidden : .isFavorite,
+                favoriteStarTintColor: theme["tintColor"]!,
+                forumName: NSAttributedString(string: announcement.title, attributes: [
+                    .font: UIFont.preferredFont(forTextStyle: .body),
+                    .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
                 indentationLevel: 0,
-                showSeparator: showSeparator)
-        }
-        else if controller === favoriteForumsController {
-            guard let metadata = item as? ForumMetadata else {
-                fatalError("expected a ForumMetadata from the favorite forum results controller")
-            }
-            return ForumTableViewCell.ViewModel(
-                favorite: .on,
-                name: metadata.forum.name ?? "",
-                canExpand: .hidden,
-                childSubforumCount: 0,
+                selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
+
+        case let forum as Forum where controller === favoriteForumsController:
+            return ForumListCell.ViewModel(
+                backgroundColor: theme["listBackgroundColor"]!,
+                expansion: .none,
+                expansionTintColor: theme["tintColor"]!,
+                favoriteStar: .isFavorite,
+                favoriteStarTintColor: theme["tintColor"]!,
+                forumName: NSAttributedString(string: forum.name ?? "", attributes: [
+                    .font: UIFont.preferredFont(forTextStyle: .body),
+                    .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
                 indentationLevel: 0,
-                showSeparator: showSeparator)
-        }
-        else if controller === forumsController {
-            guard let forum = item as? Forum else {
-                fatalError("expected a Forum from the forum results controller")
-            }
-            return ForumTableViewCell.ViewModel(
-                favorite: forum.metadata.favorite ? .hidden : .off,
-                name: forum.name ?? "",
-                canExpand: {
+                selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
+
+        case let forum as Forum:
+            return ForumListCell.ViewModel(
+                backgroundColor: theme["listBackgroundColor"]!,
+                expansion: {
                     if forum.childForums.isEmpty {
-                        return .hidden
+                        return .none
                     }
                     else if forum.metadata.showsChildrenInForumList {
-                        return .on
+                        return .isExpanded
                     }
                     else {
-                        return .off
-                    }}(),
-                childSubforumCount: forum.childForums.count,
-                indentationLevel: forum.ancestors.map { _ in 1 }.reduce(0, +),
-                showSeparator: showSeparator)
-        }
-        else {
-            fatalError("unknown results controller \(controller)")
+                        return .canExpand
+                    }
+                }(),
+                expansionTintColor: theme["tintColor"]!,
+                favoriteStar: forum.metadata.favorite ? .hidden : .canFavorite,
+                favoriteStarTintColor: theme["tintColor"]!,
+                forumName: NSAttributedString(string: forum.name ?? "", attributes: [
+                    .font: UIFont.preferredFont(forTextStyle: .body),
+                    .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
+                indentationLevel: forum.ancestors.reduce(0) { i, _ in i + 1 },
+                selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
+
+        default:
+            fatalError("unexpected item \(item) in forum list")
         }
     }
 }
 
-// TODO: bail on auto layout for cell
+protocol ForumListDataSourceDelegate: class {
+    func themeForCells(in dataSource: ForumListDataSource) -> Theme
+}
+
+private let forumCellIdentifier = "ForumListCell"
