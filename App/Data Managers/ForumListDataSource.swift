@@ -10,7 +10,7 @@ import AwfulCore
 import CoreData
 import UIKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 final class ForumListDataSource: NSObject {
     private let announcementsController: NSFetchedResultsController<Announcement>

@@ -8,7 +8,7 @@
 
 import UIKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     @IBOutlet weak var collection: UICollectionView!

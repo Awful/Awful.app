@@ -5,7 +5,7 @@
 import AwfulCore
 import CoreData
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 final class SettingsViewController: TableViewController {
     fileprivate let managedObjectContext: NSManagedObjectContext
