@@ -9,8 +9,8 @@ public class Forum: AwfulManagedObject {
     @NSManaged public var canPost: Bool
     @NSManaged public var forumID: String
     @NSManaged public var index: Int32
-    @NSManaged public var lastFilteredRefresh: NSDate?
-    @NSManaged public var lastRefresh: NSDate?
+    @NSManaged public var lastFilteredRefresh: Date?
+    @NSManaged public var lastRefresh: Date?
     @NSManaged public var name: String?
     
     @NSManaged public var childForums: Set<Forum> /* via parentForum */

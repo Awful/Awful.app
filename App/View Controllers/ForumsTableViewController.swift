@@ -45,9 +45,9 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func refreshIfNecessary() {
-//        if RefreshMinder.sharedMinder.shouldRefresh(.forumList) || dataSource.isEmpty {
-//            refresh()
-//        }
+        if RefreshMinder.sharedMinder.shouldRefresh(.forumList) {
+            refresh()
+        }
     }
     
     fileprivate func refresh() {

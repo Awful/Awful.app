@@ -5,31 +5,31 @@
 import AwfulCore
 import Foundation
 
-final class RefreshMinder: NSObject {
-    fileprivate let userDefaults: UserDefaults
+final class RefreshMinder {
+    private let userDefaults: UserDefaults
     
-    init(userDefaults: UserDefaults) {
+    private init(userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
     }
     
-    static let sharedMinder = RefreshMinder(userDefaults: UserDefaults.standard)
+    static let sharedMinder = RefreshMinder(userDefaults: .standard)
     
     func shouldRefreshForum(_ forum: Forum) -> Bool {
         guard let lastRefresh = forum.lastRefresh else { return true }
-        return NSDate().timeIntervalSince(lastRefresh as Date) > forumTimeBetweenRefreshes
+        return Date().timeIntervalSince(lastRefresh) > forumTimeBetweenRefreshes
     }
     
     func didRefreshForum(_ forum: Forum) {
-        forum.lastRefresh = Date() as NSDate
+        forum.lastRefresh = Date()
     }
     
     func shouldRefreshFilteredForum(_ forum: Forum) -> Bool {
         guard let lastRefresh = forum.lastFilteredRefresh else { return true }
-        return NSDate().timeIntervalSince(lastRefresh as Date) > forumTimeBetweenRefreshes
+        return Date().timeIntervalSince(lastRefresh) > forumTimeBetweenRefreshes
     }
     
     func didRefreshFilteredForum(_ forum: Forum) {
-        forum.lastFilteredRefresh = Date() as NSDate
+        forum.lastFilteredRefresh = Date()
     }
     
     func forgetForum(_ forum: Forum) {
@@ -41,38 +41,22 @@ final class RefreshMinder: NSObject {
         Refresh.all.forEach { userDefaults.removeObject(forKey: $0.key) }
     }
     
-    enum Refresh {
-        case announcements
-        case avatar
-        case bookmarks
-        case externalStylesheet
-        case forumList
-        case loggedInUser
-        case privateMessagesInbox
-        
-        fileprivate var key: String {
-            switch self {
-            case .announcements: return "com.awfulapp.Awful.LastAnnouncementsRefreshDate"
-            case .avatar: return "LastLoggedInUserAvatarRefreshDate"
-            case .bookmarks: return "com.awfulapp.Awful.LastBookmarksRefreshDate"
-            case .externalStylesheet: return "LastExternalStylesheetRefreshDate"
-            case .forumList: return "com.awfulapp.Awful.LastForumRefreshDate"
-            case .loggedInUser: return "LastLoggedInUserRefreshDate"
-            case .privateMessagesInbox: return "LastPrivateMessageInboxRefreshDate"
-            }
+    struct Refresh {
+        fileprivate let key: String
+        fileprivate let interval: TimeInterval
+
+        private init(key: String, interval: TimeInterval) {
+            self.key = key
+            self.interval = interval
         }
-        
-        fileprivate var timeBetweenRefreshes: TimeInterval {
-            switch self {
-            case .announcements: return 60 * 60 * 20
-            case .avatar: return 60 * 10
-            case .bookmarks: return 60 * 10
-            case .externalStylesheet: return 60 * 60
-            case .forumList: return 60 * 60 * 6
-            case .loggedInUser: return 60 * 5
-            case .privateMessagesInbox: return 60 * 10
-            }
-        }
+
+        static let announcements = Refresh(key: "com.awfulapp.Awful.LastAnnouncementsRefreshDate", interval: 60 * 60 * 20)
+        static let avatar = Refresh(key: "LastLoggedInUserAvatarRefreshDate", interval: 60 * 10)
+        static let bookmarks = Refresh(key: "com.awfulapp.Awful.LastBookmarksRefreshDate", interval: 60 * 10)
+        static let externalStylesheet = Refresh(key: "LastExternalStylesheetRefreshDate", interval: 60 * 60)
+        static let forumList = Refresh(key: "com.awfulapp.Awful.LastForumRefreshDate", interval: 60 * 60 * 6)
+        static let loggedInUser = Refresh(key: "LastLoggedInUserRefreshDate", interval: 60 * 5)
+        static let privateMessagesInbox = Refresh(key: "LastPrivateMessageInboxRefreshDate", interval: 60 * 10)
         
         static var all: [Refresh] {
             return [.announcements, .avatar, .bookmarks, .externalStylesheet, .forumList, .loggedInUser, .privateMessagesInbox]
@@ -81,7 +65,7 @@ final class RefreshMinder: NSObject {
     
     func shouldRefresh(_ r: Refresh) -> Bool {
         guard let lastRefresh = userDefaults.object(forKey: r.key) as? Date else { return true }
-        return Date().timeIntervalSince(lastRefresh) > r.timeBetweenRefreshes
+        return Date().timeIntervalSince(lastRefresh) > r.interval
     }
     
     func didRefresh(_ r: Refresh) {
@@ -93,10 +77,10 @@ final class RefreshMinder: NSObject {
             return Date().addingTimeInterval(timeBetweenInitialRefreshes())
         }
         let sinceLastRefresh = -lastRefresh.timeIntervalSinceNow
-        if sinceLastRefresh > r.timeBetweenRefreshes + 1 {
+        if sinceLastRefresh > r.interval + 1 {
             return Date()
         }
-        return Date().addingTimeInterval(r.timeBetweenRefreshes - sinceLastRefresh)
+        return Date().addingTimeInterval(r.interval - sinceLastRefresh)
     }
 }
 
