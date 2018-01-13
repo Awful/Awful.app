@@ -13,3 +13,17 @@
 
 /* Fallback title of an announcement screen (the announcement's title is used when available). */
 "announcement.title" = "Announcement";
+
+/* MARK: Forums list */
+
+/* Title of the announcements section in the forums list. */
+"forums-list.announcements-section-title" = "Announcements";
+
+/* Title of the favorite forums section in the forums list. */
+"forums-list.favorite-forums.section-title" = "Favorite Forums";
+
+/* Name of undo action where user adds a just-deleted favorite back (more of a redo action). */
+"forums-list.undo-action.add-favorite" = "Add Favorite Forum";
+
+/* Name of undo action where user deletes a favorite. */
+"forums-list.undo-action.remove-favorite" = "Remove Favorite Forum";

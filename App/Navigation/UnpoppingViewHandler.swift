@@ -10,15 +10,19 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     fileprivate var gestureStartPointX: CGFloat = 0
     fileprivate(set) var interactiveUnpopIsTakingPlace = false
     var navigationControllerIsAnimating = false
-    fileprivate let panRecognizer = UIScreenEdgePanGestureRecognizer()
+
+    private lazy var panRecognizer: UIGestureRecognizer = {
+        let pan = UIScreenEdgePanGestureRecognizer()
+        pan.addTarget(self, action: #selector(handlePan))
+        pan.delegate = self
+        pan.edges = .right
+        return pan
+    }()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         super.init()
-        
-        panRecognizer.addTarget(self, action: #selector(handlePan))
-        panRecognizer.edges = .right
-        panRecognizer.delegate = self
+
         navigationController.view.addGestureRecognizer(panRecognizer)
     }
     
@@ -143,6 +147,19 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
 }
 
 extension UnpoppingViewHandler: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // Since we're on the right edge, the recognizer interferes with reordering UITableView.
+        var cur = touch.view
+        while let view = cur {
+            if let tableView = cur as? UITableView {
+                return !tableView.isEditing
+            }
+            cur = view.superview
+        }
+
+        return true
+    }
+
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return !viewControllers.isEmpty && !navigationControllerIsAnimating
     }

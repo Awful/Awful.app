@@ -8,16 +8,26 @@ import UIKit
 
 final class ForumsTableViewController: TableViewController {
     let managedObjectContext: NSManagedObjectContext
-    fileprivate var dataSource: ForumTableViewDataSource!
+    private var listDataSource: ForumListDataSource!
+    private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(style: .plain)
+        super.init(style: .grouped)
         
         title = "Forums"
         tabBarItem.image = UIImage(named: "forum-list")
         tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
+
+        favoriteForumCountObserver = ManagedObjectCountObserver(
+            context: managedObjectContext,
+            entityName: ForumMetadata.entityName(),
+            predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
+            didChange: { [weak self] favoriteCount in
+                self?.updateEditingState(favoriteCount: favoriteCount)
+        })
+        updateEditingState(favoriteCount: favoriteForumCountObserver.count)
 
         unreadAnnouncementCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
@@ -35,7 +45,7 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func refreshIfNecessary() {
-        if RefreshMinder.sharedMinder.shouldRefresh(.forumList) || dataSource.isEmpty {
+        if RefreshMinder.sharedMinder.shouldRefresh(.forumList) {
             refresh()
         }
     }
@@ -50,6 +60,7 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func migrateFavoriteForumsFromSettings() {
+        // TODO: this shouldn't be the view controller's responsibility.
         // In Awful 3.2 favorite forums moved from AwfulSettings (i.e. NSUserDefaults) to the ForumMetadata entity in Core Data.
         if let forumIDs = AwfulSettings.shared().favoriteForums as! [String]? {
             AwfulSettings.shared().favoriteForums = nil
@@ -85,6 +96,14 @@ final class ForumsTableViewController: TableViewController {
                 : nil
         }()
     }
+
+    private func updateEditingState(favoriteCount: Int) {
+        navigationItem.setRightBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+
+        if isEditing, favoriteCount == 0 {
+            setEditing(false, animated: true)
+        }
+    }
     
     func openForum(_ forum: Forum, animated: Bool) {
         let threadList = ThreadsTableViewController(forum: forum)
@@ -98,113 +117,164 @@ final class ForumsTableViewController: TableViewController {
         vc.restorationIdentifier = "Announcement"
         showDetailViewController(vc, sender: self)
     }
-    
-    fileprivate func updateEditButtonPresence(animated: Bool) {
-        navigationItem.setRightBarButton(dataSource.hasFavorites ? editButtonItem : nil, animated: animated)
+
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
+    override var undoManager: UndoManager? {
+        return listDataSource.undoManager
     }
     
     // MARK: View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.register(UINib(nibName: ForumTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ForumTableViewCell.identifier)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: ForumTableViewDataSource.headerReuseIdentifier)
-        
-        tableView.estimatedRowHeight = ForumTableViewCell.estimatedRowHeight
-        tableView.separatorStyle = .none
-        
-        let cellConfigurator: (ForumTableViewCell, ForumTableViewCell.ViewModel) -> Void = { [weak self] cell, viewModel in
-            cell.viewModel = viewModel
-            cell.starButtonAction = self?.didTapStarButton
-            cell.disclosureButtonAction = self?.didTapDisclosureButton
-            
-            guard let theme = self?.theme else { return }
-            cell.themeData = ForumTableViewCell.ThemeData(theme)
+
+        tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
+
+        tableView.sectionFooterHeight = 0
+        tableView.separatorInset.left = tableSeparatorLeftMargin
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
+
+        do {
+            listDataSource = try ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
         }
-        let headerThemer: (UITableViewCell) -> Void = { [weak self] cell in
-            guard let theme = self?.theme else { return }
-            cell.textLabel?.textColor = theme["listHeaderTextColor"]
-            cell.backgroundColor = theme["listHeaderBackgroundColor"]
-            cell.selectedBackgroundColor = theme["listHeaderBackgroundColor"]
+        catch {
+            fatalError("could not initialize forum list data source: \(error)")
         }
-        dataSource = ForumTableViewDataSource(tableView: tableView, managedObjectContext: managedObjectContext, cellConfigurator: cellConfigurator, headerThemer: headerThemer)
-        tableView.dataSource = dataSource
-        
-        dataSource.didReload = { [weak self] in
-            self?.updateEditButtonPresence(animated: false)
-            
-            if self?.isEditing == true && self?.dataSource.hasFavorites == false {
-                DispatchQueue.main.async {
-                    // The docs say not to call this from an implementation of UITableViewDataSource.tableView(_:commitEditingStyle:forRowAtIndexPath:), but if you must, do a delayed perform.
-                    self?.setEditing(false, animated: true)
-                }
-            }
-        }
-        
-        updateEditButtonPresence(animated: false)
         
         pullToRefreshBlock = { [weak self] in
             self?.refresh()
         }
     }
+
+    override func themeDidChange() {
+        super.themeDidChange()
+
+        tableView.separatorColor = theme["listSeparatorColor"]
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
         refreshIfNecessary()
+
+        becomeFirstResponder()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        resignFirstResponder()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        undoManager?.removeAllActions()
     }
     
     // MARK: Actions
-    
-    fileprivate func didTapStarButton(_ cell: ForumTableViewCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { return }
-        forum.metadata.favoriteIndex = dataSource.lastFavoriteIndex.map { Int32($0.advanced(by: 1)) } ?? 0
-        forum.metadata.favorite = !forum.metadata.favorite
-        try! forum.managedObjectContext!.save()
-    }
-    
-    fileprivate func didTapDisclosureButton(_ cell: ForumTableViewCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        guard let forum = dataSource.objectAtIndexPath(indexPath) as? Forum else { return }
-        forum.metadata.showsChildrenInForumList = !forum.metadata.showsChildrenInForumList
-        try! forum.managedObjectContext!.save()
-    }
-}
 
-extension ForumsTableViewController {
-    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        guard case .some = dataSource.objectAtIndexPath(indexPath) else { return nil }
-        return indexPath
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let forum = dataSource.objectAtIndexPath(indexPath) as? Forum {
-            openForum(forum, animated: true)
-        }
-        else if let announcement = dataSource.objectAtIndexPath(indexPath) as? Announcement {
-            openAnnouncement(announcement)
+    private func didTapDisclosureButton(in cell: UITableViewCell) {
+        guard
+            let indexPath = tableView.indexPath(for: cell),
+            let forum = listDataSource.item(at: indexPath) as? Forum
+            else { return }
+
+        if forum.metadata.showsChildrenInForumList {
+            forum.collapse()
         }
         else {
-            fatalError("shouldn't be selecting whatever this is")
+            forum.expand()
         }
+        
+        try! forum.managedObjectContext!.save()
     }
-    
-    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath toIndexPath: IndexPath) -> IndexPath {
+
+    private func didTapStarButton(in cell: UITableViewCell) {
         guard
-            let firstFavoriteIndex = dataSource.firstFavoriteIndex,
-            let lastFavoriteIndex = dataSource.lastFavoriteIndex
-            else { fatalError("asking for target index path for non-favorite") }
-        let targetRow = max(firstFavoriteIndex, min(toIndexPath.row, lastFavoriteIndex))
-        return IndexPath(row: targetRow, section: 0)
+            let indexPath = tableView.indexPath(for: cell),
+            let forum = listDataSource.item(at: indexPath) as? Forum
+            else { return }
+
+        if forum.metadata.favorite {
+            forum.metadata.favorite = false
+        }
+        else {
+            forum.metadata.favorite = true
+            forum.metadata.favoriteIndex = listDataSource.nextFavoriteIndex
+        }
+        forum.tickleForFetchedResultsController()
+
+        try! forum.managedObjectContext!.save()
     }
 }
 
-extension ForumTableViewCell.ThemeData {
-    init(_ theme: Theme) {
-        nameColor = theme["listTextColor"]!
-        backgroundColor = theme["listBackgroundColor"]!
-        selectedBackgroundColor = theme["listSelectedBackgroundColor"]!
-        separatorColor = theme["listSeparatorColor"]!
+private let tableBottomMargin: CGFloat = 14
+private let tableSeparatorLeftMargin: CGFloat = 46
+
+extension ForumsTableViewController {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if tableView.dataSource?.tableView(tableView, numberOfRowsInSection: section) == 0 {
+            return 0
+        }
+        else {
+            return SectionHeader.height
+        }
     }
+
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: SectionHeader.reuseIdentifier) as? ForumListSectionHeaderView else {
+            assertionFailure("where's the header")
+            return nil
+        }
+
+        header.viewModel = .init(
+            backgroundColor: theme["listHeaderBackgroundColor"],
+            font: UIFont.preferredFont(forTextStyle: .body),
+            sectionName: listDataSource.titleForSection(section),
+            textColor: theme["listHeaderTextColor"])
+
+        return header
+    }
+
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return listDataSource.tableView(tableView, heightForRowAt: indexPath)
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let cell = cell as? ForumListCell {
+            cell.didTapExpand = { [weak self] in
+                self?.didTapDisclosureButton(in: $0)
+            }
+            
+            cell.didTapFavorite = { [weak self] in
+                self?.didTapStarButton(in: $0)
+            }
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        return listDataSource.tableView(tableView, targetIndexPathForMoveFromRowAt: sourceIndexPath, toProposedIndexPath: proposedDestinationIndexPath)
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch listDataSource.item(at: indexPath) {
+        case let announcement as Announcement:
+            openAnnouncement(announcement)
+
+        case let forum as Forum:
+            openForum(forum, animated: true)
+
+        default:
+            assertionFailure("unknown object type in forums list")
+        }
+    }
+}
+
+private enum SectionHeader {
+    static let height: CGFloat = 44
+    static let reuseIdentifier = "Header"
 }
