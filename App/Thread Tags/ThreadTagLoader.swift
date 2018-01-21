@@ -213,8 +213,8 @@ final class ThreadTagLoader: NSObject {
                         return
                     }
                     
-                    let userInfo = [ThreadTagLoader.newImageNameKey: (threadTagName as NSString).deletingPathExtension]
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: ThreadTagLoader.newImageAvailableNotification), object: self, userInfo: userInfo)
+                    let userInfo = [ThreadTagLoader.NewImageAvailableNotification.newImageNameKey: (threadTagName as NSString).deletingPathExtension]
+                    NotificationCenter.default.post(name: ThreadTagLoader.NewImageAvailableNotification.name, object: self, userInfo: userInfo)
             }).resume()
         }
         
@@ -248,12 +248,23 @@ final class ThreadTagLoader: NSObject {
     }
     
     // MARK: - Constants
-    
+
     /// Posted when a thread tag image becomes newly available or updates. The notification's object is the AwfulThreadTagLoader that downloaded the image. The notification's userInfo contains a value for the newImageNameKey.
-    static let newImageAvailableNotification = "com.awfulapp.Awful.ThreadTagLoaderNewImageAvailable"
-    
-    /// Value is a String suitable for AwfulThreadTagLoader.threadTagNamed(_:).
-    static let newImageNameKey = "AwfulThreadTagLoaderNewImageName"
+    struct NewImageAvailableNotification {
+        static let name = Notification.Name(rawValue: "com.awfulapp.Awful.ThreadTagLoaderNewImageAvailable")
+        static let newImageNameKey = "AwfulThreadTagLoaderNewImageName"
+
+        /// A string suitable for `ThreadTagLoader.threadTagNamed(_:)`.
+        let newImageName: String
+
+        init(_ notification: Notification) {
+            guard notification.name == NewImageAvailableNotification.name else {
+                fatalError("wrong notification")
+            }
+
+            newImageName = notification.userInfo![NewImageAvailableNotification.newImageNameKey] as! String
+        }
+    }
     
     // Names of placeholder images. Each of these has a convenience method on the ThreadTagLoader class.
     static let emptyThreadTagImageName = "empty-thread-tag"

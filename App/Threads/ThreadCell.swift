@@ -116,16 +116,28 @@ class TopCapAlignmentLabel: UILabel {
 import AVFoundation
 
 @IBDesignable
-class PageIcon: UIView {
+final class PageIcon: UIView {
     
     @IBInspectable var borderColor: UIColor = .darkGray {
         didSet { setNeedsDisplay() }
     }
-    
+
+    static let aspectRatio: CGFloat = 7 / 9
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        isOpaque = false
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     override func draw(_ rect: CGRect) {
         
         // Page shape.
-        let outline = AVMakeRect(aspectRatio: CGSize(width: 8.5, height: 11), insideRect: bounds)
+        let outline = AVMakeRect(aspectRatio: CGSize(width: 7, height: 9), insideRect: bounds)
         let borderPath = UIBezierPath()
         borderPath.move(to: CGPoint(x: outline.minX, y: outline.minY))
         borderPath.addLine(to: CGPoint(x: outline.minX + outline.width * 5/8, y: outline.minY))
