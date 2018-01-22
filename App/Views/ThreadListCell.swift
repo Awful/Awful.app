@@ -9,7 +9,7 @@ private let Log = Logger.get(level: .debug)
 final class ThreadListCell: UITableViewCell {
 
     private let pageCountLabel = UILabel()
-    private let pageIconView = PageIcon()
+    private let pageIconView = PageIconView()
     private let postInfoLabel = UILabel()
     private let ratingImageView = UIImageView()
     private let secondaryTagImageView = UIImageView()
@@ -227,7 +227,7 @@ final class ThreadListCell: UITableViewCell {
 
             let pageCountFont = viewModel.pageCount.attribute(.font, at: 0, effectiveRange: nil) as? UIFont ?? UIFont.systemFont(ofSize: 12)
             let pageIconHeight = pixelCeil(pageCountFont.capHeight)
-            let pageIconWidth = pageIconHeight * PageIcon.aspectRatio
+            let pageIconWidth = pageIconHeight * PageIconView.aspectRatio
             pageIconFrame = CGRect(
                 x: pageCountFrame.maxX + Layout.pageCountRightMargin,
                 y: pageCountFrame.maxY - pageIconHeight - (pageCountFont.ascender - pageCountFont.capHeight),

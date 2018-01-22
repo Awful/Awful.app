@@ -308,8 +308,6 @@
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */; };
-		1C8D116119B3F686005D46CB /* ThreadCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D116019B3F686005D46CB /* ThreadCell.xib */; };
-		1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D116219B3F69D005D46CB /* ThreadCell.swift */; };
 		1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D116619B4EEC6005D46CB /* MessageCell.swift */; };
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
@@ -341,6 +339,7 @@
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
 		1CB5F7F5201527550046D080 /* ThreadListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5F7F4201527550046D080 /* ThreadListCell.swift */; };
 		1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5F7F6201547D90046D080 /* Thread+Presentation.swift */; };
+		1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5F7F820156C990046D080 /* PageIconView.swift */; };
 		1CB8FA661F68BD73008A7875 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC401F5371CC00977D6F /* Logger.swift */; };
 		1CBAFB1C1F93D7F7007DAB58 /* AwfulCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CBAFB1E1F944F50007DAB58 /* IgnoreListScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBAFB1D1F944F50007DAB58 /* IgnoreListScrapingTests.swift */; };
@@ -912,8 +911,6 @@
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+AwfulConvenient.swift"; sourceTree = "<group>"; };
-		1C8D116019B3F686005D46CB /* ThreadCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreadCell.xib; sourceTree = "<group>"; };
-		1C8D116219B3F69D005D46CB /* ThreadCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
 		1C8D116619B4EEC6005D46CB /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
@@ -947,6 +944,7 @@
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
 		1CB5F7F4201527550046D080 /* ThreadListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadListCell.swift; sourceTree = "<group>"; };
 		1CB5F7F6201547D90046D080 /* Thread+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thread+Presentation.swift"; sourceTree = "<group>"; };
+		1CB5F7F820156C990046D080 /* PageIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageIconView.swift; sourceTree = "<group>"; };
 		1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCore.h; sourceTree = "<group>"; };
 		1CBAFB1D1F944F50007DAB58 /* IgnoreListScrapingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoreListScrapingTests.swift; sourceTree = "<group>"; };
 		1CBAFB1F1F945149007DAB58 /* IgnoreListChangeScrapeResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoreListChangeScrapeResult.swift; sourceTree = "<group>"; };
@@ -1941,8 +1939,6 @@
 			isa = PBXGroup;
 			children = (
 				1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */,
-				1C8D116219B3F69D005D46CB /* ThreadCell.swift */,
-				1C8D116019B3F686005D46CB /* ThreadCell.xib */,
 				1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */,
 				1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */,
 			);
@@ -2067,11 +2063,11 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1CB5F7F4201527550046D080 /* ThreadListCell.swift */,
 				1C24BC952002BF2F0022C85F /* ForumListCell.swift */,
 				1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */,
+				1CB5F7F820156C990046D080 /* PageIconView.swift */,
 				1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */,
 				1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */,
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
@@ -2079,6 +2075,7 @@
 				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
 				1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */,
 				1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */,
+				1CB5F7F4201527550046D080 /* ThreadListCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2660,7 +2657,6 @@
 				1C5B83581F74B1F200BE7517 /* AppIcon-v-83.5x83.5@2x.png in Resources */,
 				1C502D421F817010001890AF /* AppIcon-staredog-1024x1024.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
-				1C8D116119B3F686005D46CB /* ThreadCell.xib in Resources */,
 				1C502D481F817010001890AF /* AppIcon-staredog-29x29@3x.png in Resources */,
 				7BF3A6091F92FA86009F8603 /* AppIcon-ghost-20x20@2x.png in Resources */,
 				7BF3A6051F92FA86009F8603 /* AppIcon-ghost-83.5x83.5@2x.png in Resources */,
@@ -3277,7 +3273,6 @@
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
 				1C25AC431F53770300977D6F /* Bangbang.swift in Sources */,
 				1C16FBDB1CBAA5A900C88BD1 /* CoreGraphics.swift in Sources */,
-				1C8D116319B3F69D005D46CB /* ThreadCell.swift in Sources */,
 				1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
@@ -3355,6 +3350,7 @@
 				1C16FC041CC3D84500C88BD1 /* PostsView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
+				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
 				1CE55A701A10552600E474A6 /* DataSource.swift in Sources */,
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,

@@ -194,6 +194,10 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
 
                 let imageName = thread.secondaryThreadTag?.imageName
+                guard imageName != thread.threadTag?.imageName else {
+                    return nil
+                }
+
                 return imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
             }(),
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
@@ -255,5 +259,3 @@ protocol ThreadListDataSourceDelegate: class {
 protocol ThreadListDataSourceDeletionDelegate: class {
     func didDeleteThread(_ thread: AwfulThread, in dataSource: ThreadListDataSource)
 }
-
-// TODO: standardize on ThreadListCell (remove ThreadCell and ThreadTableViewCell)

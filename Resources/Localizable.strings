@@ -38,3 +38,9 @@
 
 /* Text shown below title of thread when none of the thread has been read. Parameter is the username of the original poster. */
 "thread-list.posted-by" = "Posted by %@";
+
+
+/* MARK: Compose thread */
+
+/* Text shown below the title of the thread-to-be. Parameter is the name of the forum where this will be posted. */
+"compose.thread-preview.posting-in" = "Posting in %@";
