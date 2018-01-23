@@ -33,6 +33,9 @@
 
 /* MARK: Thread list */
 
+/* Text of delete button shown in bookmarks list on iOS 11 after swiping on the cell. */
+"thread-list.delete" = "Delete";
+
 /* Text shown below title of thread when at least some of the thread has been read. Parameter is the username of the last poster. */
 "thread-list.killed-by" = "Killed by %@";
 
