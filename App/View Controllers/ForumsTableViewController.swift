@@ -137,12 +137,8 @@ final class ForumsTableViewController: TableViewController {
         tableView.separatorInset.left = tableSeparatorLeftMargin
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
 
-        do {
-            listDataSource = try ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
-        }
-        catch {
-            fatalError("could not initialize forum list data source: \(error)")
-        }
+        listDataSource = try! ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
+        tableView.reloadData()
         
         pullToRefreshBlock = { [weak self] in
             self?.refresh()

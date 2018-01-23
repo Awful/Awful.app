@@ -9,10 +9,12 @@
 /* Title of the share URL action for an announcement, post, or thread. */
 "action.share-url" = "Share URL";
 
+
 /* MARK: Announcements */
 
 /* Fallback title of an announcement screen (the announcement's title is used when available). */
 "announcement.title" = "Announcement";
+
 
 /* MARK: Forums list */
 
@@ -27,3 +29,21 @@
 
 /* Name of undo action where user deletes a favorite. */
 "forums-list.undo-action.remove-favorite" = "Remove Favorite Forum";
+
+
+/* MARK: Thread list */
+
+/* Text of delete button shown in bookmarks list on iOS 11 after swiping on the cell. */
+"thread-list.delete" = "Delete";
+
+/* Text shown below title of thread when at least some of the thread has been read. Parameter is the username of the last poster. */
+"thread-list.killed-by" = "Killed by %@";
+
+/* Text shown below title of thread when none of the thread has been read. Parameter is the username of the original poster. */
+"thread-list.posted-by" = "Posted by %@";
+
+
+/* MARK: Compose thread */
+
+/* Text shown below the title of the thread-to-be. Parameter is the name of the forum where this will be posted. */
+"compose.thread-preview.posting-in" = "Posting in %@";

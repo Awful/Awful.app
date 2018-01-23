@@ -129,6 +129,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         
         if let postsViewController = viewControllerToCommit as? PostsPageViewController, let page = postsViewController.page {
             postsViewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+            postsViewController.previewActionItemProvider = nil
         }
         
         viewController.show(viewControllerToCommit, sender: self)

@@ -11,6 +11,8 @@ import PromiseKit
 import TUSafariActivity
 import WebViewJavascriptBridge
 
+private let Log = Logger.get()
+
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
     let thread: AwfulThread
@@ -1125,6 +1127,16 @@ final class PostsPageViewController: ViewController {
         super.viewDidDisappear(animated)
         
         userActivity = nil
+    }
+
+    override func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        guard parent != nil || previewActionItemProvider == nil else {
+            // RDAR: 36754995 presenting an alert in a peek view controller often results in a screen-covering blurred view that eats all touches. Peek view controllers seem to have no parent, and as a double-check we'll see if we seem to be configured with a preview action item provider (which should only happen when we're peeking), then we'll just swallow any attempted presentation.
+            Log.w("ignoring attempt to present \(viewController) as we're pretty sure we're part of an ongoing peek 3D Touch action, and that's a bad time to present something")
+            return
+        }
+
+        super.present(viewController, animated: animated, completion: completion)
     }
     
     override func encodeRestorableState(with coder: NSCoder) {

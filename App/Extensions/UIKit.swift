@@ -5,6 +5,32 @@
 import MobileCoreServices
 import UIKit
 
+extension CGRect {
+    var pixelRound: CGRect {
+        var rounded = self
+        rounded.origin.x = Awful.pixelRound(rounded.origin.x)
+        rounded.origin.y = Awful.pixelRound(rounded.origin.y)
+        rounded.size = size.pixelCeil
+        return rounded
+    }
+}
+
+extension CGSize {
+    var pixelCeil: CGSize {
+        return CGSize(width: Awful.pixelCeil(width), height: Awful.pixelCeil(height))
+    }
+}
+
+private let defaultScale: CGFloat = UIScreen.main.scale
+
+func pixelCeil(_ val: CGFloat, scale: CGFloat = defaultScale) -> CGFloat {
+    return ceil(val * scale) / scale
+}
+
+func pixelRound(_ val: CGFloat, scale: CGFloat = defaultScale) -> CGFloat {
+    return round(val * scale) / scale
+}
+
 extension UIBarButtonItem {
     /// Returns a UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace configured with no target.
     class func flexibleSpace() -> Self {

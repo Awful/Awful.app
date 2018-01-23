@@ -6,19 +6,19 @@ import AwfulCore
 import CoreData
 
 final class ThreadPreviewViewController: PostPreviewViewController {
-    fileprivate let forum: Forum
-    fileprivate let subject: String
-    fileprivate let threadTag: ThreadTag
-    fileprivate let secondaryThreadTag: ThreadTag?
-    fileprivate var threadCell: ThreadCell!
-    fileprivate lazy var managedObjectContext: NSManagedObjectContext = {
+    private let forum: Forum
+    private let subject: String
+    private let threadTag: ThreadTag
+    private let secondaryThreadTag: ThreadTag?
+    private lazy var managedObjectContext: NSManagedObjectContext = {
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.parent = self.forum.managedObjectContext
         return moc
     }()
-    fileprivate weak var networkOperation: Cancellable?
-    fileprivate var imageInterpolator: SelfHostingAttachmentInterpolator?
+    private weak var networkOperation: Cancellable?
+    private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private(set) var formData: ForumsClient.PostNewThreadFormData?
+    private lazy var threadCell = ThreadListCell()
     
     init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, BBcode: NSAttributedString) {
         self.forum = forum
@@ -33,17 +33,22 @@ final class ThreadPreviewViewController: PostPreviewViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func loadView() {
-        super.loadView()
-        
-        threadCell = Bundle(for: ThreadPreviewViewController.self).loadNibNamed("ThreadCell", owner: nil, options: nil)?[0] as! ThreadCell
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
         threadCell.autoresizingMask = .flexibleWidth
         webView.scrollView.addSubview(threadCell)
     }
-    
+
     override var theme: Theme {
         return Theme.currentThemeForForum(forum: forum)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        repositionCell()
     }
     
     override func fetchPreviewIfNecessary() {
@@ -83,57 +88,45 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         configureCell()
     }
     
-    fileprivate func configureCell() {
-        if AwfulSettings.shared().showThreadTags {
-            /**
-                It's possible to pick the same tag for the first and second icons in e.g. SA Mart.
- 
-                Since it'd look ugly to show the e.g. "Selling" banner for each tag image, we just use the empty thread tag for anyone lame enough to pick the same tag twice.
-             */
-            if threadTag != secondaryThreadTag,
-                let imageName = threadTag.imageName , !imageName.isEmpty
-            {
-                threadCell.tagImageView.image = ThreadTagLoader.imageNamed(imageName)
-            } else {
-                threadCell.tagImageView.image = ThreadTagLoader.emptyThreadTagImage
-            }
-            
-            if let imageName = secondaryThreadTag?.imageName , !imageName.isEmpty {
-                threadCell.secondaryTagImageView.image = ThreadTagLoader.imageNamed(imageName)
-            } else {
-                threadCell.secondaryTagImageView.image = nil
-            }
-        } else {
-            threadCell.showsTag = false
-        }
-        
-        threadCell.titleLabel.text = (subject as NSString).stringByCollapsingWhitespace
-        threadCell.tagAndRatingContainerView.alpha = 1
-        threadCell.titleLabel.isEnabled = true
-        threadCell.numberOfPagesLabel.text = "1"
-        threadCell.unreadRepliesLabel.text = ""
-        threadCell.killedByLabel.text = "Posting in \(forum.name ?? "")"
-        threadCell.showsRating = false
-        
-        threadCell.backgroundColor = theme["listBackgroundColor"]
-        threadCell.titleLabel.textColor = theme["listTextColor"]
-        threadCell.numberOfPagesLabel.textColor = theme["listSecondaryTextColor"]
-        threadCell.killedByLabel.textColor = theme["listSecondaryTextColor"]
-        threadCell.tintColor = theme["listSecondaryTextColor"]
-        threadCell.fontNameForLabels = theme["listFontName"]
+    private func configureCell() {
+        threadCell.viewModel = ThreadListCell.ViewModel(
+            backgroundColor: theme["listBackgroundColor"]!,
+            pageCount: NSAttributedString(string: "1", attributes: [
+                .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
+                .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!]),
+            pageIconColor: theme["listSecondaryTextColor"]!,
+            postInfo: {
+                let text = String(format: LocalizedString("compose.thread-preview.posting-in"), forum.name ?? "")
+                return NSAttributedString(string: text, attributes: [
+                    .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
+                    .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!])
+            }(),
+            ratingImage: nil,
+            secondaryTagImage: {
+                let imageName = secondaryThreadTag?.imageName
+                guard imageName != threadTag.imageName else {
+                    return nil
+                }
+
+                return imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
+            }(),
+            selectedBackgroundColor: theme["listBackgroundColor"]!,
+            stickyImage: nil,
+            tagImage: {
+                return threadTag.imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
+                    ?? ThreadTagLoader.emptyThreadTagImage
+            }(),
+            title: NSAttributedString(string: (subject as NSString).stringByCollapsingWhitespace, attributes: [
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
+                .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
+            unreadCount: NSAttributedString())
         
         repositionCell()
     }
     
-    fileprivate func repositionCell() {
-        threadCell.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 10000)
-        threadCell.setNeedsLayout()
-        threadCell.layoutIfNeeded()
-        
-        threadCell.titleLabel.preferredMaxLayoutWidth = threadCell.titleLabel.bounds.width
-        let height = threadCell.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        threadCell.frame = CGRect(x: 0, y: -height, width: view.bounds.width, height: height)
-        
-        webView.scrollView.contentInset.top = topLayoutGuide.length + threadCell.bounds.height
+    private func repositionCell() {
+        let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width)
+        threadCell.frame = CGRect(x: 0, y: -cellHeight, width: view.bounds.width, height: cellHeight)
+        webView.scrollView.contentInset.top = topLayoutGuide.length + cellHeight
     }
 }

@@ -6,10 +6,10 @@ import CoreData
 
 @objc(Thread)
 public class AwfulThread: AwfulManagedObject {
-    @NSManaged var anyUnreadPosts: Bool
+    @NSManaged public var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged public var bookmarked: Bool
-    @NSManaged var bookmarkListPage: Int32
+    @NSManaged public var bookmarkListPage: Int32
     @NSManaged public var closed: Bool
     @NSManaged var lastModifiedDate: NSDate
     @NSManaged public var lastPostAuthorName: String?

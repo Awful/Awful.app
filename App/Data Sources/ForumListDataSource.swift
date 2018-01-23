@@ -1,10 +1,6 @@
-//
 //  ForumListDataSource.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2017-12-03.
-//  Copyright © 2017 Awful Contributors. All rights reserved.
-//
+//  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
 import CoreData
