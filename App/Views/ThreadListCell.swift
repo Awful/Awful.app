@@ -127,7 +127,7 @@ final class ThreadListCell: UITableViewCell {
         let titleFrame: CGRect
         let unreadCountFrame: CGRect
 
-        static let minimumHeight: CGFloat = 44
+        static let minimumHeight: CGFloat = 72
         static let outerMargin: CGFloat = 8
         static let pageCountRightMargin: CGFloat = 2
         static let pageIconRightMargin: CGFloat = 5
