@@ -22,9 +22,9 @@ PODS:
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.6)
-  - Crashlytics (3.8.6):
-    - Fabric (~> 1.6.3)
-  - Fabric (1.6.13)
+  - Crashlytics (3.9.3):
+    - Fabric (~> 1.7.2)
+  - Fabric (1.7.2)
   - FLAnimatedImage (1.0.12)
   - GRMustache (7.3.2):
     - JRSwizzle (~> 1.0)
@@ -117,8 +117,8 @@ SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
-  Crashlytics: 95d05f4e4c19a771250c4bd9ce344d996de32bbf
-  Fabric: 2fb5676bc811af011a04513451f463dac6803206
+  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
+  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
   GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
