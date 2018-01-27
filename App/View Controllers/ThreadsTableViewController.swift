@@ -47,7 +47,15 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         if let tag = filterThreadTag {
             filter.insert(tag)
         }
-        return try! ThreadListDataSource(forum: forum, sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread, showsTagAndRating: AwfulSettings.shared().showThreadTags, threadTagFilter: filter, managedObjectContext: managedObjectContext, tableView: tableView)
+        let dataSource = try! ThreadListDataSource(
+            forum: forum,
+            sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread,
+            showsTagAndRating: AwfulSettings.shared().showThreadTags,
+            threadTagFilter: filter,
+            managedObjectContext: managedObjectContext,
+            tableView: tableView)
+        dataSource.delegate = self
+        return dataSource
     }
     
     private func loadPage(_ page: Int) {
@@ -87,6 +95,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
 
         tableView.addGestureRecognizer(longPressRecognizer)
         tableView.estimatedRowHeight = ThreadListCell.estimatedHeight
+        tableView.hideExtraneousSeparators()
         tableView.restorationIdentifier = "Threads table view"
         
         dataSource = makeDataSource()
@@ -373,6 +382,12 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private struct ObsoleteRestorationKeys {
         static let forumID = "AwfulForumID"
         static let filterThreadTagID = "AwfulFilterThreadTagID"
+    }
+}
+
+extension ThreadsTableViewController: ThreadListDataSourceDelegate {
+    func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme {
+        return theme
     }
 }
 

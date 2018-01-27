@@ -68,6 +68,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         super.viewDidLoad()
 
         tableView.addGestureRecognizer(longPressRecognizer)
+        tableView.hideExtraneousSeparators()
         tableView.restorationIdentifier = "Bookmarks table"
 
         dataSource = makeDataSource()
