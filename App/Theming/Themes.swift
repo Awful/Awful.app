@@ -83,7 +83,7 @@ final class Theme: Comparable {
         let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
         guard let value = dictionary[key] as? String else { return parent?[key] }
 
-        if let hexColor = UIColor.fromHex(value) {
+        if let hexColor = UIColor(hex: value) {
             return hexColor
         }
         else if let patternImage = UIImage(named: value) {
