@@ -164,7 +164,7 @@ extension ThreadListDataSource: UITableViewDataSource {
             pageCount: NSAttributedString(string: "\(thread.numberOfPages)", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
                 .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!]),
-            pageIconColor: theme["listSecondaryTextColor"]!,
+            pageIconColor: theme["threadListPageIconColor"]!,
             postInfo: {
                 let text: String
                 if thread.beenSeen {

@@ -230,7 +230,7 @@ final class ThreadListCell: UITableViewCell {
             let pageIconWidth = pageIconHeight * PageIconView.aspectRatio
             pageIconFrame = CGRect(
                 x: pageCountFrame.maxX + Layout.pageCountRightMargin,
-                y: pageCountFrame.maxY - pageIconHeight - (pageCountFont.ascender - pageCountFont.capHeight),
+                y: pageCountFrame.minY + pageCountFont.ascender - pageIconHeight,
                 width: pageIconWidth,
                 height: pageIconHeight)
                 .pixelRound

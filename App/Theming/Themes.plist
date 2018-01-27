@@ -85,6 +85,8 @@
 			<string>#ffffff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#cccccc</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
@@ -180,6 +182,8 @@
 			<string>#333333</string>
 			<key>listSeparatorColor</key>
 			<string>#262626</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
@@ -269,6 +273,8 @@
 			<string>#ffffff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#cccccc</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
@@ -366,6 +372,8 @@
 			<string>#333333</string>
 			<key>listSeparatorColor</key>
 			<string>#262626</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
@@ -517,6 +525,8 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#68cc24</string>
+		<key>threadListPageIconColor</key>
+		<string>#000000</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#159933</string>
 		<key>postsViewCSS</key>
@@ -534,6 +544,8 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#888888</string>
+		<key>threadListPageIconColor</key>
+		<string>#000000</string>
 		<key>postsLoadingViewType</key>
 		<string>Macinyos</string>
 		<key>postsViewCSS</key>
@@ -551,6 +563,8 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#107f7f</string>
+		<key>threadListPageIconColor</key>
+		<string>#000000</string>
 		<key>postsLoadingViewType</key>
 		<string>Winpos95</string>
 		<key>postsViewCSS</key>
@@ -606,7 +620,7 @@
 		<key>Lists</key>
 		<dict>
 			<key>listSecondaryTextColor</key>
-			<string>#57FF57</string>
+			<string>#57ff57</string>
 			<key>listFontName</key>
 			<string>Courier</string>
 			<key>listBackgroundColor</key>
@@ -614,7 +628,9 @@
 			<key>listSelectedBackgroundColor</key>
 			<string>#333333</string>
 			<key>listTextColor</key>
-			<string>#57FF57</string>
+			<string>#57ff57</string>
+			<key>threadListPageIconColor</key>
+			<string>#57ff57</string>
 		</dict>
 		<key>Posts</key>
 		<dict>
@@ -698,6 +714,8 @@
 			<key>listSecondaryTextColor</key>
 			<string>#ebd04b</string>
 			<key>listTextColor</key>
+			<string>#ebd04b</string>
+			<key>threadListPageIconColor</key>
 			<string>#ebd04b</string>
 		</dict>
 		<key>Posts</key>
