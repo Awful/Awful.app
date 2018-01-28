@@ -372,8 +372,6 @@
 		1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */; };
 		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
 		1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B76A19C2374C00FDC33E /* Login.storyboard */; };
-		1CE55A701A10552600E474A6 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A6F1A10552600E474A6 /* DataSource.swift */; };
-		1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A771A10675700E474A6 /* FetchedDataSource.swift */; };
 		1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */; };
 		1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */; };
 		1CF0F8E01ED8F3CB00C16099 /* AuthorSidebarScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8DF1ED8F3CA00C16099 /* AuthorSidebarScrapeResult.swift */; };
@@ -389,6 +387,7 @@
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */; };
 		1CF264CA1F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */; };
+		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */; };
 		1CF7AB8C1EDB64F60089EF0C /* AuthorPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */; };
 		1CF7AB8E1EDB65AA0089EF0C /* PrivateMessagePersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB8D1EDB65AA0089EF0C /* PrivateMessagePersistence.swift */; };
@@ -981,8 +980,6 @@
 		1CE2B76619C2372200FDC33E /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		1CE55A6D1A0F77B800E474A6 /* Forum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Forum.swift; sourceTree = "<group>"; };
-		1CE55A6F1A10552600E474A6 /* DataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
-		1CE55A771A10675700E474A6 /* FetchedDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchedDataSource.swift; sourceTree = "<group>"; };
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
 		1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyPageScrapingTests.swift; sourceTree = "<group>"; };
 		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
@@ -1001,6 +998,7 @@
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar_FixiOS11iPadLayout.swift; sourceTree = "<group>"; };
 		1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBarController_FixiOS11iPadLayout.storyboard; sourceTree = "<group>"; };
+		1CF6786A201E751D009A9640 /* MessageListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDataSource.swift; sourceTree = "<group>"; };
 		1CF6BFE81A1FB21D006AE9FE /* AwfulManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulManagedObject.swift; sourceTree = "<group>"; };
 		1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapeResult.swift; sourceTree = "<group>"; };
 		1CF7AB8B1EDB64F60089EF0C /* AuthorPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorPersistence.swift; sourceTree = "<group>"; };
@@ -1314,9 +1312,7 @@
 		1C098AE519C6B38E0031C12A /* Tables */ = {
 			isa = PBXGroup;
 			children = (
-				1CE55A6F1A10552600E474A6 /* DataSource.swift */,
 				1C098AE619C6B3D10031C12A /* DynamicTypeTableViewCell.swift */,
-				1CE55A771A10675700E474A6 /* FetchedDataSource.swift */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -1961,6 +1957,7 @@
 			isa = PBXGroup;
 			children = (
 				1C42A2241FD46B4400F67BA1 /* ForumListDataSource.swift */,
+				1CF6786A201E751D009A9640 /* MessageListDataSource.swift */,
 				1C24BC97200A9BE00022C85F /* ThreadListDataSource.swift */,
 			);
 			path = "Data Sources";
@@ -3258,7 +3255,6 @@
 				1CB5F7F5201527550046D080 /* ThreadListCell.swift in Sources */,
 				1C25AC4B1F537A9600977D6F /* WebViewAntiHijacking.swift in Sources */,
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
-				1CE55A781A10675700E474A6 /* FetchedDataSource.swift in Sources */,
 				1C8D116719B4EEC6005D46CB /* MessageCell.swift in Sources */,
 				1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */,
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
@@ -3280,6 +3276,7 @@
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */,
+				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
@@ -3351,7 +3348,6 @@
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
-				1CE55A701A10552600E474A6 /* DataSource.swift in Sources */,
 				1C098AE719C6B3D10031C12A /* DynamicTypeTableViewCell.swift in Sources */,
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
 				1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */,
