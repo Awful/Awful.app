@@ -1077,7 +1077,11 @@ public final class ForumsClient {
             "delete": "yes"]
 
         return fetch(method: .post, urlString: "private.php", parameters: parameters)
-            .promise.asVoid()
+            .promise
+            .then(on: .global(), execute: parseHTML)
+            .then(on: .global()) { document, url -> Void in
+                try checkServerErrors(document)
+            }
     }
 
     public func readPrivateMessage(identifiedBy messageKey: PrivateMessageKey) -> Promise<PrivateMessage> {
