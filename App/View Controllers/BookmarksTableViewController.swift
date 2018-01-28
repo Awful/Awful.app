@@ -230,7 +230,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         undoManager.setActionName("Delete")
         
         thread.bookmarked = false
-        _ = ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
+
+        ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
             .catch { [weak self] (error) -> Void in
                 let alert = UIAlertController(networkError: error)
                 self?.present(alert, animated: true)
