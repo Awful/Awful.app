@@ -261,6 +261,7 @@ extension BookmarksTableViewController {
         let delete = UIContextualAction(style: .destructive, title: LocalizedString("thread-list.delete"), handler: { action, view, completion in
             guard let thread = self.dataSource?.thread(at: indexPath) else { return }
             self.setThread(thread, isBookmarked: false)
+            completion(true)
         })
         let config = UISwipeActionsConfiguration(actions: [delete])
         config.performsFirstActionWithFullSwipe = false
