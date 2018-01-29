@@ -6,7 +6,7 @@ import AwfulCore
 import CoreData
 import UIKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 @objc(MessageListViewController)
 final class MessageListViewController: TableViewController {
@@ -42,8 +42,6 @@ final class MessageListViewController: TableViewController {
         let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = LocalizedString("private-message-list.compose-button.accessibility-label")
         navigationItem.rightBarButtonItem = composeItem
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: nil)
     }
 
     required init(coder: NSCoder) {
@@ -53,18 +51,9 @@ final class MessageListViewController: TableViewController {
     private func makeDataSource() -> MessageListDataSource {
         let dataSource = try! MessageListDataSource(
             managedObjectContext: managedObjectContext,
-            tableView: tableView,
-            showsTag: AwfulSettings.shared().showThreadTags)
+            tableView: tableView)
         dataSource.deletionDelegate = self
         return dataSource
-    }
-    
-    @objc fileprivate func settingsDidChange(_ notification: Notification) {
-        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
-
-        if key == AwfulSettingsKeys.showThreadTags.takeUnretainedValue() as String, isViewLoaded {
-            dataSource = makeDataSource()
-        }
     }
     
     private var composeViewController: MessageComposeViewController?
@@ -76,6 +65,7 @@ final class MessageListViewController: TableViewController {
             compose.delegate = self
             composeViewController = compose
         }
+
         if let compose = composeViewController {
             present(compose.enclosingNavigationController, animated: true, completion: nil)
         }
@@ -96,7 +86,7 @@ final class MessageListViewController: TableViewController {
     @objc private func refresh() {
         startAnimatingPullToRefresh()
         
-        _ = ForumsClient.shared.listPrivateMessagesInInbox()
+        ForumsClient.shared.listPrivateMessagesInInbox()
             .then { (messages) -> Void in
                 RefreshMinder.sharedMinder.didRefresh(.privateMessagesInbox)
             }
@@ -134,13 +124,17 @@ final class MessageListViewController: TableViewController {
         }
     }
 
+    private func recalculateSeparatorInset() {
+        tableView.separatorInset.left = MessageListCell.separatorLeftInset(showsTagAndRating: AwfulSettings.shared().showThreadTags, inTableWithWidth: tableView.bounds.width)
+    }
+
     // MARK: View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.estimatedRowHeight = 65
-        tableView.separatorStyle = .none
+        recalculateSeparatorInset()
 
         dataSource = makeDataSource()
         tableView.reloadData()
@@ -154,6 +148,8 @@ final class MessageListViewController: TableViewController {
         super.themeDidChange()
         
         composeViewController?.themeDidChange()
+
+        tableView.separatorColor = theme["listSeparatorColor"]
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -165,19 +161,8 @@ final class MessageListViewController: TableViewController {
 
 // MARK: UITableViewDelegate
 extension MessageListViewController {
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        super.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
-        let cell = cell as! MessageCell
-        cell.backgroundColor = theme["listBackgroundColor"]
-        cell.senderLabel.textColor = theme["listTextColor"]
-        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.subheadline)
-        cell.senderLabel.font = UIFont.boldSystemFont(ofSize: descriptor.pointSize)
-        cell.dateLabel.textColor = theme["listTextColor"]
-        cell.subjectLabel.textColor = theme["listTextColor"]
-        cell.separator.backgroundColor = theme["listSeparatorColor"]
-        let selectedBackgroundView = UIView()
-        selectedBackgroundView.backgroundColor = theme["listSelectedBackgroundColor"]
-        cell.selectedBackgroundView = selectedBackgroundView
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return dataSource!.tableView(tableView, heightForRowAt: indexPath)
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -6,27 +6,25 @@ import AwfulCore
 import CoreData
 import UIKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 final class MessageListDataSource: NSObject {
     weak var deletionDelegate: MessageListDataSourceDeletionDelegate?
-    private let showsTag: Bool
     private let resultsController: NSFetchedResultsController<PrivateMessage>
     private let tableView: UITableView
 
-    init(managedObjectContext: NSManagedObjectContext, tableView: UITableView, showsTag: Bool) throws {
+    init(managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
         let fetchRequest = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName())
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(PrivateMessage.sentDate), ascending: false)]
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
 
-        self.showsTag = showsTag
         self.tableView = tableView
         super.init()
 
         try resultsController.performFetch()
 
         tableView.dataSource = self
-        tableView.register(UINib(nibName: "MessageCell", bundle: Bundle(for: MessageCell.self)), forCellReuseIdentifier: cellReuseIdentifier)
+        tableView.register(MessageListCell.self, forCellReuseIdentifier: cellReuseIdentifier)
 
         resultsController.delegate = self
 
@@ -42,7 +40,7 @@ final class MessageListDataSource: NSObject {
     }
 }
 
-private let cellReuseIdentifier = "Message"
+private let cellReuseIdentifier = "MessageCell"
 
 extension MessageListDataSource: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -84,43 +82,50 @@ extension MessageListDataSource: UITableViewDataSource {
         return resultsController.sections?.first?.numberOfObjects ?? 0
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as! MessageCell
-        let message = self.message(at: indexPath)
+    // Actually UITableViewDelegate
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let viewModel = viewModelForMessage(at: indexPath)
+        return MessageListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.bounds.width)
+    }
 
-        cell.showsTag = showsTag
-        if showsTag {
-            cell.tagImageView.image = message
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as! MessageListCell
+        cell.viewModel = viewModelForMessage(at: indexPath)
+        return cell
+    }
+
+    private func viewModelForMessage(at indexPath: IndexPath) -> MessageListCell.ViewModel {
+        let message = self.message(at: indexPath)
+        let theme = Theme.currentTheme
+        return MessageListCell.ViewModel(
+            backgroundColor: theme["listBackgroundColor"]!,
+            selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
+            sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
+                .font: UIFont.boldSystemFont(ofSize: UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.subheadline).pointSize),
+                .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
+            sentDate: message.sentDate ?? .distantPast,
+            sentDateAttributes: [
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
+                .foregroundColor: (theme["listTextColor"] as UIColor?)!],
+            subject: NSAttributedString(string: message.subject ?? "", attributes: [
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
+                .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
+            tagImage: message
                 .threadTag?
                 .imageName
-                .map { ThreadTagLoader.imageNamed($0) }
-                ?? ThreadTagLoader.emptyPrivateMessageImage
-        } else {
-            cell.tagImageView.image = nil
-        }
-
-        if message.replied {
-            cell.tagOverlayImageView.image = UIImage(named: "pmreplied.gif")
-        } else if message.forwarded {
-            cell.tagOverlayImageView.image = UIImage(named: "pmforwarded.gif")
-        } else if !message.seen {
-            cell.tagOverlayImageView.image = UIImage(named: "newpm.gif")
-        } else {
-            cell.tagOverlayImageView.image = nil
-        }
-
-        cell.senderLabel.text = message.fromUsername
-        let sentDateString = stringForSentDate(message.sentDate)
-        cell.dateLabel.text = sentDateString
-        cell.subjectLabel.text = message.subject
-
-        cell.accessibilityLabel = String(
-            format: LocalizedString("private-messages-list.message.accessibility-label"),
-            message.fromUsername ?? "",
-            message.subject ?? "",
-            sentDateString)
-
-        return cell
+                .flatMap { ThreadTagLoader.imageNamed($0) }
+                ?? ThreadTagLoader.emptyPrivateMessageImage,
+            tagOverlayImage: {
+                if message.replied {
+                    return UIImage(named: "pmreplied.gif")
+                } else if message.forwarded {
+                    return UIImage(named: "pmforwarded.gif")
+                } else if !message.seen {
+                    return UIImage(named: "newpm.gif")
+                } else {
+                    return nil
+                }
+        }())
     }
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
