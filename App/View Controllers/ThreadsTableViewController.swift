@@ -183,9 +183,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     // MARK: Notifications
     
     @objc private func settingsDidChange(_ notification: Notification) {
-        guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else {
-            return
-        }
+        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
 
         switch key {
         case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() as String as String where isViewLoaded:

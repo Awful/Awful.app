@@ -230,7 +230,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         undoManager.setActionName("Delete")
         
         thread.bookmarked = false
-        _ = ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
+
+        ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
             .catch { [weak self] (error) -> Void in
                 let alert = UIAlertController(networkError: error)
                 self?.present(alert, animated: true)
@@ -258,9 +259,10 @@ extension BookmarksTableViewController {
 
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let delete = UIContextualAction(style: .destructive, title: LocalizedString("thread-list.delete"), handler: { action, view, completion in
+        let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
             guard let thread = self.dataSource?.thread(at: indexPath) else { return }
             self.setThread(thread, isBookmarked: false)
+            completion(true)
         })
         let config = UISwipeActionsConfiguration(actions: [delete])
         config.performsFirstActionWithFullSwipe = false

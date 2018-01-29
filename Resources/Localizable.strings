@@ -4,6 +4,11 @@
   Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 */
 
+/* MARK: Generic */
+
+/* Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.) */
+"table-view.action.delete" = "Delete";
+
 /* MARK: Actions */
 
 /* Title of the share URL action for an announcement, post, or thread. */
@@ -33,9 +38,6 @@
 
 /* MARK: Thread list */
 
-/* Text of delete button shown in bookmarks list on iOS 11 after swiping on the cell. */
-"thread-list.delete" = "Delete";
-
 /* Text shown below title of thread when at least some of the thread has been read. Parameter is the username of the last poster. */
 "thread-list.killed-by" = "Killed by %@";
 
@@ -47,3 +49,24 @@
 
 /* Text shown below the title of the thread-to-be. Parameter is the name of the forum where this will be posted. */
 "compose.thread-preview.posting-in" = "Posting in %@";
+
+
+/* MARK: Private messages list */
+
+/* Title of alert shown when there's a problem deleting a private message from the list. */
+"private-messages-list.deletion-error.title" = "Could Not Delete Message";
+
+/* Text read by VoiceOver for a cell in the private messages list. Parameters are: 1. username of sender; 2. subject of message; 3. date message was sent. */
+"private-messages-list.message.accessibility-label" = "%1$@. %2$@. %3$@";
+
+/* Text read by VoiceOver for compose button in private messages list. */
+"private-message-list.compose-button.accessibility-label" = "Compose";
+
+/* Title of private message list, shown in navigation bar. */
+"private-message-list.title" = "Private Messages";
+
+/* Title of the private messages tab bar item. */
+"private-message-tab.title" = "Messages";
+
+/* Text read by VoiceOver for private messages tab bar item. */
+"private-message-tab.accessibility-label" = "Private messages";
