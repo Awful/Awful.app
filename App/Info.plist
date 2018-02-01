@@ -31,6 +31,21 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>Bars2_dark</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-Bars2_dark-20x20</string>
+					<string>AppIcon-Bars2_dark-29x29</string>
+					<string>AppIcon-Bars2_dark-40x40</string>
+					<string>AppIcon-Bars2_dark-60x60</string>
+					<string>AppIcon-Bars2_dark-76x76</string>
+					<string>AppIcon-Bars2_dark-83.5x83.5</string>
+					<string>AppIcon-Bars2_dark-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>five</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -117,6 +132,21 @@
 					<string>AppIcon-v-76x76</string>
 					<string>AppIcon-v-83.5x83.5</string>
 					<string>AppIcon-v-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>v_dark</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-v_dark-20x20</string>
+					<string>AppIcon-v_dark-29x29</string>
+					<string>AppIcon-v_dark-40x40</string>
+					<string>AppIcon-v_dark-60x60</string>
+					<string>AppIcon-v_dark-76x76</string>
+					<string>AppIcon-v_dark-83.5x83.5</string>
+					<string>AppIcon-v_dark-1024x1024</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
@@ -142,6 +172,21 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>Bars2_dark</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-Bars2_dark-20x20</string>
+					<string>AppIcon-Bars2_dark-29x29</string>
+					<string>AppIcon-Bars2_dark-40x40</string>
+					<string>AppIcon-Bars2_dark-60x60</string>
+					<string>AppIcon-Bars2_dark-76x76</string>
+					<string>AppIcon-Bars2_dark-83.5x83.5</string>
+					<string>AppIcon-Bars2_dark-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>five</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -228,6 +273,21 @@
 					<string>AppIcon-v-76x76</string>
 					<string>AppIcon-v-83.5x83.5</string>
 					<string>AppIcon-v-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>v_dark</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-v_dark-20x20</string>
+					<string>AppIcon-v_dark-29x29</string>
+					<string>AppIcon-v_dark-40x40</string>
+					<string>AppIcon-v_dark-60x60</string>
+					<string>AppIcon-v_dark-76x76</string>
+					<string>AppIcon-v_dark-83.5x83.5</string>
+					<string>AppIcon-v_dark-1024x1024</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
