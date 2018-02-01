@@ -303,6 +303,7 @@ final class SettingsViewController: TableViewController {
         if settingType == .AppIconPicker {
             guard let collection = (cell as! AppIconPickerCell).collection as UICollectionView? else { fatalError("setting should have collection view") }
             collection.awful_setting = setting["Key"] as? String
+            collection.backgroundColor = theme["listBackgroundColor"]
         }
         switch settingType {
         case .Button, .Disclosure, .DisclosureDetail:
