@@ -132,7 +132,7 @@ final class ForumsTableViewController: TableViewController {
         super.viewDidLoad()
 
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
-
+        tableView.restorationIdentifier = "Forums table"
         tableView.sectionFooterHeight = 0
         tableView.separatorInset.left = tableSeparatorLeftMargin
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
