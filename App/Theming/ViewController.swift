@@ -23,7 +23,7 @@ private func CommonInit(_ vc: UIViewController) {
 /**
     A thin customization of UIViewController that extends Theme support.
  
-    Instances call `themeDidChange()` after loading their view, and they call `themeDidChange()` on all child view controllers and on the presented view controller.
+    Instances call `themeDidChange()` after loading their view. `ViewController`'s implementation of `themeDidChange()` sets the view background color and updates the scroll view's indicator (if appropriate).
  */
 class ViewController: UIViewController, Themeable {
     override init(nibName: String?, bundle: Bundle?) {
@@ -42,7 +42,7 @@ class ViewController: UIViewController, Themeable {
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
-    fileprivate(set) var visible = false
+    private(set) var visible = false
     
     // MARK: View lifecycle
     
@@ -85,7 +85,7 @@ class ViewController: UIViewController, Themeable {
     Implements `UITableViewDelegate.tableView(_:willDisplayCell:forRowAtIndexPath:)`. If your subclass also implements this method, please call its superclass implementation at some point.
  */
 class TableViewController: UITableViewController, Themeable {
-    fileprivate var viewIsLoading = false
+    private var viewIsLoading = false
     
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
@@ -117,7 +117,7 @@ class TableViewController: UITableViewController, Themeable {
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
-    fileprivate(set) var visible = false
+    private(set) var visible = false
     
     /// A block to call when the table is pulled down to refresh. If nil, no refresh control is shown.
     var pullToRefreshBlock: (() -> Void)? {
@@ -132,7 +132,7 @@ class TableViewController: UITableViewController, Themeable {
         }
     }
     
-    fileprivate func createRefreshControl() {
+    private func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
         let niggly = NigglyRefreshView()
         niggly.bounds.size.height = niggly.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
@@ -150,7 +150,7 @@ class TableViewController: UITableViewController, Themeable {
         })
     }
     
-    fileprivate weak var pullToRefreshView: UIView?
+    private weak var pullToRefreshView: UIView?
     
     func startAnimatingPullToRefresh() {
         guard isViewLoaded else { return }
@@ -179,11 +179,11 @@ class TableViewController: UITableViewController, Themeable {
         }
     }
     
-    fileprivate enum InfiniteScrollState {
+    private enum InfiniteScrollState {
         case ready
         case loadingMore
     }
-    fileprivate var infiniteScrollState: InfiniteScrollState = .ready
+    private var infiniteScrollState: InfiniteScrollState = .ready
     
     func stopAnimatingInfiniteScroll() {
         infiniteScrollState = .ready
@@ -257,7 +257,7 @@ class TableViewController: UITableViewController, Themeable {
 
 /// A thin customization of UICollectionViewController that extends Theme support.
 class CollectionViewController: UICollectionViewController, Themeable {
-    fileprivate var viewIsLoading = false
+    private var viewIsLoading = false
     
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)

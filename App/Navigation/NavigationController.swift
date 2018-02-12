@@ -4,7 +4,14 @@
 
 import UIKit
 
-/// Adds theming support; hosts instances of NavigationBar and Toolbar; shows and hides the toolbar depending on whether the view controller has toolbar items; and, on iPhone, allows swiping from the *right* screen edge to unpop a view controller.
+/**
+ Navigation controller with special powers:
+
+ - Theming support.
+ - Custom navbar/toolbar classes `NavigationBar` and `Toolbar`, including after state restoration.
+ - Shows and hides the toolbar depending on whether the view controller has toolbar items.
+ - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
+ */
 final class NavigationController: UINavigationController, Themeable {
     fileprivate weak var realDelegate: UINavigationControllerDelegate?
     fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
@@ -19,7 +26,7 @@ final class NavigationController: UINavigationController, Themeable {
         super.init(nibName: nibName, bundle: bundle)
     }
     
-    init() {
+    required init() {
         super.init(navigationBarClass: NavigationBar.self, toolbarClass: Toolbar.self)
         restorationClass = type(of: self)
         delegate = self
@@ -101,7 +108,7 @@ final class NavigationController: UINavigationController, Themeable {
             unpopHandler?.viewControllers = viewControllers
         }
     }
-    
+
     // MARK: Delegate delegation
     
     override weak var delegate: UINavigationControllerDelegate? {

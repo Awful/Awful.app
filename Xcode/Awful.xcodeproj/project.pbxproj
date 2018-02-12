@@ -1317,7 +1317,6 @@
 				1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */,
 				1C9FDE5A16E9CF5A00C665B5 /* AwfulErrorDomain.m */,
 				1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */,
-				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1C4506C31A2BAB3800767306 /* Handoff.swift */,
 				1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */,
 				1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */,
@@ -2105,6 +2104,7 @@
 			children = (
 				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
 				1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */,
+				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */,
 				1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,

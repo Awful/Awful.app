@@ -85,12 +85,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         PostsViewExternalStylesheetLoader.shared.refreshIfNecessary()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(brightnessDidChange), name: NSNotification.Name.UIScreenBrightnessDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: .UIContentSizeCategoryDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(brightnessDidChange), name: .UIScreenBrightnessDidChange, object: nil)
         
         // Brightness may have changed since app was shut down
-        NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+        NotificationCenter.default.post(name: .UIScreenBrightnessDidChange, object: UIScreen.main)
 
         
         return true
@@ -106,7 +106,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         SmilieKeyboardSetIsAwfulAppActive(true)
         
         // Brightness may have changed while app was inactive
-        NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+        NotificationCenter.default.post(name: .UIScreenBrightnessDidChange, object: UIScreen.main)
         
         // Check clipboard for a forums URL
         checkClipboard()
@@ -124,7 +124,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         guard ForumsClient.shared.isLoggedIn else { return false }
         return coder.decodeInteger(forKey: interfaceVersionKey) == currentInterfaceVersion.rawValue
     }
-    
+
     func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
         guard let identifierComponents = identifierComponents as? [String] else { return nil }
         return rootViewControllerStack.viewControllerWithRestorationIdentifierPath(identifierComponents)
@@ -321,9 +321,6 @@ private extension AppDelegate {
             } else {
                 themeDidChange()
             }
-            
-            
-            
         } else if key == AwfulSettingsKeys.customBaseURL.takeUnretainedValue() as String {
             updateClientBaseURL()
         } else if key == AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String {
