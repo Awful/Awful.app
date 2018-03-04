@@ -5,6 +5,8 @@
 import PullToRefresh
 import UIKit
 
+private let Log = Logger.get()
+
 protocol Themeable {
 
     /// The current theme.
@@ -161,9 +163,11 @@ class TableViewController: UITableViewController, Themeable {
     }
     
     override var refreshControl: UIRefreshControl? {
-        // These were here to help migrate away from UIRefreshControl. Might as well leave them in to make sure we don't accidentally try something.
-        get { fatalError("use pullToRefreshView") }
-        set { fatalError("use pullToRefreshView") }
+        get { return super.refreshControl }
+        set {
+            Log.w("we usually use the custom refresh controller")
+            super.refreshControl = newValue
+        }
     }
     
     /// A block to call when the table is pulled up to load more content. If nil, no load more control is shown.
