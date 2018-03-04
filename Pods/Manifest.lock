@@ -84,7 +84,7 @@ DEPENDENCIES:
   - Crashlytics
   - FLAnimatedImage
   - GRMustache
-  - GRMustache.swift
+  - GRMustache.swift (from `https://github.com/chrisballinger/GRMustache.swift`, branch `feature/swift4`)
   - HTMLReader
   - ImgurAnonymousAPIClient
   - JLRoutes
@@ -98,6 +98,9 @@ DEPENDENCIES:
   - WebViewJavascriptBridge
 
 EXTERNAL SOURCES:
+  GRMustache.swift:
+    :branch: feature/swift4
+    :git: https://github.com/chrisballinger/GRMustache.swift
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
@@ -106,6 +109,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/MindSea/PullToRefresh
 
 CHECKOUT OPTIONS:
+  GRMustache.swift:
+    :commit: 2603bb12d67c312ef17ecc755cb40cd77bf386ad
+    :git: https://github.com/chrisballinger/GRMustache.swift
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
@@ -121,7 +127,7 @@ SPEC CHECKSUMS:
   Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
-  GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
+  GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
   HTMLReader: dd75279b0532ff5d005ffe1c6512e33d1d52f861
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
   JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
@@ -135,6 +141,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: e1441d1b7b60cbe86cdf8f141516697aecc72235
+PODFILE CHECKSUM: b5690e17e299fd6157d9f9d5b1a367319428a17a
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0
