@@ -3,7 +3,6 @@ XCODE_PROJECT = File.expand_path("../Xcode/Awful.xcodeproj")
 
 before_all do
   fastlane_version "2"
-  xcversion(version: "~> 9")
   
   DEFAULT_ENV = {
     "FL_BUILD_NUMBER_PROJECT" => XCODE_PROJECT,
