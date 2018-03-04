@@ -354,6 +354,22 @@
 		1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* Swift.swift */; };
 		1CC2EFC81F9BD96F0059EC95 /* IgnoreListFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC2EFC71F9BD96F0059EC95 /* IgnoreListFormTests.swift */; };
 		1CC2EFCA1F9BDC080059EC95 /* IgnoreListForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC2EFC91F9BDC080059EC95 /* IgnoreListForm.swift */; };
+		1CC362BC204C527700274E82 /* AppIcon-doggo-1024x1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362AC204C526E00274E82 /* AppIcon-doggo-1024x1024.png */; };
+		1CC362BD204C527700274E82 /* AppIcon-doggo-60x60.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362AD204C526F00274E82 /* AppIcon-doggo-60x60.png */; };
+		1CC362BE204C527700274E82 /* AppIcon-doggo-40x40.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362AE204C526F00274E82 /* AppIcon-doggo-40x40.png */; };
+		1CC362BF204C527700274E82 /* AppIcon-doggo-20x20@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362AF204C527000274E82 /* AppIcon-doggo-20x20@3x.png */; };
+		1CC362C0204C527700274E82 /* AppIcon-doggo-29x29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B0204C527000274E82 /* AppIcon-doggo-29x29@2x.png */; };
+		1CC362C1204C527700274E82 /* AppIcon-doggo-83.5x83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B1204C527100274E82 /* AppIcon-doggo-83.5x83.5@2x.png */; };
+		1CC362C2204C527700274E82 /* AppIcon-doggo-40x40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B2204C527100274E82 /* AppIcon-doggo-40x40@2x.png */; };
+		1CC362C3204C527700274E82 /* AppIcon-doggo-20x20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B3204C527200274E82 /* AppIcon-doggo-20x20.png */; };
+		1CC362C4204C527700274E82 /* AppIcon-doggo-29x29.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B4204C527200274E82 /* AppIcon-doggo-29x29.png */; };
+		1CC362C5204C527700274E82 /* AppIcon-doggo-76x76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B5204C527300274E82 /* AppIcon-doggo-76x76@2x.png */; };
+		1CC362C6204C527700274E82 /* AppIcon-doggo-60x60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B6204C527300274E82 /* AppIcon-doggo-60x60@2x.png */; };
+		1CC362C7204C527700274E82 /* AppIcon-doggo-29x29@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B7204C527400274E82 /* AppIcon-doggo-29x29@3x.png */; };
+		1CC362C8204C527700274E82 /* AppIcon-doggo-20x20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B8204C527400274E82 /* AppIcon-doggo-20x20@2x.png */; };
+		1CC362C9204C527700274E82 /* AppIcon-doggo-60x60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362B9204C527500274E82 /* AppIcon-doggo-60x60@3x.png */; };
+		1CC362CA204C527700274E82 /* AppIcon-doggo-76x76.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362BA204C527600274E82 /* AppIcon-doggo-76x76.png */; };
+		1CC362CB204C527700274E82 /* AppIcon-doggo-40x40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
 		1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */; };
 		1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */; };
@@ -990,6 +1006,22 @@
 		1CC256C01A3B154A003FA7A8 /* Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swift.swift; sourceTree = "<group>"; };
 		1CC2EFC71F9BD96F0059EC95 /* IgnoreListFormTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoreListFormTests.swift; sourceTree = "<group>"; };
 		1CC2EFC91F9BDC080059EC95 /* IgnoreListForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoreListForm.swift; sourceTree = "<group>"; };
+		1CC362AC204C526E00274E82 /* AppIcon-doggo-1024x1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-1024x1024.png"; sourceTree = "<group>"; };
+		1CC362AD204C526F00274E82 /* AppIcon-doggo-60x60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-60x60.png"; sourceTree = "<group>"; };
+		1CC362AE204C526F00274E82 /* AppIcon-doggo-40x40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-40x40.png"; sourceTree = "<group>"; };
+		1CC362AF204C527000274E82 /* AppIcon-doggo-20x20@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-20x20@3x.png"; sourceTree = "<group>"; };
+		1CC362B0204C527000274E82 /* AppIcon-doggo-29x29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-29x29@2x.png"; sourceTree = "<group>"; };
+		1CC362B1204C527100274E82 /* AppIcon-doggo-83.5x83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-83.5x83.5@2x.png"; sourceTree = "<group>"; };
+		1CC362B2204C527100274E82 /* AppIcon-doggo-40x40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-40x40@2x.png"; sourceTree = "<group>"; };
+		1CC362B3204C527200274E82 /* AppIcon-doggo-20x20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-20x20.png"; sourceTree = "<group>"; };
+		1CC362B4204C527200274E82 /* AppIcon-doggo-29x29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-29x29.png"; sourceTree = "<group>"; };
+		1CC362B5204C527300274E82 /* AppIcon-doggo-76x76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-76x76@2x.png"; sourceTree = "<group>"; };
+		1CC362B6204C527300274E82 /* AppIcon-doggo-60x60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-60x60@2x.png"; sourceTree = "<group>"; };
+		1CC362B7204C527400274E82 /* AppIcon-doggo-29x29@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-29x29@3x.png"; sourceTree = "<group>"; };
+		1CC362B8204C527400274E82 /* AppIcon-doggo-20x20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-20x20@2x.png"; sourceTree = "<group>"; };
+		1CC362B9204C527500274E82 /* AppIcon-doggo-60x60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-60x60@3x.png"; sourceTree = "<group>"; };
+		1CC362BA204C527600274E82 /* AppIcon-doggo-76x76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-76x76.png"; sourceTree = "<group>"; };
+		1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-40x40@3x.png"; sourceTree = "<group>"; };
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
@@ -1658,7 +1690,6 @@
 		1C502D011F816BAF001890AF /* Bars2 */ = {
 			isa = PBXGroup;
 			children = (
-				1C502D021F816BAF001890AF /* AppIcon-Bars2-1024x1024.png */,
 				1C502D031F816BAF001890AF /* AppIcon-Bars2-20x20.png */,
 				1C502D041F816BAF001890AF /* AppIcon-Bars2-20x20@2x.png */,
 				1C502D051F816BAF001890AF /* AppIcon-Bars2-20x20@3x.png */,
@@ -1674,6 +1705,7 @@
 				1C502D0F1F816BAF001890AF /* AppIcon-Bars2-76x76.png */,
 				1C502D101F816BAF001890AF /* AppIcon-Bars2-76x76@2x.png */,
 				1C502D111F816BAF001890AF /* AppIcon-Bars2-83.5x83.5@2x.png */,
+				1C502D021F816BAF001890AF /* AppIcon-Bars2-1024x1024.png */,
 			);
 			path = Bars2;
 			sourceTree = "<group>";
@@ -1681,15 +1713,16 @@
 		1C5B83181F74ADB200BE7517 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
-				7BF090162022C7570060BDC8 /* Bars2_dark */,
-				7BF090052022C7570060BDC8 /* v_dark */,
-				7BF3A5E11F92FA86009F8603 /* ghost */,
-				7BF3A5F21F92FA86009F8603 /* greenface */,
 				1C502D011F816BAF001890AF /* Bars2 */,
+				7BF090162022C7570060BDC8 /* Bars2_dark */,
+				1CC362AB204C510A00274E82 /* doggo */,
 				1C502CDF1F816ADF001890AF /* five */,
 				1C502CF01F816B44001890AF /* getout */,
+				7BF3A5E11F92FA86009F8603 /* ghost */,
+				7BF3A5F21F92FA86009F8603 /* greenface */,
 				1C502CCE1F816A0B001890AF /* staredog */,
 				1C5B83381F74B1E800BE7517 /* v */,
+				7BF090052022C7570060BDC8 /* v_dark */,
 			);
 			path = "App Icons";
 			sourceTree = "<group>";
@@ -1945,6 +1978,29 @@
 				1CC2EFC71F9BD96F0059EC95 /* IgnoreListFormTests.swift */,
 			);
 			name = Client;
+			sourceTree = "<group>";
+		};
+		1CC362AB204C510A00274E82 /* doggo */ = {
+			isa = PBXGroup;
+			children = (
+				1CC362B3204C527200274E82 /* AppIcon-doggo-20x20.png */,
+				1CC362B8204C527400274E82 /* AppIcon-doggo-20x20@2x.png */,
+				1CC362AF204C527000274E82 /* AppIcon-doggo-20x20@3x.png */,
+				1CC362B4204C527200274E82 /* AppIcon-doggo-29x29.png */,
+				1CC362B0204C527000274E82 /* AppIcon-doggo-29x29@2x.png */,
+				1CC362B7204C527400274E82 /* AppIcon-doggo-29x29@3x.png */,
+				1CC362AE204C526F00274E82 /* AppIcon-doggo-40x40.png */,
+				1CC362B2204C527100274E82 /* AppIcon-doggo-40x40@2x.png */,
+				1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */,
+				1CC362AD204C526F00274E82 /* AppIcon-doggo-60x60.png */,
+				1CC362B6204C527300274E82 /* AppIcon-doggo-60x60@2x.png */,
+				1CC362B9204C527500274E82 /* AppIcon-doggo-60x60@3x.png */,
+				1CC362BA204C527600274E82 /* AppIcon-doggo-76x76.png */,
+				1CC362B5204C527300274E82 /* AppIcon-doggo-76x76@2x.png */,
+				1CC362B1204C527100274E82 /* AppIcon-doggo-83.5x83.5@2x.png */,
+				1CC362AC204C526E00274E82 /* AppIcon-doggo-1024x1024.png */,
+			);
+			path = doggo;
 			sourceTree = "<group>";
 		};
 		1CC7801D1612D988002AF958 /* Networking */ = {
@@ -2671,12 +2727,14 @@
 				7BF0902C2022C7570060BDC8 /* AppIcon-v_dark-60x60.png in Resources */,
 				7BF090312022C7570060BDC8 /* AppIcon-v_dark-29x29@2x.png in Resources */,
 				1C502D371F817004001890AF /* AppIcon-getout-29x29@2x.png in Resources */,
+				1CC362BD204C527700274E82 /* AppIcon-doggo-60x60.png in Resources */,
 				7B502E2C1F25140F00B1B305 /* platinum-member@2x.png in Resources */,
 				7BF0903F2022C7570060BDC8 /* AppIcon-Bars2_dark-60x60@3x.png in Resources */,
 				1C502D231F816FFC001890AF /* AppIcon-five-20x20.png in Resources */,
 				7B502E2D1F25140F00B1B305 /* platinum-member@3x.png in Resources */,
 				1C502D411F817005001890AF /* AppIcon-getout-83.5x83.5@2x.png in Resources */,
 				7B502E261F2513B400B1B305 /* post-dots@2x.png in Resources */,
+				1CC362C4204C527700274E82 /* AppIcon-doggo-29x29.png in Resources */,
 				1C502D1F1F816FF3001890AF /* AppIcon-Bars2-76x76.png in Resources */,
 				7B502E271F2513B400B1B305 /* post-dots@3x.png in Resources */,
 				1C502D3E1F817005001890AF /* AppIcon-getout-60x60@3x.png in Resources */,
@@ -2702,12 +2760,14 @@
 				1C502D501F817010001890AF /* AppIcon-staredog-76x76@2x.png in Resources */,
 				1C502D321F817004001890AF /* AppIcon-getout-1024x1024.png in Resources */,
 				1C502D341F817004001890AF /* AppIcon-getout-20x20@2x.png in Resources */,
+				1CC362C5204C527700274E82 /* AppIcon-doggo-76x76@2x.png in Resources */,
 				1C502D4D1F817010001890AF /* AppIcon-staredog-60x60@2x.png in Resources */,
 				7BF090322022C7570060BDC8 /* AppIcon-v_dark-40x40.png in Resources */,
 				1C5B834F1F74B1F200BE7517 /* AppIcon-v-29x29@3x.png in Resources */,
 				1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */,
 				8C8FA48119AD7CA300B67AAA /* image-coder.png in Resources */,
 				1C502D291F816FFC001890AF /* AppIcon-five-40x40.png in Resources */,
+				1CC362C1204C527700274E82 /* AppIcon-doggo-83.5x83.5@2x.png in Resources */,
 				8C8FA47E19AD7CA300B67AAA /* award.png in Resources */,
 				1C0AFAE31ECA96E6002D4003 /* posts-view-alternate.css in Resources */,
 				7BF3A6031F92FA86009F8603 /* AppIcon-ghost-20x20.png in Resources */,
@@ -2718,6 +2778,7 @@
 				7BF0903D2022C7570060BDC8 /* AppIcon-Bars2_dark-29x29@3x.png in Resources */,
 				7BF3A61C1F92FA86009F8603 /* AppIcon-greenface-29x29@3x.png in Resources */,
 				1C5B83571F74B1F200BE7517 /* AppIcon-v-76x76@2x.png in Resources */,
+				1CC362C7204C527700274E82 /* AppIcon-doggo-29x29@3x.png in Resources */,
 				1C502D281F816FFC001890AF /* AppIcon-five-29x29@3x.png in Resources */,
 				1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */,
 				1C502D2D1F816FFC001890AF /* AppIcon-five-60x60@2x.png in Resources */,
@@ -2774,6 +2835,7 @@
 				1C8E10441914AA730010007B /* profile.css in Resources */,
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
+				1CC362C8204C527700274E82 /* AppIcon-doggo-20x20@2x.png in Resources */,
 				1C5B834B1F74B1F200BE7517 /* AppIcon-v-20x20@2x.png in Resources */,
 				7BF090412022C7570060BDC8 /* AppIcon-Bars2_dark-20x20.png in Resources */,
 				1C502D441F817010001890AF /* AppIcon-staredog-20x20@2x.png in Resources */,
@@ -2792,6 +2854,7 @@
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				7BF090452022C7570060BDC8 /* AppIcon-Bars2_dark-60x60.png in Resources */,
 				7BF3A6111F92FA86009F8603 /* AppIcon-ghost-29x29@3x.png in Resources */,
+				1CC362BC204C527700274E82 /* AppIcon-doggo-1024x1024.png in Resources */,
 				1C502D2E1F816FFC001890AF /* AppIcon-five-60x60@3x.png in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C89FAF41CAA0F4200640F3D /* widgets.js in Resources */,
@@ -2809,11 +2872,14 @@
 				1C502D241F816FFC001890AF /* AppIcon-five-20x20@2x.png in Resources */,
 				1C5B834C1F74B1F200BE7517 /* AppIcon-v-20x20@3x.png in Resources */,
 				1C502D181F816FF3001890AF /* AppIcon-Bars2-29x29@3x.png in Resources */,
+				1CC362C0204C527700274E82 /* AppIcon-doggo-29x29@2x.png in Resources */,
 				1C5B834E1F74B1F200BE7517 /* AppIcon-v-29x29@2x.png in Resources */,
 				1C502D171F816FF3001890AF /* AppIcon-Bars2-29x29@2x.png in Resources */,
 				1C502D1D1F816FF3001890AF /* AppIcon-Bars2-60x60@2x.png in Resources */,
 				1C502D3A1F817004001890AF /* AppIcon-getout-40x40@2x.png in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
+				1CC362C3204C527700274E82 /* AppIcon-doggo-20x20.png in Resources */,
+				1CC362BF204C527700274E82 /* AppIcon-doggo-20x20@3x.png in Resources */,
 				7BF090432022C7570060BDC8 /* AppIcon-Bars2_dark-40x40@3x.png in Resources */,
 				8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */,
 				7BF3A61F1F92FA86009F8603 /* AppIcon-greenface-20x20@2x.png in Resources */,
@@ -2848,11 +2914,15 @@
 				1C5B83511F74B1F200BE7517 /* AppIcon-v-40x40@2x.png in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				7BF3A6211F92FA86009F8603 /* AppIcon-greenface-20x20@3x.png in Resources */,
+				1CC362BE204C527700274E82 /* AppIcon-doggo-40x40.png in Resources */,
 				1C9FDE6216EA030800C665B5 /* newpm.gif in Resources */,
 				1C9FDE6316EA030800C665B5 /* pmforwarded.gif in Resources */,
+				1CC362C6204C527700274E82 /* AppIcon-doggo-60x60@2x.png in Resources */,
 				7BF090382022C7570060BDC8 /* AppIcon-Bars2_dark-76x76@2x.png in Resources */,
+				1CC362CB204C527700274E82 /* AppIcon-doggo-40x40@3x.png in Resources */,
 				1C5B834D1F74B1F200BE7517 /* AppIcon-v-29x29.png in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
+				1CC362C2204C527700274E82 /* AppIcon-doggo-40x40@2x.png in Resources */,
 				7BF090352022C7570060BDC8 /* AppIcon-v_dark-29x29@3x.png in Resources */,
 				1CA887AB1F3954550059FEEC /* Announcement.mustache in Resources */,
 				1CA887AD1F3958F00059FEEC /* Announcement.js in Resources */,
@@ -2867,6 +2937,7 @@
 				1C9FDE6416EA030800C665B5 /* pmreplied.gif in Resources */,
 				1C502D131F816FF3001890AF /* AppIcon-Bars2-20x20.png in Resources */,
 				7BF090342022C7570060BDC8 /* AppIcon-v_dark-60x60@3x.png in Resources */,
+				1CC362CA204C527700274E82 /* AppIcon-doggo-76x76.png in Resources */,
 				7BF3A61D1F92FA86009F8603 /* AppIcon-greenface-60x60@3x.png in Resources */,
 				1C502D1E1F816FF3001890AF /* AppIcon-Bars2-60x60@3x.png in Resources */,
 				1C502D301F816FFC001890AF /* AppIcon-five-76x76@2x.png in Resources */,
@@ -2897,6 +2968,7 @@
 				1C7C60BC18FC9EF5009BF4BB /* PrivateMessage.mustache in Resources */,
 				7BF3A6151F92FA86009F8603 /* AppIcon-greenface-40x40.png in Resources */,
 				8C8FA48019AD7CA300B67AAA /* ik.png in Resources */,
+				1CC362C9204C527700274E82 /* AppIcon-doggo-60x60@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

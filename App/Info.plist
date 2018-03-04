@@ -46,6 +46,21 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>doggo</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-doggo-20x20</string>
+					<string>AppIcon-doggo-29x29</string>
+					<string>AppIcon-doggo-40x40</string>
+					<string>AppIcon-doggo-60x60</string>
+					<string>AppIcon-doggo-76x76</string>
+					<string>AppIcon-doggo-83.5x83.5</string>
+					<string>AppIcon-doggo-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>five</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -183,6 +198,21 @@
 					<string>AppIcon-Bars2_dark-76x76</string>
 					<string>AppIcon-Bars2_dark-83.5x83.5</string>
 					<string>AppIcon-Bars2_dark-1024x1024</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>doggo</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-doggo-20x20</string>
+					<string>AppIcon-doggo-29x29</string>
+					<string>AppIcon-doggo-40x40</string>
+					<string>AppIcon-doggo-60x60</string>
+					<string>AppIcon-doggo-76x76</string>
+					<string>AppIcon-doggo-83.5x83.5</string>
+					<string>AppIcon-doggo-1024x1024</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
