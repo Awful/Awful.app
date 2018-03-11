@@ -86,7 +86,7 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
         if progress.isCancelled {
             completion(nil, NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil))
         } else {
-            completion(urls.flatMap { $0 }, nil)
+            completion(urls.compactMap { $0 }, nil)
         }
     }
     

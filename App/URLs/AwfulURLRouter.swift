@@ -187,7 +187,7 @@ final class AwfulURLRouter: NSObject {
      */
     func route(_ url: URL) -> Bool {
         guard url.scheme?.caseInsensitiveCompare("awful") == .orderedSame else { return false }
-        return routes.routeURL(url as URL!)
+        return routes.routeURL(url)
     }
     
     fileprivate func jumpToForum(_ forum: Forum) -> Bool {

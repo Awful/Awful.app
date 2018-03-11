@@ -60,7 +60,7 @@ private func findModelIdentifier() throws -> String {
 
     let bufferSize = Int(size) + 1
     let buffer = UnsafeMutablePointer<CChar>.allocate(capacity: bufferSize)
-    defer { buffer.deallocate(capacity: bufferSize) }
+    defer { buffer.deallocate() }
 
     guard sysctlbyname("hw.machine", buffer, &size, nil, 0) == 0 else {
         throw ModelIdentifierError.failedToRetrieveModelIdentifier

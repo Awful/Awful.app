@@ -117,7 +117,7 @@ class InAppActionCollectionViewLayout: UICollectionViewLayout {
         return allAttributes.filter { rect.intersects($0.frame) }
     }
     
-    override func layoutAttributesForItem(at indexPath: IndexPath) -> (UICollectionViewLayoutAttributes!) {
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         return allAttributes[(indexPath as NSIndexPath).item]
     }
     

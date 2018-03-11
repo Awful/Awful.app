@@ -230,7 +230,7 @@ final class ThreadTagLoader: NSObject {
         guard let shippedThreadTagFolder = Bundle(for: ThreadTagLoader.self).resourceURL?.appendingPathComponent(resourceSubfolder, isDirectory: true) else { return placeholderImageNames }
         do {
             let URLs = try FileManager.default.contentsOfDirectory(at: shippedThreadTagFolder, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
-            return URLs.flatMap { $0.lastPathComponent } + placeholderImageNames
+            return URLs.compactMap { $0.lastPathComponent } + placeholderImageNames
         } catch {
             print("\(#function) error listing shipped thread tags: \(error)")
             return placeholderImageNames
@@ -240,7 +240,7 @@ final class ThreadTagLoader: NSObject {
     fileprivate var cachedThreadTagImageNames: [String] {
         do {
             let URLs = try FileManager.default.contentsOfDirectory(at: cacheFolder, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
-            return URLs.flatMap { $0.lastPathComponent }
+            return URLs.compactMap { $0.lastPathComponent }
         } catch {
             print("\(#function) error listing cached thread tags: \(error)")
             return []

@@ -23,7 +23,7 @@ internal extension PrivateMessageFolderScrapeResult {
         do {
             let request = NSFetchRequest<ThreadTag>(entityName: ThreadTag.entityName())
             let imageNames = self.messages
-                .flatMap { $0.iconImage }
+                .compactMap { $0.iconImage }
                 .map { $0.deletingPathExtension().lastPathComponent }
             request.predicate = NSPredicate(format: "%K IN %@", #keyPath(ThreadTag.imageName), imageNames)
             request.returnsObjectsAsFaults = false

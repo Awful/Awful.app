@@ -19,7 +19,7 @@ final class PostIconListScrapingTests: XCTestCase {
         XCTAssertEqual(result.selectedSecondaryIconFormName, "tma_ama")
 
         let secondaryImageNames = result.secondaryIcons
-            .flatMap { $0.url }
+            .compactMap { $0.url }
             .map(ThreadTag.imageName)
             .sorted()
         XCTAssertEqual(secondaryImageNames, ["ama", "tma"])
@@ -31,7 +31,7 @@ final class PostIconListScrapingTests: XCTestCase {
         XCTAssertEqual(result.selectedSecondaryIconFormName, "samart_tag")
 
         let secondaryImageNames = result.secondaryIcons
-            .flatMap { $0.url }
+            .compactMap { $0.url }
             .map(ThreadTag.imageName)
             .sorted()
         XCTAssertEqual(secondaryImageNames, ["icon-37-selling", "icon-38-buying", "icon-46-trading", "icon-52-trading"])

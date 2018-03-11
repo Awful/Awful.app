@@ -157,8 +157,8 @@ final class ThreadComposeViewController: ComposeTextViewController {
                 sself.availableSecondaryThreadTags = tags.secondary
                 guard let tags = sself.availableThreadTags else { return }
 
-                let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.flatMap { $0.imageName }
-                let secondaryImageNames = sself.availableSecondaryThreadTags?.flatMap { $0.imageName }
+                let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.compactMap { $0.imageName }
+                let secondaryImageNames = sself.availableSecondaryThreadTags?.compactMap { $0.imageName }
                 let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: secondaryImageNames)
                 sself.threadTagPicker = picker
                 picker.delegate = sself

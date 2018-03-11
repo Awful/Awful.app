@@ -93,7 +93,7 @@ final class MessageComposeViewController: ComposeTextViewController {
             .then { [weak self] (threadTags) -> Void in
                 self?.availableThreadTags = threadTags
 
-                let imageNames = [ThreadTagLoader.emptyPrivateMessageImageName] + threadTags.flatMap { $0.imageName }
+                let imageNames = [ThreadTagLoader.emptyPrivateMessageImageName] + threadTags.compactMap { $0.imageName }
                 let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: nil)
                 picker.delegate = self
                 picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem

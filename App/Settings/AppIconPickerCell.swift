@@ -67,7 +67,7 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
         let oldSelectedIndexPath = appIcons
             .index { $0.iconName == previousSelection }
             .map { IndexPath(item: $0, section: 0) }
-        let reloadIndexPaths = [indexPath, oldSelectedIndexPath].flatMap { $0 }
+        let reloadIndexPaths = [indexPath, oldSelectedIndexPath].compactMap { $0 }
         collectionView.reloadItems(at: reloadIndexPaths)
     }
 }
@@ -117,9 +117,9 @@ private func findAppIcons() -> [AppIcon] {
 
     let alternates = icons["CFBundleAlternateIcons"] as? [String: Any] ?? [:]
     let alternateFilenames = alternates.values
-        .flatMap { (value: Any) -> [String: Any]? in value as? [String: Any] }
-        .flatMap { (dict: [String: Any]) -> [String]? in dict["CFBundleIconFiles"] as? [String] }
-        .flatMap { (files: [String]) -> String? in files.first(where: filenameContainsHandySize) }
+        .compactMap { (value: Any) -> [String: Any]? in value as? [String: Any] }
+        .compactMap { (dict: [String: Any]) -> [String]? in dict["CFBundleIconFiles"] as? [String] }
+        .compactMap { (files: [String]) -> String? in files.first(where: filenameContainsHandySize) }
         .sorted { (lhs: String, rhs: String) -> Bool in lhs.caseInsensitiveCompare(rhs) == .orderedAscending }
 
     var filenames = [primaryFilename]

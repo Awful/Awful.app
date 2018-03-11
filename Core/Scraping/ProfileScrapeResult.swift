@@ -109,7 +109,7 @@ public struct ProfileScrapeResult: ScrapeResult {
 
             let remainingInfo = additionalList?
                 .children
-                .flatMap { $0 as? HTMLElement }
+                .compactMap { $0 as? HTMLElement }
                 .dropFirst(8)
             var remainingDict: [String: String] = [:]
             var remainingIterator = (remainingInfo ?? []).makeIterator()

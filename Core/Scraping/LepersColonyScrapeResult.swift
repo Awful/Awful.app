@@ -63,7 +63,7 @@ public struct LepersColonyScrapeResult: ScrapeResult {
 
     public init(_ html: HTMLNode, url: URL?) throws {
         let table = try html.requiredNode(matchingSelector: "table.standard")
-        punishments = table.nodes(matchingSelector: "tr").flatMap { try? Punishment($0) }
+        punishments = table.nodes(matchingSelector: "tr").compactMap { try? Punishment($0) }
     }
 }
 

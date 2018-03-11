@@ -17,7 +17,7 @@ public struct PostIconListScrapeResult: ScrapeResult {
             throw ScrapingError.missingExpectedElement("div.posticon")
         }
 
-        primaryIcons = primaryDivs.flatMap { try? PostIcon(div: $0) }
+        primaryIcons = primaryDivs.compactMap { try? PostIcon(div: $0) }
 
         selectedPrimaryIconFormName = try primaryDivs.first!
             .requiredNode(matchingSelector: "input[name]")["name"]!
@@ -30,7 +30,7 @@ public struct PostIconListScrapeResult: ScrapeResult {
             return
         }
 
-        secondaryIcons = zip(secondaryInputs, secondaryImages).flatMap {
+        secondaryIcons = zip(secondaryInputs, secondaryImages).compactMap {
             try? PostIcon(input: $0, image: $1)
         }
 

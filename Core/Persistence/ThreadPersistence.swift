@@ -9,8 +9,8 @@ internal extension ThreadListScrapeResult {
         let (group: _, forums: forums) = try breadcrumbs?.upsert(into: context) ?? (nil, [])
         let forum = forums.last
 
-        let icons = self.threads.flatMap { $0.icon }
-            + self.threads.flatMap { $0.secondaryIcon }
+        let icons = self.threads.compactMap { $0.icon }
+            + self.threads.compactMap { $0.secondaryIcon }
             + self.filterableIcons
         let iconHelper = PostIconPersistenceHelper(context: context, icons: icons)
         try iconHelper.performFetch()
@@ -22,7 +22,7 @@ internal extension ThreadListScrapeResult {
         var users: [UserID: User] = [:]
         do {
             let request = NSFetchRequest<User>(entityName: User.entityName())
-            let userIDs = self.threads.flatMap { $0.author?.rawValue }
+            let userIDs = self.threads.compactMap { $0.author?.rawValue }
             request.predicate = NSPredicate(format: "%K IN %@", #keyPath(User.userID), userIDs)
             request.returnsObjectsAsFaults = false
 

@@ -79,7 +79,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
         filterableIcons = body
             .firstNode(matchingSelector: "div.thread_tags")
             .map { $0.nodes(matchingSelector: "a[href*='posticon']") }
-            .map { links in return links.flatMap { try? PostIcon($0) } }
+            .map { links in return links.compactMap { try? PostIcon($0) } }
             ?? []
 
         forum = (body["data-forum"] as String?)

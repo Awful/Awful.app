@@ -75,7 +75,7 @@ public final class ForumsClient {
 
         context.perform {
             updatedObjectIDs
-                .flatMap { context.object(with: $0) }
+                .compactMap { context.object(with: $0) }
                 .forEach { $0.willAccessValue(forKey: nil) }
 
             context.mergeChanges(fromContextDidSave: notification)
@@ -194,7 +194,7 @@ public final class ForumsClient {
                 return forums.map { $0.objectID }
             }
             .then(on: mainContext) { objectIDs, context -> [Forum] in
-                return objectIDs.flatMap { context.object(with: $0) as? Forum }
+                return objectIDs.compactMap { context.object(with: $0) as? Forum }
         }
     }
 
@@ -237,7 +237,7 @@ public final class ForumsClient {
                 return threads.map { $0.objectID }
             }
             .then(on: mainContext) { objectIDs, context -> [AwfulThread] in
-                return objectIDs.flatMap { context.object(with: $0) as? AwfulThread }
+                return objectIDs.compactMap { context.object(with: $0) as? AwfulThread }
         }
     }
 
@@ -275,7 +275,7 @@ public final class ForumsClient {
                 return threads.map { $0.objectID }
             }
             .then(on: mainContext) { objectIDs, context -> [AwfulThread] in
-                return objectIDs.flatMap { context.object(with: $0) as? AwfulThread }
+                return objectIDs.compactMap { context.object(with: $0) as? AwfulThread }
         }
     }
 
@@ -359,8 +359,8 @@ public final class ForumsClient {
             }
             .then(on: mainContext) { objectIDs, context -> (primary: [ThreadTag], secondary: [ThreadTag]) in
                 return (
-                    primary: objectIDs.primary.flatMap { context.object(with: $0) as? ThreadTag },
-                    secondary: objectIDs.secondary.flatMap { context.object(with: $0) as? ThreadTag })
+                    primary: objectIDs.primary.compactMap { context.object(with: $0) as? ThreadTag },
+                    secondary: objectIDs.secondary.compactMap { context.object(with: $0) as? ThreadTag })
         }
     }
 
@@ -523,7 +523,7 @@ public final class ForumsClient {
                 return announcements.map { $0.objectID }
             }
             .then(on: mainContext) { objectIDs, context -> [Announcement] in
-                return objectIDs.flatMap { context.object(with: $0) as? Announcement }
+                return objectIDs.compactMap { context.object(with: $0) as? Announcement }
         }
 
         return (promise: result, cancellable: cancellable)
@@ -592,7 +592,7 @@ public final class ForumsClient {
                 return posts.map { $0.objectID }
             }
             .then(on: mainContext) { objectIDs, context -> [Post] in
-                return objectIDs.flatMap { context.object(with: $0) as? Post }
+                return objectIDs.compactMap { context.object(with: $0) as? Post }
             }
 
         let firstUnreadPostIndex = promise
@@ -1066,7 +1066,7 @@ public final class ForumsClient {
                 return messages.map { $0.objectID }
             }
             .then(on: mainContext) { (objectIDs, context) -> [PrivateMessage] in
-                return objectIDs.flatMap { context.object(with: $0) as? PrivateMessage }
+                return objectIDs.compactMap { context.object(with: $0) as? PrivateMessage }
         }
     }
 
@@ -1145,7 +1145,7 @@ public final class ForumsClient {
                 return managed.primary.map { $0.objectID }
             }
             .then(on: mainContext) { managedObjectIDs, context -> [ThreadTag] in
-                return managedObjectIDs.flatMap { context.object(with: $0) as? ThreadTag }
+                return managedObjectIDs.compactMap { context.object(with: $0) as? ThreadTag }
         }
     }
 

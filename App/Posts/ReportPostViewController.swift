@@ -96,7 +96,7 @@ final class ReportPostViewController: ViewController {
         rootView.instructionLabel.textColor = theme["listTextColor"] as UIColor?
         rootView.commentTextField.textColor = theme["listTextColor"] as UIColor?
         rootView.commentTextField.attributedPlaceholder = NSAttributedString(string: "Optional comment", attributes: [
-            .foregroundColor: theme["placeholderTextColor"] as UIColor!])
+            .foregroundColor: theme["placeholderTextColor"] as UIColor? ?? .black])
     }
     
     override func viewWillAppear(_ animated: Bool) {

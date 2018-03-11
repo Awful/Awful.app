@@ -319,7 +319,7 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
 extension ForumListDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return resultsControllers
-            .flatMap { $0.sections?.count }
+            .compactMap { $0.sections?.count }
             .reduce(0, +)
     }
     

@@ -33,7 +33,7 @@ public struct PrivateMessageFolderScrapeResult: ScrapeResult {
 
         allFolders = folderDropdown?
             .nodes(matchingSelector: "option[value]")
-            .flatMap { try? Folder($0) }
+            .compactMap { try? Folder($0) }
             ?? []
 
         folder = folderDropdown
@@ -47,7 +47,7 @@ public struct PrivateMessageFolderScrapeResult: ScrapeResult {
 
         messages = try html.requiredNode(matchingSelector: "table.standard")
             .nodes(matchingSelector: "tbody tr")
-            .flatMap { try? Message($0) }
+            .compactMap { try? Message($0) }
     }
 }
 

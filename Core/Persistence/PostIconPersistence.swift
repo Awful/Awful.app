@@ -40,7 +40,7 @@ internal class PostIconPersistenceHelper {
             .map { $0.id }
             .filter { !$0.isEmpty }
         let imageNames = icons
-            .flatMap { $0.url }
+            .compactMap { $0.url }
             .map(ThreadTag.imageName)
             .filter { !$0.isEmpty }
         request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [

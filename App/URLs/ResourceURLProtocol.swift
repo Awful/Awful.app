@@ -34,7 +34,7 @@ final class ResourceURLProtocol: URLProtocol {
         let possibleResourceURLs = resource
             .pathsForScreenWithScale(UIScreen.main.scale)
             .map { Bundle.main.url(forResource: $0, withExtension: nil) }
-            .flatMap { $0 }
+            .compactMap { $0 }
         
         guard let resourceURL = possibleResourceURLs.first else {
             print("Could not find resource for URL \(URL)")

@@ -51,7 +51,7 @@ internal extension ForumBreadcrumbsScrapeResult {
             unorderedForums[rawForum.id] = forum
         }
 
-        let forums = rawForums.flatMap { (raw) -> Forum? in
+        let forums = rawForums.compactMap { (raw) -> Forum? in
             let forum = unorderedForums[raw.id]
             if let forum = forum { raw.update(forum) }
             return forum

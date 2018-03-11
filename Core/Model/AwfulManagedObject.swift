@@ -62,8 +62,8 @@ public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
                 return false
             }
             for key in keys {
-                let otherValue = other.value(forKey: key) as! NSObject!
-                let value = self.value(forKey: key) as! NSObject!
+                let otherValue = other.value(forKey: key) as! NSObject?
+                let value = self.value(forKey: key) as! NSObject?
                 if otherValue != nil && value != nil && otherValue != value {
                     return false
                 }
@@ -141,7 +141,7 @@ extension AwfulManagedObject {
     }
     
     public class func objectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject {
-        var object = existingObjectForKey(objectKey: objectKey, inManagedObjectContext: context) as! AwfulManagedObject!
+        var object = existingObjectForKey(objectKey: objectKey, inManagedObjectContext: context) as! AwfulManagedObject?
         if object == nil {
             object = insertIntoManagedObjectContext(context: context)
         }

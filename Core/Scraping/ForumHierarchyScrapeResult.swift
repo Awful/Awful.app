@@ -11,7 +11,7 @@ public struct ForumHierarchyScrapeResult: ScrapeResult {
         let select = try html.requiredNode(matchingSelector: "select[name = 'forumid']")
         nodes = try select
             .nodes(matchingSelector: "option[value]")
-            .flatMap(ForumHierarchyNode.init)
+            .compactMap(ForumHierarchyNode.init)
     }
 }
 

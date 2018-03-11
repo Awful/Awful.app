@@ -20,7 +20,7 @@ internal extension AnnouncementListScrapeResult {
         do {
             let request = NSFetchRequest<User>(entityName: User.entityName())
             let usernames: [String] = self.announcements
-                .flatMap { (announcement: Announcement) -> String? in announcement.author?.username }
+                .compactMap { (announcement: Announcement) -> String? in announcement.author?.username }
                 .filter { (s: String) -> Bool in !s.isEmpty }
             request.predicate = NSPredicate(format: "%K IN %@", #keyPath(User.username), usernames)
             request.returnsObjectsAsFaults = false
@@ -84,7 +84,7 @@ internal extension ThreadListScrapeResult {
         var threadTags: [String: ThreadTag] = [:]
         do {
             let request = NSFetchRequest<ThreadTag>(entityName: ThreadTag.entityName())
-            let imageNames = self.announcements.flatMap { $0.iconURL }.flatMap(ThreadTag.imageName)
+            let imageNames = self.announcements.compactMap { $0.iconURL }.flatMap(ThreadTag.imageName)
             request.predicate = NSPredicate(format: "%K in %@", #keyPath(ThreadTag.imageName), imageNames)
             request.returnsObjectsAsFaults = false
 
@@ -97,7 +97,7 @@ internal extension ThreadListScrapeResult {
         var users: [UserID: User] = [:]
         do {
             let request = NSFetchRequest<User>(entityName: User.entityName())
-            let userIDs = self.announcements.flatMap { $0.author }.map { $0.rawValue }
+            let userIDs = self.announcements.compactMap { $0.author }.map { $0.rawValue }
             request.predicate = NSPredicate(format: "%K in %@", #keyPath(User.userID), userIDs)
             request.returnsObjectsAsFaults = false
 
