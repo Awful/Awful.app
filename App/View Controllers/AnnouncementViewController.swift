@@ -487,8 +487,8 @@ extension AnnouncementViewController: RenderViewDelegate {
     }
 
     func didTapLink(to url: URL, in view: RenderView) {
-        if let awfulURL = url.awfulURL {
-            AppDelegate.instance.openAwfulURL(awfulURL)
+        if let route = try? AwfulRoute(url) {
+            AppDelegate.instance.open(route: route)
         }
         else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)

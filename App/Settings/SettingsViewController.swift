@@ -358,9 +358,11 @@ final class SettingsViewController: TableViewController {
             self.present(alertController, animated: true)
             
         case ("GoToAwfulThread"?, _):
-            guard let threadID = setting["ThreadID"] as? String else { fatalError("setting \(setting) needs a ThreadID") }
-            let url = URL(string: "awful://threads/")!.appendingPathComponent(threadID, isDirectory: false)
-            AppDelegate.instance.openAwfulURL(url)
+            guard let threadID = setting["ThreadID"] as? String else {
+                fatalError("setting \(setting) needs a ThreadID")
+            }
+
+            AppDelegate.instance.open(route: .threadPage(threadID: threadID, page: .nextUnread))
             
         case (_, let vcTypeName?):
             guard let vcType = NSClassFromString(vcTypeName) as? UIViewController.Type else { fatalError("couldn't find type named \(vcTypeName)") }

@@ -126,7 +126,7 @@ private enum _URLMenuPresenter {
             }
             
             alert.addAction(UIAlertAction(title: "Copy URL", style: .default, handler: { _ in
-                UIPasteboard.general.awful_URL = linkURL
+                UIPasteboard.general.coercedURL = linkURL
             }))
             
             alert.addAction(UIAlertAction(title: "Share URL", style: .default, handler: { _ in
@@ -150,7 +150,7 @@ private enum _URLMenuPresenter {
                 }))
                 
                 alert.addAction(UIAlertAction(title: "Copy Image URL", style: .default, handler: { _ in
-                    UIPasteboard.general.awful_URL = imageURL
+                    UIPasteboard.general.coercedURL = imageURL
                 }))
             }
             
@@ -169,11 +169,11 @@ private enum _URLMenuPresenter {
                     return
                 }))
                 alert.addAction(UIAlertAction(title: "Copy URL", style: .default, handler: { _ in
-                    UIPasteboard.general.awful_URL = videoURL.unembeddedURL
+                    UIPasteboard.general.coercedURL = videoURL.unembeddedURL
                 }))
             } else {
                 alert.addAction(UIAlertAction(title: "Copy URL", style: .default, handler: { _ in
-                    UIPasteboard.general.awful_URL = rawURL
+                    UIPasteboard.general.coercedURL = rawURL
                 }))
             }
         }

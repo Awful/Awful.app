@@ -69,7 +69,6 @@
 		1C16FBE31CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
 		1C16FBE91CBDB6E300C88BD1 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */; };
-		1C16FBF11CBDBEB600C88BD1 /* URL+Awful.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF01CBDBEB600C88BD1 /* URL+Awful.swift */; };
 		1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */; };
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
 		1C16FBFA1CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF91CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift */; };
@@ -404,6 +403,7 @@
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */; };
 		1CF264CA1F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */; };
+		1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF280972055EB9B00913149 /* AwfulRoute.swift */; };
 		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
 		1CF7AB8A1EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB891EDB2BBD0089EF0C /* PrivateMessageScrapeResult.swift */; };
@@ -720,7 +720,6 @@
 		1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaffleimagesURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		1C16FBF01CBDBEB600C88BD1 /* URL+Awful.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Awful.swift"; sourceTree = "<group>"; };
 		1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+OpensInBrowser.swift"; sourceTree = "<group>"; };
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
 		1C16FBF91CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldWebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
@@ -1082,6 +1081,7 @@
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar_FixiOS11iPadLayout.swift; sourceTree = "<group>"; };
 		1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBarController_FixiOS11iPadLayout.storyboard; sourceTree = "<group>"; };
+		1CF280972055EB9B00913149 /* AwfulRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulRoute.swift; sourceTree = "<group>"; };
 		1CF280992055FBDB00913149 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		1CF6786A201E751D009A9640 /* MessageListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDataSource.swift; sourceTree = "<group>"; };
 		1CF6786D201E8F45009A9640 /* MessageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListCell.swift; sourceTree = "<group>"; };
@@ -1493,7 +1493,6 @@
 				1C4079691A228DA6004A082F /* CopyURLActivity.swift */,
 				1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */,
 				1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */,
-				1C16FBF01CBDBEB600C88BD1 /* URL+Awful.swift */,
 				1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */,
 				1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */,
 			);
@@ -1503,6 +1502,7 @@
 		1C25AC1F1F532EC400977D6F /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				1CF280972055EB9B00913149 /* AwfulRoute.swift */,
 				1C25AC421F53770300977D6F /* Bangbang.swift */,
 				1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */,
 				1C25AC201F532EE600977D6F /* LocalizedString.swift */,
@@ -3512,8 +3512,8 @@
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
-				1C16FBF11CBDBEB600C88BD1 /* URL+Awful.swift in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
+				1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */,
 				1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
 				1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */,

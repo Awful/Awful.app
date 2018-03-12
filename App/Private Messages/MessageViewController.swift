@@ -351,8 +351,8 @@ extension MessageViewController: UIWebViewDelegate {
         }
         
         guard navigationType == .linkClicked || url.host?.lowercased().hasSuffix("twitter.com") == true else { return true }
-        if let awfulURL = url.awfulURL {
-            AppDelegate.instance.openAwfulURL(awfulURL)
+        if let route = try? AwfulRoute(url) {
+            AppDelegate.instance.open(route: route)
         } else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         } else {

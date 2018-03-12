@@ -52,6 +52,6 @@ final class CopyURLActivity: UIActivity {
     }
     
     override func perform() {
-        UIPasteboard.general.awful_URL = url
+        UIPasteboard.general.coercedURL = url
     }
 }

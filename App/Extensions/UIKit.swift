@@ -175,19 +175,39 @@ extension UINavigationItem {
 }
 
 extension UIPasteboard {
-    /// Some (system) apps seem to put actual NSURLs on the pasteboard, while others deal in strings that happen to resemble URLs. This property handles both.
-    var awful_URL: URL? {
+
+     /// Gets the first URL-like item on the pasteboard. A URL-like item is either a URL or a string that can be coerced into a URL.
+    var coercedURL: URL? {
         get {
-            if let URL = url { return URL }
-            if let string = string { return URL(string: string) }
-            return nil
+            if _hasURLs, let urls = urls, let url = urls.first {
+                return url
+            } else if _hasStrings, let strings = strings, let url = strings.compactMap({ URL(string: $0) }).first {
+                return url
+            } else {
+                return nil
+            }
         }
         set {
-            items = []
-            guard let newURL = newValue else { return }
-            items = [[
-                kUTTypeURL as String: newURL,
-                kUTTypePlainText as String: newURL.absoluteString]]
+            items = newValue.map { [[
+                kUTTypeURL as String: $0,
+                kUTTypePlainText as String: $0.absoluteString]] }
+            ?? []
+        }
+    }
+
+    private var _hasStrings: Bool {
+        if #available(iOS 10.0, *) {
+            return hasStrings
+        } else {
+            return !(strings ?? []).isEmpty
+        }
+    }
+
+    private var _hasURLs: Bool {
+        if #available(iOS 10.0, *) {
+            return hasURLs
+        } else {
+            return !(urls ?? []).isEmpty
         }
     }
 }

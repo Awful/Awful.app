@@ -4,6 +4,29 @@
 
 import Foundation
 
+extension Bundle {
+    var localizedName: String {
+        return localizedInfoDictionary?[kCFBundleNameKey as String] as? String ?? ""
+    }
+
+    var urlTypes: [URLType] {
+        let dicts = infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] ?? []
+        return dicts.map { URLType($0) }
+    }
+
+    struct URLType {
+        let name: String?
+        let role: String?
+        let schemes: [String]
+
+        fileprivate init(_ plist: [String: Any]) {
+            name = plist["CFBundleURLName"] as? String
+            role = plist["CFBundleTypeRole"] as? String
+            schemes = plist["CFBundleURLSchemes"] as? [String] ?? []
+        }
+    }
+}
+
 extension URLRequest {
     /**
      Sets a URL request's If-Modified-Since and If-None-Match headers appropriately, given the previous response's Last-Modified and Etag headers. No effort is done to test whether the response actually matches the request (by URL or otherwise).

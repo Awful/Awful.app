@@ -46,7 +46,7 @@ extension InAppActionViewController {
         items.append(IconActionItem(.copyURL) {
             if let url = URL(string: "https://forums.somethingawful.com/showthread.php?threadid=\(thread.threadID)") {
                 AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
-                UIPasteboard.general.awful_URL = url
+                UIPasteboard.general.coercedURL = url
             }
             })
         

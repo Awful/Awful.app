@@ -430,7 +430,7 @@ final class PostsPageViewController: ViewController {
                 let url = components.url!
                 
                 AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
-                UIPasteboard.general.awful_URL = url
+                UIPasteboard.general.coercedURL = url
             })
             copyURLItem.title = "Copy URL"
             
@@ -656,9 +656,7 @@ final class PostsPageViewController: ViewController {
     
     @objc fileprivate func goToParentForum() {
         guard let forum = thread.forum else { return }
-        var url = URL(string: "awful://forums/") !! "hardcoded"
-        url = url.appendingPathComponent(forum.forumID)
-        AppDelegate.instance.openAwfulURL(url)
+        AppDelegate.instance.open(route: .forum(id: forum.forumID))
     }
     
     @objc fileprivate func showHiddenSeenPosts() {
@@ -963,8 +961,7 @@ final class PostsPageViewController: ViewController {
         if author != nil {
             items.append(IconActionItem(.showInThread, block: {
                 // This will add the thread to the navigation stack, giving us thread->author->thread.
-                guard let url = URL(string: "awful://posts/\(post.postID)") else { return }
-                AppDelegate.instance.openAwfulURL(url)
+                AppDelegate.instance.open(route: .post(id: post.postID))
             }))
         }
         
@@ -1247,14 +1244,13 @@ extension PostsPageViewController: UIWebViewDelegate {
         guard let url = request.url else { return true }
         guard navigationType == .linkClicked || isHijackingWebView(navigationType, url: url) else { return true }
         
-        if let awfulURL = url.awfulURL {
-            if url.fragment == "awful-ignored" {
-                let postID = awfulURL.lastPathComponent
+        if let route = try? AwfulRoute(url) {
+            if url.fragment == "awful-ignored", case .post(let postID) = route {
                 if let i = posts.index(where: { $0.postID == postID }) {
                     readIgnoredPostAtIndex(i)
                 }
             } else {
-                AppDelegate.instance.openAwfulURL(awfulURL)
+                AppDelegate.instance.open(route: route)
             }
         } else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)

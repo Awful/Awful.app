@@ -171,7 +171,7 @@ fileprivate struct MenuItem {
 
 fileprivate let rootItems = [
     MenuItem(title: "[url]", action: { tree in
-        if UIPasteboard.general.awful_URL == nil {
+        if UIPasteboard.general.coercedURL == nil {
             linkifySelection(tree)
         } else {
             tree.showSubmenu(URLItems)
@@ -180,7 +180,7 @@ fileprivate let rootItems = [
     MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
     MenuItem(title: "Format", action: { $0.showSubmenu(formattingItems) }),
     MenuItem(title: "[video]", action: { tree in
-        if let URL = UIPasteboard.general.awful_URL {
+        if let URL = UIPasteboard.general.coercedURL {
             if videoTagURLForURL(URL) != nil {
                 return tree.showSubmenu(videoSubmenuItems)
             }
@@ -192,7 +192,7 @@ fileprivate let rootItems = [
 fileprivate let URLItems = [
     MenuItem(title: "[url]", action: linkifySelection),
     MenuItem(title: "Paste", action: { tree in
-        if let URL = UIPasteboard.general.awful_URL {
+        if let URL = UIPasteboard.general.coercedURL {
             wrapSelectionInTag("[url=\(URL.absoluteString)]" as NSString)(tree)
         }
     })
@@ -223,8 +223,8 @@ fileprivate let formattingItems = [
 fileprivate let videoSubmenuItems = [
     MenuItem(title: "[video]", action: wrapSelectionInTag("[video]")),
     MenuItem(title: "Paste", action: { tree in
-        if let
-            copiedURL = UIPasteboard.general.awful_URL,
+        if
+            let copiedURL = UIPasteboard.general.coercedURL,
             let URL = videoTagURLForURL(copiedURL as URL)
         {
             let textView = tree.textView

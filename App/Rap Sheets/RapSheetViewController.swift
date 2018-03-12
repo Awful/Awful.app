@@ -228,11 +228,10 @@ final class RapSheetViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
-        guard
-            let postID = punishment.post?.rawValue,
-            let url = URL(string: "awful://posts/\(postID)")
-            else { return }
-        AppDelegate.instance.openAwfulURL(url)
+        guard let postID = punishment.post?.rawValue else { return }
+
+        AppDelegate.instance.open(route: .post(id: postID))
+
         if presentingViewController != nil {
             dismiss(animated: true, completion: nil)
         }

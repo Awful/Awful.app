@@ -38,7 +38,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             
             if let url = components.url {
                 AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
-                UIPasteboard.general.awful_URL = url
+                UIPasteboard.general.coercedURL = url
             }
         }
         

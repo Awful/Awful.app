@@ -43,8 +43,8 @@ extension Sequence {
         return true
     }
     
-    func any(_ includeElement: (Iterator.Element) -> Bool) -> Bool {
-        for element in self where includeElement(element) {
+    func any(where predicate: (_ element: Element) -> Bool) -> Bool {
+        for element in self where predicate(element) {
             return true
         }
         return false

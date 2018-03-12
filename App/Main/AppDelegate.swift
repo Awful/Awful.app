@@ -135,12 +135,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        guard ForumsClient.shared.isLoggedIn else { return false }
-        if let scheme = url.scheme, ["awfulhttp", "awfulhttps"].contains(scheme.lowercased()) {
-            guard let awfulURL = url.awfulURL else { return false }
-            return openAwfulURL(awfulURL)
-        }
-        return openAwfulURL(url)
+        guard
+            ForumsClient.shared.isLoggedIn,
+            let route = try? AwfulRoute(url)
+            else { return false }
+
+        open(route: route)
+        return true
     }
     
     func application(_ application: UIApplication, didUpdate userActivity: NSUserActivity) {
@@ -183,39 +184,31 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func checkClipboard() {
-        guard ForumsClient.shared.isLoggedIn && AwfulSettings.shared().clipboardURLEnabled else { return }
-        guard let
-            url = UIPasteboard.general.awful_URL,
-            let awfulURL = url.awfulURL
+        guard
+            ForumsClient.shared.isLoggedIn,
+            AwfulSettings.shared().clipboardURLEnabled,
+            let url = UIPasteboard.general.coercedURL,
+            AwfulSettings.shared().lastOfferedPasteboardURL != url.absoluteString,
+            let scheme = url.scheme,
+            !Bundle.main.urlTypes
+                .flatMap({ $0.schemes })
+                .any(where: { scheme.caseInsensitive == $0 }),
+            let route = try? AwfulRoute(url)
             else { return }
-        for urlTypes in Bundle.main.infoDictionary?["CFBundleURLTypes"] as? [[String: AnyObject]] ?? [] {
-            for urlScheme in urlTypes["CFBundleURLSchemes"] as? [String] ?? [] {
-                if urlScheme.caseInsensitiveCompare(url.scheme!) == .orderedSame {
-                    return
-                }
-            }
-        }
-        
-        guard AwfulSettings.shared().lastOfferedPasteboardURL != url.absoluteString else { return }
+
         AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
         alert.message = "Would you like to open this URL in Awful?\n\n\(url.absoluteString)"
         alert.addCancelActionWithHandler(nil)
         alert.addActionWithTitle("Open", handler: {
-            self.openAwfulURL(awfulURL)
+            self.open(route: route)
         })
         window?.rootViewController?.present(alert, animated: true)
     }
-    
-    /**
-        Handles an awful:// URL.
-     
-        - returns: `true` if the awful:// URL made sense, or `false` otherwise.
-     */
-    @discardableResult func openAwfulURL(_ url: URL) -> Bool {
-        guard let router = urlRouter else { return false }
-        return router.route(url)
+
+    func open(route: AwfulRoute) {
+        // TODO: this
     }
     
     fileprivate func updateShortcutItems() {
@@ -254,9 +247,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        guard let url = URL(string: shortcutItem.type) else { return completionHandler(false) }
-        let result = openAwfulURL(url)
-        completionHandler(result)
+        guard
+            let url = URL(string: shortcutItem.type),
+            let route = try? AwfulRoute(url)
+            else { return completionHandler(false) }
+
+        open(route: route)
+        completionHandler(true)
     }
     
     fileprivate var _rootViewControllerStack: RootViewControllerStack?
