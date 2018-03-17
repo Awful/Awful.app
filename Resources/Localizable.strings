@@ -36,6 +36,15 @@
 "forums-list.undo-action.remove-favorite" = "Remove Favorite Forum";
 
 
+/* MARK: Launch messages */
+
+/* Title of alert asking about opening a copied URL when Awful comes to the foreground. Alert message is the URL in question. Parameter is the name of this app. */
+"launch-open-copied-url-alert.title" = "Would you like to open this URL in %@?";
+
+/* Button that opens the copied URL. */
+"launch-open-copied-url-alert.open-button" = "Open";
+
+
 /* MARK: Share actions */
 
 /* The default title of the "copy URL" share action. */

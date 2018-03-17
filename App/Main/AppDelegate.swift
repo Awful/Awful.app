@@ -198,10 +198,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
         
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-        alert.message = "Would you like to open this URL in Awful?\n\n\(url.absoluteString)"
+        let alert = UIAlertController(
+            title: String(format: LocalizedString("launch-open-copied-url-alert.title"), Bundle.main.localizedName),
+            message: url.absoluteString,
+            preferredStyle: .alert)
         alert.addCancelActionWithHandler(nil)
-        alert.addActionWithTitle("Open", handler: {
+        alert.addActionWithTitle(LocalizedString("launch-open-copied-url-alert.open-button"), handler: {
             self.open(route: route)
         })
         window?.rootViewController?.present(alert, animated: true)
