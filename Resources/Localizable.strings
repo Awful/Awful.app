@@ -36,6 +36,12 @@
 "forums-list.undo-action.remove-favorite" = "Remove Favorite Forum";
 
 
+/* MARK: Share actions */
+
+/* The default title of the "copy URL" share action. */
+"copy-url.title" = "Copy URL";
+
+
 /* MARK: Thread list */
 
 /* Text shown below title of thread when at least some of the thread has been read. Parameter is the username of the last poster. */

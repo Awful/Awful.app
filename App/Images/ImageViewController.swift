@@ -68,7 +68,8 @@ final class ImageViewController: UIViewController {
     
     @IBAction @objc fileprivate func didTapAction(_ sender: UIButton) {
         rootView.cancelHideOverlayAfterDelay()
-        let wrappedURL: AnyObject = CopyURLActivity.wrapURL(imageURL)
+
+        let wrappedURL = CopyURLActivity.Box(imageURL)
         // We need to provide the image data as the activity item so that animated GIFs stay animated.
         var activityViewController: UIActivityViewController
         if (image == nil) {
@@ -509,20 +510,26 @@ private func downloadImage(_ url: URL, completion: @escaping (DecodedImage) -> V
     return progress
 }
 
-/// Adds a "Preview Image" activity which uses an ImageViewController. Add the activity both as an application activity and as one of the activity items.
+/// Adds a "Preview Image" activity which uses an ImageViewController. Place the image URL in a `Box` bfore adding it to `activityItems` so the activity (and nothing else) picks it up.
 final class ImagePreviewActivity: UIActivity {
-    let imageURL: URL
-    
-    init(imageURL: URL) {
-        self.imageURL = imageURL
-        super.init()
+
+    private var _activityViewController: UIViewController?
+
+    /// Wraps a URL so that only the `ImagePreviewActivity` will try to use it.
+    final class Box {
+        fileprivate let url: URL
+
+        init(_ url: URL) {
+            self.url = url
+        }
     }
-    
+
+    // MARK: UIActivity
+
     override var activityViewController : UIViewController? {
         return _activityViewController
     }
-    fileprivate var _activityViewController: UIViewController?
-    
+
     override var activityType: UIActivityType {
         return UIActivityType(rawValue: "com.awfulapp.Awful.ImagePreview")
     }
@@ -536,11 +543,12 @@ final class ImagePreviewActivity: UIActivity {
     }
     
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        return any(activityItems) { $0 as! NSObject == self }
+        return activityItems.any { $0 is Box }
     }
     
     override func prepare(withActivityItems activityItems: [Any]) {
-        let imageViewController = ImageViewController(imageURL: imageURL)
+        guard let url = activityItems.lazy.compactMap({ $0 as? Box }).first?.url else { return }
+        let imageViewController = ImageViewController(imageURL: url)
         imageViewController.doneAction = { self.activityDidFinish(true) }
         _activityViewController = imageViewController
     }
