@@ -37,7 +37,7 @@ final class CopyURLActivity: UIActivity {
         return overriddenTitle ?? LocalizedString("copy-url.title")
     }
     
-    override open var activityImage: UIImage? {
+    override var activityImage: UIImage? {
         return UIImage(named: "copy")
     }
     

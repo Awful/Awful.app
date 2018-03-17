@@ -70,8 +70,9 @@ final class ImageViewController: UIViewController {
         rootView.cancelHideOverlayAfterDelay()
 
         let wrappedURL = CopyURLActivity.Box(imageURL)
+        let activityViewController: UIActivityViewController
+
         // We need to provide the image data as the activity item so that animated GIFs stay animated.
-        var activityViewController: UIActivityViewController
         if (image == nil) {
             // Allow user to share the URL before the image has loaded fully, useful on slow connections
             activityViewController = UIActivityViewController(activityItems: [imageURL, wrappedURL], applicationActivities: [CopyURLActivity()])
@@ -82,12 +83,12 @@ final class ImageViewController: UIViewController {
             activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
             
         }
-        present(activityViewController, animated: true, completion: nil)
+
+        present(activityViewController, animated: true)
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
             popover.sourceRect = sender.bounds
         }
-        
     }
     
     // MARK: View lifecycle

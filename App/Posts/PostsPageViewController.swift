@@ -654,7 +654,7 @@ final class PostsPageViewController: ViewController {
         loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
     }
     
-    @objc fileprivate func goToParentForum() {
+    @objc private func goToParentForum() {
         guard let forum = thread.forum else { return }
         AppDelegate.instance.open(route: .forum(id: forum.forumID))
     }

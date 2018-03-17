@@ -76,7 +76,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(BookmarksTableViewController.settingsDidChange(notification:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: AwfulSettings.shared())
         
         if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
@@ -156,7 +156,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     
     // MARK: Notifications
     
-    @objc private func settingsDidChange(notification: NSNotification) {
+    @objc private func settingsDidChange(_ notification: NSNotification) {
         guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
         
         switch key {

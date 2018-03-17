@@ -7,8 +7,8 @@ import UIKit
 final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     let navigationController: UINavigationController
     var viewControllers: [UIViewController] = []
-    fileprivate var gestureStartPointX: CGFloat = 0
-    fileprivate(set) var interactiveUnpopIsTakingPlace = false
+    private var gestureStartPointX: CGFloat = 0
+    private(set) var interactiveUnpopIsTakingPlace = false
     var navigationControllerIsAnimating = false
 
     private lazy var panRecognizer: UIGestureRecognizer = {
@@ -30,7 +30,7 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         navigationController.view.removeGestureRecognizer(panRecognizer)
     }
     
-    @objc fileprivate func handlePan(_ sender: UIScreenEdgePanGestureRecognizer) {
+    @objc private func handlePan(_ sender: UIScreenEdgePanGestureRecognizer) {
         let location = sender.location(in: sender.view)
         switch sender.state {
         case .began:
@@ -165,21 +165,12 @@ extension UnpoppingViewHandler: UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
-        /**
-            Allow simultaneous recognition with:
-              1. The swipe-to-pop gesture recognizer.
-              2. The swipe-to-show-basement gesture recognizer.
-         */
+        // Allow simultaneous recognition with the swipe-to-pop gesture recognizer.
         return other is UIScreenEdgePanGestureRecognizer
     }
 }
 
-protocol NavigationControllerObserver {
-    func navigationController(_ navigationController: UINavigationController, didPopViewController viewController: UIViewController?)
-    func navigationController(_ navigationController: UINavigationController, didPushViewController viewController: UIViewController)
-}
-
-extension UnpoppingViewHandler: NavigationControllerObserver {
+extension UnpoppingViewHandler {
     func navigationController(_ navigationController: UINavigationController, didPopViewController viewController: UIViewController?) {
         if let viewController = viewController {
             viewControllers.append(viewController)

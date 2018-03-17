@@ -348,8 +348,12 @@ extension MessageViewController: UIWebViewDelegate {
         guard navigationType == .linkClicked || isHijackingWebView(navigationType, url: url) else { return true }
         
         var navigationType = navigationType
+
         // Tapping the title of an embedded YouTube video doesn't come through as a click. It'll just take over the web view if we're not careful.
-        if url.host?.lowercased().hasSuffix("www.youtube.com") == true && url.path.lowercased().hasPrefix("/watch") == true {
+        if
+            (url.host ?? "").lowercased().hasSuffix("www.youtube.com"),
+            url.path.lowercased().hasPrefix("/watch")
+        {
             navigationType = .linkClicked
         }
         

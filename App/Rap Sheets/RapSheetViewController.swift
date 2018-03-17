@@ -21,7 +21,7 @@ final class RapSheetViewController: TableViewController {
     }()
 
     
-    init(user: User?) {
+    init(user: User? = nil) {
         self.user = user
         super.init(style: .plain)
         
@@ -35,10 +35,6 @@ final class RapSheetViewController: TableViewController {
             hidesBottomBarWhenPushed = true
             modalPresentationStyle = .formSheet
         }
-    }
-    
-    convenience init() {
-        self.init(user: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -233,7 +229,7 @@ final class RapSheetViewController: TableViewController {
         AppDelegate.instance.open(route: .post(id: postID))
 
         if presentingViewController != nil {
-            dismiss(animated: true, completion: nil)
+            dismiss(animated: true)
         }
     }
 }
