@@ -184,15 +184,15 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             return
         }
         
-        let activity = NSUserActivity(activityType: Handoff.ActivityTypeListingThreads)
-        activity.needsSave = true
-        userActivity = activity
+        userActivity = NSUserActivity(activityType: Handoff.ActivityType.listingThreads)
+        userActivity?.needsSave = true
     }
     
     override func updateUserActivityState(_ activity: NSUserActivity) {
-        activity.title = "Bookmarked Threads"
-        activity.addUserInfoEntries(from: [Handoff.InfoBookmarksKey: true])
-        activity.webpageURL = URL(string: "/bookmarkthreads.php", relativeTo: ForumsClient.shared.baseURL)
+        activity.route = .bookmarks
+        activity.title = LocalizedString("handoff.bookmarks-title")
+
+        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
     // MARK: ThreadPeekPopControllerDelegate

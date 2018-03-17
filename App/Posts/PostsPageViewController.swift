@@ -978,43 +978,29 @@ final class PostsPageViewController: ViewController {
         present(actionVC, animated: true, completion: nil)
     }
     
-    fileprivate func configureUserActivityIfPossible() {
+    private func configureUserActivityIfPossible() {
         guard case .specific? = page, AwfulSettings.shared().handoffEnabled else {
             userActivity = nil
             return
         }
         
-        userActivity = NSUserActivity(activityType: Handoff.ActivityTypeBrowsingPosts)
+        userActivity = NSUserActivity(activityType: Handoff.ActivityType.browsingPosts)
         userActivity?.needsSave = true
     }
     
     override func updateUserActivityState(_ activity: NSUserActivity) {
-        guard case .specific(let pageNumber)? = page else { return }
+        guard let page = page, case .specific = page else { return }
 
+        activity.route = {
+            if let author = author {
+                return .threadPageSingleUser(threadID: thread.threadID, userID: author.userID, page: page)
+            } else {
+                return .threadPage(threadID: thread.threadID, page: page)
+            }
+        }()
         activity.title = thread.title
-        activity.addUserInfoEntries(from: [
-            Handoff.InfoThreadIDKey: thread.threadID,
-            Handoff.InfoPageKey: pageNumber,
-            ])
-        
-        if let author = author {
-            activity.addUserInfoEntries(from: [Handoff.InfoFilteredThreadUserIDKey: author.userID])
-        }
-        
-        guard
-            let baseURL = ForumsClient.shared.baseURL,
-            var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
-            else { return }
-        components.path = "showthread.php"
-        var queryItems: [URLQueryItem] = [
-            URLQueryItem(name: "threadid", value: thread.threadID),
-            URLQueryItem(name: "perpage", value: "\(40)"),
-        ]
-        queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
-        if let author = author {
-            queryItems.append(URLQueryItem(name: "userid", value: author.userID))
-        }
-        activity.webpageURL = components.url
+
+        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
     override func themeDidChange() {

@@ -36,6 +36,15 @@
 "forums-list.undo-action.remove-favorite" = "Remove Favorite Forum";
 
 
+/* MARK: Handoff */
+
+/* Title of Handoff activity when reading bookmarks. */
+"handoff.bookmarks-title" = "Bookmarked Threads";
+
+/* Title of Handoff activity when reading a private message. */
+"handoff.message-title" = "Private Message";
+
+
 /* MARK: Launch messages */
 
 /* Title of alert asking about opening a copied URL when Awful comes to the foreground. Alert message is the URL in question. Parameter is the name of this app. */

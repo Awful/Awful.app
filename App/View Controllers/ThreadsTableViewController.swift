@@ -301,15 +301,15 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             return
         }
         
-        let activity = NSUserActivity(activityType: Handoff.ActivityTypeListingThreads)
-        activity.needsSave = true
-        userActivity = activity
+        userActivity = NSUserActivity(activityType: Handoff.ActivityType.listingThreads)
+        userActivity?.needsSave = true
     }
     
     override func updateUserActivityState(_ activity: NSUserActivity) {
+        activity.route = .forum(id: forum.forumID)
         activity.title = forum.name
-        activity.addUserInfoEntries(from: [Handoff.InfoForumIDKey: forum.forumID])
-        activity.webpageURL = URL(string: "https://forums.somethingawful.com/forumdisplay.php?forumid=\(forum.forumID)")
+
+        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
     // MARK: ThreadPeekPopControllerDelegate

@@ -172,20 +172,23 @@ final class MessageViewController: ViewController {
         }
     }
     
-    fileprivate func configureUserActivity() {
+    private func configureUserActivity() {
         guard AwfulSettings.shared().handoffEnabled else { return }
-        userActivity = NSUserActivity(activityType: Handoff.ActivityTypeReadingMessage)
+        userActivity = NSUserActivity(activityType: Handoff.ActivityType.readingMessage)
         userActivity?.needsSave = true
     }
     
     override func updateUserActivityState(_ activity: NSUserActivity) {
-        activity.addUserInfoEntries(from: [Handoff.InfoMessageIDKey: privateMessage.messageID])
-        if let subject = privateMessage.subject , !subject.isEmpty {
-            activity.title = subject
-        } else {
-            activity.title = "Private Message"
-        }
-        activity.webpageURL = URL(string: "/private.php?action=show&privatemessageid=\(privateMessage.messageID)", relativeTo: ForumsClient.shared.baseURL)
+        activity.route = .message(id: privateMessage.messageID)
+        activity.title = {
+            if let subject = privateMessage.subject, !subject.isEmpty {
+                return subject
+            } else {
+                return LocalizedString("handoff.message-title")
+            }
+        }()
+
+        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
     // MARK: View lifecycle

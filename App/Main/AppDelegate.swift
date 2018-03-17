@@ -144,17 +144,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(_ application: UIApplication, didUpdate userActivity: NSUserActivity) {
-        // Bit of future-proofing.
-        userActivity.addUserInfoEntries(from: [Handoff.InfoVersionKey: handoffVersion])
-    }
-    
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        guard let
-            awfulURL = userActivity.awfulURL,
-            let router = urlRouter
-            else { return false }
-        let _ = router.route(awfulURL)
+        guard let route = userActivity.route else { return false }
         return true
     }
     
@@ -440,8 +431,6 @@ private enum InterfaceVersion: Int {
 }
 
 private let currentInterfaceVersion: InterfaceVersion = .version3
-
-private let handoffVersion = 1
 
 private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
     do {

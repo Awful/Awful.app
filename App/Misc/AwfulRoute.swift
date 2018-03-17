@@ -15,6 +15,7 @@ import Foundation
  `AwfulRoutes`s have many possible sources:
 
  * Apps that launch other apps via URL, using the `awful:` URL scheme.
+ * Handoff.
  * Links that the user taps within the app. e.g. if the user taps a link resembling `https://forums.somethingawful.com/showthread.php?goto=post&postid=000` in a post that points to a user's profile, it's turned into a `.profile(userID:)` route.
  * Pages the user is browsing in Safari, by prepending `awful` to the url to obtain e.g. `awfulhttps://archive.somethingawful.com/showthread.php?threadid=000`.
  * Pasteboard contents when Awful comes to the foreground. If the user copied an Awful-routable URL, they'll be asked if they'd like to open that screen.
@@ -35,6 +36,9 @@ enum AwfulRoute {
 
     /// The root of the Leper's Colony tab.
     case lepersColony
+
+    /// A specific message.
+    case message(id: String)
 
     /// The root of the Messages tab.
     case messagesList
@@ -260,5 +264,73 @@ extension AwfulRoute {
         default:
             throw ParseError.pathNotSupported
         }
+    }
+}
+
+// MARK: Making URLs
+
+private let baseURL = URL(string: "https://forums.somethingawful.com/")!
+
+extension AwfulRoute {
+    var httpURL: URL {
+        var components = URLComponents()
+        switch self {
+        case .bookmarks:
+            components.path = "bookmarkthreads.php"
+
+        case .forum(let id):
+            components.path = "forumdisplay.php"
+            components.queryItems = [URLQueryItem(name: "forumid", value: id)]
+
+        case .forumList:
+            break
+
+        case .lepersColony:
+            components.path = "banlist.php"
+
+        case .message(let id):
+            components.path = "private.php"
+            components.queryItems = [
+                URLQueryItem(name: "action", value: "show"),
+                URLQueryItem(name: "privatemessageid", value: id)]
+
+        case .messagesList:
+            components.path = "private.php"
+
+        case .post(let id):
+            components.path = "showthread.php"
+            components.queryItems = [
+                URLQueryItem(name: "goto", value: "post"),
+                URLQueryItem(name: "postid", value: id)]
+
+        case .profile(let userID):
+            components.path = "member.php"
+            components.queryItems = [
+                URLQueryItem(name: "action", value: "getinfo"),
+                URLQueryItem(name: "userid", value: userID)]
+
+        case .rapSheet(let userID):
+            components.path = "banlist.php"
+            components.queryItems = [URLQueryItem(name: "userid", value: userID)]
+
+        case .settings:
+            components.path = "usercp.php"
+
+        case .threadPage(let threadID, let page):
+            components.path = "showthread.php"
+            components.queryItems = [
+                URLQueryItem(name: "threadid", value: threadID),
+                URLQueryItem(name: "perpage", value: "40"),
+                URLQueryItem(name: "pagenumber", value: "\(page)")]
+
+        case .threadPageSingleUser(let threadID, let userID, let page):
+            components.path = "showthread.php"
+            components.queryItems = [
+                URLQueryItem(name: "threadid", value: threadID),
+                URLQueryItem(name: "perpage", value: "40"),
+                URLQueryItem(name: "pagenumber", value: "\(page)"),
+                URLQueryItem(name: "userid", value: userID)]
+        }
+        return components.url(relativeTo: baseURL)!
     }
 }
