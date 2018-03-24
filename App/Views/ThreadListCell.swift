@@ -89,11 +89,11 @@ final class ThreadListCell: UITableViewCell {
         contentView.addSubview(pageIconView)
         contentView.addSubview(postInfoLabel)
         contentView.addSubview(ratingImageView)
-        contentView.addSubview(secondaryTagImageView)
-        contentView.addSubview(stickyImageView)
         contentView.addSubview(tagImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(unreadCountLabel)
+        contentView.addSubview(secondaryTagImageView)
+        contentView.addSubview(stickyImageView)
     }
 
     required init?(coder: NSCoder) {
@@ -185,8 +185,8 @@ final class ThreadListCell: UITableViewCell {
 
             let secondaryTagSize = viewModel.secondaryTagImage?.size ?? .zero
             secondaryTagFrame = CGRect(
-                x: tagImageFrame.maxX - secondaryTagSize.width,
-                y: tagImageFrame.minY,
+                x: tagImageFrame.maxX - secondaryTagSize.width + 2,
+                y: tagImageFrame.minY - 2,
                 width: secondaryTagSize.width,
                 height: secondaryTagSize.height)
 
