@@ -220,7 +220,7 @@ extension ThreadListDataSource: UITableViewDataSource {
             }(),
             title: NSAttributedString(string: thread.title ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
-                .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
+                .foregroundColor: (theme[thread.closed ? "listSecondaryTextColor" : "listTextColor"] as UIColor?)!]),
             unreadCount: {
                 guard thread.beenSeen else { return NSAttributedString() }
                 let color: UIColor
