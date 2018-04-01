@@ -323,13 +323,13 @@ static NSString * const CellIdentifier = @"SmilieCell";
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     if (!decelerate) {
-        SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, scrollView.contentOffset.y / scrollView.contentSize.height);
+        SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, (float)scrollView.contentOffset.y / (float)scrollView.contentSize.height);
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, scrollView.contentOffset.y / scrollView.contentSize.height);
+    SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, (float)scrollView.contentOffset.y / (float)scrollView.contentSize.height);
 }
 
 #pragma mark - UIInputViewAudioFeedback

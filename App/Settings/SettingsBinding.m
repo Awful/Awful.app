@@ -296,10 +296,10 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
         }
         NSDictionary *info = [[AwfulSettings sharedSettings] infoForSettingWithKey:settingsKey];
         if (info[@"Minimum"]) {
-            self.minimumValue = [info[@"Minimum"] doubleValue];
+            self.minimumValue = [info[@"Minimum"] floatValue];
         }
         if (info[@"Maximum"]) {
-            self.maximumValue = [info[@"Maximum"] doubleValue];
+            self.maximumValue = [info[@"Maximum"] floatValue];
         }
         
         //UISlider needs a kick to display the right value and enablement status
@@ -323,7 +323,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 
 - (void)awful_settingDidChange:(NSNumber *)newValue
 {
-    self.value = newValue.doubleValue;
+    self.value = newValue.floatValue;
 }
 
 - (void)awful_overridingSettingDidChange:(id)overridingSetting

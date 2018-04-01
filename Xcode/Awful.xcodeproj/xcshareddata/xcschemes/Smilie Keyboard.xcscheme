@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1C66A9EE19DD3939001B9A41"
-               BuildableName = "Smilie Keyboard.appex"
-               BlueprintName = "Smilie Keyboard"
+               BuildableName = "SmilieKeyboard.appex"
+               BlueprintName = "SmilieKeyboard"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

@@ -333,7 +333,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.35</string>
+	<string>${BUNDLE_SHORT_VERSION}</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -352,11 +352,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>33501</string>
+	<string>${DYLIB_CURRENT_VERSION}</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>$(CRASHLYTICS_API_KEY)</string>
+		<string>${CRASHLYTICS_API_KEY}</string>
 		<key>Kits</key>
 		<array>
 			<dict>

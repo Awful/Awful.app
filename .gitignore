@@ -1,22 +1,12 @@
-# Build artifact folder
-/build/
-
 # Bundler local install
-/Vendor/bundle/
 /.bundle/
+/Vendor/bundle/
 
-# Fastlane crud
-/fastlane/README.md
-/fastlane/report.xml
-/fastlane/test_output/
-
-# Fastlane dotenv, for dev account-specific config (e.g. Crashlytics API key)
-/fastlane/.env
-
-# App Group private files
-app-group
+# Local config for things that shouldn't be checked into a shared repo (see README.md for suggestions).
+/Local.entitlements
+/Local.xcconfig
 
 # OS X and Xcode junk
 .DS_Store
 xcuserdata
-Awful.xcworkspace/xcshareddata/Awful.xccheckout
+/Awful.xcworkspace/xcshareddata/Awful.xccheckout

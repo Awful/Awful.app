@@ -2,8 +2,7 @@ language: objective-c
 osx_image: xcode9
 install: true # skip pod install; all dependencies are already in the repo
 script:
-  - bundle install --path Vendor/bundle
-  - bundle exec fastlane scan --scheme Awful
+  - xcodebuild test -workspace Awful.xcworkspace -scheme Awful -destination 'platform=iOS Simulator,name=iPhone 8'
 notifications:
   email:
     - nolan@nolanw.ca

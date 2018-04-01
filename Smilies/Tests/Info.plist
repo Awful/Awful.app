@@ -15,10 +15,10 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.35</string>
+	<string>${BUNDLE_SHORT_VERSION}</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>33501</string>
+	<string>${DYLIB_CURRENT_VERSION}</string>
 </dict>
 </plist>

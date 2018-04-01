@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
+import argparse
+import bump
+from bump import ensure_repo_is_clean
+import os
+from subprocess import check_call
+import sys
+
+
+def build_and_archive(workspace, scheme, configuration):
+    check_call(['xcodebuild',
+                '-workspace', workspace,
+                '-scheme', scheme,
+                '-configuration', configuration,
+                'archive',
+                '-destination', 'generic/platform=iOS'])
+
+
+def _bail(message):
+    print(message, file=sys.stderr)
+    sys.exit(1)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Make a beta build ready for uploading to iTunes Connect")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--minor', dest='bumper', action='store_const', const=bump.minor,
+                       help="Bump the minor build number (default is to bump the build number)")
+    group.add_argument('--major', dest='bumper', action='store_const', const=bump.major,
+                       help="Bump the major build number (default is to bump the build number)")
+    group.add_argument('--skip-bump', action='store_true',
+                       help="Don't bump the bundle version, just make an .xcarchive (default is to bump the build number)")
+    args = parser.parse_args()
+    
+    ensure_repo_is_clean()
+    
+    if args.skip_bump is None:
+        bump.bump_version(bump.build if args.bumper is None else args.bumper)
+    
+    script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+    workspace = os.path.join(script_dir, '..', 'Awful.xcworkspace')
+    build_and_archive(workspace, 'Awful', 'Release')
+
+if __name__ == '__main__':
+    main()

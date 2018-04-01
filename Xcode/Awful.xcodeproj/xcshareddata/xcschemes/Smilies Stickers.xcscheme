@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1CBBAAB41D949EE000A847EC"
-               BuildableName = "Smilies Stickers.appex"
-               BlueprintName = "Smilies Stickers"
+               BuildableName = "SmilieStickers.appex"
+               BlueprintName = "SmilieStickers"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -48,8 +48,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1CBBAAB41D949EE000A847EC"
-            BuildableName = "Smilies Stickers.appex"
-            BlueprintName = "Smilies Stickers"
+            BuildableName = "SmilieStickers.appex"
+            BlueprintName = "SmilieStickers"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
