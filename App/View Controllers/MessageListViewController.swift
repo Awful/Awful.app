@@ -87,17 +87,17 @@ final class MessageListViewController: TableViewController {
         startAnimatingPullToRefresh()
         
         ForumsClient.shared.listPrivateMessagesInInbox()
-            .then { (messages) -> Void in
+            .done { messages in
                 RefreshMinder.sharedMinder.didRefresh(.privateMessagesInbox)
             }
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error in
                 guard let sself = self else { return }
                 if sself.visible {
                     let alert = UIAlertController(networkError: error)
                     sself.present(alert, animated: true)
                 }
             }
-            .always { [weak self] in
+            .finally { [weak self] in
                 self?.stopAnimatingPullToRefresh()
         }
     }

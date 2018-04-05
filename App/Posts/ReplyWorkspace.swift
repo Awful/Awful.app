@@ -37,17 +37,17 @@ final class ReplyWorkspace: NSObject {
         progressView?.titleLabelText = "Reading post…"
 
         _ = ForumsClient.shared.findBBcodeContents(of: post)
-            .then { [weak self] (bbcode) -> Void in
+            .done { [weak self] bbcode in
                 self?.compositionViewController.textView.text = bbcode
             }
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error in
                 guard let sself = self else { return }
                 if sself.compositionViewController.visible {
                     let alert = UIAlertController(title: "Couldn't Find BBcode", error: error)
                     sself.viewController.present(alert, animated: true)
                 }
             }
-            .always {
+            .finally {
                 progressView?.dismiss(true)
         }
     }
@@ -191,8 +191,8 @@ final class ReplyWorkspace: NSObject {
     func quotePost(_ post: Post, completion: @escaping (Error?) -> Void) {
         createCompositionViewController()
 
-        _ = ForumsClient.shared.quoteBBcodeContents(of: post)
-            .then { [weak self] (bbcode) -> Void in
+        ForumsClient.shared.quoteBBcodeContents(of: post)
+            .done { [weak self] bbcode in
                 guard let sself = self else { return }
 
                 let textView = sself.compositionViewController.textView
@@ -218,9 +218,7 @@ final class ReplyWorkspace: NSObject {
 
                 completion(nil)
             }
-            .catch { (error) -> Void in
-                completion(error)
-        }
+            .catch(completion)
     }
 }
 
@@ -356,8 +354,8 @@ extension NewReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                _ = ForumsClient.shared.reply(to: self.thread, bbcode: plainText ?? "")
-                    .then { _ in completion(nil) }
+                ForumsClient.shared.reply(to: self.thread, bbcode: plainText ?? "")
+                    .done { _ in completion(nil) }
                     .catch { completion($0) }
             }
         }
@@ -370,8 +368,8 @@ extension EditReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                _ = ForumsClient.shared.edit(self.post, bbcode: plainText ?? "")
-                    .then { completion(nil) }
+                ForumsClient.shared.edit(self.post, bbcode: plainText ?? "")
+                    .done { completion(nil) }
                     .catch { completion($0) }
             }
         }

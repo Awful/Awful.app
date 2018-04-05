@@ -51,12 +51,12 @@ final class ForumsTableViewController: TableViewController {
     }
     
     fileprivate func refresh() {
-        ForumsClient.shared.taxonomizeForums()
-            .then { (forums) -> Void in
+        _ = ForumsClient.shared.taxonomizeForums()
+            .done { forums in
                 RefreshMinder.sharedMinder.didRefresh(.forumList)
                 self.migrateFavoriteForumsFromSettings()
             }
-            .always { self.stopAnimatingPullToRefresh() }
+            .ensure { self.stopAnimatingPullToRefresh() }
     }
     
     fileprivate func migrateFavoriteForumsFromSettings() {

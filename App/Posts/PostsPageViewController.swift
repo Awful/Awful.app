@@ -162,7 +162,7 @@ final class PostsPageViewController: ViewController {
         let (promise, cancellable) = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
         networkOperation = cancellable
 
-        promise.then { [weak self] (posts, firstUnreadPost, advertisementHTML) -> Void in
+        promise.done { [weak self] posts, firstUnreadPost, advertisementHTML in
             guard let sself = self else { return }
 
             // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
@@ -212,7 +212,7 @@ final class PostsPageViewController: ViewController {
             sself.refreshControl?.endRefreshing()
             }
 
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error in
                 guard let sself = self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
@@ -449,14 +449,14 @@ final class PostsPageViewController: ViewController {
                         overlay?.tintColor = self.theme["tintColor"]
                         
                         ForumsClient.shared.rate(self.thread, as: i)
-                            .then { () -> Void in
+                            .done {
                                 overlay?.mode = .checkmark
 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                                     overlay?.dismiss(true)
                                 }
                             }
-                            .catch { [weak self] (error) -> Void in
+                            .catch { [weak self] error in
 
                                 overlay?.dismiss(false)
 
@@ -475,8 +475,8 @@ final class PostsPageViewController: ViewController {
             
             let bookmarkType: IconAction = self.thread.bookmarked ? .removeBookmark : .addBookmark
             let bookmarkItem = IconActionItem(bookmarkType, block: {
-                _ = ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked)
-                    .then { [weak self] () -> Void in
+                ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked)
+                    .done { [weak self] in
                         guard let strongSelf = self else { return }
 
                         let status = strongSelf.thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
@@ -486,7 +486,7 @@ final class PostsPageViewController: ViewController {
                             overlay?.dismiss(true)
                         }
                     }
-                    .catch { (error) -> Void in
+                    .catch { error in
                         print("\(#function) error marking thread: \(error)")
                 }
             })
@@ -752,7 +752,7 @@ final class PostsPageViewController: ViewController {
     fileprivate func readIgnoredPostAtIndex(_ i: Int) {
         let post = posts[i]
         ForumsClient.shared.readIgnoredPost(post)
-            .then { [weak self] () -> Void in
+            .done { [weak self] in
                 // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
                 guard
                     let sself = self,
@@ -763,7 +763,7 @@ final class PostsPageViewController: ViewController {
                     "index": i - sself.hiddenPosts,
                     "HTML": sself.renderedPostAtIndex(i)])
             }
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error in
                 let alert = UIAlertController(networkError: error)
                 self?.present(alert, animated: true)
         }
@@ -828,14 +828,14 @@ final class PostsPageViewController: ViewController {
                 overlay?.tintColor = self.theme["tintColor"]
                 
                 ignoreBlock(username)
-                    .then { () -> Void in
+                    .done {
                         overlay?.mode = .checkmark
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                             overlay?.dismiss(true)
                         }
                     }
-                    .catch { [weak self] error -> Void in
+                    .catch { [weak self] error in
                         overlay?.dismiss(false)
                         
                         let alert = UIAlertController(title: "Could Not Update Ignore List", error: error)
@@ -902,8 +902,8 @@ final class PostsPageViewController: ViewController {
         
         if author == nil {
             items.append(IconActionItem(.markReadUpToHere, block: {
-                _ = ForumsClient.shared.markThreadAsReadUpTo(post)
-                    .then { [weak self] () -> Void in
+                ForumsClient.shared.markThreadAsReadUpTo(post)
+                    .done { [weak self] in
                         post.thread?.seenPosts = post.threadIndex
 
                         self?.webViewJavascriptBridge?.callHandler("markReadUpToPostWithID", data: post.postID)
@@ -914,7 +914,7 @@ final class PostsPageViewController: ViewController {
                             overlay?.dismiss(true)
                         }
                     }
-                    .catch { [weak self] (error) -> Void in
+                    .catch { [weak self] error in
                         let alert = UIAlertController(title: "Could Not Mark Read", error: error)
                         self?.present(alert, animated: true)
                 }
@@ -923,15 +923,15 @@ final class PostsPageViewController: ViewController {
         
         if post.editable {
             items.append(IconActionItem(.editPost, block: {
-                _ = ForumsClient.shared.findBBcodeContents(of: post)
-                    .then { [weak self] (text) -> Void in
+                ForumsClient.shared.findBBcodeContents(of: post)
+                    .done { [weak self] text in
                         guard let sself = self else { return }
                         let replyWorkspace = ReplyWorkspace(post: post)
                         sself.replyWorkspace = replyWorkspace
                         replyWorkspace.completion = sself.replyCompletionBlock
                         sself.present(replyWorkspace.viewController, animated: true)
                     }
-                    .catch { [weak self] (error) -> Void in
+                    .catch { [weak self] error in
                         let alert = UIAlertController(title: "Could Not Edit Post", error: error)
                         self?.present(alert, animated: true)
                 }

@@ -67,8 +67,9 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
             
-            _ = ForumsClient.shared.locatePost(id: key.postID)
-                .then { [weak self] (post, page) -> Void in
+            ForumsClient.shared.locatePost(id: key.postID)
+                .done { [weak self] arg in
+                    let (post, page) = arg
                     overlay?.dismiss(true, completion: {
                         guard
                             let sself = self,
@@ -80,7 +81,7 @@ final class AwfulURLRouter: NSObject {
                         _ = sself.showPostsViewController(postsVC)
                     })
                 }
-                .catch { (error) -> Void in
+                .catch { error in
                     overlay?.titleLabelText = "Post Not Found"
                     overlay?.mode = .cross
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -106,13 +107,13 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
             
-            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: key)
-                .then { (message) in
+            ForumsClient.shared.readPrivateMessage(identifiedBy: key)
+                .done { message in
                     overlay?.dismiss(true, completion: {
                         inbox.showMessage(message)
                     })
                 }
-                .catch { (error) in
+                .catch { error in
                     overlay?.titleLabelText = "Message Not Found"
                     overlay?.mode = .cross
 
@@ -305,8 +306,8 @@ final class AwfulURLRouter: NSObject {
             return
         }
         
-        _ = ForumsClient.shared.profileUser(id: userID, username: nil)
-            .then { completion(nil, $0.user) }
+        ForumsClient.shared.profileUser(id: userID, username: nil)
+            .done { completion(nil, $0.user) }
             .catch { completion($0, nil) }
     }
 }

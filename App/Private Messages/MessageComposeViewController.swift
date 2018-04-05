@@ -90,7 +90,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         guard availableThreadTags?.isEmpty ?? true else { return }
         guard !updatingThreadTags else { return }
         _ = ForumsClient.shared.listAvailablePrivateMessageThreadTags()
-            .then { [weak self] (threadTags) -> Void in
+            .done { [weak self] threadTags in
                 self?.availableThreadTags = threadTags
 
                 let imageNames = [ThreadTagLoader.emptyPrivateMessageImageName] + threadTags.compactMap { $0.imageName }
@@ -99,7 +99,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                 picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
                 self?.threadTagPicker = picker
             }
-            .always { [weak self] in
+            .ensure { [weak self] in
                 self?.updatingThreadTags = false
         }
     }
@@ -120,10 +120,10 @@ final class MessageComposeViewController: ComposeTextViewController {
             let subject = fieldView.subjectField.textField.text
             else { return }
         _ = ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, regarding: regardingMessage, forwarding: forwardingMessage)
-            .then { () -> Void in
+            .done {
                 completion(true)
             }
-            .catch { [weak self] (error) in
+            .catch { [weak self] error in
                 completion(false)
                 self?.present(UIAlertController(networkError: error), animated: true)
         }

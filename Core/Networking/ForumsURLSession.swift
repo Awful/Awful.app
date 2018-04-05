@@ -46,18 +46,19 @@ internal final class ForumsURLSession {
 
     typealias PromiseType = Promise<(data: Data, response: URLResponse)>
 
-    internal func fetch(
+    internal func fetch<S>(
         method: Method,
         urlString: String,
-        parameters: [Dictionary<String, Any>.Element]?,
+        parameters: S?,
         redirectBlock: WillRedirectCallback? = nil)
         -> (promise: PromiseType, cancellable: Cancellable)
+        where S: Sequence, S.Element == Dictionary<String, Any>.Element
     {
         guard let url = URL(string: urlString, relativeTo: baseURL) else {
             return (Promise(error: ForumsClient.PromiseError.invalidBaseURL), Operation())
         }
 
-        let parameters = win1252Escaped(parameters ?? [])
+        let parameters = win1252Escaped(parameters.map(Array.init) ?? [])
 
         let request: URLRequest
         do {
@@ -100,7 +101,7 @@ private class SessionDelegate: NSObject, URLSessionDataDelegate {
     }()
 
     private var incomingData: [Int: [Data]] = [:]
-    private var promises: [Int: PromiseType.PendingTuple] = [:]
+    private var promises: [Int: Resolver<(data: Data, response: URLResponse)>] = [:]
     private var redirectBlocks: [Int: ForumsURLSession.WillRedirectCallback] = [:]
     private var responses: [Int: URLResponse] = [:]
 
@@ -110,7 +111,7 @@ private class SessionDelegate: NSObject, URLSessionDataDelegate {
         let pending = PromiseType.pending()
 
         queue.addOperation {
-            self.promises[task.taskIdentifier] = pending
+            self.promises[task.taskIdentifier] = pending.resolver
 
             if let block = redirectBlock {
                 self.redirectBlocks[task.taskIdentifier] = block
@@ -173,14 +174,14 @@ private class SessionDelegate: NSObject, URLSessionDataDelegate {
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        guard let (promise, fulfill, reject) = promises.removeValue(forKey: task.taskIdentifier) else {
+        guard let resolver = promises.removeValue(forKey: task.taskIdentifier) else {
             fatalError("unexpected task")
         }
 
         defer { redirectBlocks.removeValue(forKey: task.taskIdentifier) }
 
         if let error = error {
-            return reject(error)
+            return resolver.reject(error)
         }
 
         guard let response = responses.removeValue(forKey: task.taskIdentifier) else {
@@ -193,7 +194,7 @@ private class SessionDelegate: NSObject, URLSessionDataDelegate {
         for component in dataComponents {
             data.append(component)
         }
-        fulfill((data, response))
+        resolver.fulfill((data, response))
     }
 }
 

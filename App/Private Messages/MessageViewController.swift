@@ -64,23 +64,23 @@ final class MessageViewController: ViewController {
         let actionSheet = UIAlertController.makeActionSheet()
         
         actionSheet.addActionWithTitle("Reply") {
-            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
-                .then { [weak self] (bbcode) -> Void in
+            ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
+                .done { [weak self] bbcode in
                     guard let privateMessage = self?.privateMessage else { return }
                     let composeVC = MessageComposeViewController(regardingMessage: privateMessage, initialContents: bbcode)
                     composeVC.delegate = self
                     composeVC.restorationIdentifier = "New private message replying to private message"
                     self?.composeVC = composeVC
                     self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
-            }
-                .catch { [weak self] (error) in
+                }
+                .catch { [weak self] error in
                     self?.present(UIAlertController(title: "Could Not Quote Message", error: error), animated: true)
             }
         }
         
         actionSheet.addActionWithTitle("Forward") {
-            _ = ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
-                .then { [weak self] (bbcode) -> Void in
+            ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
+                .done { [weak self] bbcode in
                     guard let privateMessage = self?.privateMessage else { return }
                     let composeVC = MessageComposeViewController(forwardingMessage: privateMessage, initialContents: bbcode)
                     composeVC.delegate = self
@@ -88,7 +88,7 @@ final class MessageViewController: ViewController {
                     self?.composeVC = composeVC
                     self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
                 }
-                .catch { [weak self] (error) in
+                .catch { [weak self] error in
                     self?.present(UIAlertController(title: "Could Not Quote Message", error: error), animated: true)
             }
         }
@@ -225,8 +225,8 @@ final class MessageViewController: ViewController {
             self.loadingView = loadingView
             view.addSubview(loadingView)
 
-            _ = ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
-                .then { [weak self] message -> Void in
+            ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
+                .done { [weak self] message in
                     self?.title = message.subject
 
                     if message.seen == false {
@@ -235,10 +235,10 @@ final class MessageViewController: ViewController {
                         try message.managedObjectContext?.save()
                     }
                 }
-                .catch { [weak self] (error) in
+                .catch { [weak self] error in
                     self?.title = ""
                 }
-                .always { [weak self] in
+                .finally { [weak self] in
                     self?.renderMessage()
 
                     self?.loadingView?.removeFromSuperview()

@@ -47,7 +47,7 @@ final class RapSheetViewController: TableViewController {
     
     fileprivate func load(_ page: Int) {
         _ = ForumsClient.shared.listPunishments(of: user, page: page)
-            .then { [weak self]  (newPunishments) -> Void in
+            .done { [weak self] newPunishments in
                 guard let sself = self else { return }
 
                 sself.mostRecentlyLoadedPage = page
@@ -70,10 +70,10 @@ final class RapSheetViewController: TableViewController {
                     sself.tableView.insertRows(at: indexPaths, with: .automatic)
                 }
             }
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error -> Void in
                 self?.present(UIAlertController(networkError: error), animated: true)
             }
-            .always { [weak self] in
+            .finally { [weak self] in
                 self?.stopAnimatingPullToRefresh()
                 self?.stopAnimatingInfiniteScroll()
         }

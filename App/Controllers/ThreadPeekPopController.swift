@@ -69,7 +69,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             let thread = postsViewController.thread
             
             _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
-                .then { () -> Void in
+                .done {
                     guard let presentingViewController = previewViewController.parent else {
                         return
                     }
@@ -81,7 +81,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                         overlay?.dismiss(true)
                     }
                 }
-                .catch { error -> Void in
+                .catch { error in
                     guard let presentingViewController = previewViewController.parent else {
                         return
                     }

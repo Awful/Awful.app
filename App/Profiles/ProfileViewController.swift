@@ -91,13 +91,13 @@ final class ProfileViewController: ViewController {
         webView.scrollView.flashScrollIndicators()
         
         let (userID, username) = (user.userID, user.username)
-        _ = ForumsClient.shared.profileUser(id: user.userID, username: user.username)
-            .then { [weak self] (profile) -> Void in
+        ForumsClient.shared.profileUser(id: user.userID, username: user.username)
+            .done { [weak self] profile in
                 guard let sself = self else { return }
                 sself.user = profile.user
                 sself.renderProfile()
             }
-            .catch { (error) in
+            .catch { error in
                 print("error fetching user profile for \(username ?? "") (ID \(userID)): \(error)")
         }
     }

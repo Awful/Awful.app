@@ -49,7 +49,7 @@ final class PrivateMessageInboxRefresher {
         }
         
         _ = client.listPrivateMessagesInInbox()
-            .then { [weak self, minder] messages -> Void in
+            .done { [weak self, minder] messages in
                 Log.d("successfully refreshed private message inbox")
                 
                 minder.didRefresh(.privateMessagesInbox)

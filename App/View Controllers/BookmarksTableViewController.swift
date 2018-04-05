@@ -40,7 +40,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     
     private func loadPage(page: Int) {
         ForumsClient.shared.listBookmarkedThreads(page: page)
-            .then { (threads) -> Void in
+            .done { threads in
                 self.latestPage = page
                 RefreshMinder.sharedMinder.didRefresh(.bookmarks)
 
@@ -51,12 +51,12 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
                     self.scrollToLoadMoreBlock = nil
                 }
             }
-            .catch { (error) in
+            .catch { error in
                 guard self.visible else { return }
                 let alert = UIAlertController(networkError: error)
                 self.present(alert, animated: true)
             }
-            .always {
+            .finally {
                 self.stopAnimatingPullToRefresh()
                 self.stopAnimatingInfiniteScroll()
         }

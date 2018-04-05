@@ -149,8 +149,8 @@ final class ThreadComposeViewController: ComposeTextViewController {
         guard availableThreadTags == nil && !updatingThreadTags else { return }
         
         updatingThreadTags = true
-        _ = ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
-            .then { [weak self] tags -> Void in
+        ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
+            .done { [weak self] tags in
                 guard let sself = self else { return }
                 sself.updatingThreadTags = false
                 sself.availableThreadTags = tags.primary
@@ -169,7 +169,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
                     picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
                 }
             }
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error in
                 guard let sself = self else { return }
                 sself.updatingThreadTags = false
                 sself.availableThreadTags = nil
@@ -210,12 +210,12 @@ final class ThreadComposeViewController: ComposeTextViewController {
             let formData = formData
             else { return completion(false) }
         
-        _ = ForumsClient.shared.postThread(using: formData, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition)
-            .then { [weak self] (thread) -> Void in
+        ForumsClient.shared.postThread(using: formData, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition)
+            .done { [weak self] thread in
                 self?.thread = thread
                 completion(true)
             }
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error in
                 let alert = UIAlertController(title: "Network Error", error: error, handler: {
                     completion(false)
                 })

@@ -120,7 +120,7 @@ class PostPreviewViewController: ViewController {
         }
         networkOperation = cancellable
         promise
-            .then { callback(nil, $0) }
+            .done { callback(nil, $0) }
             .catch { callback($0, nil) }
     }
 

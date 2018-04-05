@@ -70,8 +70,8 @@ final class AnnouncementListRefresher {
         let arbitraryForum = forums[Int(arc4random_uniform(UInt32(forums.count)))]
 
         // SA: Requesting page -1 of a forum still fetches the announcements, but doesn't fetch any threads. Seems like it's maybe less work for the server? Definitely less work for us.
-        _ = client.listThreads(in: arbitraryForum, tagged: nil, page: -1)
-            .then { [weak self, minder] threads -> Void in
+        client.listThreads(in: arbitraryForum, tagged: nil, page: -1)
+            .done { [weak self, minder] threads in
                 Log.d("successfully refreshed announcements")
 
                 minder.didRefresh(.announcements)

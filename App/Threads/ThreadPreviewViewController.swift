@@ -59,7 +59,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
         let (html, cancellable) = ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode)
         networkOperation = cancellable
-        html.then { [weak self] (previewAndForm) -> Void in
+        html.done { [weak self] previewAndForm in
             guard let sself = self else { return }
 
             sself.networkOperation = nil
@@ -78,7 +78,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
             sself.formData = previewAndForm.formData
             sself.renderPreview()
             }
-            .catch { [weak self] (error) -> Void in
+            .catch { [weak self] error in
                 self?.present(UIAlertController(networkError: error), animated: true)
         }
     }

@@ -132,7 +132,7 @@ class LoginViewController: ViewController {
         state = .attemptingLogin
         ForumsClient.shared.logIn(username: usernameTextField.text ?? "",
                                   password: passwordTextField.text ?? "")
-            .then { (user) -> Void in
+            .done { user in
                 let settings = AwfulSettings.shared()!
                 settings.username = user.username
                 settings.userID = user.userID
@@ -141,7 +141,7 @@ class LoginViewController: ViewController {
                     completionBlock(self)
                 }
             }
-            .catch { (error) in
+            .catch { error in
                 self.state = .failedLogin
         }
     }

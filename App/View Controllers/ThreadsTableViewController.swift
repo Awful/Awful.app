@@ -60,7 +60,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     private func loadPage(_ page: Int) {
         ForumsClient.shared.listThreads(in: forum, tagged: filterThreadTag, page: page)
-            .then { (threads) -> Void in
+            .done { threads in
                 self.latestPage = page
 
                 self.scrollToLoadMoreBlock = { self.loadNextPage() }
@@ -82,7 +82,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
                 let alert = UIAlertController(networkError: error)
                 self.present(alert, animated: true)
             }
-            .always {
+            .finally {
                 self.stopAnimatingPullToRefresh()
                 self.stopAnimatingInfiniteScroll()
         }

@@ -89,8 +89,8 @@ final class SettingsViewController: TableViewController {
     
     fileprivate func refreshIfNecessary() {
         guard RefreshMinder.sharedMinder.shouldRefresh(.loggedInUser) else { return }
-        _ = ForumsClient.shared.profileLoggedInUser()
-            .then { [weak self] (user) -> Void in
+        ForumsClient.shared.profileLoggedInUser()
+            .done { [weak self] user in
                 RefreshMinder.sharedMinder.didRefresh(.loggedInUser)
 
                 AwfulSettings.shared().userID = user.userID
@@ -99,7 +99,7 @@ final class SettingsViewController: TableViewController {
 
                 self?.tableView.reloadData()
             }
-            .catch { (error) -> Void in
+            .catch { error in
                 Log.i("failed refreshing user info: \(error)")
         }
     }
