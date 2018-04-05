@@ -58,15 +58,20 @@ target :SmilieExtractor do
 end
 
 post_install do |installer|
-  installer.pods_project.build_configurations.each do |config|
-    config.build_settings['SWIFT_VERSION'] = '4.0'
-  end
-  
   extension_safe_pods = %w[FLAnimatedImage HTMLReader OMGHTTPURLRQ PromiseKit]
+  swift_4_pods = %w[GRMustache.swift PullToRefresher]
+
   installer.pods_project.targets.each do |target|
-    next unless extension_safe_pods.include?(target.name)
-    target.build_configurations.each do |config|
-      config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
+    if extension_safe_pods.include?(target.name)
+      target.build_configurations.each do |config|
+        config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
+      end
+    end
+
+    if swift_4_pods.include?(target.name)
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '4.0'
+      end
     end
   end
 end

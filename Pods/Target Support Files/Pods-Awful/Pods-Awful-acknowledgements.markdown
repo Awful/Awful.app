@@ -276,7 +276,7 @@ https://github.com/mxcl/OMGHTTPURLRQ/blob/master/README.markdown
 
 ## PromiseKit
 
-Copyright 2016, Max Howell; mxcl@me.com
+Copyright 2016-present, Max Howell; mxcl@me.com
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
