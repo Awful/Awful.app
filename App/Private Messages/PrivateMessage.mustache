@@ -18,12 +18,12 @@
             <section class="nameanddate">
                 <h1 class="username">{{ fromUsername }}</h1>
 
-                <time class="regdate">Joined {{ regDateFormat(from.regdate) }}</time>
+                <time class="regdate">Joined {{ regdateFormat(regdate) }}</time>
             </section>
         </header>
         
         <section class="postbody">
-            {{{ HTMLContents }}}
+            {{{ htmlContents }}}
         </section>
         
         <footer>

@@ -5,7 +5,6 @@
 import ARChromeActivity
 import AwfulCore
 import CoreData
-import GRMustache
 import MRProgress
 import PromiseKit
 import TUSafariActivity
@@ -271,58 +270,52 @@ final class PostsPageViewController: ViewController {
         
         webViewDidLoadOnce = false
         
-        var context: [String: AnyObject] = [:]
+        var context: [String: Any] = [:]
         
         var error: NSError? = nil
         if let script = LoadJavaScriptResources(["WebViewJavascriptBridge.js.txt", "zepto.min.js", "widgets.js", "common.js", "posts-view.js"], &error) {
-            context["script"] = script as AnyObject?
+            context["script"] = script as Any
         } else {
-            print("\(#function) error loading scripts: \(error!)")
-            return
+            Log.e("error loading JavaScripts: \(error!)")
         }
         
-        context["version"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String as NSString
-        context["userInterfaceIdiom"] = (UIDevice.current.userInterfaceIdiom == .pad ? "ipad" : "iphone") as NSString
-        context["stylesheet"] = (theme["postsViewCSS"] as String?)! as NSString
+        context["stylesheet"] = (theme["postsViewCSS"] as String?) as Any
         
         if posts.count > hiddenPosts {
-            let subset = posts[hiddenPosts ..< posts.endIndex]
-            context["posts"] = subset.map(PostViewModel.init) as NSArray
+            let subset = posts[hiddenPosts...]
+            context["posts"] = subset.map { PostViewModel($0) }
         }
         
-        if let ad = advertisementHTML , !ad.isEmpty {
-            context["advertisementHTML"] = ad as AnyObject?
+        if let ad = advertisementHTML, !ad.isEmpty {
+            context["advertisementHTML"] = ad
         }
         
         if context["posts"] != nil, case .specific(let pageNumber)? = page, pageNumber >= numberOfPages {
-            context["endMessage"] = true as AnyObject?
+            context["endMessage"] = true
         }
         
-        let fontScalePercentage = AwfulSettings.shared().fontScale
-        if fontScalePercentage != 100 {
-            context["fontScalePercentage"] = fontScalePercentage as AnyObject?
+        if let username = AwfulSettings.shared().username, !username.isEmpty {
+            context["loggedInUsername"] = username
         }
         
-        if let username = AwfulSettings.shared().username , !username.isEmpty {
-            context["loggedInUsername"] = username as AnyObject?
-        }
-        
-        context["externalStylesheet"] = PostsViewExternalStylesheetLoader.sharedLoader.stylesheet as AnyObject?
+        context["externalStylesheet"] = PostsViewExternalStylesheetLoader.sharedLoader.stylesheet
         
         if !thread.threadID.isEmpty {
-            context["threadID"] = thread.threadID as AnyObject?
+            context["threadID"] = thread.threadID
         }
         
-        if let forum = thread.forum , !forum.forumID.isEmpty {
-            context["forumID"] = forum.forumID as AnyObject?
+        if let forum = thread.forum, !forum.forumID.isEmpty {
+            context["forumID"] = forum.forumID
         }
-        
+
+        let html: String
         do {
-            let html = try GRMustacheTemplate.renderObject(context, fromResource: "PostsView", bundle: nil)
-            webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
+            html = try MustacheTemplate.render(.postsView, value: context)
         } catch {
-            print("\(#function) error loading posts view HTML: \(error)")
+            Log.e("could not render posts view HTML: \(error)")
+            html = ""
         }
+        webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
     }
     
     fileprivate func loadBlankPage() {
@@ -739,12 +732,12 @@ final class PostsPageViewController: ViewController {
         })
     }
     
-    fileprivate func renderedPostAtIndex(_ i: Int) -> String {
-        let viewModel = PostViewModel(post: posts[i])
+    private func renderedPostAtIndex(_ i: Int) -> String {
+        let viewModel = PostViewModel(posts[i])
         do {
-            return try GRMustacheTemplate.renderObject(viewModel, fromResource: "Post", bundle: nil)
+            return try MustacheTemplate.render(.post, value: viewModel)
         } catch {
-            print("\(#function) error rendering post at index \(i): \(error)")
+            Log.e("could not render post at index \(i): \(error)")
             return ""
         }
     }

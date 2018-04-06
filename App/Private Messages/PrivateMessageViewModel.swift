@@ -5,85 +5,49 @@
 import AwfulCore
 import Foundation
 import HTMLReader
+import Mustache
 
-final class PrivateMessageViewModel: NSObject {
-    fileprivate let privateMessage: PrivateMessage
-    
-    init(privateMessage: PrivateMessage) {
-        self.privateMessage = privateMessage
-        super.init()
-    }
-    
-    @NSCopying @objc var stylesheet: NSString?
-    
-    @objc var userInterfaceIdiom: String {
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad: return "ipad"
-        default: return "iphone"
+private let Log = Logger.get()
+
+struct PrivateMessageViewModel: MustacheBoxable {
+    private let dict: [String: Any]
+
+    init(message: PrivateMessage, stylesheet: String?) {
+        let showAvatars = AwfulSettings.shared().showAvatars
+        let hiddenAvataruRL = showAvatars ? nil : message.from?.avatarURL
+        var htmlContents: String? {
+            guard let originalHTML = message.innerHTML else { return nil }
+            let document = HTMLDocument(string: originalHTML)
+            document.removeSpoilerStylingAndEvents()
+            document.useHTML5VimeoPlayer()
+            document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
+            return document.firstNode(matchingSelector: "body")?.innerHTML
         }
-    }
-    
-    @objc var visibleAvatarURL: URL? {
-        return showAvatars ? privateMessage.from?.avatarURL as URL? : nil
-    }
-    
-    @objc var hiddenAvataruRL: URL? {
-        return showAvatars ? nil : privateMessage.from?.avatarURL as URL?
-    }
-    
-    @objc var fromUsername: String {
-        return privateMessage.fromUsername ?? ""
-    }
-    
-    @objc var showAvatars: Bool {
-        return AwfulSettings.shared().showAvatars
-    }
-    
-    @objc var HTMLContents: String? {
-        guard let originalHTML = privateMessage.innerHTML else { return nil }
-        let document = HTMLDocument(string: originalHTML)
-        document.removeSpoilerStylingAndEvents()
-        document.useHTML5VimeoPlayer()
-        document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
-        return document.firstNode(matchingSelector: "body")?.innerHTML
-    }
-    
-    @objc var regDateFormat: DateFormatter {
-        return DateFormatter.regDateFormatter
-    }
-    
-    @objc var sentDateFormat: DateFormatter {
-        return DateFormatter.postDateFormatter
-    }
-    
-    @objc var javascript: String? {
-        var error: NSError?
-        let script = LoadJavaScriptResources(["WebViewJavascriptBridge.js.txt", "zepto.min.js", "widgets.js", "common.js", "private-message.js"], &error)
-        if script == nil {
-            print("\(#function) error loading scripts: \(String(describing: error))")
+        var javascript: String? {
+            var error: NSError?
+            let script = LoadJavaScriptResources(["WebViewJavascriptBridge.js.txt", "zepto.min.js", "widgets.js", "common.js", "private-message.js"], &error)
+            if script == nil {
+                Log.e("error loading JavaaScripts: \(error as Any)")
+            }
+            return script
         }
-        return script
+        let visibleAvatarURL = showAvatars ? message.from?.avatarURL : nil
+
+        dict = [
+            "fromUsername": message.fromUsername ?? "",
+            "hiddenAvataruRL": hiddenAvataruRL as Any,
+            "htmlContents": htmlContents as Any,
+            "javascript": javascript as Any,
+            "messageID": message.messageID,
+            "regdate": message.from?.regdate as Any,
+            "seen": message.seen,
+            "sentDate": message.sentDate as Any,
+            "showAvatars": showAvatars,
+            "stylesheet": stylesheet as Any,
+            "visibleAvatarURL": visibleAvatarURL as Any]
     }
-    
-    @objc var fontScalePercentage: NSNumber? {
-        let percentage = floor(AwfulSettings.shared().fontScale)
-        if percentage == 100 { return nil }
-        return percentage as NSNumber?
-    }
-    
-    @objc var from: User? {
-        return privateMessage.from
-    }
-    
-    @objc var messageID: String {
-        return privateMessage.messageID
-    }
-    
-    @objc var seen: Bool {
-        return privateMessage.seen
-    }
-    
-    @objc var sentDate: Date? {
-        return privateMessage.sentDate as Date?
+
+    var mustacheBox: MustacheBox {
+        return Box(dict)
     }
 }

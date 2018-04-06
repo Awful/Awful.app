@@ -2,9 +2,11 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import GRMustache
+import Mustache
 import UIKit
 import WebKit
+
+private let Log = Logger.get()
 
 final class AcknowledgementsViewController: ViewController {
     fileprivate var webView: WKWebView { return view as! WKWebView }
@@ -36,19 +38,17 @@ final class AcknowledgementsViewController: ViewController {
         
         let context = [
             "backgroundColor": backgroundColor.hexCode,
-            "textColor": textColor.hexCode
-        ]
-        let bundle = Bundle(for: AcknowledgementsViewController.self)
-        
-        var HTML : String = ""
+            "textColor": textColor.hexCode]
+        let html: String
         do {
-            HTML = try GRMustacheTemplate.renderObject(context, fromResource: "Acknowledgements", bundle: bundle)
+            html = try MustacheTemplate.render(.acknowledgements, value: context)
         }
         catch {
-            NSLog("Didn't load view")
+            Log.e("could not render acknowledgements HTML: \(error)")
+            html = ""
         }
         
-        webView.loadHTMLString(HTML, baseURL: nil)
+        webView.loadHTMLString(html, baseURL: nil)
     }
     
     override func themeDidChange() {

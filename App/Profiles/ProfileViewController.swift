@@ -5,10 +5,11 @@
 import AFNetworking
 import ARChromeActivity
 import AwfulCore
-import GRMustache
 import TUSafariActivity
 import UIKit
 import WebKit
+
+private let Log = Logger.get()
 
 /// Shows detailed information about a particular user.
 final class ProfileViewController: ViewController {
@@ -103,17 +104,20 @@ final class ProfileViewController: ViewController {
     }
     
     fileprivate func renderProfile() {
-        var HTML = ""
+        let html: String
         if let profile = user.profile {
-            let viewModel = ProfileViewModel(profile: profile)
+            let viewModel = ProfileViewModel(profile)
             do {
-                HTML = try GRMustacheTemplate.renderObject(viewModel, fromResource: "Profile", bundle: nil)
+                html = try MustacheTemplate.render(.profile, value: viewModel)
             }
             catch {
-                NSLog("[\(Mirror(reflecting:self)) \(#function)] error rendering user profile for \(String(describing: user.username)) (ID \(user.userID)): \(error)")
+                Log.e("could not render profile HTML: \(error)")
+                html = ""
             }
+        } else {
+            html = ""
         }
-        webView.loadHTMLString(HTML, baseURL: baseURL)
+        webView.loadHTMLString(html, baseURL: baseURL)
     }
     
     var baseURL: URL? {

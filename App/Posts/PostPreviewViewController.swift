@@ -4,8 +4,9 @@
 
 import AwfulCore
 import CoreData
-import GRMustache
 import PromiseKit
+
+private let Log = Logger.get()
 
 /// Previews a post (new or edited).
 class PostPreviewViewController: ViewController {
@@ -130,12 +131,10 @@ class PostPreviewViewController: ViewController {
         fetchPreviewIfNecessary()
         
         guard let fakePost = fakePost else { return }
-        var context: [String: AnyObject] = [
-            "userInterfaceIdiom": (UIDevice.current.userInterfaceIdiom == .pad ? "ipad" : "iphone") as NSString,
-            "version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String as NSString,
-            "stylesheet": (theme["postsViewCSS"] as String? ?? "") as NSString,
-            "post": PostViewModel(post: fakePost),
-        ]
+
+        var context: [String: Any] = [
+            "stylesheet": (theme["postsViewCSS"] as String? ?? ""),
+            "post": PostViewModel(fakePost)]
         do {
             var error: NSError?
             if let script = LoadJavaScriptResources(["zepto.min.js", "common.js"], &error) {
@@ -144,18 +143,17 @@ class PostPreviewViewController: ViewController {
                 throw error
             }
         } catch {
-            print("\(#function) error loading: \(error)")
+            Log.e("error loading JavaScripts: \(error)")
         }
-        if AwfulSettings.shared().fontScale != 100 {
-            context["fontScalePercentage"] = AwfulSettings.shared().fontScale as AnyObject?
-        }
-        
+
+        let html: String
         do {
-            let html = try GRMustacheTemplate.renderObject(context, fromResource: "PostPreview", bundle: nil)
-            webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
+            html = try MustacheTemplate.render(.postPreview, value: context)
         } catch {
-            print("\(#function) error loading post preview HTML: \(error)")
+            Log.e("failed to render post preview HTML: \(error)")
+            html = ""
         }
+        webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
         
         loadingView?.removeFromSuperview()
         loadingView = nil

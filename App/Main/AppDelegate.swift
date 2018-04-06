@@ -7,7 +7,6 @@ import AVFoundation
 import AwfulCore
 import Crashlytics
 import Fabric
-import GRMustache
 import Smilies
 import UIKit
 
@@ -31,8 +30,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         {
             Fabric.with([Crashlytics.self])
         }
-        
-        GRMustache.preventNSUndefinedKeyExceptionAttack()
         
         AwfulSettings.shared().registerDefaults()
         AwfulSettings.shared().migrateOldSettings()

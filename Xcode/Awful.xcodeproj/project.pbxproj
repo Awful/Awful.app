@@ -314,6 +314,7 @@
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
+		1C914EC9207716D600C0E238 /* MustacheRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914EC8207716D600C0E238 /* MustacheRepository.swift */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */; };
@@ -978,6 +979,7 @@
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
+		1C914EC8207716D600C0E238 /* MustacheRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MustacheRepository.swift; sourceTree = "<group>"; };
 		1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFetchedDataSource.h; sourceTree = "<group>"; };
 		1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFetchedDataSource.m; sourceTree = "<group>"; };
 		1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulErrorDomain.h; sourceTree = "<group>"; };
@@ -1500,6 +1502,7 @@
 				1C25AC401F5371CC00977D6F /* Logger.swift */,
 				1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */,
 				1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */,
+				1C914EC8207716D600C0E238 /* MustacheRepository.swift */,
 				1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */,
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
 				1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */,
@@ -3442,6 +3445,7 @@
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
+				1C914EC9207716D600C0E238 /* MustacheRepository.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,

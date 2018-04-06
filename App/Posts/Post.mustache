@@ -7,12 +7,12 @@
       
       {{# accessibilityRoles }}<span class="voiceover-only">{{ . }}</span>{{/ }}
 
-			<time class="regdate">Joined {{ regDateFormat(author.regdate) }}</time>
+			<time class="regdate">Joined {{ regdateFormat(author.regdate) }}</time>
 		</section>
     </header>
   
     <section class="postbody">
-        {{{ HTMLContents }}}
+        {{{ htmlContents }}}
     </section>
 	
 	<footer>

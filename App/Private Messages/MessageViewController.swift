@@ -3,8 +3,9 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
-import GRMustache
 import WebViewJavascriptBridge
+
+private let Log = Logger.get()
 
 /// Displays a single private message.
 final class MessageViewController: ViewController {
@@ -45,13 +46,12 @@ final class MessageViewController: ViewController {
     }
     
     fileprivate func renderMessage() {
-        let viewModel = PrivateMessageViewModel(privateMessage: privateMessage)
-        viewModel.stylesheet = theme["postsViewCSS"] as String? as NSString?
+        let viewModel = PrivateMessageViewModel(message: privateMessage, stylesheet: theme["postsViewCSS"])
         let html: String
         do {
-            html = try GRMustacheTemplate.renderObject(viewModel, fromResource: "PrivateMessage", bundle: nil)
+            html = try MustacheTemplate.render(.privateMessage, value: viewModel)
         } catch {
-            print("\(#function) error rendering private message: \(error)")
+            Log.e("failed to render private message: \(error)")
             html = ""
         }
         webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
