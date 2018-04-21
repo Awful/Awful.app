@@ -298,7 +298,7 @@ final class PostsPageViewController: ViewController {
             context["loggedInUsername"] = username
         }
         
-        context["externalStylesheet"] = PostsViewExternalStylesheetLoader.sharedLoader.stylesheet
+        context["externalStylesheet"] = PostsViewExternalStylesheetLoader.shared.stylesheet
         
         if !thread.threadID.isEmpty {
             context["threadID"] = thread.threadID
@@ -522,8 +522,12 @@ final class PostsPageViewController: ViewController {
         }
     }
     
-    @objc fileprivate func externalStylesheetDidUpdate(_ notification: NSNotification) {
-        webViewJavascriptBridge?.callHandler("changeExternalStylesheet", data: notification.object)
+    @objc private func externalStylesheetDidUpdate(_ rawNotification: Notification) {
+        guard let notification = PostsViewExternalStylesheetLoader.DidUpdateNotification(rawNotification) else {
+            return Log.e("got an unexpected or invalid notification: \(rawNotification)")
+        }
+
+        webViewJavascriptBridge?.callHandler("changeExternalStylesheet", data: notification.stylesheet)
     }
     
     fileprivate func refetchPosts() {
@@ -1095,7 +1099,7 @@ final class PostsPageViewController: ViewController {
             }
         })
         
-        NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: NSNotification.Name(rawValue: PostsViewExternalStylesheetLoader.didUpdateNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
         
         if AwfulSettings.shared().pullForNext {
             refreshControl = PostsPageRefreshControl(scrollView: webView.scrollView, contentView: PostsPageRefreshSpinnerView())

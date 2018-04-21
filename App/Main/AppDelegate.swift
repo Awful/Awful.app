@@ -83,7 +83,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
-        PostsViewExternalStylesheetLoader.sharedLoader.refreshIfNecessary()
+        PostsViewExternalStylesheetLoader.shared.refreshIfNecessary()
         
         NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
