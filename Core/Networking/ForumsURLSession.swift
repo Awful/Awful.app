@@ -3,7 +3,6 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
-import OMGHTTPURLRQ
 import PromiseKit
 
 /**
@@ -22,7 +21,39 @@ internal final class ForumsURLSession {
         let config: URLSessionConfiguration = {
             let config = URLSessionConfiguration.default
             var headers = config.httpAdditionalHeaders ?? [:]
-            headers["User-Agent"] = OMGUserAgent()
+            headers["User-Agent"] = {
+                // Mostly snipped from Alamofire. Thanks!
+                let info = Bundle.main.infoDictionary!
+                let executable = info[kCFBundleExecutableKey as String] as? String ?? "Unknown"
+                let bundle = info[kCFBundleIdentifierKey as String] as? String ?? "Unknown"
+                let appVersion = info["CFBundleShortVersionString"] as? String ?? "Unknown"
+                let appBuild = info[kCFBundleVersionKey as String] as? String ?? "Unknown"
+
+                let osNameVersion: String = {
+                    let version = ProcessInfo.processInfo.operatingSystemVersion
+                    let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+
+                    let osName: String = {
+                        #if os(iOS)
+                            return "iOS"
+                        #elseif os(watchOS)
+                            return "watchOS"
+                        #elseif os(tvOS)
+                            return "tvOS"
+                        #elseif os(macOS)
+                            return "OS X"
+                        #elseif os(Linux)
+                            return "Linux"
+                        #else
+                            return "Unknown"
+                        #endif
+                    }()
+
+                    return "\(osName) \(versionString)"
+                }()
+
+                return "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
+            }()
             config.httpAdditionalHeaders = headers
             return config
         }()
@@ -54,9 +85,10 @@ internal final class ForumsURLSession {
         -> (promise: PromiseType, cancellable: Cancellable)
         where S: Sequence, S.Element == Dictionary<String, Any>.Element
     {
-        guard let url = URL(string: urlString, relativeTo: baseURL) else {
-            return (Promise(error: ForumsClient.PromiseError.invalidBaseURL), Operation())
-        }
+        guard
+            let url = URL(string: urlString, relativeTo: baseURL),
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            else { return (Promise(error: ForumsClient.PromiseError.invalidBaseURL), Operation()) }
 
         let parameters = win1252Escaped(parameters.map(Array.init) ?? [])
 
@@ -64,15 +96,11 @@ internal final class ForumsURLSession {
         do {
             switch method {
             case .get:
-                let dictParameters = Dictionary<String, Any>(parameters.map { (key: $0, value: $1 as Any) }, uniquingKeysWith: { (old: Any, new: Any) -> Any in
-                    switch old {
-                    case let old as [Any]:
-                        return old + [new]
-                    default:
-                        return [old, new]
-                    }
-                })
-                request = try OMGHTTPURLRQ.get(url.absoluteString, dictParameters) as URLRequest
+                let queryItems = parameters.map { URLQueryItem(name: $0, value: $1) }
+                components.queryItems = (components.queryItems ?? []) + queryItems
+                var mutableRequest = URLRequest(url: components.url!)
+                mutableRequest.httpMethod = "GET"
+                request = mutableRequest
 
             case .post:
                 var mutableRequest = URLRequest(url: url)
