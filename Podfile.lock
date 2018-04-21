@@ -26,14 +26,11 @@ PODS:
     - Fabric (~> 1.7.5)
   - Fabric (1.7.6)
   - FLAnimatedImage (1.0.12)
-  - GRMustache (7.3.2):
-    - JRSwizzle (~> 1.0)
   - GRMustache.swift (2.0.0)
   - HTMLReader (2.1)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
   - JLRoutes (1.6.4)
-  - JRSwizzle (1.0)
   - KVOController (1.2.0)
   - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
@@ -81,7 +78,6 @@ DEPENDENCIES:
   - ARChromeActivity
   - Crashlytics
   - FLAnimatedImage
-  - GRMustache
   - GRMustache.swift (from `https://github.com/chrisballinger/GRMustache.swift`, branch `feature/swift4`)
   - HTMLReader
   - ImgurAnonymousAPIClient
@@ -103,11 +99,9 @@ SPEC REPOS:
     - Crashlytics
     - Fabric
     - FLAnimatedImage
-    - GRMustache
     - HTMLReader
     - ImgurAnonymousAPIClient
     - JLRoutes
-    - JRSwizzle
     - KVOController
     - MRProgress
     - OMGHTTPURLRQ
@@ -144,12 +138,10 @@ SPEC CHECKSUMS:
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
   GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
   HTMLReader: dd75279b0532ff5d005ffe1c6512e33d1d52f861
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
   JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
-  JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   OMGHTTPURLRQ: edb14c7d28add69226b79d826f930805927a0ffa
@@ -159,6 +151,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: b52a98b54e3046efc0a3ad6164b7e2083c0bfd5d
+PODFILE CHECKSUM: da3b3467d43dea182f315228f4869c4dd0b85b27
 
 COCOAPODS: 1.5.0

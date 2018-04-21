@@ -12,7 +12,6 @@ target 'Awful' do
   pod 'ARChromeActivity'
   pod 'Crashlytics'
   pod 'FLAnimatedImage'
-  pod 'GRMustache'
   #pod 'GRMustache.swift' # Waiting for Swift 4 support
   pod 'GRMustache.swift', :git => 'https://github.com/chrisballinger/GRMustache.swift', :branch => 'feature/swift4'
 
