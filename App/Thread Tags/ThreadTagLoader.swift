@@ -2,12 +2,14 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AFNetworking
-import UIKit
 import AwfulCore
+import PromiseKit
+import UIKit
+
+private let Log = Logger.get()
 
 /// Loads thread tag images, both those shipped with the app and those updated at the GitHub repository.
-final class ThreadTagLoader: NSObject {
+final class ThreadTagLoader {
     /**
         Loads and caches a thread tag image using the convenient singleton.
      
@@ -63,11 +65,11 @@ final class ThreadTagLoader: NSObject {
         return ThreadTagLoader(tagListURL: tagListURL, cacheFolder: cacheFolder, objectionableImageNames: objectionableImageNames)
     }()
     
-    fileprivate let tagListURL: URL
-    fileprivate let cacheFolder: URL
-    fileprivate let session: AFHTTPSessionManager
-    fileprivate var downloadingNewTags = false
-    fileprivate let objectionableImageNames: Set<String>
+    private let cacheFolder: URL
+    private let objectionableImageNames: Set<String>
+    private let session = URLSession(configuration: .ephemeral)
+    private let tagListURL: URL
+    private var downloadingNewTags = false
     
     /**
         - parameter tagListURL: The location of a list of tags available for download.
@@ -77,13 +79,6 @@ final class ThreadTagLoader: NSObject {
         self.tagListURL = tagListURL
         self.cacheFolder = cacheFolder
         self.objectionableImageNames = Set(objectionableImageNames)
-        let baseURL = tagListURL.deletingLastPathComponent()
-        session = AFHTTPSessionManager(baseURL: baseURL)
-        super.init()
-        
-        let responseSerializer = AFHTTPResponseSerializer()
-        responseSerializer.acceptableContentTypes = ["text/plain"]
-        session.responseSerializer = responseSerializer
     }
     
     // MARK: - imageNamed
@@ -108,7 +103,7 @@ final class ThreadTagLoader: NSObject {
         return image
     }
     
-    fileprivate func shippedImageNamed(_ imageName: String) -> UIImage? {
+    private func shippedImageNamed(_ imageName: String) -> UIImage? {
         let pathInFolder = (resourceSubfolder as NSString).appendingPathComponent(imageName)
         guard let image = UIImage(named: pathInFolder) ?? UIImage(named: imageName) else { return nil }
         guard image.scale >= 2 else {
@@ -118,7 +113,7 @@ final class ThreadTagLoader: NSObject {
         return image
     }
     
-    fileprivate func cachedImageNamed(_ imageName: String) -> UIImage? {
+    private func cachedImageNamed(_ imageName: String) -> UIImage? {
         let url = cacheFolder.appendingPathComponent(imageName, isDirectory: false).appendingPathExtension("png")
         guard let image = UIImage(contentsOfFile: url.path) else { return nil }
         guard image.scale >= 2 else {
@@ -133,95 +128,99 @@ final class ThreadTagLoader: NSObject {
     /// Checks for new thread tags.
     func updateIfNecessary() {
         guard !downloadingNewTags else { return }
-        if lastUpdate.timeIntervalSinceNow > -60 * 60 { return }
-        
+        if lastUpdate.timeIntervalSinceNow > -60 * 60 {
+            return Log.d("not yet time to check for new thread tags")
+        }
+
+        Log.d("checking for new thread tags")
         downloadingNewTags = true
-        
-        session.get("tags.txt", parameters: nil, success: { [weak self] (task, textData) in
-            guard let
-                data = textData as? Data,
-                let tagsFile = String(data: data, encoding: String.Encoding.utf8)
-                else {
-                    print("thread tag list decoding failed")
-                    self?.downloadingNewTags = false
+
+        session.dataTask(.promise, with: tagListURL)
+            .validate()
+            .done { data, response in
+                guard let tagsFile = String(data: data, encoding: .utf8) else {
+                    Log.e("thread tag list decoding failed")
+                    self.downloadingNewTags = false
                     return
-            }
-            self?.saveTagsFile(tagsFile)
-            
-            let lines = tagsFile.components(separatedBy: "\n")
-            guard let relativePath = lines.first else {
-                print("couldn't find relative path in thread tag list")
-                self?.downloadingNewTags = false
-                return
-            }
-            let threadTags = lines.dropFirst()
-            self?.downloadNewThreadTags(threadTags, fromRelativePath: relativePath) {
-                self?.downloadingNewTags = false
-            }
-            
-            }, failure: { [weak self] (task, error) in
-                print("\(#function) error downloading new thread tag list: \(error)")
-                self?.downloadingNewTags = false
-        })
+                }
+                self.saveTagsFile(tagsFile)
+
+                let lines = tagsFile.components(separatedBy: "\n")
+                guard let relativePath = lines.first else {
+                    Log.e("couldn't find relative path in thread tag list")
+                    self.downloadingNewTags = false
+                    return
+                }
+                let threadTags = lines.dropFirst()
+                self.downloadNewThreadTags(threadTags, fromRelativePath: relativePath) {
+                    Log.d("done downloading new thread tags")
+                    self.downloadingNewTags = false
+                }
+            }.catch { error in
+                Log.e("could not download new thread tag list: \(error)")
+                self.downloadingNewTags = false
+        }
     }
     
-    fileprivate var lastUpdate: Date {
+    private var lastUpdate: Date {
         var modified: AnyObject?
         do {
-            try (cachedTagsFileURL as NSURL).getResourceValue(&modified, forKey: URLResourceKey.attributeModificationDateKey)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
+            try (cachedTagsFileURL as NSURL).getResourceValue(&modified, forKey: .attributeModificationDateKey)
+        } catch let error as CocoaError where error.code == .fileReadNoSuchFile {
             // nop
         } catch {
-            print("\(#function) error checking modification date of cached thread tags list: \(error)")
+            Log.e("could not check modification date of cached thread tags list: \(error)")
         }
-        return modified as? Date ?? Date.distantPast
+        return modified as? Date ?? .distantPast
     }
     
-    fileprivate func saveTagsFile(_ tagsFile: String) {
+    private func saveTagsFile(_ tagsFile: String) {
         do {
             try FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true, attributes: nil)
             
             try tagsFile.write(to: cachedTagsFileURL, atomically: false, encoding: String.Encoding.utf8)
         } catch {
-            print("\(#function) error: \(error)")
+            Log.e("could not save tags file: \(error)")
         }
     }
     
-    fileprivate var cachedTagsFileURL: URL {
+    private var cachedTagsFileURL: URL {
         return cacheFolder.appendingPathComponent("tags.txt", isDirectory: false)
     }
     
-    fileprivate func downloadNewThreadTags<S: Sequence>(_ allThreadTags: S, fromRelativePath relativePath: String, completion: @escaping () -> Void) where S.Iterator.Element == String {
+    private func downloadNewThreadTags<S: Sequence>(_ allThreadTags: S, fromRelativePath relativePath: String, completion: @escaping () -> Void) where S.Iterator.Element == String {
         var threadTags = Set(allThreadTags)
         threadTags.subtract(Set(shippedThreadTagImageNames))
         threadTags.subtract(Set(cachedThreadTagImageNames))
+
+        Log.d("downloading \(threadTags.count) new thread tag\(threadTags.count == 1 ? "" : "s")")
         
         let group = DispatchGroup()
         
         for threadTagName in threadTags {
             group.enter()
-            
-            guard let URL = NSURL(string: (relativePath as NSString).appendingPathComponent(threadTagName), relativeTo: session.baseURL) else { continue }
-            let request = session.requestSerializer.request(withMethod: "GET", urlString: URL.absoluteString!, parameters: nil, error: nil)
-            session.downloadTask(with: request as URLRequest, progress: nil, destination: { (targetPath, response) -> URL in
-                return self.cacheFolder.appendingPathComponent(threadTagName, isDirectory: false)
-                
-                }, completionHandler: { (response, filePath, error) in
-                    defer { group.leave() }
-                    if let error = error {
-                        print("\(#function) error download thread tag from \(URL): \(error)")
-                        return
-                    }
-                    
+
+            let baseURL = tagListURL.deletingLastPathComponent()
+            guard
+                let url = URL(string: (relativePath as NSString).appendingPathComponent(threadTagName), relativeTo: baseURL)
+                else { continue }
+
+            session.downloadTask(.promise, with: url, to: cacheFolder.appendingPathComponent(threadTagName, isDirectory: false), replacingIfNecessary: true)
+                .done { saveLocation, response in
                     let userInfo = [ThreadTagLoader.NewImageAvailableNotification.newImageNameKey: (threadTagName as NSString).deletingPathExtension]
                     NotificationCenter.default.post(name: ThreadTagLoader.NewImageAvailableNotification.name, object: self, userInfo: userInfo)
-            }).resume()
+                }.catch { error in
+                    Log.e("could not download thread tag from \(url): \(error)")
+                }
+                .finally {
+                    group.leave()
+            }
         }
         
         group.notify(queue: .main, execute: completion)
     }
     
-    fileprivate var shippedThreadTagImageNames: [String] {
+    private var shippedThreadTagImageNames: [String] {
         let placeholderImageNames = [
             ThreadTagLoader.emptyThreadTagImageName,
             ThreadTagLoader.emptyPrivateMessageImageName,
@@ -232,17 +231,17 @@ final class ThreadTagLoader: NSObject {
             let URLs = try FileManager.default.contentsOfDirectory(at: shippedThreadTagFolder, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
             return URLs.compactMap { $0.lastPathComponent } + placeholderImageNames
         } catch {
-            print("\(#function) error listing shipped thread tags: \(error)")
+            Log.e("could not list shipped thread tags: \(error)")
             return placeholderImageNames
         }
     }
     
-    fileprivate var cachedThreadTagImageNames: [String] {
+    private var cachedThreadTagImageNames: [String] {
         do {
             let URLs = try FileManager.default.contentsOfDirectory(at: cacheFolder, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
             return URLs.compactMap { $0.lastPathComponent }
         } catch {
-            print("\(#function) error listing cached thread tags: \(error)")
+            Log.e("could not list cached thread tags: \(error)")
             return []
         }
     }
