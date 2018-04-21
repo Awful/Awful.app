@@ -9,9 +9,9 @@ import WebKit
 private let Log = Logger.get()
 
 final class AcknowledgementsViewController: ViewController {
-    fileprivate var webView: WKWebView { return view as! WKWebView }
-    fileprivate var backgroundColor: UIColor { return theme["backgroundColor"]! }
-    fileprivate var textColor: UIColor { return theme["listTextColor"]! }
+    private var webView: WKWebView { return view as! WKWebView }
+    private var backgroundColor: UIColor { return theme["backgroundColor"]! }
+    private var textColor: UIColor { return theme["listTextColor"]! }
     
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
@@ -24,8 +24,8 @@ final class AcknowledgementsViewController: ViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @IBAction @objc fileprivate func didTapDone() {
-        dismiss(animated: true, completion: nil)
+    @IBAction @objc private func didTapDone() {
+        dismiss(animated: true)
     }
     
     override func loadView() {
@@ -57,7 +57,7 @@ final class AcknowledgementsViewController: ViewController {
         let js = "var s=document.body.style; s.backgroundColor='\(backgroundColor.hexCode)'; s.color='\(textColor.hexCode)'"
         webView.evaluateJavaScript(js, completionHandler: { result, error in
             if let error = error {
-                NSLog("\(#function): error running script `\(js)` in acknowledgements screen: \(error)")
+                Log.e("error running script `\(js)` in acknowledgements screen: \(error)")
             }
         })
     }
