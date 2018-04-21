@@ -33,7 +33,7 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    fileprivate var webViewNetworkActivityIndicatorManager: WebViewNetworkActivityIndicatorManager?
+    private var webViewNetworkActivityIndicatorManager: OldWebViewNetworkActivityIndicatorManager?
     fileprivate var webViewJavascriptBridge: WebViewJavascriptBridge?
     fileprivate var replyWorkspace: ReplyWorkspace?
     fileprivate var messageViewController: MessageComposeViewController?
@@ -1057,7 +1057,7 @@ final class PostsPageViewController: ViewController {
         longPress.delegate = self
         webView.addGestureRecognizer(longPress)
         
-        let activityIndicatorManager = WebViewNetworkActivityIndicatorManager(nextDelegate: self)
+        let activityIndicatorManager = OldWebViewNetworkActivityIndicatorManager(nextDelegate: self)
         webViewNetworkActivityIndicatorManager = activityIndicatorManager
         
         webViewJavascriptBridge = WebViewJavascriptBridge(for: webView, webViewDelegate: activityIndicatorManager, handler: { (data, callback) in

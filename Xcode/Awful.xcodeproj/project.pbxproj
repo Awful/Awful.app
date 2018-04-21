@@ -72,7 +72,7 @@
 		1C16FBF11CBDBEB600C88BD1 /* URL+Awful.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF01CBDBEB600C88BD1 /* URL+Awful.swift */; };
 		1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */; };
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
-		1C16FBFA1CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */; };
+		1C16FBFA1CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF91CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift */; };
 		1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */; };
 		1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBFD1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift */; };
 		1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */; };
@@ -315,6 +315,8 @@
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
 		1C914EC9207716D600C0E238 /* MustacheRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914EC8207716D600C0E238 /* MustacheRepository.swift */; };
+		1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */; };
+		1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */; };
@@ -720,7 +722,7 @@
 		1C16FBF01CBDBEB600C88BD1 /* URL+Awful.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Awful.swift"; sourceTree = "<group>"; };
 		1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+OpensInBrowser.swift"; sourceTree = "<group>"; };
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
-		1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
+		1C16FBF91CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldWebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerCell.swift; sourceTree = "<group>"; };
 		1C16FBFD1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageInboxRefresher.swift; sourceTree = "<group>"; };
 		1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -980,6 +982,8 @@
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
 		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
 		1C914EC8207716D600C0E238 /* MustacheRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MustacheRepository.swift; sourceTree = "<group>"; };
+		1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
+		1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFetchedDataSource.h; sourceTree = "<group>"; };
 		1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFetchedDataSource.m; sourceTree = "<group>"; };
 		1C9FDE5916E9CF5A00C665B5 /* AwfulErrorDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulErrorDomain.h; sourceTree = "<group>"; };
@@ -1503,9 +1507,11 @@
 				1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */,
 				1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */,
 				1C914EC8207716D600C0E238 /* MustacheRepository.swift */,
+				1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */,
 				1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */,
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
 				1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */,
+				1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -1896,8 +1902,8 @@
 				1C8E10491916F78B0010007B /* common.js */,
 				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
 				1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */,
+				1C16FBF91CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift */,
 				1CB15BF61A9D5D9C00176E73 /* URLMenuPresenter+WebViewJunk.swift */,
-				1C16FBF91CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift */,
 			);
 			path = "Web View Junk";
 			sourceTree = "<group>";
@@ -3441,7 +3447,7 @@
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
-				1C16FBFA1CBDC7A700C88BD1 /* WebViewNetworkActivityIndicatorManager.swift in Sources */,
+				1C16FBFA1CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
@@ -3471,6 +3477,7 @@
 				1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
+				1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */,
@@ -3511,6 +3518,7 @@
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
 				1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
+				1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,

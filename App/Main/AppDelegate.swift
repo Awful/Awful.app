@@ -2,7 +2,6 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AFNetworking
 import AVFoundation
 import AwfulCore
 import Crashlytics
@@ -49,8 +48,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ForumsClient.shared.didRemotelyLogOut = { [weak self] in
             self?.logOut()
         }
-        
-        AFNetworkActivityIndicatorManager.shared().isEnabled = true
+
+        ForumsClient.shared.fetchDidBegin = NetworkActivityIndicatorManager.shared.incrementActivityCount
+        ForumsClient.shared.fetchDidEnd = NetworkActivityIndicatorManager.shared.decrementActivityCount
         
         URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
         

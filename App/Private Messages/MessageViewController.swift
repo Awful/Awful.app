@@ -14,7 +14,7 @@ final class MessageViewController: ViewController {
     fileprivate var fractionalContentOffsetOnLoad: CGFloat = 0
     fileprivate var composeVC: MessageComposeViewController?
     fileprivate var webViewJavascriptBridge: WebViewJavascriptBridge?
-    fileprivate var networkActivityIndicatorManager: WebViewNetworkActivityIndicatorManager?
+    private var networkActivityIndicatorManager: OldWebViewNetworkActivityIndicatorManager?
     fileprivate var loadingView: LoadingView?
     fileprivate var didLoadOnce = false
     
@@ -197,7 +197,7 @@ final class MessageViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        networkActivityIndicatorManager = WebViewNetworkActivityIndicatorManager(nextDelegate: self)
+        networkActivityIndicatorManager = OldWebViewNetworkActivityIndicatorManager(nextDelegate: self)
         
         webViewJavascriptBridge = WebViewJavascriptBridge(for: webView, webViewDelegate: networkActivityIndicatorManager, handler: { (data, callback) in
             print("\(#function) \(String(describing: data))")

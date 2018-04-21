@@ -14,6 +14,7 @@ private let Log = Logger.get()
  While it's probably pretty clear that `RenderView` uses a web view to do its work, that fact shouldn't leak out into its public interface. In theory, we should be able to switch to something else completely (e.g. TextKit (hold me)) without breaking any callers.
  */
 final class RenderView: UIView {
+    private var activityIndicatorManager: WebViewActivityIndicatorManager?
     weak var delegate: RenderViewDelegate?
     var scrollView: UIScrollView { return webView.scrollView }
 
@@ -41,6 +42,8 @@ final class RenderView: UIView {
         webView.frame = CGRect(origin: .zero, size: self.frame.size)
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(webView)
+
+        activityIndicatorManager = .init(webView: webView)
     }
 
     required init?(coder: NSCoder) {

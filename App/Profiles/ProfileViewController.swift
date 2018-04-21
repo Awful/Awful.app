@@ -2,7 +2,6 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AFNetworking
 import ARChromeActivity
 import AwfulCore
 import TUSafariActivity
@@ -13,7 +12,9 @@ private let Log = Logger.get()
 
 /// Shows detailed information about a particular user.
 final class ProfileViewController: ViewController {
-    fileprivate var user: User {
+    private var networkActivityIndicator: WebViewActivityIndicatorManager?
+
+    private var user: User {
         didSet { updateTitle() }
     }
     
@@ -33,8 +34,6 @@ final class ProfileViewController: ViewController {
     var webView: WKWebView {
         return view as! WKWebView
     }
-    
-    fileprivate var networkActivityIndicator: NetworkActivityIndicatorForWKWebView!
 
     private func updateTitle() {
         title = user.username ?? "Profile"
@@ -59,11 +58,12 @@ final class ProfileViewController: ViewController {
         }
         configuration.userContentController = userContentController
         view = WKWebView(frame: CGRect.zero, configuration: configuration)
-        networkActivityIndicator = NetworkActivityIndicatorForWKWebView(webView)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        networkActivityIndicator = WebViewActivityIndicatorManager(webView: webView)
         renderProfile()
     }
     
@@ -103,7 +103,7 @@ final class ProfileViewController: ViewController {
         }
     }
     
-    fileprivate func renderProfile() {
+    private func renderProfile() {
         let html: String
         if let profile = user.profile {
             let viewModel = ProfileViewModel(profile)
@@ -144,12 +144,12 @@ extension ProfileViewController: WKScriptMessageHandler {
         }
     }
     
-    fileprivate func sendPrivateMessage() {
+    private func sendPrivateMessage() {
         let composeViewController = MessageComposeViewController(recipient: user)
         present(composeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     
-    fileprivate func showActionsForHomepage(_ url: URL, atRect rect: CGRect) {
+    private func showActionsForHomepage(_ url: URL, atRect rect: CGRect) {
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
         present(activityViewController, animated: true, completion: nil)
         let popover = activityViewController.popoverPresentationController
@@ -157,47 +157,3 @@ extension ProfileViewController: WKScriptMessageHandler {
         popover?.sourceView = self.webView
     }
 }
-
-// MARK: -
-
-/**
-The network activity indicator will show in the status bar while *any* NetworkActivityIndicatorForWKWebView is on.
-
-NetworkActivityIndicatorForWKWebView will turn off during deinitialization.
-*/
-private class NetworkActivityIndicatorForWKWebView: NSObject {
-    fileprivate(set) var on: Bool = false {
-        didSet {
-            if on && !oldValue {
-                AFNetworkActivityIndicatorManager.shared().incrementActivityCount()
-            } else if !on && oldValue {
-                AFNetworkActivityIndicatorManager.shared().decrementActivityCount()
-            }
-        }
-    }
-    
-    let webView: WKWebView
-    
-    init(_ webView: WKWebView) {
-        self.webView = webView
-        super.init()
-        
-        webView.addObserver(self, forKeyPath: "loading", options: .new, context: &KVOContext)
-    }
-    
-    deinit {
-        webView.removeObserver(self, forKeyPath: "loading", context: &KVOContext)
-        on = false
-    }
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if context == &KVOContext {
-            if let loading = change![NSKeyValueChangeKey.newKey] as? NSNumber {
-                on = loading.boolValue
-            }
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change , context: context)
-        }
-    }
-}
-
-private var KVOContext = 0

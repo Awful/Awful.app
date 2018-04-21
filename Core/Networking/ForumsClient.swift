@@ -16,6 +16,12 @@ public final class ForumsClient {
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
     public var didRemotelyLogOut: (() -> Void)?
 
+    /// A block to call when a request begins. May be a good time to show the network indicator.
+    public var fetchDidBegin: (() -> Void)?
+
+    /// A block to call when a request ends (in success or failure). May be a good time to stop showing the network indicator.
+    public var fetchDidEnd: (() -> Void)?
+
     /// Convenient singleton.
     public static let shared = ForumsClient()
     private init() {}
@@ -127,6 +133,9 @@ public final class ForumsClient {
                 DispatchQueue.main.async(execute: block)
             }
         }
+
+        fetchDidBegin?()
+        _ = tuple.promise.ensure { [fetchDidEnd] in fetchDidEnd?() }
 
         return tuple
     }
