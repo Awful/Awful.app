@@ -41,7 +41,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             Crashlytics.sharedInstance().recordError(error)
         }
         
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async(execute: removeOldDataStores)
+        DispatchQueue.global(qos: .background).async(execute: removeOldDataStores)
         
         ForumsClient.shared.managedObjectContext = managedObjectContext
         updateClientBaseURL()
