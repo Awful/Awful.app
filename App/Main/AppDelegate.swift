@@ -179,7 +179,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func emptyCache() {
         URLCache.shared.removeAllCachedResponses()
-        AvatarLoader.sharedLoader.emptyCache()
+        AvatarLoader.shared.emptyCache()
     }
     
     func checkClipboard() {

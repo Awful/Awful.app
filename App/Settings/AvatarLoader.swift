@@ -2,20 +2,23 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AFNetworking
 import AwfulCore
 import FLAnimatedImage
 import ImageIO
+import MobileCoreServices
+import PromiseKit
 import UIKit
 
+private let Log = Logger.get(level: .debug)
+
 /// Fetches and caches avatar images.
-final class AvatarLoader: NSObject {
-    static let sharedLoader = AvatarLoader(cacheFolder: defaultCacheFolder())
+final class AvatarLoader {
+    static let shared = AvatarLoader(cacheFolder: defaultCacheFolder())
     
-    fileprivate let cacheFolder: URL
-    fileprivate let sessionManager = AFURLSessionManager()
+    private let cacheFolder: URL
+    private let session = URLSession(configuration: .ephemeral)
     
-    init(cacheFolder: URL) {
+    private init(cacheFolder: URL) {
         self.cacheFolder = cacheFolder
     }
     
@@ -30,77 +33,68 @@ final class AvatarLoader: NSObject {
         guard let avatarURL = user.avatarURL, !avatarURL.path.isEmpty else {
             return completionBlock(true, nil, nil)
         }
+
+        do {
+            try FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            Log.e("could not create avatar cache folder \(cacheFolder): \(error)")
+            return completionBlock(true, nil, nil)
+        }
+
         var request = URLRequest(url: avatarURL)
         
-        if let oldResponse = NSKeyedUnarchiver.unarchiveObject(withFile: cachedResponesURLForUser(user).path) as? HTTPURLResponse,
+        if
+            let oldResponse = NSKeyedUnarchiver.unarchiveObject(withFile: cachedResponesURLForUser(user).path) as? HTTPURLResponse,
             oldResponse.url == avatarURL
         {
             request.setCacheHeadersWithResponse(oldResponse)
         }
-        
-        sessionManager.downloadTask(with: request, progress: nil, destination: { (targetPath, URLResponse) -> URL? in
-            guard
-                let response = URLResponse as? HTTPURLResponse,
-                response.statusCode >= 200, response.statusCode < 300
-                else { return nil }
-            
-            do {
-                try FileManager.default.createDirectory(at: self.cacheFolder, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                print("\(#function) error creating avatar cache folder \(self.cacheFolder): \(error)")
-                return nil
-            }
-            
-            let destinationURL = self.imageURLForUser(user)
-            do {
-                try FileManager.default.removeItem(at: destinationURL)
-            }
-            catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
-                // ok
-            }
-            catch let error as NSError {
-                print("\(#function) error saving avatar to \(destinationURL): \(error)")
-                // let's try downloading anyway
-            }
-            return destinationURL
-            
-            }, completionHandler: { (response, filePath, error) -> Void in
-                NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponesURLForUser(user).path)
-                
-                if
-                    let error = error,
-                    let response = (error as NSError).userInfo[AFNetworkingOperationFailingURLResponseErrorKey] as? HTTPURLResponse,
-                    response.statusCode == 304
-                {
-                    return completionBlock(false, nil, nil)
+
+        session.downloadTask(.promise, with: request, to: imageURLForUser(user), replacingIfNecessary: true)
+            .done { saveLocation, response in
+                if let http = response as? HTTPURLResponse {
+                    switch http.statusCode {
+                    case 304:
+                        return completionBlock(false, nil, nil)
+
+                    case 200..<300:
+                        Log.d("got a new avatar for user \(user.userID)")
+
+                    case let code:
+                        throw PMKHTTPError.badStatusCode(code, Data(), http)
+                    }
                 }
-                
+
+                NSKeyedArchiver.archiveRootObject(response, toFile: self.cachedResponesURLForUser(user).path)
+
                 let image = loadImageAtFileURL(self.imageURLForUser(user))
-                completionBlock(true, image, error)
-        }).resume()
+                completionBlock(true, image, nil)
+            }.catch { error in
+                completionBlock(true, loadImageAtFileURL(self.imageURLForUser(user)), error)
+        }
     }
     
     func emptyCache() {
         do {
             try FileManager.default.removeItem(at: cacheFolder)
-        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
+        } catch let error as CocoaError where error.code == .fileNoSuchFile {
             // nop
-        } catch let error as NSError {
-            print("\(#function) error deleting avatar cache at \(cacheFolder): \(error)")
+        } catch {
+            Log.e("could not delete avatar cache at \(cacheFolder): \(error)")
         }
     }
     
     // MARK: Private
     
-    fileprivate func imageURLForUser(_ user: User) -> URL {
+    private func imageURLForUser(_ user: User) -> URL {
         return cacheFolder
-            .appendingPathComponent(user.userID)
+            .appendingPathComponent(user.userID, isDirectory: false)
             .appendingPathExtension("image")
     }
     
-    fileprivate func cachedResponesURLForUser(_ user: User) -> URL {
+    private func cachedResponesURLForUser(_ user: User) -> URL {
         return cacheFolder
-            .appendingPathComponent(user.userID)
+            .appendingPathComponent(user.userID, isDirectory: false)
             .appendingPathExtension("cachedresponse")
     }
 }
@@ -111,8 +105,8 @@ private func defaultCacheFolder() -> URL {
 }
 
 private func loadImageAtFileURL(_ url: URL) -> Any? {
-    guard let
-        source = CGImageSourceCreateWithURL(url as CFURL, nil),
+    guard
+        let source = CGImageSourceCreateWithURL(url as CFURL, nil),
         let type = CGImageSourceGetType(source)
         else { return nil }
     

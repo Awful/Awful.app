@@ -408,8 +408,8 @@ final class SettingsViewController: TableViewController {
             header.setTarget(self, action: #selector(showProfile))
         }
         
-        header.setAvatarImage(AvatarLoader.sharedLoader.cachedAvatarImageForUser(loggedInUser))
-        AvatarLoader.sharedLoader.fetchAvatarImageForUser(loggedInUser) { (modified, image, error) in
+        header.setAvatarImage(AvatarLoader.shared.cachedAvatarImageForUser(loggedInUser))
+        AvatarLoader.shared.fetchAvatarImageForUser(loggedInUser) { (modified, image, error) in
             guard modified else { return }
             header.setAvatarImage(image)
         }
