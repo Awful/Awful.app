@@ -34,7 +34,6 @@ end
 
 target 'Core' do
   pod 'HTMLReader'
-  pod 'OMGHTTPURLRQ'
   pod 'PromiseKit'
   
   target 'CoreTests' do
@@ -57,7 +56,7 @@ target :SmilieExtractor do
 end
 
 post_install do |installer|
-  extension_safe_pods = %w[FLAnimatedImage HTMLReader OMGHTTPURLRQ PromiseKit]
+  extension_safe_pods = %w[FLAnimatedImage HTMLReader PromiseKit]
   swift_4_pods = %w[GRMustache.swift PullToRefresher]
 
   installer.pods_project.targets.each do |target|

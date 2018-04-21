@@ -6,10 +6,6 @@ This application makes use of the following third party libraries:
 HTMLReader is in the public domain.
 
 
-## OMGHTTPURLRQ
-
-https://github.com/mxcl/OMGHTTPURLRQ/blob/master/README.markdown
-
 ## PromiseKit
 
 Copyright 2016-present, Max Howell; mxcl@me.com

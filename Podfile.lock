@@ -51,13 +51,6 @@ PODS:
   - MRProgress/ProgressBaseClass (0.8.3)
   - MRProgress/Stopable (0.8.3):
     - MRProgress/Helper
-  - OMGHTTPURLRQ (3.2.2):
-    - OMGHTTPURLRQ/RQ (= 3.2.2)
-  - OMGHTTPURLRQ/FormURLEncode (3.2.2)
-  - OMGHTTPURLRQ/RQ (3.2.2):
-    - OMGHTTPURLRQ/FormURLEncode
-    - OMGHTTPURLRQ/UserAgent
-  - OMGHTTPURLRQ/UserAgent (3.2.2)
   - PromiseKit (6.2.5):
     - PromiseKit/CorePromise (= 6.2.5)
     - PromiseKit/Foundation (= 6.2.5)
@@ -84,7 +77,6 @@ DEPENDENCIES:
   - JLRoutes
   - KVOController
   - MRProgress/Overlay
-  - OMGHTTPURLRQ
   - PromiseKit
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/MindSea/PullToRefresh`, branch `fix-simultaneous-access`)
@@ -104,7 +96,6 @@ SPEC REPOS:
     - JLRoutes
     - KVOController
     - MRProgress
-    - OMGHTTPURLRQ
     - PromiseKit
     - TUSafariActivity
     - WebViewJavascriptBridge
@@ -144,13 +135,12 @@ SPEC CHECKSUMS:
   JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
-  OMGHTTPURLRQ: edb14c7d28add69226b79d826f930805927a0ffa
   PromiseKit: a26828b0a8d5874960dfdb575b57a70790ec36f1
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   PullToRefresher: 9d66e6a86fb9e1d8fa861c4bbd263e88f5dfc0bd
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: da3b3467d43dea182f315228f4869c4dd0b85b27
+PODFILE CHECKSUM: bd8ef6d48d54996f225c6c9bd05e3bf6b1df719f
 
 COCOAPODS: 1.5.0

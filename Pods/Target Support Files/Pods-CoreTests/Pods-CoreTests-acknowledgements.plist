@@ -25,16 +25,6 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>https://github.com/mxcl/OMGHTTPURLRQ/blob/master/README.markdown</string>
-			<key>License</key>
-			<string>MIT</string>
-			<key>Title</key>
-			<string>OMGHTTPURLRQ</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>FooterText</key>
 			<string>Copyright 2016-present, Max Howell; mxcl@me.com
 
 Permission is hereby granted, free of charge, to any person obtaining a
