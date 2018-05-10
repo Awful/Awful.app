@@ -1066,6 +1066,7 @@
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
 		1CE694AC182FF6B600B24928 /* LepersColonyPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LepersColonyPageScrapingTests.swift; sourceTree = "<group>"; };
 		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
+		1CF0A6C520A50FC5004C26EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		1CF0E9C81A191A950067511E /* DatabaseUnavailableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableTests.swift; sourceTree = "<group>"; };
 		1CF0E9CF1A191EF10067511E /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		1CF0F8DF1ED8F3CA00C16099 /* AuthorSidebarScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorSidebarScrapeResult.swift; sourceTree = "<group>"; };
@@ -2245,6 +2246,7 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				9D0762E16A2A66CEB1B627DC /* Pods */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				1CF0A6C520A50FC5004C26EA /* README.md */,
 				8CCD498115B497A700E5893B /* Resources */,
 				1C66A9BA19DD3017001B9A41 /* Smilies */,
 				1190F76913BE4ECB00B9D271 /* Vendor */,
