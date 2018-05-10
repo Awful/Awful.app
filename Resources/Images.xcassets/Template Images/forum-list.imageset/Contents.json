@@ -2,12 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "forum-list.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "list_icon@2x.png.png",
+      "filename" : "list_icon@2x.png",
       "scale" : "2x"
     },
     {
