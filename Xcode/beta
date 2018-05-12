@@ -37,7 +37,7 @@ def main():
     
     ensure_repo_is_clean()
     
-    if args.skip_bump is None:
+    if not args.skip_bump:
         bump.bump_version(bump.build if args.bumper is None else args.bumper)
     
     script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
