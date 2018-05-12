@@ -40,7 +40,18 @@ private let repository: TemplateRepository = {
     let repo = TemplateRepository(bundle: .main)
 
     let fontScale: RenderFunction = { info in
-        return Rendering("\(AwfulSettings.shared().fontScale)")
+        let scale = AwfulSettings.shared().fontScale
+        switch info.tag.type {
+        case .variable:
+            return Rendering("\(scale)")
+        case .section:
+            if scale == 100 {
+                return Rendering("")
+            } else {
+                return try info.tag.render(info.context)
+            }
+        }
+
     }
 
     repo.configuration.extendBaseContext([
