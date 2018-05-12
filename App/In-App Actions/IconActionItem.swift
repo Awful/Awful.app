@@ -76,7 +76,7 @@ final class IconActionItem: NSObject {
         case .addBookmark: return "add-bookmark"
         case .copyURL: return "copy-url"
         case .editPost: return "edit-post"
-        case .ignoreUser: return "mark-read-up-to-here"
+        case .ignoreUser: return "mark-as-unread"
         case .jumpToFirstPage: return "jump-to-first-page"
         case .jumpToLastPage: return "jump-to-last-page"
         case .markAsUnread: return "mark-as-unread"
