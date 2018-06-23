@@ -3060,7 +3060,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "[[ \"$CRASHLYTICS_API_KEY\" ]] && \"$PODS_ROOT\"/Fabric/run \"$CRASHLYTICS_API_KEY\"\n";
+			shellScript = "if [ -n \"$CRASHLYTICS_API_KEY\" ]; then \"$PODS_ROOT\"/Fabric/run \"$CRASHLYTICS_API_KEY\"; fi";
 		};
 		1C8F0DE6191CFA2200CE8DEE /* Compile CSS */ = {
 			isa = PBXShellScriptBuildPhase;
