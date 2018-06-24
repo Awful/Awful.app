@@ -247,7 +247,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     
     func decodeRestorableState(with coder: NSCoder) {
         // Our encoded CompositionViewController is not available any earlier (i.e. in objectWithRestorationIdentifierPath(_:coder:)).
-        compositionViewController = coder.decodeObject(forKey: Keys.compositionViewController) as! CompositionViewController
+        compositionViewController = (coder.decodeObject(forKey: Keys.compositionViewController) as! CompositionViewController)
     }
 
     fileprivate struct Keys {

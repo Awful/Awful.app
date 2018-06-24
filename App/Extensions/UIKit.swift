@@ -123,7 +123,7 @@ extension UIColor {
 
 extension UIFont {
     /// Typed versions of the `UIFontTextStyle*` constants.
-    enum TextStyle {
+    enum TypedTextStyle {
         case body, footnote, caption1
         
         var UIKitRawValue: String {
@@ -143,7 +143,7 @@ extension UIFont {
     - returns:
         A font associated with the text style, scaled for the user's Dynamic Type settings, in the requested font family.
     **/
-    class func preferredFontForTextStyle(_ textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0) -> UIFont {
+    class func preferredFontForTextStyle(_ textStyle: TypedTextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0) -> UIFont {
         let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle(rawValue: textStyle.UIKitRawValue))
         if let fontName = fontName {
             return UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!
