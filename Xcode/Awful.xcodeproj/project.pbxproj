@@ -2624,7 +2624,7 @@
 				CLASSPREFIX = "";
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
 					1C3A143219DFC5D10022C44C = {
@@ -3680,6 +3680,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9F642485F166EBF5608DC271 /* Pods-CoreTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ../Core/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
@@ -3691,6 +3692,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 582656AF1CF1426AB875D197 /* Pods-CoreTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ../Core/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
@@ -3788,6 +3790,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1C1533572070A3BF0021A2BD /* Awful-Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ../App/Info.plist;
 				PRODUCT_MODULE_NAME = Awful;
@@ -3800,6 +3803,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1C1533582070A3CA0021A2BD /* Awful-Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ../App/Info.plist;
 				PRODUCT_MODULE_NAME = Awful;
