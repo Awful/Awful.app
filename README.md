@@ -95,8 +95,8 @@ The [HTTP client][] connects to the Something Awful Forums and parses its conten
 Awful's Core Data store is a cache of content from the Forums. Any user info specific to the app is stored in [user defaults][]. The Core Data store may be (and can be, since it's stored in the application's Caches directory) deleted at any time.
 
 [HTTP client]: Core/Networking/ForumsClient.swift
-[entities]: Core/Models
-[user defaults]: Source/Settings/AwfulSettings.h
+[entities]: Core/Model
+[user defaults]: App/Settings/AwfulSettings.h
 
 ### Theming
 
@@ -106,8 +106,8 @@ The rest of Awful is themed in a a [big plist][theme plist]. If you can't find a
 
 [posts view]: App/Posts/PostsView.swift
 [default theme]: App/Theming/posts-view.css
-[YOSPOS CSS theme]: App/Theming/posts-view-219.less
-[FYAD CSS theme]: App/Theming/posts-view-26.less
+[YOSPOS CSS theme]: App/Theming/posts-view-yospos.less
+[FYAD CSS theme]: App/Theming/posts-view-fyad.less
 [theme plist]: App/Theming/Themes.plist
 
 ### Thread Tags
@@ -129,7 +129,7 @@ To add a new thread tag you just made:
     git push
     ```
 
-[AwfulThreadTags]: Source/Networking/AwfulThreadTags.m
+[AwfulThreadTags]: App/Thread%20Tags/ThreadTagLoader.swift
 [awfulapp.com.git]: https://github.com/Awful/awful.github.io
 [awfulapp.com.git README]: https://github.com/Awful/awful.github.io/blob/master/README.md#thread-tags
 [Thread Tags.git]: https://github.com/Awful/thread-tags
