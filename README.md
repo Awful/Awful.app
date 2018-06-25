@@ -59,13 +59,13 @@ Awful uses an App Group to communicate and share data with the Smilie Keyboard. 
 
 ### Tests
 
-There are unit tests for the HTML scraping, to help us find problems when markup changes, running continuously via [Travis CI][https://travis-ci.org/Awful/Awful.app].
+There are unit tests for the HTML scraping, to help us find problems when markup changes, running continuously via [Travis CI](https://travis-ci.org/Awful/Awful.app).
 
 [![Build Status](https://travis-ci.org/Awful/Awful.app.png)](https://travis-ci.org/Awful/Awful.app)
 
 ### Handy utilities
 
-If you peek in the [Xcode][] folder you'll find:
+If you peek in the [Xcode](Xcode) folder you'll find:
 
 * `beta`, a script that bumps the build number and then runs `xcodebuild` to create an archive suitable for uploading to iTunes Connect.
     * If you've released to the App Store, it's time to bump at least the minor version number. Run e.g. `bump --minor` before making the next beta build.
