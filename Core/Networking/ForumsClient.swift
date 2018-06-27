@@ -1305,7 +1305,7 @@ private extension Promise {
 
 private extension Promise where T == (data: Data, response: URLResponse) {
     func scrape<U: ScrapeResult>(as _: U.Type) -> Promise<U> {
-        return map {
+        return map(on: .global()) {
             let parsed = try parseHTML(data: $0.data, response: $0.response)
             return try U.init(parsed.document, url: parsed.url)
         }
