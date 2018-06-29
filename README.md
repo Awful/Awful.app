@@ -197,6 +197,7 @@ Awful includes contributions from:
 - [OHIO](http://forums.somethingawful.com/member.php?action=getinfo&userid=82915)
 - [pokeyman][]
 - [Subjunctive](http://forums.somethingawful.com/member.php?action=getinfo&userid=103253)
+- [tanky](https://forums.somethingawful.com/member.php?action=getinfo&userid=161836)
 - [The Dave][]
 - [ultramiraculous](http://forums.somethingawful.com/member.php?action=getinfo&userid=44504)
 - [xzzy](http://forums.somethingawful.com/member.php?action=getinfo&userid=148096)
