@@ -18,7 +18,6 @@ target 'Awful' do
 
   pod 'HTMLReader'
   pod 'ImgurAnonymousAPIClient'
-  pod 'JLRoutes'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
   

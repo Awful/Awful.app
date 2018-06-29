@@ -30,7 +30,6 @@ PODS:
   - HTMLReader (2.1)
   - ImgurAnonymousAPIClient (0.3.2):
     - AFNetworking (>= 2.3.1)
-  - JLRoutes (1.6.4)
   - KVOController (1.2.0)
   - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
@@ -74,7 +73,6 @@ DEPENDENCIES:
   - GRMustache.swift (from `https://github.com/chrisballinger/GRMustache.swift`, branch `feature/swift4`)
   - HTMLReader
   - ImgurAnonymousAPIClient
-  - JLRoutes
   - KVOController
   - MRProgress/Overlay
   - PromiseKit
@@ -84,7 +82,7 @@ DEPENDENCIES:
   - WebViewJavascriptBridge
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - 1PasswordExtension
     - AFNetworking
     - ARChromeActivity
@@ -93,7 +91,6 @@ SPEC REPOS:
     - FLAnimatedImage
     - HTMLReader
     - ImgurAnonymousAPIClient
-    - JLRoutes
     - KVOController
     - MRProgress
     - PromiseKit
@@ -132,7 +129,6 @@ SPEC CHECKSUMS:
   GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
   HTMLReader: dd75279b0532ff5d005ffe1c6512e33d1d52f861
   ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
-  JLRoutes: a2e6efb1b1070feccb6dc68e1646ca870f42115b
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   PromiseKit: a26828b0a8d5874960dfdb575b57a70790ec36f1
@@ -141,6 +137,6 @@ SPEC CHECKSUMS:
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
   WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-PODFILE CHECKSUM: bd8ef6d48d54996f225c6c9bd05e3bf6b1df719f
+PODFILE CHECKSUM: 2b74813e3c307d6cd682fb1485ee396b35eacfe9
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3
