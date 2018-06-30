@@ -7,10 +7,11 @@ import MRProgress
 import UIKit
 
 final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIViewControllerPreviewingDelegate {
-    fileprivate weak var previewingViewController: UIViewController?
-    fileprivate var thread: AwfulThread?
+
+    private weak var previewingViewController: (UIViewController & ThreadPeekPopControllerDelegate)?
+    private var thread: AwfulThread?
     
-    init<ViewController: UIViewController>(previewingViewController: ViewController) where ViewController: ThreadPeekPopControllerDelegate {
+    init(previewingViewController: UIViewController & ThreadPeekPopControllerDelegate) {
         self.previewingViewController = previewingViewController
         
         super.init()
@@ -26,20 +27,10 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                 return
             }
             let thread = postsViewController.thread
-            
-            var components = URLComponents(string: "https://forums.somethingawful.com/showthread.php")!
-            var queryItems: [URLQueryItem] = []
-            queryItems.append(URLQueryItem(name: "threadid", value: thread.threadID))
-            queryItems.append(URLQueryItem(name: "perpage", value: "40"))
-            if case .specific(let pageNumber)? = postsViewController.page, pageNumber > 1 {
-                queryItems.append(URLQueryItem(name:"pagenumber", value: "\(pageNumber)"))
-            }
-            components.queryItems = queryItems as [URLQueryItem]
-            
-            if let url = components.url {
-                AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
-                UIPasteboard.general.coercedURL = url
-            }
+            let route = AwfulRoute.threadPage(threadID: thread.threadID, page: postsViewController.page ?? .first)
+            let url = route.httpURL
+            AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
+            UIPasteboard.general.coercedURL = url
         }
         
         let markAsReadAction = UIPreviewAction(title: "Mark Thread As Read", style: .default) { action, previewViewController -> Void in
@@ -97,10 +88,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
     // MARK: UIViewControllerPreviewingDelegate
     
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let
-            delegate = previewingViewController as? ThreadPeekPopControllerDelegate,
-            let thread = delegate.threadForLocation(location: location)
-        else {
+        guard let thread = previewingViewController?.threadForLocation(location: location) else {
             return nil
         }
         
@@ -115,7 +103,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         postsViewController.preferredContentSize = CGSize(width: 0, height: 500)
         postsViewController.previewActionItemProvider = self
         
-        if let view = delegate.viewForThread(thread: thread) {
+        if let view = previewingViewController?.viewForThread(thread: thread) {
             previewingContext.sourceRect = view.frame
         }
         
@@ -141,6 +129,6 @@ protocol ThreadPeekPopControllerDelegate {
     func viewForThread(thread: AwfulThread) -> UIView?
 }
 
-@objc protocol PreviewActionItemProvider {
+protocol PreviewActionItemProvider: class {
     var previewActionItems: [UIPreviewActionItem] { get }
 }
