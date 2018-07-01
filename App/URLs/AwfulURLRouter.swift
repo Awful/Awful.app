@@ -4,14 +4,14 @@
 
 import AwfulCore
 import CoreData
-import JLRoutes
 import MRProgress
 import UIKit
 
 /// Translates URLs with the scheme "awful" into an appropriate shown screen.
 final class AwfulURLRouter: NSObject {
-    fileprivate let rootViewController: UIViewController
-    fileprivate let managedObjectContext: NSManagedObjectContext
+
+    private let managedObjectContext: NSManagedObjectContext
+    private let rootViewController: UIViewController
     
     /**
         - parameter rootViewController: The application's root view controller.
@@ -23,50 +23,76 @@ final class AwfulURLRouter: NSObject {
         super.init()
     }
     
-    fileprivate lazy var routes: JLRoutes = {
-        let routes = JLRoutes()
-        
-        routes.addRoute("/forums/:forumID", handler: { [weak self] (parameters) -> Bool in
-            guard let
-                forumID = parameters["forumID"] as? String,
-                let context = self?.managedObjectContext
-                else { return false }
+    /// Show the screen appropriate for an "awful" URL.
+    func route(_ route: AwfulRoute) -> Bool {
+        switch route {
+        case .bookmarks:
+            return selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self) != nil
+
+        case .forum(let forumID):
             let key = ForumKey(forumID: forumID)
-            guard let forum = Forum.existingObjectForKey(objectKey: key, inManagedObjectContext: context) as? Forum else { return false }
-            return self?.jumpToForum(forum) ?? false
-        })
-        
-        routes.addRoute("/forums", handler: { [weak self] (parameters) -> Bool in
-            return self?.selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
-        })
-        
-        routes.addRoute("/threads/:threadID/pages/:page", handler: { [weak self] (parameters) -> Bool in
-            return self?.showThread(withParameters: parameters) ?? false
-        })
-        
-        routes.addRoute("/threads/:threadID", handler: { [weak self] (parameters) -> Bool in
-            return self?.showThread(withParameters: parameters) ?? false
-        })
-        
-        routes.addRoute("/posts/:postID", handler: { [weak self] (parameters) -> Bool in
-            guard let postID = parameters["postID"] as? String else { return false }
+            guard let forum = Forum.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? Forum else { return false }
+            return jumpToForum(forum)
+
+        case .forumList:
+            return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
+
+        case .lepersColony:
+            let rapSheetVC = RapSheetViewController(user: nil)
+            rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
+            return true
+
+        case .message(let messageID):
+            guard let inbox = selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) else { return false }
+            _ = inbox.navigationController?.popToViewController(inbox, animated: false)
+
+            let key = PrivateMessageKey(messageID: messageID)
+            if let message = PrivateMessage.objectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? PrivateMessage {
+                inbox.showMessage(message)
+                return true
+            }
+
+            guard let rootView = rootViewController.view else { return false }
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
+            overlay?.tintColor = Theme.currentTheme["tintColor"]
+
+            ForumsClient.shared.readPrivateMessage(identifiedBy: key)
+                .done { message in
+                    overlay?.dismiss(true, completion: {
+                        inbox.showMessage(message)
+                    })
+                }
+                .catch { error in
+                    overlay?.titleLabelText = "Message Not Found"
+                    overlay?.mode = .cross
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        overlay?.dismiss(true)
+                    }
+            }
+
+            return true
+
+        case .messagesList:
+            return selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) != nil
+
+        case .post(let postID):
             let key = PostKey(postID: postID)
-            guard let context = self?.managedObjectContext else { return false }
-            if let
-                post = Post.existingObjectForKey(objectKey: key, inManagedObjectContext: context) as? Post,
-                let thread = post.thread
-                , post.page > 0
+            if
+                let post = Post.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? Post,
+                let thread = post.thread,
+                post.page > 0
             {
                 let postsVC = PostsPageViewController(thread: thread)
                 postsVC.loadPage(.specific(post.page), updatingCache: true, updatingLastReadPost: true)
                 postsVC.scrollPostToVisible(post)
-                return self?.showPostsViewController(postsVC) ?? false
+                return showPostsViewController(postsVC)
             }
-            
-            guard let rootView = self?.rootViewController.view else { return false }
+
+            guard let rootView = rootViewController.view else { return false }
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.currentTheme["tintColor"]
-            
+
             ForumsClient.shared.locatePost(id: key.postID)
                 .done { [weak self] arg in
                     let (post, page) = arg
@@ -89,109 +115,48 @@ final class AwfulURLRouter: NSObject {
                     }
             }
             return true
-        })
-        
-        routes.addRoute("/messages/:messageID", handler: { [weak self] (parameters) -> Bool in
-            guard let inbox = self?.selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) else { return false }
-            _ = inbox.navigationController?.popToViewController(inbox, animated: false)
-            
-            guard let messageID = parameters["messageID"] as? String else { return false }
-            let key = PrivateMessageKey(messageID: messageID)
-            guard let context = self?.managedObjectContext else { return false }
-            if let message = PrivateMessage.objectForKey(objectKey: key, inManagedObjectContext: context) as? PrivateMessage {
-                inbox.showMessage(message)
-                return true
-            }
-            
-            guard let rootView = self?.rootViewController.view else { return false }
-            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
-            overlay?.tintColor = Theme.currentTheme["tintColor"]
-            
-            ForumsClient.shared.readPrivateMessage(identifiedBy: key)
-                .done { message in
-                    overlay?.dismiss(true, completion: {
-                        inbox.showMessage(message)
-                    })
-                }
-                .catch { error in
-                    overlay?.titleLabelText = "Message Not Found"
-                    overlay?.mode = .cross
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        overlay?.dismiss(true)
-                    }
-            }
-
-            return true
-        })
-        
-        routes.addRoute("/messages", handler: { [weak self] (parameters) -> Bool in
-            return self?.selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) != nil
-        })
-        
-        routes.addRoute("/bookmarks", handler: { [weak self] (parameters) -> Bool in
-            return self?.selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self) != nil
-        })
-        
-        routes.addRoute("/settings", handler: { [weak self] (parameters) -> Bool in
-            return self?.selectTopmostViewController(containingViewControllerOfClass: SettingsViewController.self) != nil
-        })
-        
-        routes.addRoute("/users/:userID", handler: { [weak self] (parameters) -> Bool in
-            guard let userID = parameters["userID"] as? String else { return false }
-            self?.fetchUser(withUserID: userID) { (error, user) in
+        case .profile(let userID):
+            fetchUser(withUserID: userID) { (error, user) in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    self?.rootViewController.present(alert, animated: true)
+                    self.rootViewController.present(alert, animated: true)
                     return
                 }
 
                 guard let user = user else { fatalError("no error should mean yes user") }
                 let profileVC = ProfileViewController(user: user)
-                self?.rootViewController.present(profileVC.enclosingNavigationController, animated: true, completion: nil)
+                self.rootViewController.present(profileVC.enclosingNavigationController, animated: true)
             }
             return true
-        })
-        
-        routes.addRoute("/banlist/:userID", handler: { [weak self] (parameters) -> Bool in
-            guard let userID = parameters["userID"] as? String else { return false }
-            self?.fetchUser(withUserID: userID) { (error, user) in
+
+        case .rapSheet(let userID):
+            fetchUser(withUserID: userID) { error, user in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    self?.rootViewController.present(alert, animated: true)
+                    self.rootViewController.present(alert, animated: true)
                     return
                 }
-                
+
                 guard let user = user else { fatalError("no error should mean yes user") }
                 let rapSheetVC = RapSheetViewController(user: user)
-                self?.rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
+                self.rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
             }
-            
+
             return true
-        })
-        
-        routes.addRoute("/banlist", handler: { [weak self] (parameters) -> Bool in
-            let rapSheetVC = RapSheetViewController(user: nil)
-            self?.rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
-            return true
-        })
-        
-        return routes
-    }()
-    
-    /**
-        Show the screen appropriate for an "awful" URL.
-     
-        - parameter url: A URL with the scheme "awful".
-     
-        - returns: `true` if the URL was successfully routed, otherwise `false`.
-     */
-    func route(_ url: URL) -> Bool {
-        guard url.scheme?.caseInsensitiveCompare("awful") == .orderedSame else { return false }
-        return routes.routeURL(url)
+
+        case .settings:
+            return selectTopmostViewController(containingViewControllerOfClass: SettingsViewController.self) != nil
+
+        case .threadPage(let threadID, let page):
+            return showThread(threadID, page: page)
+
+        case .threadPageSingleUser(let threadID, let userID, let page):
+            return showThread(threadID, page: page, justPostsByUser: userID)
+        }
     }
     
-    fileprivate func jumpToForum(_ forum: Forum) -> Bool {
+    private func jumpToForum(_ forum: Forum) -> Bool {
         if let
             threadsVC = rootViewController.firstDescendantOfType(ThreadsTableViewController.self)
             , threadsVC.forum == forum
@@ -209,7 +174,7 @@ final class AwfulURLRouter: NSObject {
         return false
     }
     
-    fileprivate func selectTopmostViewController<T: UIViewController>(containingViewControllerOfClass klass: T.Type) -> T? {
+    private func selectTopmostViewController<T: UIViewController>(containingViewControllerOfClass klass: T.Type) -> T? {
         guard let
             splitVC = rootViewController.childViewControllers.first as? UISplitViewController,
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
@@ -223,13 +188,11 @@ final class AwfulURLRouter: NSObject {
         return nil
     }
     
-    fileprivate func showThread(withParameters parameters: [AnyHashable: Any]) -> Bool {
-        guard let threadID = parameters["threadID"] as? String else { return false }
+    private func showThread(_ threadID: String, page: ThreadPage, justPostsByUser userID: String? = nil) -> Bool {
         let threadKey = ThreadKey(threadID: threadID)
         let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: managedObjectContext) as! AwfulThread
-        let userID = parameters["userid"] as? String
         let postsVC: PostsPageViewController
-        if let userID = userID , !userID.isEmpty {
+        if let userID = userID, !userID.isEmpty {
             let userKey = UserKey(userID: userID, username: nil)
             let user = User.objectForKey(objectKey: userKey, inManagedObjectContext: managedObjectContext) as! User
             postsVC = PostsPageViewController(thread: thread, author: user)
@@ -238,40 +201,13 @@ final class AwfulURLRouter: NSObject {
         }
         
         try! managedObjectContext.save()
-        
-        var page = ThreadPage.first
-        let pageString = parameters["page"] as? String
-        if
-            let userID = userID , userID.isEmpty,
-            let pageString = pageString
-        {
-            if pageString.caseInsensitiveCompare("last") == .orderedSame {
-                page = .last
-            } else if pageString.caseInsensitiveCompare("unread") == .orderedSame {
-                page = .nextUnread
-            }
-        }
-        if case .first = page {
-            if let pageNumber = pageString.flatMap({ Int($0) }) {
-                page = .specific(pageNumber)
-            } else if thread.beenSeen {
-                page = .nextUnread
-            } else {
-                page = .first
-            }
-        }
+
         postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
-        
-        if let postID = parameters["post"] as? String , !postID.isEmpty {
-            let postKey = PostKey(postID: postID)
-            let post = Post.objectForKey(objectKey: postKey, inManagedObjectContext: managedObjectContext) as! Post
-            postsVC.scrollPostToVisible(post)
-        }
         
         return showPostsViewController(postsVC)
     }
     
-    fileprivate func showPostsViewController(_ postsVC: PostsPageViewController) -> Bool {
+    private func showPostsViewController(_ postsVC: PostsPageViewController) -> Bool {
         postsVC.restorationIdentifier = "Posts from URL"
         
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
@@ -299,7 +235,7 @@ final class AwfulURLRouter: NSObject {
         return true
     }
     
-    fileprivate func fetchUser(withUserID userID: String, completion: @escaping (Error?, User?) -> Void) {
+    private func fetchUser(withUserID userID: String, completion: @escaping (Error?, User?) -> Void) {
         let key = UserKey(userID: userID, username: nil)
         if let user = User.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? User {
             completion(nil, user)

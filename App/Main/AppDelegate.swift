@@ -145,8 +145,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        guard let route = userActivity.route else { return false }
-        return true
+        guard let router = urlRouter, let route = userActivity.route else { return false }
+        return router.route(route)
     }
     
     func logOut() {
