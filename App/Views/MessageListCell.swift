@@ -21,7 +21,40 @@ final class MessageListCell: UITableViewCell {
     }()
 
     private let tagImageView = UIImageView()
-    private let tagOverlayImageView = UIImageView()
+
+    private let tagOverlayView = TagOverlayView()
+
+    private class TagOverlayView: UIView {
+        private let background: CAShapeLayer = {
+            let layer = CAShapeLayer()
+            layer.fillColor = UIColor.white.cgColor
+            return layer
+        }()
+
+        private let imageLayer = CALayer()
+
+        var image: UIImage? {
+            didSet {
+                imageLayer.contents = image?.cgImage
+            }
+        }
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            layer.addSublayer(background)
+            layer.addSublayer(imageLayer)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func layoutSubviews() {
+            background.frame = CGRect(origin: .zero, size: bounds.size)
+            background.path = UIBezierPath(ovalIn: bounds.insetBy(dx: 2, dy: 2)).cgPath
+            imageLayer.frame = CGRect(origin: .zero, size: bounds.size)
+        }
+    }
 
     var viewModel: ViewModel = .empty {
         didSet {
@@ -40,7 +73,8 @@ final class MessageListCell: UITableViewCell {
 
             tagImageView.image = viewModel.tagImage
 
-            tagOverlayImageView.image = viewModel.tagOverlayImage
+            tagOverlayView.image = viewModel.tagOverlayImage
+            tagOverlayView.isHidden = viewModel.tagOverlayImage == nil
 
             setNeedsLayout()
         }
@@ -86,7 +120,7 @@ final class MessageListCell: UITableViewCell {
         contentView.addSubview(senderLabel)
         contentView.addSubview(subjectLabel)
         contentView.addSubview(tagImageView)
-        contentView.addSubview(tagOverlayImageView)
+        contentView.addSubview(tagOverlayView)
     }
 
     required init?(coder: NSCoder) {
@@ -101,7 +135,7 @@ final class MessageListCell: UITableViewCell {
         senderLabel.frame = layout.senderFrame
         subjectLabel.frame = layout.subjectFrame
         tagImageView.frame = layout.tagFrame
-        tagOverlayImageView.frame = layout.tagOverlayFrame
+        tagOverlayView.frame = layout.tagOverlayFrame
     }
 
     private struct Layout {
@@ -118,7 +152,7 @@ final class MessageListCell: UITableViewCell {
         private static let minimumHeight: CGFloat = 65
         private static let subjectTopMargin: CGFloat = 2
         private static let tagRightMargin: CGFloat = 8
-        private static let tagOverlayOffset = UIOffset(horizontal: 1, vertical: 2)
+        private static let tagOverlayOffset = UIOffset(horizontal: 2, vertical: 3)
 
         init(width: CGFloat, viewModel: ViewModel) {
             // 1. See how much width we have for the subject.
@@ -147,7 +181,7 @@ final class MessageListCell: UITableViewCell {
                 height: tagHeight)
                 .pixelRound
 
-            let tagOverlaySize = viewModel.tagOverlayImage?.size ?? .zero
+            let tagOverlaySize = CGSize(width: 18, height: 18)
             tagOverlayFrame = CGRect(
                 x: tagFrame.maxX - tagOverlaySize.width + Layout.tagOverlayOffset.horizontal,
                 y: tagFrame.maxY - tagOverlaySize.height + Layout.tagOverlayOffset.vertical,

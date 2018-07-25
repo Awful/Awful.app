@@ -117,11 +117,11 @@ extension MessageListDataSource: UITableViewDataSource {
                 ?? ThreadTagLoader.emptyPrivateMessageImage,
             tagOverlayImage: {
                 if message.replied {
-                    return UIImage(named: "pmreplied.gif")
+                    return UIImage(named: "pmreplied")
                 } else if message.forwarded {
-                    return UIImage(named: "pmforwarded.gif")
+                    return UIImage(named: "pmforwarded")
                 } else if !message.seen {
-                    return UIImage(named: "newpm.gif")
+                    return UIImage(named: "newpm")
                 } else {
                     return nil
                 }
