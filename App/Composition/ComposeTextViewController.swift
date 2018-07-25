@@ -137,38 +137,30 @@ class ComposeTextViewController: ViewController {
     private var textDidChangeObserver: NSObjectProtocol?
     
     fileprivate func beginObservingKeyboardNotifications() {
-        guard keyboardWillShowObserver == nil else { return }
+        guard keyboardWillChangeFrameObserver == nil else { return }
         
-        keyboardWillShowObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIKeyboardWillShow, object: nil, queue: OperationQueue.main, using: { [weak self] (notification) in
-            self?.keyboardWillThingy(notification)
-        })
-        
-        keyboardWillHideObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIKeyboardWillHide, object: nil, queue: OperationQueue.main, using: { [weak self] (notification) in
-            self?.keyboardWillThingy(notification)
+        keyboardWillChangeFrameObserver = NotificationCenter.default.addObserver(forName: .UIKeyboardWillChangeFrame, object: nil, queue: .main, using: { [weak self] notification in
+            self?.keyboardWillChangeFrame(notification)
         })
     }
     private func endObservingKeyboardNotifications() {
-        if let token = keyboardWillShowObserver {
+        if let token = keyboardWillChangeFrameObserver {
             NotificationCenter.default.removeObserver(token)
-            keyboardWillShowObserver = nil
-        }
-        
-        if let token = keyboardWillHideObserver {
-            NotificationCenter.default.removeObserver(token)
-            keyboardWillHideObserver = nil
+            keyboardWillChangeFrameObserver = nil
         }
     }
-    private var keyboardWillShowObserver: NSObjectProtocol?
-    fileprivate var keyboardWillHideObserver: NSObjectProtocol?
+    private var keyboardWillChangeFrameObserver: NSObjectProtocol?
     
-    fileprivate func keyboardWillThingy(_ notification: Notification) {
-        guard let
-            duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval,
-            let curve = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UInt,
-            let keyboardEndScreenFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+    private func keyboardWillChangeFrame(_ notification: Notification) {
+        guard
+            let userInfo = notification.userInfo,
+            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval,
+            let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? UInt,
+            let keyboardEndScreenFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
             let window = view.window
             else { return }
-        let keyboardEndTextViewFrame = textView.convert(keyboardEndScreenFrame, to: window.screen.coordinateSpace)
+        let keyboardEndWindowFrame = window.convert(keyboardEndScreenFrame, from: nil)
+        let keyboardEndTextViewFrame = textView.convert(keyboardEndWindowFrame, from: nil)
         let overlap = keyboardEndTextViewFrame.intersection(textView.bounds)
         
         let options = UIViewAnimationOptions(rawValue: curve << 16)
@@ -176,14 +168,12 @@ class ComposeTextViewController: ViewController {
         UIView.animate(withDuration: duration, delay: 0, options: options, animations: { 
             self.textView.contentInset.bottom = overlap.height
             self.textView.scrollIndicatorInsets.bottom = overlap.height
-            }) { (finished) in
-                guard let
-                    endPosition = self.textView.selectedTextRange?.end
-                    , notification.name == NSNotification.Name.UIKeyboardWillShow
-                    else { return }
+        }, completion: { isFinished in
+            if let endPosition = self.textView.selectedTextRange?.end {
                 let caretRect = self.textView.caretRect(for: endPosition)
                 self.textView.scrollRectToVisible(caretRect, animated: true)
-        }
+            }
+        })
     }
     
     fileprivate var imageUploadProgress: Progress?
