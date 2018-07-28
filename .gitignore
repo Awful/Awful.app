@@ -1,3 +1,6 @@
+# Build script working folder
+/build.noindex/
+
 # Bundler local install
 /.bundle/
 /Vendor/bundle/

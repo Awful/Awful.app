@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+
 import bump
 
 parser = argparse.ArgumentParser(description="Bump the (short) bundle version, then tag and commit the change")
