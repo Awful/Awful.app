@@ -20,21 +20,25 @@ target 'Awful' do
   pod 'ImgurAnonymousAPIClient'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
-  
+
   # Fixes a compile error; I'm happy to pin to some subsequent tagged version if that ever happens.
   pod 'PSMenuItem', :git => 'https://github.com/steipete/PSMenuItem', :commit => '489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79'
-  
+
   # Swift 4 support that doesn't crash in KVO. Go back to main pod when it arrives there
   pod 'PullToRefresher', :git => 'https://github.com/MindSea/PullToRefresh', :branch => 'fix-simultaneous-access'
-  
+
   pod 'TUSafariActivity'
   pod 'WebViewJavascriptBridge'
+
+  target :AwfulTests do
+    inherit! :search_paths
+  end
 end
 
 target 'Core' do
   pod 'HTMLReader'
   pod 'PromiseKit'
-  
+
   target 'CoreTests' do
     inherit! :search_paths
   end
@@ -43,7 +47,7 @@ end
 target :Smilies do
   pod 'FLAnimatedImage'
   pod 'HTMLReader'
-  
+
   target :SmiliesTests do
     inherit! :search_paths
   end
