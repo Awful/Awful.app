@@ -6,10 +6,11 @@ import UIKit
 
 /// Auto-closes the nearest open BBcode tag in a text view.
 final class CloseBBcodeTagCommand: NSObject {
+
     /// Whether the command can execute. KVO-compliant.
-    @objc dynamic fileprivate(set) var enabled = false
+    @objc dynamic private(set) var enabled = false
     
-    fileprivate let textView: UITextView
+    private let textView: UITextView
     
     init(textView: UITextView) {
         self.textView = textView
@@ -17,29 +18,29 @@ final class CloseBBcodeTagCommand: NSObject {
         
         updateEnabled()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: NSNotification.Name.UITextViewTextDidChange, object: textView)
+        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: .UITextViewTextDidChange, object: textView)
     }
     
-    @objc private func textDidChange(notification: NSNotification) {
+    @objc private func textDidChange(notification: Notification) {
         updateEnabled()
     }
     
-    private var textContent: String {
-        return (textView.text as NSString).substring(to: textView.selectedRange.location)
+    private var textContent: Substring {
+        return textView.text[..<String.Index(encodedOffset: textView.selectedRange.location)]
     }
     
-    fileprivate func updateEnabled() {
-        enabled = getCurrentlyOpenTag(textContent as NSString) != nil
+    private func updateEnabled() {
+        enabled = getCurrentlyOpenTag(textContent) != nil
     }
     
     /// Closes the nearest open BBcode tag.
     func execute() {
-        if hasOpenCodeTag(textContent as NSString) {
+        if hasOpenCodeTag(textContent) {
             textView.insertText("[/code]")
             return
         }
         
-        if let openTag = getCurrentlyOpenTag(textContent as NSString) {
+        if let openTag = getCurrentlyOpenTag(textContent) {
             textView.insertText("[/\(openTag)]")
         }
     }
@@ -67,21 +68,20 @@ final class CloseBBcodeTagCommand: NSObject {
  * "[codemonkey] [b]"          -> false
  * "[code][codemonkey]"        -> true
  */
-fileprivate func hasOpenCodeTag(_ text: NSString) -> Bool {
-    let codeRange = text.range(of: "[code", options: .backwards)
-    if codeRange.location == NSNotFound || NSMaxRange(codeRange) >= text.length { return false }
+internal func hasOpenCodeTag(_ text: Substring) -> Bool {
+    guard let codeRange = text.range(of: "[code", options: .backwards), codeRange.upperBound < text.endIndex else {
+        return false
+    }
     
     // If it's a false alarm like [codemonkey], keep looking.
-    
-    if
-        let nextCharacter = UnicodeScalar(text.character(at: NSMaxRange(codeRange))),
-        tagNameTerminators.contains(nextCharacter)
-    {
-        return hasOpenCodeTag(text.substring(to: codeRange.location) as NSString)
+
+    let nextCharacter = text[codeRange.upperBound]
+    if nextCharacter.unicodeScalars.count == 1, !tagNameTerminators.contains(nextCharacter.unicodeScalars.first!) {
+        return hasOpenCodeTag(text[..<codeRange.lowerBound])
     }
     
     // Is this still open?
-    return (text.substring(from: codeRange.location) as NSString).range(of: "[/code]").location == NSNotFound
+    return text[codeRange.lowerBound...].range(of: "[/code]") == nil
 }
 
 /*
@@ -91,69 +91,57 @@ fileprivate func hasOpenCodeTag(_ text: NSString) -> Bool {
  * "[b][/b]"             -> nil
  * "[url=foo]"           -> "url"
  * "[url=foo][b][i][/b]" -> "url"
- * "["                   -> "nil"
+ * "["                   -> nil
  * "[foo][/x"            -> "foo"
  * "[foo attr]"          -> "foo"
  * "[code][b]"           -> "code"
  * "[b][code][/code]"    -> "b"
  * "[list][*]"           -> "list"
  */
-fileprivate func getCurrentlyOpenTag(_ text: NSString) -> String? {
+internal func getCurrentlyOpenTag(_ text: Substring) -> Substring? {
     // Find start of preceding tag (opener or closer).
-    let startingBracket = text.range(of: "[", options: .backwards).location
-    guard startingBracket != NSNotFound else { return nil }
+    guard let startingBracket = text.range(of: "[", options: .backwards) else { return nil }
     
-    if startingBracket >= text.length - 1 {
+    if startingBracket.upperBound == text.endIndex {
         // Incomplete tag, keep going.
-        return getCurrentlyOpenTag(text.substring(to: startingBracket) as NSString)
+        return getCurrentlyOpenTag(text[..<startingBracket.lowerBound])
     }
     
     // If it's a closer, find its opener.
-    if String(text.character(at: startingBracket + 1)) == "/" {
-        var tagRange = (text.substring(from: startingBracket) as NSString).range(of: "]")
-        if tagRange.location == NSNotFound {
+    if text[startingBracket.upperBound] == "/" {
+        guard let tagEnd = text[startingBracket.lowerBound...].range(of: "]") else {
             // Not a proper tag, keep searching backwards.
-            return getCurrentlyOpenTag(text.substring(to: startingBracket) as NSString)
+            return getCurrentlyOpenTag(text[..<startingBracket.lowerBound])
         }
-        
-        tagRange = NSRange(location: startingBracket + 2, length: tagRange.location - 2)
-        let tagName = text.substring(with: tagRange)
-        
-        var openerLocation = text.range(of: "[\(tagName)]", options: .backwards).location
-        
-        if openerLocation == NSNotFound {
+
+        let afterSlash = text.index(after: startingBracket.upperBound)
+        let tagName = text[afterSlash ..< tagEnd.lowerBound]
+        guard let opener = text.range(of: "[\(tagName)]", options: .backwards)
             // Might be [tag=attr]
-            openerLocation = text.range(of: "[\(tagName)=", options: .backwards).location
-        }
-        
-        if openerLocation == NSNotFound {
+            ?? text.range(of: "[\(tagName)=", options: .backwards)
             // Might be [tag attr=val]
-            openerLocation = text.range(of: "[\(tagName) ", options: .backwards).location
-        }
-        
-        if openerLocation == NSNotFound {
+            ?? text.range(of: "[\(tagName) ", options: .backwards) else
+        {
             // Never opened, keep searching backwards from the starting bracket.
-            return getCurrentlyOpenTag(text.substring(to: startingBracket) as NSString)
+            return getCurrentlyOpenTag(text[..<startingBracket.lowerBound])
         }
-        
+
         // Now that we've matched [tag]...[/tag], keep looking back for an outer [tag2] that might still be open.
-        return getCurrentlyOpenTag(text.substring(to: openerLocation) as NSString)
+        return getCurrentlyOpenTag(text[..<opener.lowerBound])
     }
     
     // We have an opener! Find the end of the tag name.
-    var tagRange = text.rangeOfCharacter(from: tagNameTerminators as CharacterSet, options: [], range: NSRange(location: startingBracket + 1, length: text.length - startingBracket - 1))
-    if tagRange.location == NSNotFound {
+    guard let terminator = text.rangeOfCharacter(from: tagNameTerminators, options: [], range: startingBracket.upperBound ..< text.endIndex) else {
         // Malformed, keep looking.
-        return getCurrentlyOpenTag(text.substring(to: startingBracket) as NSString)
+        return getCurrentlyOpenTag(text[..<startingBracket.lowerBound])
     }
-    
-    tagRange.length -= 1 // Omit the ] or =;
-    let tagName = text.substring(with: NSRange(location: startingBracket + 1, length: tagRange.location - startingBracket - 1))
+
+    let tagName = text[startingBracket.upperBound ..< terminator.lowerBound]
     if tagName == "*" {
-        return getCurrentlyOpenTag(text.substring(to: startingBracket) as NSString)
+        return getCurrentlyOpenTag(text[..<startingBracket.lowerBound])
     }
     
     return tagName
 }
 
-fileprivate let tagNameTerminators = CharacterSet(charactersIn: "]= ")
+private let tagNameTerminators = CharacterSet(charactersIn: "]= ")
