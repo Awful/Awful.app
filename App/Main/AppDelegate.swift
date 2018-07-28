@@ -9,7 +9,6 @@ import Fabric
 import Smilies
 import UIKit
 
-@UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate(set) static var instance: AppDelegate!
 

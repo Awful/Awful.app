@@ -47,9 +47,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1CBBAAB41D949EE000A847EC"
-            BuildableName = "SmilieStickers.appex"
-            BlueprintName = "SmilieStickers"
+            BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
+            BuildableName = "AwfulDebug.app"
+            BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
