@@ -38,7 +38,7 @@ class SettingsSliderCell : UITableViewCell {
         context.setFillColor(color.cgColor)
         context.fill(bounds)
         
-        guard let spriteSheetBitmapContext = context.makeImage() else { return nil }
-        return UIImage(cgImage: spriteSheetBitmapContext, scale: image.scale, orientation: UIImageOrientation.up)
+        guard let imageBitmapContext = context.makeImage() else { return nil }
+        return UIImage(cgImage: imageBitmapContext, scale: image.scale, orientation: UIImageOrientation.up)
     }
 }
