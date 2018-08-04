@@ -302,6 +302,13 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
             self.maximumValue = [info[@"Maximum"] floatValue];
         }
         
+        if (info[@"MinimumImage"]) {
+            self.minimumValueImage = [UIImage imageNamed:info[@"MinimumImage"]];
+        }
+        if (info[@"MaximumImage"]) {
+            self.maximumValueImage = [UIImage imageNamed:info[@"MaximumImage"]];
+        }
+        
         //UISlider needs a kick to display the right value and enablement status
         [self awful_settingDidChange:[AwfulSettings sharedSettings][self.awful_setting]];
     } else {
