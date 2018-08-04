@@ -309,8 +309,14 @@ final class SettingsViewController: TableViewController {
         case .Button, .Disclosure, .DisclosureDetail:
             cell.selectionStyle = .blue
             
-        case .Immutable, .OnOff, .Stepper, .Slider, .AppIconPicker:
+        case .Immutable, .OnOff, .Stepper, .AppIconPicker:
             cell.selectionStyle = .none
+            
+        case .Slider:
+            cell.selectionStyle = .none
+            let slider = (cell as! SettingsSliderCell)
+            slider.setImageColor(theme["listTextColor"]!)
+            
         }
         
         cell.backgroundColor = theme["listBackgroundColor"]
