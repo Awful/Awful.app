@@ -18,7 +18,7 @@ final class CloseBBcodeTagCommand: NSObject {
         
         updateEnabled()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: .UITextViewTextDidChange, object: textView)
+        NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: UITextView.textDidChangeNotification, object: textView)
     }
     
     @objc private func textDidChange(notification: Notification) {

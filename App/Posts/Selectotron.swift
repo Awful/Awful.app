@@ -53,7 +53,7 @@ final class Selectotron : ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let preferredHeight = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
     }
     
@@ -111,7 +111,7 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
     
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let attributes = [
-            NSAttributedStringKey.foregroundColor: theme["sheetTextColor"]!,
+            NSAttributedString.Key.foregroundColor: theme["sheetTextColor"]!,
             .font: UIFont.preferredFont(forTextStyle: .body)
         ]
         return NSAttributedString(string: "\(row + 1)", attributes: attributes)

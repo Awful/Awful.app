@@ -137,7 +137,7 @@ public final class SpriteSheetView: UIView {
         animation.values = contentsRects
         animation.keyTimes = keyTimes as [NSNumber]
         animation.keyPath = #keyPath(CALayer.contentsRect)
-        animation.calculationMode = kCAAnimationDiscrete
+        animation.calculationMode = CAAnimationCalculationMode.discrete
         animation.repeatCount = Float.greatestFiniteMagnitude
         
         spriteLayer.add(animation, forKey: spriteAnimationKey)

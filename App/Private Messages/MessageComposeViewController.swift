@@ -83,7 +83,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         } else {
             image = ThreadTagLoader.unsetThreadTagImage()
         }
-        fieldView.threadTagButton.setImage(image, for: UIControlState())
+        fieldView.threadTagButton.setImage(image, for: UIControl.State())
     }
     
     fileprivate func updateAvailableThreadTagsIfNecessary() {
@@ -164,7 +164,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.textColor = textView.textColor
         fieldView.subjectField.textField.keyboardAppearance = textView.keyboardAppearance
         
-        let attributes = [NSAttributedStringKey.foregroundColor: (theme["placeholderTextColor"] as UIColor?) ?? .gray]
+        let attributes = [NSAttributedString.Key.foregroundColor: (theme["placeholderTextColor"] as UIColor?) ?? .gray]
         fieldView.toField.textField.attributedPlaceholder = NSAttributedString(string: "To", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = NSAttributedString(string: "Subject", attributes: attributes)
     }
@@ -253,7 +253,7 @@ extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
 }
 
 extension MessageComposeViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         let recipientKey = coder.decodeObject(forKey: Keys.RecipientUserKey.rawValue) as? UserKey
         let regardingKey = coder.decodeObject(forKey: Keys.RegardingMessageKey.rawValue) as? PrivateMessageKey
         let forwardingKey = coder.decodeObject(forKey: Keys.ForwardingMessageKey.rawValue) as? PrivateMessageKey
@@ -279,7 +279,7 @@ extension MessageComposeViewController: UIViewControllerRestoration {
         } else {
             return nil
         }
-        composeViewController.restorationIdentifier = identifierComponents.last as? String
+        composeViewController.restorationIdentifier = identifierComponents.last
         return composeViewController
     }
 }

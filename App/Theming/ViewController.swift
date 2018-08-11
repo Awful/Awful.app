@@ -93,7 +93,7 @@ class TableViewController: UITableViewController, Themeable {
         CommonInit(self)
     }
     
-    override init(style: UITableViewStyle) {
+    override init(style: UITableView.Style) {
         super.init(style: style)
         
         CommonInit(self)
@@ -135,7 +135,7 @@ class TableViewController: UITableViewController, Themeable {
     private func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
         let niggly = NigglyRefreshView()
-        niggly.bounds.size.height = niggly.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        niggly.bounds.size.height = niggly.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         niggly.autoresizingMask = .flexibleWidth
         niggly.backgroundColor = view.backgroundColor
         pullToRefreshView = niggly
@@ -246,7 +246,7 @@ class TableViewController: UITableViewController, Themeable {
         block()
         
         let loadMoreView = NigglyRefreshView()
-        loadMoreView.bounds.size.height = loadMoreView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        loadMoreView.bounds.size.height = loadMoreView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         loadMoreView.backgroundColor = tableView.backgroundColor
         loadMoreView.startAnimating()
         tableView.tableFooterView = loadMoreView

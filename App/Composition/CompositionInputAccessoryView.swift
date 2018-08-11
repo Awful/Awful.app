@@ -16,7 +16,7 @@ final class CompositionInputAccessoryView: UIInputView {
     
     fileprivate lazy var smilieButton: KeyboardButton = {
         let button = KeyboardButton()
-        button.setTitle(":-)", for: UIControlState())
+        button.setTitle(":-)", for: UIControl.State())
         button.accessibilityLabel = "Toggle smilie keyboard"
         button.addTarget(self, action: #selector(CompositionInputAccessoryView.didTapSmilieButton), for: .touchUpInside)
         return button
@@ -25,7 +25,7 @@ final class CompositionInputAccessoryView: UIInputView {
     fileprivate lazy var middleButtons: [KeyboardButton] = {
         return ["[", "=", ":", "/", "]"].map { title in
             let button = KeyboardButton()
-            button.setTitle(title, for: UIControlState())
+            button.setTitle(title, for: UIControl.State())
             button.addTarget(self, action: #selector(CompositionInputAccessoryView.didPressSingleCharacterKey(_:)), for: .touchUpInside)
             return button
         }
@@ -33,7 +33,7 @@ final class CompositionInputAccessoryView: UIInputView {
     
     fileprivate lazy var autocloseButton: KeyboardButton = {
         let button = KeyboardButton()
-        button.setTitle("[/..]", for: UIControlState())
+        button.setTitle("[/..]", for: UIControl.State())
         button.accessibilityLabel = "Close tag"
         button.setTitleColor(.gray, for: .disabled)
         button.addTarget(self, action: #selector(CompositionInputAccessoryView.didTapAutocloseButton), for: .touchUpInside)
@@ -144,7 +144,7 @@ final class CompositionInputAccessoryView: UIInputView {
         self.backgroundColor = backgroundColor
         
         for button in [smilieButton, autocloseButton] + middleButtons {
-            button.setTitleColor(titleColor, for: UIControlState())
+            button.setTitleColor(titleColor, for: UIControl.State())
             button.normalBackgroundColor = normalBackgroundColor
             button.selectedBackgroundColor = selectedBackgroundColor
             button.layer.shadowColor = shadowColor.cgColor
@@ -200,8 +200,8 @@ private final class KeyboardButton: SmilieButton {
         layer.shadowOffset = CGSize(width: 0, height: 1)
         layer.shadowRadius = 0
         
-        accessibilityTraits &= ~UIAccessibilityTraitButton
-        accessibilityTraits |= UIAccessibilityTraitKeyboardKey
+        accessibilityTraits.remove(UIAccessibilityTraits.button)
+        accessibilityTraits.insert(UIAccessibilityTraits.keyboardKey)
     }
     
     required init?(coder: NSCoder) {

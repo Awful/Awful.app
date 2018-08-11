@@ -19,6 +19,6 @@ import UIKit
     }
 
     public override var intrinsicContentSize : CGSize {
-        return CGSize(width: UIViewNoIntrinsicMetric, height: thickness)
+        return CGSize(width: UIView.noIntrinsicMetric, height: thickness)
     }
 }

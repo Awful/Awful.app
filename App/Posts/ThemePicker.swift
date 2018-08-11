@@ -7,12 +7,12 @@ import UIKit
 /// Acts as a segmented control for themes.
 final class ThemePicker: UIControl {
     /// The currently-selected theme's index, or UISegmentedControlNoSegment is no theme is selected.
-    var selectedThemeIndex: Int = UISegmentedControlNoSegment {
+    var selectedThemeIndex: Int = UISegmentedControl.noSegment {
         didSet {
-            if oldValue != UISegmentedControlNoSegment {
+            if oldValue != UISegmentedControl.noSegment {
                 buttons[oldValue].isSelected = false
             }
-            if selectedThemeIndex != UISegmentedControlNoSegment {
+            if selectedThemeIndex != UISegmentedControl.noSegment {
                 buttons[selectedThemeIndex].isSelected = true
             }
         }
@@ -45,7 +45,7 @@ final class ThemePicker: UIControl {
     }
     
     @objc fileprivate func didTapThemeButton(_ button: UIButton) {
-        selectedThemeIndex = buttons.index(of: button) ?? UISegmentedControlNoSegment
+        selectedThemeIndex = buttons.index(of: button) ?? UISegmentedControl.noSegment
         sendActions(for: .valueChanged)
     }
     

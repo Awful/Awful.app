@@ -14,11 +14,11 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
         let container = PassthroughViewController()
         container.restorationIdentifier = "Root container"
-        container.addChildViewController(self.splitViewController)
+        container.addChild(self.splitViewController)
         self.splitViewController.view.frame = CGRect(origin: .zero, size: container.view.bounds.size)
         self.splitViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         container.view.addSubview(self.splitViewController.view)
-        self.splitViewController.didMove(toParentViewController: container)
+        self.splitViewController.didMove(toParent: container)
         return container
     }()
     
@@ -295,7 +295,7 @@ extension RootViewControllerStack {
     }
     
     @objc(targetDisplayModeForActionInSplitViewController:)
-    func targetDisplayModeForAction(in splitViewController: UISplitViewController) -> UISplitViewControllerDisplayMode {
+    func targetDisplayModeForAction(in splitViewController: UISplitViewController) -> UISplitViewController.DisplayMode {
         // Misusing this delegate method to make sure the "show sidebar" button item is in place after an interface rotation.
         if let detailNav = detailNavigationController {
             if let root = detailNav.viewControllers.first {
@@ -347,36 +347,36 @@ extension MessageViewController: HasSplitViewPreference {
 }
 
 private final class PassthroughViewController: UIViewController {
-    override func childViewControllerForHomeIndicatorAutoHidden() -> UIViewController? {
-        return childViewControllers.first
+    override var childForHomeIndicatorAutoHidden: UIViewController? {
+        return children.first
     }
 
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
-        return childViewControllers.first?.preferredStatusBarUpdateAnimation ?? super.preferredStatusBarUpdateAnimation
+        return children.first?.preferredStatusBarUpdateAnimation ?? super.preferredStatusBarUpdateAnimation
     }
 
-    override func childViewControllerForScreenEdgesDeferringSystemGestures() -> UIViewController? {
-        return childViewControllers.first
+    override var childForScreenEdgesDeferringSystemGestures: UIViewController? {
+        return children.first
     }
 
-    override var childViewControllerForStatusBarHidden: UIViewController? {
-        return childViewControllers.first
+    override var childForStatusBarHidden: UIViewController? {
+        return children.first
     }
 
-    override var childViewControllerForStatusBarStyle: UIViewController? {
-        return childViewControllers.first
+    override var childForStatusBarStyle: UIViewController? {
+        return children.first
     }
 
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
-        return childViewControllers.first?.preferredInterfaceOrientationForPresentation ?? super.preferredInterfaceOrientationForPresentation
+        return children.first?.preferredInterfaceOrientationForPresentation ?? super.preferredInterfaceOrientationForPresentation
     }
 
     override var shouldAutorotate: Bool {
-        return childViewControllers.first?.shouldAutorotate ?? super.shouldAutorotate
+        return children.first?.shouldAutorotate ?? super.shouldAutorotate
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return childViewControllers.first?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
+        return children.first?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
     }
     
     private enum StateKeys {
@@ -387,6 +387,6 @@ private final class PassthroughViewController: UIViewController {
         super.encodeRestorableState(with: coder)
         
         // Just need to save them. No real need to decode; we'll set up the root stack outside of the state restoration system.
-        coder.encode(childViewControllers, forKey: StateKeys.childViewControllers)
+        coder.encode(children, forKey: StateKeys.childViewControllers)
     }
 }

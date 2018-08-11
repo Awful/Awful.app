@@ -102,7 +102,7 @@ final class ForumListCell: UITableViewCell {
         }
     }
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         contentView.addSubview(expandButton)
@@ -125,10 +125,10 @@ final class ForumListCell: UITableViewCell {
         didTapFavorite?(self)
     }
 
-    override func willTransition(to state: UITableViewCellStateMask) {
+    override func willTransition(to state: UITableViewCell.StateMask) {
         super.willTransition(to: state)
 
-        if state.contains(.showingEditControlMask) {
+        if state.contains(UITableViewCell.StateMask.showingEditControl) {
             favoriteButton.alpha = 0
         }
         else {

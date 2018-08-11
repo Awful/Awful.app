@@ -206,7 +206,7 @@ extension NavigationController: UINavigationControllerDelegate {
         return realDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
     }
     
-    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if let unpopHandler = unpopHandler , unpopHandler.shouldHandleAnimatingTransitionForOperation(operation) {
             return unpopHandler
         }
@@ -216,9 +216,9 @@ extension NavigationController: UINavigationControllerDelegate {
 }
 
 extension NavigationController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         let nav = self.init()
-        nav.restorationIdentifier = identifierComponents.last as? String
+        nav.restorationIdentifier = identifierComponents.last
         return nav
     }
 }

@@ -38,7 +38,7 @@ final class NigglyRefreshView: UIView {
     override var intrinsicContentSize: CGSize {
         let spriteSheetSize = spriteSheetView.intrinsicContentSize
         let margin: CGFloat = 6
-        return CGSize(width: UIViewNoIntrinsicMetric, height: spriteSheetSize.height + (margin * 2))
+        return CGSize(width: UIView.noIntrinsicMetric, height: spriteSheetSize.height + (margin * 2))
     }
     
     func startAnimating() {

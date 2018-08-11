@@ -94,7 +94,7 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else { return }
         
-        let titleAttributes: [NSAttributedStringKey: Any] = [
+        let titleAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: titleTextColor,
             .font: UIFont.systemFont(ofSize: 12)]
         let titleSize = titleText.size(withAttributes: titleAttributes)
@@ -112,7 +112,7 @@ final class SecondaryTagPickerCell: UICollectionViewCell {
         
         let firstLetter = String(titleText.first ?? "?")
         let letterAttributes = [
-            NSAttributedStringKey.foregroundColor: isSelected ? UIColor.white : drawColor,
+            NSAttributedString.Key.foregroundColor: isSelected ? UIColor.white : drawColor,
             .font: UIFont.systemFont(ofSize: 24)]
         let letterSize = firstLetter.size(withAttributes: letterAttributes)
         let letterOrigin = CGPoint(

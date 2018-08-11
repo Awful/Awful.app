@@ -177,7 +177,7 @@ final class AwfulURLRouter: NSObject {
     
     private func selectTopmostViewController<T: UIViewController>(containingViewControllerOfClass klass: T.Type) -> T? {
         guard let
-            splitVC = rootViewController.childViewControllers.first as? UISplitViewController,
+            splitVC = rootViewController.children.first as? UISplitViewController,
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
             else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
@@ -213,7 +213,7 @@ final class AwfulURLRouter: NSObject {
         
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
         let targetNav: UINavigationController
-        guard let splitVC = rootViewController.childViewControllers.first as? UISplitViewController else { return false }
+        guard let splitVC = rootViewController.children.first as? UISplitViewController else { return false }
         if splitVC.viewControllers.count == 2 {
             targetNav = splitVC.viewControllers[1] as! UINavigationController
         } else {

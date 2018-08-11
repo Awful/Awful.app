@@ -78,7 +78,7 @@ final class ImageViewController: UIViewController {
             activityViewController = UIActivityViewController(activityItems: [imageURL, wrappedURL], applicationActivities: [CopyURLActivity()])
             
             // Only use our copy button so it's clear they're copying the URL, not the image
-            activityViewController.excludedActivityTypes = [UIActivityType.copyToPasteboard]
+            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.copyToPasteboard]
         } else {
             activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
             
@@ -103,7 +103,7 @@ final class ImageViewController: UIViewController {
         var overlayButtons: [UIButton] { return [doneButton, actionButton] }
         var overlayHidden = false
         var hideOverlayTimer: Timer?
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        let spinner = UIActivityIndicatorView(style: .whiteLarge)
         let tap = UITapGestureRecognizer()
         let panToDismiss = UIPanGestureRecognizer()
         var panToDismissAction: (() -> Void)?
@@ -142,12 +142,12 @@ final class ImageViewController: UIViewController {
             statusBarBackground.backgroundColor = overlaidBackgroundColor
             addSubview(statusBarBackground)
             
-            let bodyFontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.body)
+            let bodyFontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.body)
             let title = NSAttributedString(string: "Done", attributes: [
                 .foregroundColor: overlaidForegroundColor,
                 .font: UIFont.boldSystemFont(ofSize: bodyFontDescriptor.pointSize)
                 ])
-            doneButton.setAttributedTitle(title, for: UIControlState())
+            doneButton.setAttributedTitle(title, for: UIControl.State())
             doneButton.contentEdgeInsets = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
             doneButton.horizontalSlop = 10
             doneButton.verticalSlop = 20
@@ -155,7 +155,7 @@ final class ImageViewController: UIViewController {
             doneButton.layer.cornerRadius = buttonCornerRadius
             addSubview(doneButton)
 
-            actionButton.setImage(UIImage(named: "action"), for: UIControlState())
+            actionButton.setImage(UIImage(named: "action"), for: UIControl.State())
             actionButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 7, bottom: 7, right: 7)
             actionButton.horizontalSlop = 10
             actionButton.verticalSlop = 20
@@ -531,8 +531,8 @@ final class ImagePreviewActivity: UIActivity {
         return _activityViewController
     }
 
-    override var activityType: UIActivityType {
-        return UIActivityType(rawValue: "com.awfulapp.Awful.ImagePreview")
+    override var activityType: UIActivity.ActivityType {
+        return UIActivity.ActivityType(rawValue: "com.awfulapp.Awful.ImagePreview")
     }
     
     override var activityTitle: String? {

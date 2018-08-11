@@ -14,18 +14,18 @@ final class PostsViewTopBar: UIView {
         enforcedHeightFrame.size.height = 40
         super.init(frame: enforcedHeightFrame)
         
-        parentForumButton.setTitle("Parent Forum", for: UIControlState())
+        parentForumButton.setTitle("Parent Forum", for: UIControl.State())
         parentForumButton.accessibilityLabel = "Parent forum"
         parentForumButton.accessibilityHint = "Opens this thread's forum"
         parentForumButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         addSubview(parentForumButton)
         
-        previousPostsButton.setTitle("Previous Posts", for: UIControlState())
+        previousPostsButton.setTitle("Previous Posts", for: UIControl.State())
         previousPostsButton.accessibilityLabel = "Previous posts"
         previousPostsButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         addSubview(previousPostsButton)
         
-        scrollToBottomButton.setTitle("Scroll To End", for: UIControlState())
+        scrollToBottomButton.setTitle("Scroll To End", for: UIControl.State())
         scrollToBottomButton.accessibilityLabel = "Scroll to end"
         scrollToBottomButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         addSubview(scrollToBottomButton)

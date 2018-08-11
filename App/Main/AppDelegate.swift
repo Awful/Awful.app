@@ -18,7 +18,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
     var window: UIWindow?
     
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.instance = self
         
         if
@@ -72,7 +72,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Don't want to lazily create it now.
         _rootViewControllerStack?.didAppear()
         
@@ -85,11 +85,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         PostsViewExternalStylesheetLoader.shared.refreshIfNecessary()
         
         NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: .UIContentSizeCategoryDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(brightnessDidChange), name: .UIScreenBrightnessDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(brightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: nil)
         
         // Brightness may have changed since app was shut down
-        NotificationCenter.default.post(name: .UIScreenBrightnessDidChange, object: UIScreen.main)
+        NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
 
         
         return true
@@ -105,7 +105,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         SmilieKeyboardSetIsAwfulAppActive(true)
         
         // Brightness may have changed while app was inactive
-        NotificationCenter.default.post(name: .UIScreenBrightnessDidChange, object: UIScreen.main)
+        NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
         
         // Check clipboard for a forums URL
         checkClipboard()
@@ -124,8 +124,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return coder.decodeInteger(forKey: interfaceVersionKey) == currentInterfaceVersion.rawValue
     }
 
-    func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
-        guard let identifierComponents = identifierComponents as? [String] else { return nil }
+    func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         return rootViewControllerStack.viewControllerWithRestorationIdentifierPath(identifierComponents)
     }
     
@@ -143,7 +142,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         guard let router = urlRouter, let route = userActivity.route else { return false }
         return router.route(route)
     }
@@ -313,9 +312,9 @@ private extension AppDelegate {
         } else if key == AwfulSettingsKeys.customBaseURL.takeUnretainedValue() as String {
             updateClientBaseURL()
         } else if key == AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String {
-            NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+            NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
         } else if key == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
-            NotificationCenter.default.post(name: NSNotification.Name.UIScreenBrightnessDidChange, object: UIScreen.main)
+            NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
         } else if key == AwfulSettingsKeys.clipboardURLEnabled.takeUnretainedValue() as String {
             checkClipboard()
         }
@@ -433,7 +432,11 @@ private let currentInterfaceVersion: InterfaceVersion = .version3
 
 private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
     do {
-        try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        if #available(iOS 10.0, *) {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default)
+        } else {
+            // do nothing
+        }
     } catch {
         print("\(#function) error setting audio session category: \(error)")
     }
@@ -444,3 +447,8 @@ private let loginCookieLastExpiryPromptDateKey = "com.awfulapp.Awful.LastCookieE
 private let loginCookieExpiryPromptFrequency = days(2)
 
 private let defaultBaseURLString = "https://forums.somethingawful.com"
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
+}

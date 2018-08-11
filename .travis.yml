@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode9.3
+osx_image: xcode10
 install: true # skip pod install; all dependencies are already in the repo
 script:
   - xcodebuild test -workspace Awful.xcworkspace -scheme Awful -destination 'platform=iOS Simulator,name=iPhone 8'

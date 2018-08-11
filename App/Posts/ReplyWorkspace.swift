@@ -82,7 +82,7 @@ final class ReplyWorkspace: NSObject {
                 self.compositionViewController.title = self.draft.title
             })
             
-            textViewNotificationToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
+            textViewNotificationToken = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
                 self.rightButtonItem.isEnabled = textView.hasText
             }
             

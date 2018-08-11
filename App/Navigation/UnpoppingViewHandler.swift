@@ -82,7 +82,7 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         navigationControllerIsAnimating = false
     }
     
-    func shouldHandleAnimatingTransitionForOperation(_ operation: UINavigationControllerOperation) -> Bool {
+    func shouldHandleAnimatingTransitionForOperation(_ operation: UINavigationController.Operation) -> Bool {
         return operation == .push && interactiveUnpopIsTakingPlace
     }
 }

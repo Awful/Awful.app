@@ -20,12 +20,12 @@ final class PrivateMessageInboxRefresher {
         
         startTimer(reason: .initialization)
         
-        tokens.append(NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: UIApplication.shared, queue: .main, using: { [unowned self] notification in
+        tokens.append(NotificationCenter.default.addObserver(forName: UIApplication.willEnterForegroundNotification, object: UIApplication.shared, queue: .main, using: { [unowned self] notification in
             
             self.startTimer(reason: .willEnterForeground)
         }))
         
-        tokens.append(NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: UIApplication.shared, queue: .main, using: { [unowned self] notification in
+        tokens.append(NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: UIApplication.shared, queue: .main, using: { [unowned self] notification in
             
             self.timer?.invalidate()
         }))

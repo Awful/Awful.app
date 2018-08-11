@@ -332,7 +332,7 @@ extension ForumListDataSource: UITableViewDataSource {
         return controllerAtGlobalSection(indexPath.section).controller === favoriteForumsController
     }
 
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 
         let (controller: controller, localSection: localSection) = controllerAtGlobalSection(indexPath.section)
 

@@ -309,12 +309,12 @@ extension MessageViewController: UIGestureRecognizerDelegate {
 }
 
 extension MessageViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         guard let messageKey = coder.decodeObject(forKey: Keys.MessageKey.rawValue) as? PrivateMessageKey else { return nil }
         let context = AppDelegate.instance.managedObjectContext
         guard let privateMessage = PrivateMessage.objectForKey(objectKey: messageKey, inManagedObjectContext: context) as? PrivateMessage else { return nil }
         let messageVC = self.init(privateMessage: privateMessage)
-        messageVC.restorationIdentifier = identifierComponents.last as? String
+        messageVC.restorationIdentifier = identifierComponents.last
         return messageVC
     }
 }
@@ -326,7 +326,7 @@ private enum Keys: String {
 }
 
 /// Twitter and YouTube embeds try to use taps to take over the frame. Here we try to detect that and treat it as if a link was tapped.
-fileprivate func isHijackingWebView(_ navigationType: UIWebViewNavigationType, url: URL) -> Bool {
+fileprivate func isHijackingWebView(_ navigationType: UIWebView.NavigationType, url: URL) -> Bool {
     guard case .other = navigationType else { return false }
     guard let host = url.host?.lowercased() else { return false }
     if host.hasSuffix("www.youtube.com") && url.path.lowercased().hasPrefix("/watch") {
@@ -343,7 +343,7 @@ fileprivate func isHijackingWebView(_ navigationType: UIWebViewNavigationType, u
 }
 
 extension MessageViewController: UIWebViewDelegate {
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
         guard let url = request.url else { return true }
         guard navigationType == .linkClicked || isHijackingWebView(navigationType, url: url) else { return true }
         

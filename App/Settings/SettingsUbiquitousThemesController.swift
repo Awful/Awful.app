@@ -58,7 +58,7 @@ final class SettingsUbiquitousThemesController: TableViewController {
         
         cell.textLabel?.text = theme.descriptiveName
         cell.textLabel?.textColor = theme["listTextColor"]
-        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.subheadline)
+        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.subheadline)
         guard let fontName = (theme["listFontName"] as String?) ?? descriptor.object(forKey: .name) as? String else {
             fatalError("\(#function) couldn't find font name")
         }
@@ -111,7 +111,7 @@ final class SettingsUbiquitousThemesController: TableViewController {
     
     override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         guard let footerView = view as? UITableViewHeaderFooterView else { return }
-        footerView.textLabel?.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.footnote)
+        footerView.textLabel?.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.footnote)
         footerView.contentView.backgroundColor = theme["listHeaderBackgroundColor"]
     }
 }

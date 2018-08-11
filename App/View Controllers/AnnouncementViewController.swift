@@ -185,7 +185,7 @@ final class AnnouncementViewController: ViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        if isBeingDismissed || isMovingFromParentViewController {
+        if isBeingDismissed || isMovingFromParent {
             clientCancellable?.cancel()
         }
     }
@@ -305,7 +305,7 @@ extension AnnouncementViewController: UIViewControllerRestoration {
         coder.encode(Float(renderView.scrollView.fractionalContentOffset.y), forKey: StateKey.fractionalContentOffsetY)
     }
 
-    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         let listIndex = coder.decodeInt32(forKey: StateKey.announcementListIndex)
         let fetchRequest = NSFetchRequest<Announcement>(entityName: Announcement.entityName())
         fetchRequest.fetchLimit = 1
@@ -325,7 +325,7 @@ extension AnnouncementViewController: UIViewControllerRestoration {
         }
 
         let announcementVC = AnnouncementViewController(announcement: announcement)
-        announcementVC.restorationIdentifier = identifierComponents.last as? String
+        announcementVC.restorationIdentifier = identifierComponents.last
         return announcementVC
     }
 

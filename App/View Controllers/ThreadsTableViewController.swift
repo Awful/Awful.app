@@ -330,7 +330,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: UIViewControllerRestoration
     
-    class func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    class func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         var forumKey = coder.decodeObject(forKey: RestorationKeys.forumKey) as! ForumKey?
         if forumKey == nil {
             guard let forumID = coder.decodeObject(forKey: ObsoleteRestorationKeys.forumID) as? String else { return nil }
@@ -339,7 +339,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         let managedObjectContext = AppDelegate.instance.managedObjectContext
         let forum = Forum.objectForKey(objectKey: forumKey!, inManagedObjectContext: managedObjectContext) as! Forum
         let viewController = self.init(forum: forum)
-        viewController.restorationIdentifier = identifierComponents.last as! String?
+        viewController.restorationIdentifier = identifierComponents.last 
         viewController.restorationClass = self
         return viewController
     }

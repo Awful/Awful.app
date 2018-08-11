@@ -13,7 +13,7 @@ final class ImageURLProtocol: URLProtocol {
         - returns: An NSURL suitable for use in a UIWebView, for passing to an API based on the Foundation URL Loading System, and for passing to `+stopHostingImageAtURL:`.
      */
     class func serveImage(_ image: UIImage, atPath path: String) -> URL? {
-        guard let data = UIImagePNGRepresentation(image) else { return nil }
+        guard let data = image.pngData() else { return nil }
         return serveImageData(data, atPath: path)
     }
     

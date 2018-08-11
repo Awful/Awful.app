@@ -128,9 +128,9 @@ extension UIFont {
         
         var UIKitRawValue: String {
             switch self {
-            case .body: return UIFontTextStyle.body.rawValue
-            case .footnote: return UIFontTextStyle.footnote.rawValue
-            case .caption1: return UIFontTextStyle.caption1.rawValue
+            case .body: return UIFont.TextStyle.body.rawValue
+            case .footnote: return UIFont.TextStyle.footnote.rawValue
+            case .caption1: return UIFont.TextStyle.caption1.rawValue
             }
         }
     }
@@ -144,7 +144,7 @@ extension UIFont {
         A font associated with the text style, scaled for the user's Dynamic Type settings, in the requested font family.
     **/
     class func preferredFontForTextStyle(_ textStyle: TypedTextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0) -> UIFont {
-        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle(rawValue: textStyle.UIKitRawValue))
+        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle(rawValue: textStyle.UIKitRawValue))
         if let fontName = fontName {
             return UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!
         } else {
@@ -178,7 +178,7 @@ extension UIImage {
         context.fill(bounds)
         
         guard let imageBitmapContext = context.makeImage() else { return nil }
-        return UIImage(cgImage: imageBitmapContext, scale: self.scale, orientation: UIImageOrientation.up)
+        return UIImage(cgImage: imageBitmapContext, scale: self.scale, orientation: UIImage.Orientation.up)
     }
 }
 
@@ -190,7 +190,7 @@ extension UINavigationItem {
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.textAlignment = .center
         label.textColor = .white
-        label.accessibilityTraits |= UIAccessibilityTraitHeader
+        label.accessibilityTraits.insert(UIAccessibilityTraits.header)
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
             label.font = UIFont.systemFont(ofSize: 17)
@@ -311,7 +311,7 @@ extension UITextView {
      */
     func replaceSelection(with text: String) {
         // If the text view is empty when mucking with text storage then the `font` and `textColor` properties are ignored.
-        var attributes: [NSAttributedStringKey: Any] = [:]
+        var attributes: [NSAttributedString.Key: Any] = [:]
         if let font = font {
             attributes[.font] = font
         }
@@ -324,7 +324,7 @@ extension UITextView {
         textStorage.endEditing()
 
         // Mucking with text storage does not send this notification automatically, but we'd like this notification to be sent.
-        NotificationCenter.default.post(name: .UITextViewTextDidChange, object: self)
+        NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self)
 
         selectedRange = NSRange(location: selectedRange.location + text.utf16.count, length: 0)
     }
@@ -335,7 +335,7 @@ extension UITextView {
         case .some(let selection) where selection.isEmpty:
             return caretRect(for: selection.end)
         case .some(let selection):
-            let rects = selectionRects(for: selection).map { ($0 as! UITextSelectionRect).rect }
+            let rects = selectionRects(for: selection).map { ($0 ).rect }
             if rects.isEmpty {
                 return nil
             } else {
@@ -392,7 +392,7 @@ extension UIViewController {
             add(presented)
         }
         
-        childViewControllers.forEach(add)
+        children.forEach(add)
         
         switch self {
         case let nav as UINavigationController:
@@ -452,7 +452,7 @@ extension UIWebView {
     class func nativeFeelingWebView() -> Self {
         let webView = self.init()
         webView.scalesPageToFit = true
-        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        webView.scrollView.decelerationRate = UIScrollView.DecelerationRate.normal
         webView.dataDetectorTypes = UIDataDetectorTypes()
         webView.isOpaque = false
         return webView
@@ -464,6 +464,6 @@ extension UIWebView {
         - returns: A rect in the web view's coordinate system corresponding to an element's offset.
      */
     func rectForElementBoundingRect(_ rectString: String) -> CGRect {
-        return CGRectFromString(rectString).insetBy(dx: scrollView.contentInset.left, dy: scrollView.contentInset.top)
+        return NSCoder.cgRect(for: rectString).insetBy(dx: scrollView.contentInset.left, dy: scrollView.contentInset.top)
     }
 }

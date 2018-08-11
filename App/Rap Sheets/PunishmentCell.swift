@@ -22,7 +22,7 @@ final class PunishmentCell: UITableViewCell {
         return ceil(reasonRect.height) + reasonInsets.top + reasonInsets.bottom
     }
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
         contentView.autoresizingMask.formUnion(.flexibleWidth)

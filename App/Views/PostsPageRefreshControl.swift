@@ -145,8 +145,8 @@ final class PostsPageRefreshControl: UIView {
     }
     
     override var intrinsicContentSize : CGSize {
-        let contentHeight = contentView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        return CGSize(width: UIViewNoIntrinsicMetric, height: contentHeight + 2 * contentPadding)
+        let contentHeight = contentView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        return CGSize(width: UIView.noIntrinsicMetric, height: contentHeight + 2 * contentPadding)
     }
     
     fileprivate lazy var height: CGFloat = { [unowned self] in

@@ -18,9 +18,9 @@ final class CompositionMenuTree: NSObject {
         
         PSMenuItem.installMenuHandler(for: textView)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: .UITextViewTextDidBeginEditing, object: textView)
-        NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidEndEditing(_:)), name: .UITextViewTextDidEndEditing, object: textView)
-        NotificationCenter.default.addObserver(self, selector: #selector(CompositionMenuTree.menuDidHide(_:)), name: .UIMenuControllerDidHideMenu, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: UITextView.textDidBeginEditingNotification, object: textView)
+        NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidEndEditing(_:)), name: UITextView.textDidEndEditingNotification, object: textView)
+        NotificationCenter.default.addObserver(self, selector: #selector(CompositionMenuTree.menuDidHide(_:)), name: UIMenuController.didHideMenuNotification, object: nil)
     }
     
     deinit {
@@ -67,7 +67,7 @@ final class CompositionMenuTree: NSObject {
         shouldPopWhenMenuHides = true
     }
     
-    func showImagePicker(_ sourceType: UIImagePickerControllerSourceType) {
+    func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
         let mediaType : NSString = kUTTypeImage as NSString
@@ -103,7 +103,7 @@ final class CompositionMenuTree: NSObject {
             textView.selectedTextRange = textView.textRange(from: afterImagePosition!, to: afterImagePosition!)
         }
         
-        NotificationCenter.default.post(name: NSNotification.Name.UITextViewTextDidChange, object: textView)
+        NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: textView)
     }
     
     private func psItemsForMenuItems(items: [MenuItem]) -> [PSMenuItem] {
@@ -119,13 +119,16 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         }
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let edited = info[UIImagePickerControllerEditedImage] as! UIImage? {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+        if let edited = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as! UIImage? {
             // AssetsLibrary's thumbnailing only gives us the original image, so ignore the asset URL.
             insertImage(edited)
         } else {
-            let original = info[UIImagePickerControllerOriginalImage] as! UIImage
-            insertImage(original, withAssetURL: info[UIImagePickerControllerReferenceURL] as! URL?)
+            let original = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as! UIImage
+            insertImage(original, withAssetURL: info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.referenceURL)] as! URL?)
         }
         picker.dismiss(animated: true) {
             self.textView.becomeFirstResponder()
@@ -338,8 +341,18 @@ fileprivate func wrapSelectionInTag(_ tagspec: NSString) -> (_ tree: Composition
     }
 }
 
-fileprivate func isPickerAvailable(_ sourceType: UIImagePickerControllerSourceType) -> () -> Bool {
+fileprivate func isPickerAvailable(_ sourceType: UIImagePickerController.SourceType) -> () -> Bool {
     return {
         return UIImagePickerController.isSourceTypeAvailable(sourceType)
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
 }

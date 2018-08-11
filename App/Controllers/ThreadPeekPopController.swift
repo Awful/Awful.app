@@ -60,7 +60,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
         }
         
         let bookmarkTitle = thread?.bookmarked == true ? "Remove Bookmark" : "Add Bookmark"
-        let bookmarkStyle: UIPreviewActionStyle = thread?.bookmarked == true ? .destructive : .default
+        let bookmarkStyle: UIPreviewAction.Style = thread?.bookmarked == true ? .destructive : .default
         let bookmarkAction = UIPreviewAction(title: bookmarkTitle, style: bookmarkStyle) { action, previewViewController -> Void in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return

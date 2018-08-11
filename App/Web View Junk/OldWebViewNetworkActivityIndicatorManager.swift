@@ -51,7 +51,7 @@ extension OldWebViewNetworkActivityIndicatorManager: UIWebViewDelegate {
         nextDelegate?.webView?(webView, didFailLoadWithError: error)
     }
     
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
         return nextDelegate?.webView?(webView, shouldStartLoadWith: request, navigationType: navigationType) ?? true
     }
 }

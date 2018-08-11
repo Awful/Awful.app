@@ -2672,12 +2672,12 @@
 					1C3CF9651A94B9B40065C964 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 					};
 					1C3CF96F1A94B9B40065C964 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 					};
 					1C66A9BF19DD304D001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -2703,6 +2703,7 @@
 					1C9AEBC2210C3B2200C9A567 = {
 						CreatedOnToolsVersion = 10.0;
 						DevelopmentTeam = 9RR6L9X39A;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
@@ -2712,9 +2713,9 @@
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
-					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
+					1D6058900D05DD3D006BFB54 = {
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -3739,6 +3740,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3750,6 +3752,7 @@
 				INFOPLIST_FILE = ../Core/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -3762,6 +3765,7 @@
 				INFOPLIST_FILE = ../Core/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3774,6 +3778,7 @@
 				INFOPLIST_FILE = ../Core/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -3854,6 +3859,7 @@
 				INFOPLIST_FILE = ../App/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
 			name = Debug;
@@ -3874,6 +3880,7 @@
 				INFOPLIST_FILE = ../App/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
 			name = Release;
@@ -3912,6 +3919,7 @@
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3924,6 +3932,7 @@
 				INFOPLIST_FILE = ../App/Info.plist;
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

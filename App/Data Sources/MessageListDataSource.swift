@@ -101,7 +101,7 @@ extension MessageListDataSource: UITableViewDataSource {
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
             sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
-                .font: UIFont.boldSystemFont(ofSize: UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyle.subheadline).pointSize),
+                .font: UIFont.boldSystemFont(ofSize: UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.subheadline).pointSize),
                 .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
             sentDate: message.sentDate ?? .distantPast,
             sentDateAttributes: [
@@ -128,7 +128,7 @@ extension MessageListDataSource: UITableViewDataSource {
         }())
     }
 
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let message = self.message(at: indexPath)
         deletionDelegate?.didDeleteMessage(message, in: self)
     }

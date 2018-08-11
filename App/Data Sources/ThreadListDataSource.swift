@@ -244,7 +244,7 @@ extension ThreadListDataSource: UITableViewDataSource {
         return deletionDelegate != nil
     }
 
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let thread = self.thread(at: indexPath)
         deletionDelegate?.didDeleteThread(thread, in: self)
     }

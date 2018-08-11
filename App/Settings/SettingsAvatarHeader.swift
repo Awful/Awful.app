@@ -40,9 +40,9 @@ class SettingsAvatarHeader: UIView {
     override var intrinsicContentSize: CGSize {
         let usernameHeight = usernameLabel.intrinsicContentSize.height + 8
         if hasAvatar {
-            return CGSize(width: UIViewNoIntrinsicMetric, height: max(avatarImageView.intrinsicContentSize.height, usernameHeight))
+            return CGSize(width: UIView.noIntrinsicMetric, height: max(avatarImageView.intrinsicContentSize.height, usernameHeight))
         } else {
-            return CGSize(width: UIViewNoIntrinsicMetric, height: usernameHeight)
+            return CGSize(width: UIView.noIntrinsicMetric, height: usernameHeight)
         }
     }
     

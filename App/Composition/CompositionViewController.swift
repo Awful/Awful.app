@@ -55,7 +55,7 @@ final class CompositionViewController: ViewController {
         super.themeDidChange()
         
         textView.textColor = theme["listTextColor"]
-        textView.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        textView.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
         textView.keyboardAppearance = theme.keyboardAppearance
         BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
     }
@@ -85,15 +85,15 @@ final class CompositionViewController: ViewController {
     
     override var keyCommands: [UIKeyCommand]? {
         return [
-            UIKeyCommand(input: UIKeyInputEscape, modifierFlags: [], action: #selector(CompositionViewController.cancel(_:)), discoverabilityTitle: "Cancel"),
+            UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(CompositionViewController.cancel(_:)), discoverabilityTitle: "Cancel"),
         ]
     }
 }
 
 extension CompositionViewController: UIViewControllerRestoration {
-    class func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    class func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         let composition = self.init()
-        composition.restorationIdentifier = identifierComponents.last as! String?
+        composition.restorationIdentifier = identifierComponents.last 
         return composition
     }
 }

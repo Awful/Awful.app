@@ -881,7 +881,7 @@ final class PostsPageViewController: ViewController {
             
             let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
             activityVC.completionWithItemsHandler = { (activityType, completed, returnedItems, activityError) in
-                if completed && activityType == UIActivityType.copyToPasteboard {
+                if completed && activityType == UIActivity.ActivityType.copyToPasteboard {
                     AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
                 }
             }
@@ -1209,7 +1209,7 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
 }
 
 /// Twitter and YouTube embeds try to use taps to take over the frame. Here we try to detect that and treat it as if a link was tapped.
-fileprivate func isHijackingWebView(_ navigationType: UIWebViewNavigationType, url: URL) -> Bool {
+fileprivate func isHijackingWebView(_ navigationType: UIWebView.NavigationType, url: URL) -> Bool {
     guard case .other = navigationType else { return false }
     guard let host = url.host?.lowercased() else { return false }
     if host.hasSuffix("www.youtube.com") && url.path.lowercased().hasPrefix("/watch") {
@@ -1226,7 +1226,7 @@ fileprivate func isHijackingWebView(_ navigationType: UIWebViewNavigationType, u
 }
 
 extension PostsPageViewController: UIWebViewDelegate {
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
         guard let url = request.url else { return true }
         guard navigationType == .linkClicked || isHijackingWebView(navigationType, url: url) else { return true }
         
@@ -1279,7 +1279,7 @@ extension PostsPageViewController: UIWebViewDelegate {
 }
 
 extension PostsPageViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         let context = AppDelegate.instance.managedObjectContext
         guard let
             threadKey = coder.decodeObject(forKey: Keys.ThreadKey.rawValue) as? ThreadKey,
@@ -1294,7 +1294,7 @@ extension PostsPageViewController: UIViewControllerRestoration {
         }
         
         let postsVC = PostsPageViewController(thread: thread, author: author)
-        postsVC.restorationIdentifier = identifierComponents.last as? String
+        postsVC.restorationIdentifier = identifierComponents.last
         return postsVC
     }
 }
@@ -1320,12 +1320,12 @@ extension PostsPageViewController {
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {
         var keyCommands: [UIKeyCommand] = [
-            UIKeyCommand(input: UIKeyInputUpArrow, modifierFlags: [], action: #selector(scrollUp), discoverabilityTitle: "Up"),
-            UIKeyCommand(input: UIKeyInputDownArrow, modifierFlags: [], action: #selector(scrollDown), discoverabilityTitle: "Down"),
+            UIKeyCommand(input: UIKeyCommand.inputUpArrow, modifierFlags: [], action: #selector(scrollUp), discoverabilityTitle: "Up"),
+            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: [], action: #selector(scrollDown), discoverabilityTitle: "Down"),
             UIKeyCommand(input: " ", modifierFlags: .shift, action: #selector(pageUp), discoverabilityTitle: "Page Up"),
             UIKeyCommand(input: " ", modifierFlags: [], action: #selector(pageDown), discoverabilityTitle: "Page Down"),
-            UIKeyCommand(input: UIKeyInputUpArrow, modifierFlags: .command, action: #selector(scrollToTop), discoverabilityTitle: "Scroll to Top"),
-            UIKeyCommand(input: UIKeyInputDownArrow, modifierFlags: .command, action: #selector(scrollToBottom(_:)), discoverabilityTitle: "Scroll to Bottom"),
+            UIKeyCommand(input: UIKeyCommand.inputUpArrow, modifierFlags: .command, action: #selector(scrollToTop), discoverabilityTitle: "Scroll to Top"),
+            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: .command, action: #selector(scrollToBottom(_:)), discoverabilityTitle: "Scroll to Bottom"),
         ]
         
         if case .specific(let pageNumber)? = page, pageNumber > 1 {

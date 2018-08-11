@@ -125,7 +125,7 @@ class ComposeTextViewController: ViewController {
     
     fileprivate func beginObservingTextChangeNotification() {
         guard textDidChangeObserver == nil else { return }
-        textDidChangeObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name.UITextViewTextDidChange, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
+        textDidChangeObserver = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
             self?.updateSubmitButtonItem()
         })
     }
@@ -139,7 +139,7 @@ class ComposeTextViewController: ViewController {
     fileprivate func beginObservingKeyboardNotifications() {
         guard keyboardWillChangeFrameObserver == nil else { return }
         
-        keyboardWillChangeFrameObserver = NotificationCenter.default.addObserver(forName: .UIKeyboardWillChangeFrame, object: nil, queue: .main, using: { [weak self] notification in
+        keyboardWillChangeFrameObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: .main, using: { [weak self] notification in
             self?.keyboardWillChangeFrame(notification)
         })
     }
@@ -154,16 +154,16 @@ class ComposeTextViewController: ViewController {
     private func keyboardWillChangeFrame(_ notification: Notification) {
         guard
             let userInfo = notification.userInfo,
-            let duration = userInfo[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval,
-            let curve = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? UInt,
-            let keyboardEndScreenFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
+            let curve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt,
+            let keyboardEndScreenFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
             let window = view.window
             else { return }
         let keyboardEndWindowFrame = window.convert(keyboardEndScreenFrame, from: nil)
         let keyboardEndTextViewFrame = textView.convert(keyboardEndWindowFrame, from: nil)
         let overlap = keyboardEndTextViewFrame.intersection(textView.bounds)
         
-        let options = UIViewAnimationOptions(rawValue: curve << 16)
+        let options = UIView.AnimationOptions(rawValue: curve << 16)
         
         UIView.animate(withDuration: duration, delay: 0, options: options, animations: { 
             self.textView.contentInset.bottom = overlap.height
@@ -273,7 +273,7 @@ class ComposeTextViewController: ViewController {
     override func loadView() {
         let textView = ComposeTextView()
         textView.restorationIdentifier = "ComposeTextView"
-        textView.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        textView.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
         textView.delegate = self
         view = textView
     }

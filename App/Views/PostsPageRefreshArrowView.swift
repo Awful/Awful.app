@@ -15,7 +15,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     init() {
         let image = UIImage(named: "arrowright")!
         arrow = UIImageView(image: image)
-        spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        spinner = UIActivityIndicatorView(style: .whiteLarge)
         
         super.init(frame: CGRect(origin: CGPoint.zero, size: image.size))
         

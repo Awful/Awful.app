@@ -88,7 +88,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
     }
     
     fileprivate func recalculatePreferredContentSize() {
-        let preferredHeight = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
     }
     
@@ -130,7 +130,7 @@ extension InAppActionViewController {
         cell.tintColor = theme[item.themeKey] ?? theme["actionIconTintColor"] ?? theme["tintColor"]
         cell.isAccessibilityElement = true
         cell.accessibilityLabel = item.title
-        cell.accessibilityTraits = UIAccessibilityTraitButton
+        cell.accessibilityTraits = UIAccessibilityTraits.button
         return cell
     }
     

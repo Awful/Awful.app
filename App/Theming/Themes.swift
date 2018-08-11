@@ -65,7 +65,7 @@ final class Theme: Comparable {
     }
     
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
-    var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
+    var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
         guard let style = dictionary["scrollIndicatorStyle"] as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
 
         switch style {

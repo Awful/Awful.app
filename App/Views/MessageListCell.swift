@@ -85,7 +85,7 @@ final class MessageListCell: UITableViewCell {
         let selectedBackgroundColor: UIColor
         let sender: NSAttributedString
         let sentDate: Date
-        let sentDateAttributes: [NSAttributedStringKey: Any]
+        let sentDateAttributes: [NSAttributedString.Key: Any]
         let subject: NSAttributedString
         let tagImage: UIImage?
         let tagOverlayImage: UIImage?
@@ -113,7 +113,7 @@ final class MessageListCell: UITableViewCell {
             tagOverlayImage: nil)
     }
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         contentView.addSubview(dateLabel)

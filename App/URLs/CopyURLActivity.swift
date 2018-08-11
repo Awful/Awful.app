@@ -25,11 +25,11 @@ final class CopyURLActivity: UIActivity {
 
     // MARK: UIActivity
     
-    override var activityType: UIActivityType {
-        return UIActivityType("com.awfulapp.Awful.CopyURL")
+    override var activityType: UIActivity.ActivityType {
+        return UIActivity.ActivityType("com.awfulapp.Awful.CopyURL")
     }
     
-    override class var activityCategory: UIActivityCategory {
+    override class var activityCategory: UIActivity.Category {
         return .action
     }
     

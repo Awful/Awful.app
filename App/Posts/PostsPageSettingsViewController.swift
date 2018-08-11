@@ -65,7 +65,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         updateAutoThemeSetting()
         themePicker.isLoaded = true
         
-        let preferredHeight = view.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
     }
     

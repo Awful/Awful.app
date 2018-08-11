@@ -49,7 +49,7 @@ final class PostsView: UIView {
     }
     
     fileprivate func updateForVoiceOver(animated: Bool) {
-        topBarAlwaysVisible = UIAccessibilityIsVoiceOverRunning()
+        topBarAlwaysVisible = UIAccessibility.isVoiceOverRunning
         guard topBarAlwaysVisible else { return }
         exposedTopBarSlice = topBar.bounds.height
         UIView.animate(withDuration: animated ? 0.2 : 0, animations: { 

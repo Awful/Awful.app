@@ -175,7 +175,7 @@ final class SettingsViewController: TableViewController {
         case Slider = "Slider"
         case AppIconPicker = "AppIconPicker"
         
-        var cellStyle: UITableViewCellStyle {
+        var cellStyle: UITableViewCell.CellStyle {
             switch self {
             case .OnOff, .Button, .Disclosure, .Slider, .AppIconPicker:
                 return .default
@@ -226,17 +226,17 @@ final class SettingsViewController: TableViewController {
                 
             case .Disclosure, .DisclosureDetail:
                 cell.accessoryType = .disclosureIndicator
-                cell.accessibilityTraits |= UIAccessibilityTraitButton
+                cell.accessibilityTraits.insert(UIAccessibilityTraits.button)
                 
             case .Stepper:
                 cell.accessoryView = UIStepper()
                 
             case .Button where setting["ThreadID"] != nil:
-                cell.accessibilityTraits |= UIAccessibilityTraitButton
+                cell.accessibilityTraits.insert(UIAccessibilityTraits.button)
                 cell.accessoryType = .disclosureIndicator
                 
             case .Button:
-                cell.accessibilityTraits |= UIAccessibilityTraitButton
+                cell.accessibilityTraits.insert(UIAccessibilityTraits.button)
                 cell.accessoryType = .none
 
             case .AppIconPicker:
@@ -432,7 +432,7 @@ final class SettingsViewController: TableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
     
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {

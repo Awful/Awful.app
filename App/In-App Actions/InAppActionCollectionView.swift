@@ -8,7 +8,7 @@ class InAppActionCollectionView: UICollectionView {
 
     override var intrinsicContentSize : CGSize {
         let contentSize = collectionViewLayout.collectionViewContentSize
-        return CGSize(width: UIViewNoIntrinsicMetric, height: contentSize.height)
+        return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height)
     }
     
 }

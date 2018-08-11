@@ -69,7 +69,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.textColor = textView.textColor
         fieldView.subjectField.textField.keyboardAppearance = textView.keyboardAppearance
         
-        let attributes = [NSAttributedStringKey.foregroundColor: theme["listSecondaryTextColor"] ?? .gray]
+        let attributes = [NSAttributedString.Key.foregroundColor: theme["listSecondaryTextColor"] ?? .gray]
         let themedString = NSAttributedString(string: "Subject", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = themedString
         updateThreadTagButtonImage()
@@ -104,7 +104,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         } else {
             image = ThreadTagLoader.unsetThreadTagImage(for: forum)
         }
-        fieldView.threadTagButton.setImage(image, for: UIControlState())
+        fieldView.threadTagButton.setImage(image, for: UIControl.State())
         
         let secondaryImage: UIImage?
         if let imageName = secondaryThreadTag?.imageName {
@@ -279,14 +279,14 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
 }
 
 extension ThreadComposeViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         guard let
             forumKey = coder.decodeObject(forKey: Keys.ForumKey.rawValue) as? ForumKey,
             let forum = Forum.objectForKey(objectKey: forumKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as? Forum
             else { return nil }
         
         let composeViewController = ThreadComposeViewController(forum: forum)
-        composeViewController.restorationIdentifier = identifierComponents.last as? String
+        composeViewController.restorationIdentifier = identifierComponents.last
         return composeViewController
     }
 }

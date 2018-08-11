@@ -79,7 +79,7 @@ class LoginViewController: ViewController {
             view.addConstraints(onePasswordUnavailableConstraints)
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillChangeFrame(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -178,16 +178,16 @@ extension LoginViewController {
     @objc fileprivate func keyboardWillChangeFrame(_ notification: Notification) {
         // For whatever insane reason, iOS9 gives you keyboard events for things that happen in extensions.
         // Check to make sure the keyboard is actually "ours", because `self.view.window` is apparently nil if 1Password is using the keyboard.
-        let isLocal = notification.userInfo?[UIKeyboardIsLocalUserInfoKey] as? Bool
+        let isLocal = notification.userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? Bool
         if (isLocal != nil && isLocal == false) {
             return;
         }
         
-        let duration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber
-        let curve = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber
-        let options = UIViewAnimationOptions(rawValue: UInt(curve.uintValue) << 16)
+        let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber
+        let curve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as! NSNumber
+        let options = UIView.AnimationOptions(rawValue: UInt(curve.uintValue) << 16)
         UIView.animate(withDuration: duration.doubleValue, delay: 0, options: options, animations: {
-            let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+            let keyboardFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
             if self.view.window != nil {
                 let windowKeyboardFrame = self.view.window!.convert(keyboardFrame, from: nil)
                 let localKeyboardFrame = self.view.convert(windowKeyboardFrame, from: nil)
