@@ -274,7 +274,9 @@ private func concatenateRenderings(array: [Any?], info: RenderingInfo) throws ->
     info.enumerationItem = true
     
     for element in array {
-        let boxRendering = try Box(element).render(info)
+        // TODO: Return to one line if bug is fixed upstream in this dependency or by Apple
+        let boxToRender = Box(element)
+        let boxRendering = try boxToRender.render(info)
         if contentType == nil
         {
             // First element: now we know our contentType
