@@ -48,7 +48,8 @@ def export_archive(archive_path, export_path):
                 '-exportArchive',
                 '-archivePath', archive_path,
                 '-exportPath', export_path,
-                '-exportOptionsPlist', options_plist_file.name])
+                '-exportOptionsPlist', options_plist_file.name,
+                '-allowProvisioningUpdates'])
 
     archive_base = os.path.basename(archive_path)
     archive_name_root = os.path.splitext(archive_base)[0]
