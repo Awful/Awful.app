@@ -200,10 +200,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func open(route: AwfulRoute) {
-        // TODO: this
-        // Threw in a naïve impl to get things working, does this need enhancement?
-        guard let router = urlRouter else { return }
-        _ = router.route(route)
+        urlRouter?.route(route)
     }
     
     fileprivate func updateShortcutItems() {

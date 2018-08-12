@@ -24,6 +24,7 @@ final class AwfulURLRouter: NSObject {
     }
     
     /// Show the screen appropriate for an "awful" URL.
+    @discardableResult
     func route(_ route: AwfulRoute) -> Bool {
         switch route {
         case .bookmarks:
