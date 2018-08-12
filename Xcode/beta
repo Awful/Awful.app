@@ -96,7 +96,7 @@ def main():
     if not args.skip_upload:
         ipa_path = export_archive(archive_path, build_dir)
         print("Uploading to App Store Connect, this can take awhile…")
-        upload_to_app_store(ipa_path, APPLE_ID_USERNAME)
+        upload_to_app_store(ipa_path, apple_id_username)
 
 
 if __name__ == '__main__':
