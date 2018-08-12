@@ -130,7 +130,13 @@ internal func getCurrentlyOpenTag(_ text: Substring) -> Substring? {
         return getCurrentlyOpenTag(text[..<opener.lowerBound])
     }
     
-    // We have an opener! Find the end of the tag name.
+    // We have an opener!
+    guard text[startingBracket.lowerBound...].range(of: "]") != nil else {
+        // User is still typing the tag, we're done here.
+        return nil
+    }
+    
+    // Find the end of the tag name.
     guard let terminator = text.rangeOfCharacter(from: tagNameTerminators, options: [], range: startingBracket.upperBound ..< text.endIndex) else {
         // Malformed, keep looking.
         return getCurrentlyOpenTag(text[..<startingBracket.lowerBound])

@@ -27,6 +27,7 @@ final class CloseBBcodeTagTests: XCTestCase {
         XCTAssertEqual(getCurrentlyOpenTag("[foo attr]"), "foo")
         XCTAssertEqual(getCurrentlyOpenTag("[b][code][/code]"), "b")
         XCTAssertEqual(getCurrentlyOpenTag("[list][*]"), "list")
+        XCTAssertEqual(getCurrentlyOpenTag("[url="), nil)
 
         // BBcode would say that "code" is the currently-open tag here…
         // XCTAssertEqual(getCurrentlyOpenTag("[code][b]"), "code")
