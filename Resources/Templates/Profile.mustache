@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+<style>
+    {{{ css }}}
+</style>
+
+<body class="{{ userInterfaceIdiom }} {{# dark }}dark{{/ }}">
+    <section>
+        {{# customTitleHTML }}
+            <div id="customTitle">
+                <div id="headerBackground" style="background-image:url('{{ avatarURL }}')"></div>
+
+                <header>
+                    {{{ . }}}
+                </header>
+            </div>
+        {{/ }}
+        <p>
+            There have been <b>{{ postCount }}</b> posts made by <i>{{ username }}</i>, an average of {{ postRate }} posts per day, since registering on <b>{{ regdateFormat(regdate) }}</b>. <i>{{ username }}</i> claims to be a {{ gender }}.
+        </p>
+
+        <p>{{ aboutMe }}</p>
+
+        {{# profilePictureURL }}<img src="{{ . }}" alt="Profile picture" id="profilePicture">{{/ profilePictureURL }}
+    </section>
+
+    <section>
+        {{# anyContactInfo }}
+            <table id="contact">
+                <caption>Contact Information</caption>
+                {{# privateMessagesWork }}<tr><th>Private Message</th><td>{{ username }}</td></tr>{{/ }}
+                {{# aimName }}<tr><th>AIM</th><td>{{ . }}</td></tr>{{/ }}
+                {{# icqName }}<tr><th>ICQ</th><td>{{ . }}</td></tr>{{/ }}
+                {{# yahooName }}<tr><th>Yahoo!</th><td>{{ . }}</td></tr>{{/ }}
+                {{# homepageURL }}<tr><th>Homepage</th><td>{{ . }}</td></tr>{{/ }}
+            </table>
+        {{/ }}
+
+        <table>
+            <caption>Additional Information</caption>
+            {{# regdate }}<tr><th>Member Since</th><td>{{ regdateFormat(.) }}</td></tr>{{/ }}
+            {{# postCount }}<tr><th>Post Count</th><td>{{ postCount }}</td></tr>{{/ }}
+            {{# postRate }}<tr><th>Post Rate</th><td>{{ . }}</td></tr>{{/ }}
+            {{# lastPost }}<tr><th>Last Post</th><td>{{ postDateFormat(.) }}</td></tr>{{/ }}
+            {{# location }}<tr><th>Location</th><td>{{ . }}</td></tr>{{/ }}
+            {{# interests }}<tr><th>Interests</th><td>{{ . }}</td></tr>{{/ }}
+            {{# occupation }}<tr><th>Occupation</th><td>{{ . }}</td></tr>{{/ }}
+        </table>
+    </section>
+</body>

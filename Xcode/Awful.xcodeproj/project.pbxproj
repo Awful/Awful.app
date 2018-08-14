@@ -69,7 +69,6 @@
 		1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */; };
 		1C16FBE31CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
-		1C16FBE91CBDB6E300C88BD1 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */; };
 		1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */; };
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
 		1C16FBFA1CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF91CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift */; };
@@ -309,7 +308,6 @@
 		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E10481914D1180010007B /* private-message.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10471914D1010010007B /* private-message.js */; };
 		1C8E104A1916F7970010007B /* common.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* common.js */; };
-		1C8E104C1916F92F0010007B /* profile.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E104B1916F85F0010007B /* profile.js */; };
 		1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */; };
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
 		1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C4191901763C8BD00EADE07 /* posts-view.js */; };
@@ -726,7 +724,6 @@
 		1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePicker.swift; sourceTree = "<group>"; };
 		1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaffleimagesURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
-		1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+OpensInBrowser.swift"; sourceTree = "<group>"; };
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
 		1C16FBF91CBDC7A700C88BD1 /* OldWebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldWebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
@@ -983,7 +980,6 @@
 		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10471914D1010010007B /* private-message.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "private-message.js"; sourceTree = "<group>"; };
 		1C8E10491916F78B0010007B /* common.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = common.js; sourceTree = "<group>"; };
-		1C8E104B1916F85F0010007B /* profile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = profile.js; sourceTree = "<group>"; };
 		1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCapabilities.swift; sourceTree = "<group>"; };
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
 		1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AwfulJavaScript.m; sourceTree = "<group>"; };
@@ -1565,6 +1561,7 @@
 			isa = PBXGroup;
 			children = (
 				1CA887AA1F3954550059FEEC /* Announcement.mustache */,
+				1C3447E8175DAED4007377C5 /* Profile.mustache */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
@@ -1603,7 +1600,6 @@
 				1C00E0AB173A006B008895E7 /* Navigation */,
 				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
-				1C6ED634169103FE0015CDD5 /* Profiles */,
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C25AC501F5777EC00977D6F /* Refreshers */,
 				1C8694A216EF78D3003FE89E /* Settings */,
@@ -1912,18 +1908,6 @@
 			path = Keyboard;
 			sourceTree = "<group>";
 		};
-		1C6ED634169103FE0015CDD5 /* Profiles */ = {
-			isa = PBXGroup;
-			children = (
-				1C8E10431914AA730010007B /* profile.css */,
-				1C8E104B1916F85F0010007B /* profile.js */,
-				1C3447E8175DAED4007377C5 /* Profile.mustache */,
-				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
-				1C16FBE81CBDB6E300C88BD1 /* ProfileViewModel.swift */,
-			);
-			path = Profiles;
-			sourceTree = "<group>";
-		};
 		1C7C60C018FCA4D7009BF4BB /* Web View Junk */ = {
 			isa = PBXGroup;
 			children = (
@@ -2135,6 +2119,7 @@
 				1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */,
 				1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
+				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
 				1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */,
 			);
 			path = "View Controllers";
@@ -2399,6 +2384,7 @@
 				1CA45D951F2C19AA005BEEC5 /* Localizable.strings */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
+				1C8E10431914AA730010007B /* profile.css */,
 				1CA45D931F2C0AD1005BEEC5 /* RenderView.js */,
 				1C331AA12122722B00C5D045 /* Templates */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
@@ -2861,7 +2847,6 @@
 				1C502D3C1F817004001890AF /* AppIcon-getout-60x60.png in Resources */,
 				1C8F0DE7191CFBE300CE8DEE /* posts-view.js in Resources */,
 				7BF3A6121F92FA86009F8603 /* AppIcon-ghost-40x40.png in Resources */,
-				1C8E104C1916F92F0010007B /* profile.js in Resources */,
 				7BF0902D2022C7570060BDC8 /* AppIcon-v_dark-20x20@2x.png in Resources */,
 				1C502D4E1F817010001890AF /* AppIcon-staredog-60x60@3x.png in Resources */,
 				1C502D161F816FF3001890AF /* AppIcon-Bars2-29x29.png in Resources */,
@@ -3557,7 +3542,6 @@
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
 				1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */,
-				1C16FBE91CBDB6E300C88BD1 /* ProfileViewModel.swift in Sources */,
 				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */,
 				1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */,

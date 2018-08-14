@@ -94,3 +94,11 @@
 
 /* Text read by VoiceOver for private messages tab bar item. */
 "private-message-tab.accessibility-label" = "Private messages";
+
+
+/* MARK: User profile */
+
+/* Title of the profile screen, used when the user's username is unavailable for some reason. */
+"profile.default-title" = "Profile";
+
+"profile.default-gender" = "porpoise";

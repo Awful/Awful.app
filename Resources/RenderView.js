@@ -2,9 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-// This file is loaded as a user script "at document end" into the `WKWebView` that renders announcements, posts, and private messages.
-
-document.body.addEventListener('click', Awful.handleClickEvent);
+// This file is loaded as a user script "at document end" into the `WKWebView` that renders announcements, posts, profiles, and private messages.
 
 // TODO: imgurGif, .gifWrap, rectOfElement, interestingElementsAtPoint, didTapUserHeader, didTapActionButton, highlightMentions (?), HeaderRectForPostAtIndex (?), FooterRectForPostAtIndex (?), ActionButtonRectForPostAtIndex (?). some of the ones marked ? mention synchronous calls, that's no longer a thing for WKWebView so let's preempt that if we can
 
@@ -248,6 +246,33 @@ Awful.setThemeStylesheet = function(css) {
     style.textContent = css;
 };
 
+
+document.body.addEventListener('click', Awful.handleClickEvent);
+
+// Listen for taps on the profile screen's rows.
+var contact = document.getElementById('contact');
+if (contact) {
+    contact.addEventListener('click', function(event) {
+        var row = event.target.closest('tr');
+        if (!row) { return; }
+        var service = row.querySelector('th');
+        if (!service) { return; }
+    
+        if (service.textContent === "Private Message") {
+            webkit.messageHandlers.sendPrivateMessage.postMessage({});
+            event.preventDefault();
+        } else if (service.textContent === "Homepage") {
+            var td = row.querySelector('td');
+            if (!td) { return; }
+            var url = td.textContent;
+            webkit.messageHandlers.showHomepageActions.postMessage({
+                frame: Awful.frameOfElement(row),
+                url: url
+            });
+            event.preventDefault();
+        }
+    });
+}
 
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.
