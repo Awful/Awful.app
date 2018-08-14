@@ -21,7 +21,7 @@ final class RenderView: UIView {
     
     var scrollView: UIScrollView { return webView.scrollView }
 
-    private var registeredMessages: [RenderViewMessage.Type] = []
+    private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -107,30 +107,31 @@ protocol RenderViewMessage {
 
 extension RenderView: WKScriptMessageHandler {
     func registerMessage(_ messageType: RenderViewMessage.Type) {
-        registeredMessages.append(messageType)
+        registeredMessages[messageType.messageName] = messageType
 
         webView.configuration.userContentController.add(ScriptMessageHandlerWeakTrampoline(self), name: messageType.messageName)
     }
 
     func unregisterMessage(_ messageType: RenderViewMessage.Type) {
-        guard let i = registeredMessages.index(where: { $0 == messageType }) else {
-            return
+        if registeredMessages.removeValue(forKey: messageType.messageName) != nil {
+            webView.configuration.userContentController.removeScriptMessageHandler(forName: messageType.messageName)
         }
-
-        let messageType = registeredMessages.remove(at: i)
-        webView.configuration.userContentController.removeScriptMessageHandler(forName: messageType.messageName)
     }
 
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        Log.d("received message from JavaScript: \(message.name)")
+    func userContentController(_ userContentController: WKUserContentController, didReceive rawMessage: WKScriptMessage) {
+        Log.d("received message from JavaScript: \(rawMessage.name)")
 
-        let messageType = registeredMessages.first { $0.messageName == message.name }
-        if let message = messageType?.init(message) {
-            delegate?.didReceive(message: message, in: self)
+        guard let messageType = registeredMessages[rawMessage.name] else {
+            Log.w("ignoring unexpected message from JavaScript: \(rawMessage.name). Did you forget to register a message type with the RenderView?")
+            return
         }
-        else {
-            Log.w("ignoring unexpected message from JavaScript: \(message.name). Did you forget to register a message type with the RenderView?")
+        
+        guard let message = messageType.init(rawMessage) else {
+            Log.w("could not deserialize \(messageType) (registered as \(rawMessage.name)) from JavaScript. Does the initializer look right?")
+            return
         }
+        
+        delegate?.didReceive(message: message, in: self)
     }
 
     /**
