@@ -145,6 +145,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     // MARK: Actions
 
     @objc private func didLongPress(_ sender: UIGestureRecognizer) {
+        guard case .began = sender.state else { return }
+        
         guard let indexPath = tableView.indexPathForRow(at: sender.location(in: tableView)) else {
             Log.d("ignoring long press, wasn't on a cell")
             return
