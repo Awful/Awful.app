@@ -7,28 +7,28 @@ import WebKit
 
 private let Log = Logger.get()
 
-
 /**
- Renders announcements, posts, and private messages.
+ Renders announcements, posts, profiles, and private messages.
+ 
+ The bundled file `RenderView.js` is automatically included in all rendered HTML documents. There are handy, type-safe methods for receiving messages from the document's JavaScript. The network activity indicator is handled for you. It's all here.
  
  While it's probably pretty clear that `RenderView` uses a web view to do its work, that fact shouldn't leak out into its public interface. In theory, we should be able to switch to something else completely (e.g. TextKit (hold me)) without breaking any callers.
  */
 final class RenderView: UIView {
+    
     private var activityIndicatorManager: WebViewActivityIndicatorManager?
     weak var delegate: RenderViewDelegate?
+    
     var scrollView: UIScrollView { return webView.scrollView }
 
-    fileprivate var registeredMessages: [RenderViewMessage.Type] = []
+    private var registeredMessages: [RenderViewMessage.Type] = []
 
-    fileprivate lazy var webView: WKWebView = {
+    private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
-
-        for filename in ["Announcement.js", "RenderView.js"] {
-            let jsURL = Bundle(for: RenderView.self).url(forResource: filename, withExtension: nil) !! "Please include \(filename)"
-            let js = try! String(contentsOf: jsURL)
-            let userScript = WKUserScript(source: js, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-            configuration.userContentController.addUserScript(userScript)
-        }
+        let jsURL = Bundle(for: RenderView.self).url(forResource: "RenderView.js", withExtension: nil)!
+        let js = try! String(contentsOf: jsURL)
+        let userScript = WKUserScript(source: js, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+        configuration.userContentController.addUserScript(userScript)
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = self
@@ -62,9 +62,11 @@ final class RenderView: UIView {
      - Seealso: `UIScrollView.fractionalContentOffset`.
      */
     func scrollToFractionalOffset(_ fractionalOffset: CGPoint) {
-        let js = "window.scrollTo(document.body.scrollWidth * \(fractionalOffset.x), "
-            + "document.body.scrollHeight * \(fractionalOffset.y))"
-        webView.evaluateJavaScript(js, completionHandler: { result, error in
+        webView.evaluateJavaScript("""
+            window.scrollTo(
+                document.body.scrollWidth * \(fractionalOffset.x),
+                document.body.scrollHeight * \(fractionalOffset.y));
+            """, completionHandler: { result, error in
             if let error = error {
                 Log.e("error attempting to scroll: \(error)")
             }
@@ -192,18 +194,27 @@ extension RenderView: WKScriptMessageHandler {
 
                 guard
                     let body = message.body as? [String: Any],
-                    let frame = body["frame"] as? [String: Double],
-                    let x = frame["x"],
-                    let y = frame["y"],
-                    let width = frame["width"],
-                    let height = frame["height"],
+                    let frame = CGRect(renderViewMessage: body["frame"] as? [String: Double]),
                     let postIndex = body["postIndex"] as? Int
                     else { return nil }
 
-                self.frame = CGRect(x: x, y: y, width: width, height: height)
+                self.frame = frame
                 self.postIndex = postIndex
             }
         }
+    }
+}
+
+extension CGRect {
+    init?(renderViewMessage body: [String: Double]?) {
+        guard
+            let x = body?["x"],
+            let y = body?["y"],
+            let width = body?["width"],
+            let height = body?["height"]
+            else { return nil }
+        
+        self.init(x: x, y: y, width: width, height: height)
     }
 }
 
