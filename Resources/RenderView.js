@@ -149,6 +149,31 @@ Awful.postIndexOfElement = function(element) {
 
 
 /**
+ Replaces the announcement HTML.
+ 
+ @param {string} html - The updated HTML for the announcement.
+ */
+window.Awful.setAnnouncementHTML = function(html) {
+    var post = document.querySelector('post');
+    if (post) {
+        post.remove();
+    }
+    
+    document.body.insertAdjacentHTML('beforeend', html);
+};
+
+
+/**
+ Sets the "dark" class on the `<body>` element.
+ 
+ @param {boolean} `true` for dark mode, `false` for light mode.
+ */
+window.Awful.setDarkMode = function(dark) {
+    document.body.classList.toggle('dark', dark);
+};
+
+
+/**
  Updates the user-specified font scale setting.
  
  @param {number} percentage - The user's selected font scale as a percentage.

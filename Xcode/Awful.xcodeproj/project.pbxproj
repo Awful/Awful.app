@@ -330,7 +330,6 @@
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887AB1F3954550059FEEC /* Announcement.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CA887AA1F3954550059FEEC /* Announcement.mustache */; };
-		1CA887AD1F3958F00059FEEC /* Announcement.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA887AC1F3958F00059FEEC /* Announcement.js */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
 		1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CB0607A1936CADC005263EA /* PostPreview.mustache */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
@@ -1009,7 +1008,6 @@
 		1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Potentially-Objectionable.xcdatamodel"; sourceTree = "<group>"; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
 		1CA887AA1F3954550059FEEC /* Announcement.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Announcement.mustache; sourceTree = "<group>"; };
-		1CA887AC1F3958F00059FEEC /* Announcement.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Announcement.js; sourceTree = "<group>"; };
 		1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Presentation.swift"; sourceTree = "<group>"; };
 		1CB0607A1936CADC005263EA /* PostPreview.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostPreview.mustache; sourceTree = "<group>"; };
 		1CB15BCE1A9CEB8800176E73 /* Themes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
@@ -1561,6 +1559,14 @@
 				1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */,
 			);
 			path = "In-App Actions";
+			sourceTree = "<group>";
+		};
+		1C331AA12122722B00C5D045 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				1CA887AA1F3954550059FEEC /* Announcement.mustache */,
+			);
+			path = Templates;
 			sourceTree = "<group>";
 		};
 		1C3447C1174D4B4F007377C5 /* Thread Tags */ = {
@@ -2387,8 +2393,6 @@
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				1CA887AC1F3958F00059FEEC /* Announcement.js */,
-				1CA887AA1F3954550059FEEC /* Announcement.mustache */,
 				1C5B83181F74ADB200BE7517 /* App Icons */,
 				8CCD503B15B783FC00E5893B /* Images */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
@@ -2396,6 +2400,7 @@
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
 				1CA45D931F2C0AD1005BEEC5 /* RenderView.js */,
+				1C331AA12122722B00C5D045 /* Templates */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
 			name = Resources;
@@ -3033,7 +3038,6 @@
 				1CC362C2204C527700274E82 /* AppIcon-doggo-40x40@2x.png in Resources */,
 				7BF090352022C7570060BDC8 /* AppIcon-v_dark-29x29@3x.png in Resources */,
 				1CA887AB1F3954550059FEEC /* Announcement.mustache in Resources */,
-				1CA887AD1F3958F00059FEEC /* Announcement.js in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
 				8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */,
 				7BF3A61E1F92FA86009F8603 /* AppIcon-greenface-20x20.png in Resources */,

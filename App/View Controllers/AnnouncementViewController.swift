@@ -348,7 +348,7 @@ extension AnnouncementViewController: UIViewControllerRestoration {
     }
 }
 
-fileprivate struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBoxable {
+private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBoxable {
     let authorRegdate: Date?
     let authorRolesDescription: String
     let authorUserID: String?
