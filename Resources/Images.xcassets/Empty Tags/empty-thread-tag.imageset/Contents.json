@@ -6,11 +6,12 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "empty-thread-tag@2x.png"
+      "filename" : "no-tag@2x.png",
+      "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "no-tag@3x.png",
       "scale" : "3x"
     }
   ],
