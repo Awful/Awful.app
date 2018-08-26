@@ -178,7 +178,7 @@ extension UIImage {
         context.fill(bounds)
         
         guard let imageBitmapContext = context.makeImage() else { return nil }
-        return UIImage(cgImage: imageBitmapContext, scale: self.scale, orientation: UIImage.Orientation.up)
+        return UIImage(cgImage: imageBitmapContext, scale: self.scale, orientation: UIImageOrientation.up)
     }
 }
 
