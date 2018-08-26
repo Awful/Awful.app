@@ -49,7 +49,7 @@ public final class SpriteSheetView: UIView {
             colorFollowsTheme = true
         }
 
-        if let tintColor = chosenColor, let sheet = tintImage(spriteSheet, as: tintColor) {
+        if let tintColor = chosenColor, let sheet = spriteSheet.withTint(tintColor){
             self.spriteSheet = sheet
         } else {
             self.spriteSheet = spriteSheet
@@ -63,7 +63,7 @@ public final class SpriteSheetView: UIView {
     @objc func settingsDidChange(_ notification: Notification) {
         guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
         if colorFollowsTheme && (key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String || key.hasPrefix("theme")) {
-            if let sheet = tintImage(self.spriteSheet!, as: Theme.currentTheme["tintColor"]!) {
+            if let sheet = self.spriteSheet?.withTint(Theme.currentTheme["tintColor"]!) {
                 self.spriteSheet = sheet
             }
         }
@@ -224,32 +224,6 @@ public final class SpriteSheetView: UIView {
         guard let image = spriteSheet else { return super.intrinsicContentSize }
         let width = image.size.width
         return CGSize(width: width, height: width)
-    }
-    
-    // Consult https://stackoverflow.com/questions/5423210/how-do-i-change-a-partially-transparent-images-color-in-ios/20750373#20750373
-    // for the original source for this algorithm
-    private func tintImage(_ image: UIImage, as color: UIColor) -> UIImage? {
-        guard let cgImage = image.cgImage else { return nil }
-        
-        let width: Int = Int(image.scale * image.size.width)
-        let height: Int = Int(image.scale * image.size.height)
-        let bounds = CGRect(x: 0, y: 0, width: width, height: height)
-        
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let context = CGContext.init(data: nil,
-                                     width: width,
-                                     height: height,
-                                     bitsPerComponent: 8,
-                                     bytesPerRow: 0,
-                                     space: colorSpace,
-                                     bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue).rawValue)!
-        
-        context.clip(to: bounds, mask: cgImage)
-        context.setFillColor(color.cgColor)
-        context.fill(bounds)
-        
-        guard let spriteSheetBitmapContext = context.makeImage() else { return nil }
-        return UIImage(cgImage: spriteSheetBitmapContext, scale: image.scale, orientation: UIImageOrientation.up)
     }
 }
 

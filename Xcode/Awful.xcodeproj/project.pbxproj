@@ -425,7 +425,6 @@
 		7B502E271F2513B400B1B305 /* post-dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E241F25139600B1B305 /* post-dots@3x.png */; };
 		7B502E2C1F25140F00B1B305 /* platinum-member@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E2A1F25140200B1B305 /* platinum-member@2x.png */; };
 		7B502E2D1F25140F00B1B305 /* platinum-member@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E2B1F25140200B1B305 /* platinum-member@3x.png */; };
-		7B582DC31F2B6BC600F6FBE5 /* ImageTinting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B582DC21F2B6BC600F6FBE5 /* ImageTinting.swift */; };
 		7B82D6671F7809E3002291C7 /* AppIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B82D6651F7809E3002291C7 /* AppIconCell.swift */; };
 		7B82D6681F7809E3002291C7 /* AppIconCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B82D6661F7809E3002291C7 /* AppIconCell.xib */; };
 		7BF090272022C7570060BDC8 /* AppIcon-v_dark-29x29.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BF090062022C7570060BDC8 /* AppIcon-v_dark-29x29.png */; };
@@ -1121,7 +1120,6 @@
 		7B502E251F25139600B1B305 /* post-dots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@2x.png"; sourceTree = "<group>"; };
 		7B502E2A1F25140200B1B305 /* platinum-member@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member@2x.png"; sourceTree = "<group>"; };
 		7B502E2B1F25140200B1B305 /* platinum-member@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member@3x.png"; sourceTree = "<group>"; };
-		7B582DC21F2B6BC600F6FBE5 /* ImageTinting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTinting.swift; sourceTree = "<group>"; };
 		7B82D6651F7809E3002291C7 /* AppIconCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconCell.swift; sourceTree = "<group>"; };
 		7B82D6661F7809E3002291C7 /* AppIconCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppIconCell.xib; sourceTree = "<group>"; };
 		7BF090062022C7570060BDC8 /* AppIcon-v_dark-29x29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-v_dark-29x29.png"; sourceTree = "<group>"; };
@@ -1496,7 +1494,6 @@
 			isa = PBXGroup;
 			children = (
 				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
-				7B582DC21F2B6BC600F6FBE5 /* ImageTinting.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -3574,7 +3571,6 @@
 				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
 				1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */,
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
-				7B582DC31F2B6BC600F6FBE5 /* ImageTinting.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,

@@ -37,8 +37,7 @@ final class ThreadTagLoader {
         } else {
             theme = Theme.currentTheme
         }
-        return ImageTinting.tintImage(UIImage(named: unsetThreadTagImageName)!, as: theme["listTextColor"]!)!
-        //return UIImage(named: unsetThreadTagImageName)!
+        return UIImage(named: unsetThreadTagImageName)!.withTint(theme["listTextColor"]!)!
     }
     
     /// A placeholder image representing "no filter".

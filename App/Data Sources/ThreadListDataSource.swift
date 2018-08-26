@@ -216,7 +216,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
 
                 return imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
-                    ?? ThreadTagLoader.emptyThreadTagImage
+                    ?? ThreadTagLoader.emptyThreadTagImage.withTint(theme["listTextColor"]!)
             }(),
             title: NSAttributedString(string: thread.title ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
