@@ -521,6 +521,7 @@
 		8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */; };
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
+		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
 		B2A9BE21D37128F0FF754D6E /* Pods_CoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F783E9D241CF6339BFCF0B /* Pods_CoreTests.framework */; };
 		BA6F56396124CA653CA313D2 /* Pods_Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */; };
 		BC9ECF5C508981ACAF1DC54D /* Pods_Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCA065CF2C50CD212D10284E /* Pods_Core.framework */; };
@@ -1219,6 +1220,7 @@
 		8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper@2x.png"; sourceTree = "<group>"; };
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
+		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
 		9F642485F166EBF5608DC271 /* Pods-CoreTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-CoreTests/Pods-CoreTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A7B3F77323960DADE60F24B0 /* Pods_SmiliesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmiliesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.release.xcconfig"; sourceTree = "<group>"; };
@@ -2135,6 +2137,7 @@
 		1CD33EDB16F397FC0059587E /* Posts View Theming */ = {
 			isa = PBXGroup;
 			children = (
+				8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */,
 				8C8FA47719AD7CA300B67AAA /* award.png */,
 				8C8FA47819AD7CA300B67AAA /* diamond-icon.png */,
 				8C9834E1169091CE009F0CD6 /* fyad-bubble.png */,
@@ -3062,6 +3065,7 @@
 				7BF3A6151F92FA86009F8603 /* AppIcon-greenface-40x40.png in Resources */,
 				8C8FA48019AD7CA300B67AAA /* ik.png in Resources */,
 				1CC362C9204C527700274E82 /* AppIcon-doggo-60x60@3x.png in Resources */,
+				8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
