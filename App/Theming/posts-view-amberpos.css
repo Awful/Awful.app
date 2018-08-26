@@ -460,6 +460,10 @@ post.seen {
 [title~=":yohoho:"] {
   -webkit-filter: invert(100%);
 }
+[title~=":ins:"] {
+    content: url('data:image/gif;base64,R0lGODlhBgAOAIABAOrPTP///yH/C05FVFNDQVBFMi4wAwEAAAAh+QQJMgABACwAAAAABgAOAAACCoyPqcvtr4CcVBYAIfkEBTIAAQAsAAAAAAYADgAAAgiMj6nL7Q9VAQA7');
+}
+
 .postbody {
   letter-spacing: -0.01em;
   line-height: 1.18em;
