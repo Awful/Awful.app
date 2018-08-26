@@ -50,6 +50,10 @@ extension InAppActionViewController {
             }
             })
         
+        items.append(IconActionItem(.copyTitle) {
+            UIPasteboard.general.string = thread.title
+        })
+        
         if thread.beenSeen {
             items.append(IconActionItem(.markAsUnread) { [weak viewController] in
                 let oldSeen = thread.seenPosts
@@ -64,7 +68,7 @@ extension InAppActionViewController {
                 }
             })
         }
-        
+
         self.items = items
     }
 }

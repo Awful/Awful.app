@@ -31,6 +31,7 @@ final class IconActionItem: NSObject {
 @objc enum IconAction: Int {
     case addBookmark
     case copyURL
+    case copyTitle
     case editPost
     case ignoreUser
     case jumpToFirstPage
@@ -52,6 +53,7 @@ final class IconActionItem: NSObject {
         switch self {
         case .addBookmark: return "Bookmark"
         case .copyURL: return "Link"
+        case .copyTitle: return "Copy Title"
         case .editPost: return "Edit"
         case .ignoreUser: return "Ignore User"
         case .jumpToFirstPage: return "First Page"
@@ -75,6 +77,7 @@ final class IconActionItem: NSObject {
         switch self {
         case .addBookmark: return "add-bookmark"
         case .copyURL: return "copy-url"
+        case .copyTitle: return "copy-thread-title"
         case .editPost: return "edit-post"
         case .ignoreUser: return "ignore"
         case .jumpToFirstPage: return "jump-to-first-page"
@@ -98,6 +101,7 @@ final class IconActionItem: NSObject {
         switch self {
         case .addBookmark: return "addBookmarkIconColor"
         case .copyURL: return "copyURLIconColor"
+        case .copyTitle: return "copyTitleColor"
         case .editPost: return "editPostIconColor"
         case .ignoreUser: return "ignoreUserIconColor"
         case .jumpToFirstPage: return "jumpToFirstPageIconColor"

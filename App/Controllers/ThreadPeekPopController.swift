@@ -33,6 +33,14 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             UIPasteboard.general.coercedURL = url
         }
         
+        let copyTitleAction = UIPreviewAction(title: "Copy Title", style: .default) { action, previewViewController -> Void in
+            guard let postsViewController = previewViewController as? PostsPageViewController else {
+                return
+            }
+            let thread = postsViewController.thread
+            UIPasteboard.general.string = thread.title
+        }
+        
         let markAsReadAction = UIPreviewAction(title: "Mark Thread As Read", style: .default) { action, previewViewController -> Void in
             guard let postsViewController = previewViewController as? PostsPageViewController else {
                 return
@@ -82,7 +90,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
             }
         }
         
-        return [copyAction, markAsReadAction, bookmarkAction]
+        return [copyAction, copyTitleAction, markAsReadAction, bookmarkAction]
     }
     
     // MARK: UIViewControllerPreviewingDelegate
