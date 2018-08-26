@@ -53,7 +53,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
         
-        let protocols: [AnyClass] = [ImageURLProtocol.self, MinusFixURLProtocol.self, ResourceURLProtocol.self, WaffleimagesURLProtocol.self]
+        let protocols: [AnyClass] = [ImageURLProtocol.self, MinusFixURLProtocol.self, ResourceURLProtocol.self, WaffleimagesURLProtocol.self, PostimgOrgURLProtocol.self]
         for proto in protocols {
             URLProtocol.registerClass(proto)
         }
