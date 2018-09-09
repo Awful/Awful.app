@@ -6,6 +6,29 @@ import HTMLReader
 
 extension HTMLDocument {
     
+    /// Finds links that appear to be to tweets and adds a `data-tweet-id` attribute to those links.
+    func addAttributeToTweetLinks() {
+        for a in nodes(matchingSelector: "a[href *= 'twitter.com']") {
+            guard
+                let href = a["href"],
+                let url = URL(string: href),
+                let host = url.host,
+                host.lowercased().hasSuffix("twitter.com")
+                else { continue }
+            
+            let pathComponents = url.pathComponents
+            guard
+                pathComponents.count >= 4,
+                pathComponents[2].lowercased().hasPrefix("status")
+                else { continue }
+            
+            let id = pathComponents[3]
+            guard id.unicodeScalars.allSatisfy(CharacterSet.decimalDigits.contains) else { continue }
+            
+            a["data-tweet-id"] = id
+        }
+    }
+    
     /**
      Modifies the document in place, adding the "mention" class to the header above a quote if it says "username posted:".
      */

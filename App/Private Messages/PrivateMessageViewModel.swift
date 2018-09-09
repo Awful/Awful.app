@@ -18,18 +18,11 @@ struct PrivateMessageViewModel: MustacheBoxable {
         var htmlContents: String? {
             guard let originalHTML = message.innerHTML else { return nil }
             let document = HTMLDocument(string: originalHTML)
+            document.addAttributeToTweetLinks()
             document.removeSpoilerStylingAndEvents()
             document.useHTML5VimeoPlayer()
             document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
-            return document.firstNode(matchingSelector: "body")?.innerHTML
-        }
-        var javascript: String? {
-            var error: NSError?
-            let script = LoadJavaScriptResources(["WebViewJavascriptBridge.js.txt", "zepto.min.js", "widgets.js", "common.js", "private-message.js"], &error)
-            if script == nil {
-                Log.e("error loading JavaaScripts: \(error as Any)")
-            }
-            return script
+            return document.bodyElement?.innerHTML
         }
         let visibleAvatarURL = showAvatars ? message.from?.avatarURL : nil
 
@@ -37,7 +30,6 @@ struct PrivateMessageViewModel: MustacheBoxable {
             "fromUsername": message.fromUsername ?? "",
             "hiddenAvataruRL": hiddenAvataruRL as Any,
             "htmlContents": htmlContents as Any,
-            "javascript": javascript as Any,
             "messageID": message.messageID,
             "regdate": message.from?.regdate as Any,
             "seen": message.seen,

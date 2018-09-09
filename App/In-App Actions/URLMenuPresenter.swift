@@ -2,6 +2,7 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import UIKit
 
 private let Log = Logger.get()
@@ -315,6 +316,7 @@ private func canOpenInTwitter(_ url: URL) -> Bool {
 
 /// Presents a menu for a link or a video.
 final class URLMenuPresenter: NSObject {
+    
     fileprivate let menuPresenter: _URLMenuPresenter
     
     init(linkURL: URL, imageURL: URL? = nil) {
@@ -333,5 +335,39 @@ final class URLMenuPresenter: NSObject {
     
     func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {
         menuPresenter.present(fromViewController: presenter, fromRect: sourceRect, inView: sourceView)
+    }
+    
+    // Convenience function.
+    class func presentInterestingElements(_ elements: [RenderView.InterestingElement], from presentingViewController: UIViewController, renderView: RenderView) -> Bool {
+        var imageURL: URL?
+        for case .spoiledImage(let url) in elements {
+            imageURL = URL(string: url.absoluteString, relativeTo: ForumsClient.shared.baseURL)
+            break
+        }
+        
+        for case .spoiledLink(frame: let frame, url: let unresolved) in elements {
+            if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
+                let presenter = URLMenuPresenter(linkURL: resolved, imageURL: imageURL)
+                presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
+                return true
+            }
+        }
+        
+        if let imageURL = imageURL {
+            let preview = ImageViewController(imageURL: imageURL)
+            preview.title = presentingViewController.title
+            presentingViewController.present(preview, animated: true)
+            return true
+        }
+        
+        for case .spoiledVideo(frame: let frame, url: let unresolved) in elements {
+            if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
+                let presenter = URLMenuPresenter(videoURL: resolved)
+                presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
+                return true
+            }
+        }
+        
+        return false
     }
 }

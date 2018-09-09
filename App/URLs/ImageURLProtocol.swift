@@ -10,7 +10,7 @@ final class ImageURLProtocol: URLProtocol {
     /**
         Adds an image whose data is served at the given path. The image's data will be held in memory; consider passing a thumbnail image where appropriate. If another image was being served at the path, it is replaced.
      
-        - returns: An NSURL suitable for use in a UIWebView, for passing to an API based on the Foundation URL Loading System, and for passing to `+stopHostingImageAtURL:`.
+     - returns: A URL suitable for use in a web view and/or the Foundation URL Loading System (be sure to register with `URLProtocol.registerClass(_:)` and/or `WKWebViewConfiguration.setURLSchemeHandler(_:forURLScheme:)`); and for passing to `+stopHostingImageAtURL:`.
      */
     class func serveImage(_ image: UIImage, atPath path: String) -> URL? {
         guard let data = image.pngData() else { return nil }

@@ -8,6 +8,7 @@ import Crashlytics
 import Fabric
 import Smilies
 import UIKit
+import WebKit
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     fileprivate(set) static var instance: AppDelegate!
@@ -53,10 +54,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
         
-        let protocols: [AnyClass] = [ImageURLProtocol.self, MinusFixURLProtocol.self, ResourceURLProtocol.self, WaffleimagesURLProtocol.self, PostimgOrgURLProtocol.self]
-        for proto in protocols {
-            URLProtocol.registerClass(proto)
-        }
+        registerURLProtocols()
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.tintColor = Theme.currentTheme["tintColor"]
@@ -448,7 +446,20 @@ private let loginCookieExpiryPromptFrequency = days(2)
 
 private let defaultBaseURLString = "https://forums.somethingawful.com"
 
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
-	return input.rawValue
+private extension AppDelegate {
+    func registerURLProtocols() {
+        let protocols: [AnyClass] = [ImageURLProtocol.self, MinusFixURLProtocol.self, ResourceURLProtocol.self, WaffleimagesURLProtocol.self, PostimgOrgURLProtocol.self]
+        for proto in protocols {
+            URLProtocol.registerClass(proto)
+        }
+        
+        if #available(iOS 11.0, *) {
+            // WKURLSchemeHandler suits our needs
+        } else {
+            let schemes = [ImageURLProtocol.URLScheme, ResourceURLProtocol.scheme]
+            for scheme in schemes {
+                WKWebView.registerCustomURLScheme(scheme)
+            }
+        }
+    }
 }

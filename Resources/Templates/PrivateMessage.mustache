@@ -2,6 +2,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
 
+{{# baseURL }}<base href="{{.}}">{{/ }}
+
+<title>Awful: Private message</title>
+
+<style>
+  /* Allow click events. */
+  header {
+    cursor: pointer;
+  }
+</style>
+
 <style id="awful-inline-style">
     {{{ stylesheet }}}
 </style>
@@ -30,6 +41,4 @@
             <time class="postdate">{{ format.sentDate(sentDate) }}</time>
         </footer>
     </post>
-    
-    <script>{{{ javascript }}}</script>
 </body>

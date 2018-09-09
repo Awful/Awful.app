@@ -96,6 +96,18 @@
 "private-message-tab.accessibility-label" = "Private messages";
 
 
+/* MARK: Private message */
+
+/* Title of action sheet button that starts a new private message forwarding the currently-visible message. */
+"private-message.action-forward" = "Forward";
+
+/* Title of action sheet button that starts a new private message replying to the currently-visible message. */
+"private-message.action-reply" = "Reply";
+
+/* Title of alert shown when the user taps Reply or Forward but the quoted contents of the original message cannot be loaded. */
+"private-message.quote-error.title" = "Could Not Quote Message";
+
+
 /* MARK: User profile */
 
 /* Title of the profile screen, used when the user's username is unavailable for some reason. */

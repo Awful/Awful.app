@@ -142,7 +142,6 @@ final class AnnouncementViewController: ViewController {
         })
 
         // TODO: long-press menu (links/images/embeds)
-        // TODO: network activity indicator
 
         let fetch = ForumsClient.shared.listAnnouncements()
         clientCancellable = fetch.cancellable

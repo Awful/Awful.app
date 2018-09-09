@@ -58,7 +58,7 @@ final class ProfileViewController: ViewController {
         present(activity, animated: true)
         let popover = activity.popoverPresentationController
         popover?.sourceRect = frame
-        popover?.sourceView = renderView.scrollView
+        popover?.sourceView = renderView
     }
     
     override func viewDidLoad() {
@@ -123,7 +123,7 @@ final class ProfileViewController: ViewController {
         renderView.render(html: html, baseURL: baseURL)
     }
     
-    var baseURL: URL? {
+    private var baseURL: URL? {
         return ForumsClient.shared.baseURL
     }
 }

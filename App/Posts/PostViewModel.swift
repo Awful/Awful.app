@@ -41,6 +41,7 @@ struct PostViewModel: MustacheBoxable {
             let document = HTMLDocument(string: innerHTML)
             document.removeSpoilerStylingAndEvents()
             document.removeEmptyEditedByParagraphs()
+            document.addAttributeToTweetLinks()
             document.useHTML5VimeoPlayer()
             document.highlightQuotesOfPosts(byUserNamed: AwfulSettings.shared().username)
             document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)

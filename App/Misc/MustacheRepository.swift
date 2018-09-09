@@ -2,6 +2,7 @@
 //
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import Mustache
 
 /**
@@ -58,6 +59,7 @@ private let repository: TemplateRepository = {
     }
 
     repo.configuration.extendBaseContext([
+        "baseURL": ForumsClient.shared.baseURL as Any,
         "fontScalePercentage": fontScale,
         "format": [
             "announcementDate": DateFormatter.announcementDateFormatter,
