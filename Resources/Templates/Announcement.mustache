@@ -36,7 +36,7 @@
 
             {{# authorRolesDescription }}<span class="voiceover-only">{{ . }}</span>{{/ }}
 
-            <time class="regdate">Joined {{ formatters.regdate(authorRegdate) }}</time>
+            <time class="regdate">Joined {{ format.regdate(authorRegdate) }}</time>
         </section>
     </header>
 
@@ -46,7 +46,7 @@
 
     <footer>
         <span class="postdate">
-            {{ formatters.announcementDate(postedDate) }}
+            {{ format.announcementDate(postedDate) }}
         </span>
     </footer>
 </post>

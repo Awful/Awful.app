@@ -23,6 +23,7 @@ struct MustacheTemplate {
 
     // Known templates:
     static let acknowledgements = MustacheTemplate(name: "Acknowledgements")
+    static let announcement = MustacheTemplate(name: "Announcement")
     static let post = MustacheTemplate(name: "Post")
     static let postPreview = MustacheTemplate(name: "PostPreview")
     static let postsView = MustacheTemplate(name: "PostsView")
@@ -59,6 +60,7 @@ private let repository: TemplateRepository = {
     repo.configuration.extendBaseContext([
         "fontScalePercentage": fontScale,
         "format": [
+            "announcementDate": DateFormatter.announcementDateFormatter,
             "postDate": DateFormatter.postDateFormatter,
             "regdate": DateFormatter.regDateFormatter,
             "sentDate": DateFormatter.postDateFormatter],

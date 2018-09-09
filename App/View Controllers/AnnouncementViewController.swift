@@ -198,15 +198,7 @@ final class AnnouncementViewController: ViewController {
 
         case (_, .renderingFirstTime(let model)), (_, .rerendering(let model)):
             do {
-                let template = try Template(named: "Announcement")
-                template.extendBaseContext([
-                    "formatters": [
-                        "announcementDate": DateFormatter.announcementDateFormatter,
-                        "regdate": DateFormatter.regDateFormatter]])
-                if AwfulSettings.shared().fontScale != 100 {
-                    template.register(AwfulSettings.shared().fontScale, forKey: "fontScalePercentage")
-                }
-                let rendering = try template.render(model)
+                let rendering = try MustacheTemplate.render(.announcement, value: model)
                 renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
             }
             catch {
