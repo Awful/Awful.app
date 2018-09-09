@@ -18,7 +18,7 @@
             <section class="nameanddate">
                 <h1 class="username">{{ fromUsername }}</h1>
 
-                <time class="regdate">Joined {{ regdateFormat(regdate) }}</time>
+                <time class="regdate">Joined {{ format.regdate(regdate) }}</time>
             </section>
         </header>
         
@@ -27,7 +27,7 @@
         </section>
         
         <footer>
-            <time class="postdate">{{ sentDateFormat(sentDate) }}</time>
+            <time class="postdate">{{ format.sentDate(sentDate) }}</time>
         </footer>
     </post>
     

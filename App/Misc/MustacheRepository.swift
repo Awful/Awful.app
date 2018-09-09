@@ -10,10 +10,12 @@ import Mustache
  These templates are rendered with some extra context, so there's no need to include these yourself:
 
  - fontScalePercentage
+ - format (a dictionary with various formatters; use as e.g. `{{ format.postDate(post.date) }}`)
+    - announcementDate
+    - postDate
+    - regdate
+    - sentDate
  - javascriptEscape
- - postDateFormatter
- - regdateFormatter
- - sentDateFormatter
  - userInterfaceIdiom (either `ipad` or `iphone`)
  - version (e.g. `3.35`)
  */
@@ -56,10 +58,11 @@ private let repository: TemplateRepository = {
 
     repo.configuration.extendBaseContext([
         "fontScalePercentage": fontScale,
+        "format": [
+            "postDate": DateFormatter.postDateFormatter,
+            "regdate": DateFormatter.regDateFormatter,
+            "sentDate": DateFormatter.postDateFormatter],
         "javascriptEscape": StandardLibrary.javascriptEscape,
-        "postDateFormat": DateFormatter.postDateFormatter,
-        "regdateFormat": DateFormatter.regDateFormatter,
-        "sentDateFormat": DateFormatter.postDateFormatter,
         "userInterfaceIdiom": { () -> String in
             switch UIDevice.current.userInterfaceIdiom {
             case .pad:

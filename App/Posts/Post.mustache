@@ -7,7 +7,7 @@
       
       {{# accessibilityRoles }}<span class="voiceover-only">{{ . }}</span>{{/ }}
 
-			<time class="regdate">Joined {{ regdateFormat(author.regdate) }}</time>
+			<time class="regdate">Joined {{ format.regdate(author.regdate) }}</time>
 		</section>
     </header>
   
@@ -17,7 +17,7 @@
 	
 	<footer>
         <span class="postdate">
-            {{ postDateFormat(postDate) }}
+            {{ format.postDate(postDate) }}
         </span>
 
         <button class="action-button" title="Post actions">
