@@ -1,6 +1,7 @@
-language: objective-c
+os: osx
 osx_image: xcode10
-install: true # skip pod install; all dependencies are already in the repo
+install:
+  - touch Local.xcconfig
 script:
   - xcodebuild test -workspace Awful.xcworkspace -scheme Awful -destination 'platform=iOS Simulator,name=iPhone 8'
 notifications:
