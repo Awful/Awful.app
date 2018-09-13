@@ -55,6 +55,12 @@ internal final class ForumsURLSession {
                 return "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
             }()
             config.httpAdditionalHeaders = headers
+            
+            #if DEBUG
+                let protocolClasses = [FixtureURLProtocol.self] + (config.protocolClasses ?? [])
+                config.protocolClasses = protocolClasses
+            #endif
+            
             return config
         }()
         urlSession = URLSession(configuration: config, delegate: sessionDelegate, delegateQueue: sessionDelegate.queue)
