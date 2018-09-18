@@ -50,7 +50,7 @@ struct PostViewModel: MustacheBoxable {
             if post.ignored {
                 document.markRevealIgnoredPostLink()
             }
-            return document.firstNode(matchingSelector: "body")!.innerHTML
+            return document.bodyElement?.innerHTML ?? ""
         }
         var visibleAvatarURL: URL? {
             return showAvatars ? post.author?.avatarURL : nil

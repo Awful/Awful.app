@@ -249,6 +249,7 @@ Awful.setThemeStylesheet = function(css) {
 
 document.body.addEventListener('click', Awful.handleClickEvent);
 
+
 // Listen for taps on the profile screen's rows.
 var contact = document.getElementById('contact');
 if (contact) {
@@ -273,6 +274,7 @@ if (contact) {
         }
     });
 }
+
 
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.

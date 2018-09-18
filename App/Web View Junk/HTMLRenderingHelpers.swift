@@ -11,7 +11,7 @@ extension HTMLDocument {
      */
     func highlightQuotesOfPosts(byUserNamed username: String) {
         let loggedInUserPosted = "\(username) posted:"
-        for h4 in nodes(matchingSelector:".bbc-block h4") where h4.textContent == loggedInUserPosted {
+        for h4 in nodes(matchingSelector: ".bbc-block h4") where h4.textContent == loggedInUserPosted {
             var block = h4.parentElement
             while block != nil, block?.hasClass("bbc-block") == false {
                 block = block?.parentElement
