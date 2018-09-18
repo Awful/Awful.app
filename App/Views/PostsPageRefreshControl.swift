@@ -8,8 +8,8 @@ import UIKit
 private let contentPadding: CGFloat = 10
 
 final class PostsPageRefreshControl: UIView {
-    unowned let scrollView: UIScrollView
     var handler: (() -> Void)?
+    private weak var scrollView: UIScrollView?
     
     var contentView: UIView {
         didSet {
@@ -27,7 +27,7 @@ final class PostsPageRefreshControl: UIView {
         
         configureContentView()
         
-        kvoController.observe(scrollView, keyPath: "contentSize", options: .initial) { [unowned self] _, _ in
+        kvoControllerNonRetaining.observe(scrollView, keyPath: #keyPath(UIScrollView.contentSize), options: .initial) { [unowned self] _, _ in
             self.layoutScrollView()
         }
         
@@ -39,7 +39,11 @@ final class PostsPageRefreshControl: UIView {
     }
     
     deinit {
-        scrollView.panGestureRecognizer.removeTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
+        if let scrollView = scrollView {
+            kvoControllerNonRetaining.unobserve(scrollView, keyPath: #keyPath(UIScrollView.contentSize))
+            
+            scrollView.panGestureRecognizer.removeTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
+        }
     }
     
     func endRefreshing() {
@@ -59,7 +63,7 @@ final class PostsPageRefreshControl: UIView {
         contentView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         contentView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         
-        scrollView.addSubview(self)
+        scrollView?.addSubview(self)
     }
     
     // MARK: State machine
@@ -90,6 +94,8 @@ final class PostsPageRefreshControl: UIView {
     // MARK: Actions
     
     @objc fileprivate func didPan(_ sender: UIPanGestureRecognizer) {
+        guard let scrollView = scrollView else { return }
+        
         let maxVisibleY = scrollView.bounds.maxY - frame.height + bottomInset
         
         switch sender.state {
@@ -113,9 +119,9 @@ final class PostsPageRefreshControl: UIView {
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
                 self.bottomInset = self.height
                 
-                var contentOffset = self.scrollView.contentOffset
-                contentOffset.y = self.frame.maxY - self.scrollView.bounds.height + self.scrollView.contentInset.bottom - self.height
-                self.scrollView.contentOffset = contentOffset
+                var contentOffset = scrollView.contentOffset
+                contentOffset.y = self.frame.maxY - scrollView.bounds.height + scrollView.contentInset.bottom - self.height
+                scrollView.contentOffset = contentOffset
                 }, completion: nil)
 
             handler?()
@@ -132,6 +138,8 @@ final class PostsPageRefreshControl: UIView {
     // MARK: Layout
     
     fileprivate func layoutScrollView() {
+        guard let scrollView = scrollView else { return }
+        
         let y = max(scrollView.contentSize.height, scrollView.bounds.height)
         frame = CGRect(x: 0, y: y, width: scrollView.bounds.width, height: height)
         
@@ -157,7 +165,7 @@ final class PostsPageRefreshControl: UIView {
     
     fileprivate var bottomInset: CGFloat = 0 {
         didSet {
-            if bottomInset != oldValue {
+            if bottomInset != oldValue, let scrollView = scrollView {
                 scrollView.contentInset.bottom += bottomInset - oldValue
             }
         }
