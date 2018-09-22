@@ -1092,6 +1092,10 @@ final class PostsPageViewController: ViewController {
             refreshControl?.tintColor = theme["postsPullForNextColor"]
         }
         
+        kvoController.observe(postsView.webView.scrollView, keyPath: #keyPath(UIScrollView.contentSize), options: .initial) { [weak self] observee, change in
+            self?.refreshControl?.scrollViewContentSizeDidChange()
+        }
+        
         if let loadingView = loadingView {
             view.addSubview(loadingView)
         }

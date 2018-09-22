@@ -27,10 +27,6 @@ final class PostsPageRefreshControl: UIView {
         
         configureContentView()
         
-        kvoControllerNonRetaining.observe(scrollView, keyPath: #keyPath(UIScrollView.contentSize), options: .initial) { [unowned self] _, _ in
-            self.layoutScrollView()
-        }
-        
         scrollView.panGestureRecognizer.addTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
     }
 
@@ -39,11 +35,7 @@ final class PostsPageRefreshControl: UIView {
     }
     
     deinit {
-        if let scrollView = scrollView {
-            kvoControllerNonRetaining.unobserve(scrollView, keyPath: #keyPath(UIScrollView.contentSize))
-            
-            scrollView.panGestureRecognizer.removeTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
-        }
+        scrollView?.panGestureRecognizer.removeTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
     }
     
     func endRefreshing() {
@@ -133,6 +125,10 @@ final class PostsPageRefreshControl: UIView {
         default:
             break
         }
+    }
+    
+    func scrollViewContentSizeDidChange() {
+        layoutScrollView()
     }
     
     // MARK: Layout
