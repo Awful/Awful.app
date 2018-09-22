@@ -57,6 +57,10 @@ def export_archive(archive_path, export_path):
     return os.path.join(export_path, ipa_filename)
 
 
+def open_archive_in_xcode(archive_path):
+    check_call(['open', archive_path])
+
+
 def _bail(message):
     print(message, file=sys.stderr)
     sys.exit(1)
@@ -97,6 +101,8 @@ def main():
         ipa_path = export_archive(archive_path, build_dir)
         print("Uploading to App Store Connect, this can take awhile…")
         upload_to_app_store(ipa_path, apple_id_username)
+
+    open_archive_in_xcode(archive_path)
 
 
 if __name__ == '__main__':
