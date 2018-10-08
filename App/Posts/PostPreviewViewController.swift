@@ -9,17 +9,18 @@ import PromiseKit
 private let Log = Logger.get()
 
 /// Previews a post (new or edited).
-class PostPreviewViewController: ViewController {
-    let editingPost: Post?
-    let thread: AwfulThread?
-    let BBcode: NSAttributedString
+final class PostPreviewViewController: ViewController {
+    private let editingPost: Post?
+    private let thread: AwfulThread?
+    private let BBcode: NSAttributedString
     var submitBlock: (() -> Void)?
-    fileprivate var loadingView: LoadingView?
-    var fakePost: Post?
-    fileprivate weak var networkOperation: Cancellable?
-    fileprivate var imageInterpolator: SelfHostingAttachmentInterpolator?
-    fileprivate var webViewDidLoadOnce = false
-    fileprivate lazy var managedObjectContext: NSManagedObjectContext = {
+    private var loadingView: LoadingView?
+    private var fakePost: Post?
+    private weak var networkOperation: Cancellable?
+    private var imageInterpolator: SelfHostingAttachmentInterpolator?
+    private var webViewDidLoadOnce = false
+    
+    private lazy var managedObjectContext: NSManagedObjectContext = {
         let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         context.parent = self.editingPost?.managedObjectContext ?? self.thread?.managedObjectContext
         return context
@@ -52,7 +53,7 @@ class PostPreviewViewController: ViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate lazy var postButtonItem: UIBarButtonItem = {
+    private lazy var postButtonItem: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: "Post", style: .plain, target: nil, action: nil)
         buttonItem.actionBlock = { [weak self] item in
             item.isEnabled = false

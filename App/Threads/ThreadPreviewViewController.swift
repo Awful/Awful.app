@@ -5,27 +5,49 @@
 import AwfulCore
 import CoreData
 
-final class ThreadPreviewViewController: PostPreviewViewController {
+private let Log = Logger.get()
+
+/// Renders the original post-to-be of a new thread.
+final class ThreadPreviewViewController: ViewController {
+    private let BBcode: NSAttributedString
+    private var fakePost: Post?
+    private(set) var formData: ForumsClient.PostNewThreadFormData?
     private let forum: Forum
-    private let subject: String
-    private let threadTag: ThreadTag
+    private var imageInterpolator: SelfHostingAttachmentInterpolator?
+    private var loadingView: LoadingView?
+    private weak var networkOperation: Cancellable?
     private let secondaryThreadTag: ThreadTag?
+    private let subject: String
+    var submitBlock: (() -> Void)?
+    private lazy var threadCell = ThreadListCell()
+    private let threadTag: ThreadTag
+    private var webViewDidLoadOnce = false
+    
     private lazy var managedObjectContext: NSManagedObjectContext = {
         let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         moc.parent = self.forum.managedObjectContext
         return moc
     }()
-    private weak var networkOperation: Cancellable?
-    private var imageInterpolator: SelfHostingAttachmentInterpolator?
-    private(set) var formData: ForumsClient.PostNewThreadFormData?
-    private lazy var threadCell = ThreadListCell()
+    
+    private lazy var postButtonItem: UIBarButtonItem = {
+        let buttonItem = UIBarButtonItem(title: "Post", style: .plain, target: nil, action: nil)
+        buttonItem.actionBlock = { [weak self] item in
+            item.isEnabled = false
+            self?.submitBlock?()
+        }
+        return buttonItem
+    }()
     
     init(forum: Forum, subject: String, threadTag: ThreadTag, secondaryThreadTag: ThreadTag?, BBcode: NSAttributedString) {
+        self.BBcode = BBcode
         self.forum = forum
+        self.secondaryThreadTag = secondaryThreadTag
         self.subject = subject
         self.threadTag = threadTag
-        self.secondaryThreadTag = secondaryThreadTag
-        super.init(BBcode: BBcode)
+        
+        super.init(nibName: nil, bundle: nil)
+        
+        navigationItem.rightBarButtonItem = postButtonItem
         
         title = "Thread Preview"
     }
@@ -33,9 +55,21 @@ final class ThreadPreviewViewController: PostPreviewViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func loadView() {
+        let webView = UIWebView.nativeFeelingWebView()
+        webView.delegate = self
+        view = webView
+    }
+    
+    private var webView: UIWebView {
+        return view as! UIWebView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loadingView = LoadingView.loadingViewWithTheme(theme)
 
         threadCell.autoresizingMask = .flexibleWidth
         webView.scrollView.addSubview(threadCell)
@@ -44,6 +78,12 @@ final class ThreadPreviewViewController: PostPreviewViewController {
     override var theme: Theme {
         return Theme.currentThemeForForum(forum: forum)
     }
+    
+    override func themeDidChange() {
+        super.themeDidChange()
+        
+        renderPreview()
+    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -51,7 +91,7 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         repositionCell()
     }
     
-    override func fetchPreviewIfNecessary() {
+    func fetchPreviewIfNecessary() {
         guard fakePost == nil && networkOperation == nil else { return }
         
         let imageInterpolator = SelfHostingAttachmentInterpolator()
@@ -83,8 +123,39 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         }
     }
     
-    override func renderPreview() {
-        super.renderPreview()
+    func renderPreview() {
+        webViewDidLoadOnce = false
+        
+        fetchPreviewIfNecessary()
+        
+        guard let fakePost = fakePost else { return }
+        
+        var context: [String: Any] = [
+            "stylesheet": (theme["postsViewCSS"] as String? ?? ""),
+            "post": PostViewModel(fakePost)]
+        do {
+            var error: NSError?
+            if let script = LoadJavaScriptResources(["zepto.min.js", "common.js"], &error) {
+                context["script"] = script as AnyObject?
+            } else if let error = error {
+                throw error
+            }
+        } catch {
+            Log.e("error loading JavaScripts: \(error)")
+        }
+        
+        let html: String
+        do {
+            html = try MustacheTemplate.render(.postPreview, value: context)
+        } catch {
+            Log.e("failed to render post preview HTML: \(error)")
+            html = ""
+        }
+        webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
+        
+        loadingView?.removeFromSuperview()
+        loadingView = nil
+        
         configureCell()
     }
     
@@ -128,5 +199,25 @@ final class ThreadPreviewViewController: PostPreviewViewController {
         let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width)
         threadCell.frame = CGRect(x: 0, y: -cellHeight, width: view.bounds.width, height: cellHeight)
         webView.scrollView.contentInset.top = topLayoutGuide.length + cellHeight
+    }
+}
+
+extension ThreadPreviewViewController: UIWebViewDelegate {
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
+        var navigationType = navigationType
+        
+        // YouTube embeds can take over the frame when someone taps the video title. Here we try to detect that and treat it as if a link was tapped.
+        if navigationType != .linkClicked && (request as NSURLRequest).url?.host?.lowercased().hasSuffix("www.youtube.com") == true && (request as NSURLRequest).url?.path.lowercased().hasPrefix("/watch") == true {
+            navigationType = .linkClicked
+        }
+        
+        return navigationType != .linkClicked
+    }
+    
+    func webViewDidFinishLoad(_ webView: UIWebView) {
+        guard !webViewDidLoadOnce else { return }
+        webViewDidLoadOnce = true
+        loadingView?.removeFromSuperview()
+        loadingView = nil
     }
 }
