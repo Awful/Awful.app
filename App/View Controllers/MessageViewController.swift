@@ -17,9 +17,9 @@ final class MessageViewController: ViewController {
     private let privateMessage: PrivateMessage
     
     private lazy var renderView: RenderView = {
-        let view = RenderView(frame: CGRect(origin: .zero, size: self.view.bounds.size))
-        view.delegate = self
-        return view
+        let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
+        renderView.delegate = self
+        return renderView
     }()
     
     private lazy var replyButtonItem: UIBarButtonItem = {
