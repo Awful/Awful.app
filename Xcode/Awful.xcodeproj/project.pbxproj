@@ -2086,7 +2086,6 @@
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
 				1C3447E3175D9CCE007377C5 /* Post.mustache */,
 				1CB0607A1936CADC005263EA /* PostPreview.mustache */,
-				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1C4191901763C8BD00EADE07 /* posts-view.js */,
 				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
 				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
@@ -2126,6 +2125,7 @@
 				1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
 				1C2C1F111CE547A600CD27DD /* MessageViewController.swift */,
+				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
 				1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */,
 			);

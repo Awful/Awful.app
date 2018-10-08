@@ -128,7 +128,12 @@ final class ReplyWorkspace: NSObject {
     @objc fileprivate func didTapPreview(_ sender: UIBarButtonItem) {
         saveTextToDraft()
         
-        let preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? NSAttributedString())
+        let preview: PostPreviewViewController
+        if let edit = draft as? EditReplyDraft {
+            preview = PostPreviewViewController(post: edit.post, BBcode: draft.text ?? .init())
+        } else {
+            preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? .init())
+        }
         preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
         (viewController as! UINavigationController).pushViewController(preview, animated: true)
     }

@@ -36,22 +36,7 @@ struct PostViewModel: MustacheBoxable {
             return showAvatars ? nil : post.author?.avatarURL
         }
         var htmlContents: String {
-            guard let innerHTML = post.innerHTML else { return "" }
-
-            let document = HTMLDocument(string: innerHTML)
-            document.removeSpoilerStylingAndEvents()
-            document.removeEmptyEditedByParagraphs()
-            document.addAttributeToTweetLinks()
-            document.useHTML5VimeoPlayer()
-            document.highlightQuotesOfPosts(byUserNamed: AwfulSettings.shared().username)
-            document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
-            if !AwfulSettings.shared().autoplayGIFs {
-                document.stopGIFAutoplay()
-            }
-            if post.ignored {
-                document.markRevealIgnoredPostLink()
-            }
-            return document.bodyElement?.innerHTML ?? ""
+            return massageHTML(post.innerHTML ?? "", isIgnored: post.ignored)
         }
         var visibleAvatarURL: URL? {
             return showAvatars ? post.author?.avatarURL : nil
@@ -72,10 +57,47 @@ struct PostViewModel: MustacheBoxable {
             "showAvatars": showAvatars,
             "visibleAvatarURL": visibleAvatarURL as Any]
     }
+    
+    init(author: User, postDate: Date, postHTML: String) {
+        dict = [
+            "author": [
+                "regdate": author.regdate as Any,
+                "userID": author.userID,
+                "username": author.username as Any],
+            "beenSeen": false,
+            "hiddenAvatarURL": (showAvatars ? author.avatarURL : nil) as Any,
+            "htmlContents": massageHTML(postHTML, isIgnored: false),
+            "postDate": postDate,
+            "postID": "fake",
+            "roles": author.authorClasses ?? "",
+            "showAvatars": showAvatars,
+            "visibleAvatarURL": (showAvatars ? author.avatarURL : nil) as Any]
+    }
 
     var mustacheBox: MustacheBox {
         return Box(dict)
     }
+}
+
+private func massageHTML(_ html: String, isIgnored: Bool) -> String {
+    let document = HTMLDocument(string: html)
+    document.removeSpoilerStylingAndEvents()
+    document.removeEmptyEditedByParagraphs()
+    document.addAttributeToTweetLinks()
+    document.useHTML5VimeoPlayer()
+    document.highlightQuotesOfPosts(byUserNamed: AwfulSettings.shared().username)
+    document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
+    if !AwfulSettings.shared().autoplayGIFs {
+        document.stopGIFAutoplay()
+    }
+    if isIgnored {
+        document.markRevealIgnoredPostLink()
+    }
+    return document.bodyElement?.innerHTML ?? ""
+}
+
+private var showAvatars: Bool {
+    return AwfulSettings.shared().showAvatars
 }
 
 private extension HTMLDocument {

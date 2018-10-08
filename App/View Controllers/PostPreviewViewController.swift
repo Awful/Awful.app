@@ -8,23 +8,21 @@ import PromiseKit
 
 private let Log = Logger.get()
 
-/// Previews a post (new or edited).
+/**
+ Previews a post (a.k.a. a reply to a thread). May be a new post, may be edited.
+ 
+ Note that some users (e.g. moderators) can edit other users' posts.
+ */
 final class PostPreviewViewController: ViewController {
+    private let bbcode: NSAttributedString
     private let editingPost: Post?
-    private let thread: AwfulThread?
-    private let BBcode: NSAttributedString
-    var submitBlock: (() -> Void)?
-    private var loadingView: LoadingView?
-    private var fakePost: Post?
-    private weak var networkOperation: Cancellable?
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
+    private var loadingView: LoadingView?
+    private weak var networkOperation: Cancellable?
+    private var post: PostViewModel?
+    var submitBlock: (() -> Void)?
+    private let thread: AwfulThread?
     private var webViewDidLoadOnce = false
-    
-    private lazy var managedObjectContext: NSManagedObjectContext = {
-        let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        context.parent = self.editingPost?.managedObjectContext ?? self.thread?.managedObjectContext
-        return context
-    }()
     
     /// Preview editing a post.
     convenience init(post: Post, BBcode: NSAttributedString) {
@@ -41,7 +39,7 @@ final class PostPreviewViewController: ViewController {
     }
     
     init(BBcode: NSAttributedString, post: Post? = nil, thread: AwfulThread? = nil) {
-        self.BBcode = BBcode
+        self.bbcode = BBcode
         editingPost = post
         self.thread = thread
         super.init(nibName: nil, bundle: nil)
@@ -62,52 +60,49 @@ final class PostPreviewViewController: ViewController {
         return buttonItem
     }()
     
-    var webView: UIWebView {
+    private var webView: UIWebView {
         return view as! UIWebView
     }
     
+    private var managedObjectContext: NSManagedObjectContext? {
+        let forum = editingPost?.thread?.forum ?? thread?.forum
+        return forum?.managedObjectContext
+    }
+    
     func fetchPreviewIfNecessary() {
-        guard fakePost == nil && networkOperation == nil else { return }
+        guard networkOperation == nil else { return }
         
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
         
-        let interpolatedBBcode = imageInterpolator.interpolateImagesInString(BBcode)
+        let interpolatedBBcode = imageInterpolator.interpolateImagesInString(bbcode)
         let callback: (Error?, String?) -> Void = { [weak self] (error, postHTML) in
             if let error = error {
+                Log.e("could not preview post: \(error)")
+                
                 self?.present(UIAlertController(networkError: error), animated: true)
+                
                 return
             }
             
-            guard let
-                postHTML = postHTML,
-                let context = self?.managedObjectContext
-                else { return }
-            let postKey = PostKey(postID: "fake")
-            self?.fakePost = Post.objectForKey(objectKey: postKey, inManagedObjectContext: context) as? Post
             let userKey = UserKey(userID: AwfulSettings.shared().userID, username: AwfulSettings.shared().username)
-            guard let loggedInUser = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User else { return }
             
-            if let editingPost = self?.editingPost {
-                // Create a copy of the post we're editing. We'll later change the properties we care about previewing.
-                for property in editingPost.entity.properties {
-                    if let attribute = property as? NSAttributeDescription {
-                        let actualValue = editingPost.value(forKey: attribute.name)
-                        self?.fakePost?.setValue(actualValue, forKey: attribute.name)
-                    } else if let
-                        relationship = property as? NSRelationshipDescription,
-                        let actualValue = editingPost.value(forKey: relationship.name) as? NSManagedObject
-                    {
-                        self?.fakePost?.setValue(context.object(with: actualValue.objectID), forKey: relationship.name)
-                    }
-                }
-            } else {
-                self?.fakePost?.postDate = Date()
-                self?.fakePost?.author = loggedInUser
+            guard
+                let postHTML = postHTML,
+                let sself = self,
+                let context = sself.managedObjectContext,
+                let author = sself.editingPost?.author ?? (User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User) else
+            {
+                Log.e("missing either the post HTML or the post author")
+                return
             }
             
-            self?.fakePost?.innerHTML = postHTML
-            self?.renderPreview()
+            sself.post = PostViewModel(
+                author: author,
+                postDate: sself.editingPost?.postDate ?? Date(),
+                postHTML: postHTML)
+            
+            sself.renderPreview()
         }
 
         let promise: Promise<String>
@@ -131,11 +126,11 @@ final class PostPreviewViewController: ViewController {
         
         fetchPreviewIfNecessary()
         
-        guard let fakePost = fakePost else { return }
+        guard let post = post else { return }
 
         var context: [String: Any] = [
             "stylesheet": (theme["postsViewCSS"] as String? ?? ""),
-            "post": PostViewModel(fakePost)]
+            "post": post]
         do {
             var error: NSError?
             if let script = LoadJavaScriptResources(["zepto.min.js", "common.js"], &error) {
