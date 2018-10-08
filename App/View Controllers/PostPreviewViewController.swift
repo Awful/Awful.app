@@ -15,6 +15,7 @@ private let Log = Logger.get()
  */
 final class PostPreviewViewController: ViewController {
     private let bbcode: NSAttributedString
+    private var didRender = false
     private let editingPost: Post?
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private var loadingView: LoadingView?
@@ -22,7 +23,12 @@ final class PostPreviewViewController: ViewController {
     private var post: PostViewModel?
     var submitBlock: (() -> Void)?
     private let thread: AwfulThread?
-    private var webViewDidLoadOnce = false
+    
+    private lazy var renderView: RenderView = {
+        let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
+        renderView.delegate = self
+        return renderView
+    }()
     
     /// Preview editing an existing post.
     convenience init(post: Post, BBcode: NSAttributedString) {
@@ -47,6 +53,10 @@ final class PostPreviewViewController: ViewController {
         navigationItem.rightBarButtonItem = postButtonItem
     }
     
+    deinit {
+        networkOperation?.cancel()
+    }
+    
     private var managedObjectContext: NSManagedObjectContext? {
         let forum = editingPost?.thread?.forum ?? thread?.forum
         return forum?.managedObjectContext
@@ -67,10 +77,6 @@ final class PostPreviewViewController: ViewController {
             let forum = thread.forum
             else { return Theme.defaultTheme }
         return Theme.currentThemeForForum(forum: forum)
-    }
-    
-    private var webView: UIWebView {
-        return view as! UIWebView
     }
     
     // MARK: Rendering the preview
@@ -128,57 +134,52 @@ final class PostPreviewViewController: ViewController {
     }
 
     func renderPreview() {
-        webViewDidLoadOnce = false
-        
         fetchPreviewIfNecessary()
         
         guard let post = post else { return }
-
-        var context: [String: Any] = [
-            "stylesheet": (theme["postsViewCSS"] as String? ?? ""),
-            "post": post]
-        do {
-            var error: NSError?
-            if let script = LoadJavaScriptResources(["zepto.min.js", "common.js"], &error) {
-                context["script"] = script as AnyObject?
-            } else if let error = error {
-                throw error
-            }
-        } catch {
-            Log.e("error loading JavaScripts: \(error)")
-        }
-
-        let html: String
-        do {
-            html = try MustacheTemplate.render(.postPreview, value: context)
-        } catch {
-            Log.e("failed to render post preview HTML: \(error)")
-            html = ""
-        }
-        webView.loadHTMLString(html, baseURL: ForumsClient.shared.baseURL)
         
-        loadingView?.removeFromSuperview()
-        loadingView = nil
+        let context: [String: Any] = [
+            "post": post,
+            "stylesheet": (theme["postsViewCSS"] as String? ?? "")]
+        do {
+            let rendering = try MustacheTemplate.render(.postPreview, value: context)
+            renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
+        } catch {
+            Log.e("failed to render post preview: \(error)")
+            
+            // TODO: show error nicer
+            renderView.render(html: "<h1>Rendering Error</h1><pre>\(error)</pre>", baseURL: nil)
+        }
+        
+        didRender = true
     }
     
     // MARK: View lifecycle
     
-    override func loadView() {
-        let webView = UIWebView.nativeFeelingWebView()
-        webView.delegate = self
-        view = webView
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadingView = LoadingView.loadingViewWithTheme(theme)
+        renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
+        renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.insertSubview(renderView, at: 0)
+        
+        renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)
+        
+        let loadingView = LoadingView.loadingViewWithTheme(theme)
+        self.loadingView = loadingView
+        view.addSubview(loadingView)
+        
+        renderPreview()
     }
     
     override func themeDidChange() {
         super.themeDidChange()
         
-        renderPreview()
+        if didRender, let css = theme["postsViewCSS"] as String? {
+            renderView.setThemeStylesheet(css)
+        }
+        
+        loadingView?.tintColor = theme["backgroundColor"]
     }
     
     // MARK: Gunk
@@ -188,22 +189,27 @@ final class PostPreviewViewController: ViewController {
     }
 }
 
-extension PostPreviewViewController: UIWebViewDelegate {
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
-        var navigationType = navigationType
-        
-        // YouTube embeds can take over the frame when someone taps the video title. Here we try to detect that and treat it as if a link was tapped.
-        if navigationType != .linkClicked && (request as NSURLRequest).url?.host?.lowercased().hasSuffix("www.youtube.com") == true && (request as NSURLRequest).url?.path.lowercased().hasPrefix("/watch") == true {
-            navigationType = .linkClicked
+extension PostPreviewViewController: RenderViewDelegate {
+    func didReceive(message: RenderViewMessage, in view: RenderView) {
+        switch message {
+        case is RenderView.BuiltInMessage.DidRender:
+            loadingView?.removeFromSuperview()
+            loadingView = nil
+            
+        default:
+            Log.w("received unexpected message: \(message)")
         }
-        
-        return navigationType != .linkClicked
     }
     
-    func webViewDidFinishLoad(_ webView: UIWebView) {
-        guard !webViewDidLoadOnce else { return }
-        webViewDidLoadOnce = true
-        loadingView?.removeFromSuperview()
-        loadingView = nil
+    func didTapLink(to url: URL, in view: RenderView) {
+        if let route = try? AwfulRoute(url) {
+            AppDelegate.instance.open(route: route)
+        }
+        else if url.opensInBrowser {
+            URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
+        }
+        else {
+            UIApplication.shared.openURL(url)
+        }
     }
 }
