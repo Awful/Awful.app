@@ -69,6 +69,18 @@
 "thread-list.posted-by" = "Posted by %@";
 
 
+/* MARK: Compose post */
+
+/* Message of alert shown when there's a problem finding the author of a post that's being written. */
+"compose.post-preview.missing-author-error" = "The post author could not be determined.";
+
+/* Title of preview screen when editing an existing post. */
+"compose.post-preview.title-editing" = "Save";
+
+/* Title of preview screen when writing a new post. */
+"compose.post-preview.title-new" = "Post Preview";
+
+
 /* MARK: Compose thread */
 
 /* Text shown below the title of the thread-to-be. Parameter is the name of the forum where this will be posted. */

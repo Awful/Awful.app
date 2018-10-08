@@ -24,21 +24,21 @@ final class PostPreviewViewController: ViewController {
     private let thread: AwfulThread?
     private var webViewDidLoadOnce = false
     
-    /// Preview editing a post.
+    /// Preview editing an existing post.
     convenience init(post: Post, BBcode: NSAttributedString) {
         self.init(BBcode: BBcode, post: post)
         
-        title = "Save"
+        title = LocalizedString("compose.post-preview.title-editing")
     }
     
     /// Preview a new post.
     convenience init(thread: AwfulThread, BBcode: NSAttributedString) {
         self.init(BBcode: BBcode, thread: thread)
         
-        title = "Post Preview"
+        title = LocalizedString("compose.post-preview.title-new")
     }
     
-    init(BBcode: NSAttributedString, post: Post? = nil, thread: AwfulThread? = nil) {
+    private init(BBcode: NSAttributedString, post: Post? = nil, thread: AwfulThread? = nil) {
         self.bbcode = BBcode
         editingPost = post
         self.thread = thread
@@ -47,8 +47,9 @@ final class PostPreviewViewController: ViewController {
         navigationItem.rightBarButtonItem = postButtonItem
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    private var managedObjectContext: NSManagedObjectContext? {
+        let forum = editingPost?.thread?.forum ?? thread?.forum
+        return forum?.managedObjectContext
     }
     
     private lazy var postButtonItem: UIBarButtonItem = {
@@ -60,14 +61,19 @@ final class PostPreviewViewController: ViewController {
         return buttonItem
     }()
     
+    override var theme: Theme {
+        guard
+            let thread = thread ?? editingPost?.thread,
+            let forum = thread.forum
+            else { return Theme.defaultTheme }
+        return Theme.currentThemeForForum(forum: forum)
+    }
+    
     private var webView: UIWebView {
         return view as! UIWebView
     }
     
-    private var managedObjectContext: NSManagedObjectContext? {
-        let forum = editingPost?.thread?.forum ?? thread?.forum
-        return forum?.managedObjectContext
-    }
+    // MARK: Rendering the preview
     
     func fetchPreviewIfNecessary() {
         guard networkOperation == nil else { return }
@@ -76,49 +82,49 @@ final class PostPreviewViewController: ViewController {
         self.imageInterpolator = imageInterpolator
         
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(bbcode)
-        let callback: (Error?, String?) -> Void = { [weak self] (error, postHTML) in
-            if let error = error {
+
+        let html: Promise<String>
+        let cancellable: Cancellable
+        if let editingPost = editingPost {
+            (promise: html, cancellable: cancellable) = ForumsClient.shared.previewEdit(to: editingPost, bbcode: interpolatedBBcode)
+        } else if let thread = thread {
+            (promise: html, cancellable: cancellable) = ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode)
+        } else {
+            return Log.e("nothing to do??")
+        }
+        networkOperation = cancellable
+        
+        html
+            .done { [weak self] html in
+                guard let sself = self, let context = sself.managedObjectContext else { return }
+                
+                var loggedInUser: User? {
+                    let settings = AwfulSettings.shared()!
+                    let userKey = UserKey(userID: settings.userID, username: settings.username)
+                    return User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
+                }
+                
+                guard let author = sself.editingPost?.author ?? loggedInUser else {
+                    throw MissingAuthorError()
+                }
+                
+                let postDate = sself.editingPost?.postDate ?? Date()
+                
+                sself.post = PostViewModel(author: author, postDate: postDate, postHTML: html)
+                
+                sself.renderPreview()
+            }
+            .catch { [weak self] error in
                 Log.e("could not preview post: \(error)")
                 
                 self?.present(UIAlertController(networkError: error), animated: true)
-                
-                return
-            }
-            
-            let userKey = UserKey(userID: AwfulSettings.shared().userID, username: AwfulSettings.shared().username)
-            
-            guard
-                let postHTML = postHTML,
-                let sself = self,
-                let context = sself.managedObjectContext,
-                let author = sself.editingPost?.author ?? (User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User) else
-            {
-                Log.e("missing either the post HTML or the post author")
-                return
-            }
-            
-            sself.post = PostViewModel(
-                author: author,
-                postDate: sself.editingPost?.postDate ?? Date(),
-                postHTML: postHTML)
-            
-            sself.renderPreview()
         }
-
-        let promise: Promise<String>
-        let cancellable: Cancellable
-        if let editingPost = editingPost {
-            (promise: promise, cancellable: cancellable) = ForumsClient.shared.previewEdit(to: editingPost, bbcode: interpolatedBBcode)
-        } else if let thread = thread {
-            (promise: promise, cancellable: cancellable) = ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode)
-        } else {
-            print("\(#function) Nothing to do??")
-            return
+    }
+    
+    struct MissingAuthorError: Error {
+        var localizedDescription: String {
+            return LocalizedString("compose.post-preview.missing-author-error")
         }
-        networkOperation = cancellable
-        promise
-            .done { callback(nil, $0) }
-            .catch { callback($0, nil) }
     }
 
     func renderPreview() {
@@ -155,6 +161,8 @@ final class PostPreviewViewController: ViewController {
         loadingView = nil
     }
     
+    // MARK: View lifecycle
+    
     override func loadView() {
         let webView = UIWebView.nativeFeelingWebView()
         webView.delegate = self
@@ -167,18 +175,16 @@ final class PostPreviewViewController: ViewController {
         loadingView = LoadingView.loadingViewWithTheme(theme)
     }
     
-    override var theme: Theme {
-        guard let
-            thread = thread ?? editingPost?.thread,
-            let forum = thread.forum
-            else { return Theme.defaultTheme }
-        return Theme.currentThemeForForum(forum: forum)
-    }
-    
     override func themeDidChange() {
         super.themeDidChange()
         
         renderPreview()
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
