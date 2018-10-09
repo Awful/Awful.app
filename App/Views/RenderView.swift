@@ -33,6 +33,7 @@ final class RenderView: UIView {
         configuration.userContentController.addUserScript(userScript)
         
         if #available(iOS 11.0, *) {
+            configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
             configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
         }
 

@@ -9,7 +9,7 @@ final class SelfHostingAttachmentInterpolator: NSObject {
     fileprivate var URLs: [URL] = []
     
     func interpolateImagesInString(_ string: NSAttributedString) -> String {
-        let basePath = UUID().uuidString as NSString
+        let basePath = "/\(UUID().uuidString)" as NSString
         let mutableString = string.mutableCopy() as! NSMutableAttributedString
         
         // I'm not sure how to modify the string within calls to -[NSMutableAttributedString enumerateAttribute:...] when the range has length one, unless we go in reverse. I'm not sure it's a bug either.

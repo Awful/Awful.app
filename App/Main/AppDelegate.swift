@@ -456,7 +456,7 @@ private extension AppDelegate {
         if #available(iOS 11.0, *) {
             // WKURLSchemeHandler suits our needs
         } else {
-            let schemes = [ImageURLProtocol.URLScheme, ResourceURLProtocol.scheme]
+            let schemes = [ImageURLProtocol.scheme, ResourceURLProtocol.scheme]
             for scheme in schemes {
                 WKWebView.registerCustomURLScheme(scheme)
             }

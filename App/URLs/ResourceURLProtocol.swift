@@ -63,9 +63,7 @@ final class ResourceURLProtocol: URLProtocol {
         do {
             return try Data(contentsOf: bundledURL)
         } catch {
-            throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoSuchFileError, userInfo: [
-                NSLocalizedDescriptionKey: "Missing file",
-                NSUnderlyingErrorKey: error])
+            throw CocoaError(.fileNoSuchFile, userInfo: [NSUnderlyingErrorKey: error])
         }
     }
     
