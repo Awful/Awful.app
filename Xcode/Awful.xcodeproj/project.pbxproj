@@ -2110,7 +2110,6 @@
 			children = (
 				1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */,
 				1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */,
-				1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */,
 			);
 			path = Threads;
 			sourceTree = "<group>";
@@ -2127,6 +2126,7 @@
 				1C2C1F111CE547A600CD27DD /* MessageViewController.swift */,
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
+				1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */,
 				1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */,
 			);
 			path = "View Controllers";

@@ -70,6 +70,13 @@ extension NSString {
     }
 }
 
+extension String {
+    mutating func collapseWhitespace() {
+        let regex = try! NSRegularExpression(pattern: "\\s+", options: [])
+        self = regex.stringByReplacingMatches(in: self as String, options: [], range: NSRange(startIndex..., in: self), withTemplate: " ")
+    }
+}
+
 extension Timer {
     @discardableResult class func scheduledTimerWithInterval(_ interval: TimeInterval, repeats: Bool = false, handler: @escaping (Timer) -> Void) -> Timer {
         let timer = CFRunLoopTimerCreateWithHandler(nil, CFAbsoluteTimeGetCurrent() + interval, repeats ? interval : 0, 0, 0) { timer in

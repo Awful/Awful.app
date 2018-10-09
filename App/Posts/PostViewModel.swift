@@ -58,7 +58,7 @@ struct PostViewModel: MustacheBoxable {
             "visibleAvatarURL": visibleAvatarURL as Any]
     }
     
-    init(author: User, postDate: Date, postHTML: String) {
+    init(author: User, isOP: Bool, postDate: Date, postHTML: String) {
         dict = [
             "author": [
                 "regdate": author.regdate as Any,
@@ -69,7 +69,7 @@ struct PostViewModel: MustacheBoxable {
             "htmlContents": massageHTML(postHTML, isIgnored: false),
             "postDate": postDate,
             "postID": "fake",
-            "roles": author.authorClasses ?? "",
+            "roles": (isOP ? "op " : "") + (author.authorClasses ?? ""),
             "showAvatars": showAvatars,
             "visibleAvatarURL": (showAvatars ? author.avatarURL : nil) as Any]
     }

@@ -116,7 +116,9 @@ final class PostPreviewViewController: ViewController {
                 
                 let postDate = sself.editingPost?.postDate ?? Date()
                 
-                sself.post = PostViewModel(author: author, postDate: postDate, postHTML: html)
+                let isOP = sself.editingPost?.author == author
+                
+                sself.post = PostViewModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
                 
                 sself.renderPreview()
             }

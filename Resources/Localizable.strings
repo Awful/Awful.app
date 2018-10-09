@@ -86,6 +86,12 @@
 /* Text shown below the title of the thread-to-be. Parameter is the name of the forum where this will be posted. */
 "compose.thread-preview.posting-in" = "Posting in %@";
 
+/* Title of button that submits a new thread. */
+"compose.thread-preview.submit-button" = "Post";
+
+/* Title of screen showing a preview of a new thread's original post. */
+"compose.thread-preview.title" = "Thread Preview";
+
 
 /* MARK: Private messages list */
 

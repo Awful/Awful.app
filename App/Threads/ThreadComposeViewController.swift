@@ -188,7 +188,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
             subject = fieldView.subjectField.textField.text,
             let threadTag = threadTag
             else { return handler(false) }
-        let preview = ThreadPreviewViewController(forum: forum, subject: subject, threadTag: threadTag, secondaryThreadTag: secondaryThreadTag, BBcode: textView.attributedText)
+        let preview = ThreadPreviewViewController(forum: forum, subject: subject, threadTag: threadTag, secondaryThreadTag: secondaryThreadTag, bbcode: textView.attributedText)
         preview.submitBlock = { [weak preview, weak self] in
             if let preview = preview, let sself = self {
                 sself.formData = preview.formData
