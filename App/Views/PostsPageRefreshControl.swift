@@ -93,7 +93,7 @@ final class PostsPageRefreshControl: UIView {
         switch sender.state {
         case .began, .changed:
             switch state {
-            case .waiting where maxVisibleY > (frame.maxY + 40):
+            case .waiting where maxVisibleY > (frame.maxY + 80):
                 state = .triggered
                 
             case .waiting, 
