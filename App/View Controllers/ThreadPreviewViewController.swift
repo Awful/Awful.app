@@ -4,6 +4,7 @@
 
 import AwfulCore
 import CoreData
+import PromiseKit
 
 private let Log = Logger.get()
 
@@ -18,6 +19,7 @@ final class ThreadPreviewViewController: ViewController {
     private var loadingView: LoadingView?
     private weak var networkOperation: Cancellable?
     private var post: PostViewModel?
+    private var postHTML: Promise<HTMLAndForm>?
     private let secondaryThreadTag: ThreadTag?
     private let subject: String
     var submitBlock: (() -> Void)?
@@ -25,6 +27,8 @@ final class ThreadPreviewViewController: ViewController {
     private lazy var threadCell = ThreadListCell()
     private let threadTag: ThreadTag
     private var webViewDidLoadOnce = false
+    
+    private typealias HTMLAndForm = (previewHTML: String, formData: ForumsClient.PostNewThreadFormData)
     
     private lazy var postButtonItem: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: LocalizedString("compose.thread-preview.submit-button"), style: .plain, target: nil, action: nil)
@@ -66,7 +70,7 @@ final class ThreadPreviewViewController: ViewController {
     // MARK: Rendering preview
     
     func fetchPreviewIfNecessary() {
-        guard networkOperation == nil else { return }
+        guard postHTML == nil || postHTML?.isRejected == true else { return }
         
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
@@ -74,6 +78,7 @@ final class ThreadPreviewViewController: ViewController {
         let (html, cancellable) = ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode)
         networkOperation = cancellable
         
+        postHTML = html
         html
             .done { [weak self] previewAndForm in
                 guard let sself = self else { return }

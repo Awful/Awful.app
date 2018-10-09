@@ -21,6 +21,7 @@ final class PostPreviewViewController: ViewController {
     private var loadingView: LoadingView?
     private weak var networkOperation: Cancellable?
     private var post: PostViewModel?
+    private var postHTML: Promise<String>?
     var submitBlock: (() -> Void)?
     private let thread: AwfulThread?
     
@@ -82,7 +83,7 @@ final class PostPreviewViewController: ViewController {
     // MARK: Rendering the preview
     
     func fetchPreviewIfNecessary() {
-        guard networkOperation == nil else { return }
+        guard postHTML == nil || postHTML?.isRejected == true else { return }
         
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
@@ -100,6 +101,7 @@ final class PostPreviewViewController: ViewController {
         }
         networkOperation = cancellable
         
+        postHTML = html
         html
             .done { [weak self] html in
                 guard let sself = self, let context = sself.managedObjectContext else { return }
