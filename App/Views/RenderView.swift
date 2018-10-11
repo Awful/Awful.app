@@ -38,7 +38,9 @@ final class RenderView: UIView {
         }
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.isOpaque = false
         webView.navigationDelegate = self
+        webView.scrollView.backgroundColor = nil
         webView.scrollView.decelerationRate = .normal
         return webView
     }()
