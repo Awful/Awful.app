@@ -4,7 +4,7 @@
 
 // This file is loaded as a user script "at document end" into the `WKWebView` that renders announcements, posts, profiles, and private messages.
 
-// TODO: imgurGif, .gifWrap, didTapUserHeader, didTapActionButton, highlightMentions (?), HeaderRectForPostAtIndex (?), FooterRectForPostAtIndex (?), ActionButtonRectForPostAtIndex (?). some of the ones marked ? mention synchronous calls, that's no longer a thing for WKWebView so let's preempt that if we can
+// TODO: imgurGif, .gifWrap, highlightMentions (?).
 
 if (!window.Awful) {
     window.Awful = {};
@@ -76,15 +76,15 @@ Awful.embedTweets = function() {
 
     if (completedFetchCount == totalFetchCount) {
       if (window.twttr) {
+        twttr.ready(function() {
+          twttr.widgets.load();
+        });
+
         if (webkit.messageHandlers.didFinishLoadingTweets) {
           twttr.events.bind('loaded', function() {
             webkit.messageHandlers.didFinishLoadingTweets.postMessage({});
           });
         }
-
-        twttr.ready(function() {
-          twttr.widgets.load();
-        });
       }
     }
   }
@@ -138,6 +138,7 @@ Awful.jumpToFractionalOffset = function(fraction) {
  @param {Event} event - A click event.
  */
 Awful.handleClickEvent = function(event) {
+
   // Toggle spoilers on tap.
   var spoiler = event.target.closest('.bbc-spoiler');
   if (spoiler) {
@@ -185,6 +186,7 @@ Awful.handleClickEvent = function(event) {
     return;
   }
 
+  // Tap on action button to reveal actions on the post.
   var button = event.target.closest('button.action-button');
   var postIndex;
   if (button && (postIndex = Awful.postIndexOfElement(button)) !== null) {
