@@ -372,6 +372,15 @@ extension RenderView {
         }
     }
     
+    /// Toggles the `highlight` class in all username mentions in post bodies, adding it when `true` or removing it when `false`.
+    func setHighlightMentions(_ highlightMentions: Bool) {
+        webView.evaluateJavaScript("Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setHighlightMentions: \(error)")
+            }
+        }
+    }
+    
     /// Turns all avatars on (when `true`) or off (when `false`).
     func setShowAvatars(_ showAvatars: Bool) {
         webView.evaluateJavaScript("Awful.setShowAvatars(\(showAvatars ? "true" : "false"))") { rawResult, error in

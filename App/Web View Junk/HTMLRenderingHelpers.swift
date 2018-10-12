@@ -44,6 +44,64 @@ extension HTMLDocument {
     }
     
     /**
+     Modifies the document in place, wrapping any occurrences of `username` in a post body within a `<span class="mention">` element. Additionally, if `isHighlighted` is `true`, the class `highlight` is added to the wrapping span elements.
+     */
+    func identifyMentionsOfUser(named username: String, shouldHighlight isHighlighted: Bool) {
+        guard let body = bodyElement else { return }
+        
+        let escapedUsername = NSRegularExpression.escapedPattern(for: username)
+        let regex = try! NSRegularExpression(
+            // Since usernames can contain what a regex thinks of as non-word characters, searching on word boundaries (`\b`) doesn't quite cut it for us. We also want to consider the start/end of the string, and beginning/ending on whitespace.
+            pattern: "(?:\\A|\\b|\\s)"
+                + "(\(escapedUsername))" // Capture just the username so we don't wrap any surrounding whitespace.
+                + "(?:\\b|\\s|\\z)",
+            options: .caseInsensitive)
+        
+        let classAttribute = "mention" + (isHighlighted ? " highlight" : "")
+        
+        var matches: [(HTMLTextNode, [NSTextCheckingResult])] = []
+        for node in body.treeEnumerator() {
+            guard let textNode = node as? HTMLTextNode else {
+                continue
+            }
+            
+            let results = regex.matches(in: textNode.data, range: NSRange(textNode.data.startIndex..., in: textNode.data))
+            if !results.isEmpty {
+                matches.append((textNode, results))
+            }
+        }
+        
+        matchLoop:
+        for (textNode, results) in matches {
+            
+            // We'll move backwards through the text node, splitting it as we go.
+            var remainder = textNode
+            
+            for result in results.reversed() {
+                guard let resultRange = Range(result.range(at: 1), in: remainder.data) else {
+                    continue
+                }
+                
+                let mention = HTMLElement(tagName: "span", attributes: ["class": classAttribute])
+                
+                switch remainder.split(resultRange) {
+                case let .entireNode(mentionText),
+                     let .anchoredAtBeginning(match: mentionText, remainder: _):
+                    
+                    mentionText.wrap(in: mention)
+                    continue matchLoop
+                    
+                case let .anchoredAtEnd(remainder: _remainder, match: mentionText),
+                     let .middle(beginning: _remainder, match: mentionText, end: _):
+                    
+                    mentionText.wrap(in: mention)
+                    remainder = _remainder
+                }
+            }
+        }
+    }
+    
+    /**
      Modifies the document in place:
      
      * Turns all non-smiley `<img src=>` elements into `<a data-awful='image'>src</a>` elements (if linkifyNonSmiles == true).

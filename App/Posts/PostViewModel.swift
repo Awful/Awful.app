@@ -86,6 +86,7 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
     document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
     document.highlightQuotesOfPosts(byUserNamed: AwfulSettings.shared().username)
+    document.identifyMentionsOfUser(named: AwfulSettings.shared().username, shouldHighlight: true)
     document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
     if !AwfulSettings.shared().autoplayGIFs {
         document.stopGIFAutoplay()

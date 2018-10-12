@@ -4,7 +4,7 @@
 
 // This file is loaded as a user script "at document end" into the `WKWebView` that renders announcements, posts, profiles, and private messages.
 
-// TODO: imgurGif, .gifWrap, highlightMentions (?).
+// TODO: imgurGif, .gifWrap.
 
 if (!window.Awful) {
     window.Awful = {};
@@ -422,6 +422,19 @@ Awful.setFontScale = function(percentage) {
   } else {
     style.textContent = ".nameanddate, .postbody, footer { font-size: " + percentage + "%; }";
   }
+};
+
+
+/**
+ Updates the user-specified setting to highlight the logged-in user's username whenever it occurs in posts.
+
+ @param {boolean} highlightMentions - `true` to highlight the logged-in user's username, `false` to remove any such highlighting.
+ */
+Awful.setHighlightMentions = function(highlightMentions) {
+  var mentions = document.querySelectorAll(".postbody span.mention");
+  Array.prototype.forEach.call(mentions, function(mention) {
+    mention.classList.toggle("highlight", highlightMentions);
+  });
 };
 
 

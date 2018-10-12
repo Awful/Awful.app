@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0FF012020DEDA6238B7DC09B /* Pods_AwfulTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */; };
+		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
+		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
 		1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0105581EAC0F450084B343 /* ForumsClient.swift */; };
 		1C07B8AE1EF568100044B8AF /* LepersColonyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */; };
 		1C07B8B01EF5848A0044B8AF /* ThreadListScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */; };
@@ -654,6 +656,8 @@
 /* Begin PBXFileReference section */
 		148A488225E4DA4C3B655AD1 /* Pods-AwfulTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwfulTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AwfulTests/Pods-AwfulTests.release.xcconfig"; sourceTree = "<group>"; };
 		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
+		1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelperTests.swift; sourceTree = "<group>"; };
+		1C0060A42170347300E5329A /* HTMLReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLReader.swift; sourceTree = "<group>"; };
 		1C0105581EAC0F450084B343 /* ForumsClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsClient.swift; sourceTree = "<group>"; };
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
@@ -1965,6 +1969,7 @@
 				1C16FBDA1CBAA5A900C88BD1 /* CoreGraphics.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
 				1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */,
+				1C0060A42170347300E5329A /* HTMLReader.swift */,
 				1CDBF2361BD2C13400ADC7DA /* KVOController.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
@@ -1979,6 +1984,7 @@
 			isa = PBXGroup;
 			children = (
 				1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */,
+				1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */,
 				1C9AEBC7210C3B2300C9A567 /* Info.plist */,
 			);
 			path = Tests;
@@ -3471,6 +3477,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */,
+				1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3621,6 +3628,7 @@
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
+				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);
