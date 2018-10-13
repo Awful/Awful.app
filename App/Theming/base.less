@@ -7,10 +7,10 @@
 body {
   font: -apple-system-body;
   margin: 0;
-  
+
   // Maintain text size on orientation change.
   -webkit-text-size-adjust: 100%;
-  
+
   // Hide UIWebView's long-tap link menu.
   -webkit-touch-callout: none;
 }
@@ -27,7 +27,7 @@ body {
 
 // The action sheet code highlights the <header>, <footer>, and .action-button elements. Padding on those elements is included in the highlight but margin is not. So prefer pading the <header> and <footer> over setting a margin on the <post>.
 .post-side-padding(@padding) {
-  
+
   // Spelled out with -left and -right so padding can be individually overridden later.
   header, .postbody {
     padding-left: @padding;
@@ -43,17 +43,17 @@ body {
 
 post {
   display: block;
-  
+
   .iphone & {
     .post-side-padding(0.6em);
   }
   .ipad & {
     .post-side-padding(1.07em);
   }
-  
+
   border-top: 1px solid;
   border-bottom: 1px solid;
-  
+
   .spacer(@height) {
     margin-top: @height;
     &:first-child {
@@ -66,12 +66,12 @@ post {
 header {
   padding-top: 0.75em;
   padding-bottom: 0.7em;
-  
+
   .ipad & {
     padding-top: 1.22em;
 /*    padding-bottom: 0.7em;*/
   }
-  
+
   .clearfix() {
     &:after {
       content: "";
@@ -85,7 +85,7 @@ header {
 .avatar {
   display: inline-block;
   vertical-align: middle;
-  
+
   .constrain-size(@width) {
     max-width: @width;
     max-height: @width;
@@ -125,33 +125,33 @@ header {
   display: inline-block;
   font-size: 1.1em;
   font-weight: 500;
-  
+
   &:before {
   	margin-right: .25em;
   }
-  
+
   .role-admin &:before {
     color: #990011;
-  }  
+  }
   .role-mod &:before {
     color: #006699;
   }
-   
+
   .role-admin &:before,
   .role-mod &:before {
-    content: '★'; 
+    content: '★';
   }
-  
+
   .op & {
     color: #199ed7;
   }
-  
+
   /* Peta's 3D username */
   .userid-182864 & {
   	color: rgba(0, 0, 0, 0.5);
 	text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
   }
-  
+
 	/*  Platinum users */
 
 	.platinum &:before {
@@ -193,11 +193,11 @@ header {
   font-family: inherit; // UIWebView base style hardcodes Helvetica.
   -webkit-tap-highlight-color: transparent;
   background-color: transparent;
-  
+
   img {
     width: 24px;
     height: 8px;
-  } 
+  }
 }
 
 .tint-black-template-image-gray(@color) {
@@ -222,17 +222,17 @@ header {
 // h4 is "pokeyman posted:" above a quote.
 // h5 is "code" above a code block.
 .bbc-block {
-  
+
   border-left: 2px solid #999;
-  font-size: 82%; 
+  font-size: 82%;
   margin: 5px 0;
   padding: 0 10px 5px;
 
-  
+
   .ipad & {
     margin: 0 10px 1em 10px;
   }
-  
+
   h4 {
     margin: 0;
     padding: 1px 0px 2px;
@@ -243,11 +243,11 @@ header {
       border-color: #7409a0;
     }
   }
-  
+
   h5 {
     margin: 0;
   }
-  
+
   &.mention, &.mention h4 a {
     color: #7409a0;
     border-color: #7409a0;
@@ -256,7 +256,7 @@ header {
 
 code, pre, tt {
 	font-family: menlo;
-	font-size:.9em; 
+	font-size: 0.9em;
 }
 
 span.mention.highlight {
@@ -311,7 +311,7 @@ span.mention.highlight {
 }
 blockquote {
   margin: 0;
-  
+
   // Shrink quoted images. You can always long-tap to see the real thing.
   img {
     max-width: 160px;
@@ -358,7 +358,7 @@ blockquote {
 footer {
   display: -webkit-flex;
   -webkit-align-items: center;
-  
+
   &:after {
     content: "";
     display: block;
@@ -369,10 +369,10 @@ footer {
 #fyad-flag {
   width: 100%;
   height: 102px;
-  
+
   img {
     border: 1px solid black;
-    
+
     .ipad & {
       display: block;
       margin: 0 auto;
@@ -382,16 +382,16 @@ footer {
 
 #ad {
   text-align: center;
-  
+
   img {
     max-width: 100%;
   }
-  
+
   .iphone & {
     padding: .6em;
     padding-bottom: 0;
   }
-  
+
   .ipad & {
     padding: 1.07em;
     padding-bottom: 0;

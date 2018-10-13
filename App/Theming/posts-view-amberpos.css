@@ -173,6 +173,10 @@ header:after {
   padding: 1px 0px 2px;
   font-weight: bold;
 }
+.bbc-block h4 span.mention.highlight {
+  color: #7409a0;
+  border-color: #7409a0;
+}
 .bbc-block h5 {
   margin: 0;
 }
@@ -187,7 +191,7 @@ tt {
   font-family: menlo;
   font-size: 0.9em;
 }
-span.mention {
+span.mention.highlight {
   color: #7409a0;
 }
 .quote_link {
@@ -399,10 +403,10 @@ post.seen {
   color: #b837ed;
   border-color: #b837ed;
 }
-.bbc-block.mention h4 .mention {
+.bbc-block.mention h4 span.mention.highlight {
   color: #dd89ff;
 }
-.editedby .mention {
+.editedby span.mention.highlight {
   color: #dd89ff;
 }
 /*
