@@ -376,7 +376,8 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBox
             document.removeSpoilerStylingAndEvents()
             document.removeEmptyEditedByParagraphs()
             document.useHTML5VimeoPlayer()
-            document.highlightQuotesOfPosts(byUserNamed: AwfulSettings.shared().username)
+            document.identifyMentionsOfUser(named: AwfulSettings.shared().username, shouldHighlight: true)
+            document.identifyQuotesCitingUser(named: AwfulSettings.shared().username, shouldHighlight: true)
             document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
             if !AwfulSettings.shared().autoplayGIFs {
                 document.stopGIFAutoplay()

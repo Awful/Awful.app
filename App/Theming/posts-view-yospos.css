@@ -180,8 +180,8 @@ header:after {
 .bbc-block h5 {
   margin: 0;
 }
-.bbc-block.mention,
-.bbc-block.mention h4 a {
+.bbc-block.mention.highlight,
+.bbc-block.mention.highlight h4 a {
   color: #7409a0;
   border-color: #7409a0;
 }
@@ -397,13 +397,13 @@ post.seen {
 .bbc-block {
   border-left-color: #57ff57;
 }
-.bbc-block.mention,
-.bbc-block.mention h4,
-.bbc-block.mention h4 a {
+.bbc-block.mention.highlight,
+.bbc-block.mention.highlight h4,
+.bbc-block.mention.highlight h4 a {
   color: #b837ed;
   border-color: #b837ed;
 }
-.bbc-block.mention h4 span.mention.highlight {
+.bbc-block.mention.highlight h4 span.mention.highlight {
   color: #dd89ff;
 }
 .editedby span.mention.highlight {

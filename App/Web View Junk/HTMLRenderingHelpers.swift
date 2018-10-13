@@ -30,20 +30,6 @@ extension HTMLDocument {
     }
     
     /**
-     Modifies the document in place, adding the "mention" class to the header above a quote if it says "username posted:".
-     */
-    func highlightQuotesOfPosts(byUserNamed username: String) {
-        let loggedInUserPosted = "\(username) posted:"
-        for h4 in nodes(matchingSelector: ".bbc-block h4") where h4.textContent == loggedInUserPosted {
-            var block = h4.parentElement
-            while block != nil, block?.hasClass("bbc-block") == false {
-                block = block?.parentElement
-            }
-            block?.toggleClass("mention")
-        }
-    }
-    
-    /**
      Modifies the document in place, wrapping any occurrences of `username` in a post body within a `<span class="mention">` element. Additionally, if `isHighlighted` is `true`, the class `highlight` is added to the wrapping span elements.
      */
     func identifyMentionsOfUser(named username: String, shouldHighlight isHighlighted: Bool) {
@@ -97,6 +83,24 @@ extension HTMLDocument {
                     mentionText.wrap(in: mention)
                     remainder = _remainder
                 }
+            }
+        }
+    }
+    
+    /**
+     Modifies the document in place, adding the `mention` class to the header above a quote if it says "username posted:". If `shouldHighlight` is `true`, also adds the `highlight` class.
+     */
+    func identifyQuotesCitingUser(named username: String, shouldHighlight isHighlighted: Bool) {
+        let loggedInUserPosted = "\(username) posted:"
+        for h4 in nodes(matchingSelector: ".bbc-block h4") where h4.textContent == loggedInUserPosted {
+            var block = h4.parentElement
+            while let next = block, !next.hasClass("bbc-block") {
+                block = next.parentElement
+            }
+            block?.toggleClass("mention")
+            
+            if isHighlighted {
+                block?.toggleClass("highlight")
             }
         }
     }

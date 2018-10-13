@@ -439,6 +439,19 @@ Awful.setHighlightMentions = function(highlightMentions) {
 
 
 /**
+ Updates the user-specified setting to highlight quote blocks that cite the logged-in user.
+
+ @param {boolean} highlightQuotes - `true` to highlight quotes written by the user, `false` to remove any such highlighting.
+ */
+Awful.setHighlightQuotes = function(highlightQuotes) {
+  var quotes = document.querySelectorAll(".bbc-block.mention");
+  Array.prototype.forEach.call(quotes, function(quote) {
+    quote.classList.toggle("highlight", highlightQuotes);
+  });
+};
+
+
+/**
  Updates the user-specified setting to show avatars.
 
  @param {boolean} showAvatars - `true` to show user avatars, `false` to hide user avatars.
