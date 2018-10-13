@@ -10,6 +10,7 @@
 		0FF012020DEDA6238B7DC09B /* Pods_AwfulTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */; };
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
+		1C0060AA217171CD00E5329A /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0060A8217171CD00E5329A /* profile.css */; };
 		1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0105581EAC0F450084B343 /* ForumsClient.swift */; };
 		1C07B8AE1EF568100044B8AF /* LepersColonyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */; };
 		1C07B8B01EF5848A0044B8AF /* ThreadListScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */; };
@@ -309,7 +310,6 @@
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */; };
-		1C8E10441914AA730010007B /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10431914AA730010007B /* profile.css */; };
 		1C8E104A1916F7970010007B /* common.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C8E10491916F78B0010007B /* common.js */; };
 		1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */; };
 		1C8F0DE5191CF89D00CE8DEE /* AwfulJavaScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F0DE4191CF89D00CE8DEE /* AwfulJavaScript.m */; };
@@ -658,6 +658,8 @@
 		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
 		1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelperTests.swift; sourceTree = "<group>"; };
 		1C0060A42170347300E5329A /* HTMLReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLReader.swift; sourceTree = "<group>"; };
+		1C0060A7217171CD00E5329A /* profile.less */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = profile.less; sourceTree = "<group>"; };
+		1C0060A8217171CD00E5329A /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C0105581EAC0F450084B343 /* ForumsClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsClient.swift; sourceTree = "<group>"; };
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
@@ -986,7 +988,6 @@
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+AwfulConvenient.swift"; sourceTree = "<group>"; };
-		1C8E10431914AA730010007B /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C8E10491916F78B0010007B /* common.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = common.js; sourceTree = "<group>"; };
 		1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCapabilities.swift; sourceTree = "<group>"; };
 		1C8F0DE3191CF89D00CE8DEE /* AwfulJavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AwfulJavaScript.h; sourceTree = "<group>"; };
@@ -1373,6 +1374,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1C0060A6217171CD00E5329A /* Stylesheets */ = {
+			isa = PBXGroup;
+			children = (
+				1C0060A8217171CD00E5329A /* profile.css */,
+				1C0060A7217171CD00E5329A /* profile.less */,
+			);
+			path = Stylesheets;
+			sourceTree = "<group>";
+		};
 		1C00E0AB173A006B008895E7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1615,6 +1625,7 @@
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C25AC501F5777EC00977D6F /* Refreshers */,
 				1C8694A216EF78D3003FE89E /* Settings */,
+				1C0060A6217171CD00E5329A /* Stylesheets */,
 				1C9AEBC4210C3B2300C9A567 /* Tests */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -2398,7 +2409,6 @@
 				1CA45D951F2C19AA005BEEC5 /* Localizable.strings */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
-				1C8E10431914AA730010007B /* profile.css */,
 				1CA45D931F2C0AD1005BEEC5 /* RenderView.js */,
 				1C331AA12122722B00C5D045 /* Templates */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
@@ -2937,7 +2947,6 @@
 				7BF0903C2022C7570060BDC8 /* AppIcon-Bars2_dark-40x40@2x.png in Resources */,
 				7BF0903A2022C7570060BDC8 /* AppIcon-Bars2_dark-83.5x83.5@2x.png in Resources */,
 				7BF3A6051F92FA86009F8603 /* AppIcon-ghost-83.5x83.5@2x.png in Resources */,
-				1C8E10441914AA730010007B /* profile.css in Resources */,
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				1CC362C8204C527700274E82 /* AppIcon-doggo-20x20@2x.png in Resources */,
@@ -3008,6 +3017,7 @@
 				1C5B83561F74B1F200BE7517 /* AppIcon-v-76x76.png in Resources */,
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
 				7BF3A6131F92FA86009F8603 /* AppIcon-greenface-83.5x83.5@2x.png in Resources */,
+				1C0060AA217171CD00E5329A /* profile.css in Resources */,
 				1C502D1C1F816FF3001890AF /* AppIcon-Bars2-60x60.png in Resources */,
 				7BF3A60B1F92FA86009F8603 /* AppIcon-ghost-29x29@2x.png in Resources */,
 				1C502D3B1F817004001890AF /* AppIcon-getout-40x40@3x.png in Resources */,
@@ -3124,7 +3134,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../App\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Profiles:Theming\" \"$@\"\n}\n\nLESSFILES=(Profiles/profile.less)\nLESSFILES+=(Theming/posts-view*.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
+			shellScript = "set -eu -o pipefail\n\nPATH=\"$PATH:/usr/local/bin:/usr/local/share/npm/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! npm install less -g\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../App\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Profiles:Theming\" \"$@\"\n}\n\nLESSFILES=(Stylesheets/profile.less)\nLESSFILES+=(Theming/posts-view*.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
 		};
 		360DD18118D355D46EC7742B /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
