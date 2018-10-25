@@ -24,6 +24,9 @@ struct PrivateMessageViewModel: MustacheBoxable {
             document.removeSpoilerStylingAndEvents()
             document.useHTML5VimeoPlayer()
             document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
+            if !AwfulSettings.shared().autoplayGIFs {
+                document.stopGIFAutoplay()
+            }
             return document.bodyElement?.innerHTML
         }
         let visibleAvatarURL = showAvatars ? message.from?.avatarURL : nil

@@ -200,6 +200,12 @@ Awful.handleClickEvent = function(event) {
     event.preventDefault();
     return;
   }
+
+  // Tap a gif-wrapper to toggle playing the gif.
+  var gifWrapper = event.target.closest('.gif-wrap');
+  if (gifWrapper) {
+    Awful.toggleGIF(gifWrapper);
+  }
 };
 
 
@@ -228,6 +234,45 @@ Awful.frameOfElement = function(element) {
     "width": rect.width,
     "height": rect.height
   };
+};
+
+
+/**
+ Starts/stops a wrapped GIF playing.
+
+ @param {Element} gifWrapper - An element wrapping a GIF.
+ */
+Awful.toggleGIF = function(gifWrapper) {
+  var img = gifWrapper.querySelector('img.posterized');
+  if (!img) { return; }
+
+  if (gifWrapper.classList.contains('playing')) {
+    var posterURL = img.getAttribute('data-poster-url');
+    var gifURL = img.getAttribute('src');
+
+    gifWrapper.classList.remove('playing');
+    img.setAttribute('data-original-url', gifURL);
+    img.setAttribute('src', posterURL);
+  } else if (gifWrapper.classList.contains('loading')) {
+    // Just wait for the load to happen.
+  } else { 
+    gifWrapper.classList.add('loading');
+    
+    var posterURL = img.getAttribute('src');
+    var gifURL = img.getAttribute('data-original-url');
+
+    var cacheWarmer = document.createElement('img');
+    cacheWarmer.onload = function() {
+      img.setAttribute('src', gifURL);
+      img.setAttribute('data-poster-url', posterURL);
+      gifWrapper.classList.add('playing');
+      gifWrapper.classList.remove('loading');
+    };
+    cacheWarmer.onerror = function() {
+      img.classList.remove('loading');
+    };
+    cacheWarmer.src = gifURL;
+  }
 };
 
 

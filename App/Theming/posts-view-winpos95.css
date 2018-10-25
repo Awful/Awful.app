@@ -200,11 +200,14 @@ span.mention.highlight {
 [data-awful-linkified-image] {
   text-decoration: underline;
 }
-.gifWrap.overlay {
+.gifWrap.overlay,
+.gif-wrap {
+  cursor: pointer;
   position: relative;
   display: inline-block;
 }
-.gifWrap.overlay:before {
+.gifWrap.overlay:before,
+.gif-wrap:before {
   content: "GIF";
   display: block;
   background-color: rgba(255, 255, 255, 0.5);
@@ -226,14 +229,18 @@ span.mention.highlight {
   border-radius: 0.125em;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
 }
-.gifWrap.overlay.loading:before {
+.gifWrap.overlay.loading:before,
+.gif-wrap.loading:before {
   background-image: url('awful-resource://spinner-button.png');
 }
-.gifWrap.overlay.playing:before {
+.gifWrap.overlay.playing:before,
+.gif-wrap.playing:before {
   display: none;
 }
 .gifWrap + br,
-.gifWrap + br + br {
+.gif-wrap + br,
+.gifWrap + br + br,
+.gif-wrap + br + br {
   display: none;
 }
 blockquote {
