@@ -8,7 +8,6 @@ import CoreData
 import MRProgress
 import PromiseKit
 import TUSafariActivity
-import WebViewJavascriptBridge
 
 private let Log = Logger.get()
 
