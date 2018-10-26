@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AwfulNewThreadTagListURL</key>
-	<string>http://awfulapp.com/tags.txt</string>
+	<string>https://awfulapp.com/tags.txt</string>
 	<key>AwfulPostsViewExternalStylesheetURL</key>
-	<string>http://awfulapp.com/posts-view-style.css</string>
+	<string>https://awfulapp.com/posts-view-style.css</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
