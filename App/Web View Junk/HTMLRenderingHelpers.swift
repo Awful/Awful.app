@@ -189,12 +189,10 @@ extension HTMLDocument {
             
             let replacementImg = HTMLElement(tagName: "img", attributes: [
                 "src": replacementSrc,
-                "class": "imgurGif posterized",
-                "data-originalurl": url.absoluteString,
-                "data-original-url": url.absoluteString,
-                "data-posterurl": replacementSrc])
+                "class": "posterized",
+                "data-original-url": url.absoluteString])
             let wrapper = HTMLElement(tagName: "div", attributes: [
-                "class": "gifWrap gif-wrap"])
+                "class": "gif-wrap"])
             replacementImg.parent = wrapper
             
             let imgSiblings = imgParent.mutableChildren

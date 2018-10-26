@@ -54,6 +54,15 @@
 "launch-open-copied-url-alert.open-button" = "Open";
 
 
+/* MARK: Posts page */
+
+/* Title of alert shown when failing to update the last-read post. */
+"posts-page.error.could-not-mark-read" = "Could Not Mark Read";
+
+/* Title shown in HUD after the last-read post is updated. */
+"posts-page.marked-read" = "Marked Read";
+
+
 /* MARK: Share actions */
 
 /* The default title of the "copy URL" share action. */

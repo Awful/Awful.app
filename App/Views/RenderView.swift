@@ -354,11 +354,100 @@ extension RenderView {
         return guarantee
     }
     
+    /// Scrolls so the identified post begins at the top of the viewport.
+    func jumpToPost(identifiedBy postID: String) {
+        let escapedPostID: String
+        do {
+            escapedPostID = try escapeForEval(postID)
+        } catch {
+            Log.w("could not JSON-escape the post ID: \(error)")
+            return
+        }
+        webView.evaluateJavaScript("Awful.jumpToPostWithID(\(escapedPostID)") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate jumpToPostWithID: \(error)")
+            }
+        }
+    }
+    
+    /// Removes all previously-loaded content.
+    func loadBlankPage() {
+        webView.load(URLRequest(url: URL(string: "about:blank")!))
+    }
+    
     /// Turns each link with a `data-awful-linkified-image` attribute into a a proper `img` element.
     func loadLinkifiedImages() {
         webView.evaluateJavaScript("Awful.loadLinkifiedImages()") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate loadLinkifiedImages: \(error)")
+            }
+        }
+    }
+    
+    /// Sets the identified post, and all previous posts, to appear read; and sets all subsequent posts to appear unread.
+    func markReadUpToPost(identifiedBy postID: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(postID)
+        } catch {
+            Log.w("could not JSON-escape the post ID: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("Awful.markReadUpToPostWithID(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate markReadUpToPostWithID: \(error)")
+            }
+        }
+    }
+    
+    /// Insert some newly-rendered posts above all existing rendered posts.
+    func prependPostHTML(_ postHTML: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(postHTML)
+        } catch {
+            Log.w("could not JSON-escape the post HTML: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("Awful.prependPosts(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate prependPosts: \(error)")
+            }
+        }
+    }
+    
+    /// Replaces an existing post with a new rendering (e.g. after loading the contents of an ignored post).
+    func replacePostHTML(_ postHTML: String, at i: Int) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(postHTML)
+        } catch {
+            Log.w("could not JSON-escape the post HTML: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("Awful.setPostHTMLAtIndex(\(escaped), \(i))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setPostHTMLAtIndex: \(error)")
+            }
+        }
+    }
+    
+    /// Replaces the "external" CSS, which is hosted somewhere and can be changed without a full-on app update.
+    func setExternalStylesheet(_ css: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(css)
+        } catch {
+            Log.w("could not JSON-escape the CSS: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("Awful.setExternalStylesheet(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setExternalStylesheet: \(error)")
             }
         }
     }
@@ -394,7 +483,7 @@ extension RenderView {
     func setThemeStylesheet(_ css: String) {
         let escaped: String
         do {
-            escaped = String(data: try JSONEncoder().encode([css]), encoding: .utf8)! + "[0]"
+            escaped = try escapeForEval(css)
         } catch {
             Log.w("could not JSON-escape the CSS: \(error)")
             return
@@ -415,7 +504,7 @@ extension RenderView {
     func unionFrameOfElements(matchingSelector selector: String) -> Guarantee<CGRect> {
         let escapedSelector: String
         do {
-            escapedSelector = String(data: try JSONEncoder().encode([selector]), encoding: .utf8)! + "[0]"
+            escapedSelector = try escapeForEval(selector)
         } catch {
             Log.w("could not JSON-encode selector \(selector): \(error)")
             return .value(.null)
@@ -448,4 +537,8 @@ extension RenderView {
 protocol RenderViewDelegate: class {
     func didReceive(message: RenderViewMessage, in view: RenderView)
     func didTapLink(to url: URL, in view: RenderView)
+}
+
+private func escapeForEval(_ s: String) throws -> String {
+    return String(data: try JSONEncoder().encode([s]), encoding: .utf8)! + "[0]"
 }

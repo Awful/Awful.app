@@ -1,38 +1,35 @@
-//  PostsView.swift
+//  PostsPageView.swift
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import UIKit
 
 /**
-    Wraps a UIWebView and emulates a top contentInset, to which UIWebView reacts poorly.
- 
-    Specifically, when a UIWebView has a contentInset, elements' bounding rects seem to be adjusted but `document.elementFromPoint` doesn't consider this. Since it returns null if either argument is negative, some visible elements will never be returned. rdar://problem/16925474
- 
-    We want to use a top contentInset for showing the top bar. Since that won't work, an AwfulPostsView will fake it for us.
+    Manages a posts page's render view and top bar, hiding and showing the top bar when appropriate.
  */
-final class PostsView: UIView {
-    let webView = UIWebView.nativeFeelingWebView()
+final class PostsPageView: UIView {
+    let renderView = RenderView()
     let topBar = PostsViewTopBar()
-    fileprivate var exposedTopBarSlice: CGFloat = 0 {
+    private var exposedTopBarSlice: CGFloat = 0 {
         didSet {
             if oldValue != exposedTopBarSlice {
                 setNeedsLayout()
             }
         }
     }
-    fileprivate var ignoreScrollViewDidScroll = false
-    fileprivate var lastContentOffset: CGPoint = .zero
-    fileprivate var maintainTopBarState = true
-    fileprivate var topBarAlwaysVisible = false
+    private var ignoreScrollViewDidScroll = false
+    private var lastContentOffset: CGPoint = .zero
+    private var maintainTopBarState = true
+    private var topBarAlwaysVisible = false
+    
+    var scrollView: UIScrollView {
+        return renderView.scrollView
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        webView.backgroundColor = nil
-        webView.scrollView.delegate = self
-        addSubview(webView)
-        
+        addSubview(renderView)
         addSubview(topBar)
         
         updateForVoiceOver(animated: false)
@@ -40,15 +37,11 @@ final class PostsView: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: NSNotification.Name(rawValue: UIAccessibilityVoiceOverStatusChanged), object: nil)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    @objc fileprivate func voiceOverStatusDidChange(_ notification: Notification) {
+    @objc private func voiceOverStatusDidChange(_ notification: Notification) {
         updateForVoiceOver(animated: true)
     }
     
-    fileprivate func updateForVoiceOver(animated: Bool) {
+    private func updateForVoiceOver(animated: Bool) {
         topBarAlwaysVisible = UIAccessibility.isVoiceOverRunning
         guard topBarAlwaysVisible else { return }
         exposedTopBarSlice = topBar.bounds.height
@@ -57,18 +50,18 @@ final class PostsView: UIView {
         }) 
     }
     
-    fileprivate func furtherExposeTopBarSlice(_ delta: CGFloat) {
+    private func furtherExposeTopBarSlice(_ delta: CGFloat) {
         let oldExposedSlice = exposedTopBarSlice
         exposedTopBarSlice = (exposedTopBarSlice + delta).clamp(0, topBar.bounds.height)
         let exposedDelta = exposedTopBarSlice - oldExposedSlice
         
         ignoreScrollViewDidScroll = true
-        webView.scrollView.contentOffset.y = max(webView.scrollView.contentOffset.y + exposedDelta, 0)
+        scrollView.contentOffset.y = max(scrollView.contentOffset.y + exposedDelta, 0)
         ignoreScrollViewDidScroll = false
     }
     
     override func layoutSubviews() {
-        let fractionalOffset = webView.fractionalContentOffset
+        let fractionalOffset = scrollView.fractionalContentOffset
         
         var topBarFrame = topBar.bounds
         topBarFrame.origin.y = exposedTopBarSlice - topBarFrame.height
@@ -87,16 +80,22 @@ final class PostsView: UIView {
          */
         let integralWidth = CGFloat(floor(bounds.width))
         let fractionalPart = bounds.width - integralWidth
-        webView.frame = CGRect(x: fractionalPart, y: topBarFrame.maxY, width: integralWidth, height: bounds.height - exposedTopBarSlice)
+        renderView.frame = CGRect(x: fractionalPart, y: topBarFrame.maxY, width: integralWidth, height: bounds.height - exposedTopBarSlice)
         
         /**
             When the app enters the background, on iPad, the width of the view changes dramatically while the system takes a snapshot. The end result is that when you leave Awful then come back, you're scrolled away from where you actually were when you left. Here we try to combat that.
          
             That said, if we're in the middle of dragging, messing with contentOffset just makes scrolling janky.
          */
-        if !webView.scrollView.isDragging {
-            webView.fractionalContentOffset = fractionalOffset
+        if !scrollView.isDragging {
+            renderView.scrollToFractionalOffset(fractionalOffset)
         }
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -104,8 +103,8 @@ private enum TopBarState {
     case hidden, visible, partiallyVisible
 }
 
-extension PostsView {
-    fileprivate var topBarState: TopBarState {
+extension PostsPageView {
+    private var topBarState: TopBarState {
         if exposedTopBarSlice <= 0 {
             return .hidden
         } else if exposedTopBarSlice >= topBar.bounds.height {
@@ -116,7 +115,7 @@ extension PostsView {
     }
 }
 
-extension PostsView: UIScrollViewDelegate {
+extension PostsPageView: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastContentOffset = scrollView.contentOffset
         maintainTopBarState = false

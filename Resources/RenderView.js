@@ -4,8 +4,6 @@
 
 // This file is loaded as a user script "at document end" into the `WKWebView` that renders announcements, posts, profiles, and private messages.
 
-// TODO: imgurGif, .gifWrap.
-
 if (!window.Awful) {
     window.Awful = {};
 }
@@ -342,7 +340,7 @@ Awful.interestingElementsAtPoint = function(x, y) {
 
   var img = elementFromPoint.closest('img:not(button img)');
   if (img && Awful.isSpoiled(img)) {
-    if (img.classList.contains('imgurGif')) {
+    if (img.classList.contains('posterized')) {
       interesting.spoiledImageURL = img.dataset.originalurl;
     } else {
       interesting.spoiledImageURL = img.getAttribute('src');
@@ -386,6 +384,16 @@ Awful.isSpoiled = function(element) {
 
 
 /**
+ Scrolls the identified post into view.
+ */
+Awful.jumpToPostWithID = function(postID) {
+  // If we previously jumped to this post, we need to clear the hash in order to jump again.
+  window.location.hash = "";
+
+  window.location.hash = `#${postID}`;
+};
+
+/**
  Turns all links with `data-awful-linkified-image` attributes into img elements.
  */
 Awful.loadLinkifiedImages = function() {
@@ -398,6 +406,28 @@ Awful.loadLinkifiedImages = function() {
     img.setAttribute('src', url);
     link.parentNode.replaceChild(img, link);
   });
+};
+
+
+/**
+ Marks as read all posts up to and including the identified post.
+ */
+Awful.markReadUpToPostWithID = function(postID) {
+  var lastReadPost = document.getElementById(postID);
+  if (!lastReadPost) { return; }
+
+  // Go backward, marking as seen.
+  var currentPost = lastReadPost;
+  while (currentPost) {
+    currentPost.classList.add('seen');
+    currentPost = currentPost.previousElementSibling;
+  }
+
+  // Go forward, marking as unseen.
+  var currentPost = lastReadPost.nextElementSibling;
+  while (currentPost) {
+    currentPost.classList.remove('seen');
+  }
 };
 
 
@@ -427,6 +457,19 @@ Awful.postIndexOfElement = function(element) {
 
 
 /**
+ Adds some posts to the top of the #posts element.
+ */
+Awful.prependPosts = function(postsHTML) {
+  var oldHeight = document.documentElement.scrollHeight;
+
+  document.getElementById('posts').insertAdjacentHTML('afterbegin', postsHTML);
+
+  var newHeight = document.documentElement.scrollHeight;
+  window.scrollBy(0, newHeight - oldHeight);
+};
+
+
+/**
  Replaces the announcement HTML.
 
  @param {string} html - The updated HTML for the announcement.
@@ -448,6 +491,14 @@ Awful.setAnnouncementHTML = function(html) {
  */
 Awful.setDarkMode = function(dark) {
   document.body.classList.toggle('dark', dark);
+};
+
+
+/**
+ Updates the externally-updatable stylesheet, which lets us make changes quickly without going through a full app update.
+ */
+Awful.setExternalStylesheet = function(stylesheet) {
+  document.getElementById('awful-external-style').innerText = stylesheet;
 };
 
 
@@ -493,6 +544,16 @@ Awful.setHighlightQuotes = function(highlightQuotes) {
   Array.prototype.forEach.call(quotes, function(quote) {
     quote.classList.toggle("highlight", highlightQuotes);
   });
+};
+
+
+/**
+ Replaces a particular post's innerHTML.
+ */
+Awful.setPostHTMLAtIndex = function(postHTML, i) {
+  // nth-of-type is 1-indexed, but the app uses 0-indexing.
+  var post = document.querySelector(`post:nth-of-type(${i + 1})`);
+  post.outerHTML = postHTML;
 };
 
 
@@ -575,6 +636,44 @@ if (contact) {
       event.preventDefault();
     }
   });
+}
+
+
+// FYAD flags
+if (document.body.classList.contains('forum-26')) {
+  var timer;
+  function fetchFlag() {
+    var request = new XMLHttpRequest();
+    request.open('GET', "/flag.php?forumid=26");
+    request.responseType = 'json';
+    request.send();
+
+    request.onload = function() {
+      var data = request.response;
+      var img = document.createElement('img');
+      img.setAttribute('title', `this flag proudly brought to you by ${data.username} on ${data.created}`);
+      img.setAttribute('src', `https://fi.somethingawful.com/flags${data.path}?by=${encodeURIComponent(data.username)}`);
+
+      var div = document.getElementById('fyad-flag');
+      if (!div) {
+        div = document.createElement('div');
+        document.getElementById('posts').insertAdjacentElement('afterbegin', div);
+      }
+
+      while (div.firstChild) {
+        div.firstChild.remove();
+      }
+      div.appendChild(img);
+
+      timer = setTimeout(fetchFlag, 60000);
+    };
+
+    request.onerror = function() {
+      timer = setTimeout(fetchFlag, 60000);
+    };
+  }
+
+  fetchFlag();
 }
 
 
