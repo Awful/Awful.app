@@ -89,11 +89,16 @@ final class PostsPageRefreshControl: UIView {
         guard let scrollView = scrollView else { return }
         
         let maxVisibleY = scrollView.bounds.maxY - frame.height + bottomInset
+        let pullThreshhold = scrollView.bounds.height * 0.111
+        var scrollDistance = frame.maxY + pullThreshhold
+        if (frame.maxY <= scrollView.bounds.height + frame.height) {
+            scrollDistance = scrollView.bounds.height + (pullThreshhold / 2)
+        }
         
         switch sender.state {
         case .began, .changed:
             switch state {
-            case .waiting where maxVisibleY > (frame.maxY + 80):
+            case .waiting where maxVisibleY > scrollDistance:
                 state = .triggered
                 
             case .waiting, 
