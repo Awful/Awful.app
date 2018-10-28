@@ -6,7 +6,7 @@ import Foundation
 
 extension Bundle {
     var localizedName: String {
-        return localizedInfoDictionary?[kCFBundleNameKey as String] as? String ?? ""
+        return object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? ""
     }
 
     var urlTypes: [URLType] {
