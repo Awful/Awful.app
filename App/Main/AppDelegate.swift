@@ -448,7 +448,7 @@ private let defaultBaseURLString = "https://forums.somethingawful.com"
 
 private extension AppDelegate {
     func registerURLProtocols() {
-        let protocols: [AnyClass] = [ImageURLProtocol.self, MinusFixURLProtocol.self, ResourceURLProtocol.self, WaffleimagesURLProtocol.self, PostimgOrgURLProtocol.self]
+        let protocols: [AnyClass] = [ImageURLProtocol.self, ResourceURLProtocol.self]
         for proto in protocols {
             URLProtocol.registerClass(proto)
         }

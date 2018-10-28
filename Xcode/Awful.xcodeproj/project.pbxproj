@@ -62,7 +62,6 @@
 		1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */; };
 		1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */; };
 		1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */; };
-		1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC71CB95C6C00C88BD1 /* MinusFixURLProtocol.swift */; };
 		1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */; };
 		1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */; };
 		1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */; };
@@ -72,7 +71,6 @@
 		1C16FBDD1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */; };
 		1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */; };
 		1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */; };
-		1C16FBE31CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
 		1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */; };
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
@@ -518,7 +516,6 @@
 		8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */; };
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
-		8F022D2721334A0900E2FBAB /* PostimgOrgURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F022D2621334A0900E2FBAB /* PostimgOrgURLProtocol.swift */; };
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
 		B2A9BE21D37128F0FF754D6E /* Pods_CoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F783E9D241CF6339BFCF0B /* Pods_CoreTests.framework */; };
 		BA6F56396124CA653CA313D2 /* Pods_Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */; };
@@ -717,7 +714,6 @@
 		1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadFieldView.swift; sourceTree = "<group>"; };
 		1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagView.swift; sourceTree = "<group>"; };
 		1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadTagObserver.swift; sourceTree = "<group>"; };
-		1C16FBC71CB95C6C00C88BD1 /* MinusFixURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinusFixURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarLoader.swift; sourceTree = "<group>"; };
 		1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTweaks.swift; sourceTree = "<group>"; };
 		1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewExternalStylesheetLoader.swift; sourceTree = "<group>"; };
@@ -727,7 +723,6 @@
 		1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsUbiquitousThemesController.swift; sourceTree = "<group>"; };
 		1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
 		1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePicker.swift; sourceTree = "<group>"; };
-		1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaffleimagesURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+OpensInBrowser.swift"; sourceTree = "<group>"; };
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
@@ -1215,7 +1210,6 @@
 		8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper@2x.png"; sourceTree = "<group>"; };
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
-		8F022D2621334A0900E2FBAB /* PostimgOrgURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostimgOrgURLProtocol.swift; sourceTree = "<group>"; };
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
 		9F642485F166EBF5608DC271 /* Pods-CoreTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-CoreTests/Pods-CoreTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A7B3F77323960DADE60F24B0 /* Pods_SmiliesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmiliesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1513,8 +1507,6 @@
 				1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */,
 				1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */,
 				1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */,
-				1C16FBE21CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift */,
-				8F022D2621334A0900E2FBAB /* PostimgOrgURLProtocol.swift */,
 			);
 			path = URLs;
 			sourceTree = "<group>";
@@ -1607,7 +1599,6 @@
 				1C25AC1F1F532EC400977D6F /* Misc */,
 				1CA887AE1F40ADFE0059FEEC /* Model Presentation */,
 				1C00E0AB173A006B008895E7 /* Navigation */,
-				1CC7801D1612D988002AF958 /* Networking */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C25AC501F5777EC00977D6F /* Refreshers */,
@@ -2059,14 +2050,6 @@
 				1CC362AC204C526E00274E82 /* AppIcon-doggo-1024x1024.png */,
 			);
 			path = doggo;
-			sourceTree = "<group>";
-		};
-		1CC7801D1612D988002AF958 /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-				1C16FBC71CB95C6C00C88BD1 /* MinusFixURLProtocol.swift */,
-			);
-			path = Networking;
 			sourceTree = "<group>";
 		};
 		1CC780241612D9DD002AF958 /* Posts */ = {
@@ -3498,7 +3481,6 @@
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
-				8F022D2721334A0900E2FBAB /* PostimgOrgURLProtocol.swift in Sources */,
 				1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C914EC9207716D600C0E238 /* MustacheRepository.swift in Sources */,
@@ -3531,7 +3513,6 @@
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
-				1C16FBC81CB95C6C00C88BD1 /* MinusFixURLProtocol.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */,
@@ -3548,7 +3529,6 @@
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
-				1C16FBE31CBAC4C300C88BD1 /* WaffleimagesURLProtocol.swift in Sources */,
 				1C25AC471F53788900977D6F /* RenderView.swift in Sources */,
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
 				1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */,
