@@ -50,7 +50,9 @@ final class PostsPageViewController: ViewController {
         
         postsView.topBar.scrollToBottomButton.addTarget(self, action: #selector(scrollToBottom as () -> Void), for: .primaryActionTriggered)
         
-        postsView.renderView.delegate = self
+        let renderView = postsView.renderView
+        
+        renderView.delegate = self
         
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)

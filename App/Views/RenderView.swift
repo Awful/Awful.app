@@ -363,7 +363,7 @@ extension RenderView {
             Log.w("could not JSON-escape the post ID: \(error)")
             return
         }
-        webView.evaluateJavaScript("Awful.jumpToPostWithID(\(escapedPostID)") { rawResult, error in
+        webView.evaluateJavaScript("Awful.jumpToPostWithID(\(escapedPostID))") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate jumpToPostWithID: \(error)")
             }
