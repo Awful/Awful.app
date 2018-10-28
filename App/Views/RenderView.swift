@@ -35,6 +35,8 @@ final class RenderView: UIView {
         if #available(iOS 11.0, *) {
             configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
             configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
+        } else {
+            registerURLProtocolsForWKWebView_iOS10AndBelow()
         }
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
@@ -89,6 +91,27 @@ final class RenderView: UIView {
         })
     }
 }
+
+/**
+ Makes the URL protocols we use for rendering available in all instances of `WKWebView`. This function uses private API and should only be called on iOS 10 and below, where no equivalent public API is available.
+ 
+ This function only needs to be called once, though it's safe to call it many times. The schemes are added only once; as we're touching private API, it seems prudent not to prod more than necessary.
+ 
+ (This is a property holding a closure, instead of just a function, so we can call it like a function but enforce our "only add once" requirement.)
+ 
+ - Note: `WKWebView` gained public API for using custom URL protocols in iOS 11. You should use `WKWebViewConfiguration.setURLSchemeHandler(…)` when it's available.
+ */
+private let registerURLProtocolsForWKWebView_iOS10AndBelow: () -> Void = {
+    
+    // We only want to register these schemes once, so we do that here when this top-level property lazily initializes.
+    let schemes = [ImageURLProtocol.scheme, ResourceURLProtocol.scheme]
+    for scheme in schemes {
+        WKWebView.registerCustomURLScheme(scheme)
+    }
+    
+    // After initialzation, and on all subsequent calls, we simply run an empty closure; our work here is done.
+    return {}
+}()
 
 private extension URL {
     /// Returns an `http` version of this URL if it's an `https` URL; otherwise just returns `self`.

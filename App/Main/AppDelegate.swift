@@ -54,8 +54,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
         
-        registerURLProtocols()
-        
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.tintColor = Theme.currentTheme["tintColor"]
         
@@ -445,21 +443,3 @@ private let loginCookieLastExpiryPromptDateKey = "com.awfulapp.Awful.LastCookieE
 private let loginCookieExpiryPromptFrequency = days(2)
 
 private let defaultBaseURLString = "https://forums.somethingawful.com"
-
-private extension AppDelegate {
-    func registerURLProtocols() {
-        let protocols: [AnyClass] = [ImageURLProtocol.self, ResourceURLProtocol.self]
-        for proto in protocols {
-            URLProtocol.registerClass(proto)
-        }
-        
-        if #available(iOS 11.0, *) {
-            // WKURLSchemeHandler suits our needs
-        } else {
-            let schemes = [ImageURLProtocol.scheme, ResourceURLProtocol.scheme]
-            for scheme in schemes {
-                WKWebView.registerCustomURLScheme(scheme)
-            }
-        }
-    }
-}
