@@ -4,6 +4,8 @@
 
 // This file is loaded as a user script "at document end" into the `WKWebView` that renders announcements, posts, profiles, and private messages.
 
+"use strict";
+
 if (!window.Awful) {
     window.Awful = {};
 }
@@ -171,17 +173,19 @@ Awful.handleClickEvent = function(event) {
 
   // Tap on post header to reveal actions on the poster.
   var header = event.target.closest('header');
-  var postIndex;
-  if (header && (postIndex = Awful.postIndexOfElement(header)) !== null) {
-    var frame = Awful.frameOfElement(header);
+  var didTapAuthorHandler = window.webkit.messageHandlers.didTapAuthorHeader;
+  if (header && didTapAuthorHandler) {
+    var postIndex = Awful.postIndexOfElement(header);
+    if (postIndex !== null) {
+      var frame = Awful.frameOfElement(header);
+      didTapAuthorHandler.postMessage({
+          "frame": frame,
+          "postIndex": postIndex
+      });
 
-    window.webkit.messageHandlers.didTapAuthorHeader.postMessage({
-        "frame": frame,
-        "postIndex": postIndex
-    });
-
-    event.preventDefault();
-    return;
+      event.preventDefault();
+      return;
+    }
   }
 
   // Tap on action button to reveal actions on the post.
@@ -253,9 +257,9 @@ Awful.toggleGIF = function(gifWrapper) {
     img.setAttribute('src', posterURL);
   } else if (gifWrapper.classList.contains('loading')) {
     // Just wait for the load to happen.
-  } else { 
+  } else {
     gifWrapper.classList.add('loading');
-    
+
     var posterURL = img.getAttribute('src');
     var gifURL = img.getAttribute('data-original-url');
 
@@ -610,6 +614,47 @@ Awful.setThemeStylesheet = function(css) {
 };
 
 
+/**
+ Periodically fetches an FYAD flag and shows it at the top of the thread.
+ */
+Awful.startFetchingFYADFlags = function() {
+  var timer;
+  function fetchFlag() {
+    var request = new XMLHttpRequest();
+    request.open('GET', "https://forums.somethingawful.com/flag.php?forumid=26");
+    request.responseType = 'json';
+    request.send();
+
+    request.onload = function() {
+      var data = request.response;
+      var img = document.createElement('img');
+      img.setAttribute('title', `this flag proudly brought to you by ${data.username} on ${data.created}`);
+      img.setAttribute('src', `https://fi.somethingawful.com/flags${data.path}?by=${encodeURIComponent(data.username)}`);
+
+      var div = document.getElementById('fyad-flag');
+      if (!div) {
+        div = document.createElement('div');
+        document.getElementById('posts').insertAdjacentElement('afterbegin', div);
+      }
+
+      while (div.firstChild) {
+        div.firstChild.remove();
+      }
+      div.appendChild(img);
+
+      timer = setTimeout(fetchFlag, 60000);
+    };
+
+    request.onerror = function() {
+      console.error("Could not fetch FYAD flag; will retry.");
+      timer = setTimeout(fetchFlag, 60000);
+    };
+  }
+
+  fetchFlag();
+};
+
+
 document.body.addEventListener('click', Awful.handleClickEvent);
 
 
@@ -639,41 +684,8 @@ if (contact) {
 }
 
 
-// FYAD flags
 if (document.body.classList.contains('forum-26')) {
-  var timer;
-  function fetchFlag() {
-    var request = new XMLHttpRequest();
-    request.open('GET', "/flag.php?forumid=26");
-    request.responseType = 'json';
-    request.send();
-
-    request.onload = function() {
-      var data = request.response;
-      var img = document.createElement('img');
-      img.setAttribute('title', `this flag proudly brought to you by ${data.username} on ${data.created}`);
-      img.setAttribute('src', `https://fi.somethingawful.com/flags${data.path}?by=${encodeURIComponent(data.username)}`);
-
-      var div = document.getElementById('fyad-flag');
-      if (!div) {
-        div = document.createElement('div');
-        document.getElementById('posts').insertAdjacentElement('afterbegin', div);
-      }
-
-      while (div.firstChild) {
-        div.firstChild.remove();
-      }
-      div.appendChild(img);
-
-      timer = setTimeout(fetchFlag, 60000);
-    };
-
-    request.onerror = function() {
-      timer = setTimeout(fetchFlag, 60000);
-    };
-  }
-
-  fetchFlag();
+  startFetchingFYADFlags();
 }
 
 

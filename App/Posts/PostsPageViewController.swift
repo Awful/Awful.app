@@ -818,7 +818,7 @@ final class PostsPageViewController: ViewController {
         actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
             // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
             sourceRect.pointee = frame
-            sourceView.pointee = self.scrollView
+            sourceView.pointee = self.renderView
         }
         
         present(actionVC, animated: true, completion: nil)
@@ -946,9 +946,9 @@ final class PostsPageViewController: ViewController {
         actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
             // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
             sourceRect.pointee = frame
-            sourceView.pointee = self.scrollView
+            sourceView.pointee = self.renderView
         }
-        present(actionVC, animated: true, completion: nil)
+        present(actionVC, animated: true)
     }
     
     private func configureUserActivityIfPossible() {

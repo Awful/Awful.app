@@ -8,22 +8,29 @@ import UIKit
     Manages a posts page's render view and top bar, hiding and showing the top bar when appropriate.
  */
 final class PostsPageView: UIView {
-    let renderView = RenderView()
+    
     let topBar = PostsViewTopBar()
+    private var ignoreScrollViewDidScroll = false
+    private var lastContentOffset: CGPoint = .zero
+    private var maintainTopBarState = true
+    private var topBarAlwaysVisible = false
+    
+    private(set) lazy var renderView: RenderView = {
+        let renderView = RenderView()
+        renderView.scrollView.delegate = self
+        return renderView
+    }()
+    
+    var scrollView: UIScrollView {
+        return renderView.scrollView
+    }
+    
     private var exposedTopBarSlice: CGFloat = 0 {
         didSet {
             if oldValue != exposedTopBarSlice {
                 setNeedsLayout()
             }
         }
-    }
-    private var ignoreScrollViewDidScroll = false
-    private var lastContentOffset: CGPoint = .zero
-    private var maintainTopBarState = true
-    private var topBarAlwaysVisible = false
-    
-    var scrollView: UIScrollView {
-        return renderView.scrollView
     }
     
     override init(frame: CGRect) {

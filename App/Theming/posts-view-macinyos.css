@@ -55,7 +55,6 @@ header {
 }
 .ipad header {
   padding-top: 1.22em;
-  /*    padding-bottom: 0.7em;*/
 }
 header:after {
   content: "";
@@ -327,6 +326,13 @@ footer:after {
 header,
 footer {
   -webkit-user-select: none;
+}
+header img.avatar,
+header section.nameanddate {
+  cursor: pointer;
+}
+footer button.action-button {
+  cursor: pointer;
 }
 html {
   font-family: "Geeza Pro";

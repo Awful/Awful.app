@@ -69,17 +69,13 @@ header {
 
   .ipad & {
     padding-top: 1.22em;
-/*    padding-bottom: 0.7em;*/
   }
 
-  .clearfix() {
-    &:after {
-      content: "";
-      display: block;
-      clear: both;
-    }
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
   }
-  .clearfix();
 }
 
 .avatar {
@@ -419,4 +415,14 @@ footer {
 // Redirect long-presses in the header and footer into the post itself. (Someone kept accidentally long-pressing the ... button.)
 header, footer {
   -webkit-user-select: none;
+}
+
+// Enable delegated click events.
+header {
+  img.avatar, section.nameanddate {
+    cursor: pointer;
+  }
+}
+footer button.action-button {
+  cursor: pointer;
 }
