@@ -15,6 +15,7 @@ private let Log = Logger.get()
 final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private let author: User?
+    private var flagRequest: Cancellable?
     private(set) var page: ThreadPage?
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
@@ -58,16 +59,25 @@ final class PostsPageViewController: ViewController {
         renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
+        renderView.registerMessage(FYADFlagRequest.self)
         
         return postsView
     }()
+    
+    private var renderView: RenderView {
+        return postsView.renderView
+    }
     
     private var scrollView: UIScrollView {
         return postsView.scrollView
     }
     
-    private var renderView: RenderView {
-        return postsView.renderView
+    private struct FYADFlagRequest: RenderViewMessage {
+        static let messageName = "fyadFlagRequest"
+        
+        init?(_ message: WKScriptMessage) {
+            assert(message.name == FYADFlagRequest.messageName)
+        }
     }
     
     /**
@@ -128,6 +138,8 @@ final class PostsPageViewController: ViewController {
         - parameter updateLastReadPost: Whether to advance the "last-read post" marker on the Forums.
      */
     func loadPage(_ newPage: ThreadPage, updatingCache: Bool, updatingLastReadPost updateLastReadPost: Bool) {
+        flagRequest?.cancel()
+        flagRequest = nil
         networkOperation?.cancel()
         networkOperation = nil
         
@@ -951,6 +963,34 @@ final class PostsPageViewController: ViewController {
         present(actionVC, animated: true)
     }
     
+    private func fetchNewFlag() {
+        flagRequest?.cancel()
+        
+        guard let forum = thread.forum else { return }
+        
+        let (promise, cancellable) = ForumsClient.shared.flagForThread(in: forum)
+        flagRequest = cancellable
+        
+        promise
+            .compactMap(on: .global()) { flag in
+                var components = URLComponents(string: "https://fi.somethingawful.com")!
+                components.path = "/flags\(flag.path)"
+                if let username = flag.username {
+                    components.queryItems = [URLQueryItem(name: "by", value: username)]
+                }
+                guard let src = components.url else { return nil }
+                let title = String(format: LocalizedString("posts-page.fyad-flag-title"), flag.username ?? "", flag.created ?? "")
+                return RenderView.FlagInfo(src: src, title: title)
+            }
+            .done {
+                self.renderView.setFYADFlag($0)
+            }
+            .catch { error in
+                Log.w("could not fetch FYAD flag: \(error)")
+                self.renderView.setFYADFlag(nil)
+        }
+    }
+    
     private func configureUserActivityIfPossible() {
         guard case .specific? = page, AwfulSettings.shared().handoffEnabled else {
             userActivity = nil
@@ -1187,6 +1227,9 @@ extension PostsPageViewController: RenderViewDelegate {
                 offset.y = fraction
                 renderView.scrollToFractionalOffset(offset)
             }
+            
+        case is FYADFlagRequest:
+            fetchNewFlag()
             
         default:
             Log.w("ignoring unexpected JavaScript message: \(type(of: message).messageName)")

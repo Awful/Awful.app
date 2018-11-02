@@ -484,6 +484,32 @@ extension RenderView {
         }
     }
     
+    func setFYADFlag(_ flag: FlagInfo?) {
+        let escaped: String
+        do {
+            if let flag = flag {
+                let data = try JSONEncoder().encode(flag)
+                escaped = String(data: data, encoding: .utf8)!
+            } else {
+                escaped = "{}"
+            }
+        } catch {
+            Log.w("could not JSON-escape the flag: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("if (window.Awful) Awful.fyadFlag.setFlag(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setFYADFlag: \(error)")
+            }
+        }
+    }
+    
+    struct FlagInfo: Encodable {
+        let src: URL
+        let title: String
+    }
+    
     /// Toggles the `highlight` class in all username mentions in post bodies, adding it when `true` or removing it when `false`.
     func setHighlightMentions(_ highlightMentions: Bool) {
         webView.evaluateJavaScript("if (window.Awful) Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))") { rawResult, error in

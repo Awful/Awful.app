@@ -25,6 +25,8 @@ public final class ForumsClient {
     /// Convenient singleton.
     public static let shared = ForumsClient()
     private init() {}
+    
+    public typealias CancellablePromise<T> = (promise: Promise<T>, cancellable: Cancellable)
 
     /**
      The Forums endpoint for the client. Typically https://forums.somethingawful.com
@@ -490,6 +492,28 @@ public final class ForumsClient {
         }
 
         return (htmlAndFormData, cancellable)
+    }
+    
+    /**
+     Returns info for a random flag image that can sit atop a page of posts in a thread.
+     
+     Generally only seen in FYAD.
+     */
+    public func flagForThread(in forum: Forum) -> CancellablePromise<Flag> {
+        let (promise, cancellable) = fetch(method: .get, urlString: "flag.php", parameters: ["forumid": forum.forumID])
+        
+        let result = promise
+            .map(on: .global()) { data, response in
+                try JSONDecoder().decode(Flag.self, from: data)
+        }
+        
+        return (promise: result, cancellable: cancellable)
+    }
+    
+    public struct Flag: Decodable {
+        public let created: String?
+        public let path: String
+        public let username: String?
     }
 
     // MARK: Announcements

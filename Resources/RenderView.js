@@ -240,6 +240,49 @@ Awful.frameOfElement = function(element) {
 
 
 /**
+ Machinery to show and periodically refresh a "flag" image at the top of the page. Since these seem limited to FYAD, we call them FYAD flags. The actual fetching gets done on the native-side for CORS reasons. Since there's a few functions and a couple properties involved, we'll store them in a handy object.
+ */
+Awful.fyadFlag = {
+  fetchFlag: function() {
+    window.webkit.messageHandlers.fyadFlagRequest.postMessage({});
+  },
+
+  setFlag: function(flag) {
+    if (flag.src && flag.title) {
+      var img = document.createElement('img');
+      img.setAttribute('src', flag.src);
+      img.setAttribute('title', flag.title);
+
+      var div = document.getElementById('fyad-flag');
+      if (!div) {
+        div = document.createElement('div');
+        div.setAttribute('id', 'fyad-flag');
+        document.getElementById('posts').insertAdjacentElement('afterbegin', div);
+      }
+
+      while (div.firstChild) {
+        div.firstChild.remove();
+      }
+      div.appendChild(img);
+
+      Awful.fyadFlag.timer = setTimeout(Awful.fyadFlag.fetchFlag, 60000);
+
+    } else if (Awful.fyadFlag.didStart) {
+      console.log("did not receive an FYAD flag; will retry later");
+
+      Awful.fyadFlag.timer = setTimeout(Awful.fyadFlag.fetchFlag, 60000);
+    }
+  },
+
+  startFetching: function() {
+    Awful.fyadFlag.didStart = true;
+
+    Awful.fyadFlag.fetchFlag();
+  }
+};
+
+
+/**
  Starts/stops a wrapped GIF playing.
 
  @param {Element} gifWrapper - An element wrapping a GIF.
@@ -614,47 +657,6 @@ Awful.setThemeStylesheet = function(css) {
 };
 
 
-/**
- Periodically fetches an FYAD flag and shows it at the top of the thread.
- */
-Awful.startFetchingFYADFlags = function() {
-  var timer;
-  function fetchFlag() {
-    var request = new XMLHttpRequest();
-    request.open('GET', "https://forums.somethingawful.com/flag.php?forumid=26");
-    request.responseType = 'json';
-    request.send();
-
-    request.onload = function() {
-      var data = request.response;
-      var img = document.createElement('img');
-      img.setAttribute('title', `this flag proudly brought to you by ${data.username} on ${data.created}`);
-      img.setAttribute('src', `https://fi.somethingawful.com/flags${data.path}?by=${encodeURIComponent(data.username)}`);
-
-      var div = document.getElementById('fyad-flag');
-      if (!div) {
-        div = document.createElement('div');
-        document.getElementById('posts').insertAdjacentElement('afterbegin', div);
-      }
-
-      while (div.firstChild) {
-        div.firstChild.remove();
-      }
-      div.appendChild(img);
-
-      timer = setTimeout(fetchFlag, 60000);
-    };
-
-    request.onerror = function() {
-      console.error("Could not fetch FYAD flag; will retry.");
-      timer = setTimeout(fetchFlag, 60000);
-    };
-  }
-
-  fetchFlag();
-};
-
-
 document.body.addEventListener('click', Awful.handleClickEvent);
 
 
@@ -685,7 +687,7 @@ if (contact) {
 
 
 if (document.body.classList.contains('forum-26')) {
-  startFetchingFYADFlags();
+  Awful.fyadFlag.startFetching();
 }
 
 
