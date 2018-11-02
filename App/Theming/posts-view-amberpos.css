@@ -55,7 +55,6 @@ header {
 }
 .ipad header {
   padding-top: 1.22em;
-  /*    padding-bottom: 0.7em;*/
 }
 header:after {
   content: "";
@@ -173,11 +172,15 @@ header:after {
   padding: 1px 0px 2px;
   font-weight: bold;
 }
+.bbc-block h4 span.mention.highlight {
+  color: #7409a0;
+  border-color: #7409a0;
+}
 .bbc-block h5 {
   margin: 0;
 }
-.bbc-block.mention,
-.bbc-block.mention h4 a {
+.bbc-block.mention.highlight,
+.bbc-block.mention.highlight h4 a {
   color: #7409a0;
   border-color: #7409a0;
 }
@@ -187,7 +190,7 @@ tt {
   font-family: menlo;
   font-size: 0.9em;
 }
-span.mention {
+span.mention.highlight {
   color: #7409a0;
 }
 .quote_link {
@@ -196,11 +199,14 @@ span.mention {
 [data-awful-linkified-image] {
   text-decoration: underline;
 }
-.gifWrap.overlay {
+.gifWrap.overlay,
+.gif-wrap {
+  cursor: pointer;
   position: relative;
   display: inline-block;
 }
-.gifWrap.overlay:before {
+.gifWrap.overlay:before,
+.gif-wrap:before {
   content: "GIF";
   display: block;
   background-color: rgba(255, 255, 255, 0.5);
@@ -222,14 +228,18 @@ span.mention {
   border-radius: 0.125em;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
 }
-.gifWrap.overlay.loading:before {
+.gifWrap.overlay.loading:before,
+.gif-wrap.loading:before {
   background-image: url('awful-resource://spinner-button.png');
 }
-.gifWrap.overlay.playing:before {
+.gifWrap.overlay.playing:before,
+.gif-wrap.playing:before {
   display: none;
 }
 .gifWrap + br,
-.gifWrap + br + br {
+.gif-wrap + br,
+.gifWrap + br + br,
+.gif-wrap + br + br {
   display: none;
 }
 blockquote {
@@ -317,6 +327,13 @@ header,
 footer {
   -webkit-user-select: none;
 }
+header img.avatar,
+header section.nameanddate {
+  cursor: pointer;
+}
+footer button.action-button {
+  cursor: pointer;
+}
 body {
   color: #eacf4c;
   background-color: #000000;
@@ -393,16 +410,16 @@ post.seen {
 .bbc-block {
   border-left-color: #eacf4c;
 }
-.bbc-block.mention,
-.bbc-block.mention h4,
-.bbc-block.mention h4 a {
+.bbc-block.mention.highlight,
+.bbc-block.mention.highlight h4,
+.bbc-block.mention.highlight h4 a {
   color: #b837ed;
   border-color: #b837ed;
 }
-.bbc-block.mention h4 .mention {
+.bbc-block.mention.highlight h4 span.mention.highlight {
   color: #dd89ff;
 }
-.editedby .mention {
+.editedby span.mention.highlight {
   color: #dd89ff;
 }
 /*

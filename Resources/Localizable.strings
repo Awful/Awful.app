@@ -54,6 +54,18 @@
 "launch-open-copied-url-alert.open-button" = "Open";
 
 
+/* MARK: Posts page */
+
+/* Title of alert shown when failing to update the last-read post. */
+"posts-page.error.could-not-mark-read" = "Could Not Mark Read";
+
+/* Alternate text for an FYAD flag. Variables are: 1. username of flag creator; 2. date of flag creation. */
+"posts-page.fyad-flag-title" = "this flag proudly brought to you by %1$@ on %2$@";
+
+/* Title shown in HUD after the last-read post is updated. */
+"posts-page.marked-read" = "Marked Read";
+
+
 /* MARK: Share actions */
 
 /* The default title of the "copy URL" share action. */

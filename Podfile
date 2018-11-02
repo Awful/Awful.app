@@ -28,7 +28,6 @@ target 'Awful' do
   pod 'PullToRefresher', :git => 'https://github.com/MindSea/PullToRefresh', :branch => 'fix-simultaneous-access'
 
   pod 'TUSafariActivity'
-  pod 'WebViewJavascriptBridge'
 
   target :AwfulTests do
     inherit! :search_paths
@@ -60,7 +59,8 @@ end
 
 post_install do |installer|
   extension_safe_pods = %w[FLAnimatedImage HTMLReader PromiseKit]
-  swift_4_pods = %w[GRMustache.swift PullToRefresher]
+  swift_4_pods = %w[GRMustache.swift]
+  swift_4_2_pods = %w[PullToRefresher]
 
   installer.pods_project.targets.each do |target|
     if extension_safe_pods.include?(target.name)
@@ -72,6 +72,10 @@ post_install do |installer|
     if swift_4_pods.include?(target.name)
       target.build_configurations.each do |config|
         config.build_settings['SWIFT_VERSION'] = '4.0'
+      end
+    elsif swift_4_2_pods.include?(target.name)
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '4.2'
       end
     end
   end

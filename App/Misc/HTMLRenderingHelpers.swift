@@ -30,39 +30,106 @@ extension HTMLDocument {
     }
     
     /**
-     Modifies the document in place, adding the "mention" class to the header above a quote if it says "username posted:".
+     Modifies the document in place, wrapping any occurrences of `username` in a post body within a `<span class="mention">` element. Additionally, if `isHighlighted` is `true`, the class `highlight` is added to the wrapping span elements.
      */
-    func highlightQuotesOfPosts(byUserNamed username: String) {
+    func identifyMentionsOfUser(named username: String, shouldHighlight isHighlighted: Bool) {
+        guard let body = bodyElement else { return }
+        
+        let escapedUsername = NSRegularExpression.escapedPattern(for: username)
+        let regex = try! NSRegularExpression(
+            // Since usernames can contain what a regex thinks of as non-word characters, searching on word boundaries (`\b`) doesn't quite cut it for us. We also want to consider the start/end of the string, and beginning/ending on whitespace.
+            pattern: "(?:\\A|\\b|\\s)"
+                + "(\(escapedUsername))" // Capture just the username so we don't wrap any surrounding whitespace.
+                + "(?:\\b|\\s|\\z)",
+            options: .caseInsensitive)
+        
+        let classAttribute = "mention" + (isHighlighted ? " highlight" : "")
+        
+        var matches: [(HTMLTextNode, [NSTextCheckingResult])] = []
+        for node in body.treeEnumerator() {
+            guard let textNode = node as? HTMLTextNode else {
+                continue
+            }
+            
+            let results = regex.matches(in: textNode.data, range: NSRange(textNode.data.startIndex..., in: textNode.data))
+            if !results.isEmpty {
+                matches.append((textNode, results))
+            }
+        }
+        
+        matchLoop:
+        for (textNode, results) in matches {
+            
+            // We'll move backwards through the text node, splitting it as we go.
+            var remainder = textNode
+            
+            for result in results.reversed() {
+                guard let resultRange = Range(result.range(at: 1), in: remainder.data) else {
+                    continue
+                }
+                
+                let mention = HTMLElement(tagName: "span", attributes: ["class": classAttribute])
+                
+                switch remainder.split(resultRange) {
+                case let .entireNode(mentionText),
+                     let .anchoredAtBeginning(match: mentionText, remainder: _):
+                    
+                    mentionText.wrap(in: mention)
+                    continue matchLoop
+                    
+                case let .anchoredAtEnd(remainder: _remainder, match: mentionText),
+                     let .middle(beginning: _remainder, match: mentionText, end: _):
+                    
+                    mentionText.wrap(in: mention)
+                    remainder = _remainder
+                }
+            }
+        }
+    }
+    
+    /**
+     Modifies the document in place, adding the `mention` class to the header above a quote if it says "username posted:". If `shouldHighlight` is `true`, also adds the `highlight` class.
+     */
+    func identifyQuotesCitingUser(named username: String, shouldHighlight isHighlighted: Bool) {
         let loggedInUserPosted = "\(username) posted:"
         for h4 in nodes(matchingSelector: ".bbc-block h4") where h4.textContent == loggedInUserPosted {
             var block = h4.parentElement
-            while block != nil, block?.hasClass("bbc-block") == false {
-                block = block?.parentElement
+            while let next = block, !next.hasClass("bbc-block") {
+                block = next.parentElement
             }
             block?.toggleClass("mention")
+            
+            if isHighlighted {
+                block?.toggleClass("highlight")
+            }
         }
     }
     
     /**
      Modifies the document in place:
      
-     * Turns all non-smiley `<img src=>` elements into `<a data-awful='image'>src</a>` elements (if linkifyNonSmiles == true).
-     * Adds .awful-smile to smilie elements.
+     - Turns all non-smiley `<img src=>` elements into `<a data-awful='image'>src</a>` elements (if linkifyNonSmiles == true).
+     - Adds .awful-smile to smilie elements.
+     - Rewrites URLs for some external image hosts that have changed domains and/or URL schemes.
      */
     func processImgTags(shouldLinkifyNonSmilies: Bool) {
         for img in nodes(matchingSelector: "img") {
             guard let src = img["src"] else { continue }
             
-            if let url = URL(string: src), isSmilieURL(url) {
-                img.toggleClass("awful-smile")
+            if let url = URL(string: src) {
+                if isSmilieURL(url) {
+                    img.toggleClass("awful-smile")
+                } else if let postimageURL = fixPostimageURL(url) {
+                    img["src"] = postimageURL.absoluteString
+                } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
+                    img["src"] = waffleURL.absoluteString
+                }
             }
             else if shouldLinkifyNonSmilies {
                 let link = HTMLElement(tagName: "span", attributes: [
                     "data-awful-linkified-image": ""])
                 link.textContent = src
-                if let siblings = img.parent?.mutableChildren {
-                    siblings.replaceObject(at: siblings.index(of: img), with: link)
-                }
+                img.parent?.replace(child: img, with: link)
             }
         }
     }
@@ -127,10 +194,10 @@ extension HTMLDocument {
             
             let replacementImg = HTMLElement(tagName: "img", attributes: [
                 "src": replacementSrc,
-                "class": "imgurGif",
-                "data-originalurl": url.absoluteString,
-                "data-posterurl": replacementSrc])
-            let wrapper = HTMLElement(tagName: "div", attributes: ["class": "gifWrap"])
+                "class": "posterized",
+                "data-original-url": url.absoluteString])
+            let wrapper = HTMLElement(tagName: "div", attributes: [
+                "class": "gif-wrap"])
             replacementImg.parent = wrapper
             
             let imgSiblings = imgParent.mutableChildren
@@ -188,6 +255,23 @@ extension URL {
     }
 }
 
+/**
+ Returns an updated Postimage URL for the provided URL, if one is available.
+ 
+ Postimage changed the domain where they host images, so old URLs are now broken. Fortunately it's an easy fix.
+ */
+private func fixPostimageURL(_ url: URL) -> URL? {
+    let oldHostSuffix = "postimg.org"
+    guard
+        var oldHost = url.host,
+        oldHost.lowercased().hasSuffix(oldHostSuffix),
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        else { return nil }
+    
+    oldHost.replaceSubrange(oldHost.index(oldHost.endIndex, offsetBy: -oldHostSuffix.count)..., with: "postimg.cc")
+    components.host = oldHost
+    return components.url
+}
 
 private func isSmilieURL(_ url: URL) -> Bool {
     guard let host = url.host else { return false }
@@ -217,4 +301,41 @@ private func isSmilieURL(_ url: URL) -> Bool {
     default:
         return false
     }
+}
+
+/**
+ Turns a waffleimages.com URL into a randomwaffle.gbs.fm URL.
+ 
+ Examples:
+ 
+ * http://img.waffleimages.com/1df43ff210a2867f4e53faa40322e877f62897e4/t/DSC_0736.JPG
+ * http://img.waffleimages.com/43bc914050a09db4e3df87289eb4b0e38e9e33eb/butter.jpg
+ * http://img.waffleimages.com/images/7e/7e4178f6e4d086a7f418aa66cdffb64c32cd8c4c.jpg
+ */
+private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
+    guard let scheme = url.scheme, scheme.lowercased().hasPrefix("http") else { return nil }
+    guard let host = url.host, host.lowercased().hasSuffix("waffleimages.com") else { return nil }
+    guard url.pathComponents.count >= 2 else { return nil }
+    guard !url.pathExtension.isEmpty else { return nil }
+    
+    let hash: String
+    if url.pathComponents.count == 4, url.pathComponents[1].lowercased() == "images" {
+        hash = (url.pathComponents[3] as NSString).deletingPathExtension
+    }
+    else {
+        hash = url.pathComponents[1]
+    }
+    guard hash.count >= 2 else { return nil }
+    let hashPrefix = String(hash[..<hash.index(hash.startIndex, offsetBy: 2)])
+    
+    var pathExtension = url.pathExtension
+    if pathExtension.caseInsensitiveCompare("jpeg") == .orderedSame {
+        pathExtension = "jpg"
+    }
+    
+    // Pretty sure NSURLComponents init should always succeed from a URL.
+    var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+    components.host = "randomwaffle.gbs.fm"
+    components.path = "/images/\(hashPrefix)/\(hash).\(pathExtension)"
+    return components.url
 }

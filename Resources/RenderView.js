@@ -4,7 +4,7 @@
 
 // This file is loaded as a user script "at document end" into the `WKWebView` that renders announcements, posts, profiles, and private messages.
 
-// TODO: imgurGif, .gifWrap, didTapUserHeader, didTapActionButton, highlightMentions (?), HeaderRectForPostAtIndex (?), FooterRectForPostAtIndex (?), ActionButtonRectForPostAtIndex (?). some of the ones marked ? mention synchronous calls, that's no longer a thing for WKWebView so let's preempt that if we can
+"use strict";
 
 if (!window.Awful) {
     window.Awful = {};
@@ -76,15 +76,15 @@ Awful.embedTweets = function() {
 
     if (completedFetchCount == totalFetchCount) {
       if (window.twttr) {
+        twttr.ready(function() {
+          twttr.widgets.load();
+        });
+
         if (webkit.messageHandlers.didFinishLoadingTweets) {
           twttr.events.bind('loaded', function() {
             webkit.messageHandlers.didFinishLoadingTweets.postMessage({});
           });
         }
-
-        twttr.ready(function() {
-          twttr.widgets.load();
-        });
       }
     }
   }
@@ -138,6 +138,7 @@ Awful.jumpToFractionalOffset = function(fraction) {
  @param {Event} event - A click event.
  */
 Awful.handleClickEvent = function(event) {
+
   // Toggle spoilers on tap.
   var spoiler = event.target.closest('.bbc-spoiler');
   if (spoiler) {
@@ -172,19 +173,22 @@ Awful.handleClickEvent = function(event) {
 
   // Tap on post header to reveal actions on the poster.
   var header = event.target.closest('header');
-  var postIndex;
-  if (header && (postIndex = Awful.postIndexOfElement(header)) !== null) {
-    var frame = Awful.frameOfElement(header);
+  var didTapAuthorHandler = window.webkit.messageHandlers.didTapAuthorHeader;
+  if (header && didTapAuthorHandler) {
+    var postIndex = Awful.postIndexOfElement(header);
+    if (postIndex !== null) {
+      var frame = Awful.frameOfElement(header);
+      didTapAuthorHandler.postMessage({
+          "frame": frame,
+          "postIndex": postIndex
+      });
 
-    window.webkit.messageHandlers.didTapAuthorHeader.postMessage({
-        "frame": frame,
-        "postIndex": postIndex
-    });
-
-    event.preventDefault();
-    return;
+      event.preventDefault();
+      return;
+    }
   }
 
+  // Tap on action button to reveal actions on the post.
   var button = event.target.closest('button.action-button');
   var postIndex;
   if (button && (postIndex = Awful.postIndexOfElement(button)) !== null) {
@@ -197,6 +201,12 @@ Awful.handleClickEvent = function(event) {
 
     event.preventDefault();
     return;
+  }
+
+  // Tap a gif-wrapper to toggle playing the gif.
+  var gifWrapper = event.target.closest('.gif-wrap');
+  if (gifWrapper) {
+    Awful.toggleGIF(gifWrapper);
   }
 };
 
@@ -226,6 +236,88 @@ Awful.frameOfElement = function(element) {
     "width": rect.width,
     "height": rect.height
   };
+};
+
+
+/**
+ Machinery to show and periodically refresh a "flag" image at the top of the page. Since these seem limited to FYAD, we call them FYAD flags. The actual fetching gets done on the native-side for CORS reasons. Since there's a few functions and a couple properties involved, we'll store them in a handy object.
+ */
+Awful.fyadFlag = {
+  fetchFlag: function() {
+    window.webkit.messageHandlers.fyadFlagRequest.postMessage({});
+  },
+
+  setFlag: function(flag) {
+    if (flag.src && flag.title) {
+      var img = document.createElement('img');
+      img.setAttribute('src', flag.src);
+      img.setAttribute('title', flag.title);
+
+      var div = document.getElementById('fyad-flag');
+      if (!div) {
+        div = document.createElement('div');
+        div.setAttribute('id', 'fyad-flag');
+        document.getElementById('posts').insertAdjacentElement('afterbegin', div);
+      }
+
+      while (div.firstChild) {
+        div.firstChild.remove();
+      }
+      div.appendChild(img);
+
+      Awful.fyadFlag.timer = setTimeout(Awful.fyadFlag.fetchFlag, 60000);
+
+    } else if (Awful.fyadFlag.didStart) {
+      console.log("did not receive an FYAD flag; will retry later");
+
+      Awful.fyadFlag.timer = setTimeout(Awful.fyadFlag.fetchFlag, 60000);
+    }
+  },
+
+  startFetching: function() {
+    Awful.fyadFlag.didStart = true;
+
+    Awful.fyadFlag.fetchFlag();
+  }
+};
+
+
+/**
+ Starts/stops a wrapped GIF playing.
+
+ @param {Element} gifWrapper - An element wrapping a GIF.
+ */
+Awful.toggleGIF = function(gifWrapper) {
+  var img = gifWrapper.querySelector('img.posterized');
+  if (!img) { return; }
+
+  if (gifWrapper.classList.contains('playing')) {
+    var posterURL = img.getAttribute('data-poster-url');
+    var gifURL = img.getAttribute('src');
+
+    gifWrapper.classList.remove('playing');
+    img.setAttribute('data-original-url', gifURL);
+    img.setAttribute('src', posterURL);
+  } else if (gifWrapper.classList.contains('loading')) {
+    // Just wait for the load to happen.
+  } else {
+    gifWrapper.classList.add('loading');
+
+    var posterURL = img.getAttribute('src');
+    var gifURL = img.getAttribute('data-original-url');
+
+    var cacheWarmer = document.createElement('img');
+    cacheWarmer.onload = function() {
+      img.setAttribute('src', gifURL);
+      img.setAttribute('data-poster-url', posterURL);
+      gifWrapper.classList.add('playing');
+      gifWrapper.classList.remove('loading');
+    };
+    cacheWarmer.onerror = function() {
+      img.classList.remove('loading');
+    };
+    cacheWarmer.src = gifURL;
+  }
 };
 
 
@@ -295,7 +387,7 @@ Awful.interestingElementsAtPoint = function(x, y) {
 
   var img = elementFromPoint.closest('img:not(button img)');
   if (img && Awful.isSpoiled(img)) {
-    if (img.classList.contains('imgurGif')) {
+    if (img.classList.contains('posterized')) {
       interesting.spoiledImageURL = img.dataset.originalurl;
     } else {
       interesting.spoiledImageURL = img.getAttribute('src');
@@ -339,6 +431,16 @@ Awful.isSpoiled = function(element) {
 
 
 /**
+ Scrolls the identified post into view.
+ */
+Awful.jumpToPostWithID = function(postID) {
+  // If we previously jumped to this post, we need to clear the hash in order to jump again.
+  window.location.hash = "";
+
+  window.location.hash = `#${postID}`;
+};
+
+/**
  Turns all links with `data-awful-linkified-image` attributes into img elements.
  */
 Awful.loadLinkifiedImages = function() {
@@ -351,6 +453,28 @@ Awful.loadLinkifiedImages = function() {
     img.setAttribute('src', url);
     link.parentNode.replaceChild(img, link);
   });
+};
+
+
+/**
+ Marks as read all posts up to and including the identified post.
+ */
+Awful.markReadUpToPostWithID = function(postID) {
+  var lastReadPost = document.getElementById(postID);
+  if (!lastReadPost) { return; }
+
+  // Go backward, marking as seen.
+  var currentPost = lastReadPost;
+  while (currentPost) {
+    currentPost.classList.add('seen');
+    currentPost = currentPost.previousElementSibling;
+  }
+
+  // Go forward, marking as unseen.
+  var currentPost = lastReadPost.nextElementSibling;
+  while (currentPost) {
+    currentPost.classList.remove('seen');
+  }
 };
 
 
@@ -380,6 +504,19 @@ Awful.postIndexOfElement = function(element) {
 
 
 /**
+ Adds some posts to the top of the #posts element.
+ */
+Awful.prependPosts = function(postsHTML) {
+  var oldHeight = document.documentElement.scrollHeight;
+
+  document.getElementById('posts').insertAdjacentHTML('afterbegin', postsHTML);
+
+  var newHeight = document.documentElement.scrollHeight;
+  window.scrollBy(0, newHeight - oldHeight);
+};
+
+
+/**
  Replaces the announcement HTML.
 
  @param {string} html - The updated HTML for the announcement.
@@ -405,6 +542,14 @@ Awful.setDarkMode = function(dark) {
 
 
 /**
+ Updates the externally-updatable stylesheet, which lets us make changes quickly without going through a full app update.
+ */
+Awful.setExternalStylesheet = function(stylesheet) {
+  document.getElementById('awful-external-style').innerText = stylesheet;
+};
+
+
+/**
  Updates the user-specified font scale setting.
 
  @param {number} percentage - The user's selected font scale as a percentage.
@@ -420,6 +565,42 @@ Awful.setFontScale = function(percentage) {
   } else {
     style.textContent = ".nameanddate, .postbody, footer { font-size: " + percentage + "%; }";
   }
+};
+
+
+/**
+ Updates the user-specified setting to highlight the logged-in user's username whenever it occurs in posts.
+
+ @param {boolean} highlightMentions - `true` to highlight the logged-in user's username, `false` to remove any such highlighting.
+ */
+Awful.setHighlightMentions = function(highlightMentions) {
+  var mentions = document.querySelectorAll(".postbody span.mention");
+  Array.prototype.forEach.call(mentions, function(mention) {
+    mention.classList.toggle("highlight", highlightMentions);
+  });
+};
+
+
+/**
+ Updates the user-specified setting to highlight quote blocks that cite the logged-in user.
+
+ @param {boolean} highlightQuotes - `true` to highlight quotes written by the user, `false` to remove any such highlighting.
+ */
+Awful.setHighlightQuotes = function(highlightQuotes) {
+  var quotes = document.querySelectorAll(".bbc-block.mention");
+  Array.prototype.forEach.call(quotes, function(quote) {
+    quote.classList.toggle("highlight", highlightQuotes);
+  });
+};
+
+
+/**
+ Replaces a particular post's innerHTML.
+ */
+Awful.setPostHTMLAtIndex = function(postHTML, i) {
+  // nth-of-type is 1-indexed, but the app uses 0-indexing.
+  var post = document.querySelector(`post:nth-of-type(${i + 1})`);
+  post.outerHTML = postHTML;
 };
 
 
@@ -502,6 +683,11 @@ if (contact) {
       event.preventDefault();
     }
   });
+}
+
+
+if (document.body.classList.contains('forum-26')) {
+  Awful.fyadFlag.startFetching();
 }
 
 

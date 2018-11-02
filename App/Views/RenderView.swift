@@ -35,6 +35,8 @@ final class RenderView: UIView {
         if #available(iOS 11.0, *) {
             configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
             configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
+        } else {
+            registerURLProtocolsForWKWebView_iOS10AndBelow()
         }
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
@@ -89,6 +91,27 @@ final class RenderView: UIView {
         })
     }
 }
+
+/**
+ Makes the URL protocols we use for rendering available in all instances of `WKWebView`. This function uses private API and should only be called on iOS 10 and below, where no equivalent public API is available.
+ 
+ This function only needs to be called once, though it's safe to call it many times. The schemes are added only once; as we're touching private API, it seems prudent not to prod more than necessary.
+ 
+ (This is a property holding a closure, instead of just a function, so we can call it like a function but enforce our "only add once" requirement.)
+ 
+ - Note: `WKWebView` gained public API for using custom URL protocols in iOS 11. You should use `WKWebViewConfiguration.setURLSchemeHandler(…)` when it's available.
+ */
+private let registerURLProtocolsForWKWebView_iOS10AndBelow: () -> Void = {
+    
+    // We only want to register these schemes once, so we do that here when this top-level property lazily initializes.
+    let schemes = [ImageURLProtocol.scheme, ResourceURLProtocol.scheme]
+    for scheme in schemes {
+        WKWebView.registerCustomURLScheme(scheme)
+    }
+    
+    // After initialzation, and on all subsequent calls, we simply run an empty closure; our work here is done.
+    return {}
+}()
 
 private extension URL {
     /// Returns an `http` version of this URL if it's an `https` URL; otherwise just returns `self`.
@@ -266,7 +289,7 @@ extension RenderView {
     
     /// Turns any links that look like tweets into an actual tweet embed.
     func embedTweets() {
-        webView.evaluateJavaScript("Awful.embedTweets()") { rawResult, error in
+        webView.evaluateJavaScript("if (window.Awful) Awful.embedTweets()") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate embedTweets: \(error)")
             }
@@ -304,7 +327,7 @@ extension RenderView {
     func interestingElements(at point: CGPoint) -> Guarantee<[InterestingElement]> {
         let (guarantee, resolver) = Guarantee<[InterestingElement]>.pending()
         
-        webView.evaluateJavaScript("Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
+        webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate interestingElementsAtPoint: \(error)")
                 return resolver([])
@@ -354,27 +377,151 @@ extension RenderView {
         return guarantee
     }
     
+    /// Scrolls so the identified post begins at the top of the viewport.
+    func jumpToPost(identifiedBy postID: String) {
+        let escapedPostID: String
+        do {
+            escapedPostID = try escapeForEval(postID)
+        } catch {
+            Log.w("could not JSON-escape the post ID: \(error)")
+            return
+        }
+        webView.evaluateJavaScript("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate jumpToPostWithID: \(error)")
+            }
+        }
+    }
+    
+    /// Removes all previously-loaded content.
+    func loadBlankPage() {
+        webView.load(URLRequest(url: URL(string: "about:blank")!))
+    }
+    
     /// Turns each link with a `data-awful-linkified-image` attribute into a a proper `img` element.
     func loadLinkifiedImages() {
-        webView.evaluateJavaScript("Awful.loadLinkifiedImages()") { rawResult, error in
+        webView.evaluateJavaScript("if (window.Awful) Awful.loadLinkifiedImages()") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate loadLinkifiedImages: \(error)")
             }
         }
     }
     
+    /// Sets the identified post, and all previous posts, to appear read; and sets all subsequent posts to appear unread.
+    func markReadUpToPost(identifiedBy postID: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(postID)
+        } catch {
+            Log.w("could not JSON-escape the post ID: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("if (window.Awful) Awful.markReadUpToPostWithID(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate markReadUpToPostWithID: \(error)")
+            }
+        }
+    }
+    
+    /// Insert some newly-rendered posts above all existing rendered posts.
+    func prependPostHTML(_ postHTML: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(postHTML)
+        } catch {
+            Log.w("could not JSON-escape the post HTML: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("if (window.Awful) Awful.prependPosts(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate prependPosts: \(error)")
+            }
+        }
+    }
+    
+    /// Replaces an existing post with a new rendering (e.g. after loading the contents of an ignored post).
+    func replacePostHTML(_ postHTML: String, at i: Int) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(postHTML)
+        } catch {
+            Log.w("could not JSON-escape the post HTML: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("if (window.Awful) Awful.setPostHTMLAtIndex(\(escaped), \(i))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setPostHTMLAtIndex: \(error)")
+            }
+        }
+    }
+    
+    /// Replaces the "external" CSS, which is hosted somewhere and can be changed without a full-on app update.
+    func setExternalStylesheet(_ css: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(css)
+        } catch {
+            Log.w("could not JSON-escape the CSS: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("if (window.Awful) Awful.setExternalStylesheet(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setExternalStylesheet: \(error)")
+            }
+        }
+    }
+    
     /// Sets the font scale to the specified number of percentage points. e.g. for `font-scale: 50%` you would pass in `50`.
     func setFontScale(_ scale: Double) {
-        webView.evaluateJavaScript("Awful.setFontScale(\(scale))") { rawResult, error in
+        webView.evaluateJavaScript("if (window.Awful) Awful.setFontScale(\(scale))") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate setFontScale: \(error)")
             }
         }
     }
     
+    func setFYADFlag(_ flag: FlagInfo?) {
+        let escaped: String
+        do {
+            if let flag = flag {
+                let data = try JSONEncoder().encode(flag)
+                escaped = String(data: data, encoding: .utf8)!
+            } else {
+                escaped = "{}"
+            }
+        } catch {
+            Log.w("could not JSON-escape the flag: \(error)")
+            return
+        }
+        
+        webView.evaluateJavaScript("if (window.Awful) Awful.fyadFlag.setFlag(\(escaped))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setFYADFlag: \(error)")
+            }
+        }
+    }
+    
+    struct FlagInfo: Encodable {
+        let src: URL
+        let title: String
+    }
+    
+    /// Toggles the `highlight` class in all username mentions in post bodies, adding it when `true` or removing it when `false`.
+    func setHighlightMentions(_ highlightMentions: Bool) {
+        webView.evaluateJavaScript("if (window.Awful) Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))") { rawResult, error in
+            if let error = error {
+                Log.w("could not evaluate setHighlightMentions: \(error)")
+            }
+        }
+    }
+    
     /// Turns all avatars on (when `true`) or off (when `false`).
     func setShowAvatars(_ showAvatars: Bool) {
-        webView.evaluateJavaScript("Awful.setShowAvatars(\(showAvatars ? "true" : "false"))") { rawResult, error in
+        webView.evaluateJavaScript("if (window.Awful) Awful.setShowAvatars(\(showAvatars ? "true" : "false"))") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate setShowAvatars: \(error)")
             }
@@ -385,13 +532,13 @@ extension RenderView {
     func setThemeStylesheet(_ css: String) {
         let escaped: String
         do {
-            escaped = String(data: try JSONEncoder().encode([css]), encoding: .utf8)! + "[0]"
+            escaped = try escapeForEval(css)
         } catch {
             Log.w("could not JSON-escape the CSS: \(error)")
             return
         }
         
-        webView.evaluateJavaScript("Awful.setThemeStylesheet(\(escaped))") { rawResult, error in
+        webView.evaluateJavaScript("if (window.Awful) Awful.setThemeStylesheet(\(escaped))") { rawResult, error in
             if let error = error {
                 Log.w("could not evaluate setThemeStylesheet: \(error)")
             }
@@ -406,7 +553,7 @@ extension RenderView {
     func unionFrameOfElements(matchingSelector selector: String) -> Guarantee<CGRect> {
         let escapedSelector: String
         do {
-            escapedSelector = String(data: try JSONEncoder().encode([selector]), encoding: .utf8)! + "[0]"
+            escapedSelector = try escapeForEval(selector)
         } catch {
             Log.w("could not JSON-encode selector \(selector): \(error)")
             return .value(.null)
@@ -439,4 +586,8 @@ extension RenderView {
 protocol RenderViewDelegate: class {
     func didReceive(message: RenderViewMessage, in view: RenderView)
     func didTapLink(to url: URL, in view: RenderView)
+}
+
+private func escapeForEval(_ s: String) throws -> String {
+    return String(data: try JSONEncoder().encode([s]), encoding: .utf8)! + "[0]"
 }

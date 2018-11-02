@@ -55,7 +55,6 @@ header {
 }
 .ipad header {
   padding-top: 1.22em;
-  /*    padding-bottom: 0.7em;*/
 }
 header:after {
   content: "";
@@ -82,14 +81,14 @@ header:after {
   margin: 0 0 2px;
 }
 .postdate {
-  font-size: .8em;
+  font-size: 0.8em;
   font-weight: lighter;
   -webkit-flex-grow: 1;
   -webkit-flex-wrap: wrap-reverse;
 }
 .regdate {
   display: block;
-  font-size: .8em;
+  font-size: 0.8em;
   font-weight: lighter;
   margin: -0.4em 0 0;
 }
@@ -101,7 +100,7 @@ header:after {
   /*  Platinum users */
 }
 .username:before {
-  margin-right: .25em;
+  margin-right: 0.25em;
 }
 .role-admin .username:before {
   color: #990011;
@@ -118,14 +117,13 @@ header:after {
 }
 .userid-182864 .username {
   color: rgba(0, 0, 0, 0.5);
-  text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
+  text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
 }
 .platinum .username:before {
   background-image: url('awful-resource://platinum-member.png');
   content: "";
-  background-size: 100%;
-  margin-bottom: .25em;
-  width: 15px;
+  background-size: 12px 15px;
+  width: 12px;
   height: 15px;
   display: inline-block;
   vertical-align: middle;
@@ -174,11 +172,15 @@ header:after {
   padding: 1px 0px 2px;
   font-weight: bold;
 }
+.bbc-block h4 span.mention.highlight {
+  color: #7409a0;
+  border-color: #7409a0;
+}
 .bbc-block h5 {
   margin: 0;
 }
-.bbc-block.mention,
-.bbc-block.mention h4 a {
+.bbc-block.mention.highlight,
+.bbc-block.mention.highlight h4 a {
   color: #7409a0;
   border-color: #7409a0;
 }
@@ -186,9 +188,9 @@ code,
 pre,
 tt {
   font-family: menlo;
-  font-size: .9em;
+  font-size: 0.9em;
 }
-span.mention {
+span.mention.highlight {
   color: #7409a0;
 }
 .quote_link {
@@ -197,16 +199,19 @@ span.mention {
 [data-awful-linkified-image] {
   text-decoration: underline;
 }
-.gifWrap.overlay {
+.gifWrap.overlay,
+.gif-wrap {
+  cursor: pointer;
   position: relative;
   display: inline-block;
 }
-.gifWrap.overlay:before {
+.gifWrap.overlay:before,
+.gif-wrap:before {
   content: "GIF";
   display: block;
   background-color: rgba(255, 255, 255, 0.5);
   background-image: url('awful-resource://play-button.png');
-  background-size: .85em;
+  background-size: 0.85em;
   background-repeat: no-repeat;
   background-position: right 5px center;
   color: #000;
@@ -218,19 +223,23 @@ span.mention {
   left: 0;
   bottom: 0;
   right: 0;
-  padding: .25em;
+  padding: 0.25em;
   padding-right: 1.25em;
-  border-radius: .125em;
+  border-radius: 0.125em;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
 }
-.gifWrap.overlay.loading:before {
+.gifWrap.overlay.loading:before,
+.gif-wrap.loading:before {
   background-image: url('awful-resource://spinner-button.png');
 }
-.gifWrap.overlay.playing:before {
+.gifWrap.overlay.playing:before,
+.gif-wrap.playing:before {
   display: none;
 }
 .gifWrap + br,
-.gifWrap + br + br {
+.gif-wrap + br,
+.gifWrap + br + br,
+.gif-wrap + br + br {
   display: none;
 }
 blockquote {
@@ -296,7 +305,7 @@ footer:after {
   max-width: 100%;
 }
 .iphone #ad {
-  padding: .6em;
+  padding: 0.6em;
   padding-bottom: 0;
 }
 .ipad #ad {
@@ -317,6 +326,13 @@ footer:after {
 header,
 footer {
   -webkit-user-select: none;
+}
+header img.avatar,
+header section.nameanddate {
+  cursor: pointer;
+}
+footer button.action-button {
+  cursor: pointer;
 }
 html {
   font-family: "Geeza Pro";
@@ -386,7 +402,7 @@ post.seen {
   height: 34px;
   padding-right: 6px;
   text-align: right;
-  background: top left no-repeat url('awful-resource://macinyos-postactions-bg.png') #ffffff;
+  background: top left no-repeat url('awful-resource://macinyos-postactions-bg.png') #fff;
   background-size: 31px;
   border: 1px solid black;
   border-radius: 4px;
@@ -400,12 +416,12 @@ post.seen {
   color: #000;
 }
 .bbc-spoiler:not(.spoiled) {
-  color: #000000;
-  background: #000000;
+  color: #000;
+  background: #000;
 }
 .bbc-spoiler:not(.spoiled) li {
-  color: #000000;
-  background: #000000;
+  color: #000;
+  background: #000;
   list-style: none;
 }
 .bbc-spoiler:not(.spoiled) img {
@@ -417,7 +433,7 @@ post.seen {
 .bbc-spoiler:not(.spoiled) a:visited,
 .bbc-spoiler:not(.spoiled) a:active,
 .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #000000;
+  color: #000;
 }
 blockquote {
   border-left-color: #000;
