@@ -13,17 +13,27 @@ private let Log = Logger.get()
 
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
-    let thread: AwfulThread
+    
+    private var advertisementHTML: String?
     private let author: User?
     private var flagRequest: Cancellable?
+    private var jumpToLastPost = false
+    private var jumpToPostIDAfterLoading: String?
+    private var messageViewController: MessageComposeViewController?
+    private weak var networkOperation: Cancellable?
     private(set) var page: ThreadPage?
+    weak var previewActionItemProvider: PreviewActionItemProvider?
+    private var refreshControl: PostsPageRefreshControl?
+    private var replyWorkspace: ReplyWorkspace?
+    private var restoringState = false
+    private var scrollToFractionAfterLoading: CGFloat?
+    let thread: AwfulThread
+    private var webViewDidLoadOnce = false
+    
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
     }
-    private var webViewDidLoadOnce = false
-    private var advertisementHTML: String?
-    private weak var networkOperation: Cancellable?
-    private var refreshControl: PostsPageRefreshControl?
+    
     private var loadingView: LoadingView? {
         didSet {
             oldValue?.removeFromSuperview()
@@ -33,13 +43,6 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    private var replyWorkspace: ReplyWorkspace?
-    private var messageViewController: MessageComposeViewController?
-    private var jumpToPostIDAfterLoading: String?
-    private var jumpToLastPost = false
-    private var scrollToFractionAfterLoading: CGFloat?
-    private var restoringState = false
-    weak var previewActionItemProvider: PreviewActionItemProvider?
     
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()

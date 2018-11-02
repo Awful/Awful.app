@@ -443,7 +443,7 @@ public final class ForumsClient {
     }
 
     /// - Returns: The promise of the previewed post's HTML.
-    public func previewOriginalPostForThread(in forum: Forum, bbcode: String) -> (Promise<(previewHTML: String, formData: PostNewThreadFormData)>, Cancellable) {
+    public func previewOriginalPostForThread(in forum: Forum, bbcode: String) -> CancellablePromise<(previewHTML: String, formData: PostNewThreadFormData)> {
         let (previewForm, cancellable) = fetch(method: .get, urlString: "newthread.php", parameters: [
             "action": "newthread",
             "forumid": forum.forumID])
@@ -523,7 +523,7 @@ public final class ForumsClient {
      
      - Note: Announcements must first be scraped as part of a thread list for this method to do anything.
      */
-    public func listAnnouncements() -> (promise: Promise<[Announcement]>, cancellable: Cancellable) {
+    public func listAnnouncements() -> CancellablePromise<[Announcement]> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
@@ -554,7 +554,7 @@ public final class ForumsClient {
      - Parameter updateLastReadPost: If `true`, the "last read post" marker on the Forums is updated to include the posts loaded on the page (which is probably what you want). If `false`, the next time the user asks for "next unread post" they'll get the same answer again.
      */
     public func listPosts(in thread: AwfulThread, writtenBy author: User?, page: ThreadPage, updateLastReadPost: Bool)
-        -> (promise: Promise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)>, cancellable: Cancellable)
+        -> CancellablePromise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)>
     {
         guard
             let backgroundContext = backgroundManagedObjectContext,
@@ -732,7 +732,7 @@ public final class ForumsClient {
         }
     }
 
-    public func previewReply(to thread: AwfulThread, bbcode: String) -> (promise: Promise<String>, cancellable: Cancellable) {
+    public func previewReply(to thread: AwfulThread, bbcode: String) -> CancellablePromise<String> {
         let (promise, cancellable) = fetch(method: .get, urlString: "newreply.php", parameters: [
             "action": "newreply",
             "threadid": thread.threadID])
@@ -799,7 +799,7 @@ public final class ForumsClient {
             .asVoid()
     }
 
-    private func editForm(for post: Post) -> (promise: Promise<Form>, cancellable: Cancellable) {
+    private func editForm(for post: Post) -> CancellablePromise<Form> {
         let startParams = [
             "action": "editpost",
             "postid": post.postID]
@@ -916,7 +916,7 @@ public final class ForumsClient {
         }
     }
 
-    public func previewEdit(to post: Post, bbcode: String) -> (promise: Promise<String>, cancellable: Cancellable) {
+    public func previewEdit(to post: Post, bbcode: String) -> CancellablePromise<String> {
         let (promise, cancellable) = editForm(for: post)
 
         let params = promise
