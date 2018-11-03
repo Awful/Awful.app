@@ -385,7 +385,7 @@ Awful.interestingElementsAtPoint = function(x, y) {
     return interesting;
   }
 
-  var img = elementFromPoint.closest('img:not(button img)');
+  var img = elementAtPoint.closest('img:not(button img)');
   if (img && Awful.isSpoiled(img)) {
     if (img.classList.contains('posterized')) {
       interesting.spoiledImageURL = img.dataset.originalurl;
@@ -417,7 +417,7 @@ Awful.interestingElementsAtPoint = function(x, y) {
     }
   }
 
-  return items;
+  return interesting;
 };
 
 
@@ -474,6 +474,7 @@ Awful.markReadUpToPostWithID = function(postID) {
   var currentPost = lastReadPost.nextElementSibling;
   while (currentPost) {
     currentPost.classList.remove('seen');
+    currentPost = currentPost.nextElementSibling;
   }
 };
 

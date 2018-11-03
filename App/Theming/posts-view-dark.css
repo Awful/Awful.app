@@ -331,6 +331,9 @@ header img.avatar,
 header section.nameanddate {
   cursor: pointer;
 }
+.bbc-spoiler {
+  cursor: pointer;
+}
 footer button.action-button {
   cursor: pointer;
 }
