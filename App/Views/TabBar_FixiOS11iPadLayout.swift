@@ -26,9 +26,10 @@ extension UITabBarController {
 
     /// Returns a tab bar controller whose tab bar is an instance of `TabBar_FixiOS11iPadLayout`.
     static func makeWithTabBarFixedForiOS11iPadLayout() -> UITabBarController {
-        return UIStoryboard(name: "TabBarController_FixiOS11iPadLayout", bundle: Bundle(for: TabBar_FixiOS11iPadLayout.self))
-            .instantiateInitialViewController()
-            as? UITabBarController
-            !! "Fix the class set in TabBarController_FixiOS11iPadLayout.storyboard"
+        let storyboard = UIStoryboard(name: "TabBarController_FixiOS11iPadLayout", bundle: Bundle(for: TabBar_FixiOS11iPadLayout.self))
+        guard let tabBarController = storyboard.instantiateInitialViewController() as? UITabBarController else {
+            fatalError("initial view controller in TabBarController_FixiOS11iPadLayout.storyboard should be a UITabBarController")
+        }
+        return tabBarController
     }
 }

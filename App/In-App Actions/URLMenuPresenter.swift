@@ -270,10 +270,10 @@ private func firefoxifyURL(_ url: URL) -> URL {
         return url
     }
     
-    let base = URL(string: "firefox://open-url") !! "hardcoded"
-    var components = URLComponents(url: base, resolvingAgainstBaseURL: true) !! "hardcoded"
+    let base = URL(string: "firefox://open-url")!
+    var components = URLComponents(url: base, resolvingAgainstBaseURL: true)!
     components.queryItems = [URLQueryItem(name: "url", value: url.absoluteString)]
-    return components.url !! "adding query item shouldn't break anything"
+    return components.url!
 }
 
 private func canOpenInYouTube(_ url: URL) -> Bool {

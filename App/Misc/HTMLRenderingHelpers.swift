@@ -228,7 +228,7 @@ extension HTMLDocument {
                 div.hasClass("bbcode_video")
                 else { continue }
             
-            var iframeSrcComponents = URLComponents(string: "https://player.vimeo.com/video/") !! "hardcoded"
+            var iframeSrcComponents = URLComponents(string: "https://player.vimeo.com/video/")!
             iframeSrcComponents.path = iframeSrcComponents.path + clipID
             iframeSrcComponents.query = "byline=0&portrait=0"
             guard let iframeSrc = iframeSrcComponents.url else { continue }
