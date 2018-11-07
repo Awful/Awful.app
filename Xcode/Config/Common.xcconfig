@@ -1,7 +1,7 @@
 // Project-level build settings common to all configurations.
 
 // Place for settings that shouldn't be committed, like API keys. See README.md for suggestions.
-#include "../Local.xcconfig"
+#include? "../Local.xcconfig"
 
 ALWAYS_SEARCH_USER_PATHS = NO
 
