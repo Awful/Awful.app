@@ -141,6 +141,11 @@ extension RenderView: WKNavigationDelegate {
         }
 
         decisionHandler(.cancel)
+        
+        guard nearestViewController?.presentedViewController == nil else {
+            Log.i("ignoring link tap as we're currently presenting something")
+            return
+        }
 
         delegate?.didTapLink(to: url, in: self)
     }
