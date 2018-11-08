@@ -99,9 +99,6 @@ header:after {
   /* Peta's 3D username */
   /*  Platinum users */
 }
-.username:before {
-  margin-right: 0.25em;
-}
 .role-admin .username:before {
   color: #990011;
 }
@@ -122,11 +119,11 @@ header:after {
 .platinum .username:before {
   background-image: url('awful-resource://platinum-member.png');
   content: "";
-  background-size: 12px 15px;
-  width: 12px;
-  height: 15px;
+  background-size: 20px;
+  width: 22px;
+  height: 20px;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: top;
 }
 .coder .username:before {
   content: url('awful-resource://image-coder.png');
