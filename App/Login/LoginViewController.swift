@@ -133,7 +133,7 @@ class LoginViewController: ViewController {
         ForumsClient.shared.logIn(username: usernameTextField.text ?? "",
                                   password: passwordTextField.text ?? "")
             .done { user in
-                let settings = AwfulSettings.shared()!
+                let settings = AwfulSettings.shared()
                 settings.username = user.username
                 settings.userID = user.userID
                 settings.canSendPrivateMessages = user.canReceivePrivateMessages

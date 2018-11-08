@@ -376,8 +376,10 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBox
             document.removeSpoilerStylingAndEvents()
             document.removeEmptyEditedByParagraphs()
             document.useHTML5VimeoPlayer()
-            document.identifyMentionsOfUser(named: AwfulSettings.shared().username, shouldHighlight: true)
-            document.identifyQuotesCitingUser(named: AwfulSettings.shared().username, shouldHighlight: true)
+            if let username = AwfulSettings.shared().username {
+                document.identifyMentionsOfUser(named: username, shouldHighlight: true)
+                document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
+            }
             document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
             if !AwfulSettings.shared().autoplayGIFs {
                 document.stopGIFAutoplay()

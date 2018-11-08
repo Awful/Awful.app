@@ -217,7 +217,7 @@ extension Theme {
     }
     
     class func themesForForum(_ forum: Forum) -> [Theme] {
-        let ubiquitousNames = AwfulSettings.shared().ubiquitousThemeNames as! [String]? ?? []
+        let ubiquitousNames = AwfulSettings.shared().ubiquitousThemeNames ?? []
         let themes = bundledThemes.values.filter {
             $0.forumID == forum.forumID || ($0.forumID == nil && appThemeMatchesTheme(themeName: $0.name)) || ubiquitousNames.contains($0.name)
         }

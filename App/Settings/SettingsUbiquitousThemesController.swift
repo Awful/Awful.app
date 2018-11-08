@@ -22,7 +22,7 @@ final class SettingsUbiquitousThemesController: TableViewController {
     
     fileprivate func loadData() {
         themes = Theme.allThemes.filter { $0.forumID != nil }
-        selectedThemeNames = Set(AwfulSettings.shared().ubiquitousThemeNames as? [String] ?? [])
+        selectedThemeNames = Set(AwfulSettings.shared().ubiquitousThemeNames ?? [])
     }
     
     @objc fileprivate func settingsDidChange(_ notification: Notification) {

@@ -5,6 +5,8 @@
 #import "AwfulSettings.h"
 @import UIKit;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation AwfulSettings
 
 + (AwfulSettings *)sharedSettings
@@ -17,7 +19,7 @@
     return instance;
 }
 
-- (id)initWithResource:(NSString *)basename
+- (instancetype)initWithResource:(NSString *)basename
 {
     if ((self = [super init])) {
         NSURL *resourceURL = [[NSBundle mainBundle] URLForResource:basename withExtension:@"plist"];
@@ -95,7 +97,7 @@ struct {
 
 @synthesize sections = _sections;
 
-- (NSDictionary *)infoForSettingWithKey:(NSString *)key
+- (nullable NSDictionary *)infoForSettingWithKey:(NSString *)key
 {
     for (NSDictionary *section in self.sections) {
         for (NSDictionary *setting in section[@"Settings"]) {
@@ -150,7 +152,7 @@ struct {
     @"current_user",
 };
 
-- (NSString *)username
+- (nullable NSString *)username
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *username = [defaults objectForKey:AwfulSettingsKeys.username];
@@ -161,17 +163,17 @@ struct {
     return oldUser[@"username"];
 }
 
-- (void)setUsername:(NSString *)username
+- (void)setUsername:(nullable NSString *)username
 {
     self[AwfulSettingsKeys.username] = username;
 }
 
-- (NSString *)userID
+- (nullable NSString *)userID
 {
     return self[AwfulSettingsKeys.userID];
 }
 
-- (void)setUserID:(NSString *)userID
+- (void)setUserID:(nullable NSString *)userID
 {
     self[AwfulSettingsKeys.userID] = userID;
 }
@@ -184,22 +186,22 @@ BOOL_PROPERTY(canSendPrivateMessages, setCanSendPrivateMessages)
 
 BOOL_PROPERTY(showThreadTags, setShowThreadTags)
 
-- (NSArray *)favoriteForums
+- (nullable NSArray<NSString *> *)favoriteForums
 {
     return self[AwfulSettingsKeys.favoriteForums];
 }
 
-- (void)setFavoriteForums:(NSArray *)favoriteForums
+- (void)setFavoriteForums:(nullable NSArray<NSString *> *)favoriteForums
 {
     self[AwfulSettingsKeys.favoriteForums] = favoriteForums;
 }
 
-- (NSString *)lastOfferedPasteboardURL
+- (nullable NSString *)lastOfferedPasteboardURL
 {
     return self[AwfulSettingsKeys.lastOfferedPasteboardURL];
 }
 
-- (void)setLastOfferedPasteboardURL:(NSString *)lastOfferedPasteboardURL
+- (void)setLastOfferedPasteboardURL:(nullable NSString *)lastOfferedPasteboardURL
 {
     self[AwfulSettingsKeys.lastOfferedPasteboardURL] = lastOfferedPasteboardURL;
 }
@@ -214,24 +216,24 @@ BOOL_PROPERTY(showThreadTags, setShowThreadTags)
     self[AwfulSettingsKeys.fontScale] = @(fontScale);
 }
 
-- (NSString *)customBaseURL
+- (nullable NSString *)customBaseURL
 {
     return self[AwfulSettingsKeys.customBaseURL];
 }
 
-- (void)setCustomBaseURL:(NSString *)customBaseURL
+- (void)setCustomBaseURL:(nullable NSString *)customBaseURL
 {
     self[AwfulSettingsKeys.customBaseURL] = customBaseURL;
 }
 
 BOOL_PROPERTY(hideSidebarInLandscape, setHideSidebarInLandscape)
 
-- (NSString *)themeNameForForumID:(NSString *)forumID
+- (nullable NSString *)themeNameForForumID:(NSString *)forumID
 {
     return self[ThemeSettingsKeyForForumID(forumID)];
 }
 
-- (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID
+- (void)setThemeName:(nullable NSString *)themeName forForumID:(NSString *)forumID
 {
     NSDictionary *defaults = [[NSUserDefaults standardUserDefaults] volatileDomainForName:NSRegistrationDomain];
     NSString *key = ThemeSettingsKeyForForumID(forumID);
@@ -244,22 +246,24 @@ BOOL_PROPERTY(hideSidebarInLandscape, setHideSidebarInLandscape)
     }
 }
 
-static inline NSString * ThemeSettingsKeyForForumID(NSString *forumID)
+static NSString * ThemeSettingsKeyForForumID(NSString *forumID)
 {
     return [@"theme-" stringByAppendingString:forumID];
 }
 
-static inline BOOL ThemeNameIsDefaultTheme(NSString *themeName)
+static BOOL ThemeNameIsDefaultTheme(NSString *themeName)
 {
-    return themeName.length == 0 || [themeName isEqualToString:@"default"] || [themeName isEqualToString:@"dark"];
+    return (themeName.length == 0
+            || [themeName isEqualToString:@"default"]
+            || [themeName isEqualToString:@"dark"]);
 }
 
-- (NSArray *)ubiquitousThemeNames
+- (nullable NSArray<NSString *> *)ubiquitousThemeNames
 {
     return self[AwfulSettingsKeys.ubiquitousThemeNames];
 }
 
-- (void)setUbiquitousThemeNames:(NSArray *)ubiquitousThemeNames
+- (void)setUbiquitousThemeNames:(nullable NSArray<NSString *> *)ubiquitousThemeNames
 {
     self[AwfulSettingsKeys.ubiquitousThemeNames] = ubiquitousThemeNames;
 }
@@ -268,7 +272,7 @@ BOOL_PROPERTY(handoffEnabled, setHandoffEnabled)
 
 BOOL_PROPERTY(clipboardURLEnabled, setClipboardURLEnabled)
 
-- (NSString *)defaultBrowser
+- (nullable NSString *)defaultBrowser
 {
     NSString *browser = self[AwfulSettingsKeys.defaultBrowser];
     
@@ -281,7 +285,7 @@ BOOL_PROPERTY(clipboardURLEnabled, setClipboardURLEnabled)
     return browser;
 }
 
-- (void)setDefaultBrowser:(NSString *)defaultBrowser
+- (void)setDefaultBrowser:(nullable NSString *)defaultBrowser
 {
     if (defaultBrowser.length > 0) {
         NSAssert([AwfulDefaultBrowsers() containsObject:defaultBrowser], @"trying to set unknown default browser %@", defaultBrowser);
@@ -296,12 +300,12 @@ BOOL_PROPERTY(openTwitterLinksInTwitter, setOpenTwitterLinksInTwitter)
 
 BOOL_PROPERTY(showUnreadAnnouncementsBadge, setShowUnreadAnnouncementsBadge)
 
-- (id)objectForKeyedSubscript:(id)key
+- (nullable id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
 }
 
-- (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key
+- (void)setObject:(nullable id)object forKeyedSubscript:(id <NSCopying>)key
 {
     NSParameterAssert(key);
     id old = self[key];
@@ -324,17 +328,17 @@ BOOL_PROPERTY(showUnreadAnnouncementsBadge, setShowUnreadAnnouncementsBadge)
     }
 }
 
-- (id)valueForUndefinedKey:(NSString *)key
+- (nullable id)valueForUndefinedKey:(NSString *)key
 {
     return self[key];
 }
 
-- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+- (void)setValue:(nullable id)value forUndefinedKey:(NSString *)key
 {
     self[key] = value;
 }
 
-- (void)setObject:(id)object withoutNotifyingForKey:(id)key
+- (void)setObject:(nullable id)object withoutNotifyingForKey:(id)key
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (object) [defaults setObject:object forKey:(NSString *)key];
@@ -391,9 +395,9 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showUnreadAnnouncementsBadge = @"show_unread_announcements_badge",
 };
 
-NSArray * AwfulDefaultBrowsers(void)
+NSArray<NSString *> * AwfulDefaultBrowsers(void)
 {
-    NSMutableArray *installed = [@[AwfulDefaultBrowserAwful, AwfulDefaultBrowserSafari] mutableCopy];
+    NSMutableArray<NSString *> *installed = [@[AwfulDefaultBrowserAwful, AwfulDefaultBrowserSafari] mutableCopy];
     
     if (AwfulDefaultBrowserIsChromeInstalled()) {
         [installed addObject:AwfulDefaultBrowserChrome];
@@ -419,3 +423,5 @@ BOOL AwfulDefaultBrowserIsFirefoxInstalled(void)
 {
     return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"firefox://"]];
 }
+
+NS_ASSUME_NONNULL_END

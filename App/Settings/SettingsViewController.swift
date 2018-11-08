@@ -83,7 +83,7 @@ final class SettingsViewController: TableViewController {
     }()
     
     fileprivate var loggedInUser: User {
-        let key = UserKey(userID: AwfulSettings.shared().userID, username: AwfulSettings.shared().username)
+        let key = UserKey(userID: AwfulSettings.shared().userID!, username: AwfulSettings.shared().username)
         return User.objectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as! User
     }
     

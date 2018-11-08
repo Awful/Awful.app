@@ -4,6 +4,8 @@
 
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface AwfulSettings : NSObject
 
 /// The convenient singleton instance.
@@ -19,7 +21,7 @@
 @property (readonly, copy, nonatomic) NSArray *sections;
 
 /// Returns an NSDictionary describing the keyed setting.
-- (NSDictionary *)infoForSettingWithKey:(NSString *)key;
+- (nullable NSDictionary *)infoForSettingWithKey:(NSString *)key;
 
 @property (assign, nonatomic) BOOL showAvatars;
 
@@ -45,9 +47,9 @@
 
 @property (assign, nonatomic) BOOL pullForNext;
 
-@property (copy, nonatomic) NSString *username;
+@property (copy, nullable, nonatomic) NSString *username;
 
-@property (copy, nonatomic) NSString *userID;
+@property (copy, nullable, nonatomic) NSString *userID;
 
 @property (assign, nonatomic) double fontScale;
 
@@ -55,26 +57,26 @@
 
 @property (assign, nonatomic) BOOL showThreadTags;
 
-@property (copy, nonatomic) NSArray *favoriteForums;
+@property (copy, nullable, nonatomic) NSArray<NSString *> *favoriteForums;
 
-@property (copy, nonatomic) NSString *lastOfferedPasteboardURL;
+@property (copy, nullable, nonatomic) NSString *lastOfferedPasteboardURL;
 
-@property (copy, nonatomic) NSString *customBaseURL;
+@property (copy, nullable, nonatomic) NSString *customBaseURL;
 
 @property (assign, nonatomic) BOOL hideSidebarInLandscape;
 
-- (NSString *)themeNameForForumID:(NSString *)forumID;
+- (nullable NSString *)themeNameForForumID:(NSString *)forumID;
 
-- (void)setThemeName:(NSString *)themeName forForumID:(NSString *)forumID;
+- (void)setThemeName:(nullable NSString *)themeName forForumID:(NSString *)forumID;
 
-@property (copy, nonatomic) NSArray *ubiquitousThemeNames;
+@property (copy, nullable, nonatomic) NSArray<NSString *> *ubiquitousThemeNames;
 
 @property (assign, nonatomic) BOOL handoffEnabled;
 
 @property (assign, nonatomic) BOOL clipboardURLEnabled;
 
 /// Values are one of the strings listed below as AwfulDefaultBrowserXXX.
-@property (copy, nonatomic) NSString *defaultBrowser;
+@property (copy, nullable, nonatomic) NSString *defaultBrowser;
 
 @property (assign, nonatomic) BOOL openYouTubeLinksInYouTube;
 
@@ -82,9 +84,9 @@
 
 @property (assign, nonatomic) BOOL showUnreadAnnouncementsBadge;
 
-- (id)objectForKeyedSubscript:(id)key;
+- (nullable id)objectForKeyedSubscript:(id)key;
 
-- (void)setObject:(id)object forKeyedSubscript:(id <NSCopying>)key;
+- (void)setObject:(nullable id)object forKeyedSubscript:(id <NSCopying>)key;
 
 /// Clears all settings from the standard NSUserDefaults.
 - (void)reset;
@@ -140,7 +142,7 @@ extern const struct AwfulSettingsKeys {
 #pragma mark Possible values for the defaultBrowser setting
 
 /// Returns all available, installed default browsers.
-extern NSArray * AwfulDefaultBrowsers(void);
+extern NSArray<NSString *> * AwfulDefaultBrowsers(void);
 
 /// The built-in Awful Browser.
 extern NSString * const AwfulDefaultBrowserAwful;
@@ -159,3 +161,5 @@ extern BOOL AwfulDefaultBrowserIsChromeInstalled(void);
 
 /// Returns whether Firefox is installed.
 extern BOOL AwfulDefaultBrowserIsFirefoxInstalled(void);
+
+NS_ASSUME_NONNULL_END

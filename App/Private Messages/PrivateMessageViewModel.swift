@@ -19,8 +19,10 @@ struct PrivateMessageViewModel: MustacheBoxable {
             guard let originalHTML = message.innerHTML else { return nil }
             let document = HTMLDocument(string: originalHTML)
             document.addAttributeToTweetLinks()
-            document.identifyQuotesCitingUser(named: AwfulSettings.shared().username, shouldHighlight: true)
-            document.identifyMentionsOfUser(named: AwfulSettings.shared().username, shouldHighlight: true)
+            if let username = AwfulSettings.shared().username {
+                document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
+                document.identifyMentionsOfUser(named: username, shouldHighlight: true)
+            }
             document.removeSpoilerStylingAndEvents()
             document.useHTML5VimeoPlayer()
             document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
