@@ -6,6 +6,9 @@
 
 /* MARK: Generic */
 
+/* Title of button that dismisses without taking any action. */
+"cancel" = "Cancel";
+
 /* Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.) */
 "table-view.action.delete" = "Delete";
 
@@ -103,6 +106,45 @@
 
 /* Title of screen showing a preview of a new thread's original post. */
 "compose.thread-preview.title" = "Thread Preview";
+
+
+/* MARK: Link actions */
+
+/* Title of button that copies an image's URL to the pasteboard. */
+"link-action.copy-image-url" = "Copy Image URL";
+
+/* Title of button that copies a URL to the pasteboard. */
+"link-action.copy-url" = "Copy URL";
+
+/* Title of button that opens a link using the system's default handler for the URL. */
+"link-action.open" = "Open";
+
+/* Title of button that shows an image in Awful's image viewer. */
+"link-action.open-image" = "Open Image";
+
+/* Title of button that opens a link within Awful. */
+"link-action.open-in-awful" = "Open in Awful";
+
+/* Title of button that opens a link in Google Chrome. */
+"link-action.open-in-chrome" = "Open in Chrome";
+
+/* Title of button that opens a link in Firefox. */
+"link-action.open-in-firefox" = "Open in Firefox";
+
+/* Title of button that opens a link in Safari. */
+"link-action.open-in-safari" = "Open in Safari";
+
+/* Title of button that opens a link in the Twitter app. */
+"link-action.open-in-twitter" = "Open in Twitter";
+
+/* Title of button that opens a link in the Vimeo app. */
+"link-action.open-in-vimeo" = "Open in Vimeo";
+
+/* Title of button that opens a link in the YouTube app. */
+"link-action.open-in-youtube" = "Open in YouTube";
+
+/* Title of button that shows the system share sheet for a URL. */
+"link-action.share-url" = "Share URL";
 
 
 /* MARK: Private messages list */

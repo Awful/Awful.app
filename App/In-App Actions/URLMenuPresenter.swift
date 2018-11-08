@@ -75,7 +75,7 @@ private enum _URLMenuPresenter {
         case AwfulDefaultBrowserFirefox?:
             UIApplication.shared.openURL(firefoxifyURL(url))
         default:
-            fatalError("unexpected browser \(String(describing: browser))")
+            fatalError("unexpected browser \(browser as Any)")
         }
     }
     
@@ -86,51 +86,52 @@ private enum _URLMenuPresenter {
         case let .link(linkURL, imageURL):
             alert.title = linkURL.absoluteString
             
-            let nonDefaultBrowsers = AwfulDefaultBrowsers().filter { $0 != AwfulSettings.shared().defaultBrowser }
-            for browser in nonDefaultBrowsers {
-                switch browser {
-                case AwfulDefaultBrowserAwful:
-                    alert.addAction(UIAlertAction(title: "Open in Awful", style: .default, handler: { _ in
-                        let _ = AwfulBrowser.presentBrowserForURL(linkURL, fromViewController: presenter)
-                        return
-                    }))
-                    
-                case AwfulDefaultBrowserSafari:
-                    let title: String
-                    if canOpenInYouTube(linkURL) {
-                        title = "Open in YouTube"
-                    } else if canOpenInTwitter(linkURL) {
-                        title = "Open in Twitter"
+            let browsers = AwfulDefaultBrowsers()
+            
+            if browsers.contains(AwfulDefaultBrowserAwful) {
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-awful"), style: .default, handler: { _ in
+                    if let route = try? AwfulRoute(linkURL) {
+                        AppDelegate.instance.open(route: route)
                     } else {
-                        title = "Open in Safari"
+                        AwfulBrowser.presentBrowserForURL(linkURL, fromViewController: presenter)
                     }
-                    alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
-                        UIApplication.shared.openURL(linkURL)
-                        return
-                    }))
-                    
-                case AwfulDefaultBrowserChrome:
-                    alert.addAction(UIAlertAction(title: "Open in Chrome", style: .default, handler: { _ in
-                        UIApplication.shared.openURL(chromifyURL(linkURL))
-                        return
-                    }))
-                    
-                case AwfulDefaultBrowserFirefox:
-                    alert.addAction(UIAlertAction(title: "Open in Firefox", style: .default, handler: { _ in
-                        UIApplication.shared.openURL(firefoxifyURL(linkURL))
-                        return
-                    }))
-                    
-                default:
-                    fatalError("unexpected browser \(browser)")
-                }
+                }))
             }
             
-            alert.addAction(UIAlertAction(title: "Copy URL", style: .default, handler: { _ in
+            if browsers.contains(AwfulDefaultBrowserSafari) {
+                let title: String
+                if canOpenInYouTube(linkURL) {
+                    title = LocalizedString("link-action.open-in-youtube")
+                } else if canOpenInTwitter(linkURL) {
+                    title = LocalizedString("link-action.open-in-twitter")
+                } else {
+                    title = LocalizedString("link-action.open-in-safari")
+                }
+                alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
+                    UIApplication.shared.openURL(linkURL)
+                    return
+                }))
+            }
+                    
+            if browsers.contains(AwfulDefaultBrowserChrome) {
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-chrome"), style: .default, handler: { _ in
+                    UIApplication.shared.openURL(chromifyURL(linkURL))
+                    return
+                }))
+            }
+                    
+            if browsers.contains(AwfulDefaultBrowserFirefox) {
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-firefox"), style: .default, handler: { _ in
+                    UIApplication.shared.openURL(firefoxifyURL(linkURL))
+                    return
+                }))
+            }
+            
+            alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
                 UIPasteboard.general.coercedURL = linkURL
             }))
             
-            alert.addAction(UIAlertAction(title: "Share URL", style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: LocalizedString("link-action.share-url"), style: .default, handler: { _ in
                 let objectsToShare = [linkURL]
                 let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
                 
@@ -144,24 +145,21 @@ private enum _URLMenuPresenter {
             
             
             if let imageURL = imageURL {
-                alert.addAction(UIAlertAction(title: "Open Image", style: .default, handler: { _ in
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-image"), style: .default, handler: { _ in
                     let preview = ImageViewController(imageURL: imageURL)
                     preview.title = presenter.title
                     presenter.present(preview, animated: true, completion: nil)
                 }))
                 
-                alert.addAction(UIAlertAction(title: "Copy Image URL", style: .default, handler: { _ in
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-image-url"), style: .default, handler: { _ in
                     UIPasteboard.general.coercedURL = imageURL
                 }))
             }
             
-            
-
-            
         case let .video(rawURL):
             if let videoURL = VideoURL(rawURL) {
                 alert.title = videoURL.unembeddedURL.absoluteString
-                alert.addAction(UIAlertAction(title: "Open", style: .default, handler: { _ in
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open"), style: .default, handler: { _ in
                     AwfulBrowser.presentBrowserForURL(videoURL.unembeddedURL, fromViewController: presenter)
                     return
                 }))
@@ -169,19 +167,19 @@ private enum _URLMenuPresenter {
                     UIApplication.shared.openURL(videoURL.actionURL)
                     return
                 }))
-                alert.addAction(UIAlertAction(title: "Copy URL", style: .default, handler: { _ in
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
                     UIPasteboard.general.coercedURL = videoURL.unembeddedURL
                 }))
             } else {
-                alert.addAction(UIAlertAction(title: "Copy URL", style: .default, handler: { _ in
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
                     UIPasteboard.general.coercedURL = rawURL
                 }))
             }
         }
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
         
-        presenter.present(alert, animated: true, completion: nil)
+        presenter.present(alert, animated: true)
         if let popover = alert.popoverPresentationController {
             popover.sourceRect = sourceRect
             popover.sourceView = sourceView
@@ -211,7 +209,7 @@ private enum _URLMenuPresenter {
         var unembeddedURL: URL {
             switch self {
             case let .vimeo(clipID):
-                return URL(string: "http://vimeo.com/\(clipID)")!
+                return URL(string: "https://vimeo.com/\(clipID)")!
             case .youTube:
                 return appURL
             }
@@ -222,7 +220,7 @@ private enum _URLMenuPresenter {
             case let .vimeo(clipID):
                 return URL(string: "vimeo://videos/\(clipID)")!
             case let .youTube(v):
-                return URL(string: "http://www.youtube.com/watch?v=\(v)")!
+                return URL(string: "https://www.youtube.com/watch?v=\(v)")!
             }
         }
         
@@ -236,11 +234,17 @@ private enum _URLMenuPresenter {
         var actionTitle: String {
             switch self {
             case .vimeo:
-                let app = appInstalled ? "Vimeo" : "Safari"
-                return "Open in \(app)"
+                if appInstalled {
+                    return LocalizedString("link-action.open-in-vimeo")
+                } else {
+                    return LocalizedString("link-action.open-in-safari")
+                }
             case .youTube:
-                let app = appInstalled ? "YouTube" : "Safari"
-                return "Open in \(app)"
+                if appInstalled {
+                    return LocalizedString("link-action.open-in-youtube")
+                } else {
+                    return LocalizedString("link-action.open-in-safari")
+                }
             }
         }
         
