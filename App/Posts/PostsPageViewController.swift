@@ -38,7 +38,7 @@ final class PostsPageViewController: ViewController {
         didSet {
             oldValue?.removeFromSuperview()
             
-            if let loadingView = loadingView , isViewLoaded {
+            if let loadingView = loadingView, isViewLoaded {
                 view.addSubview(loadingView)
             }
         }
@@ -374,7 +374,7 @@ final class PostsPageViewController: ViewController {
                 self?.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
             }
             
-            self?.dismiss(animated: true, completion: nil)
+            self?.dismiss(animated: true)
         }
     }
     
@@ -574,7 +574,7 @@ final class PostsPageViewController: ViewController {
     }
     
     private func updateUserInterface() {
-        title = (thread.title as NSString?)?.stringByCollapsingWhitespace
+        title = thread.title?.stringByCollapsingWhitespace
         
         if page == .last || page == .nextUnread || posts.isEmpty {
             showLoadingView()
