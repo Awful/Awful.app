@@ -296,6 +296,16 @@ extension RenderView {
         }
     }
     
+    /// Removes all previously-loaded content.
+    func eraseDocument() {
+        // There's a bit of subtlety here. If we eval `document.open()`, we get console errors because we can't bring the document object back into the native-side of the app. And if we don't include a `<body>`, we can get console logs attempting to retrieve `document.body.scrollWidth`.
+        webView.evaluateJavaScript("document.write('<body>')") { result, error in
+            if let error = error {
+                Log.e("could not remove content: \(error)")
+            }
+        }
+    }
+    
     /// - Seealso: RenderView.interestingElements(at:)
     enum InterestingElement {
         
@@ -391,11 +401,6 @@ extension RenderView {
                 Log.w("could not evaluate jumpToPostWithID: \(error)")
             }
         }
-    }
-    
-    /// Removes all previously-loaded content.
-    func loadBlankPage() {
-        webView.load(URLRequest(url: URL(string: "about:blank")!))
     }
     
     /// Turns each link with a `data-awful-linkified-image` attribute into a a proper `img` element.

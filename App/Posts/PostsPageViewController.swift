@@ -296,7 +296,7 @@ final class PostsPageViewController: ViewController {
     }
     
     private func renderPosts() {
-        renderView.loadBlankPage()
+        renderView.eraseDocument()
         
         webViewDidLoadOnce = false
         
@@ -338,11 +338,8 @@ final class PostsPageViewController: ViewController {
             Log.e("could not render posts view HTML: \(error)")
             html = ""
         }
-        // Sincere apologies for the runloop shenanigans here. This delayed perform exists to avoid a flash of old content before the new content gets rendered into the web view. Even though we wait for the OK from a user script injected "at document end", that's still not enough for the web view to have rendered the new content (or at least removed the old content). It's most visible when moving between (uncached) pages of a thread.
-        // If you can find some way to find out when the web view has actually re-rendered itself, that would be fantastic! and you should then remove this delayed perform with great prejudice.
-        DispatchQueue.main.async { [renderView] in
-            renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
-        }
+        
+        renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
     }
     
     private lazy var composeItem: UIBarButtonItem = {
