@@ -1178,7 +1178,7 @@ private extension ThreadPage {
 
 extension PostsPageViewController: ComposeTextViewControllerDelegate {
     func composeTextViewController(_ composeController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true)
     }
 }
 
