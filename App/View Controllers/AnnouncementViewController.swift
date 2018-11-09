@@ -115,7 +115,6 @@ final class AnnouncementViewController: ViewController {
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
 
-        renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
 
         announcementObserver = ManagedObjectObserver(object: announcement, didChange: { [weak self] (change) in
@@ -461,17 +460,18 @@ extension AnnouncementViewController: ComposeTextViewControllerDelegate {
 }
 
 extension AnnouncementViewController: RenderViewDelegate {
+    func didFinishRenderingHTML(in view: RenderView) {
+        switch state {
+        case .renderingFirstTime(let model), .rerendering(let model):
+            state = .rendered(model)
+            
+        default:
+            Log.w("ignoring didFinishRenderingHTML in unexpected state \(state)")
+        }
+    }
+    
     func didReceive(message: RenderViewMessage, in view: RenderView) {
         switch message {
-        case is RenderView.BuiltInMessage.DidRender:
-            switch state {
-            case .renderingFirstTime(let model), .rerendering(let model):
-                state = .rendered(model)
-
-            default:
-                Log.w("ignoring didRender in unexpected state \(state)")
-            }
-
         case let message as RenderView.BuiltInMessage.DidTapAuthorHeader:
             didTapAuthorHeaderInPost(at: message.postIndex, frame: message.frame)
 

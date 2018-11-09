@@ -169,8 +169,6 @@ final class PostPreviewViewController: ViewController {
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
         
-        renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)
-        
         let loadingView = LoadingView.loadingViewWithTheme(theme)
         self.loadingView = loadingView
         view.addSubview(loadingView)
@@ -196,15 +194,13 @@ final class PostPreviewViewController: ViewController {
 }
 
 extension PostPreviewViewController: RenderViewDelegate {
+    func didFinishRenderingHTML(in view: RenderView) {
+        loadingView?.removeFromSuperview()
+        loadingView = nil
+    }
+    
     func didReceive(message: RenderViewMessage, in view: RenderView) {
-        switch message {
-        case is RenderView.BuiltInMessage.DidRender:
-            loadingView?.removeFromSuperview()
-            loadingView = nil
-            
-        default:
-            Log.w("received unexpected message: \(message)")
-        }
+        Log.w("received unexpected message: \(message)")
     }
     
     func didTapLink(to url: URL, in view: RenderView) {

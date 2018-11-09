@@ -199,7 +199,6 @@ final class MessageViewController: ViewController {
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
         
-        renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
         
@@ -295,20 +294,21 @@ extension MessageViewController: ComposeTextViewControllerDelegate {
 }
 
 extension MessageViewController: RenderViewDelegate {
+    func didFinishRenderingHTML(in view: RenderView) {
+        if fractionalContentOffsetOnLoad > 0 {
+            renderView.scrollToFractionalOffset(CGPoint(x: 0, y: fractionalContentOffsetOnLoad))
+        }
+        
+        loadingView?.removeFromSuperview()
+        loadingView = nil
+        
+        if AwfulSettings.shared().embedTweets {
+            renderView.embedTweets()
+        }
+    }
+    
     func didReceive(message: RenderViewMessage, in view: RenderView) {
         switch message {
-        case is RenderView.BuiltInMessage.DidRender:
-            if fractionalContentOffsetOnLoad > 0 {
-                renderView.scrollToFractionalOffset(CGPoint(x: 0, y: fractionalContentOffsetOnLoad))
-            }
-            
-            loadingView?.removeFromSuperview()
-            loadingView = nil
-            
-            if AwfulSettings.shared().embedTweets {
-                renderView.embedTweets()
-            }
-            
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if fractionalContentOffsetOnLoad > 0 {
                 renderView.scrollToFractionalOffset(CGPoint(x: 0, y: fractionalContentOffsetOnLoad))

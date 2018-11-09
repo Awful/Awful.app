@@ -59,7 +59,6 @@ final class PostsPageViewController: ViewController {
         renderView.delegate = self
         
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
-        renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         renderView.registerMessage(FYADFlagRequest.self)
@@ -1184,37 +1183,38 @@ extension PostsPageViewController: ComposeTextViewControllerDelegate {
 }
 
 extension PostsPageViewController: RenderViewDelegate {
-    func didReceive(message: RenderViewMessage, in view: RenderView) {
-        switch message {
-        case is RenderView.BuiltInMessage.DidRender:
-            if AwfulSettings.shared().embedTweets {
-                view.embedTweets()
-            }
-            
-            webViewDidLoadOnce = true
-            
-            if jumpToLastPost {
-                if posts.count > 0 {
-                    let lastPost = posts.max(by: { (a, b) -> Bool in
-                        return a.threadIndex < b.threadIndex
-                    })
-                    if let lastPost = lastPost {
-                        jumpToPostIDAfterLoading = lastPost.postID
-                        jumpToLastPost = false
-                    }
+    func didFinishRenderingHTML(in view: RenderView) {
+        if AwfulSettings.shared().embedTweets {
+            view.embedTweets()
+        }
+        
+        webViewDidLoadOnce = true
+        
+        if jumpToLastPost {
+            if posts.count > 0 {
+                let lastPost = posts.max(by: { (a, b) -> Bool in
+                    return a.threadIndex < b.threadIndex
+                })
+                if let lastPost = lastPost {
+                    jumpToPostIDAfterLoading = lastPost.postID
+                    jumpToLastPost = false
                 }
             }
-            
-            if let postID = jumpToPostIDAfterLoading {
-                renderView.jumpToPost(identifiedBy: postID)
-            } else if let newFractionalOffset = scrollToFractionAfterLoading {
-                var fractionalOffset = scrollView.fractionalContentOffset
-                fractionalOffset.y = newFractionalOffset
-                renderView.scrollToFractionalOffset(fractionalOffset)
-            }
-            
-            clearLoadingMessage()
-            
+        }
+        
+        if let postID = jumpToPostIDAfterLoading {
+            renderView.jumpToPost(identifiedBy: postID)
+        } else if let newFractionalOffset = scrollToFractionAfterLoading {
+            var fractionalOffset = scrollView.fractionalContentOffset
+            fractionalOffset.y = newFractionalOffset
+            renderView.scrollToFractionalOffset(fractionalOffset)
+        }
+        
+        clearLoadingMessage()
+    }
+    
+    func didReceive(message: RenderViewMessage, in view: RenderView) {
+        switch message {
         case let message as RenderView.BuiltInMessage.DidTapAuthorHeader:
             didTapUserHeaderWithRect(message.frame, forPostAtIndex: message.postIndex)
             

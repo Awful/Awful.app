@@ -186,8 +186,6 @@ final class ThreadPreviewViewController: ViewController {
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
         
-        renderView.registerMessage(RenderView.BuiltInMessage.DidRender.self)
-        
         threadCell.autoresizingMask = .flexibleWidth
         renderView.scrollView.addSubview(threadCell)
         
@@ -222,15 +220,13 @@ final class ThreadPreviewViewController: ViewController {
 }
 
 extension ThreadPreviewViewController: RenderViewDelegate {
+    func didFinishRenderingHTML(in view: RenderView) {
+        loadingView?.removeFromSuperview()
+        loadingView = nil
+    }
+    
     func didReceive(message: RenderViewMessage, in view: RenderView) {
-        switch message {
-        case is RenderView.BuiltInMessage.DidRender:
-            loadingView?.removeFromSuperview()
-            loadingView = nil
-            
-        default:
-            Log.w("received unexpected message: \(message)")
-        }
+        Log.w("received unexpected message: \(message)")
     }
     
     func didTapLink(to url: URL, in view: RenderView) {

@@ -160,6 +160,10 @@ private struct ShowHomepageActions: RenderViewMessage {
 }
 
 extension ProfileViewController: RenderViewDelegate {
+    func didFinishRenderingHTML(in view: RenderView) {
+        // nop
+    }
+    
     func didReceive(message: RenderViewMessage, in view: RenderView) {
         switch message {
         case is SendPrivateMessage:

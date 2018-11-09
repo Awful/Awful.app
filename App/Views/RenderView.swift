@@ -149,6 +149,10 @@ extension RenderView: WKNavigationDelegate {
 
         delegate?.didTapLink(to: url, in: self)
     }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
+        delegate?.didFinishRenderingHTML(in: self)
+    }
 }
 
 // MARK: - Receiving messages from the render view
@@ -209,15 +213,6 @@ extension RenderView: WKScriptMessageHandler {
             
             init?(_ message: WKScriptMessage) {
                 assert(message.name == DidFinishLoadingTweets.messageName)
-            }
-        }
-
-        /// Sent from the web view once the document has more or less loaded (`DOMContentLoaded`).
-        struct DidRender: RenderViewMessage {
-            static let messageName = "didRender"
-
-            init?(_ message: WKScriptMessage) {
-                assert(message.name == DidRender.messageName)
             }
         }
 
@@ -594,6 +589,7 @@ extension RenderView {
 }
 
 protocol RenderViewDelegate: class {
+    func didFinishRenderingHTML(in view: RenderView)
     func didReceive(message: RenderViewMessage, in view: RenderView)
     func didTapLink(to url: URL, in view: RenderView)
 }
