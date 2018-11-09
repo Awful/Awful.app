@@ -4,7 +4,7 @@
 from __future__ import print_function
 import argparse
 import os
-from subprocess import check_call
+from subprocess import call, check_call
 import sys
 from tempfile import NamedTemporaryFile
 from textwrap import dedent
@@ -14,6 +14,10 @@ from bump import ensure_repo_is_clean
 from submit import upload_to_app_store
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+
+def attempt_git_push():
+    call(['git', 'push'])
 
 
 def build_and_archive(build_dir, workspace, scheme, configuration):
@@ -92,6 +96,7 @@ def main():
 
     if not args.skip_bump:
         bump.bump_version(bump.build if args.bumper is None else args.bumper)
+        attempt_git_push()
 
     build_dir = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'build.noindex'))
     workspace = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'Awful.xcworkspace'))
