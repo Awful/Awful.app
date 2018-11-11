@@ -123,8 +123,9 @@ private struct ImageTag {
     func BBcode(_ url: URL) -> String {
         let t: String
         if
-            size.width > TextAttachment.requiresThumbnailImageSize.width ||
-            size.height > TextAttachment.requiresThumbnailImageSize.height
+            AwfulSettings.shared().automaticTimg &&
+            (size.width > TextAttachment.requiresThumbnailImageSize.width ||
+            size.height > TextAttachment.requiresThumbnailImageSize.height)
         {
             t = "t"
         } else {
