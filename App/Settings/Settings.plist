@@ -115,6 +115,16 @@
 					<key>Key</key>
 					<string>embed_tweets</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Disable timg when posting</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<string>NO</string>
+					<key>Key</key>
+					<string>disable_timg</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
