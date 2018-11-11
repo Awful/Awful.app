@@ -20,7 +20,9 @@ final class SelfHostingAttachmentInterpolator: NSObject {
             self.URLs.append(URL)
             
             let imageSize = attachment.image?.size ?? .zero
-            let requiresThumbnailing = imageSize.width > TextAttachment.requiresThumbnailImageSize.width || imageSize.height > TextAttachment.requiresThumbnailImageSize.height
+            let requiresThumbnailing = AwfulSettings.shared().automaticTimg
+                && (imageSize.width > TextAttachment.requiresThumbnailImageSize.width
+                    || imageSize.height > TextAttachment.requiresThumbnailImageSize.height)
             let t = requiresThumbnailing ? "t" : ""
             // SA: The [img] BBcode seemingly only matches if the URL starts with "http[s]://" or it refuses to actually turn it into an <img> element, so we'll prefix it with http:// and then remove that later.
             let tag = "[\(t)img]http://\(URL.absoluteString)[/\(t)img]"

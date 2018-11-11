@@ -124,11 +124,11 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Automatic timg</string>
+					<string>[timg] large images</string>
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<string>NO</string>
+					<true/>
 					<key>Key</key>
 					<string>automatic_timg</string>
 				</dict>
