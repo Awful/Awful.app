@@ -180,7 +180,7 @@ struct {
 
 BOOL_PROPERTY(forumThreadsSortedByUnread, setForumThreadsSortedByUnread)
 
-BOOL_PROPERTY(disableTimg, setDisableTimg)
+BOOL_PROPERTY(automaticTimg, setAutomaticTimg)
 
 BOOL_PROPERTY(bookmarksSortedByUnread, setBookmarksSortedByUnread)
 
@@ -370,7 +370,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .showImages = @"show_images",
     .autoplayGIFs = @"autoplay_gifs",
     .embedTweets = @"embed_tweets",
-    .disableTimg = @"disable_timg",
+    .automaticTimg = @"automatic_timg",
     .forumThreadsSortedByUnread = @"forum_threads_sorted_unread",
     .bookmarksSortedByUnread = @"bookmarks_sorted_unread",
     .confirmNewPosts = @"confirm_before_replying",

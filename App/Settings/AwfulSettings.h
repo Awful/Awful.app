@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (assign, nonatomic) BOOL forumThreadsSortedByUnread;
 
-@property (assign, nonatomic) BOOL disableTimg;
+@property (assign, nonatomic) BOOL automaticTimg;
 
 @property (assign, nonatomic) BOOL bookmarksSortedByUnread;
 
@@ -123,7 +123,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *userID;
     __unsafe_unretained NSString *forumThreadsSortedByUnread;
-    __unsafe_unretained NSString *disableTimg;
+    __unsafe_unretained NSString *automaticTimg;
     __unsafe_unretained NSString *bookmarksSortedByUnread;
     __unsafe_unretained NSString *canSendPrivateMessages;
     __unsafe_unretained NSString *showThreadTags;
