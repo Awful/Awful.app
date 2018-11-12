@@ -220,7 +220,7 @@ extension RenderView: WKScriptMessageHandler {
         struct DidTapAuthorHeader: RenderViewMessage {
             static let messageName = "didTapAuthorHeader"
 
-            /// The frame of the tapped header, in the render view's scroll view's coordinate system.
+            /// The frame of the tapped header, in the render view's coordinate system.
             let frame: CGRect
 
             /// The index of the tapped post, where `0` is the first post in the render view.
@@ -248,7 +248,7 @@ extension RenderView: WKScriptMessageHandler {
         struct DidTapPostActionButton: RenderViewMessage {
             static let messageName = "didTapPostActionButton"
 
-            /// The frame of the tapped button, in the render view's scroll view's coordinate system.
+            /// The frame of the tapped button, in the render view's coordinate system.
             let frame: CGRect
 
             /// The index of the tapped post, where `0` is the first post in the render view.

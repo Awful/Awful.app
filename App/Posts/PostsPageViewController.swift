@@ -874,7 +874,7 @@ final class PostsPageViewController: ViewController {
             if let popover = activityVC.popoverPresentationController {
                 // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
                 popover.sourceRect = frame
-                popover.sourceView = self.scrollView
+                popover.sourceView = self.renderView
             }
         })
         shareItem.title = "Share URL"
