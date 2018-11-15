@@ -11,10 +11,10 @@ import UIKit
 import WebKit
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-    fileprivate(set) static var instance: AppDelegate!
+    private(set) static var instance: AppDelegate!
 
     private var announcementListRefresher: AnnouncementListRefresher?
-    fileprivate var dataStore: DataStore!
+    private var dataStore: DataStore!
     private var inboxRefresher: PrivateMessageInboxRefresher?
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
     var window: UIWindow?
@@ -204,7 +204,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         urlRouter?.route(route)
     }
     
-    fileprivate func updateShortcutItems() {
+    private func updateShortcutItems() {
         guard urlRouter != nil else {
             UIApplication.shared.shortcutItems = []
             return
@@ -249,9 +249,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(true)
     }
     
-    fileprivate var _rootViewControllerStack: RootViewControllerStack?
-    fileprivate var urlRouter: AwfulURLRouter?
-    fileprivate var rootViewControllerStack: RootViewControllerStack {
+    private var _rootViewControllerStack: RootViewControllerStack?
+    private var urlRouter: AwfulURLRouter?
+    private var rootViewControllerStack: RootViewControllerStack {
         if let stack = _rootViewControllerStack { return stack }
         let stack = RootViewControllerStack(managedObjectContext: managedObjectContext)
         urlRouter = AwfulURLRouter(rootViewController: stack.rootViewController, managedObjectContext: managedObjectContext)
@@ -259,7 +259,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return stack
     }
     
-    fileprivate lazy var loginViewController: LoginViewController! = {
+    private lazy var loginViewController: LoginViewController! = {
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
             guard let sself = self else { return }
