@@ -44,6 +44,10 @@ final class PostsPageView: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: NSNotification.Name(rawValue: UIAccessibilityVoiceOverStatusChanged), object: nil)
     }
     
+    deinit {
+        renderView.scrollView.delegate = nil
+    }
+    
     @objc private func voiceOverStatusDidChange(_ notification: Notification) {
         updateForVoiceOver(animated: true)
     }

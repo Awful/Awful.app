@@ -172,6 +172,10 @@ final class ImageViewController: UIViewController {
             fatalError("init(coder:) has not been implemented")
         }
         
+        deinit {
+            scrollView.delegate = nil
+        }
+        
         var image: DecodedImage? {
             didSet {
                 if let image = image {
