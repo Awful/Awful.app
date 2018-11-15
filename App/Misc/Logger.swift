@@ -42,7 +42,7 @@ final class Logger {
     enum Level: Comparable {
         case debug, info, warning, error
 
-        fileprivate var abbreviation: String {
+        var abbreviation: String {
             switch self {
             case .debug:
                 return "DEBUG"
@@ -134,6 +134,9 @@ final class Logger {
     func e(_ message: @autoclosure () -> String, file: String = #file, line: Int = #line) {
         log(level: .error, message: message, file: file, line: line)
     }
+    
+    /// A closure to call with every message that gets printed (e.g. for use with `CLSLog`).
+    static var extraHandler: ((_ name: String, _ level: Level, _ message: String, _ file: String, _ line: Int) -> Void)?
 }
 
 private var loggers: [String: Logger] = [:]

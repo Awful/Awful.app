@@ -30,6 +30,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             Fabric.with([Crashlytics.self])
         }
         
+        Logger.extraHandler = { name, level, message, file, line in
+            withVaList(["[\(name)] \(level.abbreviation): \(message)"]) {
+                CLSLogv("%@", $0)
+            }
+        }
+        
         AwfulSettings.shared().registerDefaults()
         AwfulSettings.shared().migrateOldSettings()
         
