@@ -121,6 +121,7 @@
 		1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */; };
 		1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C081E41832600CCBA51 /* CoreAnimation.swift */; };
 		1C3811CC2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */; };
+		1C381206219F766B005029C1 /* NSAttributedString+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C381205219F766B005029C1 /* NSAttributedString+Format.swift */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
 		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; };
 		1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */; };
@@ -773,6 +774,7 @@
 		1C353C081E41832600CCBA51 /* CoreAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAnimation.swift; sourceTree = "<group>"; };
 		1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITabBar+FixiOS12_1Layout.h"; sourceTree = "<group>"; };
 		1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITabBar+FixiOS12_1Layout.m"; sourceTree = "<group>"; };
+		1C381205219F766B005029C1 /* NSAttributedString+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Format.swift"; sourceTree = "<group>"; };
 		1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPeekPopController.swift; sourceTree = "<group>"; };
 		1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
 		1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceURLProtocol.swift; sourceTree = "<group>"; };
@@ -1945,6 +1947,7 @@
 				1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */,
 				1C0060A42170347300E5329A /* HTMLReader.swift */,
 				1CDBF2361BD2C13400ADC7DA /* KVOController.swift */,
+				1C381205219F766B005029C1 /* NSAttributedString+Format.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
@@ -3524,6 +3527,7 @@
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
+				1C381206219F766B005029C1 /* NSAttributedString+Format.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */,

@@ -57,6 +57,18 @@
 "launch-open-copied-url-alert.open-button" = "Open";
 
 
+/* MARK: Login */
+
+/* Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately). */
+"login.consent-to-terms.full-text" = "By logging in, you agree to the %1$@ and %2$@.";
+
+/* Link on the login screen that opens the Privacy Policy when tapped. */
+"login.consent-to-terms.privacy-policy" = "Privacy Policy";
+
+/* Link on the login screen that opens the Terms of Service when tapped. */
+"login.consent-to-terms.terms-of-service" = "Terms of Service";
+
+
 /* MARK: Posts page */
 
 /* Title of alert shown when failing to update the last-read post. */

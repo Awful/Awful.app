@@ -60,6 +60,18 @@ extension Scanner {
         guard scanHexInt64(&int) else { return nil }
         return int
     }
+    
+    func scanInt() -> Int? {
+        var int: Int = 0
+        guard scanInt(&int) else { return nil }
+        return int
+    }
+    
+    func scanUpTo(_ string: String) -> String? {
+        var scanned: NSString?
+        scanUpTo(string, into: &scanned)
+        return scanned as String?
+    }
 }
 
 extension NSString {

@@ -8,6 +8,10 @@ import UIKit
 
 private let Log = Logger.get()
 
+private let lostPasswordURL = URL(string: "https://forums.somethingawful.com/account.php?action=lostpw")!
+private let privacyPolicyURL = URL(string: "https://awfulapp.com/privacy-policy/")!
+private let termsOfServiceURL = URL(string: "https://www.somethingawful.com/forum-rules/forum-rules/")!
+
 class LoginViewController: ViewController {
     var completionBlock: ((LoginViewController) -> Void)?
     
@@ -17,6 +21,7 @@ class LoginViewController: ViewController {
     @IBOutlet weak var nextBarButtonItem: UIBarButtonItem!
     @IBOutlet weak var forgotPasswordButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private var consentToTermsTextView: UITextView!
     
     @IBOutlet weak var onePasswordButton: UIButton!
     @IBOutlet var onePasswordUnavailableConstraints: [NSLayoutConstraint]!
@@ -78,6 +83,19 @@ class LoginViewController: ViewController {
             onePasswordButton.removeFromSuperview()
             view.addConstraints(onePasswordUnavailableConstraints)
         }
+        
+        consentToTermsTextView.attributedText = {
+            let format = NSAttributedString(string: LocalizedString("login.consent-to-terms.full-text"))
+            let privacyPolicy = NSAttributedString(
+                string: LocalizedString("login.consent-to-terms.privacy-policy"),
+                attributes: [.link: privacyPolicyURL])
+            let termsOfService = NSAttributedString(
+                string: LocalizedString("login.consent-to-terms.terms-of-service"),
+                attributes: [.link: termsOfServiceURL])
+            let attributedText = NSMutableAttributedString(format: format, privacyPolicy, termsOfService)
+            attributedText.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote), range: NSRange(location: 0, length: attributedText.length))
+            return attributedText
+        }()
         
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
@@ -147,8 +165,7 @@ class LoginViewController: ViewController {
     }
     
     @IBAction func didTapForgetPassword() {
-        let URL = Foundation.URL(string: "https://forums.somethingawful.com/account.php?action=lostpw")!
-        UIApplication.shared.openURL(URL)
+        UIApplication.shared.openURL(lostPasswordURL)
     }
 }
 
@@ -171,6 +188,13 @@ extension LoginViewController: UITextFieldDelegate {
             fatalError("unexpected state")
         }
         return true
+    }
+}
+
+extension LoginViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange) -> Bool {
+        UIApplication.shared.openURL(url)
+        return false
     }
 }
 
