@@ -159,7 +159,7 @@ Awful.handleClickEvent = function(event) {
 
   // Show linkified images on tap.
   var link = event.target;
-  if (link.dataset.awfulLinkifiedImage) {
+  if (link.hasAttribute('data-awful-linkified-image')) {
     var img = document.createElement('img');
     img.setAttribute('alt', "");
     img.setAttribute('border', "0");

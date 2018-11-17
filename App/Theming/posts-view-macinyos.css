@@ -194,6 +194,7 @@ span.mention.highlight {
   text-decoration: none;
 }
 [data-awful-linkified-image] {
+  cursor: pointer;
   text-decoration: underline;
 }
 .gifWrap.overlay,

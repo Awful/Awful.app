@@ -114,18 +114,22 @@ extension HTMLDocument {
      */
     func processImgTags(shouldLinkifyNonSmilies: Bool) {
         for img in nodes(matchingSelector: "img") {
-            guard let src = img["src"] else { continue }
+            guard
+                let src = img["src"],
+                let url = URL(string: src)
+                else { continue }
             
-            if let url = URL(string: src) {
-                if isSmilieURL(url) {
-                    img.toggleClass("awful-smile")
-                } else if let postimageURL = fixPostimageURL(url) {
-                    img["src"] = postimageURL.absoluteString
-                } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
-                    img["src"] = waffleURL.absoluteString
-                }
+            let isSmilie = isSmilieURL(url)
+            
+            if isSmilie {
+                img.toggleClass("awful-smile")
+            } else if let postimageURL = fixPostimageURL(url) {
+                img["src"] = postimageURL.absoluteString
+            } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
+                img["src"] = waffleURL.absoluteString
             }
-            else if shouldLinkifyNonSmilies {
+            
+            if shouldLinkifyNonSmilies, !isSmilie {
                 let link = HTMLElement(tagName: "span", attributes: [
                     "data-awful-linkified-image": ""])
                 link.textContent = src
