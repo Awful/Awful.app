@@ -5,6 +5,11 @@
 // The body has the .iphone class on iPhones; .ipad on iPads.
 
 body {
+  // Prevents a grey overlay when tapping below the bottom of the "end of thread" element. Particularly annoying when there's less than a screenful of posts to show.
+  min-height: 100vh;
+}
+
+body {
   font: -apple-system-body;
   margin: 0;
 
@@ -401,6 +406,7 @@ footer {
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
+  -webkit-user-select: none;
 }
 
 .voiceover-only {

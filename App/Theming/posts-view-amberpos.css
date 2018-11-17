@@ -5,6 +5,9 @@
  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
  */
 body {
+  min-height: 100vh;
+}
+body {
   font: -apple-system-body;
   margin: 0;
   -webkit-text-size-adjust: 100%;
@@ -315,6 +318,7 @@ footer:after {
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
+  -webkit-user-select: none;
 }
 .voiceover-only {
   position: absolute;
