@@ -347,7 +347,12 @@ post {
   border-top-color: #060606;
 }
 post.seen {
+<<<<<<< HEAD
   background-color: #1a1a1a;
+=======
+  background: linear-gradient(to top, #042332, #000000 100px);
+  border-bottom: 2px solid #27424f;
+>>>>>>> Gradient height constant vs post length
 }
 header {
   border-bottom: none;
