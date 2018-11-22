@@ -339,11 +339,11 @@
 		<key>description</key>
 		<string>Dark</string>
 		<key>descriptiveColor</key>
-		<string>#151515</string>
+		<string>#000000</string>
 		<key>tintColor</key>
 		<string>#005ad3</string>
 		<key>backgroundColor</key>
-		<string>#060606</string>
+		<string>#000000</string>
 		<key>scrollIndicatorStyle</key>
 		<string>Light</string>
 		<key>keyboardAppearance</key>
@@ -363,7 +363,7 @@
 			<key>listSecondaryTextColor</key>
 			<string>#808080</string>
 			<key>listBackgroundColor</key>
-			<string>#151515</string>
+			<string>#000000</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#333333</string>
 			<key>listSeparatorColor</key>
@@ -378,11 +378,11 @@
 			<key>navigationBarTintColor</key>
 			<string>#002e64</string>
 			<key>tabBarBackgroundColor</key>
-			<string>#151515</string>
+			<string>#000000</string>
 			<key>toolbarTextColor</key>
 			<string>#ffffff</string>
 			<key>toolbarTintColor</key>
-			<string>#1a1a1a</string>
+			<string>#000000</string>
 		</dict>
 		<key>Posts</key>
 		<dict>
