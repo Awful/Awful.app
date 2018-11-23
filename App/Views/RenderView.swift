@@ -104,9 +104,12 @@ final class RenderView: UIView {
 private let registerURLProtocolsForWKWebView_iOS10AndBelow: () -> Void = {
     
     // We only want to register these schemes once, so we do that here when this top-level property lazily initializes.
-    let schemes = [ImageURLProtocol.scheme, ResourceURLProtocol.scheme]
-    for scheme in schemes {
+    let schemes = [
+        ImageURLProtocol.scheme: ImageURLProtocol.self,
+        ResourceURLProtocol.scheme: ResourceURLProtocol.self]
+    for (scheme, proto) in schemes {
         WKWebView.registerCustomURLScheme(scheme)
+        URLProtocol.registerClass(proto)
     }
     
     // After initialzation, and on all subsequent calls, we simply run an empty closure; our work here is done.

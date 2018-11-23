@@ -7,9 +7,9 @@
 @implementation WKWebView (AwfulWKWebViewHack)
 
 + (void)awful_registerCustomURLScheme:(NSString *)scheme {
-    // Written in Objective-C so we can catch the potential exception from -valueForKeyPath:.
+    // Written in Objective-C so we can catch exceptions.
     @try {
-        id contextClass = [[self new] valueForKeyPath:[@[@"browsing", @"Context", @"Controller", @".class"] componentsJoinedByString:@""]];
+        Class contextClass = NSClassFromString([@[@"WK", @"Browsing", @"Context", @"Controller"] componentsJoinedByString:@""]);
         SEL registerSelector = NSSelectorFromString([@[@"register", @"Scheme", @"For", @"Custom", @"Protocol:"] componentsJoinedByString:@""]);
         if ([contextClass respondsToSelector:registerSelector]) {
             
