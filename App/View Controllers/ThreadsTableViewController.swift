@@ -159,15 +159,15 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
 
         let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
         actionViewController.popoverPositioningBlock = { [weak self] (sourceRect, sourceView) in
-            guard let sself = self else { return }
-
-            if
-                let indexPath = sself.dataSource?.indexPath(of: thread),
-                let cell = sself.tableView.cellForRow(at: indexPath)
-            {
-                sourceRect.pointee = cell.bounds
-                sourceView.pointee = cell
-            }
+            guard let self = self else { return }
+            
+            let targetView: UIView = self.dataSource
+                .flatMap { $0.indexPath(of: thread) }
+                .flatMap { self.tableView.cellForRow(at: $0) }
+                ?? self.tableView
+            
+            sourceRect.pointee = targetView.bounds
+            sourceView.pointee = targetView
         }
         present(actionViewController, animated: true)
     }
