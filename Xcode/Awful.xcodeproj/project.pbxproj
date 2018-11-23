@@ -1563,6 +1563,9 @@
 			children = (
 				1CA887AA1F3954550059FEEC /* Announcement.mustache */,
 				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
+				1C3447E3175D9CCE007377C5 /* Post.mustache */,
+				1CB0607A1936CADC005263EA /* PostPreview.mustache */,
+				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
 				1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */,
 				1C3447E8175DAED4007377C5 /* Profile.mustache */,
 			);
@@ -2061,12 +2064,9 @@
 			isa = PBXGroup;
 			children = (
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
-				1C3447E3175D9CCE007377C5 /* Post.mustache */,
-				1CB0607A1936CADC005263EA /* PostPreview.mustache */,
 				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
 				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
 				1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */,
-				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
 				1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */,
 				1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */,
 				1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */,
