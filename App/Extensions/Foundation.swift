@@ -8,6 +8,10 @@ extension Bundle {
     var localizedName: String {
         return object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? ""
     }
+    
+    var shortVersionString: String? {
+        return object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
 
     var urlTypes: [URLType] {
         let dicts = infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] ?? []

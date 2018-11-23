@@ -82,9 +82,10 @@ final class SettingsViewController: TableViewController {
         }
     }()
     
-    fileprivate var loggedInUser: User {
-        let key = UserKey(userID: AwfulSettings.shared().userID!, username: AwfulSettings.shared().username)
-        return User.objectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as! User
+    private var loggedInUser: User? {
+        return AwfulSettings.shared().userID
+            .map { UserKey(userID: $0, username: AwfulSettings.shared().username) }
+            .flatMap { User.objectForKey(objectKey: $0, inManagedObjectContext: managedObjectContext) as? User }
     }
     
     fileprivate func refreshIfNecessary() {
@@ -109,7 +110,12 @@ final class SettingsViewController: TableViewController {
         return settings[(indexPath as NSIndexPath).row]
     }
     
-    @objc fileprivate func showProfile() {
+    @objc private func showProfile() {
+        guard let loggedInUser = loggedInUser else {
+            Log.e("expected to have a logged-in user")
+            return
+        }
+        
         let profileVC = ProfileViewController(user: loggedInUser)
         present(profileVC.enclosingNavigationController, animated: true, completion: nil)
     }
@@ -400,8 +406,7 @@ final class SettingsViewController: TableViewController {
         }
         guard let title = section["Title"] as? String else { return nil }
         if title == "Awful x.y.z" {
-            guard let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else { fatalError("couldn't find version") }
-            return "Awful \(version)"
+            return "Awful \(Bundle.main.shortVersionString ?? "")"
         }
         return title
     }
@@ -422,10 +427,13 @@ final class SettingsViewController: TableViewController {
             header.setTarget(self, action: #selector(showProfile))
         }
         
-        header.setAvatarImage(AvatarLoader.shared.cachedAvatarImageForUser(loggedInUser))
-        AvatarLoader.shared.fetchAvatarImageForUser(loggedInUser) { (modified, image, error) in
-            guard modified else { return }
-            header.setAvatarImage(image)
+        if let loggedInUser = loggedInUser {
+            header.setAvatarImage(AvatarLoader.shared.cachedAvatarImageForUser(loggedInUser))
+            
+            AvatarLoader.shared.fetchAvatarImageForUser(loggedInUser) { modified, image, error in
+                guard modified else { return }
+                header.setAvatarImage(image)
+            }
         }
         
         return header
