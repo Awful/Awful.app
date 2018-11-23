@@ -82,6 +82,7 @@ header:after {
 }
 .username {
   margin: 0 0 2px;
+  word-break: break-all;
 }
 .postdate {
   font-size: 0.8em;
