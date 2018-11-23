@@ -10,6 +10,7 @@ import Mustache
 
  These templates are rendered with some extra context, so there's no need to include these yourself:
 
+ - baseURL
  - fontScalePercentage
  - format (a dictionary with various formatters; use as e.g. `{{ format.postDate(post.date) }}`)
     - announcementDate
