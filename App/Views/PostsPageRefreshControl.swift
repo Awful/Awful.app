@@ -27,6 +27,7 @@ final class PostsPageRefreshControl: UIView {
         
         configureContentView()
         
+        scrollView.addDelegate(self)
         scrollView.panGestureRecognizer.addTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
     }
 
@@ -35,6 +36,7 @@ final class PostsPageRefreshControl: UIView {
     }
     
     deinit {
+        scrollView?.removeDelegate(self)
         scrollView?.panGestureRecognizer.removeTarget(self, action: #selector(PostsPageRefreshControl.didPan(_:)))
     }
     
@@ -132,10 +134,6 @@ final class PostsPageRefreshControl: UIView {
         }
     }
     
-    func scrollViewContentSizeDidChange() {
-        layoutScrollView()
-    }
-    
     // MARK: Layout
     
     fileprivate func layoutScrollView() {
@@ -170,6 +168,12 @@ final class PostsPageRefreshControl: UIView {
                 scrollView.contentInset.bottom += bottomInset - oldValue
             }
         }
+    }
+}
+
+extension PostsPageRefreshControl: ScrollViewDelegateExtras {
+    func scrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
+        layoutScrollView()
     }
 }
 

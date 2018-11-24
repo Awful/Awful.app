@@ -12,6 +12,7 @@
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
 		1C0060AA217171CD00E5329A /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0060A8217171CD00E5329A /* profile.css */; };
 		1C0105591EAC0F450084B343 /* ForumsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0105581EAC0F450084B343 /* ForumsClient.swift */; };
+		1C015BC021A9C8D00027C9F1 /* UIScrollView+DelegateExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C015BBF21A9C8D00027C9F1 /* UIScrollView+DelegateExtras.m */; };
 		1C07B8AE1EF568100044B8AF /* LepersColonyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AD1EF5680F0044B8AF /* LepersColonyScrapeResult.swift */; };
 		1C07B8B01EF5848A0044B8AF /* ThreadListScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8AF1EF5848A0044B8AF /* ThreadListScrapeResult.swift */; };
 		1C07B8B21EF5C2600044B8AF /* ThreadPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8B11EF5C2600044B8AF /* ThreadPersistence.swift */; };
@@ -653,6 +654,8 @@
 		1C0060A7217171CD00E5329A /* profile.less */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = profile.less; sourceTree = "<group>"; };
 		1C0060A8217171CD00E5329A /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C0105581EAC0F450084B343 /* ForumsClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsClient.swift; sourceTree = "<group>"; };
+		1C015BBE21A9C8D00027C9F1 /* UIScrollView+DelegateExtras.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+DelegateExtras.h"; sourceTree = "<group>"; };
+		1C015BBF21A9C8D00027C9F1 /* UIScrollView+DelegateExtras.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+DelegateExtras.m"; sourceTree = "<group>"; };
 		1C051C9B1A15EB7200F81EA2 /* DataStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		1C051C9D1A16EDCF00F81EA2 /* CachePruner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CachePruner.swift; sourceTree = "<group>"; };
 		1C051C9F1A16F8D700F81EA2 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -1941,6 +1944,8 @@
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
+				1C015BBE21A9C8D00027C9F1 /* UIScrollView+DelegateExtras.h */,
+				1C015BBF21A9C8D00027C9F1 /* UIScrollView+DelegateExtras.m */,
 				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
 				1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */,
 				1C0AD5EE21588CE000B72FDE /* WKWebView+RegisterScheme.h */,
@@ -3521,6 +3526,7 @@
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
 				1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */,
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,
+				1C015BC021A9C8D00027C9F1 /* UIScrollView+DelegateExtras.m in Sources */,
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
 				1C16FC041CC3D84500C88BD1 /* PostsPageView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,

@@ -123,7 +123,7 @@ final class ImageViewController: UIViewController {
             backgroundColor = UIColor.black
             
             scrollView.indicatorStyle = .white
-            scrollView.delegate = self
+            scrollView.addDelegate(self)
             addSubview(scrollView)
             
             doubleTap.numberOfTapsRequired = 2
@@ -173,7 +173,7 @@ final class ImageViewController: UIViewController {
         }
         
         deinit {
-            scrollView.delegate = nil
+            scrollView.removeDelegate(self)
         }
         
         var image: DecodedImage? {

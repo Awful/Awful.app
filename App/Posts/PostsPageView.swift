@@ -17,7 +17,7 @@ final class PostsPageView: UIView {
     
     private(set) lazy var renderView: RenderView = {
         let renderView = RenderView()
-        renderView.scrollView.delegate = self
+        renderView.scrollView.addDelegate(self)
         return renderView
     }()
     
@@ -45,7 +45,7 @@ final class PostsPageView: UIView {
     }
     
     deinit {
-        renderView.scrollView.delegate = nil
+        renderView.scrollView.removeDelegate(self)
     }
     
     @objc private func voiceOverStatusDidChange(_ notification: Notification) {
