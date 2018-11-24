@@ -126,11 +126,11 @@ To add a new thread tag you just made:
 
 1. Add it to the [thread tags repository][Thread Tags.git] and push.
 2. Update the [awfulapp.com repository][awfulapp.com.git] repository per [its README][awfulapp.com.git README].
-3. In this (Awful.app) repository, update the `Resources/Thread Tags` submodule and push:
-    
+3. In this (Awful.app) repository, update the `App/Resources/Thread Tags` submodule and push:
+
     ```bash
     cd path/to/awful-app/repo
-    cd Resources/Thread\ Tags
+    cd App/Resources/Thread\ Tags
     git pull origin master
     cd ..
     git commit -am "Updated thread tags."
