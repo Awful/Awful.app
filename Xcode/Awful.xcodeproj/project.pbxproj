@@ -1494,14 +1494,6 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
-		1C16FBF41CBDC62F00C88BD1 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
 		1C1D2FE6171BA1C200AC6387 /* URLs */ = {
 			isa = PBXGroup;
 			children = (
@@ -1519,7 +1511,9 @@
 			children = (
 				1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */,
 				1CF280972055EB9B00913149 /* AwfulRoute.swift */,
+				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
 				1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */,
+				83410EF119A582B8002CD019 /* DateFormatters.swift */,
 				1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */,
 				1C25AC201F532EE600977D6F /* LocalizedString.swift */,
 				1C25AC401F5371CC00977D6F /* Logger.swift */,
@@ -1527,7 +1521,9 @@
 				1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */,
 				1C914EC8207716D600C0E238 /* MustacheRepository.swift */,
 				1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */,
+				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
 				1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */,
+				1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */,
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
 				1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */,
 				1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */,
@@ -1591,11 +1587,8 @@
 			isa = PBXGroup;
 			children = (
 				1CF2462016DD957300C75E05 /* Composition */,
-				1C397C8C1BC9B11E00CA7FD5 /* Controllers */,
 				1CD005D41BB8DA4700232FFD /* Data Sources */,
-				1CB5DB5318F1E2EE008FBFA5 /* Dates */,
 				1C8A8CFD1A3C28E900E4F6A4 /* Extensions */,
-				1CBE1B0719CA03F100510187 /* Images */,
 				1C28B34A1729DC9700254EE7 /* In-App Actions */,
 				8CCD498215B497A700E5893B /* Info.plist */,
 				1190F71813BE4EA900B9D271 /* Login */,
@@ -1605,29 +1598,18 @@
 				1CA887AE1F40ADFE0059FEEC /* Model Presentation */,
 				1C00E0AB173A006B008895E7 /* Navigation */,
 				1CC780241612D9DD002AF958 /* Posts */,
-				1C4981F319C5389500502134 /* Rap Sheets */,
 				1C25AC501F5777EC00977D6F /* Refreshers */,
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1C0060A6217171CD00E5329A /* Stylesheets */,
 				1C9AEBC4210C3B2300C9A567 /* Tests */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
-				1CC780471612DA8D002AF958 /* Threads */,
 				1C1D2FE6171BA1C200AC6387 /* URLs */,
-				1C16FBF41CBDC62F00C88BD1 /* Utilities */,
 				1CD005CD1BB734C900232FFD /* View Controllers */,
 				1CF7FACB1BB60C2200A077F2 /* Views */,
 			);
 			name = App;
 			path = ../App;
-			sourceTree = "<group>";
-		};
-		1C397C8C1BC9B11E00CA7FD5 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */,
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 		1C3A143419DFC5D10022C44C /* Extractor */ = {
@@ -1688,15 +1670,6 @@
 			name = Tests;
 			path = ../Core/Tests;
 			sourceTree = SOURCE_ROOT;
-		};
-		1C4981F319C5389500502134 /* Rap Sheets */ = {
-			isa = PBXGroup;
-			children = (
-				1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */,
-				1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */,
-			);
-			path = "Rap Sheets";
-			sourceTree = "<group>";
 		};
 		1C502CCE1F816A0B001890AF /* staredog */ = {
 			isa = PBXGroup;
@@ -1982,20 +1955,9 @@
 			path = "Model Presentation";
 			sourceTree = "<group>";
 		};
-		1CB5DB5318F1E2EE008FBFA5 /* Dates */ = {
-			isa = PBXGroup;
-			children = (
-				83410EF119A582B8002CD019 /* DateFormatters.swift */,
-				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
-			);
-			path = Dates;
-			sourceTree = "<group>";
-		};
 		1CB6010616D826DA00CBEE22 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */,
-				1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */,
 				1C16FBB51CB891D400C88BD1 /* PrivateMessageViewModel.swift */,
 			);
 			name = Messages;
@@ -2009,15 +1971,6 @@
 				1CBBAAB91D949EE200A847EC /* Info.plist */,
 			);
 			path = Stickers;
-			sourceTree = "<group>";
-		};
-		1CBE1B0719CA03F100510187 /* Images */ = {
-			isa = PBXGroup;
-			children = (
-				1CBE1B0819CA050300510187 /* ImageViewController.swift */,
-				1C23C7041A7AB8940089BD5C /* SlopButton.swift */,
-			);
-			path = Images;
 			sourceTree = "<group>";
 		};
 		1CBEE24A1733025300C4884A /* Leper's Colony */ = {
@@ -2081,15 +2034,6 @@
 			path = Posts;
 			sourceTree = "<group>";
 		};
-		1CC780471612DA8D002AF958 /* Threads */ = {
-			isa = PBXGroup;
-			children = (
-				1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */,
-				1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */,
-			);
-			path = Threads;
-			sourceTree = "<group>";
-		};
 		1CD005CD1BB734C900232FFD /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -2097,11 +2041,15 @@
 				1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */,
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */,
+				1CBE1B0819CA050300510187 /* ImageViewController.swift */,
 				1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */,
+				1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
 				1C2C1F111CE547A600CD27DD /* MessageViewController.swift */,
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
+				1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */,
+				1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */,
 				1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */,
 				1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */,
 			);
@@ -2220,12 +2168,16 @@
 				1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1CF6786D201E8F45009A9640 /* MessageListCell.swift */,
+				1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */,
+				1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */,
 				1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */,
 				1CB5F7F820156C990046D080 /* PageIconView.swift */,
 				1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */,
 				1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */,
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
+				1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */,
 				1C25AC461F53788900977D6F /* RenderView.swift */,
+				1C23C7041A7AB8940089BD5C /* SlopButton.swift */,
 				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
 				1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */,
 				1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */,
