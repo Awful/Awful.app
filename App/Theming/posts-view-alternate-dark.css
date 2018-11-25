@@ -425,6 +425,9 @@ header {
   padding-bottom: 13px;
   border-radius: 1em;
 }
+.ipad .bbc-block {
+  margin: 0;
+}
 .bbc-block a {
   color: unset;
 }
