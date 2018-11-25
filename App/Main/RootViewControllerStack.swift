@@ -127,6 +127,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 		}
 
         tabBarController.tabBar.tintColor = Theme.currentTheme["tintColor"]
+        tabBarController.tabBar.isTranslucent = (Theme.currentTheme["tabBarBackgroundColor"] != "#000000")
 	}
 	
     private func configureSplitViewControllerDisplayMode() {
