@@ -1058,7 +1058,7 @@ final class PostsPageViewController: ViewController {
         
         if AwfulSettings.shared().pullForNext {
             refreshControl = PostsPageRefreshControl(scrollView: scrollView, contentView: PostsPageRefreshSpinnerView())
-            refreshControl?.handler = { [weak self] in
+            refreshControl?.didStartRefreshing = { [weak self] in
                 self?.loadNextPageOrRefresh()
             }
             refreshControl?.tintColor = theme["postsPullForNextColor"]

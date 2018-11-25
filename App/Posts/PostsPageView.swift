@@ -63,7 +63,7 @@ final class PostsPageView: UIView {
     
     private func furtherExposeTopBarSlice(_ delta: CGFloat) {
         let oldExposedSlice = exposedTopBarSlice
-        exposedTopBarSlice = (exposedTopBarSlice + delta).clamp(0, topBar.bounds.height)
+        exposedTopBarSlice = (exposedTopBarSlice + delta).clamp(0...topBar.bounds.height)
         let exposedDelta = exposedTopBarSlice - oldExposedSlice
         
         ignoreScrollViewDidScroll = true

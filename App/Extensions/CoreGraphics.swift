@@ -13,7 +13,13 @@ extension CGContext {
 }
 
 extension CGFloat {
-    func clamp(_ low: CGFloat, _ high: CGFloat) -> CGFloat {
-        return Swift.max(Swift.min(self, high), low)
+    func clamp(_ range: ClosedRange<CGFloat>) -> CGFloat {
+        if self < range.lowerBound {
+            return range.lowerBound
+        } else if self > range.upperBound {
+            return range.upperBound
+        } else {
+            return self
+        }
     }
 }

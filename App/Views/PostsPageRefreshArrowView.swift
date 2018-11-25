@@ -5,9 +5,10 @@
 import UIKit
 
 final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
-    fileprivate let arrow: UIImageView
-    fileprivate let spinner: UIActivityIndicatorView
-    fileprivate struct Angles {
+    private let arrow: UIImageView
+    private let spinner: UIActivityIndicatorView
+    
+    private struct Angles {
         static let triggered = CGFloat(0)
         static let waiting = CGFloat(-Double.pi / 2)
     }
@@ -17,7 +18,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         arrow = UIImageView(image: image)
         spinner = UIActivityIndicatorView(style: .whiteLarge)
         
-        super.init(frame: CGRect(origin: CGPoint.zero, size: image.size))
+        super.init(frame: CGRect(origin: .zero, size: image.size))
         
         arrow.translatesAutoresizingMaskIntoConstraints = false
         addSubview(arrow)
@@ -34,34 +35,39 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         
         rotateArrow(Angles.waiting, animated: false)
     }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
-    fileprivate func transitionFromState(_ oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
+    private func transition(from oldState: PostsPageRefreshControl.State, to newState: PostsPageRefreshControl.State) {
         switch (oldState, newState) {
-        case (.waiting, .waiting), (.triggered, .triggered), (.refreshing, .refreshing):
-            break
-            
-        case (.waiting, .triggered):
-            rotateArrow(Angles.triggered, animated: true)
-            
-        case (_, .refreshing):
-            arrow.isHidden = true
-            spinner.startAnimating()
-            
-        case (_, .waiting):
+        case (_, .ready),
+             (_, .awaitingScrollEnd):
             arrow.isHidden = false
             rotateArrow(Angles.waiting, animated: true)
             spinner.stopAnimating()
             
-        default:
-            fatalError("unexpected transition from \(oldState) to \(newState)")
+        case (.armed, .triggered):
+            rotateArrow(Angles.triggered, animated: true)
+            
+        case (.refreshing, .refreshing):
+            break
+        case (_, .refreshing):
+            arrow.isHidden = true
+            spinner.startAnimating()
+
+        case (_, .armed):
+            arrow.isHidden = false
+            rotateArrow(Angles.waiting, animated: true)
+            spinner.stopAnimating()
+            
+        case (.ready, _),
+             (.armed, _),
+             (.awaitingScrollEnd, _),
+             (.triggered, _),
+             (.refreshing, _):
+            break
         }
     }
     
-    fileprivate func rotateArrow(_ angle: CGFloat, animated: Bool) {
+    private func rotateArrow(_ angle: CGFloat, animated: Bool) {
         let duration = animated ? 0.3 : 0
         UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: { () -> Void in
             self.arrow.transform = angle == 0 ? .identity : CGAffineTransform(rotationAngle: angle)
@@ -87,9 +93,15 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     
     // MARK: PostsPageRefreshControlContent
     
-    var state: PostsPageRefreshControl.State = .waiting(triggeredFraction: 0) {
+    var state: PostsPageRefreshControl.State = .ready {
         didSet {
-            transitionFromState(oldValue, toState: state)
+            transition(from: oldValue, to: state)
         }
+    }
+    
+    // MARk: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

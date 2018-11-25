@@ -23,33 +23,38 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate func transitionFromState(_ oldState: PostsPageRefreshControl.State, toState newState: PostsPageRefreshControl.State) {
+    private func transition(from oldState: PostsPageRefreshControl.State, to newState: PostsPageRefreshControl.State) {
         switch (oldState, newState) {
-        case (.waiting, .waiting), (.triggered, .triggered), (.refreshing, .refreshing):
-            break
-            
-        case (.waiting, .triggered):
+        case (.armed, .triggered):
             rotateArrows(CGFloat(Double.pi / 2))
-            
+
+        case (.refreshing, .refreshing):
+            break
         case (_, .refreshing):
             rotateArrowsForever()
             
-        case (_, .waiting):
+        case (.armed, .armed):
+            break
+        case (_, .armed):
             rotateArrows(0)
             stopRotatingForever()
             
-        default:
-            fatalError("unexpected transition from \(oldState) to \(newState)")
+        case (.ready, _),
+             (.armed, _),
+             (.awaitingScrollEnd, _),
+             (.triggered, _),
+             (.refreshing, _):
+            break
         }
     }
     
-    fileprivate func rotateArrows(_ angle: CGFloat) {
+    private func rotateArrows(_ angle: CGFloat) {
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
             self.arrowsRotation = angle
             }, completion: nil)
     }
     
-    fileprivate var arrowsRotation: CGFloat = 0 {
+    private var arrowsRotation: CGFloat = 0 {
         didSet {
             if arrowsRotation == 0 {
                 arrows.transform = CGAffineTransform.identity
@@ -59,7 +64,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         }
     }
     
-    fileprivate func rotateArrowsForever() {
+    private func rotateArrowsForever() {
         let existingAnimationKeys = arrows.layer.animationKeys() ?? []
         guard !existingAnimationKeys.contains(indefiniteRotationAnimationKey) else {
             return
@@ -81,9 +86,9 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
     
     // MARK: PostsPageRefreshControlContent
     
-    var state: PostsPageRefreshControl.State = .waiting(triggeredFraction: 0) {
+    var state: PostsPageRefreshControl.State = .ready {
         didSet {
-            transitionFromState(oldValue, toState: state)
+            transition(from: oldValue, to: state)
         }
     }
 }
