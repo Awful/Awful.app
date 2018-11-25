@@ -368,6 +368,9 @@ header {
 .op .username {
   color: #005ec9;
 }
+.postbody {
+  margin-left: 40px;
+}
 .postbody a,
 [data-awful-linkified-image] {
   color: #005ec9;
@@ -394,7 +397,10 @@ header {
 }
 .bbc-block h4,
 .bbc-block h5 {
-  color: #999;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 .bbc-block.mention.highlight,
 .bbc-block.mention.highlight h4,
@@ -406,7 +412,21 @@ header {
   color: #dd89ff;
 }
 .bbc-block {
-  border-left: 2px solid rgba(255, 255, 255, 0.15);
+  border: none;
+  background-color: #1a1a1a;
+  background-image: url("awful-resource://quote-post.png");
+  background-repeat: no-repeat;
+  background-position-x: 10px;
+  background-position-y: 12px;
+  background-size: 20px;
+  background-blend-mode: lighten;
+  padding: 10px;
+  padding-left: 40px;
+  padding-bottom: 13px;
+  border-radius: 1em;
+}
+.bbc-block a {
+  color: unset;
 }
 footer {
   margin-top: 0.6em;

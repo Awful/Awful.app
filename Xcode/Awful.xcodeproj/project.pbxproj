@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C42662A21AB045700EAD4B7 /* quote-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C42662921AB045700EAD4B7 /* quote-post.png */; };
+		0FF012020DEDA6238B7DC09B /* Pods_AwfulTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */; };
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
 		1C0060AA217171CD00E5329A /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0060A8217171CD00E5329A /* profile.css */; };
@@ -660,6 +662,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0C42662921AB045700EAD4B7 /* quote-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-post.png"; sourceTree = "<group>"; };
+		148A488225E4DA4C3B655AD1 /* Pods-AwfulTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwfulTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AwfulTests/Pods-AwfulTests.release.xcconfig"; sourceTree = "<group>"; };
 		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
 		1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelperTests.swift; sourceTree = "<group>"; };
 		1C0060A42170347300E5329A /* HTMLReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLReader.swift; sourceTree = "<group>"; };
@@ -2391,6 +2395,7 @@
 		8CCD503B15B783FC00E5893B /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				0C42662921AB045700EAD4B7 /* quote-post.png */,
 				F4233C581917C77900482BD0 /* bg_menu.jpg */,
 				8CE6100718CAAF74002E92DA /* cat.gif */,
 				1CBEE24A1733025300C4884A /* Leper's Colony */,
@@ -3015,6 +3020,7 @@
 				8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */,
 				7BF3A61E1F92FA86009F8603 /* AppIcon-greenface-20x20.png in Resources */,
 				1C502D4A1F817010001890AF /* AppIcon-staredog-40x40@2x.png in Resources */,
+				0C42662A21AB045700EAD4B7 /* quote-post.png in Resources */,
 				7BF0903B2022C7570060BDC8 /* AppIcon-Bars2_dark-29x29.png in Resources */,
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
