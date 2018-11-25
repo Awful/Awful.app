@@ -1056,13 +1056,11 @@ final class PostsPageViewController: ViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
         
-        if AwfulSettings.shared().pullForNext {
-            refreshControl = PostsPageRefreshControl(scrollView: scrollView, contentView: PostsPageRefreshSpinnerView())
-            refreshControl?.didStartRefreshing = { [weak self] in
-                self?.loadNextPageOrRefresh()
-            }
-            refreshControl?.tintColor = theme["postsPullForNextColor"]
+        refreshControl = PostsPageRefreshControl(scrollView: scrollView, contentView: PostsPageRefreshSpinnerView())
+        refreshControl?.didStartRefreshing = { [weak self] in
+            self?.loadNextPageOrRefresh()
         }
+        refreshControl?.tintColor = theme["postsPullForNextColor"]
         
         if let loadingView = loadingView {
             view.addSubview(loadingView)

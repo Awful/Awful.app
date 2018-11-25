@@ -47,8 +47,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (assign, nonatomic) double autoThemeThreshold;
 
-@property (assign, nonatomic) BOOL pullForNext;
-
 @property (copy, nullable, nonatomic) NSString *username;
 
 @property (copy, nullable, nonatomic) NSString *userID;
@@ -119,7 +117,6 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *darkTheme;
     __unsafe_unretained NSString *autoDarkTheme;
     __unsafe_unretained NSString *autoThemeThreshold;
-    __unsafe_unretained NSString *pullForNext;
     __unsafe_unretained NSString *username;
     __unsafe_unretained NSString *userID;
     __unsafe_unretained NSString *forumThreadsSortedByUnread;
