@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ScrollViewDelegateMultiplexer : NSObject <UIScrollViewDelegate>
 
-@property (assign, nonatomic) UIScrollView *scrollView;
+@property (weak, nonatomic) UIScrollView *scrollView;
 
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
@@ -69,14 +69,17 @@ NS_ASSUME_NONNULL_BEGIN
         _delegates = [NSPointerArray weakObjectsPointerArray];
         _scrollView = scrollView;
         
-        [_scrollView addObserver:self forKeyPath:@"contentSize" options:0 context:KVOContext];
+        [self addObserver:self
+               forKeyPath:@"scrollView.contentSize"
+                  options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew)
+                  context:KVOContext];
     }
     return self;
 }
 
 - (void)dealloc {
-    self.scrollView.delegate = nil;
-    [self.scrollView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
+    _scrollView.delegate = nil;
+    [self removeObserver:self forKeyPath:@"scrollView.contentSize" context:KVOContext];
 }
 
 #pragma mark KVO
@@ -90,12 +93,27 @@ NS_ASSUME_NONNULL_BEGIN
         return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
     
-    NSParameterAssert([keyPath isEqualToString:@"contentSize"]);
-    NSParameterAssert(object == self.scrollView);
+    NSCParameterAssert(object == self);
+    NSParameterAssert([keyPath isEqualToString:@"scrollView.contentSize"]);
+    
+    UIScrollView *scrollView = _scrollView;
+    if (!scrollView) { return; }
+    
+    if (!([change[NSKeyValueChangeOldKey] isKindOfClass:[NSValue class]]
+        && [change[NSKeyValueChangeNewKey] isKindOfClass:[NSValue class]]))
+    {
+        return;
+    }
+    
+    CGSize oldSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
+    CGSize newSize = [change[NSKeyValueChangeNewKey] CGSizeValue];
+    if (CGSizeEqualToSize(oldSize, newSize)) {
+        return;
+    }
     
     for (id<ScrollViewDelegateExtras> delegate in _delegates) {
         if ([delegate respondsToSelector:@selector(awful_scrollViewDidChangeContentSize:)]) {
-            [delegate awful_scrollViewDidChangeContentSize:object];
+            [delegate awful_scrollViewDidChangeContentSize:scrollView];
         }
     }
 }
