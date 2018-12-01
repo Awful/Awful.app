@@ -12,6 +12,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private var filterThreadTag: ThreadTag?
     let forum: Forum
     private var latestPage = 0
+    private var loadMoreFooter: LoadMoreFooter?
     private lazy var longPressRecognizer: UIGestureRecognizer = {
         return UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
     }()
@@ -33,9 +34,11 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         navigationItem.rightBarButtonItem = composeBarButtonItem
         updateComposeBarButtonItem()
     }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    
+    deinit {
+        if isViewLoaded {
+            tableView.removeDelegate(self)
+        }
     }
     
     override var theme: Theme {
@@ -63,7 +66,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             .done { threads in
                 self.latestPage = page
 
-                self.scrollToLoadMoreBlock = { self.loadNextPage() }
+                self.enableLoadMore()
 
                 self.tableView.tableHeaderView = self.filterButton
 
@@ -84,14 +87,24 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             }
             .finally {
                 self.stopAnimatingPullToRefresh()
-                self.stopAnimatingInfiniteScroll()
+                self.loadMoreFooter?.didFinish()
         }
+    }
+    
+    private func enableLoadMore() {
+        guard loadMoreFooter == nil else { return }
+        
+        loadMoreFooter = LoadMoreFooter(tableView: tableView, loadMore: { [weak self] loadMoreFooter in
+            self?.loadNextPage()
+        })
     }
     
     // MARK: View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.addDelegate(self)
 
         tableView.addGestureRecognizer(longPressRecognizer)
         tableView.estimatedRowHeight = ThreadListCell.estimatedHeight
@@ -123,7 +136,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         super.viewDidAppear(animated)
         
         if tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 {
-            scrollToLoadMoreBlock = { [weak self] in self?.loadNextPage() }
+            enableLoadMore()
             
             updateFilterButton()
             tableView.tableHeaderView = filterButton
@@ -382,6 +395,12 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private struct ObsoleteRestorationKeys {
         static let forumID = "AwfulForumID"
         static let filterThreadTagID = "AwfulFilterThreadTagID"
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

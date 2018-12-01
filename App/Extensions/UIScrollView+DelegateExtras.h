@@ -45,4 +45,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+@interface UICollectionView (DelegateExtras)
+
+// Collection view requires a collection view delegate, but the implementation is agnostic, so this is just a heads-up for the programmer.
+
+- (void)addDelegate:(id<UICollectionViewDelegate>)delegate;
+- (void)removeDelegate:(id<UICollectionViewDelegate>)delegate;
+
+@end
+
+
+@interface UITableView (DelegateExtras)
+
+// Table view requires a table view delegate, but the implementation is agnostic, so this is just a heads-up for the programmer.
+
+- (void)addDelegate:(id<UITableViewDelegate>)delegate;
+- (void)removeDelegate:(id<UITableViewDelegate>)delegate;
+
+@end
+
 NS_ASSUME_NONNULL_END

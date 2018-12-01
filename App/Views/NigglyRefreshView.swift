@@ -27,8 +27,7 @@ final class NigglyRefreshView: UIView {
         
         NSLayoutConstraint.activate([
             spriteSheetView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            spriteSheetView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            ])
+            spriteSheetView.centerYAnchor.constraint(equalTo: centerYAnchor)])
     }
     
     override func layoutSubviews() {
@@ -43,6 +42,10 @@ final class NigglyRefreshView: UIView {
     
     func startAnimating() {
         spriteSheetView.startAnimating()
+    }
+    
+    func stopAnimating() {
+        spriteSheetView.stopAnimating()
     }
 }
 
