@@ -11,8 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ScrollViewDelegateMultiplexer : NSObject <UIScrollViewDelegate>
 
-@property (weak, nonatomic) UIScrollView *scrollView;
-
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
@@ -62,6 +60,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation ScrollViewDelegateMultiplexer {
     NSPointerArray *_delegates;
+    
+    // We can't use `__weak` here or it'll be set to `nil` by the time our `-dealloc` runs, and we need to remove ourselves as a KVO observer to avoid an exception.
+    __unsafe_unretained UIScrollView *_scrollView;
 }
 
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView {
@@ -69,17 +70,17 @@ NS_ASSUME_NONNULL_BEGIN
         _delegates = [NSPointerArray weakObjectsPointerArray];
         _scrollView = scrollView;
         
-        [self addObserver:self
-               forKeyPath:@"scrollView.contentSize"
-                  options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew)
-                  context:KVOContext];
+        [_scrollView addObserver:self
+                      forKeyPath:@"contentSize"
+                         options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew)
+                         context:KVOContext];
     }
     return self;
 }
 
 - (void)dealloc {
     _scrollView.delegate = nil;
-    [self removeObserver:self forKeyPath:@"scrollView.contentSize" context:KVOContext];
+    [_scrollView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
 }
 
 #pragma mark KVO
@@ -93,21 +94,22 @@ NS_ASSUME_NONNULL_BEGIN
         return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
     
-    NSCParameterAssert(object == self);
-    NSParameterAssert([keyPath isEqualToString:@"scrollView.contentSize"]);
+    NSParameterAssert(object == _scrollView);
+    NSParameterAssert([keyPath isEqualToString:@"contentSize"]);
     
-    UIScrollView *scrollView = _scrollView;
-    if (!scrollView) { return; }
+    id oldValue = change[NSKeyValueChangeOldKey];
+    id newValue = change[NSKeyValueChangeNewKey];
     
-    if (!([change[NSKeyValueChangeOldKey] isKindOfClass:[NSValue class]]
-        && [change[NSKeyValueChangeNewKey] isKindOfClass:[NSValue class]]))
-    {
+    if (!([oldValue isKindOfClass:[NSValue class]] && [newValue isKindOfClass:[NSValue class]])) {
         return;
     }
     
-    CGSize oldSize = [change[NSKeyValueChangeOldKey] CGSizeValue];
-    CGSize newSize = [change[NSKeyValueChangeNewKey] CGSizeValue];
-    if (CGSizeEqualToSize(oldSize, newSize)) {
+    if ([oldValue isEqual:newValue]) {
+        return;
+    }
+    
+    UIScrollView *scrollView = object;
+    if (!scrollView) {
         return;
     }
     
@@ -143,7 +145,7 @@ static void *KVOContext = &KVOContext;
     if ([super respondsToSelector:selector]) {
         return YES;
     }
-    for (id<UIScrollViewDelegate> delegate in _delegates){
+    for (id<UIScrollViewDelegate> delegate in _delegates) {
         if ([delegate respondsToSelector:selector]) {
             return YES;
         }
