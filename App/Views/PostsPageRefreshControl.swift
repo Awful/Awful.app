@@ -233,7 +233,15 @@ extension PostsPageRefreshControl: ScrollViewDelegateExtras {
             // Don't want to trigger if the user is doing mad successive drags to get quickly to the bottom.
             guard !scrollView.isDecelerating else { break }
             
-            if info.visibleBottom >= ScrollViewInfo.closeEnoughToBottom {
+            var adjustedBottomInset: CGFloat {
+                if #available(iOS 11.0, *) {
+                    return scrollView.adjustedContentInset.bottom
+                } else {
+                    return scrollView.contentInset.bottom
+                }
+            }
+            
+            if info.visibleBottom >= ScrollViewInfo.closeEnoughToBottom - adjustedBottomInset {
                 state = .armed(triggeredFraction: info.triggeredFraction)
             } else {
                 state = .awaitingScrollEnd
