@@ -80,7 +80,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)dealloc {
     _scrollView.delegate = nil;
-    [_scrollView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
+    
+    // Getting crash logs in production about failing to remove ourselves as an observer because we weren't registered. That's not great, and I'm not sure how it's happening, but it's really not worth crashing over.
+    @try {
+        [_scrollView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
+    } @catch (id _) {
+        NSLog(@"%s swallowing KVO exception removing observer %@ from scroll view %@", __PRETTY_FUNCTION__, self, _scrollView);
+    }
 }
 
 #pragma mark KVO
