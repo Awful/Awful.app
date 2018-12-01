@@ -1,10 +1,6 @@
-//
 //  Base62.swift
-//  Core
 //
-//  Created by Nolan Waite on 2017-12-03.
-//  Copyright © 2017 Awful Contributors. All rights reserved.
-//
+//  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 /// Returns a base-62 representation of an integer. Digits are 0-9, A-Z, a-z.
 internal func base62Encode<I: BinaryInteger>(_ i: I) -> String {
