@@ -56,9 +56,11 @@ final class RenderView: UIView {
 
         activityIndicatorManager = .init(webView: webView)
     }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    
+    deinit {
+        for registeredName in registeredMessages.keys {
+            webView.configuration.userContentController.removeScriptMessageHandler(forName: registeredName)
+        }
     }
 
     /**
@@ -89,6 +91,12 @@ final class RenderView: UIView {
                 Log.e("error attempting to scroll: \(error)")
             }
         })
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
