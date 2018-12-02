@@ -1,5 +1,5 @@
 #import "AwfulErrorDomain.h"
 #import "AwfulSettings.h"
+#import "ScrollViewDelegateMultiplexer.h"
 #import "SettingsBinding.h"
-#import "UIScrollView+DelegateExtras.h"
 #import "WKWebView+RegisterScheme.h"

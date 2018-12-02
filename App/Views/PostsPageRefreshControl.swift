@@ -7,8 +7,9 @@ import UIKit
 private let Log = Logger.get()
 
 final class PostsPageRefreshControl: UIView {
-    private weak var scrollView: UIScrollView?
+    
     var didStartRefreshing: (() -> Void)?
+    private weak var scrollView: UIScrollView?
     
     var contentView: UIView {
         didSet {
@@ -18,19 +19,15 @@ final class PostsPageRefreshControl: UIView {
         }
     }
     
-    init(scrollView: UIScrollView, contentView: UIView) {
-        self.scrollView = scrollView
+    init(scrollView: UIScrollView, multiplexer: ScrollViewDelegateMultiplexer, contentView: UIView) {
         self.contentView = contentView
+        self.scrollView = scrollView
         
         super.init(frame: CGRect.zero)
         
         addContentView()
         
-        scrollView.addDelegate(self)
-    }
-    
-    deinit {
-        scrollView?.removeDelegate(self)
+        multiplexer.addDelegate(self)
     }
     
     func endRefreshing() {

@@ -15,11 +15,11 @@ final class PostsPageView: UIView {
     private var maintainTopBarState = true
     private var topBarAlwaysVisible = false
     
-    private(set) lazy var renderView: RenderView = {
-        let renderView = RenderView()
-        renderView.scrollView.addDelegate(self)
-        return renderView
+    private(set) lazy var multiplexer: ScrollViewDelegateMultiplexer = {
+        return ScrollViewDelegateMultiplexer(scrollView: scrollView)
     }()
+    
+    private(set) lazy var renderView = RenderView()
     
     var scrollView: UIScrollView {
         return renderView.scrollView
@@ -42,10 +42,8 @@ final class PostsPageView: UIView {
         updateForVoiceOver(animated: false)
         
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: NSNotification.Name(rawValue: UIAccessibilityVoiceOverStatusChanged), object: nil)
-    }
-    
-    deinit {
-        renderView.scrollView.removeDelegate(self)
+        
+        multiplexer.addDelegate(self)
     }
     
     @objc private func voiceOverStatusDidChange(_ notification: Notification) {

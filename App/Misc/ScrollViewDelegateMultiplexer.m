@@ -1,74 +1,26 @@
-//  UIScrollView+DelegateExtras.m
+//  ScrollViewDelegateMultiplexer.m
 //
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-#import "UIScrollView+DelegateExtras.h"
-#import <objc/runtime.h>
+#import "ScrollViewDelegateMultiplexer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 // This is written in Objective-C so that we can use `-forwardInvocation`.
 
-@interface ScrollViewDelegateMultiplexer : NSObject <UIScrollViewDelegate>
-
-- (instancetype)initWithScrollView:(UIScrollView *)scrollView NS_DESIGNATED_INITIALIZER;
-- (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
-
-- (void)addDelegate:(id<UIScrollViewDelegate>)delegate;
-- (void)removeDelegate:(id<UIScrollViewDelegate>)delegate;
-
-@end
-
-
-@interface UIScrollView ()
-
-@property (readonly, nonatomic) ScrollViewDelegateMultiplexer *delegateMultiplexer;
-
-@end
-
-
-@implementation UIScrollView (DelegateExtras)
-
-- (void)addDelegate:(id<UIScrollViewDelegate>)delegate {
-    ScrollViewDelegateMultiplexer *multiplexer = self.delegateMultiplexer;
-    
-    [multiplexer addDelegate:delegate];
-    
-    // Ensure UIScrollView re-caches any `-respondsToSelector:` queries.
-    self.delegate = nil;
-    self.delegate = multiplexer;
-}
-
-- (void)removeDelegate:(id<UIScrollViewDelegate>)delegate {
-    [self.delegateMultiplexer removeDelegate:delegate];
-}
-
-- (ScrollViewDelegateMultiplexer *)delegateMultiplexer {
-    ScrollViewDelegateMultiplexer *multiplexer = objc_getAssociatedObject(self, _cmd);
-    
-    if (!multiplexer) {
-        multiplexer = [[ScrollViewDelegateMultiplexer alloc] initWithScrollView:self];
-        objc_setAssociatedObject(self, _cmd, multiplexer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    
-    return multiplexer;
-}
-
-@end
-
-
 @implementation ScrollViewDelegateMultiplexer {
     NSPointerArray *_delegates;
     
     // We can't use `__weak` here or it'll be set to `nil` by the time our `-dealloc` runs, and we need to remove ourselves as a KVO observer to avoid an exception.
-    __unsafe_unretained UIScrollView *_scrollView;
+    UIScrollView *_scrollView;
 }
 
 - (instancetype)initWithScrollView:(UIScrollView *)scrollView {
     if ((self = [super init])) {
         _delegates = [NSPointerArray weakObjectsPointerArray];
         _scrollView = scrollView;
+        
+        _scrollView.delegate = self;
         
         [_scrollView addObserver:self
                       forKeyPath:@"contentSize"
@@ -79,14 +31,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
-    _scrollView.delegate = nil;
-    
-    // Getting crash logs in production about failing to remove ourselves as an observer because we weren't registered. That's not great, and I'm not sure how it's happening, but it's really not worth crashing over.
-    @try {
-        [_scrollView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
-    } @catch (id _) {
-        NSLog(@"%s swallowing KVO exception removing observer %@ from scroll view %@", __PRETTY_FUNCTION__, self, _scrollView);
+    if (_scrollView.delegate == self) {
+        _scrollView.delegate = nil;
     }
+    [_scrollView removeObserver:self forKeyPath:@"contentSize" context:KVOContext];
 }
 
 #pragma mark KVO
@@ -132,6 +80,12 @@ static void *KVOContext = &KVOContext;
 
 - (void)addDelegate:(id<UIScrollViewDelegate>)delegate {
     [_delegates addPointer:(__bridge void *)delegate];
+    
+    // UIScrollView (and subclasses) sometimes cache `-respondsToSelector:` queries, so we should reset that now that things may have changed.
+    if (_scrollView.delegate == self){
+        _scrollView.delegate = nil;
+        _scrollView.delegate = self;
+    }
 }
 
 - (void)removeDelegate:(id<UIScrollViewDelegate>)delegate {
@@ -145,6 +99,12 @@ static void *KVOContext = &KVOContext;
     [_delegates addPointer:nil];
     
     [_delegates compact];
+    
+    // The scroll view's `-respondsToSelector:` query cache is also relevant here. (See `-addDelegate:` for more info.)
+    if (_scrollView.delegate == self){
+        _scrollView.delegate = nil;
+        _scrollView.delegate = self;
+    }
 }
 
 - (BOOL)respondsToSelector:(SEL)selector {

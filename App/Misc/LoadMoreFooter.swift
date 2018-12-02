@@ -42,16 +42,16 @@ final class LoadMoreFooter: NSObject {
     
     private lazy var refreshView = NigglyRefreshView()
     
-    init(tableView: UITableView, loadMore: @escaping (LoadMoreFooter) -> Void) {
+    init(tableView: UITableView, multiplexer: ScrollViewDelegateMultiplexer, loadMore: @escaping (LoadMoreFooter) -> Void) {
         self.loadMore = loadMore
         self.tableView = tableView
         super.init()
         
-        tableView.addDelegate(self)
+        multiplexer.addDelegate(self)
     }
     
     deinit {
-        tableView.removeDelegate(self)
+        removeFromTableView()
     }
     
     func didFinish() {
@@ -61,6 +61,12 @@ final class LoadMoreFooter: NSObject {
             
         case .ready:
             break
+        }
+    }
+    
+    func removeFromTableView() {
+        if tableView.tableFooterView == refreshView {
+            tableView.tableFooterView = nil
         }
     }
     

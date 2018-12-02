@@ -80,9 +80,9 @@ class ViewController: UIViewController, Themeable {
 }
 
 /**
-    A thin customization of UITableViewController that extends Theme support and adds some block-based refreshing/load more abilities.
+    A thin customization of UITableViewController that extends Theme support and adds some block-based refreshing abilities.
  
-    Implements `UITableViewDelegate.tableView(_:willDisplayCell:forRowAtIndexPath:)`. If your subclass also implements this method, please call its superclass implementation at some point.
+ For load more, please see `LoadMoreFooter`.
  */
 class TableViewController: UITableViewController, Themeable {
     private var viewIsLoading = false
@@ -170,29 +170,6 @@ class TableViewController: UITableViewController, Themeable {
         }
     }
     
-    /// A block to call when the table is pulled up to load more content. If nil, no load more control is shown.
-    var scrollToLoadMoreBlock: (() -> Void)? {
-        didSet {
-            if scrollToLoadMoreBlock == nil {
-                stopAnimatingInfiniteScroll()
-            }
-        }
-    }
-    
-    private enum InfiniteScrollState {
-        case ready
-        case loadingMore
-    }
-    private var infiniteScrollState: InfiniteScrollState = .ready
-    
-    func stopAnimatingInfiniteScroll() {
-        infiniteScrollState = .ready
-        
-        guard let footer = tableView.tableFooterView else { return }
-        tableView.contentInset.bottom -= footer.bounds.height
-        tableView.tableFooterView = nil
-    }
-    
     // MARK: View lifecycle
     
     override func viewDidLoad() {
@@ -233,25 +210,6 @@ class TableViewController: UITableViewController, Themeable {
         super.viewDidDisappear(animated)
         
         visible = false
-    }
-    
-    // MARK: UITableViewDelegate
-    
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard infiniteScrollState == .ready, let block = scrollToLoadMoreBlock else { return }
-        guard indexPath.row + 1 == tableView.dataSource?.tableView(tableView, numberOfRowsInSection: indexPath.section) else { return }
-        guard tableView.contentSize.height >= tableView.bounds.height else { return }
-        
-        infiniteScrollState = .loadingMore
-        block()
-        
-        let loadMoreView = NigglyRefreshView()
-        loadMoreView.bounds.size.height = loadMoreView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        loadMoreView.backgroundColor = tableView.backgroundColor
-        loadMoreView.startAnimating()
-        tableView.tableFooterView = loadMoreView
-        
-        tableView.contentInset.bottom += loadMoreView.bounds.height
     }
 }
 

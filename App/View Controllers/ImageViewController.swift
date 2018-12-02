@@ -109,6 +109,10 @@ final class ImageViewController: UIViewController {
         var panToDismissAction: (() -> Void)?
         let doubleTap = UITapGestureRecognizer()
         
+        private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
+            return ScrollViewDelegateMultiplexer(scrollView: scrollView)
+        }()
+        
         override init(frame: CGRect) {
             super.init(frame: frame)
             
@@ -123,7 +127,7 @@ final class ImageViewController: UIViewController {
             backgroundColor = UIColor.black
             
             scrollView.indicatorStyle = .white
-            scrollView.addDelegate(self)
+            multiplexer.addDelegate(self)
             addSubview(scrollView)
             
             doubleTap.numberOfTapsRequired = 2
@@ -173,7 +177,7 @@ final class ImageViewController: UIViewController {
         }
         
         deinit {
-            scrollView.removeDelegate(self)
+            multiplexer.removeDelegate(self)
         }
         
         var image: DecodedImage? {

@@ -6,30 +6,39 @@ import AwfulCore
 import CoreData
 import UIKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 final class BookmarksTableViewController: TableViewController, ThreadPeekPopControllerDelegate {
+    
     private var dataSource: ThreadListDataSource?
     private var latestPage = 0
+    private var loadMoreFooter: LoadMoreFooter?
+    private let managedObjectContext: NSManagedObjectContext
+    private var peekPopController: ThreadPeekPopController?
+    
     private lazy var longPressRecognizer: UIGestureRecognizer = {
         return UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
     }()
-    private let managedObjectContext: NSManagedObjectContext
-    private var peekPopController: ThreadPeekPopController?
+    
+    private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
+        return ScrollViewDelegateMultiplexer(scrollView: tableView)
+    }()
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         
         super.init(style: .plain)
         
-        title = "Bookmarks"
+        title = LocalizedString("bookmarks.title")
         
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    deinit {
+        if isViewLoaded {
+            multiplexer.removeDelegate(self)
+        }
     }
 
     private func makeDataSource() -> ThreadListDataSource {
@@ -45,10 +54,10 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
                 RefreshMinder.sharedMinder.didRefresh(.bookmarks)
 
                 if threads.count >= 40 {
-                    self.scrollToLoadMoreBlock = { self.loadMore() }
+                    self.enableLoadMore()
                 }
                 else {
-                    self.scrollToLoadMoreBlock = nil
+                    self.disableLoadMore()
                 }
             }
             .catch { error in
@@ -58,14 +67,29 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
             }
             .finally {
                 self.stopAnimatingPullToRefresh()
-                self.stopAnimatingInfiniteScroll()
+                self.loadMoreFooter?.didFinish()
         }
+    }
+    
+    private func enableLoadMore() {
+        guard loadMoreFooter == nil else { return }
+        
+        loadMoreFooter = LoadMoreFooter(tableView: tableView, multiplexer: multiplexer, loadMore: { [weak self] loadMoreFooter in
+            self?.loadMore()
+        })
+    }
+    
+    private func disableLoadMore() {
+        loadMoreFooter?.removeFromTableView()
+        loadMoreFooter = nil
     }
     
     // MARK: View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        multiplexer.addDelegate(self)
 
         tableView.addGestureRecognizer(longPressRecognizer)
         tableView.hideExtraneousSeparators()
@@ -96,7 +120,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         prepareUserActivity()
         
         if tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 {
-            scrollToLoadMoreBlock = { [weak self] in self?.loadMore() }
+            enableLoadMore()
         }
         
         becomeFirstResponder()
@@ -236,6 +260,12 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
                 let alert = UIAlertController(networkError: error)
                 self?.present(alert, animated: true)
         }
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

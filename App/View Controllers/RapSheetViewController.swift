@@ -7,77 +7,82 @@ import UIKit
 
 /// Displays a list of probations and bans.
 final class RapSheetViewController: TableViewController {
-    fileprivate let user: User?
-    fileprivate let punishments = NSMutableOrderedSet()
-    fileprivate var mostRecentlyLoadedPage = 0
-    fileprivate lazy var doneItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
-    }()
-    fileprivate lazy var banDateFormatter: DateFormatter = {
+    
+    private var loadMoreFooter: LoadMoreFooter?
+    private var mostRecentlyLoadedPage = 0
+    private let punishments = NSMutableOrderedSet()
+    private let user: User?
+    
+    private lazy var banDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter
     }()
 
+    private lazy var doneItem: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
+    }()
+    
+    private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
+        ScrollViewDelegateMultiplexer(scrollView: tableView)
+    }()
     
     init(user: User? = nil) {
         self.user = user
         super.init(style: .plain)
         
         if user == nil {
-            title = "Leper's Colony"
-            tabBarItem.title = "Lepers"
+            title = LocalizedString("lepers-colony.navbar-title")
+            tabBarItem.title = LocalizedString("lepers-colony.tabbar-title")
             tabBarItem.image = UIImage(named: "lepers")
             tabBarItem.selectedImage = UIImage(named: "lepers-filled")
         } else {
-            title = "Rap Sheet"
+            title = LocalizedString("rap-sheet.title")
             hidesBottomBarWhenPushed = true
             modalPresentationStyle = .formSheet
         }
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    fileprivate func load(_ page: Int) {
+    private func load(_ page: Int) {
         _ = ForumsClient.shared.listPunishments(of: user, page: page)
             .done { [weak self] newPunishments in
-                guard let sself = self else { return }
+                guard let self = self else { return }
 
-                sself.mostRecentlyLoadedPage = page
+                self.mostRecentlyLoadedPage = page
 
                 if page == 1 {
-                    sself.punishments.removeAllObjects()
-                    sself.punishments.addObjects(from: newPunishments)
-                    sself.tableView.reloadData()
+                    self.punishments.removeAllObjects()
+                    self.punishments.addObjects(from: newPunishments)
+                    self.tableView.reloadData()
 
-                    if sself.punishments.count == 0 {
-                        sself.showNothingToSeeView()
+                    if self.punishments.count == 0 {
+                        self.showNothingToSeeView()
                     } else {
-                        sself.setUpInfiniteScroll()
+                        self.enableLoadMore()
                     }
                 } else {
-                    let oldCount = sself.punishments.count
-                    sself.punishments.addObjects(from: newPunishments)
-                    let newCount = sself.punishments.count
+                    let oldCount = self.punishments.count
+                    self.punishments.addObjects(from: newPunishments)
+                    let newCount = self.punishments.count
                     let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
-                    sself.tableView.insertRows(at: indexPaths, with: .automatic)
+                    self.tableView.insertRows(at: indexPaths, with: .automatic)
                 }
             }
-            .catch { [weak self] error -> Void in
+            .catch { [weak self] error in
                 self?.present(UIAlertController(networkError: error), animated: true)
             }
             .finally { [weak self] in
-                self?.stopAnimatingPullToRefresh()
-                self?.stopAnimatingInfiniteScroll()
+                guard let self = self else { return }
+                
+                self.stopAnimatingPullToRefresh()
+                self.loadMoreFooter?.didFinish()
         }
     }
     
-    fileprivate func showNothingToSeeView() {
+    private func showNothingToSeeView() {
         let label = UILabel()
-        label.text = "Nothing to see here…"
+        label.text = LocalizedString("rap-sheet.empty")
         label.frame = CGRect(origin: .zero, size: view.bounds.size)
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.textAlignment = .center
@@ -85,23 +90,26 @@ final class RapSheetViewController: TableViewController {
         view.addSubview(label)
     }
     
-    fileprivate func setUpInfiniteScroll() {
-        scrollToLoadMoreBlock = { [weak self] in
-            guard let latestPage = self?.mostRecentlyLoadedPage else { return }
-            self?.load(latestPage + 1)
-        }
+    private func enableLoadMore() {
+        guard loadMoreFooter == nil else { return }
+        
+        loadMoreFooter = LoadMoreFooter(tableView: tableView, multiplexer: multiplexer, loadMore: { [weak self] loadMoreFooter in
+            guard let self = self else { return }
+            
+            self.load(self.mostRecentlyLoadedPage + 1)
+        })
     }
     
-    @objc fileprivate func didTapDone() {
+    @objc private func didTapDone() {
         dismiss(animated: true, completion: nil)
     }
     
-    fileprivate func refreshIfNecessary() {
+    private func refreshIfNecessary() {
         guard punishments.count == 0 else { return }
         refresh()
     }
     
-    @objc fileprivate func refresh() {
+    @objc private func refresh() {
         startAnimatingPullToRefresh()
         load(1)
     }
@@ -110,6 +118,8 @@ final class RapSheetViewController: TableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        multiplexer.addDelegate(self)
         
         tableView.register(PunishmentCell.self, forCellReuseIdentifier: cellID)
         tableView.separatorStyle = .none
@@ -231,6 +241,12 @@ final class RapSheetViewController: TableViewController {
         if presentingViewController != nil {
             dismiss(animated: true)
         }
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

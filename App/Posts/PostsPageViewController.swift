@@ -1056,7 +1056,7 @@ final class PostsPageViewController: ViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
         
-        refreshControl = PostsPageRefreshControl(scrollView: scrollView, contentView: PostsPageRefreshSpinnerView())
+        refreshControl = PostsPageRefreshControl(scrollView: scrollView, multiplexer: postsView.multiplexer, contentView: PostsPageRefreshSpinnerView())
         refreshControl?.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
         }

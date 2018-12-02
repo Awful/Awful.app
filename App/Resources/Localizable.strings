@@ -24,6 +24,12 @@
 "announcement.title" = "Announcement";
 
 
+/* MARK: Bookmarks */
+
+/* Title of the bookmarks screen, shown in the navbar and the tab bar. */
+"bookmarks.title" = "Bookmarks";
+
+
 /* MARK: Forums list */
 
 /* Title of the announcements section in the forums list. */
@@ -57,6 +63,15 @@
 "launch-open-copied-url-alert.open-button" = "Open";
 
 
+/* MARK: Leper's Colony */
+
+/* Title of the Leper's Colony as shown in the navbar. */
+"lepers-colony.navbar-title" = "Leper's Colony";
+
+/* Title of the Leper's Colony as shown in the tab bar. */
+"lepers-colony.tabbar-title" = "Lepers";
+
+
 /* MARK: Login */
 
 /* Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately). */
@@ -79,6 +94,15 @@
 
 /* Title shown in HUD after the last-read post is updated. */
 "posts-page.marked-read" = "Marked Read";
+
+
+/* MARK: Rap sheet */
+
+/* Text shown when a user's rap sheet has no entries in it. */
+"rap-sheet.empty" = "Nothing to see here…";
+
+/* Title of the rap sheet, shown in the navbar and tab bar. */
+"rap-sheet.title" = "Rap Sheet";
 
 
 /* MARK: Share actions */

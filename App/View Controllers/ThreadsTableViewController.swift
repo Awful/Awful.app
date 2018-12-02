@@ -5,19 +5,25 @@
 import AwfulCore
 import CoreData
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
+    
     private var dataSource: ThreadListDataSource?
     private var filterThreadTag: ThreadTag?
     let forum: Forum
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreFooter?
+    private let managedObjectContext: NSManagedObjectContext
+    private var peekPopController: ThreadPeekPopController?
+    
     private lazy var longPressRecognizer: UIGestureRecognizer = {
         return UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
     }()
-    private let managedObjectContext: NSManagedObjectContext
-    private var peekPopController: ThreadPeekPopController?
+    
+    private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
+        return ScrollViewDelegateMultiplexer(scrollView: tableView)
+    }()
     
     init(forum: Forum) {
         guard let managedObjectContext = forum.managedObjectContext else {
@@ -37,7 +43,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     deinit {
         if isViewLoaded {
-            tableView.removeDelegate(self)
+            multiplexer.removeDelegate(self)
         }
     }
     
@@ -94,7 +100,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private func enableLoadMore() {
         guard loadMoreFooter == nil else { return }
         
-        loadMoreFooter = LoadMoreFooter(tableView: tableView, loadMore: { [weak self] loadMoreFooter in
+        loadMoreFooter = LoadMoreFooter(tableView: tableView, multiplexer: multiplexer, loadMore: { [weak self] loadMoreFooter in
             self?.loadNextPage()
         })
     }
@@ -104,7 +110,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.addDelegate(self)
+        multiplexer.addDelegate(self)
 
         tableView.addGestureRecognizer(longPressRecognizer)
         tableView.estimatedRowHeight = ThreadListCell.estimatedHeight
