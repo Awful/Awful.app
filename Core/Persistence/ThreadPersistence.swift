@@ -144,6 +144,11 @@ internal extension ThreadListScrapeResult.Thread {
 
             if seenPosts != Int(thread.seenPosts) { thread.seenPosts = Int32(seenPosts) }
         }
+        
+        // Merely coming across a thread in a list means it must have at least one page. But if it has no replies, we won't have set the number of pages appropriately, so we need to handle that here.
+        if thread.numberOfPages == 0 {
+            thread.numberOfPages = 1
+        }
 
         if !title.isEmpty, title != thread.title { thread.title = title }
     }
