@@ -193,6 +193,10 @@ extension ProfileViewController: RenderViewDelegate {
             UIApplication.shared.openURL(url)
         }
     }
+    
+    func renderProcessDidTerminate(in view: RenderView) {
+        renderProfile()
+    }
 }
 
 

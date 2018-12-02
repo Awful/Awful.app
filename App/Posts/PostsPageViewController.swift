@@ -1249,6 +1249,10 @@ extension PostsPageViewController: RenderViewDelegate {
             UIApplication.shared.openURL(url)
         }
     }
+    
+    func renderProcessDidTerminate(in view: RenderView) {
+        renderPosts()
+    }
 }
 
 extension PostsPageViewController: UIGestureRecognizerDelegate {

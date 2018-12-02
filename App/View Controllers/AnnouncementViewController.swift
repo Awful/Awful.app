@@ -53,10 +53,10 @@ final class AnnouncementViewController: ViewController {
             switch (self, newState) {
             case (.initialized, .loading),
                  (.loading, .renderingFirstTime), (.loading, .failed),
-                 (.renderingFirstTime, .rendered),
+                 (.renderingFirstTime, .rendered), (.renderingFirstTime, .rerendering),
                  (.failed, .rerendering),
                  (.rendered, .rerendering),
-                 (.rerendering, .rendered):
+                 (.rerendering, .rendered), (.rerendering, .rerendering):
                 return true
 
             case (.initialized, _), (.loading, _), (.renderingFirstTime, _), (.failed, _), (.rendered, _), (.rerendering, _):
@@ -149,10 +149,10 @@ final class AnnouncementViewController: ViewController {
             .catch { [weak self] error in
                 Log.e("couldn't list announcements: \(error)")
 
-                guard let sself = self else { return }
+                guard let self = self else { return }
 
-                if case .loading = sself.state {
-                    sself.state = .failed(error)
+                if case .loading = self.state {
+                    self.state = .failed(error)
                 }
         }
     }
@@ -489,6 +489,27 @@ extension AnnouncementViewController: RenderViewDelegate {
         }
         else {
             UIApplication.shared.openURL(url)
+        }
+    }
+    
+    func renderProcessDidTerminate(in view: RenderView) {
+        switch state {
+        case .initialized, .loading:
+            break
+            
+        case .renderingFirstTime(let model):
+            state = .rerendering(model)
+            
+        case .failed:
+            if let model = RenderModel(announcement: announcement, theme: theme, hadBeenSeenAlready: hadBeenSeenAlready) {
+                state = .rerendering(model)
+            }
+            
+        case .rendered(let model):
+            state = .rerendering(model)
+            
+        case .rerendering(let model):
+            state = .rerendering(model)
         }
     }
 }

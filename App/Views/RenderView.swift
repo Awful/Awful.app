@@ -2,6 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Crashlytics
 import PromiseKit
 import UIKit
 import WebKit
@@ -164,6 +165,10 @@ extension RenderView: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
         delegate?.didFinishRenderingHTML(in: self)
     }
+    
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        delegate?.renderProcessDidTerminate(in: self)
+    }
 }
 
 // MARK: - Receiving messages from the render view
@@ -302,7 +307,7 @@ extension RenderView {
     func embedTweets() {
         webView.evaluateJavaScript("if (window.Awful) Awful.embedTweets()") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate embedTweets: \(error)")
+                self.mentionError(error, explanation: "could not evaluate embedTweets")
             }
         }
     }
@@ -312,7 +317,7 @@ extension RenderView {
         // There's a bit of subtlety here. If we eval `document.open()`, we get console errors because we can't bring the document object back into the native-side of the app. And if we don't include a `<body>`, we can get console logs attempting to retrieve `document.body.scrollWidth`.
         webView.evaluateJavaScript("document.write('<body>')") { result, error in
             if let error = error {
-                Log.e("could not remove content: \(error)")
+                self.mentionError(error, explanation: "could not remove content")
             }
         }
     }
@@ -350,7 +355,7 @@ extension RenderView {
         
         webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate interestingElementsAtPoint: \(error)")
+                self.mentionError(error, explanation: "could not evaluate interestingElementsAtPoint")
                 return resolver([])
             }
             
@@ -409,7 +414,7 @@ extension RenderView {
         }
         webView.evaluateJavaScript("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate jumpToPostWithID: \(error)")
+                self.mentionError(error, explanation: "could not evaluate jumpToPostWithID")
             }
         }
     }
@@ -418,7 +423,7 @@ extension RenderView {
     func loadLinkifiedImages() {
         webView.evaluateJavaScript("if (window.Awful) Awful.loadLinkifiedImages()") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate loadLinkifiedImages: \(error)")
+                self.mentionError(error, explanation: "could not evaluate loadLinkifiedImages")
             }
         }
     }
@@ -435,7 +440,7 @@ extension RenderView {
         
         webView.evaluateJavaScript("if (window.Awful) Awful.markReadUpToPostWithID(\(escaped))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate markReadUpToPostWithID: \(error)")
+                self.mentionError(error, explanation: "could not evaluate markReadUpToPostWithID")
             }
         }
     }
@@ -452,7 +457,7 @@ extension RenderView {
         
         webView.evaluateJavaScript("if (window.Awful) Awful.prependPosts(\(escaped))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate prependPosts: \(error)")
+                self.mentionError(error, explanation: "could not evaluate prependPosts")
             }
         }
     }
@@ -469,7 +474,7 @@ extension RenderView {
         
         webView.evaluateJavaScript("if (window.Awful) Awful.setPostHTMLAtIndex(\(escaped), \(i))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate setPostHTMLAtIndex: \(error)")
+                self.mentionError(error, explanation: "could not evaluate setPostHTMLAtIndex")
             }
         }
     }
@@ -486,7 +491,7 @@ extension RenderView {
         
         webView.evaluateJavaScript("if (window.Awful) Awful.setExternalStylesheet(\(escaped))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate setExternalStylesheet: \(error)")
+                self.mentionError(error, explanation: "could not evaluate setExternalStylesheet")
             }
         }
     }
@@ -495,7 +500,7 @@ extension RenderView {
     func setFontScale(_ scale: Double) {
         webView.evaluateJavaScript("if (window.Awful) Awful.setFontScale(\(scale))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate setFontScale: \(error)")
+                self.mentionError(error, explanation: "could not evaluate setFontScale")
             }
         }
     }
@@ -516,7 +521,7 @@ extension RenderView {
         
         webView.evaluateJavaScript("if (window.Awful) Awful.fyadFlag.setFlag(\(escaped))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate setFYADFlag: \(error)")
+                self.mentionError(error, explanation: "could not evaluate setFYADFlag")
             }
         }
     }
@@ -530,7 +535,7 @@ extension RenderView {
     func setHighlightMentions(_ highlightMentions: Bool) {
         webView.evaluateJavaScript("if (window.Awful) Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate setHighlightMentions: \(error)")
+                self.mentionError(error, explanation: "could not evaluate setHighlightMentions")
             }
         }
     }
@@ -539,7 +544,7 @@ extension RenderView {
     func setShowAvatars(_ showAvatars: Bool) {
         webView.evaluateJavaScript("if (window.Awful) Awful.setShowAvatars(\(showAvatars ? "true" : "false"))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate setShowAvatars: \(error)")
+                self.mentionError(error, explanation: "could not evaluate setShowAvatars")
             }
         }
     }
@@ -556,7 +561,7 @@ extension RenderView {
         
         webView.evaluateJavaScript("if (window.Awful) Awful.setThemeStylesheet(\(escaped))") { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate setThemeStylesheet: \(error)")
+                self.mentionError(error, explanation: "could not evaluate setThemeStylesheet")
             }
         }
     }
@@ -583,7 +588,7 @@ extension RenderView {
             """
         webView.evaluateJavaScript(js) { rawResult, error in
             if let error = error {
-                Log.w("could not evaluate unionFrameOfElements: \(error)")
+                self.mentionError(error, explanation: "could not evaluate unionFrameOfElements")
                 return resolver(.null)
             }
             
@@ -597,12 +602,40 @@ extension RenderView {
         
         return guarantee
     }
+    
+    private func mentionError(_ error: Error, explanation: String, file: String = #file, function: StaticString = #function, line: Int = #line) {
+        
+        // Getting many reports of features handled by user script (e.g. tapping spoilers, author headers in posts) not working correctly. Grasping at straws, I'm wondering if the web view is somehow getting invalidated or is otherwise throwing errors that we're not picking up. See e.g. https://github.com/Awful/Awful.app/issues/813
+        Log.w("\(function): \(explanation): \(error)", file: file, line: line)
+        Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: [
+            "file": file,
+            "function": function,
+            "line": line])
+        
+        do {
+            // This feels stupid but I'm not sure how else to check "is this type-erased `Error` the error I'm curious about?" as I'm a bit hazy on Error/NSError conversions and the Swift-generated error types from C/Objective-C headers.
+            throw error
+        }
+        catch WKError.webContentProcessTerminated {
+            // As the `WKNavigationDelegate` we'll presumably hear about this over there, so we won't do anything special here.
+        }
+        catch WKError.webViewInvalidated {
+            // Not totally clear what this error means, but based on the name it sounds like we should treat it similarly to the content process getting terminated.
+            delegate?.renderProcessDidTerminate(in: self)
+        }
+        catch {
+            // Already logged and recorded via Crashlytics, so we're done here.
+        }
+    }
 }
 
 protocol RenderViewDelegate: class {
     func didFinishRenderingHTML(in view: RenderView)
     func didReceive(message: RenderViewMessage, in view: RenderView)
     func didTapLink(to url: URL, in view: RenderView)
+    
+    /// Informs the delegate that rendering has probably failed (and the view is likely blank). The delegate should call `RenderView.render(html:baseURL:)`.
+    func renderProcessDidTerminate(in view: RenderView)
 }
 
 private func escapeForEval(_ s: String) throws -> String {

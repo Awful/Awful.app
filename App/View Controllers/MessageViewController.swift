@@ -333,6 +333,10 @@ extension MessageViewController: RenderViewDelegate {
             UIApplication.shared.openURL(url)
         }
     }
+    
+    func renderProcessDidTerminate(in view: RenderView) {
+        renderMessage()
+    }
 }
 
 extension MessageViewController: UIGestureRecognizerDelegate {

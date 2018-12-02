@@ -214,4 +214,8 @@ extension PostPreviewViewController: RenderViewDelegate {
             UIApplication.shared.openURL(url)
         }
     }
+    
+    func renderProcessDidTerminate(in view: RenderView) {
+        renderPreview()
+    }
 }
