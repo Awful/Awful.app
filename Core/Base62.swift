@@ -7,7 +7,7 @@ internal func base62Encode<I: BinaryInteger>(_ i: I) -> String {
     let base = I(base62Alphabet.count)
     var digits: [Character] = []
     var i = i
-    while i > base {
+    while i >= base {
         let digit: I
         (i, digit) = i.quotientAndRemainder(dividingBy: base)
         digits.append(base62Alphabet[Int(digit)])
