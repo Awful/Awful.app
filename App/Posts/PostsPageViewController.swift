@@ -533,6 +533,9 @@ final class PostsPageViewController: ViewController {
         
         case AwfulSettingsKeys.embedTweets.takeUnretainedValue() where AwfulSettings.shared().embedTweets:
             renderView.embedTweets()
+            
+        case AwfulSettingsKeys.pullForNext.takeRetainedValue():
+            updateRefreshControl()
         
         default:
             break
@@ -1019,6 +1022,24 @@ final class PostsPageViewController: ViewController {
         Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
+    private func updateRefreshControl() {
+        guard isViewLoaded else { return }
+        
+        if AwfulSettings.shared().pullForNext {
+            if refreshControl == nil {
+                refreshControl = PostsPageRefreshControl(scrollView: scrollView, multiplexer: postsView.multiplexer, contentView: PostsPageRefreshSpinnerView())
+                refreshControl?.didStartRefreshing = { [weak self] in
+                    self?.loadNextPageOrRefresh()
+                }
+            }
+            
+            refreshControl?.tintColor = theme["postsPullForNextColor"]
+        } else {
+            refreshControl?.removeFromSuperview()
+            refreshControl = nil
+        }
+    }
+    
     override func themeDidChange() {
         super.themeDidChange()
         
@@ -1056,11 +1077,7 @@ final class PostsPageViewController: ViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
         
-        refreshControl = PostsPageRefreshControl(scrollView: scrollView, multiplexer: postsView.multiplexer, contentView: PostsPageRefreshSpinnerView())
-        refreshControl?.didStartRefreshing = { [weak self] in
-            self?.loadNextPageOrRefresh()
-        }
-        refreshControl?.tintColor = theme["postsPullForNextColor"]
+        updateRefreshControl()
         
         if let loadingView = loadingView {
             view.addSubview(loadingView)

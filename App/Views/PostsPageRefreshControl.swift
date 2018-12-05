@@ -26,6 +26,7 @@ final class PostsPageRefreshControl: UIView {
         super.init(frame: CGRect.zero)
         
         addContentView()
+        layoutInScrollView()
         
         multiplexer.addDelegate(self)
     }

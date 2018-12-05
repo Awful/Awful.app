@@ -44,17 +44,15 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 struct {
+    __unsafe_unretained NSString *yosposStyle;
     __unsafe_unretained NSString *fyadStyle;
     __unsafe_unretained NSString *gasChamberStyle;
     __unsafe_unretained NSString *keepSidebarOpen;
-    __unsafe_unretained NSString *pullForNext;
-    __unsafe_unretained NSString *yosposStyle;
 } OldSettingsKeys = {
+    .yosposStyle = @"yospos_style",
     .fyadStyle = @"fyad_style",
     .gasChamberStyle = @"gas_chamber_style",
     .keepSidebarOpen = @"keep_sidebar_open",
-    .pullForNext = @"pull_for_next",
-    .yosposStyle = @"yospos_style",
 };
 
 struct {
@@ -145,6 +143,8 @@ BOOL_PROPERTY(autoDarkTheme, setAutoDarkTheme)
 - (void)setAutoThemeThreshold:(double)autoThemeThreshold {
     self[AwfulSettingsKeys.autoThemeThreshold] = @(autoThemeThreshold);
 }
+
+BOOL_PROPERTY(pullForNext, setPullForNext)
 
 struct {
     __unsafe_unretained NSString *currentUser;
@@ -378,6 +378,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .darkTheme = @"dark_theme",
     .autoDarkTheme = @"auto_dark_theme",
     .autoThemeThreshold = @"auto_theme_threshold",
+    .pullForNext = @"pull_for_next",
     .username = @"username",
     .userID = @"userID",
     .canSendPrivateMessages = @"can_send_private_messages",
