@@ -23,7 +23,7 @@ final class PostsPageRefreshControl: UIView {
         self.contentView = contentView
         self.scrollView = scrollView
         
-        super.init(frame: CGRect.zero)
+        super.init(frame: .zero)
         
         addContentView()
         layoutInScrollView()
