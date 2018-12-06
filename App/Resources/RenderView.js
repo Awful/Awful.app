@@ -328,18 +328,15 @@ Awful.toggleGIF = function(gifWrapper) {
  @returns {ElementRect} A frame that encompasses all of the elements, or null if elements is empty.
  */
 Awful.unionFrameOfElements = function(elements) {
-  if (elements.length == 0) {
-    return null;
-  }
-
-  var union;
+  var union = null;
   Array.prototype.forEach.call(elements, function(el) {
+    var rect = Awful.frameOfElement(el);
+
     if (!union) {
-      union = el;
+      union = rect;
       return;
     }
 
-    var rect = Awful.frameOfElement(el);
     var left = Math.min(rect.x, union.x);
     var top = Math.min(rect.y, union.y);
     var right = Math.max(rect.x + rect.width, union.x + union.width);
@@ -546,7 +543,10 @@ Awful.setDarkMode = function(dark) {
  Updates the externally-updatable stylesheet, which lets us make changes quickly without going through a full app update.
  */
 Awful.setExternalStylesheet = function(stylesheet) {
-  document.getElementById('awful-external-style').innerText = stylesheet;
+  var externalStyle = document.getElementById('awful-external-style');
+  if (externalStyle) {
+    externalStyle.innerText = stylesheet;
+  }
 };
 
 
