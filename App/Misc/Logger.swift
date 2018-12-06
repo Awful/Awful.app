@@ -96,7 +96,9 @@ final class Logger {
 
     private func log(level: Level, message: () -> String, file: String, line: Int) {
         guard level >= self.level else { return }
-        print("[\(name)] \(file):L\(line):\(level.abbreviation): \(message())")
+        let message = message()
+        print("[\(name)] \(file):L\(line):\(level.abbreviation): \(message)")
+        Logger.extraHandler?(name, level, message, file, line)
     }
 
     /**
