@@ -13,13 +13,28 @@ import UIKit
     * Uses the Photos framework for thumbnailing when possible.
  */
 final class TextAttachment: NSTextAttachment {
-    let assetURL: URL?
+    
+    // Would ideally be a `let` but see note at `init(data:ofType:)`.
+    private(set) var assetURL: URL?
     
     init(image: UIImage, assetURL: URL?) {
         self.assetURL = assetURL
         super.init(data: nil, ofType: nil)
         
         self.image = image
+    }
+    
+    /*
+     We've received crash logs indicting us for not implementing this initializer, and the backtrace indicated it can be called by `NSTextAttachment.init(coder:)`. So we need to implement it and forward to `super`.
+     
+     Annoyingly, we don't want to have to set `assetURL` here (because it'll already be set by our own `init(coder:)` implementation), so we have to make that property `var` to quiet the compiler.
+     
+     Not sure whether this is intended or documented behaviour for `NSTextAttachment`, though it does lead to some weirdness for Swift (e.g. we'd be required to set a value for any `let` property here, even if it was already set in our own `init(coder:)`, so what happens if you write twice to a `let`?)
+     
+     If it helps future explorers: as of writing, crash logs exist from iOS versions as late as 12.1.
+     */
+    override init(data contentData: Data?, ofType uti: String?) {
+        super.init(data: contentData, ofType: uti)
     }
     
     required init?(coder: NSCoder) {
