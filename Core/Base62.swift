@@ -4,15 +4,19 @@
 
 /// Returns a base-62 representation of an integer. Digits are 0-9, A-Z, a-z.
 internal func base62Encode<I: BinaryInteger>(_ i: I) -> String {
+    precondition(i >= 0, "negative numbers cannot be represented in base62")
+    
     let base = I(base62Alphabet.count)
     var digits: [Character] = []
     var i = i
+    
     while i >= base {
         let digit: I
         (i, digit) = i.quotientAndRemainder(dividingBy: base)
         digits.append(base62Alphabet[Int(digit)])
     }
     digits.append(base62Alphabet[Int(i)])
+    
     return String(digits.reversed())
 }
 
