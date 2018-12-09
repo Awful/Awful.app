@@ -6,6 +6,8 @@ import AwfulCore
 import KVOController
 import MRProgress
 
+private let Log = Logger.get()
+
 /**
 A place for someone to compose a reply to a thread.
 
@@ -198,9 +200,9 @@ final class ReplyWorkspace: NSObject {
 
         ForumsClient.shared.quoteBBcodeContents(of: post)
             .done { [weak self] bbcode in
-                guard let sself = self else { return }
+                guard let self = self else { return }
 
-                let textView = sself.compositionViewController.textView
+                let textView = self.compositionViewController.textView
                 var replacement = bbcode
                 let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
 
@@ -246,7 +248,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
             }
         }
         
-        NSLog("[%@ %@] failing intentionally as no saved draft was found", self.description(), #function)
+        Log.e("failing intentionally as no saved draft was found")
         return nil
     }
     

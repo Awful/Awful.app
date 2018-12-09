@@ -933,15 +933,18 @@ final class PostsPageViewController: ViewController {
                     self.replyWorkspace?.completion = self.replyCompletionBlock
                 }
                 
-                self.replyWorkspace?.quotePost(post, completion: { [weak self] (error) in
+                self.replyWorkspace?.quotePost(post, completion: { [weak self] error in
+                    guard let self = self else { return }
+                    
                     if let error = error {
                         let alert = UIAlertController(networkError: error)
-                        self?.present(alert, animated: true, completion: nil)
+                        self.present(alert, animated: true)
                         return
                     }
                     
-                    guard let vc = self?.replyWorkspace?.viewController else { return }
-                    self?.present(vc, animated: true, completion: nil)
+                    if let vc = self.replyWorkspace?.viewController {
+                        self.present(vc, animated: true)
+                    }
                 })
             }))
         }
