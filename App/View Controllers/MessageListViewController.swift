@@ -91,10 +91,10 @@ final class MessageListViewController: TableViewController {
                 RefreshMinder.sharedMinder.didRefresh(.privateMessagesInbox)
             }
             .catch { [weak self] error in
-                guard let sself = self else { return }
-                if sself.visible {
+                guard let self = self else { return }
+                if self.visible {
                     let alert = UIAlertController(networkError: error)
-                    sself.present(alert, animated: true)
+                    self.present(alert, animated: true)
                 }
             }
             .finally { [weak self] in
@@ -117,10 +117,10 @@ final class MessageListViewController: TableViewController {
         ForumsClient.shared
             .deletePrivateMessage(message)
             .catch { [weak self] (error) in
-                guard let sself = self, sself.visible else { return }
+                guard let self = self, self.visible else { return }
                 
                 let alert = UIAlertController(title: LocalizedString("private-messages-list.deletion-error.title"), error: error)
-                sself.present(alert, animated: true)
+                self.present(alert, animated: true)
         }
     }
 

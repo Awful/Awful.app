@@ -5,6 +5,8 @@
 import Smilies
 import UIKit
 
+private let Log = Logger.get()
+
 final class ShowSmilieKeyboardCommand: NSObject {
     fileprivate let textView: UITextView
     
@@ -72,7 +74,7 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
                 try smilie.managedObjectContext!.save()
             }
             catch {
-                NSLog("[\(Mirror(reflecting:self)) \(#function)] error saving: \(error)")
+                Log.e("error saving: \(error)")
             }
         }
     }

@@ -6,6 +6,8 @@ import MobileCoreServices
 import PSMenuItem
 import UIKit
 
+private let Log = Logger.get()
+
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 // This classes exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
 final class CompositionMenuTree: NSObject {
@@ -275,7 +277,7 @@ fileprivate func linkifySelection(_ tree: CompositionMenuTree) {
         detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
     }
     catch {
-        return NSLog("[\(#function)] error creating link data detector: \(error)")
+        return Log.e("error creating link data detector: \(error)")
     }
     
     let textView = tree.textView

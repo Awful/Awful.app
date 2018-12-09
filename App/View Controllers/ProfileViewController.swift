@@ -93,9 +93,9 @@ final class ProfileViewController: ViewController {
             let userID = user.userID, username = user.username
             ForumsClient.shared.profileUser(id: userID, username: username)
                 .done { [weak self] profile in
-                    guard let sself = self else { return }
-                    sself.user = profile.user
-                    sself.renderProfile()
+                    guard let self = self else { return }
+                    self.user = profile.user
+                    self.renderProfile()
                 }
                 .catch { error in
                     Log.e("error fetching user profile for \(username ?? "") (ID \(userID)): \(error)")

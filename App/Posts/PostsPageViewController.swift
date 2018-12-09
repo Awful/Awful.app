@@ -193,79 +193,79 @@ final class PostsPageViewController: ViewController {
         networkOperation = cancellable
 
         promise.done { [weak self] posts, firstUnreadPost, advertisementHTML in
-            guard let sself = self else { return }
+            guard let self = self else { return }
 
             // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
-            guard sself.page == newPage else { return }
+            guard self.page == newPage else { return }
 
             if !posts.isEmpty {
-                sself.posts = posts
+                self.posts = posts
 
                 let anyPost = posts[0]
-                if sself.author != nil {
-                    sself.page = .specific(anyPost.singleUserPage)
+                if self.author != nil {
+                    self.page = .specific(anyPost.singleUserPage)
                 } else {
-                    sself.page = .specific(anyPost.page)
+                    self.page = .specific(anyPost.page)
                 }
             }
 
             switch newPage {
-            case .last where sself.posts.isEmpty,
-                 .nextUnread where sself.posts.isEmpty:
-                let pageCount = sself.numberOfPages > 0 ? "\(sself.numberOfPages)" : "?"
-                sself.currentPageItem.title = "Page ? of \(pageCount)"
+            case .last where self.posts.isEmpty,
+                 .nextUnread where self.posts.isEmpty:
+                let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                self.currentPageItem.title = "Page ? of \(pageCount)"
 
             case .last, .nextUnread, .specific:
                 break
             }
 
-            sself.configureUserActivityIfPossible()
+            self.configureUserActivityIfPossible()
 
-            if sself.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
-                sself.hiddenPosts = firstUnreadPost - 1
+            if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
+                self.hiddenPosts = firstUnreadPost - 1
             }
 
             if reloadingSamePage || renderedCachedPosts {
-                sself.scrollToFractionAfterLoading = sself.scrollView.fractionalContentOffset.y
+                self.scrollToFractionAfterLoading = self.scrollView.fractionalContentOffset.y
             }
 
-            sself.renderPosts()
+            self.renderPosts()
 
-            sself.updateUserInterface()
+            self.updateUserInterface()
 
-            if let lastPost = sself.posts.last, updateLastReadPost {
-                if sself.thread.seenPosts < lastPost.threadIndex {
-                    sself.thread.seenPosts = lastPost.threadIndex
+            if let lastPost = self.posts.last, updateLastReadPost {
+                if self.thread.seenPosts < lastPost.threadIndex {
+                    self.thread.seenPosts = lastPost.threadIndex
                 }
             }
 
-            sself.refreshControl?.endRefreshing()
+            self.refreshControl?.endRefreshing()
             }
 
             .catch { [weak self] error in
-                guard let sself = self else { return }
+                guard let self = self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
-                if sself.page != newPage { return }
+                if self.page != newPage { return }
 
-                sself.clearLoadingMessage()
+                self.clearLoadingMessage()
 
                 if (error as NSError).code == AwfulErrorCodes.archivesRequired {
                     let alert = UIAlertController(title: "Archives Required", error: error)
-                    sself.present(alert, animated: true)
+                    self.present(alert, animated: true)
                 } else {
                     let offlineMode = (error as NSError).domain == NSURLErrorDomain && (error as NSError).code != NSURLErrorCancelled
-                    if sself.posts.isEmpty || !offlineMode {
+                    if self.posts.isEmpty || !offlineMode {
                         let alert = UIAlertController(title: "Could Not Load Page", error: error)
-                        sself.present(alert, animated: true)
+                        self.present(alert, animated: true)
                     }
                 }
 
                 switch newPage {
-                case .last where sself.posts.isEmpty,
-                     .nextUnread where sself.posts.isEmpty:
-                    let pageCount = sself.numberOfPages > 0 ? "\(sself.numberOfPages)" : "?"
-                    sself.currentPageItem.title = "Page ? of \(pageCount)"
+                case .last where self.posts.isEmpty,
+                     .nextUnread where self.posts.isEmpty:
+                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                    self.currentPageItem.title = "Page ? of \(pageCount)"
 
                 case .last, .nextUnread, .specific:
                     break
@@ -745,11 +745,11 @@ final class PostsPageViewController: ViewController {
             .done { [weak self] in
                 // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
                 guard
-                    let sself = self,
-                    let i = sself.posts.index(of: post)
+                    let self = self,
+                    let i = self.posts.index(of: post)
                     else { return }
                 
-                sself.renderView.replacePostHTML(sself.renderedPostAtIndex(i), at: i - sself.hiddenPosts)
+                self.renderView.replacePostHTML(self.renderedPostAtIndex(i), at: i - self.hiddenPosts)
             }
             .catch { [weak self] error in
                 let alert = UIAlertController(networkError: error)
@@ -913,11 +913,11 @@ final class PostsPageViewController: ViewController {
             items.append(IconActionItem(.editPost, block: {
                 ForumsClient.shared.findBBcodeContents(of: post)
                     .done { [weak self] text in
-                        guard let sself = self else { return }
+                        guard let self = self else { return }
                         let replyWorkspace = ReplyWorkspace(post: post)
-                        sself.replyWorkspace = replyWorkspace
-                        replyWorkspace.completion = sself.replyCompletionBlock
-                        sself.present(replyWorkspace.viewController, animated: true)
+                        self.replyWorkspace = replyWorkspace
+                        replyWorkspace.completion = self.replyCompletionBlock
+                        self.present(replyWorkspace.viewController, animated: true)
                     }
                     .catch { [weak self] error in
                         let alert = UIAlertController(title: "Could Not Edit Post", error: error)

@@ -262,11 +262,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private lazy var loginViewController: LoginViewController! = {
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
-            guard let sself = self else { return }
-            sself.setRootViewController(sself.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
-                guard let sself = self else { return }
-                sself.rootViewControllerStack.didAppear()
-                sself.loginViewController = nil
+            guard let self = self else { return }
+            self.setRootViewController(self.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
+                guard let self = self else { return }
+                self.rootViewControllerStack.didAppear()
+                self.loginViewController = nil
             })
         }
         return loginVC

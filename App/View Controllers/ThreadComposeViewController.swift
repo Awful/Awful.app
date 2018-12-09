@@ -151,17 +151,17 @@ final class ThreadComposeViewController: ComposeTextViewController {
         updatingThreadTags = true
         ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
             .done { [weak self] tags in
-                guard let sself = self else { return }
-                sself.updatingThreadTags = false
-                sself.availableThreadTags = tags.primary
-                sself.availableSecondaryThreadTags = tags.secondary
-                guard let tags = sself.availableThreadTags else { return }
+                guard let self = self else { return }
+                self.updatingThreadTags = false
+                self.availableThreadTags = tags.primary
+                self.availableSecondaryThreadTags = tags.secondary
+                guard let tags = self.availableThreadTags else { return }
 
                 let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.compactMap { $0.imageName }
-                let secondaryImageNames = sself.availableSecondaryThreadTags?.compactMap { $0.imageName }
+                let secondaryImageNames = self.availableSecondaryThreadTags?.compactMap { $0.imageName }
                 let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: secondaryImageNames)
-                sself.threadTagPicker = picker
-                picker.delegate = sself
+                self.threadTagPicker = picker
+                picker.delegate = self
                 picker.title = "Choose Thread Tag"
                 if secondaryImageNames?.isEmpty == false {
                     picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
@@ -170,10 +170,10 @@ final class ThreadComposeViewController: ComposeTextViewController {
                 }
             }
             .catch { [weak self] error in
-                guard let sself = self else { return }
-                sself.updatingThreadTags = false
-                sself.availableThreadTags = nil
-                sself.availableSecondaryThreadTags = nil
+                guard let self = self else { return }
+                self.updatingThreadTags = false
+                self.availableThreadTags = nil
+                self.availableSecondaryThreadTags = nil
         }
     }
     
@@ -190,8 +190,8 @@ final class ThreadComposeViewController: ComposeTextViewController {
             else { return handler(false) }
         let preview = ThreadPreviewViewController(forum: forum, subject: subject, threadTag: threadTag, secondaryThreadTag: secondaryThreadTag, bbcode: textView.attributedText)
         preview.submitBlock = { [weak preview, weak self] in
-            if let preview = preview, let sself = self {
-                sself.formData = preview.formData
+            if let preview = preview, let self = self {
+                self.formData = preview.formData
             }
             handler(true)
         }

@@ -118,21 +118,21 @@ final class AnnouncementViewController: ViewController {
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
 
         announcementObserver = ManagedObjectObserver(object: announcement, didChange: { [weak self] (change) in
-            guard let sself = self else { return }
+            guard let self = self else { return }
             switch change {
             case .delete:
-                _ = sself.navigationController?.popViewController(animated: true)
+                _ = self.navigationController?.popViewController(animated: true)
 
             case .update:
-                switch (sself.state, RenderModel(announcement: sself.announcement, theme: sself.theme, hadBeenSeenAlready: sself.hadBeenSeenAlready)) {
+                switch (self.state, RenderModel(announcement: self.announcement, theme: self.theme, hadBeenSeenAlready: self.hadBeenSeenAlready)) {
                 case (.loading, let model?):
-                    sself.state = .renderingFirstTime(model)
+                    self.state = .renderingFirstTime(model)
 
                 case (.failed, let model?):
-                    sself.state = .rerendering(model)
+                    self.state = .rerendering(model)
 
                 case (.rendered(let oldModel), let newModel?) where oldModel != newModel:
-                    sself.state = .rerendering(newModel)
+                    self.state = .rerendering(newModel)
 
                 case (.initialized, _), (.loading, _), (.renderingFirstTime, _), (.rendered, _), (.failed, _), (.rerendering, _):
                     break

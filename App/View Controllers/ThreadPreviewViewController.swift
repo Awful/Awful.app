@@ -81,19 +81,19 @@ final class ThreadPreviewViewController: ViewController {
         postHTML = html
         html
             .done { [weak self] previewAndForm in
-                guard let sself = self else { return }
+                guard let self = self else { return }
                 
-                sself.networkOperation = nil
+                self.networkOperation = nil
                 
                 guard
                     let userKey = AwfulSettings.shared().userID.map({ UserKey(userID: $0, username: AwfulSettings.shared().username) }),
-                    let context = sself.managedObjectContext,
+                    let context = self.managedObjectContext,
                     let author = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
                     else { throw MissingAuthorError() }
                 
-                sself.post = PostViewModel(author: author, isOP: true, postDate: Date(), postHTML: previewAndForm.previewHTML)
-                sself.formData = previewAndForm.formData
-                sself.renderPreview()
+                self.post = PostViewModel(author: author, isOP: true, postDate: Date(), postHTML: previewAndForm.previewHTML)
+                self.formData = previewAndForm.formData
+                self.renderPreview()
             }
             .catch { [weak self] error in
                 self?.present(UIAlertController(networkError: error), animated: true)

@@ -99,13 +99,13 @@ final class AwfulURLRouter: NSObject {
                     let (post, page) = arg
                     overlay?.dismiss(true, completion: {
                         guard
-                            let sself = self,
+                            let self = self,
                             let thread = post.thread
                             else { return }
                         let postsVC = PostsPageViewController(thread: thread)
                         postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
                         postsVC.scrollPostToVisible(post)
-                        _ = sself.showPostsViewController(postsVC)
+                        _ = self.showPostsViewController(postsVC)
                     })
                 }
                 .catch { error in

@@ -5,6 +5,8 @@
 import CoreData
 import UIKit
 
+private let Log = Logger.get()
+
 public final class DataStore: NSObject {
     /// A directory in which the store is saved. Since stores can span multiple files, a directory is required.
     let storeDirectoryURL: URL
@@ -86,7 +88,7 @@ public final class DataStore: NSObject {
             try mutableStoreDirectoryURL.setResourceValues(resourceValues)
         }
         catch {
-            NSLog("[\(Mirror(reflecting: self)) \(#function)] failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
+            Log.e("failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
         }
         
         let storeURL = storeDirectoryURL.appendingPathComponent("AwfulCache.sqlite")
@@ -135,7 +137,7 @@ public final class DataStore: NSObject {
                 try storeCoordinator.remove(persistentStore)
             }
             catch {
-                NSLog("[\(Mirror(reflecting: self)) \(#function)] error removing store at \(persistentStore.url!): \(error)")
+                Log.e("error removing store at \(persistentStore.url as Any): \(error)")
             }
             self.persistentStore = nil
         }
@@ -145,7 +147,7 @@ public final class DataStore: NSObject {
             try FileManager.default.removeItem(at: storeDirectoryURL as URL)
         }
         catch {
-            NSLog("[\(Mirror(reflecting: self)) \(#function)] error deleting store directory \(storeDirectoryURL): \(error)")
+            Log.e("error deleting store directory \(storeDirectoryURL): \(error)")
         }
         
         loadPersistentStore()

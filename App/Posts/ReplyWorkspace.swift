@@ -43,10 +43,10 @@ final class ReplyWorkspace: NSObject {
                 self?.compositionViewController.textView.text = bbcode
             }
             .catch { [weak self] error in
-                guard let sself = self else { return }
-                if sself.compositionViewController.visible {
+                guard let self = self else { return }
+                if self.compositionViewController.visible {
                     let alert = UIAlertController(title: "Couldn't Find BBcode", error: error)
-                    sself.viewController.present(alert, animated: true)
+                    self.viewController.present(alert, animated: true)
                 }
             }
             .finally {

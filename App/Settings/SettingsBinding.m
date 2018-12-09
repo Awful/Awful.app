@@ -4,6 +4,7 @@
 
 #import "SettingsBinding.h"
 #import "AwfulSettings.h"
+@import Crashlytics;
 @import ObjectiveC.runtime;
 
 @interface SettingsBinding : NSObject
@@ -122,7 +123,7 @@
 - (void)addAwful_overridingSetting:(NSString *)overridingSettingKey
 {
     if (self.awful_binding == nil) {
-        NSLog(@"WARNING: Assigning an overriding setting to a setting with no binding. Ignoring.");
+        CLSNSLog(@"WARNING: Assigning an overriding setting to a setting with no binding. Ignoring.");
         return;
     }
     SettingsBinding *binding = self.awful_binding;

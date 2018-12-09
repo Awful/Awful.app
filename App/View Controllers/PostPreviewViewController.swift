@@ -104,7 +104,7 @@ final class PostPreviewViewController: ViewController {
         postHTML = html
         html
             .done { [weak self] html in
-                guard let sself = self, let context = sself.managedObjectContext else { return }
+                guard let self = self, let context = self.managedObjectContext else { return }
                 
                 var loggedInUser: User? {
                     guard let userID = AwfulSettings.shared().userID else {
@@ -114,17 +114,17 @@ final class PostPreviewViewController: ViewController {
                     return User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
                 }
                 
-                guard let author = sself.editingPost?.author ?? loggedInUser else {
+                guard let author = self.editingPost?.author ?? loggedInUser else {
                     throw MissingAuthorError()
                 }
                 
-                let postDate = sself.editingPost?.postDate ?? Date()
+                let postDate = self.editingPost?.postDate ?? Date()
                 
-                let isOP = sself.editingPost?.author == author
+                let isOP = self.editingPost?.author == author
                 
-                sself.post = PostViewModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
+                self.post = PostViewModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
                 
-                sself.renderPreview()
+                self.renderPreview()
             }
             .catch { [weak self] error in
                 Log.e("could not preview post: \(error)")
