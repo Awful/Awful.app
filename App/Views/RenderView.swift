@@ -28,10 +28,16 @@ final class RenderView: UIView {
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         
-        let jsURL = Bundle(for: RenderView.self).url(forResource: "RenderView.js", withExtension: nil)!
-        let js = try! String(contentsOf: jsURL)
-        let userScript = WKUserScript(source: js, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-        configuration.userContentController.addUserScript(userScript)
+        let bundle = Bundle(for: RenderView.self)
+        let mainScriptURL = bundle.url(forResource: "RenderView.js", withExtension: nil)!
+        let mainScript = try! String(contentsOf: mainScriptURL)
+        let mainUserScript = WKUserScript(source: mainScript, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+        configuration.userContentController.addUserScript(mainUserScript)
+        
+        let allFramesScriptURL = bundle.url(forResource: "RenderView-AllFrames.js", withExtension: nil)!
+        let allFramesScript = try! String(contentsOf: allFramesScriptURL)
+        let allFramesUserScript = WKUserScript(source: allFramesScript, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+        configuration.userContentController.addUserScript(allFramesUserScript)
         
         if #available(iOS 11.0, *) {
             configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
