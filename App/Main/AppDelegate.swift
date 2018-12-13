@@ -7,6 +7,7 @@ import AwfulCore
 import Crashlytics
 import Fabric
 import Smilies
+import SwiftTweaks
 import UIKit
 import WebKit
 
@@ -60,7 +61,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
         
-        window = UIWindow(frame: UIScreen.main.bounds)
+        window = TweakWindow(frame: UIScreen.main.bounds, gestureType: .shake, tweakStore: Tweaks.defaultStore)
         window?.tintColor = Theme.currentTheme["tintColor"]
         
         if ForumsClient.shared.isLoggedIn {
