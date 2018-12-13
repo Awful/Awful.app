@@ -198,6 +198,8 @@ extension PostsPageRefreshControl: ScrollViewDelegateExtras {
         let refreshControlHeight: CGFloat
         let targetScrollViewBoundsMaxY: CGFloat
         
+        private static let extraBottomPadding: CGFloat = 30
+        
         init(refreshControlHeight: CGFloat, scrollView: UIScrollView, targetContentOffset: CGPoint? = nil) {
             var contentInsetBottom: CGFloat {
                 if #available(iOS 11.0, *) {
@@ -219,7 +221,8 @@ extension PostsPageRefreshControl: ScrollViewDelegateExtras {
         }
         
         var triggeredFraction: CGFloat {
-            return max(visibleBottom / refreshControlHeight, 0)
+            let effectiveControlHeight = refreshControlHeight + ScrollViewInfo.extraBottomPadding
+            return (visibleBottom / effectiveControlHeight).clamp(0 ... .greatestFiniteMagnitude)
         }
     }
     
