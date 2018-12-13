@@ -61,6 +61,7 @@ PODS:
     - PromiseKit/CorePromise
   - PSMenuItem (1.0.0)
   - PullToRefresher (2.0.2)
+  - SwiftTweaks (4.0.2)
   - TUSafariActivity (1.0.4)
 
 DEPENDENCIES:
@@ -77,6 +78,7 @@ DEPENDENCIES:
   - PromiseKit
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/MindSea/PullToRefresh`, branch `fix-simultaneous-access`)
+  - SwiftTweaks (from `https://github.com/Khan/SwiftTweaks`, branch `master`)
   - TUSafariActivity
 
 SPEC REPOS:
@@ -104,6 +106,9 @@ EXTERNAL SOURCES:
   PullToRefresher:
     :branch: fix-simultaneous-access
     :git: https://github.com/MindSea/PullToRefresh
+  SwiftTweaks:
+    :branch: master
+    :git: https://github.com/Khan/SwiftTweaks
 
 CHECKOUT OPTIONS:
   GRMustache.swift:
@@ -115,6 +120,9 @@ CHECKOUT OPTIONS:
   PullToRefresher:
     :commit: 087ec3fb5a2f7674f269b919299636d1959a4391
     :git: https://github.com/MindSea/PullToRefresh
+  SwiftTweaks:
+    :commit: c1901a615177c3cc63319a4c900f8de69178d5e8
+    :git: https://github.com/Khan/SwiftTweaks
 
 SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
@@ -131,8 +139,9 @@ SPEC CHECKSUMS:
   PromiseKit: a26828b0a8d5874960dfdb575b57a70790ec36f1
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   PullToRefresher: 9d66e6a86fb9e1d8fa861c4bbd263e88f5dfc0bd
+  SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
 
-PODFILE CHECKSUM: 713b40f0f22993f6d2fc00aed3d6bd36ceed4638
+PODFILE CHECKSUM: bfa9e0b96d8d757c42b397f645d9693c7a5d3697
 
 COCOAPODS: 1.5.3

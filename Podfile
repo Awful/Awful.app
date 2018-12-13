@@ -27,6 +27,8 @@ target 'Awful' do
   # Swift 4 support that doesn't crash in KVO. Go back to main pod when it arrives there
   pod 'PullToRefresher', :git => 'https://github.com/MindSea/PullToRefresh', :branch => 'fix-simultaneous-access'
 
+  pod 'SwiftTweaks', :git => 'https://github.com/Khan/SwiftTweaks', :branch => 'master'
+
   pod 'TUSafariActivity'
 
   target :AwfulTests do

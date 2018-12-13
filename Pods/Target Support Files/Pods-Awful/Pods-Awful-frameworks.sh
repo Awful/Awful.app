@@ -154,6 +154,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SwiftTweaks/SwiftTweaks.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TUSafariActivity/TUSafariActivity.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework"
 fi
@@ -169,6 +170,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SwiftTweaks/SwiftTweaks.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TUSafariActivity/TUSafariActivity.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework"
 fi
