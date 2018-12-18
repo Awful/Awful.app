@@ -368,9 +368,6 @@ header {
 .op .username {
   color: #005ec9;
 }
-.postbody {
-  margin-left: 40px;
-}
 .postbody a,
 [data-awful-linkified-image] {
   color: #005ec9;
