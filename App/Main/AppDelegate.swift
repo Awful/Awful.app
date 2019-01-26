@@ -18,6 +18,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private var dataStore: DataStore!
     private var inboxRefresher: PrivateMessageInboxRefresher?
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
+    private var openCopiedURLController: OpenCopiedURLController?
     var window: UIWindow?
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -70,6 +71,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             setRootViewController(loginViewController.enclosingNavigationController, animated: false, completion: nil)
         }
         
+        openCopiedURLController = OpenCopiedURLController(window: window!, router: {
+            [unowned self] in
+            self.open(route: $0)
+        })
+        
         window?.makeKeyAndVisible()
         
         return true
@@ -109,9 +115,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Brightness may have changed while app was inactive
         NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
-        
-        // Check clipboard for a forums URL
-        checkClipboard()
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
@@ -173,32 +176,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func emptyCache() {
         URLCache.shared.removeAllCachedResponses()
         AvatarLoader.shared.emptyCache()
-    }
-    
-    func checkClipboard() {
-        guard
-            ForumsClient.shared.isLoggedIn,
-            AwfulSettings.shared().clipboardURLEnabled,
-            let url = UIPasteboard.general.coercedURL,
-            AwfulSettings.shared().lastOfferedPasteboardURL != url.absoluteString,
-            let scheme = url.scheme,
-            !Bundle.main.urlTypes
-                .flatMap({ $0.schemes })
-                .any(where: { scheme.caseInsensitive == $0 }),
-            let route = try? AwfulRoute(url)
-            else { return }
-
-        AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
-        
-        let alert = UIAlertController(
-            title: String(format: LocalizedString("launch-open-copied-url-alert.title"), Bundle.main.localizedName),
-            message: url.absoluteString,
-            preferredStyle: .alert)
-        alert.addCancelActionWithHandler(nil)
-        alert.addActionWithTitle(LocalizedString("launch-open-copied-url-alert.open-button"), handler: {
-            self.open(route: route)
-        })
-        window?.rootViewController?.present(alert, animated: true)
     }
 
     func open(route: AwfulRoute) {
@@ -318,8 +295,6 @@ private extension AppDelegate {
             NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
         } else if key == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
             NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
-        } else if key == AwfulSettingsKeys.clipboardURLEnabled.takeUnretainedValue() as String {
-            checkClipboard()
         }
     }
     

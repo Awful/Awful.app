@@ -16,6 +16,9 @@ struct Tweaks: TweakLibraryType {
     
     // ▼▼▼ New tweaks go below this line (don't forget to add to `tweaks` array in `defaultStore`!) ▼▼▼
     
+    enum launch {
+        static let offerToOpenSameCopiedURL = Tweak("Launch", "Open Copied URL", "Re-offer same", false)
+    }
     
     enum posts {
         static let pullForNextExtraDistance = Tweak<CGFloat>("Posts", "Pull-for-next", "Extra distance", defaultValue: 45, min: 0, max: 500)
@@ -30,6 +33,7 @@ struct Tweaks: TweakLibraryType {
             // ▼▼▼ Add all new tweaks here or they won't show up! ▼▼▼
             
             
+            launch.offerToOpenSameCopiedURL,
             posts.pullForNextExtraDistance,
             
             

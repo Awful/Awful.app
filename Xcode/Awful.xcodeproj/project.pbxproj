@@ -378,6 +378,7 @@
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
 		1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */; };
 		1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2361BD2C13400ADC7DA /* KVOController.swift */; };
+		1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */; };
 		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
 		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
@@ -1059,6 +1060,7 @@
 		1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NigglyRefreshView.swift; sourceTree = "<group>"; };
 		1CDBF2341BD2BC3800ADC7DA /* PostsPageRefreshControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshControl.swift; sourceTree = "<group>"; };
 		1CDBF2361BD2C13400ADC7DA /* KVOController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOController.swift; sourceTree = "<group>"; };
+		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDD48BB17EE288A00E4DAE3 /* Themes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
@@ -1554,6 +1556,7 @@
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
 				1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */,
 				1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */,
+				1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -3529,6 +3532,7 @@
 				1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */,
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
+				1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */,
 				1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */,
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
