@@ -78,6 +78,7 @@ final class RenderView: UIView {
      - Warning: If an `https` `baseURL` is provided, it will be forcibly downgraded to an `http` URL. (`WKWebView` refuses to load from custom URL schemes, calling it "insecure content".) If you would like relative URLs to be resolved against an `https` URL, consider adding a `<base>` element.
      */
     func render(html: String, baseURL: URL?) {
+        Log.d("rendering \(html.count) characters of HTML with baseURL = \(baseURL as Any)")
         webView.loadHTMLString(html, baseURL: baseURL?.downgradedToInsecureHTTP())
     }
 
@@ -318,12 +319,34 @@ extension RenderView {
         }
     }
     
-    /// Removes all previously-loaded content.
-    func eraseDocument() {
-        // There's a bit of subtlety here. If we eval `document.open()`, we get console errors because we can't bring the document object back into the native-side of the app. And if we don't include a `<body>`, we can get console logs attempting to retrieve `document.body.scrollWidth`.
-        webView.evaluateJavaScript("document.write('<body>')") { result, error in
-            if let error = error {
-                self.mentionError(error, explanation: "could not remove content")
+    /**
+     Removes all previously-loaded content.
+     
+     Returns a `Guarantee` which resolves when the document erasure has completed. This is useful when the plan is to make a subsequent call to `render`; since `eraseDocument` runs JavaScript, it runs asynchronously, and the call to `render` can complete before the JavaScript gets a chance to run. For example, consider:
+     
+         // may not show "Hi!" because the document erasure can get
+         // queued and happen after the render
+         rv.eraseDocument()
+         rv.render(html: "<h1>Hi!</h1>", baseURL: nil)
+     
+     Versus:
+     
+         // Happens in the order written: erasure, then render.
+         rv.eraseDocument().done { rv.render(html: "<h1>Hi!</h1>", baseURL: nil) }
+     */
+    func eraseDocument() -> Guarantee<Void> {
+        Log.d("erasing document")
+        
+        return Guarantee { resolver in
+            
+            // There's a bit of subtlety here. If we eval `document.open()`, we get console errors because we can't bring the document object back into the native-side of the app. And if we don't include a `<body>`, we can get console logs attempting to retrieve `document.body.scrollWidth`.
+            webView.evaluateJavaScript("document.write('<body>')") { result, error in
+                Log.d("did erase document")
+                resolver(())
+                
+                if let error = error {
+                    self.mentionError(error, explanation: "could not remove content")
+                }
             }
         }
     }

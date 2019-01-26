@@ -297,8 +297,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func renderPosts() {
-        renderView.eraseDocument()
-        
         webViewDidLoadOnce = false
         
         var context: [String: Any] = [:]
@@ -340,7 +338,9 @@ final class PostsPageViewController: ViewController {
             html = ""
         }
         
-        renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        renderView.eraseDocument().done {
+            self.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        }
     }
     
     private lazy var composeItem: UIBarButtonItem = {
