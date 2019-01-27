@@ -1547,6 +1547,7 @@
 				1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */,
 				1C914EC8207716D600C0E238 /* MustacheRepository.swift */,
 				1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */,
+				1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */,
 				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
 				1C015BBE21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.h */,
 				1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */,
@@ -1556,7 +1557,6 @@
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
 				1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */,
 				1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */,
-				1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
