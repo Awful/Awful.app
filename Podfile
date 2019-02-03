@@ -14,10 +14,8 @@ target 'Awful' do
   pod 'FLAnimatedImage'
   #pod 'GRMustache.swift' # Waiting for Swift 4 support
   pod 'GRMustache.swift', :git => 'https://github.com/chrisballinger/GRMustache.swift', :branch => 'feature/swift4'
-
-
   pod 'HTMLReader'
-  pod 'ImgurAnonymousAPIClient'
+  pod 'ImgurAnonymousAPI'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
 

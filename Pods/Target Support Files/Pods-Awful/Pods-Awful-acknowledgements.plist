@@ -168,12 +168,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>ImgurAnonymousAPIClient is in the public domain.
+			<string>ImgurAnonymousAPI is in the public domain.
 </string>
 			<key>License</key>
 			<string>Public domain</string>
 			<key>Title</key>
-			<string>ImgurAnonymousAPIClient</string>
+			<string>ImgurAnonymousAPI</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
