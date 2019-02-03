@@ -3,6 +3,7 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import MobileCoreServices
+import Photos
 import PSMenuItem
 import UIKit
 
@@ -87,12 +88,12 @@ final class CompositionMenuTree: NSObject {
         textView.nearestViewController?.present(picker, animated: true, completion: nil)
     }
     
-    func insertImage(_ image: UIImage, withAssetURL assetURL: URL? = nil) {
+    func insertImage(_ image: UIImage, withAssetIdentifier assetID: String? = nil) {
         // Inserting the image changes our font and text color, so save those now and restore those later.
         let font = textView.font
         let textColor = textView.textColor
         
-        let attachment = TextAttachment(image: image, assetURL: assetURL)
+        let attachment = TextAttachment(image: image, photoAssetIdentifier: assetID)
         let string = NSAttributedString(attachment: attachment)
         // Directly modify the textStorage instead of setting a whole new attributedText on the UITextView, which can be slow and jumps the text view around. We'll need to post our own text changed notification too.
         textView.textStorage.replaceCharacters(in: textView.selectedRange, with: string)
@@ -122,27 +123,32 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-// Local variable inserted by Swift 4.2 migrator.
-let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
-
-        if let edited = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as! UIImage? {
-            // AssetsLibrary's thumbnailing only gives us the original image, so ignore the asset URL.
-            insertImage(edited)
-        } else {
-            let original = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as! UIImage
-            insertImage(original, withAssetURL: info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.referenceURL)] as! URL?)
-        }
-        picker.dismiss(animated: true) {
-            self.textView.becomeFirstResponder()
+        
+        guard let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage else {
+            Log.e("could not find image among image picker info")
+            let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found")
+            textView.nearestViewController?.present(alert, animated: true)
             return
         }
+        
+        if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
+            insertImage(image, withAssetIdentifier: asset.localIdentifier)
+        } else if let alAssetURL = info[.referenceURL] as? URL {
+            let asset = PHAsset.firstAsset(withALAssetURL: alAssetURL)
+            insertImage(image, withAssetIdentifier: asset?.localIdentifier)
+        } else {
+            insertImage(image)
+        }
+
+        picker.dismiss(animated: true, completion: {
+            self.textView.becomeFirstResponder()
+        })
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true) {
+        picker.dismiss(animated: true, completion: {
             self.textView.becomeFirstResponder()
-            return
-        }
+        })
     }
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {

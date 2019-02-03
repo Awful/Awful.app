@@ -15,10 +15,10 @@ import UIKit
 final class TextAttachment: NSTextAttachment {
     
     // Would ideally be a `let` but see note at `init(data:ofType:)`.
-    private(set) var assetURL: URL?
+    private(set) var photoAssetIdentifier: String?
     
-    init(image: UIImage, assetURL: URL?) {
-        self.assetURL = assetURL
+    init(image: UIImage, photoAssetIdentifier: String?) {
+        self.photoAssetIdentifier = photoAssetIdentifier
         super.init(data: nil, ofType: nil)
         
         self.image = image
@@ -27,7 +27,7 @@ final class TextAttachment: NSTextAttachment {
     /*
      We've received crash logs indicting us for not implementing this initializer, and the backtrace indicated it can be called by `NSTextAttachment.init(coder:)`. So we need to implement it and forward to `super`.
      
-     Annoyingly, we don't want to have to set `assetURL` here (because it'll already be set by our own `init(coder:)` implementation), so we have to make that property `var` to quiet the compiler.
+     Annoyingly, we don't want to have to set `photoAssetIdentifier` here (because it'll already be set by our own `init(coder:)` implementation), so we have to make that property `var` to quiet the compiler.
      
      Not sure whether this is intended or documented behaviour for `NSTextAttachment`, though it does lead to some weirdness for Swift (e.g. we'd be required to set a value for any `let` property here, even if it was already set in our own `init(coder:)`, so what happens if you write twice to a `let`?)
      
@@ -38,14 +38,29 @@ final class TextAttachment: NSTextAttachment {
     }
     
     required init?(coder: NSCoder) {
-        assetURL = coder.decodeObject(forKey: assetURLKey) as! NSURL? as URL?
+        if let photoAssetIdentifier = coder.decodeObject(of: NSString.self, forKey: CodingKeys.assetIdentifier.rawValue) {
+            self.photoAssetIdentifier = photoAssetIdentifier as String
+        } else if let assetURL = coder.decodeObject(of: NSURL.self, forKey: ObsoleteCodingKeys.assetURL.rawValue) {
+            photoAssetIdentifier = PHAsset.firstAsset(withALAssetURL: assetURL as URL)?.localIdentifier
+        }
+        
         super.init(coder: coder)
     }
     
     override func encode(with coder: NSCoder) {
         super.encode(with: coder)
         
-        coder.encode(assetURL, forKey: assetURLKey)
+        if let photoAssetIdentifier = photoAssetIdentifier {
+            coder.encode(photoAssetIdentifier as NSString, forKey: CodingKeys.assetIdentifier.rawValue)
+        }
+    }
+    
+    private enum CodingKeys: String {
+        case assetIdentifier
+    }
+    
+    private enum ObsoleteCodingKeys: String {
+        case assetURL = "AwfulAssetURL"
     }
     
     override var image: UIImage? {
@@ -72,9 +87,9 @@ final class TextAttachment: NSTextAttachment {
         let thumbnailSize = appropriateThumbnailSize(imageSize: image.size)
         if image.size == thumbnailSize { return image }
         
-        if let
-            assetURL = assetURL,
-            let asset = PHAsset.fetchAssets(withALAssetURLs: [assetURL as URL], options: nil).firstObject
+        if
+            let photoAssetIdentifier = photoAssetIdentifier,
+            let asset = PHAsset.fetchAssets(withLocalIdentifiers: [photoAssetIdentifier], options: nil).firstObject
         {
             let options = PHImageRequestOptions()
             options.isSynchronous = true

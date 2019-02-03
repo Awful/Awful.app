@@ -40,8 +40,8 @@ final class SelfHostingAttachmentInterpolator: NSObject {
 
 private func serve(attachment: NSTextAttachment, fromPath path: String) -> URL? {
     if let attachment = attachment as? TextAttachment {
-        if let assetURL = attachment.assetURL {
-            return ImageURLProtocol.serveAsset(assetURL, atPath: path)
+        if let assetIdentifier = attachment.photoAssetIdentifier {
+            return ImageURLProtocol.serveAsset(assetIdentifier, atPath: path)
         }
         
         if let image = attachment.thumbnailImage {

@@ -2,9 +2,12 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Crashlytics
 import Foundation
-import ImgurAnonymousAPIClient
+import ImgurAnonymousAPI
 import Photos
+
+private let Log = Logger.get()
 
 /**
     Replaces image attachments in richText with [img] tags by uploading the images anonymously to Imgur.
@@ -73,10 +76,33 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
         progress.becomeCurrent(withPendingUnitCount: 1)
         
         switch source {
-        case .asset(let assetURL):
-            ImgurAnonymousAPIClient.shared().uploadAsset(with: assetURL, filename: "image.png", completionHandler: uploadComplete)
         case .image(let image):
-            ImgurAnonymousAPIClient.shared().uploadImage(image, withFilename: "image.png", completionHandler: uploadComplete)
+            ImgurUploader.shared.upload(image, completion: { result in
+                switch result {
+                case .success(let response):
+                    uploadComplete(response.link, error: nil)
+                case .failure(let error):
+                    Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: ["source type": "UIImage"])
+                    uploadComplete(nil, error: error)
+                }
+            })
+            
+        case .photoAsset(let assetIdentifier):
+            guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetIdentifier], options: nil).firstObject else {
+                Log.e("Could not find asset corresponding to local identifier \(assetIdentifier)")
+                uploadComplete(nil, error: ImageUploadError.missingIdentifiedAsset)
+                break
+            }
+            
+            ImgurUploader.shared.upload(asset, completion: { result in
+                switch result {
+                case .success(let response):
+                    uploadComplete(response.link, error: nil)
+                case .failure(let error):
+                    Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: ["source type": "PHAsset local identifier"])
+                    uploadComplete(nil, error: error)
+                }
+            })
         }
         
         progress.resignCurrent()
@@ -93,24 +119,28 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
     return progress
 }
 
+enum ImageUploadError: Error {
+    case missingIdentifiedAsset
+}
+
 private struct ImageTag {
     let range: NSRange
     let size: CGSize
     let source: Source
     
     enum Source {
-        case asset(URL)
         case image(UIImage)
+        case photoAsset(String)
     }
     
     init(_ attachment: TextAttachment, range: NSRange) {
         self.range = range
         
         if
-            let assetURL = attachment.assetURL,
-            let asset = PHAsset.fetchAssets(withALAssetURLs: [assetURL as URL], options: nil).firstObject
+            let assetIdentifier = attachment.photoAssetIdentifier,
+            let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetIdentifier], options: nil).firstObject
         {
-            source = .asset(assetURL)
+            source = .photoAsset(assetIdentifier)
             size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
         } else if let image = attachment.image {
             source = .image(image)

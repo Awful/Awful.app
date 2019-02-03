@@ -33,14 +33,14 @@ final class ImageURLProtocol: URLProtocol {
     /**
      Adds an image from the asset library whose data is served at the given path. The image's data will be held in memory. If another image was being served at the path, it is replaced.
      
-     - Parameter assetURL: A URL representing an ALAsset.
+     - Parameter assetIdentifier: A local object identifier representing a `PHAsset`.
      
      - Returns: A `URL` suitable for use in a `UIWebView` or `WKWebView`, for passing to an API that uses the Foundation URL Loading System, and for passing to `+stopHostingImageAtURL:`.
      
      - Warning: Be sure to call `stopServingImageAtURL(_:)` when you no longer need the image to be served, or you will leak memory!
      */
-    class func serveAsset(_ assetURL: URL, atPath path: String) -> URL? {
-        guard let asset = PHAsset.fetchAssets(withALAssetURLs: [assetURL], options: nil).firstObject else { return nil }
+    class func serveAsset(_ assetIdentifier: String, atPath path: String) -> URL? {
+        guard let asset = PHAsset.firstAsset(identifiedBy: assetIdentifier) else { return nil }
         
         var maybeData: Data?
         let options = PHImageRequestOptions()

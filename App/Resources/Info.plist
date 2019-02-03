@@ -369,8 +369,6 @@
 	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>ImgurAnonymousAPIClientID</key>
-	<string>4db466addcb5cfc</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>firefox</string>
