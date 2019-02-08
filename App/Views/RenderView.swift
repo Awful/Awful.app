@@ -339,8 +339,8 @@ extension RenderView {
         
         return Guarantee { resolver in
             
-            // There's a bit of subtlety here. If we eval `document.open()`, we get console errors because we can't bring the document object back into the native-side of the app. And if we don't include a `<body>`, we can get console logs attempting to retrieve `document.body.scrollWidth`.
-            webView.evaluateJavaScript("document.write('<body>')") { result, error in
+            // There's a bit of subtlety here: `document.open()` returns a Document, which can't be serialized back to the native-side of the app; and if we don't include a `<body>`, we get console logs attempting to e.g. retrieve `document.body.scrollWidth`.
+            webView.evaluateJavaScript("document.open(), document.write('<body>')") { result, error in
                 Log.d("did erase document")
                 resolver(())
                 
