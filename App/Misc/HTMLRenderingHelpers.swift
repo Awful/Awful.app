@@ -254,7 +254,7 @@ extension HTMLDocument {
 
 extension URL {
     func valueForFirstQueryItem(named name: String) -> String? {
-        guard var components = URLComponents(url: self, resolvingAgainstBaseURL: true) else { return nil }
+        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true) else { return nil }
         return (components.queryItems ?? []).first { $0.name == name }?.value
     }
 }
