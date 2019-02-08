@@ -139,10 +139,19 @@ Awful.jumpToFractionalOffset = function(fraction) {
  */
 Awful.handleClickEvent = function(event) {
 
+  // We'll be using this in a couple places.
+  var gifWrapper = event.target.closest('.gif-wrap');
+
   // Toggle spoilers on tap.
   var spoiler = event.target.closest('.bbc-spoiler');
   if (spoiler) {
-    var isSpoiled = spoiler.classList.contains("spoiled");
+    var isSpoiled = spoiler.classList.contains('spoiled');
+
+    if (isSpoiled && gifWrapper) {
+      Awful.toggleGIF(gifWrapper);
+      event.preventDefault();
+      return;
+    }
 
     var nearestLink = event.target.closest('a, [data-awful-linkified-image]');
     var isLink = !!nearestLink;
@@ -151,7 +160,6 @@ Awful.handleClickEvent = function(event) {
         spoiler.classList.toggle("spoiled");
         event.preventDefault();
     } else if (isLink && !isSpoiled) {
-        event.stopImmediatePropagation();
         event.preventDefault();
     }
     return;
@@ -204,9 +212,10 @@ Awful.handleClickEvent = function(event) {
   }
 
   // Tap a gif-wrapper to toggle playing the gif.
-  var gifWrapper = event.target.closest('.gif-wrap');
   if (gifWrapper) {
     Awful.toggleGIF(gifWrapper);
+    event.preventDefault();
+    return;
   }
 };
 
