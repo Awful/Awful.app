@@ -5,6 +5,13 @@
 import Foundation
 
 extension Bundle {
+    
+    /// Seems to be `true` when installed via TestFlight, and `false` when installed via the App Store.
+    var containsSandboxReceipt: Bool {
+        let receiptPathComponents = appStoreReceiptURL?.pathComponents ?? []
+        return receiptPathComponents.contains("sandboxReceipt")
+    }
+    
     var localizedName: String {
         return object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? ""
     }
@@ -28,6 +35,10 @@ extension Bundle {
             role = plist["CFBundleTypeRole"] as? String
             schemes = plist["CFBundleURLSchemes"] as? [String] ?? []
         }
+    }
+    
+    var version: String? {
+        return object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String
     }
 }
 

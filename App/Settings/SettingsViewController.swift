@@ -406,7 +406,11 @@ final class SettingsViewController: TableViewController {
         }
         guard let title = section["Title"] as? String else { return nil }
         if title == "Awful x.y.z" {
-            return "Awful \(Bundle.main.shortVersionString ?? "")"
+            var components = [Bundle.main.localizedName, Bundle.main.shortVersionString]
+            if Environment.isDebugBuild || Environment.isSimulator || Environment.isInstalledViaTestFlight {
+                components.append(Bundle.main.version.map { "(\($0))" })
+            }
+            return components.compactMap { $0 }.joined(separator: " ")
         }
         return title
     }

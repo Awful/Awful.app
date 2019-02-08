@@ -371,6 +371,7 @@
 		1CC362CA204C527700274E82 /* AppIcon-doggo-76x76.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362BA204C527600274E82 /* AppIcon-doggo-76x76.png */; };
 		1CC362CB204C527700274E82 /* AppIcon-doggo-40x40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
+		1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC6645C220D224C00BEF5A6 /* Environment.swift */; };
 		1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */; };
 		1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */; };
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
@@ -1055,6 +1056,7 @@
 		1CC362BA204C527600274E82 /* AppIcon-doggo-76x76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-76x76.png"; sourceTree = "<group>"; };
 		1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-40x40@3x.png"; sourceTree = "<group>"; };
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
+		1CC6645C220D224C00BEF5A6 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
@@ -1543,6 +1545,7 @@
 				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
 				1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */,
 				83410EF119A582B8002CD019 /* DateFormatters.swift */,
+				1CC6645C220D224C00BEF5A6 /* Environment.swift */,
 				1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */,
 				1C273A9D21B316DB002875A9 /* LoadMoreFooter.swift */,
 				1C25AC201F532EE600977D6F /* LocalizedString.swift */,
@@ -3584,6 +3587,7 @@
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
+				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,

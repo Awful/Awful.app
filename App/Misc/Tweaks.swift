@@ -41,14 +41,7 @@ struct Tweaks: TweakLibraryType {
         ]
         
         var isEnabled: Bool {
-            #if DEBUG
-                return true
-            #elseif targetEnvironment(simulator)
-                return true
-            #else
-                let receiptPathComponents = Bundle.main.appStoreReceiptURL?.pathComponents ?? []
-                return receiptPathComponents.contains("sandboxReceipt") // TestFlight build
-            #endif
+            return Environment.isDebugBuild || Environment.isSimulator || Environment.isInstalledViaTestFlight
         }
         
         return TweakStore(tweaks: tweaks, enabled: isEnabled)
