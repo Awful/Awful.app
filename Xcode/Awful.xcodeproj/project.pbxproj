@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0C42662A21AB045700EAD4B7 /* quote-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C42662921AB045700EAD4B7 /* quote-post.png */; };
+		0C208E722200028D00D9FC19 /* SettingsThemeListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C208E712200028D00D9FC19 /* SettingsThemeListController.swift */; };
+		0C42662A21AB045700EAD4B7 /* quote-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 0C42662921AB045700EAD4B7 /* quote-post.png */; };
 		0FF012020DEDA6238B7DC09B /* Pods_AwfulTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */; };
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
@@ -662,6 +664,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0C42662921AB045700EAD4B7 /* quote-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-post.png"; sourceTree = "<group>"; };
+		0C208E712200028D00D9FC19 /* SettingsThemeListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsThemeListController.swift; sourceTree = "<group>"; };
 		0C42662921AB045700EAD4B7 /* quote-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-post.png"; sourceTree = "<group>"; };
 		148A488225E4DA4C3B655AD1 /* Pods-AwfulTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwfulTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-AwfulTests/Pods-AwfulTests.release.xcconfig"; sourceTree = "<group>"; };
 		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
@@ -1959,6 +1963,7 @@
 				1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */,
 				1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */,
 				1C796A26221505A00035E154 /* UserDefaults+Settings.swift */,
+				0C208E712200028D00D9FC19 /* SettingsThemeListController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3656,6 +3661,7 @@
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
 				1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */,
 				1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */,
+				0C208E722200028D00D9FC19 /* SettingsThemeListController.swift in Sources */,
 				1C9FDE5B16E9CF5B00C665B5 /* AwfulErrorDomain.m in Sources */,
 				1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */,
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,

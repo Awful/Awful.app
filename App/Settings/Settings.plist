@@ -308,6 +308,14 @@
 					<key>Key</key>
 					<string>ubiquitous_theme_names</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Test Theme View</string>
+					<key>ViewController</key>
+					<string>Awful.SettingsThemeListController</string>
+					<key>Key</key>
+					<string>theme_list</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
