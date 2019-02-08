@@ -1,0 +1,69 @@
+/*
+ posts-view-alternate.css
+ Awful
+
+ Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+
+@import "base.less";
+
+body {
+  background-color: #f4f3f3;
+}
+
+post {
+  background-color: #ffffff;
+  border-bottom-color: #ddd;
+  border-top-color: #ddd;
+
+  &.seen {
+    background-color: #e6f2ff;
+  }
+}
+
+header {
+  border-bottom: 0;
+}
+
+.op .username {
+  color: #004696;
+}
+
+.userid-182864 .username {
+    text-shadow: 4px 0px 1px #00ffff, -2px 0px 1px #ff0000, -2px 0px 1px #ff0000, 4px 0px 1px #00ffff;
+}
+
+.awful-smile {
+  image-rendering: -webkit-crisp-edges;
+}
+
+.postbody a, [data-awful-linkified-image] {
+  color: #004696;
+}
+
+@import "spoilers.less";
+.spoilers(#000);
+
+.bbc-block {
+  h4,
+  h5 {
+    color: #555;
+  }
+}
+
+footer {
+  margin-top: .6em
+}
+
+@postdate-color: #8e8e8e;
+.postdate, .regdate {
+  color: @postdate-color;
+}
+.action-button img {
+  .tint-black-template-image-gray(@postdate-color);
+}
+
+#end {
+  color: @postdate-color;
+  line-height: 3em;
+}
