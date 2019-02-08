@@ -255,8 +255,6 @@
 		<string>Light</string>
 		<key>placeholderTextColor</key>
 		<string>#999999</string>
-		<key>postsViewCSS</key>
-		<string>posts-view-alternate.css</string>
 		<key>Lists</key>
 		<dict>
 			<key>listHeaderTextColor</key>
@@ -300,7 +298,7 @@
 			<key>postsTopBarBackgroundColor</key>
 			<string>#003a7d</string>
 			<key>postsViewCSS</key>
-			<string>posts-view.css</string>
+			<string>posts-view-alternate.css</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -356,8 +354,6 @@
 		<string>#666666</string>
 		<key>settingsSwitchColor</key>
 		<string>#237733</string>
-		<key>postsViewCSS</key>
-		<string>posts-view-alternate-dark.css</string>
 		<key>Lists</key>
 		<dict>
 			<key>listHeaderBackgroundColor</key>
@@ -399,7 +395,7 @@
 			<key>postsTopBarBackgroundColor</key>
 			<string>#00234a</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-dark.css</string>
+			<string>posts-view-alternate-dark.css</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
