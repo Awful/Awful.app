@@ -308,6 +308,11 @@ span.mention.highlight {
   &.playing:before {
 	  display: none;
   }
+
+  // Hide GIF play button when image is behind spoiler tags.
+  .bbc-spoiler:not(.spoiled) & {
+    visibility: hidden;
+  }
 }
 .gif-wrap {
   & + br, & + br + br {

@@ -234,6 +234,9 @@ span.mention.highlight {
 .gif-wrap.playing:before {
   display: none;
 }
+.bbc-spoiler:not(.spoiled) .gif-wrap {
+  visibility: hidden;
+}
 .gif-wrap + br,
 .gif-wrap + br + br {
   display: none;
