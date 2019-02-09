@@ -1,10 +1,6 @@
-//
 //  OpenCopiedURLController.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2019-01-26.
-//  Copyright © 2019 Awful Contributors. All rights reserved.
-//
+//  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
 import UIKit
