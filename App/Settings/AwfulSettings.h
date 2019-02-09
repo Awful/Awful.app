@@ -86,6 +86,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (assign, nonatomic) BOOL showUnreadAnnouncementsBadge;
 
+@property (assign, nonatomic) BOOL showTweaksOnShake;
+
 - (nullable id)objectForKeyedSubscript:(id)key;
 
 - (void)setObject:(nullable id)object forKeyedSubscript:(id <NSCopying>)key;
@@ -140,6 +142,7 @@ extern const struct AwfulSettingsKeys {
     __unsafe_unretained NSString *openTwitterLinksInTwitter;
     __unsafe_unretained NSString *appIconName;
     __unsafe_unretained NSString *showUnreadAnnouncementsBadge;
+    __unsafe_unretained NSString *showTweaksOnShake;
 } AwfulSettingsKeys;
 
 #pragma mark Possible values for the defaultBrowser setting

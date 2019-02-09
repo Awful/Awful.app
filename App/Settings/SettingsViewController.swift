@@ -4,6 +4,7 @@
 
 import AwfulCore
 import CoreData
+import SwiftTweaks
 
 private let Log = Logger.get()
 
@@ -53,10 +54,15 @@ final class SettingsViewController: TableViewController {
             default:
                 break
             }
+            
+            if section["RequiresTweaksEnabled"] as? Bool == true, !Tweaks.isEnabled {
+                return false
+            }
 
             if let visible = section["VisibleInSettingsTab"] as? Bool {
                 return visible
             }
+            
             return true
         }
         
@@ -382,6 +388,21 @@ final class SettingsViewController: TableViewController {
 
             AppDelegate.instance.open(route: .threadPage(threadID: threadID, page: .nextUnread))
             
+        case ("ShowTweaks"?, _):
+            var topViewController = AppDelegate.instance.window?.rootViewController
+            while topViewController?.presentedViewController != nil {
+                topViewController = topViewController?.presentedViewController
+            }
+            
+            let tweaksVC = TweaksViewController(tweakStore: Tweaks.defaultStore, delegate: self)
+            switch topViewController?.traitCollection.horizontalSizeClass {
+            case .regular?:
+                tweaksVC.modalPresentationStyle = .formSheet
+            case .compact?, .unspecified?, nil:
+                break
+            }
+            topViewController?.present(tweaksVC, animated: true)
+            
         case (_, let vcTypeName?):
             guard let vcType = NSClassFromString(vcTypeName) as? UIViewController.Type else { fatalError("couldn't find type named \(vcTypeName)") }
             let vc = vcType.init()
@@ -450,8 +471,10 @@ final class SettingsViewController: TableViewController {
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return sections[section]["Explanation"] as? String
     }
-    
-    func awfulSettingsDidChange(_ notification: Notification) {
-        
+}
+
+extension SettingsViewController: TweaksViewControllerDelegate {
+    func tweaksViewControllerRequestsDismiss(_ tweaksViewController: TweaksViewController, completion: (() -> ())?) {
+        tweaksViewController.dismiss(animated: true, completion: completion)
     }
 }

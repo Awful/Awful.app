@@ -302,6 +302,8 @@ BOOL_PROPERTY(openTwitterLinksInTwitter, setOpenTwitterLinksInTwitter)
 
 BOOL_PROPERTY(showUnreadAnnouncementsBadge, setShowUnreadAnnouncementsBadge)
 
+BOOL_PROPERTY(showTweaksOnShake, setShowTweaksOnShake)
+
 - (nullable id)objectForKeyedSubscript:(id)key
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -396,6 +398,7 @@ const struct AwfulSettingsKeys AwfulSettingsKeys = {
     .openTwitterLinksInTwitter = @"open_twitter_links_in_twitter",
     .appIconName = @"app_icon_name",
     .showUnreadAnnouncementsBadge = @"show_unread_announcements_badge",
+    .showTweaksOnShake = @"show_tweaks_on_shake",
 };
 
 NSArray<NSString *> * AwfulDefaultBrowsers(void)

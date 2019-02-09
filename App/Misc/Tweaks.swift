@@ -27,6 +27,10 @@ struct Tweaks: TweakLibraryType {
     
     // ▲▲▲ New tweaks go above this line (don't forget to add to `tweaks` array in `defaultStore`!) ▲▲▲
     
+    static var isEnabled: Bool {
+        return Environment.isDebugBuild || Environment.isSimulator || Environment.isInstalledViaTestFlight
+    }
+    
     static let defaultStore: TweakStore = {
         var tweaks: [TweakClusterType] = [
             
@@ -40,10 +44,6 @@ struct Tweaks: TweakLibraryType {
             // ▲▲▲ Add all new tweaks here or they won't show up! ▲▲▲
         ]
         
-        var isEnabled: Bool {
-            return Environment.isDebugBuild || Environment.isSimulator || Environment.isInstalledViaTestFlight
-        }
-        
-        return TweakStore(tweaks: tweaks, enabled: isEnabled)
+        return TweakStore(tweaks: tweaks, enabled: Tweaks.isEnabled)
     }()
 }
