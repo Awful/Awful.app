@@ -1,26 +1,5 @@
 PODS:
   - 1PasswordExtension (1.8.4)
-  - AFNetworking (2.6.3):
-    - AFNetworking/NSURLConnection (= 2.6.3)
-    - AFNetworking/NSURLSession (= 2.6.3)
-    - AFNetworking/Reachability (= 2.6.3)
-    - AFNetworking/Security (= 2.6.3)
-    - AFNetworking/Serialization (= 2.6.3)
-    - AFNetworking/UIKit (= 2.6.3)
-  - AFNetworking/NSURLConnection (2.6.3):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.3):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.3)
-  - AFNetworking/Security (2.6.3)
-  - AFNetworking/Serialization (2.6.3)
-  - AFNetworking/UIKit (2.6.3):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
   - ARChromeActivity (1.0.6)
   - Crashlytics (3.11.1):
     - Fabric (~> 1.8.1)
@@ -65,7 +44,6 @@ PODS:
 
 DEPENDENCIES:
   - 1PasswordExtension
-  - AFNetworking (~> 2.0)
   - ARChromeActivity
   - Crashlytics
   - FLAnimatedImage
@@ -83,7 +61,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - 1PasswordExtension
-    - AFNetworking
     - ARChromeActivity
     - Crashlytics
     - Fabric
@@ -125,7 +102,6 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
-  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
   Crashlytics: ca7ab4bc304aa216bdc2e4c1a96389ee77252203
   Fabric: d2b22f443ba195d8a7cc204da230977c72733b40
@@ -141,6 +117,6 @@ SPEC CHECKSUMS:
   SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
 
-PODFILE CHECKSUM: ac491051a069a89c8af1ef5c4ad6dd367a286777
+PODFILE CHECKSUM: 02344c5af2e295962117bd1154de6306cfc2df35
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.0
