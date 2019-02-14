@@ -301,6 +301,8 @@
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
+		1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */; };
+		1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A26221505A00035E154 /* UserDefaults+Settings.swift */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
@@ -979,6 +981,9 @@
 		1C6D2EA9182E890D00785766 /* PrivateMessageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageScrapingTests.swift; sourceTree = "<group>"; };
 		1C6FFED9182A74A00014311C /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		1C6FFEDC182AA57C0014311C /* PostsPageScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageScrapingTests.swift; sourceTree = "<group>"; };
+		1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.generated.swift"; sourceTree = "<group>"; };
+		1C796A24221505180035E154 /* UserDefaults+Settings.stencil */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "UserDefaults+Settings.stencil"; sourceTree = "<group>"; };
+		1C796A26221505A00035E154 /* UserDefaults+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.swift"; sourceTree = "<group>"; };
 		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
 		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
 		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
@@ -1637,6 +1642,7 @@
 				1C25AC501F5777EC00977D6F /* Refreshers */,
 				8CCD498115B497A700E5893B /* Resources */,
 				1C8694A216EF78D3003FE89E /* Settings */,
+				1C796A202214FF470035E154 /* Sourcery */,
 				1C0060A6217171CD00E5329A /* Stylesheets */,
 				1C9AEBC4210C3B2300C9A567 /* Tests */,
 				1CDD51951542949600326C7B /* Theming */,
@@ -1923,6 +1929,15 @@
 			path = Keyboard;
 			sourceTree = "<group>";
 		};
+		1C796A202214FF470035E154 /* Sourcery */ = {
+			isa = PBXGroup;
+			children = (
+				1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */,
+				1C796A24221505180035E154 /* UserDefaults+Settings.stencil */,
+			);
+			path = Sourcery;
+			sourceTree = "<group>";
+		};
 		1C8694A216EF78D3003FE89E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1946,6 +1961,7 @@
 				7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */,
 				1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */,
 				1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */,
+				1C796A26221505A00035E154 /* UserDefaults+Settings.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2225,7 +2241,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA = {
+		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -2592,6 +2608,7 @@
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
 			buildPhases = (
 				92D192B30FE54C29B1BC2C16 /* [CP] Check Pods Manifest.lock */,
+				1C796A22221503300035E154 /* Sourcery */,
 				1C8F0DE6191CFA2200CE8DEE /* Compile CSS */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -2700,7 +2717,7 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -3050,6 +3067,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ -n \"$CRASHLYTICS_API_KEY\" ]; then \"$PODS_ROOT\"/Fabric/run \"$CRASHLYTICS_API_KEY\"; fi";
+		};
+		1C796A22221503300035E154 /* Sourcery */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Sourcery;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$PODS_ROOT/Sourcery/bin/sourcery\" --config \"$PROJECT_DIR/sourcery-config.yml\"\n";
 		};
 		1C8F0DE6191CFA2200CE8DEE /* Compile CSS */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3458,6 +3493,7 @@
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C273AA221C1E26F002875A9 /* Tweaks.swift in Sources */,
 				1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */,
+				1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */,
 				1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */,
@@ -3532,6 +3568,7 @@
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
 				1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */,
 				1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */,
+				1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */,
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
 				1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */,
 				1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */,

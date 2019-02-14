@@ -1,0 +1,31 @@
+//  UserDefaults+Settings
+//
+//  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+
+import Foundation
+
+/*
+ KVO-compliant properties for various Awful settings.
+
+ `UserDefaults` instances emit KVO notifications when values change. In order to use these with Swift's awesome `observe(keyPath:…)` methods, we need to:
+
+    * Expose a property on `UserDefaults` for each key we're interested in.
+    * Either have that property's name match the key, or add some KVO machinery so changes to the key notify observers of the property. (That machinery is the `keyPathsForValuesAffecting…` class properties.)
+
+ To add settings, see `UserDefaults+Settings.swift`. To change what gets generated for each setting, see `UserDefaults+Settings.stencil`.
+ */
+extension UserDefaults {
+
+    {% for key in type.UserDefaults.SettingsKeys.variables|static %}
+
+    @objc dynamic var {{ key.name }}: {{ key.annotations.valueType|default:"Bool" }} {
+        get { return {{ key.annotations.valueType|default:"Bool"|replace:"?",""|lowercase }}(forKey: SettingsKeys.{{ key.name }}) }
+        set { set(newValue, forKey: SettingsKeys.{{ key.name }}) }
+    }
+
+    @objc private class var keyPathsForValuesAffecting{{ key.name|upperFirstLetter }}: Set<String> {
+        return [SettingsKeys.{{ key.name }}]
+    }
+
+    {% endfor %}
+}
