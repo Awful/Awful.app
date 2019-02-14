@@ -14,6 +14,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
+    private var observers: [NSKeyValueObservation] = []
     private var peekPopController: ThreadPeekPopController?
     
     private lazy var longPressRecognizer: UIGestureRecognizer = {
@@ -42,7 +43,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
 
     private func makeDataSource() -> ThreadListDataSource {
-        let dataSource = try! ThreadListDataSource(bookmarksSortedByUnread: AwfulSettings.shared().bookmarksSortedByUnread, showsTagAndRating: AwfulSettings.shared().showThreadTags, managedObjectContext: managedObjectContext, tableView: tableView)
+        let dataSource = try! ThreadListDataSource(bookmarksSortedByUnread: UserDefaults.standard.sortUnreadBookmarksFirst, showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, managedObjectContext: managedObjectContext, tableView: tableView)
         dataSource.deletionDelegate = self
         return dataSource
     }
@@ -100,10 +101,19 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: AwfulSettings.shared())
-        
         if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
+        }
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
+                self.prepareUserActivity()
+            }
+            $0.observe(\.showThreadTagsInThreadList, \.sortUnreadBookmarksFirst) {
+                [unowned self] defaults in
+                self.dataSource = self.makeDataSource()
+                self.tableView.reloadData()
+            }
         }
     }
 
@@ -111,7 +121,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         super.themeDidChange()
 
         tableView.separatorColor = theme["listSeparatorColor"]
-        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: AwfulSettings.shared().showThreadTags, inTableWithWidth: tableView.bounds.width)
+        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -178,32 +188,10 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         loadPage(page: 1)
     }
     
-    // MARK: Notifications
-    
-    @objc private func settingsDidChange(_ notification: NSNotification) {
-        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
-        
-        switch key {
-        case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() as String as String where isViewLoaded:
-            dataSource = makeDataSource()
-            tableView.reloadData()
-            
-        case AwfulSettingsKeys.bookmarksSortedByUnread.takeUnretainedValue() as String as String:
-            dataSource = makeDataSource()
-            tableView.reloadData()
-            
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
-            prepareUserActivity()
-            
-        default:
-            break
-        }
-    }
-    
     // MARK: Handoff
     
     private func prepareUserActivity() {
-        guard AwfulSettings.shared().handoffEnabled else {
+        guard UserDefaults.standard.isHandoffEnabled else {
             userActivity = nil
             return
         }

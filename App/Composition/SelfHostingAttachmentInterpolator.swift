@@ -20,7 +20,7 @@ final class SelfHostingAttachmentInterpolator: NSObject {
             self.URLs.append(URL)
             
             let imageSize = attachment.image?.size ?? .zero
-            let requiresThumbnailing = AwfulSettings.shared().automaticTimg
+            let requiresThumbnailing = UserDefaults.standard.postLargeImagesAsThumbnails
                 && (imageSize.width > TextAttachment.requiresThumbnailImageSize.width
                     || imageSize.height > TextAttachment.requiresThumbnailImageSize.height)
             let t = requiresThumbnailing ? "t" : ""

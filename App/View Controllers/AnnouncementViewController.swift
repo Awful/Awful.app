@@ -252,9 +252,9 @@ final class AnnouncementViewController: ViewController {
             self.present(profileVC.enclosingNavigationController, animated: true)
         }))
 
-        if AwfulSettings.shared().canSendPrivateMessages
+        if UserDefaults.standard.loggedInUserCanSendPrivateMessages
             && user.canReceivePrivateMessages
-            && user.userID != AwfulSettings.shared().userID
+            && user.userID != UserDefaults.standard.loggedInUserID
         {
             items.append(IconActionItem(.sendPrivateMessage, block: {
                 let messageVC = MessageComposeViewController(recipient: user)
@@ -375,12 +375,12 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBox
             document.removeSpoilerStylingAndEvents()
             document.removeEmptyEditedByParagraphs()
             document.useHTML5VimeoPlayer()
-            if let username = AwfulSettings.shared().username {
+            if let username = UserDefaults.standard.loggedInUsername {
                 document.identifyMentionsOfUser(named: username, shouldHighlight: true)
                 document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
             }
-            document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
-            if !AwfulSettings.shared().autoplayGIFs {
+            document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.showImages)
+            if !UserDefaults.standard.automaticallyPlayGIFs {
                 document.stopGIFAutoplay()
             }
             return document.bodyElement?.innerHTML ?? ""
@@ -390,7 +390,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBox
 
         roles = announcement.author?.roles(in: announcement) ?? []
 
-        showsAvatar = AwfulSettings.shared().showAvatars
+        showsAvatar = UserDefaults.standard.showAuthorAvatars
     }
 
     var hiddenAvatarURL: URL? {

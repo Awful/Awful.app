@@ -49,7 +49,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         _selectedTheme = themes[sender.selectedThemeIndex]
         AwfulSettings.shared().setThemeName(selectedTheme.name, forForumID: forum.forumID)
         if selectedTheme.forumID == nil {
-            AwfulSettings.shared().darkTheme = selectedTheme != Theme.defaultTheme
+            UserDefaults.standard.isDarkModeEnabled = selectedTheme != Theme.defaultTheme
         }
     }
     

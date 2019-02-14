@@ -224,7 +224,7 @@ private struct RenderModel: MustacheBoxable {
     let yahooName: String?
     
     init(_ profile: Profile) {
-        let privateMessagesWork = profile.user.canReceivePrivateMessages && AwfulSettings.shared().canSendPrivateMessages
+        let privateMessagesWork = profile.user.canReceivePrivateMessages && UserDefaults.standard.loggedInUserCanSendPrivateMessages
         
         aboutMe = profile.aboutMe
         aimName = profile.aimName
@@ -244,7 +244,7 @@ private struct RenderModel: MustacheBoxable {
             let url = Bundle(for: ProfileViewController.self).url(forResource: "profile.css", withExtension: nil)!
             return try! String(contentsOf: url, encoding: .utf8)
         }()
-        dark = AwfulSettings.shared().darkTheme
+        dark = UserDefaults.standard.isDarkModeEnabled
         gender = profile.gender ?? LocalizedString("profile.default-gender")
         homepageURL = profile.homepageURL
         icqName = profile.icqName

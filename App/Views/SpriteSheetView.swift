@@ -12,8 +12,10 @@ import UIKit
     Animation is done by updating a `CALayer`'s `contentRect`.
  */
 public final class SpriteSheetView: UIView {
-    private let spriteLayer = CALayer()
+    
     private var colorFollowsTheme = false
+    private var observers: [NSKeyValueObservation] = []
+    private let spriteLayer = CALayer()
     
     /// An image of multiple frames stacked in a single column. Each frame is assumed to be a square.
     public var spriteSheet: UIImage? {
@@ -39,34 +41,38 @@ public final class SpriteSheetView: UIView {
     /// Initializes the view with an appropriate size for the sprite sheet.
     // Optionally, provide a color to tint the
     public convenience init(spriteSheet: UIImage, followsTheme: Bool = false, tint color: UIColor? = nil) {
-        let size = CGSize(width: spriteSheet.size.width, height: spriteSheet.size.width)
-        self.init(frame: CGRect(origin: .zero, size: size))
+        self.init(frame: CGRect(origin: .zero, size: spriteSheet.size))
         
-        var chosenColor = color
-        
-        if (followsTheme) {
+        let chosenColor: UIColor?
+        if followsTheme {
             chosenColor = Theme.currentTheme["tintColor"]
             colorFollowsTheme = true
+        } else {
+            chosenColor = color
         }
 
-        if let tintColor = chosenColor, let sheet = spriteSheet.withTint(tintColor){
-            self.spriteSheet = sheet
+        if let tintColor = chosenColor, let spriteSheet = spriteSheet.withTint(tintColor) {
+            self.spriteSheet = spriteSheet
         } else {
             self.spriteSheet = spriteSheet
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
-        
-        updateForSpriteSheet()
-    }
-    
-    @objc func settingsDidChange(_ notification: Notification) {
-        guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
-        if colorFollowsTheme && (key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String || key.hasPrefix("theme")) {
-            if let sheet = self.spriteSheet?.withTint(Theme.currentTheme["tintColor"]!) {
-                self.spriteSheet = sheet
+        if colorFollowsTheme {
+            observers += UserDefaults.standard.observeSeveral {
+                $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
+                    [unowned self] defaults in
+                    if
+                        let currentSheet = self.spriteSheet,
+                        let tintColor = Theme.currentTheme["tintColor"] as UIColor?,
+                        let newSheet = currentSheet.withTint(tintColor)
+                    {
+                        self.spriteSheet = newSheet
+                    }
+                }
             }
         }
+        
+        updateForSpriteSheet()
     }
     
     /// How quickly to play the animation, in number of frames per second.

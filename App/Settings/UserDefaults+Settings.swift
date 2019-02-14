@@ -27,17 +27,41 @@ extension UserDefaults {
         static let isDarkModeEnabled = "dark_theme"
         static let isHandoffEnabled = "handoff_enabled"
         static let isPullForNextEnabled = "pull_for_next"
+        /// sourcery: valueType = String?
+        static let lastOfferedPasteboardURLString = "last_offered_pasteboard_URL"
+        static let loggedInUserCanSendPrivateMessages = "can_send_private_messages"
+        /// sourcery: valueType = String?
+        static let loggedInUserID = "userID"
+        /// sourcery: valueType = String?
+        static let loggedInUsername = "username"
         static let openCopiedURLAfterBecomingActive = "clipboard_url_enabled"
         static let openTwitterLinksInTwitter = "open_twitter_links_in_twitter"
         static let openYouTubeLinksInYouTube = "open_youtube_links_in_youtube"
         static let postLargeImagesAsThumbnails = "automatic_timg"
-        static let showAvatars = "show_avatars"
+        static let showAuthorAvatars = "show_avatars"
         static let showImages = "show_images"
         static let showThreadTagsInThreadList = "show_thread_tags"
         static let showTweaksOnShake = "show_tweaks_on_shake"
         static let showUnreadAnnouncementsBadge = "show_unread_announcements_badge"
         static let sortUnreadBookmarksFirst = "bookmarks_sorted_unread"
         static let sortUnreadForumThreadsFirst = "forum_threads_sorted_unread"
+    }
+}
+
+extension UserDefaults {
+    
+    /// Some settings are a bit more effort and it's not worth customizing the Sourcery template just for them.
+    private enum MoreSettingsKeys {
+        static let ubiquitousThemeNames = "ubiquitous_theme_names"
+    }
+    
+    @objc dynamic var ubiquitousThemeNames: [String]? {
+        get { return object(forKey: MoreSettingsKeys.ubiquitousThemeNames) as? [String] }
+        set { set(newValue, forKey: MoreSettingsKeys.ubiquitousThemeNames) }
+    }
+    
+    @objc private class var keyPathsForValuesAffectingUbiquitousThemeNames: Set<String> {
+        return [MoreSettingsKeys.ubiquitousThemeNames]
     }
 }
 
@@ -71,9 +95,9 @@ extension UserDefaults {
      var observers: [NSKeyValueObservation] = []
      
      observers += UserDefaults.standard.observeSeveral {
-     $0.observe(\.showAvatars, changeHandler: { defaults in
-     print("showAvatars is now \(defaults.showAvatars)")
-     })
+         $0.observe(\.showAvatars) { defaults in
+             print("showAvatars is now \(defaults.showAvatars)")
+         }
      }
      
      Note that there's no provision for `NSKeyValueObservingOptions` or `NSKeyValueObservedChange`; this is a convenience method for adding several observers that react to settings changes, and the assumption is that the current value is desired and will be obtained from the passed-in `UserDefaults` instance (as in the example).
@@ -93,10 +117,17 @@ extension UserDefaults {
             self.defaults = defaults
         }
         
-        func observe<Value>(_ keyPath: KeyPath<UserDefaults, Value>, changeHandler: @escaping (UserDefaults) -> Void) {
-            observers += [defaults.observeOnMain(keyPath, changeHandler: { defaults, change in
-                changeHandler(defaults)
-            })]
+        /**
+         Add a key-value observer for each provided key path. The change handler is called on the main queue whenever any of the key paths change.
+         
+         The added observers are all included in the return value from `UserDefaults.observeSeveral(_:)`.
+         */
+        func observe<Value>(_ keyPaths: KeyPath<UserDefaults, Value>..., changeHandler: @escaping (UserDefaults) -> Void) {
+            observers += keyPaths.map {
+                defaults.observeOnMain($0, changeHandler: { defaults, change in
+                    changeHandler(defaults)
+                })
+            }
         }
     }
 }

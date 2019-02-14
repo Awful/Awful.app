@@ -104,7 +104,7 @@ Awful's Core Data store is a cache of content from the Forums. Any user info spe
 
 [HTTP client]: Core/Networking/ForumsClient.swift
 [entities]: Core/Model
-[user defaults]: App/Settings/AwfulSettings.h
+[user defaults]: App/Settings/UserDefaults+Settings.swift
 
 ### Theming
 

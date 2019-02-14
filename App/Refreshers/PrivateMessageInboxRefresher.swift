@@ -41,7 +41,7 @@ final class PrivateMessageInboxRefresher {
         
         guard
             client.isLoggedIn,
-            AwfulSettings.shared().canSendPrivateMessages,
+            UserDefaults.standard.loggedInUserCanSendPrivateMessages,
             minder.shouldRefresh(.privateMessagesInbox) else
         {
             Log.d("can't refresh private message inbox yet, will try again later")

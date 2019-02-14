@@ -9,6 +9,7 @@ import UIKit
 final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     
     let managedObjectContext: NSManagedObjectContext
+    private var observers: [NSKeyValueObservation] = []
     
     lazy private(set) var rootViewController: UIViewController = {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
@@ -22,8 +23,8 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         return container
     }()
     
-    fileprivate let splitViewController: AwfulSplitViewController
-    fileprivate let tabBarController: UITabBarController
+    private let splitViewController: AwfulSplitViewController
+    private let tabBarController: UITabBarController
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -64,24 +65,32 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         splitViewController.preferredPrimaryColumnWidthFraction = 0.5
         
         updateMessagesTabPresence()
-        NotificationCenter.default.addObserver(self, selector: #selector(RootViewControllerStack.settingsDidChange(_:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.hideSidebarInLandscape) { [unowned self] defaults in
+                self.configureSplitViewControllerDisplayMode()
+            }
+            $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
+                [unowned self] defaults in
+                self.configureTabBarColor()
+            }
+            $0.observe(\.loggedInUserCanSendPrivateMessages) { [unowned self] defaults in
+                self.updateMessagesTabPresence()
+            }
+        }
         
         configureSplitViewControllerDisplayMode()
 		configureTabBarColor()
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    fileprivate func createEmptyDetailNavigationController() -> UINavigationController {
+    private func createEmptyDetailNavigationController() -> UINavigationController {
         let emptyNavigationController = NavigationController()
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
         emptyNavigationController.restorationClass = nil
         return emptyNavigationController
     }
     
-    fileprivate func updateMessagesTabPresence() {
+    private func updateMessagesTabPresence() {
         let roots = tabBarController.mutableArrayValue(forKey: "viewControllers")
         let messagesRestorationIdentifier = "Messages"
         var messagesTabIndex: Int?
@@ -94,7 +103,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             }
         }
         
-        if AwfulSettings.shared().canSendPrivateMessages {
+        if UserDefaults.standard.loggedInUserCanSendPrivateMessages {
             if messagesTabIndex == nil {
                 let messages = MessageListViewController(managedObjectContext: managedObjectContext)
                 messages.restorationIdentifier = messagesRestorationIdentifier
@@ -109,32 +118,19 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             }
         }
     }
-    
-    @objc fileprivate func settingsDidChange(_ notification: Notification) {
-        let userInfo = (notification).userInfo!
-        let changeKey = userInfo[AwfulSettingsDidChangeSettingKey]! as! String
-        if changeKey == AwfulSettingsKeys.canSendPrivateMessages.takeUnretainedValue() as String {
-            updateMessagesTabPresence()
-        } else if changeKey == AwfulSettingsKeys.hideSidebarInLandscape.takeUnretainedValue() as String {
-            configureSplitViewControllerDisplayMode()
-		} else if changeKey == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || changeKey == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String {
-			configureTabBarColor()
-		}
-    }
 	
-	fileprivate func configureTabBarColor() {
-		if AwfulSettings.shared().darkTheme {
-			self.tabBarController.tabBar.barTintColor = UIColor.black
+	private func configureTabBarColor() {
+		if UserDefaults.standard.isDarkModeEnabled {
+			tabBarController.tabBar.barTintColor = .black
 		} else {
-			self.tabBarController.tabBar.barTintColor = nil
+			tabBarController.tabBar.barTintColor = nil
 		}
 
-        self.tabBarController.tabBar.tintColor = Theme.currentTheme["tintColor"]
-        
+        tabBarController.tabBar.tintColor = Theme.currentTheme["tintColor"]
 	}
 	
-    fileprivate func configureSplitViewControllerDisplayMode() {
-        if AwfulSettings.shared().hideSidebarInLandscape {
+    private func configureSplitViewControllerDisplayMode() {
+        if UserDefaults.standard.hideSidebarInLandscape {
             switch splitViewController.displayMode {
             case .primaryOverlay, .allVisible:
                 splitViewController.preferredDisplayMode = .primaryOverlay
@@ -198,11 +194,11 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         }
     }
     
-    fileprivate var primaryNavigationController: UINavigationController {
+    private var primaryNavigationController: UINavigationController {
         return tabBarController.selectedViewController as! UINavigationController
     }
 
-    fileprivate var detailNavigationController: UINavigationController? {
+    private var detailNavigationController: UINavigationController? {
         let viewControllers = splitViewController.viewControllers as! [UINavigationController]
         return viewControllers.count > 1 ? viewControllers[1] : nil
     }
@@ -268,7 +264,7 @@ extension RootViewControllerStack {
     }
     
     // Split view controllers really don't like it outside of .Automatic on iPhone 6+. This largely works around a bug whereby the screen just turns grey after rotating from landscape to portrait with "Hide sidebar in landscape" enabled. rdar://problem/18553183
-    fileprivate func kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior() {
+    private func kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior() {
         let tempMode = splitViewController.preferredDisplayMode
         splitViewController.preferredDisplayMode = .automatic
         splitViewController.preferredDisplayMode = tempMode
@@ -305,7 +301,7 @@ extension RootViewControllerStack {
         return .automatic
     }
     
-    fileprivate var backBarButtonItem: UIBarButtonItem? {
+    private var backBarButtonItem: UIBarButtonItem? {
         guard !splitViewController.isCollapsed else {
             return nil
         }

@@ -89,8 +89,8 @@ final class SettingsViewController: TableViewController {
     }()
     
     private var loggedInUser: User? {
-        return AwfulSettings.shared().userID
-            .map { UserKey(userID: $0, username: AwfulSettings.shared().username) }
+        return UserDefaults.standard.loggedInUserID
+            .map { UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }
             .flatMap { User.objectForKey(objectKey: $0, inManagedObjectContext: managedObjectContext) as? User }
     }
     
@@ -100,9 +100,9 @@ final class SettingsViewController: TableViewController {
             .done { [weak self] user in
                 RefreshMinder.sharedMinder.didRefresh(.loggedInUser)
 
-                AwfulSettings.shared().userID = user.userID
-                AwfulSettings.shared().username = user.username
-                AwfulSettings.shared().canSendPrivateMessages = user.canReceivePrivateMessages
+                UserDefaults.standard.loggedInUserCanSendPrivateMessages = user.canReceivePrivateMessages
+                UserDefaults.standard.loggedInUserID = user.userID
+                UserDefaults.standard.loggedInUsername = user.username
 
                 self?.tableView.reloadData()
             }
@@ -285,7 +285,7 @@ final class SettingsViewController: TableViewController {
         }
         
         if settingType == .Immutable, let valueID = setting["ValueIdentifier"] as? String , valueID == "Username" {
-            cell.detailTextLabel?.text = AwfulSettings.shared().username
+            cell.detailTextLabel?.text = UserDefaults.standard.loggedInUsername
         }
         
         if settingType == .OnOff {

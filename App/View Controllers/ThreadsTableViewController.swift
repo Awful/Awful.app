@@ -15,6 +15,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
+    private var observers: [NSKeyValueObservation] = []
     private var peekPopController: ThreadPeekPopController?
     
     private lazy var longPressRecognizer: UIGestureRecognizer = {
@@ -58,8 +59,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         }
         let dataSource = try! ThreadListDataSource(
             forum: forum,
-            sortedByUnread: AwfulSettings.shared().forumThreadsSortedByUnread,
-            showsTagAndRating: AwfulSettings.shared().showThreadTags,
+            sortedByUnread: UserDefaults.standard.sortUnreadForumThreadsFirst,
+            showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList,
             threadTagFilter: filter,
             managedObjectContext: managedObjectContext,
             tableView: tableView)
@@ -122,10 +123,21 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ThreadsTableViewController.settingsDidChange(_:)), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
-        
         if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
+        }
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
+                if self.visible {
+                    self.prepareUserActivity()
+                }
+            }
+            $0.observe(\.sortUnreadForumThreadsFirst, \.showThreadTagsInThreadList) {
+                [unowned self] defaults in
+                self.dataSource = self.makeDataSource()
+                self.tableView.reloadData()
+            }
         }
     }
     
@@ -135,7 +147,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         updateFilterButton()
 
         tableView.separatorColor = theme["listSeparatorColor"]
-        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: AwfulSettings.shared().showThreadTags, inTableWithWidth: tableView.bounds.width)
+        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -199,28 +211,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         startAnimatingPullToRefresh()
         
         loadPage(1)
-    }
-    
-    // MARK: Notifications
-    
-    @objc private func settingsDidChange(_ notification: Notification) {
-        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
-
-        switch key {
-        case AwfulSettingsKeys.showThreadTags.takeUnretainedValue() as String as String where isViewLoaded:
-            dataSource = makeDataSource()
-            tableView.reloadData()
-            
-        case AwfulSettingsKeys.forumThreadsSortedByUnread.takeUnretainedValue() as String as String:
-            dataSource = makeDataSource()
-            tableView.reloadData()
-            
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() as String as String where visible:
-            prepareUserActivity()
-            
-        default:
-            break
-        }
     }
     
     // MARK: Composition
@@ -317,7 +307,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     // MARK: Handoff
     
     private func prepareUserActivity() {
-        guard AwfulSettings.shared().handoffEnabled else {
+        guard UserDefaults.standard.isHandoffEnabled else {
             userActivity = nil
             return
         }

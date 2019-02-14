@@ -18,6 +18,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private var dataStore: DataStore!
     private var inboxRefresher: PrivateMessageInboxRefresher?
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
+    private var observers: [NSKeyValueObservation] = []
     private var openCopiedURLController: OpenCopiedURLController?
     var window: UIWindow?
     
@@ -62,7 +63,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
         
-        if Tweaks.isEnabled, AwfulSettings.shared().showTweaksOnShake {
+        if Tweaks.isEnabled, UserDefaults.standard.showTweaksOnShake {
             window = TweakWindow(frame: UIScreen.main.bounds, gestureType: .shake, tweakStore: Tweaks.defaultStore)
         } else {
             window = UIWindow(frame: UIScreen.main.bounds)
@@ -99,11 +100,26 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(brightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mainScreenBrightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
         
-        // Brightness may have changed since app was shut down
-        NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
-
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.automaticallyEnableDarkMode) { [unowned self] defaults in
+                self.automaticallyUpdateDarkModeEnabledIfNecessary()
+            }
+            $0.observe(\.automaticDarkModeBrightnessThresholdPercent) { [unowned self] defaults in
+                self.automaticallyUpdateDarkModeEnabledIfNecessary()
+            }
+            $0.observe(\.customBaseURLString) { [unowned self] defaults in
+                self.updateClientBaseURL()
+            }
+            $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
+                [unowned self] defaults in
+                self.showSnapshotDuringThemeDidChange()
+            }
+            $0.observe(\.isDarkModeEnabled) { [unowned self] defaults in
+                self.showSnapshotDuringThemeDidChange()
+            }
+        }
         
         return true
     }
@@ -117,8 +133,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(true)
         
-        // Brightness may have changed while app was inactive
-        NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
+        // Screen brightness may have changed while the app wasn't paying attention.
+        automaticallyUpdateDarkModeEnabledIfNecessary()
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
@@ -280,39 +296,36 @@ private extension AppDelegate {
     }
     
     @objc func settingsDidChange(_ notification: Notification) {
-        guard let key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String else { return }
-        if key == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String || key == AwfulSettingsKeys.alternateTheme.takeUnretainedValue() as String || key.hasPrefix("theme") {
-            guard let window = window else { return }
-            if let snapshot = window.snapshotView(afterScreenUpdates: false) {
-                window.addSubview(snapshot)
-                themeDidChange()
-                
-                UIView.transition(from: snapshot, to: window, duration: 0.2, options: [.transitionCrossDissolve, .showHideTransitionViews], completion: { (completed) in
-                    snapshot.removeFromSuperview()
-                })
-            } else {
-                themeDidChange()
-            }
-        } else if key == AwfulSettingsKeys.customBaseURL.takeUnretainedValue() as String {
-            updateClientBaseURL()
-        } else if key == AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String {
-            NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
-        } else if key == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
-            NotificationCenter.default.post(name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
+        if let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String, key.hasPrefix("theme") {
+            showSnapshotDuringThemeDidChange()
         }
     }
     
-    @objc func brightnessDidChange(note: NSNotification) {
-        if AwfulSettings.shared().autoDarkTheme {
-            if let screen: UIScreen = note.object as? UIScreen {
-                let threshold = CGFloat(AwfulSettings.shared().autoThemeThreshold / 100.0)
-                // TODO: Replace threshold with user-set preference
-                if screen.brightness > threshold && AwfulSettings.shared().darkTheme {
-                    AwfulSettings.shared().darkTheme = false
-                } else if screen.brightness <= threshold && !AwfulSettings.shared().darkTheme {
-                    AwfulSettings.shared().darkTheme = true
-                }
-            }
+    private func showSnapshotDuringThemeDidChange() {
+        if let window = window, let snapshot = window.snapshotView(afterScreenUpdates: false) {
+            window.addSubview(snapshot)
+            themeDidChange()
+            
+            UIView.transition(from: snapshot, to: window, duration: 0.2, options: [.transitionCrossDissolve, .showHideTransitionViews], completion: { completed in
+                snapshot.removeFromSuperview()
+            })
+        } else {
+            themeDidChange()
+        }
+    }
+    
+    @objc private func mainScreenBrightnessDidChange(_ notification: Notification) {
+        automaticallyUpdateDarkModeEnabledIfNecessary()
+    }
+    
+    private func automaticallyUpdateDarkModeEnabledIfNecessary() {
+        guard UserDefaults.standard.automaticallyEnableDarkMode else { return }
+        
+        let threshold = CGFloat(UserDefaults.standard.automaticDarkModeBrightnessThresholdPercent / 100)
+        let shouldDarkModeBeEnabled = UIScreen.main.brightness <= threshold
+        
+        if shouldDarkModeBeEnabled != UserDefaults.standard.isDarkModeEnabled {
+            UserDefaults.standard.isDarkModeEnabled.toggle()
         }
     }
     
@@ -321,7 +334,7 @@ private extension AppDelegate {
     }
     
     func updateClientBaseURL() {
-        let urlString = AwfulSettings.shared().customBaseURL ?? defaultBaseURLString
+        let urlString = UserDefaults.standard.customBaseURLString ?? defaultBaseURLString
         guard var components = URLComponents(string: urlString) else { return }
         if components.scheme?.isEmpty ?? true {
             components.scheme = "http"

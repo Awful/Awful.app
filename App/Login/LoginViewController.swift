@@ -151,13 +151,11 @@ class LoginViewController: ViewController {
         ForumsClient.shared.logIn(username: usernameTextField.text ?? "",
                                   password: passwordTextField.text ?? "")
             .done { user in
-                let settings = AwfulSettings.shared()
-                settings.username = user.username
-                settings.userID = user.userID
-                settings.canSendPrivateMessages = user.canReceivePrivateMessages
-                if let completionBlock = self.completionBlock {
-                    completionBlock(self)
-                }
+                UserDefaults.standard.loggedInUserCanSendPrivateMessages = user.canReceivePrivateMessages
+                UserDefaults.standard.loggedInUserID = user.userID
+                UserDefaults.standard.loggedInUsername = user.username
+                
+                self.completionBlock?(self)
             }
             .catch { error in
                 self.state = .failedLogin

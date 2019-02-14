@@ -15,7 +15,8 @@ ReplyWorkspace conforms to UIStateRestoring, so it is ok to involve it in UIKit 
 */
 final class ReplyWorkspace: NSObject {
     let draft: ReplyDraft
-    fileprivate let restorationIdentifier: String
+    private var observers: [NSKeyValueObservation] = []
+    private let restorationIdentifier: String
     
     /**
     Called when the viewController should be dismissed. saveDraft is true if the workspace should stick around; newPost is a newly-created Post if one was made.
@@ -91,9 +92,10 @@ final class ReplyWorkspace: NSObject {
             let navigationItem = compositionViewController.navigationItem
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
             navigationItem.rightBarButtonItem = rightButtonItem
-            kvoController.observe(AwfulSettings.shared(), keyPath: AwfulSettingsKeys.confirmNewPosts.takeUnretainedValue() as String, options: .initial) { [unowned self] _, _, change in
+            
+            observers += [UserDefaults.standard.observeOnMain(\.confirmNewPosts, options: .initial, changeHandler: { [unowned self] defaults, change in
                 self.updateRightButtonItem()
-            }
+            })]
             
             if let
                 forumID = draft.thread.forum?.forumID,
@@ -113,7 +115,7 @@ final class ReplyWorkspace: NSObject {
         }()
     
     fileprivate func updateRightButtonItem() {
-        if AwfulSettings.shared().confirmNewPosts {
+        if UserDefaults.standard.confirmNewPosts {
             rightButtonItem.title = "Preview"
             rightButtonItem.action = #selector(ReplyWorkspace.didTapPreview(_:))
         } else {

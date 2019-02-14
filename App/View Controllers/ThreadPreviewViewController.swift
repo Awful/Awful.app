@@ -86,7 +86,7 @@ final class ThreadPreviewViewController: ViewController {
                 self.networkOperation = nil
                 
                 guard
-                    let userKey = AwfulSettings.shared().userID.map({ UserKey(userID: $0, username: AwfulSettings.shared().username) }),
+                    let userKey = UserDefaults.standard.loggedInUserID.map({ UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }),
                     let context = self.managedObjectContext,
                     let author = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
                     else { throw MissingAuthorError() }

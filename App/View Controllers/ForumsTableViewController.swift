@@ -7,9 +7,11 @@ import CoreData
 import UIKit
 
 final class ForumsTableViewController: TableViewController {
-    let managedObjectContext: NSManagedObjectContext
-    private var listDataSource: ForumListDataSource!
+    
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
+    private var listDataSource: ForumListDataSource!
+    let managedObjectContext: NSManagedObjectContext
+    private var observers: [NSKeyValueObservation] = []
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     
     init(managedObjectContext: NSManagedObjectContext) {
@@ -37,20 +39,24 @@ final class ForumsTableViewController: TableViewController {
                 self?.updateBadgeValue(unreadCount) })
         updateBadgeValue(unreadAnnouncementCountObserver.count)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(didChangeSettings), name: .AwfulSettingsDidChange, object: AwfulSettings.shared())
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.showUnreadAnnouncementsBadge) { [unowned self] defaults in
+                self.updateBadgeValue(self.unreadAnnouncementCountObserver.count)
+            }
+        }
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    fileprivate func refreshIfNecessary() {
+    private func refreshIfNecessary() {
         if RefreshMinder.sharedMinder.shouldRefresh(.forumList) {
             refresh()
         }
     }
     
-    fileprivate func refresh() {
+    private func refresh() {
         _ = ForumsClient.shared.taxonomizeForums()
             .done { forums in
                 RefreshMinder.sharedMinder.didRefresh(.forumList)
@@ -59,7 +65,7 @@ final class ForumsTableViewController: TableViewController {
             .ensure { self.stopAnimatingPullToRefresh() }
     }
     
-    fileprivate func migrateFavoriteForumsFromSettings() {
+    private func migrateFavoriteForumsFromSettings() {
         // TODO: this shouldn't be the view controller's responsibility.
         // In Awful 3.2 favorite forums moved from AwfulSettings (i.e. NSUserDefaults) to the ForumMetadata entity in Core Data.
         if let forumIDs = AwfulSettings.shared().favoriteForums {
@@ -78,18 +84,9 @@ final class ForumsTableViewController: TableViewController {
         }
     }
     
-    @objc private func didChangeSettings(_ notification: Notification) {
-        if
-            let settingsKey = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String,
-            settingsKey == AwfulSettingsKeys.showUnreadAnnouncementsBadge.takeUnretainedValue() as String
-        {
-            updateBadgeValue(unreadAnnouncementCountObserver.count)
-        }
-    }
-    
     private func updateBadgeValue(_ unreadCount: Int) {
         tabBarItem?.badgeValue = {
-            guard AwfulSettings.shared().showUnreadAnnouncementsBadge else { return nil }
+            guard UserDefaults.standard.showUnreadAnnouncementsBadge else { return nil }
             
             return unreadCount > 0
                 ? NumberFormatter.localizedString(from: unreadCount as NSNumber, number: .none)

@@ -72,7 +72,7 @@ final class MessageListViewController: TableViewController {
     }
     
     private func refreshIfNecessary() {
-        if !AwfulSettings.shared().canSendPrivateMessages { return }
+        if !UserDefaults.standard.loggedInUserCanSendPrivateMessages { return }
         
         if tableView.numberOfSections >= 1, tableView.numberOfRows(inSection: 0) == 0 {
             return refresh()
@@ -125,7 +125,7 @@ final class MessageListViewController: TableViewController {
     }
 
     private func recalculateSeparatorInset() {
-        tableView.separatorInset.left = MessageListCell.separatorLeftInset(showsTagAndRating: AwfulSettings.shared().showThreadTags, inTableWithWidth: tableView.bounds.width)
+        tableView.separatorInset.left = MessageListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
     }
 
     // MARK: View lifecycle

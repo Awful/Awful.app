@@ -21,6 +21,7 @@ final class PostsPageViewController: ViewController {
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
     private weak var networkOperation: Cancellable?
+    private var observers: [NSKeyValueObservation] = []
     private(set) var page: ThreadPage?
     weak var previewActionItemProvider: PreviewActionItemProvider?
     private var refreshControl: PostsPageRefreshControl?
@@ -109,8 +110,6 @@ final class PostsPageViewController: ViewController {
             UIBarButtonItem.flexibleSpace(),
             actionsItem,
         ]
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
     }
     
     var posts: [Post] = []
@@ -316,7 +315,7 @@ final class PostsPageViewController: ViewController {
             context["endMessage"] = true
         }
         
-        if let username = AwfulSettings.shared().username, !username.isEmpty {
+        if let username = UserDefaults.standard.loggedInUsername, !username.isEmpty {
             context["loggedInUsername"] = username
         }
         
@@ -449,7 +448,7 @@ final class PostsPageViewController: ViewController {
                 components.queryItems = queryItems
                 let url = components.url!
                 
-                AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
+                UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
                 UIPasteboard.general.coercedURL = url
             })
             copyURLItem.title = "Copy URL"
@@ -513,34 +512,6 @@ final class PostsPageViewController: ViewController {
         }
         return item
     }()
-    
-    @objc private func settingsDidChange(_ notification: NSNotification) {
-        guard isViewLoaded else { return }
-        guard let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? NSString else { return }
-        
-        switch key {
-        case AwfulSettingsKeys.showAvatars.takeUnretainedValue():
-            renderView.setShowAvatars(AwfulSettings.shared().showAvatars)
-            
-        case AwfulSettingsKeys.fontScale.takeUnretainedValue():
-            renderView.setFontScale(AwfulSettings.shared().fontScale)
-            
-        case AwfulSettingsKeys.showImages.takeUnretainedValue() where AwfulSettings.shared().showImages:
-            renderView.loadLinkifiedImages()
-        
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue() where visible:
-            configureUserActivityIfPossible()
-        
-        case AwfulSettingsKeys.embedTweets.takeUnretainedValue() where AwfulSettings.shared().embedTweets:
-            renderView.embedTweets()
-            
-        case AwfulSettingsKeys.pullForNext.takeRetainedValue():
-            updateRefreshControl()
-        
-        default:
-            break
-        }
-    }
     
     @objc private func externalStylesheetDidUpdate(_ rawNotification: Notification) {
         guard let notification = PostsViewExternalStylesheetLoader.DidUpdateNotification(rawNotification) else {
@@ -778,9 +749,9 @@ final class PostsPageViewController: ViewController {
         }
         
         if
-            AwfulSettings.shared().canSendPrivateMessages &&
+            UserDefaults.standard.loggedInUserCanSendPrivateMessages &&
             user.canReceivePrivateMessages &&
-            user.userID != AwfulSettings.shared().userID
+            user.userID != UserDefaults.standard.loggedInUserID
         {
             items.append(IconActionItem(.sendPrivateMessage, block: {
                 let messageVC = MessageComposeViewController(recipient: user)
@@ -847,7 +818,7 @@ final class PostsPageViewController: ViewController {
         
         let post = posts[postIndex + hiddenPosts]
         let possessiveUsername: String
-        if post.author?.username == AwfulSettings.shared().username {
+        if post.author?.username == UserDefaults.standard.loggedInUsername {
             possessiveUsername = "Your"
         } else {
             possessiveUsername = "\(post.author?.username ?? "")'s"
@@ -871,7 +842,7 @@ final class PostsPageViewController: ViewController {
             let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ARChromeActivity()])
             activityVC.completionWithItemsHandler = { (activityType, completed, returnedItems, activityError) in
                 if completed && activityType == .copyToPasteboard {
-                    AwfulSettings.shared().lastOfferedPasteboardURL = url.absoluteString
+                    UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
                 }
             }
             self.present(activityVC, animated: false)
@@ -1001,7 +972,7 @@ final class PostsPageViewController: ViewController {
     }
     
     private func configureUserActivityIfPossible() {
-        guard case .specific? = page, AwfulSettings.shared().handoffEnabled else {
+        guard case .specific? = page, UserDefaults.standard.isHandoffEnabled else {
             userActivity = nil
             return
         }
@@ -1028,7 +999,7 @@ final class PostsPageViewController: ViewController {
     private func updateRefreshControl() {
         guard isViewLoaded else { return }
         
-        if AwfulSettings.shared().pullForNext {
+        if UserDefaults.standard.isPullForNextEnabled {
             if refreshControl == nil {
                 refreshControl = PostsPageRefreshControl(scrollView: scrollView, multiplexer: postsView.multiplexer, contentView: PostsPageRefreshSpinnerView())
                 refreshControl?.didStartRefreshing = { [weak self] in
@@ -1084,6 +1055,33 @@ final class PostsPageViewController: ViewController {
         
         if let loadingView = loadingView {
             view.addSubview(loadingView)
+        }
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.embedTweets) { [unowned self] defaults in
+                if defaults.embedTweets {
+                    self.renderView.embedTweets()
+                }
+            }
+            $0.observe(\.fontScale) { [unowned self] defaults in
+                self.renderView.setFontScale(defaults.fontScale)
+            }
+            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
+                if defaults.isHandoffEnabled, self.view.window != nil {
+                    self.configureUserActivityIfPossible()
+                }
+            }
+            $0.observe(\.isPullForNextEnabled) { [unowned self] defaults in
+                self.updateRefreshControl()
+            }
+            $0.observe(\.showAuthorAvatars) { [unowned self] defaults in
+                self.renderView.setShowAvatars(defaults.showAuthorAvatars)
+            }
+            $0.observe(\.showImages) { [unowned self] defaults in
+                if defaults.showImages {
+                    self.renderView.loadLinkifiedImages()
+                }
+            }
         }
     }
     
@@ -1200,7 +1198,7 @@ extension PostsPageViewController: ComposeTextViewControllerDelegate {
 
 extension PostsPageViewController: RenderViewDelegate {
     func didFinishRenderingHTML(in view: RenderView) {
-        if AwfulSettings.shared().embedTweets {
+        if UserDefaults.standard.embedTweets {
             view.embedTweets()
         }
         

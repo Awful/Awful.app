@@ -140,6 +140,46 @@ extension UserDefaults {
     }
 
 
+    @objc dynamic var lastOfferedPasteboardURLString: String? {
+        get { return string(forKey: SettingsKeys.lastOfferedPasteboardURLString) }
+        set { set(newValue, forKey: SettingsKeys.lastOfferedPasteboardURLString) }
+    }
+
+    @objc private class var keyPathsForValuesAffectingLastOfferedPasteboardURLString: Set<String> {
+        return [SettingsKeys.lastOfferedPasteboardURLString]
+    }
+
+
+    @objc dynamic var loggedInUserCanSendPrivateMessages: Bool {
+        get { return bool(forKey: SettingsKeys.loggedInUserCanSendPrivateMessages) }
+        set { set(newValue, forKey: SettingsKeys.loggedInUserCanSendPrivateMessages) }
+    }
+
+    @objc private class var keyPathsForValuesAffectingLoggedInUserCanSendPrivateMessages: Set<String> {
+        return [SettingsKeys.loggedInUserCanSendPrivateMessages]
+    }
+
+
+    @objc dynamic var loggedInUserID: String? {
+        get { return string(forKey: SettingsKeys.loggedInUserID) }
+        set { set(newValue, forKey: SettingsKeys.loggedInUserID) }
+    }
+
+    @objc private class var keyPathsForValuesAffectingLoggedInUserID: Set<String> {
+        return [SettingsKeys.loggedInUserID]
+    }
+
+
+    @objc dynamic var loggedInUsername: String? {
+        get { return string(forKey: SettingsKeys.loggedInUsername) }
+        set { set(newValue, forKey: SettingsKeys.loggedInUsername) }
+    }
+
+    @objc private class var keyPathsForValuesAffectingLoggedInUsername: Set<String> {
+        return [SettingsKeys.loggedInUsername]
+    }
+
+
     @objc dynamic var openCopiedURLAfterBecomingActive: Bool {
         get { return bool(forKey: SettingsKeys.openCopiedURLAfterBecomingActive) }
         set { set(newValue, forKey: SettingsKeys.openCopiedURLAfterBecomingActive) }
@@ -180,13 +220,13 @@ extension UserDefaults {
     }
 
 
-    @objc dynamic var showAvatars: Bool {
-        get { return bool(forKey: SettingsKeys.showAvatars) }
-        set { set(newValue, forKey: SettingsKeys.showAvatars) }
+    @objc dynamic var showAuthorAvatars: Bool {
+        get { return bool(forKey: SettingsKeys.showAuthorAvatars) }
+        set { set(newValue, forKey: SettingsKeys.showAuthorAvatars) }
     }
 
-    @objc private class var keyPathsForValuesAffectingShowAvatars: Set<String> {
-        return [SettingsKeys.showAvatars]
+    @objc private class var keyPathsForValuesAffectingShowAuthorAvatars: Set<String> {
+        return [SettingsKeys.showAuthorAvatars]
     }
 
 

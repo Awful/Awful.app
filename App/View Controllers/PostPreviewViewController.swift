@@ -107,10 +107,10 @@ final class PostPreviewViewController: ViewController {
                 guard let self = self, let context = self.managedObjectContext else { return }
                 
                 var loggedInUser: User? {
-                    guard let userID = AwfulSettings.shared().userID else {
+                    guard let userID = UserDefaults.standard.loggedInUserID else {
                         return nil
                     }
-                    let userKey = UserKey(userID: userID, username: AwfulSettings.shared().username)
+                    let userKey = UserKey(userID: userID, username: UserDefaults.standard.loggedInUsername)
                     return User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
                 }
                 

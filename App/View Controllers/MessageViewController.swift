@@ -14,6 +14,7 @@ final class MessageViewController: ViewController {
     private var didRender = false
     private var fractionalContentOffsetOnLoad: CGFloat = 0
     private var loadingView: LoadingView?
+    private var observers: [NSKeyValueObservation] = []
     private let privateMessage: PrivateMessage
     
     private lazy var renderView: RenderView = {
@@ -36,8 +37,6 @@ final class MessageViewController: ViewController {
         hidesBottomBarWhenPushed = true
         
         restorationClass = type(of: self)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: nil)
     }
     
     override var title: String? {
@@ -56,30 +55,6 @@ final class MessageViewController: ViewController {
             renderView.render(html: "<h1>Rendering Error</h1><pre>\(error)</pre>", baseURL: nil)
         }
         didRender = true
-    }
-    
-    @objc private func settingsDidChange(_ notification: Notification) {
-        guard isViewLoaded else { return }
-        
-        switch notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? NSString {
-        case AwfulSettingsKeys.showAvatars.takeUnretainedValue()?:
-            renderView.setShowAvatars(AwfulSettings.shared().showAvatars)
-            
-        case AwfulSettingsKeys.showImages.takeUnretainedValue()?:
-            renderView.loadLinkifiedImages()
-            
-        case AwfulSettingsKeys.fontScale.takeUnretainedValue()?:
-            renderView.setFontScale(AwfulSettings.shared().fontScale)
-            
-        case AwfulSettingsKeys.handoffEnabled.takeUnretainedValue()? where visible:
-            configureUserActivity()
-            
-        case AwfulSettingsKeys.embedTweets.takeUnretainedValue()? where AwfulSettings.shared().embedTweets:
-            renderView.embedTweets()
-            
-        default:
-            break
-        }
     }
     
     // MARK: Actions
@@ -172,7 +147,7 @@ final class MessageViewController: ViewController {
     // MARK: Handoff
     
     private func configureUserActivity() {
-        guard AwfulSettings.shared().handoffEnabled else { return }
+        guard UserDefaults.standard.isHandoffEnabled else { return }
         userActivity = NSUserActivity(activityType: Handoff.ActivityType.readingMessage)
         userActivity?.needsSave = true
     }
@@ -205,6 +180,28 @@ final class MessageViewController: ViewController {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressWebView))
         longPress.delegate = self
         renderView.addGestureRecognizer(longPress)
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.embedTweets) { [unowned self] defaults in
+                if defaults.embedTweets {
+                    self.renderView.embedTweets()
+                }
+            }
+            $0.observe(\.fontScale) { [unowned self] defaults in
+                self.renderView.setFontScale(defaults.fontScale)
+            }
+            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
+                if self.visible {
+                    self.configureUserActivity()
+                }
+            }
+            $0.observe(\.showAuthorAvatars) { [unowned self] defaults in
+                self.renderView.setShowAvatars(defaults.showAuthorAvatars)
+            }
+            $0.observe(\.showImages) { [unowned self] defaults in
+                self.renderView.loadLinkifiedImages()
+            }
+        }
         
         if privateMessage.innerHTML == nil || privateMessage.innerHTML?.isEmpty == true || privateMessage.from == nil {
             let loadingView = LoadingView.loadingViewWithTheme(theme)
@@ -302,7 +299,7 @@ extension MessageViewController: RenderViewDelegate {
         loadingView?.removeFromSuperview()
         loadingView = nil
         
-        if AwfulSettings.shared().embedTweets {
+        if UserDefaults.standard.embedTweets {
             renderView.embedTweets()
         }
     }

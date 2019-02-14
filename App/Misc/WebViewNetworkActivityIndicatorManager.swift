@@ -31,9 +31,8 @@ final class WebViewActivityIndicatorManager {
             // This `self` capture was originally `unowned` but that was very occasionally crashing trying to read an unowned reference to an instance that was already deallocated. This feels vaguely wrong (is someone doing a delayed-perform to notify KVO observers?), but the crash log was pretty convincing.
             [weak self] webView, change in
             
-            guard let self = self else { return }
-            
-            self.on = change.newValue!
+            guard let self = self, let newValue = change.newValue else { return }
+            self.on = newValue
         }
     }
 

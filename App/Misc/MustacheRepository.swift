@@ -45,7 +45,7 @@ private let repository: TemplateRepository = {
     let repo = TemplateRepository(bundle: .main)
 
     let fontScale: RenderFunction = { info in
-        let scale = AwfulSettings.shared().fontScale
+        let scale = UserDefaults.standard.fontScale
         switch info.tag.type {
         case .variable:
             return Rendering("\(scale)")

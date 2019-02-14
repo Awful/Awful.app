@@ -45,15 +45,12 @@ private enum _URLMenuPresenter {
             }
         }
         
-        if canOpenInYouTube(url) &&
-            AwfulSettings.shared().openYouTubeLinksInYouTube {
-            
+        if canOpenInYouTube(url), UserDefaults.standard.openYouTubeLinksInYouTube {
             UIApplication.shared.openURL(url)
             return
         }
         
-        if canOpenInTwitter(url) &&
-            AwfulSettings.shared().openTwitterLinksInTwitter {
+        if canOpenInTwitter(url), UserDefaults.standard.openTwitterLinksInTwitter {
             UIApplication.shared.openURL(url)
             return
         }

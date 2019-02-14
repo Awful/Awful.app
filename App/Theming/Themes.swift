@@ -174,27 +174,27 @@ private let bundledThemes: [String: Theme] = {
 
 extension Theme {
     class var defaultTheme: Theme {
-        if AwfulSettings.shared().alternateTheme {
+        if UserDefaults.standard.isAlternateThemeEnabled {
             return bundledThemes["alternateDefault"]!
         }
         return bundledThemes["default"]!
     }
     
     class var darkTheme: Theme {
-        if AwfulSettings.shared().alternateTheme {
+        if UserDefaults.standard.isAlternateThemeEnabled {
             return bundledThemes["alternateDark"]!
         }
         return bundledThemes["dark"]!
     }
     
     class var currentTheme: Theme {
-        if AwfulSettings.shared().darkTheme {
-            if AwfulSettings.shared().alternateTheme {
+        if UserDefaults.standard.isDarkModeEnabled {
+            if UserDefaults.standard.isAlternateThemeEnabled {
                 return bundledThemes["alternateDark"]!
             }
             return bundledThemes["dark"]!
         } else {
-            if AwfulSettings.shared().alternateTheme {
+            if UserDefaults.standard.isAlternateThemeEnabled {
                 return bundledThemes["alternateDefault"]!
             }
             return defaultTheme
@@ -217,27 +217,29 @@ extension Theme {
     }
     
     class func themesForForum(_ forum: Forum) -> [Theme] {
-        let ubiquitousNames = AwfulSettings.shared().ubiquitousThemeNames ?? []
+        let ubiquitousNames = UserDefaults.standard.ubiquitousThemeNames ?? []
         let themes = bundledThemes.values.filter {
-            $0.forumID == forum.forumID || ($0.forumID == nil && appThemeMatchesTheme(themeName: $0.name)) || ubiquitousNames.contains($0.name)
+            $0.forumID == forum.forumID
+                || ($0.forumID == nil && appThemeMatchesTheme(themeName: $0.name))
+                || ubiquitousNames.contains($0.name)
         }
         
         return themes.sorted()
     }
     
     class func appThemeMatchesTheme(themeName: String) -> Bool {
-        if ((themeName == "default" || themeName == "alternateDefault") && AwfulSettings.shared().darkTheme)
-            || ((themeName == "dark" || themeName == "alternateDark") && !AwfulSettings.shared().darkTheme) {
+        if ((themeName == "default" || themeName == "alternateDefault") && UserDefaults.standard.isDarkModeEnabled)
+            || ((themeName == "dark" || themeName == "alternateDark") && !UserDefaults.standard.isDarkModeEnabled) {
             return false
         }
         
-        if ((themeName == "default" && AwfulSettings.shared().alternateTheme)
-            || (themeName == "alternateDefault" && !AwfulSettings.shared().alternateTheme)) {
+        if (themeName == "default" && UserDefaults.standard.isAlternateThemeEnabled)
+            || (themeName == "alternateDefault" && !UserDefaults.standard.isAlternateThemeEnabled) {
             return false
         }
         
-        if ((themeName == "dark" && AwfulSettings.shared().alternateTheme)
-            || (themeName == "alternateDark" && !AwfulSettings.shared().alternateTheme)) {
+        if (themeName == "dark" && UserDefaults.standard.isAlternateThemeEnabled)
+            || (themeName == "alternateDark" && !UserDefaults.standard.isAlternateThemeEnabled) {
             return false
         }
         

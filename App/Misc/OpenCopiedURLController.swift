@@ -7,47 +7,40 @@ import UIKit
 
 /// Checks a pasteboard for a Forums URL at appropriate times and offers to open that URL.
 final class OpenCopiedURLController {
+    
     private let client: ForumsClient
+    private var observer: NSKeyValueObservation?
     private let pasteboard: UIPasteboard
     private let router: (AwfulRoute) -> Void
-    private let settings: AwfulSettings
     private let window: UIWindow
     
     init(client: ForumsClient = .shared,
          pasteboard: UIPasteboard = .general,
-         settings: AwfulSettings = .shared(),
          window: UIWindow,
          router: @escaping (AwfulRoute) -> Void)
     {
         self.client = client
         self.pasteboard = pasteboard
         self.router = router
-        self.settings = settings
         self.window = window
         
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: UIApplication.shared)
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: settings)
+        observer = UserDefaults.standard.observeOnMain(\.openCopiedURLAfterBecomingActive) {
+            [unowned self] defaults, change in
+            self.checkPasteboardForInterestingURL()
+        }
     }
     
     @objc private func applicationDidBecomeActive(_ notification: Notification) {
         checkPasteboardForInterestingURL()
     }
     
-    @objc private func settingsDidChange(_ notification: Notification) {
-        if
-            let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String,
-            key == AwfulSettingsKeys.clipboardURLEnabled.takeRetainedValue() as String
-        {
-            checkPasteboardForInterestingURL()
-        }
-    }
-    
     private func checkPasteboardForInterestingURL() {
         guard
             client.isLoggedIn,
-            settings.clipboardURLEnabled,
+            UserDefaults.standard.openCopiedURLAfterBecomingActive,
             let url = pasteboard.coercedURL,
-            settings.lastOfferedPasteboardURL != url.absoluteString
+            UserDefaults.standard.lastOfferedPasteboardURLString != url.absoluteString
                 || Tweaks.defaultStore.assign(Tweaks.launch.offerToOpenSameCopiedURL),
             let scheme = url.scheme,
             !Bundle.main.urlTypes
@@ -56,7 +49,7 @@ final class OpenCopiedURLController {
             let route = try? AwfulRoute(url)
             else { return }
         
-        settings.lastOfferedPasteboardURL = url.absoluteString
+        UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
         
         let alert = UIAlertController(
             title: String(format: LocalizedString("launch-open-copied-url-alert.title"), Bundle.main.localizedName),

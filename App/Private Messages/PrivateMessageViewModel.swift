@@ -13,20 +13,20 @@ struct PrivateMessageViewModel: MustacheBoxable {
     private let dict: [String: Any]
 
     init(message: PrivateMessage, stylesheet: String?) {
-        let showAvatars = AwfulSettings.shared().showAvatars
+        let showAvatars = UserDefaults.standard.showAuthorAvatars
         let hiddenAvataruRL = showAvatars ? nil : message.from?.avatarURL
         var htmlContents: String? {
             guard let originalHTML = message.innerHTML else { return nil }
             let document = HTMLDocument(string: originalHTML)
             document.addAttributeToTweetLinks()
-            if let username = AwfulSettings.shared().username {
+            if let username = UserDefaults.standard.loggedInUsername {
                 document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
                 document.identifyMentionsOfUser(named: username, shouldHighlight: true)
             }
             document.removeSpoilerStylingAndEvents()
             document.useHTML5VimeoPlayer()
-            document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
-            if !AwfulSettings.shared().autoplayGIFs {
+            document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.showImages)
+            if !UserDefaults.standard.automaticallyPlayGIFs {
                 document.stopGIFAutoplay()
             }
             return document.bodyElement?.innerHTML

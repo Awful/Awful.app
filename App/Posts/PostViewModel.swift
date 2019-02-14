@@ -30,7 +30,7 @@ struct PostViewModel: MustacheBoxable {
                 .joined(separator: "; ")
         }
         var showAvatars: Bool {
-            return AwfulSettings.shared().showAvatars
+            return UserDefaults.standard.showAuthorAvatars
         }
         var hiddenAvatarURL: URL? {
             return showAvatars ? nil : post.author?.avatarURL
@@ -85,12 +85,12 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
     document.removeEmptyEditedByParagraphs()
     document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
-    if let username = AwfulSettings.shared().username {
+    if let username = UserDefaults.standard.loggedInUsername {
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
         document.identifyMentionsOfUser(named: username, shouldHighlight: true)
     }
-    document.processImgTags(shouldLinkifyNonSmilies: !AwfulSettings.shared().showImages)
-    if !AwfulSettings.shared().autoplayGIFs {
+    document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.showImages)
+    if !UserDefaults.standard.automaticallyPlayGIFs {
         document.stopGIFAutoplay()
     }
     if isIgnored {
@@ -100,7 +100,7 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
 }
 
 private var showAvatars: Bool {
-    return AwfulSettings.shared().showAvatars
+    return UserDefaults.standard.showAuthorAvatars
 }
 
 private extension HTMLDocument {

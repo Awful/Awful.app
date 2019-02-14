@@ -5,9 +5,11 @@
 import UIKit
 
 final class SettingsUbiquitousThemesController: TableViewController {
-    fileprivate var themes: [Theme] = []
-    fileprivate var selectedThemeNames: Set<String> = []
-    fileprivate var ignoreSettingsChanges = false
+    
+    private var ignoreSettingsChanges = false
+    private var observer: NSKeyValueObservation?
+    private var selectedThemeNames: Set<String> = []
+    private var themes: [Theme] = []
     
     init() {
         super.init(style: .grouped)
@@ -16,26 +18,12 @@ final class SettingsUbiquitousThemesController: TableViewController {
         loadData()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    fileprivate func loadData() {
+    private func loadData() {
         themes = Theme.allThemes.filter { $0.forumID != nil }
-        selectedThemeNames = Set(AwfulSettings.shared().ubiquitousThemeNames ?? [])
+        selectedThemeNames = Set(UserDefaults.standard.ubiquitousThemeNames ?? [])
     }
     
-    @objc fileprivate func settingsDidChange(_ notification: Notification) {
-        guard !ignoreSettingsChanges else { return }
-        guard let
-            key = (notification as NSNotification).userInfo?[AwfulSettingsDidChangeSettingKey] as? String,
-            key == AwfulSettingsKeys.ubiquitousThemeNames.takeUnretainedValue() as String
-            else { return }
-        loadData()
-        
-        guard isViewLoaded else { return }
-        tableView.reloadData()
-    }
+    // MARK: View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +31,10 @@ final class SettingsUbiquitousThemesController: TableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
         tableView.separatorStyle = .none
         
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: NSNotification.Name.AwfulSettingsDidChange, object: nil)
+        observer = UserDefaults.standard.observeOnMain(\.ubiquitousThemeNames, changeHandler: { [unowned self] defaults, change in
+            self.loadData()
+            self.tableView.reloadData()
+        })
     }
     
     // MARK: UITableViewDataSource and UITableViewDelegate
@@ -100,7 +91,7 @@ final class SettingsUbiquitousThemesController: TableViewController {
         }
         
         ignoreSettingsChanges = true
-        AwfulSettings.shared().ubiquitousThemeNames = Array(selectedThemeNames)
+        UserDefaults.standard.ubiquitousThemeNames = Array(selectedThemeNames)
         ignoreSettingsChanges = false
     }
     
@@ -113,6 +104,12 @@ final class SettingsUbiquitousThemesController: TableViewController {
         guard let footerView = view as? UITableViewHeaderFooterView else { return }
         footerView.textLabel?.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.footnote)
         footerView.contentView.backgroundColor = theme["listHeaderBackgroundColor"]
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
