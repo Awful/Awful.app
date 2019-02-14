@@ -17,6 +17,7 @@ target 'Awful' do
   pod 'ImgurAnonymousAPI'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
+  pod 'PromiseKit'
 
   # Fixes a compile error; I'm happy to pin to some subsequent tagged version if that ever happens.
   pod 'PSMenuItem', :git => 'https://github.com/steipete/PSMenuItem', :commit => '489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79'
