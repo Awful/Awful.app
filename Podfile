@@ -11,13 +11,16 @@ target 'Awful' do
   pod 'ARChromeActivity'
   pod 'Crashlytics'
   pod 'FLAnimatedImage'
-  #pod 'GRMustache.swift' # Waiting for Swift 4 support
-  pod 'GRMustache.swift', :git => 'https://github.com/chrisballinger/GRMustache.swift', :branch => 'feature/swift4'
   pod 'HTMLReader'
   pod 'ImgurAnonymousAPI'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
   pod 'PromiseKit'
+  pod 'Sourcery'
+  pod 'TUSafariActivity'
+
+  # No Swift 4 support yet; picked a fork that seems ok.
+  pod 'GRMustache.swift', :git => 'https://github.com/chrisballinger/GRMustache.swift', :branch => 'feature/swift4'
 
   # Fixes a compile error; I'm happy to pin to some subsequent tagged version if that ever happens.
   pod 'PSMenuItem', :git => 'https://github.com/steipete/PSMenuItem', :commit => '489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79'
@@ -25,9 +28,8 @@ target 'Awful' do
   # Swift 4 support that doesn't crash in KVO. Go back to main pod when it arrives there
   pod 'PullToRefresher', :git => 'https://github.com/MindSea/PullToRefresh', :branch => 'fix-simultaneous-access'
 
+  # Frequently bumps versions without pushing podspec to CocoaPods.
   pod 'SwiftTweaks', :git => 'https://github.com/Khan/SwiftTweaks', :branch => 'master'
-
-  pod 'TUSafariActivity'
 
   target :AwfulTests do
     inherit! :search_paths
