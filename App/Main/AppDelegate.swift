@@ -98,7 +98,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         PostsViewExternalStylesheetLoader.shared.refreshIfNecessary()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(settingsDidChange), name: .AwfulSettingsDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
         NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(mainScreenBrightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
         
@@ -295,10 +295,8 @@ private extension AppDelegate {
         }
     }
     
-    @objc func settingsDidChange(_ notification: Notification) {
-        if let key = notification.userInfo?[AwfulSettingsDidChangeSettingKey] as? String, key.hasPrefix("theme") {
-            showSnapshotDuringThemeDidChange()
-        }
+    @objc private func forumSpecificThemeDidChange(_ notification: Notification) {
+        showSnapshotDuringThemeDidChange()
     }
     
     private func showSnapshotDuringThemeDidChange() {

@@ -47,7 +47,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @IBOutlet weak var themePicker: ThemePicker!
     @IBAction func changeSelectedTheme(_ sender: ThemePicker) {
         _selectedTheme = themes[sender.selectedThemeIndex]
-        AwfulSettings.shared().setThemeName(selectedTheme.name, forForumID: forum.forumID)
+        Theme.setThemeName(selectedTheme.name, forForumIdentifiedBy: forum.forumID)
         if selectedTheme.forumID == nil {
             UserDefaults.standard.isDarkModeEnabled = selectedTheme != Theme.defaultTheme
         }
@@ -71,7 +71,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     fileprivate func updateSelectedThemeInPicker() {
         let names = themes.map { $0.name }
-        if var themeName = AwfulSettings.shared().themeName(forForumID: forum.forumID) {
+        if var themeName = Theme.themeNameForForum(identifiedBy: forum.forumID) {
             if themeName == "default" || themeName == "dark" || themeName == "alternate" || themeName == "alternateDark" {
                 themeName = Theme.currentTheme.name
             }

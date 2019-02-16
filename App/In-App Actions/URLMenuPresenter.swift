@@ -61,18 +61,15 @@ private enum _URLMenuPresenter {
             return
         }
         
-        let browser = AwfulSettings.shared().defaultBrowser
-        switch browser {
-        case AwfulDefaultBrowserAwful?:
+        switch UserDefaults.standard.defaultBrowser {
+        case .awful:
             AwfulBrowser.presentBrowserForURL(url, fromViewController: presenter)
-        case AwfulDefaultBrowserSafari?:
+        case .safari:
             UIApplication.shared.openURL(url)
-        case AwfulDefaultBrowserChrome?:
+        case .chrome:
             UIApplication.shared.openURL(chromifyURL(url))
-        case AwfulDefaultBrowserFirefox?:
+        case .firefox:
             UIApplication.shared.openURL(firefoxifyURL(url))
-        default:
-            fatalError("unexpected browser \(browser as Any)")
         }
     }
     
@@ -83,9 +80,9 @@ private enum _URLMenuPresenter {
         case let .link(linkURL, imageURL):
             alert.title = linkURL.absoluteString
             
-            let browsers = AwfulDefaultBrowsers()
+            let browsers = DefaultBrowser.installedBrowsers
             
-            if browsers.contains(AwfulDefaultBrowserAwful) {
+            if browsers.contains(.awful) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-awful"), style: .default, handler: { _ in
                     if let route = try? AwfulRoute(linkURL) {
                         AppDelegate.instance.open(route: route)
@@ -95,7 +92,7 @@ private enum _URLMenuPresenter {
                 }))
             }
             
-            if browsers.contains(AwfulDefaultBrowserSafari) {
+            if browsers.contains(.safari) {
                 let title: String
                 if canOpenInYouTube(linkURL) {
                     title = LocalizedString("link-action.open-in-youtube")
@@ -110,14 +107,14 @@ private enum _URLMenuPresenter {
                 }))
             }
                     
-            if browsers.contains(AwfulDefaultBrowserChrome) {
+            if browsers.contains(.chrome) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-chrome"), style: .default, handler: { _ in
                     UIApplication.shared.openURL(chromifyURL(linkURL))
                     return
                 }))
             }
                     
-            if browsers.contains(AwfulDefaultBrowserFirefox) {
+            if browsers.contains(.firefox) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-firefox"), style: .default, handler: { _ in
                     UIApplication.shared.openURL(firefoxifyURL(linkURL))
                     return

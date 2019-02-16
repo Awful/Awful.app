@@ -216,6 +216,12 @@
 "private-message.quote-error.title" = "Could Not Quote Message";
 
 
+/* MARK: Settings */
+
+/* Title of the "Default Browser" settings screen. */
+"settings.default-browser.title" = "Default Browser";
+
+
 /* MARK: User profile */
 
 /* Title of the profile screen, used when the user's username is unavailable for some reason. */

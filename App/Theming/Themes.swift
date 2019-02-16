@@ -206,7 +206,7 @@ extension Theme {
     }
     
     class func currentThemeForForum(forum: Forum) -> Theme {
-        if let name = AwfulSettings.shared().themeName(forForumID: forum.forumID) {
+        if let name = themeNameForForum(identifiedBy: forum.forumID) {
             if name == "default" || name == "dark" || name == "alternateDefault" || name == "alternateDark" {
                 return currentTheme
             }
@@ -245,4 +245,33 @@ extension Theme {
         
         return true
     }
+    
+    class func themeNameForForum(identifiedBy forumID: String) -> String? {
+        return UserDefaults.standard.string(forKey: defaultsKeyForForum(identifiedBy: forumID))
+    }
+    
+    /// Posts `Themes.themeForForumDidChangeNotification`.
+    class func setThemeName(_ themeName: String?, forForumIdentifiedBy forumID: String) {
+        UserDefaults.standard.set(themeName, forKey: defaultsKeyForForum(identifiedBy: forumID))
+        
+        var userInfo = [Theme.forumIDKey: forumID]
+        if let themeName = themeName {
+            userInfo[Theme.themeNameKey] = themeName
+        }
+        NotificationCenter.default.post(name: Theme.themeForForumDidChangeNotification, object: self, userInfo: userInfo)
+    }
+    
+    /**
+     Posted when `Theme.setThemeName(_:forForumIdentifiedBy:)` is called. The notification object is the `Theme` class itself. The user info dictionary always includes a value for `Theme.forumIDKey`, and it includes a value for `Theme.themeNameKey` if a theme name was specified.
+     */
+    static var themeForForumDidChangeNotification: Notification.Name {
+        return Notification.Name("Awful theme for forum did change")
+    }
+    
+    static var forumIDKey: String { return "forumID" }
+    static var themeNameKey: String { return "themeName" }
+}
+
+private func defaultsKeyForForum(identifiedBy forumID: String) -> String {
+    return "theme-\(forumID)"
 }

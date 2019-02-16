@@ -38,6 +38,8 @@ extension UserDefaults {
         static let openTwitterLinksInTwitter = "open_twitter_links_in_twitter"
         static let openYouTubeLinksInYouTube = "open_youtube_links_in_youtube"
         static let postLargeImagesAsThumbnails = "automatic_timg"
+        /// sourcery: valueType = String?
+        static let rawDefaultBrowser = "default_browser"
         static let showAuthorAvatars = "show_avatars"
         static let showImages = "show_images"
         static let showThreadTagsInThreadList = "show_thread_tags"

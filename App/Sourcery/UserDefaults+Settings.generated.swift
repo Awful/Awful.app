@@ -220,6 +220,16 @@ extension UserDefaults {
     }
 
 
+    @objc dynamic var rawDefaultBrowser: String? {
+        get { return string(forKey: SettingsKeys.rawDefaultBrowser) }
+        set { set(newValue, forKey: SettingsKeys.rawDefaultBrowser) }
+    }
+
+    @objc private class var keyPathsForValuesAffectingRawDefaultBrowser: Set<String> {
+        return [SettingsKeys.rawDefaultBrowser]
+    }
+
+
     @objc dynamic var showAuthorAvatars: Bool {
         get { return bool(forKey: SettingsKeys.showAuthorAvatars) }
         set { set(newValue, forKey: SettingsKeys.showAuthorAvatars) }
