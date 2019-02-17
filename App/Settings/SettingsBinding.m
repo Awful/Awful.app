@@ -3,9 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SettingsBinding.h"
-#import "AwfulSettings.h"
 @import Crashlytics;
 @import ObjectiveC.runtime;
+#import "Awful-Swift.h"
 
 @interface SettingsBinding : NSObject
 
@@ -30,29 +30,39 @@
     if ((self = [super init])) {
         _settingsKey = [settingsKey copy];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDidChange:) name:AwfulSettingsDidChangeNotification object:nil];
+        [NSUserDefaults.standardUserDefaults addObserver:self forKeyPath:_settingsKey options:0 context:KVOContext];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSUserDefaults.standardUserDefaults removeObserver:self forKeyPath:_settingsKey context:KVOContext];
+    for (NSString *key in _overridingSettingsKeys) {
+        [NSUserDefaults.standardUserDefaults removeObserver:self forKeyPath:key context:KVOContext];
+    }
 }
 
-- (void)settingsDidChange:(NSNotification *)notification
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey, id> *)change context:(void *)context
 {
-    NSString *key = notification.userInfo[AwfulSettingsDidChangeSettingKey];
-    if ([key isEqualToString:self.settingsKey]) {
-        [self sendAction];
+    if (context != KVOContext) {
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
     
-    for (NSString *otherKey in _overridingSettingsKeys) {
-        if ([otherKey isEqualToString:key]) {
-            [self sendOverridingAction: key];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([keyPath isEqualToString:self.settingsKey]) {
+            [self sendAction];
         }
-    }
+        
+        for (NSString *key in self.overridingSettingsKeys) {
+            if ([keyPath isEqualToString:key]) {
+                [self sendOverridingAction:key];
+            }
+        }
+    });
 }
+
+static void *KVOContext = &KVOContext;
 
 - (void)addOverridingSettingsKeys:(NSSet *)objects
 {
@@ -60,6 +70,10 @@
         self.overridingSettingsKeys = [[NSMutableArray alloc] init];
     }
     [self.overridingSettingsKeys addObjectsFromArray:[objects allObjects]];
+    
+    for (NSString *key in objects) {
+        [NSUserDefaults.standardUserDefaults addObserver:self forKeyPath:key options:0 context:KVOContext];
+    }
 }
 
 - (void)addOverridingSettingsKey:(NSString *)newKey
@@ -68,15 +82,17 @@
         self.overridingSettingsKeys = [[NSMutableArray alloc] init];
     }
     [self.overridingSettingsKeys addObject:newKey];
+    [NSUserDefaults.standardUserDefaults addObserver:self forKeyPath:newKey options:0 context:KVOContext];
     
 }
 
 - (void)sendAction
 {
     if (self.target && self.action) {
+        id value = [NSUserDefaults.standardUserDefaults objectForKey:self.settingsKey];
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.target performSelector:self.action withObject:[AwfulSettings sharedSettings][self.settingsKey]];
+        [self.target performSelector:self.action withObject:value];
         #pragma clang diagnostic pop
     }
 }
@@ -92,6 +108,22 @@
 }
 
 @end
+
+
+/// Retrieves a particular setting's info dictionary.
+static NSDictionary<NSString *, id> * _Nullable
+InfoForSettingWithKeyInSections(NSString *key, NSArray<SettingsSection *> *sections)
+{
+    for (SettingsSection *section in sections) {
+        for (SettingsSectionSetting *setting in section.settings) {
+            if ([setting.key isEqualToString:key]) {
+                return setting.info;
+            }
+        }
+    }
+    return nil;
+}
+
 
 @implementation UIView (AwfulSettingsBinding)
 @dynamic awful_overridingSettings;
@@ -200,7 +232,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
             [self addTarget:self action:@selector(awful_valueChanged) forControlEvents:UIControlEventValueChanged];
         }
         
-        NSDictionary *info = [[AwfulSettings sharedSettings] infoForSettingWithKey:settingsKey];
+        NSDictionary<NSString *, id> *info = InfoForSettingWithKeyInSections(settingsKey, SettingsSection.mainBundleSections);
         if (info[@"Minimum"]) {
             self.minimumValue = [info[@"Minimum"] doubleValue];
         }
@@ -224,7 +256,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 
 - (void)awful_valueChanged
 {
-    [AwfulSettings sharedSettings][self.awful_setting] = @(self.value);
+    [NSUserDefaults.standardUserDefaults setObject:@(self.value) forKey:self.awful_setting];
 }
 
 - (void)awful_settingDidChange:(NSNumber *)newValue
@@ -264,7 +296,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 
 - (void)awful_valueChanged
 {
-    [AwfulSettings sharedSettings][self.awful_setting] = @(self.on);
+    [NSUserDefaults.standardUserDefaults setBool:self.on forKey:self.awful_setting];
 }
 
 - (void)awful_settingDidChange:(NSNumber *)newValue
@@ -276,10 +308,10 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 {
     NSString *key = (NSString *)overridingSetting;
     
-    if ([self.awful_setting isEqualToString:AwfulSettingsKeys.darkTheme]) {
-        if ([key isEqualToString:AwfulSettingsKeys.autoDarkTheme]) {
+    if ([self.awful_setting isEqualToString:NSUserDefaults.isDarkModeEnabledKey]) {
+        if ([key isEqualToString:NSUserDefaults.automaticallyEnableDarkModeKey]) {
             // If autoDarkTheme is turned on, disable the dark theme switch, since the setting will be toggled automatically
-            self.enabled = ![AwfulSettings sharedSettings].autoDarkTheme;
+            self.enabled = !NSUserDefaults.standardUserDefaults.automaticallyEnableDarkMode;
         }
     }
 }
@@ -295,7 +327,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
         if (![[self actionsForTarget:self forControlEvent:UIControlEventValueChanged] containsObject:NSStringFromSelector(@selector(awful_valueChanged))]) {
             [self addTarget:self action:@selector(awful_valueChanged) forControlEvents:UIControlEventValueChanged];
         }
-        NSDictionary *info = [[AwfulSettings sharedSettings] infoForSettingWithKey:settingsKey];
+        NSDictionary *info = InfoForSettingWithKeyInSections(settingsKey, SettingsSection.mainBundleSections);
         if (info[@"Minimum"]) {
             self.minimumValue = [info[@"Minimum"] floatValue];
         }
@@ -310,8 +342,8 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
             self.maximumValueImage = [UIImage imageNamed:info[@"MaximumImage"]];
         }
         
-        //UISlider needs a kick to display the right value and enablement status
-        [self awful_settingDidChange:[AwfulSettings sharedSettings][self.awful_setting]];
+        // UISlider needs a kick to display the right value and enablement status
+        [self awful_settingDidChange:[NSUserDefaults.standardUserDefaults objectForKey:self.awful_setting]];
     } else {
         [self removeTarget:self action:@selector(awful_valueChanged) forControlEvents:UIControlEventValueChanged];
     }
@@ -326,7 +358,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 
 - (void)awful_valueChanged
 {
-    [AwfulSettings sharedSettings][self.awful_setting] = @(self.value);
+    [NSUserDefaults.standardUserDefaults setDouble:self.value forKey:self.awful_setting];
 }
 
 - (void)awful_settingDidChange:(NSNumber *)newValue
@@ -338,10 +370,10 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 {
     NSString *key = (NSString *)overridingSetting;
     
-    if ([self.awful_setting isEqualToString:AwfulSettingsKeys.autoThemeThreshold]) {
-        if ([key isEqualToString:AwfulSettingsKeys.autoDarkTheme]) {
+    if ([self.awful_setting isEqualToString:NSUserDefaults.automaticDarkModeBrightnessThresholdPercentKey]) {
+        if ([key isEqualToString:NSUserDefaults.automaticallyEnableDarkModeKey]) {
             // If autoDarkTheme is turned on, enable the threshold slider, otherwise disable it.
-            self.enabled = [AwfulSettings sharedSettings].autoDarkTheme;
+            self.enabled = NSUserDefaults.standardUserDefaults.automaticallyEnableDarkMode;
         }
     }
 }
@@ -378,4 +410,3 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 }
 
 @end
-

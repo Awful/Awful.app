@@ -39,8 +39,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
-        AwfulSettings.shared().registerDefaults()
-        AwfulSettings.shared().migrateOldSettings()
+        UserDefaults.standard.registerDefaults(SettingsSection.mainBundleSections)
+        UserDefaults.standard.migrateOldAwfulSettings()
         
         let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let storeURL = appSupport.appendingPathComponent("CachedForumData", isDirectory: true)
@@ -176,7 +176,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         for cookie in cookieJar.cookies ?? [] {
             cookieJar.deleteCookie(cookie)
         }
-        AwfulSettings.shared().reset()
+        UserDefaults.standard.removeAllObjectsInMainBundleDomain()
         emptyCache()
         
         // Do this after resetting settings so that it gets the default baseURL.

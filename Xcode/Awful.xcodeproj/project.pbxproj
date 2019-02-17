@@ -304,6 +304,7 @@
 		1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */; };
 		1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A26221505A00035E154 /* UserDefaults+Settings.swift */; };
 		1C796A292218C41F0035E154 /* DefaultBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A282218C41F0035E154 /* DefaultBrowser.swift */; };
+		1C796A2D2219EC1C0035E154 /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A2C2219EC1C0035E154 /* SettingsSection.swift */; };
 		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
@@ -986,6 +987,7 @@
 		1C796A24221505180035E154 /* UserDefaults+Settings.stencil */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "UserDefaults+Settings.stencil"; sourceTree = "<group>"; };
 		1C796A26221505A00035E154 /* UserDefaults+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.swift"; sourceTree = "<group>"; };
 		1C796A282218C41F0035E154 /* DefaultBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowser.swift; sourceTree = "<group>"; };
+		1C796A2C2219EC1C0035E154 /* SettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
 		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
 		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
 		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
@@ -1960,6 +1962,7 @@
 				1C54D30919BBC717002AC6B9 /* SettingsBinding.h */,
 				1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */,
 				1CE0357C1AA2371F007F5277 /* SettingsDefaultBrowserController.swift */,
+				1C796A2C2219EC1C0035E154 /* SettingsSection.swift */,
 				7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */,
 				7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */,
 				1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */,
@@ -3526,6 +3529,7 @@
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
+				1C796A2D2219EC1C0035E154 /* SettingsSection.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,

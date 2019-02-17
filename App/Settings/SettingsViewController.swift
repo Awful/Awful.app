@@ -37,16 +37,14 @@ final class SettingsViewController: TableViewController {
             }
         }()
 
-        guard let sections = AwfulSettings.shared().sections as? [[String: Any]] else {
-            fatalError("can't interpret settings sections")
-        }
+        let sections = SettingsSection.mainBundleSections
         
-        func validSection(_ section: [String: Any]) -> Bool {
-            if let device = section["Device"] as? String, !device.hasPrefix(currentDevice) {
+        func validSection(_ section: SettingsSection) -> Bool {
+            if let device = section.device, !device.hasPrefix(currentDevice) {
                 return false
             }
 
-            switch section["DeviceCapability"] as? String {
+            switch section.deviceCapability {
             case "AppIconChange"? where !SystemCapabilities.changeAppIcon:
                 return false
             case "Handoff"? where !SystemCapabilities.handoff:
@@ -55,12 +53,12 @@ final class SettingsViewController: TableViewController {
                 break
             }
             
-            if section["RequiresTweaksEnabled"] as? Bool == true, !Tweaks.isEnabled {
+            if section.requiresTweaksEnabled, !Tweaks.isEnabled {
                 return false
             }
 
-            if let visible = section["VisibleInSettingsTab"] as? Bool {
-                return visible
+            if !section.visibleInSettingsTab {
+                return false
             }
             
             return true
@@ -68,11 +66,11 @@ final class SettingsViewController: TableViewController {
         
         return sections.lazy
             .filter(validSection)
-            .map { (section: [String: Any]) -> [String: Any] in
-                guard let settings = section["Settings"] as? [[String: AnyObject]] else { return section }
-                var section = section
+            .map { section -> [String: Any] in
+                guard let settings = section.info["Settings"] as? [[String: Any]] else { return section.info }
+                var section = section.info
                 
-                section["Settings"] = settings.filter { (setting) in
+                section["Settings"] = settings.filter { setting in
                     if let device = setting["Device"] as? String, !device.hasPrefix(currentDevice) {
                         return false
                     }
@@ -83,7 +81,7 @@ final class SettingsViewController: TableViewController {
                         return UIApplication.shared.canOpenURL(url)
                     }
                     return true
-                } as NSArray
+                }
                 return section
         }
     }()
@@ -265,7 +263,7 @@ final class SettingsViewController: TableViewController {
         if setting["ShowValue"] as? Bool == true {
             cell.textLabel?.text = setting["Title"] as? String
             guard let key = setting["Key"] as? String else { fatalError("expected a key for setting \(setting)") }
-            cell.detailTextLabel?.text = AwfulSettings.shared()[key] as? String
+            cell.detailTextLabel?.text = UserDefaults.standard.string(forKey: key)
         } else {
             cell.textLabel?.text = setting["Title"] as? String
         }
@@ -279,8 +277,8 @@ final class SettingsViewController: TableViewController {
             switchView.awful_setting = setting["Key"] as? String
             
             // Add overriding settings
-            if switchView.awful_setting == AwfulSettingsKeys.darkTheme.takeUnretainedValue() as String {
-                switchView.addAwful_overridingSetting(AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String)
+            if switchView.awful_setting == UserDefaults.SettingsKeys.isDarkModeEnabled {
+                switchView.addAwful_overridingSetting(UserDefaults.SettingsKeys.automaticallyEnableDarkMode)
             }
             else {
                 switchView.isEnabled = true
@@ -299,8 +297,8 @@ final class SettingsViewController: TableViewController {
             slider.awful_setting = setting["Key"] as? String
             
             // Add overriding settings
-            if slider.awful_setting == AwfulSettingsKeys.autoThemeThreshold.takeUnretainedValue() as String {
-                slider.addAwful_overridingSetting(AwfulSettingsKeys.autoDarkTheme.takeUnretainedValue() as String)
+            if slider.awful_setting == UserDefaults.SettingsKeys.automaticDarkModeBrightnessThresholdPercent {
+                slider.addAwful_overridingSetting(UserDefaults.SettingsKeys.automaticallyEnableDarkMode)
             }
         }
         

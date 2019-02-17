@@ -4,6 +4,8 @@
 
 import Foundation
 
+// MARK: Keys
+
 extension UserDefaults {
     
     /**
@@ -50,6 +52,27 @@ extension UserDefaults {
     }
 }
 
+// MARK: Keys still used in Objective-C code
+
+extension UserDefaults {
+    
+    // If you can't find anywhere these properties are used, please delete them!
+    
+    @objc class var automaticDarkModeBrightnessThresholdPercentKey: String {
+        return SettingsKeys.automaticDarkModeBrightnessThresholdPercent
+    }
+    
+    @objc class var automaticallyEnableDarkModeKey: String {
+        return SettingsKeys.automaticallyEnableDarkMode
+    }
+    
+    @objc class var isDarkModeEnabledKey: String {
+        return SettingsKeys.isDarkModeEnabled
+    }
+}
+
+// MARK: Non-Sourcery-generated accessors
+
 extension UserDefaults {
     
     /// Some settings are a bit more effort and it's not worth customizing the Sourcery template just for them.
@@ -66,6 +89,8 @@ extension UserDefaults {
         return [MoreSettingsKeys.ubiquitousThemeNames]
     }
 }
+
+// MARK: Observation helpers
 
 extension UserDefaults {
     
@@ -140,5 +165,72 @@ extension UserDefaults {
                 changeHandler(defaults)
             }
         }
+    }
+}
+
+// MARK: Working with SettingsSection
+
+extension UserDefaults {
+    func registerDefaults(_ sections: [SettingsSection]) {
+        let defaults = SettingsSection.mainBundleSections.reduce(into: [:]) { defaults, section in
+            defaults.merge(section.defaultValues, uniquingKeysWith: { $1 })
+        }
+        register(defaults: defaults)
+    }
+}
+
+// MARK: Mass deletion
+
+extension UserDefaults {
+    
+    func removeAllObjectsInMainBundleDomain() {
+        guard let bundleID = Bundle.main.bundleIdentifier else { return }
+        setPersistentDomain([:], forName: bundleID)
+    }
+}
+
+// MARK: Settings migration
+
+extension UserDefaults {
+    
+    private enum OldSettingsKeys {
+        
+        /// Value was an array of forumID strings. As of Awful 3.2, favorite forums are stored in Core Data.
+        static let favoriteForums = "favorite_forums"
+        
+        /// Possible values: "never", "landscape", "portrait", "always".
+        static let keepSidebarOpen = "keep_sidebar_open"
+        
+        /// Possible values: "green", "amber", "macinyos", "winpos95".
+        static let yosposStyle = "yospos_style"
+    }
+    
+    func migrateOldAwfulSettings() {
+        var newYOSPOSStyle: String? {
+            switch string(forKey: OldSettingsKeys.yosposStyle) {
+            case "green": return "YOSPOS"
+            case "amber": return "YOSPOS (amber)"
+            case "macinyos": return "Macinyos"
+            case "winpos95": return "Winpos 95"
+            default: return nil
+            }
+        }
+        if let newYOSPOSStyle = newYOSPOSStyle {
+            Theme.setThemeName(newYOSPOSStyle, forForumIdentifiedBy: "219")
+            removeObject(forKey: OldSettingsKeys.yosposStyle)
+        }
+        
+        switch string(forKey: OldSettingsKeys.keepSidebarOpen) {
+        case "never", "portrait":
+            hideSidebarInLandscape = true
+            removeObject(forKey: OldSettingsKeys.keepSidebarOpen)
+        default:
+            break
+        }
+    }
+    
+    var oldFavoriteForums: [String]? {
+        get { return object(forKey: OldSettingsKeys.favoriteForums) as? [String] }
+        set { set(newValue, forKey: OldSettingsKeys.favoriteForums) }
     }
 }
