@@ -123,12 +123,21 @@ extension UserDefaults {
          Add a key-value observer for each provided key path. The change handler is called on the main queue whenever any of the key paths change.
          
          The added observers are all included in the return value from `UserDefaults.observeSeveral(_:)`.
+         
+         If `options` contains `.initial`, then `changeHandler` will be called immediately, but exactly once (no matter how many `keyPaths` are provided).
+         
+         Passing `.old` and/or `.new` in `options` is probably not terribly useful, as `changeHandler` doesn't have access to the `NSKeyValueObservedChange` instance.
          */
-        func observe<Value>(_ keyPaths: KeyPath<UserDefaults, Value>..., changeHandler: @escaping (UserDefaults) -> Void) {
-            observers += keyPaths.map {
-                defaults.observeOnMain($0, changeHandler: { defaults, change in
+        func observe<Value>(_ keyPaths: KeyPath<UserDefaults, Value>..., options: NSKeyValueObservingOptions = [], changeHandler: @escaping (UserDefaults) -> Void) {
+            var noninitialOptions = options
+            noninitialOptions.remove(.initial)
+            observers += keyPaths.map { keyPath in
+                return defaults.observeOnMain(keyPath, options: noninitialOptions, changeHandler: { defaults, change in
                     changeHandler(defaults)
                 })
+            }
+            if options.contains(.initial) {
+                changeHandler(defaults)
             }
         }
     }

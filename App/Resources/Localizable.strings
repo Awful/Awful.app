@@ -221,6 +221,9 @@
 /* Title of the "Default Browser" settings screen. */
 "settings.default-browser.title" = "Default Browser";
 
+/* Placeholder is the locale-formatted text scale %. */
+"settings.font-scale.title" = "Scale Text %@";
+
 
 /* MARK: User profile */
 

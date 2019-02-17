@@ -7,7 +7,9 @@ import UIKit
 
 /// A PostsPageSettingsViewController is a modal view controller for changing settings specific to a posts page. By default it presents in a popover on all devices.
 final class PostsPageSettingsViewController: ViewController, UIPopoverPresentationControllerDelegate {
+    
     let forum: Forum
+    private var observers: [NSKeyValueObservation] = []
     var themes: [Theme] { return Theme.themesForForum(forum) }
     
     var selectedTheme: Theme! {
@@ -21,37 +23,62 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             }
         }
     }
-    fileprivate var _selectedTheme: Theme?
+    private var _selectedTheme: Theme?
     
     init(forum: Forum) {
         self.forum = forum
         super.init(nibName: "PostsPageSettings", bundle: nil)
         modalPresentationStyle = .popover
-        popoverPresentationController!.delegate = self
+        popoverPresentationController?.delegate = self
     }
     
-    @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var headerBackground: UIView!
+    @IBOutlet private var headerLabel: UILabel!
+    @IBOutlet private var headerBackground: UIView!
     
-    @IBOutlet var labels: [UILabel]!
-    @IBOutlet var switches: [UISwitch]!
+    @IBOutlet private var labels: [UILabel]!
+    @IBOutlet private var switches: [UISwitch]!
     
-    @IBOutlet weak var autoThemeSwitch: UISwitch!
-    @IBOutlet weak var darkThemeSwitch: UISwitch!
-    @IBOutlet weak var darkThemeLabel: UILabel!
-    @IBAction func toggleAutomaticTheme(_ sender: UISwitch) {
-        updateAutoThemeSetting()
+    @IBOutlet private var avatarsSwitch: UISwitch!
+    @IBAction func toggleAvatars(_ sender: UISwitch) {
+        UserDefaults.standard.showAuthorAvatars = sender.isOn
+    }
+    @IBOutlet private var imagesSwitch: UISwitch!
+    @IBAction private func toggleImages(_ sender: UISwitch) {
+        UserDefaults.standard.showImages = sender.isOn
     }
     
-    @IBOutlet weak var themeLabel: UILabel!
-    @IBOutlet weak var themePicker: ThemePicker!
-    @IBAction func changeSelectedTheme(_ sender: ThemePicker) {
+    @IBOutlet private var scaleTextLabel: UILabel!
+    @IBOutlet private var scaleTextStepper: UIStepper!
+    @IBAction private func scaleStepperDidChange(_ sender: UIStepper) {
+        UserDefaults.standard.fontScale = sender.value
+    }
+    
+    @IBOutlet private var autoThemeSwitch: UISwitch!
+    @IBAction func toggleAutomaticDarkTheme(_ sender: UISwitch) {
+        UserDefaults.standard.automaticallyEnableDarkMode = sender.isOn
+    }
+    @IBOutlet private var darkThemeLabel: UILabel!
+    @IBOutlet private var darkThemeSwitch: UISwitch!
+    @IBAction func toggleDarkTheme(_ sender: UISwitch) {
+    
+        UserDefaults.standard.isDarkModeEnabled = sender.isOn
+    }
+    
+    @IBOutlet private var themeLabel: UILabel!
+    @IBOutlet private var themePicker: ThemePicker!
+    @IBAction private func changeSelectedTheme(_ sender: ThemePicker) {
         _selectedTheme = themes[sender.selectedThemeIndex]
         Theme.setThemeName(selectedTheme.name, forForumIdentifiedBy: forum.forumID)
         if selectedTheme.forumID == nil {
             UserDefaults.standard.isDarkModeEnabled = selectedTheme != Theme.defaultTheme
         }
     }
+    
+    private lazy var fontScaleFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .percent
+        return formatter
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,14 +89,46 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             themePicker.insertThemeWithColor(color, atIndex: i)
         }
         updateSelectedThemeInPicker()
-        updateAutoThemeSetting()
         themePicker.isLoaded = true
+        NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.automaticallyEnableDarkMode, \.isDarkModeEnabled, options: .initial) {
+                [unowned self] defaults in
+                self.autoThemeSwitch.isOn = defaults.automaticallyEnableDarkMode
+                self.darkThemeSwitch.isOn = defaults.isDarkModeEnabled
+                
+                let canManuallyToggleDarkTheme = !defaults.automaticallyEnableDarkMode
+                self.darkThemeLabel.isEnabled = canManuallyToggleDarkTheme
+                self.darkThemeSwitch.isEnabled = canManuallyToggleDarkTheme
+            }
+            $0.observe(\.fontScale, options: .initial) { [unowned self] defaults in
+                let percent = self.fontScaleFormatter.string(from: (defaults.fontScale / 100) as NSNumber) ?? ""
+                let format = LocalizedString("settings.font-scale.title")
+                self.scaleTextLabel.text = String(format: format, percent)
+            }
+            $0.observe(\.showAuthorAvatars, options: .initial) { [unowned self] defaults in
+                self.avatarsSwitch.isOn = defaults.showAuthorAvatars
+            }
+            $0.observe(\.showImages, options: .initial) { [unowned self] defaults in
+                self.imagesSwitch.isOn = defaults.showImages
+            }
+        }
         
         let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: preferredHeight)
     }
     
-    fileprivate func updateSelectedThemeInPicker() {
+    @objc private func forumSpecificThemeDidChange(_ notification: Notification) {
+        guard
+            let forumID = notification.userInfo?[Theme.forumIDKey] as? String,
+            forumID == forum.forumID
+            else { return }
+        
+        updateSelectedThemeInPicker()
+    }
+    
+    private func updateSelectedThemeInPicker() {
         let names = themes.map { $0.name }
         if var themeName = Theme.themeNameForForum(identifiedBy: forum.forumID) {
             if themeName == "default" || themeName == "dark" || themeName == "alternate" || themeName == "alternateDark" {
@@ -81,17 +140,6 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         }
         else {
             themePicker.selectedThemeIndex = names.index(of: Theme.currentTheme.name)!
-        }
-    }
-    
-    private func updateAutoThemeSetting() {
-        if autoThemeSwitch.isOn {
-            darkThemeSwitch.isEnabled = false;
-            darkThemeLabel.isEnabled = false;
-        }
-        else {
-            darkThemeSwitch.isEnabled = true;
-            darkThemeLabel.isEnabled = true;
         }
     }
     
@@ -127,7 +175,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     // MARK: Initializers not intended to be called
     
-    fileprivate override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: Bundle!) {
+    private override init(nibName: String?, bundle: Bundle?) {
         fatalError("Selectotron needs a posts view controller")
     }
     
