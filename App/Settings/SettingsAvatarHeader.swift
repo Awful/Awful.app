@@ -5,14 +5,16 @@
 import FLAnimatedImage
 import UIKit
 
-class SettingsAvatarHeader: UIView {
+final class SettingsAvatarHeader: UIView {
     
     // Strong reference in case we temporarily remove it
-    @IBOutlet fileprivate var avatarImageView: FLAnimatedImageView!
+    @IBOutlet private var avatarImageView: FLAnimatedImageView!
     
-    @IBOutlet fileprivate(set) weak var usernameLabel: UILabel!
-    @IBOutlet fileprivate var avatarConstraints: [NSLayoutConstraint]!
-    @IBOutlet fileprivate var insetConstraints: [NSLayoutConstraint]!
+    @IBOutlet private(set) weak var usernameLabel: UILabel!
+    @IBOutlet private var avatarConstraints: [NSLayoutConstraint]!
+    @IBOutlet private var insetConstraints: [NSLayoutConstraint]!
+    
+    private var observer: NSKeyValueObservation?
     
     /// Only the `insets.left` value is used, though it is applied to both the left and the right.
     var contentEdgeInsets: UIEdgeInsets = .zero {
@@ -25,6 +27,27 @@ class SettingsAvatarHeader: UIView {
     
     class func newFromNib() -> SettingsAvatarHeader {
         return Bundle.main.loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)![0] as! SettingsAvatarHeader
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonAwake()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        commonAwake()
+    }
+    
+    private func commonAwake() {
+        observer = UserDefaults.standard.observeOnMain(\.loggedInUsername) { [unowned self] defaults, change in
+            self.usernameLabel?.text = defaults.loggedInUsername
+        }
     }
     
     override func updateConstraints() {
@@ -46,7 +69,7 @@ class SettingsAvatarHeader: UIView {
         }
     }
     
-    fileprivate var hasAvatar: Bool {
+    private var hasAvatar: Bool {
         return avatarImageView.image != nil
     }
     
@@ -69,9 +92,9 @@ class SettingsAvatarHeader: UIView {
     
     // MARK: Target-action
     
-    @IBOutlet fileprivate weak var tapGestureRecognizer: UITapGestureRecognizer!
-    fileprivate var target: AnyObject?
-    fileprivate var action: Selector?
+    @IBOutlet private weak var tapGestureRecognizer: UITapGestureRecognizer!
+    private var target: AnyObject?
+    private var action: Selector?
     
     func setTarget(_ target: AnyObject?, action: Selector?) {
         if let action = action {

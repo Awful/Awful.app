@@ -408,8 +408,8 @@ final class SettingsViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection sectionIndex: Int) -> String? {
         let section = sections[sectionIndex]
-        if let titleKey = section["TitleKey"] as? String {
-            return AwfulSettings.shared()[titleKey] as? String
+        if let title = section["TitleKey"] as? String, title == "username" {
+            return UserDefaults.standard.loggedInUsername
         }
         guard let title = section["Title"] as? String else { return nil }
         if title == "Awful x.y.z" {
