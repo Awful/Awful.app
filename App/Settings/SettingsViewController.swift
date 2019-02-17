@@ -212,7 +212,7 @@ final class SettingsViewController: TableViewController {
         } else if let typeString = setting["Type"] as? String , typeString == "Stepper" {
             settingType = .Stepper
         } else if setting["ViewController"] != nil {
-            if setting["DisplayTransformer"] != nil || setting["ShowValue"] as? Bool == true {
+            if setting["ShowValue"] as? Bool == true {
                 settingType = .DisclosureDetail
             } else {
                 settingType = .Disclosure
@@ -262,21 +262,7 @@ final class SettingsViewController: TableViewController {
             cell.detailTextLabel?.textColor = UIColor.gray
         }
         
-        if let transformerTypeName = setting["DisplayTransformer"] as? String {
-            guard let transformerType = NSClassFromString(transformerTypeName) as? ValueTransformer.Type else { fatalError("Couldn't make transformer of type \(transformerTypeName)") }
-            let transformer = transformerType.init()
-            switch settingType {
-            case .DisclosureDetail:
-                cell.textLabel?.text = setting["Title"] as? String
-                cell.detailTextLabel?.text = transformer.transformedValue(AwfulSettings.shared()) as? String
-                
-            case .Immutable, .OnOff, .Disclosure, .Stepper, .Button:
-                cell.textLabel?.text = transformer.transformedValue(AwfulSettings.shared()) as? String
-                
-            case .Slider, .AppIconPicker:
-                break
-            }
-        } else if setting["ShowValue"] as? Bool == true {
+        if setting["ShowValue"] as? Bool == true {
             cell.textLabel?.text = setting["Title"] as? String
             guard let key = setting["Key"] as? String else { fatalError("expected a key for setting \(setting)") }
             cell.detailTextLabel?.text = AwfulSettings.shared()[key] as? String
