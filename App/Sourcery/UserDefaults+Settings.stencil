@@ -10,7 +10,7 @@ import Foundation
  `UserDefaults` instances emit KVO notifications when values change. In order to use these with Swift's awesome `observe(keyPath:…)` methods, we need to:
 
     * Expose a property on `UserDefaults` for each key we're interested in.
-    * Either have that property's name match the key, or add some KVO machinery so changes to the key notify observers of the property. (That machinery is the `keyPathsForValuesAffecting…` class properties.)
+    * Either have that property's name match the key, or add some KVO machinery so changes to the key notify observers of the property. (That machinery is the `automaticallyNotifiesObserversOf…` and `keyPathsForValuesAffecting…` class properties. We turn off automatic notification because we only want notifications when the underlying defaults key changes, and we specify the underlying defaults key as a key path whose value affects the property.)
 
  To add settings, see `UserDefaults+Settings.swift`. To change what gets generated for each setting, see `UserDefaults+Settings.stencil`.
  */
@@ -21,6 +21,10 @@ extension UserDefaults {
     @objc dynamic var {{ key.name }}: {{ key.annotations.valueType|default:"Bool" }} {
         get { return {{ key.annotations.valueType|default:"Bool"|replace:"?",""|lowercase }}(forKey: SettingsKeys.{{ key.name }}) }
         set { set(newValue, forKey: SettingsKeys.{{ key.name }}) }
+    }
+
+    @objc private class var automaticallyNotifiesObserversOf{{ key.name|upperFirstLetter }}: Bool {
+        return false
     }
 
     @objc private class var keyPathsForValuesAffecting{{ key.name|upperFirstLetter }}: Set<String> {
