@@ -518,6 +518,12 @@ Awful.prependPosts = function(postsHTML) {
 
   document.getElementById('posts').insertAdjacentHTML('afterbegin', postsHTML);
 
+  if (window.twttr) {
+    window.twttr.ready(function() {
+      Awful.embedTweets();
+    });
+  }
+
   var newHeight = document.documentElement.scrollHeight;
   window.scrollBy(0, newHeight - oldHeight);
 };
