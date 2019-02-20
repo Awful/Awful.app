@@ -318,6 +318,7 @@
 		1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */; };
 		1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */; };
 		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
+		1C8F6519221D0827007E61ED /* Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* Swift.swift */; };
 		1C914EC9207716D600C0E238 /* MustacheRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914EC8207716D600C0E238 /* MustacheRepository.swift */; };
 		1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */; };
 		1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */; };
@@ -3316,6 +3317,7 @@
 				1C14A4B31A94C0B50045DDF7 /* DataStore.swift in Sources */,
 				1C14A4AE1A94C0A70045DDF7 /* AwfulManagedObject.swift in Sources */,
 				1C14A4B51A94C0BA0045DDF7 /* Post.swift in Sources */,
+				1C8F6519221D0827007E61ED /* Swift.swift in Sources */,
 				1CF0F8EB1ED8F83100C16099 /* ProfilePersistence.swift in Sources */,
 				1C2894991EE3091C00843C6B /* ShowPostScrapeResult.swift in Sources */,
 				1CF7AB961EDB71640089EF0C /* PostScrapeResult.swift in Sources */,

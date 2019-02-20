@@ -13,8 +13,10 @@ extension Array {
     }
 }
 
-extension Int {
-    func clamp(_ range: ClosedRange<Int>) -> Int {
+extension Numeric where Self: Comparable {
+    
+    /// Returns `self` if it's within `range`, otherwise returns the bound of `range` nearest to `self`.
+    func clamp(_ range: ClosedRange<Self>) -> Self {
         if self < range.lowerBound {
             return range.lowerBound
         } else if self > range.upperBound {

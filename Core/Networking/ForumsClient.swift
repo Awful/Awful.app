@@ -300,7 +300,7 @@ public final class ForumsClient {
 
     public func rate(_ thread: AwfulThread, as rating: Int) -> Promise<Void> {
         let parameters = [
-            "vote": "\(max(5, min(1, rating)))",
+            "vote": "\(rating.clamp(1...5))",
             "threadid": thread.threadID]
 
         return fetch(method: .post, urlString: "threadrate.php", parameters: parameters)
