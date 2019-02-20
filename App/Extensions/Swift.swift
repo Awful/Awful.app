@@ -26,18 +26,3 @@ extension Numeric where Self: Comparable {
         }
     }
 }
-
-extension Sequence {
-
-    /**
-     Returns `true` if `predicate` returns `true` for any element in the sequence.
-
-     This method stops as soon as `predicate` returns `true`.
-     */
-    func any(where predicate: (_ element: Element) -> Bool) -> Bool {
-        for element in self where predicate(element) {
-            return true
-        }
-        return false
-    }
-}

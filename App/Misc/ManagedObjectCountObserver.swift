@@ -30,11 +30,11 @@ final class ManagedObjectCountObserver {
             }
 
             guard notification.didInvalidateAllObjects
-                || notification.deletedObjects.any(where: isRelevant)
-                || notification.insertedObjects.any(where: isRelevant)
-                || notification.invalidatedObjects.any(where: isRelevant)
-                || notification.refreshedObjects.any(where: isRelevant)
-                || notification.updatedObjects.any(where: isRelevant)
+                || notification.deletedObjects.contains(where: isRelevant)
+                || notification.insertedObjects.contains(where: isRelevant)
+                || notification.invalidatedObjects.contains(where: isRelevant)
+                || notification.refreshedObjects.contains(where: isRelevant)
+                || notification.updatedObjects.contains(where: isRelevant)
                 else { return }
 
             self.updateCount()

@@ -45,7 +45,7 @@ final class OpenCopiedURLController {
             let scheme = url.scheme,
             !Bundle.main.urlTypes
                 .flatMap({ $0.schemes })
-                .any(where: { scheme.caseInsensitive == $0 }),
+                .contains(where: { scheme.caseInsensitive == $0 }),
             let route = try? AwfulRoute(url)
             else { return }
         

@@ -552,7 +552,7 @@ final class ImagePreviewActivity: UIActivity {
     }
     
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        return activityItems.any { $0 is Box }
+        return activityItems.contains { $0 is Box }
     }
     
     override func prepare(withActivityItems activityItems: [Any]) {

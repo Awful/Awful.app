@@ -42,7 +42,7 @@ final class CopyURLActivity: UIActivity {
     }
     
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        return activityItems.any { $0 is Box }
+        return activityItems.contains { $0 is Box }
     }
     
     fileprivate var url: URL!
