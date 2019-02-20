@@ -323,7 +323,7 @@
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<true/>
+					<false/>
 					<key>Key</key>
 					<string>handoff_enabled</string>
 				</dict>
