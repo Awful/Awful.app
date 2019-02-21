@@ -1050,6 +1050,8 @@ final class PostsPageViewController: ViewController {
         
         postsView.frame = CGRect(origin: .zero, size: view.bounds.size)
         postsView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        extendedLayoutIncludesOpaqueBars = true
+        edgesForExtendedLayout = .bottom
         view.addSubview(postsView)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))

@@ -10,6 +10,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     
     let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
+    private let tabBarTopBorder: CALayer = CALayer()
     
     lazy private(set) var rootViewController: UIViewController = {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
@@ -127,7 +128,18 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 		}
 
         tabBarController.tabBar.tintColor = Theme.currentTheme["tintColor"]
-        tabBarController.tabBar.isTranslucent = (Theme.currentTheme["tabBarBackgroundColor"] != "#000000")
+        
+        if UserDefaults.standard.isAlternateThemeEnabled && UserDefaults.standard.isDarkModeEnabled {
+            tabBarController.tabBar.isTranslucent = false
+            
+            tabBarTopBorder.frame = CGRect(x: 0, y: 0, width: tabBarController.tabBar.frame.size.width, height: 0.5)
+            tabBarTopBorder.backgroundColor = UIColor.darkGray.cgColor
+            tabBarController.tabBar.layer.addSublayer(tabBarTopBorder)
+        } else {
+            tabBarController.tabBar.isTranslucent = true
+            
+            tabBarTopBorder.removeFromSuperlayer()
+        }
 	}
 	
     private func configureSplitViewControllerDisplayMode() {
