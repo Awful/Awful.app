@@ -63,9 +63,9 @@ Awful uses an App Group to communicate and share data with the Smilie Keyboard. 
 
 ### Tests
 
-There are unit tests for the HTML scraping, to help us find problems when markup changes, running continuously via [Travis CI](https://travis-ci.org/Awful/Awful.app).
+There are unit tests for the HTML scraping, to help us find problems when markup changes, running continuously via [Azure DevOps](https://dev.azure.com/awful-app/Awful%20iOS/_build?definitionId=1).
 
-[![Build Status](https://travis-ci.org/Awful/Awful.app.png)](https://travis-ci.org/Awful/Awful.app)
+[![Build Status](https://dev.azure.com/awful-app/Awful%20iOS/_apis/build/status/Awful%20iOS?branchName=change-ci)](https://dev.azure.com/awful-app/Awful%20iOS/_build/latest?definitionId=1&branchName=master)
 
 ### Version scheme
 

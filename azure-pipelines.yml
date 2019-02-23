@@ -1,0 +1,12 @@
+pool:
+  vmImage: 'macOS-10.13'
+
+steps:
+- task: Xcode@5
+  inputs:
+    actions: 'test'
+    scheme: 'Awful'
+    configuration: 'Debug'
+    sdk: 'iphonesimulator'
+    xcWorkspacePath: 'Awful.xcworkspace'
+    xcodeVersion: '10'
