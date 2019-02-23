@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale = 1, minimum-scale = 1, maximum-scale = 1">
+
+{% if baseURL %}<base href="{{ baseURL|htmlEscape }}">{% endif %}
+
+<title>Awful: Private message</title>
+
+<style>
+  /* Allow click events. */
+  header {
+    cursor: pointer;
+  }
+</style>
+
+<style id="awful-inline-style">
+    {{ stylesheet }}
+</style>
+
+{% fontScaleStyle %}
+
+<body
+    class="{{ userInterfaceIdiom|htmlEscape }}">
+    <post
+        id="{{ messageID }}"
+        class="private-message
+               {% if seen %} seen {% endif %}
+               {% if not visibleAvatarURL %} no-avatar {% endif %}">
+        <header
+            {% if hiddenAvatarURL %}data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}"{% endif %}>
+            
+            {% if visibleAvatarURL %}
+            <img class="avatar" src="{{ visibleAvatarURL|htmlEscape }}" alt="">
+            {% endif %}
+            
+            <section class="nameanddate">
+                <h1 class="username">{{ fromUsername|htmlEscape }}</h1>
+
+                <time class="regdate">Joined {{ regdate|formatRegdate }}</time>
+            </section>
+        </header>
+        
+        <section class="postbody">
+            {{ htmlContents }}
+        </section>
+        
+        <footer>
+            <time class="postdate">{{ sentDate|formatSentDate }}</time>
+        </footer>
+    </post>
+</body>

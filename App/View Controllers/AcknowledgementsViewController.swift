@@ -1,49 +1,30 @@
-//  Acknowledgements.swift
+//  AcknowledgementsViewController.swift
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import Mustache
+import Stencil
 import UIKit
 import WebKit
 
 private let Log = Logger.get()
 
 final class AcknowledgementsViewController: ViewController {
-    private var webView: WKWebView { return view as! WKWebView }
-    private var backgroundColor: UIColor { return theme["backgroundColor"]! }
-    private var textColor: UIColor { return theme["listTextColor"]! }
-    
-    override init(nibName: String?, bundle: Bundle?) {
-        super.init(nibName: nibName, bundle: bundle)
+
+    init() {
+        super.init(nibName: nil, bundle: nil)
         
-        title = "Acknowledgements"
+        title = LocalizedString("acknowledgements.title")
         modalPresentationStyle = .formSheet
     }
-
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
-    @IBAction @objc private func didTapDone() {
-        dismiss(animated: true)
-    }
-    
-    override func loadView() {
-        view = WKWebView()
-        webView.navigationDelegate = self
-        
-        // Avoids flash of white when first presented.
-        view.isOpaque = false
-        view.backgroundColor = UIColor.clear
-        
+    private func render() {
         let context = [
             "backgroundColor": backgroundColor.hexCode,
             "textColor": textColor.hexCode]
         let html: String
         do {
-            html = try MustacheTemplate.render(.acknowledgements, value: context)
-        }
-        catch {
+            html = try StencilEnvironment.shared.renderTemplate(.acknowledgements, context: context)
+        } catch {
             Log.e("could not render acknowledgements HTML: \(error)")
             html = ""
         }
@@ -51,10 +32,44 @@ final class AcknowledgementsViewController: ViewController {
         webView.loadHTMLString(html, baseURL: nil)
     }
     
+    private var backgroundColor: UIColor { return theme["backgroundColor"]! }
+    private var textColor: UIColor { return theme["listTextColor"]! }
+    
+    @objc private func didTapDone() {
+        dismiss(animated: true)
+    }
+    
+    // MARK: View lifecycle
+    
+    private lazy var webView: WKWebView = {
+        let webView = WKWebView()
+        webView.navigationDelegate = self
+        
+        // Avoids flash of white when first presented.
+        webView.backgroundColor = .clear
+        webView.isOpaque = false
+        
+        return webView
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        webView.frame = CGRect(origin: .zero, size: view.bounds.size)
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(webView)
+        
+        render()
+    }
+    
     override func themeDidChange() {
         super.themeDidChange()
         
-        let js = "var s=document.body.style; s.backgroundColor='\(backgroundColor.hexCode)'; s.color='\(textColor.hexCode)'"
+        let js = """
+            var s = document.body.style;
+            s.backgroundColor = "\(backgroundColor.hexCode)";
+            s.color = "\(textColor.hexCode)";
+            """
         webView.evaluateJavaScript(js, completionHandler: { result, error in
             if let error = error {
                 Log.e("error running script `\(js)` in acknowledgements screen: \(error)")
@@ -76,6 +91,12 @@ final class AcknowledgementsViewController: ViewController {
         super.viewDidAppear(animated)
         
         webView.scrollView.flashScrollIndicators()
+    }
+    
+    // MARK: Gunk
+    
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

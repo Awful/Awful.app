@@ -5,10 +5,9 @@
 import AwfulCore
 import Foundation
 import HTMLReader
-import Mustache
 
-struct PostViewModel: MustacheBoxable {
-    private let dict: [String: Any]
+struct PostRenderModel: StencilContextConvertible {
+    let context: [String: Any]
 
     init(_ post: Post) {
         var roles: String {
@@ -42,7 +41,7 @@ struct PostViewModel: MustacheBoxable {
             return showAvatars ? post.author?.avatarURL : nil
         }
 
-        dict = [
+        context = [
             "accessibilityRoles": accessibilityRoles,
             "author": [
                 "regdate": post.author?.regdate as Any,
@@ -59,7 +58,7 @@ struct PostViewModel: MustacheBoxable {
     }
     
     init(author: User, isOP: Bool, postDate: Date, postHTML: String) {
-        dict = [
+        context = [
             "author": [
                 "regdate": author.regdate as Any,
                 "userID": author.userID,
@@ -72,10 +71,6 @@ struct PostViewModel: MustacheBoxable {
             "roles": (isOP ? "op " : "") + (author.authorClasses ?? ""),
             "showAvatars": showAvatars,
             "visibleAvatarURL": (showAvatars ? author.avatarURL : nil) as Any]
-    }
-
-    var mustacheBox: MustacheBox {
-        return Box(dict)
     }
 }
 

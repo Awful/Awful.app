@@ -38,7 +38,7 @@ There are optional dependencies for building Awful. You only need them if you're
 
 * [CocoaPods][] manages dependencies. If you're updating, adding, or removing a dependency, please [install CocoaPods][CocoaPods].
     * There's a `Gemfile` nearby if you want to use a known working version of CocoaPods.
-    * **Even if you add a dependency directly to the Xcode project**, please update `Source/Settings/Acknowledgements.mustache` with the name and license of the dependency. We do not use the CocoaPods-generated acknowledgements.
+    * **Even if you add a dependency directly to the Xcode project**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency. We do not use the CocoaPods-generated acknowledgements.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node`.

@@ -5,12 +5,13 @@
 import Foundation
 
 extension DateFormatter {
-    class var announcementDateFormatter: DateFormatter { return _regDateFormatter }
-    class var postDateFormatter: DateFormatter { return _postDateFormatter }
-    class var regDateFormatter: DateFormatter { return _regDateFormatter }
+    class var announcement: DateFormatter { return _regdate }
+    class var postDate: DateFormatter { return _postDate }
+    class var regdate: DateFormatter { return _regdate }
+    class var sentDate: DateFormatter { return _postDate }
 }
 
-private let _postDateFormatter: DateFormatter = {
+private let _postDate: DateFormatter = {
 	let formatter = DateFormatter()
     
 	// 01/02/03 16:05
@@ -20,7 +21,7 @@ private let _postDateFormatter: DateFormatter = {
 	return formatter
 }()
 
-private let _regDateFormatter: DateFormatter = {
+private let _regdate: DateFormatter = {
 	let formatter = DateFormatter()
     
 	// Jan 2, 2003

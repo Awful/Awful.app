@@ -20,7 +20,7 @@ final class PostPreviewViewController: ViewController {
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private var loadingView: LoadingView?
     private weak var networkOperation: Cancellable?
-    private var post: PostViewModel?
+    private var post: PostRenderModel?
     private var postHTML: Promise<String>?
     var submitBlock: (() -> Void)?
     private let thread: AwfulThread?
@@ -122,7 +122,7 @@ final class PostPreviewViewController: ViewController {
                 
                 let isOP = self.editingPost?.author == author
                 
-                self.post = PostViewModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
+                self.post = PostRenderModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
                 
                 self.renderPreview()
             }
@@ -148,7 +148,7 @@ final class PostPreviewViewController: ViewController {
             "post": post,
             "stylesheet": (theme["postsViewCSS"] as String? ?? "")]
         do {
-            let rendering = try MustacheTemplate.render(.postPreview, value: context)
+            let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
         } catch {
             Log.e("failed to render post preview: \(error)")

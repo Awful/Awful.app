@@ -5,32 +5,33 @@
 import AwfulCore
 import CoreData
 import HTMLReader
-import Mustache
 import UIKit
 import WebKit
 
 private let Log = Logger.get()
 
+/// Renders a Forums-wide announcement.
 final class AnnouncementViewController: ViewController {
-    fileprivate let announcement: Announcement
+    
+    private let announcement: Announcement
     private var announcementObserver: ManagedObjectObserver?
     private var clientCancellable: Cancellable?
     private var desiredFractionalContentOffsetAfterRendering: CGFloat?
     private let hadBeenSeenAlready: Bool
 
-    fileprivate lazy var loadingView: LoadingView = {
-        return LoadingView.loadingViewWithTheme(self.theme)
+    private lazy var loadingView: LoadingView = {
+        return LoadingView.loadingViewWithTheme(theme)
     }()
 
-    fileprivate var messageViewController: MessageComposeViewController?
+    private var messageViewController: MessageComposeViewController?
 
-    fileprivate lazy var renderView: RenderView = {
-        let view = RenderView(frame: CGRect(origin: .zero, size: self.view.bounds.size))
-        view.delegate = self
-        return view
+    private lazy var renderView: RenderView = {
+        let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
+        renderView.delegate = self
+        return renderView
     }()
 
-    fileprivate var state: State = .initialized {
+    private var state: State = .initialized {
         willSet {
             assert(state.canTransition(to: newValue))
         }
@@ -41,7 +42,7 @@ final class AnnouncementViewController: ViewController {
         }
     }
 
-    fileprivate enum State {
+    private enum State {
         case initialized
         case loading
         case renderingFirstTime(RenderModel)
@@ -79,15 +80,11 @@ final class AnnouncementViewController: ViewController {
             : LocalizedString("announcements.title")
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     override var title: String? {
         didSet { navigationItem.titleLabel.text = title }
     }
 
-    fileprivate func setFractionalContentOffsetAfterRendering(fractionalContentOffset: CGFloat) {
+    private func setFractionalContentOffsetAfterRendering(fractionalContentOffset: CGFloat) {
         switch state {
         case .initialized, .loading, .renderingFirstTime, .rerendering:
             desiredFractionalContentOffsetAfterRendering = fractionalContentOffset
@@ -196,7 +193,7 @@ final class AnnouncementViewController: ViewController {
 
         case (_, .renderingFirstTime(let model)), (_, .rerendering(let model)):
             do {
-                let rendering = try MustacheTemplate.render(.announcement, value: model)
+                let rendering = try StencilEnvironment.shared.renderTemplate(.announcement, context: model)
                 renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
             }
             catch {
@@ -238,7 +235,7 @@ final class AnnouncementViewController: ViewController {
 
     // MARK: Actions
 
-    fileprivate func didTapAuthorHeaderInPost(at postIndex: Int, frame: CGRect) {
+    private func didTapAuthorHeaderInPost(at postIndex: Int, frame: CGRect) {
         assert(postIndex == 0, "why was there more than one announcement?")
         guard let user = announcement.author else {
             Log.e("tapped author header but announcement has no author?")
@@ -285,6 +282,12 @@ final class AnnouncementViewController: ViewController {
         }
 
         present(actionVC, animated: true)
+    }
+    
+    // MARK: Gunk
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -338,7 +341,7 @@ extension AnnouncementViewController: UIViewControllerRestoration {
     }
 }
 
-private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBoxable {
+private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilContextConvertible {
     let authorRegdate: Date?
     let authorRolesDescription: String
     let authorUserID: String?
@@ -419,21 +422,8 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBox
         return "AnnouncementViewController.RenderModel(css: \(firstBit(of: css)), html: \(firstBit(of: innerHTML)))"
     }
 
-    static func == (lhs: RenderModel, rhs: RenderModel) -> Bool {
-        return lhs.authorRegdate == rhs.authorRegdate
-            && lhs.authorRolesDescription == rhs.authorRolesDescription
-            && lhs.authorUsername == rhs.authorUsername
-            && lhs.avatarURL == rhs.avatarURL
-            && lhs.css == rhs.css
-            && lhs.hasBeenSeen == rhs.hasBeenSeen
-            && lhs.innerHTML == rhs.innerHTML
-            && lhs.postedDate == rhs.postedDate
-            && lhs.roles == rhs.roles
-            && lhs.showsAvatar == rhs.showsAvatar
-    }
-
-    var mustacheBox: MustacheBox {
-        return Box([
+    var context: [String : Any] {
+        return [
             "authorRegdate": authorRegdate as Any,
             "authorRolesDescription": authorRolesDescription,
             "authorUserID": authorUserID as Any,
@@ -445,7 +435,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, MustacheBox
             "roles": roles,
             "stylesheet": css,
             "userInterfaceIdiom": userInterfaceIdiom,
-            "visibleAvatarURL": visibleAvatarURL as Any])
+            "visibleAvatarURL": visibleAvatarURL as Any]
     }
 }
 

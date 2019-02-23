@@ -12,6 +12,11 @@
 /* Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.) */
 "table-view.action.delete" = "Delete";
 
+
+/* MARK: Acknowledgements */
+"acknowledgements.title" = "Acknowledgements";
+
+
 /* MARK: Actions */
 
 /* Title of the share URL action for an announcement, post, or thread. */

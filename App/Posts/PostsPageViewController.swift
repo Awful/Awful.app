@@ -304,7 +304,7 @@ final class PostsPageViewController: ViewController {
         
         if posts.count > hiddenPosts {
             let subset = posts[hiddenPosts...]
-            context["posts"] = subset.map { PostViewModel($0) }
+            context["posts"] = subset.map { PostRenderModel($0).context }
         }
         
         if let ad = advertisementHTML, !ad.isEmpty {
@@ -331,7 +331,7 @@ final class PostsPageViewController: ViewController {
 
         let html: String
         do {
-            html = try MustacheTemplate.render(.postsView, value: context)
+            html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
         } catch {
             Log.e("could not render posts view HTML: \(error)")
             html = ""
@@ -701,9 +701,9 @@ final class PostsPageViewController: ViewController {
     }
     
     private func renderedPostAtIndex(_ i: Int) -> String {
-        let viewModel = PostViewModel(posts[i])
         do {
-            return try MustacheTemplate.render(.post, value: viewModel)
+            let model = PostRenderModel(posts[i])
+            return try StencilEnvironment.shared.renderTemplate(.post, context: model)
         } catch {
             Log.e("could not render post at index \(i): \(error)")
             return ""

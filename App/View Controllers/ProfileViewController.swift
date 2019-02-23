@@ -4,7 +4,6 @@
 
 import ARChromeActivity
 import AwfulCore
-import Mustache
 import PromiseKit
 import TUSafariActivity
 import UIKit
@@ -40,10 +39,6 @@ final class ProfileViewController: ViewController {
         hidesBottomBarWhenPushed = true
     }
     
-    required init(coder: NSCoder) {
-        fatalError("NSCoding is not supported")
-    }
-    
     private func updateTitle() {
         title = user.username ?? LocalizedString("profile.default-title")
     }
@@ -62,12 +57,12 @@ final class ProfileViewController: ViewController {
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
         view.addSubview(renderView)
         renderView.translatesAutoresizingMaskIntoConstraints = true
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        super.viewDidLoad()
     }
     
     override func themeDidChange() {
@@ -113,7 +108,7 @@ final class ProfileViewController: ViewController {
         let html: String = {
             guard let profile = user.profile else { return "" }
             do {
-                return try MustacheTemplate.render(.profile, value: RenderModel(profile))
+                return try StencilEnvironment.shared.renderTemplate(.profile, context: RenderModel(profile))
             }
             catch {
                 Log.e("could not render profile HTML: \(error)")
@@ -125,6 +120,12 @@ final class ProfileViewController: ViewController {
     
     private var baseURL: URL? {
         return ForumsClient.shared.baseURL
+    }
+    
+    // MARK: Gunk
+    
+    required init(coder: NSCoder) {
+        fatalError("NSCoding is not supported")
     }
 }
 
@@ -200,7 +201,7 @@ extension ProfileViewController: RenderViewDelegate {
 }
 
 
-private struct RenderModel: MustacheBoxable {
+private struct RenderModel: StencilContextConvertible {
     let aboutMe: String?
     let aimName: String?
     let anyContactInfo: Bool
@@ -261,8 +262,8 @@ private struct RenderModel: MustacheBoxable {
         yahooName = profile.yahooName
     }
     
-    var mustacheBox: MustacheBox {
-        return Box([
+    var context: [String: Any] {
+        return [
             "aboutMe": aboutMe as Any,
             "aimName": aimName as Any,
             "anyContactInfo": anyContactInfo,
@@ -283,6 +284,6 @@ private struct RenderModel: MustacheBoxable {
             "profilePictureURL": profilePictureURL as Any,
             "regdate": regdate as Any,
             "username": username as Any,
-            "yahooName": yahooName as Any])
+            "yahooName": yahooName as Any]
     }
 }

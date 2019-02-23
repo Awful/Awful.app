@@ -55,14 +55,18 @@ class ViewController: UIViewController, Themeable {
     func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
-        let scrollView: UIScrollView?
-        if let scrollingSelf = view as? UIScrollView {
-            scrollView = scrollingSelf
-        } else if responds(to: #selector(getter: UIWebView.scrollView)), let scrollingSubview = value(forKey: "scrollView") as? UIScrollView {
-            scrollView = scrollingSubview
-        } else {
-            scrollView = nil
-        }
+        let scrollView: UIScrollView? = {
+            var candidates = view.subviews + [view]
+            while let candidate = candidates.popLast() {
+                switch candidate {
+                case let rv as RenderView: return rv.scrollView
+                case let sv as UIScrollView: return sv
+                case let wv as WKWebView: return wv.scrollView
+                default: continue
+                }
+            }
+            return nil
+        }()
         scrollView?.indicatorStyle = theme.scrollIndicatorStyle
     }
     

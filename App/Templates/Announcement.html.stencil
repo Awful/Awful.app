@@ -1,0 +1,54 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width = device-width, initial-scale = 1, maximum-scale = 1, user-scalable = no">
+
+{% if baseURL %}<base href="{{ baseURL|htmlEscape }}">{% endif %}
+
+<title>Awful - Announcement</title>
+
+<style>
+  /* Allow click event delegation for everything. */
+  * { cursor: pointer; }
+</style>
+
+<style id="awful-inline-style">
+    {{ stylesheet }}
+</style>
+
+{% fontScaleStyle %}
+
+<body class="{{ userInterfaceIdiom|htmlEscape }}">
+
+<post
+    class="
+        {% if hasBeenSeen %}seen{% endif %}
+        {% for role in roles %} {{ role|htmlEscape }} {% endfor %}
+        {% if not visibleAvatarURL %} no-avatar {% endif %}">
+
+    <header
+        class="userid-{{ authorUserID|htmlEscape }}"
+        {% if hiddenAvatarURL %}data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}"{% endif %}>
+
+        {% if visibleAvatarURL %}<img class="avatar" src="{{ visibleAvatarURL|htmlEscape }}" alt="">{% endif %}
+
+        <section class="nameanddate">
+            <h1 class="username">{{ authorUsername|htmlEscape }}</h1>
+
+            {% if authorRolesDescription %}
+            <span class="voiceover-only">{{ authorRolesDescription|htmlEscape }}</span>
+            {% endif %}
+
+            <time class="regdate">Joined {{ authorRegdate|formatRegdate }}</time>
+        </section>
+    </header>
+
+    <section class="postbody">
+        {{ innerHTML }}
+    </section>
+
+    <footer>
+        <span class="postdate">
+            {{ postedDate|formatAnnouncementDate }}
+        </span>
+    </footer>
+</post>

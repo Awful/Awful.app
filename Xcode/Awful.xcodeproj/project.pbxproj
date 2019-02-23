@@ -55,7 +55,6 @@
 		1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBAF1CB863E600C88BD1 /* IconActionItem.swift */; };
 		1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */; };
 		1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */; };
-		1C16FBB61CB891D400C88BD1 /* PrivateMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB51CB891D400C88BD1 /* PrivateMessageViewModel.swift */; };
 		1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */; };
 		1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */; };
 		1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */; };
@@ -93,7 +92,6 @@
 		1C19CA4A1F70AD740060F4DE /* PostIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA491F70AD740060F4DE /* PostIcon.swift */; };
 		1C19CA4C1F70ADC50060F4DE /* PostIconPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA4B1F70ADC50060F4DE /* PostIconPersistence.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
-		1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C24BC952002BF2F0022C85F /* ForumListCell.swift */; };
@@ -119,8 +117,6 @@
 		1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */; };
 		1C2DC7341DCEA177005040FD /* PotentiallyObjectionableStickers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */; };
 		1C2DC7351DCEA605005040FD /* SmilieStickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E3175D9CCE007377C5 /* Post.mustache */; };
-		1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C3447E8175DAED4007377C5 /* Profile.mustache */; };
 		1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */; };
 		1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C081E41832600CCBA51 /* CoreAnimation.swift */; };
 		1C3811CC2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */; };
@@ -164,8 +160,8 @@
 		1C3CF9A51A94BE190065C964 /* ThreadListScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */; };
 		1C3CF9A61A94BE1E0065C964 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
 		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
-		1C40D4AA1A85F57400D9F793 /* Acknowledgements.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */; };
-		1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */; };
+		1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */; };
+		1C40D4AB1A85F57400D9F793 /* AcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C4154E11ED1D53D009686E4 /* ProfileScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4154E01ED1D53D009686E4 /* ProfileScrapeResult.swift */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
@@ -309,16 +305,20 @@
 		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
 		1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010819DE89B000542293 /* SmilieCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010919DE89B000542293 /* SmilieCell.m */; };
-		1C7C60BC18FC9EF5009BF4BB /* PrivateMessage.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */; };
 		1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */; };
-		1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F0DED191E311B00CE8DEE /* FontScale.mustache */; };
 		1C8F6519221D0827007E61ED /* Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256C01A3B154A003FA7A8 /* Swift.swift */; };
-		1C914EC9207716D600C0E238 /* MustacheRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914EC8207716D600C0E238 /* MustacheRepository.swift */; };
+		1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */; };
+		1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67F722210DED007E61ED /* Profile.html.stencil */; };
+		1C8F67FA2221AFB1007E61ED /* Announcement.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67F92221AFB1007E61ED /* Announcement.html.stencil */; };
+		1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67FC2221BB57007E61ED /* PrivateMessage.html.stencil */; };
+		1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67FE2221BDE8007E61ED /* PostPreview.html.stencil */; };
+		1C8F68012221BE7C007E61ED /* Post.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F68002221BE7C007E61ED /* Post.html.stencil */; };
+		1C8F68032221C545007E61ED /* PostsView.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F68022221C545007E61ED /* PostsView.html.stencil */; };
 		1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */; };
 		1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */; };
 		1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */; };
@@ -332,9 +332,7 @@
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
-		1CA887AB1F3954550059FEEC /* Announcement.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CA887AA1F3954550059FEEC /* Announcement.mustache */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
-		1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */ = {isa = PBXBuildFile; fileRef = 1CB0607A1936CADC005263EA /* PostPreview.mustache */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -724,7 +722,6 @@
 		1C16FBAF1CB863E600C88BD1 /* IconActionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconActionItem.swift; sourceTree = "<group>"; };
 		1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		1C16FBB31CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPrivateMessageFieldView.swift; sourceTree = "<group>"; };
-		1C16FBB51CB891D400C88BD1 /* PrivateMessageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageViewModel.swift; sourceTree = "<group>"; };
 		1C16FBB91CB8961F00C88BD1 /* ImageURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageURLProtocol.swift; sourceTree = "<group>"; };
 		1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerLayout.swift; sourceTree = "<group>"; };
 		1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagButton.swift; sourceTree = "<group>"; };
@@ -762,7 +759,6 @@
 		1C19CA491F70AD740060F4DE /* PostIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostIcon.swift; sourceTree = "<group>"; };
 		1C19CA4B1F70ADC50060F4DE /* PostIconPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostIconPersistence.swift; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
-		1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostsView.mustache; sourceTree = "<group>"; };
 		1C23C7041A7AB8940089BD5C /* SlopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlopButton.swift; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
 		1C24BC952002BF2F0022C85F /* ForumListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumListCell.swift; sourceTree = "<group>"; };
@@ -787,8 +783,6 @@
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableStickers.plist; sourceTree = "<group>"; };
-		1C3447E3175D9CCE007377C5 /* Post.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Post.mustache; sourceTree = "<group>"; };
-		1C3447E8175DAED4007377C5 /* Profile.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Profile.mustache; sourceTree = "<group>"; };
 		1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteSheetView.swift; sourceTree = "<group>"; };
 		1C353C081E41832600CCBA51 /* CoreAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAnimation.swift; sourceTree = "<group>"; };
 		1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITabBar+FixiOS12_1Layout.h"; sourceTree = "<group>"; };
@@ -830,8 +824,8 @@
 		1C3DED791B6FD0AB00954CFC /* ARChromeActivity@3x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity@3x~ipad.png"; sourceTree = "<group>"; };
 		1C3DED7A1B6FD0AB00954CFC /* ARChromeActivity~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity~ipad.png"; sourceTree = "<group>"; };
 		1C4079691A228DA6004A082F /* CopyURLActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyURLActivity.swift; sourceTree = "<group>"; };
-		1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Acknowledgements.mustache; sourceTree = "<group>"; };
-		1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Acknowledgements.swift; sourceTree = "<group>"; };
+		1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Acknowledgements.html.stencil; sourceTree = "<group>"; };
+		1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcknowledgementsViewController.swift; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C4154E01ED1D53D009686E4 /* ProfileScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileScrapeResult.swift; sourceTree = "<group>"; };
 		1C41B8A416CD573D00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-banned.gif"; sourceTree = "<group>"; };
@@ -995,7 +989,6 @@
 		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
 		1C7B010819DE89B000542293 /* SmilieCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCell.h; sourceTree = "<group>"; };
 		1C7B010919DE89B000542293 /* SmilieCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCell.m; sourceTree = "<group>"; };
-		1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PrivateMessage.mustache; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
@@ -1003,8 +996,13 @@
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+AwfulConvenient.swift"; sourceTree = "<group>"; };
 		1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCapabilities.swift; sourceTree = "<group>"; };
-		1C8F0DED191E311B00CE8DEE /* FontScale.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FontScale.mustache; sourceTree = "<group>"; };
-		1C914EC8207716D600C0E238 /* MustacheRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MustacheRepository.swift; sourceTree = "<group>"; };
+		1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilEnvironment.swift; sourceTree = "<group>"; };
+		1C8F67F722210DED007E61ED /* Profile.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Profile.html.stencil; sourceTree = "<group>"; };
+		1C8F67F92221AFB1007E61ED /* Announcement.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Announcement.html.stencil; sourceTree = "<group>"; };
+		1C8F67FC2221BB57007E61ED /* PrivateMessage.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = PrivateMessage.html.stencil; sourceTree = "<group>"; };
+		1C8F67FE2221BDE8007E61ED /* PostPreview.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = PostPreview.html.stencil; sourceTree = "<group>"; };
+		1C8F68002221BE7C007E61ED /* Post.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Post.html.stencil; sourceTree = "<group>"; };
+		1C8F68022221C545007E61ED /* PostsView.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = PostsView.html.stencil; sourceTree = "<group>"; };
 		1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Promises.swift"; sourceTree = "<group>"; };
@@ -1022,9 +1020,7 @@
 		1CA45D951F2C19AA005BEEC5 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Potentially-Objectionable.xcdatamodel"; sourceTree = "<group>"; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
-		1CA887AA1F3954550059FEEC /* Announcement.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Announcement.mustache; sourceTree = "<group>"; };
 		1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Presentation.swift"; sourceTree = "<group>"; };
-		1CB0607A1936CADC005263EA /* PostPreview.mustache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PostPreview.mustache; sourceTree = "<group>"; };
 		1CB15BCE1A9CEB8800176E73 /* Themes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLMenuPresenter.swift; sourceTree = "<group>"; };
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
@@ -1572,12 +1568,12 @@
 				1C25AC401F5371CC00977D6F /* Logger.swift */,
 				1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */,
 				1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */,
-				1C914EC8207716D600C0E238 /* MustacheRepository.swift */,
 				1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */,
 				1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */,
 				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
 				1C015BBE21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.h */,
 				1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */,
+				1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */,
 				1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */,
 				1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */,
 				1C273AA121C1E26F002875A9 /* Tweaks.swift */,
@@ -1611,20 +1607,6 @@
 			path = "In-App Actions";
 			sourceTree = "<group>";
 		};
-		1C331AA12122722B00C5D045 /* Templates */ = {
-			isa = PBXGroup;
-			children = (
-				1CA887AA1F3954550059FEEC /* Announcement.mustache */,
-				1C8F0DED191E311B00CE8DEE /* FontScale.mustache */,
-				1C3447E3175D9CCE007377C5 /* Post.mustache */,
-				1CB0607A1936CADC005263EA /* PostPreview.mustache */,
-				1C23A0A4163E6E1D006C7F39 /* PostsView.mustache */,
-				1C7C60BB18FC9EF5009BF4BB /* PrivateMessage.mustache */,
-				1C3447E8175DAED4007377C5 /* Profile.mustache */,
-			);
-			path = Templates;
-			sourceTree = "<group>";
-		};
 		1C3447C1174D4B4F007377C5 /* Thread Tags */ = {
 			isa = PBXGroup;
 			children = (
@@ -1649,7 +1631,6 @@
 				1C28B34A1729DC9700254EE7 /* In-App Actions */,
 				1190F71813BE4EA900B9D271 /* Login */,
 				1190F71C13BE4EA900B9D271 /* Main */,
-				1CB6010616D826DA00CBEE22 /* Messages */,
 				1C25AC1F1F532EC400977D6F /* Misc */,
 				1CA887AE1F40ADFE0059FEEC /* Model Presentation */,
 				1C00E0AB173A006B008895E7 /* Navigation */,
@@ -1659,6 +1640,7 @@
 				1C8694A216EF78D3003FE89E /* Settings */,
 				1C796A202214FF470035E154 /* Sourcery */,
 				1C0060A6217171CD00E5329A /* Stylesheets */,
+				1C8F67F22221050A007E61ED /* Templates */,
 				1C9AEBC4210C3B2300C9A567 /* Tests */,
 				1CDD51951542949600326C7B /* Theming */,
 				1C3447C1174D4B4F007377C5 /* Thread Tags */,
@@ -1956,8 +1938,6 @@
 		1C8694A216EF78D3003FE89E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				1C40D4A81A85F57400D9F793 /* Acknowledgements.mustache */,
-				1C40D4A91A85F57400D9F793 /* Acknowledgements.swift */,
 				7B82D6651F7809E3002291C7 /* AppIconCell.swift */,
 				7B82D6661F7809E3002291C7 /* AppIconCell.xib */,
 				7B1FF1271F76C3A3000B64DA /* AppIconPickerCell.swift */,
@@ -2005,6 +1985,20 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		1C8F67F22221050A007E61ED /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */,
+				1C8F67F92221AFB1007E61ED /* Announcement.html.stencil */,
+				1C8F68002221BE7C007E61ED /* Post.html.stencil */,
+				1C8F67FE2221BDE8007E61ED /* PostPreview.html.stencil */,
+				1C8F68022221C545007E61ED /* PostsView.html.stencil */,
+				1C8F67FC2221BB57007E61ED /* PrivateMessage.html.stencil */,
+				1C8F67F722210DED007E61ED /* Profile.html.stencil */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
 		1C9AEBC4210C3B2300C9A567 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -2023,15 +2017,6 @@
 				1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */,
 			);
 			path = "Model Presentation";
-			sourceTree = "<group>";
-		};
-		1CB6010616D826DA00CBEE22 /* Messages */ = {
-			isa = PBXGroup;
-			children = (
-				1C16FBB51CB891D400C88BD1 /* PrivateMessageViewModel.swift */,
-			);
-			name = Messages;
-			path = "Private Messages";
 			sourceTree = "<group>";
 		};
 		1CBBAAB61D949EE100A847EC /* Stickers */ = {
@@ -2107,6 +2092,7 @@
 		1CD005CD1BB734C900232FFD /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */,
 				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
 				1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */,
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
@@ -2256,7 +2242,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA = {
+		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -2395,7 +2381,6 @@
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
 				1C273A9F21C1DC25002875A9 /* RenderView-AllFrames.js */,
 				1CA45D931F2C0AD1005BEEC5 /* RenderView.js */,
-				1C331AA12122722B00C5D045 /* Templates */,
 				1CF186A517D48E5700B26717 /* Thread Tags */,
 			);
 			path = Resources;
@@ -2744,7 +2729,7 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2901,7 +2886,6 @@
 				1C5B83521F74B1F200BE7517 /* AppIcon-v-40x40@3x.png in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
 				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
-				1C23A0A5163E6E1D006C7F39 /* PostsView.mustache in Resources */,
 				7BF090302022C7570060BDC8 /* AppIcon-v_dark-83.5x83.5@2x.png in Resources */,
 				8C8FA48319AD7CA300B67AAA /* redpill.png in Resources */,
 				7BF090362022C7570060BDC8 /* AppIcon-v_dark-40x40@2x.png in Resources */,
@@ -2910,20 +2894,21 @@
 				1C502D3D1F817005001890AF /* AppIcon-getout-60x60@2x.png in Resources */,
 				1C502D221F816FFC001890AF /* AppIcon-five-1024x1024.png in Resources */,
 				1C502D201F816FF3001890AF /* AppIcon-Bars2-76x76@2x.png in Resources */,
+				1C8F68012221BE7C007E61ED /* Post.html.stencil in Resources */,
 				1C502D431F817010001890AF /* AppIcon-staredog-20x20.png in Resources */,
 				1C502D4F1F817010001890AF /* AppIcon-staredog-76x76.png in Resources */,
+				1C8F68032221C545007E61ED /* PostsView.html.stencil in Resources */,
 				1C502D2A1F816FFC001890AF /* AppIcon-five-40x40@2x.png in Resources */,
 				1C502D2B1F816FFC001890AF /* AppIcon-five-40x40@3x.png in Resources */,
 				1C5B834A1F74B1F200BE7517 /* AppIcon-v-20x20.png in Resources */,
 				7BF090402022C7570060BDC8 /* AppIcon-Bars2_dark-60x60@2x.png in Resources */,
 				8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */,
-				1CB0607B1936CADC005263EA /* PostPreview.mustache in Resources */,
 				7BF3A6101F92FA86009F8603 /* AppIcon-ghost-40x40@2x.png in Resources */,
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
 				7BF3A60F1F92FA86009F8603 /* AppIcon-ghost-60x60@3x.png in Resources */,
 				7BF3A60A1F92FA86009F8603 /* AppIcon-ghost-20x20@3x.png in Resources */,
 				7BF090282022C7570060BDC8 /* AppIcon-v_dark-76x76.png in Resources */,
-				1C40D4AA1A85F57400D9F793 /* Acknowledgements.mustache in Resources */,
+				1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */,
 				8C8FA47F19AD7CA300B67AAA /* diamond-icon.png in Resources */,
 				1C5B83531F74B1F200BE7517 /* AppIcon-v-60x60.png in Resources */,
 				1C502D1B1F816FF3001890AF /* AppIcon-Bars2-40x40@3x.png in Resources */,
@@ -2962,15 +2947,18 @@
 				7BF090452022C7570060BDC8 /* AppIcon-Bars2_dark-60x60.png in Resources */,
 				7BF3A6111F92FA86009F8603 /* AppIcon-ghost-29x29@3x.png in Resources */,
 				1CC362BC204C527700274E82 /* AppIcon-doggo-1024x1024.png in Resources */,
+				1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */,
 				1C502D2E1F816FFC001890AF /* AppIcon-five-60x60@3x.png in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				8C89FAF41CAA0F4200640F3D /* widgets.js in Resources */,
 				7BF3A6061F92FA86009F8603 /* AppIcon-ghost-29x29.png in Resources */,
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
+				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C5B83551F74B1F200BE7517 /* AppIcon-v-60x60@3x.png in Resources */,
 				1C502D121F816FF3001890AF /* AppIcon-Bars2-1024x1024.png in Resources */,
+				1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */,
 				1C5B83541F74B1F200BE7517 /* AppIcon-v-60x60@2x.png in Resources */,
 				7BF090332022C7570060BDC8 /* AppIcon-v_dark-60x60@2x.png in Resources */,
 				7B82D6681F7809E3002291C7 /* AppIconCell.xib in Resources */,
@@ -2985,6 +2973,7 @@
 				1C502D1D1F816FF3001890AF /* AppIcon-Bars2-60x60@2x.png in Resources */,
 				1C502D3A1F817004001890AF /* AppIcon-getout-40x40@2x.png in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
+				1C8F67FA2221AFB1007E61ED /* Announcement.html.stencil in Resources */,
 				1CC362C3204C527700274E82 /* AppIcon-doggo-20x20.png in Resources */,
 				1CC362BF204C527700274E82 /* AppIcon-doggo-20x20@3x.png in Resources */,
 				7BF090432022C7570060BDC8 /* AppIcon-Bars2_dark-40x40@3x.png in Resources */,
@@ -3030,7 +3019,6 @@
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
 				1CC362C2204C527700274E82 /* AppIcon-doggo-40x40@2x.png in Resources */,
 				7BF090352022C7570060BDC8 /* AppIcon-v_dark-29x29@3x.png in Resources */,
-				1CA887AB1F3954550059FEEC /* Announcement.mustache in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
 				8C8FA48219AD7CA300B67AAA /* platinum-member.png in Resources */,
 				7BF3A61E1F92FA86009F8603 /* AppIcon-greenface-20x20.png in Resources */,
@@ -3045,13 +3033,11 @@
 				7BF3A61D1F92FA86009F8603 /* AppIcon-greenface-60x60@3x.png in Resources */,
 				1C502D1E1F816FF3001890AF /* AppIcon-Bars2-60x60@3x.png in Resources */,
 				1C502D301F816FFC001890AF /* AppIcon-five-76x76@2x.png in Resources */,
-				1C3447E4175D9CCE007377C5 /* Post.mustache in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
 				1C502D511F817010001890AF /* AppIcon-staredog-83.5x83.5@2x.png in Resources */,
 				1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
 				1C502D151F816FF3001890AF /* AppIcon-Bars2-20x20@3x.png in Resources */,
-				1C3447E9175DAED4007377C5 /* Profile.mustache in Resources */,
 				1C502D2F1F816FFC001890AF /* AppIcon-five-76x76.png in Resources */,
 				1C5B83501F74B1F200BE7517 /* AppIcon-v-40x40.png in Resources */,
 				1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */,
@@ -3066,10 +3052,8 @@
 				1C502D2C1F816FFC001890AF /* AppIcon-five-60x60.png in Resources */,
 				7BF090462022C7570060BDC8 /* AppIcon-Bars2_dark-20x20@2x.png in Resources */,
 				1C5B83491F74B1F200BE7517 /* AppIcon-v-1024x1024.png in Resources */,
-				1C8F0DEE191E311B00CE8DEE /* FontScale.mustache in Resources */,
 				7BF3A6081F92FA86009F8603 /* AppIcon-ghost-60x60.png in Resources */,
 				7BF3A61A1F92FA86009F8603 /* AppIcon-greenface-40x40@3x.png in Resources */,
-				1C7C60BC18FC9EF5009BF4BB /* PrivateMessage.mustache in Resources */,
 				7BF3A6151F92FA86009F8603 /* AppIcon-greenface-40x40.png in Resources */,
 				8C8FA48019AD7CA300B67AAA /* ik.png in Resources */,
 				1CC362C9204C527700274E82 /* AppIcon-doggo-60x60@3x.png in Resources */,
@@ -3590,7 +3574,6 @@
 				1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */,
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
-				1C16FBB61CB891D400C88BD1 /* PrivateMessageViewModel.swift in Sources */,
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
 				1C16FBDD1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift in Sources */,
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
@@ -3608,7 +3591,7 @@
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
-				1C914EC9207716D600C0E238 /* MustacheRepository.swift in Sources */,
+				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
@@ -3665,7 +3648,7 @@
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
 				1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */,
-				1C40D4AB1A85F57400D9F793 /* Acknowledgements.swift in Sources */,
+				1C40D4AB1A85F57400D9F793 /* AcknowledgementsViewController.swift in Sources */,
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,

@@ -18,7 +18,7 @@ final class ThreadPreviewViewController: ViewController {
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private var loadingView: LoadingView?
     private weak var networkOperation: Cancellable?
-    private var post: PostViewModel?
+    private var post: PostRenderModel?
     private var postHTML: Promise<HTMLAndForm>?
     private let secondaryThreadTag: ThreadTag?
     private let subject: String
@@ -91,7 +91,7 @@ final class ThreadPreviewViewController: ViewController {
                     let author = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
                     else { throw MissingAuthorError() }
                 
-                self.post = PostViewModel(author: author, isOP: true, postDate: Date(), postHTML: previewAndForm.previewHTML)
+                self.post = PostRenderModel(author: author, isOP: true, postDate: Date(), postHTML: previewAndForm.previewHTML)
                 self.formData = previewAndForm.formData
                 self.renderPreview()
             }
@@ -117,7 +117,7 @@ final class ThreadPreviewViewController: ViewController {
             "stylesheet": (theme["postsViewCSS"] as String? ?? ""),
             "post": post]
         do {
-            let rendering = try MustacheTemplate.render(.postPreview, value: context)
+            let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
         } catch {
             Log.e("failed to render thread preview: \(error)")
