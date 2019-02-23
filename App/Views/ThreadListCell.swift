@@ -239,7 +239,7 @@ final class ThreadListCell: UITableViewCell {
             postInfoFrame = CGRect(
                 x: pageIconFrame.maxX + Layout.pageIconRightMargin,
                 y: textRect.maxY - postInfoSize.height + (pageCountFont.descender - postInfoFont.descender),
-                width: textWidth - pageIconFrame.maxX - Layout.pageIconRightMargin,
+                width: textWidth - (pageIconFrame.maxX - pageCountFrame.minX),
                 height: postInfoSize.height)
                 .pixelRound
 
