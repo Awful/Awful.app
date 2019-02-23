@@ -32,4 +32,10 @@ final class StandardErrorScrapingTests: XCTestCase {
         XCTAssert(scraped.title.contains("Senor Lowtax"))
         XCTAssert(scraped.message.contains("only accessible to Platinum members"))
     }
+    
+    func testThreadClosed() {
+        let scraped = try! scrapeFixture(named: "newreply-closed") as StandardErrorScrapeResult
+        XCTAssert(scraped.title.contains("Sorry!"))
+        XCTAssert(scraped.message.contains("This thread is closed!"))
+    }
 }
