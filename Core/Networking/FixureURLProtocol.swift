@@ -40,14 +40,10 @@ public final class FixtureURLProtocol: URLProtocol {
         fileprivate let query: String?
         
         /// Requests for announcement details.
-        public static var announcement: Fixture {
-            return Fixture(basename: "announcement", pathPrefix: "/announcement.php")
-        }
+        public static let announcement = Fixture(basename: "announcement", pathPrefix: "/announcement.php")
         
         /// Requests for the list of forums, and for the list of threads on any forum.
-        public static var forum: Fixture {
-            return Fixture(basename: "forumdisplay", pathPrefix: "/forumdisplay.php")
-        }
+        public static let forum = Fixture(basename: "forumdisplay", pathPrefix: "/forumdisplay.php")
         
         private init(basename: String, pathPrefix: String, query: String? = nil) {
             self.basename = basename

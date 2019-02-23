@@ -2,7 +2,7 @@
 
 [Awful][App Store] is an iOS 9+ app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
-Development talk usually ends up in the [project.log][] thread, but we're not fussy. There's also a [list of issues](https://github.com/awful/Awful.app/issues).
+Not sure what to work on? There's a [list of issues](https://github.com/awful/Awful.app/issues), or just post in the thread and someone will share their pet peeves for your amusement!
 
 <p align="center">
   <img src="Screenshots/iPhone 4.7in retina.png" width="375" height="667" alt="Screenshot of Awful as it appears on an iPhone">
@@ -24,7 +24,7 @@ This app is not endorsed by Something Awful.
 You need Xcode 10 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
 
 1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
-2. Open Xcode project and build away: `xed Awful-app`
+2. Open the Xcode workspace and build away: `xed Awful-app`
 
 You may see build warnings of the form "Unable to find included file '../Local.xcconfig'". You should still be able to build and run, just with a couple of features turned off. If you'd like to enable those features, or just make the warnings go away, please scroll on down to the "Local build settings" section below.
 
@@ -83,6 +83,10 @@ If you peek in the [Xcode](Xcode) folder you'll find:
 And in the Xcode workspace itself you'll find:
 
 * `SmilieExtractor`, an iOS app that takes `showsmilies.webarchive` and extracts resources for both Smilie Keyboard and Smilie Stickers. To update smilies, first save a fresh `showsmilies.webarchive` from the Forums, then run `SmilieExtractor`, then look at `scale-stickers`.
+
+### Loading fixtures into the app and/or working offline
+
+If you've stashed some .html files from the Forums, you can load those into a debug build of the app. And if you forgot to stash some, you're in luck: we've stashed some as test fixtures. See [FixtureURLProtocol](Core/Networking/FixtureURLProtocol.swift) for more info.
 
 ## Contribute
 
@@ -195,6 +199,7 @@ Awful development is led by [pokeyman][] aka [Nolan Waite](https://github.com/no
 
 Awful includes contributions from:
 
+- [awesomeolion](https://forums.somethingawful.com/member.php?action=getinfo&userid=127057)
 - [Diabolik900][]
 - [enigma105](http://forums.somethingawful.com/member.php?action=getinfo&userid=51258)
 - [Froist](http://forums.somethingawful.com/member.php?action=getinfo&userid=56411)
@@ -204,6 +209,7 @@ Awful includes contributions from:
 - [Malcolm XML](http://forums.somethingawful.com/member.php?action=getinfo&userid=154586)
 - [OHIO](http://forums.somethingawful.com/member.php?action=getinfo&userid=82915)
 - [pokeyman][]
+- [spanky the dolphin](https://forums.somethingawful.com/member.php?action=getinfo&userid=102668)
 - [Subjunctive](http://forums.somethingawful.com/member.php?action=getinfo&userid=103253)
 - [tanky](https://forums.somethingawful.com/member.php?action=getinfo&userid=161836)
 - [The Dave][]
