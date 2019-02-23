@@ -17,6 +17,7 @@ target 'Awful' do
   pod 'MRProgress/Overlay'
   pod 'PromiseKit'
   pod 'Sourcery'
+  pod 'Stencil'
   pod 'TUSafariActivity'
 
   # No Swift 4 support yet; picked a fork that seems ok.
@@ -31,27 +32,21 @@ target 'Awful' do
   # Frequently bumps versions without pushing podspec to CocoaPods.
   pod 'SwiftTweaks', :git => 'https://github.com/Khan/SwiftTweaks', :branch => 'master'
 
-  target :AwfulTests do
-    inherit! :search_paths
-  end
+  target :AwfulTests
 end
 
 target 'Core' do
   pod 'HTMLReader'
   pod 'PromiseKit'
 
-  target 'CoreTests' do
-    inherit! :search_paths
-  end
+  target 'CoreTests'
 end
 
 target :Smilies do
   pod 'FLAnimatedImage'
   pod 'HTMLReader'
 
-  target :SmiliesTests do
-    inherit! :search_paths
-  end
+  target :SmiliesTests
 end
 
 target :SmilieExtractor do
