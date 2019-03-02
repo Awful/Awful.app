@@ -16,6 +16,12 @@ extension Numeric where Self: Comparable {
     }
 }
 
+extension Sequence where Element: AnyObject {
+    func containsObjectIdentical(to object: AnyObject) -> Bool {
+        return contains { $0 === object }
+    }
+}
+
 extension Sequence {
     
     /// Same as `reduce(_:_:)` but with the first element used as the initial result value. Returns `nil` when the sequence is empty.

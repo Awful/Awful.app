@@ -7,6 +7,7 @@ import Foundation
 
 /// Calls a block whenever a particular managed object is deleted, invalidated, refreshed, or updated.
 final class ManagedObjectObserver {
+    
     private let didChange: (Change) -> Void
     private var token: NSObjectProtocol?
 
@@ -41,12 +42,14 @@ final class ManagedObjectObserver {
 private extension ManagedObjectObserver.Change {
     init?(object: NSManagedObject, notification: ContextObjectsDidChangeNotification) {
         if notification.didInvalidateAllObjects
-            || notification.invalidatedObjects.contains(object)
-            || notification.deletedObjects.contains(object)
+            || notification.invalidatedObjects.containsObjectIdentical(to: object)
+            || notification.deletedObjects.containsObjectIdentical(to: object)
         {
             self = .delete
         }
-        else if notification.refreshedObjects.contains(object) || notification.updatedObjects.contains(object) {
+        else if notification.refreshedObjects.containsObjectIdentical(to: object)
+            || notification.updatedObjects.containsObjectIdentical(to: object)
+        {
             self = .update
         }
         else {
