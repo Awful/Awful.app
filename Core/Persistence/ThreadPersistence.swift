@@ -14,10 +14,8 @@ internal extension ThreadListScrapeResult {
             + self.filterableIcons
         let iconHelper = PostIconPersistenceHelper(context: context, icons: icons)
         try iconHelper.performFetch()
-
-        for icon in filterableIcons {
-            _ = iconHelper.upsert(icon)
-        }
+        
+        forum?.threadTags = NSMutableOrderedSet(array: filterableIcons.map { iconHelper.upsert($0) })
 
         var users: [UserID: User] = [:]
         do {
