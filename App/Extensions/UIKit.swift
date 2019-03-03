@@ -347,6 +347,37 @@ extension UITextView {
     }
 }
 
+extension Sequence where Element == NSLayoutConstraint {
+    func activate() {
+        forEach { $0.isActive = true }
+    }
+}
+
+extension UIView {
+    func constrain(to view: UIView, edges: UIRectEdge, insets: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
+        var constraints: [NSLayoutConstraint] = []
+        if edges.contains(.top) {
+            constraints.append(topAnchor.constraint(equalTo: view.topAnchor, constant: insets.top))
+        }
+        if edges.contains(.bottom) {
+            constraints.append(view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: insets.bottom))
+        }
+        if edges.contains(.left) {
+            constraints.append(leftAnchor.constraint(equalTo: view.leftAnchor, constant: insets.left))
+        }
+        if edges.contains(.right) {
+            constraints.append(view.rightAnchor.constraint(equalTo: rightAnchor, constant: insets.right))
+        }
+        return constraints
+    }
+    
+    func addSubview(_ subview: UIView, constrainEdges edges: UIRectEdge, insets: UIEdgeInsets = .zero) {
+        subview.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(subview)
+        subview.constrain(to: self, edges: edges, insets: insets).activate()
+    }
+}
+
 extension UIView {
     var nearestViewController: UIViewController? {
         var responder: UIResponder? = self

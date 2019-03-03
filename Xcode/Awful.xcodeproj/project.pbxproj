@@ -59,8 +59,6 @@
 		1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */; };
 		1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */; };
 		1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */; };
-		1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */; };
-		1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */; };
 		1C16FBCA1CB9656800C88BD1 /* AvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */; };
 		1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */; };
 		1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */; };
@@ -319,6 +317,9 @@
 		1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67FE2221BDE8007E61ED /* PostPreview.html.stencil */; };
 		1C8F68012221BE7C007E61ED /* Post.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F68002221BE7C007E61ED /* Post.html.stencil */; };
 		1C8F68032221C545007E61ED /* PostsView.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F68022221C545007E61ED /* PostsView.html.stencil */; };
+		1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F6806222B6DD9007E61ED /* ThreadTagDataLoader.swift */; };
+		1C8F6809222B7940007E61ED /* SecondaryThreadTagPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F6808222B7940007E61ED /* SecondaryThreadTagPickerCell.swift */; };
+		1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */; };
 		1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */; };
 		1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */; };
 		1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */; };
@@ -723,8 +724,6 @@
 		1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagPickerLayout.swift; sourceTree = "<group>"; };
 		1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagButton.swift; sourceTree = "<group>"; };
 		1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadFieldView.swift; sourceTree = "<group>"; };
-		1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadTagView.swift; sourceTree = "<group>"; };
-		1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadTagObserver.swift; sourceTree = "<group>"; };
 		1C16FBC91CB9656800C88BD1 /* AvatarLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarLoader.swift; sourceTree = "<group>"; };
 		1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTweaks.swift; sourceTree = "<group>"; };
 		1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewExternalStylesheetLoader.swift; sourceTree = "<group>"; };
@@ -1000,6 +999,9 @@
 		1C8F67FE2221BDE8007E61ED /* PostPreview.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = PostPreview.html.stencil; sourceTree = "<group>"; };
 		1C8F68002221BE7C007E61ED /* Post.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Post.html.stencil; sourceTree = "<group>"; };
 		1C8F68022221C545007E61ED /* PostsView.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = PostsView.html.stencil; sourceTree = "<group>"; };
+		1C8F6806222B6DD9007E61ED /* ThreadTagDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadTagDataLoader.swift; sourceTree = "<group>"; };
+		1C8F6808222B7940007E61ED /* SecondaryThreadTagPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryThreadTagPickerCell.swift; sourceTree = "<group>"; };
+		1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedThreadTag.swift; sourceTree = "<group>"; };
 		1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Promises.swift"; sourceTree = "<group>"; };
@@ -1600,14 +1602,15 @@
 		1C3447C1174D4B4F007377C5 /* Thread Tags */ = {
 			isa = PBXGroup;
 			children = (
-				1C16FBC51CB9591E00C88BD1 /* NewThreadTagObserver.swift */,
+				1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */,
 				F4B3645719165D5100CCE1EF /* SecondaryTags.plist */,
+				1C8F6808222B7940007E61ED /* SecondaryThreadTagPickerCell.swift */,
 				1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */,
+				1C8F6806222B6DD9007E61ED /* ThreadTagDataLoader.swift */,
 				1C16FC0B1CC41A7800C88BD1 /* ThreadTagLoader.swift */,
 				1C16FBFB1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift */,
-				1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */,
 				1C16FBBD1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift */,
-				1C16FBC31CB9549500C88BD1 /* ThreadTagView.swift */,
+				1C16FC0D1CC477B200C88BD1 /* ThreadTagPickerViewController.swift */,
 			);
 			path = "Thread Tags";
 			sourceTree = "<group>";
@@ -3589,7 +3592,6 @@
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C273AA221C1E26F002875A9 /* Tweaks.swift in Sources */,
-				1C16FBC41CB9549500C88BD1 /* ThreadTagView.swift in Sources */,
 				1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */,
@@ -3603,7 +3605,6 @@
 				1C0AD5F021588D6400B72FDE /* WKWebView+RegisterScheme.m in Sources */,
 				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */,
-				1C16FBC61CB9591E00C88BD1 /* NewThreadTagObserver.swift in Sources */,
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
@@ -3656,6 +3657,7 @@
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,
 				1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
+				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
 				7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */,
@@ -3672,6 +3674,7 @@
 				1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */,
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
 				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
+				1C8F6809222B7940007E61ED /* SecondaryThreadTagPickerCell.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
 				7B1FF12C1F76E690000B64DA /* AppIconPickerCollectionViewLayout.swift in Sources */,
 				1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */,
@@ -3679,6 +3682,7 @@
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
+				1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,

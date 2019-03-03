@@ -27,16 +27,10 @@ final class MessageListDataSource: NSObject {
         tableView.register(MessageListCell.self, forCellReuseIdentifier: cellReuseIdentifier)
 
         resultsController.delegate = self
-
-        NotificationCenter.default.addObserver(self, selector: #selector(threadTagLoaderNewImageAvailable), name: ThreadTagLoader.NewImageAvailableNotification.name, object: ThreadTagLoader.sharedLoader)
     }
 
     func message(at indexPath: IndexPath) -> PrivateMessage {
         return resultsController.object(at: indexPath)
-    }
-
-    @objc private func threadTagLoaderNewImageAvailable(_ notification: Notification) {
-        // TODO: this
     }
 }
 
@@ -110,11 +104,7 @@ extension MessageListDataSource: UITableViewDataSource {
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
                 .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
-            tagImage: message
-                .threadTag?
-                .imageName
-                .flatMap { ThreadTagLoader.imageNamed($0) }
-                ?? ThreadTagLoader.emptyPrivateMessageImage,
+            tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
             tagOverlayImage: {
                 if message.replied {
                     return UIImage(named: "pmreplied")

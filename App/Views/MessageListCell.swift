@@ -71,7 +71,7 @@ final class MessageListCell: UITableViewCell {
 
             subjectLabel.attributedText = viewModel.subject
 
-            tagImageView.image = viewModel.tagImage
+            ThreadTagLoader.shared.loadNamedImage(viewModel.tagImage, into: tagImageView)
 
             tagOverlayView.image = viewModel.tagOverlayImage
             tagOverlayView.isHidden = viewModel.tagOverlayImage == nil
@@ -87,7 +87,7 @@ final class MessageListCell: UITableViewCell {
         let sentDate: Date
         let sentDateAttributes: [NSAttributedString.Key: Any]
         let subject: NSAttributedString
-        let tagImage: UIImage?
+        let tagImage: NamedThreadTag
         let tagOverlayImage: UIImage?
 
         fileprivate var accessibilityLabel: String {
@@ -109,7 +109,7 @@ final class MessageListCell: UITableViewCell {
             sentDate: .distantPast,
             sentDateAttributes: [:],
             subject: .init(),
-            tagImage: nil,
+            tagImage: .none,
             tagOverlayImage: nil)
     }
 
@@ -157,9 +157,9 @@ final class MessageListCell: UITableViewCell {
         init(width: CGFloat, viewModel: ViewModel) {
             // 1. See how much width we have for the subject.
             var subjectWidth = width - Layout.cellHorizontalMargin - Layout.cellHorizontalMargin
-            let tagSize = viewModel.tagImage?.size.width ?? 0
-            if viewModel.tagImage != nil {
-                subjectWidth -= tagSize - Layout.tagRightMargin
+            let tagSize = viewModel.tagImage.imageSize
+            if tagSize.width > 0 {
+                subjectWidth -= tagSize.width - Layout.tagRightMargin
             }
 
             let subjectHeight = viewModel.subject.boundingRect(with: CGSize(width: subjectWidth, height: .infinity), options: .usesLineFragmentOrigin, context: nil).pixelRound.height
@@ -168,17 +168,16 @@ final class MessageListCell: UITableViewCell {
             let senderHeight = viewModel.sender.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.height
             let dateSize = viewModel.formattedSentDate.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound
 
-            let tagHeight = viewModel.tagImage?.size.height ?? 0
             let textHeight = max(senderHeight, dateSize.height) + Layout.subjectTopMargin + subjectHeight
             height = max(Layout.minimumHeight,
-                         Layout.cellVerticalMargin + max(tagHeight, textHeight) + Layout.cellVerticalMargin)
+                         Layout.cellVerticalMargin + max(tagSize.height, textHeight) + Layout.cellVerticalMargin)
 
             // 3. Tag and overlay
             tagFrame = CGRect(
                 x: Layout.cellHorizontalMargin,
-                y: (height - tagHeight) / 2,
-                width: tagSize,
-                height: tagHeight)
+                y: (height - tagSize.height) / 2,
+                width: tagSize.width,
+                height: tagSize.height)
                 .pixelRound
 
             let tagOverlaySize = CGSize(width: 18, height: 18)
@@ -197,9 +196,9 @@ final class MessageListCell: UITableViewCell {
                 .pixelRound
 
             // 5. Sender
-            let senderX = viewModel.tagImage == nil
-                ? Layout.cellHorizontalMargin
-                : tagFrame.maxX + Layout.tagRightMargin
+            let senderX = tagSize.width > 0
+                ? tagFrame.maxX + Layout.tagRightMargin
+                : Layout.cellHorizontalMargin
             senderFrame = CGRect(
                 x: senderX,
                 y: (height - textHeight) / 2,
@@ -229,7 +228,7 @@ final class MessageListCell: UITableViewCell {
             sentDate: .distantPast,
             sentDateAttributes: [:],
             subject: .init(),
-            tagImage: showsTagAndRating ? ThreadTagLoader.emptyThreadTagImage : nil,
+            tagImage: showsTagAndRating ? .spacer : .none,
             tagOverlayImage: nil)
         return Layout(width: width, viewModel: viewModel).subjectFrame.minX
     }

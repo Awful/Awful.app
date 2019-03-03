@@ -3,24 +3,26 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import Nuke
+import UIKit
 
 /// For writing the OP of a new thread.
 final class ThreadComposeViewController: ComposeTextViewController {
     /// The newly-posted thread.
-    fileprivate(set) var thread: AwfulThread?
-    fileprivate let forum: Forum
-    fileprivate var threadTag: ThreadTag? {
+    private(set) var thread: AwfulThread?
+    private let forum: Forum
+    private var threadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
-    fileprivate var secondaryThreadTag: ThreadTag? {
+    private var secondaryThreadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
-    fileprivate var fieldView: NewThreadFieldView!
-    fileprivate var availableThreadTags: [ThreadTag]?
-    fileprivate var availableSecondaryThreadTags: [ThreadTag]?
-    fileprivate var updatingThreadTags = false
-    fileprivate var onAppearBlock: (() -> Void)?
-    fileprivate var threadTagPicker: ThreadTagPickerViewController?
+    private var fieldView: NewThreadFieldView!
+    private var availableThreadTags: [ThreadTag]?
+    private var availableSecondaryThreadTags: [ThreadTag]?
+    private var updatingThreadTags = false
+    private var onAppearBlock: (() -> Void)?
+    private var threadTagPicker: ThreadTagPickerViewController?
     private var formData: ForumsClient.PostNewThreadFormData?
     
     /// - parameter forum: The forum in which the new thread is posted.
@@ -86,7 +88,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         onAppearBlock = nil
     }
     
-    fileprivate func updateTweaks() {
+    private func updateTweaks() {
         guard let tweaks = ForumTweaks(forumID: forum.forumID) else { return }
         fieldView.subjectField.textField.autocapitalizationType = tweaks.autocapitalizationType
         fieldView.subjectField.textField.autocorrectionType = tweaks.autocorrectionType
@@ -97,45 +99,51 @@ final class ThreadComposeViewController: ComposeTextViewController {
         textView.spellCheckingType = tweaks.spellCheckingType
     }
     
-    fileprivate func updateThreadTagButtonImage() {
-        let image: UIImage?
-        if let imageName = threadTag?.imageName {
-            image = ThreadTagLoader.imageNamed(imageName)
-        } else {
-            image = ThreadTagLoader.unsetThreadTagImage(for: forum)
-        }
-        fieldView.threadTagButton.setImage(image, for: UIControl.State())
+    private var threadTagImageTask: ImageTask?
+    private var secondaryThreadTagImageTask: ImageTask?
+    
+    private func updateThreadTagButtonImage() {
+        threadTagImageTask?.cancel()
+        fieldView.threadTagButton.setImage(ThreadTagLoader.Placeholder.thread(in: forum).image, for: .normal)
         
-        let secondaryImage: UIImage?
-        if let imageName = secondaryThreadTag?.imageName {
-            secondaryImage = ThreadTagLoader.imageNamed(imageName)
-        } else {
-            secondaryImage = nil
+        threadTagImageTask = ThreadTagLoader.shared.loadImage(named: threadTag?.imageName) {
+            [button = fieldView.threadTagButton] response, error in
+            if let image = response?.image {
+                button.setImage(image, for: .normal)
+            }
         }
-        fieldView.threadTagButton.secondaryTagImage = secondaryImage
+        
+        secondaryThreadTagImageTask?.cancel()
+        fieldView.threadTagButton.secondaryTagImage = nil
+        
+        secondaryThreadTagImageTask = ThreadTagLoader.shared.loadImage(named: secondaryThreadTag?.imageName) {
+            [button = fieldView.threadTagButton] response, error in
+            if let image = response?.image {
+                button.secondaryTagImage = image
+            }
+        }
     }
     
-    @objc fileprivate func didTapThreadTagButton(_ sender: UIButton) {
+    @objc private func didTapThreadTagButton(_ sender: UIButton) {
         guard let picker = threadTagPicker else { return }
         
-        let selectedImageName = threadTag?.imageName ?? ThreadTagLoader.emptyThreadTagImageName
-        picker.selectImageName(selectedImageName)
+        picker.selectImageName(threadTag?.imageName)
         
-        if let
-            secondaryTags = availableSecondaryThreadTags,
+        if
+            let secondaryTags = availableSecondaryThreadTags,
             let secondaryImageName = secondaryThreadTag?.imageName ?? secondaryTags.first?.imageName
         {
             picker.selectSecondaryImageName(secondaryImageName)
         }
         
-        picker.present(fromView: sender)
+        picker.present(from: self, sourceView: sender)
         
         // HACK: Calling -endEditing: once doesn't work if the Subject field is selected. But twice works. I assume this is some weirdness from adding a text field as a subview to a text view.
         view.endEditing(true)
         view.endEditing(true)
     }
     
-    @objc fileprivate func subjectFieldDidChange(_ sender: UITextField) {
+    @objc private func subjectFieldDidChange(_ sender: UITextField) {
         if let text = sender.text , !text.isEmpty {
             title = text
         } else {
@@ -145,7 +153,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
         updateSubmitButtonItem()
     }
     
-    fileprivate func updateAvailableThreadTagsIfNecessary() {
+    private func updateAvailableThreadTagsIfNecessary() {
         guard availableThreadTags == nil && !updatingThreadTags else { return }
         
         updatingThreadTags = true
@@ -155,18 +163,20 @@ final class ThreadComposeViewController: ComposeTextViewController {
                 self.updatingThreadTags = false
                 self.availableThreadTags = tags.primary
                 self.availableSecondaryThreadTags = tags.secondary
+                
                 guard let tags = self.availableThreadTags else { return }
-
-                let imageNames = [ThreadTagLoader.emptyThreadTagImageName] + tags.compactMap { $0.imageName }
-                let secondaryImageNames = self.availableSecondaryThreadTags?.compactMap { $0.imageName }
-                let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: secondaryImageNames)
+                let secondaryImageNames = self.availableSecondaryThreadTags?.compactMap { $0.imageName } ?? []
+                let picker = ThreadTagPickerViewController(
+                    firstTag: .thread(in: self.forum),
+                    imageNames: tags.compactMap { $0.imageName },
+                    secondaryImageNames: secondaryImageNames)
                 self.threadTagPicker = picker
                 picker.delegate = self
-                picker.title = "Choose Thread Tag"
-                if secondaryImageNames?.isEmpty == false {
-                    picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
-                } else {
+                picker.title = LocalizedString("compose.thread.tag-picker.title")
+                if secondaryImageNames.isEmpty {
                     picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
+                } else {
+                    picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
                 }
             }
             .catch { [weak self] error in
@@ -248,14 +258,16 @@ final class ThreadComposeViewController: ComposeTextViewController {
 }
 
 extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
-    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
-        if imageName == ThreadTagLoader.emptyThreadTagImageName {
-            threadTag = nil
-        } else if let
-            threadTags = availableThreadTags,
-            let i = threadTags.index(where: { $0.imageName == imageName})
+    
+    func didSelectImageName(_ imageName: String?, in picker: ThreadTagPickerViewController) {
+        if
+            let imageName = imageName,
+            let threadTags = availableThreadTags,
+            let i = threadTags.firstIndex(where: { $0.imageName == imageName})
         {
             threadTag = threadTags[i]
+        } else {
+            threadTag = nil
         }
         
         if availableSecondaryThreadTags?.isEmpty ?? true {
@@ -264,16 +276,16 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
         }
     }
     
-    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectSecondaryImageName imageName: String) {
-        if let
-            tags = availableSecondaryThreadTags,
-            let i = tags.index(where: { $0.imageName == imageName })
+    func didSelectSecondaryImageName(_ secondaryImageName: String, in picker: ThreadTagPickerViewController) {
+        if
+            let tags = availableSecondaryThreadTags,
+            let i = tags.firstIndex(where: { $0.imageName == secondaryImageName })
         {
             secondaryThreadTag = tags[i]
         }
     }
     
-    func threadTagPickerDidDismiss(_ picker: ThreadTagPickerViewController) {
+    func didDismissPicker(_ picker: ThreadTagPickerViewController) {
         focusInitialFirstResponder()
     }
 }

@@ -124,6 +124,14 @@
 /* Text shown below title of thread when none of the thread has been read. Parameter is the username of the original poster. */
 "thread-list.posted-by" = "Posted by %@";
 
+/* Button title atop the thread list when no filter is set. */
+"thread-list.filter-button.no-filter" = "Filter By Tag";
+
+/* Button title atop the thread list when some filter is set. */
+"thread-list.filter-button.change-filter" = "Change Filter";
+
+/* Title of the thread tag picker screen shown when filtering a thread list. */
+"thread-list.filter.picker-title" = "Filter Threads";
 
 /* MARK: Compose post */
 
@@ -147,6 +155,9 @@
 
 /* Title of screen showing a preview of a new thread's original post. */
 "compose.thread-preview.title" = "Thread Preview";
+
+/* Title of the thread tag picker when choosing a new thread's tag. */
+"compose.thread.tag-picker.title" = "Choose Thread Tag";
 
 
 /* MARK: Link actions */

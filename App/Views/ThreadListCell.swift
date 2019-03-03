@@ -36,7 +36,7 @@ final class ThreadListCell: UITableViewCell {
 
             ratingImageView.image = viewModel.ratingImage
 
-            secondaryTagImageView.image = viewModel.secondaryTagImage
+            ThreadTagLoader.shared.loadImage(named: viewModel.secondaryTagImageName, placeholder: nil, into: secondaryTagImageView)
 
             if selectedBackgroundView == nil {
                 selectedBackgroundView = UIView()
@@ -45,7 +45,7 @@ final class ThreadListCell: UITableViewCell {
 
             stickyImageView.image = viewModel.stickyImage
 
-            tagImageView.image = viewModel.tagImage
+            ThreadTagLoader.shared.loadImage(named: viewModel.tagImage.imageName, placeholder: viewModel.tagImage.placeholder, into: tagImageView)
 
             titleLabel.attributedText = viewModel.title
 
@@ -61,10 +61,10 @@ final class ThreadListCell: UITableViewCell {
         let pageIconColor: UIColor
         let postInfo: NSAttributedString
         let ratingImage: UIImage?
-        let secondaryTagImage: UIImage?
+        let secondaryTagImageName: String?
         let selectedBackgroundColor: UIColor
         let stickyImage: UIImage?
-        let tagImage: UIImage?
+        let tagImage: NamedThreadTag
         let title: NSAttributedString
         let unreadCount: NSAttributedString
 
@@ -74,10 +74,10 @@ final class ThreadListCell: UITableViewCell {
             pageIconColor: .clear,
             postInfo: NSAttributedString(),
             ratingImage: nil,
-            secondaryTagImage: nil,
+            secondaryTagImageName: nil,
             selectedBackgroundColor: .clear,
             stickyImage: nil,
-            tagImage: nil,
+            tagImage: .none,
             title: NSAttributedString(),
             unreadCount: NSAttributedString())
     }
@@ -140,8 +140,9 @@ final class ThreadListCell: UITableViewCell {
             // 1. See how much width we have for the text.
             var textWidth = width - Layout.outerMargin - Layout.outerMargin
 
-            if let tagImage = viewModel.tagImage {
-                textWidth -= tagImage.size.width + Layout.tagRightMargin
+            let tagImageSize = viewModel.tagImage.imageSize
+            if tagImageSize.width > 0 {
+                textWidth -= tagImageSize.width + Layout.tagRightMargin
             }
 
             let unreadSize = viewModel.unreadCount.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.size
@@ -158,32 +159,30 @@ final class ThreadListCell: UITableViewCell {
             let textHeight = titleHeight + Layout.titleBottomMargin + max(pageCountSize.height, postInfoSize.height)
 
             let ratingHeight = viewModel.ratingImage?.size.height ?? 0
-            let tagHeight = viewModel.tagImage?.size.height ?? 0
 
-            let tagAndRatingMargin = tagHeight > 0 && ratingHeight > 0 ? Layout.tagBottomMargin : 0
-            let tagAndRatingHeight = tagHeight + ratingHeight + tagAndRatingMargin
+            let tagAndRatingMargin = tagImageSize.height > 0 && ratingHeight > 0 ? Layout.tagBottomMargin : 0
+            let tagAndRatingHeight = tagImageSize.height + ratingHeight + tagAndRatingMargin
 
             let contentHeight = max(textHeight, tagAndRatingHeight)
             height = max(Layout.outerMargin + contentHeight + Layout.outerMargin, Layout.minimumHeight)
 
             // 3. Tag and rating
-            let tagWidth = viewModel.tagImage?.size.width ?? 0
             let ratingWidth = viewModel.ratingImage?.size.width ?? 0
             let tagAndRatingRect = CGRect(
                 x: Layout.outerMargin,
                 y: (height - tagAndRatingHeight) / 2,
-                width: max(tagWidth, ratingWidth),
+                width: max(tagImageSize.width, ratingWidth),
                 height: tagAndRatingHeight)
                 .pixelRound
 
             tagImageFrame = CGRect(
-                x: tagAndRatingRect.minX + (tagAndRatingRect.width - tagWidth) / 2,
+                x: tagAndRatingRect.minX + (tagAndRatingRect.width - tagImageSize.width) / 2,
                 y: tagAndRatingRect.minY,
-                width: tagWidth,
-                height: tagHeight)
+                width: tagImageSize.width,
+                height: tagImageSize.height)
                 .pixelRound
 
-            let secondaryTagSize = viewModel.secondaryTagImage?.size ?? .zero
+            let secondaryTagSize = CGSize(width: 14, height: 14)
             secondaryTagFrame = CGRect(
                 x: tagImageFrame.maxX - secondaryTagSize.width + 2,
                 y: tagImageFrame.minY - 2,
@@ -266,10 +265,10 @@ final class ThreadListCell: UITableViewCell {
             pageIconColor: .clear,
             postInfo: NSAttributedString(),
             ratingImage: nil,
-            secondaryTagImage: nil,
+            secondaryTagImageName: nil,
             selectedBackgroundColor: .clear,
             stickyImage: nil,
-            tagImage: showsTagAndRating ? ThreadTagLoader.emptyThreadTagImage : nil,
+            tagImage: showsTagAndRating ? .spacer : .none,
             title: NSAttributedString(),
             unreadCount: NSAttributedString())
         return Layout(width: width, viewModel: viewModel).titleFrame.minX

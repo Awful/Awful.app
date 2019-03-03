@@ -12,6 +12,7 @@ final class ThreadListDataSource: NSObject {
     weak var delegate: ThreadListDataSourceDelegate?
     weak var deletionDelegate: ThreadListDataSourceDeletionDelegate?
     private let ignoreSticky: Bool
+    private let placeholder: ThreadTagLoader.Placeholder
     private let resultsController: NSFetchedResultsController<AwfulThread>
     private let showsTagAndRating: Bool
     private let tableView: UITableView
@@ -30,7 +31,7 @@ final class ThreadListDataSource: NSObject {
             return descriptors
         }()
 
-        try self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest, tableView: tableView, ignoreSticky: true, showsTagAndRating: showsTagAndRating)
+        try self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest, tableView: tableView, ignoreSticky: true, showsTagAndRating: showsTagAndRating, placeholder: .thread(tintColor: nil))
     }
 
     convenience init(forum: Forum, sortedByUnread: Bool, showsTagAndRating: Bool, threadTagFilter: Set<ThreadTag>, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
@@ -55,11 +56,12 @@ final class ThreadListDataSource: NSObject {
             return descriptors
         }()
 
-        try self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest, tableView: tableView, ignoreSticky: false, showsTagAndRating: showsTagAndRating)
+        try self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest, tableView: tableView, ignoreSticky: false, showsTagAndRating: showsTagAndRating, placeholder: .thread(in: forum))
     }
 
-    private init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<AwfulThread>, tableView: UITableView, ignoreSticky: Bool, showsTagAndRating: Bool) throws {
+    private init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<AwfulThread>, tableView: UITableView, ignoreSticky: Bool, showsTagAndRating: Bool, placeholder: ThreadTagLoader.Placeholder) throws {
         self.ignoreSticky = ignoreSticky
+        self.placeholder = placeholder
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         self.showsTagAndRating = showsTagAndRating
         self.tableView = tableView
@@ -71,8 +73,6 @@ final class ThreadListDataSource: NSObject {
         tableView.register(ThreadListCell.self, forCellReuseIdentifier: threadCellIdentifier)
 
         resultsController.delegate = self
-
-        NotificationCenter.default.addObserver(self, selector: #selector(threadTagLoaderNewImageAvailable), name: ThreadTagLoader.NewImageAvailableNotification.name, object: ThreadTagLoader.sharedLoader)
     }
 
     func indexPath(of thread: AwfulThread) -> IndexPath? {
@@ -81,24 +81,6 @@ final class ThreadListDataSource: NSObject {
 
     func thread(at indexPath: IndexPath) -> AwfulThread {
         return resultsController.object(at: indexPath)
-    }
-
-    @objc private func threadTagLoaderNewImageAvailable(_ notification: Notification) {
-        let notification = ThreadTagLoader.NewImageAvailableNotification(notification)
-        let reloads = (tableView.indexPathsForVisibleRows ?? [])
-            .filter {
-                let thread = resultsController.object(at: $0)
-                return thread.threadTag?.imageName == notification.newImageName
-                    || thread.secondaryThreadTag?.imageName == notification.newImageName
-        }
-
-        Log.d("loaded thread tag \(notification.newImageName), will reload \(reloads.count) row\(reloads.count == 1 ? "" : "s")")
-
-        if !reloads.isEmpty {
-            tableView.beginUpdates()
-            tableView.reloadRows(at: reloads, with: .none)
-            tableView.endUpdates()
-        }
     }
 }
 
@@ -188,35 +170,24 @@ extension ThreadListDataSource: UITableViewDataSource {
 
                 return thread.ratingImageName.flatMap { UIImage(named: $0) }
             }(),
-            secondaryTagImage: {
+            secondaryTagImageName: {
                 if !showsTagAndRating {
                     return nil
                 }
-
-                let imageName = thread.secondaryThreadTag?.imageName
-                guard imageName != thread.threadTag?.imageName else {
-                    return nil
-                }
-
-                return imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
+                return thread.secondaryThreadTag?.imageName
             }(),
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
             stickyImage: !ignoreSticky && thread.sticky ? UIImage(named: "sticky") : nil,
             tagImage: {
                 if !showsTagAndRating {
-                    return nil
+                    return .none
                 }
 
-                let imageName: String?
-                if let tweaks = tweaks, tweaks.showRatingsAsThreadTags {
-                    imageName = thread.ratingTagImageName
+                if let tweaks = tweaks, tweaks.showRatingsAsThreadTags, let imageName = thread.ratingTagImageName {
+                    return .image(name: imageName, placeholder: placeholder)
+                } else {
+                    return .image(name: thread.threadTag?.imageName, placeholder: placeholder)
                 }
-                else {
-                    imageName = thread.threadTag?.imageName
-                }
-
-                return imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
-                    ?? ThreadTagLoader.emptyThreadTagImage.withTint(theme["listTextColor"]!)
             }(),
             title: NSAttributedString(string: thread.title ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),

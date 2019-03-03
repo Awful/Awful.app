@@ -3,6 +3,8 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import Nuke
+import UIKit
 
 /// For writing private messages.
 final class MessageComposeViewController: ComposeTextViewController {
@@ -73,17 +75,17 @@ final class MessageComposeViewController: ComposeTextViewController {
         restorationClass = type(of: self)
     }
     
+    private var threadTagTask: ImageTask?
+    
     fileprivate func updateThreadTagButtonImage() {
-        let image: UIImage
-        if let
-            imageName = threadTag?.imageName,
-            let loadedImage = ThreadTagLoader.imageNamed(imageName)
-        {
-            image = loadedImage
-        } else {
-            image = ThreadTagLoader.unsetThreadTagImage()
+        threadTagTask?.cancel()
+        fieldView.threadTagButton.setImage(ThreadTagLoader.Placeholder.thread(tintColor: nil).image, for: .normal)
+        
+        threadTagTask = ThreadTagLoader.shared.loadImage(named: threadTag?.imageName) { [fieldView] response, error in
+            if let image = response?.image {
+                fieldView.threadTagButton.setImage(image, for: .normal)
+            }
         }
-        fieldView.threadTagButton.setImage(image, for: UIControl.State())
     }
     
     fileprivate func updateAvailableThreadTagsIfNecessary() {
@@ -93,8 +95,10 @@ final class MessageComposeViewController: ComposeTextViewController {
             .done { [weak self] threadTags in
                 self?.availableThreadTags = threadTags
 
-                let imageNames = [ThreadTagLoader.emptyPrivateMessageImageName] + threadTags.compactMap { $0.imageName }
-                let picker = ThreadTagPickerViewController(imageNames: imageNames, secondaryImageNames: nil)
+                let picker = ThreadTagPickerViewController(
+                    firstTag: .privateMessage,
+                    imageNames: threadTags.compactMap { $0.imageName },
+                    secondaryImageNames: [])
                 picker.delegate = self
                 picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
                 self?.threadTagPicker = picker
@@ -132,9 +136,8 @@ final class MessageComposeViewController: ComposeTextViewController {
     @objc fileprivate func didTapThreadTagButton(_ sender: ThreadTagButton) {
         guard let picker = threadTagPicker else { return }
         
-        let selectedImageName = threadTag?.imageName ?? ThreadTagLoader.emptyPrivateMessageImageName
-        picker.selectImageName(selectedImageName)
-        picker.present(fromView: sender)
+        picker.selectImageName(threadTag?.imageName)
+        picker.present(from: self, sourceView: sender)
         
         // HACK: Calling -endEditing: once doesn't work if the To or Subject fields are selected. But twice works. I assume this is some weirdness from adding text fields as subviews to a text view.
         view.endEditing(true)
@@ -236,19 +239,29 @@ final class MessageComposeViewController: ComposeTextViewController {
 }
 
 extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
-    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
-        if imageName == ThreadTagLoader.emptyPrivateMessageImageName {
-            threadTag = nil
-        } else if let
-            availableThreadTags = availableThreadTags,
-            let i = availableThreadTags.index(where: { $0.imageName == imageName })
+    
+    func didSelectImageName(_ imageName: String?, in picker: ThreadTagPickerViewController) {
+        if
+            let imageName = imageName,
+            let availableThreadTags = availableThreadTags,
+            let i = availableThreadTags.firstIndex(where: { $0.imageName == imageName })
         {
             threadTag = availableThreadTags[i]
+        } else {
+            threadTag = nil
         }
         
         picker.dismiss()
         
         focusInitialFirstResponder()
+    }
+    
+    func didSelectSecondaryImageName(_ secondaryImageName: String, in picker: ThreadTagPickerViewController) {
+        // nop
+    }
+    
+    func didDismissPicker(_ picker: ThreadTagPickerViewController) {
+        // nop
     }
 }
 

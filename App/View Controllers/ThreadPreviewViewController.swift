@@ -145,20 +145,10 @@ final class ThreadPreviewViewController: ViewController {
                     .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!])
             }(),
             ratingImage: nil,
-            secondaryTagImage: {
-                let imageName = secondaryThreadTag?.imageName
-                guard imageName != threadTag.imageName else {
-                    return nil
-                }
-                
-                return imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
-            }(),
+            secondaryTagImageName: secondaryThreadTag?.imageName,
             selectedBackgroundColor: theme["listBackgroundColor"]!,
             stickyImage: nil,
-            tagImage: {
-                return threadTag.imageName.flatMap { ThreadTagLoader.sharedLoader.imageNamed($0) }
-                    ?? ThreadTagLoader.emptyThreadTagImage
-            }(),
+            tagImage: .image(name: threadTag.imageName, placeholder: .thread(in: forum)),
             title: {
                 var subject = self.subject
                 subject.collapseWhitespace()

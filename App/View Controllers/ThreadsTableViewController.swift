@@ -255,32 +255,31 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: Filtering by tag
     
-    private lazy var filterButton: UIButton = { [unowned self] in
+    private lazy var filterButton: UIButton = {
         let button = UIButton(type: .system)
         button.bounds.size.height = button.intrinsicContentSize.height + 8
-        button.addTarget(self, action: #selector(ThreadsTableViewController.didTapFilterButton(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapFilterButton), for: .primaryActionTriggered)
         return button
-        }()
+    }()
     
-    private lazy var threadTagPicker: ThreadTagPickerViewController = { [unowned self] in
+    private lazy var threadTagPicker: ThreadTagPickerViewController = {
         let imageNames = self.forum.threadTags.array
             .filter { ($0 as! ThreadTag).imageName != nil }
             .map { ($0 as! ThreadTag).imageName! }
-        let picker = ThreadTagPickerViewController(imageNames: [ThreadTagLoader.noFilterImageName] + imageNames, secondaryImageNames: nil)
+        let picker = ThreadTagPickerViewController(firstTag: .noFilter, imageNames: imageNames, secondaryImageNames: [])
         picker.delegate = self
-        picker.title = "Filter Threads"
+        picker.title = LocalizedString("thread-list.filter.picker-title")
         picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
         return picker
-        }()
+    }()
     
     @objc private func didTapFilterButton(_ sender: UIButton) {
-        let imageName = filterThreadTag?.imageName ?? ThreadTagLoader.noFilterImageName
-        threadTagPicker.selectImageName(imageName)
-        threadTagPicker.present(fromView: sender)
+        threadTagPicker.selectImageName(filterThreadTag?.imageName)
+        threadTagPicker.present(from: self, sourceView: sender)
     }
     
     private func updateFilterButton() {
-        let title = filterThreadTag == nil ? "Filter By Tag" : "Change Filter"
+        let title = LocalizedString(filterThreadTag == nil ? "thread-list.filter-button.no-filter" : "thread-list.filter-button.change-filter")
         filterButton.setTitle(title, for: .normal)
         
         filterButton.tintColor = theme["tintColor"]
@@ -288,11 +287,13 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: ThreadTagPickerViewControllerDelegate
     
-    func threadTagPicker(_ picker: ThreadTagPickerViewController, didSelectImageName imageName: String) {
-        if imageName == ThreadTagLoader.noFilterImageName {
-            filterThreadTag = nil
+    func didSelectImageName(_ imageName: String?, in picker: ThreadTagPickerViewController) {
+        if let imageName = imageName {
+            filterThreadTag = forum.threadTags.array
+                .compactMap { $0 as? ThreadTag }
+                .first { $0.imageName == imageName }
         } else {
-            filterThreadTag = forum.threadTags.array.first { ($0 as! ThreadTag).imageName == imageName } as! ThreadTag?
+            filterThreadTag = nil
         }
         
         RefreshMinder.sharedMinder.forgetForum(forum)
@@ -302,6 +303,14 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         tableView.reloadData()
         
         picker.dismiss()
+    }
+    
+    func didSelectSecondaryImageName(_ secondaryImageName: String, in picker: ThreadTagPickerViewController) {
+        // nop
+    }
+    
+    func didDismissPicker(_ picker: ThreadTagPickerViewController) {
+        // nop
     }
     
     // MARK: Handoff
