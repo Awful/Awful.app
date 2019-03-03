@@ -15,6 +15,7 @@ target 'Awful' do
   pod 'ImgurAnonymousAPI'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
+  pod 'Nuke'
   pod 'PromiseKit'
   pod 'Sourcery'
   pod 'Stencil'
@@ -62,11 +63,7 @@ post_install do |installer|
       end
     end
 
-    if swift_4_pods.include?(target.name)
-      target.build_configurations.each do |config|
-        config.build_settings['SWIFT_VERSION'] = '4.0'
-      end
-    elsif swift_4_2_pods.include?(target.name)
+    if swift_4_2_pods.include?(target.name)
       target.build_configurations.each do |config|
         config.build_settings['SWIFT_VERSION'] = '4.2'
       end
