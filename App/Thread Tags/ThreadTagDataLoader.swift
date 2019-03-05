@@ -6,7 +6,7 @@ import Foundation
 import MobileCoreServices
 import Nuke
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger.get()
 
 /// Teaches a Nuke `ImagePipeline` to look for thread tag images in the app bundle before fetching them from the internet.
 final class ThreadTagDataLoader: DataLoading {
