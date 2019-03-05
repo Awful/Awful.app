@@ -101,10 +101,10 @@ internal extension ForumHierarchyScrapeResult {
             }
         }
 
-        let groups = rawGroups.enumerated().map { i, raw -> ForumGroup in
+        let groups = zip(rawGroups, Int32(0)...).map { raw, i -> ForumGroup in
             let group = existingGroups[raw.id] ?? ForumGroup.insertIntoManagedObjectContext(context: context)
             raw.update(group)
-            if i != Int(group.index) { group.index = Int32(i) }
+            if i != group.index { group.index = i }
             return group
         }
 
@@ -122,10 +122,10 @@ internal extension ForumHierarchyScrapeResult {
             }
         }
 
-        let forums = rawForums.enumerated().map { i, raw -> Forum in
+        let forums = zip(rawForums, Int32(0)...).map { raw, i -> Forum in
             let forum = unorderedForums[raw.id] ?? Forum.insertIntoManagedObjectContext(context: context)
             raw.update(forum)
-            if i != Int(forum.index) { forum.index = Int32(i) }
+            if i != forum.index { forum.index = i }
             return forum
         }
 
