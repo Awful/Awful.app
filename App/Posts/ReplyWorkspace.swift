@@ -93,8 +93,8 @@ final class ReplyWorkspace: NSObject {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
             navigationItem.rightBarButtonItem = rightButtonItem
             
-            observers += [UserDefaults.standard.observeOnMain(\.confirmNewPosts, options: .initial, changeHandler: { [unowned self] defaults, change in
-                self.updateRightButtonItem()
+            observers += [UserDefaults.standard.observeOnMain(\.confirmNewPosts, options: .initial, changeHandler: { [weak self] defaults, change in
+                self?.updateRightButtonItem()
             })]
             
             if let
