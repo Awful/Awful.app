@@ -145,7 +145,7 @@ final class PostPreviewViewController: ViewController {
         guard let post = post else { return }
         
         let context: [String: Any] = [
-            "post": post,
+            "post": post.context,
             "stylesheet": (theme["postsViewCSS"] as String? ?? "")]
         do {
             let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
