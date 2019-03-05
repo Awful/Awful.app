@@ -74,9 +74,10 @@ public class ForumGroup: AwfulManagedObject {
             didAccessValue(forKey: #keyPath(ForumGroup.index))
         }
         
-        let encodedIndex = base62Encode(index)
+        let encodedIndex = base62Encode(abs(index))
         let padding = String(repeating: "0", count: ForumGroup.sectionIdentifierIndexLength - encodedIndex.count)
-        return "\(padding)\(encodedIndex) \(name ?? "")"
+        let minus = index < 0 ? "-" : ""
+        return "\(padding)\(minus)\(encodedIndex) \(name ?? "")"
     }
     
     /// The number of characters in the index part of `sectionIdentifier`. Provided for easy chopping of an `NSFetchedResultsController`'s section name into a proper display name.
