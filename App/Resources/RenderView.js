@@ -394,7 +394,7 @@ Awful.interestingElementsAtPoint = function(x, y) {
   var img = elementAtPoint.closest('img:not(button img)');
   if (img && Awful.isSpoiled(img)) {
     if (img.classList.contains('posterized')) {
-      interesting.spoiledImageURL = img.dataset.originalurl;
+      interesting.spoiledImageURL = img.dataset.originalUrl;
     } else {
       interesting.spoiledImageURL = img.getAttribute('src');
     }
