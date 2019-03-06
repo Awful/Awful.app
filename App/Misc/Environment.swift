@@ -1,10 +1,6 @@
-//
 //  Environment.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2019-02-07.
-//  Copyright © 2019 Awful Contributors. All rights reserved.
-//
+//  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 enum Environment {
     static var isDebugBuild: Bool {

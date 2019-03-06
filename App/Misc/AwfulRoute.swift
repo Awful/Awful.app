@@ -1,10 +1,6 @@
-//
 //  AwfulRoute.swift
-//  Awful
 //
-//  Created by Nolan Waite on 2018-03-11.
-//  Copyright © 2018 Awful Contributors. All rights reserved.
-//
+//  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
 import Foundation
