@@ -5,6 +5,10 @@
 import HTMLReader
 
 extension HTMLNode {
+
+    var nodeChildren: AnySequence<HTMLNode> {
+        return AnySequence(children.lazy.compactMap { $0 as? HTMLNode })
+    }
     
     /**
      Replaces one child node with one or more new nodes.

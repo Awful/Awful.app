@@ -10,9 +10,9 @@ final class IconActionItem: NSObject {
     let themeKey: String
     let block: () -> Void
     
-    @nonobjc convenience init(_ action: IconAction, block: @escaping () -> Void) {
+    @nonobjc convenience init(_ action: IconAction, title: String? = nil, block: @escaping () -> Void) {
         guard let icon = UIImage(named: action.iconName) else { fatalError("missing image named \(action.iconName)") }
-        self.init(title: action.title, icon: icon, themeKey: action.themeKey, block: block)
+        self.init(title: title ?? action.title, icon: icon, themeKey: action.themeKey, block: block)
     }
     
     static func itemWithAction(_ action: IconAction, block: @escaping () -> Void) -> IconActionItem {

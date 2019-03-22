@@ -8,12 +8,23 @@ import SwiftTweaks
  Tweaks that are accessible in debug, simulator, and TestFlight builds by shaking the device.
  
  To add a new tweak:
- 
- 1. Add a static property between the indicated lines. (Feel free to use a handy caseless enum as a namespace to match the tweak section.)
- 2. Add the newly-created property to the `tweaks` array in `defaultStore` near the bottom of this file.
+
+ 1. Add your to-be-created property to the `allTweaks` array between the indicated lines.
+ 2. Add a static property for your tweak between the indicated lines. (Feel free to use a handy caseless enum as a namespace to match the tweak section.)
  */
 struct Tweaks: TweakLibraryType {
-    
+
+    private static let allTweaks: [TweakClusterType] = [
+
+        // ▼▼▼ Add all new tweaks here or they won't show up! ▼▼▼
+
+        launch.offerToOpenSameCopiedURL,
+        posts.pullForNextExtraDistance,
+        posts.showCopyAsMarkdownAction,
+
+        // ▲▲▲ Add all new tweaks here or they won't show up! ▲▲▲
+    ]
+
     // ▼▼▼ New tweaks go below this line (don't forget to add to `tweaks` array in `defaultStore`!) ▼▼▼
     
     enum launch {
@@ -22,28 +33,17 @@ struct Tweaks: TweakLibraryType {
     
     enum posts {
         static let pullForNextExtraDistance = Tweak<CGFloat>("Posts", "Pull-for-next", "Extra distance", defaultValue: 45, min: 0, max: 500)
+        static let showCopyAsMarkdownAction = Tweak("Posts", "Extra Actions", "Copy as Markdown", false)
     }
-    
-    
+
     // ▲▲▲ New tweaks go above this line (don't forget to add to `tweaks` array in `defaultStore`!) ▲▲▲
-    
+
+
     static var isEnabled: Bool {
         return Environment.isDebugBuild || Environment.isSimulator || Environment.isInstalledViaTestFlight
     }
     
     static let defaultStore: TweakStore = {
-        var tweaks: [TweakClusterType] = [
-            
-            // ▼▼▼ Add all new tweaks here or they won't show up! ▼▼▼
-            
-            
-            launch.offerToOpenSameCopiedURL,
-            posts.pullForNextExtraDistance,
-            
-            
-            // ▲▲▲ Add all new tweaks here or they won't show up! ▲▲▲
-        ]
-        
-        return TweakStore(tweaks: tweaks, enabled: Tweaks.isEnabled)
+        return TweakStore(tweaks: allTweaks, enabled: Tweaks.isEnabled)
     }()
 }

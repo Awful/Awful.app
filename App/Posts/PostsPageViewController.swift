@@ -5,6 +5,7 @@
 import ARChromeActivity
 import AwfulCore
 import CoreData
+import MobileCoreServices
 import MRProgress
 import PromiseKit
 import TUSafariActivity
@@ -929,6 +930,12 @@ final class PostsPageViewController: ViewController {
             items.append(IconActionItem(.showInThread, block: {
                 // This will add the thread to the navigation stack, giving us thread->author->thread.
                 AppDelegate.instance.open(route: .post(id: post.postID))
+            }))
+        }
+
+        if Tweaks.defaultStore.assign(Tweaks.posts.showCopyAsMarkdownAction) {
+            items.append(IconActionItem(.copyTitle, title: "Copy Markdown", block: {
+                UIPasteboard.general.setValue(post.gitHubFlavoredMarkdown, forPasteboardType: kUTTypePlainText as String)
             }))
         }
         
