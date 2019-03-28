@@ -5,8 +5,11 @@
 import UIKit
 
 final class AppIconCell: UICollectionViewCell {
-    @IBOutlet private weak var imageView: UIImageView!
-    @IBOutlet private weak var isSelectedIcon: UIImageView!
+
+    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var isSelectedIcon: UIImageView!
+
+    private var loadingImageName: String?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -14,9 +17,30 @@ final class AppIconCell: UICollectionViewCell {
         imageView.layer.mask = makeSquircleMask()
     }
 
-    func configure(image: UIImage?, isCurrentlySelectedIcon: Bool) {
-        imageView.image = image
+    func configure(imageName: String?, isCurrentlySelectedIcon: Bool) {
         isSelectedIcon.isHidden = !isCurrentlySelectedIcon
+
+        guard let imageName = imageName else {
+            loadingImageName = nil
+            imageView.image = nil
+            return
+        }
+
+        guard loadingImageName != imageName else { return }
+
+        imageView.image = nil
+        loadingImageName = imageName
+        DispatchQueue.global()
+            .async(.promise) {
+                UIImage(named: imageName)?.makeDecompressedCopy()
+            }
+            .done { [weak self] image in
+                guard let self = self else { return }
+
+                if self.loadingImageName == imageName {
+                    self.imageView.image = image
+                }
+        }
     }
 }
 

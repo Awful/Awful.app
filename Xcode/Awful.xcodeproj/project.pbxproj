@@ -63,7 +63,7 @@
 		1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */; };
 		1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */; };
 		1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */; };
-		1C16FBDB1CBAA5A900C88BD1 /* CoreGraphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDA1CBAA5A900C88BD1 /* CoreGraphics.swift */; };
+		1C16FBDB1CBAA5A900C88BD1 /* CGContext+WithGState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */; };
 		1C16FBDD1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */; };
 		1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */; };
 		1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */; };
@@ -157,6 +157,8 @@
 		1C3CF9A51A94BE190065C964 /* ThreadListScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFE984518292DE6003DBBC2 /* ThreadListScrapingTests.swift */; };
 		1C3CF9A61A94BE1E0065C964 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 1C6FFED9182A74A00014311C /* Fixtures */; };
 		1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */; };
+		1C3E1815224C632A00BD88E5 /* UIImage+Decompression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */; };
+		1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */; };
 		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
 		1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */; };
 		1C40D4AB1A85F57400D9F793 /* AcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */; };
@@ -729,7 +731,7 @@
 		1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewExternalStylesheetLoader.swift; sourceTree = "<group>"; };
 		1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewTopBar.swift; sourceTree = "<group>"; };
 		1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PunishmentCell.swift; sourceTree = "<group>"; };
-		1C16FBDA1CBAA5A900C88BD1 /* CoreGraphics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGraphics.swift; sourceTree = "<group>"; };
+		1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+WithGState.swift"; sourceTree = "<group>"; };
 		1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsUbiquitousThemesController.swift; sourceTree = "<group>"; };
 		1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
 		1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePicker.swift; sourceTree = "<group>"; };
@@ -820,6 +822,8 @@
 		1C3DED791B6FD0AB00954CFC /* ARChromeActivity@3x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity@3x~ipad.png"; sourceTree = "<group>"; };
 		1C3DED7A1B6FD0AB00954CFC /* ARChromeActivity~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity~ipad.png"; sourceTree = "<group>"; };
 		1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FLAnimatedImageView+Nuke.swift"; sourceTree = "<group>"; };
+		1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Decompression.swift"; sourceTree = "<group>"; };
+		1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+IsOpaque.swift"; sourceTree = "<group>"; };
 		1C4079691A228DA6004A082F /* CopyURLActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyURLActivity.swift; sourceTree = "<group>"; };
 		1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Acknowledgements.html.stencil; sourceTree = "<group>"; };
 		1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcknowledgementsViewController.swift; sourceTree = "<group>"; };
@@ -1959,8 +1963,9 @@
 			isa = PBXGroup;
 			children = (
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
+				1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */,
+				1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */,
 				1C353C081E41832600CCBA51 /* CoreAnimation.swift */,
-				1C16FBDA1CBAA5A900C88BD1 /* CoreGraphics.swift */,
 				1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
 				1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */,
@@ -1971,6 +1976,7 @@
 				1CDC53DF220669640086BD2B /* Photos.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
+				1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
 				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
 				1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */,
@@ -3567,7 +3573,7 @@
 				1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */,
 				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
-				1C16FBDB1CBAA5A900C88BD1 /* CoreGraphics.swift in Sources */,
+				1C16FBDB1CBAA5A900C88BD1 /* CGContext+WithGState.swift in Sources */,
 				1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
@@ -3577,6 +3583,7 @@
 				1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */,
+				1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
@@ -3622,6 +3629,7 @@
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C796A2D2219EC1C0035E154 /* SettingsSection.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
+				1C3E1815224C632A00BD88E5 /* UIImage+Decompression.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,

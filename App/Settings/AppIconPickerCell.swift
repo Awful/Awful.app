@@ -7,7 +7,8 @@ import UIKit
 private let Log = Logger.get()
 
 final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
-    @IBOutlet weak var collection: UICollectionView!
+
+    @IBOutlet var collectionView: UICollectionView?
     var selectedIconName: String?
 
     private let appIcons: [AppIcon] = findAppIcons()
@@ -15,9 +16,9 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        collection.dataSource = self
-        collection.delegate = self
-        collection.register(UINib(nibName: "AppIconCell", bundle: nil), forCellWithReuseIdentifier: "AppIcon")
+        collectionView?.dataSource = self
+        collectionView?.delegate = self
+        collectionView?.register(UINib(nibName: "AppIconCell", bundle: Bundle(for: AppIconPickerCell.self)), forCellWithReuseIdentifier: "AppIcon")
         
         if #available(iOS 10.3, *) {
             selectedIconName = UIApplication.shared.alternateIconName ?? appIcons.first?.iconName
@@ -29,15 +30,12 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let collection = collection else {
-            Log.e("No collection in view")
-            return UICollectionViewCell()
-        }
         let appIcon = appIcons[indexPath.item]
-        
-        let cell = collection.dequeueReusableCell(withReuseIdentifier: "AppIcon", for: indexPath) as! AppIconCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AppIcon", for: indexPath) as! AppIconCell
 
-        cell.configure(image: UIImage(named: appIcon.filename), isCurrentlySelectedIcon: selectedIconName == appIcon.iconName)
+        cell.configure(
+            imageName: appIcon.filename,
+            isCurrentlySelectedIcon: selectedIconName == appIcon.iconName)
 
         return cell
     }
@@ -71,20 +69,13 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
 private struct AppIcon: Equatable {
     let filename: String
 
-    static func == (lhs: AppIcon, rhs: AppIcon) -> Bool {
-        return lhs.filename == rhs.filename
-    }
-
     var iconName: String? {
         let scanner = Scanner(string: filename)
-        guard scanner.scanString("AppIcon-", into: nil) else {
-            return nil
-        }
-        var iconName: NSString?
-        guard scanner.scanUpTo("-", into: &iconName) else {
-            return nil
-        }
-        return (iconName as String?) ?? ""
+        guard
+            scanner.scan("AppIcon-"),
+            let iconName = scanner.scanUpTo("-")
+            else { return nil }
+        return iconName
     }
 }
 
@@ -113,12 +104,11 @@ private func findAppIcons() -> [AppIcon] {
 
     let alternates = icons["CFBundleAlternateIcons"] as? [String: Any] ?? [:]
     let alternateFilenames = alternates.values
-        .compactMap { (value: Any) -> [String: Any]? in value as? [String: Any] }
-        .compactMap { (dict: [String: Any]) -> [String]? in dict["CFBundleIconFiles"] as? [String] }
-        .compactMap { (files: [String]) -> String? in files.first(where: filenameContainsHandySize) }
-        .sorted { (lhs: String, rhs: String) -> Bool in lhs.caseInsensitiveCompare(rhs) == .orderedAscending }
+        .compactMap { $0 as? [String: Any] }
+        .compactMap { $0["CFBundleIconFiles"] as? [String] }
+        .compactMap { $0.first(where: filenameContainsHandySize) }
+        .sorted()
 
-    var filenames = [primaryFilename]
-    filenames.append(contentsOf: alternateFilenames)
-    return filenames.map { (filename: String) -> AppIcon in AppIcon(filename: filename) }
+    let filenames = [primaryFilename] + alternateFilenames
+    return filenames.map { AppIcon(filename: $0) }
 }
