@@ -12,6 +12,8 @@ import SwiftTweaks
 import UIKit
 import WebKit
 
+private let Log = Logger.get()
+
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     private(set) static var instance: AppDelegate!
 
@@ -120,7 +122,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 self.showSnapshotDuringThemeDidChange()
             }
         }
-        
+
         return true
     }
     
@@ -224,7 +226,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             favourites = try managedObjectContext.fetch(fetchRequest)
         } catch {
-            print("\(#function) fetch failed: \(error)")
+            Log.w("favorites fetch failed: \(error)")
             return
         }
         let favouritesIcon = UIApplicationShortcutIcon(templateImageName: "star-off")
@@ -378,7 +380,7 @@ private func removeOldDataStores() {
     let caches = try! fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     for directory in [documents, caches] {
         guard let enumerator = fm.enumerator(at: directory, includingPropertiesForKeys: nil, options: .skipsSubdirectoryDescendants, errorHandler: { (url, error) -> Bool in
-            print("\(#function) error enumerating URL \(url.absoluteString)")
+            Log.i("error enumerating \(url.absoluteString)")
             return true
         }) else { continue }
         for url in enumerator {
@@ -400,8 +402,10 @@ private func removeOldDataStores() {
     for url in pendingDeletions {
         do {
             try fm.removeItem(at: url)
+        } catch let error as CocoaError where error.code == .fileNoSuchFile {
+            // nop
         } catch {
-            print("\(#function) error deleting file at \(url.absoluteString)")
+            Log.i("error deleting file at \(url.absoluteString): \(error)")
         }
     }
 }
@@ -436,7 +440,7 @@ private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
             // do nothing
         }
     } catch {
-        print("\(#function) error setting audio session category: \(error)")
+        Log.d("error setting audio session category: \(error)")
     }
 }
 
