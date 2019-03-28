@@ -26,7 +26,12 @@ final class CloseBBcodeTagCommand: NSObject {
     }
     
     private var textContent: Substring {
-        return textView.text[..<String.Index(encodedOffset: textView.selectedRange.location)]
+        guard
+            let text = textView.text,
+            let selectedRange = Range(textView.selectedRange, in: text)
+            else { return "" }
+        
+        return text[selectedRange]
     }
     
     private func updateEnabled() {

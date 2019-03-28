@@ -114,12 +114,4 @@ public struct PrivateMessageFolderID: Hashable, RawRepresentable {
         guard !rawValue.isEmpty else { return nil }
         self.rawValue = rawValue
     }
-
-    public static func ==(lhs: PrivateMessageFolderID, rhs: PrivateMessageFolderID) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-
-    public var hashValue: Int {
-        return rawValue.hashValue
-    }
 }

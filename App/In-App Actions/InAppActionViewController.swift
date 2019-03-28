@@ -74,7 +74,7 @@ class InAppActionViewController: ViewController, UICollectionViewDataSource, UIC
     fileprivate func titleDidChange() {
         if (title ?? "").count == 0 {
             if headerHeightConstraint == nil {
-                let constraint = NSLayoutConstraint(item: headerBackground, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+                let constraint = NSLayoutConstraint(item: headerBackground!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
                 headerBackground.addConstraint(constraint)
                 headerHeightConstraint = constraint
             }

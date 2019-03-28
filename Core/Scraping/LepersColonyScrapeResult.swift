@@ -32,32 +32,6 @@ public struct LepersColonyScrapeResult: ScrapeResult {
                     return true
                 }
             }
-
-            public static func == (lhs: Sentence, rhs: Sentence) -> Bool {
-                switch (lhs, rhs) {
-                case (.probation, .probation), (.ban, .ban), (.autoban, .autoban), (.permaban, .permaban):
-                    return true
-                case (.probation, _), (.ban, _), (.autoban, _), (.permaban, _):
-                    return false
-                }
-            }
-        }
-
-        public static func == (lhs: Punishment, rhs: Punishment) -> Bool {
-            return lhs.approver == rhs.approver
-                && lhs.approverUsername == rhs.approverUsername
-                && lhs.date == rhs.date
-                && lhs.post == rhs.post
-                && lhs.reason == rhs.reason
-                && lhs.requester == rhs.requester
-                && lhs.requesterUsername == rhs.requesterUsername
-                && lhs.sentence == rhs.sentence
-                && lhs.subject == rhs.subject
-                && lhs.subjectUsername == rhs.subjectUsername
-        }
-
-        public var hashValue: Int {
-            return subjectUsername.hashValue
         }
     }
 

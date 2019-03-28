@@ -334,7 +334,7 @@ final class SettingsViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         let ok = ["Action", "Choices", "ViewController"]
-        if let _ = setting(at: indexPath).keys.index(where: ok.contains) {
+        if let _ = setting(at: indexPath).keys.firstIndex(where: ok.contains) {
             return indexPath
         }
         return nil
@@ -384,6 +384,8 @@ final class SettingsViewController: TableViewController {
                 tweaksVC.modalPresentationStyle = .formSheet
             case .compact?, .unspecified?, nil:
                 break
+            @unknown default:
+                assertionFailure("handle unknown size class")
             }
             topViewController?.present(tweaksVC, animated: true)
             

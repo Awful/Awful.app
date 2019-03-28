@@ -61,7 +61,7 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
         })
 
         let oldSelectedIndexPath = appIcons
-            .index { $0.iconName == previousSelection }
+            .firstIndex { $0.iconName == previousSelection }
             .map { IndexPath(item: $0, section: 0) }
         let reloadIndexPaths = [indexPath, oldSelectedIndexPath].compactMap { $0 }
         collectionView.reloadItems(at: reloadIndexPaths)

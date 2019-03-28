@@ -406,6 +406,9 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
             return "ipad"
         case .phone, .carPlay, .tv, .unspecified:
             return "iphone"
+        @unknown default:
+            assertionFailure("handle unknown user interface idiom")
+            return "iphone"
         }
     }
 

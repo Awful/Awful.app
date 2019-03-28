@@ -97,6 +97,8 @@ extension ThreadListDataSource: NSFetchedResultsControllerDelegate {
             tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
         case .move, .update:
             assertionFailure("why")
+        @unknown default:
+            assertionFailure("handle unknown change type")
         }
     }
 
@@ -111,6 +113,8 @@ extension ThreadListDataSource: NSFetchedResultsControllerDelegate {
             tableView.insertRows(at: [newIndexPath!], with: .fade)
         case .update:
             tableView.reloadRows(at: [oldIndexPath!], with: .none)
+        @unknown default:
+            assertionFailure("handle unknown change type")
         }
     }
 

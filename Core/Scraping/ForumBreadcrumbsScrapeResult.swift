@@ -38,14 +38,4 @@ public struct ForumBreadcrumb: Hashable {
         name = node.textContent
         self.depth = depth
     }
-
-    public static func ==(lhs: ForumBreadcrumb, rhs: ForumBreadcrumb) -> Bool {
-        return lhs.depth == rhs.depth
-            && lhs.id == rhs.id
-            && lhs.name == rhs.name
-    }
-
-    public var hashValue: Int {
-        return id.hashValue
-    }
 }

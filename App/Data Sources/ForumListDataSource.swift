@@ -223,6 +223,9 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
             
         case .move, .update:
             assertionFailure("why")
+
+        @unknown default:
+            assertionFailure("handle unknown change type")
         }
     }
     
@@ -256,6 +259,9 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
             Log.d("…global path = \(oldIndexPath!) and it's getting updated")
             
             deferredUpdates.append(oldIndexPath!)
+
+        @unknown default:
+            assertionFailure("handle unknown change type")
         }
     }
     
@@ -458,7 +464,7 @@ extension ForumListDataSource: UITableViewDataSource {
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
 
         default:
-            fatalError("unexpected item \(item) in forum list")
+            fatalError("unexpected item \(item as Any) in forum list")
         }
     }
 }

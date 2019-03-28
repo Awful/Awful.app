@@ -3803,7 +3803,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3815,7 +3814,6 @@
 				INFOPLIST_FILE = ../Core/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -3827,7 +3825,6 @@
 				INFOPLIST_FILE = ../Core/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3839,7 +3836,6 @@
 				INFOPLIST_FILE = ../Core/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCoreTests;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -3920,7 +3916,6 @@
 				INFOPLIST_FILE = ../App/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
 			name = Debug;
@@ -3941,7 +3936,6 @@
 				INFOPLIST_FILE = ../App/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
 			name = Release;
@@ -3979,7 +3973,6 @@
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3991,7 +3984,6 @@
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

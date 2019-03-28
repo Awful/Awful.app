@@ -45,7 +45,7 @@ final class ThemePicker: UIControl {
     }
     
     @objc fileprivate func didTapThemeButton(_ button: UIButton) {
-        selectedThemeIndex = buttons.index(of: button) ?? UISegmentedControl.noSegment
+        selectedThemeIndex = buttons.firstIndex(of: button) ?? UISegmentedControl.noSegment
         sendActions(for: .valueChanged)
     }
     

@@ -1245,7 +1245,7 @@ public final class ForumsClient {
         return listIgnoredUsers()
             .then { form -> Promise<Void> in
                 var form = form
-                guard let i = form.usernames.index(of: username) else { return Promise.value(()) }
+                guard let i = form.usernames.firstIndex(of: username) else { return Promise.value(()) }
                 
                 form.usernames.remove(at: i)
                 return self.updateIgnoredUsers(form)

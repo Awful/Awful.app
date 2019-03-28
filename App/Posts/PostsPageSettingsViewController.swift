@@ -134,12 +134,12 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             if themeName == "default" || themeName == "dark" || themeName == "alternate" || themeName == "alternateDark" {
                 themeName = Theme.currentTheme.name
             }
-            if let i = names.index(of: themeName) {
+            if let i = names.firstIndex(of: themeName) {
                 themePicker.selectedThemeIndex = i
             }
         }
         else {
-            themePicker.selectedThemeIndex = names.index(of: Theme.currentTheme.name)!
+            themePicker.selectedThemeIndex = names.firstIndex(of: Theme.currentTheme.name)!
         }
     }
     

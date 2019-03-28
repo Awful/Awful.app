@@ -275,7 +275,7 @@ final class PostsPageViewController: ViewController {
     
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
     func scrollPostToVisible(_ post: Post) {
-        let i = posts.index(of: post)
+        let i = posts.firstIndex(of: post)
         if loadingView != nil || !webViewDidLoadOnce || i == nil {
             jumpToPostIDAfterLoading = post.postID
         } else {
@@ -718,7 +718,7 @@ final class PostsPageViewController: ViewController {
                 // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
                 guard
                     let self = self,
-                    let i = self.posts.index(of: post)
+                    let i = self.posts.firstIndex(of: post)
                     else { return }
                 
                 self.renderView.replacePostHTML(self.renderedPostAtIndex(i), at: i - self.hiddenPosts)
@@ -1262,7 +1262,7 @@ extension PostsPageViewController: RenderViewDelegate {
     func didTapLink(to url: URL, in view: RenderView) {
         if let route = try? AwfulRoute(url) {
             if url.fragment == "awful-ignored", case .post(let postID) = route {
-                if let i = posts.index(where: { $0.postID == postID }) {
+                if let i = posts.firstIndex(where: { $0.postID == postID }) {
                     readIgnoredPostAtIndex(i)
                 }
             } else {

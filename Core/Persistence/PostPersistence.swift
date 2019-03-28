@@ -123,7 +123,7 @@ internal extension PostsPageScrapeResult {
         // Ignored posts don't inform us of their index within the thread, so we need to try our best to derive correct indices.
         let calculatedIndices: [Int]
         if
-            let hasIndexInThread = self.posts.index(where: { $0.indexInThread != nil }),
+            let hasIndexInThread = self.posts.firstIndex(where: { $0.indexInThread != nil }),
             let indexInThread = self.posts[hasIndexInThread].indexInThread
         {
             calculatedIndices = posts.indices.map { indexInThread + $0 - hasIndexInThread }

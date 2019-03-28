@@ -23,7 +23,7 @@ final class ForumHierarchyScrapingTests: XCTestCase {
         XCTAssertEqual(en.name, "E/N Bullshit")
         XCTAssertEqual(en.depth, 2)
 
-        let gbs: ForumHierarchyNode = forums[forums.index(of: en)! - 2]
+        let gbs: ForumHierarchyNode = forums[forums.firstIndex(of: en)! - 2]
         XCTAssertEqual(gbs.id.rawValue, "1")
         XCTAssertEqual(gbs.name, "General Bullshit")
         XCTAssertEqual(gbs.depth, en.depth - 1)
@@ -37,12 +37,12 @@ final class ForumHierarchyScrapingTests: XCTestCase {
         XCTAssertEqual(gameRoom.name, "The Game Room")
         XCTAssertEqual(gameRoom.depth, 3)
 
-        let traditionalGames: ForumHierarchyNode = forums[forums.index(of: gameRoom)! - 1]
+        let traditionalGames: ForumHierarchyNode = forums[forums.firstIndex(of: gameRoom)! - 1]
         XCTAssertEqual(traditionalGames.id.rawValue, "234")
         XCTAssertEqual(traditionalGames.name, "Traditional Games")
         XCTAssertEqual(traditionalGames.depth, gameRoom.depth - 1)
 
-        let games: ForumHierarchyNode = forums[forums.index(of: traditionalGames)! - 7]
+        let games: ForumHierarchyNode = forums[forums.firstIndex(of: traditionalGames)! - 7]
         XCTAssertEqual(games.id.rawValue, "44")
         XCTAssertEqual(games.name, "Games")
         XCTAssertEqual(games.depth, traditionalGames.depth - 1)

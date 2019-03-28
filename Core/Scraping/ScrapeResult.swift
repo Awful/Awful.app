@@ -22,14 +22,6 @@ public struct ForumID: Hashable, RawRepresentable {
         guard !rawValue.isEmpty else { return nil }
         self.rawValue = rawValue
     }
-
-    public static func ==(lhs: ForumID, rhs: ForumID) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-
-    public var hashValue: Int {
-        return rawValue.hashValue
-    }
 }
 
 
@@ -41,14 +33,6 @@ public struct PostID: Hashable, RawRepresentable {
         guard !rawValue.isEmpty else { return nil }
         self.rawValue = rawValue
     }
-
-    public static func ==(lhs: PostID, rhs: PostID) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-
-    public var hashValue: Int {
-        return rawValue.hashValue
-    }
 }
 
 
@@ -59,14 +43,6 @@ public struct PrivateMessageID: Hashable, RawRepresentable {
     public init?(rawValue: String) {
         guard !rawValue.isEmpty else { return nil }
         self.rawValue = rawValue
-    }
-
-    public static func ==(lhs: PrivateMessageID, rhs: PrivateMessageID) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-
-    public var hashValue: Int {
-        return rawValue.hashValue
     }
 }
 
@@ -83,14 +59,6 @@ public struct ThreadID: Hashable, RawRepresentable {
         guard !rawValue.isEmpty else { return nil }
         self.rawValue = rawValue
     }
-
-    public static func ==(lhs: ThreadID, rhs: ThreadID) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-
-    public var hashValue: Int {
-        return rawValue.hashValue
-    }
 }
 
 
@@ -101,13 +69,5 @@ public struct UserID: Hashable, RawRepresentable {
     public init?(rawValue: String) {
         guard !rawValue.isEmpty else { return nil }
         self.rawValue = rawValue
-    }
-
-    public static func ==(lhs: UserID, rhs: UserID) -> Bool {
-        return lhs.rawValue == rhs.rawValue
-    }
-
-    public var hashValue: Int {
-        return rawValue.hashValue
     }
 }

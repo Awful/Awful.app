@@ -61,6 +61,9 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
             
         case .failed, .possible:
             break
+
+        @unknown default:
+            assertionFailure("handle unknown gesture recognizer state")
         }
     }
     

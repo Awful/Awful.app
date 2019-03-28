@@ -148,7 +148,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         // I can't recursively call a nested function? Toss it in a closure then I guess.
         var search: ([String], [UIViewController]) -> UIViewController? = { _, _ in nil }
         search = { identifierComponents, viewControllers in
-            if let i = viewControllers.map({ $0.restorationIdentifier ?? "" }).index(of: identifierComponents[0]) {
+            if let i = viewControllers.map({ $0.restorationIdentifier ?? "" }).firstIndex(of: identifierComponents[0]) {
                 let currentViewController = viewControllers[i]
                 if identifierComponents.count == 1 {
                     return currentViewController
@@ -320,7 +320,7 @@ private func navigationIdentifier(_ rootIdentifier: String?) -> String {
 }
 
 func partition<C: Collection>(_ c: C, test: (C.Iterator.Element) -> Bool) -> (C.SubSequence, C.SubSequence) {
-    if let i = c.index(where: test) {
+    if let i = c.firstIndex(where: test) {
         return (c.prefix(upTo: i), c.suffix(from: i))
     }
     return (c.prefix(upTo: c.endIndex), c.suffix(from: c.endIndex))

@@ -22,16 +22,6 @@ public struct ForumHierarchyNode: Hashable {
     public let id: ForumID
     public let name: String
 
-    public static func == (lhs: ForumHierarchyNode, rhs: ForumHierarchyNode) -> Bool {
-        return lhs.depth == rhs.depth
-            && lhs.id == rhs.id
-            && lhs.name == rhs.name
-    }
-
-    public var hashValue: Int {
-        return id.hashValue
-    }
-
     /// This is kinda gross. Optional because some <option>s in the dropdown aren't actually for forums. `throws` because we can fail to parse the ones that are forums.
     fileprivate init?(_ html: HTMLElement) throws {
         guard let value = html["value"], html.tagName == "option" else {
