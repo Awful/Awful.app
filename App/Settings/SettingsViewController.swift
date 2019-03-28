@@ -425,27 +425,19 @@ final class SettingsViewController: TableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection sectionIndex: Int) -> UIView? {
         let section = sections[sectionIndex]
         guard let action = section["Action"] as? String else { return nil }
+
         let header = SettingsAvatarHeader.newFromNib()
-        
-        if let titleKey = section["TitleKey"] as? String {
-            header.usernameLabel.awful_setting = titleKey
-        }
-        header.usernameLabel.textColor = theme["listTextColor"]
-        
-        header.contentEdgeInsets = tableView.separatorInset
-        
+
         if action == "ShowProfile" {
             header.setTarget(self, action: #selector(showProfile))
+        } else {
+            header.setTarget(nil, action: nil)
         }
-        
-        if let loggedInUser = loggedInUser {
-            header.setAvatarImage(AvatarLoader.shared.cachedAvatarImageForUser(loggedInUser))
-            
-            AvatarLoader.shared.fetchAvatarImageForUser(loggedInUser) { modified, image, error in
-                guard modified else { return }
-                header.setAvatarImage(image)
-            }
-        }
+
+        header.configure(
+            avatarURL: loggedInUser?.avatarURL,
+            horizontalPadding: tableView.separatorInset.left,
+            textColor: theme["listTextColor"])
         
         return header
     }

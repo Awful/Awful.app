@@ -6,6 +6,7 @@ import AVFoundation
 import AwfulCore
 import Crashlytics
 import Fabric
+import Nuke
 import Smilies
 import SwiftTweaks
 import UIKit
@@ -62,6 +63,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ForumsClient.shared.fetchDidEnd = NetworkActivityIndicatorManager.shared.decrementActivityCount
         
         URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
+
+        ImagePipeline.Configuration.isAnimatedImageDataEnabled = true
         
         if Tweaks.isEnabled, UserDefaults.standard.showTweaksOnShake {
             window = TweakWindow(frame: UIScreen.main.bounds, gestureType: .shake, tweakStore: Tweaks.defaultStore)
@@ -192,7 +195,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func emptyCache() {
         URLCache.shared.removeAllCachedResponses()
-        AvatarLoader.shared.emptyCache()
+        ImageCache.shared.removeAll()
     }
 
     func open(route: AwfulRoute) {
@@ -388,6 +391,11 @@ private func removeOldDataStores() {
             }
         }
     }
+
+    // The user's avatar (for showing in Settings) and any thread tags not included in the app bundle used to get downloaded to a couple Caches subdirectories. Now Nuke handles everything, so let's clean up the old caches.
+    pendingDeletions += [
+        caches.appendingPathComponent("Avatars", isDirectory: true),
+        caches.appendingPathComponent("Thread Tags", isDirectory: true)]
     
     for url in pendingDeletions {
         do {

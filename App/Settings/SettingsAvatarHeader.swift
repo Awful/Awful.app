@@ -3,27 +3,16 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import FLAnimatedImage
+import Nuke
 import UIKit
 
 final class SettingsAvatarHeader: UIView {
     
-    // Strong reference in case we temporarily remove it
     @IBOutlet private var avatarImageView: FLAnimatedImageView!
-    
-    @IBOutlet private(set) weak var usernameLabel: UILabel!
-    @IBOutlet private var avatarConstraints: [NSLayoutConstraint]!
-    @IBOutlet private var insetConstraints: [NSLayoutConstraint]!
-    
+    @IBOutlet private var insetConstraints: [NSLayoutConstraint] = []
+    @IBOutlet private var usernameLabel: UILabel!
+
     private var observer: NSKeyValueObservation?
-    
-    /// Only the `insets.left` value is used, though it is applied to both the left and the right.
-    var contentEdgeInsets: UIEdgeInsets = .zero {
-        didSet(oldInsets) {
-            if contentEdgeInsets.left != oldInsets.left {
-                setNeedsUpdateConstraints()
-            }
-        }
-    }
     
     class func newFromNib() -> SettingsAvatarHeader {
         return Bundle.main.loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)![0] as! SettingsAvatarHeader
@@ -45,74 +34,59 @@ final class SettingsAvatarHeader: UIView {
     }
     
     private func commonAwake() {
-        observer = UserDefaults.standard.observeOnMain(\.loggedInUsername) { [unowned self] defaults, change in
-            self.usernameLabel?.text = defaults.loggedInUsername
+        let defaults = UserDefaults.standard
+        observer = defaults.observeOnMain(\.loggedInUsername) {
+            [weak self] defaults, change in
+            self?.usernameLabel.text = defaults.loggedInUsername
         }
+        usernameLabel.text = defaults.loggedInUsername
     }
-    
-    override func updateConstraints() {
-        if hasAvatar {
-            addConstraints(avatarConstraints)
-        }
-        for constraint in insetConstraints {
-            constraint.constant = contentEdgeInsets.left
-        }
-        super.updateConstraints()
+
+    var horizontalPadding: CGFloat {
+        get { return insetConstraints[0].constant }
+        set { insetConstraints.forEach { $0.constant = newValue } }
     }
-    
-    override var intrinsicContentSize: CGSize {
-        let usernameHeight = usernameLabel.intrinsicContentSize.height + 8
-        if hasAvatar {
-            return CGSize(width: UIView.noIntrinsicMetric, height: max(avatarImageView.intrinsicContentSize.height, usernameHeight))
-        } else {
-            return CGSize(width: UIView.noIntrinsicMetric, height: usernameHeight)
+
+    func configure(avatarURL: URL?, horizontalPadding: CGFloat, textColor: UIColor?) {
+        self.horizontalPadding = horizontalPadding
+        usernameLabel.textColor = textColor
+
+        guard let avatarURL = avatarURL else {
+            Nuke.cancelRequest(for: avatarImageView)
+            avatarImageView.image = nil
+            avatarImageView.isHidden = true
+            return
         }
-    }
-    
-    private var hasAvatar: Bool {
-        return avatarImageView.image != nil
-    }
-    
-    func setAvatarImage(_ image: Any?) {
-        if let image = image as? FLAnimatedImage {
-            avatarImageView.animatedImage = image
-        } else {
-            avatarImageView.image = image as? UIImage
-        }
-        
-        if hasAvatar {
-            addSubview(avatarImageView)
-            setNeedsUpdateConstraints()
-            invalidateIntrinsicContentSize()
-            avatarImageView.startAnimating()
-        } else {
-            avatarImageView.removeFromSuperview()
-        }
+
+        avatarImageView.isHidden = false
+
+        Nuke.loadImage(with: avatarURL, into: avatarImageView, completion: {
+            [weak self] response, error in
+            self?.avatarImageView.isHidden = response?.image == nil
+        })
     }
     
     // MARK: Target-action
     
-    @IBOutlet private weak var tapGestureRecognizer: UITapGestureRecognizer!
-    private var target: AnyObject?
+    @IBOutlet private var tapGestureRecognizer: UITapGestureRecognizer?
+    private var target: Any?
     private var action: Selector?
     
-    func setTarget(_ target: AnyObject?, action: Selector?) {
+    func setTarget(_ target: Any?, action: Selector?) {
         if let action = action {
             self.target = target
             self.action = action
-            tapGestureRecognizer.isEnabled = true
+            tapGestureRecognizer?.isEnabled = true
         } else {
             self.target = nil
             self.action = nil
-            tapGestureRecognizer.isEnabled = false
+            tapGestureRecognizer?.isEnabled = false
         }
     }
     
-    @IBAction func didTap(_ sender: UITapGestureRecognizer) {
+    @IBAction private func didTap(_ sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             UIApplication.shared.sendAction(action!, to: target, from: self, for: nil)
         }
     }
 }
-
-private var KVOContext = 0
