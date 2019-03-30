@@ -353,8 +353,9 @@ extension RenderView {
     
     /// - Seealso: RenderView.interestingElements(at:)
     enum InterestingElement {
-        
-        case spoiledImage(URL)
+
+        /// - Parameter title: The image's alt-text. For smilies, contains the text used to insert the smilie into a post.
+        case spoiledImage(title: String, url: URL, frame: CGRect?)
         
         /// - Parameter frame: The link element's frame expressed in the render view's coordinate system.
         case spoiledLink(frame: CGRect, url: URL)
@@ -403,7 +404,10 @@ extension RenderView {
                 let rawImageURL = result["spoiledImageURL"] as? String,
                 let imageURL = URL(string: rawImageURL)
             {
-                interesting.append(.spoiledImage(imageURL))
+                let title = result["spoiledImageTitle"] as? String ?? ""
+                let frame = (result["spoiledImageFrame"] as? [String: Double])
+                    .flatMap { CGRect(renderViewMessage: $0) }
+                interesting.append(.spoiledImage(title: title, url: imageURL, frame: frame))
             }
             
             if

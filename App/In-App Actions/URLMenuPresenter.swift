@@ -3,6 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import Smilies
 import UIKit
 
 private let Log = Logger.get()
@@ -29,13 +30,13 @@ fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 
 private enum _URLMenuPresenter {
-    case link(url: URL, imageURL: URL?)
+    case link(url: URL, imageURL: URL?, smilie: PostedSmilie?)
     case video(url: URL)
     
     func presentInDefaultBrowser(fromViewController presenter: UIViewController) {
         let url: URL
         switch self {
-        case .link(let linkURL, _):
+        case .link(url: let linkURL, _, _):
             url = linkURL
         case .video(let rawURL):
             if let videoURL = VideoURL(rawURL) {
@@ -77,7 +78,7 @@ private enum _URLMenuPresenter {
         let alert = UIAlertController.makeActionSheet()
         
         switch self {
-        case let .link(linkURL, imageURL):
+        case let .link(url: linkURL, imageURL: imageURL, smilie: smilie):
             alert.title = linkURL.absoluteString
             
             let browsers = DefaultBrowser.installedBrowsers
@@ -136,8 +137,7 @@ private enum _URLMenuPresenter {
                 }
                 
             }))
-            
-            
+
             if let imageURL = imageURL {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-image"), style: .default, handler: { _ in
                     let preview = ImageViewController(imageURL: imageURL)
@@ -148,6 +148,23 @@ private enum _URLMenuPresenter {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-image-url"), style: .default, handler: { _ in
                     UIPasteboard.general.coercedURL = imageURL
                 }))
+            }
+
+            if let smilie = smilie {
+                if let storedSmilie = SmilieDataStore.shared.fetchSmilie(text: smilie.text) {
+                    let format = storedSmilie.metadata.isFavorite ? LocalizedString("smilie-action.remove-from-favorites") : LocalizedString("smilie-action.add-to-favorites")
+
+                    alert.addAction(.init(title: String(format: format, storedSmilie.text), style: .default, handler: { _ in
+                        if storedSmilie.metadata.isFavorite {
+                            storedSmilie.metadata.removeFromFavoritesUpdatingSubsequentIndices()
+                        } else {
+                            storedSmilie.metadata.addToFavorites()
+                        }
+                        try! storedSmilie.managedObjectContext?.save()
+                    }))
+                } else {
+                    alert.message = smilie.text
+                }
             }
             
         case let .video(rawURL):
@@ -317,8 +334,8 @@ final class URLMenuPresenter: NSObject {
     
     fileprivate let menuPresenter: _URLMenuPresenter
     
-    init(linkURL: URL, imageURL: URL? = nil) {
-        menuPresenter = .link(url: linkURL, imageURL: imageURL)
+    init(linkURL: URL, imageURL: URL? = nil, smilie: PostedSmilie? = nil) {
+        menuPresenter = .link(url: linkURL, imageURL: imageURL, smilie: smilie)
         super.init()
     }
     
@@ -337,21 +354,49 @@ final class URLMenuPresenter: NSObject {
     
     // Convenience function.
     class func presentInterestingElements(_ elements: [RenderView.InterestingElement], from presentingViewController: UIViewController, renderView: RenderView) -> Bool {
+        var imageFrame: CGRect?
         var imageURL: URL?
-        for case .spoiledImage(let url) in elements {
+        var smilie: PostedSmilie?
+        for case let .spoiledImage(title: title, url: url, frame: frame) in elements {
+            smilie = PostedSmilie(title: title, url: url)
             imageURL = URL(string: url.absoluteString, relativeTo: ForumsClient.shared.baseURL)
+            imageFrame = frame
             break
         }
         
-        for case .spoiledLink(frame: let frame, url: let unresolved) in elements {
+        for case let .spoiledLink(frame: frame, url: unresolved) in elements {
             if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
-                let presenter = URLMenuPresenter(linkURL: resolved, imageURL: imageURL)
+                let presenter = URLMenuPresenter(linkURL: resolved, imageURL: imageURL, smilie: smilie)
                 presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
                 return true
             }
         }
-        
-        if let imageURL = imageURL {
+
+        if let smilie = smilie {
+            // Just a smilie, nothing else.
+            let actionSheet = UIAlertController.makeActionSheet()
+            actionSheet.message = smilie.text
+            if let storedSmilie = SmilieDataStore.shared.fetchSmilie(text: smilie.text) {
+                let format = storedSmilie.metadata.isFavorite ? LocalizedString("smilie-action.remove-from-favorites") : LocalizedString("smilie-action.add-to-favorites")
+
+                actionSheet.addAction(.init(title: String(format: format, storedSmilie.text), style: .default, handler: { _ in
+                    if storedSmilie.metadata.isFavorite {
+                        storedSmilie.metadata.removeFromFavoritesUpdatingSubsequentIndices()
+                    } else {
+                        storedSmilie.metadata.addToFavorites()
+                    }
+                    try! storedSmilie.managedObjectContext?.save()
+                }))
+            }
+
+            actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
+
+            presentingViewController.present(actionSheet, animated: true)
+            if let popover = actionSheet.popoverPresentationController, let imageFrame = imageFrame {
+                popover.sourceRect = imageFrame.insetBy(dx: -6, dy: -6)
+                popover.sourceView = renderView
+            }
+        } else if let imageURL = imageURL {
             let preview = ImageViewController(imageURL: imageURL)
             preview.title = presentingViewController.title
             presentingViewController.present(preview, animated: true)

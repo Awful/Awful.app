@@ -159,6 +159,9 @@
 		1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */; };
 		1C3E1815224C632A00BD88E5 /* UIImage+Decompression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */; };
 		1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */; };
+		1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */; };
+		1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */; };
+		1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */; };
 		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
 		1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */; };
 		1C40D4AB1A85F57400D9F793 /* AcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */; };
@@ -824,6 +827,9 @@
 		1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FLAnimatedImageView+Nuke.swift"; sourceTree = "<group>"; };
 		1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Decompression.swift"; sourceTree = "<group>"; };
 		1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+IsOpaque.swift"; sourceTree = "<group>"; };
+		1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostedSmilie.swift; sourceTree = "<group>"; };
+		1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmilieDataStore+Shared.swift"; sourceTree = "<group>"; };
+		1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmilieDataStore+Query.swift"; sourceTree = "<group>"; };
 		1C4079691A228DA6004A082F /* CopyURLActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyURLActivity.swift; sourceTree = "<group>"; };
 		1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Acknowledgements.html.stencil; sourceTree = "<group>"; };
 		1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcknowledgementsViewController.swift; sourceTree = "<group>"; };
@@ -1568,6 +1574,7 @@
 				1C25AC441F5377B100977D6F /* ManagedObjectObserver.swift */,
 				1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */,
 				1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */,
+				1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */,
 				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
 				1C015BBE21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.h */,
 				1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */,
@@ -1974,6 +1981,8 @@
 				1CDBF2361BD2C13400ADC7DA /* KVOController.swift */,
 				1C381205219F766B005029C1 /* NSAttributedString+Format.swift */,
 				1CDC53DF220669640086BD2B /* Photos.swift */,
+				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
+				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
 				1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */,
@@ -3626,6 +3635,7 @@
 				1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
+				1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C796A2D2219EC1C0035E154 /* SettingsSection.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
@@ -3634,6 +3644,7 @@
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
+				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,
 				1C25AC471F53788900977D6F /* RenderView.swift in Sources */,
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
 				1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */,
@@ -3658,6 +3669,7 @@
 				1C16FC041CC3D84500C88BD1 /* PostsPageView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
 				1CDC53E0220669640086BD2B /* Photos.swift in Sources */,
+				1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,

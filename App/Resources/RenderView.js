@@ -374,6 +374,8 @@ Awful.unionFrameOfElements = function(elements) {
  @typedef InterestingElements
  @type {object}
  @property {boolean} [hasUnspoiledLink] - true when there's an unspoiled link we shouldn't inadvertently reveal.
+ @property {ElementRect} [spoiledImageFrame] - Where the image is in web view coordinates.
+ @property {string} [spoiledImageTitle] - The title of an image visible to the user. For smilies, contains the text used to insert the smilie into a post.
  @property {string} [spoiledImageURL] - A URL pointing to an image that's visible to the user.
  @property {InterestingLink} [spoiledLink] - A text link visible to the user.
  @property {InterestingLink} [spoiledVideo] - A video embed visible to the user.
@@ -393,11 +395,13 @@ Awful.interestingElementsAtPoint = function(x, y) {
 
   var img = elementAtPoint.closest('img:not(button img)');
   if (img && Awful.isSpoiled(img)) {
+    interesting.spoiledImageTitle = img.getAttribute('title');
     if (img.classList.contains('posterized')) {
       interesting.spoiledImageURL = img.dataset.originalUrl;
     } else {
       interesting.spoiledImageURL = img.getAttribute('src');
     }
+    interesting.spoiledImageFrame = Awful.frameOfElement(img);
   }
 
   var a = elementAtPoint.closest('a[href]');

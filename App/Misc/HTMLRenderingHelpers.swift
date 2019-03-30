@@ -278,33 +278,13 @@ private func fixPostimageURL(_ url: URL) -> URL? {
 }
 
 private func isSmilieURL(_ url: URL) -> Bool {
-    guard let host = url.host else { return false }
-    let components = url.pathComponents
-    
-    switch CaseInsensitive(host) {
-    case "fi.somethingawful.com":
-        return components.contains("smilies")
-            || components.contains("posticons")
-            || components.contains("customtitles")
-        
-    case "i.somethingawful.com":
-        return components.contains("emot")
-            || components.contains("emoticons")
-            || components.contains("images")
-            || (components.contains("u")
-                && (components.contains("adminuploads") || components.contains("garbageday")))
-        
-    case "forumimages.somethingawful.com":
-        return components.first == "images"
-            || components.contains("posticons")
-        
-    // Games of Mafia
-    case "media.votefinder.org":
+    if PostedSmilie.isSmilieURL(url) {
         return true
-        
-    default:
-        return false
     }
+    if let host = url.host, host.caseInsensitive == "media.votefinder.org" {
+        return true
+    }
+    return false
 }
 
 /**
