@@ -162,6 +162,7 @@
 		1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */; };
 		1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */; };
 		1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */; };
+		1C3E181F225005F400BD88E5 /* UIFont+MonospacedDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181E225005F400BD88E5 /* UIFont+MonospacedDigits.swift */; };
 		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
 		1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */; };
 		1C40D4AB1A85F57400D9F793 /* AcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */; };
@@ -830,6 +831,7 @@
 		1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostedSmilie.swift; sourceTree = "<group>"; };
 		1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmilieDataStore+Shared.swift"; sourceTree = "<group>"; };
 		1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmilieDataStore+Query.swift"; sourceTree = "<group>"; };
+		1C3E181E225005F400BD88E5 /* UIFont+MonospacedDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+MonospacedDigits.swift"; sourceTree = "<group>"; };
 		1C4079691A228DA6004A082F /* CopyURLActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyURLActivity.swift; sourceTree = "<group>"; };
 		1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Acknowledgements.html.stencil; sourceTree = "<group>"; };
 		1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcknowledgementsViewController.swift; sourceTree = "<group>"; };
@@ -1985,6 +1987,7 @@
 				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
+				1C3E181E225005F400BD88E5 /* UIFont+MonospacedDigits.swift */,
 				1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
 				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
@@ -3695,6 +3698,7 @@
 				1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */,
 				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
 				1C8F6809222B7940007E61ED /* SecondaryThreadTagPickerCell.swift in Sources */,
+				1C3E181F225005F400BD88E5 /* UIFont+MonospacedDigits.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
 				7B1FF12C1F76E690000B64DA /* AppIconPickerCollectionViewLayout.swift in Sources */,
 				1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */,

@@ -216,37 +216,7 @@ extension Theme {
         }
     }
     
-    class func themesForForum(_ forum: Forum) -> [Theme] {
-        let ubiquitousNames = UserDefaults.standard.ubiquitousThemeNames ?? []
-        let themes = bundledThemes.values.filter {
-            $0.forumID == forum.forumID
-                || ($0.forumID == nil && appThemeMatchesTheme(themeName: $0.name))
-                || ubiquitousNames.contains($0.name)
-        }
-        
-        return themes.sorted()
-    }
-    
-    class func appThemeMatchesTheme(themeName: String) -> Bool {
-        if ((themeName == "default" || themeName == "alternateDefault") && UserDefaults.standard.isDarkModeEnabled)
-            || ((themeName == "dark" || themeName == "alternateDark") && !UserDefaults.standard.isDarkModeEnabled) {
-            return false
-        }
-        
-        if (themeName == "default" && UserDefaults.standard.isAlternateThemeEnabled)
-            || (themeName == "alternateDefault" && !UserDefaults.standard.isAlternateThemeEnabled) {
-            return false
-        }
-        
-        if (themeName == "dark" && UserDefaults.standard.isAlternateThemeEnabled)
-            || (themeName == "alternateDark" && !UserDefaults.standard.isAlternateThemeEnabled) {
-            return false
-        }
-        
-        return true
-    }
-    
-    class func themeNameForForum(identifiedBy forumID: String) -> String? {
+    private class func themeNameForForum(identifiedBy forumID: String) -> String? {
         return UserDefaults.standard.string(forKey: defaultsKeyForForum(identifiedBy: forumID))
     }
     
@@ -268,8 +238,8 @@ extension Theme {
         return Notification.Name("Awful theme for forum did change")
     }
     
-    static var forumIDKey: String { return "forumID" }
-    static var themeNameKey: String { return "themeName" }
+    static let forumIDKey = "forumID"
+    static let themeNameKey = "themeName"
 }
 
 private func defaultsKeyForForum(identifiedBy forumID: String) -> String {

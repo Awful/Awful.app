@@ -383,10 +383,8 @@ final class PostsPageViewController: ViewController {
         let item = UIBarButtonItem(image: UIImage(named: "page-settings"), style: .plain, target: nil, action: nil)
         item.accessibilityLabel = "Settings"
         item.actionBlock = { [unowned self] (sender) in
-            guard let forum = self.thread.forum else { return }
-            let settings = PostsPageSettingsViewController(forum: forum)
-            settings.selectedTheme = self.theme
-            self.present(settings, animated: true, completion: nil)
+            let settings = PostsPageSettingsViewController()
+            self.present(settings, animated: true)
             
             if let popover = settings.popoverPresentationController {
                 popover.barButtonItem = sender
