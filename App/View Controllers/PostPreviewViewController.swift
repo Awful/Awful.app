@@ -146,7 +146,7 @@ final class PostPreviewViewController: ViewController {
         
         let context: [String: Any] = [
             "post": post.context,
-            "stylesheet": (theme["postsViewCSS"] as String? ?? "")]
+            "stylesheet": theme[string: "postsViewCSS"] ?? ""]
         do {
             let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
@@ -179,7 +179,7 @@ final class PostPreviewViewController: ViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        if didRender, let css = theme["postsViewCSS"] as String? {
+        if didRender, let css = theme[string: "postsViewCSS"] {
             renderView.setThemeStylesheet(css)
         }
         

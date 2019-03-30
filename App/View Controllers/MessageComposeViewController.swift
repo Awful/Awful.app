@@ -167,7 +167,7 @@ final class MessageComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.textColor = textView.textColor
         fieldView.subjectField.textField.keyboardAppearance = textView.keyboardAppearance
         
-        let attributes = [NSAttributedString.Key.foregroundColor: (theme["placeholderTextColor"] as UIColor?) ?? .gray]
+        let attributes = [NSAttributedString.Key.foregroundColor: theme[color: "placeholderTextColor"] ?? .gray]
         fieldView.toField.textField.attributedPlaceholder = NSAttributedString(string: "To", attributes: attributes)
         fieldView.subjectField.textField.attributedPlaceholder = NSAttributedString(string: "Subject", attributes: attributes)
     }

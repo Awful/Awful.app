@@ -100,14 +100,14 @@ extension MessageListDataSource: UITableViewDataSource {
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
             sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
                 .font: UIFont.boldSystemFont(ofSize: UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.subheadline).pointSize),
-                .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
+                .foregroundColor: theme[color: "listTextColor"]!]),
             sentDate: message.sentDate ?? .distantPast,
             sentDateAttributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
-                .foregroundColor: (theme["listTextColor"] as UIColor?)!],
+                .foregroundColor: theme[color: "listTextColor"]!],
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
-                .foregroundColor: (theme["listTextColor"] as UIColor?)!]),
+                .foregroundColor: theme[color: "listTextColor"]!]),
             tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
             tagOverlayImage: {
                 if message.replied {

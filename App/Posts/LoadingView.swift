@@ -23,7 +23,7 @@ class LoadingView: UIView {
     }
     
     class func loadingViewWithTheme(_ theme: Theme) -> LoadingView {
-        switch theme["postsLoadingViewType"] as String? {
+        switch theme[string: "postsLoadingViewType"] {
         case "Macinyos"?:
             return MacinyosLoadingView(theme: theme)
         case "Winpos95"?:
@@ -66,7 +66,7 @@ private class DefaultLoadingView: LoadingView {
     override func retheme() {
         super.retheme()
         
-        backgroundColor = theme?["postsLoadingViewTintColor"] as UIColor?
+        backgroundColor = theme?[color: "postsLoadingViewTintColor"]
     }
     
     fileprivate override func willMove(toSuperview newSuperview: UIView?) {

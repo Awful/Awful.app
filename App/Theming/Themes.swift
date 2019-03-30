@@ -79,7 +79,7 @@ final class Theme: Comparable {
     }
 
     /// The named color (the "Color" suffix is optional).
-    subscript(colorName: String) -> UIColor? {
+    subscript(color colorName: String) -> UIColor? {
         let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
         guard let value = dictionary[key] as? String else { return parent?[key] }
 
@@ -94,8 +94,17 @@ final class Theme: Comparable {
         }
     }
 
+    /**
+     The named color (the "Color" suffix in the key is optional).
+
+     - Note: If type inference is leading you to do things like `theme["coolKey"] as UIColor?`, consider `theme[color: "coolKey"]` instead.
+     */
+    subscript(colorName: String) -> UIColor? {
+        return self[color: colorName]
+    }
+
     /// The named theme attribute as a string.
-    subscript(key: String) -> String? {
+    subscript(string key: String) -> String? {
         guard let value = dictionary[key] as? String ?? parent?[key] else { return nil }
         if key.hasSuffix("CSS") {
             guard let url = Bundle.main.url(forResource: value, withExtension: nil) else {

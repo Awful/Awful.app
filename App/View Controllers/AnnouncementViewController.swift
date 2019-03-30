@@ -369,7 +369,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
         avatarURL = announcement.author?.avatarURL
             ?? extractAvatarURL(fromCustomTitleHTML: announcement.authorCustomTitleHTML)
 
-        css = theme["postsViewCSS"] as String? ?? ""
+        css = theme[string: "postsViewCSS"] ?? ""
 
         hasBeenSeen = announcement.hasBeenSeen && hadBeenSeenAlready
 

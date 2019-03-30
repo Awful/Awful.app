@@ -114,7 +114,7 @@ final class ThreadPreviewViewController: ViewController {
         guard let post = post else { return }
         
         let context: [String: Any] = [
-            "stylesheet": (theme["postsViewCSS"] as String? ?? ""),
+            "stylesheet": theme[string: "postsViewCSS"] ?? "",
             "post": post]
         do {
             let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
@@ -136,13 +136,13 @@ final class ThreadPreviewViewController: ViewController {
             backgroundColor: theme["listBackgroundColor"]!,
             pageCount: NSAttributedString(string: "1", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
-                .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!]),
+                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             pageIconColor: theme["listSecondaryTextColor"]!,
             postInfo: {
                 let text = String(format: LocalizedString("compose.thread-preview.posting-in"), forum.name ?? "")
                 return NSAttributedString(string: text, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
-                    .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!])
+                    .foregroundColor: theme[color: "listSecondaryTextColor"]!])
             }(),
             ratingImage: nil,
             secondaryTagImageName: secondaryThreadTag?.imageName,
@@ -154,7 +154,7 @@ final class ThreadPreviewViewController: ViewController {
                 subject.collapseWhitespace()
                 return NSAttributedString(string: subject, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
-                    .foregroundColor: (theme["listTextColor"] as UIColor?)!])
+                    .foregroundColor: theme[color: "listTextColor"]!])
             }(),
             unreadCount: NSAttributedString())
         
@@ -189,7 +189,7 @@ final class ThreadPreviewViewController: ViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        if didRender, let css = theme["postsViewCSS"] as String? {
+        if didRender, let css = theme[string: "postsViewCSS"] {
             renderView.setThemeStylesheet(css)
         }
         

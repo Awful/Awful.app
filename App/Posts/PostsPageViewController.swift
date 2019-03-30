@@ -301,7 +301,7 @@ final class PostsPageViewController: ViewController {
         
         var context: [String: Any] = [:]
         
-        context["stylesheet"] = (theme["postsViewCSS"] as String?) as Any
+        context["stylesheet"] = theme[string: "postsViewCSS"] as Any
         
         if posts.count > hiddenPosts {
             let subset = posts[hiddenPosts...]

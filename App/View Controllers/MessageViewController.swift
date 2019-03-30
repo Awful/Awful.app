@@ -234,7 +234,7 @@ final class MessageViewController: ViewController {
     override func themeDidChange() {
         super.themeDidChange()
         
-        if didRender, let css = theme["postsViewCSS"] as String? {
+        if didRender, let css = theme[string: "postsViewCSS"] {
             renderView.setThemeStylesheet(css)
         }
         

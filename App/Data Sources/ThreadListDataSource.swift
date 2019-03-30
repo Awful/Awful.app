@@ -149,7 +149,7 @@ extension ThreadListDataSource: UITableViewDataSource {
             backgroundColor: theme["listBackgroundColor"]!,
             pageCount: NSAttributedString(string: "\(thread.numberOfPages)", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
-                .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!]),
+                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             pageIconColor: theme["threadListPageIconColor"]!,
             postInfo: {
                 let text: String
@@ -161,7 +161,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
                 return NSAttributedString(string: text, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
-                    .foregroundColor: (theme["listSecondaryTextColor"] as UIColor?)!])
+                    .foregroundColor: theme[color: "listSecondaryTextColor"]!])
             }(),
             ratingImage: {
                 if !showsTagAndRating {
@@ -195,7 +195,7 @@ extension ThreadListDataSource: UITableViewDataSource {
             }(),
             title: NSAttributedString(string: thread.title ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
-                .foregroundColor: (theme[thread.closed ? "listSecondaryTextColor" : "listTextColor"] as UIColor?)!]),
+                .foregroundColor: theme[color: thread.closed ? "listSecondaryTextColor" : "listTextColor"]!]),
             unreadCount: {
                 guard thread.beenSeen else { return NSAttributedString() }
                 let color: UIColor
