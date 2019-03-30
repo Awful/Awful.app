@@ -49,7 +49,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     override var theme: Theme {
-        return Theme.currentThemeForForum(forum: forum)
+        return Theme.currentTheme(for: forum)
     }
 
     private func makeDataSource() -> ThreadListDataSource {

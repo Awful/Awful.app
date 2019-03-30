@@ -42,7 +42,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     var theme: Theme {
-        return Theme.currentTheme
+        return Theme.defaultTheme()
     }
     
     // MARK: Swipe to unpop

@@ -76,8 +76,8 @@ final class PostPreviewViewController: ViewController {
         guard
             let thread = thread ?? editingPost?.thread,
             let forum = thread.forum
-            else { return Theme.defaultTheme }
-        return Theme.currentThemeForForum(forum: forum)
+            else { return Theme.defaultTheme() }
+        return Theme.currentTheme(for: forum)
     }
     
     // MARK: Rendering the preview

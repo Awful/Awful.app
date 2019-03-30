@@ -94,7 +94,7 @@ extension MessageListDataSource: UITableViewDataSource {
 
     private func viewModelForMessage(at indexPath: IndexPath) -> MessageListCell.ViewModel {
         let message = self.message(at: indexPath)
-        let theme = Theme.currentTheme
+        let theme = Theme.defaultTheme()
         return MessageListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,

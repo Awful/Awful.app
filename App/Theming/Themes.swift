@@ -21,7 +21,7 @@ import UIKit
 
     The theme named "default" is special: it is the parent of all themes that do not specify a parent. It's the root theme. All themes eventually point back to the default theme.
 */
-final class Theme: Comparable {
+final class Theme {
     let name: String
     fileprivate let dictionary: [String: Any]
     fileprivate var parent: Theme?
@@ -30,7 +30,30 @@ final class Theme: Comparable {
         self.name = name
         self.dictionary = flatten(dictionary)
     }
-    
+
+    enum Mode: Hashable {
+        case light, dark
+    }
+}
+
+private func flatten<K, V>(_ dictionary: [K: V]) -> [K: V] {
+    return dictionary.reduce([:]) { (accum, kvpair) in
+        var accum = accum
+        if let nested = kvpair.1 as? [K: V] {
+            for (k, v) in flatten(nested) {
+                accum[k] = v
+            }
+        } else {
+            accum[kvpair.0] = kvpair.1
+        }
+        return accum
+    }
+}
+
+// MARK: Dictionary accessors
+
+extension Theme {
+
     /// The name of the theme, suitable for presentation.
     var descriptiveName: String {
         return dictionary["descriptiveName"] as? String ?? name
@@ -122,122 +145,116 @@ final class Theme: Comparable {
             return value
         }
     }
-}
 
-func == (lhs: Theme, rhs: Theme) -> Bool {
-    return lhs === rhs
-}
+    /**
+     The named theme attribute as a string.
 
-/// Themes are ordered: default, dark, <rest sorted by name>
-func < (lhs: Theme, rhs: Theme) -> Bool {
-    if lhs.name == "default" {
-        return rhs.name != "default"
-    } else if rhs.name == "default" {
-        return false
+     - Note: If type inference is leading you to do things like `theme["coolKey"] as String?`, consider `theme[string: "coolKey"]` instead.
+     */
+    subscript(key: String) -> String? {
+        return self[string: key]
     }
-    
-    if lhs.name == "dark" {
-        return rhs.name != "dark"
-    } else if rhs.name == "dark" {
-        return false
-    }
-    
-    return lhs.name < rhs.name
 }
 
-private func flatten<K, V>(_ dictionary: [K: V]) -> [K: V] {
-    return dictionary.reduce([:]) { (accum, kvpair) in
-        var accum = accum
-        if let nested = kvpair.1 as? [K: V] {
-            for (k, v) in flatten(nested) {
-                accum[k] = v
-            }
-        } else {
-            accum[kvpair.0] = kvpair.1
+// MARK: - Comparable
+
+extension Theme: Comparable {
+    static func == (lhs: Theme, rhs: Theme) -> Bool {
+        return lhs === rhs
+    }
+
+    /// Themes are ordered: default, dark, <rest sorted by name>
+    static func < (lhs: Theme, rhs: Theme) -> Bool {
+        if lhs.name == "default" {
+            return rhs.name != "default"
+        } else if rhs.name == "default" {
+            return false
         }
-        return accum
+
+        if lhs.name == "dark" {
+            return rhs.name != "dark"
+        } else if rhs.name == "dark" {
+            return false
+        }
+
+        return lhs.name < rhs.name
     }
 }
+
+// MARK: - Themes based on forums and settings
 
 private let bundledThemes: [String: Theme] = {
     let URL = Bundle.main.url(forResource: "Themes", withExtension: "plist")!
-    let plist = NSDictionary(contentsOf: URL) as! [String: AnyObject]
-    
+    let plist = NSDictionary(contentsOf: URL) as! [String: Any]
+
     var themes = [String: Theme]()
-    
+
     for (name, dictionary) in plist {
-        themes[name] = Theme(name: name, dictionary: dictionary as! [String: AnyObject])
+        themes[name] = Theme(name: name, dictionary: dictionary as! [String: Any])
     }
-    
+
     for (name, var theme) in themes {
         if name != "default" {
             let parentName = theme.dictionary["parent"] as? String ?? "default"
             theme.parent = themes[parentName]!
         }
     }
-    
+
     return themes
 }()
 
-// MARK: Themes based on forums and preferences
-
 extension Theme {
-    class var defaultTheme: Theme {
-        if UserDefaults.standard.isAlternateThemeEnabled {
-            return bundledThemes["alternateDefault"]!
+    static func defaultTheme(mode: Mode = currentMode) -> Theme {
+        let themeName: String
+        switch mode {
+        case .dark:
+            themeName = UserDefaults.standard.defaultDarkTheme
+        case .light:
+            themeName = UserDefaults.standard.defaultLightTheme
         }
-        return bundledThemes["default"]!
+        return bundledThemes[themeName]!
     }
-    
-    class var darkTheme: Theme {
-        if UserDefaults.standard.isAlternateThemeEnabled {
-            return bundledThemes["alternateDark"]!
-        }
-        return bundledThemes["dark"]!
-    }
-    
-    class var currentTheme: Theme {
-        if UserDefaults.standard.isDarkModeEnabled {
-            if UserDefaults.standard.isAlternateThemeEnabled {
-                return bundledThemes["alternateDark"]!
-            }
-            return bundledThemes["dark"]!
-        } else {
-            if UserDefaults.standard.isAlternateThemeEnabled {
-                return bundledThemes["alternateDefault"]!
-            }
-            return defaultTheme
-        }
-    }
-    
+
     class var allThemes: [Theme] {
         return bundledThemes.values.sorted()
     }
+
+    private static var currentMode: Mode {
+        return UserDefaults.standard.isDarkModeEnabled ? .dark : .light
+    }
     
-    class func currentThemeForForum(forum: Forum) -> Theme {
-        if let name = themeNameForForum(identifiedBy: forum.forumID) {
-            if name == "default" || name == "dark" || name == "alternateDefault" || name == "alternateDark" {
-                return currentTheme
-            }
-            return bundledThemes[name]!
+    static func currentTheme(for forum: Forum, mode: Mode = currentMode) -> Theme {
+        if let themeName = themeNameForForum(identifiedBy: forum.forumID, mode: mode) {
+            return bundledThemes[themeName]!
         } else {
-            return currentTheme
+            return defaultTheme(mode: mode)
         }
     }
     
-    private class func themeNameForForum(identifiedBy forumID: String) -> String? {
-        return UserDefaults.standard.string(forKey: defaultsKeyForForum(identifiedBy: forumID))
+    private static func themeNameForForum(identifiedBy forumID: String, mode: Mode) -> String? {
+        return UserDefaults.standard.string(forKey: defaultsKeyForForum(identifiedBy: forumID, mode: mode))
     }
     
     /// Posts `Themes.themeForForumDidChangeNotification`.
-    class func setThemeName(_ themeName: String?, forForumIdentifiedBy forumID: String) {
-        UserDefaults.standard.set(themeName, forKey: defaultsKeyForForum(identifiedBy: forumID))
+    static func setThemeName(_ themeName: String?, forForumIdentifiedBy forumID: String, modes: Set<Mode>) {
+        for mode in modes {
+            UserDefaults.standard.set(themeName, forKey: defaultsKeyForForum(identifiedBy: forumID, mode: mode))
+        }
         
         var userInfo = [Theme.forumIDKey: forumID]
         if let themeName = themeName {
             userInfo[Theme.themeNameKey] = themeName
         }
         NotificationCenter.default.post(name: Theme.themeForForumDidChangeNotification, object: self, userInfo: userInfo)
+    }
+
+    private static func defaultsKeyForForum(identifiedBy forumID: String, mode: Mode) -> String {
+        switch mode {
+        case .light:
+            return "theme-light-\(forumID)"
+        case .dark:
+            return "theme-dark-\(forumID)"
+        }
     }
     
     /**
@@ -251,6 +268,18 @@ extension Theme {
     static let themeNameKey = "themeName"
 }
 
-private func defaultsKeyForForum(identifiedBy forumID: String) -> String {
-    return "theme-\(forumID)"
+extension Theme {
+    static var forumSpecificDefaults: [String: Any] {
+        let modeless = [
+            "25": "Gas Chamber",
+            "26": "FYAD",
+            "219": "YOSPOS",
+            "268": "BYOB"]
+        var altogether: [String: Any] = [:]
+        for (forumID, themeName) in modeless {
+            altogether["theme-dark-\(forumID)"] = themeName
+            altogether["theme-light-\(forumID)"] = themeName
+        }
+        return altogether
+    }
 }

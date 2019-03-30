@@ -21,11 +21,14 @@ extension UserDefaults {
         static let confirmNewPosts = "confirm_before_replying"
         /// sourcery: valueType = String?
         static let customBaseURLString = "custom_base_URL"
+        /// sourcery: valueType = String!
+        static let defaultLightTheme = "default_light_theme_name"
+        /// sourcery: valueType = String!
+        static let defaultDarkTheme = "default_dark_theme_name"
         static let embedTweets = "embed_tweets"
         /// sourcery: valueType = Double
         static let fontScale = "font_scale"
         static let hideSidebarInLandscape = "hide_sidebar_in_landscape"
-        static let isAlternateThemeEnabled = "alternate_theme"
         static let isDarkModeEnabled = "dark_theme"
         static let isHandoffEnabled = "handoff_enabled"
         static let isPullForNextEnabled = "pull_for_next"
@@ -172,9 +175,12 @@ extension UserDefaults {
 
 extension UserDefaults {
     func registerDefaults(_ sections: [SettingsSection]) {
-        let defaults = SettingsSection.mainBundleSections.reduce(into: [:]) { defaults, section in
+        var defaults = SettingsSection.mainBundleSections.reduce(into: [:]) { defaults, section in
             defaults.merge(section.defaultValues, uniquingKeysWith: { $1 })
         }
+        defaults[SettingsKeys.defaultDarkTheme] = "dark" // TODO: if OLED screen and we have OLED theme, use OLED theme
+        defaults[SettingsKeys.defaultLightTheme] = "default"
+        defaults.merge(Theme.forumSpecificDefaults, uniquingKeysWith: { $1 })
         register(defaults: defaults)
     }
 }
@@ -200,14 +206,19 @@ extension UserDefaults {
         
         /// Possible values: "never", "landscape", "portrait", "always".
         static let keepSidebarOpen = "keep_sidebar_open"
+
+        /// Possible values: `true`, `false`.
+        static let isAlternateThemeEnabled = "alternate_theme"
         
         /// Possible values: "green", "amber", "macinyos", "winpos95".
         static let yosposStyle = "yospos_style"
     }
     
     func migrateOldAwfulSettings() {
+        let userSpecifiedSettings = persistentDomain(forName: Bundle.main.bundleIdentifier!) ?? [:]
+
         var newYOSPOSStyle: String? {
-            switch string(forKey: OldSettingsKeys.yosposStyle) {
+            switch userSpecifiedSettings[OldSettingsKeys.yosposStyle] as? String {
             case "green": return "YOSPOS"
             case "amber": return "YOSPOS (amber)"
             case "macinyos": return "Macinyos"
@@ -216,16 +227,49 @@ extension UserDefaults {
             }
         }
         if let newYOSPOSStyle = newYOSPOSStyle {
-            Theme.setThemeName(newYOSPOSStyle, forForumIdentifiedBy: "219")
+            Theme.setThemeName(newYOSPOSStyle, forForumIdentifiedBy: "219", modes: [.light, .dark])
             removeObject(forKey: OldSettingsKeys.yosposStyle)
         }
         
-        switch string(forKey: OldSettingsKeys.keepSidebarOpen) {
+        switch userSpecifiedSettings[OldSettingsKeys.keepSidebarOpen] as? String {
         case "never", "portrait":
             hideSidebarInLandscape = true
             removeObject(forKey: OldSettingsKeys.keepSidebarOpen)
         default:
             break
+        }
+
+        // "Alternate App Theme" used to be a separate setting. Now we have default theme settings for each mode.
+        if userSpecifiedSettings[OldSettingsKeys.isAlternateThemeEnabled] as? Bool == true {
+            defaultDarkTheme = "alternateDark"
+            defaultLightTheme = "alternateDefault"
+            removeObject(forKey: OldSettingsKeys.isAlternateThemeEnabled)
+        }
+
+        // Now we set forum-specific themes for each mode, so migrate the old keys over.
+        func parseForumSpecificThemeKey(_ key: String) -> String? {
+            let scanner = Scanner(string: key)
+            scanner.caseSensitive = true
+            scanner.charactersToBeSkipped = nil
+            guard
+                scanner.scan("theme-"),
+                let forumID = scanner.scanInt(),
+                scanner.isAtEnd
+                else { return nil }
+            return String(forumID)
+        }
+        var keysToRemove: [String] = []
+        // We don't want any registered defaults, just ones the user has set.
+        for (key, themeName) in userSpecifiedSettings {
+            guard
+                let forumID = parseForumSpecificThemeKey(key),
+                let themeName = themeName as? String
+                else { continue }
+            Theme.setThemeName(themeName, forForumIdentifiedBy: forumID, modes: [.light, .dark])
+            keysToRemove.append(key)
+        }
+        for key in keysToRemove {
+            removeObject(forKey: key)
         }
     }
     

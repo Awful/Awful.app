@@ -73,7 +73,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         } else {
             window = UIWindow(frame: UIScreen.main.bounds)
         }
-        window?.tintColor = Theme.currentTheme["tintColor"]
+        window?.tintColor = Theme.defaultTheme()["tintColor"]
         
         if ForumsClient.shared.isLoggedIn {
             setRootViewController(rootViewControllerStack.rootViewController, animated: false, completion: nil)
@@ -116,10 +116,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             $0.observe(\.customBaseURLString) { [unowned self] defaults in
                 self.updateClientBaseURL()
-            }
-            $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
-                [unowned self] defaults in
-                self.showSnapshotDuringThemeDidChange()
             }
         }
 
@@ -286,7 +282,7 @@ private extension AppDelegate {
     func themeDidChange() {
         guard let window = window else { return }
 
-        window.tintColor = Theme.currentTheme["tintColor"]
+        window.tintColor = Theme.defaultTheme()["tintColor"]
 
         if let root = window.rootViewController {
             for vc in root.subtree {

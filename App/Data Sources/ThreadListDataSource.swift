@@ -142,7 +142,7 @@ extension ThreadListDataSource: UITableViewDataSource {
 
     private func viewModelForCell(at indexPath: IndexPath) -> ThreadListCell.ViewModel {
         let thread = resultsController.object(at: indexPath)
-        let theme = delegate?.themeForItem(at: indexPath, in: self) ?? .currentTheme
+        let theme = delegate?.themeForItem(at: indexPath, in: self) ?? .defaultTheme()
         let tweaks = thread.forum.flatMap { ForumTweaks(forumID: $0.forumID) }
 
         return ThreadListCell.ViewModel(

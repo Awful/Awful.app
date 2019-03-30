@@ -116,7 +116,7 @@ extension ThreadTagLoader {
         static func thread(in forum: Forum) -> Placeholder {
             return Placeholder(
                 imageName: "empty-thread-tag",
-                tintColor: Theme.currentThemeForForum(forum: forum)["listTextColor"])
+                tintColor: Theme.currentTheme(for: forum)["listTextColor"])
         }
         
         

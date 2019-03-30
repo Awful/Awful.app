@@ -62,7 +62,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     override var theme: Theme {
-        return Theme.currentThemeForForum(forum: forum)
+        return Theme.currentTheme(for: forum)
     }
     
     override func themeDidChange() {

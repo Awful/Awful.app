@@ -67,15 +67,14 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         updateMessagesTabPresence()
         
         observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.hideSidebarInLandscape) { [unowned self] defaults in
-                self.configureSplitViewControllerDisplayMode()
+            $0.observe(\.hideSidebarInLandscape) { [weak self] defaults in
+                self?.configureSplitViewControllerDisplayMode()
             }
-            $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
-                [unowned self] defaults in
-                self.configureTabBarColor()
+            $0.observe(\.isDarkModeEnabled) { [weak self] defaults in
+                self?.configureTabBarColor()
             }
-            $0.observe(\.loggedInUserCanSendPrivateMessages) { [unowned self] defaults in
-                self.updateMessagesTabPresence()
+            $0.observe(\.loggedInUserCanSendPrivateMessages) { [weak self] defaults in
+                self?.updateMessagesTabPresence()
             }
         }
         
@@ -126,7 +125,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 			tabBarController.tabBar.barTintColor = nil
 		}
 
-        tabBarController.tabBar.tintColor = Theme.currentTheme["tintColor"]
+        tabBarController.tabBar.tintColor = Theme.defaultTheme()["tintColor"]
 	}
 	
     private func configureSplitViewControllerDisplayMode() {

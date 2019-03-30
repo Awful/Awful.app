@@ -38,7 +38,7 @@ class ViewController: UIViewController, Themeable {
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
     var theme: Theme {
-        return Theme.currentTheme
+        return Theme.defaultTheme()
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
@@ -117,7 +117,7 @@ class TableViewController: UITableViewController, Themeable {
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
     var theme: Theme {
-        return Theme.currentTheme
+        return Theme.defaultTheme()
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
@@ -235,7 +235,7 @@ class CollectionViewController: UICollectionViewController, Themeable {
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
     var theme: Theme {
-        return Theme.currentTheme
+        return Theme.defaultTheme()
     }
     
     // MARK: View lifecycle

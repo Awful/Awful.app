@@ -410,7 +410,7 @@ extension ForumListDataSource: UITableViewDataSource {
 
     private func viewModelForCell(at indexPath: IndexPath) -> ForumListCell.ViewModel {
         let controller = controllerAtGlobalSection(indexPath.section).controller
-        let theme = delegate?.themeForCells(in: self) ?? Theme.currentTheme
+        let theme = delegate?.themeForCells(in: self) ?? Theme.defaultTheme()
 
         // Using forum cells to show announcements out of sheer laziness.
         switch item(at: indexPath) {

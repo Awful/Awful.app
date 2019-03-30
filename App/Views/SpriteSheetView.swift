@@ -45,7 +45,7 @@ public final class SpriteSheetView: UIView {
         
         let chosenColor: UIColor?
         if followsTheme {
-            chosenColor = Theme.currentTheme["tintColor"]
+            chosenColor = Theme.defaultTheme()["tintColor"]
             colorFollowsTheme = true
         } else {
             chosenColor = color
@@ -59,12 +59,11 @@ public final class SpriteSheetView: UIView {
         
         if colorFollowsTheme {
             observers += UserDefaults.standard.observeSeveral {
-                $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
-                    [weak self] defaults in
+                $0.observe(\.isDarkModeEnabled) { [weak self] defaults in
                     guard let self = self else { return }
                     if
                         let currentSheet = self.spriteSheet,
-                        let tintColor = Theme.currentTheme[color: "tintColor"],
+                        let tintColor = Theme.defaultTheme()[color: "tintColor"],
                         let newSheet = currentSheet.withTint(tintColor)
                     {
                         self.spriteSheet = newSheet

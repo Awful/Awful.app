@@ -18,8 +18,8 @@ extension UserDefaults {
 
     {% for key in type.UserDefaults.SettingsKeys.variables|static %}
 
-    @objc dynamic var {{ key.name }}: {{ key.annotations.valueType|default:"Bool" }} {
-        get { return {{ key.annotations.valueType|default:"Bool"|replace:"?",""|lowercase }}(forKey: SettingsKeys.{{ key.name }}) }
+    @objc dynamic var {{ key.name }}: {{ key.annotations.valueType|default:"Bool"|replace:"!","" }} {
+        get { return {{ key.annotations.valueType|default:"Bool"|replace:"?",""|replace:"!",""|lowercase }}(forKey: SettingsKeys.{{ key.name }}){% if key.annotations.valueType|default:"Bool"|contains:"!" %}!{% endif %} }
         set { set(newValue, forKey: SettingsKeys.{{ key.name }}) }
     }
 

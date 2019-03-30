@@ -55,7 +55,7 @@ final class AwfulURLRouter: NSObject {
 
             guard let rootView = rootViewController.view else { return false }
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
-            overlay?.tintColor = Theme.currentTheme["tintColor"]
+            overlay?.tintColor = Theme.defaultTheme()["tintColor"]
 
             ForumsClient.shared.readPrivateMessage(identifiedBy: key)
                 .done { message in
@@ -92,7 +92,7 @@ final class AwfulURLRouter: NSObject {
 
             guard let rootView = rootViewController.view else { return false }
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)
-            overlay?.tintColor = Theme.currentTheme["tintColor"]
+            overlay?.tintColor = Theme.defaultTheme()["tintColor"]
 
             ForumsClient.shared.locatePost(id: key.postID)
                 .done { [weak self] arg in

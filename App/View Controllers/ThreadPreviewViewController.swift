@@ -64,7 +64,7 @@ final class ThreadPreviewViewController: ViewController {
     }
     
     override var theme: Theme {
-        return Theme.currentThemeForForum(forum: forum)
+        return Theme.currentTheme(for: forum)
     }
     
     // MARK: Rendering preview
