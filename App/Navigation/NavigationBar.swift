@@ -6,6 +6,8 @@ import UIKit
 
 /// Long-tapping the back button of an AwfulNavigationBar will pop its navigation controller to its root view controller.
 final class NavigationBar: UINavigationBar {
+    private var observers: [NSKeyValueObservation] = []
+    private let bottomBorder: CALayer = CALayer()
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -21,6 +23,21 @@ final class NavigationBar: UINavigationBar {
         titleTextAttributes = [.font: UIFont.systemFont(ofSize: 17, weight: .regular)]
         
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
+                [unowned self] defaults in
+                self.configureNavigationBarColor()
+            }
+        }
+        
+        configureNavigationBarColor()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        configureNavigationBarColor()
     }
     
     required init?(coder: NSCoder) {
@@ -39,5 +56,22 @@ final class NavigationBar: UINavigationBar {
             leftmost.bounds.contains(sender.location(in: leftmost))
             else { return }
         nav.popToRootViewController(animated: true)
+    }
+    
+    private func configureNavigationBarColor() {
+        print("NavigationBar configureNavigationBarColor entry")
+        if UserDefaults.standard.isAlternateThemeEnabled && UserDefaults.standard.isDarkModeEnabled {
+            print("adding border")
+            bottomBorder.frame = CGRect(x: 0, y: frame.size.height - 0.5, width: frame.size.width, height: 0.5)
+            bottomBorder.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0).cgColor
+            bottomBorder.removeFromSuperlayer()
+            layer.addSublayer(bottomBorder)
+            layer.shadowOpacity = 0
+        } else {
+            print("removing border")
+            bottomBorder.removeFromSuperlayer()
+            layer.shadowOpacity = 1
+        }
+        
     }
 }

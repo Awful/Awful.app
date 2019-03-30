@@ -348,8 +348,8 @@ post {
   padding-bottom: 0.7em;
 }
 post.seen {
-  background: linear-gradient(to top, #042332, #000000 100px);
-  border-bottom: 2px solid #27424f;
+  background: linear-gradient(to top, #002044, #000000 100px);
+  border-bottom: 2px solid #003169;
 }
 header {
   border-bottom: none;

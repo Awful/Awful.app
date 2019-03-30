@@ -376,7 +376,7 @@
 			<key>navigationBarTextColor</key>
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
-			<string>#002e64</string>
+			<string>#000000</string>
 			<key>tabBarBackgroundColor</key>
 			<string>#000000</string>
 			<key>toolbarTextColor</key>
@@ -393,7 +393,7 @@
 			<key>postsTopBarTextColor</key>
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
-			<string>#00234a</string>
+			<string>#000000</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-alternate-dark.css</string>
 		</dict>

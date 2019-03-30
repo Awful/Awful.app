@@ -20,6 +20,8 @@ final class Toolbar: UIToolbar {
             }
         }
         
+        configureToolbarColor()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -31,7 +33,7 @@ final class Toolbar: UIToolbar {
             isTranslucent = false
             
             topBorder.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: 0.5)
-            topBorder.backgroundColor = UIColor.darkGray.cgColor
+            topBorder.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0).cgColor
             
             layer.addSublayer(topBorder)
         } else {

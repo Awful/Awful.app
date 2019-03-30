@@ -5,6 +5,10 @@
 import UIKit
 
 final class PostsViewTopBar: UIView {
+    private var observers: [NSKeyValueObservation] = []
+    
+    private let bottomBorder: CALayer = CALayer()
+    
     let parentForumButton = UIButton()
     let previousPostsButton = UIButton()
     let scrollToBottomButton = UIButton()
@@ -29,6 +33,15 @@ final class PostsViewTopBar: UIView {
         scrollToBottomButton.accessibilityLabel = "Scroll to end"
         scrollToBottomButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         addSubview(scrollToBottomButton)
+        
+        observers += UserDefaults.standard.observeSeveral {
+            $0.observe(\.isAlternateThemeEnabled, \.isDarkModeEnabled) {
+                [unowned self] defaults in
+                self.configureBarColor()
+            }
+        }
+        
+        configureBarColor()
     }
     
     required init?(coder: NSCoder) {
@@ -45,5 +58,21 @@ final class PostsViewTopBar: UIView {
         previousPostsButton.frame = CGRect(x: parentForumButton.frame.maxX + 1, y: 0, width: buttonWidth + leftoverWidth, height: buttonHeight)
         
         scrollToBottomButton.frame = CGRect(x: previousPostsButton.frame.maxX + 1, y: 0, width: buttonWidth, height: buttonHeight)
+        
+        configureBarColor()
+    }
+    
+    private func configureBarColor() {
+        print("PostsViewTopBar configureBarColor entry")
+        if UserDefaults.standard.isAlternateThemeEnabled && UserDefaults.standard.isDarkModeEnabled {
+            print("adding border")
+            bottomBorder.frame = CGRect(x: 0, y: frame.size.height - 0.5, width: frame.size.width, height: 0.5)
+            bottomBorder.backgroundColor = UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0).cgColor
+            bottomBorder.removeFromSuperlayer()
+            layer.addSublayer(bottomBorder)
+        } else {
+            print("removing border")
+            bottomBorder.removeFromSuperlayer()
+        }
     }
 }
