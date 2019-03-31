@@ -110,6 +110,7 @@
 		1C29BD4922505AD500E1217A /* ThemeNameTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */; };
 		1C29BD4B22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */; };
 		1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */; };
+		1C29BD4F225114C600E1217A /* ThemeMode+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
@@ -784,6 +785,7 @@
 		1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeNameTransformer.swift; sourceTree = "<group>"; };
 		1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsForumSpecificThemesViewController.swift; sourceTree = "<group>"; };
 		1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsThemePickerViewController.swift; sourceTree = "<group>"; };
+		1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeMode+Presentation.swift"; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -2031,6 +2033,7 @@
 			children = (
 				1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */,
 				1C719F4B2244653F009864E9 /* Post+Presentation.swift */,
+				1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */,
 				1CB5F7F6201547D90046D080 /* Thread+Presentation.swift */,
 				1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */,
 			);
@@ -3721,6 +3724,7 @@
 				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
+				1C29BD4F225114C600E1217A /* ThemeMode+Presentation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

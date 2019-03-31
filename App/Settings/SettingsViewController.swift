@@ -412,6 +412,11 @@ final class SettingsViewController: TableViewController {
             let vc = SettingsThemePickerViewController(defaultMode: mode)
             vc.title = setting["Title"] as! String?
             navigationController?.pushViewController(vc, animated: true)
+
+        case (_, "forum-specific-themes"):
+            let vc = SettingsForumSpecificThemesViewController(context: managedObjectContext)
+            vc.title = setting["Title"] as? String
+            navigationController?.pushViewController(vc, animated: true)
             
         case (_, let vcTypeName?):
             guard let vcType = NSClassFromString(vcTypeName) as? UIViewController.Type else { fatalError("couldn't find type named \(vcTypeName)") }

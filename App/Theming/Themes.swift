@@ -31,7 +31,7 @@ final class Theme {
         self.dictionary = flatten(dictionary)
     }
 
-    enum Mode: Hashable {
+    enum Mode: CaseIterable, Hashable {
         case light, dark
     }
 }
@@ -268,6 +268,22 @@ extension Theme {
         case .dark:
             return "theme-dark-\(forumID)"
         }
+    }
+
+    static var forumsWithSpecificThemes: Set<String> {
+        func extractForumID(_ key: String) -> String? {
+            let components = key.split(separator: "-")
+            guard
+                components.count == 3,
+                components[0] == "theme",
+                ["light", "dark"].contains(components[1]),
+                Int(components[2]) != nil
+                else { return nil }
+            return String(components[2])
+        }
+        return Set(UserDefaults.standard
+            .dictionaryRepresentation().keys
+            .compactMap(extractForumID(_:)))
     }
     
     /**

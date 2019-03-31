@@ -250,6 +250,11 @@
 "smilie-action.remove-from-favorites" = "Remove %@ from Favorites";
 
 
+/* MARK: Theme modes */
+
+"theme-mode.dark" = "Dark";
+"theme-mode.light" = "Light";
+
 /* MARK: User profile */
 
 /* Title of the profile screen, used when the user's username is unavailable for some reason. */

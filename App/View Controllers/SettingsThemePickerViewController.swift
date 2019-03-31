@@ -106,7 +106,11 @@ final class SettingsThemePickerViewController: TableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        UserDefaults.standard.set(themes[indexPath.row].name, forKey: settingsKey)
+        if let forumID = forumID {
+            Theme.setThemeName(themes[indexPath.row].name, forForumIdentifiedBy: forumID, modes: [mode])
+        } else {
+            UserDefaults.standard.set(themes[indexPath.row].name, forKey: settingsKey)
+        }
     }
 
     // MARK: - Gunk

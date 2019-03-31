@@ -127,6 +127,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.showSnapshotDuringThemeDidChange()
                 }
             }
+            $0.observe(\.isDarkModeEnabled) { [unowned self] defaults in
+                self.showSnapshotDuringThemeDidChange()
+            }
         }
 
         return true

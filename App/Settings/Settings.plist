@@ -280,7 +280,7 @@
 					<key>Title</key>
 					<string>Forum-Specific Themes</string>
 					<key>ViewController</key>
-					<string>Awful.SettingsForumSpecificThemesViewController</string>
+					<string>forum-specific-themes</string>
 				</dict>
 				<dict>
 					<key>Title</key>
