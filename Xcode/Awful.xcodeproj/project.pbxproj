@@ -111,6 +111,9 @@
 		1C29BD4B22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */; };
 		1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */; };
 		1C29BD4F225114C600E1217A /* ThemeMode+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */; };
+		1C29BD512251203400E1217A /* posts-view-oled-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C29BD502251203400E1217A /* posts-view-oled-dark.css */; };
+		1C29BD532251208200E1217A /* quote-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C29BD522251208200E1217A /* quote-post.png */; };
+		1C29BD55225121F100E1217A /* RootTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD54225121F100E1217A /* RootTabBarController.swift */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
@@ -414,8 +417,7 @@
 		1CF0F8F11ED9E46600C16099 /* StandardErrorScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */; };
 		1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
-		1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */; };
-		1CF264CA1F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */; };
+		1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */; };
 		1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF280972055EB9B00913149 /* AwfulRoute.swift */; };
 		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
@@ -786,6 +788,9 @@
 		1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsForumSpecificThemesViewController.swift; sourceTree = "<group>"; };
 		1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsThemePickerViewController.swift; sourceTree = "<group>"; };
 		1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeMode+Presentation.swift"; sourceTree = "<group>"; };
+		1C29BD502251203400E1217A /* posts-view-oled-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-oled-dark.css"; sourceTree = "<group>"; };
+		1C29BD522251208200E1217A /* quote-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-post.png"; sourceTree = "<group>"; };
+		1C29BD54225121F100E1217A /* RootTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarController.swift; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -1117,8 +1122,7 @@
 		1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardErrorScrapingTests.swift; sourceTree = "<group>"; };
 		1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableScrapeResult.swift; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
-		1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar_FixiOS11iPadLayout.swift; sourceTree = "<group>"; };
-		1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBarController_FixiOS11iPadLayout.storyboard; sourceTree = "<group>"; };
+		1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RootTabBarController.storyboard; sourceTree = "<group>"; };
 		1CF280972055EB9B00913149 /* AwfulRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulRoute.swift; sourceTree = "<group>"; };
 		1CF6786A201E751D009A9640 /* MessageListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDataSource.swift; sourceTree = "<group>"; };
 		1CF6786D201E8F45009A9640 /* MessageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListCell.swift; sourceTree = "<group>"; };
@@ -2126,6 +2130,8 @@
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
 				1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */,
+				1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */,
+				1C29BD54225121F100E1217A /* RootTabBarController.swift */,
 				1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */,
 				1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */,
 				1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */,
@@ -2171,6 +2177,7 @@
 				1C397CA81BCC473A00CA7FD5 /* post-dots.png */,
 				7B502E251F25139600B1B305 /* post-dots@2x.png */,
 				7B502E241F25139600B1B305 /* post-dots@3x.png */,
+				1C29BD522251208200E1217A /* quote-post.png */,
 				8C8FA47C19AD7CA300B67AAA /* redpill.png */,
 				8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */,
 				8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */,
@@ -2195,6 +2202,7 @@
 				1C5B9C3317F20BB800D4981D /* posts-view-fyad.css */,
 				1C5B9C3417F20BB800D4981D /* posts-view-gas-chamber.css */,
 				1C5B9C3517F20BB800D4981D /* posts-view-macinyos.css */,
+				1C29BD502251203400E1217A /* posts-view-oled-dark.css */,
 				1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */,
 				1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */,
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
@@ -2258,8 +2266,6 @@
 				1C25AC461F53788900977D6F /* RenderView.swift */,
 				1C23C7041A7AB8940089BD5C /* SlopButton.swift */,
 				1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */,
-				1CF264C71F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift */,
-				1CF264C91F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard */,
 				1CB5F7F4201527550046D080 /* ThreadListCell.swift */,
 			);
 			path = Views;
@@ -2976,11 +2982,13 @@
 				7BF090332022C7570060BDC8 /* AppIcon-v_dark-60x60@2x.png in Resources */,
 				7B82D6681F7809E3002291C7 /* AppIconCell.xib in Resources */,
 				1C502D361F817004001890AF /* AppIcon-getout-29x29.png in Resources */,
+				1C29BD512251203400E1217A /* posts-view-oled-dark.css in Resources */,
 				7BF0902F2022C7570060BDC8 /* AppIcon-v_dark-40x40@3x.png in Resources */,
 				1C502D241F816FFC001890AF /* AppIcon-five-20x20@2x.png in Resources */,
 				1C5B834C1F74B1F200BE7517 /* AppIcon-v-20x20@3x.png in Resources */,
 				1C502D181F816FF3001890AF /* AppIcon-Bars2-29x29@3x.png in Resources */,
 				1CC362C0204C527700274E82 /* AppIcon-doggo-29x29@2x.png in Resources */,
+				1C29BD532251208200E1217A /* quote-post.png in Resources */,
 				1C5B834E1F74B1F200BE7517 /* AppIcon-v-29x29@2x.png in Resources */,
 				1C502D171F816FF3001890AF /* AppIcon-Bars2-29x29@2x.png in Resources */,
 				1C502D1D1F816FF3001890AF /* AppIcon-Bars2-60x60@2x.png in Resources */,
@@ -3006,7 +3014,7 @@
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */,
-				1CF264CA1F7811EA0059CCCA /* TabBarController_FixiOS11iPadLayout.storyboard in Resources */,
+				1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */,
 				7BF3A60D1F92FA86009F8603 /* AppIcon-ghost-1024x1024.png in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C5B83561F74B1F200BE7517 /* AppIcon-v-76x76.png in Resources */,
@@ -3565,6 +3573,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */,
+				1C29BD55225121F100E1217A /* RootTabBarController.swift in Sources */,
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
 				1C25AC411F5371CC00977D6F /* Logger.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
@@ -3602,7 +3611,6 @@
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CDBF2351BD2BC3800ADC7DA /* PostsPageRefreshControl.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
-				1CF264C81F780DC80059CCCA /* TabBar_FixiOS11iPadLayout.swift in Sources */,
 				1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,

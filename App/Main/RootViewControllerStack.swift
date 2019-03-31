@@ -29,7 +29,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         splitViewController = AwfulSplitViewController()
-        tabBarController = UITabBarController.makeWithTabBarFixedForiOS11iPadLayout()
+        tabBarController = RootTabBarController.makeWithTabBarFixedForiOS11iPadLayout()
         super.init()
         
         let forums = ForumsTableViewController(managedObjectContext: managedObjectContext)
@@ -70,16 +70,12 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             $0.observe(\.hideSidebarInLandscape) { [weak self] defaults in
                 self?.configureSplitViewControllerDisplayMode()
             }
-            $0.observe(\.isDarkModeEnabled) { [weak self] defaults in
-                self?.configureTabBarColor()
-            }
             $0.observe(\.loggedInUserCanSendPrivateMessages) { [weak self] defaults in
                 self?.updateMessagesTabPresence()
             }
         }
         
         configureSplitViewControllerDisplayMode()
-		configureTabBarColor()
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {
@@ -117,16 +113,6 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
             }
         }
     }
-	
-	private func configureTabBarColor() {
-		if UserDefaults.standard.isDarkModeEnabled {
-			tabBarController.tabBar.barTintColor = .black
-		} else {
-			tabBarController.tabBar.barTintColor = nil
-		}
-
-        tabBarController.tabBar.tintColor = Theme.defaultTheme()["tintColor"]
-	}
 	
     private func configureSplitViewControllerDisplayMode() {
         if UserDefaults.standard.hideSidebarInLandscape {

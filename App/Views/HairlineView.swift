@@ -21,4 +21,10 @@ import UIKit
     public override var intrinsicContentSize : CGSize {
         return CGSize(width: UIView.noIntrinsicMetric, height: thickness)
     }
+
+    public override func sizeThatFits(_ size: CGSize) -> CGSize {
+        var size = size
+        size.height = thickness
+        return size
+    }
 }

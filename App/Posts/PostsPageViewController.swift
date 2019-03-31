@@ -1032,6 +1032,7 @@ final class PostsPageViewController: ViewController {
         
         let topBar = postsView.topBar
         topBar.backgroundColor = theme["postsTopBarBackgroundColor"]
+        topBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         for button in [topBar.parentForumButton, topBar.previousPostsButton, topBar.scrollToBottomButton] {
             button.setTitleColor(theme["postsTopBarTextColor"], for: .normal)
             button.setTitleColor(theme["postsTopBarTextColor"]?.withAlphaComponent(0.5), for: .disabled)

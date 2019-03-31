@@ -101,6 +101,10 @@ extension Theme {
         }
     }
 
+    subscript(bool key: String) -> Bool? {
+        return dictionary[key] as? Bool ?? parent?[bool: key]
+    }
+
     /// The named color (the "Color" suffix is optional).
     subscript(color colorName: String) -> UIColor? {
         let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
@@ -124,6 +128,10 @@ extension Theme {
      */
     subscript(colorName: String) -> UIColor? {
         return self[color: colorName]
+    }
+
+    subscript(double key: String) -> Double? {
+        return dictionary[key] as? Double ?? parent?[double: key]
     }
 
     /// The named theme attribute as a string.
@@ -178,6 +186,7 @@ extension Theme: Comparable {
             ?? givePriority(to: "dark")
             ?? givePriority(to: "alternateDefault")
             ?? givePriority(to: "alternateDark")
+            ?? givePriority(to: "oledDark")
             ?? (lhs.descriptiveName < rhs.descriptiveName)
     }
 }
