@@ -96,8 +96,6 @@
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
 			<string>#1483b1</string>
-			<key>tabBarBackgroundColor</key>
-			<string>#444444</string>
 			<key>toolbarTextColor</key>
 			<string>#1e84af</string>
 			<key>toolbarTintColor</key>
@@ -286,8 +284,6 @@
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
 			<string>#004696</string>
-			<key>tabBarBackgroundColor</key>
-			<string>#444444</string>
 			<key>toolbarTextColor</key>
 			<string>#004696</string>
 			<key>toolbarTintColor</key>
