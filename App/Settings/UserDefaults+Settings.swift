@@ -22,9 +22,9 @@ extension UserDefaults {
         /// sourcery: valueType = String?
         static let customBaseURLString = "custom_base_URL"
         /// sourcery: valueType = String!
-        static let defaultLightTheme = "default_light_theme_name"
-        /// sourcery: valueType = String!
         static let defaultDarkTheme = "default_dark_theme_name"
+        /// sourcery: valueType = String!
+        static let defaultLightTheme = "default_light_theme_name"
         static let embedTweets = "embed_tweets"
         /// sourcery: valueType = Double
         static let fontScale = "font_scale"
@@ -71,25 +71,6 @@ extension UserDefaults {
     
     @objc class var isDarkModeEnabledKey: String {
         return SettingsKeys.isDarkModeEnabled
-    }
-}
-
-// MARK: Non-Sourcery-generated accessors
-
-extension UserDefaults {
-    
-    /// Some settings are a bit more effort and it's not worth customizing the Sourcery template just for them.
-    private enum MoreSettingsKeys {
-        static let ubiquitousThemeNames = "ubiquitous_theme_names"
-    }
-    
-    @objc dynamic var ubiquitousThemeNames: [String]? {
-        get { return object(forKey: MoreSettingsKeys.ubiquitousThemeNames) as? [String] }
-        set { set(newValue, forKey: MoreSettingsKeys.ubiquitousThemeNames) }
-    }
-    
-    @objc private class var keyPathsForValuesAffectingUbiquitousThemeNames: Set<String> {
-        return [MoreSettingsKeys.ubiquitousThemeNames]
     }
 }
 
@@ -209,6 +190,9 @@ extension UserDefaults {
 
         /// Possible values: `true`, `false`.
         static let isAlternateThemeEnabled = "alternate_theme"
+
+        /// An array of strings representing theme names of themes that should be made available for selection in any forum, not just the specific forum that the theme was created for. This is no longer a relevant concept, as we allow users to choose any theme. We don't even bother deleting the now-unused value for this key. It's simply documented here for posterity.
+        static let ubiquitousThemeNames = "ubiquitous_theme_names"
         
         /// Possible values: "green", "amber", "macinyos", "winpos95".
         static let yosposStyle = "yospos_style"

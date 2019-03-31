@@ -128,6 +128,8 @@ final class SettingsViewController: TableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        registerTransformers()
         
         tableView.separatorStyle = .singleLine
         tableView.register(UINib(nibName: "SettingsSliderCell", bundle: Bundle(for: SettingsViewController.self)), forCellReuseIdentifier: SettingType.Slider.cellIdentifier)
@@ -263,7 +265,15 @@ final class SettingsViewController: TableViewController {
         if setting["ShowValue"] as? Bool == true {
             cell.textLabel?.text = setting["Title"] as? String
             guard let key = setting["Key"] as? String else { fatalError("expected a key for setting \(setting)") }
-            cell.detailTextLabel?.text = UserDefaults.standard.string(forKey: key)
+            let value = UserDefaults.standard.string(forKey: key)
+            if
+                let transformerName = setting["ValueTransformer"] as? String,
+                let transformer = ValueTransformer(forName: NSValueTransformerName(rawValue: transformerName))
+            {
+                cell.detailTextLabel?.text = transformer.transformedValue(value) as? String
+            } else {
+                cell.detailTextLabel?.text = value
+            }
         } else {
             cell.textLabel?.text = setting["Title"] as? String
         }
@@ -342,7 +352,7 @@ final class SettingsViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         defer { tableView.deselectRow(at: indexPath, animated: true) }
-        print("Selected row")
+
         let setting = self.setting(at: indexPath)
         switch (setting["Action"] as? String, setting["ViewController"] as? String) {
         case ("LogOut"?, _):
@@ -388,6 +398,20 @@ final class SettingsViewController: TableViewController {
                 assertionFailure("handle unknown size class")
             }
             topViewController?.present(tweaksVC, animated: true)
+
+        case (_, "theme-picker"):
+            let mode: Theme.Mode
+            switch setting["Key"] as! String {
+            case UserDefaults.SettingsKeys.defaultDarkTheme:
+                mode = .dark
+            case UserDefaults.SettingsKeys.defaultLightTheme:
+                mode = .light
+            default:
+                fatalError("unknown default theme key \(setting["Key"] as Any)")
+            }
+            let vc = SettingsThemePickerViewController(defaultMode: mode)
+            vc.title = setting["Title"] as! String?
+            navigationController?.pushViewController(vc, animated: true)
             
         case (_, let vcTypeName?):
             guard let vcType = NSClassFromString(vcTypeName) as? UIViewController.Type else { fatalError("couldn't find type named \(vcTypeName)") }
@@ -456,3 +480,8 @@ extension SettingsViewController: TweaksViewControllerDelegate {
         tweaksViewController.dismiss(animated: true, completion: completion)
     }
 }
+
+private let registerTransformers: () -> Void = {
+    ValueTransformer.setValueTransformer(ThemeNameTransformer(), forName: ThemeNameTransformer.name)
+    return {}
+}()

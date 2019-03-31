@@ -90,20 +90,6 @@ extension UserDefaults {
     }
 
 
-    @objc dynamic var defaultLightTheme: String {
-        get { return string(forKey: SettingsKeys.defaultLightTheme)! }
-        set { set(newValue, forKey: SettingsKeys.defaultLightTheme) }
-    }
-
-    @objc private class var automaticallyNotifiesObserversOfDefaultLightTheme: Bool {
-        return false
-    }
-
-    @objc private class var keyPathsForValuesAffectingDefaultLightTheme: Set<String> {
-        return [SettingsKeys.defaultLightTheme]
-    }
-
-
     @objc dynamic var defaultDarkTheme: String {
         get { return string(forKey: SettingsKeys.defaultDarkTheme)! }
         set { set(newValue, forKey: SettingsKeys.defaultDarkTheme) }
@@ -115,6 +101,20 @@ extension UserDefaults {
 
     @objc private class var keyPathsForValuesAffectingDefaultDarkTheme: Set<String> {
         return [SettingsKeys.defaultDarkTheme]
+    }
+
+
+    @objc dynamic var defaultLightTheme: String {
+        get { return string(forKey: SettingsKeys.defaultLightTheme)! }
+        set { set(newValue, forKey: SettingsKeys.defaultLightTheme) }
+    }
+
+    @objc private class var automaticallyNotifiesObserversOfDefaultLightTheme: Bool {
+        return false
+    }
+
+    @objc private class var keyPathsForValuesAffectingDefaultLightTheme: Set<String> {
+        return [SettingsKeys.defaultLightTheme]
     }
 
 

@@ -163,25 +163,26 @@ extension Theme: Comparable {
         return lhs === rhs
     }
 
-    /// Themes are ordered: default, dark, <rest sorted by name>
     static func < (lhs: Theme, rhs: Theme) -> Bool {
-        if lhs.name == "default" {
-            return rhs.name != "default"
-        } else if rhs.name == "default" {
-            return false
+        func givePriority(to name: String) -> Bool? {
+            if lhs.name == name {
+                return rhs.name != name
+            } else if rhs.name == name {
+                return false
+            } else {
+                return nil
+            }
         }
 
-        if lhs.name == "dark" {
-            return rhs.name != "dark"
-        } else if rhs.name == "dark" {
-            return false
-        }
-
-        return lhs.name < rhs.name
+        return givePriority(to: "default")
+            ?? givePriority(to: "dark")
+            ?? givePriority(to: "alternateDefault")
+            ?? givePriority(to: "alternateDark")
+            ?? (lhs.descriptiveName < rhs.descriptiveName)
     }
 }
 
-// MARK: - Themes based on forums and settings
+// MARK: - Bundled themes
 
 private let bundledThemes: [String: Theme] = {
     let URL = Bundle.main.url(forResource: "Themes", withExtension: "plist")!
@@ -202,6 +203,18 @@ private let bundledThemes: [String: Theme] = {
 
     return themes
 }()
+
+extension Theme {
+    static func theme(named themeName: String) -> Theme? {
+        return bundledThemes.values.first { $0.name == themeName }
+    }
+
+    static func theme(describedAs description: String) -> Theme? {
+        return bundledThemes.values.first { $0.descriptiveName == description }
+    }
+}
+
+// MARK: - Getting themes with settings
 
 extension Theme {
     static func defaultTheme(mode: Mode = currentMode) -> Theme {
@@ -248,7 +261,7 @@ extension Theme {
         NotificationCenter.default.post(name: Theme.themeForForumDidChangeNotification, object: self, userInfo: userInfo)
     }
 
-    private static func defaultsKeyForForum(identifiedBy forumID: String, mode: Mode) -> String {
+    static func defaultsKeyForForum(identifiedBy forumID: String, mode: Mode) -> String {
         switch mode {
         case .light:
             return "theme-light-\(forumID)"

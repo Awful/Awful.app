@@ -59,6 +59,8 @@
 		<string>Light</string>
 		<key>descriptiveColor</key>
 		<string>#ffffff</string>
+		<key>descriptiveName</key>
+		<string>Classic</string>
 		<key>tintColor</key>
 		<string>#1e84af</string>
 		<key>backgroundColor</key>
@@ -154,6 +156,8 @@
 		<string>Dark</string>
 		<key>descriptiveColor</key>
 		<string>#151515</string>
+		<key>descriptiveName</key>
+		<string>Classic Dark</string>
 		<key>tintColor</key>
 		<string>#1e84af</string>
 		<key>backgroundColor</key>
@@ -245,6 +249,8 @@
 		<string>Light</string>
 		<key>descriptiveColor</key>
 		<string>#ffffff</string>
+		<key>descriptiveName</key>
+		<string>Alternate</string>
 		<key>tintColor</key>
 		<string>#004696</string>
 		<key>backgroundColor</key>
@@ -340,6 +346,8 @@
 		<string>Dark</string>
 		<key>descriptiveColor</key>
 		<string>#151515</string>
+		<key>descriptiveName</key>
+		<string>Alternate Dark</string>
 		<key>tintColor</key>
 		<string>#005ad3</string>
 		<key>backgroundColor</key>
@@ -668,6 +676,8 @@
 		<string>Amber console</string>
 		<key>descriptiveColor</key>
 		<string>#ebd04b</string>
+		<key>descriptiveName</key>
+		<string>Amberpos</string>
 		<key>Action icons</key>
 		<dict>
 			<key>addBookmarkIconColor</key>

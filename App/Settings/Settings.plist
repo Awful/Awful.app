@@ -254,13 +254,33 @@
 			<array>
 				<dict>
 					<key>Title</key>
-					<string>Automatic Dark Mode</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<false/>
+					<string>Default Light Theme</string>
+					<key>ViewController</key>
+					<string>theme-picker</string>
 					<key>Key</key>
-					<string>auto_dark_theme</string>
+					<string>default_light_theme_name</string>
+					<key>ShowValue</key>
+					<true/>
+					<key>ValueTransformer</key>
+					<string>theme-name</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Default Dark Theme</string>
+					<key>ViewController</key>
+					<string>theme-picker</string>
+					<key>Key</key>
+					<string>default_dark_theme_name</string>
+					<key>ShowValue</key>
+					<true/>
+					<key>ValueTransformer</key>
+					<string>theme-name</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Forum-Specific Themes</string>
+					<key>ViewController</key>
+					<string>Awful.SettingsForumSpecificThemesViewController</string>
 				</dict>
 				<dict>
 					<key>Title</key>
@@ -271,6 +291,16 @@
 					<false/>
 					<key>Key</key>
 					<string>dark_theme</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Automatic Dark Mode</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>auto_dark_theme</string>
 				</dict>
 				<dict>
 					<key>MaximumImage</key>
@@ -289,14 +319,6 @@
 					<integer>40</integer>
 					<key>Key</key>
 					<string>auto_theme_threshold</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Forum-Specific Themes</string>
-					<key>ViewController</key>
-					<string>Awful.SettingsUbiquitousThemesController</string>
-					<key>Key</key>
-					<string>ubiquitous_theme_names</string>
 				</dict>
 			</array>
 		</dict>

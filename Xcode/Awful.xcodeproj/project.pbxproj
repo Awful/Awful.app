@@ -64,7 +64,6 @@
 		1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */; };
 		1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */; };
 		1C16FBDB1CBAA5A900C88BD1 /* CGContext+WithGState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */; };
-		1C16FBDD1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */; };
 		1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */; };
 		1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
@@ -108,6 +107,9 @@
 		1C2894971EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */; };
 		1C2894991EE3091C00843C6B /* ShowPostScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */; };
 		1C28949B1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */; };
+		1C29BD4922505AD500E1217A /* ThemeNameTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */; };
+		1C29BD4B22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */; };
+		1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
@@ -736,7 +738,6 @@
 		1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewTopBar.swift; sourceTree = "<group>"; };
 		1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PunishmentCell.swift; sourceTree = "<group>"; };
 		1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+WithGState.swift"; sourceTree = "<group>"; };
-		1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsUbiquitousThemesController.swift; sourceTree = "<group>"; };
 		1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
 		1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePicker.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
@@ -780,6 +781,9 @@
 		1C2894961EE2F4B600843C6B /* ForumHierarchyScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumHierarchyScrapeResult.swift; sourceTree = "<group>"; };
 		1C2894981EE3091C00843C6B /* ShowPostScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowPostScrapeResult.swift; sourceTree = "<group>"; };
 		1C28949A1EEB7C2700843C6B /* PrivateMessageFolderScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateMessageFolderScrapeResult.swift; sourceTree = "<group>"; };
+		1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeNameTransformer.swift; sourceTree = "<group>"; };
+		1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsForumSpecificThemesViewController.swift; sourceTree = "<group>"; };
+		1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsThemePickerViewController.swift; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -1582,6 +1586,7 @@
 				1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */,
 				1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */,
 				1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */,
+				1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */,
 				1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */,
 				1C273AA121C1E26F002875A9 /* Tweaks.swift */,
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
@@ -1961,7 +1966,6 @@
 				1C796A2C2219EC1C0035E154 /* SettingsSection.swift */,
 				7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */,
 				7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */,
-				1C16FBDC1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift */,
 				1C0D80071CFA3002003EE2D1 /* SettingsViewController.swift */,
 				1C796A26221505A00035E154 /* UserDefaults+Settings.swift */,
 			);
@@ -2119,6 +2123,8 @@
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
 				1C16FC071CC3F01B00C88BD1 /* RapSheetViewController.swift */,
+				1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */,
+				1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */,
 				1C16FC111CC6FD8600C88BD1 /* ThreadComposeViewController.swift */,
 				1C16FC0F1CC6F19700C88BD1 /* ThreadPreviewViewController.swift */,
 				1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */,
@@ -3580,7 +3586,6 @@
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
-				1C16FBDD1CBAB33D00C88BD1 /* SettingsUbiquitousThemesController.swift in Sources */,
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
 				1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */,
 				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
@@ -3603,6 +3608,7 @@
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
+				1C29BD4B22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */,
@@ -3668,6 +3674,7 @@
 				1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */,
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,
 				1C015BC021A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m in Sources */,
+				1C29BD4922505AD500E1217A /* ThemeNameTransformer.swift in Sources */,
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
 				1C16FC041CC3D84500C88BD1 /* PostsPageView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
@@ -3685,6 +3692,7 @@
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
 				7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */,
+				1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */,
 				1C0D80061CFA0CD7003EE2D1 /* ViewController.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
