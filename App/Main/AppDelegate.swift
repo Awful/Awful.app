@@ -117,6 +117,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             $0.observe(\.customBaseURLString) { [unowned self] defaults in
                 self.updateClientBaseURL()
             }
+            $0.observe(\.defaultDarkTheme) { [unowned self] defaults in
+                if defaults.isDarkModeEnabled {
+                    self.showSnapshotDuringThemeDidChange()
+                }
+            }
+            $0.observe(\.defaultLightTheme) { [unowned self] defaults in
+                if !defaults.isDarkModeEnabled {
+                    self.showSnapshotDuringThemeDidChange()
+                }
+            }
         }
 
         return true
