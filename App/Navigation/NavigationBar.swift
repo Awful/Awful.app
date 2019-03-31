@@ -6,6 +6,19 @@ import UIKit
 
 /// Long-tapping the back button of an AwfulNavigationBar will pop its navigation controller to its root view controller.
 final class NavigationBar: UINavigationBar {
+
+    private lazy var bottomBorder: HairlineView = {
+        let bottomBorder = HairlineView()
+        bottomBorder.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(bottomBorder, constrainEdges: [.bottom, .left, .right])
+        return bottomBorder
+    }()
+
+    var bottomBorderColor: UIColor? {
+        get { return bottomBorder.backgroundColor }
+        set { bottomBorder.backgroundColor = newValue }
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         

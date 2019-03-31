@@ -13,7 +13,7 @@
         <scene sceneID="76x-sq-b3e">
             <objects>
                 <tabBarController id="cFB-Pp-6M4" customClass="RootTabBarController" customModule="Awful" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="V16-e3-gM7" userLabel="Tab Bar with iOS 11 iPad Layout Fix" customClass="TabBar_FixiOS11iPadLayout" customModule="Awful" customModuleProvider="target">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="V16-e3-gM7" customClass="RootTabBar" customModule="Awful" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>

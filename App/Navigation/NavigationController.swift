@@ -41,6 +41,14 @@ final class NavigationController: UINavigationController, Themeable {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private var awfulNavigationBar: NavigationBar {
+        return navigationBar as! NavigationBar
+    }
+
+    private var awfulToolbar: Toolbar? {
+        return toolbar as! Toolbar?
+    }
+
     var theme: Theme {
         return Theme.defaultTheme()
     }
@@ -88,11 +96,14 @@ final class NavigationController: UINavigationController, Themeable {
     }
     
     func themeDidChange() {
-        navigationBar.tintColor = theme["navigationBarTextColor"]
-        navigationBar.barTintColor = theme["navigationBarTintColor"]
-        
-        toolbar?.tintColor = theme["toolbarTextColor"]
-        toolbar?.barTintColor = theme["toolbarTintColor"]
+        awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
+        awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
+        awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
+        awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
+
+        awfulToolbar?.barTintColor = theme["toolbarTintColor"]
+        awfulToolbar?.tintColor = theme["toolbarTextColor"]
+        awfulToolbar?.topBorderColor = theme["bottomBarTopBorderColor"]
     }
     
     override func encodeRestorableState(with coder: NSCoder) {

@@ -6,6 +6,21 @@ import UIKit
 
 /// Sets its default tint color.
 final class Toolbar: UIToolbar {
+
+
+    private lazy var topBorder: HairlineView = {
+        let topBorder = HairlineView()
+        topBorder.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(topBorder, constrainEdges: [.top, .left, .right])
+        return topBorder
+    }()
+
+    var topBorderColor: UIColor? {
+        get { return topBorder.backgroundColor }
+        set { topBorder.backgroundColor = newValue }
+    }
+
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         

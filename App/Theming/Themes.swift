@@ -130,6 +130,10 @@ extension Theme {
         return self[color: colorName]
     }
 
+    subscript(double key: String) -> Double? {
+        return dictionary[key] as? Double ?? parent?[double: key]
+    }
+
     /// The named theme attribute as a string.
     subscript(string key: String) -> String? {
         guard let value = dictionary[key] as? String ?? parent?[key] else { return nil }

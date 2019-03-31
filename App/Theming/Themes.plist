@@ -474,6 +474,10 @@
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
+			<key>bottomBarTopBorderColor</key>
+			<string>#555555</string>
+			<key>navigationBarShadowOpacity</key>
+			<integer>0</integer>
 			<key>navigationBarTextColor</key>
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
@@ -486,6 +490,8 @@
 			<string>#ffffff</string>
 			<key>toolbarTintColor</key>
 			<string>#000000</string>
+			<key>topBarBottomBorderColor</key>
+			<string>#555555</string>
 		</dict>
 		<key>Posts</key>
 		<dict>

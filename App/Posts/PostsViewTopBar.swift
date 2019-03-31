@@ -5,9 +5,17 @@
 import UIKit
 
 final class PostsViewTopBar: UIView {
+
     let parentForumButton = UIButton()
     let previousPostsButton = UIButton()
     let scrollToBottomButton = UIButton()
+
+    private let bottomBorder = HairlineView()
+
+    var bottomBorderColor: UIColor? {
+        get { return bottomBorder.backgroundColor }
+        set { bottomBorder.backgroundColor = newValue }
+    }
     
     override init(frame: CGRect) {
         var enforcedHeightFrame = frame
@@ -29,6 +37,8 @@ final class PostsViewTopBar: UIView {
         scrollToBottomButton.accessibilityLabel = "Scroll to end"
         scrollToBottomButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         addSubview(scrollToBottomButton)
+
+        addSubview(bottomBorder)
     }
     
     required init?(coder: NSCoder) {
@@ -45,5 +55,9 @@ final class PostsViewTopBar: UIView {
         previousPostsButton.frame = CGRect(x: parentForumButton.frame.maxX + 1, y: 0, width: buttonWidth + leftoverWidth, height: buttonHeight)
         
         scrollToBottomButton.frame = CGRect(x: previousPostsButton.frame.maxX + 1, y: 0, width: buttonWidth, height: buttonHeight)
+
+        bottomBorder.sizeToFit()
+        bottomBorder.bounds.size.width = bounds.width
+        bottomBorder.center = CGPoint(x: bounds.midX, y: bounds.maxY - bottomBorder.bounds.height)
     }
 }
