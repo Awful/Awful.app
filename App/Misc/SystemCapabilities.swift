@@ -25,33 +25,46 @@ enum SystemCapabilities {
         // Handoff starts at iPhone 5, iPod Touch 5G, iPad 4G, iPad Mini 1: http://support.apple.com/en-us/HT6555
         // Models are listed at http://theiphonewiki.com/wiki/Models
         // Let's assume all future models also support Handoff.
-        let scanner: Scanner
-        do {
-            scanner = try Scanner(string: findModelIdentifier())
-        }
-        catch {
-            Log.e("Could not determine Handoff capability: \(error)")
-            return false
-        }
-
-        var major: Int = Int.min
-        if scanner.scanString("iPad", into: nil), scanner.scanInt(&major) {
+        let scanner = Scanner(string: modelIdentifier)
+        if scanner.scan("iPad"), let major = scanner.scanInt() {
             return major >= 2
-        } else if scanner.scanString("iPhone", into: nil), scanner.scanInt(&major) {
+        } else if scanner.scan("iPhone"), let major = scanner.scanInt() {
             return major >= 5
-        } else if scanner.scanString("iPod", into: nil), scanner.scanInt(&major) {
+        } else if scanner.scan("iPod"), let major = scanner.scanInt() {
             return major >= 5
         } else {
             return false
         }
     }()
+
+    static let oled: Bool = {
+        // Models are listed at http://theiphonewiki.com/wiki/Models
+        // Not gonna bother trying to guess at future models.
+        let scanner = Scanner(string: modelIdentifier)
+        guard
+            scanner.scan("iPhone"),
+            let major = scanner.scanInt(),
+            scanner.scan(","),
+            let minor = scanner.scanInt()
+            else { return false }
+        switch (major, minor) {
+        case (10, 3), (10, 6): // iPhone X
+            return true
+        case (11, 2): // iPhone XS
+            return true
+        case (11, 6): // iPhone XS Max
+            return true
+        default:
+            return false
+        }
+    }()
 }
 
-/// - Throws: ModelIdentifierError
-private func findModelIdentifier() throws -> String {
+private let modelIdentifier: String = {
     var size: Int = 0
     guard sysctlbyname("hw.machine", nil, &size, nil, 0) == 0 else {
-        throw ModelIdentifierError.couldNotGetBufferSize
+        Log.e("could not find model identifier: could not get buffer size")
+        return ""
     }
 
     let bufferSize = Int(size) + 1
@@ -59,14 +72,10 @@ private func findModelIdentifier() throws -> String {
     defer { buffer.deallocate() }
 
     guard sysctlbyname("hw.machine", buffer, &size, nil, 0) == 0 else {
-        throw ModelIdentifierError.failedToRetrieveModelIdentifier
+        Log.e("could not find model identifier")
+        return ""
     }
 
     buffer[Int(size)] = 0
     return String(cString: buffer)
-}
-
-private enum ModelIdentifierError: Error {
-    case couldNotGetBufferSize
-    case failedToRetrieveModelIdentifier
-}
+}()

@@ -1,0 +1,114 @@
+/*
+ posts-view-alternate-dark.css
+ Awful
+
+ Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+
+@import "base.less";
+
+body {
+  color: #ddd;
+  background-color: #000000;
+}
+
+post {
+  background-color: #000000;
+  border-bottom: 2px solid #242424;
+  border-top: none;
+  padding-bottom: .7em;
+
+  &.seen {
+    background: linear-gradient(to top, #002044, #000000 100px);
+    border-bottom: 2px solid #003169;
+  }
+}
+
+header {
+  border-bottom: none;
+}
+
+/* Peta's 3D username */
+.userid-182864 .username {
+  color: rgba(255, 255, 255, 0.5);
+}
+.platinum .username:before {
+		background-image: url('awful-resource://platinum-member-white.png');
+}
+.op .username {
+  color: #005ec9;
+}
+
+.postbody a, [data-awful-linkified-image] {
+  color: #1682b2;
+}
+
+@import "spoilers.less";
+.spoilers(#fff);
+
+.bbc-block {
+  h4,
+  h5 {
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+}
+
+.bbc-block {
+  &.mention.highlight, &.mention.highlight h4, &.mention.highlight h4 a {
+    color: #b837ed;
+    border-color: #b837ed;
+  }
+
+  &.mention.highlight h4 span.mention.highlight{
+    color: #dd89ff;
+  }
+}
+
+.bbc-block {
+  border: none;
+  background-color: #1a1a1a;
+  background-image: url("awful-resource://quote-post.png");
+  background-repeat: no-repeat;
+  background-position-x: 10px;
+  background-position-y: 12px;
+  background-size: 20px;
+  background-blend-mode: lighten;
+  padding: 10px;
+  padding-left: 40px;
+  padding-bottom: 13px;
+  border-radius: 1em;
+
+  .ipad & {
+    margin: 0;
+  }
+
+  a {
+    color: unset;
+  }
+}
+
+footer {
+  margin-top: .6em
+}
+
+@postdate-color: #8e8e8e;
+.postdate, .regdate {
+  color: @postdate-color;
+}
+.action-button img {
+  .tint-black-template-image-gray(@postdate-color);
+}
+
+.editedby span.mention.highlight {
+  color: #dd89ff;
+}
+
+#end {
+  color: @postdate-color;
+  line-height: 3em;
+}
+
+@import "posts-view-dark-emoticons.less";

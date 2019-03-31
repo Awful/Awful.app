@@ -178,6 +178,7 @@ extension Theme: Comparable {
             ?? givePriority(to: "dark")
             ?? givePriority(to: "alternateDefault")
             ?? givePriority(to: "alternateDark")
+            ?? givePriority(to: "oledDark")
             ?? (lhs.descriptiveName < rhs.descriptiveName)
     }
 }

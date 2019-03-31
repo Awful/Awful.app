@@ -159,7 +159,7 @@ extension UserDefaults {
         var defaults = SettingsSection.mainBundleSections.reduce(into: [:]) { defaults, section in
             defaults.merge(section.defaultValues, uniquingKeysWith: { $1 })
         }
-        defaults[SettingsKeys.defaultDarkTheme] = "dark" // TODO: if OLED screen and we have OLED theme, use OLED theme
+        defaults[SettingsKeys.defaultDarkTheme] = SystemCapabilities.oled ? "oledDark" : "dark"
         defaults[SettingsKeys.defaultLightTheme] = "default"
         defaults.merge(Theme.forumSpecificDefaults, uniquingKeysWith: { $1 })
         register(defaults: defaults)

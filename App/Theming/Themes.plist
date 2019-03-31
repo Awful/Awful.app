@@ -433,6 +433,99 @@
 			<string>#bebebe</string>
 		</dict>
 	</dict>
+	<key>oledDark</key>
+	<dict>
+		<key>description</key>
+		<string>Dark</string>
+		<key>descriptiveColor</key>
+		<string>#000000</string>
+		<key>descriptiveName</key>
+		<string>OLED Dark</string>
+		<key>tintColor</key>
+		<string>#005ad3</string>
+		<key>backgroundColor</key>
+		<string>#000000</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Light</string>
+		<key>keyboardAppearance</key>
+		<string>Dark</string>
+		<key>actionIconTintColor</key>
+		<string>#006ae3</string>
+		<key>placeholderTextColor</key>
+		<string>#666666</string>
+		<key>settingsSwitchColor</key>
+		<string>#237733</string>
+		<key>Lists</key>
+		<dict>
+			<key>listHeaderBackgroundColor</key>
+			<string>#1c1c1c</string>
+			<key>listTextColor</key>
+			<string>#dddddd</string>
+			<key>listSecondaryTextColor</key>
+			<string>#808080</string>
+			<key>listBackgroundColor</key>
+			<string>#000000</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#333333</string>
+			<key>listSeparatorColor</key>
+			<string>#262626</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>navigationBarTintColor</key>
+			<string>#000000</string>
+			<key>tabBarBackgroundColor</key>
+			<string>#000000</string>
+			<key>toolbarTextColor</key>
+			<string>#ffffff</string>
+			<key>toolbarTintColor</key>
+			<string>#000000</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#060606</string>
+			<key>postsPullForNextColor</key>
+			<string>#8e8e8e</string>
+			<key>postsTopBarTextColor</key>
+			<string>#eeeeee</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#000000</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-oled-dark.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTitleColor</key>
+			<string>#ffffff</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTextColor</key>
+			<string>#ffffff</string>
+			<key>sheetDimColor</key>
+			<string>#202020f2</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#151515</string>
+			<key>tagPickerTextColor</key>
+			<string>#dddddd</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#006ae3</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#bebebe</string>
+		</dict>
+	</dict>
 	<key>FYAD</key>
 	<dict>
 		<key>relevantForumID</key>

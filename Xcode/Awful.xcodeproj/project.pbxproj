@@ -111,6 +111,8 @@
 		1C29BD4B22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */; };
 		1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */; };
 		1C29BD4F225114C600E1217A /* ThemeMode+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */; };
+		1C29BD512251203400E1217A /* posts-view-oled-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C29BD502251203400E1217A /* posts-view-oled-dark.css */; };
+		1C29BD532251208200E1217A /* quote-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C29BD522251208200E1217A /* quote-post.png */; };
 		1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */; };
 		1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */; };
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
@@ -786,6 +788,8 @@
 		1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsForumSpecificThemesViewController.swift; sourceTree = "<group>"; };
 		1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsThemePickerViewController.swift; sourceTree = "<group>"; };
 		1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeMode+Presentation.swift"; sourceTree = "<group>"; };
+		1C29BD502251203400E1217A /* posts-view-oled-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-oled-dark.css"; sourceTree = "<group>"; };
+		1C29BD522251208200E1217A /* quote-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-post.png"; sourceTree = "<group>"; };
 		1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagCommand.swift; sourceTree = "<group>"; };
 		1C2C1F0F1CE4131000CD27DD /* UploadImageAttachments.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadImageAttachments.swift; sourceTree = "<group>"; };
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
@@ -2171,6 +2175,7 @@
 				1C397CA81BCC473A00CA7FD5 /* post-dots.png */,
 				7B502E251F25139600B1B305 /* post-dots@2x.png */,
 				7B502E241F25139600B1B305 /* post-dots@3x.png */,
+				1C29BD522251208200E1217A /* quote-post.png */,
 				8C8FA47C19AD7CA300B67AAA /* redpill.png */,
 				8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */,
 				8C299D6F16877AE9001B9D96 /* winpos95-heading-left.png */,
@@ -2195,6 +2200,7 @@
 				1C5B9C3317F20BB800D4981D /* posts-view-fyad.css */,
 				1C5B9C3417F20BB800D4981D /* posts-view-gas-chamber.css */,
 				1C5B9C3517F20BB800D4981D /* posts-view-macinyos.css */,
+				1C29BD502251203400E1217A /* posts-view-oled-dark.css */,
 				1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */,
 				1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */,
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
@@ -2976,11 +2982,13 @@
 				7BF090332022C7570060BDC8 /* AppIcon-v_dark-60x60@2x.png in Resources */,
 				7B82D6681F7809E3002291C7 /* AppIconCell.xib in Resources */,
 				1C502D361F817004001890AF /* AppIcon-getout-29x29.png in Resources */,
+				1C29BD512251203400E1217A /* posts-view-oled-dark.css in Resources */,
 				7BF0902F2022C7570060BDC8 /* AppIcon-v_dark-40x40@3x.png in Resources */,
 				1C502D241F816FFC001890AF /* AppIcon-five-20x20@2x.png in Resources */,
 				1C5B834C1F74B1F200BE7517 /* AppIcon-v-20x20@3x.png in Resources */,
 				1C502D181F816FF3001890AF /* AppIcon-Bars2-29x29@3x.png in Resources */,
 				1CC362C0204C527700274E82 /* AppIcon-doggo-29x29@2x.png in Resources */,
+				1C29BD532251208200E1217A /* quote-post.png in Resources */,
 				1C5B834E1F74B1F200BE7517 /* AppIcon-v-29x29@2x.png in Resources */,
 				1C502D171F816FF3001890AF /* AppIcon-Bars2-29x29@2x.png in Resources */,
 				1C502D1D1F816FF3001890AF /* AppIcon-Bars2-60x60@2x.png in Resources */,
