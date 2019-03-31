@@ -480,6 +480,8 @@
 			<string>#000000</string>
 			<key>tabBarBackgroundColor</key>
 			<string>#000000</string>
+			<key>tabBarIsTranslucent</key>
+			<false/>
 			<key>toolbarTextColor</key>
 			<string>#ffffff</string>
 			<key>toolbarTintColor</key>

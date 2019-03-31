@@ -101,6 +101,10 @@ extension Theme {
         }
     }
 
+    subscript(bool key: String) -> Bool? {
+        return dictionary[key] as? Bool ?? parent?[bool: key]
+    }
+
     /// The named color (the "Color" suffix is optional).
     subscript(color colorName: String) -> UIColor? {
         let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
