@@ -104,6 +104,7 @@ final class NavigationController: UINavigationController, Themeable {
         awfulToolbar?.barTintColor = theme["toolbarTintColor"]
         awfulToolbar?.tintColor = theme["toolbarTextColor"]
         awfulToolbar?.topBorderColor = theme["bottomBarTopBorderColor"]
+        awfulToolbar?.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
     }
     
     override func encodeRestorableState(with coder: NSCoder) {
