@@ -36,53 +36,28 @@ final class PostsPageViewController: ViewController {
         didSet { updateUserInterface() }
     }
     
-    private var loadingView: LoadingView? {
-        didSet {
-            oldValue?.removeFromSuperview()
-            
-            if let loadingView = loadingView, isViewLoaded {
-                postsView.insertSubview(loadingView, belowSubview: postsView.toolbar)
-            }
-        }
-    }
-    
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
-
-        let topBar = postsView.topBar
-        topBar.goToParentForum = { [unowned self] in
+        postsView.renderView.delegate = self
+        postsView.renderView.registerMessage(FYADFlagRequest.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
+        postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
         }
-        
-        let renderView = postsView.renderView
-        
-        renderView.delegate = self
-        
-        renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
-        renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
-        renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
-        renderView.registerMessage(FYADFlagRequest.self)
-        
         return postsView
     }()
-    
-    private var renderView: RenderView {
-        return postsView.renderView
-    }
-    
-    private var scrollView: UIScrollView {
-        return postsView.scrollView
-    }
-    
+
     private struct FYADFlagRequest: RenderViewMessage {
         static let messageName = "fyadFlagRequest"
-        
+
         init?(_ message: WKScriptMessage) {
             assert(message.name == FYADFlagRequest.messageName)
         }
     }
-    
+
     /**
         - parameter thread: The thread whose posts are shown.
         - parameter author: An optional author used to filter the shown posts. May be nil, in which case all posts are shown.
@@ -212,7 +187,7 @@ final class PostsPageViewController: ViewController {
             }
 
             if reloadingSamePage || renderedCachedPosts {
-                self.scrollToFractionAfterLoading = self.scrollView.fractionalContentOffset.y
+                self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
             }
 
             self.renderPosts()
@@ -262,14 +237,14 @@ final class PostsPageViewController: ViewController {
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
     func scrollPostToVisible(_ post: Post) {
         let i = posts.firstIndex(of: post)
-        if loadingView != nil || !webViewDidLoadOnce || i == nil {
+        if postsView.loadingView != nil || !webViewDidLoadOnce || i == nil {
             jumpToPostIDAfterLoading = post.postID
         } else {
             if let i = i , i < hiddenPosts {
                 showHiddenSeenPosts()
             }
             
-            renderView.jumpToPost(identifiedBy: post.postID)
+            postsView.renderView.jumpToPost(identifiedBy: post.postID)
         }
     }
     
@@ -324,8 +299,8 @@ final class PostsPageViewController: ViewController {
             html = ""
         }
         
-        renderView.eraseDocument().done {
-            self.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        postsView.renderView.eraseDocument().done {
+            self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
     
@@ -394,7 +369,7 @@ final class PostsPageViewController: ViewController {
         item.possibleTitles = ["2345 / 2345"]
         item.accessibilityHint = "Opens page picker"
         item.actionBlock = { [unowned self] (sender) in
-            guard self.loadingView == nil else { return }
+            guard self.postsView.loadingView == nil else { return }
             let selectotron = Selectotron(postsViewController: self)
             self.present(selectotron, animated: true, completion: nil)
             
@@ -503,7 +478,7 @@ final class PostsPageViewController: ViewController {
             return Log.e("got an unexpected or invalid notification: \(rawNotification)")
         }
         
-        renderView.setExternalStylesheet(notification.stylesheet)
+        postsView.renderView.setExternalStylesheet(notification.stylesheet)
     }
     
     private func refetchPosts() {
@@ -587,12 +562,12 @@ final class PostsPageViewController: ViewController {
     }
     
     private func showLoadingView() {
-        guard loadingView == nil else { return }
-        loadingView = LoadingView.loadingViewWithTheme(theme)
+        guard postsView.loadingView == nil else { return }
+        postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
     }
     
     private func clearLoadingMessage() {
-        loadingView = nil
+        postsView.loadingView = nil
     }
     
     private func loadNextPageOrRefresh() {
@@ -632,22 +607,25 @@ final class PostsPageViewController: ViewController {
         hiddenPosts = 0
         
         let html = (0..<end).map(renderedPostAtIndex).joined(separator: "\n")
-        renderView.prependPostHTML(html)
+        postsView.renderView.prependPostHTML(html)
     }
     
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
+        let scrollView = postsView.renderView.scrollView
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
     
     @objc private func scrollToTop(_ sender: UIKeyCommand) {
-        scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
+        postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
     
     @objc private func scrollUp(_ sender: UIKeyCommand) {
+        let scrollView = postsView.renderView.scrollView
         scrollView.contentOffset.y = max(scrollView.contentOffset.y - 80, 0)
     }
     
     @objc private func scrollDown(_ sender: UIKeyCommand) {
+        let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y + 80
         if proposedOffset > scrollView.contentSize.height - scrollView.bounds.height {
             scrollToBottom(nil)
@@ -658,12 +636,14 @@ final class PostsPageViewController: ViewController {
     }
     
     @objc private func pageUp(_ sender: UIKeyCommand) {
+        let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y - (scrollView.bounds.height - 80)
         let newOffset = CGPoint(x: scrollView.contentOffset.x, y: max(proposedOffset, 0))
         scrollView.setContentOffset(newOffset, animated: true)
     }
     
     @objc private func pageDown(_ sender: UIKeyCommand) {
+        let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y + (scrollView.bounds.height - 80)
         if proposedOffset > scrollView.contentSize.height - scrollView.bounds.height {
             scrollToBottom(nil)
@@ -675,8 +655,8 @@ final class PostsPageViewController: ViewController {
     @objc private func didLongPressOnPostsView(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
         
-        renderView.interestingElements(at: sender.location(in: renderView)).done {
-            _ = URLMenuPresenter.presentInterestingElements($0, from: self, renderView: self.renderView)
+        postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView)).done {
+            _ = URLMenuPresenter.presentInterestingElements($0, from: self, renderView: self.postsView.renderView)
         }
     }
     
@@ -700,7 +680,7 @@ final class PostsPageViewController: ViewController {
                     let i = self.posts.firstIndex(of: post)
                     else { return }
                 
-                self.renderView.replacePostHTML(self.renderedPostAtIndex(i), at: i - self.hiddenPosts)
+                self.postsView.renderView.replacePostHTML(self.renderedPostAtIndex(i), at: i - self.hiddenPosts)
             }
             .catch { [weak self] error in
                 let alert = UIAlertController(networkError: error)
@@ -787,7 +767,7 @@ final class PostsPageViewController: ViewController {
         actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
             // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
             sourceRect.pointee = frame
-            sourceView.pointee = self.renderView
+            sourceView.pointee = self.postsView.renderView
         }
         
         present(actionVC, animated: true, completion: nil)
@@ -830,7 +810,7 @@ final class PostsPageViewController: ViewController {
             if let popover = activityVC.popoverPresentationController {
                 // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
                 popover.sourceRect = frame
-                popover.sourceView = self.renderView
+                popover.sourceView = self.postsView.renderView
             }
         })
         shareItem.title = "Share URL"
@@ -844,7 +824,7 @@ final class PostsPageViewController: ViewController {
 
                         guard let self = self else { return }
                         
-                        self.renderView.markReadUpToPost(identifiedBy: post.postID)
+                        self.postsView.renderView.markReadUpToPost(identifiedBy: post.postID)
                         
                         let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: LocalizedString("posts-page.marked-read"), mode: .checkmark, animated: true)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
@@ -924,7 +904,7 @@ final class PostsPageViewController: ViewController {
         actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
             // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
             sourceRect.pointee = frame
-            sourceView.pointee = self.renderView
+            sourceView.pointee = self.postsView.renderView
         }
         present(actionVC, animated: true)
     }
@@ -949,11 +929,11 @@ final class PostsPageViewController: ViewController {
                 return RenderView.FlagInfo(src: src, title: title)
             }
             .done {
-                self.renderView.setFYADFlag($0)
+                self.postsView.renderView.setFYADFlag($0)
             }
             .catch { error in
                 Log.w("could not fetch FYAD flag: \(error)")
-                self.renderView.setFYADFlag(nil)
+                self.postsView.renderView.setFYADFlag(nil)
         }
     }
     
@@ -987,7 +967,7 @@ final class PostsPageViewController: ViewController {
         
         if UserDefaults.standard.isPullForNextEnabled {
             if refreshControl == nil {
-                refreshControl = PostsPageRefreshControl(scrollView: scrollView, multiplexer: postsView.multiplexer, contentView: PostsPageRefreshSpinnerView())
+//                refreshControl = PostsPageRefreshControl(scrollView: postsView.renderView.scrollView, multiplexer: postsView.multiplexer, contentView: PostsPageRefreshSpinnerView())
                 refreshControl?.didStartRefreshing = { [weak self] in
                     self?.loadNextPageOrRefresh()
                 }
@@ -1002,23 +982,13 @@ final class PostsPageViewController: ViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
+
+        postsView.themeDidChange(theme)
         
-        scrollView.indicatorStyle = theme.scrollIndicatorStyle
-        
-        renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
-        
-        if loadingView != nil {
-            loadingView = LoadingView.loadingViewWithTheme(theme)
+        if postsView.loadingView != nil {
+            postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
         }
 
-        postsView.topBar.themeDidChange(theme)
-
-        let toolbar = postsView.toolbar
-        toolbar.barTintColor = theme["toolbarTintColor"]
-        toolbar.tintColor = theme["toolbarTextColor"]
-        toolbar.topBorderColor = theme["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
-        
         messageViewController?.themeDidChange()
         
         refreshControl?.tintColor = theme["postsPullForNextColor"]
@@ -1027,38 +997,45 @@ final class PostsPageViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        /*
+         Laying this screen out is a challenge: there are bars on the top and bottom, and between our deployment target and the latest SDK we span a few different schools of layout thought. Here's the plan:
+
+         1. Turn off all UIKit magic automated everything. We'll handle all scroll view content insets and safe area insets ourselves.
+         2. Set layout margins on `postsView` in lieu of the above. Layout margins are available on all iOS versions that Awful supports.
+
+         Here is where we turn off the magic. In `viewDidLayoutSubviews` we update the layout margins.
+         */
+        extendedLayoutIncludesOpaqueBars = true
+        if #available(iOS 11.0, *) {
+            postsView.insetsLayoutMarginsFromSafeArea = false
+            postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
+        } else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
+        view.addSubview(postsView, constrainEdges: .all)
+
         let spacer: CGFloat = 12
-        postsView.toolbar.items = [
+        postsView.toolbarItems = [
             settingsItem, .flexibleSpace(),
             backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
             .flexibleSpace(), actionsItem]
-        
-        postsView.frame = CGRect(origin: .zero, size: view.bounds.size)
-        postsView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        extendedLayoutIncludesOpaqueBars = true
-        edgesForExtendedLayout = .bottom
-        view.addSubview(postsView)
-        
+
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
-        renderView.addGestureRecognizer(longPress)
+        postsView.renderView.addGestureRecognizer(longPress)
         
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
         
         updateRefreshControl()
         
-        if let loadingView = loadingView {
-            postsView.insertSubview(loadingView, belowSubview: postsView.toolbar)
-        }
-        
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.embedTweets) { [unowned self] defaults in
                 if defaults.embedTweets {
-                    self.renderView.embedTweets()
+                    self.postsView.renderView.embedTweets()
                 }
             }
             $0.observe(\.fontScale) { [unowned self] defaults in
-                self.renderView.setFontScale(defaults.fontScale)
+                self.postsView.renderView.setFontScale(defaults.fontScale)
             }
             $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
                 if defaults.isHandoffEnabled, self.view.window != nil {
@@ -1069,13 +1046,33 @@ final class PostsPageViewController: ViewController {
                 self.updateRefreshControl()
             }
             $0.observe(\.showAuthorAvatars) { [unowned self] defaults in
-                self.renderView.setShowAvatars(defaults.showAuthorAvatars)
+                self.postsView.renderView.setShowAvatars(defaults.showAuthorAvatars)
             }
             $0.observe(\.showImages) { [unowned self] defaults in
                 if defaults.showImages {
-                    self.renderView.loadLinkifiedImages()
+                    self.postsView.renderView.loadLinkifiedImages()
                 }
             }
+        }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updatePostsViewLayoutMargins()
+    }
+
+    @available(iOS 11.0, *)
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updatePostsViewLayoutMargins()
+    }
+
+    private func updatePostsViewLayoutMargins() {
+        // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
+        if #available(iOS 11.0, *) {
+            postsView.layoutMargins = view.safeAreaInsets
+        } else {
+            postsView.layoutMargins = UIEdgeInsets(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
         }
     }
     
@@ -1112,7 +1109,7 @@ final class PostsPageViewController: ViewController {
         coder.encode(hiddenPosts, forKey: Keys.hiddenPosts)
         coder.encode(messageViewController, forKey: Keys.messageViewController)
         coder.encode(advertisementHTML, forKey: Keys.advertisementHTML)
-        coder.encode(Float(scrollView.fractionalContentOffset.y), forKey: Keys.scrolledFractionOfContent)
+        coder.encode(Float(postsView.renderView.scrollView.fractionalContentOffset.y), forKey: Keys.scrolledFractionOfContent)
         coder.encode(replyWorkspace, forKey: Keys.replyWorkspace)
     }
     
@@ -1211,11 +1208,11 @@ extension PostsPageViewController: RenderViewDelegate {
         }
         
         if let postID = jumpToPostIDAfterLoading {
-            renderView.jumpToPost(identifiedBy: postID)
+            postsView.renderView.jumpToPost(identifiedBy: postID)
         } else if let newFractionalOffset = scrollToFractionAfterLoading {
-            var fractionalOffset = scrollView.fractionalContentOffset
+            var fractionalOffset = postsView.renderView.scrollView.fractionalContentOffset
             fractionalOffset.y = newFractionalOffset
-            renderView.scrollToFractionalOffset(fractionalOffset)
+            postsView.renderView.scrollToFractionalOffset(fractionalOffset)
         }
         
         clearLoadingMessage()
@@ -1231,11 +1228,11 @@ extension PostsPageViewController: RenderViewDelegate {
             
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if let postID = jumpToPostIDAfterLoading {
-                renderView.jumpToPost(identifiedBy: postID)
+                postsView.renderView.jumpToPost(identifiedBy: postID)
             } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
-                var offset = scrollView.fractionalContentOffset
+                var offset = postsView.renderView.scrollView.fractionalContentOffset
                 offset.y = fraction
-                renderView.scrollToFractionalOffset(offset)
+                postsView.renderView.scrollToFractionalOffset(offset)
             }
             
         case is FYADFlagRequest:

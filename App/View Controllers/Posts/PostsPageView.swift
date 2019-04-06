@@ -4,187 +4,95 @@
 
 import UIKit
 
-/**
-    Manages a posts page's render view and top bar, hiding and showing the top bar when appropriate.
- */
+/// Manages a posts page's render view, top bar, and toolbar.
 final class PostsPageView: UIView {
 
-    let toolbar = Toolbar()
-    let topBar = PostsPageTopBar(frame: CGRect(x: 0, y: 0, width: 320, height: 40))
-    private var ignoreScrollViewDidScroll = false
-    private var lastContentOffset: CGPoint = .zero
-    private var maintainTopBarState = true
-    private var topBarAlwaysVisible = false
-    
-    private(set) lazy var multiplexer: ScrollViewDelegateMultiplexer = {
-        return ScrollViewDelegateMultiplexer(scrollView: scrollView)
-    }()
-    
-    private(set) lazy var renderView = RenderView()
-    
-    var scrollView: UIScrollView {
-        return renderView.scrollView
-    }
-    
-    private var exposedTopBarSlice: CGFloat = 0 {
-        didSet {
-            if oldValue != exposedTopBarSlice {
-                setNeedsLayout()
+    var loadingView: UIView? {
+        get { return loadingViewContainer.subviews.first }
+        set {
+            loadingViewContainer.subviews.forEach { $0.removeFromSuperview() }
+            if let newValue = newValue {
+                loadingViewContainer.addSubview(newValue, constrainEdges: .all)
             }
+            loadingViewContainer.isHidden = newValue == nil
         }
     }
+
+    private lazy var loadingViewContainer = LoadingViewContainer()
+
+    /// Trivial subclass to identify the view when debugging.
+    final class LoadingViewContainer: UIView {}
+
+    let renderView = RenderView()
+
+    private let toolbar = Toolbar()
+
+    var toolbarItems: [UIBarButtonItem] {
+        get { return toolbar.items ?? [] }
+        set { toolbar.items = newValue }
+    }
+
+    let topBar = PostsPageTopBar()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        addSubview(renderView)
-        addSubview(topBar)
-        addSubview(toolbar)
-        
-        updateForVoiceOver(animated: false)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: NSNotification.Name(rawValue: UIAccessibilityVoiceOverStatusChanged), object: nil)
-        
-        multiplexer.addDelegate(self)
+
+        addSubview(renderView, constrainEdges: [.top, .bottom, .left, .right])
+        addSubview(topBar, constrainEdges: [.left, .right])
+        addSubview(loadingViewContainer, constrainEdges: .all)
+        addSubview(toolbar, constrainEdges: [.left, .right])
+
+        let topBarHeight = topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+        topBarHeight.priority = .init(rawValue: 500)
+
+        // See commentary in `PostsPageViewController.viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
+        NSLayoutConstraint.activate([
+            topBar.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            topBarHeight,
+            layoutMarginsGuide.bottomAnchor.constraint(equalTo: toolbar.bottomAnchor)])
     }
-    
-    @objc private func voiceOverStatusDidChange(_ notification: Notification) {
-        updateForVoiceOver(animated: true)
-    }
-    
-    private func updateForVoiceOver(animated: Bool) {
-        topBarAlwaysVisible = UIAccessibility.isVoiceOverRunning
-        guard topBarAlwaysVisible else { return }
-        exposedTopBarSlice = topBar.bounds.height
-        UIView.animate(withDuration: animated ? 0.2 : 0, animations: { 
-            self.layoutIfNeeded()
-        }) 
-    }
-    
-    private func furtherExposeTopBarSlice(_ delta: CGFloat) {
-        let oldExposedSlice = exposedTopBarSlice
-        exposedTopBarSlice = (exposedTopBarSlice + delta).clamp(0...topBar.bounds.height)
-        let exposedDelta = exposedTopBarSlice - oldExposedSlice
-        
-        ignoreScrollViewDidScroll = true
-        scrollView.contentOffset.y = max(scrollView.contentOffset.y + exposedDelta, 0)
-        ignoreScrollViewDidScroll = false
-    }
-    
+
     override func layoutSubviews() {
-//        let fractionalOffset = scrollView.fractionalContentOffset
 
-        var topBarFrame = topBar.bounds
-        topBarFrame.origin.y = exposedTopBarSlice - topBarFrame.height
-        topBarFrame.size.width = bounds.width
-        topBar.frame = topBarFrame
-        
+        // Let Auto Layout do its thing first, so we can use bar frames to figure out content insets.
+        super.layoutSubviews()
+
         /*
-            This silliness combats an annoying interplay on iOS 8 between UISplitViewController and UIWebView. On a 2x Retina iPad in landscape with the sidebar always visible, the width is distributed like so:
-         
-                       separator(0.5)
-            |--sidebar(350)--|------------posts(673.5)------------|
-         
-            Unfortunately, UIWebView doesn't particularly like a fractional portion to its width, and it will round up its content size to 674 in this example. And now that the content is wider than the viewport, we get horizontal scrolling.
-         
-            (And if you ask UISplitViewController to set a maximumPrimaryColumnWidth of, say, 349.5 to take the separator into account, it will simply round down to 349.)
-         */
-        let integralWidth = CGFloat(floor(bounds.width))
-        let fractionalPart = bounds.width - integralWidth
-        renderView.frame = CGRect(x: fractionalPart, y: topBarFrame.maxY, width: integralWidth, height: bounds.height - exposedTopBarSlice)
+         I'm assuming `layoutSubviews()` will get called (among other times) whenever `layoutMarginsDidChange()` gets called, so there's no point overriding `layoutMarginsDidChange()` to do the same work we're doing here. But I haven't yet convinced myself that this is how things work.
 
-        toolbar.sizeToFit()
-        let safeAreaMaxY: CGFloat
-        if #available(iOS 11.0, *) {
-            safeAreaMaxY = safeAreaLayoutGuide.layoutFrame.maxY
-        } else {
-            safeAreaMaxY = bounds.maxY
-        }
-        toolbar.frame = CGRect(x: bounds.minX, y: safeAreaMaxY - toolbar.bounds.height, width: bounds.width, height: toolbar.bounds.height)
-        
-        /**
-            When the app enters the background, on iPad, the width of the view changes dramatically while the system takes a snapshot. The end result is that when you leave Awful then come back, you're scrolled away from where you actually were when you left. Here we try to combat that.
-         
-            That said, if we're in the middle of dragging, messing with contentOffset just makes scrolling janky.
+         See commentary in `PostsPageViewController.viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
          */
-//        if !scrollView.isDragging {
-//            renderView.scrollToFractionalOffset(fractionalOffset)
-//        }
+
+        let scrollView = renderView.scrollView
+        let contentInset = UIEdgeInsets(top: topBar.frame.maxY, left: 0, bottom: bounds.maxY - toolbar.frame.minY, right: 0)
+        scrollView.contentInset = contentInset
+
+        if #available(iOS 12.0, *) {
+            // I'm not sure if this is a bug or if I'm misunderstanding something, but on iOS 12 it seems that the indicator insets have already taken the safe area into account? At least, that's what setting the indicator insets to zero seems to suggest. In that case, we'll remove our adjustment for the safe area (which we're representing using layout margins).
+            var indicatorInsets = contentInset
+            indicatorInsets.top -= layoutMargins.top
+            indicatorInsets.bottom -= layoutMargins.bottom
+            scrollView.scrollIndicatorInsets = indicatorInsets
+        } else {
+            scrollView.scrollIndicatorInsets = contentInset
+        }
     }
-    
+
+    func themeDidChange(_ theme: Theme){
+        renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
+        renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
+
+        toolbar.barTintColor = theme["toolbarTintColor"]
+        toolbar.tintColor = theme["toolbarTextColor"]
+        toolbar.topBorderColor = theme["bottomBarTopBorderColor"]
+        toolbar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
+
+        topBar.themeDidChange(theme)
+    }
+
     // MARK: Gunk
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private enum TopBarState {
-    case hidden, visible, partiallyVisible
-}
-
-extension PostsPageView {
-    private var topBarState: TopBarState {
-        if exposedTopBarSlice <= 0 {
-            return .hidden
-        } else if exposedTopBarSlice >= topBar.bounds.height {
-            return .visible
-        } else {
-            return .partiallyVisible
-        }
-    }
-}
-
-extension PostsPageView: UIScrollViewDelegate {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        lastContentOffset = scrollView.contentOffset
-        maintainTopBarState = false
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard !ignoreScrollViewDidScroll && !topBarAlwaysVisible else { return }
-        
-        let scrollDistance = scrollView.contentOffset.y - lastContentOffset.y
-        guard scrollDistance != 0 else { return }
-        
-        switch topBarState {
-        case .hidden:
-            // Don't start showing a hidden topbar after bouncing.
-            guard !maintainTopBarState else { break }
-            
-            // Only moving the content down can expose the topbar.
-            guard scrollDistance < 0 else { break }
-            
-            // Only start showing the topbar if we're scrolling past the bottom of the scrollview's contents. Otherwise we can briefly trap ourselves at the bottom, exposing some topbar causing the scrollview to bounce back.
-            if scrollView.bounds.maxY - scrollView.contentInset.bottom - scrollDistance <= scrollView.contentSize.height {
-                furtherExposeTopBarSlice(-scrollDistance)
-            }
-            
-        case .partiallyVisible:
-            furtherExposeTopBarSlice(-scrollDistance)
-            
-        case .visible:
-            // Don't start hiding a visible topbar after bouncing.
-            guard !maintainTopBarState else { break }
-            
-            // Only start hiding the topbar if we're scrolling past the top of the scrollview's contents. Otherwise we can briefly trap ourselves at the top, hiding some topbar causing the scrollview to bounce back.
-            guard scrollView.contentOffset.y >= 0 else { break }
-            
-            // Only moving the content up can hide the topbar.
-            if scrollDistance > 0 {
-                furtherExposeTopBarSlice(-scrollDistance)
-            }
-        }
-        
-        lastContentOffset = scrollView.contentOffset
-    }
-    
-    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        maintainTopBarState = true
-    }
-    
-    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        maintainTopBarState = true
-        return true
     }
 }
