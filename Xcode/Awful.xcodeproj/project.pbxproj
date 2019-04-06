@@ -64,8 +64,6 @@
 		1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */; };
 		1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */; };
 		1C16FBDB1CBAA5A900C88BD1 /* CGContext+WithGState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */; };
-		1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */; };
-		1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
 		1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */; };
 		1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */; };
@@ -741,8 +739,6 @@
 		1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewTopBar.swift; sourceTree = "<group>"; };
 		1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PunishmentCell.swift; sourceTree = "<group>"; };
 		1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+WithGState.swift"; sourceTree = "<group>"; };
-		1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeButton.swift; sourceTree = "<group>"; };
-		1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePicker.swift; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		1C16FBF21CBDC58B00C88BD1 /* URL+OpensInBrowser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+OpensInBrowser.swift"; sourceTree = "<group>"; };
 		1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaseInsensitiveMatching.swift; sourceTree = "<group>"; };
@@ -2108,8 +2104,6 @@
 				1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */,
 				1C82AC4A199F585000CB15FE /* Selectotron.swift */,
 				1C82AC4C199F5C1500CB15FE /* Selectotron.xib */,
-				1C16FBDE1CBABB0700C88BD1 /* ThemeButton.swift */,
-				1C16FBE01CBABE6D00C88BD1 /* ThemePicker.swift */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -3632,7 +3626,6 @@
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */,
 				1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */,
-				1C16FBDF1CBABB0700C88BD1 /* ThemeButton.swift in Sources */,
 				1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */,
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
@@ -3669,7 +3662,6 @@
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
 				1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */,
 				1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */,
-				1C16FBE11CBABE6D00C88BD1 /* ThemePicker.swift in Sources */,
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
 				1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */,
