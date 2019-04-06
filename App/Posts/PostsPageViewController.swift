@@ -41,7 +41,7 @@ final class PostsPageViewController: ViewController {
             oldValue?.removeFromSuperview()
             
             if let loadingView = loadingView, isViewLoaded {
-                view.addSubview(loadingView)
+                postsView.insertSubview(loadingView, belowSubview: postsView.toolbar)
             }
         }
     }
@@ -98,19 +98,6 @@ final class PostsPageViewController: ViewController {
         navigationItem.rightBarButtonItem = composeItem
         
         hidesBottomBarWhenPushed = true
-        
-        let spacerWidth: CGFloat = 12
-        toolbarItems = [
-            settingsItem,
-            UIBarButtonItem.flexibleSpace(),
-            backItem,
-            UIBarButtonItem.fixedSpace(spacerWidth),
-            currentPageItem,
-            UIBarButtonItem.fixedSpace(spacerWidth),
-            forwardItem,
-            UIBarButtonItem.flexibleSpace(),
-            actionsItem,
-        ]
     }
     
     var posts: [Post] = []
@@ -1038,6 +1025,12 @@ final class PostsPageViewController: ViewController {
             button.setTitleColor(theme["postsTopBarTextColor"]?.withAlphaComponent(0.5), for: .disabled)
             button.backgroundColor = theme["postsTopBarBackgroundColor"]
         }
+
+        let toolbar = postsView.toolbar
+        toolbar.barTintColor = theme["toolbarTintColor"]
+        toolbar.tintColor = theme["toolbarTextColor"]
+        toolbar.topBorderColor = theme["bottomBarTopBorderColor"]
+        toolbar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
         
         messageViewController?.themeDidChange()
         
@@ -1046,6 +1039,12 @@ final class PostsPageViewController: ViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let spacer: CGFloat = 12
+        postsView.toolbar.items = [
+            settingsItem, .flexibleSpace(),
+            backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
+            .flexibleSpace(), actionsItem]
         
         postsView.frame = CGRect(origin: .zero, size: view.bounds.size)
         postsView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -1062,7 +1061,7 @@ final class PostsPageViewController: ViewController {
         updateRefreshControl()
         
         if let loadingView = loadingView {
-            view.addSubview(loadingView)
+            postsView.insertSubview(loadingView, belowSubview: postsView.toolbar)
         }
         
         observers += UserDefaults.standard.observeSeveral {

@@ -8,7 +8,7 @@ import UIKit
  Navigation controller with special powers:
 
  - Theming support.
- - Custom navbar/toolbar classes `NavigationBar` and `Toolbar`, including after state restoration.
+ - Custom navbar class `NavigationBar`, including after state restoration.
  - Shows and hides the toolbar depending on whether the view controller has toolbar items.
  - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
  */
@@ -43,10 +43,6 @@ final class NavigationController: UINavigationController, Themeable {
 
     private var awfulNavigationBar: NavigationBar {
         return navigationBar as! NavigationBar
-    }
-
-    private var awfulToolbar: Toolbar? {
-        return toolbar as! Toolbar?
     }
 
     var theme: Theme {
@@ -100,11 +96,6 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
         awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
-
-        awfulToolbar?.barTintColor = theme["toolbarTintColor"]
-        awfulToolbar?.tintColor = theme["toolbarTextColor"]
-        awfulToolbar?.topBorderColor = theme["bottomBarTopBorderColor"]
-        awfulToolbar?.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
     }
     
     override func encodeRestorableState(with coder: NSCoder) {
@@ -170,8 +161,6 @@ extension NavigationController: UIGestureRecognizerDelegate {
 
 extension NavigationController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        setToolbarHidden(viewController.toolbarItems?.count ?? 0 == 0, animated: animated)
-        
         if let unpopHandler = unpopHandler , animated {
             unpopHandler.navigationControllerDidBeginAnimating()
             

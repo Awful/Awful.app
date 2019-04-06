@@ -8,7 +8,8 @@ import UIKit
     Manages a posts page's render view and top bar, hiding and showing the top bar when appropriate.
  */
 final class PostsPageView: UIView {
-    
+
+    let toolbar = Toolbar()
     let topBar = PostsViewTopBar()
     private var ignoreScrollViewDidScroll = false
     private var lastContentOffset: CGPoint = .zero
@@ -38,6 +39,7 @@ final class PostsPageView: UIView {
         
         addSubview(renderView)
         addSubview(topBar)
+        addSubview(toolbar)
         
         updateForVoiceOver(animated: false)
         
@@ -90,6 +92,15 @@ final class PostsPageView: UIView {
         let integralWidth = CGFloat(floor(bounds.width))
         let fractionalPart = bounds.width - integralWidth
         renderView.frame = CGRect(x: fractionalPart, y: topBarFrame.maxY, width: integralWidth, height: bounds.height - exposedTopBarSlice)
+
+        toolbar.sizeToFit()
+        let safeAreaMaxY: CGFloat
+        if #available(iOS 11.0, *) {
+            safeAreaMaxY = safeAreaLayoutGuide.layoutFrame.maxY
+        } else {
+            safeAreaMaxY = bounds.maxY
+        }
+        toolbar.frame = CGRect(x: bounds.minX, y: safeAreaMaxY - toolbar.bounds.height, width: bounds.width, height: toolbar.bounds.height)
         
         /**
             When the app enters the background, on iPad, the width of the view changes dramatically while the system takes a snapshot. The end result is that when you leave Awful then come back, you're scrolled away from where you actually were when you left. Here we try to combat that.
