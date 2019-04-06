@@ -61,7 +61,7 @@
 		1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */; };
 		1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */; };
 		1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */; };
-		1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */; };
+		1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */; };
 		1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */; };
 		1C16FBDB1CBAA5A900C88BD1 /* CGContext+WithGState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */; };
 		1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */; };
@@ -736,7 +736,7 @@
 		1C16FBC11CB9525B00C88BD1 /* NewThreadFieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewThreadFieldView.swift; sourceTree = "<group>"; };
 		1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumTweaks.swift; sourceTree = "<group>"; };
 		1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewExternalStylesheetLoader.swift; sourceTree = "<group>"; };
-		1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewTopBar.swift; sourceTree = "<group>"; };
+		1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageTopBar.swift; sourceTree = "<group>"; };
 		1C16FBD81CBAA33600C88BD1 /* PunishmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PunishmentCell.swift; sourceTree = "<group>"; };
 		1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+WithGState.swift"; sourceTree = "<group>"; };
 		1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
@@ -1631,9 +1631,9 @@
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
 				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
 				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
+				1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */,
 				1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */,
 				1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */,
-				1C16FBD61CBAA00200C88BD1 /* PostsViewTopBar.swift */,
 				1C16FBE61CBC671A00C88BD1 /* PostViewModel.swift */,
 				1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */,
 				1C82AC4A199F585000CB15FE /* Selectotron.swift */,
@@ -3760,7 +3760,7 @@
 				1C3E181F225005F400BD88E5 /* UIFont+MonospacedDigits.swift in Sources */,
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
 				7B1FF12C1F76E690000B64DA /* AppIconPickerCollectionViewLayout.swift in Sources */,
-				1C16FBD71CBAA00200C88BD1 /* PostsViewTopBar.swift in Sources */,
+				1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,

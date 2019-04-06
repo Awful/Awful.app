@@ -48,13 +48,12 @@ final class PostsPageViewController: ViewController {
     
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
-        
-        postsView.topBar.parentForumButton.addTarget(self, action: #selector(goToParentForum), for: .primaryActionTriggered)
-        
-        postsView.topBar.previousPostsButton.addTarget(self, action: #selector(showHiddenSeenPosts), for: .primaryActionTriggered)
-        postsView.topBar.previousPostsButton.isEnabled = hiddenPosts > 0
-        
-        postsView.topBar.scrollToBottomButton.addTarget(self, action: #selector(scrollToBottom as () -> Void), for: .primaryActionTriggered)
+
+        let topBar = postsView.topBar
+        topBar.goToParentForum = { [unowned self] in
+            guard let forum = self.thread.forum else { return }
+            AppDelegate.instance.open(route: .forum(id: forum.forumID))
+        }
         
         let renderView = postsView.renderView
         
@@ -540,9 +539,13 @@ final class PostsPageViewController: ViewController {
         if page == .last || page == .nextUnread || posts.isEmpty {
             showLoadingView()
         }
-        
-        postsView.topBar.scrollToBottomButton.isEnabled = !posts.isEmpty
-        postsView.topBar.previousPostsButton.isEnabled = hiddenPosts > 0
+
+        postsView.topBar.showPreviousPosts = hiddenPosts == 0 ? nil : { [unowned self] in
+            self.showHiddenSeenPosts()
+        }
+        postsView.topBar.scrollToEnd = posts.isEmpty ? nil : { [unowned self] in
+            self.scrollToBottom(nil)
+        }
 
         if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
             if !(refreshControl?.contentView is PostsPageRefreshArrowView) {
@@ -614,10 +617,6 @@ final class PostsPageViewController: ViewController {
         loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
     }
     
-    @objc private func scrollToBottom() {
-        scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
-    }
-    
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
         guard case .specific(let pageNumber)? = page, pageNumber > 1 else { return }
         loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
@@ -628,12 +627,7 @@ final class PostsPageViewController: ViewController {
         loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
     }
     
-    @objc private func goToParentForum() {
-        guard let forum = thread.forum else { return }
-        AppDelegate.instance.open(route: .forum(id: forum.forumID))
-    }
-    
-    @objc private func showHiddenSeenPosts() {
+    private func showHiddenSeenPosts() {
         let end = hiddenPosts
         hiddenPosts = 0
         
@@ -641,8 +635,8 @@ final class PostsPageViewController: ViewController {
         renderView.prependPostHTML(html)
     }
     
-    @objc private func scrollToBottom(_ sender: UIKeyCommand) {
-        scrollToBottom()
+    @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
+        scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
     
     @objc private func scrollToTop(_ sender: UIKeyCommand) {
@@ -656,7 +650,7 @@ final class PostsPageViewController: ViewController {
     @objc private func scrollDown(_ sender: UIKeyCommand) {
         let proposedOffset = scrollView.contentOffset.y + 80
         if proposedOffset > scrollView.contentSize.height - scrollView.bounds.height {
-            scrollToBottom()
+            scrollToBottom(nil)
         } else {
             let newOffset = CGPoint(x: scrollView.contentOffset.x, y: proposedOffset)
             scrollView.setContentOffset(newOffset, animated: true)
@@ -672,7 +666,7 @@ final class PostsPageViewController: ViewController {
     @objc private func pageDown(_ sender: UIKeyCommand) {
         let proposedOffset = scrollView.contentOffset.y + (scrollView.bounds.height - 80)
         if proposedOffset > scrollView.contentSize.height - scrollView.bounds.height {
-            scrollToBottom()
+            scrollToBottom(nil)
         } else {
             scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: proposedOffset), animated: true)
         }
@@ -1016,15 +1010,8 @@ final class PostsPageViewController: ViewController {
         if loadingView != nil {
             loadingView = LoadingView.loadingViewWithTheme(theme)
         }
-        
-        let topBar = postsView.topBar
-        topBar.backgroundColor = theme["postsTopBarBackgroundColor"]
-        topBar.bottomBorderColor = theme["topBarBottomBorderColor"]
-        for button in [topBar.parentForumButton, topBar.previousPostsButton, topBar.scrollToBottomButton] {
-            button.setTitleColor(theme["postsTopBarTextColor"], for: .normal)
-            button.setTitleColor(theme["postsTopBarTextColor"]?.withAlphaComponent(0.5), for: .disabled)
-            button.backgroundColor = theme["postsTopBarBackgroundColor"]
-        }
+
+        postsView.topBar.themeDidChange(theme)
 
         let toolbar = postsView.toolbar
         toolbar.barTintColor = theme["toolbarTintColor"]

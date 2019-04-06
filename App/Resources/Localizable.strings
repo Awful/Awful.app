@@ -100,6 +100,23 @@
 /* Title shown in HUD after the last-read post is updated. */
 "posts-page.marked-read" = "Marked Read";
 
+/* Button that opens the thread's forum. */
+"posts-page.parent-forum-button.title" = "Parent Forum";
+/* Button that opens the thread's forum. */
+"posts-page.parent-forum-button.accessibility-label" = "Parent forum";
+/* Button that opens the thread's forum. */
+"posts-page.parent-forum-button.accessibility-hint" = "Opens this thread's forum";
+
+/* Button that loads the previously-read posts on the page. */
+"posts-page.previous-posts-button.title" = "Previous Posts";
+/* Button that loads the previously-read posts on the page. */
+"posts-page.previous-posts-button.accessibility-label" = "Previous posts";
+
+/* Button that jumps to the bottom of the page. */
+"posts-page.scroll-to-end-button.title" = "Scroll To End";
+/* Button that jumps to the bottom of the page. */
+"posts-page.scroll-to-end-button.accessibility-label" = "Scroll to end";
+
 
 /* MARK: Rap sheet */
 

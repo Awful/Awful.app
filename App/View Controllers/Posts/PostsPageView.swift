@@ -10,7 +10,7 @@ import UIKit
 final class PostsPageView: UIView {
 
     let toolbar = Toolbar()
-    let topBar = PostsViewTopBar()
+    let topBar = PostsPageTopBar(frame: CGRect(x: 0, y: 0, width: 320, height: 40))
     private var ignoreScrollViewDidScroll = false
     private var lastContentOffset: CGPoint = .zero
     private var maintainTopBarState = true
@@ -72,8 +72,8 @@ final class PostsPageView: UIView {
     }
     
     override func layoutSubviews() {
-        let fractionalOffset = scrollView.fractionalContentOffset
-        
+//        let fractionalOffset = scrollView.fractionalContentOffset
+
         var topBarFrame = topBar.bounds
         topBarFrame.origin.y = exposedTopBarSlice - topBarFrame.height
         topBarFrame.size.width = bounds.width
@@ -107,9 +107,9 @@ final class PostsPageView: UIView {
          
             That said, if we're in the middle of dragging, messing with contentOffset just makes scrolling janky.
          */
-        if !scrollView.isDragging {
-            renderView.scrollToFractionalOffset(fractionalOffset)
-        }
+//        if !scrollView.isDragging {
+//            renderView.scrollToFractionalOffset(fractionalOffset)
+//        }
     }
     
     // MARK: Gunk
