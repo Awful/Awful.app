@@ -36,7 +36,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         rotateArrow(Angles.waiting, animated: false)
     }
     
-    private func transition(from oldState: PostsPageRefreshControl.State, to newState: PostsPageRefreshControl.State) {
+    private func transition(from oldState: PostsPageView.RefreshControlState, to newState: PostsPageView.RefreshControlState) {
         switch (oldState, newState) {
         case (_, .ready),
              (_, .awaitingScrollEnd):
@@ -93,7 +93,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     
     // MARK: PostsPageRefreshControlContent
     
-    var state: PostsPageRefreshControl.State = .ready {
+    var state: PostsPageView.RefreshControlState = .ready {
         didSet {
             transition(from: oldValue, to: state)
         }

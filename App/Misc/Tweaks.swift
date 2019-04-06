@@ -19,6 +19,7 @@ struct Tweaks: TweakLibraryType {
         // ▼▼▼ Add all new tweaks here or they won't show up! ▼▼▼
 
         launch.offerToOpenSameCopiedURL,
+        posts.delayBeforePullForNext,
         posts.pullForNextExtraDistance,
         posts.showCopyAsMarkdownAction,
 
@@ -32,6 +33,7 @@ struct Tweaks: TweakLibraryType {
     }
     
     enum posts {
+        static let delayBeforePullForNext = Tweak<TimeInterval>("Posts", "Pull-for-next", "Delay (s)", defaultValue: 0, min: 0, max: 10)
         static let pullForNextExtraDistance = Tweak<CGFloat>("Posts", "Pull-for-next", "Extra distance", defaultValue: 45, min: 0, max: 500)
         static let showCopyAsMarkdownAction = Tweak("Posts", "Extra Actions", "Copy as Markdown", false)
     }

@@ -23,7 +23,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func transition(from oldState: PostsPageRefreshControl.State, to newState: PostsPageRefreshControl.State) {
+    private func transition(from oldState: PostsPageView.RefreshControlState, to newState: PostsPageView.RefreshControlState) {
         switch (oldState, newState) {
         case (.armed, .triggered):
             rotateArrows(CGFloat(Double.pi / 2))
@@ -86,7 +86,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
     
     // MARK: PostsPageRefreshControlContent
     
-    var state: PostsPageRefreshControl.State = .ready {
+    var state: PostsPageView.RefreshControlState = .ready {
         didSet {
             transition(from: oldValue, to: state)
         }

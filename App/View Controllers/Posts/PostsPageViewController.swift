@@ -25,7 +25,6 @@ final class PostsPageViewController: ViewController {
     private var observers: [NSKeyValueObservation] = []
     private(set) var page: ThreadPage?
     weak var previewActionItemProvider: PreviewActionItemProvider?
-    private var refreshControl: PostsPageRefreshControl?
     private var replyWorkspace: ReplyWorkspace?
     private var restoringState = false
     private var scrollToFractionAfterLoading: CGFloat?
@@ -124,7 +123,7 @@ final class PostsPageViewController: ViewController {
         page = newPage
         
         if posts.isEmpty || !reloadingSamePage {
-            refreshControl?.endRefreshing()
+            postsView.endRefreshing()
             
             updateUserInterface()
             
@@ -200,7 +199,7 @@ final class PostsPageViewController: ViewController {
                 }
             }
 
-            self.refreshControl?.endRefreshing()
+            self.postsView.endRefreshing()
             }
 
             .catch { [weak self] error in
@@ -523,12 +522,12 @@ final class PostsPageViewController: ViewController {
         }
 
         if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
-            if !(refreshControl?.contentView is PostsPageRefreshArrowView) {
-                refreshControl?.contentView = PostsPageRefreshArrowView()
+            if !(postsView.refreshControl is PostsPageRefreshArrowView) {
+                postsView.refreshControl = PostsPageRefreshArrowView()
             }
         } else {
-            if !(refreshControl?.contentView is PostsPageRefreshSpinnerView) {
-                refreshControl?.contentView = PostsPageRefreshSpinnerView()
+            if !(postsView.refreshControl is PostsPageRefreshSpinnerView) {
+                postsView.refreshControl = PostsPageRefreshSpinnerView()
             }
         }
         
@@ -588,8 +587,15 @@ final class PostsPageViewController: ViewController {
         } else {
             return
         }
-        
-        loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
+
+        // Sometimes a delay is handy when working on the refresh control (making sure it is working as expected without having the whole screen reload after 300ms).
+        let delay = Tweaks.defaultStore.assign(Tweaks.posts.delayBeforePullForNext)
+        let loadNext = { self.loadPage(nextPage, updatingCache: true, updatingLastReadPost: true) }
+        if delay > 0 {
+            after(seconds: delay).done(loadNext)
+        } else {
+            loadNext()
+        }
     }
     
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
@@ -966,17 +972,14 @@ final class PostsPageViewController: ViewController {
         guard isViewLoaded else { return }
         
         if UserDefaults.standard.isPullForNextEnabled {
-            if refreshControl == nil {
-//                refreshControl = PostsPageRefreshControl(scrollView: postsView.renderView.scrollView, multiplexer: postsView.multiplexer, contentView: PostsPageRefreshSpinnerView())
-                refreshControl?.didStartRefreshing = { [weak self] in
+            if postsView.refreshControl == nil {
+                postsView.refreshControl = PostsPageRefreshSpinnerView()
+                postsView.didStartRefreshing = { [weak self] in
                     self?.loadNextPageOrRefresh()
                 }
             }
-            
-            refreshControl?.tintColor = theme["postsPullForNextColor"]
         } else {
-            refreshControl?.removeFromSuperview()
-            refreshControl = nil
+            postsView.refreshControl = nil
         }
     }
     
@@ -990,8 +993,6 @@ final class PostsPageViewController: ViewController {
         }
 
         messageViewController?.themeDidChange()
-        
-        refreshControl?.tintColor = theme["postsPullForNextColor"]
     }
     
     override func viewDidLoad() {
