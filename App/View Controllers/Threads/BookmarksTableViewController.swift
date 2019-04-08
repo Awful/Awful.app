@@ -29,6 +29,9 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         self.managedObjectContext = managedObjectContext
         
         super.init(style: .plain)
+
+        edgesForExtendedLayout.remove(.top)
+        extendedLayoutIncludesOpaqueBars = true
         
         title = LocalizedString("bookmarks.title")
         

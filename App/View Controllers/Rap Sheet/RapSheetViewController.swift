@@ -42,6 +42,9 @@ final class RapSheetViewController: TableViewController {
             hidesBottomBarWhenPushed = true
             modalPresentationStyle = .formSheet
         }
+
+        edgesForExtendedLayout.remove(.top)
+        extendedLayoutIncludesOpaqueBars = true
     }
     
     private func load(_ page: Int) {
