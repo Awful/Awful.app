@@ -99,7 +99,7 @@ final class PostsPageView: UIView {
             }
         }
         didSet {
-            Log.d("transitioned from \(oldValue) to \(refreshControlState)")
+            Log.d("refresh control transitioned from \(oldValue) to \(refreshControlState)")
 
             refreshControl?.state = refreshControlState
 
@@ -127,6 +127,40 @@ final class PostsPageView: UIView {
         }
     }
 
+    // MARK: Top bar
+
+    var topBar: PostsPageTopBar {
+        return topBarContainer.topBar
+    }
+
+    private let topBarContainer = TopBarContainer()
+
+    private var topBarHiddenConstraint: NSLayoutConstraint?
+
+    private var topBarState: TopBarState {
+        didSet {
+            Log.d("top bar transitioned from \(oldValue) to \(topBarState)")
+
+            switch (oldValue, topBarState) {
+            case (.hidden, .appearing),
+                 (.hidden, .visible),
+                 (.visible, .hidden),
+                 (_, .appearing),
+                 (.appearing, _),
+                 (_, .disappearing),
+                 (.disappearing, _),
+                 (.hidden, .alwaysVisible),
+                 (.alwaysVisible, .hidden):
+                updateTopBarHiddenConstraint()
+
+            case (.hidden, _),
+                 (.visible, _),
+                 (.alwaysVisible, _):
+                break
+            }
+        }
+    }
+
     // MARK: Remaining subviews
 
     private(set) lazy var renderView: RenderView = {
@@ -142,15 +176,11 @@ final class PostsPageView: UIView {
         set { toolbar.items = newValue }
     }
 
-    var topBar: PostsPageTopBar {
-        return topBarContainer.topBar
-    }
-
-    private let topBarContainer = TopBarContainer()
-
     // MARK: Layout
     
     override init(frame: CGRect) {
+        topBarState = UIAccessibility.isVoiceOverRunning ? .alwaysVisible : .hidden
+
         super.init(frame: frame)
 
         addSubview(renderView, constrainEdges: .all)
@@ -162,6 +192,16 @@ final class PostsPageView: UIView {
         NSLayoutConstraint.activate([
             topBarContainer.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: toolbar.bottomAnchor)])
+
+        topBarHiddenConstraint = topBarContainer.bottomAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor)
+        topBarHiddenConstraint?.isActive = {
+            switch topBarState {
+            case .hidden, .appearing, .disappearing:
+                return true
+            case .visible, .alwaysVisible:
+                return false
+            }
+        }()
 
         refreshControlContainer.translatesAutoresizingMaskIntoConstraints = false
         renderView.scrollView.addSubview(refreshControlContainer)
@@ -250,13 +290,65 @@ extension PostsPageView {
             let showBarByDefault = topBar.topAnchor.constraint(equalTo: topAnchor)
             showBarByDefault.priority = 500
             NSLayoutConstraint.activate([
-                topBar.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
+                topAnchor.constraint(greaterThanOrEqualTo: topBar.topAnchor),
                 showBarByDefault])
         }
 
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+    }
+
+    enum TopBarState {
+
+        /// The top bar is not visible, but will appear when the user scrolls up.
+        case hidden
+
+        /// The top bar is visible, and may disappear when the user scrolls down.
+        case visible
+
+        /// The top bar was hidden but is now "scrolling" into view. `fromContentOffset` is the content offset from then this started, used to calculate its current progress.
+        case appearing(fromContentOffset: CGPoint)
+
+        /// The top bar was visible but is now "scrolling" out of view. `fromContentOffset` is the content offset from then this started, used to calculate its current progress.
+        case disappearing(fromContentOffset: CGPoint)
+
+        /// The top bar is visible and will not disappear when the user scrolls.
+        case alwaysVisible
+    }
+
+    @discardableResult
+    private func updateTopBarHiddenConstraint() -> TopBarUpdateResult {
+        switch topBarState {
+        case .hidden:
+            topBarHiddenConstraint?.constant = 0
+            topBarHiddenConstraint?.isActive = true
+            return .init(progress: 1)
+
+        case .appearing(fromContentOffset: let initialContentOffset):
+            let distance = initialContentOffset.y - renderView.scrollView.contentOffset.y
+            let upperBound = topBar.bounds.height
+            let clamped = distance.clamp(0...upperBound)
+            topBarHiddenConstraint?.constant = clamped
+            topBarHiddenConstraint?.isActive = true
+            return .init(progress: clamped / upperBound)
+
+        case .disappearing(fromContentOffset: let initialContentOffset):
+            let distance = renderView.scrollView.contentOffset.y - initialContentOffset.y
+            let upperBound = topBar.bounds.height
+            let clamped = distance.clamp(0...upperBound)
+            topBarHiddenConstraint?.constant = upperBound - clamped
+            topBarHiddenConstraint?.isActive = true
+            return .init(progress: clamped / upperBound)
+
+        case .visible, .alwaysVisible:
+            topBarHiddenConstraint?.isActive = false
+            return .init(progress: 1)
+        }
+    }
+
+    private struct TopBarUpdateResult {
+        let progress: CGFloat
     }
 }
 
@@ -380,11 +472,42 @@ extension PostsPageView: ScrollViewDelegateContentSize {
             break
         }
 
-        // TODO: decide if it's ok to hide the top bar if we drag in the right direction?
+        switch refreshControlState {
+        case .armed, .triggered:
+            break
+
+        case .ready, .awaitingScrollEnd, .refreshing:
+            switch topBarState  {
+            case .hidden:
+            topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
+
+            case .visible:
+            topBarState = .disappearing(fromContentOffset: scrollView.contentOffset)
+
+            case .appearing, .disappearing, .alwaysVisible:
+            break
+            }
+        }
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        // based on direction, figure out whether top bar or refresh control need fiddling.
+        switch refreshControlState {
+        case .ready, .awaitingScrollEnd, .refreshing:
+            switch topBarState {
+            case .hidden where velocity.y < 0:
+                topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
+
+            case .visible where velocity.y > 0:
+                topBarState = .disappearing(fromContentOffset: scrollView.contentOffset)
+
+            case .hidden, .visible, .appearing, .disappearing, .alwaysVisible:
+                break
+            }
+
+        case .armed, .triggered:
+            // Don't fight with the refresh control.
+            break
+        }
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool) {
@@ -401,6 +524,10 @@ extension PostsPageView: ScrollViewDelegateContentSize {
         case .ready, .armed, .awaitingScrollEnd, .refreshing:
             break
         }
+
+        if !willDecelerate {
+            updateTopBarDidEndDecelerating()
+        }
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -409,6 +536,22 @@ extension PostsPageView: ScrollViewDelegateContentSize {
             refreshControlState = .ready
 
         case .ready, .armed, .triggered, .refreshing:
+            break
+        }
+
+        updateTopBarDidEndDecelerating()
+    }
+
+    private func updateTopBarDidEndDecelerating() {
+        let result = updateTopBarHiddenConstraint()
+        switch topBarState {
+        case .appearing:
+            topBarState = result.progress >= 0.75 ? .visible : .hidden
+
+        case .disappearing:
+            topBarState = result.progress >= 0.75 ? .hidden : .visible
+
+        case .hidden, .visible, .alwaysVisible:
             break
         }
     }
@@ -433,16 +576,12 @@ extension PostsPageView: ScrollViewDelegateContentSize {
             break
         }
 
-        // TODO: fiddle with top bar if warranted
-    }
+        switch topBarState {
+        case .appearing, .disappearing:
+            updateTopBarHiddenConstraint()
 
-    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        // note that we're jumping to the top; turn off refresh control and don't change the top bar state
-        return true
-    }
-
-    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
-        // unfreeze the top bar if it was frozen in shouldScrollToTop
-        // reenable the refresh control
+        case .hidden, .visible, .alwaysVisible:
+            break
+        }
     }
 }
