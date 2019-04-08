@@ -290,6 +290,8 @@ final class PostsPageViewController: ViewController {
             context["forumID"] = forum.forumID
         }
 
+        context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
+
         let html: String
         do {
             html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)

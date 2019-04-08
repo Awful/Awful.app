@@ -598,6 +598,22 @@ extension RenderView {
             }
         }
     }
+
+    func setTweetTheme(_ theme: String) {
+        let escaped: String
+        do {
+            escaped = try escapeForEval(theme)
+        } catch {
+            Log.w("could not JSON-escape the tweet theme: \(error)")
+            return
+        }
+
+        webView.evaluateJavaScript("if (window.Awful) Awful.setTweetTheme(\(escaped))") { rawResult, error in
+            if let error = error {
+                self.mentionError(error, explanation: "could not evaluate Awful.setTweetTheme")
+            }
+        }
+    }
     
     /**
      Returns a frame in the render view's coordinate system that encompasses the frames of all elements matching the selector.

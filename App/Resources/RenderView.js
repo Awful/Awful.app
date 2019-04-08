@@ -36,9 +36,10 @@ Awful.embedTweets = function() {
 
   Object.keys(tweetIDsToLinks).forEach(function(tweetID) {
     var callback = `jsonp_callback_${tweetID}`;
+    var tweetTheme = Awful.tweetTheme();
 
     var script = document.createElement('script');
-    script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&callback=${callback}`;
+    script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${tweetTheme}&callback=${callback}`;
 
     window[callback] = function(data) {
       cleanUp(script);
@@ -89,6 +90,14 @@ Awful.embedTweets = function() {
     }
   }
 };
+
+Awful.tweetTheme = function() {
+  return document.body.dataset.tweetTheme;
+}
+
+Awful.setTweetTheme = function(newTheme) {
+  document.body.dataset.tweetTheme = newTheme;
+}
 
 
 /**

@@ -24,7 +24,8 @@
     class="{{ userInterfaceIdiom }}
            {% if threadID %} thread-{{ threadID|htmlEscape }} {% endif %}
            {% if forumID %} forum-{{ forumID|htmlEscape }} {% endif %}"
-    data-version="{{ version }}">
+    data-version="{{ version }}"
+    data-tweet-theme="{{ tweetTheme }}">
     
     <div id="posts">
     {% for post in posts %}

@@ -111,6 +111,8 @@
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#1773a1</string>
+			<key>postsTweetTheme</key>
+			<string>light</string>
 			<key>postsViewCSS</key>
 			<string>posts-view.css</string>
 		</dict>
@@ -210,6 +212,8 @@
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#0c3c57</string>
+			<key>postsTweetTheme</key>
+			<string>dark</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-dark.css</string>
 		</dict>
@@ -299,6 +303,8 @@
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#003a7d</string>
+			<key>postsTweetTheme</key>
+			<string>light</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-alternate.css</string>
 		</dict>
@@ -398,6 +404,8 @@
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#00234a</string>
+			<key>postsTweetTheme</key>
+			<string>dark</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-alternate-dark.css</string>
 		</dict>
@@ -499,6 +507,8 @@
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#000000</string>
+			<key>postsTweetTheme</key>
+			<string>dark</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-oled-dark.css</string>
 		</dict>
