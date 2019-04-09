@@ -37,6 +37,9 @@ final class PostsPageViewController: ViewController {
     
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
+        postsView.didStartRefreshing = { [weak self] in
+            self?.loadNextPageOrRefresh()
+        }
         postsView.renderView.delegate = self
         postsView.renderView.registerMessage(FYADFlagRequest.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
@@ -523,16 +526,20 @@ final class PostsPageViewController: ViewController {
             self.scrollToBottom(nil)
         }
 
-        if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
-            if !(postsView.refreshControl is PostsPageRefreshArrowView) {
-                postsView.refreshControl = PostsPageRefreshArrowView()
+        if UserDefaults.standard.isPullForNextEnabled {
+            if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
+                if !(postsView.refreshControl is PostsPageRefreshArrowView) {
+                    postsView.refreshControl = PostsPageRefreshArrowView()
+                }
+            } else {
+                if !(postsView.refreshControl is PostsPageRefreshSpinnerView) {
+                    postsView.refreshControl = PostsPageRefreshSpinnerView()
+                }
             }
         } else {
-            if !(postsView.refreshControl is PostsPageRefreshSpinnerView) {
-                postsView.refreshControl = PostsPageRefreshSpinnerView()
-            }
+            postsView.refreshControl = nil
         }
-        
+
         backItem.isEnabled = {
             switch page {
             case .specific(let pageNumber)?:
@@ -970,21 +977,6 @@ final class PostsPageViewController: ViewController {
         Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
-    private func updateRefreshControl() {
-        guard isViewLoaded else { return }
-        
-        if UserDefaults.standard.isPullForNextEnabled {
-            if postsView.refreshControl == nil {
-                postsView.refreshControl = PostsPageRefreshSpinnerView()
-                postsView.didStartRefreshing = { [weak self] in
-                    self?.loadNextPageOrRefresh()
-                }
-            }
-        } else {
-            postsView.refreshControl = nil
-        }
-    }
-    
     override func themeDidChange() {
         super.themeDidChange()
 
@@ -1028,9 +1020,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.addGestureRecognizer(longPress)
         
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
-        
-        updateRefreshControl()
-        
+
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.embedTweets) { [unowned self] defaults in
                 if defaults.embedTweets {
