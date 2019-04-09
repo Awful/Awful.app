@@ -1022,26 +1022,32 @@ final class PostsPageViewController: ViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
 
         observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.embedTweets) { [unowned self] defaults in
+            $0.observe(\.embedTweets) { [weak self] defaults in
+                guard let self = self else { return }
                 if defaults.embedTweets {
                     self.postsView.renderView.embedTweets()
                 }
             }
-            $0.observe(\.fontScale) { [unowned self] defaults in
+            $0.observe(\.fontScale) { [weak self] defaults in
+                guard let self = self else { return }
                 self.postsView.renderView.setFontScale(defaults.fontScale)
             }
-            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
+            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
+                guard let self = self else { return }
                 if defaults.isHandoffEnabled, self.view.window != nil {
                     self.configureUserActivityIfPossible()
                 }
             }
-            $0.observe(\.isPullForNextEnabled) { [unowned self] defaults in
-                self.updateRefreshControl()
+            $0.observe(\.isPullForNextEnabled, options: .initial) { [weak self] defaults in
+                guard let self = self else { return }
+                self.updateUserInterface()
             }
-            $0.observe(\.showAuthorAvatars) { [unowned self] defaults in
+            $0.observe(\.showAuthorAvatars) { [weak self] defaults in
+                guard let self = self else { return }
                 self.postsView.renderView.setShowAvatars(defaults.showAuthorAvatars)
             }
-            $0.observe(\.showImages) { [unowned self] defaults in
+            $0.observe(\.showImages) { [weak self] defaults in
+                guard let self = self else { return }
                 if defaults.showImages {
                     self.postsView.renderView.loadLinkifiedImages()
                 }
