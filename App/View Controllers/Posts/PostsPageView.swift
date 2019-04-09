@@ -183,6 +183,15 @@ final class PostsPageView: UIView {
 
         super.init(frame: frame)
 
+        let voiceOverStatusNotification: Notification.Name = {
+            if #available(iOS 11.0, *) {
+                return UIAccessibility.voiceOverStatusDidChangeNotification
+            } else {
+                return .init(rawValue: UIAccessibilityVoiceOverStatusChanged)
+            }
+        }()
+        NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: voiceOverStatusNotification, object: nil)
+
         addSubview(renderView, constrainEdges: .all)
         addSubview(topBarContainer, constrainEdges: [.left, .right])
         addSubview(loadingViewContainer, constrainEdges: .all)
@@ -240,6 +249,19 @@ final class PostsPageView: UIView {
             indicatorInsets.bottom -= layoutMargins.bottom
         }
         scrollView.scrollIndicatorInsets = indicatorInsets
+    }
+
+    @objc private func voiceOverStatusDidChange(_ notification: Notification) {
+        if UIAccessibility.isVoiceOverRunning {
+            topBarState = .alwaysVisible
+        } else {
+            switch topBarState {
+            case .alwaysVisible:
+                topBarState = .visible
+            case .hidden, .appearing, .disappearing, .visible:
+                break
+            }
+        }
     }
 
     // MARK: Theming
