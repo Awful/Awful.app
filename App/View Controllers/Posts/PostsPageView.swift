@@ -163,6 +163,8 @@ final class PostsPageView: UIView {
 
     // MARK: Remaining subviews
 
+    private var willBeginDraggingContentOffset: CGPoint?
+
     private(set) lazy var renderView: RenderView = {
         let renderView = RenderView()
         renderView.scrollView.delegate = self
@@ -462,54 +464,7 @@ extension PostsPageView: ScrollViewDelegateContentSize {
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        let info = ScrollViewInfo(refreshControlHeight: refreshControlContainer.bounds.height, scrollView: scrollView)
-
-        switch refreshControlState {
-        case .ready:
-            // Don't want to trigger if the user is doing mad successive drags to get quickly to the bottom.
-            guard !scrollView.isDecelerating else { break }
-
-            var adjustedBottomInset: CGFloat {
-                if #available(iOS 11.0, *) {
-                    return scrollView.adjustedContentInset.bottom
-                } else {
-                    return scrollView.contentInset.bottom
-                }
-            }
-
-            if info.visibleBottom >= ScrollViewInfo.closeEnoughToBottom - adjustedBottomInset {
-                refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
-            } else {
-                refreshControlState = .awaitingScrollEnd
-            }
-
-        case .armed:
-            if info.triggeredFraction >= 1 {
-                refreshControlState = .triggered
-            } else {
-                refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
-            }
-
-        case .awaitingScrollEnd, .triggered, .refreshing:
-            break
-        }
-
-        switch refreshControlState {
-        case .armed, .triggered:
-            break
-
-        case .ready, .awaitingScrollEnd, .refreshing:
-            switch topBarState  {
-            case .hidden:
-            topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
-
-            case .visible:
-            topBarState = .disappearing(fromContentOffset: scrollView.contentOffset)
-
-            case .appearing, .disappearing, .alwaysVisible:
-            break
-            }
-        }
+        willBeginDraggingContentOffset = scrollView.contentOffset
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -550,6 +505,8 @@ extension PostsPageView: ScrollViewDelegateContentSize {
         if !willDecelerate {
             updateTopBarDidEndDecelerating()
         }
+
+        willBeginDraggingContentOffset = nil
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -581,20 +538,32 @@ extension PostsPageView: ScrollViewDelegateContentSize {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let info = ScrollViewInfo(refreshControlHeight: refreshControlContainer.bounds.height, scrollView: scrollView)
 
-        switch refreshControlState {
-        case .armed(let triggeredFraction):
+        // Update refreshControlState first, then decide if we care about topBarState.
+        switch (refreshControlState, willBeginDraggingContentOffset) {
+        case (.ready, let initialContentOffset?)
+            where initialContentOffset.y < scrollView.contentOffset.y
+                && !scrollView.isDecelerating:
+
+            if info.visibleBottom >= ScrollViewInfo.closeEnoughToBottom - scrollView.contentInset.bottom {
+                refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
+            } else {
+                refreshControlState = .awaitingScrollEnd
+            }
+
+
+        case (.armed(let triggeredFraction), _):
             if info.triggeredFraction >= 1 {
                 refreshControlState = .triggered
             } else if info.triggeredFraction != triggeredFraction {
                 refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
             }
 
-        case .triggered:
+        case (.triggered, _):
             if info.triggeredFraction < 1 {
                 refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
             }
 
-        case .ready, .awaitingScrollEnd, .refreshing:
+        case (.ready, _), (.awaitingScrollEnd, _), (.refreshing, _):
             break
         }
 
@@ -604,6 +573,23 @@ extension PostsPageView: ScrollViewDelegateContentSize {
 
         case .hidden, .visible, .alwaysVisible:
             break
+        }
+
+        switch refreshControlState {
+        case .armed, .triggered:
+            break
+
+        case .ready, .awaitingScrollEnd, .refreshing:
+            switch (topBarState, willBeginDraggingContentOffset)  {
+            case (.hidden, let willBeginDraggingContentOffset?):
+                topBarState = .appearing(fromContentOffset: willBeginDraggingContentOffset)
+
+            case (.visible, let willBeginDraggingContentOffset?):
+                topBarState = .disappearing(fromContentOffset: willBeginDraggingContentOffset)
+
+            case (.hidden, _), (.visible, _), (.appearing, _), (.disappearing, _), (.alwaysVisible, _):
+                break
+            }
         }
     }
 }
