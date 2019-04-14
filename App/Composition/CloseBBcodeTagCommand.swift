@@ -31,7 +31,7 @@ final class CloseBBcodeTagCommand: NSObject {
             let selectedRange = Range(textView.selectedRange, in: text)
             else { return "" }
         
-        return text[selectedRange]
+        return text[..<selectedRange.upperBound]
     }
     
     private func updateEnabled() {
