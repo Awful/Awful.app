@@ -5,7 +5,7 @@
 Not sure what to work on? There's a [list of issues](https://github.com/awful/Awful.app/issues), or just post in the thread and someone will share their pet peeves for your amusement!
 
 <p align="center">
-  <img src="Screenshots/iPhone 4.7in retina.png" width="375" height="667" alt="Screenshot of Awful as it appears on an iPhone">
+  <img src="Screenshots/Awful/iPhone 6.5in.png" width="375" height="667" alt="Screenshot of Awful as it appears on an iPhone">
 </p>
 
 [App Store]: https://itunes.apple.com/app/awful-unofficial-something/id567936609
