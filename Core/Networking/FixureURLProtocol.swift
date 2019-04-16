@@ -44,6 +44,9 @@ public final class FixtureURLProtocol: URLProtocol {
         
         /// Requests for the list of forums, and for the list of threads on any forum.
         public static let forum = Fixture(basename: "forumdisplay", pathPrefix: "/forumdisplay.php")
+
+        /// Requests for a page of posts.
+        public static let thread = Fixture(basename: "showthread3", pathPrefix: "/showthread.php")
         
         private init(basename: String, pathPrefix: String, query: String? = nil) {
             self.basename = basename
