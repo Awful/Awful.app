@@ -39,7 +39,8 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
             rotateArrows(0)
             stopRotatingForever()
             
-        case (.ready, _),
+        case (.disabled, _),
+             (.ready, _),
              (.armed, _),
              (.awaitingScrollEnd, _),
              (.triggered, _),

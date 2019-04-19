@@ -38,6 +38,10 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     
     private func transition(from oldState: PostsPageView.RefreshControlState, to newState: PostsPageView.RefreshControlState) {
         switch (oldState, newState) {
+        case (_, .disabled):
+            arrow.isHidden = true
+            spinner.stopAnimating()
+
         case (_, .ready),
              (_, .awaitingScrollEnd):
             arrow.isHidden = false
@@ -58,7 +62,8 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
             rotateArrow(Angles.waiting, animated: true)
             spinner.stopAnimating()
             
-        case (.ready, _),
+        case (.disabled, _),
+             (.ready, _),
              (.armed, _),
              (.awaitingScrollEnd, _),
              (.triggered, _),

@@ -51,6 +51,14 @@ final class PostsPageView: UIView {
 
                 refreshControl.state = refreshControlState
             }
+
+            if refreshControl == nil {
+                refreshControlState = .disabled
+            } else {
+                if refreshControlState == .disabled {
+                    refreshControlState = .ready
+                }
+            }
         }
     }
 
@@ -68,6 +76,10 @@ final class PostsPageView: UIView {
     private var refreshControlState: RefreshControlState = .ready {
         willSet {
             switch (refreshControlState, newValue) {
+            case (_, .disabled),
+                 (.disabled, .ready):
+                break
+
             case (.ready, .armed),
                  (.ready, .awaitingScrollEnd),
                  (.ready, .triggered):
@@ -90,7 +102,8 @@ final class PostsPageView: UIView {
             case (.refreshing, .ready):
                 break
 
-            case (.ready, _),
+            case (.disabled, _),
+                 (.ready, _),
                  (.armed, _),
                  (.awaitingScrollEnd, _),
                  (.triggered, _),
@@ -104,7 +117,7 @@ final class PostsPageView: UIView {
             refreshControl?.state = refreshControlState
 
             switch refreshControlState {
-            case .ready, .awaitingScrollEnd:
+            case .ready, .awaitingScrollEnd, .disabled:
                 setNeedsLayout()
 
             case .refreshing:
@@ -390,6 +403,9 @@ extension PostsPageView {
 
     enum RefreshControlState: Equatable {
 
+        /// The refresh control is unseen and does nothing.
+        case disabled
+
         /// The refresh control may spring to life if an appropriate drag begins.
         case ready
 
@@ -450,7 +466,7 @@ extension PostsPageView {
         case .armed, .awaitingScrollEnd, .triggered, .refreshing:
             refreshControlState = .ready
 
-        case .ready:
+        case .ready, .disabled:
             break
         }
     }
@@ -469,7 +485,11 @@ extension PostsPageView: ScrollViewDelegateContentSize {
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         switch refreshControlState {
-        case .ready, .awaitingScrollEnd, .refreshing:
+        case .armed, .triggered:
+            // Top bar shouldn't fight with refresh control.
+            break
+
+        case .ready, .awaitingScrollEnd, .refreshing, .disabled:
             switch topBarState {
             case .hidden where velocity.y < 0:
                 topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
@@ -480,10 +500,6 @@ extension PostsPageView: ScrollViewDelegateContentSize {
             case .hidden, .visible, .appearing, .disappearing, .alwaysVisible:
                 break
             }
-
-        case .armed, .triggered:
-            // Don't fight with the refresh control.
-            break
         }
     }
 
@@ -498,7 +514,7 @@ extension PostsPageView: ScrollViewDelegateContentSize {
         case .triggered:
             refreshControlState = .refreshing
 
-        case .ready, .armed, .awaitingScrollEnd, .refreshing:
+        case .ready, .armed, .awaitingScrollEnd, .refreshing, .disabled:
             break
         }
 
@@ -514,7 +530,7 @@ extension PostsPageView: ScrollViewDelegateContentSize {
         case .awaitingScrollEnd:
             refreshControlState = .ready
 
-        case .ready, .armed, .triggered, .refreshing:
+        case .ready, .armed, .triggered, .refreshing, .disabled:
             break
         }
 
@@ -563,7 +579,7 @@ extension PostsPageView: ScrollViewDelegateContentSize {
                 refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
             }
 
-        case (.ready, _), (.awaitingScrollEnd, _), (.refreshing, _):
+        case (.disabled, _), (.ready, _), (.awaitingScrollEnd, _), (.refreshing, _):
             break
         }
 
@@ -577,15 +593,21 @@ extension PostsPageView: ScrollViewDelegateContentSize {
 
         switch refreshControlState {
         case .armed, .triggered:
+            // Top bar shouldn't fight with refresh control.
             break
 
-        case .ready, .awaitingScrollEnd, .refreshing:
+        case .disabled, .ready, .awaitingScrollEnd, .refreshing:
             switch (topBarState, willBeginDraggingContentOffset)  {
             case (.hidden, let willBeginDraggingContentOffset?):
                 topBarState = .appearing(fromContentOffset: willBeginDraggingContentOffset)
 
             case (.visible, let willBeginDraggingContentOffset?):
-                topBarState = .disappearing(fromContentOffset: willBeginDraggingContentOffset)
+                // Without this check, when the refresh control is disabled, it's impossible to scroll content up when at the bottom of the page and the top bar is visible (i.e. after tapping "Scroll to Bottom"). There's surely a better approach, but this gets us working again.
+                let contentOffsetYAtBottom = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
+                let isVeryCloseToBottom = abs(willBeginDraggingContentOffset.y - contentOffsetYAtBottom) < 5
+                if !isVeryCloseToBottom {
+                    topBarState = .disappearing(fromContentOffset: willBeginDraggingContentOffset)
+                }
 
             case (.hidden, _), (.visible, _), (.appearing, _), (.disappearing, _), (.alwaysVisible, _):
                 break
