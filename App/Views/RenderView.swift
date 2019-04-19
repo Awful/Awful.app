@@ -395,6 +395,8 @@ extension RenderView {
      */
     func interestingElements(at point: CGPoint) -> Guarantee<[InterestingElement]> {
         let (guarantee, resolver) = Guarantee<[InterestingElement]>.pending()
+
+        let point = scrollView.convert(point, from: self)
         
         webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
             if let error = error {

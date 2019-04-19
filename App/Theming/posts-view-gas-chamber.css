@@ -156,7 +156,8 @@ header:after {
   width: 24px;
   height: 8px;
 }
-.postbody img {
+.postbody img,
+#fyad-flag {
   -webkit-user-select: none;
 }
 .bbc-block {
