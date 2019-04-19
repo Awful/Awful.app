@@ -1,2 +1,7 @@
 CHANGELOG.md merge=union
-*.html linguist-generated=true
+App/Sourcery/*.generated.* linguist-generated
+Core/Tests/Fixtures/*.html linguist-vendored
+Gemfile.lock linguist-generated
+Podfile.lock linguist-generated
+Pods/* linguist-vendored
+Vendor/* linguist-vendored
