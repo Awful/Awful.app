@@ -235,7 +235,7 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         let undoManager = UndoManager()
         undoManager.levelsOfUndo = 1
         return undoManager
-        }()
+    }()
     
     @objc private func setThread(_ thread: AwfulThread, isBookmarked: Bool) {
         (undoManager.prepare(withInvocationTarget: self) as AnyObject).setThread(thread, isBookmarked: !isBookmarked)
