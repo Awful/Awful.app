@@ -357,8 +357,10 @@ final class URLMenuPresenter: NSObject {
         var imageFrame: CGRect?
         var imageURL: URL?
         var smilie: PostedSmilie?
-        for case let .spoiledImage(title: title, url: url, frame: frame) in elements {
-            smilie = PostedSmilie(title: title, url: url)
+        for case let .spoiledImage(title: title, url: url, frame: frame, location: location) in elements {
+            if case .postbody? = location {
+                smilie = PostedSmilie(title: title, url: url)
+            }
             imageURL = URL(string: url.absoluteString, relativeTo: ForumsClient.shared.baseURL)
             imageFrame = frame
             break

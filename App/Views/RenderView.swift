@@ -355,7 +355,7 @@ extension RenderView {
     enum InterestingElement {
 
         /// - Parameter title: The image's alt-text. For smilies, contains the text used to insert the smilie into a post.
-        case spoiledImage(title: String, url: URL, frame: CGRect?)
+        case spoiledImage(title: String, url: URL, frame: CGRect?, location: LocationWithinPost?)
         
         /// - Parameter frame: The link element's frame expressed in the render view's coordinate system.
         case spoiledLink(frame: CGRect, url: URL)
@@ -364,6 +364,19 @@ extension RenderView {
         case spoiledVideo(frame: CGRect, url: URL)
         
         case unspoiledLink
+    }
+
+    /// Where an interesting element was found within a post.
+    enum LocationWithinPost: String {
+
+        /// A post's header includes the author's avatar.
+        case header
+
+        /// The contents of the post.
+        case postbody
+
+        /// Includes the post date and the post action button.
+        case footer
     }
     
     /**
@@ -407,7 +420,8 @@ extension RenderView {
                 let title = result["spoiledImageTitle"] as? String ?? ""
                 let frame = (result["spoiledImageFrame"] as? [String: Double])
                     .flatMap { CGRect(renderViewMessage: $0) }
-                interesting.append(.spoiledImage(title: title, url: imageURL, frame: frame))
+                let location = (result["postContainerElement"] as? String).flatMap(LocationWithinPost.init(rawValue:))
+                interesting.append(.spoiledImage(title: title, url: imageURL, frame: frame, location: location))
             }
             
             if

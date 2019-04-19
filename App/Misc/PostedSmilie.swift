@@ -49,7 +49,7 @@ extension PostedSmilie {
     }
 
     init?(title: String = "", url: URL) {
-        guard PostedSmilie.isSmilieURL(url) else { return nil }
+        guard PostedSmilie.isSmilieURL(url), !title.isEmpty else { return nil }
 
         imageURL = url
         self.text = title

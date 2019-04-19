@@ -383,6 +383,7 @@ Awful.unionFrameOfElements = function(elements) {
  @typedef InterestingElements
  @type {object}
  @property {boolean} [hasUnspoiledLink] - true when there's an unspoiled link we shouldn't inadvertently reveal.
+ @property {string} [postContainerElement] - One of "header", "postbody", "footer" depending on where the element is within the post. For example, a user's avatar will have this set to "header".
  @property {ElementRect} [spoiledImageFrame] - Where the image is in web view coordinates.
  @property {string} [spoiledImageTitle] - The title of an image visible to the user. For smilies, contains the text used to insert the smilie into a post.
  @property {string} [spoiledImageURL] - A URL pointing to an image that's visible to the user.
@@ -400,6 +401,14 @@ Awful.interestingElementsAtPoint = function(x, y) {
   var elementAtPoint = document.elementFromPoint(x, y);
   if (!elementAtPoint) {
     return interesting;
+  }
+
+  if (elementAtPoint.closest('header')) {
+    interesting.postContainerElement = 'header';
+  } else if (elementAtPoint.closest('section.postbody')) {
+    interesting.postContainerElement = 'postbody';
+  } else if (elementAtPoint.closest('footer')) {
+    interesting.postContainerElement = 'footer';
   }
 
   var img = elementAtPoint.closest('img:not(button img)');
