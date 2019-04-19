@@ -25,9 +25,6 @@ final class MessageListViewController: TableViewController {
         tabBarItem.accessibilityLabel = LocalizedString("private-message-tab.accessibility-label")
         tabBarItem.image = UIImage(named: "pm-icon")
         tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
-
-        edgesForExtendedLayout.remove(.top)
-        extendedLayoutIncludesOpaqueBars = true
         
         let updateBadgeValue = { [weak self] (unreadCount: Int) -> Void in
             self?.tabBarItem?.badgeValue = unreadCount > 0

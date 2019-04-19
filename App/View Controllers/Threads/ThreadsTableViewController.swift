@@ -36,9 +36,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         
         super.init(style: .plain)
 
-        edgesForExtendedLayout.remove(.top)
-        extendedLayoutIncludesOpaqueBars = true
-
         title = forum.name
         
         navigationItem.rightBarButtonItem = composeBarButtonItem
