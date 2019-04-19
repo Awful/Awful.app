@@ -40,7 +40,8 @@ final class ForumsTableViewController: TableViewController {
         updateBadgeValue(unreadAnnouncementCountObserver.count)
         
         observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.showUnreadAnnouncementsBadge) { [unowned self] defaults in
+            $0.observe(\.showUnreadAnnouncementsBadge) { [weak self] defaults in
+                guard let self = self else { return }
                 self.updateBadgeValue(self.unreadAnnouncementCountObserver.count)
             }
         }

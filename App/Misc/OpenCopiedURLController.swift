@@ -26,8 +26,8 @@ final class OpenCopiedURLController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: UIApplication.shared)
         observer = UserDefaults.standard.observeOnMain(\.openCopiedURLAfterBecomingActive) {
-            [unowned self] defaults, change in
-            self.checkPasteboardForInterestingURL()
+            [weak self] defaults, change in
+            self?.checkPasteboardForInterestingURL()
         }
     }
     

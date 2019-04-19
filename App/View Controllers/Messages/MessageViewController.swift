@@ -183,24 +183,25 @@ final class MessageViewController: ViewController {
         renderView.addGestureRecognizer(longPress)
         
         observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.embedTweets) { [unowned self] defaults in
+            $0.observe(\.embedTweets) { [weak self] defaults in
                 if defaults.embedTweets {
-                    self.renderView.embedTweets()
+                    self?.renderView.embedTweets()
                 }
             }
-            $0.observe(\.fontScale) { [unowned self] defaults in
-                self.renderView.setFontScale(defaults.fontScale)
+            $0.observe(\.fontScale) { [weak self] defaults in
+                self?.renderView.setFontScale(defaults.fontScale)
             }
-            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
+            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
+                guard let self = self else { return }
                 if self.visible {
                     self.configureUserActivity()
                 }
             }
-            $0.observe(\.showAuthorAvatars) { [unowned self] defaults in
-                self.renderView.setShowAvatars(defaults.showAuthorAvatars)
+            $0.observe(\.showAuthorAvatars) { [weak self] defaults in
+                self?.renderView.setShowAvatars(defaults.showAuthorAvatars)
             }
-            $0.observe(\.showImages) { [unowned self] defaults in
-                self.renderView.loadLinkifiedImages()
+            $0.observe(\.showImages) { [weak self] defaults in
+                self?.renderView.loadLinkifiedImages()
             }
         }
         

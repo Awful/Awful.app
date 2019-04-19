@@ -128,13 +128,15 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         }
         
         observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
+            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
+                guard let self = self else { return }
                 if self.visible {
                     self.prepareUserActivity()
                 }
             }
             $0.observe(\.sortUnreadForumThreadsFirst, \.showThreadTagsInThreadList) {
-                [unowned self] defaults in
+                [weak self] defaults in
+                guard let self = self else { return }
                 self.dataSource = self.makeDataSource()
                 self.tableView.reloadData()
             }

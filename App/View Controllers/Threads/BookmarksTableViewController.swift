@@ -106,11 +106,12 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         }
         
         observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.isHandoffEnabled) { [unowned self] defaults in
-                self.prepareUserActivity()
+            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
+                self?.prepareUserActivity()
             }
             $0.observe(\.showThreadTagsInThreadList, \.sortUnreadBookmarksFirst) {
-                [unowned self] defaults in
+                [weak self] defaults in
+                guard let self = self else { return }
                 self.dataSource = self.makeDataSource()
                 self.tableView.reloadData()
             }

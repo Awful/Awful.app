@@ -108,27 +108,27 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(mainScreenBrightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
         
         observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.automaticallyEnableDarkMode) { [unowned self] defaults in
-                self.automaticallyUpdateDarkModeEnabledIfNecessary()
+            $0.observe(\.automaticallyEnableDarkMode) { [weak self] defaults in
+                self?.automaticallyUpdateDarkModeEnabledIfNecessary()
             }
-            $0.observe(\.automaticDarkModeBrightnessThresholdPercent) { [unowned self] defaults in
-                self.automaticallyUpdateDarkModeEnabledIfNecessary()
+            $0.observe(\.automaticDarkModeBrightnessThresholdPercent) { [weak self] defaults in
+                self?.automaticallyUpdateDarkModeEnabledIfNecessary()
             }
-            $0.observe(\.customBaseURLString) { [unowned self] defaults in
-                self.updateClientBaseURL()
+            $0.observe(\.customBaseURLString) { [weak self] defaults in
+                self?.updateClientBaseURL()
             }
-            $0.observe(\.defaultDarkTheme) { [unowned self] defaults in
+            $0.observe(\.defaultDarkTheme) { [weak self] defaults in
                 if defaults.isDarkModeEnabled {
-                    self.showSnapshotDuringThemeDidChange()
+                    self?.showSnapshotDuringThemeDidChange()
                 }
             }
-            $0.observe(\.defaultLightTheme) { [unowned self] defaults in
+            $0.observe(\.defaultLightTheme) { [weak self] defaults in
                 if !defaults.isDarkModeEnabled {
-                    self.showSnapshotDuringThemeDidChange()
+                    self?.showSnapshotDuringThemeDidChange()
                 }
             }
-            $0.observe(\.isDarkModeEnabled) { [unowned self] defaults in
-                self.showSnapshotDuringThemeDidChange()
+            $0.observe(\.isDarkModeEnabled) { [weak self] defaults in
+                self?.showSnapshotDuringThemeDidChange()
             }
         }
 
