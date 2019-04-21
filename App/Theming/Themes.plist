@@ -500,7 +500,7 @@
 		<key>Posts</key>
 		<dict>
 			<key>postsLoadingViewTintColor</key>
-			<string>#060606</string>
+			<string>#000000</string>
 			<key>postsPullForNextColor</key>
 			<string>#8e8e8e</string>
 			<key>postsTopBarTextColor</key>
