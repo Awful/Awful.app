@@ -27,26 +27,29 @@ body {
   }
 }
 
+#customTitle {
+    position: relative;
+    
+    header {
+        position: relative;
+        z-index: 2;
+    }
+}
+
 #headerBackground {
-	background: rgba(0,0,0,.5);
+	background-color: rgba(0, 0, 0, 0.5);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 105%;
+    -webkit-filter: blur(5px);
+
 	position: absolute;
+    top: 0;
+    bottom: 0;
 	left: 0;
 	right: 0;
-	overflow: hidden;
+
 	z-index: 1;
-	display: block;
-	width: 100%;
-  
-  & > section {
-  	-webkit-filter: blur(5px);
-  	background-size: cover;
-  	background-position-y: center;
-  	position: absolute;
-  	left: -20px;
-  	right: -20px;
-  	top:-20px;
-  	bottom: -20px;
-  }
 }
 
 #content {
