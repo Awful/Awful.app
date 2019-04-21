@@ -47,14 +47,20 @@ final class RootTabBarController: UITabBarController, Themeable {
 }
 
 /**
- On iOS 11, `UITabBar` lays out its items with title and icon stacked horizontally whenever we're in a horizontally regular size class, and it does not do well if we constrict its width. Everything falls apart when the tab bar is in the primary view controller of a split view controller. So we subclass `UITabBar` here and override its trait collection.
+ A tab bar that fixes some issues we've come across. Some fixes are specific to Awful's particular use of the tab bar, so this may not be suitable as a general-purpose fix-it subclass.
 
- Hilariously, the most reasonable way to convince a `UITabBarController` to use a custom `UITabBar` subclass is in a storyboard. So we do that too.
+ On iOS 11, `UITabBar` lays out its items with title and icon stacked horizontally whenever we're in a horizontally regular size class, and it does not do well if we constrict its width. Everything falls apart when the tab bar is in the primary view controller of a split view controller. This subclass overrides `traitCollection` and forces an always compact horizontal size class.
+
+ On iOS 12, `UITabBar` has a hard time with safe area insets and can completely mess up its own layout after some combination of `hidesBottomBarOnPush` and/or full-screen modal presentation. The layout mess usually fixes itself after the pop animation that results in the tab bar appearing. This subclass overrides `sizeThatFits(_:)` and ensures that the returned height considers the safe area insets.
+
+ Hilariously, the most reasonable way to convince a `UITabBarController` to use a custom `UITabBar` subclass is in a storyboard, so we use `RootTabBarController.storyboard`.
 
  - Seealso: `RootTabBarController.makeWithTabBarFixedForiOS11iPadLayout()`
  - Seealso: https://github.com/Awful/Awful.app/issues/357 where we were trying to puzzle this out.
- - Seealso: https://stackoverflow.com/a/45945937/1063051 which has this subclassing solution.
+ - Seealso: https://stackoverflow.com/a/45945937 which has this subclassing solution.
  - Seealso: https://github.com/bnickel/HidingTabBar which mentions that storyboard is the only reasonable way to crowbar a `UITabBar` subclass into a `UITabBarController`.
+ - Seealso: https://stackoverflow.com/a/53524635 which overrides `sizeThatFits(_:)` to force safe area consideration.
+ - Seealso: `UITabBar+FixiOS12_1Layout.h` which addresses another UITabBar issue in iOS 12.
  */
 final class RootTabBar: UITabBar {
 
@@ -74,5 +80,16 @@ final class RootTabBar: UITabBar {
         return UITraitCollection(traitsFrom: [
             super.traitCollection,
             UITraitCollection(horizontalSizeClass: .compact)])
+    }
+
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        var size = super.sizeThatFits(size)
+        if #available(iOS 11.0, *) {
+            let bottomInset = safeAreaInsets.bottom
+            if size.height - bottomInset < 40 {
+                size.height += bottomInset
+            }
+        }
+        return size
     }
 }
