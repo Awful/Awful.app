@@ -1,5 +1,6 @@
 CHANGELOG.md merge=union
 App/Sourcery/*.generated.* linguist-generated
+App/Theming/*.css linguist-generated
 Core/Tests/Fixtures/*.html linguist-vendored
 Gemfile.lock linguist-generated
 Podfile.lock linguist-generated
