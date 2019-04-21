@@ -103,6 +103,12 @@ final class AnnouncementViewController: ViewController {
         desiredFractionalContentOffsetAfterRendering = nil
     }
 
+    private func updateScrollViewContentInsets() {
+        if #available(iOS 11.0, *) {
+            renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        }
+    }
+
     // MARK: Lifecycle
 
     override func viewDidLoad() {
@@ -175,6 +181,17 @@ final class AnnouncementViewController: ViewController {
         }
 
         messageViewController?.themeDidChange()
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        updateScrollViewContentInsets()
+    }
+
+    @available(iOS 11.0, *)
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateScrollViewContentInsets()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
