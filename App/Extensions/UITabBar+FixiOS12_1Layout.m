@@ -12,10 +12,14 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        // Versions below iOS 12.1 are unaffected, so don't bother them with our swizzling hijinks.
+        // Just iOS 12.1 is affected, so don't bother anyone else with our swizzling hijinks.
         if (@available(iOS 12.1, *)) {
-            Method setFrame = class_getInstanceMethod(NSClassFromString(@"UITabBarButton"), @selector(setFrame:));
-            originalSetFrame = method_setImplementation(setFrame, (IMP)swizzledSetFrame);
+            if (@available(iOS 12.2, *)) {
+                // nop; compiler says "@available does not guard availability here" if we try anything remotely fancy with `@available` (like negating it).
+            } else {
+                Method setFrame = class_getInstanceMethod(NSClassFromString(@"UITabBarButton"), @selector(setFrame:));
+                originalSetFrame = method_setImplementation(setFrame, (IMP)swizzledSetFrame);
+            }
         }
     });
 }
