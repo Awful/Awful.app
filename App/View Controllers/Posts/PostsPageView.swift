@@ -236,6 +236,10 @@ final class PostsPageView: UIView {
             refreshControlContainer.rightAnchor.constraint(equalTo: rightAnchor)])
     }
 
+    deinit {
+        renderView.scrollView.delegate = nil
+    }
+
     override func layoutSubviews() {
 
         // Let Auto Layout do its thing first, so we can use bar frames to figure out content insets.
