@@ -83,6 +83,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
                 let percent = self.fontScaleFormatter.string(from: (defaults.fontScale / 100) as NSNumber) ?? ""
                 let format = LocalizedString("settings.font-scale.title")
                 self.scaleTextLabel.text = String(format: format, percent)
+                self.scaleTextStepper.value = defaults.fontScale
             }
             $0.observe(\.showAuthorAvatars, options: .initial) {
                 [avatarsSwitch] defaults in
