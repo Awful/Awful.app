@@ -15,25 +15,26 @@
             <rect key="frame" x="0.0" y="0.0" width="428" height="60"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="laK-fc-tGC">
+                <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="laK-fc-tGC">
                     <rect key="frame" x="0.0" y="0.0" width="428" height="60"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="n9G-s6-gYc" userLabel="Avatar" customClass="FLAnimatedImageView">
-                            <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="n9G-s6-gYc" userLabel="Avatar" customClass="FLAnimatedImageView">
+                            <rect key="frame" x="16" y="0.0" width="60" height="60"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="60" id="b0p-dc-UUi"/>
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eGH-gl-nS9">
-                            <rect key="frame" x="68" y="0.0" width="360" height="60"/>
+                            <rect key="frame" x="84" y="0.0" width="328" height="60"/>
                             <constraints>
-                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="kSu-jx-n2N"/>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="900" constant="60" id="kSu-jx-n2N"/>
                             </constraints>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
+                    <edgeInsets key="layoutMargins" top="0.0" left="16" bottom="0.0" right="16"/>
                 </stackView>
             </subviews>
             <gestureRecognizers/>
@@ -47,11 +48,10 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="avatarImageView" destination="n9G-s6-gYc" id="7Ki-3E-8pb"/>
+                <outlet property="stackView" destination="laK-fc-tGC" id="GAf-OC-TIS"/>
                 <outlet property="tapGestureRecognizer" destination="JUi-9b-aRd" id="Uia-sb-2SI"/>
                 <outlet property="usernameLabel" destination="eGH-gl-nS9" id="uMq-kV-2Qk"/>
                 <outletCollection property="gestureRecognizers" destination="JUi-9b-aRd" appends="YES" id="zaG-6r-kEG"/>
-                <outletCollection property="insetConstraints" destination="1Tx-Zm-ViQ" collectionClass="NSMutableArray" id="AxI-ft-4aC"/>
-                <outletCollection property="insetConstraints" destination="Om8-em-zJD" collectionClass="NSMutableArray" id="k4L-op-1cj"/>
             </connections>
             <point key="canvasLocation" x="385" y="461"/>
         </view>

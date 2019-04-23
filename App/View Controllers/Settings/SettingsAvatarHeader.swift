@@ -9,7 +9,7 @@ import UIKit
 final class SettingsAvatarHeader: UIView {
     
     @IBOutlet private var avatarImageView: FLAnimatedImageView!
-    @IBOutlet private var insetConstraints: [NSLayoutConstraint] = []
+    @IBOutlet private var stackView: UIStackView!
     @IBOutlet private var usernameLabel: UILabel!
 
     private var observer: NSKeyValueObservation?
@@ -42,13 +42,9 @@ final class SettingsAvatarHeader: UIView {
         usernameLabel.text = defaults.loggedInUsername
     }
 
-    var horizontalPadding: CGFloat {
-        get { return insetConstraints[0].constant }
-        set { insetConstraints.forEach { $0.constant = newValue } }
-    }
-
     func configure(avatarURL: URL?, horizontalPadding: CGFloat, textColor: UIColor?) {
-        self.horizontalPadding = horizontalPadding
+        stackView.layoutMargins = .init(top: 0, left: horizontalPadding, bottom: 0, right: horizontalPadding)
+
         usernameLabel.textColor = textColor
 
         guard let avatarURL = avatarURL else {
