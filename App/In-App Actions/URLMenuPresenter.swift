@@ -391,6 +391,14 @@ final class URLMenuPresenter: NSObject {
                 }))
             }
 
+            if let imageURL = imageURL {
+                actionSheet.addAction(.init(title: LocalizedString("link-action.open-image"), style: .default, handler: { action in
+                    let preview = ImageViewController(imageURL: imageURL)
+                    preview.title = presentingViewController.title
+                    presentingViewController.present(preview, animated: true)
+                }))
+            }
+
             actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
 
             presentingViewController.present(actionSheet, animated: true)
