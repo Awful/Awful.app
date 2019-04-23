@@ -390,13 +390,16 @@ extension RenderView {
      
       If something goes wrong during communication with the web view, an empty array is returned and a warning is logged. Any potential errors are internal to the RenderView and you would have no recourse, so we don't bother reporting them via a `Promise`.
      
-     - Parameter point: The point of curiosity, expressed in the render view's coordinate system.
+     - Parameter renderViewPoint: The point of curiosity, expressed in the render view's coordinate system.
      - Returns: A guaranteed (though possibly empty) array of interesting elements.
      */
-    func interestingElements(at point: CGPoint) -> Guarantee<[InterestingElement]> {
+    func interestingElements(at renderViewPoint: CGPoint) -> Guarantee<[InterestingElement]> {
         let (guarantee, resolver) = Guarantee<[InterestingElement]>.pending()
 
-        let point = scrollView.convert(point, from: self)
+        var point = webView.convert(renderViewPoint, from: self)
+        let contentInset = scrollView.contentInset
+        point.x -= contentInset.left
+        point.y -= contentInset.top
         
         webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
             if let error = error {
