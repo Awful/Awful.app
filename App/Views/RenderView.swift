@@ -396,11 +396,19 @@ extension RenderView {
     func interestingElements(at renderViewPoint: CGPoint) -> Guarantee<[InterestingElement]> {
         let (guarantee, resolver) = Guarantee<[InterestingElement]>.pending()
 
-        var point = webView.convert(renderViewPoint, from: self)
+        var point = scrollView.convert(renderViewPoint, from: self)
+        let contentOffset = scrollView.contentOffset
         let contentInset = scrollView.contentInset
-        point.x -= contentInset.left
-        point.y -= contentInset.top
-        
+        if #available(iOS 12.0, *) {
+            // As of iOS 12, `window.scrollY` equals `scrollView.contentOffset.y`, so as long as we deal with a negative content offset (due to scrolling into the `contentInset` area) we're all set.
+            point.x -= max(contentOffset.x, 0)
+            point.y -= max(contentOffset.y, 0)
+        } else {
+            // Pre-iOS 12, `window.scrollY` is offset by `scrollView.contentInset.top` at all times.
+            point.x -= max(contentOffset.x + contentInset.left, 0)
+            point.y -= max(contentOffset.y + contentInset.top, 0)
+        }
+
         webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
             if let error = error {
                 self.mentionError(error, explanation: "could not evaluate interestingElementsAtPoint")
