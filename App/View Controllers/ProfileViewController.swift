@@ -131,9 +131,9 @@ final class ProfileViewController: ViewController {
 
 private struct SendPrivateMessage: RenderViewMessage {
     static let messageName = "sendPrivateMessage"
-    
-    init?(_ message: WKScriptMessage) {
-        assert(message.name == SendPrivateMessage.messageName)
+
+    init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+        assert(rawMessage.name == SendPrivateMessage.messageName)
     }
 }
 
@@ -145,17 +145,17 @@ private struct ShowHomepageActions: RenderViewMessage {
     
     /// Whatever's specified as the homepage. May not be parseable as a URL.
     let urlString: String
-    
-    init?(_ message: WKScriptMessage) {
-        assert(message.name == ShowHomepageActions.messageName)
+
+    init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+        assert(rawMessage.name == ShowHomepageActions.messageName)
         
         guard
-            let body = message.body as? [String: Any],
-            let frame = CGRect(renderViewMessage: body["frame"] as? [String: Double]),
+            let body = rawMessage.body as? [String: Any],
+            let documentFrame = CGRect(renderViewMessage: body["frame"] as? [String: Double]),
             let urlString = body["url"] as? String
             else { return nil }
-        
-        self.frame = frame
+
+        frame = renderView.convertToRenderView(webDocumentRect: documentFrame)
         self.urlString = urlString
     }
 }

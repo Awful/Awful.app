@@ -55,8 +55,8 @@ final class PostsPageViewController: ViewController {
     private struct FYADFlagRequest: RenderViewMessage {
         static let messageName = "fyadFlagRequest"
 
-        init?(_ message: WKScriptMessage) {
-            assert(message.name == FYADFlagRequest.messageName)
+        init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+            assert(rawMessage.name == FYADFlagRequest.messageName)
         }
     }
 

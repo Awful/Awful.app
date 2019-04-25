@@ -189,7 +189,7 @@ protocol RenderViewMessage {
     static var messageName: String { get }
 
     /// - Returns: `nil` if the required message body couldn't be read in `message`.
-    init?(_ message: WKScriptMessage)
+    init?(rawMessage: WKScriptMessage, in renderView: RenderView)
 }
 
 extension RenderView: WKScriptMessageHandler {
@@ -213,7 +213,7 @@ extension RenderView: WKScriptMessageHandler {
             return
         }
         
-        guard let message = messageType.init(rawMessage) else {
+        guard let message = messageType.init(rawMessage: rawMessage, in: self) else {
             Log.w("could not deserialize \(messageType) (registered as \(rawMessage.name)) from JavaScript. Does the initializer look right?")
             return
         }
@@ -233,9 +233,9 @@ extension RenderView: WKScriptMessageHandler {
         /// Sent from the web view after any embedded tweets have loaded.
         struct DidFinishLoadingTweets: RenderViewMessage {
             static let messageName = "didFinishLoadingTweets"
-            
-            init?(_ message: WKScriptMessage) {
-                assert(message.name == DidFinishLoadingTweets.messageName)
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == DidFinishLoadingTweets.messageName)
             }
         }
 
@@ -249,20 +249,17 @@ extension RenderView: WKScriptMessageHandler {
             /// The index of the tapped post, where `0` is the first post in the render view.
             let postIndex: Int
 
-            init?(_ message: WKScriptMessage) {
-                assert(message.name == DidTapAuthorHeader.messageName)
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == DidTapAuthorHeader.messageName)
 
                 guard
-                    let body = message.body as? [String: Any],
-                    let frame = body["frame"] as? [String: Double],
-                    let x = frame["x"],
-                    let y = frame["y"],
-                    let width = frame["width"],
-                    let height = frame["height"],
+                    let body = rawMessage.body as? [String: Any],
+                    let rawFrame = body["frame"] as? [String: Double],
+                    let documentFrame = CGRect(renderViewMessage: rawFrame),
                     let postIndex = body["postIndex"] as? Int
                     else { return nil }
 
-                self.frame = CGRect(x: x, y: y, width: width, height: height)
+                frame = renderView.convertToRenderView(webDocumentRect: documentFrame)
                 self.postIndex = postIndex
             }
         }
@@ -277,16 +274,16 @@ extension RenderView: WKScriptMessageHandler {
             /// The index of the tapped post, where `0` is the first post in the render view.
             let postIndex: Int
 
-            init?(_ message: WKScriptMessage) {
-                assert(message.name == DidTapPostActionButton.messageName)
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == DidTapPostActionButton.messageName)
 
                 guard
-                    let body = message.body as? [String: Any],
-                    let frame = CGRect(renderViewMessage: body["frame"] as? [String: Double]),
+                    let body = rawMessage.body as? [String: Any],
+                    let documentFrame = CGRect(renderViewMessage: body["frame"] as? [String: Double]),
                     let postIndex = body["postIndex"] as? Int
                     else { return nil }
 
-                self.frame = frame
+                frame = renderView.convertToRenderView(webDocumentRect: documentFrame)
                 self.postIndex = postIndex
             }
         }
@@ -396,18 +393,7 @@ extension RenderView {
     func interestingElements(at renderViewPoint: CGPoint) -> Guarantee<[InterestingElement]> {
         let (guarantee, resolver) = Guarantee<[InterestingElement]>.pending()
 
-        var point = scrollView.convert(renderViewPoint, from: self)
-        let contentOffset = scrollView.contentOffset
-        let contentInset = scrollView.contentInset
-        if #available(iOS 12.0, *) {
-            // As of iOS 12, `window.scrollY` equals `scrollView.contentOffset.y`, so as long as we deal with a negative content offset (due to scrolling into the `contentInset` area) we're all set.
-            point.x -= max(contentOffset.x, 0)
-            point.y -= max(contentOffset.y, 0)
-        } else {
-            // Pre-iOS 12, `window.scrollY` is offset by `scrollView.contentInset.top` at all times.
-            point.x -= max(contentOffset.x + contentInset.left, 0)
-            point.y -= max(contentOffset.y + contentInset.top, 0)
-        }
+        let point = convertToWebDocument(renderViewPoint: renderViewPoint)
 
         webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
             if let error = error {
@@ -432,7 +418,8 @@ extension RenderView {
             {
                 let title = result["spoiledImageTitle"] as? String ?? ""
                 let frame = (result["spoiledImageFrame"] as? [String: Double])
-                    .flatMap { CGRect(renderViewMessage: $0) }
+                    .flatMap(CGRect.init(renderViewMessage:))
+                    .map(self.convertToRenderView(webDocumentRect:))
                 let location = (result["postContainerElement"] as? String).flatMap(LocationWithinPost.init(rawValue:))
                 interesting.append(.spoiledImage(title: title, url: imageURL, frame: frame, location: location))
             }
@@ -440,20 +427,22 @@ extension RenderView {
             if
                 let linkInfo = result["spoiledLink"] as? [String: Any],
                 let rawFrame = linkInfo["frame"] as? [String: Double],
-                let frame = CGRect(renderViewMessage: rawFrame),
+                let documentFrame = CGRect(renderViewMessage: rawFrame),
                 let rawURL = linkInfo["url"] as? String,
                 let url = URL(string: rawURL)
             {
+                let frame = self.convertToRenderView(webDocumentRect: documentFrame)
                 interesting.append(.spoiledLink(frame: frame, url: url))
             }
             
             if
                 let videoInfo = result["spoiledVideo"] as? [String: Any],
                 let rawFrame = videoInfo["frame"] as? [String: Double],
-                let frame = CGRect(renderViewMessage: rawFrame),
+                let documentFrame = CGRect(renderViewMessage: rawFrame),
                 let rawURL = videoInfo["url"] as? String,
                 let url = URL(string: rawURL)
             {
+                let frame = self.convertToRenderView(webDocumentRect: documentFrame)
                 interesting.append(.spoiledVideo(frame: frame, url: url))
             }
             
@@ -461,6 +450,50 @@ extension RenderView {
         }
         
         return guarantee
+    }
+
+    func convertToWebDocument(renderViewPoint: CGPoint) -> CGPoint {
+        return scrollView.convert(renderViewPoint, from: self) - documentToScrollViewOffset
+    }
+
+    func convertToWebDocument(renderViewRect: CGRect) -> CGRect {
+        var rect = renderViewRect
+        rect.origin = convertToWebDocument(renderViewPoint: rect.origin)
+        return rect
+    }
+
+    func convertToRenderView(webDocumentPoint: CGPoint) -> CGPoint {
+        let scrollViewPoint = webDocumentPoint + documentToScrollViewOffset
+        return convert(scrollViewPoint, from: scrollView)
+    }
+
+    func convertToRenderView(webDocumentRect: CGRect) -> CGRect {
+        var rect = webDocumentRect
+        rect.origin = convertToRenderView(webDocumentPoint: rect.origin)
+        return rect
+    }
+
+    /**
+     How far the web document is offset from the scroll view's bounds.
+
+     To convert from web document coordinates to scroll view coordinates (e.g. when locating a rect obtained via `getBoundingClientRect()`), add this offset.
+
+     To convert from scroll view coordinates to web document coordinates (e.g. when you want to ask the document what's located at a particular point in the scroll view), subtract this offset.
+
+     Note that the offset differs on iOS 12 compared to earlier versions.
+     */
+    private var documentToScrollViewOffset: CGPoint {
+        let contentOffset = scrollView.contentOffset
+        if #available(iOS 12.0, *) {
+            // As of iOS 12, `window.scrollY` equals `scrollView.contentOffset.y`, so as long as we deal with a negative content offset (due to scrolling into the `contentInset` area) we're all set.
+            return CGPoint(x: max(contentOffset.x, 0), y: max(contentOffset.y, 0))
+        } else {
+            // Pre-iOS 12, `window.scrollY` is offset by `scrollView.contentInset.top` at all times.
+            let contentInset = scrollView.contentInset
+            return CGPoint(
+                x: max(contentOffset.x + contentInset.left, 0),
+                y: max(contentOffset.y + contentInset.top, 0))
+        }
     }
     
     /// Scrolls so the identified post begins at the top of the viewport.
