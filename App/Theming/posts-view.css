@@ -3,255 +3,392 @@
  Awful
  
  Copyright 2012 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
-*/
+ */
 body {
-  min-height: 100vh;
+    min-height: 100vh;
 }
+
 body {
-  font: -apple-system-body;
-  margin: 0;
-  -webkit-text-size-adjust: 100%;
-  -webkit-touch-callout: none;
+    font: -apple-system-body;
+    margin: 0;
+    -webkit-text-size-adjust: 100%;
+    -webkit-touch-callout: none;
 }
+
 body {
-  word-wrap: break-word;
+    word-wrap: break-word;
 }
+
 .postbody img,
 .postbody iframe,
 .postbody embed {
-  max-width: 100%;
+    max-width: 100%;
 }
+
 post {
-  display: block;
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-  margin-top: 0.5em;
+    display: grid;
+    grid-template-columns: repeat(12, [col-start] 1fr);
+    grid-gap: 20px;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    margin-top: 0.5em;
 }
-.iphone post header,
-.iphone post .postbody {
-  padding-left: 0.6em;
-  padding-right: 0.6em;
+
+post > * {
+    grid-column: col-start / span 12;
 }
-.iphone post footer {
-  padding-left: 0.6em;
+
+/* Phone */
+
+@media only screen and (max-width: 768px) {
+    
+    .youtube-player {
+        width: 100%;
+        height: 315px;
+        margin: 0 auto;
+    }
+    
+    .avatar-tablet {
+        display: none;
+    }
+    
+    .avatar {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .nameanddate {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    post header,
+    post .postbody {
+        padding-left: 0.6em;
+        padding-right: 0.6em;
+    }
+    
+    post footer {
+        padding-left: 0.6em;
+    }
+    
+    post .action-button {
+        padding-right: 0.6em;
+    }
+    
+    .avatar {
+        max-width: 2.5em;
+        max-height: 2.5em;
+    }
+    
+    .postbody ol,
+    .postbody ul {
+        margin: 0;
+        padding-left: 1.5em;
+    }
+    
+    #ad {
+        padding: 0.6em;
+        padding-bottom: 0;
+    }
+    
 }
-.iphone post .action-button {
-  padding-right: 0.6em;
+
+/* Tablet */
+
+@media only screen and (min-width: 769px) {
+    .youtube-player {
+        width: 640px;
+        height: 360px;
+        margin: 0 auto;
+    }
+    
+    .user {
+        display: flex;
+        flex-flow: column;
+    }
+    
+    .avatar-phone {
+        display: none;
+    }
+    
+    .nameanddate {
+        order: 1;
+        padding-bottom: 1.5em;
+    }
+    
+    .avatar-tablet {
+        order: 2;
+    }
+    
+    post header {
+        grid-column: col-start / span 3;
+    }
+    
+    post .postbody {
+        grid-column: col-start 4 / span 9;
+    }
+    
+    post header,
+    post .postbody {
+        padding-left: 1.07em;
+        padding-right: 1.07em;
+    }
+    
+    post footer {
+        padding-left: 1.07em;
+    }
+    
+    post .action-button {
+        padding-right: 1.07em;
+    }
+    
+    header {
+        padding-top: 1.22em;
+    }
+    
+    .avatar {
+        max-width: 4em;
+        max-height: 4em;
+    }
+    
+    .bbc-block {
+        margin: 0 10px 1em 10px;
+    }
+    
+    
+    #fyad-flag img {
+        display: block;
+        margin: 0 auto;
+    }
+    
+    #ad {
+        padding: 1.07em;
+        padding-bottom: 0;
+    }
 }
-.ipad post header,
-.ipad post .postbody {
-  padding-left: 1.07em;
-  padding-right: 1.07em;
-}
-.ipad post footer {
-  padding-left: 1.07em;
-}
-.ipad post .action-button {
-  padding-right: 1.07em;
-}
+
 post:first-child {
-  margin-top: 0;
+    margin-top: 0;
 }
+
 header {
-  padding-top: 0.75em;
-  padding-bottom: 0.7em;
+    padding-top: 0.75em;
+    padding-bottom: 0.7em;
 }
-.ipad header {
-  padding-top: 1.22em;
-}
+
 header:after {
-  content: "";
-  display: block;
-  clear: both;
+    content: "";
+    display: block;
+    clear: both;
 }
-.avatar {
-  display: inline-block;
-  vertical-align: middle;
-}
-.iphone .avatar {
-  max-width: 2.5em;
-  max-height: 2.5em;
-}
-.ipad .avatar {
-  max-width: 4em;
-  max-height: 4em;
-}
-.nameanddate {
-  display: inline-block;
-  vertical-align: middle;
-}
+
 .username {
-  margin: 0 0 2px;
-  word-break: break-all;
+    margin: 0 0 2px;
+    word-break: break-all;
 }
+
 .postdate {
-  font-size: 0.8em;
-  font-weight: lighter;
-  -webkit-flex-grow: 1;
-  -webkit-flex-wrap: wrap-reverse;
+    font-size: 0.8em;
+    font-weight: lighter;
+    -webkit-flex-grow: 1;
+    -webkit-flex-wrap: wrap-reverse;
 }
+
 .regdate {
-  display: block;
-  font-size: 0.8em;
-  font-weight: lighter;
-  margin: -0.4em 0 0;
+    display: block;
+    font-size: 0.8em;
+    font-weight: lighter;
+    margin: -0.4em 0 0;
 }
+
 .username {
-  display: inline-block;
-  font-size: 1.1em;
-  font-weight: 500;
-  /* Peta's 3D username */
-  /*  Platinum users */
+    display: inline-block;
+    font-size: 1.1em;
+    font-weight: 500;
+    /* Peta's 3D username */
+    /*  Platinum users */
 }
+
 .role-admin .username:before {
-  color: #990011;
+    color: #990011;
 }
+
 .role-mod .username:before {
-  color: #006699;
+    color: #006699;
 }
+
 .role-admin .username:before,
 .role-mod .username:before {
-  content: '★';
+    content: '★';
 }
+
 .op .username {
-  color: #199ed7;
+    color: #199ed7;
 }
+
 .userid-182864 .username {
-  color: rgba(0, 0, 0, 0.5);
-  text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
+    color: rgba(0, 0, 0, 0.5);
+    text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
 }
+
 .platinum .username:before {
-  background-image: url('awful-resource://platinum-member.png');
-  content: "";
-  background-size: 20px;
-  width: 22px;
-  height: 20px;
-  display: inline-block;
-  vertical-align: top;
+    background-image: url('awful-resource://platinum-member.png');
+    content: "";
+    background-size: 20px;
+    width: 22px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: top;
 }
+
 .coder .username:before {
-  content: url('awful-resource://image-coder.png');
+    content: url('awful-resource://image-coder.png');
 }
+
 .idiotking .username:before {
-  content: url('awful-resource://ik.png');
+    content: url('awful-resource://ik.png');
 }
+
 .diamond .username:before {
-  content: url('awful-resource://diamond-icon.png');
+    content: url('awful-resource://diamond-icon.png');
 }
+
 .redpill .username:before {
-  content: url('awful-resource://redpill.png');
+    content: url('awful-resource://redpill.png');
 }
+
 .award .username:before {
-  content: url('awful-resource://award.png');
+    content: url('awful-resource://award.png');
 }
+
 .action-button {
-  margin: 0;
-  padding: 0.6em;
-  border: none;
-  font-family: inherit;
-  -webkit-tap-highlight-color: transparent;
-  background-color: transparent;
+    margin: 0;
+    padding: 0.6em;
+    border: none;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
 }
+
 .action-button img {
-  width: 24px;
-  height: 8px;
+    width: 24px;
+    height: 8px;
 }
+
 .postbody img,
 #fyad-flag {
-  -webkit-user-select: none;
+    -webkit-user-select: none;
 }
+
 .bbc-block {
-  border-left: 2px solid #999;
-  font-size: 82%;
-  margin: 5px 0;
-  padding: 0 10px 5px;
+    border-left: 2px solid #999;
+    font-size: 82%;
+    margin: 5px 0;
+    padding: 0 10px 5px;
 }
-.ipad .bbc-block {
-  margin: 0 10px 1em 10px;
-}
+
+
 .bbc-block h4 {
-  margin: 0;
-  padding: 1px 0px 2px;
-  font-weight: bold;
+    margin: 0;
+    padding: 1px 0px 2px;
+    font-weight: bold;
 }
+
 .bbc-block h4 span.mention.highlight {
-  color: #7409a0;
-  border-color: #7409a0;
+    color: #7409a0;
+    border-color: #7409a0;
 }
+
 .bbc-block h5 {
-  margin: 0;
+    margin: 0;
 }
+
 .bbc-block.mention.highlight,
 .bbc-block.mention.highlight h4 a {
-  color: #7409a0;
-  border-color: #7409a0;
+    color: #7409a0;
+    border-color: #7409a0;
 }
+
 code,
 pre,
 tt {
-  font-family: menlo;
-  font-size: 0.9em;
+    font-family: menlo;
+    font-size: 0.9em;
 }
+
 span.mention.highlight {
-  color: #7409a0;
+    color: #7409a0;
 }
+
 .quote_link {
-  text-decoration: none;
+    text-decoration: none;
 }
+
 [data-awful-linkified-image] {
-  cursor: pointer;
-  text-decoration: underline;
+    cursor: pointer;
+    text-decoration: underline;
 }
+
 .gif-wrap {
-  cursor: pointer;
-  position: relative;
-  display: inline-block;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
 }
+
 .gif-wrap:before {
-  content: "GIF";
-  display: block;
-  background-color: rgba(255, 255, 255, 0.5);
-  background-image: url('awful-resource://play-button.png');
-  background-size: 0.85em;
-  background-repeat: no-repeat;
-  background-position: right 5px center;
-  color: #000;
-  height: 1.35em;
-  margin: auto;
-  position: absolute;
-  width: 1.75em;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  padding: 0.25em;
-  padding-right: 1.25em;
-  border-radius: 0.125em;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+    content: "GIF";
+    display: block;
+    background-color: rgba(255, 255, 255, 0.5);
+    background-image: url('awful-resource://play-button.png');
+    background-size: 0.85em;
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    color: #000;
+    height: 1.35em;
+    margin: auto;
+    position: absolute;
+    width: 1.75em;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0.25em;
+    padding-right: 1.25em;
+    border-radius: 0.125em;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
 }
+
 .gif-wrap.loading:before {
-  background-image: url('awful-resource://spinner-button.png');
+    background-image: url('awful-resource://spinner-button.png');
 }
+
 .gif-wrap.playing:before {
-  display: none;
+    display: none;
 }
+
 .bbc-spoiler:not(.spoiled) .gif-wrap {
-  visibility: hidden;
+    visibility: hidden;
 }
+
 .gif-wrap + br,
 .gif-wrap + br + br {
-  display: none;
+    display: none;
 }
+
 blockquote {
-  margin: 0;
+    margin: 0;
 }
+
 blockquote img {
-  max-width: 160px;
-  max-height: 100px;
+    max-width: 160px;
+    max-height: 100px;
 }
+
 .postbody a {
-  -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
 }
+
 .postbody b::before,
 .postbody i::before,
 .postbody s::before,
@@ -260,148 +397,167 @@ blockquote img {
 .postbody sup::before,
 .postbody tt::before,
 .postbody u::before {
-  content: "\200C";
+    content: "\200C";
 }
-.iphone .postbody ol,
-.iphone .postbody ul {
-  margin: 0;
-  padding-left: 1.5em;
-}
+
+
 .bbc-block.code pre {
-  margin: 0;
+    margin: 0;
 }
+
 .editedby {
-  margin-bottom: 0;
-  font-size: 90%;
-  font-style: italic;
+    margin-bottom: 0;
+    font-size: 90%;
+    font-style: italic;
 }
+
 .attachment {
-  margin: 0;
+    margin: 0;
 }
+
 footer {
-  display: -webkit-flex;
-  -webkit-align-items: center;
+    display: -webkit-flex;
+    -webkit-align-items: center;
 }
+
 footer:after {
-  content: "";
-  display: block;
-  clear: both;
+    content: "";
+    display: block;
+    clear: both;
 }
+
 #fyad-flag {
-  width: 100%;
-  height: 102px;
+    width: 100%;
+    height: 102px;
 }
+
 #fyad-flag img {
-  border: 1px solid black;
+    border: 1px solid black;
 }
-.ipad #fyad-flag img {
-  display: block;
-  margin: 0 auto;
-}
+
+
 #ad {
-  text-align: center;
+    text-align: center;
 }
+
 #ad img {
-  max-width: 100%;
+    max-width: 100%;
 }
-.iphone #ad {
-  padding: 0.6em;
-  padding-bottom: 0;
-}
-.ipad #ad {
-  padding: 1.07em;
-  padding-bottom: 0;
-}
+
+
+
+
 #end {
-  font-weight: normal;
-  text-align: center;
-  line-height: 1;
-  margin-bottom: 10px;
-  -webkit-user-select: none;
+    font-weight: normal;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 10px;
+    -webkit-user-select: none;
 }
+
 .voiceover-only {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
 }
+
 header,
 footer {
-  -webkit-user-select: none;
+    -webkit-user-select: none;
 }
+
 header img.avatar,
 header section.nameanddate {
-  cursor: pointer;
+    cursor: pointer;
 }
+
 .bbc-spoiler {
-  cursor: pointer;
+    cursor: pointer;
 }
+
 footer button.action-button {
-  cursor: pointer;
+    cursor: pointer;
 }
+
 post,
 #ad,
 #end {
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-  padding-left: constant(safe-area-inset-left);
-  padding-right: constant(safe-area-inset-right);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-left: constant(safe-area-inset-left);
+    padding-right: constant(safe-area-inset-right);
 }
+
 body {
-  background-color: #f4f3f3;
+    background-color: #f4f3f3;
 }
+
 post {
-  background-color: #ffffff;
-  border-bottom-color: #ddd;
-  border-top-color: #ddd;
+    background-color: #ffffff;
+    border-bottom-color: #ddd;
+    border-top-color: #ddd;
 }
+
 post.seen {
-  background-color: #e6eff8;
+    background-color: #e6eff8;
 }
+
 header {
-  border-bottom: 0;
+    border-bottom: 0;
 }
+
 .awful-smile {
-  image-rendering: -webkit-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
 }
+
 .postbody a,
 [data-awful-linkified-image] {
-  color: #1682b2;
+    color: #1682b2;
 }
+
 .bbc-spoiler:not(.spoiled) {
-  color: #000;
-  background: #000;
+    color: #000;
+    background: #000;
 }
+
 .bbc-spoiler:not(.spoiled) li {
-  color: #000;
-  background: #000;
-  list-style: none;
+    color: #000;
+    background: #000;
+    list-style: none;
 }
+
 .bbc-spoiler:not(.spoiled) img {
-  opacity: 0;
-  height: 0;
-  width: 100%;
+    opacity: 0;
+    height: 0;
+    width: 100%;
 }
+
 .bbc-spoiler:not(.spoiled) a:link,
 .bbc-spoiler:not(.spoiled) a:visited,
 .bbc-spoiler:not(.spoiled) a:active,
 .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #000;
+    color: #000;
 }
+
 .bbc-block h4,
 .bbc-block h5 {
-  color: #555;
+    color: #555;
 }
+
 footer {
-  margin-top: 0.6em;
+    margin-top: 0.6em;
 }
+
 .postdate,
 .regdate {
-  color: #8e8e8e;
+    color: #8e8e8e;
 }
+
 .action-button img {
-  -webkit-filter: invert() brightness(55.68627451%);
+    -webkit-filter: invert() brightness(55.68627451%);
 }
+
 #end {
-  color: #8e8e8e;
-  line-height: 3em;
+    color: #8e8e8e;
+    line-height: 3em;
 }

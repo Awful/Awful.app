@@ -46,7 +46,8 @@ struct PostRenderModel: StencilContextConvertible {
             "author": [
                 "regdate": post.author?.regdate as Any,
                 "userID": post.author?.userID as Any,
-                "username": post.author?.username as Any],
+                "username": post.author?.username as Any,
+                "customTitleHTML": post.author?.customTitleHTML as Any],
             "beenSeen": post.beenSeen,
             "hiddenAvatarURL": hiddenAvatarURL as Any,
             "htmlContents": htmlContents,
@@ -62,7 +63,8 @@ struct PostRenderModel: StencilContextConvertible {
             "author": [
                 "regdate": author.regdate as Any,
                 "userID": author.userID,
-                "username": author.username as Any],
+                "username": author.username as Any,
+                "customTitleHTML": author.customTitleHTML as Any],
             "beenSeen": false,
             "hiddenAvatarURL": (showAvatars ? author.avatarURL : nil) as Any,
             "htmlContents": massageHTML(postHTML, isIgnored: false),

@@ -5,11 +5,14 @@
            {% if not visibleAvatarURL %} no-avatar {% endif %}">
     
     <header
-        class="userid-{{ author.userID|htmlEscape }}"
+        class="user userid-{{ author.userID|htmlEscape }}"
         {% if hiddenAvatarURL %} data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}" {% endif %}>
         
         {% if visibleAvatarURL %}
-        <img class="avatar" src="{{ visibleAvatarURL }}" alt="">
+        <img class="avatar avatar-phone" src="{{ visibleAvatarURL }}" alt="">
+        <section class="avatar-tablet">
+            {{ author.customTitleHTML }}
+        </section>
         {% endif %}
 
 		<section class="nameanddate">

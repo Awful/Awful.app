@@ -22,32 +22,146 @@ body {
   max-width: 100%;
 }
 post {
-  display: block;
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-  margin-top: 0.5em;
+    display: grid;
+    grid-template-columns: repeat(12, [col-start] 1fr);
+    grid-gap: 20px;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    margin-top: 0.5em;
 }
-.iphone post header,
-.iphone post .postbody {
-  padding-left: 0.6em;
-  padding-right: 0.6em;
+
+post > * {
+    grid-column: col-start / span 12;
 }
-.iphone post footer {
-  padding-left: 0.6em;
+
+/* Phone */
+
+@media only screen and (max-width: 768px) {
+    
+    .youtube-player {
+        width: 100%;
+        height: 315px;
+        margin: 0 auto;
+    }
+    
+    .avatar-tablet {
+        display: none;
+    }
+    
+    .avatar {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .nameanddate {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    post header,
+    post .postbody {
+        padding-left: 0.6em;
+        padding-right: 0.6em;
+    }
+    
+    post footer {
+        padding-left: 0.6em;
+    }
+    
+    post .action-button {
+        padding-right: 0.6em;
+    }
+    
+    .avatar {
+        max-width: 2.5em;
+        max-height: 2.5em;
+    }
+    
+    .postbody ol,
+    .postbody ul {
+        margin: 0;
+        padding-left: 1.5em;
+    }
+    
+    #ad {
+        padding: 0.6em;
+        padding-bottom: 0;
+    }
+    
 }
-.iphone post .action-button {
-  padding-right: 0.6em;
-}
-.ipad post header,
-.ipad post .postbody {
-  padding-left: 1.07em;
-  padding-right: 1.07em;
-}
-.ipad post footer {
-  padding-left: 1.07em;
-}
-.ipad post .action-button {
-  padding-right: 1.07em;
+
+/* Tablet */
+
+@media only screen and (min-width: 769px) {
+    .youtube-player {
+        width: 640px;
+        height: 360px;
+        margin: 0 auto;
+    }
+    
+    .user {
+        display: flex;
+        flex-flow: column;
+    }
+    
+    .avatar-phone {
+        display: none;
+    }
+    
+    .nameanddate {
+        order: 1;
+        padding-bottom: 1.5em;
+    }
+    
+    .avatar-tablet {
+        order: 2;
+    }
+    
+    post header {
+        grid-column: col-start / span 3;
+    }
+    
+    post .postbody {
+        grid-column: col-start 4 / span 9;
+    }
+    
+    post header,
+    post .postbody {
+        padding-left: 1.07em;
+        padding-right: 1.07em;
+    }
+    
+    post footer {
+        padding-left: 1.07em;
+    }
+    
+    post .action-button {
+        padding-right: 1.07em;
+    }
+    
+    header {
+        padding-top: 1.22em;
+    }
+    
+    .avatar {
+        max-width: 4em;
+        max-height: 4em;
+    }
+    
+    .bbc-block {
+        margin: 0 10px 1em 10px;
+    }
+    
+    
+    #fyad-flag img {
+        display: block;
+        margin: 0 auto;
+    }
+    
+    #ad {
+        padding: 1.07em;
+        padding-bottom: 0;
+    }
 }
 post:first-child {
   margin-top: 0;
@@ -56,29 +170,10 @@ header {
   padding-top: 0.75em;
   padding-bottom: 0.7em;
 }
-.ipad header {
-  padding-top: 1.22em;
-}
 header:after {
   content: "";
   display: block;
   clear: both;
-}
-.avatar {
-  display: inline-block;
-  vertical-align: middle;
-}
-.iphone .avatar {
-  max-width: 2.5em;
-  max-height: 2.5em;
-}
-.ipad .avatar {
-  max-width: 4em;
-  max-height: 4em;
-}
-.nameanddate {
-  display: inline-block;
-  vertical-align: middle;
 }
 .username {
   margin: 0 0 2px;
@@ -165,9 +260,6 @@ header:after {
   font-size: 82%;
   margin: 5px 0;
   padding: 0 10px 5px;
-}
-.ipad .bbc-block {
-  margin: 0 10px 1em 10px;
 }
 .bbc-block h4 {
   margin: 0;
@@ -262,11 +354,6 @@ blockquote img {
 .postbody u::before {
   content: "\200C";
 }
-.iphone .postbody ol,
-.iphone .postbody ul {
-  margin: 0;
-  padding-left: 1.5em;
-}
 .bbc-block.code pre {
   margin: 0;
 }
@@ -294,23 +381,11 @@ footer:after {
 #fyad-flag img {
   border: 1px solid black;
 }
-.ipad #fyad-flag img {
-  display: block;
-  margin: 0 auto;
-}
 #ad {
   text-align: center;
 }
 #ad img {
   max-width: 100%;
-}
-.iphone #ad {
-  padding: 0.6em;
-  padding-bottom: 0;
-}
-.ipad #ad {
-  padding: 1.07em;
-  padding-bottom: 0;
 }
 #end {
   font-weight: normal;
