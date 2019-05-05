@@ -133,6 +133,7 @@ post > * {
     post .postbody {
         padding-left: 1.07em;
         padding-right: 1.07em;
+        padding-top: 1.07em;
     }
     
     post footer {
