@@ -237,6 +237,7 @@ final class PostsPageView: UIView {
     }
 
     deinit {
+        // On iOS 9 the web view's scroll view doesn't seem to keep a weak reference to its delegate. iOS 10+ seems ok though.
         renderView.scrollView.delegate = nil
     }
 
