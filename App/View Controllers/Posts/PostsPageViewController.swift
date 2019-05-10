@@ -152,59 +152,65 @@ final class PostsPageViewController: ViewController {
             return
         }
 
+        let initialTheme = theme
+
         let (promise, cancellable) = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
         networkOperation = cancellable
 
-        promise.done { [weak self] posts, firstUnreadPost, advertisementHTML in
-            guard let self = self else { return }
+        promise
+            .done { [weak self] posts, firstUnreadPost, advertisementHTML in
+                guard let self = self else { return }
 
-            // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
-            guard self.page == newPage else { return }
+                // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
+                guard self.page == newPage else { return }
 
-            if !posts.isEmpty {
-                self.posts = posts
-
-                let anyPost = posts[0]
-                if self.author != nil {
-                    self.page = .specific(anyPost.singleUserPage)
-                } else {
-                    self.page = .specific(anyPost.page)
+                if self.theme != initialTheme {
+                    self.themeDidChange()
                 }
-            }
 
-            switch newPage {
-            case .last where self.posts.isEmpty,
-                 .nextUnread where self.posts.isEmpty:
-                let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                self.currentPageItem.title = "Page ? of \(pageCount)"
+                if !posts.isEmpty {
+                    self.posts = posts
 
-            case .last, .nextUnread, .specific:
-                break
-            }
-
-            self.configureUserActivityIfPossible()
-
-            if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
-                self.hiddenPosts = firstUnreadPost - 1
-            }
-
-            if reloadingSamePage || renderedCachedPosts {
-                self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
-            }
-
-            self.renderPosts()
-
-            self.updateUserInterface()
-
-            if let lastPost = self.posts.last, updateLastReadPost {
-                if self.thread.seenPosts < lastPost.threadIndex {
-                    self.thread.seenPosts = lastPost.threadIndex
+                    let anyPost = posts[0]
+                    if self.author != nil {
+                        self.page = .specific(anyPost.singleUserPage)
+                    } else {
+                        self.page = .specific(anyPost.page)
+                    }
                 }
-            }
 
-            self.postsView.endRefreshing()
-            }
+                switch newPage {
+                case .last where self.posts.isEmpty,
+                     .nextUnread where self.posts.isEmpty:
+                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                    self.currentPageItem.title = "Page ? of \(pageCount)"
 
+                case .last, .nextUnread, .specific:
+                    break
+                }
+
+                self.configureUserActivityIfPossible()
+
+                if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
+                    self.hiddenPosts = firstUnreadPost - 1
+                }
+
+                if reloadingSamePage || renderedCachedPosts {
+                    self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
+                }
+
+                self.renderPosts()
+
+                self.updateUserInterface()
+
+                if let lastPost = self.posts.last, updateLastReadPost {
+                    if self.thread.seenPosts < lastPost.threadIndex {
+                        self.thread.seenPosts = lastPost.threadIndex
+                    }
+                }
+
+                self.postsView.endRefreshing()
+            }
             .catch { [weak self] error in
                 guard let self = self else { return }
 
