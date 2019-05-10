@@ -391,6 +391,8 @@
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
 		1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */; };
 		1CD1ADA72272737600E075EA /* CGGeometry+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */; };
+		1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED5228501BF00B62865 /* CGRect+Center.swift */; };
+		1CD7EED8228504C100B62865 /* UIView+CompressedHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */; };
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
 		1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2361BD2C13400ADC7DA /* KVOController.swift */; };
 		1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */; };
@@ -1091,6 +1093,8 @@
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
 		1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGGeometry+Math.swift"; sourceTree = "<group>"; };
+		1CD7EED5228501BF00B62865 /* CGRect+Center.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Center.swift"; sourceTree = "<group>"; };
+		1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+CompressedHeight.swift"; sourceTree = "<group>"; };
 		1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NigglyRefreshView.swift; sourceTree = "<group>"; };
 		1CDBF2361BD2C13400ADC7DA /* KVOController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOController.swift; sourceTree = "<group>"; };
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
@@ -2054,6 +2058,7 @@
 				1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */,
 				1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */,
 				1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */,
+				1CD7EED5228501BF00B62865 /* CGRect+Center.swift */,
 				1C353C081E41832600CCBA51 /* CoreAnimation.swift */,
 				1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
@@ -2074,6 +2079,7 @@
 				1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */,
 				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
 				1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */,
+				1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */,
 				1C0AD5EE21588CE000B72FDE /* WKWebView+RegisterScheme.h */,
 				1C0AD5EF21588D6400B72FDE /* WKWebView+RegisterScheme.m */,
 			);
@@ -3710,9 +3716,11 @@
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
+				1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,
 				1C25AC471F53788900977D6F /* RenderView.swift in Sources */,
+				1CD7EED8228504C100B62865 /* UIView+CompressedHeight.swift in Sources */,
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
 				1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */,
 				1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */,

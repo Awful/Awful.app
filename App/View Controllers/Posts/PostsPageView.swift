@@ -40,6 +40,10 @@ final class PostsPageView: UIView {
             oldValue?.removeFromSuperview()
 
             if let refreshControl = refreshControl {
+                if refreshControlContainer.frame.height == 0 {
+                    refreshControlContainer.frame.size.height = 44 // avoid unhelpful unsatisfiable constraint console messages
+                }
+
                 refreshControl.translatesAutoresizingMaskIntoConstraints = false
                 refreshControlContainer.addSubview(refreshControl)
                 let containerMargins = refreshControlContainer.layoutMarginsGuide
@@ -70,8 +74,6 @@ final class PostsPageView: UIView {
         refreshControlContainer.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         return refreshControlContainer
     }()
-
-    private var refreshControlContainerTopConstraint: NSLayoutConstraint?
 
     private var refreshControlState: RefreshControlState = .ready {
         willSet {
@@ -130,7 +132,7 @@ final class PostsPageView: UIView {
                     var contentOffset = scrollView.contentOffset
                     contentOffset.y = max(scrollView.contentSize.height, scrollView.bounds.height)
                         - scrollView.bounds.height
-                        + refreshControlContainer.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+                        + refreshControlContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
                     scrollView.setContentOffset(contentOffset, animated: true)
                 }
 
@@ -146,9 +148,7 @@ final class PostsPageView: UIView {
         return topBarContainer.topBar
     }
 
-    private let topBarContainer = TopBarContainer()
-
-    private var topBarHiddenConstraint: NSLayoutConstraint?
+    private let topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
     private var topBarState: TopBarState {
         didSet {
@@ -164,7 +164,7 @@ final class PostsPageView: UIView {
                  (.disappearing, _),
                  (.hidden, .alwaysVisible),
                  (.alwaysVisible, .hidden):
-                updateTopBarHiddenConstraint()
+                updateTopBarContainerFrameAndScrollViewInsets()
 
             case (.hidden, _),
                  (.visible, _),
@@ -184,7 +184,7 @@ final class PostsPageView: UIView {
         return renderView
     }()
 
-    private let toolbar = Toolbar()
+    private let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
     var toolbarItems: [UIBarButtonItem] {
         get { return toolbar.items ?? [] }
@@ -207,33 +207,11 @@ final class PostsPageView: UIView {
         }()
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: voiceOverStatusNotification, object: nil)
 
-        addSubview(renderView, constrainEdges: .all)
-        addSubview(topBarContainer, constrainEdges: [.left, .right])
-        addSubview(loadingViewContainer, constrainEdges: .all)
-        addSubview(toolbar, constrainEdges: [.left, .right])
-
-        // See commentary in `PostsPageViewController.viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
-        NSLayoutConstraint.activate([
-            topBarContainer.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            layoutMarginsGuide.bottomAnchor.constraint(equalTo: toolbar.bottomAnchor)])
-
-        topBarHiddenConstraint = topBarContainer.bottomAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor)
-        topBarHiddenConstraint?.isActive = {
-            switch topBarState {
-            case .hidden, .appearing, .disappearing:
-                return true
-            case .visible, .alwaysVisible:
-                return false
-            }
-        }()
-
-        refreshControlContainer.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(renderView)
+        addSubview(topBarContainer)
+        addSubview(loadingViewContainer)
+        addSubview(toolbar)
         renderView.scrollView.addSubview(refreshControlContainer)
-        refreshControlContainerTopConstraint = refreshControlContainer.topAnchor.constraint(equalTo: renderView.scrollView.topAnchor)
-        NSLayoutConstraint.activate([
-            refreshControlContainerTopConstraint!,
-            leftAnchor.constraint(equalTo: refreshControlContainer.leftAnchor),
-            refreshControlContainer.rightAnchor.constraint(equalTo: rightAnchor)])
     }
 
     deinit {
@@ -242,19 +220,41 @@ final class PostsPageView: UIView {
     }
 
     override func layoutSubviews() {
+        /*
+         See commentary in `PostsPageViewController.viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
+         */
 
-        // Let Auto Layout do its thing first, so we can use bar frames to figure out content insets.
-        super.layoutSubviews()
+        renderView.frame = bounds
+        loadingViewContainer.frame = bounds
+
+        let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
+        toolbar.frame = CGRect(
+            x: bounds.minX,
+            y: bounds.maxY - layoutMargins.bottom - toolbarHeight,
+            width: bounds.width,
+            height: toolbarHeight)
 
         let scrollView = renderView.scrollView
 
-        refreshControlContainerTopConstraint?.constant = max(scrollView.contentSize.height, scrollView.bounds.height)
+        let refreshControlHeight = refreshControlContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
+        refreshControlContainer.frame = CGRect(
+            x: bounds.minX,
+            y: max(scrollView.contentSize.height, scrollView.bounds.height - layoutMargins.bottom),
+            width: bounds.width,
+            height: refreshControlHeight)
 
-        /*
-         I'm assuming `layoutSubviews()` will get called (among other times) whenever `layoutMarginsDidChange()` gets called, so there's no point overriding `layoutMarginsDidChange()` to do the same work we're doing here. But I haven't yet convinced myself that this is how things work.
+        let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
+        topBarContainer.frame = CGRect(
+            x: bounds.minX,
+            y: bounds.minY + layoutMargins.top,
+            width: bounds.width,
+            height: topBarHeight)
+        updateTopBarContainerFrameAndScrollViewInsets()
+    }
 
-         See commentary in `PostsPageViewController.viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
-         */
+    /// Assumes that various views (top bar container, refresh control container, toolbar) have been laid out.
+    private func updateScrollViewInsets() {
+        let scrollView = renderView.scrollView
 
         var contentInset = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bounds.maxY - toolbar.frame.minY, right: 0)
         if case .refreshing = refreshControlState {
@@ -282,6 +282,11 @@ final class PostsPageView: UIView {
                 break
             }
         }
+    }
+
+    override func layoutMarginsDidChange() {
+        super.layoutMarginsDidChange()
+        setNeedsLayout()
     }
 
     // MARK: Theming
@@ -327,13 +332,6 @@ extension PostsPageView {
             clipsToBounds = true
 
             addSubview(topBar, constrainEdges: [.bottom, .left, .right])
-
-            // When we want to hide the bar, the posts page view will add a higher-priority constraint to do so.
-            let showBarByDefault = topBar.topAnchor.constraint(equalTo: topAnchor)
-            showBarByDefault.priority = 500
-            NSLayoutConstraint.activate([
-                topAnchor.constraint(greaterThanOrEqualTo: topBar.topAnchor),
-                showBarByDefault])
         }
 
         required init?(coder: NSCoder) {
@@ -359,34 +357,37 @@ extension PostsPageView {
         case alwaysVisible
     }
 
+    /// Assumes the top bar container has already been laid out as if it was fully visible.
     @discardableResult
-    private func updateTopBarHiddenConstraint() -> TopBarUpdateResult {
+    private func updateTopBarContainerFrameAndScrollViewInsets() -> TopBarUpdateResult {
+        let result: TopBarUpdateResult
         switch topBarState {
         case .hidden:
-            topBarHiddenConstraint?.constant = 0
-            topBarHiddenConstraint?.isActive = true
-            return .init(progress: 1)
+            topBarContainer.frame.size.height = 0
+            result = .init(progress: 1)
 
         case .appearing(fromContentOffset: let initialContentOffset):
             let distance = initialContentOffset.y - renderView.scrollView.contentOffset.y
             let upperBound = topBar.bounds.height
             let clamped = distance.clamp(0...upperBound)
-            topBarHiddenConstraint?.constant = clamped
-            topBarHiddenConstraint?.isActive = true
-            return .init(progress: clamped / upperBound)
+            topBarContainer.frame.size.height = clamped
+            result = .init(progress: clamped / upperBound)
 
         case .disappearing(fromContentOffset: let initialContentOffset):
             let distance = renderView.scrollView.contentOffset.y - initialContentOffset.y
             let upperBound = topBar.bounds.height
             let clamped = distance.clamp(0...upperBound)
-            topBarHiddenConstraint?.constant = upperBound - clamped
-            topBarHiddenConstraint?.isActive = true
-            return .init(progress: clamped / upperBound)
+            topBarContainer.frame.size.height = upperBound - clamped
+            result = .init(progress: clamped / upperBound)
 
         case .visible, .alwaysVisible:
-            topBarHiddenConstraint?.isActive = false
-            return .init(progress: 1)
+            topBarContainer.layoutIfNeeded()
+            topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
+            result = .init(progress: 1)
         }
+
+        updateScrollViewInsets()
+        return result
     }
 
     private struct TopBarUpdateResult {
@@ -543,7 +544,7 @@ extension PostsPageView: ScrollViewDelegateContentSize {
     }
 
     private func updateTopBarDidEndDecelerating() {
-        let result = updateTopBarHiddenConstraint()
+        let result = updateTopBarContainerFrameAndScrollViewInsets()
         switch topBarState {
         case .appearing:
             topBarState = result.progress >= 0.75 ? .visible : .hidden
@@ -590,7 +591,7 @@ extension PostsPageView: ScrollViewDelegateContentSize {
 
         switch topBarState {
         case .appearing, .disappearing:
-            updateTopBarHiddenConstraint()
+            updateTopBarContainerFrameAndScrollViewInsets()
 
         case .hidden, .visible, .alwaysVisible:
             break
