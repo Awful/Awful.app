@@ -349,10 +349,10 @@ extension PostsPageView {
         /// The top bar is visible, and may disappear when the user scrolls down.
         case visible
 
-        /// The top bar was hidden but is now "scrolling" into view. `fromContentOffset` is the content offset from then this started, used to calculate its current progress.
+        /// The top bar was hidden but is now "scrolling" into view. `fromContentOffset` is the content offset from when this started, used to calculate its current progress.
         case appearing(fromContentOffset: CGPoint)
 
-        /// The top bar was visible but is now "scrolling" out of view. `fromContentOffset` is the content offset from then this started, used to calculate its current progress.
+        /// The top bar was visible but is now "scrolling" out of view. `fromContentOffset` is the content offset from when this started, used to calculate its current progress.
         case disappearing(fromContentOffset: CGPoint)
 
         /// The top bar is visible and will not disappear when the user scrolls.
