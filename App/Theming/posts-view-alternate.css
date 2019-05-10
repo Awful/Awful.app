@@ -6,12 +6,11 @@
 */
 body {
   min-height: 100vh;
-}
-body {
   font: -apple-system-body;
   margin: 0;
   -webkit-text-size-adjust: 100%;
   -webkit-touch-callout: none;
+  touch-action: manipulation;
 }
 body {
   word-wrap: break-word;

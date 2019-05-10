@@ -7,17 +7,19 @@
 body {
   // Prevents a grey overlay when tapping below the bottom of the "end of thread" element. Particularly annoying when there's less than a screenful of posts to show.
   min-height: 100vh;
-}
 
-body {
   font: -apple-system-body;
+
   margin: 0;
 
   // Maintain text size on orientation change.
   -webkit-text-size-adjust: 100%;
 
-  // Hide UIWebView's long-tap link menu.
+  // Hide the web view's long-tap link menu.
   -webkit-touch-callout: none;
+
+  // Skip the double-tap delay: https://webkit.org/blog/5610/more-responsive-tapping-on-ios/
+  touch-action: manipulation;
 }
 
 // Don't break tables with text, images, or videos.
