@@ -17,7 +17,7 @@ final class LoadMoreFooter: NSObject {
         didSet {
             switch (oldValue, state) {
             case (.ready, .loading):
-                refreshView.backgroundColor = tableView.backgroundColor
+                themeDidChange()
                 refreshView.frame = CGRect(
                     x: 0,
                     y: 0,
@@ -68,6 +68,10 @@ final class LoadMoreFooter: NSObject {
         if tableView.tableFooterView == refreshView {
             tableView.tableFooterView = nil
         }
+    }
+
+    func themeDidChange() {
+        refreshView.backgroundColor = tableView.backgroundColor
     }
     
     // MARK: Gunk

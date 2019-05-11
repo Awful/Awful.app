@@ -121,6 +121,8 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     override func themeDidChange() {
         super.themeDidChange()
 
+        loadMoreFooter?.themeDidChange()
+
         tableView.separatorColor = theme["listSeparatorColor"]
         tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
     }

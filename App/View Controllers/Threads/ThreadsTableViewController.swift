@@ -145,6 +145,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     override func themeDidChange() {
         super.themeDidChange()
+
+        loadMoreFooter?.themeDidChange()
         
         updateFilterButton()
 
