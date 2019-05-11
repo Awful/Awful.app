@@ -177,6 +177,12 @@
 "compose.thread.tag-picker.title" = "Choose Thread Tag";
 
 
+/* MARK: Image upload */
+
+/* Title of a generic error uploading an image. */
+"image-upload.generic-error-title" = "Image Upload Failed";
+
+
 /* MARK: Link actions */
 
 /* Title of button that copies an image's URL to the pasteboard. */

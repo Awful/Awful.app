@@ -187,15 +187,28 @@ class ComposeTextViewController: ViewController {
                 overlay?.dismiss(false)
                 
                 self?.enableEverything()
-                
-                if (error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == NSUserCancelledError {
+
+                if let error = error as? CocoaError, error.code == .userCancelled {
                     self?.focusInitialFirstResponder()
-                } else {
-                    // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
-                    let presenter = self?.navigationController ?? self
-                    presenter?.present(UIAlertController(title: "Image Upload Failed", error: error), animated: true)
+                    return
                 }
-                
+
+                // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.
+                let presenter = self?.navigationController ?? self
+                let alert: UIAlertController
+
+                switch error {
+                case let error as LocalizedError where error.failureReason != nil:
+                    alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "")
+
+                case let error as LocalizedError:
+                    alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription)
+
+                case let error:
+                    alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), error: error)
+                }
+
+                presenter?.present(alert, animated: true)
                 return
             }
             

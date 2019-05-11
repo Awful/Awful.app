@@ -151,10 +151,20 @@ final class ReplyWorkspace: NSObject {
         
         let submitProgress = draft.submit { [unowned self] error in
             progressView?.dismiss(true)
-            
+
             if let error = error {
-                if !((error as NSError).domain == NSCocoaErrorDomain && (error as NSError).code == NSUserCancelledError) {
-                    let alert = UIAlertController(title: "Image Upload Failed", error: error)
+                if (error as? CocoaError)?.code != .userCancelled {
+                    let alert: UIAlertController
+                    switch error {
+                    case let error as LocalizedError where error.failureReason != nil:
+                        alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "")
+
+                    case let error as LocalizedError:
+                        alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription)
+
+                    case let error:
+                        alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), error: error)
+                    }
                     self.viewController.present(alert, animated: true)
                 }
             } else {
