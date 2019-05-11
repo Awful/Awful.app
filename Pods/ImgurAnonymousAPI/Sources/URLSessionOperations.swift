@@ -2,22 +2,34 @@
 
 import Foundation
 
-internal struct MissingResponseData: Error {}
+internal struct MissingResponseData: LocalizedError {
+    var errorDescription: String? {
+        return "Invalid response"
+    }
+
+    var failureReason: String? {
+        return "No Imgur response data"
+    }
+}
 
 extension ImgurUploader {
     
     /// An error from the Imgur anonymous upload API.
-    public struct APIError: Swift.Error {
+    public struct APIError: LocalizedError {
         
         /// Sometimes Imgur provides just a plain string explaining the problem, and other times they include more info.
         public let error: Either<String, DetailedAPIError>
-        
-        public var localizedDescription: String {
+
+        public var errorDescription: String? {
+            return "Imgur API Error"
+        }
+
+        public var failureReason: String? {
             switch error {
             case .left(let string):
                 return string
             case .right(let detail):
-                return detail.message
+                return "\(detail.message) (\(detail.type) code \(detail.code))"
             }
         }
     }

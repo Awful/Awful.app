@@ -6,7 +6,7 @@ PODS:
   - Fabric (1.8.2)
   - FLAnimatedImage (1.0.12)
   - HTMLReader (2.1)
-  - ImgurAnonymousAPI (0.9)
+  - ImgurAnonymousAPI (1.0)
   - KVOController (1.2.0)
   - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
@@ -111,7 +111,7 @@ SPEC CHECKSUMS:
   Fabric: d2b22f443ba195d8a7cc204da230977c72733b40
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   HTMLReader: dd75279b0532ff5d005ffe1c6512e33d1d52f861
-  ImgurAnonymousAPI: ebf15883d021832c80e4b1cc1fc0cee445fea7e7
+  ImgurAnonymousAPI: 018b22f420ce45dc805fe792f0c53a18934eaef3
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   Nuke: 0350d346a688426e8f2331253ef28dc2fc4f6178

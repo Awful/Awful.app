@@ -449,7 +449,7 @@ public final class ImgurUploader {
  
  There's also no mention of whether a megabyte is 2^20 bytes or 10^6 bytes.
  
- As of 2018-11-04, an 18.7 MB file was rejected with "File is over the size limit", so I guess that rules out 20 MB. And a 10,018,523 byte file was similarly rejected, so 10^6 it is!
+ As of 2018-11-04, an 18.7 MB file was rejected with "File is over the size limit", so I guess that rules out 20 MB. And a 10,018,523 byte file was similarly rejected, so 10^7 it is!
  */
 private let imgurFileSizeLimit = 10_000_000
 
