@@ -194,15 +194,15 @@ There's an iMessage sticker pack with all the smilies. From a fresh start:
 ## iOS deployment targets
 
 For iOS | Check out tag/branch
-------------------------------
-12      | master
-11      | master
-10      | master
-9       | master
-8       | ios-8
-7       | ios-7
-6       | ios-6
-5       | ios-5
+------- | --------------------
+12 | master
+11 | master
+10 | master
+9  | master
+8  | ios-8
+7  | ios-7
+6  | ios-6
+5  | ios-5
 
 ## License
 
