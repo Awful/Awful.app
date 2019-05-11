@@ -71,6 +71,8 @@ There are unit tests for the HTML scraping, to help us find problems when markup
 
 Bump the major version when raising the iOS deployment target. Otherwise, bump the minor version.
 
+Also, when raising the iOS deployment target, please tag the last commit that supports the no-longer-supported deployment target(s) and update the table in the section "iOS deployment targets" below.
+
 ### Handy utilities
 
 If you peek in the [Xcode](Xcode) folder you'll find:
@@ -188,6 +190,19 @@ There's an iMessage sticker pack with all the smilies. From a fresh start:
 * You're done.
 
 [showsmilies]: http://forums.somethingawful.com/misc.php?action=showsmilies
+
+## iOS deployment targets
+
+For iOS | Check out tag/branch
+------------------------------
+12      | master
+11      | master
+10      | master
+9       | master
+8       | ios-8
+7       | ios-7
+6       | ios-6
+5       | ios-5
 
 ## License
 
