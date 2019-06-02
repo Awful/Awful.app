@@ -83,7 +83,7 @@ final class SettingsThemePickerViewController: TableViewController {
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let text = themes[indexPath.row].name
-        let maxSize = CGSize(width: tableView.bounds.width - 40, height: .greatestFiniteMagnitude)
+        let maxSize = CGSize(width: tableView.safeAreaFrame.width - 40, height: .greatestFiniteMagnitude)
         let fittingSize = (text as NSString).boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [.font: fontForRow(at: indexPath)], context: nil)
         return max(44, floor(fittingSize.height + 16))
     }

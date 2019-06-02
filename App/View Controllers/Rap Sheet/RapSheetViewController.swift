@@ -229,7 +229,7 @@ final class RapSheetViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
-        return PunishmentCell.rowHeightWithBanReason(punishment.reason, width: tableView.bounds.width)
+        return PunishmentCell.rowHeightWithBanReason(punishment.reason, width: tableView.safeAreaFrame.width)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

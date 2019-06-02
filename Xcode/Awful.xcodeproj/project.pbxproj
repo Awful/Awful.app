@@ -147,6 +147,7 @@
 		1C3A147319DFD0D00022C44C /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147119DFD0D00022C44C /* showsmilies.webarchive */; };
 		1C3A147519DFDE380022C44C /* Smilies.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147419DFDE380022C44C /* Smilies.sqlite */; };
 		1C3A147719DFDEC30022C44C /* BundledSmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */; };
+		1C3CBEFF22A45C2500F6C634 /* UIView+SafeAreaFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3CBEFE22A45C2500F6C634 /* UIView+SafeAreaFrame.swift */; };
 		1C3CF9711A94B9B50065C964 /* AwfulCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; };
 		1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; };
 		1C3CF97E1A94B9B50065C964 /* AwfulCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -826,6 +827,7 @@
 		1C3A147119DFD0D00022C44C /* showsmilies.webarchive */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = showsmilies.webarchive; sourceTree = "<group>"; };
 		1C3A147419DFDE380022C44C /* Smilies.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Smilies.sqlite; sourceTree = "<group>"; };
 		1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundledSmiliesTests.m; sourceTree = "<group>"; };
+		1C3CBEFE22A45C2500F6C634 /* UIView+SafeAreaFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaFrame.swift"; sourceTree = "<group>"; };
 		1C3CF9661A94B9B40065C964 /* AwfulCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AwfulCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C3CF9691A94B9B40065C964 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2080,6 +2082,7 @@
 				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
 				1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */,
 				1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */,
+				1C3CBEFE22A45C2500F6C634 /* UIView+SafeAreaFrame.swift */,
 				1C0AD5EE21588CE000B72FDE /* WKWebView+RegisterScheme.h */,
 				1C0AD5EF21588D6400B72FDE /* WKWebView+RegisterScheme.m */,
 			);
@@ -3666,6 +3669,7 @@
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */,
+				1C3CBEFF22A45C2500F6C634 /* UIView+SafeAreaFrame.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
