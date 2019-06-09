@@ -213,6 +213,13 @@ fileprivate let imageItems = [
     MenuItem(title: "From Camera", action: { $0.showImagePicker(.camera) }, enabled: isPickerAvailable(.camera)),
     MenuItem(title: "From Library", action: { $0.showImagePicker(.photoLibrary) }, enabled: isPickerAvailable(.photoLibrary)),
     MenuItem(title: "[img]", action: wrapSelectionInTag("[img]")),
+    MenuItem(title: "Paste [img]", action:{ tree in
+        if let text = UIPasteboard.general.coercedURL {
+            if let textRange = tree.textView.selectedTextRange {
+                tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
+            }
+        }
+    }, enabled: { UIPasteboard.general.coercedURL != nil }),
     MenuItem(title: "Paste", action: { tree in
         if let image = UIPasteboard.general.image {
             tree.insertImage(image)
