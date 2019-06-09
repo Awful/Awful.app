@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
-   version = "1.7">
+   LastUpgradeVersion = "1020"
+   version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Awful Debug.app"
+               BuildableName = "AwfulDebug.app"
                BlueprintName = "Awful"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
@@ -57,7 +57,21 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1C9AEBC2210C3B2200C9A567"
+               BuildableName = "AwfulTests.xctest"
+               BlueprintName = "AwfulTests"
+               ReferencedContainer = "container:Awful.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1C3CF96F1A94B9B40065C964"
@@ -67,7 +81,9 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1C66A9C919DD304E001B9A41"
@@ -81,7 +97,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -104,7 +120,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -134,7 +150,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -146,24 +162,5 @@
    <ArchiveAction
       buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
-      <PostActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "&quot;$PROJECT_DIR&quot;/tag-archive.rb &quot;$ARCHIVE_PATH&quot;"
-               shellToInvoke = "/bin/bash">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-                     BuildableName = "Awful Debug.app"
-                     BlueprintName = "Awful"
-                     ReferencedContainer = "container:Awful.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PostActions>
    </ArchiveAction>
 </Scheme>

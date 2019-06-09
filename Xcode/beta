@@ -1,0 +1,114 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
+import argparse
+import os
+from subprocess import call, check_call
+import sys
+from tempfile import NamedTemporaryFile
+from textwrap import dedent
+
+import bump
+from bump import ensure_repo_is_clean
+from submit import upload_to_app_store
+
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+
+def attempt_git_push():
+    call(['git', 'push'])
+
+
+def build_and_archive(build_dir, workspace, scheme, configuration):
+    archive_path = os.path.join(build_dir, 'Awful.xcarchive')
+    check_call(['xcodebuild',
+                '-workspace', workspace,
+                '-scheme', scheme,
+                '-configuration', configuration,
+                '-archivePath', archive_path,
+                '-derivedDataPath', os.path.join(build_dir, 'DerivedData'),
+                '-destination', 'generic/platform=iOS',
+                'clean',
+                'archive',
+                ])
+    return archive_path
+
+
+def export_archive(archive_path, export_path):
+    options_plist_file = NamedTemporaryFile(suffix='-exportOptions.plist')
+    options_plist_file.write(dedent("""\
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>method</key>
+            <string>app-store</string>
+        </dict>
+        </plist>
+        """))
+    options_plist_file.flush()
+    check_call(['xcodebuild',
+                '-exportArchive',
+                '-archivePath', archive_path,
+                '-exportPath', export_path,
+                '-exportOptionsPlist', options_plist_file.name,
+                '-allowProvisioningUpdates'])
+
+    archive_base = os.path.basename(archive_path)
+    archive_name_root = os.path.splitext(archive_base)[0]
+    ipa_filename = archive_name_root + '.ipa'
+    return os.path.join(export_path, ipa_filename)
+
+
+def open_archive_in_xcode(archive_path):
+    check_call(['open', archive_path])
+
+
+def _bail(message):
+    print(message, file=sys.stderr)
+    sys.exit(1)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Make a beta build ready for uploading to App Store Connect")
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--minor', dest='bumper', action='store_const', const=bump.minor,
+                       help="Bump the minor build number (default is to bump the build number)")
+    group.add_argument('--major', dest='bumper', action='store_const', const=bump.major,
+                       help="Bump the major build number (default is to bump the build number)")
+    group.add_argument('--skip-bump', action='store_true',
+                       help="Don't bump the bundle version, just make an .xcarchive (default is to bump the build number)")
+
+    parser.add_argument('--appleid', dest='apple_id_username',
+                        help="Apple ID username for uploading to App Store Connect (defaults to environment variable APPLE_ID_USERNAME)")
+    parser.add_argument('--skip-upload', action='store_true',
+                        help="Don't export a .ipa and upload it to App Store Connect")
+
+    args = parser.parse_args()
+
+    apple_id_username = args.apple_id_username or os.environ.get('APPLE_ID_USERNAME')
+    if not (apple_id_username or args.skip_upload):
+        _bail("Must either specify Apple ID username via the  --appleid command-line argument or the APPLE_ID_USERNAME environment variable, or skip upload by specifying --skip-upload")
+
+    ensure_repo_is_clean()
+
+    if not args.skip_bump:
+        bump.bump_version(bump.build if args.bumper is None else args.bumper)
+        attempt_git_push()
+
+    build_dir = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'build.noindex'))
+    workspace = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'Awful.xcworkspace'))
+    archive_path = build_and_archive(build_dir, workspace, 'Awful', 'Release')
+
+    if not args.skip_upload:
+        ipa_path = export_archive(archive_path, build_dir)
+        print("Uploading to App Store Connect, this can take awhile…")
+        upload_to_app_store(ipa_path, apple_id_username)
+
+    open_archive_in_xcode(archive_path)
+
+
+if __name__ == '__main__':
+    main()

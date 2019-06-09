@@ -10,48 +10,42 @@ public class User: AwfulManagedObject {
     @NSManaged public var authorClasses: String?
     @NSManaged public var canReceivePrivateMessages: Bool
     @NSManaged public var customTitleHTML: String?
-    @NSManaged var lastModifiedDate: NSDate
+    @NSManaged var lastModifiedDate: Date
     @NSManaged public var moderator: Bool
-    @NSManaged public var regdate: NSDate?
+    @NSManaged public var regdate: Date?
     @NSManaged public var userID: String
     @NSManaged public var username: String?
-    
-    @NSManaged var posts: NSMutableSet /* Post */
+
+    @NSManaged var announcements: Set<Announcement>
+    @NSManaged var posts: Set<Post>
     @NSManaged public var profile: Profile?
-    @NSManaged var receivedPrivateMessages: NSMutableSet /* PrivateMessage via to */
-    @NSManaged var sentPrivateMessages: NSMutableSet /* PrivateMessage via from */
-    @NSManaged var threadFilters: NSMutableSet /* ThreadFilter */
-    @NSManaged var threads: NSMutableSet /* Thread */
+    @NSManaged var receivedPrivateMessages: Set<PrivateMessage> /* via to */
+    @NSManaged var sentPrivateMessages: Set<PrivateMessage> /* via from */
+    @NSManaged var threadFilters: Set<ThreadFilter>
+    @NSManaged var threads: Set<AwfulThread>
 }
 
 extension User {
-    // TODO this is very stupid, just handle it during scraping
-    public var avatarURL: NSURL? {
-        if let HTML = customTitleHTML {
-            if let element = avatarImageElement(customTitleHTML: HTML) {
-                if let url = element.objectForKeyedSubscript("data-cfsrc") as! String! {
-                    return NSURL(string: url)
-                } else if let url = element.objectForKeyedSubscript("src") as! String! {
-                    return NSURL(string: url)
-                }
-                return nil
-            }
-        }
-        return nil
+    public var avatarURL: URL? {
+        return customTitleHTML.flatMap(extractAvatarURL)
     }
 }
 
-private func avatarImageElement(customTitleHTML HTML: String) -> HTMLElement? {
-    let document = HTMLDocument(string: HTML)
-    return document.firstNodeMatchingSelector("div > img:first-child") ??
-        document.firstNodeMatchingSelector("body > img:first-child") ??
-        document.firstNodeMatchingSelector("a > img:first-child")
+// TODO: this is very stupid, just handle it during scraping
+public func extractAvatarURL(fromCustomTitleHTML customTitleHTML: String) -> URL? {
+    let document = HTMLDocument(string: customTitleHTML)
+    let img = document.firstNode(matchingSelector: "div > img:first-child") ??
+        document.firstNode(matchingSelector: "body > img:first-child") ??
+        document.firstNode(matchingSelector: "a > img:first-child")
+
+    let src = img?["data-cfsrc"] ?? img?["src"]
+    return src.flatMap { URL(string: $0) }
 }
 
 @objc(UserKey)
 public final class UserKey: AwfulObjectKey {
-    public let userID: String
-    let username: String?
+    @objc public let userID: String
+    @objc let username: String?
     
     public init(userID: String, username: String?) {
         precondition(!userID.isEmpty)
@@ -62,8 +56,8 @@ public final class UserKey: AwfulObjectKey {
     }
     
     public required init?(coder: NSCoder) {
-        userID = coder.decodeObjectForKey(userIDKey) as! String
-        username = coder.decodeObjectForKey(usernameKey) as! String?
+        userID = coder.decodeObject(forKey: userIDKey) as! String
+        username = coder.decodeObject(forKey: usernameKey) as! String?
         super.init(coder: coder)
     }
     
@@ -71,7 +65,7 @@ public final class UserKey: AwfulObjectKey {
         return [userIDKey, usernameKey]
     }
     
-    public override func isEqual(object: AnyObject?) -> Bool {
+    public override func isEqual(_ object: Any?) -> Bool {
         if let other = object as? UserKey {
             return other.userID == userID
         }

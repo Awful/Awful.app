@@ -1,49 +1,71 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '8.0'
-xcodeproj 'Xcode/Awful'
-link_with 'Awful'
+platform :ios, '9.0'
+project 'Xcode/Awful'
+
 inhibit_all_warnings!
 use_frameworks!
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
-# In general I don't trust library authors to adhere to semantic versioning, so always pin to a specific version or commit.
+target 'Awful' do
+  pod '1PasswordExtension'
+  pod 'ARChromeActivity'
+  pod 'Crashlytics'
+  pod 'FLAnimatedImage'
+  pod 'HTMLReader'
+  pod 'ImgurAnonymousAPI'
+  pod 'KVOController'
+  pod 'MRProgress/Overlay'
+  pod 'Nuke'
+  pod 'PromiseKit'
+  pod 'Sourcery'
+  pod 'Stencil'
+  pod 'TUSafariActivity'
 
-def afnetworking; pod 'AFNetworking', '2.5.2'; end
-def fl_animated_image; pod 'FLAnimatedImage', '1.0.2'; end
-def html_reader; pod 'HTMLReader', '0.8'; end
-
-target :Awful do
-  afnetworking
-  pod 'ARChromeActivity', '1.0.6'
-  fl_animated_image
-  pod 'GRMustache', '7.3.2'
-  html_reader
-  pod 'ImgurAnonymousAPIClient', '0.3.2'
-  pod 'JLRoutes', '1.5.1'
-  pod 'KVOController', '1.0.3'
-  pod 'MRProgress/Overlay', '0.8.0'
   # Fixes a compile error; I'm happy to pin to some subsequent tagged version if that ever happens.
   pod 'PSMenuItem', :git => 'https://github.com/steipete/PSMenuItem', :commit => '489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79'
-  pod 'TUSafariActivity', '1.0.4'
-  pod 'WebViewJavascriptBridge', '4.1.4'
+
+  # Swift 4 support that doesn't crash in KVO. Go back to main pod when it arrives there
+  pod 'PullToRefresher', :git => 'https://github.com/MindSea/PullToRefresh', :branch => 'fix-simultaneous-access'
+
+  # Frequently bumps versions without pushing podspec to CocoaPods.
+  pod 'SwiftTweaks', :git => 'https://github.com/Khan/SwiftTweaks', :branch => 'master'
+
+  target :AwfulTests
 end
 
-target :Core do
-  afnetworking
-  html_reader
+target 'Core' do
+  pod 'HTMLReader'
+  pod 'PromiseKit'
+
+  target 'CoreTests'
 end
 
-# FLAnimatedImage is used by both Awful and Smilies targets, but CocoaPods doesn't have a good story for dealing with that. Instead we'll compile it in Smilies and leave Awful's dependency implicit.
 target :Smilies do
-  fl_animated_image
-  html_reader
+  pod 'FLAnimatedImage'
+  pod 'HTMLReader'
+
+  target :SmiliesTests
 end
 
-post_install do |extension_safe_api|
-  EXTENSION_SAFE_TARGETS = %w[FLAnimatedImage HTMLReader Pods-Smilies]
-  extension_safe_api.pods_project.targets.each do |target|
-    if EXTENSION_SAFE_TARGETS.include? target.name
+target :SmilieExtractor do
+  pod 'FLAnimatedImage'
+  pod 'HTMLReader'
+end
+
+post_install do |installer|
+  extension_safe_pods = %w[FLAnimatedImage HTMLReader PromiseKit]
+  swift_4_2_pods = %w[PullToRefresher]
+
+  installer.pods_project.targets.each do |target|
+    if extension_safe_pods.include?(target.name)
       target.build_configurations.each do |config|
         config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
+      end
+    end
+
+    if swift_4_2_pods.include?(target.name)
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '4.2'
       end
     end
   end

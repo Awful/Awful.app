@@ -19,7 +19,7 @@
 			<key>listTextColor</key>
 			<string>#006666</string>
 			<key>listSecondaryTextColor</key>
-			<string>#9999ff</string>
+			<string>#006666</string>
 			<key>listSeparatorColor</key>
 			<string>#003333</string>
 			<key>listBackgroundColor</key>
@@ -59,6 +59,8 @@
 		<string>Light</string>
 		<key>descriptiveColor</key>
 		<string>#ffffff</string>
+		<key>descriptiveName</key>
+		<string>Classic</string>
 		<key>tintColor</key>
 		<string>#1e84af</string>
 		<key>backgroundColor</key>
@@ -85,6 +87,8 @@
 			<string>#ffffff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#cccccc</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
@@ -92,8 +96,6 @@
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>
 			<string>#1483b1</string>
-			<key>tabBarBackgroundColor</key>
-			<string>#444444</string>
 			<key>toolbarTextColor</key>
 			<string>#1e84af</string>
 			<key>toolbarTintColor</key>
@@ -109,6 +111,8 @@
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#1773a1</string>
+			<key>postsTweetTheme</key>
+			<string>light</string>
 			<key>postsViewCSS</key>
 			<string>posts-view.css</string>
 		</dict>
@@ -152,8 +156,10 @@
 		<string>Dark</string>
 		<key>descriptiveColor</key>
 		<string>#151515</string>
+		<key>descriptiveName</key>
+		<string>Classic Dark</string>
 		<key>tintColor</key>
-		<string>#0f4f70</string>
+		<string>#1e84af</string>
 		<key>backgroundColor</key>
 		<string>#060606</string>
 		<key>scrollIndicatorStyle</key>
@@ -180,6 +186,8 @@
 			<string>#333333</string>
 			<key>listSeparatorColor</key>
 			<string>#262626</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
@@ -204,6 +212,8 @@
 			<string>#eeeeee</string>
 			<key>postsTopBarBackgroundColor</key>
 			<string>#0c3c57</string>
+			<key>postsTweetTheme</key>
+			<string>dark</string>
 			<key>postsViewCSS</key>
 			<string>posts-view-dark.css</string>
 		</dict>
@@ -235,6 +245,301 @@
 			<string>#bebebe</string>
 		</dict>
 	</dict>
+	<key>alternateDefault</key>
+	<dict>
+		<key>description</key>
+		<string>Light</string>
+		<key>descriptiveColor</key>
+		<string>#ffffff</string>
+		<key>descriptiveName</key>
+		<string>Alternate</string>
+		<key>tintColor</key>
+		<string>#004696</string>
+		<key>backgroundColor</key>
+		<string>#f4f3f3</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Dark</string>
+		<key>keyboardAppearance</key>
+		<string>Light</string>
+		<key>placeholderTextColor</key>
+		<string>#999999</string>
+		<key>Lists</key>
+		<dict>
+			<key>listHeaderTextColor</key>
+			<string>#838383</string>
+			<key>listHeaderBackgroundColor</key>
+			<string>#e4e4e4</string>
+			<key>listTextColor</key>
+			<string>#000000</string>
+			<key>listSecondaryTextColor</key>
+			<string>#808080</string>
+			<key>listSeparatorColor</key>
+			<string>#cccccc</string>
+			<key>listBackgroundColor</key>
+			<string>#ffffff</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#cccccc</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>navigationBarTintColor</key>
+			<string>#004696</string>
+			<key>toolbarTextColor</key>
+			<string>#004696</string>
+			<key>toolbarTintColor</key>
+			<string>#ffffff33</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#f5f5f5</string>
+			<key>postsPullForNextColor</key>
+			<string>#8e8e8e</string>
+			<key>postsTopBarTextColor</key>
+			<string>#eeeeee</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#003a7d</string>
+			<key>postsTweetTheme</key>
+			<string>light</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-alternate.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#eeeeee</string>
+			<key>sheetTitleColor</key>
+			<string>#333333</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#ffffff</string>
+			<key>sheetTextColor</key>
+			<string>#000000</string>
+			<key>sheetDimColor</key>
+			<string>#777777f0</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerTextColor</key>
+			<string>#000000</string>
+			<key>tagPickerBackgroundColor</key>
+			<string>#ffffff</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#004696</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#7f7f7f</string>
+			<key>unreadBadgeOrangeColor</key>
+			<string>#ff8000</string>
+			<key>unreadBadgeRedColor</key>
+			<string>#ff0000</string>
+			<key>unreadBadgeYellowColor</key>
+			<string>#f3f135</string>
+		</dict>
+	</dict>
+	<key>alternateDark</key>
+	<dict>
+		<key>description</key>
+		<string>Dark</string>
+		<key>descriptiveColor</key>
+		<string>#151515</string>
+		<key>descriptiveName</key>
+		<string>Alternate Dark</string>
+		<key>tintColor</key>
+		<string>#005ad3</string>
+		<key>backgroundColor</key>
+		<string>#060606</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Light</string>
+		<key>keyboardAppearance</key>
+		<string>Dark</string>
+		<key>actionIconTintColor</key>
+		<string>#006ae3</string>
+		<key>placeholderTextColor</key>
+		<string>#666666</string>
+		<key>settingsSwitchColor</key>
+		<string>#237733</string>
+		<key>Lists</key>
+		<dict>
+			<key>listHeaderBackgroundColor</key>
+			<string>#1c1c1c</string>
+			<key>listTextColor</key>
+			<string>#dddddd</string>
+			<key>listSecondaryTextColor</key>
+			<string>#808080</string>
+			<key>listBackgroundColor</key>
+			<string>#151515</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#333333</string>
+			<key>listSeparatorColor</key>
+			<string>#262626</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>navigationBarTintColor</key>
+			<string>#002e64</string>
+			<key>tabBarBackgroundColor</key>
+			<string>#151515</string>
+			<key>toolbarTextColor</key>
+			<string>#ffffff</string>
+			<key>toolbarTintColor</key>
+			<string>#1a1a1a</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#060606</string>
+			<key>postsPullForNextColor</key>
+			<string>#8e8e8e</string>
+			<key>postsTopBarTextColor</key>
+			<string>#eeeeee</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#00234a</string>
+			<key>postsTweetTheme</key>
+			<string>dark</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-alternate-dark.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTitleColor</key>
+			<string>#ffffff</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTextColor</key>
+			<string>#ffffff</string>
+			<key>sheetDimColor</key>
+			<string>#202020f2</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#151515</string>
+			<key>tagPickerTextColor</key>
+			<string>#dddddd</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#006ae3</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#bebebe</string>
+		</dict>
+	</dict>
+	<key>oledDark</key>
+	<dict>
+		<key>description</key>
+		<string>Dark</string>
+		<key>descriptiveColor</key>
+		<string>#000000</string>
+		<key>descriptiveName</key>
+		<string>OLED Dark</string>
+		<key>tintColor</key>
+		<string>#005ad3</string>
+		<key>backgroundColor</key>
+		<string>#000000</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Light</string>
+		<key>keyboardAppearance</key>
+		<string>Dark</string>
+		<key>actionIconTintColor</key>
+		<string>#006ae3</string>
+		<key>placeholderTextColor</key>
+		<string>#666666</string>
+		<key>settingsSwitchColor</key>
+		<string>#237733</string>
+		<key>Lists</key>
+		<dict>
+			<key>listHeaderBackgroundColor</key>
+			<string>#1c1c1c</string>
+			<key>listTextColor</key>
+			<string>#dddddd</string>
+			<key>listSecondaryTextColor</key>
+			<string>#808080</string>
+			<key>listBackgroundColor</key>
+			<string>#000000</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#333333</string>
+			<key>listSeparatorColor</key>
+			<string>#262626</string>
+			<key>threadListPageIconColor</key>
+			<string>#808080e5</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>bottomBarTopBorderColor</key>
+			<string>#555555</string>
+			<key>navigationBarShadowOpacity</key>
+			<integer>0</integer>
+			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>navigationBarTintColor</key>
+			<string>#000000</string>
+			<key>tabBarBackgroundColor</key>
+			<string>#000000</string>
+			<key>tabBarIsTranslucent</key>
+			<false/>
+			<key>toolbarTextColor</key>
+			<string>#ffffff</string>
+			<key>toolbarTintColor</key>
+			<string>#000000</string>
+			<key>topBarBottomBorderColor</key>
+			<string>#555555</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#000000</string>
+			<key>postsPullForNextColor</key>
+			<string>#8e8e8e</string>
+			<key>postsTopBarTextColor</key>
+			<string>#eeeeee</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#000000</string>
+			<key>postsTweetTheme</key>
+			<string>dark</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-oled-dark.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTitleColor</key>
+			<string>#ffffff</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTextColor</key>
+			<string>#ffffff</string>
+			<key>sheetDimColor</key>
+			<string>#202020f2</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#151515</string>
+			<key>tagPickerTextColor</key>
+			<string>#dddddd</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#006ae3</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#bebebe</string>
+		</dict>
+	</dict>
 	<key>FYAD</key>
 	<dict>
 		<key>relevantForumID</key>
@@ -252,6 +557,8 @@
 			<key>copyURLIconColor</key>
 			<string>#834e83</string>
 			<key>editPostIconColor</key>
+			<string>#834e83</string>
+			<key>ignoreUserIconColor</key>
 			<string>#834e83</string>
 			<key>jumpToFirstPageIconColor</key>
 			<string>#834e83</string>
@@ -272,6 +579,8 @@
 			<key>sendPMIconColor</key>
 			<string>#834e83</string>
 			<key>singleUserIconColor</key>
+			<string>#834e83</string>
+			<key>unignoreUserIconColor</key>
 			<string>#834e83</string>
 			<key>voteIconColor</key>
 			<string>#834e83</string>
@@ -327,6 +636,8 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#68cc24</string>
+		<key>threadListPageIconColor</key>
+		<string>#000000</string>
 		<key>postsLoadingViewTintColor</key>
 		<string>#159933</string>
 		<key>postsViewCSS</key>
@@ -344,6 +655,8 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#888888</string>
+		<key>threadListPageIconColor</key>
+		<string>#000000</string>
 		<key>postsLoadingViewType</key>
 		<string>Macinyos</string>
 		<key>postsViewCSS</key>
@@ -361,6 +674,8 @@
 		<string>#000000</string>
 		<key>listBackgroundColor</key>
 		<string>#107f7f</string>
+		<key>threadListPageIconColor</key>
+		<string>#000000</string>
 		<key>postsLoadingViewType</key>
 		<string>Winpos95</string>
 		<key>postsViewCSS</key>
@@ -386,6 +701,8 @@
 			<string>#57FF57</string>
 			<key>editPostIconColor</key>
 			<string>#57FF57</string>
+			<key>ignoreUserIconColor</key>
+			<string>#57FF57</string>
 			<key>jumpToFirstPageIconColor</key>
 			<string>#57FF57</string>
 			<key>jumpToLastPageIconColor</key>
@@ -406,13 +723,15 @@
 			<string>#57FF57</string>
 			<key>singleUserIconColor</key>
 			<string>#57FF57</string>
+			<key>unignoreUserIconColor</key>
+			<string>#57FF57</string>
 			<key>voteIconColor</key>
 			<string>#57FF57</string>
 		</dict>
 		<key>Lists</key>
 		<dict>
 			<key>listSecondaryTextColor</key>
-			<string>#57FF57</string>
+			<string>#57ff57</string>
 			<key>listFontName</key>
 			<string>Courier</string>
 			<key>listBackgroundColor</key>
@@ -420,7 +739,9 @@
 			<key>listSelectedBackgroundColor</key>
 			<string>#333333</string>
 			<key>listTextColor</key>
-			<string>#57FF57</string>
+			<string>#57ff57</string>
+			<key>threadListPageIconColor</key>
+			<string>#57ff57</string>
 		</dict>
 		<key>Posts</key>
 		<dict>
@@ -462,6 +783,8 @@
 		<string>Amber console</string>
 		<key>descriptiveColor</key>
 		<string>#ebd04b</string>
+		<key>descriptiveName</key>
+		<string>Amberpos</string>
 		<key>Action icons</key>
 		<dict>
 			<key>addBookmarkIconColor</key>
@@ -469,6 +792,8 @@
 			<key>copyURLIconColor</key>
 			<string>#ebd04b</string>
 			<key>editPostIconColor</key>
+			<string>#ebd04b</string>
+			<key>ignoreUserIconColor</key>
 			<string>#ebd04b</string>
 			<key>jumpToFirstPageIconColor</key>
 			<string>#ebd04b</string>
@@ -490,6 +815,8 @@
 			<string>#ebd04b</string>
 			<key>singleUserIconColor</key>
 			<string>#ebd04b</string>
+			<key>unignoreUserIconColor</key>
+			<string>#ebd04b</string>
 			<key>voteIconColor</key>
 			<string>#ebd04b</string>
 		</dict>
@@ -500,6 +827,8 @@
 			<key>listSecondaryTextColor</key>
 			<string>#ebd04b</string>
 			<key>listTextColor</key>
+			<string>#ebd04b</string>
+			<key>threadListPageIconColor</key>
 			<string>#ebd04b</string>
 		</dict>
 		<key>Posts</key>

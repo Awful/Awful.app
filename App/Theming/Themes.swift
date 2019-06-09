@@ -21,19 +21,42 @@ import UIKit
 
     The theme named "default" is special: it is the parent of all themes that do not specify a parent. It's the root theme. All themes eventually point back to the default theme.
 */
-@objc final class Theme: NSObject, Comparable {
+final class Theme {
     let name: String
-    private let dictionary: [String: AnyObject]
-    private var parent: Theme?
+    fileprivate let dictionary: [String: Any]
+    fileprivate var parent: Theme?
     
-    private init(name: String, dictionary: [String: AnyObject]) {
+    fileprivate init(name: String, dictionary: [String: Any]) {
         self.name = name
         self.dictionary = flatten(dictionary)
     }
-    
+
+    enum Mode: CaseIterable, Hashable {
+        case light, dark
+    }
+}
+
+private func flatten<K, V>(_ dictionary: [K: V]) -> [K: V] {
+    return dictionary.reduce([:]) { (accum, kvpair) in
+        var accum = accum
+        if let nested = kvpair.1 as? [K: V] {
+            for (k, v) in flatten(nested) {
+                accum[k] = v
+            }
+        } else {
+            accum[kvpair.0] = kvpair.1
+        }
+        return accum
+    }
+}
+
+// MARK: Dictionary accessors
+
+extension Theme {
+
     /// The name of the theme, suitable for presentation.
     var descriptiveName: String {
-        return (dictionary["descriptiveName"] as! String?) ?? name
+        return dictionary["descriptiveName"] as? String ?? name
     }
     
     /// A color representative of the theme, suitable for presentation.
@@ -48,173 +71,253 @@ import UIKit
     
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
     var keyboardAppearance: UIKeyboardAppearance {
-        let appearance = (dictionary["keyboardAppearance"] as! String?) ?? parent?["keyboardAppearance"] ?? "default"
+        let appearance = dictionary["keyboardAppearance"] as? String
+            ?? parent?["keyboardAppearance"]
+            ?? "default"
+
         switch appearance {
         case "Dark", "dark":
-            return .Dark
+            return .dark
         case "Light", "light":
-            return .Light
+            return .light
         case "default":
-            return .Default
+            return .default
         default:
             fatalError("Unrecognized keyboard appearance: \(appearance) (in theme \(name)")
         }
     }
     
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
-    var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
-        if let style = (dictionary["scrollIndicatorStyle"] as! String?) ?? parent?["scrollIndicatorStyle"] {
-            switch style {
-            case "Dark", "dark":
-                return .Black
-            case "Light", "light":
-                return .White
-            default:
-                fatalError("Unrecognized scroll indicator style: \(style) (in theme \(name))")
-            }
-        } else {
-            return .Default
+    var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
+        guard let style = dictionary["scrollIndicatorStyle"] as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
+
+        switch style {
+        case "Dark", "dark":
+            return .black
+        case "Light", "light":
+            return .white
+        default:
+            fatalError("Unrecognized scroll indicator style: \(style) (in theme \(name))")
         }
     }
-    
+
+    subscript(bool key: String) -> Bool? {
+        return dictionary[key] as? Bool ?? parent?[bool: key]
+    }
+
     /// The named color (the "Color" suffix is optional).
-    subscript(colorName: String) -> UIColor? {
-        @objc(colorNamed:) get {
-            let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
-            if let value = dictionary[key] as? String {
-                if let hexColor = UIColor.fromHex(value) {
-                    return hexColor
-                } else if let patternImage = UIImage(named: value) {
-                    return UIColor(patternImage: patternImage)
-                } else {
-                    fatalError("Unrecognized theme attribute color: \(value) (in theme \(name), for key \(colorName)")
-                }
-            } else {
-                return parent?[key]
-            }
+    subscript(color colorName: String) -> UIColor? {
+        let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
+        guard let value = dictionary[key] as? String else { return parent?[key] }
+
+        if let hexColor = UIColor(hex: value) {
+            return hexColor
+        }
+        else if let patternImage = UIImage(named: value) {
+            return UIColor(patternImage: patternImage)
+        }
+        else {
+            fatalError("Unrecognized theme attribute color: \(value) (in theme \(name), for key \(colorName)")
         }
     }
-    
+
+    /**
+     The named color (the "Color" suffix in the key is optional).
+
+     - Note: If type inference is leading you to do things like `theme["coolKey"] as UIColor?`, consider `theme[color: "coolKey"]` instead.
+     */
+    subscript(colorName: String) -> UIColor? {
+        return self[color: colorName]
+    }
+
+    subscript(double key: String) -> Double? {
+        return dictionary[key] as? Double ?? parent?[double: key]
+    }
+
     /// The named theme attribute as a string.
+    subscript(string key: String) -> String? {
+        guard let value = dictionary[key] as? String ?? parent?[key] else { return nil }
+        if key.hasSuffix("CSS") {
+            guard let url = Bundle.main.url(forResource: value, withExtension: nil) else {
+                fatalError("Missing CSS file for \(key): \(value)")
+            }
+
+            do {
+                return try String(contentsOf: url, encoding: .utf8)
+            }
+            catch {
+                fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)): \(error)")
+            }
+        }
+        else {
+            return value
+        }
+    }
+
+    /**
+     The named theme attribute as a string.
+
+     - Note: If type inference is leading you to do things like `theme["coolKey"] as String?`, consider `theme[string: "coolKey"]` instead.
+     */
     subscript(key: String) -> String? {
-        @objc(stringNamed:) get {
-            if let value = (dictionary[key] as! String?) ?? parent?[key] {
-                if key.hasSuffix("CSS") {
-                    let URL = NSBundle.mainBundle().URLForResource(value, withExtension: nil)!
-                    var CSS = NSString()
-                    do {
-                        try CSS = NSString(contentsOfURL: URL, usedEncoding: nil)
-                    }
-                    catch {
-                        fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)")
-                    }
-                    return CSS as String
-                } else {
-                    return value
-                }
+        return self[string: key]
+    }
+}
+
+// MARK: - Comparable
+
+extension Theme: Comparable {
+    static func == (lhs: Theme, rhs: Theme) -> Bool {
+        return lhs === rhs
+    }
+
+    static func < (lhs: Theme, rhs: Theme) -> Bool {
+        func givePriority(to name: String) -> Bool? {
+            if lhs.name == name {
+                return rhs.name != name
+            } else if rhs.name == name {
+                return false
             } else {
                 return nil
             }
         }
-    }
-    
-    /// A subscript accessible to Objective-C.
-    subscript(key: String) -> AnyObject? {
-        if key.hasSuffix("Color") {
-            return self[key] as UIColor?
-        } else {
-            return self[key] as String?
-        }
+
+        return givePriority(to: "default")
+            ?? givePriority(to: "dark")
+            ?? givePriority(to: "alternateDefault")
+            ?? givePriority(to: "alternateDark")
+            ?? givePriority(to: "oledDark")
+            ?? (lhs.descriptiveName < rhs.descriptiveName)
     }
 }
 
-func == (lhs: Theme, rhs: Theme) -> Bool {
-    return lhs === rhs
-}
-
-/// Themes are ordered: default, dark, <rest sorted by name>
-func < (lhs: Theme, rhs: Theme) -> Bool {
-    if lhs.name == "default" {
-        return rhs.name != "default"
-    } else if rhs.name == "default" {
-        return false
-    }
-    
-    if lhs.name == "dark" {
-        return rhs.name != "dark"
-    } else if rhs.name == "dark" {
-        return false
-    }
-    
-    return lhs.name < rhs.name
-}
-
-private func flatten<K, V>(dictionary: [K: V]) -> [K: V] {
-    return dictionary.reduce([:]) { (accum, kvpair) in
-        var accum = accum
-        if let nested = kvpair.1 as? [K: V] {
-            for (k, v) in flatten(nested) {
-                accum[k] = v
-            }
-        } else {
-            accum[kvpair.0] = kvpair.1
-        }
-        return accum
-    }
-}
+// MARK: - Bundled themes
 
 private let bundledThemes: [String: Theme] = {
-    let URL = NSBundle.mainBundle().URLForResource("Themes", withExtension: "plist")!
-    let plist = NSDictionary(contentsOfURL: URL) as! [String: AnyObject]
-    
+    let URL = Bundle.main.url(forResource: "Themes", withExtension: "plist")!
+    let plist = NSDictionary(contentsOf: URL) as! [String: Any]
+
     var themes = [String: Theme]()
-    
+
     for (name, dictionary) in plist {
-        themes[name] = Theme(name: name, dictionary: dictionary as! [String: AnyObject])
+        themes[name] = Theme(name: name, dictionary: dictionary as! [String: Any])
     }
-    
+
     for (name, var theme) in themes {
         if name != "default" {
             let parentName = theme.dictionary["parent"] as? String ?? "default"
             theme.parent = themes[parentName]!
         }
     }
-    
+
     return themes
 }()
 
-// MARK: Themes based on forums and preferences
+extension Theme {
+    static func theme(named themeName: String) -> Theme? {
+        return bundledThemes.values.first { $0.name == themeName }
+    }
+
+    static func theme(describedAs description: String) -> Theme? {
+        return bundledThemes.values.first { $0.descriptiveName == description }
+    }
+}
+
+// MARK: - Getting themes with settings
 
 extension Theme {
-    class var defaultTheme: Theme {
-        return bundledThemes["default"]!
-    }
-    
-    class var currentTheme: Theme {
-        if AwfulSettings.sharedSettings().darkTheme {
-            return bundledThemes["dark"]!
-        } else {
-            return defaultTheme
+    static func defaultTheme(mode: Mode = currentMode) -> Theme {
+        let themeName: String
+        switch mode {
+        case .dark:
+            themeName = UserDefaults.standard.defaultDarkTheme
+        case .light:
+            themeName = UserDefaults.standard.defaultLightTheme
         }
+        return bundledThemes[themeName]!
     }
-    
+
     class var allThemes: [Theme] {
-        return bundledThemes.values.sort()
+        return bundledThemes.values.sorted()
+    }
+
+    private static var currentMode: Mode {
+        return UserDefaults.standard.isDarkModeEnabled ? .dark : .light
     }
     
-    class func currentThemeForForum(forum: Forum) -> Theme {
-        if let name = AwfulSettings.sharedSettings().themeNameForForumID(forum.forumID) {
-            return bundledThemes[name]!
+    static func currentTheme(for forum: Forum, mode: Mode = currentMode) -> Theme {
+        if let themeName = themeNameForForum(identifiedBy: forum.forumID, mode: mode) {
+            return bundledThemes[themeName]!
         } else {
-            return currentTheme
+            return defaultTheme(mode: mode)
         }
     }
     
-    class func themesForForum(forum: Forum) -> [Theme] {
-        let ubiquitousNames = AwfulSettings.sharedSettings().ubiquitousThemeNames as! [String]? ?? []
-        let themes = bundledThemes.values.filter {
-            $0.forumID == forum.forumID || $0.forumID == nil || ubiquitousNames.contains($0.name)
+    private static func themeNameForForum(identifiedBy forumID: String, mode: Mode) -> String? {
+        return UserDefaults.standard.string(forKey: defaultsKeyForForum(identifiedBy: forumID, mode: mode))
+    }
+    
+    /// Posts `Themes.themeForForumDidChangeNotification`.
+    static func setThemeName(_ themeName: String?, forForumIdentifiedBy forumID: String, modes: Set<Mode>) {
+        for mode in modes {
+            UserDefaults.standard.set(themeName, forKey: defaultsKeyForForum(identifiedBy: forumID, mode: mode))
         }
-        return themes.sort()
+        
+        var userInfo = [Theme.forumIDKey: forumID]
+        if let themeName = themeName {
+            userInfo[Theme.themeNameKey] = themeName
+        }
+        NotificationCenter.default.post(name: Theme.themeForForumDidChangeNotification, object: self, userInfo: userInfo)
+    }
+
+    static func defaultsKeyForForum(identifiedBy forumID: String, mode: Mode) -> String {
+        switch mode {
+        case .light:
+            return "theme-light-\(forumID)"
+        case .dark:
+            return "theme-dark-\(forumID)"
+        }
+    }
+
+    static var forumsWithSpecificThemes: Set<String> {
+        func extractForumID(_ key: String) -> String? {
+            let components = key.split(separator: "-")
+            guard
+                components.count == 3,
+                components[0] == "theme",
+                ["light", "dark"].contains(components[1]),
+                Int(components[2]) != nil
+                else { return nil }
+            return String(components[2])
+        }
+        return Set(UserDefaults.standard
+            .dictionaryRepresentation().keys
+            .compactMap(extractForumID(_:)))
+    }
+    
+    /**
+     Posted when `Theme.setThemeName(_:forForumIdentifiedBy:)` is called. The notification object is the `Theme` class itself. The user info dictionary always includes a value for `Theme.forumIDKey`, and it includes a value for `Theme.themeNameKey` if a theme name was specified.
+     */
+    static var themeForForumDidChangeNotification: Notification.Name {
+        return Notification.Name("Awful theme for forum did change")
+    }
+    
+    static let forumIDKey = "forumID"
+    static let themeNameKey = "themeName"
+}
+
+extension Theme {
+    static var forumSpecificDefaults: [String: Any] {
+        let modeless = [
+            "25": "Gas Chamber",
+            "26": "FYAD",
+            "219": "YOSPOS",
+            "268": "BYOB"]
+        var altogether: [String: Any] = [:]
+        for (forumID, themeName) in modeless {
+            altogether["theme-dark-\(forumID)"] = themeName
+            altogether["theme-light-\(forumID)"] = themeName
+        }
+        return altogether
     }
 }

@@ -6,68 +6,69 @@ import AwfulCore
 import UIKit
 
 extension InAppActionViewController {
-    convenience init(thread: Thread, presentingViewController viewController: UIViewController) {
+    convenience init(thread: AwfulThread, presentingViewController viewController: UIViewController) {
         self.init()
         
         var items = [IconActionItem]()
         
-        func jumpToPageItem(itemType: IconAction) -> IconActionItem {
+        func jumpToPageItem(_ itemType: IconAction) -> IconActionItem {
             return IconActionItem(itemType) {
                 let postsViewController = PostsPageViewController(thread: thread)
                 postsViewController.restorationIdentifier = "Posts"
-                let page = itemType == .JumpToLastPage ? AwfulThreadPage.Last.rawValue : 1
+                let page = itemType == .jumpToLastPage ? ThreadPage.last : .first
                 postsViewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
                 viewController.showDetailViewController(postsViewController, sender: self)
             }
         }
-        items.append(jumpToPageItem(.JumpToFirstPage))
-        items.append(jumpToPageItem(.JumpToLastPage))
+        items.append(jumpToPageItem(.jumpToFirstPage))
+        items.append(jumpToPageItem(.jumpToLastPage))
         
-        let bookmarkItemType: IconAction = thread.bookmarked ? .RemoveBookmark : .AddBookmark
+        let bookmarkItemType: IconAction = thread.bookmarked ? .removeBookmark : .addBookmark
         items.append(IconActionItem(bookmarkItemType) { [weak viewController] in
-            AwfulForumsClient.sharedClient().setThread(thread, isBookmarked: !thread.bookmarked) { error in
-                if let error = error {
-                    let alert = UIAlertController(networkError: error, handler: nil)
-                    viewController?.presentViewController(alert, animated: true, completion: nil)
-                }
+            _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
+            .catch { (error) -> Void in
+                let alert = UIAlertController(networkError: error)
+                viewController?.present(alert, animated: true)
             }
-            return // hooray for implicit return
             })
         
         if let author = thread.author {
-            items.append(IconActionItem(.UserProfile) {
+            items.append(IconActionItem(.userProfile) {
                 let profile = ProfileViewController(user: author)
-                if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-                    viewController.presentViewController(profile.enclosingNavigationController, animated: true, completion: nil)
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    viewController.present(profile.enclosingNavigationController, animated: true)
                 } else {
                     viewController.navigationController?.pushViewController(profile, animated: true)
                 }
                 })
         }
         
-        items.append(IconActionItem(.CopyURL) {
-            if let URL = NSURL(string: "https://forums.somethingawful.com/showthread.php?threadid=\(thread.threadID)") {
-                AwfulSettings.sharedSettings().lastOfferedPasteboardURL = URL.absoluteString
-                UIPasteboard.generalPasteboard().awful_URL = URL
+        items.append(IconActionItem(.copyURL) {
+            if let url = URL(string: "https://forums.somethingawful.com/showthread.php?threadid=\(thread.threadID)") {
+                UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
+                UIPasteboard.general.coercedURL = url
             }
             })
         
+        items.append(IconActionItem(.copyTitle) {
+            UIPasteboard.general.string = thread.title
+        })
+        
         if thread.beenSeen {
-            items.append(IconActionItem(.MarkAsUnread) { [weak viewController] in
+            items.append(IconActionItem(.markAsUnread) { [weak viewController] in
                 let oldSeen = thread.seenPosts
                 thread.seenPosts = 0
-                AwfulForumsClient.sharedClient().markThreadUnread(thread) { error in
-                    if let error = error {
+                _ = ForumsClient.shared.markUnread(thread)
+                    .catch { (error) -> Void in
                         if thread.seenPosts == 0 {
                             thread.seenPosts = oldSeen
                         }
-                        let alert = UIAlertController(networkError: error, handler: nil)
-                        viewController?.presentViewController(alert, animated: true, completion: nil)
-                    }
+                        let alert = UIAlertController(networkError: error)
+                        viewController?.present(alert, animated: true)
                 }
-                })
+            })
         }
-        
+
         self.items = items
     }
 }

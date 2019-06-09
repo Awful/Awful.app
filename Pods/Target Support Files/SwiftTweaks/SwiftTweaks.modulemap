@@ -1,0 +1,6 @@
+framework module SwiftTweaks {
+  umbrella header "SwiftTweaks-umbrella.h"
+
+  export *
+  module * { export * }
+}

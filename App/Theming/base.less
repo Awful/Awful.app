@@ -5,14 +5,21 @@
 // The body has the .iphone class on iPhones; .ipad on iPads.
 
 body {
+  // Prevents a grey overlay when tapping below the bottom of the "end of thread" element. Particularly annoying when there's less than a screenful of posts to show.
+  min-height: 100vh;
+
   font: -apple-system-body;
+
   margin: 0;
-  
+
   // Maintain text size on orientation change.
   -webkit-text-size-adjust: 100%;
-  
-  // Hide UIWebView's long-tap link menu.
+
+  // Hide the web view's long-tap link menu.
   -webkit-touch-callout: none;
+
+  // Skip the double-tap delay: https://webkit.org/blog/5610/more-responsive-tapping-on-ios/
+  touch-action: manipulation;
 }
 
 // Don't break tables with text, images, or videos.
@@ -27,7 +34,7 @@ body {
 
 // The action sheet code highlights the <header>, <footer>, and .action-button elements. Padding on those elements is included in the highlight but margin is not. So prefer pading the <header> and <footer> over setting a margin on the <post>.
 .post-side-padding(@padding) {
-  
+
   // Spelled out with -left and -right so padding can be individually overridden later.
   header, .postbody {
     padding-left: @padding;
@@ -43,17 +50,17 @@ body {
 
 post {
   display: block;
-  
+
   .iphone & {
     .post-side-padding(0.6em);
   }
   .ipad & {
     .post-side-padding(1.07em);
   }
-  
+
   border-top: 1px solid;
   border-bottom: 1px solid;
-  
+
   .spacer(@height) {
     margin-top: @height;
     &:first-child {
@@ -66,26 +73,22 @@ post {
 header {
   padding-top: 0.75em;
   padding-bottom: 0.7em;
-  
+
   .ipad & {
     padding-top: 1.22em;
-/*    padding-bottom: 0.7em;*/
   }
-  
-  .clearfix() {
-    &:after {
-      content: "";
-      display: block;
-      clear: both;
-    }
+
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
   }
-  .clearfix();
 }
 
 .avatar {
   display: inline-block;
   vertical-align: middle;
-  
+
   .constrain-size(@width) {
     max-width: @width;
     max-height: @width;
@@ -105,6 +108,9 @@ header {
 
 .username {
   margin: 0 0 2px;
+
+  // Prevent obnoxiously-long single-word usernames from breaking things.
+  word-break: break-all;
 }
 
 .postdate {
@@ -125,43 +131,39 @@ header {
   display: inline-block;
   font-size: 1.1em;
   font-weight: 500;
-  
-  &:before {
-  	margin-right: .25em;
-  }
-  
+
   .role-admin &:before {
     color: #990011;
-  }  
+  }
   .role-mod &:before {
     color: #006699;
   }
-   
+
   .role-admin &:before,
   .role-mod &:before {
-    content: '★'; 
+    content: '★';
   }
-  
+
   .op & {
     color: #199ed7;
   }
-  
+
   /* Peta's 3D username */
   .userid-182864 & {
   	color: rgba(0, 0, 0, 0.5);
 	text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
   }
-  
+
 	/*  Platinum users */
 
 	.platinum &:before {
 		background-image: url('awful-resource://platinum-member.png');
 		content: "";
-		background-size: 12px 15px;
-		width: 12px;
-		height: 15px;
+		background-size: 20px;
+		width: 22px;
+		height: 20px;
 		display: inline-block;
-		vertical-align: middle;
+		vertical-align: top;
 	}
 
 	.coder &:before {
@@ -193,11 +195,11 @@ header {
   font-family: inherit; // UIWebView base style hardcodes Helvetica.
   -webkit-tap-highlight-color: transparent;
   background-color: transparent;
-  
+
   img {
     width: 24px;
     height: 8px;
-  } 
+  }
 }
 
 .tint-black-template-image-gray(@color) {
@@ -214,7 +216,7 @@ header {
 // We don't generally control the markup in the post body, so tread carefully.
 
 // Hide UIWebView's long-tap image menu.
-.postbody img {
+.postbody img, #fyad-flag {
   -webkit-user-select: none;
 }
 
@@ -222,28 +224,33 @@ header {
 // h4 is "pokeyman posted:" above a quote.
 // h5 is "code" above a code block.
 .bbc-block {
-  
+
   border-left: 2px solid #999;
-  font-size: 82%; 
+  font-size: 82%;
   margin: 5px 0;
   padding: 0 10px 5px;
 
-  
+
   .ipad & {
     margin: 0 10px 1em 10px;
   }
-  
+
   h4 {
     margin: 0;
     padding: 1px 0px 2px;
     font-weight: bold;
+
+    & span.mention.highlight {
+      color: #7409a0;
+      border-color: #7409a0;
+    }
   }
-  
+
   h5 {
     margin: 0;
   }
-  
-  &.mention, &.mention h4 a {
+
+  &.mention.highlight, &.mention.highlight h4 a {
     color: #7409a0;
     border-color: #7409a0;
   }
@@ -251,10 +258,10 @@ header {
 
 code, pre, tt {
 	font-family: menlo;
-	font-size:.9em; 
+	font-size: 0.9em;
 }
 
-span.mention {
+span.mention.highlight {
   color: #7409a0;
 }
 
@@ -263,13 +270,15 @@ span.mention {
   text-decoration: none;
 }
 
-// Make linkified images look like links.
+// Make linkified images look and act like links.
 [data-awful-linkified-image] {
+  cursor: pointer;
   text-decoration: underline;
 }
 
-.gifWrap.overlay {
-	position:relative;
+.gif-wrap {
+  cursor: pointer; // enable delegated click event
+	position: relative;
 	display: inline-block;
 	&:before {
 		content: "GIF";
@@ -293,20 +302,29 @@ span.mention {
 		border-radius: .125em;
 		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
   }
-}
-.gifWrap.overlay.loading:before {
-	  background-image: url('awful-resource://spinner-button.png');
-}
-.gifWrap.overlay.playing:before {
+
+  &.loading:before {
+    background-image: url('awful-resource://spinner-button.png');
+  }
+
+  &.playing:before {
 	  display: none;
+  }
+
+  // Hide GIF play button when image is behind spoiler tags.
+  .bbc-spoiler:not(.spoiled) & {
+    visibility: hidden;
+  }
+}
+.gif-wrap {
+  & + br, & + br + br {
+  	display: none;
+  }
 }
 
-.gifWrap + br, .gifWrap + br + br {
-	display: none;
-}
 blockquote {
   margin: 0;
-  
+
   // Shrink quoted images. You can always long-tap to see the real thing.
   img {
     max-width: 160px;
@@ -353,7 +371,7 @@ blockquote {
 footer {
   display: -webkit-flex;
   -webkit-align-items: center;
-  
+
   &:after {
     content: "";
     display: block;
@@ -364,10 +382,10 @@ footer {
 #fyad-flag {
   width: 100%;
   height: 102px;
-  
+
   img {
     border: 1px solid black;
-    
+
     .ipad & {
       display: block;
       margin: 0 auto;
@@ -377,16 +395,16 @@ footer {
 
 #ad {
   text-align: center;
-  
+
   img {
     max-width: 100%;
   }
-  
+
   .iphone & {
     padding: .6em;
     padding-bottom: 0;
   }
-  
+
   .ipad & {
     padding: 1.07em;
     padding-bottom: 0;
@@ -398,6 +416,7 @@ footer {
   text-align: center;
   line-height: 1;
   margin-bottom: 10px;
+  -webkit-user-select: none;
 }
 
 .voiceover-only {
@@ -410,3 +429,26 @@ footer {
 header, footer {
   -webkit-user-select: none;
 }
+
+// Enable delegated click events.
+header {
+  img.avatar, section.nameanddate {
+    cursor: pointer;
+  }
+}
+.bbc-spoiler {
+  cursor: pointer;
+}
+footer button.action-button {
+  cursor: pointer;
+}
+
+// Handle iPhone X notch.
+post, #ad, #end {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  // env() was constant() before iOS 11.3.
+  padding-left: constant(safe-area-inset-left);
+  padding-right: constant(safe-area-inset-right);
+}
+

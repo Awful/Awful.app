@@ -1,0 +1,6 @@
+framework module ImgurAnonymousAPI {
+  umbrella header "ImgurAnonymousAPI-umbrella.h"
+
+  export *
+  module * { export * }
+}

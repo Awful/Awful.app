@@ -28,7 +28,7 @@
 
 - (void)testSubresourceData
 {
-    NSURL *URL = [NSURL URLWithString:@"http://i.somethingawful.com/forumsystem/emoticons/emot-backtowork.gif"];
+    NSURL *URL = [NSURL URLWithString:@"https://i.somethingawful.com/forumsystem/emoticons/emot-backtowork.gif"];
     NSData *scallopData = [self.archive dataForSubresourceWithURL:URL];
     char header[4] = {0};
     [scallopData getBytes:header length:3];

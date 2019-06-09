@@ -22,7 +22,7 @@
 		<key>8DEBCDEA-BEBA-4524-8795-EE332E1B1B01</key>
 		<string>../../..</string>
 		<key>98A936E2-06A0-4DC5-B648-A78E9DAFA88F</key>
-		<string>../../../Resources/Thread Tags</string>
+		<string>../../../App/Resources/Thread Tags</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/Awful/Awful.app.git</string>

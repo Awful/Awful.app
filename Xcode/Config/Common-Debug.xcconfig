@@ -1,0 +1,20 @@
+// This .xcconfig is included at the project level in the Debug build configuration.
+
+// Anything shared by multiple build configurations should go in the common config.
+#include "Common.xcconfig"
+
+COPY_PHASE_STRIP = NO
+
+ENABLE_TESTABILITY = YES
+
+GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1
+GCC_OPTIMIZATION_LEVEL = 0
+
+ONLY_ACTIVE_ARCH = YES
+
+OTHER_CFLAGS = -ftrapv
+
+STRIP_INSTALLED_PRODUCT = NO
+
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
+SWIFT_OPTIMIZATION_LEVEL = -Onone

@@ -1,12 +1,15 @@
-# Big, pointless HTMLReader cruft.
-/Carthage/Checkouts/HTMLReader/Tests/html5lib
+# Build script working folder
+/build.noindex/
 
-# App Group and Entitlements private or auto-generated files
-app-group
-/App/Awful.entitlements
-/Smilies/Keyboard/Keyboard.entitlements
+# Bundler local install
+/.bundle/
+/Vendor/bundle/
+
+# Local config for things that shouldn't be checked into a shared repo (see README.md for suggestions).
+/Local.entitlements
+/Local.xcconfig
 
 # OS X and Xcode junk
 .DS_Store
 xcuserdata
-Awful.xcworkspace/xcshareddata/Awful.xccheckout
+/Awful.xcworkspace/xcshareddata/Awful.xccheckout

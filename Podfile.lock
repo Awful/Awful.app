@@ -1,95 +1,129 @@
 PODS:
-  - AFNetworking (2.5.2):
-    - AFNetworking/NSURLConnection (= 2.5.2)
-    - AFNetworking/NSURLSession (= 2.5.2)
-    - AFNetworking/Reachability (= 2.5.2)
-    - AFNetworking/Security (= 2.5.2)
-    - AFNetworking/Serialization (= 2.5.2)
-    - AFNetworking/UIKit (= 2.5.2)
-  - AFNetworking/NSURLConnection (2.5.2):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.5.2):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.5.2)
-  - AFNetworking/Security (2.5.2)
-  - AFNetworking/Serialization (2.5.2)
-  - AFNetworking/UIKit (2.5.2):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
+  - 1PasswordExtension (1.8.4)
   - ARChromeActivity (1.0.6)
-  - FLAnimatedImage (1.0.2)
-  - GRMustache (7.3.2):
-    - JRSwizzle (~> 1.0)
-  - HTMLReader (0.8)
-  - ImgurAnonymousAPIClient (0.3.2):
-    - AFNetworking (>= 2.3.1)
-  - JLRoutes (1.5.1)
-  - JRSwizzle (1.0)
-  - KVOController (1.0.3)
-  - MRProgress/ActivityIndicator (0.8.0):
+  - Crashlytics (3.11.1):
+    - Fabric (~> 1.8.1)
+  - Fabric (1.8.2)
+  - FLAnimatedImage (1.0.12)
+  - HTMLReader (2.1)
+  - ImgurAnonymousAPI (1.0)
+  - KVOController (1.2.0)
+  - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
-  - MRProgress/Blur (0.8.0):
+  - MRProgress/Blur (0.8.3):
     - MRProgress/Helper
-  - MRProgress/Circular (0.8.0):
+  - MRProgress/Circular (0.8.3):
     - MRProgress/Helper
     - MRProgress/ProgressBaseClass
     - MRProgress/Stopable
-  - MRProgress/Helper (0.8.0)
-  - MRProgress/Icons (0.8.0)
-  - MRProgress/Overlay (0.8.0):
+  - MRProgress/Helper (0.8.3)
+  - MRProgress/Icons (0.8.3)
+  - MRProgress/Overlay (0.8.3):
     - MRProgress/ActivityIndicator
     - MRProgress/Blur
     - MRProgress/Circular
     - MRProgress/Helper
     - MRProgress/Icons
-  - MRProgress/ProgressBaseClass (0.8.0)
-  - MRProgress/Stopable (0.8.0):
+  - MRProgress/ProgressBaseClass (0.8.3)
+  - MRProgress/Stopable (0.8.3):
     - MRProgress/Helper
+  - Nuke (7.5.2)
+  - PathKit (0.9.2)
+  - PromiseKit (6.8.3):
+    - PromiseKit/CorePromise (= 6.8.3)
+    - PromiseKit/Foundation (= 6.8.3)
+    - PromiseKit/UIKit (= 6.8.3)
+  - PromiseKit/CorePromise (6.8.3)
+  - PromiseKit/Foundation (6.8.3):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (6.8.3):
+    - PromiseKit/CorePromise
   - PSMenuItem (1.0.0)
+  - PullToRefresher (2.0.2)
+  - Sourcery (0.15.0)
+  - Stencil (0.13.1):
+    - PathKit (~> 0.9.0)
+  - SwiftTweaks (4.0.2)
   - TUSafariActivity (1.0.4)
-  - WebViewJavascriptBridge (4.1.4)
 
 DEPENDENCIES:
-  - AFNetworking (= 2.5.2)
-  - ARChromeActivity (= 1.0.6)
-  - FLAnimatedImage (= 1.0.2)
-  - GRMustache (= 7.3.2)
-  - HTMLReader (= 0.8)
-  - ImgurAnonymousAPIClient (= 0.3.2)
-  - JLRoutes (= 1.5.1)
-  - KVOController (= 1.0.3)
-  - MRProgress/Overlay (= 0.8.0)
+  - 1PasswordExtension
+  - ARChromeActivity
+  - Crashlytics
+  - FLAnimatedImage
+  - HTMLReader
+  - ImgurAnonymousAPI
+  - KVOController
+  - MRProgress/Overlay
+  - Nuke
+  - PromiseKit
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
-  - TUSafariActivity (= 1.0.4)
-  - WebViewJavascriptBridge (= 4.1.4)
+  - PullToRefresher (from `https://github.com/MindSea/PullToRefresh`, branch `fix-simultaneous-access`)
+  - Sourcery
+  - Stencil
+  - SwiftTweaks (from `https://github.com/Khan/SwiftTweaks`, branch `master`)
+  - TUSafariActivity
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - 1PasswordExtension
+    - ARChromeActivity
+    - Crashlytics
+    - Fabric
+    - FLAnimatedImage
+    - HTMLReader
+    - ImgurAnonymousAPI
+    - KVOController
+    - MRProgress
+    - Nuke
+    - PathKit
+    - PromiseKit
+    - Sourcery
+    - Stencil
+    - TUSafariActivity
 
 EXTERNAL SOURCES:
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
+  PullToRefresher:
+    :branch: fix-simultaneous-access
+    :git: https://github.com/MindSea/PullToRefresh
+  SwiftTweaks:
+    :branch: master
+    :git: https://github.com/Khan/SwiftTweaks
 
 CHECKOUT OPTIONS:
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
+  PullToRefresher:
+    :commit: 087ec3fb5a2f7674f269b919299636d1959a4391
+    :git: https://github.com/MindSea/PullToRefresh
+  SwiftTweaks:
+    :commit: c1901a615177c3cc63319a4c900f8de69178d5e8
+    :git: https://github.com/Khan/SwiftTweaks
 
 SPEC CHECKSUMS:
-  AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
+  1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
-  FLAnimatedImage: 352065d63a011faade774ca3b833237785a59854
-  GRMustache: ebe6104fd30a6d22c1f36af131e19e2dbf7cd292
-  HTMLReader: b4d19899a242c02e1ce4a2308584fe2a6bcb6f6b
-  ImgurAnonymousAPIClient: d1887ebe11b64a44ede12928b101d1f1c0099c2b
-  JLRoutes: eececedd8c3f1f040209520f783e12049674416e
-  JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
-  KVOController: 9fd8f0343670994e4b6f9f0b31f5a45663f3e1cf
-  MRProgress: 43bed03f7a1919add87aa583678c8ea244c1cd0d
+  Crashlytics: ca7ab4bc304aa216bdc2e4c1a96389ee77252203
+  Fabric: d2b22f443ba195d8a7cc204da230977c72733b40
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  HTMLReader: dd75279b0532ff5d005ffe1c6512e33d1d52f861
+  ImgurAnonymousAPI: 018b22f420ce45dc805fe792f0c53a18934eaef3
+  KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
+  MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
+  Nuke: 0350d346a688426e8f2331253ef28dc2fc4f6178
+  PathKit: 273f59a38e3218eb95abd9f6a61730a8bcfd2f06
+  PromiseKit: 94c6e781838c5bf4717677d0d882b0e7250c80fc
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
+  PullToRefresher: 9d66e6a86fb9e1d8fa861c4bbd263e88f5dfc0bd
+  Sourcery: 5895672cae353cdbfa95f3f4aaeb75a664d76f6a
+  Stencil: b5128a0a43ece9225db5cbd94d6569fe6fba609b
+  SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
-  WebViewJavascriptBridge: f10ac16f2cd3adf2b941bd79477c55a8f6e01044
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: fa4bb722e2a5cf724bb3f9f482796a7c6081439c
+
+COCOAPODS: 1.6.1

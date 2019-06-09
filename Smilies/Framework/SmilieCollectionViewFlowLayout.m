@@ -66,7 +66,7 @@
     
     BOOL wasEditing = cell.editing;
     BOOL wasHighlighted = cell.highlighted;
-    CGFloat oldShadowOpacity = cell.layer.shadowOpacity;
+    float oldShadowOpacity = cell.layer.shadowOpacity;
     
     cell.highlighted = YES;
     cell.layer.shadowOpacity = 0;

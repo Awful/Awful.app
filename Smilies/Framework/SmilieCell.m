@@ -197,7 +197,7 @@
         
         CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"];
         animation.duration = 0.2;
-        CGFloat degrees = 1 + arc4random_uniform(500) / 500.0 + 0.5;
+        CGFloat degrees = (CGFloat)(1 + arc4random_uniform(500) / 500.0 + 0.5);
         
         // Randomize the start direction. It looks weird when all the cells rotate the same way.
         degrees *= arc4random_uniform(1) ? -1 : 1;

@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import argparse
+
+import submit
+
+parser = argparse.ArgumentParser(description="Upload a .ipa to App Store Connect")
+parser.add_argument('ipa_path', help="The .ipa to upload")
+parser.add_argument('--appleid', dest='apple_id_username', required=True,
+                    help="The Apple ID username to use for uploading")
+args = parser.parse_args()
+submit.upload_to_app_store(args.ipa_path, args.apple_id_username)

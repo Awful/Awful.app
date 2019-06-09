@@ -1,0 +1,8 @@
+// Build settings for the Awful app target in the Release configuration.
+
+#include "Application.xcconfig"
+#include "../../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful
+
+PRODUCT_NAME = Awful

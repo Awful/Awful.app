@@ -6,33 +6,33 @@
 public class ThreadTag: AwfulManagedObject {
     @NSManaged public var imageName: String?
     @NSManaged public var threadTagID: String?
-    
-    @NSManaged var forums: NSMutableSet /* AwfulForum via threadTags */
-    @NSManaged var messages: NSMutableSet /* PrivateMessage */
-    @NSManaged var secondaryForums: NSMutableSet /* AwfulForum via secondaryThreadTags */
-    @NSManaged var secondaryThreads: NSMutableSet /* AwfulThread via secondaryThreadTag */
-    @NSManaged var threads: NSMutableSet /* AwfulThread via threadTag */
+
+    @NSManaged var announcements: Set<Announcement>
+    @NSManaged var forums: Set<Forum> /* via threadTags */
+    @NSManaged var messages: Set<PrivateMessage>
+    @NSManaged var secondaryForums: Set<Forum> /* via secondaryThreadTags */
+    @NSManaged var secondaryThreads: Set<AwfulThread> /* via secondaryThreadTag */
+    @NSManaged var threads: Set<AwfulThread> /* via threadTag */
 }
 
 extension ThreadTag {
-    func setURL(URL: NSURL) {
-        imageName = imageNameFromURL(URL)
+    func setURL(url: URL) {
+        imageName = ThreadTag.imageName(from: url)
     }
-}
 
-private func imageNameFromURL(URL: NSURL) -> String {
-    // This silly casting works around an API change between Xcode 6.1 and Xcode 6.1.1, wherein NSURL.lastPathComponent went from returning `String` to returning `String?`. The cast allows compilation on either version.
-    return (URL.lastPathComponent as NSString!).stringByDeletingPathExtension
+    public static func imageName(from url: URL) -> String {
+        return url.deletingPathExtension().lastPathComponent
+    }
 }
 
 @objc(ThreadTagKey)
 public final class ThreadTagKey: AwfulObjectKey {
-    public let imageName: String?
-    public let threadTagID: String?
+    @objc public let imageName: String?
+    @objc public let threadTagID: String?
     
-    public init(imageName: String!, threadTagID: String!) {
-        let imageName = nilIfEmpty(imageName)
-        let threadTagID = nilIfEmpty(threadTagID)
+    @objc public init(imageName: String!, threadTagID: String!) {
+        let imageName = nilIfEmpty(s: imageName)
+        let threadTagID = nilIfEmpty(s: threadTagID)
         precondition(imageName != nil || threadTagID != nil)
         
         self.imageName = imageName
@@ -40,13 +40,13 @@ public final class ThreadTagKey: AwfulObjectKey {
         super.init(entityName: ThreadTag.entityName())
     }
     
-    public convenience init(imageURL: NSURL, threadTagID: String?) {
-        self.init(imageName: imageNameFromURL(imageURL), threadTagID: threadTagID)
+    @objc public convenience init(imageURL: URL, threadTagID: String?) {
+        self.init(imageName: ThreadTag.imageName(from: imageURL), threadTagID: threadTagID)
     }
     
     public required init?(coder: NSCoder) {
-        imageName = coder.decodeObjectForKey(imageNameKey) as! String?
-        threadTagID = coder.decodeObjectForKey(threadTagIDKey) as! String?
+        imageName = coder.decodeObject(forKey: imageNameKey) as! String?
+        threadTagID = coder.decodeObject(forKey: threadTagIDKey) as! String?
         super.init(coder: coder)
     }
     

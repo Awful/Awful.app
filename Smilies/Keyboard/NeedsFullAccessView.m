@@ -20,6 +20,7 @@
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTap:)];
     [self.textView addGestureRecognizer:self.tap];
 }

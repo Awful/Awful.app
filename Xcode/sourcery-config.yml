@@ -1,0 +1,8 @@
+project:
+  file: "Awful.xcodeproj"
+  target:
+    name: "Awful"
+templates:
+  - "../App/Sourcery"
+output:
+  "../App/Sourcery"

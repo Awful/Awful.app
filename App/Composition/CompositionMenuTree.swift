@@ -2,39 +2,43 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import MobileCoreServices
+import Photos
 import PSMenuItem
 import UIKit
+
+private let Log = Logger.get()
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 // This classes exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
 final class CompositionMenuTree: NSObject {
-    private let textView: UITextView
+    let textView: UITextView
     
     /// The textView's class will have some responder chain methods swizzled.
     init(textView: UITextView) {
         self.textView = textView
         super.init()
         
-        PSMenuItem.installMenuHandlerForObject(textView)
+        PSMenuItem.installMenuHandler(for: textView)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: UITextViewTextDidBeginEditingNotification, object: textView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(UITextViewDelegate.textViewDidEndEditing(_:)), name: UITextViewTextDidEndEditingNotification, object: textView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CompositionMenuTree.menuDidHide(_:)), name: UIMenuControllerDidHideMenuNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: UITextView.textDidBeginEditingNotification, object: textView)
+        NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidEndEditing(_:)), name: UITextView.textDidEndEditingNotification, object: textView)
+        NotificationCenter.default.addObserver(self, selector: #selector(CompositionMenuTree.menuDidHide(_:)), name: UIMenuController.didHideMenuNotification, object: nil)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
-    @objc private func textViewDidBeginEditing(note: NSNotification) {
+    @objc private func textViewDidBeginEditing(_ note: NSNotification) {
         popToRootItems()
     }
     
-    @objc private func textViewDidEndEditing(note: NSNotification) {
-        UIMenuController.sharedMenuController().menuItems = nil
+    @objc private func textViewDidEndEditing(_ note: NSNotification) {
+        UIMenuController.shared.menuItems = nil
     }
     
-    @objc private func menuDidHide(note: NSNotification) {
+    @objc private func menuDidHide(_ note: NSNotification) {
         if shouldPopWhenMenuHides && textView.window != nil {
             popToRootItems()
         }
@@ -46,63 +50,63 @@ final class CompositionMenuTree: NSObject {
         return textView.selectedRect ?? textView.bounds
     }
     
-    private func popToRootItems() {
-        UIMenuController.sharedMenuController().menuItems = psItemsForMenuItems(rootItems)
+    fileprivate func popToRootItems() {
+        UIMenuController.shared.menuItems = psItemsForMenuItems(items: rootItems)
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = false
     }
     
-    private func showSubmenu(submenu: [MenuItem]) {
+    fileprivate func showSubmenu(_ submenu: [MenuItem]) {
         shouldPopWhenMenuHides = false
         
-        UIMenuController.sharedMenuController().menuItems = psItemsForMenuItems(submenu)
+        UIMenuController.shared.menuItems = psItemsForMenuItems(items: submenu)
         // Simply calling UIMenuController.update() here doesn't suffice; the menu simply hides. Instead we need to hide the menu then show it again.
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = true
-        UIMenuController.sharedMenuController().menuVisible = false
+        UIMenuController.shared.isMenuVisible = false
         if let _ = textView.selectedTextRange {
-            UIMenuController.sharedMenuController().setTargetRect(targetRect, inView: textView)
+            UIMenuController.shared.setTargetRect(targetRect, in: textView)
         }
-        UIMenuController.sharedMenuController().setMenuVisible(true, animated: true)
+        UIMenuController.shared.setMenuVisible(true, animated: true)
         
         shouldPopWhenMenuHides = true
     }
     
-    private func showImagePicker(sourceType: UIImagePickerControllerSourceType) {
+    func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
         let mediaType : NSString = kUTTypeImage as NSString
         picker.mediaTypes = [mediaType as String]
         picker.allowsEditing = false
         picker.delegate = self
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad && sourceType == .PhotoLibrary {
-            picker.modalPresentationStyle = .Popover
+        if UIDevice.current.userInterfaceIdiom == .pad && sourceType == .photoLibrary {
+            picker.modalPresentationStyle = .popover
             if let popover = picker.popoverPresentationController {
                 popover.sourceRect = targetRect
                 popover.sourceView = textView
                 popover.delegate = self
             }
         }
-        textView.nearestViewController?.presentViewController(picker, animated: true, completion: nil)
+        textView.nearestViewController?.present(picker, animated: true, completion: nil)
     }
     
-    private func insertImage(image: UIImage, withAssetURL assetURL: NSURL? = nil) {
+    func insertImage(_ image: UIImage, withAssetIdentifier assetID: String? = nil) {
         // Inserting the image changes our font and text color, so save those now and restore those later.
         let font = textView.font
         let textColor = textView.textColor
         
-        let attachment = TextAttachment(image: image, assetURL: assetURL)
+        let attachment = TextAttachment(image: image, photoAssetIdentifier: assetID)
         let string = NSAttributedString(attachment: attachment)
         // Directly modify the textStorage instead of setting a whole new attributedText on the UITextView, which can be slow and jumps the text view around. We'll need to post our own text changed notification too.
-        textView.textStorage.replaceCharactersInRange(textView.selectedRange, withAttributedString: string)
+        textView.textStorage.replaceCharacters(in: textView.selectedRange, with: string)
         
         textView.font = font
         textView.textColor = textColor
         
         if let selection = textView.selectedTextRange {
-            let afterImagePosition = textView.positionFromPosition(selection.end, offset: 1)
-            textView.selectedTextRange = textView.textRangeFromPosition(afterImagePosition!, toPosition: afterImagePosition!)
+            let afterImagePosition = textView.position(from: selection.end, offset: 1)
+            textView.selectedTextRange = textView.textRange(from: afterImagePosition!, to: afterImagePosition!)
         }
         
-        NSNotificationCenter.defaultCenter().postNotificationName(UITextViewTextDidChangeNotification, object: textView)
+        NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: textView)
     }
     
     private func psItemsForMenuItems(items: [MenuItem]) -> [PSMenuItem] {
@@ -112,34 +116,42 @@ final class CompositionMenuTree: NSObject {
 }
 
 extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverPresentationControllerDelegate {
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if viewController == navigationController.viewControllers.first {
             viewController.navigationItem.title = "Insert Image"
         }
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        if let edited = info[UIImagePickerControllerEditedImage] as! UIImage? {
-            // AssetsLibrary's thumbnailing only gives us the original image, so ignore the asset URL.
-            insertImage(edited)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage else {
+            Log.e("could not find image among image picker info")
+            let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found")
+            textView.nearestViewController?.present(alert, animated: true)
+            return
+        }
+        
+        if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
+            insertImage(image, withAssetIdentifier: asset.localIdentifier)
+        } else if let alAssetURL = info[.referenceURL] as? URL {
+            let asset = PHAsset.firstAsset(withALAssetURL: alAssetURL)
+            insertImage(image, withAssetIdentifier: asset?.localIdentifier)
         } else {
-            let original = info[UIImagePickerControllerOriginalImage] as! UIImage
-            insertImage(original, withAssetURL: info[UIImagePickerControllerReferenceURL] as! NSURL?)
+            insertImage(image)
         }
-        picker.dismissViewControllerAnimated(true) {
+
+        picker.dismiss(animated: true, completion: {
             self.textView.becomeFirstResponder()
-            return
-        }
+        })
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true) {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: {
             self.textView.becomeFirstResponder()
-            return
-        }
+        })
     }
     
-    func popoverPresentationControllerDidDismissPopover(popoverPresentationController: UIPopoverPresentationController) {
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         textView.becomeFirstResponder()
     }
 }
@@ -148,29 +160,29 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     var hidesBuiltInMenuItems: Bool { get set }
 }
 
-private struct MenuItem {
+fileprivate struct MenuItem {
     var title: String
-    var action: CompositionMenuTree -> Void
+    var action: (CompositionMenuTree) -> Void
     var enabled: () -> Bool
     
-    init(title: String, action: CompositionMenuTree -> Void, enabled: () -> Bool) {
+    init(title: String, action: @escaping (CompositionMenuTree) -> Void, enabled: @escaping () -> Bool) {
         self.title = title
         self.action = action
         self.enabled = enabled
     }
     
-    init(title: String, action: CompositionMenuTree -> Void) {
+    init(title: String, action: @escaping (CompositionMenuTree) -> Void) {
         self.init(title: title, action: action, enabled: { true })
     }
     
-    func psItem(tree: CompositionMenuTree) {
+    func psItem(_ tree: CompositionMenuTree) {
         return
     }
 }
 
-private let rootItems = [
+fileprivate let rootItems = [
     MenuItem(title: "[url]", action: { tree in
-        if UIPasteboard.generalPasteboard().awful_URL == nil {
+        if UIPasteboard.general.coercedURL == nil {
             linkifySelection(tree)
         } else {
             tree.showSubmenu(URLItems)
@@ -179,36 +191,36 @@ private let rootItems = [
     MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
     MenuItem(title: "Format", action: { $0.showSubmenu(formattingItems) }),
     MenuItem(title: "[video]", action: { tree in
-        if let URL = UIPasteboard.generalPasteboard().awful_URL {
+        if let URL = UIPasteboard.general.coercedURL {
             if videoTagURLForURL(URL) != nil {
                 return tree.showSubmenu(videoSubmenuItems)
             }
         }
-        wrapSelectionInTag("[video]")(tree: tree)
+        wrapSelectionInTag("[video]")(tree)
     })
 ]
 
-private let URLItems = [
+fileprivate let URLItems = [
     MenuItem(title: "[url]", action: linkifySelection),
     MenuItem(title: "Paste", action: { tree in
-        if let URL = UIPasteboard.generalPasteboard().awful_URL {
-            wrapSelectionInTag("[url=\(URL.absoluteString)]")(tree: tree)
+        if let URL = UIPasteboard.general.coercedURL {
+            wrapSelectionInTag("[url=\(URL.absoluteString)]" as NSString)(tree)
         }
     })
 ]
 
-private let imageItems = [
-    MenuItem(title: "From Camera", action: { $0.showImagePicker(.Camera) }, enabled: isPickerAvailable(.Camera)),
-    MenuItem(title: "From Library", action: { $0.showImagePicker(.PhotoLibrary) }, enabled: isPickerAvailable(.PhotoLibrary)),
+fileprivate let imageItems = [
+    MenuItem(title: "From Camera", action: { $0.showImagePicker(.camera) }, enabled: isPickerAvailable(.camera)),
+    MenuItem(title: "From Library", action: { $0.showImagePicker(.photoLibrary) }, enabled: isPickerAvailable(.photoLibrary)),
     MenuItem(title: "[img]", action: wrapSelectionInTag("[img]")),
     MenuItem(title: "Paste", action: { tree in
-        if let image = UIPasteboard.generalPasteboard().image {
+        if let image = UIPasteboard.general.image {
             tree.insertImage(image)
         }
-        }, enabled: { UIPasteboard.generalPasteboard().image != nil })
+        }, enabled: { UIPasteboard.general.image != nil })
 ]
 
-private let formattingItems = [
+fileprivate let formattingItems = [
     MenuItem(title: "[b]", action: wrapSelectionInTag("[b]")),
     MenuItem(title: "[i]", action: wrapSelectionInTag("[i]")),
     MenuItem(title: "[s]", action: wrapSelectionInTag("[s]")),
@@ -219,45 +231,45 @@ private let formattingItems = [
     MenuItem(title: "[code]", action: wrapSelectionInTag("[code]\n")),
 ]
 
-private let videoSubmenuItems = [
+fileprivate let videoSubmenuItems = [
     MenuItem(title: "[video]", action: wrapSelectionInTag("[video]")),
     MenuItem(title: "Paste", action: { tree in
-        if let
-            copiedURL = UIPasteboard.generalPasteboard().awful_URL,
-            URL = videoTagURLForURL(copiedURL)
+        if
+            let copiedURL = UIPasteboard.general.coercedURL,
+            let URL = videoTagURLForURL(copiedURL as URL)
         {
             let textView = tree.textView
             if let selectedTextRange = textView.selectedTextRange {
                 let tag = "[video]\(URL.absoluteString)[/video]"
                 let textView = tree.textView
-                textView.replaceRange(selectedTextRange, withText: tag)
+                textView.replace(selectedTextRange, withText: tag)
                 textView.selectedRange = NSRange(location: textView.selectedRange.location + (tag as NSString).length, length: 0)
             }
         }
     })
 ]
 
-private func videoTagURLForURL(URL: NSURL) -> NSURL? {
-    switch (URL.host?.lowercaseString, URL.path?.lowercaseString) {
-    case let (.Some(host), .Some(path)) where host.hasSuffix("cnn.com") && path.hasPrefix("/video"):
-        return URL
-    case let (.Some(host), .Some(path)) where host.hasSuffix("foxnews.com") && path.hasPrefix("/video"):
-        return URL
-    case let (.Some(host), _) where host.hasSuffix("video.yahoo.com"):
-        return URL
-    case let (.Some(host), _) where host.hasSuffix("vimeo.com"):
-        return URL
-    case let (.Some(host), .Some(path)) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
-        return URL
-    case let (.Some(host), .Some(path)) where host.hasSuffix("youtu.be") && path.characters.count > 1:
-        if let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: true) {
-            let videoID = URL.pathComponents![1] 
+fileprivate func videoTagURLForURL(_ url: URL) -> URL? {
+    switch (url.host?.lowercased(), url.path.lowercased()) {
+    case let (host?, path) where host.hasSuffix("cnn.com") && path.hasPrefix("/video"):
+        return url
+    case let (host?, path) where host.hasSuffix("foxnews.com") && path.hasPrefix("/video"):
+        return url
+    case let (host?, _) where host.hasSuffix("video.yahoo.com"):
+        return url
+    case let (host?, _) where host.hasSuffix("vimeo.com"):
+        return url
+    case let (host?, path) where host.hasSuffix("youtube.com") && path.hasPrefix("/watch"):
+        return url
+    case let (host?, path) where host.hasSuffix("youtu.be") && path.count > 1:
+        if var components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+            let videoID = url.pathComponents[1]
             components.host = "www.youtube.com"
             components.path = "/watch"
             var queryItems = components.queryItems ?? []
-            queryItems.insert(NSURLQueryItem(name: "v", value: videoID), atIndex: 0)
+            queryItems.insert(URLQueryItem(name: "v", value: videoID) as URLQueryItem, at: 0)
             components.queryItems = queryItems
-            return components.URL
+            return components.url
         }
         return nil
     default:
@@ -265,27 +277,27 @@ private func videoTagURLForURL(URL: NSURL) -> NSURL? {
     }
 }
 
-private func linkifySelection(tree: CompositionMenuTree) {
+fileprivate func linkifySelection(_ tree: CompositionMenuTree) {
     var detector : NSDataDetector = NSDataDetector()
     do {
-        detector = try NSDataDetector(types: NSTextCheckingType.Link.rawValue)
+        detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
     }
     catch {
-        return NSLog("[\(#function)] error creating link data detector: \(error)")
+        return Log.e("error creating link data detector: \(error)")
     }
     
     let textView = tree.textView
     if let selectionRange = textView.selectedTextRange {
-        let selection: NSString = textView.textInRange(selectionRange)!
-        let matches = detector.matchesInString(selection as String, options: [], range: NSRange(location: 0, length: selection.length))
+        let selection: NSString = textView.text(in: selectionRange)! as NSString
+        let matches = detector.matches(in: selection as String, options: [], range: NSRange(location: 0, length: selection.length))
         if let firstMatchLength = matches.first?.range.length {
             if firstMatchLength == selection.length && selection.length > 0 {
-                return wrapSelectionInTag("[url]")(tree: tree)
+                return wrapSelectionInTag("[url]")(tree)
             }
         }
     }
     
-    wrapSelectionInTag("[url=]")(tree: tree)
+    wrapSelectionInTag("[url=]")(tree)
 }
 
 /**
@@ -296,45 +308,59 @@ tagspec specifies which tag to insert, with optional newlines and attribute inse
 - [quote=]\n does the above plus inserts an = sign within the opening tag and, after wrapping, places the cursor after it.
 - [url=http://example.com] puts an opening and closing tag around the selection with the attribute intact in the opening tag and, after wrapping, places the cursor after the closing tag.
 */
-private func wrapSelectionInTag(tagspec: NSString)(tree: CompositionMenuTree) {
-    let textView = tree.textView
-    
-    var equalsPart = tagspec.rangeOfString("=")
-    let end = tagspec.rangeOfString("]")
-    if equalsPart.location != NSNotFound {
-        equalsPart.length = end.location - equalsPart.location
+fileprivate func wrapSelectionInTag(_ tagspec: NSString) -> (_ tree: CompositionMenuTree) -> Void {
+    return { tree in
+        let textView = tree.textView
+        
+        var equalsPart = tagspec.range(of: "=")
+        let end = tagspec.range(of: "]")
+        if equalsPart.location != NSNotFound {
+            equalsPart.length = end.location - equalsPart.location
+        }
+        
+        let closingTag = NSMutableString(string: tagspec)
+        if equalsPart.location != NSNotFound {
+            closingTag.deleteCharacters(in: equalsPart)
+        }
+        closingTag.insert("/", at: 1)
+        if tagspec.hasSuffix("\n") {
+            closingTag.insert("\n", at: 0)
+        }
+        
+        var selectedRange = textView.selectedRange
+        
+        if let selection = textView.selectedTextRange {
+            textView.replace(textView.textRange(from: selection.end, to: selection.end)!, withText: closingTag as String)
+            textView.replace(textView.textRange(from: selection.start, to: selection.start)!, withText: tagspec as String)
+        }
+        
+        if equalsPart.location == NSNotFound && !tagspec.hasSuffix("\n") {
+            selectedRange.location += tagspec.length
+        } else if equalsPart.length == 1 {
+            selectedRange.location += NSMaxRange(equalsPart)
+        } else if selectedRange.length == 0 {
+            selectedRange.location += NSMaxRange(end) + 1
+        } else {
+            selectedRange.location += selectedRange.length + tagspec.length + closingTag.length
+            selectedRange.length = 0
+        }
+        textView.selectedRange = selectedRange
+        textView.becomeFirstResponder()
     }
-    
-    let closingTag = NSMutableString(string: tagspec)
-    if equalsPart.location != NSNotFound {
-        closingTag.deleteCharactersInRange(equalsPart)
-    }
-    closingTag.insertString("/", atIndex: 1)
-    if tagspec.hasSuffix("\n") {
-        closingTag.insertString("\n", atIndex: 0)
-    }
-    
-    var selectedRange = textView.selectedRange
-    
-    if let selection = textView.selectedTextRange {
-        textView.replaceRange(textView.textRangeFromPosition(selection.end, toPosition: selection.end)!, withText: closingTag as String)
-        textView.replaceRange(textView.textRangeFromPosition(selection.start, toPosition: selection.start)!, withText: tagspec as String)
-    }
-    
-    if equalsPart.location == NSNotFound && !tagspec.hasSuffix("\n") {
-        selectedRange.location += tagspec.length
-    } else if equalsPart.length == 1 {
-        selectedRange.location += NSMaxRange(equalsPart)
-    } else if selectedRange.length == 0 {
-        selectedRange.location += NSMaxRange(equalsPart) + 1
-    } else {
-        selectedRange.location += selectedRange.length + tagspec.length + closingTag.length
-        selectedRange.length = 0
-    }
-    textView.selectedRange = selectedRange
-    textView.becomeFirstResponder()
 }
 
-private func isPickerAvailable(sourceType: UIImagePickerControllerSourceType)() -> Bool {
-    return UIImagePickerController.isSourceTypeAvailable(sourceType)
+fileprivate func isPickerAvailable(_ sourceType: UIImagePickerController.SourceType) -> () -> Bool {
+    return {
+        return UIImagePickerController.isSourceTypeAvailable(sourceType)
+    }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
 }

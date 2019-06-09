@@ -1,0 +1,5 @@
+// Build settings common to all iOS application targets.
+
+CODE_SIGN_IDENTITY[sdk=iphoneos*] = iPhone Developer
+
+LD_RUNPATH_SEARCH_PATHS = @executable_path/../Frameworks @loader_path/../Frameworks @executable_path/Frameworks @loader_path/Frameworks

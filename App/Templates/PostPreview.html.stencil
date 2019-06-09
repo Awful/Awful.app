@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=320, initial-scale=0.99, viewport-fit=cover">
+    
+<title>Awful - Post preview</title>
+
+<style id="awful-inline-style">
+{{ stylesheet }}
+</style>
+
+<style>
+/* The action button doesn't do anything in preview, but it can affect layout. */
+.action-button {
+    visibility: hidden;
+}
+</style>
+
+{% fontScaleStyle %}
+
+<script>
+{{ script }}
+</script>
+
+<body
+    class="{{ userInterfaceIdiom }}"
+    data-version="{{ version }}">
+    
+    <div id="posts">
+    {% include "Post.html.stencil" post %}
+    </div>
+</body>

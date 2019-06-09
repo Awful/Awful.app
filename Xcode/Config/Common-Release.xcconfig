@@ -1,0 +1,15 @@
+// This .xcconfig is included at the project level in the Release build configuration.
+
+// Anything shared by multiple build configurations should go in the common config.
+#include "Common.xcconfig"
+
+ASSETCATALOG_COMPILER_OPTIMIZATION = time
+
+GCC_PREPROCESSOR_DEFINITIONS = NDEBUG=1
+
+LLVM_LTO = YES
+
+SWIFT_COMPILATION_MODE = wholemodule
+SWIFT_OPTIMIZATION_LEVEL = -O
+
+VALIDATE_PRODUCT = YES

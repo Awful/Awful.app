@@ -2,110 +2,132 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import Foundation
 
-/// Awful NSUserActivity.userInfo keys, wrapped in a class for Objective-C exposure.
-@objc final class Handoff: NSObject {
-    /// An NSNumber included in all Awful NSUserActivity.userInfo dictionaries for future-proofing.
-    class var InfoVersionKey: String { return "version" }
-    
-    /// Browsing a page of posts. On the Forums, this is `showthread.php`.
-    class var ActivityTypeBrowsingPosts: String { return "com.awfulapp.Awful.activity.browsing-posts" }
-    /// An NSString of the thread's ID.
-    class var InfoThreadIDKey: String { return "threadID" }
-    /// An NSNumber of the page of the thread.
-    class var InfoPageKey: String { return "page" }
-    /// An NSString of the currently-visible post's ID.
-    class var InfoPostIDKey: String { return "postID" }
-    /// An NSString of the author's user ID. Only present when filtering the thread by posts written by this author.
-    class var InfoFilteredThreadUserIDKey: String { return "filteredUserID" }
-    
-    /// Browsing a forum or bookmarked threads. On the Forums, this is `forumdisplay.php` or `bookmarkthreads.php`.
-    class var ActivityTypeListingThreads: String { return "com.awfulapp.Awful.activity.listing-threads" }
-    /// An NSString of the forum's ID. Only present when browing a forum.
-    class var InfoForumIDKey: String { return "forumID" }
-    /// An NSNumber `YES`. Only present when listing bookmarked threads.
-    class var InfoBookmarksKey: String { return "bookmarks" }
-    
-    /// Reading a private message. On the Forums, this is `private.php?action=show`.
-    class var ActivityTypeReadingMessage: String { return "com.awfulapp.Awful.activity.reading-message" }
-    /// An NSString of the message's ID.
-    class var InfoMessageIDKey: String { return "messageID" }
-}
+private let Log = Logger.get()
 
 extension NSUserActivity {
-    /// An awful:// URL locating the user activity, or nil if no such URL exists.
-    var awfulURL: NSURL? {
-        if let userInfo = userInfo {
+
+    /// The getter attempts to turn the user activity into a route, returning `nil` if no route exists that matches the activity. The setter sets values for the route's `userInfo` keys and sets the `webpageURL`.
+    var route: AwfulRoute? {
+        get {
+            guard let userInfo = userInfo else { return nil }
             switch activityType {
-            case Handoff.ActivityTypeBrowsingPosts where userInfo[Handoff.InfoFilteredThreadUserIDKey] != nil:
-                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
-                if let page: AnyObject = userInfo[Handoff.InfoPageKey] {
-                    URL += "/pages/\(page)"
+
+            case Handoff.ActivityType.browsingPosts:
+                guard let threadID = userInfo[Keys.threadID] as? String else {
+                    Log.e("cannot continue 'browsing posts' Handoff activity without a thread ID")
+                    return nil
                 }
-                URL += "?userid=\(userInfo[Handoff.InfoFilteredThreadUserIDKey]!)"
-                if let postID: AnyObject = userInfo[Handoff.InfoPostIDKey] {
-                    URL += "#post=\(postID)"
+
+                let pageNumber = userInfo[Keys.page] as? Int
+                let page = pageNumber.map { ThreadPage.specific($0) } ?? .nextUnread
+
+                if let userID = userInfo[Keys.filteredThreadUserID] as? String {
+                    return .threadPageSingleUser(threadID: threadID, userID: userID, page: page)
+                } else {
+                    return .threadPage(threadID: threadID, page: page)
                 }
-                return NSURL(string: URL)
-            case Handoff.ActivityTypeBrowsingPosts where userInfo[Handoff.InfoPostIDKey] != nil:
-                return NSURL(string: "awful://posts/\(userInfo[Handoff.InfoPostIDKey]!)")
-            case Handoff.ActivityTypeBrowsingPosts:
-                var URL = "awful://threads/\(userInfo[Handoff.InfoThreadIDKey]!)"
-                if let page: AnyObject = userInfo[Handoff.InfoPageKey] {
-                    URL += "/pages/\(page)"
+
+            case Handoff.ActivityType.listingThreads:
+                if userInfo[Keys.bookmarks] != nil {
+                    return .bookmarks
+                } else if let forumID = userInfo[Keys.forumID] as? String {
+                    return .forum(id: forumID)
+                } else {
+                    Log.e("cannot continue 'listing threads' Handoff activity without either bookmarks or a forum ID")
+                    return nil
                 }
-                return NSURL(string: URL)
-            case Handoff.ActivityTypeListingThreads:
-                return NSURL(string: "awful://forums/\(userInfo[Handoff.InfoForumIDKey]!)")
-            case Handoff.ActivityTypeReadingMessage:
-                return NSURL(string: "awful://messages/\(userInfo[Handoff.InfoMessageIDKey]!)")
+
+            case Handoff.ActivityType.readingMessage:
+                guard let messageID = userInfo[Keys.messageID] as? String else {
+                    Log.e("cannot continue 'reading message' Handoff activity without a message ID")
+                    return nil
+                }
+                return .message(id: messageID)
+
             default:
-                break
+                return nil
             }
         }
-        return nil
-    }
-}
 
-extension UIDevice {
-    /// Whether the device is capable of Handoff. Returns true even if the user has otherwise disabled Handoff.
-    var isHandoffCapable: Bool {
-        // Handoff starts at iPhone 5, iPod Touch 5G, iPad 4G, iPad Mini 1: http://support.apple.com/en-us/HT6555
-        // Models are listed at http://theiphonewiki.com/wiki/Models
-        // Let's assume all future models also support Handoff.
-        let scanner = NSScanner(string: modelIdentifier())
-        var major: Int = Int.min
-        if scanner.scanString("iPad", intoString: nil) && scanner.scanInteger(&major) {
-            return major >= 2
-        } else if scanner.scanString("iPhone", intoString: nil) && scanner.scanInteger(&major) {
-            return major >= 5
-        } else if scanner.scanString("iPod", intoString: nil) && scanner.scanInteger(&major) {
-            return major >= 5
-        } else {
-            return false
+        set {
+            guard let route = newValue else { return }
+
+            switch route {
+            case .bookmarks:
+                addUserInfoEntries(from: [Keys.bookmarks: true])
+
+            case .forum(let forumID):
+                addUserInfoEntries(from: [Keys.forumID: forumID])
+
+            case .message(let messageID):
+                addUserInfoEntries(from: [Keys.messageID: messageID])
+
+            case .threadPage(let threadID, .specific(let page)):
+                addUserInfoEntries(from: [Keys.threadID: threadID, Keys.page: page])
+
+            case .threadPageSingleUser(let threadID, let userID, .specific(let page)):
+                addUserInfoEntries(from: [
+                    Keys.threadID: threadID,
+                    Keys.filteredThreadUserID: userID,
+                    Keys.page: page])
+
+            case .forumList, .lepersColony, .messagesList, .post, .profile, .rapSheet, .settings, .threadPage, .threadPageSingleUser:
+                Log.e("setting a Handoff route \(route) has no effect!")
+                return
+            }
+
+            addUserInfoEntries(from: [Keys.version: handoffUserInfoVersion])
+            webpageURL = route.httpURL
         }
     }
 }
 
-private func modelIdentifier() -> String {
-    var size: Int = 0
-    if sysctlbyname("hw.machine", nil, &size, nil, 0) != 0 {
-        NSLog("%@ failed to get buffer size", #function)
-        return ""
+/// Constants for Handoff support.
+enum Handoff {
+
+    /// Supported `NSUserActivity` activity types.
+    enum ActivityType {
+
+        /// Browsing a page of posts. On the Forums, this is `showthread.php`.
+        static let browsingPosts = "com.awfulapp.Awful.activity.browsing-posts"
+
+        /// Browsing a forum or bookmarked threads. On the Forums, this is `forumdisplay.php` or `bookmarkthreads.php`.
+        static let listingThreads = "com.awfulapp.Awful.activity.listing-threads"
+
+        /// Reading a private message. On the Forums, this is `private.php?action=show`.
+        static let readingMessage = "com.awfulapp.Awful.activity.reading-message"
     }
-    
-    let bufferSize = Int(size) + 1
-    let buffer = UnsafeMutablePointer<CChar>.alloc(bufferSize)
-    if sysctlbyname("hw.machine", buffer, &size, nil, 0) != 0 {
-        NSLog("%@ failed to get model identifier", #function)
-        buffer.dealloc(bufferSize)
-        return ""
-    }
-    
-    buffer[Int(size)] = 0
-    let identifier = String.fromCString(buffer)!
-    
-    buffer.dealloc(bufferSize)
-    return identifier
 }
+
+private enum Keys {
+
+    /// `true`. Only present when listing bookmarked threads.
+    static let bookmarks = "bookmarks"
+
+    /// A `String` of the author's user ID. Only present when filtering the thread by posts written by this author.
+    static let filteredThreadUserID = "filteredUserID"
+
+    /// A `String` of the forum's ID. Only present when browing a forum.
+    static let forumID = "forumID"
+
+    /// A `String` of the message's ID.
+    static let messageID = "messageID"
+
+    /// An `Int` of the page of the thread.
+    static let page = "page"
+
+    /// A `String` of the currently-visible post's ID.
+    static let postID = "postID"
+
+    /// A `String` of the thread's ID.
+    static let threadID = "threadID"
+
+    /// An `Int` included in all Awful `NSUserActivity.userInfo` dictionaries for future-proofing.
+    static let version = "version"
+}
+
+/// Increment this number if you make an incompatible change to the user info stored for a Handoff activity.
+private let handoffUserInfoVersion = 1

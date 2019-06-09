@@ -6,29 +6,31 @@ import UIKit
 
 /// Sets a scroll view's bottom insets to avoid the keyboard.
 final class ScrollViewKeyboardAvoider {
-    private var observer: AnyObject!
+    private var observer: NSObjectProtocol?
     
     init(_ scrollView: UIScrollView) {
-        observer = NSNotificationCenter.defaultCenter().addObserverForName(UIKeyboardWillChangeFrameNotification, object: nil, queue: NSOperationQueue.mainQueue()) { [unowned self] note in
+        observer = NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillChangeFrameNotification, object: nil, queue: OperationQueue.main) { [unowned self] note in
             self.keyboardWillChangeFrame(note, scrollView: scrollView)
         }
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(observer)
+        if let observer = observer {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
-    private func keyboardWillChangeFrame(note: NSNotification, scrollView: UIScrollView) {
+    private func keyboardWillChangeFrame(_ note: Notification, scrollView: UIScrollView) {
         if let window = scrollView.window {
-            let screenFrame = (note.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-            let localFrame = scrollView.superview!.convertRect(screenFrame, fromCoordinateSpace: window.screen.coordinateSpace)
-            let intersection = CGRectIntersection(localFrame, scrollView.frame)
-            let bottomInset = CGRectIsNull(intersection) ? 0 : intersection.height
+            let screenFrame = ((note as NSNotification).userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+            let localFrame = scrollView.superview!.convert(screenFrame, from: window.screen.coordinateSpace)
+            let intersection = localFrame.intersection(scrollView.frame)
+            let bottomInset = intersection.isNull ? 0 : intersection.height
             
-            let duration = note.userInfo![UIKeyboardAnimationDurationUserInfoKey] as! NSTimeInterval
-            let rawCurve = note.userInfo![UIKeyboardAnimationCurveUserInfoKey] as! Int
-            let options = UIViewAnimationOptions(rawValue: UInt(rawCurve) << 16)
-            UIView.animateWithDuration(duration, delay: 0, options: options, animations: {
+            let duration = (note as NSNotification).userInfo![UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
+            let rawCurve = (note as NSNotification).userInfo![UIResponder.keyboardAnimationCurveUserInfoKey] as! Int
+            let options = UIView.AnimationOptions(rawValue: UInt(rawCurve) << 16)
+            UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
                 scrollView.contentInset.bottom = bottomInset
                 scrollView.scrollIndicatorInsets.bottom = bottomInset
                 }, completion: nil)

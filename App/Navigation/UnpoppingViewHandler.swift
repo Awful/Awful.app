@@ -9,16 +9,20 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
     var viewControllers: [UIViewController] = []
     private var gestureStartPointX: CGFloat = 0
     private(set) var interactiveUnpopIsTakingPlace = false
-    private var navigationControllerIsAnimating = false
-    private let panRecognizer = UIScreenEdgePanGestureRecognizer()
+    var navigationControllerIsAnimating = false
+
+    private lazy var panRecognizer: UIGestureRecognizer = {
+        let pan = UIScreenEdgePanGestureRecognizer()
+        pan.addTarget(self, action: #selector(handlePan))
+        pan.delegate = self
+        pan.edges = .right
+        return pan
+    }()
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         super.init()
-        
-        panRecognizer.addTarget(self, action: #selector(handlePan))
-        panRecognizer.edges = .Right
-        panRecognizer.delegate = self
+
         navigationController.view.addGestureRecognizer(panRecognizer)
     }
     
@@ -26,10 +30,10 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         navigationController.view.removeGestureRecognizer(panRecognizer)
     }
     
-    @objc private func handlePan(sender: UIScreenEdgePanGestureRecognizer) {
-        let location = sender.locationInView(sender.view)
+    @objc private func handlePan(_ sender: UIScreenEdgePanGestureRecognizer) {
+        let location = sender.location(in: sender.view)
         switch sender.state {
-        case .Began:
+        case .began:
             guard !viewControllers.isEmpty else { break }
             interactiveUnpopIsTakingPlace = true
             gestureStartPointX = location.x
@@ -37,26 +41,29 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
                 navigationController.pushViewController(vc, animated: true)
             }
             
-        case .Changed:
+        case .changed:
             guard interactiveUnpopIsTakingPlace else { break }
             let percent = (gestureStartPointX - location.x) / gestureStartPointX
-            updateInteractiveTransition(percent)
+            update(percent)
             
-        case .Cancelled, .Ended:
+        case .cancelled, .ended:
             guard interactiveUnpopIsTakingPlace else { break }
             let percent = (gestureStartPointX - location.x) / gestureStartPointX
             // TODO: Use [recognizer velocityInView] too?
             if percent <= 0.3 {
-                cancelInteractiveTransition()
+                cancel()
             } else {
                 viewControllers.removeLast()
-                finishInteractiveTransition()
+                finish()
             }
             gestureStartPointX = 0
             interactiveUnpopIsTakingPlace = false
             
-        case .Failed, .Possible:
+        case .failed, .possible:
             break
+
+        @unknown default:
+            assertionFailure("handle unknown gesture recognizer state")
         }
     }
     
@@ -78,25 +85,25 @@ final class UnpoppingViewHandler: UIPercentDrivenInteractiveTransition {
         navigationControllerIsAnimating = false
     }
     
-    func shouldHandleAnimatingTransitionForOperation(operation: UINavigationControllerOperation) -> Bool {
-        return operation == .Push && interactiveUnpopIsTakingPlace
+    func shouldHandleAnimatingTransitionForOperation(_ operation: UINavigationController.Operation) -> Bool {
+        return operation == .push && interactiveUnpopIsTakingPlace
     }
 }
 
 extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
-    func transitionDuration(context: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using context: UIViewControllerContextTransitioning?) -> TimeInterval {
         // TODO: Can we match this up to the default? Does it matter if it will always be interactive?
         // Only takes effect when the system completes a half-swipe
         return 0.35
     }
     
-    func animateTransition(context: UIViewControllerContextTransitioning) {
+    func animateTransition(using context: UIViewControllerContextTransitioning) {
         guard let
-            toVC = context.viewControllerForKey(UITransitionContextToViewControllerKey),
-            fromVC = context.viewControllerForKey(UITransitionContextFromViewControllerKey)
+            toVC = context.viewController(forKey: UITransitionContextViewControllerKey.to),
+            let fromVC = context.viewController(forKey: UITransitionContextViewControllerKey.from)
             else { return }
         
-        context.containerView()?.addSubview(toVC.view)
+        context.containerView.addSubview(toVC.view)
         
         let toTargetFrame = fromVC.view.frame
         toVC.view.frame = toTargetFrame.offsetBy(dx: toTargetFrame.width, dy: 0)
@@ -119,7 +126,7 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
             tabBarTargetFrame = .zero
         }
         
-        UIView.animateWithDuration(transitionDuration(context), delay: 0, options: .CurveLinear, animations: { 
+        UIView.animate(withDuration: transitionDuration(using: context), delay: 0, options: .curveLinear, animations: { 
             toVC.view.frame = toTargetFrame
             fromVC.view.frame = fromTargetFrame
             if animateTabBar {
@@ -131,11 +138,11 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
                     previousParent?.addSubview(tabBar)
                 }
                 
-                context.completeTransition(!context.transitionWasCancelled())
+                context.completeTransition(!context.transitionWasCancelled)
         })
     }
     
-    func animationEnded(transitionCompleted: Bool) {
+    func animationEnded(_ transitionCompleted: Bool) {
         if !transitionCompleted {
             navigationControllerIsAnimating = false
         }
@@ -143,33 +150,37 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
 }
 
 extension UnpoppingViewHandler: UIGestureRecognizerDelegate {
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // Since we're on the right edge, the recognizer interferes with reordering UITableView.
+        var cur = touch.view
+        while let view = cur {
+            if let tableView = cur as? UITableView {
+                return !tableView.isEditing
+            }
+            cur = view.superview
+        }
+
+        return true
+    }
+
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return !viewControllers.isEmpty && !navigationControllerIsAnimating
     }
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer other: UIGestureRecognizer) -> Bool {
-        /**
-            Allow simultaneous recognition with:
-              1. The swipe-to-pop gesture recognizer.
-              2. The swipe-to-show-basement gesture recognizer.
-         */
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
+        // Allow simultaneous recognition with the swipe-to-pop gesture recognizer.
         return other is UIScreenEdgePanGestureRecognizer
     }
 }
 
-protocol NavigationControllerObserver {
-    func navigationController(navigationController: UINavigationController, didPopViewController viewController: UIViewController?)
-    func navigationController(navigationController: UINavigationController, didPushViewController viewController: UIViewController)
-}
-
-extension UnpoppingViewHandler: NavigationControllerObserver {
-    func navigationController(navigationController: UINavigationController, didPopViewController viewController: UIViewController?) {
+extension UnpoppingViewHandler {
+    func navigationController(_ navigationController: UINavigationController, didPopViewController viewController: UIViewController?) {
         if let viewController = viewController {
             viewControllers.append(viewController)
         }
     }
     
-    func navigationController(navigationController: UINavigationController, didPushViewController viewController: UIViewController) {
+    func navigationController(_ navigationController: UINavigationController, didPushViewController viewController: UIViewController) {
         guard !interactiveUnpopIsTakingPlace else { return }
         viewControllers.removeAll()
     }

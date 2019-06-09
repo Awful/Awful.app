@@ -2,13 +2,15 @@
 
 A [WHATWG-compliant HTML parser][whatwg-spec] with [CSS selectors][selectors-level-3] in Objective-C and Foundation. It parses HTML just like a browser.
 
+![Supports iOS, OS X, tvOS, and watchOS](https://img.shields.io/cocoapods/p/HTMLReader.svg)
+
 [selectors-level-3]: http://www.w3.org/TR/css3-selectors/
 [whatwg-spec]: http://whatwg.org/html
 
 ## Usage
 
 ```objc
-#import <HTMLReader/HTMLReader.h>
+@import HTMLReader;
 
 // Parse a string and find an element.
 NSString *markup = @"<p><b>Ahoy there sailor!</b></p>";
@@ -39,7 +41,7 @@ NSURLSession *session = [NSURLSession sharedSession];
     }
     HTMLDocument *home = [HTMLDocument documentWithData:data
                                       contentTypeHeader:contentType];
-    HTMLElement *div = [home firstNodeMatchingSelector:@".repository-description"];
+    HTMLElement *div = [home firstNodeMatchingSelector:@".repository-meta-content"];
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     NSLog(@"%@", [div.textContent stringByTrimmingCharactersInSet:whitespace]);
     // => A WHATWG-compliant HTML parser in Objective-C.
@@ -50,19 +52,26 @@ NSURLSession *session = [NSURLSession sharedSession];
 
 You have choices:
 
-* Copy the files in the [Code](Code) folder into your project.
+* Copy the files in the [Sources](Sources) folder into your project.
 * Add the following line to your [Cartfile][Carthage]:
   
   `github "nolanw/HTMLReader"`
 * Add the following line to your [Podfile][CocoaPods]:
    
    `pod "HTMLReader"`
-* Clone this repository (perhaps add it as a submodule), add `HTMLReader.xcodeproj` to your project/workspace, and add `libHTMLReader.a` to your iOS target or `HTMLReader.framework` to your OS X target.
+* Add the following line to your [Package.swift][Swift Package Manager]:
+    
+   `.Package(url: "https://github.com/nolanw/HTMLReader",
+             majorVersion: 2)`
+   
+   You'll need to invoke `swift package` with an extra option like so: `swift package [command] -Xcc -fobjc-arc`.
+* Clone this repository (perhaps add it as a submodule) and add `HTMLReader.xcodeproj` to your project/workspace. Then add `HTMLReader.framework` to your app target. (Or, if you're targeting iOS earlier than 8.0: add `libHTMLReader.a` to your app target and `"$(SYMROOT)/include"` to your app target's Header Search Paths.)
 
 HTMLReader has no dependencies other than Foundation.
 
 [Carthage]: https://github.com/Carthage/Carthage#readme
 [CocoaPods]: http://docs.cocoapods.org/podfile.html#pod
+[Swift Package Manager]: https://swift.org/package-manager/#importing-dependencies
 
 ## Why HTMLReader?
 
@@ -74,9 +83,9 @@ I needed to scrape HTML like a browser. I couldn't find a good choice for iOS.
 
 Other Objective-C libraries I came across (e.g. [hpple][] and [Ono][]) use libxml2 and inherit its shortcomings.
 
-There are C libraries such as [Gumbo][] or [Hubbub][], but you need to shuffle data to and from Objective-C.
+There are C libraries such as [Gumbo][] or [Hubbub][], but you need to shuffle data to and from Objective-C. (Also Gumbo wasn't publicly announced until after HTMLReader was far enough along.)
 
-[WebKit][] ships with iOS, but its HTML parsing abilities are considered private API. I consider a round-trip through UIWebView inappropriate for parsing HTML. And I didn't make it very far into building my own copy of WebCore.
+[WebKit][] ships with iOS, but its HTML parsing abilities are considered private API. I consider a round-trip through a web view inappropriate for parsing HTML. And I didn't make it very far into building my own copy of WebCore.
 
 [Google Toolbox for Mac][GTMNSString+HTML] will escape and unescape strings for HTML (e.g. `&amp;` ⇔ `&`) but, again, not like a modern browser. For example, GTM will not unescape `&#65` (note the missing semicolon).
 
@@ -93,9 +102,9 @@ There are C libraries such as [Gumbo][] or [Hubbub][], but you need to shuffle d
 
 ## Does it work?
 
-HTMLReader continually runs [html5lib][html5lib-tests]'s tokenization and tree construction tests, ignoring the tests for `<template>` (which HTMLReader does not implement).
+HTMLReader continually runs [html5lib][html5lib-tests]'s tokenization and tree construction tests, ignoring the tests for `<template>` (which HTMLReader does not implement). Note that you need to check out the `HTMLReaderTests/html5lib` Git submodule in order to actually run these tests.
 
-HTMLReader is continually tested on iOS versions 7.0, 7.1, and 8.1, as well as OS X versions 10.9 and 10.10. It should work on down to iOS 5 and OS X 10.7 but no automated testing is done.
+HTMLReader is continually built and tested on iOS versions 8.4, 9.3, 10.3, and 11.0; built and tested on macOS versions 10.9, 10.10, 10.11, 10.12, and 10.13; built and tested on tvOS versions 9.2, 10.2, and 11.0; and built on watchOS versions 2.2, 3.2, and 4.0. It should work on down to iOS 5, macOS 10.7, tvOS 9.0, and watchOS 2.0, but there is no automated testing there (it's ok to file an issue though!).
 
 Given all that:  [![Build Status](https://travis-ci.org/nolanw/HTMLReader.png?branch=master)](https://travis-ci.org/nolanw/HTMLReader)
 

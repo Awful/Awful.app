@@ -19,6 +19,12 @@
 					<key>Action</key>
 					<string>LogOut</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Empty Cache</string>
+					<key>Action</key>
+					<string>EmptyCache</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -34,7 +40,7 @@
 					<key>Action</key>
 					<string>GoToAwfulThread</string>
 					<key>ThreadID</key>
-					<string>3510131</string>
+					<string>3837546</string>
 				</dict>
 			</array>
 		</dict>
@@ -108,6 +114,23 @@
 					<string>YES</string>
 					<key>Key</key>
 					<string>embed_tweets</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Posting</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>[timg] large images</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>automatic_timg</string>
 				</dict>
 			</array>
 		</dict>
@@ -202,19 +225,63 @@
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<false/>
+					<true/>
 					<key>Key</key>
 					<string>open_youtube_links_in_youtube</string>
 					<key>CanOpenURL</key>
 					<string>youtube://</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Open Twitter in Twitter</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>open_twitter_links_in_twitter</string>
+					<key>CanOpenURL</key>
+					<string>twitter://</string>
 				</dict>
 			</array>
 		</dict>
 		<dict>
 			<key>Title</key>
 			<string>Themes</string>
+			<key>Explanation</key>
+			<string>Awful can automatically switch between light and dark themes based on screen brightness. Use the slider to set when to switch.</string>
 			<key>Settings</key>
 			<array>
+				<dict>
+					<key>Title</key>
+					<string>Default Light Theme</string>
+					<key>ViewController</key>
+					<string>theme-picker</string>
+					<key>Key</key>
+					<string>default_light_theme_name</string>
+					<key>ShowValue</key>
+					<true/>
+					<key>ValueTransformer</key>
+					<string>theme-name</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Default Dark Theme</string>
+					<key>ViewController</key>
+					<string>theme-picker</string>
+					<key>Key</key>
+					<string>default_dark_theme_name</string>
+					<key>ShowValue</key>
+					<true/>
+					<key>ValueTransformer</key>
+					<string>theme-name</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Forum-Specific Themes</string>
+					<key>ViewController</key>
+					<string>forum-specific-themes</string>
+				</dict>
 				<dict>
 					<key>Title</key>
 					<string>Dark Mode</string>
@@ -227,11 +294,31 @@
 				</dict>
 				<dict>
 					<key>Title</key>
-					<string>Forum-Specific Themes</string>
-					<key>ViewController</key>
-					<string>Awful.SettingsUbiquitousThemesController</string>
+					<string>Automatic Dark Mode</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
 					<key>Key</key>
-					<string>ubiquitous_theme_names</string>
+					<string>auto_dark_theme</string>
+				</dict>
+				<dict>
+					<key>MaximumImage</key>
+					<string>brightness-up</string>
+					<key>MinimumImage</key>
+					<string>brightness-down</string>
+					<key>Title</key>
+					<string>Threshold</string>
+					<key>Type</key>
+					<string>Slider</string>
+					<key>Minimum</key>
+					<real>0</real>
+					<key>Maximum</key>
+					<integer>100</integer>
+					<key>Default</key>
+					<integer>40</integer>
+					<key>Key</key>
+					<string>auto_theme_threshold</string>
 				</dict>
 			</array>
 		</dict>
@@ -248,9 +335,56 @@
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<true/>
+					<false/>
 					<key>Key</key>
 					<string>handoff_enabled</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Explanation</key>
+			<string>Checking the clipboard for a forums URL when you open the app allows you to jump straight to a copied URL in Awful.</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Check Clipboard for URL</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>clipboard_url_enabled</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>App Icon</string>
+			<key>DeviceCapability</key>
+			<string>AppIconChange</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Type</key>
+					<string>AppIconPicker</string>
+					<key>Key</key>
+					<string>app_icon_name</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Unread announcements badge</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_unread_announcements_badge</string>
 				</dict>
 			</array>
 		</dict>
@@ -264,6 +398,33 @@
 					<string>Acknowledgements</string>
 					<key>ViewController</key>
 					<string>Awful.AcknowledgementsViewController</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Title</key>
+			<string>Tweaks</string>
+			<key>Explanation</key>
+			<string>Tweaks are only available in beta builds. When enabled, physically shaking your device will bring up a hidden settings window. Changes to this setting will only take effect after restarting Awful (sorry).</string>
+			<key>RequiresTweaksEnabled</key>
+			<true/>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Show Tweaks on Shake</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>show_tweaks_on_shake</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Show Tweaks</string>
+					<key>Action</key>
+					<string>ShowTweaks</string>
 				</dict>
 			</array>
 		</dict>

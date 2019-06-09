@@ -1,0 +1,2 @@
+#include "Framework.xcconfig"
+#include "../../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.release.xcconfig"

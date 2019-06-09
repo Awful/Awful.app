@@ -2,6 +2,8 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Foundation
+
 /// A single reply to a thread.
 @objc(Post)
 public class Post: AwfulManagedObject {
@@ -18,10 +20,10 @@ public class Post: AwfulManagedObject {
     @NSManaged public var innerHTML: String?
     
     /// The last time the cached post data changed.
-    @NSManaged var lastModifiedDate: NSDate
+    @NSManaged var lastModifiedDate: Date
     
     /// When the post appeared.
-    @NSManaged public var postDate: NSDate?
+    @NSManaged public var postDate: Date?
     
     /// An ID assigned by the Forums that presumably uniquely identifies it.
     @NSManaged public var postID: String
@@ -33,7 +35,7 @@ public class Post: AwfulManagedObject {
     @NSManaged public var author: User?
     
     /// Where the post is located.
-    @NSManaged public var thread: Thread?
+    @NSManaged public var thread: AwfulThread?
 }
 
 extension Post {
@@ -47,12 +49,12 @@ extension Post {
     
     /// Which 40-post page the post is located on.
     public var page: Int {
-        return pageForIndex(threadIndex)
+        return pageForIndex(index: threadIndex)
     }
     
     /// Which 40-post page the post is located on in a thread filtered by the post's author.
     public var singleUserPage: Int {
-        return pageForIndex(filteredThreadIndex)
+        return pageForIndex(index: filteredThreadIndex)
     }
 }
 
@@ -60,13 +62,13 @@ private func pageForIndex(index: Int32) -> Int {
     if index <= 0 {
         return 0
     } else {
-        return (index - 1) / 40 + 1
+        return Int(index - 1) / 40 + 1
     }
 }
 
 @objc(PostKey)
 public final class PostKey: AwfulObjectKey {
-    public let postID: String
+    @objc public let postID: String
     
     public init(postID: String) {
         assert(!postID.isEmpty)
@@ -75,7 +77,7 @@ public final class PostKey: AwfulObjectKey {
     }
     
     public required init?(coder: NSCoder) {
-        postID = coder.decodeObjectForKey(postIDKey) as! String
+        postID = coder.decodeObject(forKey: postIDKey) as! String
         super.init(coder: coder)
     }
     

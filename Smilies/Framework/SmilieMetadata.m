@@ -31,7 +31,7 @@
     NSError *error;
     NSUInteger favoritesCount = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
     NSAssert(favoritesCount != NSNotFound, @"failed to count favorites: %@", error);
-    self.favoriteIndex = favoritesCount;
+    self.favoriteIndex = (int16_t)favoritesCount;
     self.isFavorite = YES;
 }
 

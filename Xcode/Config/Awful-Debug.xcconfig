@@ -1,0 +1,8 @@
+// Build settings for the Awful app target in the Debug configuration.
+
+#include "Application.xcconfig"
+#include "../../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug
+
+PRODUCT_NAME = AwfulDebug

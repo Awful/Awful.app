@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=320, initial-scale=0.99, viewport-fit=cover">
+
+{% if baseURL %}<base href="{{ baseURL|htmlEscape }}">{% endif %}
+
+<title>Awful - Profile</title>
+
+<style>
+{{ css }}
+</style>
+
+<body class="{{ userInterfaceIdiom }} {% if dark %} dark {% endif %}">
+    <section>
+        {% if customTitleHTML %}
+        <div id="customTitle">
+            <div id="headerBackground" style="background-image:url('{{ avatarURL|htmlEscape }}')"></div>
+
+            <header>
+            {{ customTitleHTML }}
+            </header>
+        </div>
+        {% endif %}
+        
+        <p>
+            There have been <b>{{ postCount }}</b> posts
+            made by <i>{{ username }}</i>,
+            an average of {{ postRate }} posts per day,
+            since registering on <b>{{ regdate|formatRegdate }}</b>.
+            <i>{{ username }}</i> claims to be a {{ gender }}.
+        </p>
+
+        <p>{{ aboutMe }}</p>
+
+        {% if profilePictureURL %}
+        <img src="{{ profilePictureURL }}" alt="Profile picture" id="profilePicture">
+        {% endif %}
+    </section>
+
+    <section>
+        {% if anyContactInfo %}
+        <table id="contact">
+            <caption>Contact Information</caption>
+            
+            {% if privateMessagesWork %}
+            <tr><th>Private Message</th><td>{{ username }}</td></tr>
+            {% endif %}
+            
+            {% if aimName %}
+            <tr><th>AIM</th><td>{{ aimName }}</td></tr>
+            {% endif %}
+            
+            {% if icqName %}
+            <tr><th>ICQ</th><td>{{ icqName }}</td></tr>
+            {% endif %}
+            
+            {% if yahooName %}
+            <tr><th>Yahoo!</th><td>{{ yahooName }}</td></tr>
+            {% endif %}
+            
+            {% if homepageURL %}
+            <tr><th>Homepage</th><td>{{ homepageURL }}</td></tr>
+            {% endif %}
+        </table>
+        {% endif %}
+
+        <table>
+            <caption>Additional Information</caption>
+            
+            {% if regdate %}
+            <tr><th>Member Since</th><td>{{ regdate|formatRegdate }}</td></tr>
+            {% endif %}
+            
+            {% if postCount %}
+            <tr><th>Post Count</th><td>{{ postCount }}</td></tr>
+            {% endif %}
+            
+            {% if postRate %}
+            <tr><th>Post Rate</th><td>{{ postRate }}</td></tr>
+            {% endif %}
+            
+            {% if lastPost %}
+            <tr><th>Last Post</th><td>{{ lastPost|formatPostDate }}</td></tr>
+            {% endif %}
+            
+            {% if location %}
+            <tr><th>Location</th><td>{{ location }}</td></tr>
+            {% endif %}
+            
+            {% if interests %}
+            <tr><th>Interests</th><td>{{ interests }}</td></tr>
+            {% endif %}
+            
+            {% if occupation %}
+            <tr><th>Occupation</th><td>{{ occupation }}</td></tr>
+            {% endif %}
+        </table>
+    </section>
+</body>

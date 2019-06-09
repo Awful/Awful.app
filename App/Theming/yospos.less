@@ -15,7 +15,7 @@ post {
   background-color: #151515;
   border-bottom-color: #000;
   border-top-color: #000;
-  
+
   &.seen {
     background-color: @seencolor;
   }
@@ -25,11 +25,11 @@ post {
   .role-admin &:before {
     content: '★';
   }
-  
+
   .role-mod &:before {
     content: '☆';
   }
-  
+
   .role-admin &,
   .role-mod & {
     background-image: none;
@@ -38,8 +38,8 @@ post {
   	&:before {
   	  color: @color;
   	}
-  } 
-   
+  }
+
   .op & {
 	color: @color;
 
@@ -83,17 +83,17 @@ post {
   border-left-color: @color;
 }
 
-.bbc-block { 
-  &.mention, &.mention h4, &.mention h4 a {
+.bbc-block {
+  &.mention.highlight, &.mention.highlight h4, &.mention.highlight h4 a {
     color: #b837ed;
     border-color: #b837ed;
   }
-    
-  &.mention h4 .mention{
-    color: #dd89ff;     
+
+  &.mention.highlight h4 span.mention.highlight {
+    color: #dd89ff;
   }
 }
 
-.editedby .mention { 
+.editedby span.mention.highlight {
   color: #dd89ff;
 }

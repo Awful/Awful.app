@@ -4,13 +4,51 @@
 
 import Foundation
 
-extension NSMutableURLRequest {
+extension Bundle {
+    
+    /// Seems to be `true` when installed via TestFlight, and `false` when installed via the App Store.
+    var containsSandboxReceipt: Bool {
+        let receiptPathComponents = appStoreReceiptURL?.pathComponents ?? []
+        return receiptPathComponents.contains("sandboxReceipt")
+    }
+    
+    var localizedName: String {
+        return object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? ""
+    }
+    
+    var shortVersionString: String? {
+        return object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+
+    var urlTypes: [URLType] {
+        let dicts = infoDictionary?["CFBundleURLTypes"] as? [[String: Any]] ?? []
+        return dicts.map { URLType($0) }
+    }
+
+    struct URLType {
+        let name: String?
+        let role: String?
+        let schemes: [String]
+
+        fileprivate init(_ plist: [String: Any]) {
+            name = plist["CFBundleURLName"] as? String
+            role = plist["CFBundleTypeRole"] as? String
+            schemes = plist["CFBundleURLSchemes"] as? [String] ?? []
+        }
+    }
+    
+    var version: String? {
+        return object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String
+    }
+}
+
+extension URLRequest {
     /**
      Sets a URL request's If-Modified-Since and If-None-Match headers appropriately, given the previous response's Last-Modified and Etag headers. No effort is done to test whether the response actually matches the request (by URL or otherwise).
      
      See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26 and http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2.4
      */
-    func setCacheHeadersWithResponse(response: NSHTTPURLResponse) {
+    mutating func setCacheHeadersWithResponse(_ response: HTTPURLResponse) {
         if let etag = response.allHeaderFields["Etag"] as? String {
             setValue(etag, forHTTPHeaderField: "If-None-Match")
         }
@@ -21,21 +59,33 @@ extension NSMutableURLRequest {
     }
 }
 
-extension NSScanner {
+extension Scanner {
     func scan(fromSet characterSet: NSCharacterSet) -> String? {
         var scanned: NSString?
-        guard scanCharactersFromSet(characterSet, intoString: &scanned) else { return nil }
+        guard scanCharacters(from: characterSet as CharacterSet, into: &scanned) else { return nil }
         return scanned as String?
     }
     
-    func scan(string string: String) -> Bool {
-        return scanString(string, intoString: nil)
+    func scan(_ string: String) -> Bool {
+        return scanString(string, into: nil)
     }
     
     func scanHex() -> UInt64? {
         var int: UInt64 = 0
-        guard scanHexLongLong(&int) else { return nil }
+        guard scanHexInt64(&int) else { return nil }
         return int
+    }
+    
+    func scanInt() -> Int? {
+        var int: Int = 0
+        guard scanInt(&int) else { return nil }
+        return int
+    }
+    
+    func scanUpTo(_ string: String) -> String? {
+        var scanned: NSString?
+        scanUpTo(string, into: &scanned)
+        return scanned as String?
     }
 }
 
@@ -43,16 +93,23 @@ extension NSString {
     var stringByCollapsingWhitespace: String {
         // Literal regex; should crash loudly if it can't be used.
         let regex = try! NSRegularExpression(pattern: "\\s+", options: [])
-        return regex.stringByReplacingMatchesInString(self as String, options: [], range: NSRange(0..<length), withTemplate: " ")
+        return regex.stringByReplacingMatches(in: self as String, options: [], range: NSRange(0..<length), withTemplate: " ")
     }
 }
 
-extension NSTimer {
-    class func scheduledTimerWithInterval(interval: NSTimeInterval, repeats: Bool = false, handler: NSTimer -> Void) -> NSTimer {
+extension String {
+    mutating func collapseWhitespace() {
+        let regex = try! NSRegularExpression(pattern: "\\s+", options: [])
+        self = regex.stringByReplacingMatches(in: self as String, options: [], range: NSRange(startIndex..., in: self), withTemplate: " ")
+    }
+}
+
+extension Timer {
+    @discardableResult class func scheduledTimerWithInterval(_ interval: TimeInterval, repeats: Bool = false, handler: @escaping (Timer) -> Void) -> Timer {
         let timer = CFRunLoopTimerCreateWithHandler(nil, CFAbsoluteTimeGetCurrent() + interval, repeats ? interval : 0, 0, 0) { timer in
-            handler(timer)
+            handler(timer!)
         }
-        CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, kCFRunLoopCommonModes)
-        return timer
+        CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, CFRunLoopMode.commonModes)
+        return timer!
     }
 }

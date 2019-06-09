@@ -6,9 +6,9 @@ import UIKit
 
 class InAppActionCollectionView: UICollectionView {
 
-    override func intrinsicContentSize() -> CGSize {
-        let contentSize = collectionViewLayout.collectionViewContentSize()
-        return CGSize(width: UIViewNoIntrinsicMetric, height: contentSize.height)
+    override var intrinsicContentSize : CGSize {
+        let contentSize = collectionViewLayout.collectionViewContentSize
+        return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height)
     }
     
 }

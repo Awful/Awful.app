@@ -1,0 +1,5 @@
+// Build settings common to all iOS extension targets.
+
+CODE_SIGN_IDENTITY[sdk=iphoneos*] = iPhone Developer
+
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../../Frameworks

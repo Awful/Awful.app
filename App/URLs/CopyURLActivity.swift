@@ -4,58 +4,54 @@
 
 import UIKit
 
-/// Adds a "Copy URL" activity. The target URL needs to go through wrapURL() before being added to the activityItems array, and no other activities will see or attempt to use the URL.
-class CopyURLActivity: UIActivity {
-    class func wrapURL(URL: NSURL) -> AnyObject {
-        return URLToCopyContainer(URL)
-    }
-    
-    override func activityType() -> String? {
-        return "com.awfulapp.Awful.CopyURL"
-    }
-    
-    override class func activityCategory() -> UIActivityCategory {
-        return .Action
-    }
-    
-    override func activityTitle() -> String? {
-        return overriddenTitle ?? "Copy URL"
-    }
-    
-    private var overriddenTitle: String?
-    
-    /// Change the title from the default "Copy URL". Useful for distinguishing the target URL from other URLs that may be activity items.
-    convenience init(title: String) {
-        self.init()
+/// Adds a "Copy URL" activity. Place the target URL in a `Box` before adding it to `activityItems` and no other activities will see or attempt to use the URL.
+final class CopyURLActivity: UIActivity {
+
+    private let overriddenTitle: String?
+
+    /// - Parameter title: Overrides the default "Copy URL" title.
+    init(title: String? = nil) {
         overriddenTitle = title
     }
+
+    /// Wraps a URL so that only the `CopyURLActivity` will try to use it.
+    final class Box {
+        fileprivate let url: URL
+
+        init(_ url: URL) {
+            self.url = url
+        }
+    }
+
+    // MARK: UIActivity
     
-    override func activityImage() -> UIImage? {
+    override var activityType: UIActivity.ActivityType {
+        return UIActivity.ActivityType("com.awfulapp.Awful.CopyURL")
+    }
+    
+    override class var activityCategory: UIActivity.Category {
+        return .action
+    }
+    
+    override var activityTitle: String? {
+        return overriddenTitle ?? LocalizedString("copy-url.title")
+    }
+    
+    override var activityImage: UIImage? {
         return UIImage(named: "copy")
     }
     
-    override func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
-        return any(activityItems) { $0 is URLToCopyContainer }
+    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
+        return activityItems.contains { $0 is Box }
     }
     
-    private var URL: NSURL!
+    fileprivate var url: URL!
     
-    override func prepareWithActivityItems(activityItems: [AnyObject]) {
-        let container = first(activityItems) { $0 is URLToCopyContainer } as! URLToCopyContainer
-        URL = container.URL
+    override func prepare(withActivityItems activityItems: [Any]) {
+        url = activityItems.lazy.compactMap({ $0 as? Box }).first?.url
     }
     
-    override func performActivity() {
-        UIPasteboard.generalPasteboard().awful_URL = URL
-    }
-    
-    /// Wraps an NSURL so that only the CopyURLActivity will try to use it.
-    private class URLToCopyContainer: NSObject {
-        let URL: NSURL
-        
-        init(_ URL: NSURL) {
-            self.URL = URL
-            super.init()
-        }
+    override func perform() {
+        UIPasteboard.general.coercedURL = url
     }
 }

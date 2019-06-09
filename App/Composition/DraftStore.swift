@@ -6,19 +6,19 @@ import Foundation
 
 /// Saves drafts to and loads drafts from disk.
 final class DraftStore {
-    private let rootDirectory: NSURL
+    fileprivate let rootDirectory: URL
     
     /// rootDirectory should be a folder that can be deleted without consequence (e.g. "Application Support/Drafts"). It need not exist when the initializer is called.
-    init(rootDirectory: NSURL) {
+    init(rootDirectory: URL) {
         self.rootDirectory = rootDirectory
     }
     
     /// Convenient singleton that saves drafts in the Application Support directory.
     class func sharedStore() -> DraftStore {
         struct Singleton {
-            static var defaultDirectory: NSURL {
-                let appSupport = try! NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-                return appSupport.URLByAppendingPathComponent("Drafts", isDirectory: true)
+            static var defaultDirectory: URL {
+                let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                return appSupport.appendingPathComponent("Drafts", isDirectory: true)
             }
             
             static let instance = DraftStore(rootDirectory: defaultDirectory)
@@ -28,29 +28,29 @@ final class DraftStore {
     }
     
     /// Returns nil if no draft exists at the given path.
-    func loadDraft(path: String) -> AnyObject? {
+    func loadDraft(_ path: String) -> AnyObject? {
         let URL = URLForDraftAtPath(path)
-        return NSKeyedUnarchiver.unarchiveObjectWithFile(URL.path!)
+        return NSKeyedUnarchiver.unarchiveObject(withFile: URL.path) as AnyObject?
     }
     
-    func saveDraft(draft: StorableDraft) {
+    func saveDraft(_ draft: StorableDraft) {
         let URL = URLForDraftAtPath(draft.storePath)
-        let enclosingDirectory = URL.URLByDeletingLastPathComponent!
+        let enclosingDirectory = URL.deletingLastPathComponent()
         do {
-            try NSFileManager.defaultManager().createDirectoryAtURL(enclosingDirectory, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(at: enclosingDirectory, withIntermediateDirectories: true, attributes: nil)
         }
         catch {
             fatalError("could not create draft folder at \(enclosingDirectory): \(error)")
         }
         
-        NSKeyedArchiver.archiveRootObject(draft, toFile: URL.path!)
+        NSKeyedArchiver.archiveRootObject(draft, toFile: URL.path)
     }
     
-    func deleteDraft(draft: StorableDraft) {
+    func deleteDraft(_ draft: StorableDraft) {
         let URL = URLForDraftAtPath(draft.storePath)
-        let enclosingDirectory = URL.URLByDeletingLastPathComponent!
+        let enclosingDirectory = URL.deletingLastPathComponent()
         do {
-            try NSFileManager.defaultManager().removeItemAtURL(enclosingDirectory)
+            try FileManager.default.removeItem(at: enclosingDirectory)
         }
         catch let error as NSError {
             if error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {
@@ -61,14 +61,14 @@ final class DraftStore {
         }
     }
     
-    private func URLForDraftAtPath(path: String) -> NSURL {
-        return NSURL(string: path, relativeToURL: rootDirectory)!.URLByAppendingPathComponent("Draft.dat")
+    fileprivate func URLForDraftAtPath(_ path: String) -> URL {
+        return URL(string: path, relativeTo: rootDirectory)!.appendingPathComponent("Draft.dat")
     }
     
     /// Deletes all drafts in the draft store's rootDirectory.
     func deleteAllDrafts() {
         do {
-            try NSFileManager.defaultManager().removeItemAtURL(rootDirectory)
+            try FileManager.default.removeItem(at: rootDirectory)
         }
         catch let error as NSError {
             if error.domain == NSCocoaErrorDomain && error.code == NSFileNoSuchFileError {

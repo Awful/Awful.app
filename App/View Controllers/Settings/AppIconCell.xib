@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AppIcon" id="gTV-IL-0wX" customClass="AppIconCell" customModule="Awful" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="O9P-5o-uGl">
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="O9P-5o-uGl" secondAttribute="height" multiplier="1:1" id="6nn-43-qxn"/>
+                        </constraints>
+                    </imageView>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="selected-tick-icon" translatesAutoresizingMaskIntoConstraints="NO" id="Tdc-Qd-Uby">
+                        <rect key="frame" x="89" y="89" width="31" height="31"/>
+                    </imageView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="O9P-5o-uGl" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="56Y-9C-rDH"/>
+                <constraint firstItem="Tdc-Qd-Uby" firstAttribute="bottom" secondItem="ZTg-uK-7eu" secondAttribute="bottom" id="diL-Eo-263"/>
+                <constraint firstItem="Tdc-Qd-Uby" firstAttribute="trailing" secondItem="ZTg-uK-7eu" secondAttribute="trailing" id="g7d-xm-y3Y"/>
+                <constraint firstItem="O9P-5o-uGl" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="kRa-qn-ncl"/>
+                <constraint firstAttribute="trailing" secondItem="O9P-5o-uGl" secondAttribute="trailing" id="nNN-NN-uoS"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="imageView" destination="O9P-5o-uGl" id="rvh-K5-ArS"/>
+                <outlet property="isSelectedIcon" destination="Tdc-Qd-Uby" id="qN5-dT-eWT"/>
+            </connections>
+            <point key="canvasLocation" x="-313" y="-324"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="selected-tick-icon" width="31" height="31"/>
+    </resources>
+</document>

@@ -29,16 +29,19 @@
     [self addBundledSmilieStore];
     
     if (SmilieKeyboardHasFullAccess()) {
-        NSError *error;
-        _appContainerSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                                       configuration:nil
-                                                                                 URL:AppContainerSmilieStoreURL()
-                                                                             options:@{NSMigratePersistentStoresAutomaticallyOption: @YES,
-                                                                                       NSInferMappingModelAutomaticallyOption: @YES}
-                                                                               error:&error];
-        if (!_appContainerSmilieStore) {
-            NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);
-            return;
+        NSURL *storeURL = AppContainerSmilieStoreURL();
+        if (storeURL) {
+            NSError *error;
+            _appContainerSmilieStore = [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                                           configuration:nil
+                                                                                     URL:storeURL
+                                                                                 options:@{NSMigratePersistentStoresAutomaticallyOption: @YES,
+                                                                                           NSInferMappingModelAutomaticallyOption: @YES}
+                                                                                   error:&error];
+            if (!_appContainerSmilieStore) {
+                NSLog(@"%s error adding app container store: %@", __PRETTY_FUNCTION__, error);
+                return;
+            }
         }
     } else {
         NSLog(@"%s bailing; keyboard does not have full access", __PRETTY_FUNCTION__);
@@ -67,6 +70,10 @@ static NSURL * BundledSmilieStoreURL(void)
 static NSURL * AppContainerSmilieStoreURL(void)
 {
     NSURL *folder = [SmilieKeyboardSharedContainerURL() URLByAppendingPathComponent:@"Data Store"];
+    if (!folder) {
+        NSLog(@"%s can't find container folder", __PRETTY_FUNCTION__);
+        return nil;
+    }
     NSError *error;
     if (![[NSFileManager defaultManager] createDirectoryAtURL:folder withIntermediateDirectories:YES attributes:nil error:&error]) {
         NSLog(@"%s error creating containing folder: %@", __PRETTY_FUNCTION__, error);

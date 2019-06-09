@@ -10,6 +10,7 @@
 #import "SmilieCell.h"
 #import "SmilieDataStore.h"
 #import "SmilieMetadata.h"
+#import <tgmath.h>
 @import UIKit;
 
 @interface SmilieFetchedDataSource () <NSFetchedResultsControllerDelegate>
@@ -166,14 +167,14 @@
     
     self.ignoringUpdates = YES; {
         id<NSFetchedResultsSectionInfo> section = self.fetchedResultsController.sections[0];
-        NSInteger delta = oldIndexPath.item < newIndexPath.item ? -1 : 1;
+        int16_t delta = oldIndexPath.item < newIndexPath.item ? -1 : 1;
         for (NSInteger i = MIN(oldIndexPath.item, newIndexPath.item), end = MAX(oldIndexPath.item, newIndexPath.item); i <= end; i++) {
             SmilieMetadata *metadata = section.objects[i];
             metadata.favoriteIndex += delta;
         }
         
         SmilieMetadata *metadata = [self.fetchedResultsController objectAtIndexPath:oldIndexPath];
-        metadata.favoriteIndex = newIndexPath.item;
+        metadata.favoriteIndex = (int16_t)newIndexPath.item;
         
         [metadata.managedObjectContext processPendingChanges];
     }

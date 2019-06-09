@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "1020"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1C66A9EE19DD3939001B9A41"
-               BuildableName = "Smilie Keyboard.appex"
-               BlueprintName = "Smilie Keyboard"
+               BuildableName = "SmilieKeyboard.appex"
+               BlueprintName = "SmilieKeyboard"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,7 +30,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Awful Debug.app"
+               BuildableName = "AwfulDebug.app"
                BlueprintName = "Awful"
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
@@ -67,22 +67,12 @@
                ReferencedContainer = "container:Awful.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1C3CF96F1A94B9B40065C964"
-               BuildableName = "AwfulCoreTests.xctest"
-               BlueprintName = "CoreTests"
-               ReferencedContainer = "container:Awful.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -105,7 +95,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>
@@ -129,7 +119,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Awful Debug.app"
+            BuildableName = "AwfulDebug.app"
             BlueprintName = "Awful"
             ReferencedContainer = "container:Awful.xcodeproj">
          </BuildableReference>

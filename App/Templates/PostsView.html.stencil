@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=320, initial-scale=0.99, viewport-fit=cover">
+
+{% if baseURL %}<base href="{{ baseURL|htmlEscape }}">{% endif %}
+
+<title>Awful - Thread</title>
+
+<style id="awful-inline-style">
+{{ stylesheet }}
+</style>
+
+<style id="awful-external-style">
+{{ externalStylesheet }}
+</style>
+
+{% fontScaleStyle %}
+
+<script>
+{{ script }}
+</script>
+
+<body
+    class="{{ userInterfaceIdiom }}
+           {% if threadID %} thread-{{ threadID|htmlEscape }} {% endif %}
+           {% if forumID %} forum-{{ forumID|htmlEscape }} {% endif %}"
+    data-version="{{ version }}"
+    data-tweet-theme="{{ tweetTheme }}">
+    
+    <div id="posts">
+    {% for post in posts %}
+        {% include "Post.html.stencil" post %}
+    {% endfor %}
+    </div>
+
+    <div id="ad">
+        {{ advertisementHTML }}
+    </div>
+
+    {% if endMessage %}
+    <div id="end">
+        End of the thread
+    </div>
+    {% endif %}
+</body>

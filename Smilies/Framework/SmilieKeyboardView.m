@@ -268,7 +268,7 @@ static NSString * const CellIdentifier = @"SmilieCell";
     
     // For aesthetics, ensure each key width is a multiple of the minimumWidth (while also considering interitem spacing).
     CGFloat interitemSpacing = collectionViewLayout.minimumInteritemSpacing;
-    CGFloat (^sizer)() = ^(NSUInteger multiple) { return minimumWidth * multiple + interitemSpacing * (multiple - 1); };
+    CGFloat (^sizer)(NSUInteger) = ^(NSUInteger multiple) { return minimumWidth * multiple + interitemSpacing * (multiple - 1); };
     NSUInteger multiple = 1;
     while (targetSize.width > sizer(multiple)) {
         multiple++;
@@ -323,13 +323,13 @@ static NSString * const CellIdentifier = @"SmilieCell";
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     if (!decelerate) {
-        SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, scrollView.contentOffset.y / scrollView.contentSize.height);
+        SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, (float)scrollView.contentOffset.y / (float)scrollView.contentSize.height);
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, scrollView.contentOffset.y / scrollView.contentSize.height);
+    SmilieKeyboardSetScrollFractionForSmilieList(self.selectedSmilieList, (float)scrollView.contentOffset.y / (float)scrollView.contentSize.height);
 }
 
 #pragma mark - UIInputViewAudioFeedback
