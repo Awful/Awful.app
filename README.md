@@ -21,7 +21,7 @@ This app is not endorsed by Something Awful.
 
 ## Build
 
-You need Xcode 10 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
+You need Xcode 11 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
 
 1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
 2. Open the Xcode workspace and build away: `xed Awful-app`
@@ -36,8 +36,9 @@ If you'd like to build to your device, set the `DEVELOPMENT_TEAM` build setting 
 
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app.
 
-* [CocoaPods][] manages dependencies. If you're updating, adding, or removing a dependency, please [install CocoaPods][CocoaPods].
+* [CocoaPods][] manages some of our dependencies. If you're updating or removing a dependency, please [install CocoaPods][CocoaPods].
     * There's a `Gemfile` nearby if you want to use a known working version of CocoaPods.
+    * If you're adding a new dependency, consider not using CocoaPods. We'd love to migrate away from it. In order of preference, try Swift Package Manager or manual integration.
     * **Even if you add a dependency directly to the Xcode project**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency. We do not use the CocoaPods-generated acknowledgements.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
@@ -65,7 +66,14 @@ Awful uses an App Group to communicate and share data with the Smilie Keyboard. 
 
 There are unit tests for the HTML scraping, to help us find problems when markup changes, running continuously via [Azure DevOps](https://dev.azure.com/awful-app/Awful%20iOS/_build?definitionId=1).
 
-[![Build Status](https://dev.azure.com/awful-app/Awful%20iOS/_apis/build/status/Awful%20iOS?branchName=change-ci)](https://dev.azure.com/awful-app/Awful%20iOS/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/awful-app/Awful%20iOS/_apis/build/status/Awful%20iOS?branchName=master)](https://dev.azure.com/awful-app/Awful%20iOS/_build/latest?definitionId=1&branchName=master)
+
+### Updating dependencies
+
+Dependencies not managed via CocoaPods or Swift Package Manager are placed in the [Vendor](Vendor) folder and manually kept up-to-date. If you think it's time to update, here's where you might find newer versions:
+
+* [Crashlytics and Fabric](https://fabric.io/kits/ios/crashlytics/update?type=manual). A download link and update instructions should be there.
+* [widgets.js](https://developer.twitter.com/en/docs/twitter-for-websites/javascript-api/guides/set-up-twitter-for-websites), the Twitter for Websites widget code. Partway down that page you'll find example code that sets the `src` attribute of a `script` element; that's where you can find the latest `widgets.js` (we bundle the whole thing in the app). As of last update the location is: https://platform.twitter.com/widgets.js
 
 ### Version scheme
 
