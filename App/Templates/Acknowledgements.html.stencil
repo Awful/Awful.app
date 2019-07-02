@@ -49,6 +49,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <section>
   <header>
+      <h1>Crashlytics &amp; Fabric</h1>
+      <a href=""></a>
+  </header>
+
+  <pre>
+Fabric: Copyright 2018 Google, Inc. All Rights Reserved. Use of this software is subject to the terms and conditions of the Fabric Software and Services Agreement located at <a href="https://fabric.io/terms">https://fabric.io/terms</a>. Crashlytics Kit: Copyright 2018 Crashlytics, Inc. All Rights Reserved. Use of this software is subject to the terms and conditions of the Crashlytics Terms of Service located at <a href="http://try.crashlytics.com/terms/terms-of-service.pdf">http://try.crashlytics.com/terms/terms-of-service.pdf</a> and the Crashlytics Privacy Policy located at <a href="http://try.crashlytics.com/terms/privacy-policy.pdf">http://try.crashlytics.com/terms/privacy-policy.pdf</a>. OSS: <a href="http://get.fabric.io/terms/opensource.txt">http://get.fabric.io/terms/opensource.txt</a>
+  </pre>
+</section>
+
+<section>
+  <header>
     <h1>FLAnimatedImage</h1>
     <a href="https://github.com/Flipboard/FLAnimatedImage">github.com/Flipboard/FLAnimatedImage</a>
   </header>

@@ -11,7 +11,6 @@ install! 'cocoapods', :generate_multiple_pod_projects => true
 target 'Awful' do
   pod '1PasswordExtension'
   pod 'ARChromeActivity'
-  pod 'Crashlytics'
   pod 'FLAnimatedImage'
   pod 'ImgurAnonymousAPI'
   pod 'KVOController'
