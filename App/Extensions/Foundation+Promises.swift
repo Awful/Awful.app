@@ -15,9 +15,9 @@ extension URLSession {
      
      - Parameter replacingIfNecessary: If `true`, will attempt `FileManager.replaceItemAt(…)` if the attempt to `moveItem(…)` fails due to `fileWriteFileExists`.
      */
-    func downloadTask(_: PMKNamespacer, with convertible: URLRequestConvertible, to saveLocation: URL, replacingIfNecessary: Bool) -> Promise<(saveLocation: URL, response: URLResponse)> {
+    func downloadTask(_: PMKNamespacer, with request: URLRequest, to saveLocation: URL, replacingIfNecessary: Bool) -> Promise<(saveLocation: URL, response: URLResponse)> {
         return Promise { seal in
-            downloadTask(with: convertible.pmkRequest, completionHandler: { tempURL, response, error in
+            downloadTask(with: request, completionHandler: { tempURL, response, error in
                 if let error = error {
                     return seal.reject(error)
                 }

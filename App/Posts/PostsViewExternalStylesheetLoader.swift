@@ -8,6 +8,7 @@ import PromiseKit
 private let Log = Logger.get()
 
 final class PostsViewExternalStylesheetLoader: NSObject {
+
     static let shared: PostsViewExternalStylesheetLoader = {
         guard let stylesheetURLString = Bundle.main.infoDictionary?[externalStylesheetURLKey] as? String else {
             fatalError("missing Info.plist key for AwfulPostsViewExternalStylesheetURL")
@@ -30,7 +31,18 @@ final class PostsViewExternalStylesheetLoader: NSObject {
             stylesheet = notification.userInfo![DidUpdateNotification.stylesheetKey] as! String
         }
     }
-    
+
+    enum StylesheetLoaderError: LocalizedError {
+        case badStatusCode(Int, Data, HTTPURLResponse)
+
+        var errorDescription: String? {
+            switch self {
+            case let .badStatusCode(code, _, response):
+                return "Invalid HTTP response (\(code) for \(response.url?.absoluteString ?? "nil")"
+            }
+        }
+    }
+
     private(set) var stylesheet: String?
     private let stylesheetURL: URL
     private let cacheFolder: URL
@@ -85,7 +97,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
                         Log.d("downloaded new stylesheet")
 
                     case let code:
-                        throw PMKHTTPError.badStatusCode(code, Data(), httpResponse)
+                        throw StylesheetLoaderError.badStatusCode(code, Data(), httpResponse)
                     }
                 }
 

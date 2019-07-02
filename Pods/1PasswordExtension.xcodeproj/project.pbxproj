@@ -1,0 +1,527 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		42AD708F7DA3A812FE6573EAA9245BC1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB980B75A3025747318389CAE92CB628 /* Foundation.framework */; };
+		443E70EDEA01F084D0679B01CD9AF190 /* OnePasswordExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = FEBCE0653AE3AB4F6B9074FCC3C23A86 /* OnePasswordExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		76B947A476340B09C23C04DCBE5AD2DD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51CB3739A2339A481839857D50D7EEEF /* UIKit.framework */; };
+		9DCD465650867A8AC2FFF3A5EC1E9520 /* 1PasswordExtension-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A03B1C90F7199DE88F269A686E4EAF26 /* 1PasswordExtension-dummy.m */; };
+		B741B2D71584CCC841BC41B142D2BD4B /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7272A6A76E2155FBAFD72987F6CE0A3 /* MobileCoreServices.framework */; };
+		BE78CBA233F6B3AE71BF7881CD013BFD /* OnePasswordExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 02FEEA8878FE75120DBEC8A94CB0CC74 /* OnePasswordExtension.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		C24A6F9489D1700D1C261A63DF937C83 /* 1Password.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCF1A85CF2A1950F38DE7AEA4A97CEF6 /* 1Password.xcassets */; };
+		E1542571D0E5D9C1A1B1E6EAEEBFC029 /* OnePasswordExtensionResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9288F136F89167E6FD17FF04A9EF1C15 /* OnePasswordExtensionResources.bundle */; };
+		E3ADC2D8815111F4DC9A9C39425F1902 /* 1PasswordExtension-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 85673D39431A4287B3864CE8831BECEC /* 1PasswordExtension-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		02BB8000A0B25C7CF4BC4B3C38B67976 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D7DC30D22CB4A3F75E5F655C7459C6BB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3171E20B357A4539E64C4E60070B4A35;
+			remoteInfo = "1PasswordExtension-OnePasswordExtensionResources";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		02FEEA8878FE75120DBEC8A94CB0CC74 /* OnePasswordExtension.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = OnePasswordExtension.m; sourceTree = "<group>"; };
+		13781556CE843F2CCDD49FBB347DB261 /* 1PasswordExtension.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = 1PasswordExtension.modulemap; sourceTree = "<group>"; };
+		4699FD25843B58DEE519CDD5FABEE50B /* 1PasswordExtension-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "1PasswordExtension-Info.plist"; sourceTree = "<group>"; };
+		51CB3739A2339A481839857D50D7EEEF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		620B3E75670DD828F49A807EBA07A63C /* ResourceBundle-OnePasswordExtensionResources-1PasswordExtension-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-OnePasswordExtensionResources-1PasswordExtension-Info.plist"; sourceTree = "<group>"; };
+		80B1655918E608787C3B3F28355591A4 /* 1PasswordExtension.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = 1PasswordExtension.xcconfig; sourceTree = "<group>"; };
+		85673D39431A4287B3864CE8831BECEC /* 1PasswordExtension-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "1PasswordExtension-umbrella.h"; sourceTree = "<group>"; };
+		9288F136F89167E6FD17FF04A9EF1C15 /* OnePasswordExtensionResources.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = OnePasswordExtensionResources.bundle; path = "1PasswordExtension-OnePasswordExtensionResources.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A03B1C90F7199DE88F269A686E4EAF26 /* 1PasswordExtension-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "1PasswordExtension-dummy.m"; sourceTree = "<group>"; };
+		A265174A24A4B131EE604B2551D7DDE6 /* OnePasswordExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = OnePasswordExtension.framework; path = 1PasswordExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB980B75A3025747318389CAE92CB628 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		BCF1A85CF2A1950F38DE7AEA4A97CEF6 /* 1Password.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = 1Password.xcassets; sourceTree = "<group>"; };
+		C7272A6A76E2155FBAFD72987F6CE0A3 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
+		F8F62CA1A627CFCB7A6171379315BD65 /* 1PasswordExtension-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "1PasswordExtension-prefix.pch"; sourceTree = "<group>"; };
+		FEBCE0653AE3AB4F6B9074FCC3C23A86 /* OnePasswordExtension.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = OnePasswordExtension.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E0EC3F7977A8B4D66B80E70AEC15DBEF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				42AD708F7DA3A812FE6573EAA9245BC1 /* Foundation.framework in Frameworks */,
+				B741B2D71584CCC841BC41B142D2BD4B /* MobileCoreServices.framework in Frameworks */,
+				76B947A476340B09C23C04DCBE5AD2DD /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBF7AEAC9696A6B66041311C335930F5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		000A1D7A54D1BF25A2B79311ACB02EE2 /* 1PasswordExtension */ = {
+			isa = PBXGroup;
+			children = (
+				FEBCE0653AE3AB4F6B9074FCC3C23A86 /* OnePasswordExtension.h */,
+				02FEEA8878FE75120DBEC8A94CB0CC74 /* OnePasswordExtension.m */,
+				2E66B515BB94FFAA83A84986B81E01F9 /* Resources */,
+				DFFEA3876EC5846A5979C5CE7E5B5E1E /* Support Files */,
+			);
+			name = 1PasswordExtension;
+			path = 1PasswordExtension;
+			sourceTree = "<group>";
+		};
+		2E66B515BB94FFAA83A84986B81E01F9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BCF1A85CF2A1950F38DE7AEA4A97CEF6 /* 1Password.xcassets */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		43B92FA13DD4F1BCC573B376C3EA9F53 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				AB980B75A3025747318389CAE92CB628 /* Foundation.framework */,
+				C7272A6A76E2155FBAFD72987F6CE0A3 /* MobileCoreServices.framework */,
+				51CB3739A2339A481839857D50D7EEEF /* UIKit.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		6E96A2385DD118EFEB11B5F14AA71032 = {
+			isa = PBXGroup;
+			children = (
+				000A1D7A54D1BF25A2B79311ACB02EE2 /* 1PasswordExtension */,
+				FDA57920BE5AF4FA19556051C66F4DF6 /* Frameworks */,
+				8E5C8A0F23468317C30216720F3000DA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8E5C8A0F23468317C30216720F3000DA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A265174A24A4B131EE604B2551D7DDE6 /* OnePasswordExtension.framework */,
+				9288F136F89167E6FD17FF04A9EF1C15 /* OnePasswordExtensionResources.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DFFEA3876EC5846A5979C5CE7E5B5E1E /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				13781556CE843F2CCDD49FBB347DB261 /* 1PasswordExtension.modulemap */,
+				80B1655918E608787C3B3F28355591A4 /* 1PasswordExtension.xcconfig */,
+				A03B1C90F7199DE88F269A686E4EAF26 /* 1PasswordExtension-dummy.m */,
+				4699FD25843B58DEE519CDD5FABEE50B /* 1PasswordExtension-Info.plist */,
+				F8F62CA1A627CFCB7A6171379315BD65 /* 1PasswordExtension-prefix.pch */,
+				85673D39431A4287B3864CE8831BECEC /* 1PasswordExtension-umbrella.h */,
+				620B3E75670DD828F49A807EBA07A63C /* ResourceBundle-OnePasswordExtensionResources-1PasswordExtension-Info.plist */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/1PasswordExtension";
+			sourceTree = "<group>";
+		};
+		FDA57920BE5AF4FA19556051C66F4DF6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				43B92FA13DD4F1BCC573B376C3EA9F53 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9BFD3F37486920D1C215EAA2BD00D2FE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3ADC2D8815111F4DC9A9C39425F1902 /* 1PasswordExtension-umbrella.h in Headers */,
+				443E70EDEA01F084D0679B01CD9AF190 /* OnePasswordExtension.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		3171E20B357A4539E64C4E60070B4A35 /* 1PasswordExtension-OnePasswordExtensionResources */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 503FB3209D81CA716C183C02AAA801EE /* Build configuration list for PBXNativeTarget "1PasswordExtension-OnePasswordExtensionResources" */;
+			buildPhases = (
+				B91AB5822E6C03D41057B510F5DF565A /* Sources */,
+				EBF7AEAC9696A6B66041311C335930F5 /* Frameworks */,
+				CA38DA5B410465532AC4D237B9F0D917 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "1PasswordExtension-OnePasswordExtensionResources";
+			productName = "1PasswordExtension-OnePasswordExtensionResources";
+			productReference = 9288F136F89167E6FD17FF04A9EF1C15 /* OnePasswordExtensionResources.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		A511897B31D78AEAFD8D2EF9CFD547B6 /* 1PasswordExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEC30D13AFD43306B4D4B0501137E729 /* Build configuration list for PBXNativeTarget "1PasswordExtension" */;
+			buildPhases = (
+				9BFD3F37486920D1C215EAA2BD00D2FE /* Headers */,
+				5FD0814BE02EE621CC8D0F92E6A0DCC3 /* Sources */,
+				E0EC3F7977A8B4D66B80E70AEC15DBEF /* Frameworks */,
+				D0430005984BDF0B279768FFBEEDC447 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				42F01E4F7D059176F38151CC4B2D5B21 /* PBXTargetDependency */,
+			);
+			name = 1PasswordExtension;
+			productName = 1PasswordExtension;
+			productReference = A265174A24A4B131EE604B2551D7DDE6 /* OnePasswordExtension.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D7DC30D22CB4A3F75E5F655C7459C6BB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+			};
+			buildConfigurationList = A12243D4BD85FA94513E4E58EF01D09B /* Build configuration list for PBXProject "1PasswordExtension" */;
+			compatibilityVersion = "Xcode 11.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6E96A2385DD118EFEB11B5F14AA71032;
+			productRefGroup = 8E5C8A0F23468317C30216720F3000DA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A511897B31D78AEAFD8D2EF9CFD547B6 /* 1PasswordExtension */,
+				3171E20B357A4539E64C4E60070B4A35 /* 1PasswordExtension-OnePasswordExtensionResources */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CA38DA5B410465532AC4D237B9F0D917 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C24A6F9489D1700D1C261A63DF937C83 /* 1Password.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D0430005984BDF0B279768FFBEEDC447 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1542571D0E5D9C1A1B1E6EAEEBFC029 /* OnePasswordExtensionResources.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5FD0814BE02EE621CC8D0F92E6A0DCC3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9DCD465650867A8AC2FFF3A5EC1E9520 /* 1PasswordExtension-dummy.m in Sources */,
+				BE78CBA233F6B3AE71BF7881CD013BFD /* OnePasswordExtension.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B91AB5822E6C03D41057B510F5DF565A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		42F01E4F7D059176F38151CC4B2D5B21 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "1PasswordExtension-OnePasswordExtensionResources";
+			target = 3171E20B357A4539E64C4E60070B4A35 /* 1PasswordExtension-OnePasswordExtensionResources */;
+			targetProxy = 02BB8000A0B25C7CF4BC4B3C38B67976 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		75A0075D5EBC8C1A91F9E81AB1A52EF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 80B1655918E608787C3B3F28355591A4 /* 1PasswordExtension.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/1PasswordExtension/1PasswordExtension-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/1PasswordExtension/1PasswordExtension-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/1PasswordExtension/1PasswordExtension.modulemap";
+				PRODUCT_MODULE_NAME = OnePasswordExtension;
+				PRODUCT_NAME = OnePasswordExtension;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		85831DF09AD7A5749173FB7BC2B04AFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		B8A4442E4C6ECBE0D15A5638494F3D00 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 80B1655918E608787C3B3F28355591A4 /* 1PasswordExtension.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/1PasswordExtension";
+				INFOPLIST_FILE = "Target Support Files/1PasswordExtension/ResourceBundle-OnePasswordExtensionResources-1PasswordExtension-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = OnePasswordExtensionResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		C973337D9C919B35FFAB30F2DF821A6B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 80B1655918E608787C3B3F28355591A4 /* 1PasswordExtension.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/1PasswordExtension";
+				INFOPLIST_FILE = "Target Support Files/1PasswordExtension/ResourceBundle-OnePasswordExtensionResources-1PasswordExtension-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = OnePasswordExtensionResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		E8C8915F921D9C48C427682475B2DA95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		F9DDAAC84C8D62BA13559559735B039A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 80B1655918E608787C3B3F28355591A4 /* 1PasswordExtension.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/1PasswordExtension/1PasswordExtension-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/1PasswordExtension/1PasswordExtension-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/1PasswordExtension/1PasswordExtension.modulemap";
+				PRODUCT_MODULE_NAME = OnePasswordExtension;
+				PRODUCT_NAME = OnePasswordExtension;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		503FB3209D81CA716C183C02AAA801EE /* Build configuration list for PBXNativeTarget "1PasswordExtension-OnePasswordExtensionResources" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B8A4442E4C6ECBE0D15A5638494F3D00 /* Debug */,
+				C973337D9C919B35FFAB30F2DF821A6B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A12243D4BD85FA94513E4E58EF01D09B /* Build configuration list for PBXProject "1PasswordExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8C8915F921D9C48C427682475B2DA95 /* Debug */,
+				85831DF09AD7A5749173FB7BC2B04AFD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEC30D13AFD43306B4D4B0501137E729 /* Build configuration list for PBXNativeTarget "1PasswordExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9DDAAC84C8D62BA13559559735B039A /* Debug */,
+				75A0075D5EBC8C1A91F9E81AB1A52EF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D7DC30D22CB4A3F75E5F655C7459C6BB /* Project object */;
+}

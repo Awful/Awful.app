@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "HTMLReader",
+        "repositoryURL": "https://github.com/nolanw/HTMLReader",
+        "state": {
+          "branch": null,
+          "revision": "46afbc51f008298b22716f91a36c96e398a83c3d",
+          "version": "2.1.4"
+        }
+      },
+      {
+        "package": "PromiseKit",
+        "repositoryURL": "https://github.com/mxcl/PromiseKit",
+        "state": {
+          "branch": null,
+          "revision": "2fdb8c64a85e2081388532dbc61eb348a0793b1c",
+          "version": "6.10.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

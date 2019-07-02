@@ -1,0 +1,433 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0280EB5EC5DE1C54238B382E5A264C04 /* ARChromeActivity@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F6A85BD01CC203450E462A9F932881E8 /* ARChromeActivity@2x~ipad.png */; };
+		11496392725BCD964DAF07FDABEF7873 /* ARChromeActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = A02EA4D9B2555F9E362EF3A565BFCBAE /* ARChromeActivity.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0 -w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		120AE257600423AF75C596A4515FD98B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B112D885125107C024EAB999E0A146AF /* Foundation.framework */; };
+		91413F451FF56F6C7B84216F6F31D7DC /* ARChromeActivity@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D50D0CCE3D799E73BF22866CC42C0EDD /* ARChromeActivity@3x.png */; };
+		AC7010A34250722604EDA3561AEB1A7D /* ARChromeActivity@3x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6AFADABCA9C44A8F18979DE7465D79E9 /* ARChromeActivity@3x~ipad.png */; };
+		B994F75DCF96875F04B5F92C8D85E2B3 /* ARChromeActivity.png in Resources */ = {isa = PBXBuildFile; fileRef = AC9BC773D94E137545FD482B6FBE09FC /* ARChromeActivity.png */; };
+		BFBEED1D58CD40097E010B9909A4BBE4 /* ARChromeActivity@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BEACD9BCA1FB4F50669BAC159176773 /* ARChromeActivity@2x.png */; };
+		C261F8A5BFB18056AD99C9AD5D979934 /* ARChromeActivity-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 8845C6500D8D30B4C6C2D3C0563164CA /* ARChromeActivity-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E9E4819FDBF2B01DC076241F132DE04B /* ARChromeActivity~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A28B2D3A59E4F3E897C805A211EFAEA3 /* ARChromeActivity~ipad.png */; };
+		F378F7BDDDE6CA0F149BE3365E29DD0A /* ARChromeActivity-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D09E12119C1DFBDF1651D9874A14A4F6 /* ARChromeActivity-dummy.m */; };
+		F482FDBB4026C42E309F127651DF9701 /* ARChromeActivity.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B38E2901825D48BF05A59D354466E27 /* ARChromeActivity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		07A9B6670628186D62B8666959F8A6D2 /* ARChromeActivity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ARChromeActivity.framework; path = ARChromeActivity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AFE0EC73087BD9CC1FFFDCF405EF008 /* ARChromeActivity.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = ARChromeActivity.modulemap; sourceTree = "<group>"; };
+		1B38E2901825D48BF05A59D354466E27 /* ARChromeActivity.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ARChromeActivity.h; path = ARChromeActivity/ARChromeActivity.h; sourceTree = "<group>"; };
+		57F07BF842B947D7BFC99A0724387386 /* ARChromeActivity.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ARChromeActivity.xcconfig; sourceTree = "<group>"; };
+		6AFADABCA9C44A8F18979DE7465D79E9 /* ARChromeActivity@3x~ipad.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "ARChromeActivity@3x~ipad.png"; path = "ARChromeActivity/ARChromeActivity@3x~ipad.png"; sourceTree = "<group>"; };
+		6E0D84FF2108426F9F93A0C0A329EB8C /* ARChromeActivity-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ARChromeActivity-Info.plist"; sourceTree = "<group>"; };
+		7BEACD9BCA1FB4F50669BAC159176773 /* ARChromeActivity@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "ARChromeActivity@2x.png"; path = "ARChromeActivity/ARChromeActivity@2x.png"; sourceTree = "<group>"; };
+		84BBEE3B899801E34F45B5C0A65F75F1 /* ARChromeActivity-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ARChromeActivity-prefix.pch"; sourceTree = "<group>"; };
+		8845C6500D8D30B4C6C2D3C0563164CA /* ARChromeActivity-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ARChromeActivity-umbrella.h"; sourceTree = "<group>"; };
+		A02EA4D9B2555F9E362EF3A565BFCBAE /* ARChromeActivity.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = ARChromeActivity.m; path = ARChromeActivity/ARChromeActivity.m; sourceTree = "<group>"; };
+		A28B2D3A59E4F3E897C805A211EFAEA3 /* ARChromeActivity~ipad.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "ARChromeActivity~ipad.png"; path = "ARChromeActivity/ARChromeActivity~ipad.png"; sourceTree = "<group>"; };
+		AC9BC773D94E137545FD482B6FBE09FC /* ARChromeActivity.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = ARChromeActivity.png; path = ARChromeActivity/ARChromeActivity.png; sourceTree = "<group>"; };
+		B112D885125107C024EAB999E0A146AF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		D09E12119C1DFBDF1651D9874A14A4F6 /* ARChromeActivity-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "ARChromeActivity-dummy.m"; sourceTree = "<group>"; };
+		D50D0CCE3D799E73BF22866CC42C0EDD /* ARChromeActivity@3x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "ARChromeActivity@3x.png"; path = "ARChromeActivity/ARChromeActivity@3x.png"; sourceTree = "<group>"; };
+		F6A85BD01CC203450E462A9F932881E8 /* ARChromeActivity@2x~ipad.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "ARChromeActivity@2x~ipad.png"; path = "ARChromeActivity/ARChromeActivity@2x~ipad.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1EBFB3D010F52E1F6E562635D2E468D1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				120AE257600423AF75C596A4515FD98B /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		27477B031306234AACCEEA8E8B647CD5 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				B112D885125107C024EAB999E0A146AF /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		2C169B9F99459A97CFF8ED99A399839F /* ARChromeActivity */ = {
+			isa = PBXGroup;
+			children = (
+				1B38E2901825D48BF05A59D354466E27 /* ARChromeActivity.h */,
+				A02EA4D9B2555F9E362EF3A565BFCBAE /* ARChromeActivity.m */,
+				83A1E46A184D5F4E68CFDEFCB58EC9F0 /* Resources */,
+				703CE2D3D73AF86638E7DBF7E90F3BC7 /* Support Files */,
+			);
+			name = ARChromeActivity;
+			path = ARChromeActivity;
+			sourceTree = "<group>";
+		};
+		703CE2D3D73AF86638E7DBF7E90F3BC7 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				1AFE0EC73087BD9CC1FFFDCF405EF008 /* ARChromeActivity.modulemap */,
+				57F07BF842B947D7BFC99A0724387386 /* ARChromeActivity.xcconfig */,
+				D09E12119C1DFBDF1651D9874A14A4F6 /* ARChromeActivity-dummy.m */,
+				6E0D84FF2108426F9F93A0C0A329EB8C /* ARChromeActivity-Info.plist */,
+				84BBEE3B899801E34F45B5C0A65F75F1 /* ARChromeActivity-prefix.pch */,
+				8845C6500D8D30B4C6C2D3C0563164CA /* ARChromeActivity-umbrella.h */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/ARChromeActivity";
+			sourceTree = "<group>";
+		};
+		83A1E46A184D5F4E68CFDEFCB58EC9F0 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AC9BC773D94E137545FD482B6FBE09FC /* ARChromeActivity.png */,
+				7BEACD9BCA1FB4F50669BAC159176773 /* ARChromeActivity@2x.png */,
+				F6A85BD01CC203450E462A9F932881E8 /* ARChromeActivity@2x~ipad.png */,
+				D50D0CCE3D799E73BF22866CC42C0EDD /* ARChromeActivity@3x.png */,
+				6AFADABCA9C44A8F18979DE7465D79E9 /* ARChromeActivity@3x~ipad.png */,
+				A28B2D3A59E4F3E897C805A211EFAEA3 /* ARChromeActivity~ipad.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		9624C376E36793F0845A510CE49D0D9B = {
+			isa = PBXGroup;
+			children = (
+				2C169B9F99459A97CFF8ED99A399839F /* ARChromeActivity */,
+				C8D42451C63A1A771F6CC81927AC5F75 /* Frameworks */,
+				9EE91A5B1F3C8632FB3787EE722CF3D6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9EE91A5B1F3C8632FB3787EE722CF3D6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07A9B6670628186D62B8666959F8A6D2 /* ARChromeActivity.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C8D42451C63A1A771F6CC81927AC5F75 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				27477B031306234AACCEEA8E8B647CD5 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		7F4FE51795B87E2E7E8F7A5C2A1FA799 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C261F8A5BFB18056AD99C9AD5D979934 /* ARChromeActivity-umbrella.h in Headers */,
+				F482FDBB4026C42E309F127651DF9701 /* ARChromeActivity.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		A02404F6139351CCC9A64978C7EEB1F8 /* ARChromeActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 137831FAFA660F03FE1648A3A2B6F1ED /* Build configuration list for PBXNativeTarget "ARChromeActivity" */;
+			buildPhases = (
+				7F4FE51795B87E2E7E8F7A5C2A1FA799 /* Headers */,
+				DDC8075374957044F7DD30D5235D725C /* Sources */,
+				1EBFB3D010F52E1F6E562635D2E468D1 /* Frameworks */,
+				8B782065EF2E0ED0FC15DE3708EEB142 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ARChromeActivity;
+			productName = ARChromeActivity;
+			productReference = 07A9B6670628186D62B8666959F8A6D2 /* ARChromeActivity.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		70338E6ABEB4405BD46F8039E63B5205 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+			};
+			buildConfigurationList = 14FFE952C89FAA1180C24FDA6609E994 /* Build configuration list for PBXProject "ARChromeActivity" */;
+			compatibilityVersion = "Xcode 11.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9624C376E36793F0845A510CE49D0D9B;
+			productRefGroup = 9EE91A5B1F3C8632FB3787EE722CF3D6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A02404F6139351CCC9A64978C7EEB1F8 /* ARChromeActivity */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8B782065EF2E0ED0FC15DE3708EEB142 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B994F75DCF96875F04B5F92C8D85E2B3 /* ARChromeActivity.png in Resources */,
+				BFBEED1D58CD40097E010B9909A4BBE4 /* ARChromeActivity@2x.png in Resources */,
+				0280EB5EC5DE1C54238B382E5A264C04 /* ARChromeActivity@2x~ipad.png in Resources */,
+				91413F451FF56F6C7B84216F6F31D7DC /* ARChromeActivity@3x.png in Resources */,
+				AC7010A34250722604EDA3561AEB1A7D /* ARChromeActivity@3x~ipad.png in Resources */,
+				E9E4819FDBF2B01DC076241F132DE04B /* ARChromeActivity~ipad.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DDC8075374957044F7DD30D5235D725C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F378F7BDDDE6CA0F149BE3365E29DD0A /* ARChromeActivity-dummy.m in Sources */,
+				11496392725BCD964DAF07FDABEF7873 /* ARChromeActivity.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5828EF8F3B964AE7AC175F4FE5FD7A98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		7C36BBBF55498B6C08FD04FAA8EB9A0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		CBF943C091CCEE42CCEAAC06E1DD6999 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 57F07BF842B947D7BFC99A0724387386 /* ARChromeActivity.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/ARChromeActivity/ARChromeActivity-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/ARChromeActivity/ARChromeActivity-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/ARChromeActivity/ARChromeActivity.modulemap";
+				PRODUCT_MODULE_NAME = ARChromeActivity;
+				PRODUCT_NAME = ARChromeActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		F31581F3E157416CD4D0F57DFF37D415 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 57F07BF842B947D7BFC99A0724387386 /* ARChromeActivity.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/ARChromeActivity/ARChromeActivity-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/ARChromeActivity/ARChromeActivity-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/ARChromeActivity/ARChromeActivity.modulemap";
+				PRODUCT_MODULE_NAME = ARChromeActivity;
+				PRODUCT_NAME = ARChromeActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		137831FAFA660F03FE1648A3A2B6F1ED /* Build configuration list for PBXNativeTarget "ARChromeActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F31581F3E157416CD4D0F57DFF37D415 /* Debug */,
+				CBF943C091CCEE42CCEAAC06E1DD6999 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		14FFE952C89FAA1180C24FDA6609E994 /* Build configuration list for PBXProject "ARChromeActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C36BBBF55498B6C08FD04FAA8EB9A0D /* Debug */,
+				5828EF8F3B964AE7AC175F4FE5FD7A98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 70338E6ABEB4405BD46F8039E63B5205 /* Project object */;
+}

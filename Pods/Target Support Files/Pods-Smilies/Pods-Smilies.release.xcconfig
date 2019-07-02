@@ -1,9 +1,9 @@
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage" "${PODS_CONFIGURATION_BUILD_DIR}/HTMLReader"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage/FLAnimatedImage.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/HTMLReader/HTMLReader.framework/Headers"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage/FLAnimatedImage.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks' '@executable_path/../../Frameworks'
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage/FLAnimatedImage.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/HTMLReader/HTMLReader.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/HTMLReader"
-OTHER_LDFLAGS = $(inherited) -framework "CoreGraphics" -framework "FLAnimatedImage" -framework "HTMLReader" -framework "ImageIO" -framework "MobileCoreServices" -framework "QuartzCore"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage/FLAnimatedImage.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/FLAnimatedImage"
+OTHER_LDFLAGS = $(inherited) -framework "CoreGraphics" -framework "FLAnimatedImage" -framework "ImageIO" -framework "MobileCoreServices" -framework "QuartzCore"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/..

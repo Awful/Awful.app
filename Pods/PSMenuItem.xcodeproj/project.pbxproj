@@ -1,0 +1,405 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0 -w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		AF880930007CD25835AEE0E31452F7A6 /* PSMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B6B903841F02FECC8E573B506AD723B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A813DE82382F632FD3D4821B5A5E9F6 /* Foundation.framework */; };
+		EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */; };
+		FA08B28829768C38DC1AC07379EE879A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86706842E6DD3E97FEF60F7A557477D6 /* UIKit.framework */; };
+		FC0EA1BCCE1E5CDCBB9B722A7015EB1C /* PSMenuItem-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = EED1B7DEFE44BA2055423C8E53291AC1 /* PSMenuItem-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1A813DE82382F632FD3D4821B5A5E9F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PSMenuItem.xcconfig; sourceTree = "<group>"; };
+		855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "PSMenuItem-dummy.m"; sourceTree = "<group>"; };
+		86706842E6DD3E97FEF60F7A557477D6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		C0AFBE06F02A973A03181773F06B1814 /* PSMenuItem-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PSMenuItem-prefix.pch"; sourceTree = "<group>"; };
+		DB58916A01FBB5AEFC99B719BC30106B /* PSMenuItem-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "PSMenuItem-Info.plist"; sourceTree = "<group>"; };
+		E4BB79653E5DFA6A8F3F6BB83DEAB6A1 /* PSMenuItem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = PSMenuItem.framework; path = PSMenuItem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EED1B7DEFE44BA2055423C8E53291AC1 /* PSMenuItem-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PSMenuItem-umbrella.h"; sourceTree = "<group>"; };
+		F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
+		F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
+		F814F3180C9B312E374671D517E86E75 /* PSMenuItem.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = PSMenuItem.modulemap; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5D61285DB37B2E602F68E150191F4D0F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6B903841F02FECC8E573B506AD723B5 /* Foundation.framework in Frameworks */,
+				FA08B28829768C38DC1AC07379EE879A /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20719B2992AA38BC9581A6AC6A75F681 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E4BB79653E5DFA6A8F3F6BB83DEAB6A1 /* PSMenuItem.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		274369E228A5A1DF3AFC448CADB3F7F4 /* PSMenuItem */ = {
+			isa = PBXGroup;
+			children = (
+				F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */,
+				F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */,
+				668727185A197003901A001F14B74835 /* Support Files */,
+			);
+			name = PSMenuItem;
+			path = PSMenuItem;
+			sourceTree = "<group>";
+		};
+		668727185A197003901A001F14B74835 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				F814F3180C9B312E374671D517E86E75 /* PSMenuItem.modulemap */,
+				5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */,
+				855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */,
+				DB58916A01FBB5AEFC99B719BC30106B /* PSMenuItem-Info.plist */,
+				C0AFBE06F02A973A03181773F06B1814 /* PSMenuItem-prefix.pch */,
+				EED1B7DEFE44BA2055423C8E53291AC1 /* PSMenuItem-umbrella.h */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/PSMenuItem";
+			sourceTree = "<group>";
+		};
+		9C52134E10A5058A1317C270E041F038 = {
+			isa = PBXGroup;
+			children = (
+				B78464B7C7CD5EAC826CA7B12AFEF907 /* Frameworks */,
+				20719B2992AA38BC9581A6AC6A75F681 /* Products */,
+				274369E228A5A1DF3AFC448CADB3F7F4 /* PSMenuItem */,
+			);
+			sourceTree = "<group>";
+		};
+		B78464B7C7CD5EAC826CA7B12AFEF907 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D2F90DB0898A560E71B5029178C2AB5D /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D2F90DB0898A560E71B5029178C2AB5D /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				1A813DE82382F632FD3D4821B5A5E9F6 /* Foundation.framework */,
+				86706842E6DD3E97FEF60F7A557477D6 /* UIKit.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2A035886A2B5730D6F2F1D5CD9A5414A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC0EA1BCCE1E5CDCBB9B722A7015EB1C /* PSMenuItem-umbrella.h in Headers */,
+				AF880930007CD25835AEE0E31452F7A6 /* PSMenuItem.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		90AD4897D9EBBEB7C6182AF1ECAACB9E /* PSMenuItem */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7EA8F05EF2C8D46FC4753C926ED56458 /* Build configuration list for PBXNativeTarget "PSMenuItem" */;
+			buildPhases = (
+				2A035886A2B5730D6F2F1D5CD9A5414A /* Headers */,
+				46734520E1F7835019A6680A0465B4DA /* Sources */,
+				5D61285DB37B2E602F68E150191F4D0F /* Frameworks */,
+				7198A86220125ABB8598352497BC36E7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PSMenuItem;
+			productName = PSMenuItem;
+			productReference = E4BB79653E5DFA6A8F3F6BB83DEAB6A1 /* PSMenuItem.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		36898075765C40A12203132A91AF03BE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+			};
+			buildConfigurationList = D4D3CE0826F426CF2E36BBB59442D72B /* Build configuration list for PBXProject "PSMenuItem" */;
+			compatibilityVersion = "Xcode 11.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9C52134E10A5058A1317C270E041F038;
+			productRefGroup = 20719B2992AA38BC9581A6AC6A75F681 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				90AD4897D9EBBEB7C6182AF1ECAACB9E /* PSMenuItem */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7198A86220125ABB8598352497BC36E7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		46734520E1F7835019A6680A0465B4DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */,
+				80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		13A0DD7F68E71463B83E97DAA2A70DE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		6ECC3068B3DC68F2D1D9B21127C6C803 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/PSMenuItem/PSMenuItem-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/PSMenuItem/PSMenuItem-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/PSMenuItem/PSMenuItem.modulemap";
+				PRODUCT_MODULE_NAME = PSMenuItem;
+				PRODUCT_NAME = PSMenuItem;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		83C78988DE3AB0DCC955887F42C7E9FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/PSMenuItem/PSMenuItem-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/PSMenuItem/PSMenuItem-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/PSMenuItem/PSMenuItem.modulemap";
+				PRODUCT_MODULE_NAME = PSMenuItem;
+				PRODUCT_NAME = PSMenuItem;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		897B92400FB611A2FF6377AF507DFB68 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7EA8F05EF2C8D46FC4753C926ED56458 /* Build configuration list for PBXNativeTarget "PSMenuItem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6ECC3068B3DC68F2D1D9B21127C6C803 /* Debug */,
+				83C78988DE3AB0DCC955887F42C7E9FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4D3CE0826F426CF2E36BBB59442D72B /* Build configuration list for PBXProject "PSMenuItem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13A0DD7F68E71463B83E97DAA2A70DE1 /* Debug */,
+				897B92400FB611A2FF6377AF507DFB68 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 36898075765C40A12203132A91AF03BE /* Project object */;
+}
