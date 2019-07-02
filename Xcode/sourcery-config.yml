@@ -1,7 +1,5 @@
-project:
-  file: "Awful.xcodeproj"
-  target:
-    name: "Awful"
+sources:
+  - "../App/Settings/UserDefaults+Settings.swift"
 templates:
   - "../App/Sourcery"
 output:
