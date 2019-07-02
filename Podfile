@@ -1,4 +1,4 @@
-source 'https://github.com/CocoaPods/Specs.git'
+source 'https://cdn.cocoapods.org/'
 platform :ios, '9.0'
 project 'Xcode/Awful'
 
@@ -6,17 +6,17 @@ inhibit_all_warnings!
 use_frameworks!
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
+install! 'cocoapods', :generate_multiple_pod_projects => true
+
 target 'Awful' do
   pod '1PasswordExtension'
   pod 'ARChromeActivity'
   pod 'Crashlytics'
   pod 'FLAnimatedImage'
-  pod 'HTMLReader'
   pod 'ImgurAnonymousAPI'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
   pod 'Nuke'
-  pod 'PromiseKit'
   pod 'Sourcery'
   pod 'Stencil'
   pod 'TUSafariActivity'
@@ -33,38 +33,29 @@ target 'Awful' do
   target :AwfulTests
 end
 
-target 'Core' do
-  pod 'HTMLReader'
-  pod 'PromiseKit'
-
-  target 'CoreTests'
-end
-
 target :Smilies do
   pod 'FLAnimatedImage'
-  pod 'HTMLReader'
 
   target :SmiliesTests
 end
 
 target :SmilieExtractor do
   pod 'FLAnimatedImage'
-  pod 'HTMLReader'
 end
 
 post_install do |installer|
-  extension_safe_pods = %w[FLAnimatedImage HTMLReader PromiseKit]
+  extension_safe_pods = %w[FLAnimatedImage]
   swift_4_2_pods = %w[PullToRefresher]
-
-  installer.pods_project.targets.each do |target|
-    if extension_safe_pods.include?(target.name)
-      target.build_configurations.each do |config|
+  
+  installer.pod_target_subprojects.each do |subproj|
+    if extension_safe_pods.include?(subproj.project_name.to_s)
+      subproj.build_configurations.each do |config|
         config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
       end
     end
-
-    if swift_4_2_pods.include?(target.name)
-      target.build_configurations.each do |config|
+    
+    if swift_4_2_pods.include?(subproj.project_name.to_s)
+      subproj.build_configurations.each do |config|
         config.build_settings['SWIFT_VERSION'] = '4.2'
       end
     end

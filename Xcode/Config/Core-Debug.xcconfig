@@ -1,4 +1,0 @@
-// Build settings for the AwfulCore framework target in the Debug configuration.
-
-#include "Framework.xcconfig"
-#include "../../Pods/Target Support Files/Pods-Core/Pods-Core.debug.xcconfig"
