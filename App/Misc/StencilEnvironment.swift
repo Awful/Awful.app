@@ -44,9 +44,8 @@ final class StencilEnvironment {
         ext.registerFilter("htmlEscape", filter: htmlEscape)
         
         ext.registerSimpleTag("fontScaleStyle", handler: fontScaleStyle)
-        
-        let bundle = Bundle(for: StencilEnvironment.self)
-        let loader = FileSystemLoader(bundle: [bundle])
+
+        let loader = BundleResourceLoader(bundle: Bundle(for: StencilEnvironment.self))
         return .init(loader: loader, extensions: [ext])
     }()
     
@@ -56,6 +55,35 @@ final class StencilEnvironment {
 
 protocol StencilContextConvertible {
     var context: [String: Any] { get }
+}
+
+/// Loads templates from a bundle's Resources directory. Unlike `FileSystemLoader`, this loader does not assume that resources are in the root of the bundle.
+class BundleResourceLoader: Loader {
+    private let resourceURL: URL?
+
+    init(bundle: Bundle) {
+        resourceURL = bundle.resourceURL
+    }
+
+    func loadTemplate(name: String, environment: Stencil.Environment) throws -> Template {
+        guard let url = URL(string: name, relativeTo: resourceURL) else {
+            throw TemplateDoesNotExist(templateNames: [name], loader: self)
+        }
+        let content = try String(contentsOf: url, encoding: .utf8)
+        return environment.templateClass.init(templateString: content, environment: environment, name: name)
+    }
+
+    func loadTemplate(names: [String], environment: Stencil.Environment) throws -> Template {
+        for name in names {
+            guard let url = URL(string: name, relativeTo: resourceURL) else {
+                continue
+            }
+            let content = try String(contentsOf: url, encoding: .utf8)
+            return environment.templateClass.init(templateString: content, environment: environment, name: name)
+        }
+
+        throw TemplateDoesNotExist(templateNames: names, loader: self)
+    }
 }
 
 extension Stencil.Environment {
