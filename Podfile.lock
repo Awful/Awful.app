@@ -1,5 +1,4 @@
 PODS:
-  - 1PasswordExtension (1.8.4)
   - ARChromeActivity (1.0.6)
   - FLAnimatedImage (1.0.12)
   - ImgurAnonymousAPI (1.0)
@@ -34,7 +33,6 @@ PODS:
   - TUSafariActivity (1.0.4)
 
 DEPENDENCIES:
-  - 1PasswordExtension
   - ARChromeActivity
   - FLAnimatedImage
   - ImgurAnonymousAPI
@@ -50,7 +48,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://cdn.cocoapods.org/:
-    - 1PasswordExtension
     - ARChromeActivity
     - FLAnimatedImage
     - ImgurAnonymousAPI
@@ -85,7 +82,6 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Khan/SwiftTweaks
 
 SPEC CHECKSUMS:
-  1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   ImgurAnonymousAPI: 018b22f420ce45dc805fe792f0c53a18934eaef3
@@ -100,6 +96,6 @@ SPEC CHECKSUMS:
   SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
 
-PODFILE CHECKSUM: d65f90aec8b780ecbdba8658a5feb676090787e5
+PODFILE CHECKSUM: e75e2796c9e5cfce515a7214cc3e5b9a6bc905b5
 
 COCOAPODS: 1.7.5
