@@ -5,6 +5,9 @@
       location = "group:Xcode/Awful.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:MiniOnePassword">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>
