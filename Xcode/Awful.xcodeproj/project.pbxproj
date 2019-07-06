@@ -355,6 +355,7 @@
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
+		1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* MiniOnePassword */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -1382,6 +1383,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
+				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
 				1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */,
 				1CCBE07822CB092600E1BE6A /* Crashlytics.framework in Frameworks */,
 				1CCBE07722CB092600E1BE6A /* Fabric.framework in Frameworks */,
@@ -2802,6 +2804,9 @@
 				1C2DC7371DCEA605005040FD /* PBXTargetDependency */,
 			);
 			name = Awful;
+			packageProductDependencies = (
+				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
+			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
 			productType = "com.apple.product-type.application";
@@ -4277,6 +4282,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */;
 			productName = PromiseKit;
+		};
+		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MiniOnePassword;
 		};
 		1CCBDFF922CB02D500E1BE6A /* HTMLReader */ = {
 			isa = XCSwiftPackageProductDependency;

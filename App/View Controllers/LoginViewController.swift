@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
-import OnePasswordExtension
+import MiniOnePassword
 import UIKit
 
 private let Log = Logger.get()
@@ -77,9 +77,9 @@ class LoginViewController: ViewController {
         // Can't set this in the storyboard for some reason.
         nextBarButtonItem.isEnabled = false
 
-        onePasswordButton.setImage(findOnePasswordButtonImage(), for: .normal)
+        onePasswordButton.setImage(UIImage(named: "onepassword-button"), for: .normal)
         
-        if !OnePasswordExtension.shared().isAppExtensionAvailable() {
+        if !OnePassword.isAvailable {
             onePasswordButton.removeFromSuperview()
             view.addConstraints(onePasswordUnavailableConstraints)
         }
@@ -129,20 +129,27 @@ class LoginViewController: ViewController {
         }
     }
     
-    @IBAction func didTapOnePassword(_ sender: AnyObject) {
+    @IBAction func didTapOnePassword(_ sender: UIButton) {
         view.endEditing(true)
-        
-        OnePasswordExtension.shared().findLogin(forURLString: "forums.somethingawful.com", for: self, sender: sender) { [weak self] (loginInfo, error) -> Void in
-            if loginInfo == nil {
-                if let error = error as NSError?, error.code != AppExtensionErrorCodeCancelledByUser {
+
+        OnePassword.findLogin(
+            urlString: "forums.somethingawful.com",
+            presentingViewController: self,
+            sender: .view(sender),
+            completion: { result in
+                switch result {
+                case let .success(loginInfo):
+                    self.usernameTextField.text = loginInfo.username
+                    self.passwordTextField.text = loginInfo.password
+                    self.state = .canAttemptLogin
+
+                case .failure(.userCancelled):
+                    break
+
+                case let .failure(error):
                     Log.e("1Password extension failed: \(error)")
                 }
-                return
-            }
-            self?.usernameTextField.text = loginInfo?[AppExtensionUsernameKey] as? String
-            self?.passwordTextField.text = loginInfo?[AppExtensionPasswordKey] as? String
-            self?.state = .canAttemptLogin
-        }
+        })
     }
     
     fileprivate func attemptToLogIn() {
@@ -226,18 +233,4 @@ extension LoginViewController {
             
         }, completion: nil)
     }
-}
-
-private func findOnePasswordButtonImage() -> UIImage {
-    // This seems way too buried and like I'm missing the obvious way to get this image out of the framework. If you know what that way is, please replace this junk!
-    guard
-        let resourceBundleURL = Bundle(for: OnePasswordExtension.self).url(forResource: "OnePasswordExtensionResources.bundle", withExtension: nil),
-        let resourceBundle = Bundle(url: resourceBundleURL),
-        let image = UIImage(named: "onepassword-button", in: resourceBundle, compatibleWith: nil) else
-    {
-        Log.e("where's the onepassword-button?")
-        return UIImage()
-    }
-
-    return image
 }
