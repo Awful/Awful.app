@@ -36,7 +36,7 @@ DEPENDENCIES:
   - FLAnimatedImage
   - KVOController
   - MRProgress/Overlay
-  - Nuke
+  - Nuke (from `https://github.com/nolanw/Nuke`, branch `catalyst-prep`)
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/MindSea/PullToRefresh`, branch `fix-simultaneous-access`)
   - Sourcery
@@ -50,13 +50,15 @@ SPEC REPOS:
     - FLAnimatedImage
     - KVOController
     - MRProgress
-    - Nuke
     - PathKit
     - Sourcery
     - Stencil
     - TUSafariActivity
 
 EXTERNAL SOURCES:
+  Nuke:
+    :branch: catalyst-prep
+    :git: https://github.com/nolanw/Nuke
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
@@ -68,6 +70,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/Khan/SwiftTweaks
 
 CHECKOUT OPTIONS:
+  Nuke:
+    :commit: b78de62060d6125fcccc4526bcf79dc88ab11524
+    :git: https://github.com/nolanw/Nuke
   PSMenuItem:
     :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
     :git: https://github.com/steipete/PSMenuItem
@@ -92,6 +97,6 @@ SPEC CHECKSUMS:
   SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
 
-PODFILE CHECKSUM: dd4a646cf345f57d071f64e754d8324612e9a858
+PODFILE CHECKSUM: 5c1fa3826909e376c7f24fcb028fc7533c90d34a
 
 COCOAPODS: 1.7.5
