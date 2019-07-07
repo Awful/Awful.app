@@ -63,17 +63,6 @@ SOFTWARE.
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>ImgurAnonymousAPI is in the public domain.
-</string>
-			<key>License</key>
-			<string>Public domain</string>
-			<key>Title</key>
-			<string>ImgurAnonymousAPI</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>FooterText</key>
 			<string>BSD License
 
 For KVOController software

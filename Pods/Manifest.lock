@@ -1,7 +1,6 @@
 PODS:
   - ARChromeActivity (1.0.6)
   - FLAnimatedImage (1.0.12)
-  - ImgurAnonymousAPI (1.0)
   - KVOController (1.2.0)
   - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
@@ -35,7 +34,6 @@ PODS:
 DEPENDENCIES:
   - ARChromeActivity
   - FLAnimatedImage
-  - ImgurAnonymousAPI
   - KVOController
   - MRProgress/Overlay
   - Nuke
@@ -50,7 +48,6 @@ SPEC REPOS:
   https://cdn.cocoapods.org/:
     - ARChromeActivity
     - FLAnimatedImage
-    - ImgurAnonymousAPI
     - KVOController
     - MRProgress
     - Nuke
@@ -84,7 +81,6 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  ImgurAnonymousAPI: 018b22f420ce45dc805fe792f0c53a18934eaef3
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   Nuke: 0350d346a688426e8f2331253ef28dc2fc4f6178
@@ -96,6 +92,6 @@ SPEC CHECKSUMS:
   SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
   TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
 
-PODFILE CHECKSUM: e75e2796c9e5cfce515a7214cc3e5b9a6bc905b5
+PODFILE CHECKSUM: dd4a646cf345f57d071f64e754d8324612e9a858
 
 COCOAPODS: 1.7.5
