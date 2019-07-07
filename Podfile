@@ -13,7 +13,7 @@ target 'Awful' do
   pod 'FLAnimatedImage'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
-  pod 'Nuke'
+  pod 'Nuke', :git => 'https://github.com/nolanw/Nuke', :branch => 'catalyst-prep'
   pod 'Sourcery'
   pod 'Stencil'
   pod 'TUSafariActivity'
