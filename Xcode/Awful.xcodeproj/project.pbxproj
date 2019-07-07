@@ -299,6 +299,12 @@
 		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
 		1C5C2C4B22D24F7200EA5A80 /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2C4A22D24F7200EA5A80 /* ScannerShim */; };
 		1C5C2C4D22D24F7900EA5A80 /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2C4C22D24F7900EA5A80 /* ScannerShim */; };
+		1C5C2C5122D2559C00EA5A80 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */; };
+		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
+		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
+		1C5C2C5F22D2594500EA5A80 /* ARChromeActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */; };
+		1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7822D259A500EA5A80 /* Fabric.framework */; };
+		1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
@@ -406,8 +412,6 @@
 		1CCBE00122CB03C500E1BE6A /* CommonSPM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1CCBE07222CB045100E1BE6A /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1CCBE07322CB047300E1BE6A /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
-		1CCBE07722CB092600E1BE6A /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCBE07522CB092600E1BE6A /* Fabric.framework */; };
-		1CCBE07822CB092600E1BE6A /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CCBE07622CB092600E1BE6A /* Crashlytics.framework */; };
 		1CD005CF1BB734E900232FFD /* BookmarksTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */; };
 		1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */; };
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
@@ -1009,6 +1013,14 @@
 		1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-yospos.css"; sourceTree = "<group>"; };
 		1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-dark.css"; sourceTree = "<group>"; };
 		1C5BA3E416CA445600375A72 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
+		1C5C2C4F22D2559C00EA5A80 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUSafariActivity.h; sourceTree = "<group>"; };
+		1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUSafariActivity.m; sourceTree = "<group>"; };
+		1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TUSafariActivity.bundle; sourceTree = "<group>"; };
+		1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ARChromeActivity.xcassets; sourceTree = "<group>"; };
+		1C5C2C5D22D2594500EA5A80 /* ARChromeActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARChromeActivity.h; sourceTree = "<group>"; };
+		1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARChromeActivity.m; sourceTree = "<group>"; };
+		1C5C2C7822D259A500EA5A80 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1C5F700517D86E0F005ABD6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1C6460D11A3F1037002F5CEE /* Awful 3.2-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.2-beta6.xcdatamodel"; sourceTree = "<group>"; };
 		1C66A9C019DD304D001B9A41 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1126,8 +1138,6 @@
 		1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-40x40@3x.png"; sourceTree = "<group>"; };
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		1CC6645C220D224C00BEF5A6 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
-		1CCBE07522CB092600E1BE6A /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
-		1CCBE07622CB092600E1BE6A /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
@@ -1387,12 +1397,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
+				1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */,
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
 				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
+				1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */,
 				1C5C2C4D22D24F7900EA5A80 /* ScannerShim in Frameworks */,
 				1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */,
-				1CCBE07822CB092600E1BE6A /* Crashlytics.framework in Frameworks */,
-				1CCBE07722CB092600E1BE6A /* Fabric.framework in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
 			);
@@ -1427,7 +1437,9 @@
 		1190F76913BE4ECB00B9D271 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				1CCBE07422CB092600E1BE6A /* iOS */,
+				1C5C2C5422D2584100EA5A80 /* ARChromeActivity */,
+				1C5C2C7622D259A500EA5A80 /* Crashlytics */,
+				1C5C2C4E22D254D600EA5A80 /* TUSafariActivity */,
 				8C89FAF31CAA0F4200640F3D /* widgets.js */,
 			);
 			name = Vendor;
@@ -2005,6 +2017,43 @@
 			path = v;
 			sourceTree = "<group>";
 		};
+		1C5C2C4E22D254D600EA5A80 /* TUSafariActivity */ = {
+			isa = PBXGroup;
+			children = (
+				1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */,
+				1C5C2C4F22D2559C00EA5A80 /* TUSafariActivity.h */,
+				1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */,
+			);
+			path = TUSafariActivity;
+			sourceTree = "<group>";
+		};
+		1C5C2C5422D2584100EA5A80 /* ARChromeActivity */ = {
+			isa = PBXGroup;
+			children = (
+				1C5C2C5D22D2594500EA5A80 /* ARChromeActivity.h */,
+				1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */,
+				1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */,
+			);
+			path = ARChromeActivity;
+			sourceTree = "<group>";
+		};
+		1C5C2C7622D259A500EA5A80 /* Crashlytics */ = {
+			isa = PBXGroup;
+			children = (
+				1C5C2C7722D259A500EA5A80 /* iOS */,
+			);
+			path = Crashlytics;
+			sourceTree = "<group>";
+		};
+		1C5C2C7722D259A500EA5A80 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */,
+				1C5C2C7822D259A500EA5A80 /* Fabric.framework */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
 		1C66A9BA19DD3017001B9A41 /* Smilies */ = {
 			isa = PBXGroup;
 			children = (
@@ -2238,15 +2287,6 @@
 				1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */,
 			);
 			path = Posts;
-			sourceTree = "<group>";
-		};
-		1CCBE07422CB092600E1BE6A /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				1CCBE07622CB092600E1BE6A /* Crashlytics.framework */,
-				1CCBE07522CB092600E1BE6A /* Fabric.framework */,
-			);
-			path = iOS;
 			sourceTree = "<group>";
 		};
 		1CD005CD1BB734C900232FFD /* View Controllers */ = {
@@ -3180,6 +3220,7 @@
 				7BF0902B2022C7570060BDC8 /* AppIcon-v_dark-76x76@2x.png in Resources */,
 				7BF0902A2022C7570060BDC8 /* AppIcon-v_dark-20x20.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
+				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */,
@@ -3225,6 +3266,7 @@
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
 				1C502D511F817010001890AF /* AppIcon-staredog-83.5x83.5@2x.png in Resources */,
 				1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */,
+				1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
 				1C502D151F816FF3001890AF /* AppIcon-Bars2-20x20@3x.png in Resources */,
 				1C502D2F1F816FFC001890AF /* AppIcon-five-76x76.png in Resources */,
@@ -3262,14 +3304,14 @@
 			inputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 				"$(PROJECT_DIR)/../Local.xcconfig",
-				"$(PROJECT_DIR)/../Vendor/iOS/Fabric.framework/run",
+				"$(PROJECT_DIR)/../Vendor/Crashlytics/iOS/Fabric.framework/run",
 			);
 			name = Crashlytics;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -n \"$CRASHLYTICS_API_KEY\" ]\nthen \"$PROJECT_DIR\"/../Vendor/iOS/Fabric.framework/run \"$CRASHLYTICS_API_KEY\"\nfi\n";
+			shellScript = "if [ -n \"$CRASHLYTICS_API_KEY\" ]\nthen \"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS/Fabric.framework/run \"$CRASHLYTICS_API_KEY\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		1C796A22221503300035E154 /* Sourcery */ = {
@@ -3651,6 +3693,7 @@
 				1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */,
 				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
+				1C5C2C5122D2559C00EA5A80 /* TUSafariActivity.m in Sources */,
 				1C16FBDB1CBAA5A900C88BD1 /* CGContext+WithGState.swift in Sources */,
 				1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
@@ -3748,6 +3791,7 @@
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,
 				1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
+				1C5C2C5F22D2594500EA5A80 /* ARChromeActivity.m in Sources */,
 				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
@@ -4119,7 +4163,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$PROJECT_DIR\"/../Vendor/iOS",
+					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4139,7 +4183,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$PROJECT_DIR\"/../Vendor/iOS",
+					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

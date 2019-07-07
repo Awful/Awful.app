@@ -9,14 +9,12 @@ ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 install! 'cocoapods', :generate_multiple_pod_projects => true
 
 target 'Awful' do
-  pod 'ARChromeActivity'
   pod 'FLAnimatedImage'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
   pod 'Nuke', :git => 'https://github.com/nolanw/Nuke', :branch => 'catalyst-prep'
   pod 'Sourcery'
   pod 'Stencil'
-  pod 'TUSafariActivity'
 
   # Fixes a compile error; I'm happy to pin to some subsequent tagged version if that ever happens.
   pod 'PSMenuItem', :git => 'https://github.com/steipete/PSMenuItem', :commit => '489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79'
