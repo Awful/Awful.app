@@ -4,6 +4,7 @@
 
 import Foundation
 import HTMLReader
+import class ScannerShim.Scanner
 
 /// Scrapes the sidebar with author info that appears alongside posts, private messages, and user profiles.
 public struct AuthorSidebarScrapeResult: ScrapeResult {
@@ -63,8 +64,8 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
 }
 
 private func parseUserID(_ htmlClass: String) -> UserID? {
-    let scanner = Scanner.makeForScraping(htmlClass)
-    while scanner.scanUpToAndPast("userid-") {
+    let scanner = Scanner(scraping: htmlClass)
+    while scanner.scanUpToAndPastString("userid-") {
         if
             let id = scanner.scanCharacters(from: .decimalDigits),
             let userID = UserID(rawValue: id)

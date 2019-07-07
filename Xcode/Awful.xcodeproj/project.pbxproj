@@ -297,6 +297,8 @@
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
 		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
+		1C5C2C4B22D24F7200EA5A80 /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2C4A22D24F7200EA5A80 /* ScannerShim */; };
+		1C5C2C4D22D24F7900EA5A80 /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2C4C22D24F7900EA5A80 /* ScannerShim */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
@@ -1322,6 +1324,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C5C2C4B22D24F7200EA5A80 /* ScannerShim in Frameworks */,
 				1C49CFF222CB01D3004B76E6 /* CommonSPM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1386,6 +1389,7 @@
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
 				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
+				1C5C2C4D22D24F7900EA5A80 /* ScannerShim in Frameworks */,
 				1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */,
 				1CCBE07822CB092600E1BE6A /* Crashlytics.framework in Frameworks */,
 				1CCBE07722CB092600E1BE6A /* Fabric.framework in Frameworks */,
@@ -2643,6 +2647,9 @@
 				1C49CFF522CB01D3004B76E6 /* PBXTargetDependency */,
 			);
 			name = Core;
+			packageProductDependencies = (
+				1C5C2C4A22D24F7200EA5A80 /* ScannerShim */,
+			);
 			productName = AwfulCore;
 			productReference = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */;
 			productType = "com.apple.product-type.framework";
@@ -2809,6 +2816,7 @@
 			packageProductDependencies = (
 				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
 				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
+				1C5C2C4C22D24F7900EA5A80 /* ScannerShim */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -4289,6 +4297,14 @@
 		1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImgurAnonymousAPI;
+		};
+		1C5C2C4A22D24F7200EA5A80 /* ScannerShim */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ScannerShim;
+		};
+		1C5C2C4C22D24F7900EA5A80 /* ScannerShim */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ScannerShim;
 		};
 		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
 			isa = XCSwiftPackageProductDependency;

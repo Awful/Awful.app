@@ -4,6 +4,7 @@
 
 import Foundation
 import HTMLReader
+import class ScannerShim.Scanner
 
 internal func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")
@@ -52,48 +53,23 @@ internal let regdateFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy")
 
 
 internal extension Scanner {
-    class func makeForScraping(_ string: String) -> Scanner {
-        let scanner = self.init(string: string)
-        scanner.charactersToBeSkipped = nil
-        scanner.caseSensitive = true
-        return scanner
+    convenience init(scraping string: String) {
+        self.init(string: string)
+        charactersToBeSkipped = nil
+        caseSensitive = true
     }
 
     var remainder: String {
-        return String(string.utf16.dropFirst(scanLocation)) ?? ""
+        return String(string[currentIndex...])
     }
 
     var scanned: String {
-        return String(string.utf16.prefix(scanLocation)) ?? ""
+        return String(string[..<currentIndex])
     }
 
-    func scanCharacters(from cs: CharacterSet) -> String? {
-        var result: NSString?
-        guard scanCharacters(from: cs, into: &result) else { return nil }
-        return result as String?
-    }
-
-    func scanFloat() -> Float? {
-        var result: Float = 0
-        guard scanFloat(&result) else { return nil }
-        return result
-    }
-
-    func scanInt() -> Int? {
-        var result: Int = 0
-        guard scanInt(&result) else { return nil }
-        return result
-    }
-    
-    func scanUpTo(_ s: String) -> String? {
-        var result: NSString?
-        guard scanUpTo(s, into: &result) else { return nil }
-        return result as String?
-    }
-
-    func scanUpToAndPast(_ s: String) -> Bool {
-        scanUpTo(s, into: nil)
-        return scanString(s, into: nil)
+    func scanUpToAndPastString(_ substring: String) -> Bool {
+        _ = scanUpToString(substring)
+        return scanString(substring) != nil
     }
 }
 

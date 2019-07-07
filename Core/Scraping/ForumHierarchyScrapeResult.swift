@@ -3,6 +3,7 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import HTMLReader
+import class ScannerShim.Scanner
 
 public struct ForumHierarchyScrapeResult: ScrapeResult {
     public let nodes: [ForumHierarchyNode]
@@ -29,7 +30,7 @@ public struct ForumHierarchyNode: Hashable {
         }
 
         do {
-            let scanner = Scanner.makeForScraping(value)
+            let scanner = Scanner(scraping: value)
             guard
                 let rawID = scanner.scanCharacters(from: .decimalDigits),
                 let id = ForumID(rawValue: rawID)
@@ -38,9 +39,9 @@ public struct ForumHierarchyNode: Hashable {
         }
 
         do {
-            let scanner = Scanner.makeForScraping(html.textContent)
+            let scanner = Scanner(scraping: html.textContent)
             var depth = 0
-            while scanner.scanString("--", into: nil) {
+            while scanner.scanString("--") != nil {
                 depth += 1
             }
             self.depth = depth

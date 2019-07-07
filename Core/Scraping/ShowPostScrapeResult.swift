@@ -4,6 +4,7 @@
 
 import Foundation
 import HTMLReader
+import class ScannerShim.Scanner
 
 public struct ShowPostScrapeResult: ScrapeResult {
     public let author: AuthorSidebarScrapeResult
@@ -19,16 +20,16 @@ public struct ShowPostScrapeResult: ScrapeResult {
         threadID = html.firstNode(matchingSelector: "#thread")
             .flatMap { $0["class"] }
             .flatMap { cls in
-                let scanner = Scanner.makeForScraping(cls)
-                guard scanner.scanString("thread:", into: nil) else { return nil }
+                let scanner = Scanner(scraping: cls)
+                guard scanner.scanString("thread:") != nil else { return nil }
                 return scanner.scanCharacters(from: .decimalDigits)
             }
             .flatMap(ThreadID.init)
 
         threadTitle = html.firstNode(matchingSelector: "title")
             .flatMap { title in
-                let scanner = Scanner.makeForScraping(title.textContent)
-                guard scanner.scanUpToAndPast(" - ") else { return nil }
+                let scanner = Scanner(scraping: title.textContent)
+                guard scanner.scanUpToAndPastString(" - ") else { return nil }
                 return scanner.remainder
             }
             ?? ""

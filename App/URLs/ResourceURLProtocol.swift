@@ -2,8 +2,8 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import Foundation
 import MobileCoreServices
+import class ScannerShim.Scanner
 import UIKit
 import WebKit
 
@@ -105,10 +105,10 @@ private struct Resource {
         // Can't really use URLComponents here since awful-resource:// URLs have annoying bits like "@2x" in images. Easier to parse ourselves.
         let scanner = Scanner(string: resourceURL.absoluteString)
         scanner.charactersToBeSkipped = nil
-        scanner.scanString(ResourceURLProtocol.scheme, into: nil)
-        scanner.scanString(":", into: nil)
-        scanner.scanString("//", into: nil)
-        path = (scanner.string as NSString).substring(from: scanner.scanLocation)
+        _ = scanner.scanString(ResourceURLProtocol.scheme)
+        _ = scanner.scanString(":")
+        _ = scanner.scanString("//")
+        path = String(scanner.string[scanner.currentIndex...])
     }
     
     func pathsForScreenWithScale(_ screenScale: CGFloat) -> [String] {

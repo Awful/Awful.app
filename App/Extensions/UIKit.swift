@@ -3,6 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import MobileCoreServices
+import class ScannerShim.Scanner
 import UIKit
 
 extension CGRect {
@@ -74,10 +75,10 @@ private var actionBlockKey = 0
 extension UIColor {
     convenience init?(hex hexString: String) {
         let scanner = Scanner(string: hexString)
-        _ = scanner.scan("#")
-        let start = scanner.scanLocation
-        guard let hex = scanner.scanHex() else { return nil }
-        let length = scanner.scanLocation - start
+        _ = scanner.scanString("#")
+        let start = scanner.currentIndex
+        guard let hex = scanner.scanUInt64(representation: .hexadecimal) else { return nil }
+        let length = scanner.string.distance(from: start, to: scanner.currentIndex)
         switch length {
         case 3:
             self.init(

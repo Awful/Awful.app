@@ -6,6 +6,7 @@ import CoreData
 import Foundation
 import HTMLReader
 import PromiseKit
+import class ScannerShim.Scanner
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
@@ -617,11 +618,10 @@ public final class ForumsClient {
                 guard case .nextUnread = page else { return nil }
                 guard let fragment = response.url?.fragment, !fragment.isEmpty else { return nil }
 
-                let scanner = Scanner.makeForScraping(fragment)
-                guard scanner.scanString("pti", into: nil) else { return nil }
+                let scanner = Scanner(scraping: fragment)
+                guard scanner.scanString("pti") != nil else { return nil }
 
-                var scannedInt: Int = 0
-                guard scanner.scanInt(&scannedInt), scannedInt != 0 else { return nil }
+                guard let scannedInt = scanner.scanInt(), scannedInt != 0 else { return nil }
                 return scannedInt
         }
 

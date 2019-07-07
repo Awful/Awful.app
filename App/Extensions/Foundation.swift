@@ -59,36 +59,6 @@ extension URLRequest {
     }
 }
 
-extension Scanner {
-    func scan(fromSet characterSet: NSCharacterSet) -> String? {
-        var scanned: NSString?
-        guard scanCharacters(from: characterSet as CharacterSet, into: &scanned) else { return nil }
-        return scanned as String?
-    }
-    
-    func scan(_ string: String) -> Bool {
-        return scanString(string, into: nil)
-    }
-    
-    func scanHex() -> UInt64? {
-        var int: UInt64 = 0
-        guard scanHexInt64(&int) else { return nil }
-        return int
-    }
-    
-    func scanInt() -> Int? {
-        var int: Int = 0
-        guard scanInt(&int) else { return nil }
-        return int
-    }
-    
-    func scanUpTo(_ string: String) -> String? {
-        var scanned: NSString?
-        scanUpTo(string, into: &scanned)
-        return scanned as String?
-    }
-}
-
 extension NSString {
     var stringByCollapsingWhitespace: String {
         // Literal regex; should crash loudly if it can't be used.

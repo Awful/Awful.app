@@ -3,6 +3,7 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import HTMLReader
+import class ScannerShim.Scanner
 
 /**
  Scrapes the page shown after submitting the ignore list form.
@@ -20,11 +21,11 @@ public enum IgnoreListChangeScrapeResult: ScrapeResult {
     public init(_ html: HTMLNode, url: URL?) throws {
         if let error = try? StandardErrorScrapeResult(html, url: url) {
             let username = { () -> String? in
-                let scanner = Scanner.makeForScraping(error.message)
-                guard scanner.scanUpToAndPast("Sorry ") else { return nil }
+                let scanner = Scanner(scraping: error.message)
+                guard scanner.scanUpToAndPastString("Sorry ") else { return nil }
                 
                 // We want to test enough of the string after the username to avoid some silly goose adding e.g. "is a mod" to their username then becoming a mod, which would be confusing. But the longer we go, the more we tempt fate when some well-meaning soul edits the copy in the error message. This seems to be just beyond the character limit for a name, hopefully it's ok.
-                return scanner.scanUpTo(" is a moderator/admin and you")
+                return scanner.scanUpToString(" is a moderator/admin and you")
             }()
             
             self = .failure(.rejected(problemUsername: username, underlyingError: error))
