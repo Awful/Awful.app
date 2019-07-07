@@ -4,6 +4,7 @@
 
 import Foundation
 import HTMLReader
+import class ScannerShim.Scanner
 
 public struct ThreadListScrapeResult: ScrapeResult {
     public let announcements: [Announcement]
@@ -157,8 +158,8 @@ private extension ThreadListScrapeResult.Thread {
                 throw ScrapingError.missingExpectedElement("tr[id]")
             }
 
-            let scanner = Scanner.makeForScraping(idAttribute)
-            scanner.scanUpToCharacters(from: .decimalDigits, into: nil)
+            let scanner = Scanner(scraping: idAttribute)
+            _ = scanner.scanUpToCharacters(from: .decimalDigits)
             guard
                 let rawID = scanner.scanCharacters(from: .decimalDigits),
                 let id = ThreadID(rawValue: rawID) else
@@ -232,11 +233,11 @@ private extension ThreadListScrapeResult.Thread {
             .flatMap { $0.firstNode(matchingSelector: "img[title]") }
             .flatMap { $0["title"] }
             .map { title in
-                let scanner = Scanner.makeForScraping(title)
-                scanner.scanUpToCharacters(from: .decimalDigits, into: nil)
+                let scanner = Scanner(scraping: title)
+                _ = scanner.scanUpToCharacters(from: .decimalDigits)
                 let count = scanner.scanInt()
 
-                scanner.scanUpToCharacters(from: .decimalDigits, into: nil)
+                _ = scanner.scanUpToCharacters(from: .decimalDigits)
                 let average = scanner.scanFloat()
 
                 return (average, count)

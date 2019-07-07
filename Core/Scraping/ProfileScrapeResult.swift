@@ -4,6 +4,7 @@
 
 import Foundation
 import HTMLReader
+import class ScannerShim.Scanner
 
 public struct ProfileScrapeResult: ScrapeResult {
     public let about: RawHTML
@@ -32,8 +33,8 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { $0.firstNode(matchingSelector: "p:first-of-type") }
                 .map { $0.textContent }
                 .flatMap { (info) -> String? in
-                    let scanner = Scanner.makeForScraping(info)
-                    guard scanner.scanUpToAndPast("claims to be a ") else { return nil }
+                    let scanner = Scanner(scraping: info)
+                    guard scanner.scanUpToAndPastString("claims to be a ") else { return nil }
                     return scanner.scanCharacters(from: .letters)
                 }
                 ?? ""
@@ -86,7 +87,7 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap { (text) -> Int? in
-                    let scanner = Scanner.makeForScraping(text)
+                    let scanner = Scanner(scraping: text)
                     return scanner.scanInt()
             }
 
@@ -95,8 +96,8 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap { (text) -> String? in
-                    let scanner = Scanner.makeForScraping(text)
-                    guard scanner.scanFloat(nil) else { return nil }
+                    let scanner = Scanner(scraping: text)
+                    guard scanner.scanFloat() != nil else { return nil }
                     return scanner.scanned
                 }
                 ?? ""

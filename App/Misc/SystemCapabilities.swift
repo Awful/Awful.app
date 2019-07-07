@@ -2,6 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import class ScannerShim.Scanner
 import UIKit
 
 private let Log = Logger.get()
@@ -26,11 +27,11 @@ enum SystemCapabilities {
         // Models are listed at http://theiphonewiki.com/wiki/Models
         // Let's assume all future models also support Handoff.
         let scanner = Scanner(string: modelIdentifier)
-        if scanner.scan("iPad"), let major = scanner.scanInt() {
+        if scanner.scanString("iPad") != nil, let major = scanner.scanInt() {
             return major >= 2
-        } else if scanner.scan("iPhone"), let major = scanner.scanInt() {
+        } else if scanner.scanString("iPhone") != nil, let major = scanner.scanInt() {
             return major >= 5
-        } else if scanner.scan("iPod"), let major = scanner.scanInt() {
+        } else if scanner.scanString("iPod") != nil, let major = scanner.scanInt() {
             return major >= 5
         } else {
             return false
@@ -42,9 +43,9 @@ enum SystemCapabilities {
         // Not gonna bother trying to guess at future models.
         let scanner = Scanner(string: modelIdentifier)
         guard
-            scanner.scan("iPhone"),
+            scanner.scanString("iPhone") != nil,
             let major = scanner.scanInt(),
-            scanner.scan(","),
+            scanner.scanString(",") != nil,
             let minor = scanner.scanInt()
             else { return false }
         switch (major, minor) {

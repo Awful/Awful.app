@@ -3,6 +3,7 @@
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
+import class ScannerShim.Scanner
 
 // MARK: Keys
 
@@ -236,7 +237,7 @@ extension UserDefaults {
             scanner.caseSensitive = true
             scanner.charactersToBeSkipped = nil
             guard
-                scanner.scan("theme-"),
+                scanner.scanString("theme-") != nil,
                 let forumID = scanner.scanInt(),
                 scanner.isAtEnd
                 else { return nil }

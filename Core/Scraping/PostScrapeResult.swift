@@ -4,6 +4,7 @@
 
 import Foundation
 import HTMLReader
+import class ScannerShim.Scanner
 
 public struct PostScrapeResult {
     public let author: AuthorSidebarScrapeResult
@@ -28,8 +29,8 @@ public struct PostScrapeResult {
                 throw ScrapingError.missingExpectedElement("table.post[id]")
             }
 
-            let scanner = Scanner.makeForScraping(rawestID)
-            scanner.scanString("post", into: nil)
+            let scanner = Scanner(scraping: rawestID)
+            _ = scanner.scanString("post")
             guard
                 let rawID = scanner.scanCharacters(from: .decimalDigits),
                 let id = PostID(rawValue: rawID) else

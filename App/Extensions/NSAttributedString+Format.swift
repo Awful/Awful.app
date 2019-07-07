@@ -3,6 +3,7 @@
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
+import class ScannerShim.Scanner
 
 extension NSMutableAttributedString {
     
@@ -16,52 +17,54 @@ extension NSMutableAttributedString {
     convenience init(format: NSAttributedString, _ args: NSAttributedString...) {
         self.init(attributedString: format)
         
-        func makeScanner(at scanLocation: Int) -> Scanner {
+        func makeScanner(at index: String.Index) -> Scanner {
             let scanner = Scanner(string: string)
             scanner.caseSensitive = false
             scanner.charactersToBeSkipped = nil
-            scanner.scanLocation = scanLocation
+            scanner.currentIndex = index
             return scanner
         }
         
-        var scanner = makeScanner(at: 0)
+        var scanner = makeScanner(at: string.startIndex)
         
         var unindexedArgs = args.makeIterator()
         
         while true {
             
             // Find next %
-            _ = scanner.scanUpTo("%")
-            let specifierStartLocation = scanner.scanLocation
+            _ = scanner.scanUpToString("%")
+            let specifierStartIndex = scanner.currentIndex
             
             // If we didn't find one, we're done!
-            guard scanner.scan("%") else { break }
+            guard scanner.scanString("%") != nil else { break }
             
             // Might just be a %-escaped %.
-            if scanner.scan("%") {
+            if scanner.scanString("%") != nil {
                 continue
             }
             
             let replacement: NSAttributedString
             if
                 let i = scanner.scanInt(),
-                scanner.scan("$"),
-                scanner.scan("@")
+                scanner.scanString("$") != nil,
+                scanner.scanString("@") != nil
             {
                 // Format specifiers are 1-indexed.
                 replacement = args[i - 1]
             }
-            else if scanner.scan("@") {
+            else if scanner.scanString("@") != nil {
                 replacement = unindexedArgs.next()!
             }
             else {
-                fatalError("unsupported format specifier in \(scanner.string) at index \(scanner.scanLocation)")
+                fatalError("unsupported format specifier in \(scanner.string) at index \(scanner.currentIndex)")
             }
             
-            let specifierRange = NSRange(location: specifierStartLocation, length: scanner.scanLocation - specifierStartLocation)
+            let specifierRange = NSRange(
+                location: specifierStartIndex.utf16Offset(in: scanner.string),
+                length: scanner.string.distance(from: specifierStartIndex, to: scanner.currentIndex))
             replaceCharacters(in: specifierRange, with: replacement)
             
-            scanner = makeScanner(at: specifierStartLocation + replacement.length)
+            scanner = makeScanner(at: string.index(specifierStartIndex, offsetBy: replacement.length))
         }
     }
 }
