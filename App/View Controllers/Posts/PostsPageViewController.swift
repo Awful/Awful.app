@@ -2,13 +2,11 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import ARChromeActivity
 import AwfulCore
 import CoreData
 import MobileCoreServices
 import MRProgress
 import PromiseKit
-import TUSafariActivity
 
 private let Log = Logger.get()
 

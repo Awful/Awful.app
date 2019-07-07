@@ -22,7 +22,10 @@
 @synthesize activityTitle = _activityTitle;
 
 static NSString *encodeByAddingPercentEscapes(NSString *input) {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSString *encodedValue = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)input, NULL, (CFStringRef)@"!*'();:@&=+$,/?%#[]", kCFStringEncodingUTF8));
+    #pragma clang diagnostic pop
     return encodedValue;
 }
 

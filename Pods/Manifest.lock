@@ -1,5 +1,4 @@
 PODS:
-  - ARChromeActivity (1.0.6)
   - FLAnimatedImage (1.0.12)
   - KVOController (1.2.0)
   - MRProgress/ActivityIndicator (0.8.3):
@@ -29,10 +28,8 @@ PODS:
   - Stencil (0.13.1):
     - PathKit (~> 0.9.0)
   - SwiftTweaks (4.0.2)
-  - TUSafariActivity (1.0.4)
 
 DEPENDENCIES:
-  - ARChromeActivity
   - FLAnimatedImage
   - KVOController
   - MRProgress/Overlay
@@ -42,18 +39,15 @@ DEPENDENCIES:
   - Sourcery
   - Stencil
   - SwiftTweaks (from `https://github.com/Khan/SwiftTweaks`, branch `master`)
-  - TUSafariActivity
 
 SPEC REPOS:
   https://cdn.cocoapods.org/:
-    - ARChromeActivity
     - FLAnimatedImage
     - KVOController
     - MRProgress
     - PathKit
     - Sourcery
     - Stencil
-    - TUSafariActivity
 
 EXTERNAL SOURCES:
   Nuke:
@@ -84,7 +78,6 @@ CHECKOUT OPTIONS:
     :git: https://github.com/Khan/SwiftTweaks
 
 SPEC CHECKSUMS:
-  ARChromeActivity: 5dcf9b9f09323761f992aff3525cdd777f83609d
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
@@ -95,8 +88,7 @@ SPEC CHECKSUMS:
   Sourcery: 5895672cae353cdbfa95f3f4aaeb75a664d76f6a
   Stencil: b5128a0a43ece9225db5cbd94d6569fe6fba609b
   SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
-  TUSafariActivity: afc55a00965377939107ce4fdc7f951f62454546
 
-PODFILE CHECKSUM: 5c1fa3826909e376c7f24fcb028fc7533c90d34a
+PODFILE CHECKSUM: 04041bbf5f8881a60227fd6b2c320a83eaa29a00
 
 COCOAPODS: 1.7.5
