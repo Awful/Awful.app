@@ -1,7 +1,6 @@
 ${PODS_ROOT}/Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/ARChromeActivity/ARChromeActivity.framework
 ${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework
-${BUILT_PRODUCTS_DIR}/ImgurAnonymousAPI/ImgurAnonymousAPI.framework
 ${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework
 ${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework
 ${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework

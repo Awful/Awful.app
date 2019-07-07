@@ -163,7 +163,6 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/ARChromeActivity/ARChromeActivity.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/ImgurAnonymousAPI/ImgurAnonymousAPI.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework"
@@ -177,7 +176,6 @@ fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/ARChromeActivity/ARChromeActivity.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/ImgurAnonymousAPI/ImgurAnonymousAPI.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework"

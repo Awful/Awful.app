@@ -11,7 +11,6 @@ install! 'cocoapods', :generate_multiple_pod_projects => true
 target 'Awful' do
   pod 'ARChromeActivity'
   pod 'FLAnimatedImage'
-  pod 'ImgurAnonymousAPI'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
   pod 'Nuke'

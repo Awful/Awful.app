@@ -179,11 +179,15 @@ public final class ImgurUploader {
             
             if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
                 return asset
-            } else if let assetURL = info[.referenceURL] as? URL {
-                return PHAsset.fetchAssets(withALAssetURLs: [assetURL], options: nil).firstObject
-            } else {
-                return nil
             }
+
+            #if canImport(AssetsLibrary)
+            if let assetURL = info[.referenceURL] as? URL {
+                return PHAsset.fetchAssets(withALAssetURLs: [assetURL], options: nil).firstObject
+            }
+            #endif
+
+            return nil
         }
 
         var image: UIImage? {
