@@ -23,6 +23,12 @@ enum SystemCapabilities {
      - Note: Does not take into account the user's current Handoff settings. That is, `handoff` can return `true` when the user has turned off Handoff.
      */
     static let handoff: Bool = {
+        #if targetEnvironment(UIKitForMac)
+        // Supported Handoff devices: https://support.apple.com/en-ca/HT204689
+        // Macs that can run 10.15 Catalina (when UIKit for Mac shipped): https://www.apple.com/ca/macos/catalina-preview/
+        // 100% overlap :)
+        return true
+        #else
         // Handoff starts at iPhone 5, iPod Touch 5G, iPad 4G, iPad Mini 1: http://support.apple.com/en-us/HT6555
         // Models are listed at http://theiphonewiki.com/wiki/Models
         // Let's assume all future models also support Handoff.
@@ -36,6 +42,7 @@ enum SystemCapabilities {
         } else {
             return false
         }
+        #endif
     }()
 
     static let oled: Bool = {
