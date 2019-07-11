@@ -46,7 +46,9 @@ final class NetworkActivityIndicatorManager {
                         throw IndicatorUpdateUnnecessary()
                     }
                 }.done(on: .main) {
+                    #if !targetEnvironment(UIKitForMac)
                     UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                    #endif
             }
         } else if newCount == 0 {
             _ = after(.milliseconds(300))
@@ -56,7 +58,9 @@ final class NetworkActivityIndicatorManager {
                     }
                 }
                 .done(on: .main) {
+                    #if !targetEnvironment(UIKitForMac)
                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    #endif
             }
         }
     }

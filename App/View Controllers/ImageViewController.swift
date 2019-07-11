@@ -103,7 +103,7 @@ final class ImageViewController: UIViewController {
         var overlayButtons: [UIButton] { return [doneButton, actionButton] }
         var overlayHidden = false
         var hideOverlayTimer: Timer?
-        let spinner = UIActivityIndicatorView(style: .whiteLarge)
+        let spinner = UIActivityIndicatorView.makeLarge()
         let tap = UITapGestureRecognizer()
         let panToDismiss = UIPanGestureRecognizer()
         var panToDismissAction: (() -> Void)?
@@ -238,10 +238,22 @@ final class ImageViewController: UIViewController {
             layoutOverlay()
         }
         
-        fileprivate func layoutOverlay() {
-            let statusBarFrame = UIApplication.shared.statusBarFrame
-            // Status bar frame is in screen coordinates.
-            let statusBarHeight = min(statusBarFrame.width, statusBarFrame.height)
+        private func layoutOverlay() {
+            let statusBarHeight: CGFloat = {
+                let frame: CGRect
+                #if targetEnvironment(UIKitForMac)
+                frame = .zero
+                #else
+                if #available(iOS 13, *) {
+                    frame = window?.windowScene?.statusBarManager?.statusBarFrame ?? .zero
+                } else {
+                    frame = UIApplication.shared.statusBarFrame
+                }
+                #endif
+
+                // Status bar frame is in screen coordinates, so may be rotated. (Is this still true? Original comment dates back many years. Also, if our minimum iOS version supports safe areas, let's use that.)
+                return min(frame.width, frame.height)
+            }()
             let typicalStatusBarHeight: CGFloat = 20
             let bonusStatusBarHeight = statusBarHeight - typicalStatusBarHeight
             // The in-call status bar bumps the whole window down past the typical status bar height, so we'll offset the status bar background by the same amount that the window was pushed down.

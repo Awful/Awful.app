@@ -303,6 +303,10 @@
 		1C5C2C5F22D2594500EA5A80 /* ARChromeActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */; };
 		1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7822D259A500EA5A80 /* Fabric.framework */; };
 		1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */; };
+		1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */; };
+		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
+		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
+		1C5D570A22D6D14D00952242 /* UIApplication+OpenURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570922D6D14D00952242 /* UIApplication+OpenURL.swift */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
@@ -1021,6 +1025,10 @@
 		1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARChromeActivity.m; sourceTree = "<group>"; };
 		1C5C2C7822D259A500EA5A80 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityIndicatorView+MakeLarge.swift"; sourceTree = "<group>"; };
+		1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollIndicatorInsetBottom.swift"; sourceTree = "<group>"; };
+		1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyCommand+MakeWithDiscoverabilityTitle.swift"; sourceTree = "<group>"; };
+		1C5D570922D6D14D00952242 /* UIApplication+OpenURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenURL.swift"; sourceTree = "<group>"; };
 		1C5F700517D86E0F005ABD6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1C6460D11A3F1037002F5CEE /* Awful 3.2-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.2-beta6.xcdatamodel"; sourceTree = "<group>"; };
 		1C66A9C019DD304D001B9A41 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2184,11 +2192,15 @@
 				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
 				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
+				1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
+				1C5D570922D6D14D00952242 /* UIApplication+OpenURL.swift */,
 				1C3E181E225005F400BD88E5 /* UIFont+MonospacedDigits.swift */,
 				1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */,
+				1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
 				1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */,
+				1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */,
 				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
 				1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */,
 				1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */,
@@ -3729,6 +3741,8 @@
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
 				1C273AA221C1E26F002875A9 /* Tweaks.swift in Sources */,
 				1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */,
+				1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */,
+				1C5D570A22D6D14D00952242 /* UIApplication+OpenURL.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */,
 				1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */,
@@ -3799,8 +3813,10 @@
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,
 				1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
+				1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */,
 				1C5C2C5F22D2594500EA5A80 /* ARChromeActivity.m in Sources */,
 				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
+				1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
 				7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */,

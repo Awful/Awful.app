@@ -63,8 +63,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         ForumsClient.shared.fetchDidBegin = NetworkActivityIndicatorManager.shared.incrementActivityCount
         ForumsClient.shared.fetchDidEnd = NetworkActivityIndicatorManager.shared.decrementActivityCount
-        
-        URLCache.shared = URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
+
+        URLCache.shared = {
+            #if targetEnvironment(UIKitForMac)
+            return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), directory: nil)
+            #else
+            return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
+            #endif
+        }()
 
         ImagePipeline.Configuration.isAnimatedImageDataEnabled = true
         

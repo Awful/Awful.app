@@ -170,7 +170,7 @@ class LoginViewController: ViewController {
     }
     
     @IBAction func didTapForgetPassword() {
-        UIApplication.shared.openURL(lostPasswordURL)
+        UIApplication.shared.open(lostPasswordURL)
     }
 }
 
@@ -198,7 +198,7 @@ extension LoginViewController: UITextFieldDelegate {
 
 extension LoginViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange) -> Bool {
-        UIApplication.shared.openURL(url)
+        UIApplication.shared.open(url)
         return false
     }
 }
@@ -221,14 +221,9 @@ extension LoginViewController {
                 let windowKeyboardFrame = self.view.window!.convert(keyboardFrame, from: nil)
                 let localKeyboardFrame = self.view.convert(windowKeyboardFrame, from: nil)
                 let insetBottom = localKeyboardFrame.intersection(self.view.bounds).height
-                
-                var contentInsets = self.scrollView.contentInset
-                contentInsets.bottom = insetBottom
-                self.scrollView.contentInset = contentInsets
-                
-                var scrollIndicatorInsets = self.scrollView.scrollIndicatorInsets
-                scrollIndicatorInsets.bottom = insetBottom
-                self.scrollView.scrollIndicatorInsets = scrollIndicatorInsets
+
+                self.scrollView.contentInset.bottom = insetBottom
+                self.scrollView.scrollIndicatorInsetBottom = insetBottom
             }
             
         }, completion: nil)

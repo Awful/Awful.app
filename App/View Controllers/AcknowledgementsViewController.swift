@@ -103,7 +103,7 @@ final class AcknowledgementsViewController: ViewController {
 extension AcknowledgementsViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated {
-            UIApplication.shared.openURL(navigationAction.request.url!)
+            UIApplication.shared.open(navigationAction.request.url!)
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)

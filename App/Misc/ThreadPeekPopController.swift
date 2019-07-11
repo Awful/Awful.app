@@ -6,6 +6,8 @@ import AwfulCore
 import MRProgress
 import UIKit
 
+#if !targetEnvironment(UIKitForMac)
+
 final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIViewControllerPreviewingDelegate {
 
     private weak var previewingViewController: (UIViewController & ThreadPeekPopControllerDelegate)?
@@ -140,3 +142,5 @@ protocol ThreadPeekPopControllerDelegate {
 protocol PreviewActionItemProvider: class {
     var previewActionItems: [UIPreviewActionItem] { get }
 }
+
+#endif

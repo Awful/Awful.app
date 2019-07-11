@@ -61,11 +61,21 @@ final class CompositionMenuTree: NSObject {
         UIMenuController.shared.menuItems = psItemsForMenuItems(items: submenu)
         // Simply calling UIMenuController.update() here doesn't suffice; the menu simply hides. Instead we need to hide the menu then show it again.
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = true
+
+        #if targetEnvironment(UIKitForMac)
+        UIMenuController.shared.hideMenu()
+        if textView.selectedTextRange != nil {
+            UIMenuController.shared.showMenu(from: textView, rect: targetRect)
+        } else {
+            UIMenuController.shared.showMenu(from: textView, rect: textView.bounds)
+        }
+        #else
         UIMenuController.shared.isMenuVisible = false
-        if let _ = textView.selectedTextRange {
+        if textView.selectedTextRange != nil {
             UIMenuController.shared.setTargetRect(targetRect, in: textView)
         }
         UIMenuController.shared.setMenuVisible(true, animated: true)
+        #endif
         
         shouldPopWhenMenuHides = true
     }
@@ -130,12 +140,23 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             textView.nearestViewController?.present(alert, animated: true)
             return
         }
+
+        var assetFromALAssetURL: PHAsset? {
+            #if targetEnvironment(UIKitForMac)
+            return nil
+            #else
+            if let alAssetURL = info[.referenceURL] as? URL {
+                return PHAsset.firstAsset(withALAssetURL: alAssetURL)
+            } else {
+                return nil
+            }
+            #endif
+        }
         
         if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
             insertImage(image, withAssetIdentifier: asset.localIdentifier)
-        } else if let alAssetURL = info[.referenceURL] as? URL {
-            let asset = PHAsset.firstAsset(withALAssetURL: alAssetURL)
-            insertImage(image, withAssetIdentifier: asset?.localIdentifier)
+        } else if let asset = assetFromALAssetURL {
+            insertImage(image, withAssetIdentifier: asset.localIdentifier)
         } else {
             insertImage(image)
         }

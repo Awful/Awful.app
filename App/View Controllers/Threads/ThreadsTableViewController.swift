@@ -7,7 +7,7 @@ import CoreData
 
 private let Log = Logger.get()
 
-final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, ThreadPeekPopControllerDelegate, UIViewControllerRestoration {
+final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration {
     
     private var dataSource: ThreadListDataSource?
     private var filterThreadTag: ThreadTag?
@@ -16,7 +16,10 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
+
+    #if !targetEnvironment(UIKitForMac)
     private var peekPopController: ThreadPeekPopController?
+    #endif
     
     private lazy var longPressRecognizer: UIGestureRecognizer = {
         return UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
@@ -122,10 +125,12 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         tableView.reloadData()
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
-        
+
+        #if !targetEnvironment(UIKitForMac)
         if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
         }
+        #endif
         
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.isHandoffEnabled) { [weak self] defaults in
@@ -336,20 +341,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
-    // MARK: ThreadPeekPopControllerDelegate
-    
-    func threadForLocation(location: CGPoint) -> AwfulThread? {
-        return tableView
-            .indexPathForRow(at: location)
-            .flatMap { dataSource?.thread(at: $0) }
-    }
-    
-    func viewForThread(thread: AwfulThread) -> UIView? {
-        return dataSource?
-            .indexPath(of: thread)
-            .flatMap { tableView.cellForRow(at: $0) }
-    }
-    
     // MARK: UIViewControllerRestoration
     
     class func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
@@ -418,6 +409,23 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
         return theme
     }
 }
+
+// MARK: ThreadPeekPopControllerDelegate
+#if !targetEnvironment(UIKitForMac)
+extension ThreadsTableViewController: ThreadPeekPopControllerDelegate {
+    func threadForLocation(location: CGPoint) -> AwfulThread? {
+        return tableView
+            .indexPathForRow(at: location)
+            .flatMap { dataSource?.thread(at: $0) }
+    }
+
+    func viewForThread(thread: AwfulThread) -> UIView? {
+        return dataSource?
+            .indexPath(of: thread)
+            .flatMap { tableView.cellForRow(at: $0) }
+    }
+}
+#endif
 
 // MARK: UITableViewDelegate
 extension ThreadsTableViewController {
