@@ -8,14 +8,17 @@ import UIKit
 
 private let Log = Logger.get()
 
-final class BookmarksTableViewController: TableViewController, ThreadPeekPopControllerDelegate {
+final class BookmarksTableViewController: TableViewController {
     
     private var dataSource: ThreadListDataSource?
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
+
+    #if !targetEnvironment(UIKitForMac)
     private var peekPopController: ThreadPeekPopController?
+    #endif
     
     private lazy var longPressRecognizer: UIGestureRecognizer = {
         return UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
@@ -100,10 +103,12 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         tableView.reloadData()
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
-        
+
+        #if !targetEnvironment(UIKitForMac)
         if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
         }
+        #endif
         
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.isHandoffEnabled) { [weak self] defaults in
@@ -212,20 +217,6 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
         Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
-    // MARK: ThreadPeekPopControllerDelegate
-    
-    func threadForLocation(location: CGPoint) -> AwfulThread? {
-        return tableView
-            .indexPathForRow(at: location)
-            .flatMap { dataSource?.thread(at: $0) }
-    }
-    
-    func viewForThread(thread: AwfulThread) -> UIView? {
-        return dataSource?
-            .indexPath(of: thread)
-            .flatMap { tableView.cellForRow(at: $0) }
-    }
-    
     // MARK: Undo
     
     override var canBecomeFirstResponder: Bool {
@@ -262,6 +253,22 @@ final class BookmarksTableViewController: TableViewController, ThreadPeekPopCont
     }
 }
 
+// MARK: ThreadPeekPopControllerDelegate
+#if !targetEnvironment(UIKitForMac)
+extension BookmarksTableViewController: ThreadPeekPopControllerDelegate {
+    func threadForLocation(location: CGPoint) -> AwfulThread? {
+        return tableView
+            .indexPathForRow(at: location)
+            .flatMap { dataSource?.thread(at: $0) }
+    }
+
+    func viewForThread(thread: AwfulThread) -> UIView? {
+        return dataSource?
+            .indexPath(of: thread)
+            .flatMap { tableView.cellForRow(at: $0) }
+    }
+}
+#endif
 
 // MARK: UITableViewDelegate
 extension BookmarksTableViewController {

@@ -22,12 +22,17 @@ final class PostsPageViewController: ViewController {
     private weak var networkOperation: Cancellable?
     private var observers: [NSKeyValueObservation] = []
     private(set) var page: ThreadPage?
-    weak var previewActionItemProvider: PreviewActionItemProvider?
     private var replyWorkspace: ReplyWorkspace?
     private var restoringState = false
     private var scrollToFractionAfterLoading: CGFloat?
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
+
+    #if targetEnvironment(UIKitForMac)
+    weak var previewActionItemProvider: AnyObject?
+    #else
+    weak var previewActionItemProvider: PreviewActionItemProvider?
+    #endif
     
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
@@ -1272,7 +1277,7 @@ extension PostsPageViewController: RenderViewDelegate {
         } else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         } else {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
         }
     }
     
@@ -1320,32 +1325,34 @@ private struct Keys {
     static let replyWorkspace = "Reply workspace"
 }
 
+#if !targetEnvironment(UIKitForMac)
 extension PostsPageViewController {
     override var previewActionItems: [UIPreviewActionItem] {
         return previewActionItemProvider?.previewActionItems ?? []
     }
 }
+#endif
 
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {
         var keyCommands: [UIKeyCommand] = [
-            UIKeyCommand(input: UIKeyCommand.inputUpArrow, modifierFlags: [], action: #selector(scrollUp), discoverabilityTitle: "Up"),
-            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: [], action: #selector(scrollDown), discoverabilityTitle: "Down"),
-            UIKeyCommand(input: " ", modifierFlags: .shift, action: #selector(pageUp), discoverabilityTitle: "Page Up"),
-            UIKeyCommand(input: " ", modifierFlags: [], action: #selector(pageDown), discoverabilityTitle: "Page Down"),
-            UIKeyCommand(input: UIKeyCommand.inputUpArrow, modifierFlags: .command, action: #selector(scrollToTop), discoverabilityTitle: "Scroll to Top"),
-            UIKeyCommand(input: UIKeyCommand.inputDownArrow, modifierFlags: .command, action: #selector(scrollToBottom(_:)), discoverabilityTitle: "Scroll to Bottom"),
+            UIKeyCommand.make(input: UIKeyCommand.inputUpArrow, action: #selector(scrollUp), discoverabilityTitle: "Up"),
+            UIKeyCommand.make(input: UIKeyCommand.inputDownArrow, action: #selector(scrollDown), discoverabilityTitle: "Down"),
+            UIKeyCommand.make(input: " ", modifierFlags: .shift, action: #selector(pageUp), discoverabilityTitle: "Page Up"),
+            UIKeyCommand.make(input: " ", action: #selector(pageDown), discoverabilityTitle: "Page Down"),
+            UIKeyCommand.make(input: UIKeyCommand.inputUpArrow, modifierFlags: .command, action: #selector(scrollToTop), discoverabilityTitle: "Scroll to Top"),
+            UIKeyCommand.make(input: UIKeyCommand.inputDownArrow, modifierFlags: .command, action: #selector(scrollToBottom(_:)), discoverabilityTitle: "Scroll to Bottom"),
         ]
         
         if case .specific(let pageNumber)? = page, pageNumber > 1 {
-            keyCommands.append(UIKeyCommand(input: "[", modifierFlags: .command, action: #selector(loadPreviousPage), discoverabilityTitle: "Previous Page"))
+            keyCommands.append(UIKeyCommand.make(input: "[", modifierFlags: .command, action: #selector(loadPreviousPage), discoverabilityTitle: "Previous Page"))
         }
         
         if case .specific(let pageNumber)? = page, pageNumber < numberOfPages {
-            keyCommands.append(UIKeyCommand(input: "]", modifierFlags: .command, action: #selector(loadNextPage), discoverabilityTitle: "Next Page"))
+            keyCommands.append(UIKeyCommand.make(input: "]", modifierFlags: .command, action: #selector(loadNextPage), discoverabilityTitle: "Next Page"))
         }
         
-        keyCommands.append(UIKeyCommand(input: "N", modifierFlags: .command, action: #selector(newReply), discoverabilityTitle: "New Reply"))
+        keyCommands.append(UIKeyCommand.make(input: "N", modifierFlags: .command, action: #selector(newReply), discoverabilityTitle: "New Reply"))
         
         return keyCommands
     }

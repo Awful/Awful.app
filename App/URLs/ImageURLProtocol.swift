@@ -46,9 +46,16 @@ final class ImageURLProtocol: URLProtocol {
         let options = PHImageRequestOptions()
         options.isSynchronous = true
         options.version = .current
-        PHImageManager.default().requestImageData(for: asset, options: options) { (imageData, UTI, orientation, info) in
+
+        let resultHandler = { (imageData: Data?, uti: String?, orientation: Any, info: [AnyHashable: Any]?) in
             maybeData = imageData
         }
+        #if targetEnvironment(UIKitForMac)
+        PHImageManager.default().requestImageDataAndOrientation(for: asset, options: options, resultHandler: resultHandler)
+        #else
+        PHImageManager.default().requestImageData(for: asset, options: options, resultHandler: resultHandler)
+        #endif
+
         guard let data = maybeData, !data.isEmpty else { return nil }
         return serveImageData(data, atPath: path)
     }

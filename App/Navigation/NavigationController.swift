@@ -166,7 +166,7 @@ extension NavigationController: UINavigationControllerDelegate {
             
             // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled.
             // See http://stackoverflow.com/questions/23484310
-            navigationController.transitionCoordinator?.notifyWhenInteractionEnds({ (context) in
+            let interactionChanges = { (context: UIViewControllerTransitionCoordinatorContext) in
                 guard context.isCancelled else { return }
                 let unpopping = unpopHandler.interactiveUnpopIsTakingPlace
                 let completion = context.transitionDuration * Double(context.percentComplete)
@@ -180,10 +180,15 @@ extension NavigationController: UINavigationControllerDelegate {
                     } else {
                         unpopHandler.navigationControllerDidCancelInteractivePop()
                     }
-                    
+
                     self.pushAnimationInProgress = false
                 }
-            })
+            }
+            #if targetEnvironment(UIKitForMac)
+            navigationController.transitionCoordinator?.notifyWhenInteractionChanges(interactionChanges)
+            #else
+            navigationController.transitionCoordinator?.notifyWhenInteractionEnds(interactionChanges)
+            #endif
         }
         
         realDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)

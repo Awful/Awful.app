@@ -164,7 +164,15 @@ final class ThreadPreviewViewController: ViewController {
     private func repositionCell() {
         let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width)
         threadCell.frame = CGRect(x: 0, y: -cellHeight, width: view.bounds.width, height: cellHeight)
-        renderView.scrollView.contentInset.top = topLayoutGuide.length + cellHeight
+
+        var topInset: CGFloat {
+            #if targetEnvironment(UIKitForMac)
+            return view.safeAreaLayoutGuide.layoutFrame.minY
+            #else
+            return topLayoutGuide.length
+            #endif
+        }
+        renderView.scrollView.contentInset.top = topInset + cellHeight
     }
     
     // MARK: View lifecycle
@@ -227,7 +235,7 @@ extension ThreadPreviewViewController: RenderViewDelegate {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         }
         else {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
         }
     }
     

@@ -5,11 +5,15 @@
 import SafariServices
 
 final class AwfulBrowser: NSObject {
-    @discardableResult class func presentBrowserForURL(_ URL: Foundation.URL, fromViewController presentingViewController: UIViewController) -> SFSafariViewController {
-        let browser = SFSafariViewController(url: URL)
+    @discardableResult class func presentBrowserForURL(
+        _ url: URL,
+        fromViewController presentingViewController: UIViewController)
+        -> SFSafariViewController
+    {
+        let browser = SFSafariViewController(url: url)
         browser.delegate = sharedInstance
         browser.restorationIdentifier = "Awful Browser"
-        UIApplication.shared.keyWindow?.rootViewController?.present(browser, animated: true, completion: nil)
+        presentingViewController.present(browser, animated: true)
         return browser
     }
     

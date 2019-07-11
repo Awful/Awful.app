@@ -189,7 +189,7 @@ extension ProfileViewController: RenderViewDelegate {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         }
         else {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
         }
     }
     

@@ -328,9 +328,11 @@ extension MessageViewController: HasSplitViewPreference {
 }
 
 private final class PassthroughViewController: UIViewController {
+    #if !targetEnvironment(UIKitForMac)
     override var childForHomeIndicatorAutoHidden: UIViewController? {
         return children.first
     }
+    #endif
 
     override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
         return children.first?.preferredStatusBarUpdateAnimation ?? super.preferredStatusBarUpdateAnimation

@@ -8,8 +8,10 @@ extension PHAsset {
     class func firstAsset(identifiedBy identifier: String) -> PHAsset? {
         return fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject
     }
-    
+
+    #if !targetEnvironment(UIKitForMac)
     class func firstAsset(withALAssetURL assetURL: URL) -> PHAsset? {
         return fetchAssets(withALAssetURLs: [assetURL], options: nil).firstObject
     }
+    #endif
 }
