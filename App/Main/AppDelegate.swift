@@ -26,6 +26,15 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
     private var observers: [NSKeyValueObservation] = []
     private var openCopiedURLController: OpenCopiedURLController?
+    private lazy var rootViewController: RootViewController = {
+        let rootVC = RootViewController(
+            isLoggedIn: ForumsClient.shared.isLoggedIn,
+            managedObjectContext: managedObjectContext)
+        rootVC.delegate = self
+        rootVC.restorationIdentifier = "Root"
+        return rootVC
+    }()
+    private var urlRouter: AwfulURLRouter?
     var window: UIWindow?
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -87,12 +96,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             window = UIWindow(frame: UIScreen.main.bounds)
         }
         window?.tintColor = Theme.defaultTheme()["tintColor"]
-        
-        if ForumsClient.shared.isLoggedIn {
-            setRootViewController(rootViewControllerStack.rootViewController, animated: false, completion: nil)
-        } else {
-            setRootViewController(loginViewController.enclosingNavigationController, animated: false, completion: nil)
-        }
+        window?.rootViewController = rootViewController
+
+        urlRouter = .init(rootViewController: rootViewController, managedObjectContext: managedObjectContext)
         
         openCopiedURLController = OpenCopiedURLController(window: window!, router: {
             [unowned self] in
@@ -105,9 +111,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Don't want to lazily create it now.
-        _rootViewControllerStack?.didAppear()
-        
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
         
         showPromptIfLoginCookieExpiresSoon()
@@ -180,7 +183,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        return rootViewControllerStack.viewControllerWithRestorationIdentifierPath(identifierComponents)
+        var currentVC: UIViewController? = rootViewController
+        guard identifierComponents.first == currentVC?.restorationIdentifier else { return nil }
+        for identifier in identifierComponents.dropFirst() {
+            currentVC = currentVC?.children.first { $0.restorationIdentifier == identifier }
+        }
+        return currentVC
     }
     
     func application(_ application: UIApplication, didDecodeRestorableStateWith coder: NSCoder) {
@@ -213,13 +221,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Do this after resetting settings so that it gets the default baseURL.
         updateClientBaseURL()
-        
-        setRootViewController(loginViewController.enclosingNavigationController, animated: true) { [weak self] in
-            self?._rootViewControllerStack = nil
-            self?.urlRouter = nil
-            
-            self?.dataStore.deleteStoreAndReset()
-        }
+
+        rootViewController.setIsLoggedIn(false, animated: true)
+
+        dataStore.deleteStoreAndReset()
     }
     
     func emptyCache() {
@@ -275,42 +280,15 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         open(route: route)
         completionHandler(true)
     }
-    
-    private var _rootViewControllerStack: RootViewControllerStack?
-    private var urlRouter: AwfulURLRouter?
-    private var rootViewControllerStack: RootViewControllerStack {
-        if let stack = _rootViewControllerStack { return stack }
-        let stack = RootViewControllerStack(managedObjectContext: managedObjectContext)
-        urlRouter = AwfulURLRouter(rootViewController: stack.rootViewController, managedObjectContext: managedObjectContext)
-        stack.userInterfaceStyleDidChange = { [weak self] in self?.automaticallyUpdateDarkModeEnabledIfNecessary() }
-        _rootViewControllerStack = stack
-        return stack
+}
+
+extension AppDelegate: RootViewControllerDelegate {
+    func userInterfaceStyleDidChange(in viewController: RootViewController) {
+        automaticallyUpdateDarkModeEnabledIfNecessary()
     }
-    
-    private lazy var loginViewController: LoginViewController! = {
-        let loginVC = LoginViewController.newFromStoryboard()
-        loginVC.completionBlock = { [weak self] (login) in
-            guard let self = self else { return }
-            self.setRootViewController(self.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
-                guard let self = self else { return }
-                self.rootViewControllerStack.didAppear()
-                self.loginViewController = nil
-            })
-        }
-        return loginVC
-    }()
 }
 
 private extension AppDelegate {
-    func setRootViewController(_ rootViewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
-        guard let window = window else { return }
-        UIView.transition(with: window, duration: animated ? 0.3 : 0, options: .transitionCrossDissolve, animations: { 
-            window.rootViewController = rootViewController
-            }) { (completed) in
-                completion?()
-        }
-    }
-    
     func themeDidChange() {
         guard let window = window else { return }
 
@@ -467,9 +445,12 @@ private enum InterfaceVersion: Int {
     
     /// Interface for Awful 3, the version that runs on iOS 8. The primary view controller is a UISplitViewController on both iPhone and iPad.
     case version3
+
+    /// Interface for Awful 4, the version that runs on iOS 9+ and macOS 10.15+. The root view controller is a container view controller that adds the correct child view controller for the application state and platform: the login view controller (when we're not logged in), a split view controller (for iOS), or a three-pane view controller (for macOS).
+    case version4
 }
 
-private let currentInterfaceVersion: InterfaceVersion = .version3
+private let currentInterfaceVersion: InterfaceVersion = .version4
 
 private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
     do {
