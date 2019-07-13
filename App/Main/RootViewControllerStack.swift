@@ -15,6 +15,7 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
         let container = PassthroughViewController()
         container.restorationIdentifier = "Root container"
+        container.userInterfaceStyleDidChange = { [weak self] in self?.userInterfaceStyleDidChange() }
         container.addChild(self.splitViewController)
         self.splitViewController.view.frame = CGRect(origin: .zero, size: container.view.bounds.size)
         self.splitViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -25,6 +26,8 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
     
     private let splitViewController: AwfulSplitViewController
     private let tabBarController: UITabBarController
+
+    var userInterfaceStyleDidChange: () -> Void = {}
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -328,6 +331,9 @@ extension MessageViewController: HasSplitViewPreference {
 }
 
 private final class PassthroughViewController: UIViewController {
+
+    var userInterfaceStyleDidChange: () -> Void = {}
+
     #if !targetEnvironment(UIKitForMac)
     override var childForHomeIndicatorAutoHidden: UIViewController? {
         return children.first
@@ -371,5 +377,13 @@ private final class PassthroughViewController: UIViewController {
         
         // Just need to save them. No real need to decode; we'll set up the root stack outside of the state restoration system.
         coder.encode(children, forKey: StateKeys.childViewControllers)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+            userInterfaceStyleDidChange()
+        }
     }
 }
