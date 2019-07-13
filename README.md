@@ -1,6 +1,6 @@
 # Awful
 
-[Awful][App Store] is an iOS 9+ app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
+[Awful][App Store] is an iOS 9+ and macOS app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
 
 Not sure what to work on? There's a [list of issues](https://github.com/awful/Awful.app/issues), or just post in the thread and someone will share their pet peeves for your amusement!
 
