@@ -3,6 +3,12 @@
 #include "Application.xcconfig"
 #include "../../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"
 
+DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES
+
+INFOPLIST_FILE = $(SRCROOT)/../App/Resources/Info.plist
+
 PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug
 
 PRODUCT_NAME = AwfulDebug
+
+SUPPORTS_UIKITFORMAC = YES

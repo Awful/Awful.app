@@ -1,0 +1,9 @@
+// Build settings for the CommonSPM framework target.
+
+#include "Framework.xcconfig"
+
+INFOPLIST_FILE = CommonSPM/Info.plist
+
+PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CommonSPM
+
+PRODUCT_NAME = CommonSPM

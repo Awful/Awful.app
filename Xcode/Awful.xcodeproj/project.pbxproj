@@ -805,6 +805,7 @@
 		1C19CA491F70AD740060F4DE /* PostIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostIcon.swift; sourceTree = "<group>"; };
 		1C19CA4B1F70ADC50060F4DE /* PostIconPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostIconPersistence.swift; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
+		1C210D4522DA5E39009EBB6F /* CommonSPM.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = CommonSPM.xcconfig; sourceTree = "<group>"; };
 		1C23C7041A7AB8940089BD5C /* SlopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlopButton.swift; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
 		1C24BC952002BF2F0022C85F /* ForumListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumListCell.swift; sourceTree = "<group>"; };
@@ -1589,15 +1590,16 @@
 				1C15334E20708F140021A2BD /* Common-Debug.xcconfig */,
 				1C15334F20708F250021A2BD /* Common-Release.xcconfig */,
 				1C15334B20707EB10021A2BD /* Common.xcconfig */,
+				1C210D4522DA5E39009EBB6F /* CommonSPM.xcconfig */,
 				1C153359207125F60021A2BD /* Extension.xcconfig */,
-				1C15335A2071261A0021A2BD /* SmilieKeyboard-Debug.xcconfig */,
-				1C15335B207126990021A2BD /* SmilieKeyboard-Release.xcconfig */,
-				1C15335C20712BBA0021A2BD /* SmilieStickers-Debug.xcconfig */,
-				1C15335D20712BDF0021A2BD /* SmilieStickers-Release.xcconfig */,
 				1C15335020709D520021A2BD /* Framework.xcconfig */,
 				1C15335220709E950021A2BD /* Local.xcconfig */,
+				1C15335A2071261A0021A2BD /* SmilieKeyboard-Debug.xcconfig */,
+				1C15335B207126990021A2BD /* SmilieKeyboard-Release.xcconfig */,
 				1C15335420709FD90021A2BD /* Smilies-Debug.xcconfig */,
 				1C15335520709FF10021A2BD /* Smilies-Release.xcconfig */,
+				1C15335C20712BBA0021A2BD /* SmilieStickers-Debug.xcconfig */,
+				1C15335D20712BDF0021A2BD /* SmilieStickers-Release.xcconfig */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -3995,38 +3997,15 @@
 		};
 		1C49CFEC22CB0102004B76E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C15335020709D520021A2BD /* Framework.xcconfig */;
+			baseConfigurationReference = 1C210D4522DA5E39009EBB6F /* CommonSPM.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = CommonSPM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CommonSPM;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		1C49CFED22CB0102004B76E6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C15335020709D520021A2BD /* Framework.xcconfig */;
+			baseConfigurationReference = 1C210D4522DA5E39009EBB6F /* CommonSPM.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				INFOPLIST_FILE = CommonSPM/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CommonSPM;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -4164,18 +4143,16 @@
 			baseConfigurationReference = 1C1533572070A3BF0021A2BD /* Awful-Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_MODULE_NAME = Awful;
-				SUPPORTS_UIKITFORMAC = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
 			};
@@ -4186,18 +4163,16 @@
 			baseConfigurationReference = 1C1533582070A3CA0021A2BD /* Awful-Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_MODULE_NAME = Awful;
-				SUPPORTS_UIKITFORMAC = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
 			};
 			name = Release;
