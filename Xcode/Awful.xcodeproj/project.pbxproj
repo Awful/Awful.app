@@ -119,7 +119,7 @@
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
 		1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */; };
 		1C2DC7341DCEA177005040FD /* PotentiallyObjectionableStickers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */; };
-		1C2DC7351DCEA605005040FD /* SmilieStickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1C2DC7351DCEA605005040FD /* SmilieStickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */; };
 		1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C081E41832600CCBA51 /* CoreAnimation.swift */; };
 		1C3811CC2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */; };
@@ -299,8 +299,8 @@
 		1C5C2C5122D2559C00EA5A80 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
-		1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7822D259A500EA5A80 /* Fabric.framework */; };
-		1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */; };
+		1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7822D259A500EA5A80 /* Fabric.framework */; platformFilter = ios; };
+		1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */; platformFilter = ios; };
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
 		1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */; };
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
@@ -315,7 +315,7 @@
 		1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9E719DD345D001B9A41 /* Smilie.m */; };
 		1C66A9EA19DD372B001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
 		1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */; };
-		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C66AA0419DD39AF001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
 		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
 		1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66AA1019DDF54A001B9A41 /* SmilieButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3305,8 +3305,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -n \"$CRASHLYTICS_API_KEY\" ]\nthen \"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS/Fabric.framework/run \"$CRASHLYTICS_API_KEY\"\nfi\n";
-			showEnvVarsInLog = 0;
+			shellScript = "if [ -n \"$CRASHLYTICS_API_KEY\" ] && [ \"$IS_UIKITFORMAC\" != \"YES\"]\nthen \"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS/Fabric.framework/run \"$CRASHLYTICS_API_KEY\"\nfi\n";
 		};
 		1C796A22221503300035E154 /* Sourcery */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3839,6 +3838,7 @@
 		};
 		1C2DC7371DCEA605005040FD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 1CBBAAB41D949EE000A847EC /* SmilieStickers */;
 			targetProxy = 1C2DC7361DCEA605005040FD /* PBXContainerItemProxy */;
 		};
@@ -3874,6 +3874,7 @@
 		};
 		1C66A9F719DD393A001B9A41 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */;
 			targetProxy = 1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */;
 		};
@@ -4079,6 +4080,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_UIKITFORMAC = NO;
 			};
 			name = Debug;
 		};
@@ -4088,6 +4090,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_UIKITFORMAC = NO;
 			};
 			name = Release;
 		};
@@ -4139,6 +4142,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_UIKITFORMAC = NO;
 			};
 			name = Debug;
 		};
@@ -4151,6 +4155,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_UIKITFORMAC = NO;
 			};
 			name = Release;
 		};
@@ -4159,6 +4164,7 @@
 			baseConfigurationReference = 1C1533572070A3BF0021A2BD /* Awful-Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
@@ -4169,6 +4175,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_MODULE_NAME = Awful;
+				SUPPORTS_UIKITFORMAC = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
 			};
@@ -4179,6 +4186,7 @@
 			baseConfigurationReference = 1C1533582070A3CA0021A2BD /* Awful-Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
@@ -4189,6 +4197,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_MODULE_NAME = Awful;
+				SUPPORTS_UIKITFORMAC = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
 			};
 			name = Release;
