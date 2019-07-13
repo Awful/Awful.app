@@ -87,6 +87,7 @@
 		1C19CA4A1F70AD740060F4DE /* PostIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA491F70AD740060F4DE /* PostIcon.swift */; };
 		1C19CA4C1F70ADC50060F4DE /* PostIconPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19CA4B1F70ADC50060F4DE /* PostIconPersistence.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
+		1C210D4422DA5A8F009EBB6F /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C210D4322DA5A8F009EBB6F /* ScannerShim */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C24BC952002BF2F0022C85F /* ForumListCell.swift */; };
@@ -295,8 +296,6 @@
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
 		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
-		1C5C2C4B22D24F7200EA5A80 /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2C4A22D24F7200EA5A80 /* ScannerShim */; };
-		1C5C2C4D22D24F7900EA5A80 /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2C4C22D24F7900EA5A80 /* ScannerShim */; };
 		1C5C2C5122D2559C00EA5A80 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
@@ -1345,7 +1344,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C5C2C4B22D24F7200EA5A80 /* ScannerShim in Frameworks */,
 				1C49CFF222CB01D3004B76E6 /* CommonSPM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1363,6 +1361,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C210D4422DA5A8F009EBB6F /* ScannerShim in Frameworks */,
 				1CCBDFFA22CB02D500E1BE6A /* HTMLReader in Frameworks */,
 				1C49CFEF22CB01A4004B76E6 /* PromiseKit in Frameworks */,
 			);
@@ -1412,7 +1411,6 @@
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
 				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
 				1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */,
-				1C5C2C4D22D24F7900EA5A80 /* ScannerShim in Frameworks */,
 				1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
@@ -2704,7 +2702,6 @@
 			);
 			name = Core;
 			packageProductDependencies = (
-				1C5C2C4A22D24F7200EA5A80 /* ScannerShim */,
 			);
 			productName = AwfulCore;
 			productReference = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */;
@@ -2745,6 +2742,7 @@
 			packageProductDependencies = (
 				1C49CFEE22CB01A4004B76E6 /* PromiseKit */,
 				1CCBDFF922CB02D500E1BE6A /* HTMLReader */,
+				1C210D4322DA5A8F009EBB6F /* ScannerShim */,
 			);
 			productName = CommonSPM;
 			productReference = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */;
@@ -2872,7 +2870,6 @@
 			packageProductDependencies = (
 				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
 				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
-				1C5C2C4C22D24F7900EA5A80 /* ScannerShim */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -4355,6 +4352,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1C210D4322DA5A8F009EBB6F /* ScannerShim */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ScannerShim;
+		};
 		1C49CFEE22CB01A4004B76E6 /* PromiseKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */;
@@ -4363,14 +4364,6 @@
 		1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImgurAnonymousAPI;
-		};
-		1C5C2C4A22D24F7200EA5A80 /* ScannerShim */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ScannerShim;
-		};
-		1C5C2C4C22D24F7900EA5A80 /* ScannerShim */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ScannerShim;
 		};
 		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
 			isa = XCSwiftPackageProductDependency;
