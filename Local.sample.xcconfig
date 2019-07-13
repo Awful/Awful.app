@@ -2,9 +2,13 @@
 // CRASHLYTICS_API_KEY = YOUR_API_KEY_HERE
 
 // These lines set up the .entitlements file needed to make the App Group work for communication between the Awful app and the Smilie Keyboard extension. See README.md for more details.
-// CODE_SIGN_ENTITLEMENTS = ${CODE_SIGN_ENTITLEMENTS_${TARGET_NAME}}
+// CODE_SIGN_ENTITLEMENTS[sdk=*] = ${CODE_SIGN_ENTITLEMENTS_${TARGET_NAME}}
 // CODE_SIGN_ENTITLEMENTS_Awful = ../Local.entitlements
 // CODE_SIGN_ENTITLEMENTS_SmilieKeyboard = ../Local.entitlements
+
+// These lines make code signing work on Mac. There's nothing to customize here, but it seems that if these lines aren't included in this same file where other fiddling occurs with CODE_SIGN_ENTITLEMENTS, things break.
+CODE_SIGN_ENTITLEMENTS[sdk=macosx*] = ${CODE_SIGN_ENTITLEMENTS_${TARGET_NAME}_MAC}
+CODE_SIGN_ENTITLEMENTS_Awful_MAC = Mac.entitlements
 
 // To get builds running on your device, uncomment this next line and paste in your Team ID from the Developer Portal.
 // DEVELOPMENT_TEAM = YOUR_TEAM_ID_HERE
