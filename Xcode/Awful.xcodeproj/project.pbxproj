@@ -871,12 +871,6 @@
 		1C3CF9691A94B9B40065C964 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C3CF9781A94B9B50065C964 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1C3DED751B6FD0AB00954CFC /* ARChromeActivity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ARChromeActivity.png; sourceTree = "<group>"; };
-		1C3DED761B6FD0AB00954CFC /* ARChromeActivity@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity@2x.png"; sourceTree = "<group>"; };
-		1C3DED771B6FD0AB00954CFC /* ARChromeActivity@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity@2x~ipad.png"; sourceTree = "<group>"; };
-		1C3DED781B6FD0AB00954CFC /* ARChromeActivity@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity@3x.png"; sourceTree = "<group>"; };
-		1C3DED791B6FD0AB00954CFC /* ARChromeActivity@3x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity@3x~ipad.png"; sourceTree = "<group>"; };
-		1C3DED7A1B6FD0AB00954CFC /* ARChromeActivity~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ARChromeActivity~ipad.png"; sourceTree = "<group>"; };
 		1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FLAnimatedImageView+Nuke.swift"; sourceTree = "<group>"; };
 		1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Decompression.swift"; sourceTree = "<group>"; };
 		1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+IsOpaque.swift"; sourceTree = "<group>"; };
@@ -1491,20 +1485,6 @@
 			);
 			path = Navigation;
 			sourceTree = "<group>";
-		};
-		1C015BBB21A9C0E30027C9F1 /* ARChromeActivity */ = {
-			isa = PBXGroup;
-			children = (
-				1C3DED751B6FD0AB00954CFC /* ARChromeActivity.png */,
-				1C3DED761B6FD0AB00954CFC /* ARChromeActivity@2x.png */,
-				1C3DED771B6FD0AB00954CFC /* ARChromeActivity@2x~ipad.png */,
-				1C3DED781B6FD0AB00954CFC /* ARChromeActivity@3x.png */,
-				1C3DED791B6FD0AB00954CFC /* ARChromeActivity@3x~ipad.png */,
-				1C3DED7A1B6FD0AB00954CFC /* ARChromeActivity~ipad.png */,
-			);
-			name = ARChromeActivity;
-			path = ../Pods/ARChromeActivity/ARChromeActivity;
-			sourceTree = SOURCE_ROOT;
 		};
 		1C05EDAD16230BFE00FE567F /* Scraping */ = {
 			isa = PBXGroup;
@@ -2576,7 +2556,6 @@
 			isa = PBXGroup;
 			children = (
 				1C5B83181F74ADB200BE7517 /* App Icons */,
-				1C015BBB21A9C0E30027C9F1 /* ARChromeActivity */,
 				8CCD503B15B783FC00E5893B /* Images */,
 				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
 				8CCD498215B497A700E5893B /* Info.plist */,
