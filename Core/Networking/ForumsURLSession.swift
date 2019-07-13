@@ -35,17 +35,17 @@ internal final class ForumsURLSession {
 
                     let osName: String = {
                         #if os(iOS)
-                            return "iOS"
-                        #elseif os(watchOS)
-                            return "watchOS"
-                        #elseif os(tvOS)
-                            return "tvOS"
-                        #elseif os(macOS)
-                            return "OS X"
+                        return "iOS"
                         #elseif os(Linux)
-                            return "Linux"
+                        return "Linux"
+                        #elseif os(macOS)
+                        return "macOS"
+                        #elseif os(tvOS)
+                        return "tvOS"
+                        #elseif os(watchOS)
+                        return "watchOS"
                         #else
-                            return "Unknown"
+                        return "Unknown"
                         #endif
                     }()
 
