@@ -302,9 +302,9 @@
 		1C5C2C5122D2559C00EA5A80 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
-		1C5C2C5F22D2594500EA5A80 /* ARChromeActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */; };
 		1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7822D259A500EA5A80 /* Fabric.framework */; };
 		1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */; };
+		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
 		1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */; };
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
 		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
@@ -1021,10 +1021,9 @@
 		1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUSafariActivity.m; sourceTree = "<group>"; };
 		1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TUSafariActivity.bundle; sourceTree = "<group>"; };
 		1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ARChromeActivity.xcassets; sourceTree = "<group>"; };
-		1C5C2C5D22D2594500EA5A80 /* ARChromeActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARChromeActivity.h; sourceTree = "<group>"; };
-		1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARChromeActivity.m; sourceTree = "<group>"; };
 		1C5C2C7822D259A500EA5A80 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromeActivity.swift; sourceTree = "<group>"; };
 		1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityIndicatorView+MakeLarge.swift"; sourceTree = "<group>"; };
 		1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollIndicatorInsetBottom.swift"; sourceTree = "<group>"; };
 		1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyCommand+MakeWithDiscoverabilityTitle.swift"; sourceTree = "<group>"; };
@@ -1639,6 +1638,7 @@
 				1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */,
 				1CF280972055EB9B00913149 /* AwfulRoute.swift */,
 				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
+				1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */,
 				1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */,
 				83410EF119A582B8002CD019 /* DateFormatters.swift */,
 				1CC6645C220D224C00BEF5A6 /* Environment.swift */,
@@ -2038,8 +2038,6 @@
 		1C5C2C5422D2584100EA5A80 /* ARChromeActivity */ = {
 			isa = PBXGroup;
 			children = (
-				1C5C2C5D22D2594500EA5A80 /* ARChromeActivity.h */,
-				1C5C2C5E22D2594500EA5A80 /* ARChromeActivity.m */,
 				1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */,
 			);
 			path = ARChromeActivity;
@@ -3714,6 +3712,7 @@
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
+				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
 				1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */,
 				1C3CBEFF22A45C2500F6C634 /* UIView+SafeAreaFrame.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
@@ -3806,7 +3805,6 @@
 				1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
 				1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */,
-				1C5C2C5F22D2594500EA5A80 /* ARChromeActivity.m in Sources */,
 				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
 				1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
