@@ -29,14 +29,18 @@ final class RootTabBarController: UITabBarController, Themeable {
         return super.tabBar as! RootTabBar
     }
 
-    var theme: Theme {
-        return Theme.defaultTheme()
-    }
+    // MARK: View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         themeDidChange()
     }
+}
+
+// MARK: - Themeable
+
+extension RootTabBarController: Themeable {
+    var theme: Theme { Theme.defaultTheme() }
 
     func themeDidChange() {
         tabBar.barTintColor = theme["tabBarBackgroundColor"]
@@ -45,6 +49,8 @@ final class RootTabBarController: UITabBarController, Themeable {
         tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
     }
 }
+
+// MARK: - Tab bar
 
 /**
  A tab bar that fixes some issues we've come across. Some fixes are specific to Awful's particular use of the tab bar, so this may not be suitable as a general-purpose fix-it subclass.

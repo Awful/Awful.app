@@ -13,7 +13,7 @@ private let privacyPolicyURL = URL(string: "https://awfulapp.com/privacy-policy/
 private let termsOfServiceURL = URL(string: "https://www.somethingawful.com/forum-rules/forum-rules/")!
 
 class LoginViewController: ViewController {
-    var completionBlock: ((LoginViewController) -> Void)?
+    weak var delegate: LoginViewControllerDelegate?
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var usernameTextField: UITextField!
@@ -168,8 +168,8 @@ class LoginViewController: ViewController {
                 UserDefaults.standard.loggedInUserCanSendPrivateMessages = user.canReceivePrivateMessages
                 UserDefaults.standard.loggedInUserID = user.userID
                 UserDefaults.standard.loggedInUsername = user.username
-                
-                self.completionBlock?(self)
+
+                self.delegate?.didLogIn(via: self)
             }
             .catch { error in
                 self.state = .failedLogin
@@ -179,6 +179,10 @@ class LoginViewController: ViewController {
     @IBAction func didTapForgetPassword() {
         UIApplication.shared.open(lostPasswordURL)
     }
+}
+
+protocol LoginViewControllerDelegate: AnyObject {
+    func didLogIn(via viewController: LoginViewController)
 }
 
 extension LoginViewController: UITextFieldDelegate {

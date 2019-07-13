@@ -213,7 +213,7 @@ final class AwfulURLRouter: NSObject {
         
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
         let targetNav: UINavigationController
-        guard let splitVC = rootViewController.children.first as? UISplitViewController else { return false }
+        guard let splitVC = rootViewController.firstDescendantOfType(UISplitViewController.self) else { return false }
         if splitVC.viewControllers.count == 2 {
             targetNav = splitVC.viewControllers[1] as! UINavigationController
         } else {
@@ -225,11 +225,6 @@ final class AwfulURLRouter: NSObject {
         if targetNav.topViewController is EmptyViewController {
             splitVC.showDetailViewController(postsVC, sender: self)
             return true
-        }
-        
-        // Posts view controllers by default hide the bottom bar when pushed. This moves the tab bar controller's tab bar out of the way, making room for the toolbar. However, if some earlier posts view controller has already done this for us, and we went ahead oblivious, we would hide our own toolbar!
-        if targetNav.topViewController is PostsPageViewController {
-            postsVC.hidesBottomBarWhenPushed = false
         }
         
         targetNav.pushViewController(postsVC, animated: true)

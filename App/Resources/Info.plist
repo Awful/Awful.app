@@ -403,7 +403,7 @@
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIRequiresFullScreen</key>
-	<true/>
+	<false/>
 	<key>UIRequiresFullScreen~ipad</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
