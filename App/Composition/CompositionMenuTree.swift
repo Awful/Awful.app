@@ -379,6 +379,25 @@ fileprivate func wrapSelectionInTag(_ tagspec: NSString) -> (_ tree: Composition
 
 fileprivate func isPickerAvailable(_ sourceType: UIImagePickerController.SourceType) -> () -> Bool {
     return {
-        return UIImagePickerController.isSourceTypeAvailable(sourceType)
+        guard UIImagePickerController.isSourceTypeAvailable(sourceType) else {
+            return false
+        }
+
+        switch sourceType {
+        case .camera:
+            #if targetEnvironment(macCatalyst)
+            // Figured camera usage on a Mac was not very helpful, so we don't even try.
+            return false
+            #else
+            return true
+            #endif
+
+        case .photoLibrary, .savedPhotosAlbum:
+            return true
+
+        @unknown default:
+            Log.w("handle unknown image picker source type")
+            return true
+        }
     }
 }
