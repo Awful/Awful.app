@@ -111,7 +111,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
         NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(mainScreenBrightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
+
+        if #available(iOS 13.0, *) {
+            // We'll use trait collection's userInterfaceStyle.
+        } else {
+            NotificationCenter.default.addObserver(self, selector: #selector(mainScreenBrightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
+        }
         
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.automaticallyEnableDarkMode) { [weak self] defaults in
@@ -270,6 +275,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         if let stack = _rootViewControllerStack { return stack }
         let stack = RootViewControllerStack(managedObjectContext: managedObjectContext)
         urlRouter = AwfulURLRouter(rootViewController: stack.rootViewController, managedObjectContext: managedObjectContext)
+        stack.userInterfaceStyleDidChange = { [weak self] in self?.automaticallyUpdateDarkModeEnabledIfNecessary() }
         _rootViewControllerStack = stack
         return stack
     }
@@ -335,10 +341,16 @@ private extension AppDelegate {
     
     private func automaticallyUpdateDarkModeEnabledIfNecessary() {
         guard UserDefaults.standard.automaticallyEnableDarkMode else { return }
-        
-        let threshold = CGFloat(UserDefaults.standard.automaticDarkModeBrightnessThresholdPercent / 100)
-        let shouldDarkModeBeEnabled = UIScreen.main.brightness <= threshold
-        
+
+        let shouldDarkModeBeEnabled: Bool = {
+            if #available(iOS 13.0, *) {
+                return window?.traitCollection.userInterfaceStyle == .dark
+            } else {
+                let threshold = CGFloat(UserDefaults.standard.automaticDarkModeBrightnessThresholdPercent / 100)
+                return UIScreen.main.brightness <= threshold
+            }
+        }()
+
         if shouldDarkModeBeEnabled != UserDefaults.standard.isDarkModeEnabled {
             UserDefaults.standard.isDarkModeEnabled.toggle()
         }
