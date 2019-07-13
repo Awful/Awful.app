@@ -106,7 +106,10 @@ class LoginViewController: ViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        #if !targetEnvironment(macCatalyst)
         usernameTextField.becomeFirstResponder()
+        #endif
     }
     
     @IBAction func didTapNext() {
