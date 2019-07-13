@@ -403,6 +403,10 @@ private extension AppDelegate {
 }
 
 private func removeOldDataStores() {
+    #if targetEnvironment(macCatalyst)
+    // Mac version never had old stores, and pointlessly tickling the Documents folder shows sandbox alerts.
+    return
+    #else
     // Obsolete data stores should be cleaned up so we're not wasting space.
     let fm = FileManager.default
     var pendingDeletions: [URL] = []
@@ -442,6 +446,7 @@ private func removeOldDataStores() {
             Log.i("error deleting file at \(url.absoluteString): \(error)")
         }
     }
+    #endif
 }
 
 /// Returns the number of bytes in the passed-in number of megabytes.
