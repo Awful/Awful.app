@@ -4,6 +4,8 @@
 
 import Foundation
 
+private let Log = Logger.get()
+
 /// Saves drafts to and loads drafts from disk.
 final class DraftStore {
     fileprivate let rootDirectory: URL
@@ -29,21 +31,37 @@ final class DraftStore {
     
     /// Returns nil if no draft exists at the given path.
     func loadDraft(_ path: String) -> AnyObject? {
-        let URL = URLForDraftAtPath(path)
-        return NSKeyedUnarchiver.unarchiveObject(withFile: URL.path) as AnyObject?
+        if #available(iOS 11.0, *) {
+            do {
+                let data = try Data(contentsOf: URLForDraftAtPath(path))
+                let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+                return unarchiver.decodeObject() as AnyObject
+            } catch {
+                Log.e("could not load draft at \(path): \(error)")
+                return nil
+            }
+        } else {
+            return NSKeyedUnarchiver.unarchiveObject(withFile: URLForDraftAtPath(path).path) as AnyObject?
+        }
     }
     
     func saveDraft(_ draft: StorableDraft) {
-        let URL = URLForDraftAtPath(draft.storePath)
-        let enclosingDirectory = URL.deletingLastPathComponent()
+        let url = URLForDraftAtPath(draft.storePath)
+        let enclosingDirectory = url.deletingLastPathComponent()
         do {
             try FileManager.default.createDirectory(at: enclosingDirectory, withIntermediateDirectories: true, attributes: nil)
         }
         catch {
             fatalError("could not create draft folder at \(enclosingDirectory): \(error)")
         }
-        
-        NSKeyedArchiver.archiveRootObject(draft, toFile: URL.path)
+
+        if #available(iOS 11.0, *) {
+            let archiver = NSKeyedArchiver(requiringSecureCoding: false)
+            archiver.encode(draft)
+            try! archiver.encodedData.write(to: url)
+        } else {
+            NSKeyedArchiver.archiveRootObject(draft, toFile: url.path)
+        }
     }
     
     func deleteDraft(_ draft: StorableDraft) {
