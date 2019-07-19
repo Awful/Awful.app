@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0 -w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		655FCAD5AE0114C33DDA7BF0414C4DCF /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		AF880930007CD25835AEE0E31452F7A6 /* PSMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B6B903841F02FECC8E573B506AD723B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A813DE82382F632FD3D4821B5A5E9F6 /* Foundation.framework */; };
 		EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */; };
@@ -176,7 +176,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */,
-				80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */,
+				655FCAD5AE0114C33DDA7BF0414C4DCF /* PSMenuItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,10 +238,12 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CLFAGS = "-w";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_SUPPRESS_WARNINGS = YES;
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
@@ -369,10 +371,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_CLFAGS = "-w";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_SUPPRESS_WARNINGS = YES;
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
