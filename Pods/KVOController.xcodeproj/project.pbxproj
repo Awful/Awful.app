@@ -9,12 +9,12 @@
 /* Begin PBXBuildFile section */
 		0093B8796090B216081EC795A560DCC3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20520041B8D37BD5C9B46C65137CEE0C /* Foundation.framework */; };
 		03A493D86FD2E7128109617F6176A536 /* FBKVOController.h in Headers */ = {isa = PBXBuildFile; fileRef = 37201E81E534113DD96D949A10B4DCF3 /* FBKVOController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6FEB603406E742CB68CB6FF7EC2B7CF0 /* FBKVOController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87DC932F42E123EB6CACE7DDDC865405 /* FBKVOController.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		3C1BADD96D54BD861F702A67EB91E7EA /* KVOController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4E53332F94EE484B3937904B8F32E /* KVOController-dummy.m */; };
+		6E9A0E7D86EB3DE1073DEA16CACEB50B /* FBKVOController.m in Sources */ = {isa = PBXBuildFile; fileRef = 87DC932F42E123EB6CACE7DDDC865405 /* FBKVOController.m */; };
 		9DC2BD9E6A27DF3800E186D3C3627735 /* KVOController-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 28BF51A654B5B7B9DC8DA43A84414185 /* KVOController-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D008F6D991C4CE6D0DA3D9389E756935 /* NSObject+FBKVOController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5703015BA54A2A3835A45D6458FB9472 /* NSObject+FBKVOController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D91A527CFB37F15A02B914AB70958C7F /* KVOController.h in Headers */ = {isa = PBXBuildFile; fileRef = C67ECD55F2BF320D32E888CE76C64045 /* KVOController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DD2B97B8231A45A17E9BBCA10013E245 /* KVOController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4E53332F94EE484B3937904B8F32E /* KVOController-dummy.m */; };
-		DE1A1F229025F4A50FDFE7A6B090A84C /* NSObject+FBKVOController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66B67AAB2EAAD511219DC0181344762 /* NSObject+FBKVOController.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		FC1B6ED37FF9BE4725096CEE25391812 /* NSObject+FBKVOController.m in Sources */ = {isa = PBXBuildFile; fileRef = D66B67AAB2EAAD511219DC0181344762 /* NSObject+FBKVOController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,7 +128,7 @@
 			buildConfigurationList = A81AA3E3AE86FC21BA39A8CB70D8081D /* Build configuration list for PBXNativeTarget "KVOController" */;
 			buildPhases = (
 				A73A332EF4C6BFE417E18D183D216820 /* Headers */,
-				C7DDA5D1A2C690E024B0A0813E8F0B0D /* Sources */,
+				AD8641A8113DED9CBDD8AE117446838B /* Sources */,
 				E0FC6BF8F7C519ECDA054E3C16A2EA5B /* Frameworks */,
 				D88042B087EE41925CD0310F300B3A85 /* Resources */,
 			);
@@ -178,13 +178,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		C7DDA5D1A2C690E024B0A0813E8F0B0D /* Sources */ = {
+		AD8641A8113DED9CBDD8AE117446838B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FEB603406E742CB68CB6FF7EC2B7CF0 /* FBKVOController.m in Sources */,
-				DD2B97B8231A45A17E9BBCA10013E245 /* KVOController-dummy.m in Sources */,
-				DE1A1F229025F4A50FDFE7A6B090A84C /* NSObject+FBKVOController.m in Sources */,
+				6E9A0E7D86EB3DE1073DEA16CACEB50B /* FBKVOController.m in Sources */,
+				3C1BADD96D54BD861F702A67EB91E7EA /* KVOController-dummy.m in Sources */,
+				FC1B6ED37FF9BE4725096CEE25391812 /* NSObject+FBKVOController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,10 +281,12 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CLFAGS = "-w";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_SUPPRESS_WARNINGS = YES;
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
@@ -341,10 +343,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_CLFAGS = "-w";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_SUPPRESS_WARNINGS = YES;
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
