@@ -122,7 +122,6 @@
 		1C2DC7351DCEA605005040FD /* SmilieStickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */; };
 		1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C081E41832600CCBA51 /* CoreAnimation.swift */; };
-		1C3811CC2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */; };
 		1C381206219F766B005029C1 /* NSAttributedString+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C381205219F766B005029C1 /* NSAttributedString+Format.swift */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
 		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; };
@@ -841,8 +840,6 @@
 		1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableStickers.plist; sourceTree = "<group>"; };
 		1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteSheetView.swift; sourceTree = "<group>"; };
 		1C353C081E41832600CCBA51 /* CoreAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAnimation.swift; sourceTree = "<group>"; };
-		1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITabBar+FixiOS12_1Layout.h"; sourceTree = "<group>"; };
-		1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITabBar+FixiOS12_1Layout.m"; sourceTree = "<group>"; };
 		1C381205219F766B005029C1 /* NSAttributedString+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Format.swift"; sourceTree = "<group>"; };
 		1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPeekPopController.swift; sourceTree = "<group>"; };
 		1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
@@ -2183,8 +2180,6 @@
 				1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */,
 				1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */,
 				1CC0D69722E2684500559684 /* UISplitViewController+HideShowPrimary.swift */,
-				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
-				1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */,
 				1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */,
 				1C3CBEFE22A45C2500F6C634 /* UIView+SafeAreaFrame.swift */,
 				1C0AD5EE21588CE000B72FDE /* WKWebView+RegisterScheme.h */,
@@ -3676,7 +3671,6 @@
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
 				1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */,
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
-				1C3811CC2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m in Sources */,
 				1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */,
 				1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */,
 				1CD1ADA72272737600E075EA /* CGGeometry+Math.swift in Sources */,
