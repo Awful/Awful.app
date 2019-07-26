@@ -36,8 +36,12 @@ class RootViewController: UIViewController {
     private func updateChild(animated: Bool) {
         setSingleChildViewController(to: {
             if isLoggedIn {
+                #if targetEnvironment(macCatalyst)
+                let paneVC = ThreePaneViewController(managedObjectContext: managedObjectContext)
+                #else
                 let paneVC = OneOrTwoPaneViewController(managedObjectContext: managedObjectContext)
-                paneVC.restorationIdentifier = "OneOrTwoPane"
+                #endif
+                paneVC.restorationIdentifier = "Pane"
                 return paneVC
             } else {
                 let loginVC = LoginViewController.newFromStoryboard()
@@ -52,6 +56,8 @@ class RootViewController: UIViewController {
 
         oldChild?.willMove(toParent: nil)
         addChild(newChild)
+
+        child = newChild
 
         if let oldChild = oldChild {
             view.insertSubview(newChild.view, belowSubview: oldChild.view)
