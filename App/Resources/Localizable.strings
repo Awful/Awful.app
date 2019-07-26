@@ -46,6 +46,9 @@
 /* Title of the favorite forums section in the forums list. */
 "forums-list.favorite-forums.section-title" = "Favorite Forums";
 
+/* Title of the Forums screen, shown in the navbar and the tab bar. */
+"forums-list.title" = "Forums";
+
 /* Name of undo action where user adds a just-deleted favorite back (more of a redo action). */
 "forums-list.undo-action.add-favorite" = "Add Favorite Forum";
 

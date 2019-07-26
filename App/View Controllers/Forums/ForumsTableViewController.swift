@@ -18,7 +18,7 @@ final class ForumsTableViewController: TableViewController {
         self.managedObjectContext = managedObjectContext
         super.init(style: .grouped)
         
-        title = "Forums"
+        title = NSLocalizedString("forums-list.title", comment: "")
         tabBarItem.image = UIImage(named: "forum-list")
         tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
 
