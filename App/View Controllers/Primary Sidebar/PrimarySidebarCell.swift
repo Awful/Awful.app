@@ -11,7 +11,14 @@ final class PrimarySidebarCell: UITableViewCell {
 
     static let estimatedRowHeight: CGFloat = 44
 
-    func configure(title: String) {
+    func configure(icon: UIImage?, title: String) {
+        iconImageView.image = icon
         titleLabel.text = title
+    }
+
+    override func tintColorDidChange() {
+        super.tintColorDidChange()
+
+        titleLabel.textColor = tintColor
     }
 }

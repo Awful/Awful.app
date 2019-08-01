@@ -63,29 +63,43 @@ final class PrimarySidebarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataSource = .init(tableView: tableView, cellProvider: { tableView, indexPath, item in
+        dataSource = .init(tableView: tableView, cellProvider: {
+            [unowned self] tableView, indexPath, item in
             let cell = tableView.dequeueReusableCell(withIdentifier: "PrimarySidebarCell") as! PrimarySidebarCell
+            cell.backgroundColor = self.theme["backgroundColor"]
+
             switch item {
             case .allForums:
-                cell.configure(title: NSLocalizedString("forums-list.title", comment: ""))
+                cell.configure(
+                    icon: UIImage(named: "forum-list"),
+                    title: NSLocalizedString("forums-list.title", comment: ""))
 
             case .bookmarkedThreads:
-                cell.configure(title: NSLocalizedString("bookmarks.title", comment: ""))
+                cell.configure(
+                    icon: UIImage(named: "bookmarks"),
+                    title: NSLocalizedString("bookmarks.title", comment: ""))
 
             case .favoriteForum(_, let name):
-                cell.configure(title: name)
+                cell.configure(
+                    icon: UIImage(named: "star-on"),
+                    title: name)
 
             case .lepersColony:
-                cell.configure(title: NSLocalizedString("lepers-colony.tabbar-title", comment: ""))
+                cell.configure(
+                    icon: UIImage(named: "lepers"),
+                    title: NSLocalizedString("lepers-colony.tabbar-title", comment: ""))
 
             case .privateMessages:
-                cell.configure(title: NSLocalizedString("private-message-tab.title", comment: ""))
+                cell.configure(
+                    icon: UIImage(named: "pm-icon"),
+                    title: NSLocalizedString("private-message-tab.title", comment: ""))
             }
             return cell
         })
 
         view.addSubview(tableView, constrainEdges: .all)
 
+        themeDidChange()
         update()
     }
 
@@ -138,5 +152,23 @@ extension PrimarySidebarViewController: UITableViewDelegate {
             self.selectedItem = selectedItem
             delegate?.didSelect(selectedItem, in: self)
         }
+    }
+}
+
+// MARK: - Theme
+
+@available(iOS 13.0, *)
+extension PrimarySidebarViewController: Themeable {
+    var theme: Theme { Theme.defaultTheme() }
+
+    func themeDidChange() {
+        view.backgroundColor = theme["backgroundColor"]
+        view.tintColor = self.theme["listTextColor"]
+
+        tableView.backgroundColor = theme["backgroundColor"]
+        tableView.indicatorStyle = theme.scrollIndicatorStyle
+        tableView.separatorColor = theme["listSeparatorColor"]
+
+        tableView.reloadData()
     }
 }
