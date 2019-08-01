@@ -162,6 +162,11 @@ extension UserDefaults {
         }
         defaults[SettingsKeys.defaultDarkTheme] = SystemCapabilities.oled ? "oledDark" : "dark"
         defaults[SettingsKeys.defaultLightTheme] = SystemCapabilities.oled ? "brightLight" : "default"
+
+        #if targetEnvironment(macCatalyst)
+        defaults[SettingsKeys.automaticallyEnableDarkMode] = true
+        #endif
+
         defaults.merge(Theme.forumSpecificDefaults, uniquingKeysWith: { $1 })
         register(defaults: defaults)
     }

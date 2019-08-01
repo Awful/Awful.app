@@ -16,24 +16,26 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" placeholderIntrinsicWidth="22" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="e9k-AB-FBy">
-                        <rect key="frame" x="16" y="11" width="22" height="22"/>
-                    </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lxf-wk-2dY">
-                        <rect key="frame" x="46" y="11" width="258" height="22"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="kg5-o4-yT8">
+                        <rect key="frame" x="16" y="11" width="288" height="22"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" placeholderIntrinsicWidth="22" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="e9k-AB-FBy">
+                                <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lxf-wk-2dY">
+                                <rect key="frame" x="30" y="0.0" width="258" height="22"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="lxf-wk-2dY" firstAttribute="trailing" secondItem="5Fj-te-cHK" secondAttribute="trailingMargin" id="2a0-Fb-GXo"/>
-                    <constraint firstItem="e9k-AB-FBy" firstAttribute="leading" secondItem="5Fj-te-cHK" secondAttribute="leadingMargin" id="FqD-3j-Msv"/>
-                    <constraint firstItem="e9k-AB-FBy" firstAttribute="top" secondItem="5Fj-te-cHK" secondAttribute="topMargin" id="Nqh-fR-P0F"/>
-                    <constraint firstItem="e9k-AB-FBy" firstAttribute="bottom" secondItem="5Fj-te-cHK" secondAttribute="bottomMargin" id="giB-JH-fwA"/>
-                    <constraint firstItem="lxf-wk-2dY" firstAttribute="top" secondItem="5Fj-te-cHK" secondAttribute="topMargin" id="mqv-UP-G9A"/>
-                    <constraint firstItem="lxf-wk-2dY" firstAttribute="leading" secondItem="e9k-AB-FBy" secondAttribute="trailing" constant="8" id="mse-VV-SF9"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="lxf-wk-2dY" secondAttribute="bottom" id="w7J-Ib-HW8"/>
+                    <constraint firstAttribute="leadingMargin" secondItem="kg5-o4-yT8" secondAttribute="leading" id="Kfn-Ox-60A"/>
+                    <constraint firstAttribute="topMargin" secondItem="kg5-o4-yT8" secondAttribute="top" id="NzL-QT-EJL"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="kg5-o4-yT8" secondAttribute="bottom" id="a6x-wz-zAD"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="kg5-o4-yT8" secondAttribute="trailing" id="tOB-js-gSA"/>
                 </constraints>
                 <edgeInsets key="layoutMargins" top="11" left="16" bottom="11" right="16"/>
             </tableViewCellContentView>
