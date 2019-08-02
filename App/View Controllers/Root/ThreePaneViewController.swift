@@ -25,8 +25,10 @@ final class ThreePaneViewController: UIViewController {
     private var middleNavWidth: NSLayoutConstraint?
     private var primarySidebarWidth: NSLayoutConstraint?
 
-    private lazy var allForums: ForumsTableViewController = {
-        return ForumsTableViewController(managedObjectContext: managedObjectContext)
+    private lazy var allForums: ForumListViewController = {
+        let allForums = ForumListViewController(managedObjectContext: managedObjectContext)
+        allForums.title = NSLocalizedString("forums-list.title", comment: "")
+        return allForums
     }()
 
     private lazy var bookmarkedThreads: BookmarksTableViewController = {
