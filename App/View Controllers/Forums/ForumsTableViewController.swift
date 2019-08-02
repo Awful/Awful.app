@@ -177,13 +177,8 @@ final class ForumsTableViewController: TableViewController {
             let forum = listDataSource.item(at: indexPath) as? Forum
             else { return }
 
-        if forum.metadata.showsChildrenInForumList {
-            forum.collapse()
-        }
-        else {
-            forum.expand()
-        }
-        
+        forum.toggleCollapseExpand()
+
         try! forum.managedObjectContext!.save()
     }
 
@@ -193,15 +188,7 @@ final class ForumsTableViewController: TableViewController {
             let forum = listDataSource.item(at: indexPath) as? Forum
             else { return }
 
-        if forum.metadata.favorite {
-            forum.metadata.favorite = false
-        }
-        else {
-            forum.metadata.favorite = true
-            forum.metadata.favoriteIndex = listDataSource.nextFavoriteIndex
-        }
-        forum.tickleForFetchedResultsController()
-
+        forum.toggleFavorite()
         try! forum.managedObjectContext!.save()
     }
 }
