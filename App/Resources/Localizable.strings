@@ -55,6 +55,18 @@
 /* Name of undo action where user deletes a favorite. */
 "forums-list.undo-action.remove-favorite" = "Remove Favorite Forum";
 
+/* Title of context menu item that adds a favorite forum. */
+"forums-list.context-menu.add-favorite" = "Mark as Favorite";
+
+/* Title of context menu item that deletes a favorite forum. */
+"forums-list.context-menu.delete-favorite" = "Unfavorite";
+
+/* Title of context menu item that hides the forum's descendants. */
+"forums-list.context-menu.collapse" = "Collapse";
+
+/* Title of context menu item that shows the forum's children. */
+"forums-list.context-menu.expand" = "Expand";
+
 
 /* MARK: Handoff */
 

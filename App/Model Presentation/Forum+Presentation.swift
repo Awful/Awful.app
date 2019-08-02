@@ -64,15 +64,25 @@ extension Forum {
 }
 
 extension Forum {
-    func toggleFavorite() {
-        if metadata.favorite {
-            metadata.favorite = false
-        } else {
-            metadata.favorite = true
-            metadata.favoriteIndex = Forum.nextFavoriteIndex(in: managedObjectContext!)
-        }
+    func addFavorite() {
+        metadata.favorite = true
+        metadata.favoriteIndex = Forum.nextFavoriteIndex(in: managedObjectContext!)
 
         tickleForFetchedResultsController()
+    }
+
+    func removeFavorite() {
+        metadata.favorite = false
+
+        tickleForFetchedResultsController()
+    }
+
+    func toggleFavorite() {
+        if metadata.favorite {
+            removeFavorite()
+        } else {
+            addFavorite()
+        }
     }
 
     private static func nextFavoriteIndex(in managedObjectContext: NSManagedObjectContext) -> Int32 {
