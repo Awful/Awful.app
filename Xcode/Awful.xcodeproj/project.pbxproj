@@ -334,6 +334,7 @@
 		1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010819DE89B000542293 /* SmilieCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010919DE89B000542293 /* SmilieCell.m */; };
 		1C81405922F495EA00C52CDA /* ForumListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C81405822F495EA00C52CDA /* ForumListViewController.swift */; };
+		1C81405D22F4BB8500C52CDA /* AnnouncementListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C81405C22F4BB8500C52CDA /* AnnouncementListViewController.swift */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C83A41522EA902B007CD69C /* PrimarySidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEA9FDC22EA59BE00415C0F /* PrimarySidebarViewController.swift */; };
@@ -1065,6 +1066,7 @@
 		1C7B010819DE89B000542293 /* SmilieCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCell.h; sourceTree = "<group>"; };
 		1C7B010919DE89B000542293 /* SmilieCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCell.m; sourceTree = "<group>"; };
 		1C81405822F495EA00C52CDA /* ForumListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumListViewController.swift; sourceTree = "<group>"; };
+		1C81405C22F4BB8500C52CDA /* AnnouncementListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementListViewController.swift; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
@@ -2144,6 +2146,15 @@
 			path = Sourcery;
 			sourceTree = "<group>";
 		};
+		1C81405B22F4BB7100C52CDA /* Announcements */ = {
+			isa = PBXGroup;
+			children = (
+				1C81405C22F4BB8500C52CDA /* AnnouncementListViewController.swift */,
+				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
+			);
+			path = Announcements;
+			sourceTree = "<group>";
+		};
 		1C83A41622EAA4F3007CD69C /* Root */ = {
 			isa = PBXGroup;
 			children = (
@@ -2305,8 +2316,8 @@
 		1CD005CD1BB734C900232FFD /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				1C81405B22F4BB7100C52CDA /* Announcements */,
 				1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */,
-				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1C29C3812258538A00E1217A /* Forums */,
 				1CBE1B0819CA050300510187 /* ImageViewController.swift */,
@@ -3850,6 +3861,7 @@
 				1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
+				1C81405D22F4BB8500C52CDA /* AnnouncementListViewController.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
 				1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */,

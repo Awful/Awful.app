@@ -74,6 +74,7 @@ final class ForumListViewController: UIViewController {
 
 // MARK: Navigation
 
+@available(iOS 13.0, *)
 extension ForumListViewController {
     func openForum(_ forum: Forum, animated: Bool) {
         let threadList = ThreadsTableViewController(forum: forum)
@@ -85,6 +86,7 @@ extension ForumListViewController {
 
 // MARK: Helpers
 
+@available(iOS 13.0, *)
 extension ForumListViewController {
     private func makeViewModel(for forum: Forum) -> ForumListCell.ViewModel {
         return .init(
@@ -113,6 +115,7 @@ extension ForumListViewController {
 
 // MARK: Results controller
 
+@available(iOS 13.0, *)
 extension ForumListViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
@@ -178,6 +181,7 @@ extension ForumListViewController: NSFetchedResultsControllerDelegate {
 
 // MARK: Theme
 
+@available(iOS 13.0, *)
 extension ForumListViewController: Themeable {
     var theme: Theme { Theme.defaultTheme() }
 
@@ -194,6 +198,7 @@ extension ForumListViewController: Themeable {
 
 // MARK: Table view
 
+@available(iOS 13.0, *)
 extension ForumListViewController: UITableViewDataSource & UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return resultsController.sections?.count ?? 0

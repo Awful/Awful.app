@@ -12,7 +12,7 @@ private let Log = Logger.get()
 /**
  A custom URL protocol that intercepts certain Forums requests and loads fixture data in their place.
  
- This protocol is intentionally difficult to use in an effort to avoid ever shipping this protocol enabled to actual users (e.g. via the App Store). It is wrapped in an `#if DEBUG … #endif`, it requires futzing with target memberships, and it requires adding code somewhere in the app itself to actually do anything. Please do not commit any of these changes to the git repository!
+ This protocol is intentionally difficult to use in an effort to avoid ever shipping to actual users (i.e. the App Store) with this enabled. It is wrapped in `#if DEBUG … #endif`, it requires futzing with target memberships, and it requires adding code somewhere in the app itself to actually do anything. Please do not commit any of these changes to the git repository!
  
  All that said, here's how you might use this thing:
  

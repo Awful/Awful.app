@@ -6,6 +6,8 @@ import AwfulCore
 import CoreData
 import UIKit
 
+private let Log = Logger.get()
+
 /// A three-pane view controller manages three children: one for a primary sidebar, one for a middle list, and one for a "detail" area.
 @available(iOS 13.0, *)
 final class ThreePaneViewController: UIViewController {
@@ -27,20 +29,34 @@ final class ThreePaneViewController: UIViewController {
 
     private lazy var allForums: ForumListViewController = {
         let allForums = ForumListViewController(managedObjectContext: managedObjectContext)
+        allForums.restorationIdentifier = "Forum list"
         allForums.title = NSLocalizedString("forums-list.title", comment: "")
         return allForums
     }()
 
+    private lazy var announcements: AnnouncementListViewController = {
+        let announcements = AnnouncementListViewController(managedObjectContext: managedObjectContext)
+        announcements.restorationIdentifier = "Announcements"
+        announcements.title = NSLocalizedString("announcements-list.title", comment: "")
+        return announcements
+    }()
+
     private lazy var bookmarkedThreads: BookmarksTableViewController = {
-        return BookmarksTableViewController(managedObjectContext: managedObjectContext)
+        let bookmarkedThreads = BookmarksTableViewController(managedObjectContext: managedObjectContext)
+        bookmarkedThreads.restorationIdentifier = "Bookmarks"
+        return bookmarkedThreads
     }()
 
     private lazy var lepersColony: RapSheetViewController = {
-        return RapSheetViewController(user: nil)
+        let lepersColony = RapSheetViewController(user: nil)
+        lepersColony.restorationIdentifier = "Leper's Colony"
+        return lepersColony
     }()
 
     private lazy var privateMessages: MessageListViewController = {
-        return MessageListViewController(managedObjectContext: managedObjectContext)
+        let privateMessages = MessageListViewController(managedObjectContext: managedObjectContext)
+        privateMessages.restorationIdentifier = "Messages"
+        return privateMessages
     }()
 
     init(managedObjectContext: NSManagedObjectContext) {
@@ -80,6 +96,9 @@ final class ThreePaneViewController: UIViewController {
         switch primarySidebar.selectedItem {
         case .allForums:
             targetMiddleList = allForums
+
+        case .announcements:
+            targetMiddleList = announcements
 
         case .bookmarkedThreads:
             targetMiddleList = bookmarkedThreads
