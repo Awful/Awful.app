@@ -24,7 +24,7 @@ final class PrimarySidebarViewController: UIViewController {
     enum Item: Hashable {
         case allForums
         case bookmarkedThreads
-        case favoriteForum(forumID: String, name: String)
+        case favoriteForum(name: String, objectID: NSManagedObjectID)
         case lepersColony
         case privateMessages
     }
@@ -79,7 +79,7 @@ final class PrimarySidebarViewController: UIViewController {
                     icon: UIImage(named: "bookmarks"),
                     title: NSLocalizedString("bookmarks.title", comment: ""))
 
-            case .favoriteForum(_, let name):
+            case .favoriteForum(name: let name, objectID: _):
                 cell.configure(
                     icon: UIImage(named: "star-on"),
                     title: name)
@@ -108,9 +108,11 @@ final class PrimarySidebarViewController: UIViewController {
         snapshot.appendSections(Section.allCases)
 
         snapshot.appendItems([.allForums], toSection: .forums)
-        snapshot.appendItems(favoriteForumsController.fetchedObjects?
-            .map { .favoriteForum(forumID: $0.forum.forumID, name: $0.forum.name ?? "") }
-            ?? [])
+        snapshot.appendItems(
+            favoriteForumsController.fetchedObjects?
+                .map { .favoriteForum(name: $0.forum.name ?? "", objectID: $0.forum.objectID) }
+                ?? [],
+            toSection: .forums)
 
         snapshot.appendItems([.bookmarkedThreads, .lepersColony], toSection: .other)
         if UserDefaults.standard.loggedInUserCanSendPrivateMessages {
@@ -151,6 +153,30 @@ extension PrimarySidebarViewController: UITableViewDelegate {
         if let selectedItem = dataSource?.itemIdentifier(for: indexPath) {
             self.selectedItem = selectedItem
             delegate?.didSelect(selectedItem, in: self)
+        }
+    }
+
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+
+        switch dataSource?.itemIdentifier(for: indexPath) {
+        case let .favoriteForum(name: _, objectID: objectID):
+            let delete = { [unowned self] in
+                let context = self.favoriteForumsController.managedObjectContext
+                let forum = context.object(with: objectID) as! Forum
+                forum.removeFavorite()
+                try! context.save()
+            }
+            let menu = UIMenu(title: "", image: nil, identifier: nil, children: [
+                UIAction(
+                    title: NSLocalizedString("forums-list.context-menu.delete-favorite", comment: ""),
+                    handler: { action in delete() })])
+            return UIContextMenuConfiguration(
+                identifier: objectID,
+                previewProvider: nil,
+                actionProvider: { suggestedItems in menu })
+
+        case .allForums, .bookmarkedThreads, .lepersColony, .privateMessages, nil:
+            return nil
         }
     }
 }

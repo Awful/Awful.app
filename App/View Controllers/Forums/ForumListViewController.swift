@@ -111,6 +111,8 @@ extension ForumListViewController {
     }
 }
 
+// MARK: Results controller
+
 extension ForumListViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
@@ -174,6 +176,8 @@ extension ForumListViewController: NSFetchedResultsControllerDelegate {
     }
 }
 
+// MARK: Theme
+
 extension ForumListViewController: Themeable {
     var theme: Theme { Theme.defaultTheme() }
 
@@ -187,6 +191,8 @@ extension ForumListViewController: Themeable {
         tableView.reloadData()
     }
 }
+
+// MARK: Table view
 
 extension ForumListViewController: UITableViewDataSource & UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -241,5 +247,38 @@ extension ForumListViewController: UITableViewDataSource & UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let forum = resultsController.object(at: indexPath)
         openForum(forum, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let forum = resultsController.object(at: indexPath)
+
+        var menuElements: [UIMenuElement] = []
+
+        if !forum.childForums.isEmpty {
+            if forum.metadata.showsChildrenInForumList {
+                menuElements.append(UIAction(
+                    title: NSLocalizedString("forums-list.context-menu.collapse", comment: ""),
+                    handler: { action in forum.collapse() }))
+            } else {
+                menuElements.append(UIAction(
+                    title: NSLocalizedString("forums-list.context-menu.expand", comment: ""),
+                    handler: { action in forum.expand() }))
+            }
+        }
+
+        if forum.metadata.favorite {
+            menuElements.append(UIAction(
+                title: NSLocalizedString("forums-list.context-menu.delete-favorite", comment: ""),
+                handler: { action in forum.removeFavorite() }))
+        } else {
+            menuElements.append(UIAction(
+                title: NSLocalizedString("forums-list.context-menu.add-favorite", comment: ""),
+                handler: { action in forum.addFavorite() }))
+        }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: {
+            suggestedItems in
+            return UIMenu(title: "", children: menuElements)
+        })
     }
 }
