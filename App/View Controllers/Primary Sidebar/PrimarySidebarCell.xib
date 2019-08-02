@@ -19,7 +19,7 @@
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="kg5-o4-yT8">
                         <rect key="frame" x="16" y="11" width="288" height="22"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" placeholderIntrinsicWidth="22" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="e9k-AB-FBy">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" placeholderIntrinsicWidth="22" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="e9k-AB-FBy">
                                 <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lxf-wk-2dY">

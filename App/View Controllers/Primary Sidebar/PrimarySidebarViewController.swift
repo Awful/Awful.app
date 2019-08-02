@@ -17,27 +17,29 @@ final class PrimarySidebarViewController: UIViewController {
     }
 
     enum Section: Int, CaseIterable, Hashable {
-        case forums
-        case other
+        case topItems
+        case favoriteForums
     }
 
     enum Item: Hashable {
         case allForums
+        case announcements
         case bookmarkedThreads
         case favoriteForum(name: String, objectID: NSManagedObjectID)
         case lepersColony
         case privateMessages
     }
 
+    private var announcementsCountObserver: ManagedObjectCountObserver?
     private var dataSource: UITableViewDiffableDataSource<Section, Item>?
-    private let favoriteForumsController: NSFetchedResultsController<ForumMetadata>
+    private let resultsController: NSFetchedResultsController<ForumMetadata>
 
     init(managedObjectContext: NSManagedObjectContext) {
         let favoriteForumsRequest = NSFetchRequest<ForumMetadata>(entityName: ForumMetadata.entityName())
         favoriteForumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite))
         favoriteForumsRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(ForumMetadata.favoriteIndex), ascending: true)]
-        favoriteForumsController = NSFetchedResultsController(
+        resultsController = NSFetchedResultsController(
             fetchRequest: favoriteForumsRequest,
             managedObjectContext: managedObjectContext,
             sectionNameKeyPath: nil,
@@ -45,10 +47,13 @@ final class PrimarySidebarViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        try! favoriteForumsController.performFetch()
-        favoriteForumsController.delegate = self
-
         preferredContentSize = CGSize(width: 175, height: 200)
+
+        announcementsCountObserver = .init(
+            context: managedObjectContext,
+            entityName: Announcement.entityName(),
+            predicate: NSPredicate(value: true),
+            didChange: { [weak self] count in self?.update() })
     }
 
     private lazy var tableView: UITableView = {
@@ -73,6 +78,11 @@ final class PrimarySidebarViewController: UIViewController {
                 cell.configure(
                     icon: UIImage(named: "forum-list"),
                     title: NSLocalizedString("forums-list.title", comment: ""))
+
+            case .announcements:
+                cell.configure(
+                    icon: UIImage(named: "forum-list"),
+                    title: NSLocalizedString("announcements-list.title", comment: ""))
 
             case .bookmarkedThreads:
                 cell.configure(
@@ -100,24 +110,32 @@ final class PrimarySidebarViewController: UIViewController {
         view.addSubview(tableView, constrainEdges: .all)
 
         themeDidChange()
+
+        try! resultsController.performFetch()
         update()
+
+        resultsController.delegate = self
     }
 
     private func update() {
         let snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections(Section.allCases)
 
-        snapshot.appendItems([.allForums], toSection: .forums)
-        snapshot.appendItems(
-            favoriteForumsController.fetchedObjects?
-                .map { .favoriteForum(name: $0.forum.name ?? "", objectID: $0.forum.objectID) }
-                ?? [],
-            toSection: .forums)
+        snapshot.appendItems([.allForums, .bookmarkedThreads, .lepersColony], toSection: .topItems)
 
-        snapshot.appendItems([.bookmarkedThreads, .lepersColony], toSection: .other)
+        if let announcementCount = announcementsCountObserver?.count, announcementCount > 0 {
+            snapshot.insertItems([.announcements], beforeItem: .allForums)
+        }
+
         if UserDefaults.standard.loggedInUserCanSendPrivateMessages {
             snapshot.insertItems([.privateMessages], afterItem: .bookmarkedThreads)
         }
+
+        snapshot.appendItems(
+            resultsController.fetchedObjects?
+                .map { .favoriteForum(name: $0.forum.name ?? "", objectID: $0.forum.objectID) }
+                ?? [],
+            toSection: .favoriteForums)
 
         dataSource?.apply(snapshot)
     }
@@ -161,7 +179,7 @@ extension PrimarySidebarViewController: UITableViewDelegate {
         switch dataSource?.itemIdentifier(for: indexPath) {
         case let .favoriteForum(name: _, objectID: objectID):
             let delete = { [unowned self] in
-                let context = self.favoriteForumsController.managedObjectContext
+                let context = self.resultsController.managedObjectContext
                 let forum = context.object(with: objectID) as! Forum
                 forum.removeFavorite()
                 try! context.save()
@@ -175,7 +193,7 @@ extension PrimarySidebarViewController: UITableViewDelegate {
                 previewProvider: nil,
                 actionProvider: { suggestedItems in menu })
 
-        case .allForums, .bookmarkedThreads, .lepersColony, .privateMessages, nil:
+        case .allForums, .announcements, .bookmarkedThreads, .lepersColony, .privateMessages, nil:
             return nil
         }
     }

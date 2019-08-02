@@ -31,6 +31,9 @@
 /* Fallback title of an announcement screen (the announcement's title is used when available). */
 "announcement.title" = "Announcement";
 
+/* Title of the announcement list. */
+"announcements-list.title" = "Announcements";
+
 
 /* MARK: Bookmarks */
 

@@ -172,7 +172,10 @@ final class AwfulURLRouter: NSObject {
             return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
         }
 
-        if let forumsVC = rootViewController.firstDescendantOfType(ForumListViewController.self) {
+        if
+            #available(iOS 13.0, *),
+            let forumsVC = rootViewController.firstDescendantOfType(ForumListViewController.self)
+        {
             _ = forumsVC.navigationController?.popToViewController(forumsVC, animated: false)
             forumsVC.openForum(forum, animated: false)
             return selectTopmostViewController(containingViewControllerOfClass: ForumListViewController.self) != nil
