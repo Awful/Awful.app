@@ -186,6 +186,7 @@ extension Theme: Comparable {
             ?? givePriority(to: "dark")
             ?? givePriority(to: "alternateDefault")
             ?? givePriority(to: "alternateDark")
+            ?? givePriority(to: "brightLight")
             ?? givePriority(to: "oledDark")
             ?? (lhs.descriptiveName < rhs.descriptiveName)
     }
@@ -234,7 +235,9 @@ extension Theme {
         case .light:
             themeName = UserDefaults.standard.defaultLightTheme
         }
-        return bundledThemes[themeName]!
+        
+        // If a theme was renamed, this will prevent a crash on launch
+        return bundledThemes[themeName] ?? (mode == .light ? bundledThemes["default"] : bundledThemes["dark"])!
     }
 
     class var allThemes: [Theme] {

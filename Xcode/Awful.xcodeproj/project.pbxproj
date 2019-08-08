@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C6C11B422FCE5800084C406 /* posts-view-bright-light.css in Resources */ = {isa = PBXBuildFile; fileRef = 0C6C11B322FCE5800084C406 /* posts-view-bright-light.css */; };
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
 		1C0060AA217171CD00E5329A /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0060A8217171CD00E5329A /* profile.css */; };
@@ -672,6 +673,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0C6C11B322FCE5800084C406 /* posts-view-bright-light.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-bright-light.css"; sourceTree = "<group>"; };
 		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
 		1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelperTests.swift; sourceTree = "<group>"; };
 		1C0060A42170347300E5329A /* HTMLReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLReader.swift; sourceTree = "<group>"; };
@@ -2258,6 +2260,7 @@
 		1CDD51951542949600326C7B /* Theming */ = {
 			isa = PBXGroup;
 			children = (
+				0C6C11B322FCE5800084C406 /* posts-view-bright-light.css */,
 				837D67ED1861C25000464055 /* ForumTweaks.plist */,
 				1C16FBCB1CB96F9300C88BD1 /* ForumTweaks.swift */,
 				1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */,
@@ -3126,6 +3129,7 @@
 				7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */,
 				7BF3A6191F92FA86009F8603 /* AppIcon-greenface-60x60.png in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
+				0C6C11B422FCE5800084C406 /* posts-view-bright-light.css in Resources */,
 				1C502D4B1F817010001890AF /* AppIcon-staredog-40x40@3x.png in Resources */,
 				1C502D2C1F816FFC001890AF /* AppIcon-five-60x60.png in Resources */,
 				7BF090462022C7570060BDC8 /* AppIcon-Bars2_dark-20x20@2x.png in Resources */,
