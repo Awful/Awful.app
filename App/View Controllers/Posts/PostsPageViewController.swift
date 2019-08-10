@@ -405,8 +405,8 @@ final class PostsPageViewController: ViewController {
         item.actionBlock = { [unowned self] (sender) in
             let actionVC = InAppActionViewController()
             actionVC.title = self.title
-            
-            let copyURLItem = IconActionItem(.copyURL, block: { 
+
+            let copyURLItem = IconActionItem(.copyURL, block: {
                 let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
                 var queryItems = [
                     URLQueryItem(name: "threadid", value: self.thread.threadID),
@@ -473,7 +473,21 @@ final class PostsPageViewController: ViewController {
                 }
             })
             
-            actionVC.items = [copyURLItem, voteItem, bookmarkItem]
+            if let author = self.author {
+                actionVC.items = [copyURLItem, voteItem, bookmarkItem]
+            } else {
+                let ownPostsItem = IconActionItem(.ownPosts, block: {
+                    let userKey = UserKey(userID: UserDefaults.standard.loggedInUserID!, username: UserDefaults.standard.loggedInUsername)
+                    let user = User.objectForKey(objectKey: userKey, inManagedObjectContext: self.thread.managedObjectContext!) as! User
+                    let postsVC = PostsPageViewController(thread: self.thread, author: user)
+                    postsVC.restorationIdentifier = "Just your posts"
+                    postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
+                    self.navigationController?.pushViewController(postsVC, animated: true)
+                })
+                ownPostsItem.title = "Your Posts"
+
+                actionVC.items = [copyURLItem, ownPostsItem, voteItem, bookmarkItem]
+            }
             self.present(actionVC, animated: true, completion: nil)
             
             if let popover = actionVC.popoverPresentationController {

@@ -38,6 +38,7 @@ final class IconActionItem: NSObject {
     case jumpToLastPage
     case markAsUnread
     case markReadUpToHere
+    case ownPosts
     case quotePost
     case rapSheet
     case removeBookmark
@@ -60,6 +61,7 @@ final class IconActionItem: NSObject {
         case .jumpToLastPage: return "Last Page"
         case .markAsUnread: return "Mark Unread"
         case .markReadUpToHere: return "Mark Read"
+        case .ownPosts: return "Your Posts"
         case .quotePost: return "Quote"
         case .rapSheet: return "Rap Sheet"
         case .reportPost: return "Report"
@@ -84,6 +86,7 @@ final class IconActionItem: NSObject {
         case .jumpToLastPage: return "jump-to-last-page"
         case .markAsUnread: return "mark-as-unread"
         case .markReadUpToHere: return "mark-read-up-to-here"
+        case .ownPosts: return "single-users-posts"
         case .quotePost: return "quote-post"
         case .rapSheet: return "rap-sheet"
         case .reportPost: return "rap-sheet"
@@ -108,6 +111,7 @@ final class IconActionItem: NSObject {
         case .jumpToLastPage: return "jumpToLastPageIconColor"
         case .markAsUnread: return "markUnreadIconColor"
         case .markReadUpToHere: return "markReadUpToHereIconColor"
+        case .ownPosts: return "singleUserIconColor"
         case .quotePost: return "quoteIconColor"
         case .rapSheet: return "rapSheetIconColor"
         case .reportPost: return "rapSheetIconColor"
