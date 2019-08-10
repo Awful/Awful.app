@@ -407,7 +407,12 @@ final class PostsPageViewController: ViewController {
             actionVC.title = self.title
 
             let ownPostsItem = IconActionItem(.ownPosts, block: {
-                
+                let userKey = UserKey(userID: UserDefaults.standard.loggedInUserID!, username: UserDefaults.standard.loggedInUsername)
+                let user = User.objectForKey(objectKey: userKey, inManagedObjectContext: self.thread.managedObjectContext!) as! User
+                let postsVC = PostsPageViewController(thread: self.thread, author: user)
+                postsVC.restorationIdentifier = "Just your posts"
+                postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
+                self.navigationController?.pushViewController(postsVC, animated: true)
             })
             ownPostsItem.title = "Your Posts"
             
