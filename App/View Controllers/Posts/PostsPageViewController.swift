@@ -405,6 +405,11 @@ final class PostsPageViewController: ViewController {
         item.actionBlock = { [unowned self] (sender) in
             let actionVC = InAppActionViewController()
             actionVC.title = self.title
+
+            let ownPostsItem = IconActionItem(.ownPosts, block: {
+                
+            })
+            ownPostsItem.title = "Your Posts"
             
             let copyURLItem = IconActionItem(.copyURL, block: { 
                 let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
@@ -473,7 +478,7 @@ final class PostsPageViewController: ViewController {
                 }
             })
             
-            actionVC.items = [copyURLItem, voteItem, bookmarkItem]
+            actionVC.items = [copyURLItem, ownPostsItem, voteItem, bookmarkItem]
             self.present(actionVC, animated: true, completion: nil)
             
             if let popover = actionVC.popoverPresentationController {
