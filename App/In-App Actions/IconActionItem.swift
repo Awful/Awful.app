@@ -67,7 +67,7 @@ final class IconActionItem: NSObject {
         case .reportPost: return "Report"
         case .removeBookmark: return "Unmark"
         case .sendPrivateMessage: return "PM"
-        case .showInThread: return "All Posts"
+        case .showInThread: return "Find Post"
         case .singleUsersPosts: return "Their Posts"
         case .unignoreUser: return "Unignore"
         case .userProfile: return "Profile"
