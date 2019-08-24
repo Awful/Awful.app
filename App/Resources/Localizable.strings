@@ -9,6 +9,9 @@
 /* Title of button that dismisses without taking any action. */
 "cancel" = "Cancel";
 
+/* Title of a button that acknowledges information without offering any choice. */
+"ok" = "OK";
+
 /* Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.) */
 "table-view.action.delete" = "Delete";
 
@@ -87,6 +90,15 @@
 
 /* Link on the login screen that opens the Terms of Service when tapped. */
 "login.consent-to-terms.terms-of-service" = "Terms of Service";
+
+
+/* MARK: Periodic warnings */
+
+/* Title of an alert shown on launch if the user's session expires within a week. */
+"session-expiry-imminent.title" = "Session Expires Soon";
+
+/* Message of an alert shown on launch if the user's session expires within a week. Parameter is the expiry date. */
+"session-expiry-imminent.message" = "You'll be automatically logged out on %@. Or you can log out and back in before then.";
 
 
 /* MARK: Posts page */

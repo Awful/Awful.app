@@ -367,10 +367,10 @@ private extension AppDelegate {
         guard lastPromptDate.timeIntervalSinceNow < -loginCookieExpiryPromptFrequency else { return }
         
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-        alert.title = "Login Expiring Soon"
+        alert.title = LocalizedString("session-expiry-imminent.title")
         let dateString = DateFormatter.localizedString(from: expiryDate, dateStyle: .short, timeStyle: .none)
-        alert.message = "Your login cookie expires on \(dateString)"
-        alert.addActionWithTitle("OK") { 
+        alert.message = String(format: LocalizedString("session-expiry-imminent.message"), dateString)
+        alert.addActionWithTitle(LocalizedString("ok")) {
             UserDefaults.standard.set(Date(), forKey: loginCookieLastExpiryPromptDateKey)
         }
         window?.rootViewController?.present(alert, animated: true, completion: nil)
