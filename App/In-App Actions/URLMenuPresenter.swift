@@ -178,8 +178,15 @@ private enum _URLMenuPresenter {
                     UIApplication.shared.openURL(videoURL.actionURL)
                     return
                 }))
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
-                    UIPasteboard.general.coercedURL = videoURL.unembeddedURL
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.share-url"), style: .default, handler: { _ in
+                    let items = [videoURL.unembeddedURL]
+                    let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+                    presenter.present(activityVC, animated: true)
+
+                    if let popover = activityVC.popoverPresentationController {
+                        popover.sourceRect = sourceRect
+                        popover.sourceView = sourceView
+                    }
                 }))
             } else {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
