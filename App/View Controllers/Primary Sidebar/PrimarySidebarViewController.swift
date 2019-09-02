@@ -118,7 +118,7 @@ final class PrimarySidebarViewController: UIViewController {
     }
 
     private func update() {
-        let snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections(Section.allCases)
 
         snapshot.appendItems([.allForums, .bookmarkedThreads, .lepersColony], toSection: .topItems)

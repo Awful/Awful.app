@@ -34,9 +34,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1C082EF9231CD5E800D05824 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BDE31901F826A4F26C3906F875868DFF /* PathKit */;
+			proxyType = 2;
+			remoteGlobalIDString = F0C5A5D2A379426D2C34FFE6EE704D85;
+			remoteInfo = PathKit;
+		};
 		9A434AC88D7EDA728BCCEB703A955B49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = BDE31901F826A4F26C3906F875868DFF /* PathKit.xcodeproj */;
+			containerPortal = BDE31901F826A4F26C3906F875868DFF /* PathKit */;
 			proxyType = 1;
 			remoteGlobalIDString = B4C4433A0942F44A502A8BF212B71BAC;
 			remoteInfo = PathKit;
@@ -65,7 +72,7 @@
 		847A298446A9583BE1C80219960B8872 /* Parser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Parser.swift; path = Sources/Parser.swift; sourceTree = "<group>"; };
 		97FA5807C4DCF77CC34E23EE35171D49 /* Variable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Variable.swift; path = Sources/Variable.swift; sourceTree = "<group>"; };
 		A3C3700E9DE61104B17B2D14185C92CB /* Node.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Node.swift; path = Sources/Node.swift; sourceTree = "<group>"; };
-		A7BB5C6FD5130837582EA52B2DA979CE /* Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Stencil.framework; path = Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7BB5C6FD5130837582EA52B2DA979CE /* Stencil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Stencil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDE31901F826A4F26C3906F875868DFF /* PathKit */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PathKit; path = PathKit.xcodeproj; sourceTree = "<group>"; };
 		C5756622513FFDC329453E5C6F035ECC /* Stencil-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Stencil-umbrella.h"; sourceTree = "<group>"; };
 		C932335B6B7486DE8C2808D67E876DA1 /* Inheritence.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Inheritence.swift; path = Sources/Inheritence.swift; sourceTree = "<group>"; };
@@ -114,8 +121,15 @@
 				97FA5807C4DCF77CC34E23EE35171D49 /* Variable.swift */,
 				7EC39BBEC1D09202E3733C512338C783 /* Support Files */,
 			);
-			name = Stencil;
 			path = Stencil;
+			sourceTree = "<group>";
+		};
+		1C082EF7231CD55B00D05824 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1C082EFA231CD5E800D05824 /* PathKit.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		7EC39BBEC1D09202E3733C512338C783 /* Support Files */ = {
@@ -216,6 +230,11 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1100;
+				TargetAttributes = {
+					9107B3F2331D60BA08A1A2603425733F = {
+						LastSwiftMigration = 1100;
+					};
+				};
 			};
 			buildConfigurationList = 5E6CFC28719743075F6B08E5ECBA0D41 /* Build configuration list for PBXProject "Stencil" */;
 			compatibilityVersion = "Xcode 11.0";
@@ -229,6 +248,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 1C082EF7231CD55B00D05824 /* Products */;
 					ProjectRef = BDE31901F826A4F26C3906F875868DFF /* PathKit */;
 				},
 			);
@@ -238,6 +258,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1C082EFA231CD5E800D05824 /* PathKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PathKit.framework;
+			remoteRef = 1C082EF9231CD5E800D05824 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		B8F120692CB29E1FD7BD740CEFDA2B31 /* Resources */ = {

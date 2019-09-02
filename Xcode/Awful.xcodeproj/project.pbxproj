@@ -21,6 +21,7 @@
 		1C07B8BE1F0098E50044B8AF /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8BD1F0098E50044B8AF /* Announcement.swift */; };
 		1C07B8C01F009F260044B8AF /* AnnouncementPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8BF1F009F260044B8AF /* AnnouncementPersistence.swift */; };
 		1C07B8C41F07D73F0044B8AF /* AnnouncementPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C07B8C31F07D73F0044B8AF /* AnnouncementPersistenceTests.swift */; };
+		1C082EFB231CD99F00D05824 /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0AD5E92149D3D100B72FDE /* FixureURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0AD5E82149D3D100B72FDE /* FixureURLProtocol.swift */; };
@@ -1404,6 +1405,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C082EFB231CD99F00D05824 /* CommonSPM.framework in Frameworks */,
 				FF308D05C62669BEAFAEA2AC /* Pods_Awful_AwfulTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
