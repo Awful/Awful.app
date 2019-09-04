@@ -12,7 +12,7 @@ extension UIActivityIndicatorView {
      The style name changed in iOS 13 and the old one is unavailable in UIKit for Mac. This method deals with it.
      */
     class func makeLarge() -> Self {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return self.init(style: .large)
         #else
         return self.init(style: .whiteLarge)

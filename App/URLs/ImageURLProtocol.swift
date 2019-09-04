@@ -50,7 +50,7 @@ final class ImageURLProtocol: URLProtocol {
         let resultHandler = { (imageData: Data?, uti: String?, orientation: Any, info: [AnyHashable: Any]?) in
             maybeData = imageData
         }
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         PHImageManager.default().requestImageDataAndOrientation(for: asset, options: options, resultHandler: resultHandler)
         #else
         PHImageManager.default().requestImageData(for: asset, options: options, resultHandler: resultHandler)

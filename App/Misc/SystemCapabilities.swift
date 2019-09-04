@@ -23,7 +23,7 @@ enum SystemCapabilities {
      - Note: Does not take into account the user's current Handoff settings. That is, `handoff` can return `true` when the user has turned off Handoff.
      */
     static let handoff: Bool = {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         // Supported Handoff devices: https://support.apple.com/en-ca/HT204689
         // Macs that can run 10.15 Catalina (when UIKit for Mac shipped): https://www.apple.com/ca/macos/catalina-preview/
         // 100% overlap :)

@@ -65,7 +65,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ForumsClient.shared.fetchDidEnd = NetworkActivityIndicatorManager.shared.decrementActivityCount
 
         URLCache.shared = {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), directory: nil)
             #else
             return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)

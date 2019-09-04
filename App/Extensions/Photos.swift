@@ -9,7 +9,7 @@ extension PHAsset {
         return fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject
     }
 
-    #if !targetEnvironment(UIKitForMac)
+    #if !targetEnvironment(macCatalyst)
     class func firstAsset(withALAssetURL assetURL: URL) -> PHAsset? {
         return fetchAssets(withALAssetURLs: [assetURL], options: nil).firstObject
     }

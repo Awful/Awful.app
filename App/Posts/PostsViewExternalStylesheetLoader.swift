@@ -75,7 +75,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
         var request = URLRequest(url: stylesheetURL)
 
         var oldResponse: HTTPURLResponse? {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             guard let data = try? Data(contentsOf: cachedResponseURL) else { return nil }
             return try? NSKeyedUnarchiver.unarchivedObject(ofClass: HTTPURLResponse.self, from: data)
             #else
@@ -110,7 +110,7 @@ final class PostsViewExternalStylesheetLoader: NSObject {
                     }
                 }
 
-                #if targetEnvironment(UIKitForMac)
+                #if targetEnvironment(macCatalyst)
                 do {
                     let data = try NSKeyedArchiver.archivedData(withRootObject: response, requiringSecureCoding: false)
                     try data.write(to: self.cachedResponseURL)

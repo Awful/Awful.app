@@ -20,14 +20,14 @@ public final class Scanner {
 
     public var currentIndex: String.Index {
         get {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             return scanner.currentIndex
             #else
             return String.Index(utf16Offset: scanner.scanLocation, in: string)
             #endif
         }
         set {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             scanner.currentIndex = newValue
             #else
             scanner.scanLocation = newValue.utf16Offset(in: string)
@@ -68,7 +68,7 @@ extension Scanner {
     }
 
     public func scanInt(representation: NumberRepresentation = .decimal) -> Int? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanInt(representation: representation.foundationValue)
         #else
         var result = Int()
@@ -78,7 +78,7 @@ extension Scanner {
     }
 
     public func scanInt32(representation: NumberRepresentation = .decimal) -> Int32? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanInt32(representation: representation.foundationValue)
         #else
         switch representation {
@@ -95,7 +95,7 @@ extension Scanner {
     }
 
     public func scanInt64(representation: NumberRepresentation = .decimal) -> Int64? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanInt64(representation: representation.foundationValue)
         #else
         switch representation {
@@ -112,7 +112,7 @@ extension Scanner {
     }
 
     public func scanUInt64(representation: NumberRepresentation = .decimal) -> UInt64? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanUInt64(representation: representation.foundationValue)
         #else
         switch representation {
@@ -129,7 +129,7 @@ extension Scanner {
     }
 
     public func scanFloat(representation: NumberRepresentation = .decimal) -> Float? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanFloat(representation: representation.foundationValue)
         #else
         var result = Float()
@@ -144,7 +144,7 @@ extension Scanner {
     }
 
     public func scanDouble(representation: NumberRepresentation = .decimal) -> Double? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanDouble(representation: representation.foundationValue)
         #else
         var result = Double()
@@ -159,7 +159,7 @@ extension Scanner {
     }
 
     public func scanDecimal() -> Decimal? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanDecimal()
         #else
         var result = Decimal()
@@ -169,7 +169,7 @@ extension Scanner {
     }
 
     public func scanString(_ searchString: String) -> String? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanString(searchString)
         #else
         var result: NSString!
@@ -179,7 +179,7 @@ extension Scanner {
     }
 
     public func scanCharacters(from set: CharacterSet) -> String? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanCharacters(from: set)
         #else
         var result: NSString!
@@ -189,7 +189,7 @@ extension Scanner {
     }
 
     public func scanUpToString(_ substring: String) -> String? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanUpToString(substring)
         #else
         var result: NSString!
@@ -199,7 +199,7 @@ extension Scanner {
     }
 
     public func scanUpToCharacters(from set: CharacterSet) -> String? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanUpToCharacters(from: set)
         #else
         var result: NSString!
@@ -209,7 +209,7 @@ extension Scanner {
     }
 
     public func scanCharacter() -> Character? {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         return scanner.scanCharacter()
         #else
         guard !isAtEnd else { return nil }
