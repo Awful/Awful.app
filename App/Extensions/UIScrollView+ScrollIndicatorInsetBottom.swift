@@ -13,14 +13,14 @@ extension UIScrollView {
      */
     var scrollIndicatorInsetBottom: CGFloat {
         get {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             return verticalScrollIndicatorInsets.bottom
             #else
             return scrollIndicatorInsets.bottom
             #endif
         }
         set {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             verticalScrollIndicatorInsets.bottom = newValue
             #else
             scrollIndicatorInsets.bottom = newValue

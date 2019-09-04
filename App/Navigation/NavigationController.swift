@@ -184,7 +184,7 @@ extension NavigationController: UINavigationControllerDelegate {
                     self.pushAnimationInProgress = false
                 }
             }
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             navigationController.transitionCoordinator?.notifyWhenInteractionChanges(interactionChanges)
             #else
             navigationController.transitionCoordinator?.notifyWhenInteractionEnds(interactionChanges)

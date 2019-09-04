@@ -17,7 +17,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
 
-    #if !targetEnvironment(UIKitForMac)
+    #if !targetEnvironment(macCatalyst)
     private var peekPopController: ThreadPeekPopController?
     #endif
     
@@ -126,7 +126,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
 
-        #if !targetEnvironment(UIKitForMac)
+        #if !targetEnvironment(macCatalyst)
         if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
         }
@@ -411,7 +411,7 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
 }
 
 // MARK: ThreadPeekPopControllerDelegate
-#if !targetEnvironment(UIKitForMac)
+#if !targetEnvironment(macCatalyst)
 extension ThreadsTableViewController: ThreadPeekPopControllerDelegate {
     func threadForLocation(location: CGPoint) -> AwfulThread? {
         return tableView

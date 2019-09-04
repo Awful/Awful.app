@@ -6,7 +6,7 @@ import AwfulCore
 import MRProgress
 import UIKit
 
-#if !targetEnvironment(UIKitForMac)
+#if !targetEnvironment(macCatalyst)
 
 final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIViewControllerPreviewingDelegate {
 

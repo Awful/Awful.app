@@ -46,7 +46,7 @@ final class NetworkActivityIndicatorManager {
                         throw IndicatorUpdateUnnecessary()
                     }
                 }.done(on: .main) {
-                    #if !targetEnvironment(UIKitForMac)
+                    #if !targetEnvironment(macCatalyst)
                     UIApplication.shared.isNetworkActivityIndicatorVisible = true
                     #endif
             }
@@ -58,7 +58,7 @@ final class NetworkActivityIndicatorManager {
                     }
                 }
                 .done(on: .main) {
-                    #if !targetEnvironment(UIKitForMac)
+                    #if !targetEnvironment(macCatalyst)
                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
                     #endif
             }

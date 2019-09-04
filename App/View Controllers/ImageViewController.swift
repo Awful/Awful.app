@@ -241,7 +241,7 @@ final class ImageViewController: UIViewController {
         private func layoutOverlay() {
             let statusBarHeight: CGFloat = {
                 let frame: CGRect
-                #if targetEnvironment(UIKitForMac)
+                #if targetEnvironment(macCatalyst)
                 frame = .zero
                 #else
                 if #available(iOS 13, *) {

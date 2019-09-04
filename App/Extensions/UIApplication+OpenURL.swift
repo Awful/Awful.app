@@ -11,7 +11,7 @@ extension UIApplication {
      `open(_ url:options:completionHandler:)` is unavailable in UIKit for Mac but was only introduced in iOS 10, so this method bridges the gap.
      */
     func open(_ url: URL) {
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         open(url, options: [:])
         #else
         openURL(url)

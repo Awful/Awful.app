@@ -166,7 +166,7 @@ final class ThreadPreviewViewController: ViewController {
         threadCell.frame = CGRect(x: 0, y: -cellHeight, width: view.bounds.width, height: cellHeight)
 
         var topInset: CGFloat {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             return view.safeAreaLayoutGuide.layoutFrame.minY
             #else
             return topLayoutGuide.length

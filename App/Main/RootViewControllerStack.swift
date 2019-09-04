@@ -334,7 +334,7 @@ private final class PassthroughViewController: UIViewController {
 
     var userInterfaceStyleDidChange: () -> Void = {}
 
-    #if !targetEnvironment(UIKitForMac)
+    #if !targetEnvironment(macCatalyst)
     override var childForHomeIndicatorAutoHidden: UIViewController? {
         return children.first
     }

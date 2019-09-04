@@ -16,7 +16,7 @@ final class BookmarksTableViewController: TableViewController {
     private let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
 
-    #if !targetEnvironment(UIKitForMac)
+    #if !targetEnvironment(macCatalyst)
     private var peekPopController: ThreadPeekPopController?
     #endif
     
@@ -104,7 +104,7 @@ final class BookmarksTableViewController: TableViewController {
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
 
-        #if !targetEnvironment(UIKitForMac)
+        #if !targetEnvironment(macCatalyst)
         if traitCollection.forceTouchCapability == .available {
             peekPopController = ThreadPeekPopController(previewingViewController: self)
         }
@@ -254,7 +254,7 @@ final class BookmarksTableViewController: TableViewController {
 }
 
 // MARK: ThreadPeekPopControllerDelegate
-#if !targetEnvironment(UIKitForMac)
+#if !targetEnvironment(macCatalyst)
 extension BookmarksTableViewController: ThreadPeekPopControllerDelegate {
     func threadForLocation(location: CGPoint) -> AwfulThread? {
         return tableView

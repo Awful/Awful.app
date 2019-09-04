@@ -28,7 +28,7 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
 
-    #if targetEnvironment(UIKitForMac)
+    #if targetEnvironment(macCatalyst)
     weak var previewActionItemProvider: AnyObject?
     #else
     weak var previewActionItemProvider: PreviewActionItemProvider?
@@ -1325,7 +1325,7 @@ private struct Keys {
     static let replyWorkspace = "Reply workspace"
 }
 
-#if !targetEnvironment(UIKitForMac)
+#if !targetEnvironment(macCatalyst)
 extension PostsPageViewController {
     override var previewActionItems: [UIPreviewActionItem] {
         return previewActionItemProvider?.previewActionItems ?? []

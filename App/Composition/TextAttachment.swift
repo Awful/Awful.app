@@ -41,7 +41,7 @@ final class TextAttachment: NSTextAttachment {
         if let photoAssetIdentifier = coder.decodeObject(of: NSString.self, forKey: CodingKeys.assetIdentifier.rawValue) {
             self.photoAssetIdentifier = photoAssetIdentifier as String
         } else {
-            #if !targetEnvironment(UIKitForMac)
+            #if !targetEnvironment(macCatalyst)
             if let assetURL = coder.decodeObject(of: NSURL.self, forKey: ObsoleteCodingKeys.assetURL.rawValue) {
                 photoAssetIdentifier = PHAsset.firstAsset(withALAssetURL: assetURL as URL)?.localIdentifier
             }

@@ -62,7 +62,7 @@ final class CompositionMenuTree: NSObject {
         // Simply calling UIMenuController.update() here doesn't suffice; the menu simply hides. Instead we need to hide the menu then show it again.
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = true
 
-        #if targetEnvironment(UIKitForMac)
+        #if targetEnvironment(macCatalyst)
         UIMenuController.shared.hideMenu()
         if textView.selectedTextRange != nil {
             UIMenuController.shared.showMenu(from: textView, rect: targetRect)
@@ -142,7 +142,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         }
 
         var assetFromALAssetURL: PHAsset? {
-            #if targetEnvironment(UIKitForMac)
+            #if targetEnvironment(macCatalyst)
             return nil
             #else
             if let alAssetURL = info[.referenceURL] as? URL {
