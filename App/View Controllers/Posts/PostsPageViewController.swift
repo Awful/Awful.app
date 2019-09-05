@@ -401,7 +401,7 @@ final class PostsPageViewController: ViewController {
     }()
     
     private lazy var actionsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "action"), style: .plain, target: nil, action: nil)
+        let item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: nil)
         item.actionBlock = { [unowned self] (sender) in
             let actionVC = InAppActionViewController()
             actionVC.title = self.title

@@ -12,7 +12,7 @@ private let Log = Logger.get()
 /**
  Provides a URL scheme of the form `awful-resource://<bundle-resource-path>`, which gives convenient access to bundled images etc. from theme CSS.
  
- Automatically loads `@3x` and/or `@2x` versions of image resources when available, and when the main screen is of sufficient scale.
+ Automatically loads `@3x` and/or `@2x` versions of image resources when available, with priority given to scales closest to the main screen.
  
  Unlike `UIImage.imageNamed()`, the path extension is required.
  
@@ -112,23 +112,26 @@ private struct Resource {
     }
     
     func pathsForScreenWithScale(_ screenScale: CGFloat) -> [String] {
-        guard isImage && screenScale > 1 else {
-            return [path]
-        }
+        guard isImage else { return [path] }
         
         let basename = ((path as NSString).lastPathComponent as NSString).deletingPathExtension
         
         // If someone asks specifically for "foo@2x.png", trying to load "foo@2x@2x.png" is probably not helpful.
-        guard !basename.hasSuffix("@2x") && !basename.hasSuffix("@3x") else {
+        if basename.hasSuffix("@2x") || basename.hasSuffix("@3x") {
             return [path]
         }
         
-        var basenameSuffixes = [""]
-        if screenScale >= 2 {
-            basenameSuffixes.insert("@2x", at: 0)
-        }
-        if screenScale >= 3 {
-            basenameSuffixes.insert("@3x", at: 0)
+        let basenameSuffixes: [String]
+        switch screenScale {
+        case 1:
+            basenameSuffixes = ["", "@2x", "@3x"]
+        case 2:
+            basenameSuffixes = ["@2x", "@3x", ""]
+        case 3:
+            basenameSuffixes = ["@3x", "@2x", ""]
+        default:
+            Log.w("unexpected screen scale \(screenScale)")
+            basenameSuffixes = [""]
         }
         
         let folders = (path as NSString).deletingLastPathComponent
