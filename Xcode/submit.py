@@ -7,10 +7,7 @@ import sys
 
 def find_altool():
     developer_dir = check_output(['xcode-select', '-p'])
-    application_loader = os.path.join(developer_dir, '..', 'Applications', 'Application Loader.app')
-    software_service = os.path.join(application_loader, 'Contents', 'Frameworks', 'ITunesSoftwareService.framework')
-    altool_path = os.path.join(software_service, 'Support', 'altool')
-    return os.path.normpath(altool_path)
+    return os.path.join(developer_dir, 'usr', 'bin', 'altool')
 
 
 def upload_to_app_store(ipa_path, apple_id_username):
