@@ -5,8 +5,12 @@ steps:
 - task: Xcode@5
   inputs:
     actions: 'test'
-    scheme: 'Awful'
     configuration: 'Debug'
-    sdk: 'iphonesimulator'
+    destinationPlatformOption: 'iOS'
+    destinationSimulators: 'iPhone 8'
+    destinationTypeOption: 'simulators'
+    scheme: 'Awful'
+    sdk: 'iphonesimulator13.0'
+    useXcpretty: false
     xcWorkspacePath: 'Awful.xcworkspace'
-    xcodeVersion: '10'
+    xcodeVersion: '11'
