@@ -6,7 +6,7 @@ from subprocess import CalledProcessError, check_call, check_output
 import sys
 
 def find_altool():
-    developer_dir = check_output(['xcode-select', '-p'])
+    developer_dir = check_output(['xcode-select', '-p']).strip()
     return os.path.join(developer_dir, 'usr', 'bin', 'altool')
 
 
