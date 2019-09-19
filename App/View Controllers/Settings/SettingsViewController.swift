@@ -69,17 +69,30 @@ final class SettingsViewController: TableViewController {
             .map { section -> [String: Any] in
                 guard let settings = section.info["Settings"] as? [[String: Any]] else { return section.info }
                 var section = section.info
+
+                if
+                    let ios13Explanation = section.removeValue(forKey: "Explanation~ios13") as? String,
+                    #available(iOS 13.0, *)
+                {
+                    section["Explanation"] = ios13Explanation
+                }
                 
                 section["Settings"] = settings.filter { setting in
                     if let device = setting["Device"] as? String, !device.hasPrefix(currentDevice) {
                         return false
                     }
+
                     if
                         let urlString = setting["CanOpenURL"] as? String,
                         let url = URL(string: urlString)
                     {
                         return UIApplication.shared.canOpenURL(url)
                     }
+
+                    if #available(iOS 13.0, *), let visibleOniOS13 = setting["VisibleOniOS13"] as? Bool, !visibleOniOS13 {
+                        return false
+                    }
+
                     return true
                 }
                 return section
@@ -275,7 +288,9 @@ final class SettingsViewController: TableViewController {
                 cell.detailTextLabel?.text = value
             }
         } else {
-            cell.textLabel?.text = setting["Title"] as? String
+            if settingType != .Slider {
+                cell.textLabel?.text = setting["Title"] as? String
+            }
         }
         
         if settingType == .Immutable, let valueID = setting["ValueIdentifier"] as? String , valueID == "Username" {

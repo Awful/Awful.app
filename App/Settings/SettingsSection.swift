@@ -34,7 +34,11 @@ extension SettingsSection {
     
     var defaultValues: [String: Any] {
         return settings.reduce(into: [:], { defaultValues, setting in
-            if let key = setting.key, let value = setting.defaultValue {
+            guard let key = setting.key else { return }
+
+            if #available(iOS 13.0, *), let value = setting.defaultValueAsOfiOS13 {
+                defaultValues[key] = value
+            } else if let value = setting.defaultValue {
                 defaultValues[key] = value
             }
         })
@@ -61,6 +65,10 @@ extension SettingsSection {
         
         var defaultValue: Any? {
             return info["Default"]
+        }
+
+        var defaultValueAsOfiOS13: Any? {
+            return info["Default~ios13"]
         }
         
         @objc var key: String? {
