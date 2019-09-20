@@ -119,12 +119,12 @@ header:after {
   color: rgba(0, 0, 0, 0.5);
   text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
 }
-.platinum .username:before {
+.platinum .username:after {
   background-image: url('awful-resource://platinum-member.png');
   content: "";
-  background-size: 15px;
-  width: 15px;
-  height: 15px;
+  background-size: 14px;
+  width: 14px;
+  height: 14px;
   display: inline-block;
 }
 .coder .username:before {

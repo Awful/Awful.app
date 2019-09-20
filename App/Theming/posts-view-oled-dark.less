@@ -32,7 +32,7 @@ header {
 .userid-182864 .username {
   color: rgba(255, 255, 255, 0.5);
 }
-.platinum .username:before {
+.platinum .username:after {
 		background-image: url('awful-resource://platinum-member-white.png');
 }
 .op .username {
@@ -94,12 +94,12 @@ footer {
   margin-top: .6em
 }
 
-@postdate-color: #8e8e8e;
+@postdate-color: rgba(255, 255, 255, 30%);
 .postdate, .regdate {
   color: @postdate-color;
 }
 .action-button img {
-  .tint-black-template-image-gray(@postdate-color);
+  .tint-black-template-image-gray(#8e8e8e);
 }
 
 .editedby span.mention.highlight {

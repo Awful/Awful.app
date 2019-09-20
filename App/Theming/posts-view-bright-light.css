@@ -119,12 +119,12 @@ header:after {
   color: rgba(0, 0, 0, 0.5);
   text-shadow: 4px 0px 1px cyan, -2px 0px 1px red, -2px 0px 1px red, 4px 0px 1px cyan;
 }
-.platinum .username:before {
+.platinum .username:after {
   background-image: url('awful-resource://platinum-member.png');
   content: "";
-  background-size: 15px;
-  width: 15px;
-  height: 15px;
+  background-size: 14px;
+  width: 14px;
+  height: 14px;
   display: inline-block;
 }
 .coder .username:before {
@@ -365,7 +365,7 @@ header {
 .userid-182864 .username {
   color: rgba(255, 255, 255, 0.5);
 }
-.platinum .username:before {
+.platinum .username:after {
   background-image: url('awful-resource://platinum-member.png');
 }
 .op .username {
@@ -435,7 +435,7 @@ footer {
 }
 .postdate,
 .regdate {
-  color: #414141;
+  color: rgba(0, 0, 0, 0.3);
 }
 .action-button img {
   -webkit-filter: invert() brightness(25.49019608%);
@@ -444,6 +444,6 @@ footer {
   color: #dd89ff;
 }
 #end {
-  color: #414141;
+  color: rgba(0, 0, 0, 0.3);
   line-height: 3em;
 }
