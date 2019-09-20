@@ -31,17 +31,12 @@ final class DraftStore {
     
     /// Returns nil if no draft exists at the given path.
     func loadDraft(_ path: String) -> AnyObject? {
-        if #available(iOS 11.0, *) {
-            do {
-                let data = try Data(contentsOf: URLForDraftAtPath(path))
-                let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
-                return unarchiver.decodeObject() as AnyObject
-            } catch {
-                Log.e("could not load draft at \(path): \(error)")
-                return nil
-            }
-        } else {
-            return NSKeyedUnarchiver.unarchiveObject(withFile: URLForDraftAtPath(path).path) as AnyObject?
+        do {
+            let data = try Data(contentsOf: URLForDraftAtPath(path))
+            return try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as AnyObject
+        } catch {
+            Log.e("could not load draft at \(path): \(error)")
+            return nil
         }
     }
     
@@ -55,13 +50,8 @@ final class DraftStore {
             fatalError("could not create draft folder at \(enclosingDirectory): \(error)")
         }
 
-        if #available(iOS 11.0, *) {
-            let archiver = NSKeyedArchiver(requiringSecureCoding: false)
-            archiver.encode(draft)
-            try! archiver.encodedData.write(to: url)
-        } else {
-            NSKeyedArchiver.archiveRootObject(draft, toFile: url.path)
-        }
+        let data = NSKeyedArchiver.archivedData(withRootObject: draft)
+        try! data.write(to: url)
     }
     
     func deleteDraft(_ draft: StorableDraft) {
