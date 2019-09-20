@@ -30,7 +30,7 @@ enum SystemCapabilities {
         return true
         #else
         // Handoff starts at iPhone 5, iPod Touch 5G, iPad 4G, iPad Mini 1: http://support.apple.com/en-us/HT6555
-        // Models are listed at http://theiphonewiki.com/wiki/Models
+        // Models are listed at https://ipsw.me/ and/or http://theiphonewiki.com/wiki/Models
         // Let's assume all future models also support Handoff.
         let scanner = Scanner(string: modelIdentifier)
         if scanner.scanString("iPad") != nil, let major = scanner.scanInt() {
@@ -46,7 +46,7 @@ enum SystemCapabilities {
     }()
 
     static let oled: Bool = {
-        // Models are listed at http://theiphonewiki.com/wiki/Models
+        // Models are listed at https://ipsw.me/ and/or http://theiphonewiki.com/wiki/Models
         // Not gonna bother trying to guess at future models.
         let scanner = Scanner(string: modelIdentifier)
         guard
@@ -60,7 +60,11 @@ enum SystemCapabilities {
             return true
         case (11, 2): // iPhone XS
             return true
-        case (11, 6): // iPhone XS Max
+        case (11, 4), (11, 6): // iPhone XS Max
+            return true
+        case (12, 3): // iPhone 11 Pro
+            return true
+        case (12, 5): // iPhone 11 Pro Max
             return true
         default:
             return false
