@@ -21,17 +21,35 @@ final class CloseBBcodeTagCommand: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(textDidChange), name: UITextView.textDidChangeNotification, object: textView)
     }
     
-    @objc private func textDidChange(notification: Notification) {
+    @objc private func textDidChange(_ notification: Notification) {
         updateEnabled()
     }
     
     private var textContent: Substring {
+        guard let text = textView.text else { return "" }
+
+        /**
+         This getter started started occasionally crashing after building against the iOS 13 SDK with an exception like
+
+         ```
+         *** -[NSBigMutableString characterAtIndex:]: Index 723 out of bounds; string length 723
+         ```
+
+         I assume we're doing something wrong with our UITextView mucking about, but I can't figure out what and I'd like to avoid this crash in the meantime. So this is an attempt to avoid `Range(_:in:)` while accomplishing the same goal.
+         */
+        let utf16 = text.utf16
+        var selected = textView.selectedRange
+        if selected.location == NSNotFound {
+            selected.location = utf16.endIndex.utf16Offset(in: text)
+            selected.length = 0
+        }
+
         guard
-            let text = textView.text,
-            let selectedRange = Range(textView.selectedRange, in: text)
+            let end = utf16.index(utf16.startIndex, offsetBy: NSMaxRange(selected), limitedBy: utf16.endIndex),
+            let endIndex = String.Index(end, within: text)
             else { return "" }
         
-        return text[..<selectedRange.upperBound]
+        return text[..<endIndex]
     }
     
     private func updateEnabled() {
