@@ -97,6 +97,10 @@ class LoginViewController: ViewController {
             return attributedText
         }()
         
+        if #available(iOS 13.0, *) {
+            consentToTermsTextView.textColor = .label
+        }
+        
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
