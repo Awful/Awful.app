@@ -105,16 +105,20 @@ final class CompositionMenuTree: NSObject {
         
         let attachment = TextAttachment(image: image, photoAssetIdentifier: assetID)
         let string = NSAttributedString(attachment: attachment)
+
         // Directly modify the textStorage instead of setting a whole new attributedText on the UITextView, which can be slow and jumps the text view around. We'll need to post our own text changed notification too.
-        textView.textStorage.replaceCharacters(in: textView.selectedRange, with: string)
-        
+        let storage = textView.textStorage
+        storage.beginEditing()
+        storage.replaceCharacters(in: textView.selectedRange, with: string)
         textView.font = font
         textView.textColor = textColor
-        
-        if let selection = textView.selectedTextRange {
+        if
+            let selection = textView.selectedTextRange,
             let afterImagePosition = textView.position(from: selection.end, offset: 1)
-            textView.selectedTextRange = textView.textRange(from: afterImagePosition!, to: afterImagePosition!)
+        {
+            textView.selectedTextRange = textView.textRange(from: afterImagePosition, to: afterImagePosition)
         }
+        storage.endEditing()
         
         NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: textView)
     }

@@ -25,31 +25,32 @@ final class CloseBBcodeTagCommand: NSObject {
         updateEnabled()
     }
     
-    private var textContent: Substring {
-        guard let text = textView.text else { return "" }
-
+    private var textContent: String {
         /**
-         This getter started started occasionally crashing after building against the iOS 13 SDK with an exception like
+         Starting with the iOS 13 SDK, the more natural approach resembling
+
+         ```
+         let selectedRange = Range(textView.selectedRange, in: textView.text)
+         return textView.text[..<selectedRange.upperBound]
+         ```
+
+         started crashing occasionally with an exception like
 
          ```
          *** -[NSBigMutableString characterAtIndex:]: Index 723 out of bounds; string length 723
          ```
 
-         I assume we're doing something wrong with our UITextView mucking about, but I can't figure out what and I'd like to avoid this crash in the meantime. So this is an attempt to avoid `Range(_:in:)` while accomplishing the same goal.
-         */
-        let utf16 = text.utf16
-        var selected = textView.selectedRange
-        if selected.location == NSNotFound {
-            selected.location = utf16.endIndex.utf16Offset(in: text)
-            selected.length = 0
-        }
+         No amount of futzing around with the bridged Swift string seems to avoid the crash. However, staying in `NSString`-land does avoid a crash. So here we are.
 
-        guard
-            let end = utf16.index(utf16.startIndex, offsetBy: NSMaxRange(selected), limitedBy: utf16.endIndex),
-            let endIndex = String.Index(end, within: text)
-            else { return "" }
-        
-        return text[..<endIndex]
+         I couldn't reproduce this in a playground, and it would not be surprising if we're the ones doing something wrong. But i have no idea what, and for now I'd like to not crash.
+
+         It almost sounds related to https://bugs.swift.org/browse/SR-11036 but not really?
+         */
+        let text = textView.text as NSString
+        var range = textView.selectedRange
+        range.length = NSMaxRange(range)
+        range.location = 0
+        return text.substring(with: range)
     }
     
     private func updateEnabled() {
@@ -91,7 +92,7 @@ final class CloseBBcodeTagCommand: NSObject {
  * "[codemonkey] [b]"          -> false
  * "[code][codemonkey]"        -> true
  */
-internal func hasOpenCodeTag(_ text: Substring) -> Bool {
+internal func hasOpenCodeTag<S: StringProtocol>(_ text: S) -> Bool {
     guard let codeRange = text.range(of: "[code", options: .backwards), codeRange.upperBound < text.endIndex else {
         return false
     }
@@ -121,7 +122,7 @@ internal func hasOpenCodeTag(_ text: Substring) -> Bool {
  * "[b][code][/code]"    -> "b"
  * "[list][*]"           -> "list"
  */
-internal func getCurrentlyOpenTag(_ text: Substring) -> Substring? {
+internal func getCurrentlyOpenTag<S: StringProtocol>(_ text: S) -> S.SubSequence? {
     // Find start of preceding tag (opener or closer).
     guard let startingBracket = text.range(of: "[", options: .backwards) else { return nil }
     

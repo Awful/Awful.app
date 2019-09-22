@@ -220,16 +220,17 @@ final class ReplyWorkspace: NSObject {
 
                 // Yep. This is just a delight.
                 let precedingOffset = max(-2, textView.offset(from: selectedRange.start, to: textView.beginningOfDocument))
-                if precedingOffset < 0 {
-                    let precedingStart = textView.position(from: selectedRange.start, offset: precedingOffset)
-                    let precedingRange = textView.textRange(from: precedingStart!, to: selectedRange.start)
-                    let preceding = textView.text(in: precedingRange!)
-                    if preceding != "\n\n" {
-                        if preceding!.hasSuffix("\n") {
-                            replacement = "\n" + replacement
-                        } else {
-                            replacement = "\n\n" + replacement
-                        }
+                if
+                    precedingOffset < 0,
+                    let precedingStart = textView.position(from: selectedRange.start, offset: precedingOffset),
+                    let precedingRange = textView.textRange(from: precedingStart, to: selectedRange.start),
+                    let preceding = textView.text(in: precedingRange),
+                    preceding != "\n\n"
+                {
+                    if preceding.hasSuffix("\n") {
+                        replacement = "\n" + replacement
+                    } else {
+                        replacement = "\n\n" + replacement
                     }
                 }
 

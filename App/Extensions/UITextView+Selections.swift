@@ -25,14 +25,15 @@ extension UITextView {
             attributes[.foregroundColor] = textColor
         }
 
+        let previouslySelected = selectedRange
+
         textStorage.beginEditing()
-        textStorage.replaceCharacters(in: selectedRange, with: NSAttributedString(string: text, attributes: attributes))
+        textStorage.replaceCharacters(in: previouslySelected, with: NSAttributedString(string: text, attributes: attributes))
+        selectedRange = NSRange(location: previouslySelected.location + text.utf16.count, length: 0)
         textStorage.endEditing()
 
         // Mucking with text storage does not send this notification automatically, but we'd like this notification to be sent.
         NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self)
-
-        selectedRange = NSRange(location: selectedRange.location + text.utf16.count, length: 0)
     }
 
     /// Returns a rectangle that encompasses the current selection in the text view, or nil if there is no selection.
