@@ -221,8 +221,7 @@ final class RapSheetViewController: TableViewController {
         cell.detailTextLabel?.textColor = theme["listSecondaryTextColor"]
         cell.reasonLabel.textColor = theme["listTextColor"]
         cell.backgroundColor = theme["listBackgroundColor"]
-        cell.selectedBackgroundView = UIView()
-        cell.selectedBackgroundView?.backgroundColor = theme["listSelectedBackgroundColor"]
+        cell.selectedBackgroundColor = theme["listSelectedBackgroundColor"]
         
         return cell
     }

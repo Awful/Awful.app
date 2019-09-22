@@ -62,10 +62,7 @@ final class MessageListCell: UITableViewCell {
 
             dateLabel.attributedText = viewModel.formattedSentDate
 
-            if selectedBackgroundView == nil {
-                selectedBackgroundView = UIView()
-            }
-            selectedBackgroundView?.backgroundColor = viewModel.selectedBackgroundColor
+            selectedBackgroundColor = viewModel.selectedBackgroundColor
 
             senderLabel.attributedText = viewModel.sender
 

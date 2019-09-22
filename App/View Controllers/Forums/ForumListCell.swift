@@ -58,10 +58,7 @@ final class ForumListCell: UITableViewCell {
 
             nameLabel.attributedText = viewModel.forumName
 
-            if selectedBackgroundView == nil {
-                selectedBackgroundView = UIView()
-            }
-            selectedBackgroundView?.backgroundColor = viewModel.selectedBackgroundColor
+            selectedBackgroundColor = viewModel.selectedBackgroundColor
 
             setNeedsLayout()
         }

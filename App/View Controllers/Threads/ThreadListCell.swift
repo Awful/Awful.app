@@ -38,10 +38,7 @@ final class ThreadListCell: UITableViewCell {
 
             ThreadTagLoader.shared.loadImage(named: viewModel.secondaryTagImageName, placeholder: nil, into: secondaryTagImageView)
 
-            if selectedBackgroundView == nil {
-                selectedBackgroundView = UIView()
-            }
-            selectedBackgroundView?.backgroundColor = viewModel.selectedBackgroundColor
+            selectedBackgroundColor = viewModel.selectedBackgroundColor
 
             stickyImageView.image = viewModel.stickyImage
 
