@@ -83,7 +83,7 @@ extension MessageListDataSource: UITableViewDataSource {
     // Actually UITableViewDelegate
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let viewModel = viewModelForMessage(at: indexPath)
-        return MessageListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.safeAreaFrame.width)
+        return MessageListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.safeAreaLayoutGuide.layoutFrame.width)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

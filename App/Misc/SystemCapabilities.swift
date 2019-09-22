@@ -8,14 +8,6 @@ import UIKit
 private let Log = Logger.get()
 
 enum SystemCapabilities {
-    static let changeAppIcon: Bool = {
-        if #available(iOS 10.3, *) {
-            return UIApplication.shared.supportsAlternateIcons
-        }
-        else {
-            return false
-        }
-    }()
 
     /**
      Whether the current device is capable of Handoff.

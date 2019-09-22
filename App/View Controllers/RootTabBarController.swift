@@ -84,11 +84,9 @@ final class RootTabBar: UITabBar {
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         var size = super.sizeThatFits(size)
-        if #available(iOS 11.0, *) {
-            let bottomInset = safeAreaInsets.bottom
-            if size.height - bottomInset < 40 {
-                size.height += bottomInset
-            }
+        let bottomInset = safeAreaInsets.bottom
+        if size.height - bottomInset < 40 {
+            size.height += bottomInset
         }
         return size
     }

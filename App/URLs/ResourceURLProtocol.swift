@@ -87,7 +87,6 @@ final class ResourceURLProtocol: URLProtocol {
     }
 }
 
-@available(iOS 11.0, *)
 extension ResourceURLProtocol: WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start task: WKURLSchemeTask) {
         loadResource(url: task.request.url!, client: .webkit(task))
@@ -168,8 +167,6 @@ private struct Resource {
 
 private enum URLClientWrapper {
     case foundation(URLProtocolClient)
-    
-    @available(iOS 11.0, *)
     case webkit(WKURLSchemeTask)
     
     func didFailWithError(_ error: Error, in urlProtocol: URLProtocol) {

@@ -170,7 +170,6 @@ extension MessageListViewController {
         showMessage(message)
     }
 
-    @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
             guard let message = self.dataSource?.message(at: indexPath) else { return }

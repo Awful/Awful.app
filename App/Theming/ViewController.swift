@@ -4,6 +4,7 @@
 
 import PullToRefresh
 import UIKit
+import WebKit
 
 private let Log = Logger.get()
 

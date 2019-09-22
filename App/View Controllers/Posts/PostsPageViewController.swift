@@ -7,6 +7,7 @@ import CoreData
 import MobileCoreServices
 import MRProgress
 import PromiseKit
+import WebKit
 
 private let Log = Logger.get()
 
@@ -1024,12 +1025,8 @@ final class PostsPageViewController: ViewController {
          Here is where we turn off the magic. In `viewDidLayoutSubviews` we update the layout margins.
          */
         extendedLayoutIncludesOpaqueBars = true
-        if #available(iOS 11.0, *) {
-            postsView.insetsLayoutMarginsFromSafeArea = false
-            postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
-        } else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
+        postsView.insetsLayoutMarginsFromSafeArea = false
+        postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
 
         let spacer: CGFloat = 12
@@ -1083,7 +1080,6 @@ final class PostsPageViewController: ViewController {
         updatePostsViewLayoutMargins()
     }
 
-    @available(iOS 11.0, *)
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         updatePostsViewLayoutMargins()
@@ -1091,11 +1087,7 @@ final class PostsPageViewController: ViewController {
 
     private func updatePostsViewLayoutMargins() {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
-        if #available(iOS 11.0, *) {
-            postsView.layoutMargins = view.safeAreaInsets
-        } else {
-            postsView.layoutMargins = UIEdgeInsets(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
-        }
+        postsView.layoutMargins = view.safeAreaInsets
     }
     
     override func viewDidAppear(_ animated: Bool) {

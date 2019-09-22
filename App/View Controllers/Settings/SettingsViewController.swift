@@ -45,8 +45,6 @@ final class SettingsViewController: TableViewController {
             }
 
             switch section.deviceCapability {
-            case "AppIconChange"? where !SystemCapabilities.changeAppIcon:
-                return false
             case "Handoff"? where !SystemCapabilities.handoff:
                 return false
             default:

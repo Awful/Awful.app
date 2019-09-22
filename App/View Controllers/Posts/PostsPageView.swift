@@ -68,9 +68,7 @@ final class PostsPageView: UIView {
 
     private let refreshControlContainer: RefreshControlContainer = {
         let refreshControlContainer = RefreshControlContainer()
-        if #available(iOS 11.0, *) {
-            refreshControlContainer.insetsLayoutMarginsFromSafeArea = false
-        }
+        refreshControlContainer.insetsLayoutMarginsFromSafeArea = false
         refreshControlContainer.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         return refreshControlContainer
     }()
@@ -198,14 +196,7 @@ final class PostsPageView: UIView {
 
         super.init(frame: frame)
 
-        let voiceOverStatusNotification: Notification.Name = {
-            if #available(iOS 11.0, *) {
-                return UIAccessibility.voiceOverStatusDidChangeNotification
-            } else {
-                return .init(rawValue: UIAccessibilityVoiceOverStatusChanged)
-            }
-        }()
-        NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: voiceOverStatusNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
 
         addSubview(renderView)
         addSubview(topBarContainer)
@@ -263,11 +254,9 @@ final class PostsPageView: UIView {
         scrollView.contentInset = contentInset
 
         var indicatorInsets = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bounds.maxY - toolbar.frame.minY, right: 0)
-        if #available(iOS 12.0, *) {
-            // I'm not sure if this is a bug or if I'm misunderstanding something, but on iOS 12 it seems that the indicator insets have already taken the layout margins into consideration? That's my guess based on observing their positioning when the indicator insets are set to zero.
-            indicatorInsets.top -= layoutMargins.top
-            indicatorInsets.bottom -= layoutMargins.bottom
-        }
+        // I'm not sure if this is a bug or if I'm misunderstanding something, but on iOS 12 it seems that the indicator insets have already taken the layout margins into consideration? That's my guess based on observing their positioning when the indicator insets are set to zero.
+        indicatorInsets.top -= layoutMargins.top
+        indicatorInsets.bottom -= layoutMargins.bottom
         scrollView.scrollIndicatorInsets = indicatorInsets
     }
 
@@ -442,14 +431,7 @@ extension PostsPageView {
         let targetScrollViewBoundsMaxY: CGFloat
 
         init(refreshControlHeight: CGFloat, scrollView: UIScrollView, targetContentOffset: CGPoint? = nil) {
-            var contentInsetBottom: CGFloat {
-                if #available(iOS 11.0, *) {
-                    return scrollView.adjustedContentInset.bottom
-                } else {
-                    return scrollView.contentInset.bottom
-                }
-            }
-
+            let contentInsetBottom = scrollView.adjustedContentInset.bottom
             effectiveContentHeight = max(scrollView.contentSize.height + contentInsetBottom, scrollView.bounds.height)
             self.refreshControlHeight = refreshControlHeight
             targetScrollViewBoundsMaxY = (targetContentOffset?.y ?? scrollView.contentOffset.y) + scrollView.bounds.height

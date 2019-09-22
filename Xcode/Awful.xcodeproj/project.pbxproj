@@ -24,7 +24,6 @@
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0AD5E92149D3D100B72FDE /* FixureURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0AD5E82149D3D100B72FDE /* FixureURLProtocol.swift */; };
-		1C0AD5F021588D6400B72FDE /* WKWebView+RegisterScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C0AD5EF21588D6400B72FDE /* WKWebView+RegisterScheme.m */; };
 		1C0AFAE21ECA96E6002D4003 /* posts-view-alternate-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */; };
 		1C0AFAE31ECA96E6002D4003 /* posts-view-alternate.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0AFAE11ECA96E6002D4003 /* posts-view-alternate.css */; };
 		1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */; };
@@ -124,7 +123,6 @@
 		1C2DC7351DCEA605005040FD /* SmilieStickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */; };
 		1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C081E41832600CCBA51 /* CoreAnimation.swift */; };
-		1C3811CC2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */; };
 		1C381206219F766B005029C1 /* NSAttributedString+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C381205219F766B005029C1 /* NSAttributedString+Format.swift */; };
 		1C397C8E1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */; };
 		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; };
@@ -151,7 +149,6 @@
 		1C3A147319DFD0D00022C44C /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147119DFD0D00022C44C /* showsmilies.webarchive */; };
 		1C3A147519DFDE380022C44C /* Smilies.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147419DFDE380022C44C /* Smilies.sqlite */; };
 		1C3A147719DFDEC30022C44C /* BundledSmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */; };
-		1C3CBEFF22A45C2500F6C634 /* UIView+SafeAreaFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3CBEFE22A45C2500F6C634 /* UIView+SafeAreaFrame.swift */; };
 		1C3CF9711A94B9B50065C964 /* AwfulCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; };
 		1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; };
 		1C3CF97E1A94B9B50065C964 /* AwfulCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3CF9661A94B9B40065C964 /* AwfulCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -308,7 +305,6 @@
 		1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */; };
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
 		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
-		1C5D570A22D6D14D00952242 /* UIApplication+OpenURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570922D6D14D00952242 /* UIApplication+OpenURL.swift */; };
 		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
@@ -736,8 +732,6 @@
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0AD5E82149D3D100B72FDE /* FixureURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixureURLProtocol.swift; sourceTree = "<group>"; };
-		1C0AD5EE21588CE000B72FDE /* WKWebView+RegisterScheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WKWebView+RegisterScheme.h"; sourceTree = "<group>"; };
-		1C0AD5EF21588D6400B72FDE /* WKWebView+RegisterScheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+RegisterScheme.m"; sourceTree = "<group>"; };
 		1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate-dark.css"; sourceTree = "<group>"; };
 		1C0AFAE11ECA96E6002D4003 /* posts-view-alternate.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate.css"; sourceTree = "<group>"; };
 		1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulURLRouter.swift; sourceTree = "<group>"; };
@@ -839,8 +833,6 @@
 		1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableStickers.plist; sourceTree = "<group>"; };
 		1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteSheetView.swift; sourceTree = "<group>"; };
 		1C353C081E41832600CCBA51 /* CoreAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreAnimation.swift; sourceTree = "<group>"; };
-		1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITabBar+FixiOS12_1Layout.h"; sourceTree = "<group>"; };
-		1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITabBar+FixiOS12_1Layout.m"; sourceTree = "<group>"; };
 		1C381205219F766B005029C1 /* NSAttributedString+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Format.swift"; sourceTree = "<group>"; };
 		1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPeekPopController.swift; sourceTree = "<group>"; };
 		1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
@@ -867,7 +859,6 @@
 		1C3A147119DFD0D00022C44C /* showsmilies.webarchive */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = showsmilies.webarchive; sourceTree = "<group>"; };
 		1C3A147419DFDE380022C44C /* Smilies.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Smilies.sqlite; sourceTree = "<group>"; };
 		1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundledSmiliesTests.m; sourceTree = "<group>"; };
-		1C3CBEFE22A45C2500F6C634 /* UIView+SafeAreaFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaFrame.swift"; sourceTree = "<group>"; };
 		1C3CF9661A94B9B40065C964 /* AwfulCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AwfulCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C3CF9691A94B9B40065C964 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1022,7 +1013,6 @@
 		1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityIndicatorView+MakeLarge.swift"; sourceTree = "<group>"; };
 		1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollIndicatorInsetBottom.swift"; sourceTree = "<group>"; };
 		1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyCommand+MakeWithDiscoverabilityTitle.swift"; sourceTree = "<group>"; };
-		1C5D570922D6D14D00952242 /* UIApplication+OpenURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+OpenURL.swift"; sourceTree = "<group>"; };
 		1C5F700517D86E0F005ABD6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1C6460D11A3F1037002F5CEE /* Awful 3.2-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.2-beta6.xcdatamodel"; sourceTree = "<group>"; };
 		1C66A9C019DD304D001B9A41 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2168,20 +2158,14 @@
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
 				1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
-				1C5D570922D6D14D00952242 /* UIApplication+OpenURL.swift */,
 				1C3E181E225005F400BD88E5 /* UIFont+MonospacedDigits.swift */,
 				1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */,
 				1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */,
 				1CC58F5C1B5AC4330016EE83 /* UIKit.swift */,
 				1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */,
 				1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */,
-				1C3811CA2191419F005029C1 /* UITabBar+FixiOS12_1Layout.h */,
-				1C3811CB2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m */,
 				1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */,
 				1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */,
-				1C3CBEFE22A45C2500F6C634 /* UIView+SafeAreaFrame.swift */,
-				1C0AD5EE21588CE000B72FDE /* WKWebView+RegisterScheme.h */,
-				1C0AD5EF21588D6400B72FDE /* WKWebView+RegisterScheme.m */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3663,7 +3647,6 @@
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
 				1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */,
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
-				1C3811CC2191419F005029C1 /* UITabBar+FixiOS12_1Layout.m in Sources */,
 				1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */,
 				1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */,
 				1CD1ADA72272737600E075EA /* CGGeometry+Math.swift in Sources */,
@@ -3693,7 +3676,6 @@
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
 				1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */,
-				1C3CBEFF22A45C2500F6C634 /* UIView+SafeAreaFrame.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
@@ -3712,7 +3694,6 @@
 				1C273AA221C1E26F002875A9 /* Tweaks.swift in Sources */,
 				1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */,
 				1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */,
-				1C5D570A22D6D14D00952242 /* UIApplication+OpenURL.swift in Sources */,
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */,
 				1C0D80081CFA3002003EE2D1 /* SettingsViewController.swift in Sources */,
@@ -3721,7 +3702,6 @@
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
-				1C0AD5F021588D6400B72FDE /* WKWebView+RegisterScheme.m in Sources */,
 				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */,
 				1CC256C11A3B154A003FA7A8 /* Swift.swift in Sources */,
@@ -4003,7 +3983,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CommonSPM;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -4021,7 +4000,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CommonSPM;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -4132,7 +4110,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				INFOPLIST_FILE = ../Smilies/Stickers/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -4144,7 +4121,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				INFOPLIST_FILE = ../Smilies/Stickers/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};

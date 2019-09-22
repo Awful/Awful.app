@@ -20,10 +20,8 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
         collectionView?.dataSource = self
         collectionView?.delegate = self
         collectionView?.register(UINib(nibName: "AppIconCell", bundle: Bundle(for: AppIconPickerCell.self)), forCellWithReuseIdentifier: "AppIcon")
-        
-        if #available(iOS 10.3, *) {
-            selectedIconName = UIApplication.shared.alternateIconName ?? appIcons.first?.iconName
-        }
+
+        selectedIconName = UIApplication.shared.alternateIconName ?? appIcons.first?.iconName
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -47,8 +45,6 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
 
         let previousSelection = selectedIconName
         selectedIconName = appIcon.iconName
-
-        guard #available(iOS 10.3, *) else { return }
 
         UIApplication.shared.setAlternateIconName(appIcon.iconName, completionHandler: { error in
             if let error = error {

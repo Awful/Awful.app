@@ -382,7 +382,7 @@ private final class PassthroughViewController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+        if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
             userInterfaceStyleDidChange()
         }
     }

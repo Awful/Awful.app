@@ -1,8 +1,9 @@
 source 'https://cdn.cocoapods.org/'
-platform :ios, '9.0'
+platform :ios, '11.2'
 project 'Xcode/Awful'
 
 use_frameworks!
+inhibit_all_warnings!
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 install! 'cocoapods', :generate_multiple_pod_projects => true
@@ -42,12 +43,6 @@ post_install do |installer|
   swift_4_2_pods = %w[PullToRefresher]
   
   installer.pod_target_subprojects.each do |subproj|
-    # Replicates `inhibit_all_warnings!`, which was causing problems in Xcode 11 beta 4. If we're past beta 4, maybe reinstate `inhibit_all_warnings!` and see how it goes.
-    subproj.build_configurations.each do |config|
-      (config.build_settings['OTHER_CLFAGS'] ||= []) << '-w'
-      config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
-    end
-
     if extension_safe_pods.include?(subproj.project_name.to_s)
       subproj.build_configurations.each do |config|
         config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'

@@ -4,4 +4,3 @@
 #import "ScrollViewDelegateMultiplexer.h"
 #import "SettingsBinding.h"
 #import "TUSafariActivity.h"
-#import "WKWebView+RegisterScheme.h"

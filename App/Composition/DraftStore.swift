@@ -50,7 +50,7 @@ final class DraftStore {
             fatalError("could not create draft folder at \(enclosingDirectory): \(error)")
         }
 
-        let data = NSKeyedArchiver.archivedData(withRootObject: draft)
+        let data = try! NSKeyedArchiver.archivedData(withRootObject: draft, requiringSecureCoding: false)
         try! data.write(to: url)
     }
     

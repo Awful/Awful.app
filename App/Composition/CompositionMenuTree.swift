@@ -144,22 +144,8 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             textView.nearestViewController?.present(alert, animated: true)
             return
         }
-
-        var assetFromALAssetURL: PHAsset? {
-            #if targetEnvironment(macCatalyst)
-            return nil
-            #else
-            if let alAssetURL = info[.referenceURL] as? URL {
-                return PHAsset.firstAsset(withALAssetURL: alAssetURL)
-            } else {
-                return nil
-            }
-            #endif
-        }
         
-        if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
-            insertImage(image, withAssetIdentifier: asset.localIdentifier)
-        } else if let asset = assetFromALAssetURL {
+        if let asset = info[.phAsset] as? PHAsset {
             insertImage(image, withAssetIdentifier: asset.localIdentifier)
         } else {
             insertImage(image)

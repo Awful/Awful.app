@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		655FCAD5AE0114C33DDA7BF0414C4DCF /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0 -w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		AF880930007CD25835AEE0E31452F7A6 /* PSMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B6B903841F02FECC8E573B506AD723B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A813DE82382F632FD3D4821B5A5E9F6 /* Foundation.framework */; };
 		EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */; };
@@ -176,7 +176,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */,
-				655FCAD5AE0114C33DDA7BF0414C4DCF /* PSMenuItem.m in Sources */,
+				80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,18 +238,16 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CLFAGS = "-w";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SUPPRESS_WARNINGS = YES;
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Debug;
 		};
-		6ECC3068B3DC68F2D1D9B21127C6C803 /* Debug */ = {
+		3C55DE9DCCF126463488E21AC1D45ECD /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */;
 			buildSettings = {
@@ -277,42 +275,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		83C78988DE3AB0DCC955887F42C7E9FB /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/PSMenuItem/PSMenuItem-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/PSMenuItem/PSMenuItem-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/PSMenuItem/PSMenuItem.modulemap";
-				PRODUCT_MODULE_NAME = PSMenuItem;
-				PRODUCT_NAME = PSMenuItem;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -371,16 +334,49 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				OTHER_CLFAGS = "-w";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_SUPPRESS_WARNINGS = YES;
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Release;
+		};
+		D082E0B8B8770983D25366131707B4FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/PSMenuItem/PSMenuItem-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/PSMenuItem/PSMenuItem-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/PSMenuItem/PSMenuItem.modulemap";
+				PRODUCT_MODULE_NAME = PSMenuItem;
+				PRODUCT_NAME = PSMenuItem;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -388,8 +384,8 @@
 		7EA8F05EF2C8D46FC4753C926ED56458 /* Build configuration list for PBXNativeTarget "PSMenuItem" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6ECC3068B3DC68F2D1D9B21127C6C803 /* Debug */,
-				83C78988DE3AB0DCC955887F42C7E9FB /* Release */,
+				D082E0B8B8770983D25366131707B4FA /* Debug */,
+				3C55DE9DCCF126463488E21AC1D45ECD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
