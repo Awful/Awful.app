@@ -47,7 +47,7 @@ final class ProfileViewController: ViewController {
     }
     
     private func showActionsForHomepage(_ url: URL, from frame: CGRect) {
-        let activity = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ChromeActivity(url: url)])
+        let activity = UIActivityViewController(activityItems: [url], applicationActivities: [SafariActivity(), ChromeActivity(url: url)])
         present(activity, animated: true)
         let popover = activity.popoverPresentationController
         popover?.sourceRect = frame

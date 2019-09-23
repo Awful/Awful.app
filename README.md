@@ -36,10 +36,12 @@ If you'd like to build to your device, set the `DEVELOPMENT_TEAM` build setting 
 
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app.
 
-* [CocoaPods][] manages some of our dependencies. If you're updating or removing a dependency, please [install CocoaPods][CocoaPods].
+* Swift Package Manager is the preferred way to add dependencies. If at all possible, please use it.
+    * Running into "duplicate symbol" warnings? Add the dependency to the `CommonSPM` target instead.
+* Manual installation is totally fine. Drag the built binary or xcodeproj on in.
+* [CocoaPods][] manages some of our dependencies.
     * There's a `Gemfile` nearby if you want to use a known working version of CocoaPods.
-    * If you're adding a new dependency, consider not using CocoaPods. We'd love to migrate away from it. In order of preference, try Swift Package Manager or manual integration.
-    * **Even if you add a dependency directly to the Xcode project**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency. We do not use the CocoaPods-generated acknowledgements.
+* **No matter how you add a dependency**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency. We do not use CocoaPods-generated acknowledgements.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node`.

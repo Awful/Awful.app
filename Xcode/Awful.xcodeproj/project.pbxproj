@@ -183,6 +183,7 @@
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
 		1C453F0F23384264007AC6CD /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F0E23384264007AC6CD /* Nuke */; };
 		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
+		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
@@ -298,7 +299,6 @@
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
 		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
-		1C5C2C5122D2559C00EA5A80 /* TUSafariActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
 		1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7822D259A500EA5A80 /* Fabric.framework */; };
@@ -890,6 +890,7 @@
 		1C442FCE1A0E27E2001BD898 /* Thread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Thread.swift; sourceTree = "<group>"; };
 		1C4506C31A2BAB3800767306 /* Handoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Handoff.swift; sourceTree = "<group>"; };
 		1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Selections.swift"; sourceTree = "<group>"; };
+		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelpers.swift; sourceTree = "<group>"; };
@@ -1005,8 +1006,6 @@
 		1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-yospos.css"; sourceTree = "<group>"; };
 		1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-dark.css"; sourceTree = "<group>"; };
 		1C5BA3E416CA445600375A72 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
-		1C5C2C4F22D2559C00EA5A80 /* TUSafariActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TUSafariActivity.h; sourceTree = "<group>"; };
-		1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TUSafariActivity.m; sourceTree = "<group>"; };
 		1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TUSafariActivity.bundle; sourceTree = "<group>"; };
 		1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ARChromeActivity.xcassets; sourceTree = "<group>"; };
 		1C5C2C7822D259A500EA5A80 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -1626,6 +1625,7 @@
 				1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */,
 				1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */,
 				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
+				1C453F45233849C2007AC6CD /* SafariActivity.swift */,
 				1C015BBE21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.h */,
 				1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */,
 				1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */,
@@ -2003,8 +2003,6 @@
 			isa = PBXGroup;
 			children = (
 				1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */,
-				1C5C2C4F22D2559C00EA5A80 /* TUSafariActivity.h */,
-				1C5C2C5022D2559C00EA5A80 /* TUSafariActivity.m */,
 			);
 			path = TUSafariActivity;
 			sourceTree = "<group>";
@@ -3673,10 +3671,10 @@
 				1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */,
 				1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */,
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
-				1C5C2C5122D2559C00EA5A80 /* TUSafariActivity.m in Sources */,
 				1C16FBDB1CBAA5A900C88BD1 /* CGContext+WithGState.swift in Sources */,
 				1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
+				1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */,
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
 				1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */,
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,

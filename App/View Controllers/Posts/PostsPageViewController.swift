@@ -838,7 +838,7 @@ final class PostsPageViewController: ViewController {
             components.fragment = "post\(post.postID)"
             let url = components.url!
             
-            let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [TUSafariActivity(), ChromeActivity(url: url)])
+            let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [SafariActivity(), ChromeActivity(url: url)])
             activityVC.completionWithItemsHandler = { (activityType, completed, returnedItems, activityError) in
                 if completed && activityType == .copyToPasteboard {
                     UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString

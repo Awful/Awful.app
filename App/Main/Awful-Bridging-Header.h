@@ -3,4 +3,3 @@
 #import "AwfulErrorDomain.h"
 #import "ScrollViewDelegateMultiplexer.h"
 #import "SettingsBinding.h"
-#import "TUSafariActivity.h"
