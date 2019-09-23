@@ -300,8 +300,8 @@ final class SettingsViewController: TableViewController {
             switchView.awful_setting = setting["Key"] as? String
             
             // Add overriding settings
-            if switchView.awful_setting == UserDefaults.SettingsKeys.isDarkModeEnabled {
-                switchView.addAwful_overridingSetting(UserDefaults.SettingsKeys.automaticallyEnableDarkMode)
+            if switchView.awful_setting == SettingsKeys.isDarkModeEnabled {
+                switchView.addAwful_overridingSetting(SettingsKeys.automaticallyEnableDarkMode)
             }
             else {
                 switchView.isEnabled = true
@@ -320,8 +320,8 @@ final class SettingsViewController: TableViewController {
             slider.awful_setting = setting["Key"] as? String
             
             // Add overriding settings
-            if slider.awful_setting == UserDefaults.SettingsKeys.automaticDarkModeBrightnessThresholdPercent {
-                slider.addAwful_overridingSetting(UserDefaults.SettingsKeys.automaticallyEnableDarkMode)
+            if slider.awful_setting == SettingsKeys.automaticDarkModeBrightnessThresholdPercent {
+                slider.addAwful_overridingSetting(SettingsKeys.automaticallyEnableDarkMode)
             }
         }
         
@@ -415,9 +415,9 @@ final class SettingsViewController: TableViewController {
         case (_, "theme-picker"):
             let mode: Theme.Mode
             switch setting["Key"] as! String {
-            case UserDefaults.SettingsKeys.defaultDarkTheme:
+            case SettingsKeys.defaultDarkTheme:
                 mode = .dark
-            case UserDefaults.SettingsKeys.defaultLightTheme:
+            case SettingsKeys.defaultLightTheme:
                 mode = .light
             default:
                 fatalError("unknown default theme key \(setting["Key"] as Any)")

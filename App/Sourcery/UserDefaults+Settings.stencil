@@ -16,20 +16,16 @@ import Foundation
  */
 extension UserDefaults {
 
-    {% for key in type.UserDefaults.SettingsKeys.variables|static %}
+    {% for key in type.SettingsKeys.variables|static %}
 
     @objc dynamic var {{ key.name }}: {{ key.annotations.valueType|default:"Bool"|replace:"!","" }} {
         get { return {{ key.annotations.valueType|default:"Bool"|replace:"?",""|replace:"!",""|lowercase }}(forKey: SettingsKeys.{{ key.name }}){% if key.annotations.valueType|default:"Bool"|contains:"!" %}!{% endif %} }
         set { set(newValue, forKey: SettingsKeys.{{ key.name }}) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOf{{ key.name|upperFirstLetter }}: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOf{{ key.name|upperFirstLetter }}: Bool { false }
 
-    @objc private class var keyPathsForValuesAffecting{{ key.name|upperFirstLetter }}: Set<String> {
-        return [SettingsKeys.{{ key.name }}]
-    }
+    @objc private class var keyPathsForValuesAffecting{{ key.name|upperFirstLetter }}: Set<String> { [SettingsKeys.{{ key.name }}] }
 
     {% endfor %}
 }

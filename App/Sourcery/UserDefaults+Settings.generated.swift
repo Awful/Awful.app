@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 //  UserDefaults+Settings
@@ -25,13 +25,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.automaticallyEnableDarkMode) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfAutomaticallyEnableDarkMode: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfAutomaticallyEnableDarkMode: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingAutomaticallyEnableDarkMode: Set<String> {
-        return [SettingsKeys.automaticallyEnableDarkMode]
-    }
+    @objc private class var keyPathsForValuesAffectingAutomaticallyEnableDarkMode: Set<String> { [SettingsKeys.automaticallyEnableDarkMode] }
 
 
     @objc dynamic var automaticallyPlayGIFs: Bool {
@@ -39,13 +35,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.automaticallyPlayGIFs) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfAutomaticallyPlayGIFs: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfAutomaticallyPlayGIFs: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingAutomaticallyPlayGIFs: Set<String> {
-        return [SettingsKeys.automaticallyPlayGIFs]
-    }
+    @objc private class var keyPathsForValuesAffectingAutomaticallyPlayGIFs: Set<String> { [SettingsKeys.automaticallyPlayGIFs] }
 
 
     @objc dynamic var automaticDarkModeBrightnessThresholdPercent: Double {
@@ -53,13 +45,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.automaticDarkModeBrightnessThresholdPercent) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfAutomaticDarkModeBrightnessThresholdPercent: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfAutomaticDarkModeBrightnessThresholdPercent: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingAutomaticDarkModeBrightnessThresholdPercent: Set<String> {
-        return [SettingsKeys.automaticDarkModeBrightnessThresholdPercent]
-    }
+    @objc private class var keyPathsForValuesAffectingAutomaticDarkModeBrightnessThresholdPercent: Set<String> { [SettingsKeys.automaticDarkModeBrightnessThresholdPercent] }
 
 
     @objc dynamic var confirmNewPosts: Bool {
@@ -67,13 +55,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.confirmNewPosts) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfConfirmNewPosts: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfConfirmNewPosts: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingConfirmNewPosts: Set<String> {
-        return [SettingsKeys.confirmNewPosts]
-    }
+    @objc private class var keyPathsForValuesAffectingConfirmNewPosts: Set<String> { [SettingsKeys.confirmNewPosts] }
 
 
     @objc dynamic var customBaseURLString: String? {
@@ -81,13 +65,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.customBaseURLString) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfCustomBaseURLString: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfCustomBaseURLString: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingCustomBaseURLString: Set<String> {
-        return [SettingsKeys.customBaseURLString]
-    }
+    @objc private class var keyPathsForValuesAffectingCustomBaseURLString: Set<String> { [SettingsKeys.customBaseURLString] }
 
 
     @objc dynamic var defaultDarkTheme: String {
@@ -95,13 +75,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.defaultDarkTheme) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfDefaultDarkTheme: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfDefaultDarkTheme: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingDefaultDarkTheme: Set<String> {
-        return [SettingsKeys.defaultDarkTheme]
-    }
+    @objc private class var keyPathsForValuesAffectingDefaultDarkTheme: Set<String> { [SettingsKeys.defaultDarkTheme] }
 
 
     @objc dynamic var defaultLightTheme: String {
@@ -109,13 +85,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.defaultLightTheme) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfDefaultLightTheme: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfDefaultLightTheme: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingDefaultLightTheme: Set<String> {
-        return [SettingsKeys.defaultLightTheme]
-    }
+    @objc private class var keyPathsForValuesAffectingDefaultLightTheme: Set<String> { [SettingsKeys.defaultLightTheme] }
 
 
     @objc dynamic var embedTweets: Bool {
@@ -123,13 +95,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.embedTweets) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfEmbedTweets: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfEmbedTweets: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingEmbedTweets: Set<String> {
-        return [SettingsKeys.embedTweets]
-    }
+    @objc private class var keyPathsForValuesAffectingEmbedTweets: Set<String> { [SettingsKeys.embedTweets] }
 
 
     @objc dynamic var fontScale: Double {
@@ -137,13 +105,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.fontScale) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfFontScale: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfFontScale: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingFontScale: Set<String> {
-        return [SettingsKeys.fontScale]
-    }
+    @objc private class var keyPathsForValuesAffectingFontScale: Set<String> { [SettingsKeys.fontScale] }
 
 
     @objc dynamic var hideSidebarInLandscape: Bool {
@@ -151,13 +115,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.hideSidebarInLandscape) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfHideSidebarInLandscape: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfHideSidebarInLandscape: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingHideSidebarInLandscape: Set<String> {
-        return [SettingsKeys.hideSidebarInLandscape]
-    }
+    @objc private class var keyPathsForValuesAffectingHideSidebarInLandscape: Set<String> { [SettingsKeys.hideSidebarInLandscape] }
 
 
     @objc dynamic var isDarkModeEnabled: Bool {
@@ -165,13 +125,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.isDarkModeEnabled) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfIsDarkModeEnabled: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfIsDarkModeEnabled: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingIsDarkModeEnabled: Set<String> {
-        return [SettingsKeys.isDarkModeEnabled]
-    }
+    @objc private class var keyPathsForValuesAffectingIsDarkModeEnabled: Set<String> { [SettingsKeys.isDarkModeEnabled] }
 
 
     @objc dynamic var isHandoffEnabled: Bool {
@@ -179,13 +135,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.isHandoffEnabled) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfIsHandoffEnabled: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfIsHandoffEnabled: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingIsHandoffEnabled: Set<String> {
-        return [SettingsKeys.isHandoffEnabled]
-    }
+    @objc private class var keyPathsForValuesAffectingIsHandoffEnabled: Set<String> { [SettingsKeys.isHandoffEnabled] }
 
 
     @objc dynamic var isPullForNextEnabled: Bool {
@@ -193,13 +145,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.isPullForNextEnabled) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfIsPullForNextEnabled: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfIsPullForNextEnabled: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingIsPullForNextEnabled: Set<String> {
-        return [SettingsKeys.isPullForNextEnabled]
-    }
+    @objc private class var keyPathsForValuesAffectingIsPullForNextEnabled: Set<String> { [SettingsKeys.isPullForNextEnabled] }
 
 
     @objc dynamic var lastOfferedPasteboardURLString: String? {
@@ -207,13 +155,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.lastOfferedPasteboardURLString) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfLastOfferedPasteboardURLString: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfLastOfferedPasteboardURLString: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingLastOfferedPasteboardURLString: Set<String> {
-        return [SettingsKeys.lastOfferedPasteboardURLString]
-    }
+    @objc private class var keyPathsForValuesAffectingLastOfferedPasteboardURLString: Set<String> { [SettingsKeys.lastOfferedPasteboardURLString] }
 
 
     @objc dynamic var loggedInUserCanSendPrivateMessages: Bool {
@@ -221,13 +165,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.loggedInUserCanSendPrivateMessages) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfLoggedInUserCanSendPrivateMessages: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfLoggedInUserCanSendPrivateMessages: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingLoggedInUserCanSendPrivateMessages: Set<String> {
-        return [SettingsKeys.loggedInUserCanSendPrivateMessages]
-    }
+    @objc private class var keyPathsForValuesAffectingLoggedInUserCanSendPrivateMessages: Set<String> { [SettingsKeys.loggedInUserCanSendPrivateMessages] }
 
 
     @objc dynamic var loggedInUserID: String? {
@@ -235,13 +175,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.loggedInUserID) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfLoggedInUserID: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfLoggedInUserID: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingLoggedInUserID: Set<String> {
-        return [SettingsKeys.loggedInUserID]
-    }
+    @objc private class var keyPathsForValuesAffectingLoggedInUserID: Set<String> { [SettingsKeys.loggedInUserID] }
 
 
     @objc dynamic var loggedInUsername: String? {
@@ -249,13 +185,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.loggedInUsername) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfLoggedInUsername: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfLoggedInUsername: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingLoggedInUsername: Set<String> {
-        return [SettingsKeys.loggedInUsername]
-    }
+    @objc private class var keyPathsForValuesAffectingLoggedInUsername: Set<String> { [SettingsKeys.loggedInUsername] }
 
 
     @objc dynamic var openCopiedURLAfterBecomingActive: Bool {
@@ -263,13 +195,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.openCopiedURLAfterBecomingActive) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfOpenCopiedURLAfterBecomingActive: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfOpenCopiedURLAfterBecomingActive: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingOpenCopiedURLAfterBecomingActive: Set<String> {
-        return [SettingsKeys.openCopiedURLAfterBecomingActive]
-    }
+    @objc private class var keyPathsForValuesAffectingOpenCopiedURLAfterBecomingActive: Set<String> { [SettingsKeys.openCopiedURLAfterBecomingActive] }
 
 
     @objc dynamic var openTwitterLinksInTwitter: Bool {
@@ -277,13 +205,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.openTwitterLinksInTwitter) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfOpenTwitterLinksInTwitter: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfOpenTwitterLinksInTwitter: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingOpenTwitterLinksInTwitter: Set<String> {
-        return [SettingsKeys.openTwitterLinksInTwitter]
-    }
+    @objc private class var keyPathsForValuesAffectingOpenTwitterLinksInTwitter: Set<String> { [SettingsKeys.openTwitterLinksInTwitter] }
 
 
     @objc dynamic var openYouTubeLinksInYouTube: Bool {
@@ -291,13 +215,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.openYouTubeLinksInYouTube) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfOpenYouTubeLinksInYouTube: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfOpenYouTubeLinksInYouTube: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingOpenYouTubeLinksInYouTube: Set<String> {
-        return [SettingsKeys.openYouTubeLinksInYouTube]
-    }
+    @objc private class var keyPathsForValuesAffectingOpenYouTubeLinksInYouTube: Set<String> { [SettingsKeys.openYouTubeLinksInYouTube] }
 
 
     @objc dynamic var postLargeImagesAsThumbnails: Bool {
@@ -305,13 +225,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.postLargeImagesAsThumbnails) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfPostLargeImagesAsThumbnails: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfPostLargeImagesAsThumbnails: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingPostLargeImagesAsThumbnails: Set<String> {
-        return [SettingsKeys.postLargeImagesAsThumbnails]
-    }
+    @objc private class var keyPathsForValuesAffectingPostLargeImagesAsThumbnails: Set<String> { [SettingsKeys.postLargeImagesAsThumbnails] }
 
 
     @objc dynamic var rawDefaultBrowser: String? {
@@ -319,13 +235,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.rawDefaultBrowser) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfRawDefaultBrowser: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfRawDefaultBrowser: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingRawDefaultBrowser: Set<String> {
-        return [SettingsKeys.rawDefaultBrowser]
-    }
+    @objc private class var keyPathsForValuesAffectingRawDefaultBrowser: Set<String> { [SettingsKeys.rawDefaultBrowser] }
 
 
     @objc dynamic var showAuthorAvatars: Bool {
@@ -333,13 +245,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.showAuthorAvatars) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfShowAuthorAvatars: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfShowAuthorAvatars: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingShowAuthorAvatars: Set<String> {
-        return [SettingsKeys.showAuthorAvatars]
-    }
+    @objc private class var keyPathsForValuesAffectingShowAuthorAvatars: Set<String> { [SettingsKeys.showAuthorAvatars] }
 
 
     @objc dynamic var showImages: Bool {
@@ -347,13 +255,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.showImages) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfShowImages: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfShowImages: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingShowImages: Set<String> {
-        return [SettingsKeys.showImages]
-    }
+    @objc private class var keyPathsForValuesAffectingShowImages: Set<String> { [SettingsKeys.showImages] }
 
 
     @objc dynamic var showThreadTagsInThreadList: Bool {
@@ -361,13 +265,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.showThreadTagsInThreadList) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfShowThreadTagsInThreadList: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfShowThreadTagsInThreadList: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingShowThreadTagsInThreadList: Set<String> {
-        return [SettingsKeys.showThreadTagsInThreadList]
-    }
+    @objc private class var keyPathsForValuesAffectingShowThreadTagsInThreadList: Set<String> { [SettingsKeys.showThreadTagsInThreadList] }
 
 
     @objc dynamic var showTweaksOnShake: Bool {
@@ -375,13 +275,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.showTweaksOnShake) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfShowTweaksOnShake: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfShowTweaksOnShake: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingShowTweaksOnShake: Set<String> {
-        return [SettingsKeys.showTweaksOnShake]
-    }
+    @objc private class var keyPathsForValuesAffectingShowTweaksOnShake: Set<String> { [SettingsKeys.showTweaksOnShake] }
 
 
     @objc dynamic var showUnreadAnnouncementsBadge: Bool {
@@ -389,13 +285,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.showUnreadAnnouncementsBadge) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfShowUnreadAnnouncementsBadge: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfShowUnreadAnnouncementsBadge: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingShowUnreadAnnouncementsBadge: Set<String> {
-        return [SettingsKeys.showUnreadAnnouncementsBadge]
-    }
+    @objc private class var keyPathsForValuesAffectingShowUnreadAnnouncementsBadge: Set<String> { [SettingsKeys.showUnreadAnnouncementsBadge] }
 
 
     @objc dynamic var sortUnreadBookmarksFirst: Bool {
@@ -403,13 +295,9 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.sortUnreadBookmarksFirst) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfSortUnreadBookmarksFirst: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfSortUnreadBookmarksFirst: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingSortUnreadBookmarksFirst: Set<String> {
-        return [SettingsKeys.sortUnreadBookmarksFirst]
-    }
+    @objc private class var keyPathsForValuesAffectingSortUnreadBookmarksFirst: Set<String> { [SettingsKeys.sortUnreadBookmarksFirst] }
 
 
     @objc dynamic var sortUnreadForumThreadsFirst: Bool {
@@ -417,12 +305,8 @@ extension UserDefaults {
         set { set(newValue, forKey: SettingsKeys.sortUnreadForumThreadsFirst) }
     }
 
-    @objc private class var automaticallyNotifiesObserversOfSortUnreadForumThreadsFirst: Bool {
-        return false
-    }
+    @objc private class var automaticallyNotifiesObserversOfSortUnreadForumThreadsFirst: Bool { false }
 
-    @objc private class var keyPathsForValuesAffectingSortUnreadForumThreadsFirst: Set<String> {
-        return [SettingsKeys.sortUnreadForumThreadsFirst]
-    }
+    @objc private class var keyPathsForValuesAffectingSortUnreadForumThreadsFirst: Set<String> { [SettingsKeys.sortUnreadForumThreadsFirst] }
 
 }
