@@ -337,6 +337,7 @@
 		1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010919DE89B000542293 /* SmilieCell.m */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
+		1C84293B23386AC0001FD3BA /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */; };
@@ -644,6 +645,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
 			remoteInfo = Smilies;
+		};
+		1C842937233868DB001FD3BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C49CFE122CB0102004B76E6;
+			remoteInfo = CommonSPM;
 		};
 		1C9AEBC8210C3B2300C9A567 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1382,6 +1390,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C84293B23386AC0001FD3BA /* CommonSPM.framework in Frameworks */,
 				FF308D05C62669BEAFAEA2AC /* Pods_Awful_AwfulTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2682,9 +2691,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				1C842938233868DB001FD3BA /* PBXTargetDependency */,
 				1C3CF9731A94B9B50065C964 /* PBXTargetDependency */,
 			);
 			name = CoreTests;
+			packageProductDependencies = (
+			);
 			productName = AwfulCoreTests;
 			productReference = 1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -3867,6 +3879,11 @@
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
 			targetProxy = 1C66AA0219DD39A9001B9A41 /* PBXContainerItemProxy */;
 		};
+		1C842938233868DB001FD3BA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C49CFE122CB0102004B76E6 /* CommonSPM */;
+			targetProxy = 1C842937233868DB001FD3BA /* PBXContainerItemProxy */;
+		};
 		1C9AEBC9210C3B2300C9A567 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1D6058900D05DD3D006BFB54 /* Awful */;
@@ -3942,7 +3959,6 @@
 				INFOPLIST_FILE = ../Core/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = AwfulCore;
-				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Debug;
 		};
@@ -4145,10 +4161,6 @@
 					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
@@ -4165,10 +4177,6 @@
 					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
 			};
