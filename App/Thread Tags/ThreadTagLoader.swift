@@ -8,6 +8,8 @@ import Nuke
 import PromiseKit
 import UIKit
 
+import enum Swift.Result
+
 private let Log = Logger.get(level: .debug)
 
 /**
@@ -26,15 +28,15 @@ final class ThreadTagLoader {
     {
         guard let imageName = imageName, let url = makeURLForImage(named: imageName) else {
             cancelRequest(for: view)
-            view.display(image: placeholder?.image)
+            view.nuke_display(image: placeholder?.image)
             return
         }
         
         var options = ImageLoadingOptions(placeholder: placeholder?.image)
         options.pipeline = pipeline
-        Nuke.loadImage(with: url, options: options, into: view, completion: { response, error in
-            self.recordMissingTagImage(named: imageName, response: response, error: error)
-            completion?(response, error)
+        Nuke.loadImage(with: url, options: options, into: view, completion: { result in
+            self.recordMissingTagImage(named: imageName, result)
+            completion?(result)
         })
     }
     
@@ -44,13 +46,13 @@ final class ThreadTagLoader {
     
     func loadImage(named imageName: String?, completion: @escaping ImageTask.Completion) -> ImageTask? {
         guard let imageName = imageName, let url = makeURLForImage(named: imageName) else {
-            completion(nil, .dataLoadingFailed(CocoaError(.fileNoSuchFile)))
+            completion(.failure(.dataLoadingFailed(CocoaError(.fileNoSuchFile))))
             return nil
         }
         
-        return pipeline.loadImage(with: url, completion: { response, error in
-            self.recordMissingTagImage(named: imageName, response: response, error: error)
-            completion(response, error)
+        return pipeline.loadImage(with: url, completion: { result in
+            self.recordMissingTagImage(named: imageName, result)
+            completion(result)
         })
     }
     
@@ -65,10 +67,12 @@ final class ThreadTagLoader {
             .appendingPathExtension("png")
     }
     
-    private func recordMissingTagImage(named imageName: String, response: ImageResponse?, error: ImagePipeline.Error?) -> Void
-    {
+    private func recordMissingTagImage(
+        named imageName: String,
+        _ result: Result<ImageResponse, ImagePipeline.Error>
+    ) -> Void {
         if
-            let error = error,
+            case .failure(let error) = result,
             case .dataLoadingFailed(let underlyingError) = error,
             case .statusCodeUnacceptable(let statusCode)? = underlyingError as? DataLoader.Error,
             statusCode == 404

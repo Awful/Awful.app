@@ -164,22 +164,16 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SwiftTweaks/SwiftTweaks.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SwiftTweaks/SwiftTweaks.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then

@@ -2,9 +2,6 @@ ${PODS_ROOT}/Target Support Files/Pods-Awful/Pods-Awful-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework
 ${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework
 ${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework
-${BUILT_PRODUCTS_DIR}/Nuke/Nuke.framework
 ${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework
-${BUILT_PRODUCTS_DIR}/PathKit/PathKit.framework
 ${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework
-${BUILT_PRODUCTS_DIR}/Stencil/Stencil.framework
 ${BUILT_PRODUCTS_DIR}/SwiftTweaks/SwiftTweaks.framework

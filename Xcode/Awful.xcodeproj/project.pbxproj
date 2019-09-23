@@ -181,6 +181,8 @@
 		1C42A22A1FD4D6F400F67BA1 /* Base62.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2291FD4D6F400F67BA1 /* Base62.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
+		1C453F0F23384264007AC6CD /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F0E23384264007AC6CD /* Nuke */; };
+		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
@@ -1388,6 +1390,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C453F0F23384264007AC6CD /* Nuke in Frameworks */,
+				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
 				1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */,
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
@@ -2830,6 +2834,8 @@
 			packageProductDependencies = (
 				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
 				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
+				1C453F0E23384264007AC6CD /* Nuke */,
+				1C453F272338457A007AC6CD /* Stencil */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -2923,6 +2929,8 @@
 			packageReferences = (
 				1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
+				1C453F0D23384264007AC6CD /* XCRemoteSwiftPackageReference "Nuke" */,
+				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
@@ -4284,6 +4292,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1C453F0D23384264007AC6CD /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.2.0;
+			};
+		};
+		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stencilproject/Stencil.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.13.1;
+			};
+		};
 		1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit";
@@ -4306,6 +4330,16 @@
 		1C210D4322DA5A8F009EBB6F /* ScannerShim */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ScannerShim;
+		};
+		1C453F0E23384264007AC6CD /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C453F0D23384264007AC6CD /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		1C453F272338457A007AC6CD /* Stencil */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
+			productName = Stencil;
 		};
 		1C49CFEE22CB01A4004B76E6 /* PromiseKit */ = {
 			isa = XCSwiftPackageProductDependency;

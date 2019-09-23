@@ -81,9 +81,12 @@ final class MessageComposeViewController: ComposeTextViewController {
         threadTagTask?.cancel()
         fieldView.threadTagButton.setImage(ThreadTagLoader.Placeholder.thread(tintColor: nil).image, for: .normal)
         
-        threadTagTask = ThreadTagLoader.shared.loadImage(named: threadTag?.imageName) { [fieldView] response, error in
-            if let image = response?.image {
-                fieldView.threadTagButton.setImage(image, for: .normal)
+        threadTagTask = ThreadTagLoader.shared.loadImage(named: threadTag?.imageName) { [fieldView] result in
+            switch result {
+            case .success(let response):
+                fieldView.threadTagButton.setImage(response.image, for: .normal)
+            case .failure:
+                break
             }
         }
     }

@@ -107,9 +107,12 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.threadTagButton.setImage(ThreadTagLoader.Placeholder.thread(in: forum).image, for: .normal)
         
         threadTagImageTask = ThreadTagLoader.shared.loadImage(named: threadTag?.imageName) {
-            [button = fieldView.threadTagButton] response, error in
-            if let image = response?.image {
-                button.setImage(image, for: .normal)
+            [button = fieldView.threadTagButton] result in
+            switch result {
+            case .success(let response):
+                button.setImage(response.image, for: .normal)
+            case .failure:
+                break
             }
         }
         
@@ -117,9 +120,12 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.threadTagButton.secondaryTagImage = nil
         
         secondaryThreadTagImageTask = ThreadTagLoader.shared.loadImage(named: secondaryThreadTag?.imageName) {
-            [button = fieldView.threadTagButton] response, error in
-            if let image = response?.image {
-                button.secondaryTagImage = image
+            [button = fieldView.threadTagButton] result in
+            switch result {
+            case .success(let response):
+                button.secondaryTagImage = response.image
+            case .failure:
+                break
             }
         }
     }

@@ -58,9 +58,12 @@ final class ThreadTagPickerCell: UICollectionViewCell {
             named: tagImageName,
             placeholder: .thread(tintColor: nil),
             into: tagImageView,
-            completion: { [weak self] response, error in
-                if response?.image == nil, let self = self {
-                    self.imageNameLabel.isHidden = false
+            completion: { [weak self] response in
+                switch response {
+                case .success:
+                    self?.imageNameLabel.isHidden = false
+                case .failure:
+                    break
                 }
         })
     }

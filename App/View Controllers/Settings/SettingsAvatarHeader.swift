@@ -57,8 +57,13 @@ final class SettingsAvatarHeader: UIView {
         avatarImageView.isHidden = false
 
         Nuke.loadImage(with: avatarURL, into: avatarImageView, completion: {
-            [weak self] response, error in
-            self?.avatarImageView.isHidden = response?.image == nil
+            [weak self] result in
+            self?.avatarImageView.isHidden = {
+                switch result {
+                case .success: return false
+                case .failure: return true
+                }
+            }()
         })
     }
     
