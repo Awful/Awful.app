@@ -2,7 +2,9 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+#if !targetEnvironment(macCatalyst)
 import Crashlytics
+#endif
 import PromiseKit
 import UIKit
 import WebKit
@@ -680,10 +682,12 @@ extension RenderView {
         
         // Getting many reports of features handled by user script (e.g. tapping spoilers, author headers in posts) not working correctly. Grasping at straws, I'm wondering if the web view is somehow getting invalidated or is otherwise throwing errors that we're not picking up. See e.g. https://github.com/Awful/Awful.app/issues/813
         Log.w("\(function): \(explanation): \(error)", file: file, line: line)
+        #if !targetEnvironment(macCatalyst)
         Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: [
             "file": file,
             "function": function,
             "line": line])
+        #endif
         
         do {
             // This feels stupid but I'm not sure how else to check "is this type-erased `Error` the error I'm curious about?" as I'm a bit hazy on Error/NSError conversions and the Swift-generated error types from C/Objective-C headers.

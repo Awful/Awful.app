@@ -53,8 +53,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let storeURL = appSupport.appendingPathComponent("CachedForumData", isDirectory: true)
         let modelURL = Bundle(for: DataStore.self).url(forResource: "Awful", withExtension: "momd")!
-        #if !targetEnvironment(macCatalyst)
         dataStore = DataStore(storeDirectoryURL: storeURL, modelURL: modelURL)
+        #if !targetEnvironment(macCatalyst)
         dataStore.prunerErrorObserver = { error in
             Crashlytics.sharedInstance().recordError(error)
         }

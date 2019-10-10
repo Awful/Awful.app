@@ -3,10 +3,13 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
-import Crashlytics
 import Nuke
 import PromiseKit
 import UIKit
+
+#if !targetEnvironment(macCatalyst)
+import Crashlytics
+#endif
 
 import enum Swift.Result
 
@@ -78,7 +81,9 @@ final class ThreadTagLoader {
             statusCode == 404
         {
             Log.i("missing thread tag image: \(imageName)")
+            #if !targetEnvironment(macCatalyst)
             Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: ["imageName": imageName])
+            #endif
         }
     }
     
