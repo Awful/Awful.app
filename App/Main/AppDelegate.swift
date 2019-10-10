@@ -4,13 +4,16 @@
 
 import AVFoundation
 import AwfulCore
-import Crashlytics
-import Fabric
 import Nuke
 import Smilies
 import SwiftTweaks
 import UIKit
 import WebKit
+
+#if !targetEnvironment(macCatalyst)
+import Crashlytics
+import Fabric
+#endif
 
 private let Log = Logger.get()
 
@@ -28,6 +31,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.instance = self
         
+        #if !targetEnvironment(macCatalyst)
         if
             let fabric = Bundle.main.object(forInfoDictionaryKey: "Fabric") as? [String: Any],
             let key = fabric["APIKey"] as? String,
@@ -41,6 +45,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 CLSLogv("%@", $0)
             }
         }
+        #endif
         
         UserDefaults.standard.registerDefaults(SettingsSection.mainBundleSections)
         UserDefaults.standard.migrateOldAwfulSettings()
@@ -48,10 +53,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let storeURL = appSupport.appendingPathComponent("CachedForumData", isDirectory: true)
         let modelURL = Bundle(for: DataStore.self).url(forResource: "Awful", withExtension: "momd")!
+        #if !targetEnvironment(macCatalyst)
         dataStore = DataStore(storeDirectoryURL: storeURL, modelURL: modelURL)
         dataStore.prunerErrorObserver = { error in
             Crashlytics.sharedInstance().recordError(error)
         }
+        #endif
         
         DispatchQueue.global(qos: .background).async(execute: removeOldDataStores)
         
