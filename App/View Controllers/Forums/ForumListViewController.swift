@@ -228,7 +228,7 @@ extension ForumListViewController: UITableViewDataSource & UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let forum = resultsController.object(at: indexPath)
         let viewModel = makeViewModel(for: forum)
-        return ForumListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.safeAreaFrame.width)
+        return ForumListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.safeAreaLayoutGuide.layoutFrame.width)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

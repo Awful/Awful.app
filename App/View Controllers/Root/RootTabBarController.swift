@@ -7,8 +7,8 @@ import UIKit
 /// A themeable tab bar controller that fixes an iOS 11 layout problem.
 final class RootTabBarController: UITabBarController, Themeable {
 
-    /// Returns a tab bar controller whose tab bar is an instance of `TabBar_FixiOS11iPadLayout`.
-    static func makeWithTabBarFixedForiOS11iPadLayout() -> RootTabBarController {
+    /// Returns a tab bar controller whose tab bar is an instance of `RootTabBar`.
+    static func makeWithTabBarFixedForLayoutIssues() -> RootTabBarController {
         let storyboard = UIStoryboard(name: "RootTabBarController", bundle: Bundle(for: RootTabBarController.self))
         guard let tabBarController = storyboard.instantiateInitialViewController() as? RootTabBarController else {
             fatalError("initial view controller in RootTabBarController.storyboard should be a RootTabBarController")
@@ -39,7 +39,7 @@ final class RootTabBarController: UITabBarController, Themeable {
 
 // MARK: - Themeable
 
-extension RootTabBarController: Themeable {
+extension RootTabBarController {
     var theme: Theme { Theme.defaultTheme() }
 
     func themeDidChange() {

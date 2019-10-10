@@ -147,7 +147,7 @@ extension AnnouncementListViewController: UITableViewDataSource & UITableViewDel
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let announcement = resultsController.object(at: indexPath)
         let viewModel = makeViewModel(for: announcement)
-        return ForumListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.safeAreaFrame.width)
+        return ForumListCell.heightForViewModel(viewModel, inTableWithWidth: tableView.safeAreaLayoutGuide.layoutFrame.width)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
