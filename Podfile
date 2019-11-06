@@ -1,5 +1,5 @@
 source 'https://cdn.cocoapods.org/'
-platform :ios, '11.2'
+platform :ios, '12.0'
 project 'Xcode/Awful'
 
 use_frameworks!
@@ -38,14 +38,14 @@ end
 post_install do |installer|
   extension_safe_pods = %w[FLAnimatedImage]
   swift_4_2_pods = %w[PullToRefresher]
-  
+
   installer.pod_target_subprojects.each do |subproj|
     if extension_safe_pods.include?(subproj.project_name.to_s)
       subproj.build_configurations.each do |config|
         config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
       end
     end
-    
+
     if swift_4_2_pods.include?(subproj.project_name.to_s)
       subproj.build_configurations.each do |config|
         config.build_settings['SWIFT_VERSION'] = '4.2'
