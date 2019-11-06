@@ -375,12 +375,12 @@ header {
   color: #005ec9;
 }
 .bbc-spoiler:not(.spoiled) {
-  color: #fff;
-  background: #fff;
+  color: #333;
+  background: #333;
 }
 .bbc-spoiler:not(.spoiled) li {
-  color: #fff;
-  background: #fff;
+  color: #333;
+  background: #333;
   list-style: none;
 }
 .bbc-spoiler:not(.spoiled) img {
@@ -392,7 +392,7 @@ header {
 .bbc-spoiler:not(.spoiled) a:visited,
 .bbc-spoiler:not(.spoiled) a:active,
 .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #fff;
+  color: #333;
 }
 .bbc-block h4,
 .bbc-block h5 {

@@ -135,12 +135,12 @@ tr:last-child td {
   color: #000;
 }
 .dark .bbc-spoiler:not(.spoiled) {
-  color: #fff;
-  background: #fff;
+  color: #333;
+  background: #333;
 }
 .dark .bbc-spoiler:not(.spoiled) li {
-  color: #fff;
-  background: #fff;
+  color: #333;
+  background: #333;
   list-style: none;
 }
 .dark .bbc-spoiler:not(.spoiled) img {
@@ -152,5 +152,5 @@ tr:last-child td {
 .dark .bbc-spoiler:not(.spoiled) a:visited,
 .dark .bbc-spoiler:not(.spoiled) a:active,
 .dark .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #fff;
+  color: #333;
 }
