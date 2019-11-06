@@ -20,6 +20,9 @@ body {
 .postbody embed {
   max-width: 100%;
 }
+.postbody div.code pre {
+  white-space: break-spaces;
+}
 post {
   display: block;
   border-top: 1px solid;
