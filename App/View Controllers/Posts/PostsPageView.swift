@@ -176,11 +176,9 @@ final class PostsPageView: UIView {
 
     private var willBeginDraggingContentOffset: CGPoint?
 
-    private(set) lazy var renderView: RenderView = {
-        let renderView = RenderView()
-        renderView.scrollView.delegate = self
-        return renderView
-    }()
+    private(set) lazy var renderView = RenderView()
+
+    private var scrollViewDelegateMux: ScrollViewDelegateMultiplexer?
 
     private let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
@@ -203,11 +201,9 @@ final class PostsPageView: UIView {
         addSubview(loadingViewContainer)
         addSubview(toolbar)
         renderView.scrollView.addSubview(refreshControlContainer)
-    }
 
-    deinit {
-        // On iOS 9 the web view's scroll view doesn't seem to keep a weak reference to its delegate. iOS 10+ seems ok though.
-        renderView.scrollView.delegate = nil
+        scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
+        scrollViewDelegateMux?.addDelegate(self)
     }
 
     override func layoutSubviews() {
@@ -462,7 +458,7 @@ extension PostsPageView {
 
 // MARK: - UIScrollViewDelegate and ScrollViewDelegateContentSize
 
-extension PostsPageView: ScrollViewDelegateContentSize {
+extension PostsPageView: ScrollViewDelegateExtras {
     func scrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
         setNeedsLayout()
     }

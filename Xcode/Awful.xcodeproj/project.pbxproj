@@ -445,7 +445,6 @@
 		1CF0F8EF1ED9E20A00C16099 /* StandardErrorScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */; };
 		1CF0F8F11ED9E46600C16099 /* StandardErrorScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */; };
 		1CF0F8F31ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */; };
-		1CF171FE2258FF31004B2ABB /* ScrollViewDelegateContentSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF171FD2258FF31004B2ABB /* ScrollViewDelegateContentSize.swift */; };
 		1CF17200225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */; };
@@ -1175,7 +1174,6 @@
 		1CF0F8EE1ED9E20A00C16099 /* StandardErrorScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardErrorScrapeResult.swift; sourceTree = "<group>"; };
 		1CF0F8F01ED9E46600C16099 /* StandardErrorScrapingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardErrorScrapingTests.swift; sourceTree = "<group>"; };
 		1CF0F8F21ED9E5D700C16099 /* DatabaseUnavailableScrapeResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseUnavailableScrapeResult.swift; sourceTree = "<group>"; };
-		1CF171FD2258FF31004B2ABB /* ScrollViewDelegateContentSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewDelegateContentSize.swift; sourceTree = "<group>"; };
 		1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILayoutPriority+IntegerLiteral.swift"; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RootTabBarController.storyboard; sourceTree = "<group>"; };
@@ -2165,7 +2163,6 @@
 				1CDBF2361BD2C13400ADC7DA /* KVOController.swift */,
 				1C381205219F766B005029C1 /* NSAttributedString+Format.swift */,
 				1CDC53DF220669640086BD2B /* Photos.swift */,
-				1CF171FD2258FF31004B2ABB /* ScrollViewDelegateContentSize.swift */,
 				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
 				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
@@ -3790,7 +3787,6 @@
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
 				7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */,
-				1CF171FE2258FF31004B2ABB /* ScrollViewDelegateContentSize.swift in Sources */,
 				1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */,
 				1C0D80061CFA0CD7003EE2D1 /* ViewController.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
