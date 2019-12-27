@@ -11,6 +11,15 @@
 		<key>autocapitalization</key>
 		<false/>
 	</dict>
+	<key>666</key>
+	<dict>
+		<key>checkSpelling</key>
+		<false/>
+		<key>autocorrection</key>
+		<false/>
+		<key>autocapitalization</key>
+		<false/>
+	</dict>
 	<key>133</key>
 	<dict>
 		<key>showRatings</key>
