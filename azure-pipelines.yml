@@ -10,7 +10,7 @@ steps:
     destinationSimulators: 'iPhone 8'
     destinationTypeOption: 'simulators'
     scheme: 'Awful'
-    sdk: 'iphonesimulator13.0'
+    sdk: 'iphonesimulator13.1'
     useXcpretty: false
     xcWorkspacePath: 'Awful.xcworkspace'
     xcodeVersion: '11'
