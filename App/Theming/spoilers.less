@@ -5,24 +5,22 @@
   .bbc-spoiler:not(.spoiled) {
     color: @color;
     background: @color;
-    
-    li {
+
+    .bbc-block, .bbc-block h4, .bbc-block h5,
+    li,
+    a:link, a:visited, a:active, [data-awful-linkified-image] {
       color: @color;
       background: @color;
+    }
+
+    li {
       list-style: none;
     }
-    
+
     img {
       opacity: 0;
       height: 0;
       width: 100%;
-    }
-    
-    a:link,
-    a:visited,
-    a:active,
-    [data-awful-linkified-image] {
-      color: @color;
     }
   }
 }

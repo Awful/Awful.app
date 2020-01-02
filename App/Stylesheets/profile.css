@@ -118,9 +118,18 @@ tr:last-child td {
   color: #000;
   background: #000;
 }
-.bbc-spoiler:not(.spoiled) li {
+.bbc-spoiler:not(.spoiled) .bbc-block,
+.bbc-spoiler:not(.spoiled) .bbc-block h4,
+.bbc-spoiler:not(.spoiled) .bbc-block h5,
+.bbc-spoiler:not(.spoiled) li,
+.bbc-spoiler:not(.spoiled) a:link,
+.bbc-spoiler:not(.spoiled) a:visited,
+.bbc-spoiler:not(.spoiled) a:active,
+.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
   color: #000;
   background: #000;
+}
+.bbc-spoiler:not(.spoiled) li {
   list-style: none;
 }
 .bbc-spoiler:not(.spoiled) img {
@@ -128,29 +137,26 @@ tr:last-child td {
   height: 0;
   width: 100%;
 }
-.bbc-spoiler:not(.spoiled) a:link,
-.bbc-spoiler:not(.spoiled) a:visited,
-.bbc-spoiler:not(.spoiled) a:active,
-.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #000;
-}
 .dark .bbc-spoiler:not(.spoiled) {
   color: #333;
   background: #333;
 }
-.dark .bbc-spoiler:not(.spoiled) li {
+.dark .bbc-spoiler:not(.spoiled) .bbc-block,
+.dark .bbc-spoiler:not(.spoiled) .bbc-block h4,
+.dark .bbc-spoiler:not(.spoiled) .bbc-block h5,
+.dark .bbc-spoiler:not(.spoiled) li,
+.dark .bbc-spoiler:not(.spoiled) a:link,
+.dark .bbc-spoiler:not(.spoiled) a:visited,
+.dark .bbc-spoiler:not(.spoiled) a:active,
+.dark .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
   color: #333;
   background: #333;
+}
+.dark .bbc-spoiler:not(.spoiled) li {
   list-style: none;
 }
 .dark .bbc-spoiler:not(.spoiled) img {
   opacity: 0;
   height: 0;
   width: 100%;
-}
-.dark .bbc-spoiler:not(.spoiled) a:link,
-.dark .bbc-spoiler:not(.spoiled) a:visited,
-.dark .bbc-spoiler:not(.spoiled) a:active,
-.dark .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #333;
 }
