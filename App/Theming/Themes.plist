@@ -768,17 +768,32 @@
 		<key>description</key>
 		<string>Winpos 95</string>
 		<key>descriptiveColor</key>
-		<string>#107f7f</string>
+		<string>#008080</string>
+		<key>listTextColor</key>
+		<string>#ffffff</string>
 		<key>listSecondaryTextColor</key>
-		<string>#000000</string>
+		<string>#ffffff</string>
 		<key>listBackgroundColor</key>
-		<string>#107f7f</string>
+		<string>#008080</string>
 		<key>threadListPageIconColor</key>
-		<string>#000000</string>
+		<string>#ffffff</string>
 		<key>postsLoadingViewType</key>
 		<string>Winpos95</string>
 		<key>postsViewCSS</key>
 		<string>posts-view-winpos95.css</string>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#0000ff</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#e5e5e5</string>
+			<key>unreadBadgeOrangeColor</key>
+			<string>#ff8000</string>
+			<key>unreadBadgeRedColor</key>
+			<string>#ff0000</string>
+			<key>unreadBadgeYellowColor</key>
+			<string>#ffff00</string>
+		</dict>
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
