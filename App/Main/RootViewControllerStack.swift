@@ -6,7 +6,7 @@ import CoreData
 import UIKit
 
 /// The RootViewControllerStack initializes the logged-in root view controller, implements releated delegate methods, and handles state restoration.
-final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
+final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate {
     
     let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
@@ -197,8 +197,11 @@ final class RootViewControllerStack: NSObject, UISplitViewControllerDelegate {
 }
 
 extension RootViewControllerStack {
-    @objc(splitViewController:collapseSecondaryViewController:ontoPrimaryViewController:)
-    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+    func splitViewController(
+        _ splitViewController: UISplitViewController,
+        collapseSecondary secondaryViewController: UIViewController,
+        onto primaryViewController: UIViewController
+    ) -> Bool {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
         let secondaryNavigationController = secondaryViewController as! UINavigationController
@@ -223,9 +226,11 @@ extension RootViewControllerStack {
         
         return true
     }
-    
-    @objc(splitViewController:separateSecondaryViewControllerFromPrimaryViewController:)
-    func splitViewController(_ splitViewController: UISplitViewController, separateSecondaryFrom primaryViewController: UIViewController) -> UIViewController? {
+
+    func splitViewController(
+        _ splitViewController: UISplitViewController,
+        separateSecondaryFrom primaryViewController: UIViewController
+    ) -> UIViewController? {
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
         
         let viewControllers = primaryNavigationController.viewControllers 
@@ -257,9 +262,12 @@ extension RootViewControllerStack {
         splitViewController.preferredDisplayMode = .automatic
         splitViewController.preferredDisplayMode = tempMode
     }
-    
-    @objc(splitViewController:showDetailViewController:sender:)
-    func splitViewController(_ splitViewController: UISplitViewController, showDetail viewController: UIViewController, sender: Any?) -> Bool {
+
+    func splitViewController(
+        _ splitViewController: UISplitViewController,
+        showDetail viewController: UIViewController,
+        sender: Any?
+    ) -> Bool {
         if splitViewController.isCollapsed {
             primaryNavigationController.pushViewController(viewController, animated: true)
         } else {
@@ -277,16 +285,23 @@ extension RootViewControllerStack {
         
         return true
     }
-    
-    @objc(targetDisplayModeForActionInSplitViewController:)
-    func targetDisplayModeForAction(in splitViewController: UISplitViewController) -> UISplitViewController.DisplayMode {
-        // Misusing this delegate method to make sure the "show sidebar" button item is in place after an interface rotation.
-        if let detailNav = detailNavigationController {
-            if let root = detailNav.viewControllers.first {
-                root.navigationItem.leftBarButtonItem = splitViewController.displayMode == .allVisible ? nil : backBarButtonItem
+
+    func splitView(
+        _ splitView: AwfulSplitViewController,
+        viewWillTransitionToSize size: CGSize,
+        with coordinator: UIViewControllerTransitionCoordinator
+    ) {
+        coordinator.animate(alongsideTransition: nil, completion: { context in
+            // Make sure the "show sidebar" button item is in place after an interface rotation.
+            // (We used to misuse the delegate method `targetDisplayModeForAction(in:)` to do this, but that sometimes resulted in an endless recursive call starting on iOS 13.)
+            if
+                let detailNav = self.detailNavigationController,
+                let root = detailNav.viewControllers.first
+            {
+                let displayMode = self.splitViewController.displayMode
+                root.navigationItem.leftBarButtonItem = displayMode == .allVisible ? nil : self.backBarButtonItem
             }
-        }
-        return .automatic
+        })
     }
     
     private var backBarButtonItem: UIBarButtonItem? {
