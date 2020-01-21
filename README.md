@@ -1,6 +1,6 @@
 # Awful
 
-[Awful][App Store] is an iOS 12.2+ app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and [its older thread][second thread] (and [its first thread][first thread])).
+[Awful][App Store] is an iOS 12.2+ app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and the [thread before that][third thread] (and [the thread before that][second thread] (and [the thread before that][first thread]))).
 
 Not sure what to work on? There's a [list of issues](https://github.com/awful/Awful.app/issues), or just post in the thread and someone will share their pet peeves for your amusement!
 
@@ -10,7 +10,8 @@ Not sure what to work on? There's a [list of issues](https://github.com/awful/Aw
 
 [App Store]: https://itunes.apple.com/app/awful-unofficial-something/id567936609
 [forums]: http://forums.somethingawful.com
-[current thread]: http://forums.somethingawful.com/showthread.php?threadid=3510131
+[current thread]: https://forums.somethingawful.com/showthread.php?threadid=3837546
+[third thread]: http://forums.somethingawful.com/showthread.php?threadid=3510131
 [second thread]: http://forums.somethingawful.com/showthread.php?threadid=3381510
 [first thread]: http://forums.somethingawful.com/showthread.php?threadid=3483760
 [project.log]: http://forums.somethingawful.com/showthread.php?threadid=3564303
