@@ -98,47 +98,25 @@ extension UnpoppingViewHandler: UIViewControllerAnimatedTransitioning {
     }
     
     func animateTransition(using context: UIViewControllerContextTransitioning) {
-        guard let
-            toVC = context.viewController(forKey: UITransitionContextViewControllerKey.to),
-            let fromVC = context.viewController(forKey: UITransitionContextViewControllerKey.from)
+        guard
+            let toVC = context.viewController(forKey: .to),
+            let toView = context.view(forKey: .to),
+            let fromView = context.view(forKey: .from)
             else { return }
+
+        context.containerView.addSubview(fromView)
+        context.containerView.addSubview(toView)
         
-        context.containerView.addSubview(toVC.view)
+        let toTargetFrame = context.finalFrame(for: toVC)
+        toView.frame = toTargetFrame.offsetBy(dx: toTargetFrame.width, dy: 0)
         
-        let toTargetFrame = fromVC.view.frame
-        toVC.view.frame = toTargetFrame.offsetBy(dx: toTargetFrame.width, dy: 0)
-        
-        let fromTargetFrame = fromVC.view.frame.offsetBy(dx: -fromVC.view.frame.width / 3, dy: 0)
-        
-        let animateTabBar = toVC.hidesBottomBarWhenPushed && !fromVC.hidesBottomBarWhenPushed
-        
-        let tabBar = fromVC.tabBarController?.tabBar
-        let previousParent = tabBar?.superview
-        if animateTabBar, let tabBar = tabBar {
-            // UIKit reparents the tab bar before this method gets called; restore its logical position.
-            let wrapper = toVC.view.superview
-            wrapper?.insertSubview(tabBar, belowSubview: toVC.view)
-        }
-        let tabBarTargetFrame: CGRect
-        if let tabBar = tabBar {
-            tabBarTargetFrame = tabBar.frame.offsetBy(dx: tabBar.frame.width / 3 * 2, dy: 0)
-        } else {
-            tabBarTargetFrame = .zero
-        }
-        
+        let fromTargetFrame = fromView.frame.offsetBy(dx: -fromView.frame.width / 3, dy: 0)
+
         UIView.animate(withDuration: transitionDuration(using: context), delay: 0, options: .curveLinear, animations: { 
-            toVC.view.frame = toTargetFrame
-            fromVC.view.frame = fromTargetFrame
-            if animateTabBar {
-                tabBar?.frame = tabBarTargetFrame
-            }
-            
-            }, completion: { finished in
-                if animateTabBar, let tabBar = tabBar {
-                    previousParent?.addSubview(tabBar)
-                }
-                
-                context.completeTransition(!context.transitionWasCancelled)
+            toView.frame = toTargetFrame
+            fromView.frame = fromTargetFrame
+        }, completion: { finished in
+            context.completeTransition(!context.transitionWasCancelled)
         })
     }
     
