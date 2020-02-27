@@ -317,16 +317,29 @@ extension AwfulRoute {
             components.queryItems = [
                 URLQueryItem(name: "threadid", value: threadID),
                 URLQueryItem(name: "perpage", value: "40"),
-                URLQueryItem(name: "pagenumber", value: "\(page)")]
+                page.queryItem]
 
         case .threadPageSingleUser(let threadID, let userID, let page):
             components.path = "showthread.php"
             components.queryItems = [
                 URLQueryItem(name: "threadid", value: threadID),
                 URLQueryItem(name: "perpage", value: "40"),
-                URLQueryItem(name: "pagenumber", value: "\(page)"),
+                page.queryItem,
                 URLQueryItem(name: "userid", value: userID)]
         }
         return components.url(relativeTo: baseURL)!
+    }
+}
+
+private extension ThreadPage {
+    var queryItem: URLQueryItem {
+        switch self {
+        case .last:
+            return .init(name: "goto", value: "lastpost")
+        case .nextUnread:
+            return .init(name: "goto", value: "newpost")
+        case .specific(let number):
+            return .init(name: "pagenumber", value: "\(number)")
+        }
     }
 }
