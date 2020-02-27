@@ -202,7 +202,7 @@ extension NavigationController: UINavigationControllerDelegate {
     }
     
     func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        if let unpopHandler = unpopHandler {
+        if let unpopHandler = unpopHandler, animationController === unpopHandler {
             return unpopHandler
         }
         
