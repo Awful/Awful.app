@@ -78,8 +78,7 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
     let document = HTMLDocument(string: html)
     document.removeSpoilerStylingAndEvents()
     document.removeEmptyEditedByParagraphs()
-    document.addAttributeToTweetLinks()
-    document.embedVideos()
+    document.addAttributeToTweetLinks()    
     document.useHTML5VimeoPlayer()
     if let username = UserDefaults.standard.loggedInUsername {
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
@@ -92,6 +91,7 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
     if isIgnored {
         document.markRevealIgnoredPostLink()
     }
+    document.embedVideos()
     return document.bodyElement?.innerHTML ?? ""
 }
 

@@ -372,7 +372,6 @@ private struct RenderModel: StencilContextConvertible {
             guard let originalHTML = message.innerHTML else { return nil }
             let document = HTMLDocument(string: originalHTML)
             document.addAttributeToTweetLinks()
-            document.embedVideos()
             if let username = UserDefaults.standard.loggedInUsername {
                 document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
                 document.identifyMentionsOfUser(named: username, shouldHighlight: true)
@@ -383,6 +382,7 @@ private struct RenderModel: StencilContextConvertible {
             if !UserDefaults.standard.automaticallyPlayGIFs {
                 document.stopGIFAutoplay()
             }
+            document.embedVideos()
             return document.bodyElement?.innerHTML
         }
         let visibleAvatarURL = showAvatars ? message.from?.avatarURL : nil
