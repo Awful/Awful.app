@@ -728,53 +728,29 @@ if (document.body.classList.contains('forum-26')) {
   Awful.fyadFlag.startFetching();
 }
 
-Awful.embedVideos = function() {
+Awful.embedGfycat = function() {
   var postLinks = document.querySelectorAll('section.postbody a')
 
   postLinks.forEach(link => {
     let vidInfo = matchVidLinkurl(link);
-    if (vidInfo) {
-        if (isImgurLink(link)) {
-            let div = document.createElement('div');
-            div.className = 'gifv_video';
-            div.innerHTML = imgurLinkToVideo(link, vidInfo.extension);
-            link.replaceWith(div);
-        }
-        else if (isGfycatLink(link)) {
-          var gifyKey = link.pathname.match(/([A-Za-z]+)(?:\/*)?/i);
-          if (gifyKey) {
-              fetch(`https://api.gfycat.com/v1/gfycats/${gifyKey[1]}`)
-                .then(res => res.json())
-                .then(l => {
-                  if (l.gfyItem) {
-                      let div = document.createElement('div');
-                      div.className = 'gifv_video';
-                      div.innerHTML = gfyUrlToVideo(l.gfyItem.posterUrl, l.gfyItem.mp4Url);
-                      link.replaceWith(div);
-                  }
-                })
-                .catch(console.warn); //ignore errors, keep processing
-          }
+    if (vidInfo && isGfycatLink(link)) {
+      var gifyKey = link.pathname.match(/([A-Za-z]+)(?:\/*)?/i);
+      if (gifyKey) {
+          fetch(`https://api.gfycat.com/v1/gfycats/${gifyKey[1]}`)
+            .then(res => res.json())
+            .then(l => {
+              if (l.gfyItem) {
+                  let div = document.createElement('div');
+                  div.className = 'gifv_video';
+                  div.innerHTML = gfyUrlToVideo(l.gfyItem.posterUrl, l.gfyItem.mp4Url);
+                  link.replaceWith(div);
+              }
+            })
+            .catch(console.warn); //ignore errors, keep processing
       }
-
-        //todo: embed "other"
-    }
-    else if (isYoutubeLink(link.href)) {
-        let div = document.createElement('div');
-        div.innerHTML = youtubeLinkToEmbeddedUrl(link.href);
-        link.replaceWith(div);
     }
   });
 
-
-  function imgurLinkToVideo(link, extension) {
-    return `<video width="320" playsinline webkit-playsinline preload="metadata" controls loop muted="true" poster="${link.href.replace(extension, 'h.jpg')}">
-        <source src="${link.href.replace(extension, '.mp4')}" type="video/mp4">
-    </video>`;
-  }
-  function isImgurLink(link) {
-    return /(www\.|i\.)imgur.com$/i.test(link.hostname);
-  }
   function matchVidLinkurl(link) {
     let match = link.pathname.match(/(\.gifv|\.webm|\.mp4)$/i);
     if (!match)
@@ -782,28 +758,6 @@ Awful.embedVideos = function() {
     return {
         extension: match[1]
     };
-  }
-  function youtubeLinkToEmbeddedUrl(uri) {
-    let url = new URL(uri);
-    // console.log(url);
-    let seconds = null;
-    let id = null;
-    if (url.host == 'youtu.be') {
-        console.log(url);
-        seconds = url.searchParams.get('t');
-        if (url.pathname)
-            id = url.pathname.substr(1);
-    }
-    else {
-        let match = url.hash.match(/(?:#t=(\d+))s/);
-        if (match != null)
-            seconds = match[1];
-        id = url.searchParams.get('v');
-    }
-    return `<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/${id}${seconds ? `?start=${seconds}` : ''}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-  }
-  function isYoutubeLink(uri) {
-    return /((https).+youtu)/.test(uri);
   }
   function isGfycatLink(link) {
     return /gfycat.com$/i.test(link.hostname);
@@ -813,7 +767,7 @@ Awful.embedVideos = function() {
   }
 }
 
-Awful.embedVideos();
+Awful.embedGfycat();
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.
 window.webkit.messageHandlers.didRender.postMessage({});
