@@ -250,6 +250,53 @@ extension HTMLDocument {
             }
         }
     }
+
+    func embedVideos() {
+        for a in nodes(matchingSelector: "a") {
+            if
+                let href = a["href"],
+                let url = URL(string: href),
+                let host = url.host
+                 {
+                    print(href)
+                    if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
+                        if(host.lowercased().hasSuffix("imgur.com")) {
+                            let videoElement = HTMLElement(tagName: "video", attributes: [
+                            "width": "300",
+                            "preload":"metadata",
+                            "controls":"",
+                            "loop":"",
+                            "muted":"true",
+                            "poster": href.replacingCharacters(in: ext, with: "h.jpg"),
+                            "src":href.replacingCharacters(in: ext, with: ".mp4"),
+                            "type":"video/mp4"])
+
+                            a.parent?.replace(child: a, with: videoElement)
+                        }
+                        //todo gifcat mp4 files
+                    }
+                    else if(href.range(of: #"((https).+youtu)"#, options: .regularExpression) != nil) {
+                        guard
+                            let youtubeUri = getYoutubeEmbeddedUri(uri: href)
+                        else {
+                            continue
+                        }
+                        let embedElement = HTMLElement(tagName: "iframe", attributes: [
+                            "width":"500",
+                            "height":"315",
+                            "src": youtubeUri,
+                            "frameborder":"0",
+                            "allow":"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
+                            "allowfullscreen":""
+                        ])
+                        a.parent?.replace(child: a, with: embedElement)
+                    }
+
+                }
+
+            }
+
+        }
 }
 
 extension URL {
@@ -322,4 +369,39 @@ private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
     components.host = "randomwaffle.gbs.fm"
     components.path = "/images/\(hashPrefix)/\(hash).\(pathExtension)"
     return components.url
+}
+
+private func getYoutubeEmbeddedUri(uri: String) -> String? {
+    guard
+        let sourceUrl = URLComponents(string: uri)
+    else{
+        return nil
+    }
+    var seconds: Int?
+    var id: String?
+    if(sourceUrl.host == "youtu.be") {
+        let t = sourceUrl.queryItems?.filter({$0.name == "t"}).first
+        if(t != nil && t?.value != nil){
+            seconds = Int(t!.value!)
+        }
+        let str: String = sourceUrl.path
+        id = String(str[str.index(str.startIndex, offsetBy: 1)...])
+    } else {
+        let pair = sourceUrl.fragment?.split(separator: "=")
+        if(pair?[0] == "t" && pair?[1] != nil){
+            seconds = Int(pair![1])
+        }
+        let v = sourceUrl.queryItems?.filter({$0.name == "v"}).first
+        if(v != nil && v?.value != nil) {
+            id = v!.value
+        }
+    }
+
+    let secondsString = seconds != nil ? "?start=\(seconds!)" : ""
+    if(id == nil) {
+        return nil
+    }
+    return """
+    https://www.youtube-nocookie.com/embed/\(id!)\(secondsString)
+    """
 }

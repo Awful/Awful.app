@@ -728,7 +728,46 @@ if (document.body.classList.contains('forum-26')) {
   Awful.fyadFlag.startFetching();
 }
 
+Awful.embedGfycat = function() {
+  var postLinks = document.querySelectorAll('section.postbody a')
 
+  postLinks.forEach(link => {
+    let vidInfo = matchVidLinkurl(link);
+    if (vidInfo && isGfycatLink(link)) {
+      var gifyKey = link.pathname.match(/([A-Za-z]+)(?:\/*)?/i);
+      if (gifyKey) {
+          fetch(`https://api.gfycat.com/v1/gfycats/${gifyKey[1]}`)
+            .then(res => res.json())
+            .then(l => {
+              if (l.gfyItem) {
+                  let div = document.createElement('div');
+                  div.className = 'gifv_video';
+                  div.innerHTML = gfyUrlToVideo(l.gfyItem.posterUrl, l.gfyItem.mp4Url);
+                  link.replaceWith(div);
+              }
+            })
+            .catch(console.warn); //ignore errors, keep processing
+      }
+    }
+  });
+
+  function matchVidLinkurl(link) {
+    let match = link.pathname.match(/(\.gifv|\.webm|\.mp4)$/i);
+    if (!match)
+        return null;
+    return {
+        extension: match[1]
+    };
+  }
+  function isGfycatLink(link) {
+    return /gfycat.com$/i.test(link.hostname);
+  }
+  function gfyUrlToVideo(posterUrl, mp4Url) {
+      return `<video width="320" playsinline webkit-playsinline preload="metadata" controls loop muted="true" poster="${posterUrl}"><source src="${mp4Url}" type="video/mp4"></video>`;
+  }
+}
+
+Awful.embedGfycat();
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.
 window.webkit.messageHandlers.didRender.postMessage({});

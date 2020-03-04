@@ -382,6 +382,7 @@ private struct RenderModel: StencilContextConvertible {
             if !UserDefaults.standard.automaticallyPlayGIFs {
                 document.stopGIFAutoplay()
             }
+            document.embedVideos()
             return document.bodyElement?.innerHTML
         }
         let visibleAvatarURL = showAvatars ? message.from?.avatarURL : nil
