@@ -8,27 +8,6 @@ import UIKit
 
 private let Log = Logger.get()
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l >= r
-  default:
-    return !(lhs < rhs)
-  }
-}
-
-
 private enum _URLMenuPresenter {
     case link(url: URL, imageURL: URL?, smilie: PostedSmilie?)
     case video(url: URL)
@@ -67,8 +46,12 @@ private enum _URLMenuPresenter {
             AwfulBrowser.presentBrowserForURL(url, fromViewController: presenter)
         case .safari:
             UIApplication.shared.open(url)
+        case .brave:
+            UIApplication.shared.open(bravifyURL(url))
         case .chrome:
             UIApplication.shared.open(chromifyURL(url))
+        case .edge:
+            UIApplication.shared.open(edgifyURL(url))
         case .firefox:
             UIApplication.shared.open(firefoxifyURL(url))
         }
@@ -118,6 +101,20 @@ private enum _URLMenuPresenter {
             if browsers.contains(.firefox) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-firefox"), style: .default, handler: { _ in
                     UIApplication.shared.open(firefoxifyURL(linkURL))
+                    return
+                }))
+            }
+
+            if browsers.contains(.brave) {
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-brave"), style: .default, handler: { _ in
+                    UIApplication.shared.open(bravifyURL(linkURL))
+                    return
+                }))
+            }
+
+            if browsers.contains(.edge) {
+                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-edge"), style: .default, handler: { _ in
+                    UIApplication.shared.open(edgifyURL(linkURL))
                     return
                 }))
             }
@@ -272,12 +269,36 @@ private enum _URLMenuPresenter {
     }
 }
 
+private func bravifyURL(_ url: URL) -> URL {
+    // https://github.com/brave/ios-open-thirdparty-browser
+    switch url.scheme?.lowercased() {
+    case "http", "https":
+        var components = URLComponents(string: "brave://open-url")!
+        components.queryItems = [.init(name: "url", value: url.absoluteString)]
+        return components.url!
+    default:
+        Log.w("can't make a Brave URL for url \(url)")
+        return url
+    }
+}
+
 private func chromifyURL(_ url: URL) -> URL {
     var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
     if components.scheme?.lowercased() == "http" {
         components.scheme = "googlechrome"
     } else if components.scheme?.lowercased() == "https" {
         components.scheme = "googlechromes"
+    }
+    return components.url!
+}
+
+private func edgifyURL(_ url: URL) -> URL {
+    // https://stackoverflow.com/a/51109646
+    var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+    if components.scheme?.lowercased() == "http" {
+        components.scheme = "microsoft-edge-http"
+    } else if components.scheme?.lowercased() == "https" {
+        components.scheme = "microsoft-edge-https"
     }
     return components.url!
 }

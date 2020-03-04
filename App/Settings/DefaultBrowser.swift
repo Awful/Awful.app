@@ -7,7 +7,9 @@ import UIKit
 enum DefaultBrowser: String, CaseIterable {
     case awful = "Awful"
     case safari = "Safari"
+    case brave = "Brave"
     case chrome = "Chrome"
+    case edge = "Edge"
     case firefox = "Firefox"
 }
 
@@ -16,8 +18,12 @@ extension DefaultBrowser {
         switch self {
         case .awful, .safari:
             return true
+        case .brave:
+            return UIApplication.shared.canOpenURL(URL(string: "brave://")!)
         case .chrome:
             return UIApplication.shared.canOpenURL(URL(string: "googlechrome://")!)
+        case .edge:
+            return UIApplication.shared.canOpenURL(URL(string: "microsoft-edge-http://")!)
         case .firefox:
             return UIApplication.shared.canOpenURL(URL(string: "firefox://")!)
         }

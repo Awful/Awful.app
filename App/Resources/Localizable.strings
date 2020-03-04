@@ -212,8 +212,14 @@
 /* Title of button that opens a link within Awful. */
 "link-action.open-in-awful" = "Open in Awful";
 
+/* Title of button that opens a link in Brave. */
+"link-action.open-in-brave" = "Open in Brave";
+
 /* Title of button that opens a link in Google Chrome. */
 "link-action.open-in-chrome" = "Open in Chrome";
+
+/* Title of button that opens a link in Microsoft Edge. */
+"link-action.open-in-edge" = "Open in Edge";
 
 /* Title of button that opens a link in Firefox. */
 "link-action.open-in-firefox" = "Open in Firefox";

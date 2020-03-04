@@ -371,8 +371,10 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>brave</string>
 		<string>firefox</string>
 		<string>googlechrome</string>
+		<string>microsoft-edge-http</string>
 		<string>org-appextension-feature-password-management</string>
 		<string>twitter</string>
 		<string>vimeo</string>
