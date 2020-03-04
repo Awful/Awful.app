@@ -14,10 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: xcodebuild test
-      run: >
-        xcodebuild
-          -workspace Awful.xcworkspace
-          -scheme Awful
-          -configuration Debug
-          -destination "platform=iOS Simulator,name=iPhone 11,OS=latest"
-          test
+      run: xcodebuild -workspace Awful.xcworkspace -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 11,OS=latest" test
