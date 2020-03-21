@@ -5,7 +5,7 @@
 import HTMLReader
 
 @objc(User)
-public class User: AwfulManagedObject {
+public class User: AwfulManagedObject, Managed {
     @NSManaged public var administrator: Bool
     @NSManaged public var authorClasses: String?
     @NSManaged public var canReceivePrivateMessages: Bool

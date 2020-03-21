@@ -2,6 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulScraping
 import CoreData
 import Foundation
 import HTMLReader
@@ -13,6 +14,8 @@ public final class ForumsClient {
     private var urlSession: ForumsURLSession?
     private var backgroundManagedObjectContext: NSManagedObjectContext?
     private var lastModifiedObserver: LastModifiedContextObserver?
+
+    private let scrapingQueue = DispatchQueue(label: "com.awfulapp.ForumsClient.Scraping")
 
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
     public var didRemotelyLogOut: (() -> Void)?
@@ -153,19 +156,22 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
+        // Not that we'll parse any JSON from the login attempt, but it might avoid pointless server-side rendering.
+        let urlString = "account.php?json=1"
+
         let parameters = [
             "action": "login",
             "username": username,
             "password" : password,
-            "next": "/member.php?action=getinfo"]
+            "next": "/index.php?json=1"]
 
-        return fetch(method: .post, urlString: "account.php?json=1", parameters: parameters)
+        return fetch(method: .post, urlString: urlString, parameters: parameters)
             .promise
-            .scrape(as: ProfileScrapeResult.self)
+            .decode(as: IndexScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
-                let profile = try scrapeResult.upsert(into: context)
+                let result = try scrapeResult.upsert(into: context)
                 try context.save()
-                return profile.user.objectID
+                return result.currentUser.objectID
             }
             .map(on: mainContext) { objectID, context in
                 guard let user = context.object(with: objectID) as? User else {
@@ -177,26 +183,19 @@ public final class ForumsClient {
 
     // MARK: Forums
 
-    public func taxonomizeForums() -> Promise<[Forum]> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
+    public func taxonomizeForums() -> Promise<Void> {
+        guard let backgroundContext = backgroundManagedObjectContext else {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
         // Seems like only `forumdisplay.php` and `showthread.php` have the `<select>` with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-        return fetch(method: .get, urlString: "forumdisplay.php", parameters: ["forumid": "48"])
+        return fetch(method: .get, urlString: "index.php?json=1", parameters: [])
             .promise
-            .scrape(as: ForumHierarchyScrapeResult.self)
-            .map(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
-                let forums = try scrapeResult.upsert(into: context)
+            .decode(as: IndexScrapeResult.self, on: scrapingQueue)
+            .map(on: backgroundContext) { scrapeResult, context -> Void in
+                try scrapeResult.upsert(into: context)
                 try context.save()
-                return forums.map { $0.objectID }
             }
-            .map(on: mainContext) { objectIDs, context -> [Forum] in
-                return objectIDs.compactMap { context.object(with: $0) as? Forum }
-        }
     }
 
     // MARK: Threads
@@ -219,7 +218,7 @@ public final class ForumsClient {
         }
 
         return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters).promise
-            .scrape(as: ThreadListScrapeResult.self)
+            .scrape(as: ThreadListScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
                 let threads = try result.upsert(into: context)
                 _ = try result.upsertAnnouncements(into: context)
@@ -256,7 +255,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "bookmarkthreads.php", parameters: parameters)
             .promise
-            .scrape(as: ThreadListScrapeResult.self)
+            .scrape(as: ThreadListScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
                 let threads = try result.upsert(into: context)
 
@@ -348,7 +347,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "newthread.php", parameters: parameters)
             .promise
-            .scrape(as: PostIconListScrapeResult.self)
+            .scrape(as: PostIconListScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { parsed, context -> (primary: [NSManagedObjectID], secondary: [NSManagedObjectID]) in
                 let managed = try parsed.upsert(into: context)
                 try context.save()
@@ -535,7 +534,7 @@ public final class ForumsClient {
         let (promise, cancellable) = fetch(method: .get, urlString: "announcement.php", parameters: ["forumid": "1"])
 
         let result = promise
-            .scrape(as: AnnouncementListScrapeResult.self)
+            .scrape(as: AnnouncementListScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
                 let announcements = try scrapeResult.upsert(into: context)
                 try context.save()
@@ -601,7 +600,7 @@ public final class ForumsClient {
         let (promise, cancellable) = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
 
         let parsed = promise
-            .scrape(as: PostsPageScrapeResult.self)
+            .scrape(as: PostsPageScrapeResult.self, on: scrapingQueue)
 
         let posts = parsed
             .map(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
@@ -650,7 +649,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
             .promise
-            .scrape(as: ShowPostScrapeResult.self)
+            .scrape(as: ShowPostScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { scrapeResult, context -> Void in
                 _ = try scrapeResult.upsert(into: context)
                 try context.save()
@@ -968,7 +967,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "member.php", parameters: parameters)
             .promise
-            .scrape(as: ProfileScrapeResult.self)
+            .scrape(as: ProfileScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
                 let profile = try scrapeResult.upsert(into: context)
                 try context.save()
@@ -1072,7 +1071,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: [])
             .promise
-            .scrape(as: PrivateMessageFolderScrapeResult.self)
+            .scrape(as: PrivateMessageFolderScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
                 let messages = try result.upsert(into: context)
                 try context.save()
@@ -1112,7 +1111,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
-            .scrape(as: PrivateMessageScrapeResult.self)
+            .scrape(as: PrivateMessageScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
                 let message = try scrapeResult.upsert(into: context)
                 try context.save()
@@ -1150,7 +1149,7 @@ public final class ForumsClient {
 
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
-            .scrape(as: PostIconListScrapeResult.self)
+            .scrape(as: PostIconListScrapeResult.self, on: scrapingQueue)
             .map(on: backgroundContext) { parsed, context -> [NSManagedObjectID] in
                 let managed = try parsed.upsert(into: context)
                 try context.save()
@@ -1220,7 +1219,7 @@ public final class ForumsClient {
         let parameters = prepareFormEntries(submittable.submit(button: form.submitButton))
         return fetch(method: .post, urlString: "member2.php", parameters: parameters)
             .promise
-            .scrape(as: IgnoreListChangeScrapeResult.self)
+            .scrape(as: IgnoreListChangeScrapeResult.self, on: scrapingQueue)
             .done(on: .global()) {
                 if case .failure(let error) = $0 {
                     throw error
@@ -1328,10 +1327,24 @@ private extension Promise {
 }
 
 private extension Promise where T == (data: Data, response: URLResponse) {
-    func scrape<U: ScrapeResult>(as _: U.Type) -> Promise<U> {
-        return map(on: .global()) {
+    func scrape<U: ScrapeResult>(
+        as _: U.Type,
+        on queue: DispatchQueue
+    ) -> Promise<U> {
+        map(on: queue) {
             let parsed = try parseHTML(data: $0.data, response: $0.response)
             return try U.init(parsed.document, url: parsed.url)
+        }
+    }
+
+    func decode<U: Decodable>(
+        as _: U.Type,
+        on queue: DispatchQueue
+    ) -> Promise<U> {
+        map(on: queue) {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            return try decoder.decode(U.self, from: $0.data)
         }
     }
 }

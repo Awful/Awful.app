@@ -5,7 +5,7 @@
 import CoreData
 
 @objc(Forum)
-public class Forum: AwfulManagedObject {
+public class Forum: AwfulManagedObject, Managed {
     @NSManaged public var canPost: Bool
     @NSManaged public var forumID: String
     @NSManaged public var index: Int32
@@ -54,7 +54,7 @@ extension Forum {
 }
 
 @objc(ForumGroup)
-public class ForumGroup: AwfulManagedObject {
+public class ForumGroup: AwfulManagedObject, Managed {
     @NSManaged public var groupID: String
     @NSManaged public var index: Int32
     @NSManaged public var name: String?

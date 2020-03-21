@@ -1,0 +1,1797 @@
+{
+  "stats": {
+    "archived_posts": 177503398,
+    "archived_threads": 3358965,
+    "banned_users": 1,
+    "banned_users_total": 24264,
+    "online_registered": 3979,
+    "online_total": 4235,
+    "unique_posts": 63237156,
+    "unique_threads": 2628812,
+    "usercount": 203224
+  },
+  "user": {
+    "userid": 106125,
+    "username": "pokeyman",
+    "homepage": "",
+    "icq": "",
+    "aim": "Pronouns: he or they",
+    "yahoo": "",
+    "gender": "U",
+    "usertitle": "<img src=\"http://fi.somethingawful.com/safs/titles/3f/7c/00106125.0001.jpg\" alt=\"\" class=\"img\" border=\"0\"><br />\nThat elephant ate my entire platoon.",
+    "joindate": 1164525312,
+    "lastpost": 1585103508,
+    "posts": 8079,
+    "receivepm": 1,
+    "postsperday": 1.66,
+    "role": "PL",
+    "biography": "",
+    "location": "",
+    "interests": "",
+    "occupation": "",
+    "picture": ""
+  },
+  "forums": [
+    {
+      "id": 48,
+      "title": "Main",
+      "title_short": "Main",
+      "has_threads": false,
+      "icon": "",
+      "sub_forums": [
+        {
+          "id": 273,
+          "title": "General Bullshit",
+          "title_short": "GBS",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/gbs.gif",
+          "sub_forums": [
+            {
+              "id": 669,
+              "title": "The Cholesterol Clubhouse",
+              "title_short": "The Cholesterol Clubhouse",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 31158,
+                  "username": "Genesplicer"
+                },
+                {
+                  "userid": 61923,
+                  "username": "GRINDCORE MEGGIDO"
+                },
+                {
+                  "userid": 89442,
+                  "username": "Jeffrey of YOSPOS"
+                },
+                {
+                  "userid": 91513,
+                  "username": "Burt Sexual"
+                },
+                {
+                  "userid": 116079,
+                  "username": "Barudak"
+                },
+                {
+                  "userid": 121245,
+                  "username": "Jose"
+                },
+                {
+                  "userid": 161903,
+                  "username": "esperterra"
+                },
+                {
+                  "userid": 39780,
+                  "username": "StupidSexyVaultGuy"
+                },
+                {
+                  "userid": 108942,
+                  "username": "shadow puppet of a"
+                },
+                {
+                  "userid": 222569,
+                  "username": "HugeGrossBurrito"
+                }
+              ]
+            },
+            {
+              "id": 155,
+              "title": "SA's Front Page Discussion",
+              "title_short": "SA's Front Page Discussion",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 31158,
+                  "username": "Genesplicer"
+                },
+                {
+                  "userid": 61923,
+                  "username": "GRINDCORE MEGGIDO"
+                },
+                {
+                  "userid": 89442,
+                  "username": "Jeffrey of YOSPOS"
+                },
+                {
+                  "userid": 91513,
+                  "username": "Burt Sexual"
+                },
+                {
+                  "userid": 116079,
+                  "username": "Barudak"
+                },
+                {
+                  "userid": 121245,
+                  "username": "Jose"
+                },
+                {
+                  "userid": 161903,
+                  "username": "esperterra"
+                }
+              ]
+            },
+            {
+              "id": 214,
+              "title": "E/N: Everyone's/Neurotic",
+              "title_short": "E/N Bullshit",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 31158,
+                  "username": "Genesplicer"
+                },
+                {
+                  "userid": 61923,
+                  "username": "GRINDCORE MEGGIDO"
+                },
+                {
+                  "userid": 89442,
+                  "username": "Jeffrey of YOSPOS"
+                },
+                {
+                  "userid": 91513,
+                  "username": "Burt Sexual"
+                },
+                {
+                  "userid": 116079,
+                  "username": "Barudak"
+                },
+                {
+                  "userid": 121245,
+                  "username": "Jose"
+                },
+                {
+                  "userid": 161903,
+                  "username": "esperterra"
+                },
+                {
+                  "userid": 156180,
+                  "username": "PMush Perfect"
+                },
+                {
+                  "userid": 172374,
+                  "username": "DJ Fuckboy Supreme"
+                },
+                {
+                  "userid": 178551,
+                  "username": "Mocking Bird"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 31158,
+              "username": "Genesplicer"
+            },
+            {
+              "userid": 61923,
+              "username": "GRINDCORE MEGGIDO"
+            },
+            {
+              "userid": 89442,
+              "username": "Jeffrey of YOSPOS"
+            },
+            {
+              "userid": 91513,
+              "username": "Burt Sexual"
+            },
+            {
+              "userid": 116079,
+              "username": "Barudak"
+            },
+            {
+              "userid": 121245,
+              "username": "Jose"
+            },
+            {
+              "userid": 161903,
+              "username": "esperterra"
+            }
+          ]
+        },
+        {
+          "id": 167,
+          "title": "Post Your Favorite (or Request): Stop! Collaborate and LISTen",
+          "title_short": "Post Your Favorite",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/pyf.gif",
+          "sub_forums": [
+            {
+              "id": 670,
+              "title": "Post My Favorites",
+              "title_short": "Post My Favorites",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 141500,
+                  "username": "LITERALLY A BIRD"
+                },
+                {
+                  "userid": 198910,
+                  "username": "Pastry of the Year"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 141500,
+              "username": "LITERALLY A BIRD"
+            },
+            {
+              "userid": 198910,
+              "username": "Pastry of the Year"
+            }
+          ]
+        },
+        {
+          "id": 268,
+          "title": "BYOB: An Island of Chill in a Sea of Madness",
+          "title_short": "BYOB",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/byob.gif",
+          "sub_forums": [
+            {
+              "id": 196,
+              "title": "Cool Crew Chat Central",
+              "title_short": "Crew Chat",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 158211,
+                  "username": "alnilam"
+                },
+                {
+                  "userid": 206664,
+                  "username": "Goons Are Great"
+                },
+                {
+                  "userid": 185467,
+                  "username": "Stroop There It Is"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 158211,
+              "username": "alnilam"
+            },
+            {
+              "userid": 206664,
+              "username": "Goons Are Great"
+            }
+          ]
+        }
+      ],
+      "moderators": []
+    },
+    {
+      "id": 51,
+      "title": "Discussion",
+      "title_short": "Discussion",
+      "has_threads": false,
+      "icon": "",
+      "sub_forums": [
+        {
+          "id": 44,
+          "title": "Games",
+          "title_short": "Games",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/games.gif",
+          "sub_forums": [
+            {
+              "id": 191,
+              "title": "Let's Play!",
+              "title_short": "Let's Play!",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 40838,
+                  "username": "VideoGames"
+                },
+                {
+                  "userid": 60088,
+                  "username": "Infinitum"
+                },
+                {
+                  "userid": 92735,
+                  "username": "oddium"
+                },
+                {
+                  "userid": 96646,
+                  "username": "Relax Or DIE"
+                },
+                {
+                  "userid": 108839,
+                  "username": "Dash Rendar"
+                },
+                {
+                  "userid": 162156,
+                  "username": "Fedule"
+                },
+                {
+                  "userid": 203973,
+                  "username": "nine-gear crow"
+                }
+              ]
+            },
+            {
+              "id": 278,
+              "title": "Retro Games",
+              "title_short": "Retro Games",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/retro.gif",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 40838,
+                  "username": "VideoGames"
+                },
+                {
+                  "userid": 60088,
+                  "username": "Infinitum"
+                },
+                {
+                  "userid": 92735,
+                  "username": "oddium"
+                },
+                {
+                  "userid": 96646,
+                  "username": "Relax Or DIE"
+                }
+              ]
+            },
+            {
+              "id": 279,
+              "title": "Mobile Gaming",
+              "title_short": "Mobile Gaming",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/mob.gif",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 40838,
+                  "username": "VideoGames"
+                },
+                {
+                  "userid": 60088,
+                  "username": "Infinitum"
+                },
+                {
+                  "userid": 92735,
+                  "username": "oddium"
+                },
+                {
+                  "userid": 96646,
+                  "username": "Relax Or DIE"
+                }
+              ]
+            },
+            {
+              "id": 145,
+              "title": "The MMO HMO",
+              "title_short": "The MMO HMO",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 40838,
+                  "username": "VideoGames"
+                },
+                {
+                  "userid": 60088,
+                  "username": "Infinitum"
+                },
+                {
+                  "userid": 92735,
+                  "username": "oddium"
+                },
+                {
+                  "userid": 96646,
+                  "username": "Relax Or DIE"
+                },
+                {
+                  "userid": 38670,
+                  "username": "The Chairman"
+                },
+                {
+                  "userid": 165461,
+                  "username": "Eox"
+                }
+              ]
+            },
+            {
+              "id": 259,
+              "title": "Free Hong Kong",
+              "title_short": "A Blizzard Subforum",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [
+                {
+                  "id": 146,
+                  "title": "WoW: Goon Squad",
+                  "title_short": "WoW: Goon Squad",
+                  "has_threads": true,
+                  "icon": "",
+                  "sub_forums": [],
+                  "moderators": [
+                    {
+                      "userid": 40838,
+                      "username": "VideoGames"
+                    },
+                    {
+                      "userid": 60088,
+                      "username": "Infinitum"
+                    },
+                    {
+                      "userid": 92735,
+                      "username": "oddium"
+                    },
+                    {
+                      "userid": 96646,
+                      "username": "Relax Or DIE"
+                    },
+                    {
+                      "userid": 138508,
+                      "username": "Pragmatica"
+                    }
+                  ]
+                }
+              ],
+              "moderators": [
+                {
+                  "userid": 40838,
+                  "username": "VideoGames"
+                },
+                {
+                  "userid": 60088,
+                  "username": "Infinitum"
+                },
+                {
+                  "userid": 92735,
+                  "username": "oddium"
+                },
+                {
+                  "userid": 96646,
+                  "username": "Relax Or DIE"
+                }
+              ]
+            },
+            {
+              "id": 93,
+              "title": "Private Game Servers",
+              "title_short": "Private Game Servers",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 40838,
+                  "username": "VideoGames"
+                },
+                {
+                  "userid": 60088,
+                  "username": "Infinitum"
+                },
+                {
+                  "userid": 92735,
+                  "username": "oddium"
+                },
+                {
+                  "userid": 96646,
+                  "username": "Relax Or DIE"
+                }
+              ]
+            },
+            {
+              "id": 234,
+              "title": "Traditional Games",
+              "title_short": "Traditional Games",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [
+                {
+                  "id": 103,
+                  "title": "The Game Room",
+                  "title_short": "The Game Room",
+                  "has_threads": true,
+                  "icon": "",
+                  "sub_forums": [],
+                  "moderators": [
+                    {
+                      "userid": 40838,
+                      "username": "VideoGames"
+                    },
+                    {
+                      "userid": 60088,
+                      "username": "Infinitum"
+                    },
+                    {
+                      "userid": 92735,
+                      "username": "oddium"
+                    },
+                    {
+                      "userid": 96646,
+                      "username": "Relax Or DIE"
+                    },
+                    {
+                      "userid": 70341,
+                      "username": "Alien Rope Burn"
+                    },
+                    {
+                      "userid": 168014,
+                      "username": "Ettin"
+                    },
+                    {
+                      "userid": 190228,
+                      "username": "JIZZ DENOUEMENT"
+                    }
+                  ]
+                }
+              ],
+              "moderators": [
+                {
+                  "userid": 40838,
+                  "username": "VideoGames"
+                },
+                {
+                  "userid": 60088,
+                  "username": "Infinitum"
+                },
+                {
+                  "userid": 92735,
+                  "username": "oddium"
+                },
+                {
+                  "userid": 96646,
+                  "username": "Relax Or DIE"
+                },
+                {
+                  "userid": 70341,
+                  "username": "Alien Rope Burn"
+                },
+                {
+                  "userid": 168014,
+                  "username": "Ettin"
+                },
+                {
+                  "userid": 190228,
+                  "username": "JIZZ DENOUEMENT"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 40838,
+              "username": "VideoGames"
+            },
+            {
+              "userid": 60088,
+              "username": "Infinitum"
+            },
+            {
+              "userid": 92735,
+              "username": "oddium"
+            },
+            {
+              "userid": 96646,
+              "username": "Relax Or DIE"
+            }
+          ]
+        },
+        {
+          "id": 46,
+          "title": "Debate & Discussion",
+          "title_short": "Debate & Discussion",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/dnd.gif",
+          "sub_forums": [
+            {
+              "id": 275,
+              "title": "The Minority Rapport",
+              "title_short": "TGRS",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 28262,
+                  "username": "Vilerat"
+                },
+                {
+                  "userid": 28275,
+                  "username": "Ardennes"
+                },
+                {
+                  "userid": 41058,
+                  "username": "Helsing"
+                },
+                {
+                  "userid": 158364,
+                  "username": "Guavanaut"
+                },
+                {
+                  "userid": 161143,
+                  "username": "Anidav"
+                },
+                {
+                  "userid": 162368,
+                  "username": "GreyjoyBastard"
+                },
+                {
+                  "userid": 169319,
+                  "username": "Main Paineframe"
+                },
+                {
+                  "userid": 190881,
+                  "username": "fool of sound"
+                },
+                {
+                  "userid": 145552,
+                  "username": "Fluffdaddy"
+                },
+                {
+                  "userid": 213372,
+                  "username": "there wolf"
+                }
+              ]
+            },
+            {
+              "id": 269,
+              "title": "C-SPAM: Better Posts Aren't Possible",
+              "title_short": "C-SPAM",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/threadtag-poll.png",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 28262,
+                  "username": "Vilerat"
+                },
+                {
+                  "userid": 28275,
+                  "username": "Ardennes"
+                },
+                {
+                  "userid": 41058,
+                  "username": "Helsing"
+                },
+                {
+                  "userid": 158364,
+                  "username": "Guavanaut"
+                },
+                {
+                  "userid": 161143,
+                  "username": "Anidav"
+                },
+                {
+                  "userid": 162368,
+                  "username": "GreyjoyBastard"
+                },
+                {
+                  "userid": 169319,
+                  "username": "Main Paineframe"
+                },
+                {
+                  "userid": 190881,
+                  "username": "fool of sound"
+                },
+                {
+                  "userid": 42661,
+                  "username": "Paramemetic"
+                },
+                {
+                  "userid": 135140,
+                  "username": "Squizzle"
+                },
+                {
+                  "userid": 139609,
+                  "username": "Chokes McGee"
+                },
+                {
+                  "userid": 147625,
+                  "username": "Mayor Dave"
+                },
+                {
+                  "userid": 148067,
+                  "username": "logikv9"
+                },
+                {
+                  "userid": 165190,
+                  "username": "Shear Modulus"
+                },
+                {
+                  "userid": 185100,
+                  "username": "Lightning Knight"
+                },
+                {
+                  "userid": 186014,
+                  "username": "joepinetree"
+                },
+                {
+                  "userid": 191371,
+                  "username": "punchymcpunch"
+                },
+                {
+                  "userid": 215880,
+                  "username": "Calibanibal"
+                },
+                {
+                  "userid": 220779,
+                  "username": "Bearjew"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 28262,
+              "username": "Vilerat"
+            },
+            {
+              "userid": 28275,
+              "username": "Ardennes"
+            },
+            {
+              "userid": 41058,
+              "username": "Helsing"
+            },
+            {
+              "userid": 158364,
+              "username": "Guavanaut"
+            },
+            {
+              "userid": 161143,
+              "username": "Anidav"
+            },
+            {
+              "userid": 162368,
+              "username": "GreyjoyBastard"
+            },
+            {
+              "userid": 169319,
+              "username": "Main Paineframe"
+            },
+            {
+              "userid": 190881,
+              "username": "fool of sound"
+            }
+          ]
+        },
+        {
+          "id": 158,
+          "title": "Ask/Tell",
+          "title_short": "Ask / Tell",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/at.gif",
+          "sub_forums": [
+            {
+              "id": 162,
+              "title": "Science, Academics and Languages",
+              "title_short": "Education & Academics",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 91694,
+                  "username": "Grand Fromage"
+                },
+                {
+                  "userid": 78326,
+                  "username": "twoday"
+                },
+                {
+                  "userid": 103775,
+                  "username": "Cyrano4747"
+                }
+              ]
+            },
+            {
+              "id": 211,
+              "title": "Tourism & Travel",
+              "title_short": "Tourism & Travel",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 91694,
+                  "username": "Grand Fromage"
+                }
+              ]
+            },
+            {
+              "id": 200,
+              "title": "Buncha Fuckin Crash!!!!!!!!!!!!",
+              "title_short": "Business, Finances, Careers",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/bizfin.gif",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 91694,
+                  "username": "Grand Fromage"
+                },
+                {
+                  "userid": 81453,
+                  "username": "Moneyball"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 91694,
+              "username": "Grand Fromage"
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "title": "Serious Hardware / Software Crap",
+          "title_short": "Serious Hardware / Software Crap",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/shsc.gif",
+          "sub_forums": [
+            {
+              "id": 170,
+              "title": "Haus of Tech Support",
+              "title_short": "Haus of Tech Support",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 110481,
+                  "username": "CLAM DOWN"
+                },
+                {
+                  "userid": 140485,
+                  "username": "movax"
+                }
+              ]
+            },
+            {
+              "id": 202,
+              "title": "The Cavern of COBOL",
+              "title_short": "The Cavern of COBOL",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [
+                {
+                  "id": 265,
+                  "title": "project.log",
+                  "title_short": "project.log",
+                  "has_threads": true,
+                  "icon": "",
+                  "sub_forums": [],
+                  "moderators": [
+                    {
+                      "userid": 110481,
+                      "username": "CLAM DOWN"
+                    },
+                    {
+                      "userid": 140485,
+                      "username": "movax"
+                    },
+                    {
+                      "userid": 106125,
+                      "username": "pokeyman"
+                    }
+                  ]
+                }
+              ],
+              "moderators": [
+                {
+                  "userid": 110481,
+                  "username": "CLAM DOWN"
+                },
+                {
+                  "userid": 140485,
+                  "username": "movax"
+                },
+                {
+                  "userid": 106125,
+                  "username": "pokeyman"
+                }
+              ]
+            },
+            {
+              "id": 219,
+              "title": "YOSPOS",
+              "title_short": "YOSPOS",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 110481,
+                  "username": "CLAM DOWN"
+                },
+                {
+                  "userid": 140485,
+                  "username": "movax"
+                },
+                {
+                  "userid": 43235,
+                  "username": "Smythe"
+                },
+                {
+                  "userid": 54492,
+                  "username": "Captain Foo"
+                },
+                {
+                  "userid": 105961,
+                  "username": "graph"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 110481,
+              "username": "CLAM DOWN"
+            },
+            {
+              "userid": 140485,
+              "username": "movax"
+            }
+          ]
+        },
+        {
+          "id": 192,
+          "title": "Inspect Your Gadgets",
+          "title_short": "Inspect Your Gadgets",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/iyg.png",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 110481,
+              "username": "CLAM DOWN"
+            }
+          ]
+        },
+        {
+          "id": 122,
+          "title": "Sports Are Suspended",
+          "title_short": "Sports Argument Stadium",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/sas.gif",
+          "sub_forums": [
+            {
+              "id": 181,
+              "title": "The Football Funhouse",
+              "title_short": "The Football Funhouse",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 86188,
+                  "username": "Hand Knit"
+                },
+                {
+                  "userid": 188027,
+                  "username": "iospace"
+                },
+                {
+                  "userid": 97970,
+                  "username": "Athanatos"
+                }
+              ]
+            },
+            {
+              "id": 248,
+              "title": "The Armchair Quarterback",
+              "title_short": "The Armchair Quarterback",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 86188,
+                  "username": "Hand Knit"
+                },
+                {
+                  "userid": 188027,
+                  "username": "iospace"
+                }
+              ]
+            },
+            {
+              "id": 175,
+              "title": "The Wagatha Christie",
+              "title_short": "The Ray Parlour",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 86188,
+                  "username": "Hand Knit"
+                },
+                {
+                  "userid": 188027,
+                  "username": "iospace"
+                },
+                {
+                  "userid": 42231,
+                  "username": "Gigi Galli"
+                }
+              ]
+            },
+            {
+              "id": 177,
+              "title": "Rowdy Ringsports",
+              "title_short": "Punchsport Pagoda",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 86188,
+                  "username": "Hand Knit"
+                },
+                {
+                  "userid": 188027,
+                  "username": "iospace"
+                },
+                {
+                  "userid": 55247,
+                  "username": "Jerusalem"
+                },
+                {
+                  "userid": 197859,
+                  "username": "Junpei Hyde"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 86188,
+              "username": "Hand Knit"
+            },
+            {
+              "userid": 188027,
+              "username": "iospace"
+            }
+          ]
+        },
+        {
+          "id": 179,
+          "title": "You Look Like Shit",
+          "title_short": "You Look Like Shit",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/ylls.png",
+          "sub_forums": [
+            {
+              "id": 183,
+              "title": "The Goon Doctor",
+              "title_short": "The Goon Doctor",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 98940,
+                  "username": "A.s.P."
+                },
+                {
+                  "userid": 111348,
+                  "username": "Shine"
+                },
+                {
+                  "userid": 26875,
+                  "username": "Invicta{HOG}, M.D."
+                }
+              ]
+            },
+            {
+              "id": 244,
+              "title": "The Fitness Log Cabin",
+              "title_short": "The Fitness Log Cabin",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 98940,
+                  "username": "A.s.P."
+                },
+                {
+                  "userid": 111348,
+                  "username": "Shine"
+                },
+                {
+                  "userid": 41916,
+                  "username": "Dum Cumpster"
+                },
+                {
+                  "userid": 180849,
+                  "username": "david carmichael"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 98940,
+              "username": "A.s.P."
+            },
+            {
+              "userid": 111348,
+              "username": "Shine"
+            }
+          ]
+        },
+        {
+          "id": 161,
+          "title": "Goons With Spoons",
+          "title_short": "GWS",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/gws.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 50893,
+              "username": "Liquid Communism"
+            }
+          ]
+        },
+        {
+          "id": 91,
+          "title": "Automotive Insanity",
+          "title_short": "Automotive Insanity",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/ai.gif",
+          "sub_forums": [
+            {
+              "id": 236,
+              "title": "Cycle Asylum",
+              "title_short": "Cycle Asylum",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 127562,
+                  "username": "Adiabatic"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 127562,
+              "username": "Adiabatic"
+            }
+          ]
+        },
+        {
+          "id": 210,
+          "title": "DIY",
+          "title_short": "DIY & Hobbies",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/diy2.png",
+          "sub_forums": [
+            {
+              "id": 272,
+              "title": "Take a Hike!",
+              "title_short": "Take a Hike!",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/dd-environment.png",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 58623,
+                  "username": "Jaded Burnout"
+                },
+                {
+                  "userid": 95860,
+                  "username": "SoundMonkey"
+                },
+                {
+                  "userid": 81154,
+                  "username": "Verman"
+                },
+                {
+                  "userid": 84918,
+                  "username": "Levitate"
+                },
+                {
+                  "userid": 131806,
+                  "username": "Picnic Princess"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 58623,
+              "username": "Jaded Burnout"
+            },
+            {
+              "userid": 95860,
+              "username": "SoundMonkey"
+            }
+          ]
+        },
+        {
+          "id": 124,
+          "title": "Heavy Petting",
+          "title_short": "Pet Island",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/pi.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 141500,
+              "username": "LITERALLY A BIRD"
+            }
+          ]
+        },
+        {
+          "id": 132,
+          "title": "The Firing Range",
+          "title_short": "TFR",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/tfr.gif",
+          "sub_forums": [
+            {
+              "id": 277,
+              "title": "The Pellet Palace",
+              "title_short": "The Pellet Palace",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/tpp.gif",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 103775,
+                  "username": "Cyrano4747"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 103775,
+              "username": "Cyrano4747"
+            }
+          ]
+        },
+        {
+          "id": 90,
+          "title": "The Crackhead Clubhouse",
+          "title_short": "TCC",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/tcc.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 45175,
+              "username": "I eat baby skin"
+            },
+            {
+              "userid": 187453,
+              "username": "DrAlexanderTobacco"
+            }
+          ]
+        },
+        {
+          "id": 218,
+          "title": "Goons in Platoons",
+          "title_short": "GiP",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/terrordome.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 124121,
+              "username": "McNally"
+            }
+          ]
+        }
+      ],
+      "moderators": []
+    },
+    {
+      "id": 152,
+      "title": "The Finer Arts",
+      "title_short": "The Finer Arts",
+      "has_threads": false,
+      "icon": "",
+      "sub_forums": [
+        {
+          "id": 267,
+          "title": "Imp Zone",
+          "title_short": "Imp Zone",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/nintendo.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 138102,
+              "username": "In Training"
+            }
+          ]
+        },
+        {
+          "id": 668,
+          "title": "Star Wars - Fuck Midichlorians ",
+          "title_short": "STAR WARS",
+          "has_threads": true,
+          "icon": "",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 143342,
+              "username": "reignofevil"
+            },
+            {
+              "userid": 164451,
+              "username": "Pennywise the Frown"
+            },
+            {
+              "userid": 218595,
+              "username": "Roth"
+            }
+          ]
+        },
+        {
+          "id": 151,
+          "title": "Cinema Discusso",
+          "title_short": "Cinema Discusso",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/cd.gif",
+          "sub_forums": [
+            {
+              "id": 133,
+              "title": "The Film Dump",
+              "title_short": "The Film Dump",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/tfd.gif",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 196876,
+                  "username": "Franchescanado"
+                }
+              ]
+            },
+            {
+              "id": 274,
+              "title": "Blockbuster Video",
+              "title_short": "BBV",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/movies.png",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 196876,
+                  "username": "Franchescanado"
+                },
+                {
+                  "userid": 163916,
+                  "username": "GonSmithe"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 196876,
+              "username": "Franchescanado"
+            }
+          ]
+        },
+        {
+          "id": 150,
+          "title": "No Music Discussion",
+          "title_short": "No Music Discussion",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/nmd.gif",
+          "sub_forums": [
+            {
+              "id": 104,
+              "title": "Musician's Lounge",
+              "title_short": "Musician's Lounge",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 167099,
+                  "username": "Henchman of Santa"
+                },
+                {
+                  "userid": 17998,
+                  "username": "Colorfinger"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 167099,
+              "username": "Henchman of Santa"
+            }
+          ]
+        },
+        {
+          "id": 215,
+          "title": "PHIZ",
+          "title_short": "PHIZ",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/phiz.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 148076,
+              "username": "a false"
+            }
+          ]
+        },
+        {
+          "id": 31,
+          "title": "Creative Convention",
+          "title_short": "Creative Convention",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/cc.gif",
+          "sub_forums": [
+            {
+              "id": 247,
+              "title": "The Dorkroom",
+              "title_short": "The Dorkroom",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 95860,
+                  "username": "SoundMonkey"
+                },
+                {
+                  "userid": 168908,
+                  "username": "sebmojo"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 95860,
+              "username": "SoundMonkey"
+            },
+            {
+              "userid": 168908,
+              "username": "sebmojo"
+            }
+          ]
+        },
+        {
+          "id": 182,
+          "title": "The Book Bran",
+          "title_short": "The Book Barn",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/tbb.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 146846,
+              "username": "Hieronymous Alloy"
+            },
+            {
+              "userid": 168677,
+              "username": "Safety Biscuits"
+            }
+          ]
+        },
+        {
+          "id": 130,
+          "title": "TV IV",
+          "title_short": "The TV IV",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/tviv.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 19327,
+              "username": "OldSenileGuy"
+            },
+            {
+              "userid": 73408,
+              "username": "muscles like this!"
+            },
+            {
+              "userid": 161903,
+              "username": "esperterra"
+            }
+          ]
+        },
+        {
+          "id": 255,
+          "title": "Rapidly Going Deaf",
+          "title_short": "Rapidly Going Deaf",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/RGD.png",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 197859,
+              "username": "Junpei Hyde"
+            }
+          ]
+        },
+        {
+          "id": 144,
+          "title": "Batman's Shameful Secret",
+          "title_short": "Batman's Shameful Secret",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/bss.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 28104,
+              "username": "X-O"
+            },
+            {
+              "userid": 99998,
+              "username": "How Wonderful!"
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "title": "ADTRW",
+          "title_short": "ADTRW",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/adtrw.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 187767,
+              "username": "Julias"
+            },
+            {
+              "userid": 196791,
+              "username": "Wark Say"
+            }
+          ]
+        }
+      ],
+      "moderators": []
+    },
+    {
+      "id": 153,
+      "title": "The Community",
+      "title_short": "The Community",
+      "has_threads": false,
+      "icon": "",
+      "sub_forums": [
+        {
+          "id": 61,
+          "title": "SA-Mart",
+          "title_short": "SA-Mart",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/samart.gif",
+          "sub_forums": [
+            {
+              "id": 77,
+              "title": "Feedback & Discussion",
+              "title_short": "Feedback & Discussion",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 18862,
+                  "username": "Nyc_Tattoo"
+                }
+              ]
+            },
+            {
+              "id": 85,
+              "title": "Coupons & Deals",
+              "title_short": "Coupons & Deals",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": [
+                {
+                  "userid": 18862,
+                  "username": "Nyc_Tattoo"
+                },
+                {
+                  "userid": 19614,
+                  "username": "Dr. Eldarion"
+                }
+              ]
+            }
+          ],
+          "moderators": [
+            {
+              "userid": 18862,
+              "username": "Nyc_Tattoo"
+            }
+          ]
+        },
+        {
+          "id": 43,
+          "title": "Goon Meets",
+          "title_short": "Goon Meets",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/gag.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 18862,
+              "username": "Nyc_Tattoo"
+            }
+          ]
+        },
+        {
+          "id": 241,
+          "title": "LAN: Your City Sucks - Regional Discussion",
+          "title_short": "LAN: Your City Sucks - Regional ",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/citysucks.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 42231,
+              "username": "Gigi Galli"
+            }
+          ]
+        },
+        {
+          "id": 188,
+          "title": "QCS: Questions, Comments, Suggestions",
+          "title_short": "Questions, Comments, Suggestions",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/qcs.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 97970,
+              "username": "Athanatos"
+            },
+            {
+              "userid": 145552,
+              "username": "Fluffdaddy"
+            },
+            {
+              "userid": 223668,
+              "username": "QCS HR Rep"
+            },
+            {
+              "userid": 225746,
+              "username": "QCS Marketing VP"
+            },
+            {
+              "userid": 225747,
+              "username": "QCS Floor Manager"
+            },
+            {
+              "userid": 225748,
+              "username": "QCS Unpaid Intern"
+            }
+          ]
+        }
+      ],
+      "moderators": []
+    },
+    {
+      "id": 49,
+      "title": "Archives",
+      "title_short": "Archives",
+      "has_threads": false,
+      "icon": "",
+      "sub_forums": [
+        {
+          "id": 21,
+          "title": "Comedy Goldmine",
+          "title_short": "Comedy Goldmine",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/goldmine.gif",
+          "sub_forums": [
+            {
+              "id": 264,
+              "title": "The Goodmine",
+              "title_short": "The Goodmine",
+              "has_threads": true,
+              "icon": "https://fi.somethingawful.com/forumicons/goldmine.gif",
+              "sub_forums": [],
+              "moderators": []
+            },
+            {
+              "id": 115,
+              "title": "FYAD: Criterion Collection",
+              "title_short": "FYAD Goldmine",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": []
+            },
+            {
+              "id": 176,
+              "title": "BYOB Goldmine",
+              "title_short": "BYOB Goldmine",
+              "has_threads": true,
+              "icon": "",
+              "sub_forums": [],
+              "moderators": []
+            }
+          ],
+          "moderators": []
+        },
+        {
+          "id": 25,
+          "title": "The Awful Septic Tank",
+          "title_short": "The Awful Septic Tank",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/gas.gif",
+          "sub_forums": [],
+          "moderators": []
+        },
+        {
+          "id": 1,
+          "title": "GBS Graveyard",
+          "title_short": "RIP-GBS",
+          "has_threads": true,
+          "icon": "https://fi.somethingawful.com/forumicons/gas.gif",
+          "sub_forums": [],
+          "moderators": [
+            {
+              "userid": 31158,
+              "username": "Genesplicer"
+            },
+            {
+              "userid": 43235,
+              "username": "Smythe"
+            }
+          ]
+        }
+      ],
+      "moderators": []
+    }
+  ]
+}
