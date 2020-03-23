@@ -6,30 +6,30 @@
 import XCTest
 
 final class IgnoreListScrapingTests: XCTestCase {
-    func testEmpty() {
-        let form = try! scrapeForm(matchingSelector: "form[action = 'member2.php']", inFixtureNamed: "ignore-empty")
+    func testEmpty() throws {
+        let form = try scrapeForm(matchingSelector: "form[action = 'member2.php']", inFixtureNamed: "ignore-empty")
         XCTAssertEqual(form.textboxes.map { $0.name }, ["listbits[]", "listbits[]"])
         XCTAssertEqual(form.textboxes.map { $0.value }, ["", ""])
     }
     
-    func testMultiple() {
-        let form = try! scrapeForm(matchingSelector: "form[action = 'member2.php']", inFixtureNamed: "ignore-multiple")
+    func testMultiple() throws {
+        let form = try scrapeForm(matchingSelector: "form[action = 'member2.php']", inFixtureNamed: "ignore-multiple")
         XCTAssertEqual(form.textboxes.count, 4)
         
         let filled = form.textboxes.filter { !$0.value.isEmpty }
         XCTAssertEqual(filled.map { $0.value }, ["Diabolik900", "carry on then"])
     }
     
-    func testOne() {
-        let form = try! scrapeForm(matchingSelector: "form[action = 'member2.php']", inFixtureNamed: "ignore-one")
+    func testOne() throws {
+        let form = try scrapeForm(matchingSelector: "form[action = 'member2.php']", inFixtureNamed: "ignore-one")
         XCTAssertEqual(form.textboxes.count, 3)
         
         let filled = form.textboxes.filter { !$0.value.isEmpty }
         XCTAssertEqual(filled.map { $0.value }, ["carry on then"])
     }
     
-    func testErrorAddingStaff() {
-        let result = try! scrapeFixture(named: "ignore-staff") as IgnoreListChangeScrapeResult
+    func testErrorAddingStaff() throws {
+        let result = try scrapeHTMLFixture(IgnoreListChangeScrapeResult.self, named: "ignore-staff")
         guard case .failure(.rejected(problemUsername: let username?, underlyingError: _)) = result else {
             return XCTFail("expected rejected username")
         }
@@ -37,8 +37,8 @@ final class IgnoreListScrapingTests: XCTestCase {
         XCTAssertEqual(username, "Lowtax")
     }
     
-    func testSuccess() {
-        let result = try! scrapeFixture(named: "ignore-success") as IgnoreListChangeScrapeResult
+    func testSuccess() throws {
+        let result = try scrapeHTMLFixture(IgnoreListChangeScrapeResult.self, named: "ignore-success")
         switch result {
         case .success:
             break // test passes

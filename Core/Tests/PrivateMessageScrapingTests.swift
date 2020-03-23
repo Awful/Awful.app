@@ -12,8 +12,8 @@ final class PrivateMessageScrapingTests: XCTestCase {
         makeUTCDefaultTimeZone()
     }
     
-    func testFolder() {
-        let result = try! scrapeFixture(named: "private-list") as PrivateMessageFolderScrapeResult
+    func testFolder() throws {
+        let result = try scrapeHTMLFixture(PrivateMessageFolderScrapeResult.self, named: "private-list")
 
         XCTAssertEqual(result.allFolders.map { $0.id.rawValue }, ["0", "-1"])
         XCTAssertEqual(result.allFolders.map { $0.name }, ["Inbox", "Sent Items"])
@@ -35,8 +35,8 @@ final class PrivateMessageScrapingTests: XCTestCase {
         XCTAssertFalse(first.wasRepliedTo)
     }
 
-    func testSingleMessage() {
-        let result = try! scrapeFixture(named: "private-one") as PrivateMessageScrapeResult
+    func testSingleMessage() throws {
+        let result = try scrapeHTMLFixture(PrivateMessageScrapeResult.self, named: "private-one")
 
         XCTAssertEqual(result.privateMessageID, PrivateMessageID(rawValue: "4601162"))
         XCTAssertEqual(result.subject, "Awful app")

@@ -9,17 +9,10 @@ import HTMLReader
 // Without import UIKit somewhere in this test bundle, it refuses to load. Nothing here actually needs UIKit.
 import UIKit
 
-func fixtureNamed(_ basename: String) -> HTMLDocument {
+func htmlFixture(named basename: String) throws -> HTMLDocument {
     let fixtureURL = Bundle(for: DatabaseUnavailableScrapingTests.self).url(forResource: basename, withExtension: "html", subdirectory: "Fixtures")!
-    var fixtureHTML : NSString = NSString()
-    do {
-        fixtureHTML = try NSString(contentsOf: fixtureURL, encoding: String.Encoding.windowsCP1252.rawValue)
-    }
-    catch {
-        fatalError("error loading fixture from \(fixtureURL): \(error)")
-    }
-    
-    return HTMLDocument(string: (fixtureHTML as String?)!)
+    let string = try String(contentsOf: fixtureURL, encoding: .windowsCP1252)
+    return HTMLDocument(string: string)
 }
 
 func makeInMemoryStoreContext() -> NSManagedObjectContext {
@@ -32,8 +25,8 @@ func makeInMemoryStoreContext() -> NSManagedObjectContext {
     return context
 }
 
-func scrapeFixture<T: ScrapeResult>(named fixtureName: String) throws -> T {
-    return try T(fixtureNamed(fixtureName), url: URL(string: "https://example.com/?perpage=40"))
+func scrapeHTMLFixture<T: ScrapeResult>(_: T.Type, named fixtureName: String) throws -> T {
+    return try T(htmlFixture(named: fixtureName), url: URL(string: "https://example.com/?perpage=40"))
 }
 
 func scrapeJSONFixture<T: Decodable>(_: T.Type, named fixtureName: String) throws -> T {
@@ -45,7 +38,7 @@ func scrapeJSONFixture<T: Decodable>(_: T.Type, named fixtureName: String) throw
 }
 
 func scrapeForm(matchingSelector selector: String, inFixtureNamed fixtureName: String) throws -> Form {
-    let doc = fixtureNamed(fixtureName)
+    let doc = try htmlFixture(named: fixtureName)
     return try Form(doc.requiredNode(matchingSelector: selector), url: URL(string: "https://example.com/?perpage=40"))
 }
 

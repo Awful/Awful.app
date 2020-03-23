@@ -12,8 +12,8 @@ final class LepersColonyPageScrapingTests: XCTestCase {
         makeUTCDefaultTimeZone()
     }
 
-    func testFirstPage() {
-        let result = try! scrapeFixture(named: "banlist") as LepersColonyScrapeResult
+    func testFirstPage() throws {
+        let result = try scrapeHTMLFixture(LepersColonyScrapeResult.self, named: "banlist")
         XCTAssertEqual(result.punishments.count, 50)
         
         let first = result.punishments[0]

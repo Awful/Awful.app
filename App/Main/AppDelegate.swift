@@ -238,7 +238,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         shortcutItems.append(UIApplicationShortcutItem(type: "awful://bookmarks", localizedTitle: "Bookmarks", localizedSubtitle: nil, icon: bookmarksImage, userInfo: nil))
         
         // Add a shortcut for favorited forums, in the order they appear in the list.
-        let fetchRequest = NSFetchRequest<ForumMetadata>(entityName: ForumMetadata.entityName())
+        let fetchRequest = ForumMetadata.makeFetchRequest()
         fetchRequest.predicate = NSPredicate(format: "favorite = YES")
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "favoriteIndex", ascending: true)]
         fetchRequest.fetchLimit = 3

@@ -37,7 +37,7 @@ public final class ThreadTagKey: AwfulObjectKey {
         
         self.imageName = imageName
         self.threadTagID = threadTagID
-        super.init(entityName: ThreadTag.entityName())
+        super.init(entityName: ThreadTag.entity().name!)
     }
     
     @objc public convenience init(imageURL: URL, threadTagID: String?) {

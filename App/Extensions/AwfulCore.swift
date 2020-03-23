@@ -7,7 +7,7 @@ import CoreData
 
 extension AwfulThread {
     static func bookmarksFetchRequest(_ sortedByUnread: Bool) -> NSFetchRequest<AwfulThread> {
-        let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+        let fetchRequest = AwfulThread.makeFetchRequest()
         fetchRequest.fetchBatchSize = 20
         fetchRequest.predicate = NSPredicate(format: "bookmarked = YES AND bookmarkListPage > 0")
         
@@ -22,7 +22,7 @@ extension AwfulThread {
     }
     
     static func threadsFetchRequest(_ forum: Forum, sortedByUnread: Bool, filterThreadTag: ThreadTag?) -> NSFetchRequest<AwfulThread> {
-        let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+        let fetchRequest = AwfulThread.makeFetchRequest()
         fetchRequest.fetchBatchSize = 20
         
         let basePredicate = NSPredicate(format: "threadListPage > 0 AND forum == %@", forum)

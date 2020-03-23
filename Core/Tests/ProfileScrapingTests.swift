@@ -6,8 +6,8 @@
 import XCTest
 
 final class ProfileScrapingTests: XCTestCase {
-    func testWithAvatarAndText() {
-        let scraped = try! scrapeFixture(named: "profile") as ProfileScrapeResult
+    func testWithAvatarAndText() throws {
+        let scraped = try scrapeHTMLFixture(ProfileScrapeResult.self, named: "profile")
         XCTAssertEqual(scraped.author.userID, UserID(rawValue: "106125"))
         XCTAssertEqual(scraped.author.username, "pokeyman")
         XCTAssert(scraped.author.customTitle.contains("play?"))
@@ -23,33 +23,33 @@ final class ProfileScrapingTests: XCTestCase {
         XCTAssertEqual(scraped.postRate, "0.88")
     }
     
-    func testWithAvatarAndGangTag() {
-        let scraped = try! scrapeFixture(named: "profile2") as ProfileScrapeResult
+    func testWithAvatarAndGangTag() throws {
+        let scraped = try scrapeHTMLFixture(ProfileScrapeResult.self, named: "profile2")
         XCTAssertEqual(scraped.location, "San Francisco")
         XCTAssert(scraped.author.customTitle.contains("safs/titles"))
         XCTAssert(scraped.author.customTitle.contains("dd/68"))
         XCTAssert(scraped.author.customTitle.contains("01/df"))
     }
     
-    func testWithFunkyText() {
-        let scraped = try! scrapeFixture(named: "profile3") as ProfileScrapeResult
+    func testWithFunkyText() throws {
+        let scraped = try scrapeHTMLFixture(ProfileScrapeResult.self, named: "profile3")
         XCTAssert(scraped.author.customTitle.contains("<i>"))
         XCTAssert(scraped.author.customTitle.contains("I'm getting at is"))
         XCTAssert(scraped.author.customTitle.contains("safs/titles"))
     }
     
-    func testWithNoAvatarOrTitle() {
-        let scraped = try! scrapeFixture(named: "profile4") as ProfileScrapeResult
+    func testWithNoAvatarOrTitle() throws {
+        let scraped = try scrapeHTMLFixture(ProfileScrapeResult.self, named: "profile4")
         XCTAssert(scraped.author.customTitle.contains("<br"))
     }
     
-    func testStupidNewbie() {
-        let scraped = try! scrapeFixture(named: "profile5") as ProfileScrapeResult
+    func testStupidNewbie() throws {
+        let scraped = try scrapeHTMLFixture(ProfileScrapeResult.self, named: "profile5")
         XCTAssert(scraped.author.customTitle.contains("newbie.gif"))
     }
     
-    func testWithGangTagButNoAvatar() {
-        let scraped = try! scrapeFixture(named: "profile6") as ProfileScrapeResult
+    func testWithGangTagButNoAvatar() throws {
+        let scraped = try scrapeHTMLFixture(ProfileScrapeResult.self, named: "profile6")
         XCTAssert(scraped.author.customTitle.contains("i am winner"))
         XCTAssert(scraped.author.customTitle.contains("tccburnouts.png"))
     }

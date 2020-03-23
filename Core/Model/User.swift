@@ -52,7 +52,7 @@ public final class UserKey: AwfulObjectKey {
         
         self.userID = userID
         self.username = username
-        super.init(entityName: User.entityName())
+        super.init(entityName: User.entity().name!)
     }
     
     public required init?(coder: NSCoder) {

@@ -27,7 +27,7 @@ internal extension ProfileScrapeResult {
 
         let profile: Profile = {
             if let profile = user.profile { return profile }
-            let newProfile = Profile.insertIntoManagedObjectContext(context: context)
+            let newProfile = Profile(context: context)
             user.profile = newProfile
             return newProfile
         }()

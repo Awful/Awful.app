@@ -6,7 +6,7 @@ import Foundation
 
 /// A single reply to a thread.
 @objc(Post)
-public class Post: AwfulManagedObject {
+public class Post: AwfulManagedObject, Managed {
     /// Whether the logged-in user can edit the post.
     @NSManaged public var editable: Bool
     
@@ -73,7 +73,7 @@ public final class PostKey: AwfulObjectKey {
     public init(postID: String) {
         assert(!postID.isEmpty)
         self.postID = postID
-        super.init(entityName: Post.entityName())
+        super.init(entityName: Post.entity().name!)
     }
     
     public required init?(coder: NSCoder) {

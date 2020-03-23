@@ -12,8 +12,8 @@ final class AnnouncementScrapingTests: XCTestCase {
         makeUTCDefaultTimeZone()
     }
 
-    func testRewrittenStore() {
-        let result = try! scrapeFixture(named: "announcement") as AnnouncementListScrapeResult
+    func testRewrittenStore() throws {
+        let result = try scrapeHTMLFixture(AnnouncementListScrapeResult.self, named: "announcement")
         XCTAssertEqual(result.announcements.count, 1)
 
         let storeRewritten = result.announcements[0]
@@ -22,8 +22,8 @@ final class AnnouncementScrapingTests: XCTestCase {
         XCTAssertEqual(storeRewritten.date?.timeIntervalSince1970, 1283644800)
     }
 
-    func testTwoAnnouncements() {
-        let result = try! scrapeFixture(named: "announcement-two") as AnnouncementListScrapeResult
+    func testTwoAnnouncements() throws {
+        let result = try scrapeHTMLFixture(AnnouncementListScrapeResult.self, named: "announcement-two")
         XCTAssertEqual(result.announcements.count, 2)
 
         let patreon = result.announcements[0]

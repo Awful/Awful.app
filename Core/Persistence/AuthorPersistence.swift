@@ -21,7 +21,7 @@ internal extension AuthorSidebarScrapeResult {
     }
 
     func upsert(into context: NSManagedObjectContext) throws -> User {
-        let request = NSFetchRequest<User>(entityName: User.entityName())
+        let request = User.fetchRequest() as! NSFetchRequest<User>
 
         request.predicate = {
             var subpredicates: [NSPredicate] = [
@@ -36,7 +36,7 @@ internal extension AuthorSidebarScrapeResult {
         request.returnsObjectsAsFaults = false
 
         let users = try context.fetch(request)
-        let user = users.isEmpty ? User.insertIntoManagedObjectContext(context: context) : merge(users)
+        let user = users.isEmpty ? User(context: context) : merge(users)
 
         update(user)
 

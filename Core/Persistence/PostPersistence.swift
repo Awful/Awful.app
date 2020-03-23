@@ -32,7 +32,7 @@ internal extension PostsPageScrapeResult {
                 return last
             }
             else if let forumID = forumID {
-                let request = NSFetchRequest<Forum>(entityName: Forum.entityName())
+                let request = Forum.fetchRequest() as! NSFetchRequest<Forum>
                 request.predicate = NSPredicate(format: "%K = %@", #keyPath(Forum.forumID), forumID.rawValue)
                 request.returnsObjectsAsFaults = false
 
@@ -40,7 +40,7 @@ internal extension PostsPageScrapeResult {
                     return forum
                 }
                 else {
-                    let forum = Forum.insertIntoManagedObjectContext(context: context)
+                    let forum = Forum(context: context)
                     forum.forumID = forumID.rawValue
                     return forum
                 }
@@ -53,12 +53,11 @@ internal extension PostsPageScrapeResult {
         let users = try upsertUsers(into: context)
 
         let thread = try threadID.map { id -> AwfulThread in
-            let request = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+            let request = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
             request.predicate = NSPredicate(format: "%K = %@", #keyPath(AwfulThread.threadID), id.rawValue)
             request.returnsObjectsAsFaults = false
 
-            let thread = try context.fetch(request).first
-                ?? AwfulThread.insertIntoManagedObjectContext(context: context)
+            let thread = try context.fetch(request).first ?? AwfulThread(context: context)
 
             if let forum = forum, thread.forum != forum { thread.forum = forum }
             if id.rawValue != thread.threadID { thread.threadID = id.rawValue }
@@ -100,7 +99,7 @@ internal extension PostsPageScrapeResult {
         }
 
         var existingPosts: [PostID: Post] = [:]
-        let request = NSFetchRequest<Post>(entityName: Post.entityName())
+        let request = Post.fetchRequest() as! NSFetchRequest<Post>
         let postIDs = self.posts.map { $0.id.rawValue }
         request.predicate = NSPredicate(format: "%K in %@", #keyPath(Post.postID), postIDs)
         request.returnsObjectsAsFaults = false
@@ -110,7 +109,7 @@ internal extension PostsPageScrapeResult {
         }
 
         let posts = self.posts.map { raw -> Post in
-            let post = existingPosts[raw.id] ?? Post.insertIntoManagedObjectContext(context: context)
+            let post = existingPosts[raw.id] ?? Post(context: context)
 
             if let thread = thread, thread != post.thread { post.thread = thread }
             if let user = users[raw.author.userID], user != post.author { post.author = user }
@@ -163,7 +162,7 @@ internal extension PostsPageScrapeResult {
 
         let authors = posts.map { $0.author }
         let userIDs = Set(authors.map { $0.userID.rawValue })
-        let request = NSFetchRequest<User>(entityName: User.entityName())
+        let request = User.fetchRequest() as! NSFetchRequest<User>
         request.predicate = NSPredicate(format: "%K in %@", #keyPath(User.userID), userIDs)
         request.returnsObjectsAsFaults = false
 
@@ -178,7 +177,7 @@ internal extension PostsPageScrapeResult {
         }
 
         for author in authors {
-            let user = users[author.userID] ?? User.insertIntoManagedObjectContext(context: context)
+            let user = users[author.userID] ?? User(context: context)
             author.update(user)
             users[author.userID] = user
         }
@@ -189,12 +188,11 @@ internal extension PostsPageScrapeResult {
 
 internal extension ShowPostScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> Post {
-        let request = NSFetchRequest<Post>(entityName: Post.entityName())
+        let request = Post.fetchRequest() as! NSFetchRequest<Post>
         request.predicate = NSPredicate(format: "%K = %@", #keyPath(Post.postID), self.post.id.rawValue)
         request.returnsObjectsAsFaults = false
 
-        let post = try context.fetch(request).first
-            ?? Post.insertIntoManagedObjectContext(context: context)
+        let post = try context.fetch(request).first ?? Post(context: context)
 
         let user = try author.upsert(into: context)
         if user != post.author { post.author = user }
@@ -202,12 +200,11 @@ internal extension ShowPostScrapeResult {
         self.post.update(post)
 
         let thread = try threadID.map { id -> AwfulThread in
-            let request = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+            let request = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
             request.predicate = NSPredicate(format: "%K = %@", #keyPath(AwfulThread.threadID), id.rawValue)
             request.returnsObjectsAsFaults = false
 
-            let thread = try context.fetch(request).first
-                ?? AwfulThread.insertIntoManagedObjectContext(context: context)
+            let thread = try context.fetch(request).first ?? AwfulThread(context: context)
 
             if id.rawValue != thread.threadID { thread.threadID = id.rawValue }
             if !threadTitle.isEmpty, threadTitle != thread.title { thread.title = threadTitle }

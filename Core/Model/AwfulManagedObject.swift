@@ -6,27 +6,7 @@ import CoreData
 
 /// A slightly more convenient NSManagedObject for entities with a custom class.
 public class AwfulManagedObject: NSManagedObject {
-    public class func entityName() -> String {
-        return NSStringFromClass(self)
-    }
     
-    /// Convenience factory method for creating managed objects and calling their awakeFromInitialInsert() method.
-    public class func insertIntoManagedObjectContext(context: NSManagedObjectContext) -> Self {
-        let entity = NSEntityDescription.entity(forEntityName: entityName(), in: context)!
-        let object = self.init(entity: entity, insertInto: context)
-        object.awakeFromInitialInsert()
-        return object
-    }
-    
-    /// Called *once*, after the first insertion into a managed object context (contrast to awakeFromInsert(), which can get called multiple times), making awakeFromInitialInsert() a good time to set up necessary relationships.
-    func awakeFromInitialInsert() {
-        // noop
-    }
-    
-    // Adds `required` so that insertIntoManagedObjectContext(:) works.
-    required override public init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertInto: context)
-    }
 }
 
 /// An object key uniquely identifies an AwfulManagedObject, but (unlike NSManagedObjectID) in an Awful-specific away.
@@ -143,7 +123,7 @@ extension AwfulManagedObject {
     public class func objectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject {
         var object = existingObjectForKey(objectKey: objectKey, inManagedObjectContext: context) as! AwfulManagedObject?
         if object == nil {
-            object = insertIntoManagedObjectContext(context: context)
+            object = Self(context: context)
         }
         object?.applyObjectKey(objectKey: objectKey)
         return object!
@@ -165,7 +145,7 @@ extension AwfulManagedObject {
     @objc public class func objectsForKeys(objectKeys: [AwfulObjectKey], inManagedObjectContext context: NSManagedObjectContext) -> [AwfulManagedObject] {
         guard !objectKeys.isEmpty else { return [] }
         
-        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName())
+        let request = Self.fetchRequest() as! NSFetchRequest<AwfulManagedObject>
         let aggregateValues = type(of: objectKeys[0]).valuesForKeysInObjectKeys(objectKeys: objectKeys)
         var subpredicates = [NSPredicate]()
         for (key, values) in aggregateValues {
@@ -176,16 +156,8 @@ extension AwfulManagedObject {
         } else {
             request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
         }
-        
-        var results : [AwfulManagedObject] = []
-        do {
-            results = try context.fetch(request) as! [AwfulManagedObject]
-        }
-        catch {
-            print("error fetching \(error)")
-            
-        }
 
+        let results = try! context.fetch(request)
         
         var existingByKey = [AwfulObjectKey: AwfulManagedObject](minimumCapacity: results.count)
         for object in results {
@@ -196,7 +168,7 @@ extension AwfulManagedObject {
             if let existing = existingByKey[objectKey] {
                 return existing
             } else {
-                let object = self.insertIntoManagedObjectContext(context: context)
+                let object = self.init(context: context)
                 object.applyObjectKey(objectKey: objectKey)
                 existingByKey[object.objectKey] = object
                 return object

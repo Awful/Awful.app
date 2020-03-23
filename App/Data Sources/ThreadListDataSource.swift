@@ -18,7 +18,7 @@ final class ThreadListDataSource: NSObject {
     private let tableView: UITableView
 
     convenience init(bookmarksSortedByUnread sortedByUnread: Bool, showsTagAndRating: Bool, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
-        let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+        let fetchRequest = AwfulThread.makeFetchRequest()
 
         fetchRequest.predicate = NSPredicate(format: "%K == YES && %K > 0", #keyPath(AwfulThread.bookmarked), #keyPath(AwfulThread.bookmarkListPage))
 
@@ -35,7 +35,7 @@ final class ThreadListDataSource: NSObject {
     }
 
     convenience init(forum: Forum, sortedByUnread: Bool, showsTagAndRating: Bool, threadTagFilter: Set<ThreadTag>, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
-        let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+        let fetchRequest = AwfulThread.makeFetchRequest()
 
         fetchRequest.predicate = {
             var predicates = [NSPredicate(format: "%K > 0 && %K == %@", #keyPath(AwfulThread.threadListPage), #keyPath(AwfulThread.forum), forum)]

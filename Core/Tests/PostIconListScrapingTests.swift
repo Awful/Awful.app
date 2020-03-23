@@ -6,15 +6,15 @@
 import XCTest
 
 final class PostIconListScrapingTests: XCTestCase {
-    func testNewThread() {
-        let result = try! scrapeFixture(named: "newthread") as PostIconListScrapeResult
+    func testNewThread() throws {
+        let result = try scrapeHTMLFixture(PostIconListScrapeResult.self, named: "newthread")
         XCTAssertEqual(result.primaryIcons.count, 51)
         XCTAssertEqual(result.selectedPrimaryIconFormName, "iconid")
         XCTAssert(result.secondaryIcons.isEmpty)
     }
 
-    func testAskTellThread() {
-        let result = try! scrapeFixture(named: "newthread-at") as PostIconListScrapeResult
+    func testAskTellThread() throws {
+        let result = try scrapeHTMLFixture(PostIconListScrapeResult.self, named: "newthread-at")
         XCTAssertEqual(result.primaryIcons.count, 55)
         XCTAssertEqual(result.selectedSecondaryIconFormName, "tma_ama")
 
@@ -25,8 +25,8 @@ final class PostIconListScrapingTests: XCTestCase {
         XCTAssertEqual(secondaryImageNames, ["ama", "tma"])
     }
 
-    func testSAMartThread() {
-        let result = try! scrapeFixture(named: "newthread-samart") as PostIconListScrapeResult
+    func testSAMartThread() throws {
+        let result = try scrapeHTMLFixture(PostIconListScrapeResult.self, named: "newthread-samart")
         XCTAssertEqual(result.primaryIcons.count, 69)
         XCTAssertEqual(result.selectedSecondaryIconFormName, "samart_tag")
 

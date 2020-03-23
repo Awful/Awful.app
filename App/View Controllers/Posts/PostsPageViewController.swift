@@ -515,7 +515,7 @@ final class PostsPageViewController: ViewController {
             return
         }
         
-        let request = NSFetchRequest<Post>(entityName: Post.entityName())
+        let request = Post.makeFetchRequest()
         
         let indexKey = author == nil ? "threadIndex" : "filteredThreadIndex"
         let predicate = NSPredicate(format: "thread = %@ AND %d <= %K AND %K <= %d", thread, (pageNumber - 1) * 40 + 1, indexKey, indexKey, pageNumber * 40)

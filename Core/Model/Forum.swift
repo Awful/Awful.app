@@ -20,9 +20,13 @@ public class Forum: AwfulManagedObject, Managed {
     @NSManaged public var threads: Set<AwfulThread>
     @NSManaged public var threadTags: NSMutableOrderedSet /* ThreadTag via forums */
     @NSManaged public private(set) var metadata: ForumMetadata
-    
-    override public func awakeFromInitialInsert() {
-        metadata = ForumMetadata.insertIntoManagedObjectContext(context: managedObjectContext!)
+
+    @NSManaged private var primitiveMetadata: ForumMetadata
+
+    convenience init(context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+
+        metadata = ForumMetadata(context: context)
     }
 }
 
@@ -33,7 +37,7 @@ public final class ForumKey: AwfulObjectKey {
     public init(forumID: String) {
         assert(!forumID.isEmpty)
         self.forumID = forumID
-        super.init(entityName: Forum.entityName())
+        super.init(entityName: Forum.entity().name!)
     }
     
     public required init?(coder: NSCoder) {
@@ -97,7 +101,7 @@ public final class ForumGroupKey: AwfulObjectKey {
     
     public init(groupID: String) {
         self.groupID = groupID
-        super.init(entityName: ForumGroup.entityName())
+        super.init(entityName: ForumGroup.entity().name!)
     }
     
     public required init?(coder: NSCoder) {
@@ -118,7 +122,7 @@ extension ForumGroup {
 }
 
 @objc(ForumMetadata)
-public class ForumMetadata: AwfulManagedObject {
+public class ForumMetadata: AwfulManagedObject, Managed {
     @NSManaged public var favorite: Bool
     @NSManaged public var favoriteIndex: Int32
     @NSManaged public var showsChildrenInForumList: Bool
@@ -129,18 +133,8 @@ public class ForumMetadata: AwfulManagedObject {
 
 extension ForumMetadata {
     public class func metadataForForumsWithIDs(forumIDs: [String], inManagedObjectContext context: NSManagedObjectContext) -> [ForumMetadata] {
-        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName())
+        let request = ForumMetadata.fetchRequest() as! NSFetchRequest<ForumMetadata>
         request.predicate = NSPredicate(format: "forum.forumID IN %@", forumIDs)
-        var results : [ForumMetadata] = []
-        var success : Bool = false
-        do {
-            results = try context.fetch(request) as! [ForumMetadata]
-            success = true;
-        }
-        catch {
-            print("error fetching: \(error)")
-        }
-        assert(success, "error fetching, crashing")
-        return results
+        return try! context.fetch(request)
     }
 }

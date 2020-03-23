@@ -5,7 +5,7 @@
 import CoreData
 
 @objc(Thread)
-public class AwfulThread: AwfulManagedObject {
+public class AwfulThread: AwfulManagedObject, Managed {
     @NSManaged public var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged public var bookmarked: Bool
@@ -136,7 +136,7 @@ public final class ThreadKey: AwfulObjectKey {
     public init(threadID: String) {
         assert(!threadID.isEmpty)
         self.threadID = threadID
-        super.init(entityName: AwfulThread.entityName())
+        super.init(entityName: AwfulThread.entity().name!)
     }
     
     public required init?(coder: NSCoder) {
@@ -176,7 +176,7 @@ extension AwfulThread {
     public func setFilteredNumberOfPages(numberOfPages: Int32, forAuthor author: User) {
         var filter: ThreadFilter! = fetchFilter(author: author)
         if filter == nil {
-            filter = ThreadFilter.insertIntoManagedObjectContext(context: managedObjectContext!)
+            filter = ThreadFilter(context: managedObjectContext!)
             filter.thread = self
             filter.author = author
         }
@@ -184,19 +184,10 @@ extension AwfulThread {
     }
     
     private func fetchFilter(author: User) -> ThreadFilter? {
-        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: ThreadFilter.entityName())
+        let request = ThreadFilter.fetchRequest() as! NSFetchRequest<ThreadFilter>
         request.predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
         request.fetchLimit = 1
-        var results: [ThreadFilter] = []
-        var success: Bool = false
-        do {
-            results = try (managedObjectContext!.fetch(request) as! [ThreadFilter])
-            success = true
-        }
-        catch let error as NSError {
-            print("error fetching: \(error)")
-        }
-        assert(success, "error fetching, crashing")
+        let results = try! managedObjectContext!.fetch(request)
         return results.first
     }
 }

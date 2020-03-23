@@ -33,7 +33,7 @@ final class MessageListViewController: TableViewController {
         }
         unreadMessageCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
-            entityName: PrivateMessage.entityName(),
+            entityName: PrivateMessage.entity().name!,
             predicate: NSPredicate(format: "%K == NO", #keyPath(PrivateMessage.seen)),
             didChange: updateBadgeValue)
         updateBadgeValue(unreadMessageCountObserver.count)

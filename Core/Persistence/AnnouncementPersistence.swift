@@ -10,7 +10,7 @@ internal extension AnnouncementListScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [AwfulCore.Announcement] {
         let existingAnnouncements: [AwfulCore.Announcement]
         do {
-            let request = NSFetchRequest<AwfulCore.Announcement>(entityName: AwfulCore.Announcement.entityName())
+            let request = AwfulCore.Announcement.fetchRequest() as! NSFetchRequest<AwfulCore.Announcement>
             request.sortDescriptors = [NSSortDescriptor(key: #keyPath(AwfulCore.Announcement.listIndex), ascending: true)]
             request.returnsObjectsAsFaults = false
             existingAnnouncements = try context.fetch(request)
@@ -18,7 +18,7 @@ internal extension AnnouncementListScrapeResult {
 
         var users: [String: User] = [:]
         do {
-            let request = NSFetchRequest<User>(entityName: User.entityName())
+            let request = User.fetchRequest() as! NSFetchRequest<User>
             let usernames: [String] = self.announcements
                 .compactMap { (announcement: Announcement) -> String? in announcement.author?.username }
                 .filter { (s: String) -> Bool in !s.isEmpty }
@@ -83,7 +83,7 @@ internal extension ThreadListScrapeResult {
     func upsertAnnouncements(into context: NSManagedObjectContext) throws -> [AwfulCore.Announcement] {
         var threadTags: [String: ThreadTag] = [:]
         do {
-            let request = NSFetchRequest<ThreadTag>(entityName: ThreadTag.entityName())
+            let request = ThreadTag.fetchRequest() as! NSFetchRequest<ThreadTag>
             let imageNames = self.announcements.compactMap { $0.iconURL }.flatMap(ThreadTag.imageName)
             request.predicate = NSPredicate(format: "%K in %@", #keyPath(ThreadTag.imageName), imageNames)
             request.returnsObjectsAsFaults = false
@@ -96,7 +96,7 @@ internal extension ThreadListScrapeResult {
 
         var users: [UserID: User] = [:]
         do {
-            let request = NSFetchRequest<User>(entityName: User.entityName())
+            let request = User.fetchRequest() as! NSFetchRequest<User>
             let userIDs = self.announcements.compactMap { $0.author }.map { $0.rawValue }
             request.predicate = NSPredicate(format: "%K in %@", #keyPath(User.userID), userIDs)
             request.returnsObjectsAsFaults = false
@@ -109,7 +109,7 @@ internal extension ThreadListScrapeResult {
 
         let existingAnnouncements: [AwfulCore.Announcement]
         do {
-            let request = NSFetchRequest<AwfulCore.Announcement>(entityName: AwfulCore.Announcement.entityName())
+            let request = AwfulCore.Announcement.fetchRequest() as! NSFetchRequest<AwfulCore.Announcement>
             request.sortDescriptors = [NSSortDescriptor(key: #keyPath(AwfulCore.Announcement.listIndex), ascending: true)]
             existingAnnouncements = try context.fetch(request)
         }
@@ -121,7 +121,7 @@ internal extension ThreadListScrapeResult {
             scraped.update(announcement)
 
             if let author = scraped.author {
-                let user = users[author] ?? User.insertIntoManagedObjectContext(context: context)
+                let user = users[author] ?? User(context: context)
                 if author.rawValue != user.userID { user.userID = author.rawValue }
                 if !scraped.authorUsername.isEmpty, scraped.authorUsername != user.username { user.username = scraped.authorUsername }
                 users[author] = user
@@ -132,7 +132,7 @@ internal extension ThreadListScrapeResult {
                 let imageName = scraped.iconURL.map(ThreadTag.imageName),
                 imageName != announcement.threadTag?.imageName
             {
-                let threadTag = threadTags[imageName] ?? ThreadTag.insertIntoManagedObjectContext(context: context)
+                let threadTag = threadTags[imageName] ?? ThreadTag(context: context)
                 if imageName != threadTag.imageName { threadTag.imageName = imageName }
                 threadTags[imageName] = threadTag
                 announcement.threadTag = threadTag
@@ -147,14 +147,14 @@ internal extension ThreadListScrapeResult {
 
         var listIndex = existingAnnouncements.count
         for new in self.announcements.dropFirst(existingAnnouncements.count) {
-            let announcement = AwfulCore.Announcement.insertIntoManagedObjectContext(context: context)
+            let announcement = AwfulCore.Announcement(context: context)
             new.update(announcement)
 
             announcement.listIndex = Int32(listIndex)
             listIndex += 1
 
             if let author = new.author {
-                let user = users[author] ?? User.insertIntoManagedObjectContext(context: context)
+                let user = users[author] ?? User(context: context)
                 if author.rawValue != user.userID { user.userID = author.rawValue }
                 if !new.authorUsername.isEmpty, new.authorUsername != user.username { user.username = new.authorUsername }
                 users[author] = user
@@ -162,7 +162,7 @@ internal extension ThreadListScrapeResult {
             }
 
             if let imageName = new.iconURL.map(ThreadTag.imageName) {
-                let threadTag = threadTags[imageName] ?? ThreadTag.insertIntoManagedObjectContext(context: context)
+                let threadTag = threadTags[imageName] ?? ThreadTag(context: context)
                 if imageName != threadTag.imageName { threadTag.imageName = imageName }
                 threadTags[imageName] = threadTag
                 announcement.threadTag = threadTag

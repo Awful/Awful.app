@@ -176,14 +176,13 @@ public final class LastModifiedContextObserver: NSObject {
     
     @objc private func contextWillSave(notification: NSNotification) {
         let context = notification.object as! NSManagedObjectContext
-        let lastModifiedDate = NSDate()
+        let lastModifiedDate = Date()
         let insertedOrUpdated = context.insertedObjects.union(context.updatedObjects)
         context.performAndWait {
-            let relevantObjects = insertedOrUpdated.filter() { self.relevantEntities.contains(($0 as NSManagedObject).entity) }
-            //(relevantObjects as NSArray).setValue(lastModifiedDate, forKey: "lastModifiedDate")
-            relevantObjects.forEach({item in
+            let relevantObjects = insertedOrUpdated.filter { relevantEntities.contains($0.entity) }
+            for item in relevantObjects {
                 item.setValue(lastModifiedDate, forKey: "lastModifiedDate")
-            })
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ final class SettingsForumSpecificThemesViewController: TableViewController {
 
     private lazy var resultsController: NSFetchedResultsController<Forum> = {
         let unsorted = Theme.forumsWithSpecificThemes
-        let request = NSFetchRequest<Forum>(entityName: Forum.entityName())
+        let request = Forum.makeFetchRequest()
         request.returnsObjectsAsFaults = false
         request.predicate = NSPredicate(format: "%K IN %@", #keyPath(Forum.forumID), unsorted)
         request.sortDescriptors = [

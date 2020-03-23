@@ -35,7 +35,7 @@ internal class PostIconPersistenceHelper {
     }
 
     func performFetch() throws {
-        let request = NSFetchRequest<ThreadTag>(entityName: ThreadTag.entityName())
+        let request = ThreadTag.fetchRequest() as! NSFetchRequest<ThreadTag>
         let threadTagIDs = icons
             .map { $0.id }
             .filter { !$0.isEmpty }
@@ -63,7 +63,7 @@ internal class PostIconPersistenceHelper {
         let fromID = icon.id.isEmpty ? nil : byID[icon.id]
         let imageName = icon.url.map(ThreadTag.imageName)
         let fromImageName = imageName.flatMap { byImageName[$0] }
-        let tag = fromID ?? fromImageName ?? ThreadTag.insertIntoManagedObjectContext(context: context)
+        let tag = fromID ?? fromImageName ?? ThreadTag(context: context)
         icon.update(tag)
 
         if fromID == nil, let id = tag.threadTagID { byID[id] = tag }

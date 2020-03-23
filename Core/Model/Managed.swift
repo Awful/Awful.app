@@ -53,7 +53,7 @@ extension Managed where Self: NSManagedObject {
         in context: NSManagedObjectContext,
         configure: (NSFetchRequest<Self>) -> Void
     ) -> [Self] {
-        let request = fetchRequest() as! NSFetchRequest<Self>
+        let request = makeFetchRequest()
         configure(request)
         return try! context.fetch(request)
     }
@@ -65,5 +65,9 @@ extension Managed where Self: NSManagedObject {
         let request = makeFetchRequest()
         configure(request)
         return try! context.count(for: request)
+    }
+
+    public static func makeFetchRequest() -> NSFetchRequest<Self> {
+        return fetchRequest() as! NSFetchRequest<Self>
     }
 }

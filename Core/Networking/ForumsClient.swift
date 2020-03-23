@@ -260,7 +260,7 @@ public final class ForumsClient {
                 let threads = try result.upsert(into: context)
 
                 let threadIDsToIgnore = threads.map { $0.threadID }
-                let fetchRequest = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+                let fetchRequest = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
                 fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[
                     NSPredicate(format: "%K = YES", #keyPath(AwfulThread.bookmarked)),
                     NSPredicate(format: "%K >= %@", #keyPath(AwfulThread.bookmarkListPage), NSNumber(value: page)),

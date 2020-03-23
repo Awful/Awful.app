@@ -16,12 +16,11 @@ internal extension ForumBreadcrumb {
     }
 
     func upsert(into context: NSManagedObjectContext) throws -> ForumGroup {
-        let request = NSFetchRequest<ForumGroup>(entityName: ForumGroup.entityName())
+        let request = ForumGroup.fetchRequest() as! NSFetchRequest<ForumGroup>
         request.predicate = NSPredicate(format: "%K = %@", #keyPath(ForumGroup.groupID), id.rawValue)
         request.returnsObjectsAsFaults = false
 
-        let group = try context.fetch(request).first
-            ?? ForumGroup.insertIntoManagedObjectContext(context: context)
+        let group = try context.fetch(request).first ?? ForumGroup(context: context)
 
         update(group)
 
@@ -35,7 +34,7 @@ internal extension ForumBreadcrumbsScrapeResult {
 
         let rawForums = self.forums.dropFirst()
         let rawForumIDs = rawForums.map { $0.id.rawValue }
-        let request = NSFetchRequest<Forum>(entityName: Forum.entityName())
+        let request = Forum.fetchRequest() as! NSFetchRequest<Forum>
         request.predicate = NSPredicate(format: "%K IN %@", #keyPath(Forum.forumID), rawForumIDs)
         request.returnsObjectsAsFaults = false
 
@@ -46,7 +45,7 @@ internal extension ForumBreadcrumbsScrapeResult {
         }
 
         for rawForum in rawForums where unorderedForums[rawForum.id] == nil {
-            let forum = Forum.insertIntoManagedObjectContext(context: context)
+            let forum = Forum(context: context)
             forum.forumID = rawForum.id.rawValue
             unorderedForums[rawForum.id] = forum
         }

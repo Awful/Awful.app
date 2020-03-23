@@ -322,7 +322,7 @@ extension AnnouncementViewController: UIViewControllerRestoration {
 
     static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         let listIndex = coder.decodeInt32(forKey: StateKey.announcementListIndex)
-        let fetchRequest = NSFetchRequest<Announcement>(entityName: Announcement.entityName())
+        let fetchRequest = Announcement.makeFetchRequest()
         fetchRequest.fetchLimit = 1
         fetchRequest.predicate = NSPredicate(format: "%K = %d", #keyPath(Announcement.listIndex), listIndex)
         let maybeAnnouncement: Announcement?

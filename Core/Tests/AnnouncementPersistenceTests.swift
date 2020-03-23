@@ -15,12 +15,7 @@ final class AnnouncementPersistenceTests: XCTestCase {
 
         makeUTCDefaultTimeZone()
 
-        let modelURL = Bundle(for: Announcement.self).url(forResource: "Awful", withExtension: "momd")!
-        let model = NSManagedObjectModel(contentsOf: modelURL)!
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: model)
-        try! psc.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil)
-        context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        context.persistentStoreCoordinator = psc
+        context = makeInMemoryStoreContext()
     }
     
     override func tearDown() {
@@ -29,18 +24,18 @@ final class AnnouncementPersistenceTests: XCTestCase {
     }
 
     private func scrapeThreadList(named basename: String) throws {
-        let fixture = try scrapeFixture(named: basename) as ThreadListScrapeResult
+        let fixture = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: basename)
         try _ = fixture.upsert(into: context)
         try _ = fixture.upsertAnnouncements(into: context)
     }
 
     private func scrapeAnnouncementList(named basename: String) throws {
-        let fixture = try scrapeFixture(named: basename) as AnnouncementListScrapeResult
+        let fixture = try scrapeHTMLFixture(AnnouncementListScrapeResult.self, named: basename)
         try _ = fixture.upsert(into: context)
     }
 
     private func fetchAnnouncements() throws -> [Announcement] {
-        let request = NSFetchRequest<Announcement>(entityName: Announcement.entityName())
+        let request = Announcement.fetchRequest() as! NSFetchRequest<Announcement>
         request.sortDescriptors = [NSSortDescriptor(key: #keyPath(Announcement.listIndex), ascending: true)]
         return try context.fetch(request)
     }
@@ -77,7 +72,7 @@ final class AnnouncementPersistenceTests: XCTestCase {
 
     func testUpdateAnnouncements() {
         do {
-            let fake = Announcement.insertIntoManagedObjectContext(context: context)
+            let fake = Announcement(context: context)
             fake.authorCustomTitleHTML = "<marquee>wow"
             fake.authorUsername = "ugh"
             fake.bodyHTML = "</marquee>"
@@ -85,7 +80,7 @@ final class AnnouncementPersistenceTests: XCTestCase {
             fake.postedDate = Date()
             fake.title = "A fake announcement"
 
-            let madeUp = Announcement.insertIntoManagedObjectContext(context: context)
+            let madeUp = Announcement(context: context)
             madeUp.authorCustomTitleHTML = "<sup>"
             madeUp.authorUsername = "ugh"
             madeUp.bodyHTML = "</sup>"

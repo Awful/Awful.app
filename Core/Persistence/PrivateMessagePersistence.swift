@@ -8,7 +8,7 @@ internal extension PrivateMessageFolderScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [PrivateMessage] {
         var existingMessages: [PrivateMessageID: PrivateMessage] = [:]
         do {
-            let request = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName())
+            let request = PrivateMessage.fetchRequest() as! NSFetchRequest<PrivateMessage>
             let messageIDs = self.messages.map { $0.id.rawValue }
             request.predicate = NSPredicate(format: "%K IN %@", #keyPath(PrivateMessage.messageID), messageIDs)
             request.returnsObjectsAsFaults = false
@@ -21,7 +21,7 @@ internal extension PrivateMessageFolderScrapeResult {
 
         var threadTags: [String: ThreadTag] = [:]
         do {
-            let request = NSFetchRequest<ThreadTag>(entityName: ThreadTag.entityName())
+            let request = ThreadTag.fetchRequest() as! NSFetchRequest<ThreadTag>
             let imageNames = self.messages
                 .compactMap { $0.iconImage }
                 .map { $0.deletingPathExtension().lastPathComponent }
@@ -37,8 +37,7 @@ internal extension PrivateMessageFolderScrapeResult {
         var messages: [PrivateMessage] = []
 
         for rawMessage in self.messages {
-            let message = existingMessages[rawMessage.id]
-                ?? PrivateMessage.insertIntoManagedObjectContext(context: context)
+            let message = existingMessages[rawMessage.id] ?? PrivateMessage(context: context)
             rawMessage.update(message)
 
             let threadTag: ThreadTag?
@@ -47,7 +46,7 @@ internal extension PrivateMessageFolderScrapeResult {
                     threadTag = existing
                 }
                 else {
-                    let newTag = ThreadTag.insertIntoManagedObjectContext(context: context)
+                    let newTag = ThreadTag(context: context)
                     newTag.imageName = imageName
                     threadTags[imageName] = newTag
                     threadTag = newTag
@@ -92,12 +91,11 @@ internal extension PrivateMessageScrapeResult {
     }
 
     func upsert(into context: NSManagedObjectContext) throws -> PrivateMessage {
-        let request = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName())
+        let request = PrivateMessage.fetchRequest() as! NSFetchRequest<PrivateMessage>
         request.predicate = NSPredicate(format: "%K = %@", #keyPath(PrivateMessage.messageID), privateMessageID.rawValue)
         request.returnsObjectsAsFaults = false
 
-        let message = try context.fetch(request).first
-            ?? PrivateMessage.insertIntoManagedObjectContext(context: context)
+        let message = try context.fetch(request).first ?? PrivateMessage(context: context)
 
         let from = author.flatMap { try? $0.upsert(into: context) }
         if from != message.from { message.from = from }

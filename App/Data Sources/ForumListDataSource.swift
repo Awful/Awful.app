@@ -28,7 +28,7 @@ final class ForumListDataSource: NSObject {
     }()
     
     init(managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
-        let announcementsRequest = NSFetchRequest<Announcement>(entityName: Announcement.entityName())
+        let announcementsRequest = Announcement.makeFetchRequest()
         announcementsRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(Announcement.listIndex), ascending: true)]
         announcementsController = NSFetchedResultsController(
@@ -37,7 +37,7 @@ final class ForumListDataSource: NSObject {
             sectionNameKeyPath: nil,
             cacheName: nil)
         
-        let favoriteForumsRequest = NSFetchRequest<ForumMetadata>(entityName: ForumMetadata.entityName())
+        let favoriteForumsRequest = ForumMetadata.makeFetchRequest()
         favoriteForumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite))
         favoriteForumsRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(ForumMetadata.favoriteIndex), ascending: true)]
@@ -47,7 +47,7 @@ final class ForumListDataSource: NSObject {
             sectionNameKeyPath: nil,
             cacheName: nil)
         
-        let forumsRequest = NSFetchRequest<Forum>(entityName: Forum.entityName())
+        let forumsRequest = Forum.makeFetchRequest()
         forumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(Forum.metadata.visibleInForumList))
         forumsRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(Forum.group.index), ascending: true), // section

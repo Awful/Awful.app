@@ -49,7 +49,7 @@ final class AnnouncementListRefresher {
             return startTimer(reason: .failure)
         }
 
-        let fetchRequest = NSFetchRequest<Forum>(entityName: Forum.entityName())
+        let fetchRequest = Forum.makeFetchRequest()
         fetchRequest.fetchBatchSize = 1
         fetchRequest.propertiesToFetch = [#keyPath(Forum.forumID)]
 

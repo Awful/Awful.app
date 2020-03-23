@@ -14,7 +14,7 @@ final class MessageListDataSource: NSObject {
     private let tableView: UITableView
 
     init(managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
-        let fetchRequest = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName())
+        let fetchRequest = PrivateMessage.makeFetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(PrivateMessage.sentDate), ascending: false)]
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
 

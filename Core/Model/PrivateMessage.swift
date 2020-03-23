@@ -5,7 +5,7 @@
 import Foundation
 
 @objc(PrivateMessage)
-public class PrivateMessage: AwfulManagedObject {
+public class PrivateMessage: AwfulManagedObject, Managed {
     @NSManaged public var forwarded: Bool
     @NSManaged public var innerHTML: String?
     @NSManaged var lastModifiedDate: Date
@@ -51,7 +51,7 @@ public final class PrivateMessageKey: AwfulObjectKey {
     
     public init(messageID: String) {
         self.messageID = messageID
-        super.init(entityName: PrivateMessage.entityName())
+        super.init(entityName: PrivateMessage.entity().name!)
     }
     
     public required init?(coder: NSCoder) {

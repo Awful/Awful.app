@@ -5,21 +5,19 @@
 @testable import AwfulCore
 import XCTest
 
-private let fixture = fixtureNamed("database-unavailable")
-
 final class DatabaseUnavailableScrapingTests: XCTestCase {
-    func testDatabaseUnavailable() {
-        let scraped = try! scrapeFixture(named: "database-unavailable") as DatabaseUnavailableScrapeResult
+    func testDatabaseUnavailable() throws {
+        let scraped = try scrapeHTMLFixture(DatabaseUnavailableScrapeResult.self, named: "database-unavailable")
         XCTAssert(scraped.title.contains("Database Unavailable"))
         XCTAssert(scraped.message.contains("currently not available"))
     }
 
-    func testNonError() {
-        XCTAssertThrowsError(try scrapeFixture(named: "forumdisplay") as DatabaseUnavailableScrapeResult)
-        XCTAssertThrowsError(try scrapeFixture(named: "profile") as DatabaseUnavailableScrapeResult)
+    func testNonError() throws {
+        XCTAssertThrowsError(try scrapeHTMLFixture(DatabaseUnavailableScrapeResult.self, named: "forumdisplay"))
+        XCTAssertThrowsError(try scrapeHTMLFixture(DatabaseUnavailableScrapeResult.self, named: "profile"))
     }
 
-    func testStandardError() {
-        XCTAssertThrowsError(try scrapeFixture(named: "error-must-register") as DatabaseUnavailableScrapeResult)
+    func testStandardError() throws {
+        XCTAssertThrowsError(try scrapeHTMLFixture(DatabaseUnavailableScrapeResult.self, named: "error-must-register"))
     }
 }

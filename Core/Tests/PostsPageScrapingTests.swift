@@ -12,8 +12,8 @@ final class PostsPageScrapingTests: XCTestCase {
         makeUTCDefaultTimeZone()
     }
     
-    func testCanadianPoliticsThread() {
-        let result = try! scrapeFixture(named: "showthread") as PostsPageScrapeResult
+    func testCanadianPoliticsThread() throws {
+        let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread")
         XCTAssertEqual(result.posts.count, 40)
 
         XCTAssertEqual(result.threadID?.rawValue, "3507451")
@@ -60,9 +60,9 @@ final class PostsPageScrapingTests: XCTestCase {
         XCTAssertEqual(result.pageCount, 151)
     }
     
-    func testWeirdSizeTags() {
+    func testWeirdSizeTags() throws {
         // Some posts have a tag that looks like `<size:8>`. Once upon a time, all subsequent posts went missing. In this fixture, Ganker's custom title has a `<size:8>` tag.
-        let result = try! scrapeFixture(named: "showthread2") as PostsPageScrapeResult
+        let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread2")
         XCTAssertEqual(result.posts.count, 40)
         let ganker = result.posts[24]
         XCTAssertEqual(ganker.author.username, "Ganker")
@@ -71,14 +71,14 @@ final class PostsPageScrapingTests: XCTestCase {
         XCTAssertEqual(brylcreem.author.username, "brylcreem")
     }
     
-    func testFYADThreadIndex() {
-        let result = try! scrapeFixture(named: "showthread-fyad") as PostsPageScrapeResult
+    func testFYADThreadIndex() throws {
+        let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread-fyad")
         XCTAssertEqual(result.posts.count, 10)
         XCTAssertEqual(result.pageNumber, 2)
     }
     
-    func testFYADThreadPageOne() {
-        let result = try! scrapeFixture(named: "showthread-fyad2") as PostsPageScrapeResult
+    func testFYADThreadPageOne() throws {
+        let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread-fyad2")
         XCTAssertEqual(result.posts.count, 40)
 
         let first = result.posts[0]
@@ -94,14 +94,14 @@ final class PostsPageScrapingTests: XCTestCase {
         XCTAssertNil(second.indexInThread)
     }
     
-    func testLastPage() {
-        let result = try! scrapeFixture(named: "showthread-last") as PostsPageScrapeResult
+    func testLastPage() throws {
+        let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread-last")
         XCTAssertEqual(result.posts.last?.author.username, "Ashmole")
         XCTAssertEqual(result.posts.last?.postDate?.timeIntervalSince1970, 1357586460)
     }
     
-    func testIgnoredPost() {
-        let result = try! scrapeFixture(named: "showthread2") as PostsPageScrapeResult
+    func testIgnoredPost() throws {
+        let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread2")
         XCTAssertEqual(result.posts.count, 40)
 
         let ignored = result.posts.filter { $0.isIgnored }
@@ -111,8 +111,8 @@ final class PostsPageScrapingTests: XCTestCase {
         XCTAssertEqual(post.id.rawValue, "428957756")
     }
 
-    func testOneUserOnepage() {
-        let result = try! scrapeFixture(named: "showthread-oneuser") as PostsPageScrapeResult
+    func testOneUserOnepage() throws {
+        let result = try! scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread-oneuser")
         XCTAssertEqual(result.pageCount, 1)
         XCTAssertEqual(result.pageNumber, 1)
     }

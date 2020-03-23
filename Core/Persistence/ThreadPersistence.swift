@@ -19,7 +19,7 @@ internal extension ThreadListScrapeResult {
 
         var users: [UserID: User] = [:]
         do {
-            let request = NSFetchRequest<User>(entityName: User.entityName())
+            let request = User.fetchRequest() as! NSFetchRequest<User>
             let userIDs = self.threads.compactMap { $0.author?.rawValue }
             request.predicate = NSPredicate(format: "%K IN %@", #keyPath(User.userID), userIDs)
             request.returnsObjectsAsFaults = false
@@ -32,7 +32,7 @@ internal extension ThreadListScrapeResult {
 
         var existingThreads: [ThreadID: AwfulThread] = [:]
         do {
-            let request = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName())
+            let request = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
             let threadIDs = self.threads.map { $0.id.rawValue }
             request.predicate = NSPredicate(format: "%K IN %@", #keyPath(AwfulThread.threadID), threadIDs)
             request.returnsObjectsAsFaults = false
@@ -46,14 +46,13 @@ internal extension ThreadListScrapeResult {
         var threads: [AwfulThread] = []
         var stickyIndex = -self.threads.count
         for raw in self.threads {
-            let thread = existingThreads[raw.id]
-                ?? AwfulThread.insertIntoManagedObjectContext(context: context)
+            let thread = existingThreads[raw.id] ?? AwfulThread(context: context)
 
             raw.update(thread)
 
             if let authorID = raw.author {
                 let author = users[authorID] ?? {
-                    let author = User.insertIntoManagedObjectContext(context: context)
+                    let author = User(context: context)
                     author.userID = authorID.rawValue
                     users[authorID] = author
                     return author

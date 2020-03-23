@@ -12,7 +12,7 @@ import CoreData
  The closest thing we have to a unique ID for announcements is `listIndex`, which sorts in order of appearance on the website.
  */
 @objc(Announcement)
-public final class Announcement: AwfulManagedObject {
+public final class Announcement: AwfulManagedObject, Managed {
     @NSManaged public var authorCustomTitleHTML: String
     @NSManaged public var authorRegdate: Date?
     @NSManaged public var authorUsername: String

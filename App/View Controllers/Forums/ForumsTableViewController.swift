@@ -24,7 +24,7 @@ final class ForumsTableViewController: TableViewController {
 
         favoriteForumCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
-            entityName: ForumMetadata.entityName(),
+            entityName: ForumMetadata.entity().name!,
             predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
             didChange: { [weak self] favoriteCount in
                 self?.updateEditingState(favoriteCount: favoriteCount)
@@ -33,7 +33,7 @@ final class ForumsTableViewController: TableViewController {
 
         unreadAnnouncementCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
-            entityName: Announcement.entityName(),
+            entityName: Announcement.entity().name!,
             predicate: NSPredicate(format: "%K == NO", #keyPath(Announcement.hasBeenSeen)),
             didChange: { [weak self] unreadCount in
                 self?.updateBadgeValue(unreadCount) })

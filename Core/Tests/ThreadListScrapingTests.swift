@@ -12,16 +12,16 @@ final class ThreadListScrapingTests: XCTestCase {
         makeUTCDefaultTimeZone()
     }
     
-    func testAskTellThreadList() {
-        let result = try! scrapeFixture(named: "showthread-asktell") as ThreadListScrapeResult
+    func testAskTellThreadList() throws {
+        let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "showthread-asktell")
         XCTAssertFalse(result.isBookmarkedThreadsPage)
         let stupidQuestions = result.threads[0]
         let askIconURL = stupidQuestions.secondaryIcon?.url
         XCTAssertEqual(askIconURL.map(ThreadTag.imageName), "ama")
     }
     
-    func testBookmarkedThreadList() {
-        let result = try! scrapeFixture(named: "bookmarkthreads") as ThreadListScrapeResult
+    func testBookmarkedThreadList() throws {
+        let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "bookmarkthreads")
         XCTAssertEqual(result.threads.count, 11)
         XCTAssert(result.isBookmarkedThreadsPage)
         XCTAssertEqual(result.pageCount, 1)
@@ -77,8 +77,8 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(androidAppThread.ratingAverage, 4.79)
     }
     
-    func testDebateAndDiscussionThreadList() {
-        let result = try! scrapeFixture(named: "forumdisplay") as ThreadListScrapeResult
+    func testDebateAndDiscussionThreadList() throws {
+        let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "forumdisplay")
         XCTAssertEqual(result.threads.count, 40)
         XCTAssertFalse(result.isBookmarkedThreadsPage)
 
@@ -146,8 +146,8 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(venezuelanThread.lastPostAuthorUsername, "d3c0y2")
     }
     
-    func testSubforumHierarchy() {
-        let result = try! scrapeFixture(named: "forumdisplay2") as ThreadListScrapeResult
+    func testSubforumHierarchy() throws {
+        let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "forumdisplay2")
         let breadcrumbs = result.breadcrumbs!
         XCTAssertEqual(breadcrumbs.forums.count, 3)
 
@@ -161,14 +161,14 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(lp.name, "Let's Play!")
     }
     
-    func testAcceptsNewThreads() {
+    func testAcceptsNewThreads() throws {
         do {
-            let result = try! scrapeFixture(named: "forumdisplay2") as ThreadListScrapeResult
+            let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "forumdisplay2")
             XCTAssert(result.canPostNewThread)
         }
 
         do {
-            let result = try! scrapeFixture(named: "forumdisplay-goldmine") as ThreadListScrapeResult
+            let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "forumdisplay-goldmine")
             XCTAssertFalse(result.canPostNewThread)
         }
     }
