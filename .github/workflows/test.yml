@@ -11,6 +11,8 @@ on:
 jobs:
   test:
     runs-on: macos-latest
+    env:
+    - DEVELOPER_DIR: /Applications/Xcode_11.4_beta.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
     - name: xcodebuild test
