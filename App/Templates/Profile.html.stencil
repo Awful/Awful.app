@@ -76,7 +76,7 @@
             {% endif %}
             
             {% if postRate %}
-            <tr><th>Post Rate</th><td>{{ postRate }}</td></tr>
+            <tr><th>Posts Per Day</th><td>{{ postRate }}</td></tr>
             {% endif %}
             
             {% if lastPost %}

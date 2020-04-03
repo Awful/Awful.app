@@ -161,7 +161,12 @@ extension IndexScrapeResult.ScrapedProfile {
         if let biography = biography, profile.aboutMe != biography {
             profile.aboutMe = biography
         }
-        // TODO: gender
+        if let scraped = gender {
+            let stored = Profile.Gender(scraped)
+            if profile.gender != stored {
+                profile.gender = stored
+            }
+        }
         if let homepage = homepage {
             let url = URL(string: homepage)
             if profile.homepageURL != url {
@@ -192,7 +197,9 @@ extension IndexScrapeResult.ScrapedProfile {
         if let postCount = postCount, profile.postCount != Int32(postCount) {
             profile.postCount = Int32(postCount)
         }
-        // TODO: post rate
+        if let postRate = postsPerDay.map({ String($0) }), profile.postRate != postRate {
+            profile.postRate = postRate
+        }
         // TODO: role?
         if let yahoo = yahoo, profile.yahooName != yahoo {
             profile.yahooName = yahoo
@@ -204,5 +211,15 @@ extension ForumMetadata {
     func tickleForFetchedResultsController() {
         let favorite = self.favorite
         self.favorite = favorite
+    }
+}
+
+private extension Profile.Gender {
+    init(_ scraped: IndexScrapeResult.ScrapedProfile.Gender) {
+        switch scraped {
+        case .female: self = .female
+        case .male: self = .male
+        case .porpoise: self = .porpoise
+        }
     }
 }

@@ -8,6 +8,7 @@ internal extension ProfileScrapeResult {
     func update(_ profile: Profile) {
         if about != profile.aboutMe { profile.aboutMe = about }
         if aimName != profile.aimName { profile.aimName = aimName }
+        let gender = Profile.Gender(rawValue: self.gender)
         if gender != profile.gender { profile.gender = gender }
         if homepage != profile.homepageURL { profile.homepageURL = homepage }
         if icqName != profile.icqName { profile.icqName = icqName }

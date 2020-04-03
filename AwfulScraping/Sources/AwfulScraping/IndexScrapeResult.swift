@@ -58,7 +58,7 @@ public struct IndexScrapeResult: Decodable {
         @IntToBool public private(set) var canReceivePrivateMessages: Bool?
         /// Probably a fragment of HTML
         public let customTitle: String?
-        public let gender: String?
+        public let gender: Gender?
         public let homepage: String?
         public let icq: String?
         public let interests: String?
@@ -94,6 +94,12 @@ public struct IndexScrapeResult: Decodable {
             case userID = "userid"
             case username = "username"
             case yahoo = "yahoo"
+        }
+
+        public enum Gender: String, Decodable {
+            case female = "F"
+            case male = "M"
+            case porpoise = "U"
         }
     }
 

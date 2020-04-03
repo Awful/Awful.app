@@ -244,7 +244,7 @@ private struct RenderModel: StencilContextConvertible {
             return try! String(contentsOf: url, encoding: .utf8)
         }()
         dark = UserDefaults.standard.isDarkModeEnabled
-        gender = profile.gender ?? LocalizedString("profile.default-gender")
+        gender = profile.gender?.rawValue ?? LocalizedString("profile.default-gender")
         homepageURL = profile.homepageURL
         icqName = profile.icqName
         interests = profile.interests
