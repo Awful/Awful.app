@@ -7,7 +7,7 @@ import Foundation
 /**
  `index.php?format=json`
 
- Assumes a date decoding strategy of `.secondsSince1970`.
+ Assumes a date decoding strategy of `.awful` (see `AwfulDateDecodingStrategy`).
  */
 public struct IndexScrapeResult: Decodable {
     public let currentUser: ScrapedProfile

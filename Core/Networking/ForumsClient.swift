@@ -1343,7 +1343,7 @@ private extension Promise where T == (data: Data, response: URLResponse) {
     ) -> Promise<U> {
         map(on: queue) {
             let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .secondsSince1970
+            decoder.dateDecodingStrategy = .awful
             return try decoder.decode(U.self, from: $0.data)
         }
     }
