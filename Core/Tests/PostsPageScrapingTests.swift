@@ -6,12 +6,7 @@
 import XCTest
 
 final class PostsPageScrapingTests: XCTestCase {
-    override class func setUp() {
-        super.setUp()
 
-        makeUTCDefaultTimeZone()
-    }
-    
     func testCanadianPoliticsThread() throws {
         let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread")
         XCTAssertEqual(result.posts.count, 40)
@@ -28,14 +23,14 @@ final class PostsPageScrapingTests: XCTestCase {
         XCTAssert(firstPost.authorCanReceivePrivateMessages)
         XCTAssert(firstPost.body.contains("more I think about it"))
         XCTAssertEqual(firstPost.indexInThread, 161)
-        XCTAssertEqual(firstPost.postDate?.timeIntervalSince1970, 1348139760)
+        XCTAssertEqual(firstPost.postDate?.timeIntervalSince1970, 1348157760)
         XCTAssert(firstPost.hasBeenSeen)
         XCTAssertFalse(firstPost.isEditable)
 
         let majuju = firstPost.author
         XCTAssertEqual(majuju.username, "Majuju")
         XCTAssertEqual(majuju.userID.rawValue, "108110")
-        XCTAssertEqual(majuju.regdate?.timeIntervalSince1970, 1167350400)
+        XCTAssertEqual(majuju.regdate?.timeIntervalSince1970, 1167372000)
         XCTAssert(majuju.customTitle.contains("AAA"))
         
         let accentAiguPost = result.posts[10]
@@ -83,13 +78,13 @@ final class PostsPageScrapingTests: XCTestCase {
 
         let first = result.posts[0]
         XCTAssertEqual(first.author.username, "BiG TrUcKs !!!")
-        XCTAssertEqual(first.postDate?.timeIntervalSince1970, 1388525460)
+        XCTAssertEqual(first.postDate?.timeIntervalSince1970, 1388547060)
         XCTAssert(first.body.contains("twitter assholes"))
         XCTAssertNil(first.indexInThread)
 
         let second = result.posts[1]
         XCTAssertEqual(second.author.username, "syxxcowz")
-        XCTAssertEqual(second.postDate?.timeIntervalSince1970, 1388525580)
+        XCTAssertEqual(second.postDate?.timeIntervalSince1970, 1388547180)
         XCTAssert(second.body.contains("hate twiter"))
         XCTAssertNil(second.indexInThread)
     }
@@ -97,7 +92,7 @@ final class PostsPageScrapingTests: XCTestCase {
     func testLastPage() throws {
         let result = try scrapeHTMLFixture(PostsPageScrapeResult.self, named: "showthread-last")
         XCTAssertEqual(result.posts.last?.author.username, "Ashmole")
-        XCTAssertEqual(result.posts.last?.postDate?.timeIntervalSince1970, 1357586460)
+        XCTAssertEqual(result.posts.last?.postDate?.timeIntervalSince1970, 1357608060)
     }
     
     func testIgnoredPost() throws {

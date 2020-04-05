@@ -55,7 +55,7 @@ private extension AnnouncementListScrapeResult.Author {
         regdate = html
             .firstNode(matchingSelector: "dd.registered")
             .map {$0.textContent }
-            .flatMap(regdateFormatter.date)
+            .flatMap(parseRegdate(_:))
 
         username = try html.requiredNode(matchingSelector: "dt.author").textContent
     }

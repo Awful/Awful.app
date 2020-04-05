@@ -16,14 +16,15 @@ func htmlFixture(named basename: String) throws -> HTMLDocument {
 }
 
 func makeInMemoryStoreContext() -> NSManagedObjectContext {
-    let modelURL = Bundle(for: Announcement.self).url(forResource: "Awful", withExtension: "momd")!
-    let model = NSManagedObjectModel(contentsOf: modelURL)!
-    let psc = NSPersistentStoreCoordinator(managedObjectModel: model)
+    let psc = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
     try! psc.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil)
     let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
     context.persistentStoreCoordinator = psc
     return context
 }
+
+private let managedObjectModel = NSManagedObjectModel(contentsOf:
+    Bundle(for: Announcement.self).url(forResource: "Awful", withExtension: "momd")!)!
 
 func scrapeHTMLFixture<T: ScrapeResult>(_: T.Type, named fixtureName: String) throws -> T {
     return try T(htmlFixture(named: fixtureName), url: URL(string: "https://example.com/?perpage=40"))
@@ -41,12 +42,6 @@ func scrapeForm(matchingSelector selector: String, inFixtureNamed fixtureName: S
     let doc = try htmlFixture(named: fixtureName)
     return try Form(doc.requiredNode(matchingSelector: selector), url: URL(string: "https://example.com/?perpage=40"))
 }
-
-
-func makeUTCDefaultTimeZone() {
-    NSTimeZone.default = TimeZone(secondsFromGMT: 0)!
-}
-
 
 extension Form {
     var textboxes: [Form.Control] {

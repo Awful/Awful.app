@@ -13,13 +13,12 @@ final class AnnouncementPersistenceTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        makeUTCDefaultTimeZone()
-
         context = makeInMemoryStoreContext()
     }
     
     override func tearDown() {
         context = nil
+        
         super.tearDown()
     }
 

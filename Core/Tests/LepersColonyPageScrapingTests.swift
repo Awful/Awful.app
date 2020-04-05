@@ -6,11 +6,6 @@
 import XCTest
 
 final class LepersColonyPageScrapingTests: XCTestCase {
-    override class func setUp() {
-        super.setUp()
-
-        makeUTCDefaultTimeZone()
-    }
 
     func testFirstPage() throws {
         let result = try scrapeHTMLFixture(LepersColonyScrapeResult.self, named: "banlist")
@@ -19,7 +14,7 @@ final class LepersColonyPageScrapingTests: XCTestCase {
         let first = result.punishments[0]
         XCTAssertEqual(first.sentence, .probation)
         XCTAssertEqual(first.post?.rawValue, "421665753")
-        XCTAssertEqual(first.date?.timeIntervalSince1970, 1384078200)
+        XCTAssertEqual(first.date?.timeIntervalSince1970, 1384099800)
         XCTAssertEqual(first.subjectUsername, "Kheldragar")
         XCTAssertEqual(first.subject?.rawValue, "202925")
         XCTAssert(first.reason.contains("shitty as you"))

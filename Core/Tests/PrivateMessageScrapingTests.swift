@@ -6,12 +6,7 @@
 import XCTest
 
 final class PrivateMessageScrapingTests: XCTestCase {
-    override class func setUp() {
-        super.setUp()
 
-        makeUTCDefaultTimeZone()
-    }
-    
     func testFolder() throws {
         let result = try scrapeHTMLFixture(PrivateMessageFolderScrapeResult.self, named: "private-list")
 
@@ -29,7 +24,7 @@ final class PrivateMessageScrapingTests: XCTestCase {
         XCTAssert(first.hasBeenSeen)
         XCTAssertEqual(first.id.rawValue, "4601204")
         XCTAssertEqual(first.senderUsername, "InFlames235")
-        XCTAssertEqual(first.sentDate?.timeIntervalSinceReferenceDate, 374103000)
+        XCTAssertEqual(first.sentDate?.timeIntervalSince1970, 1352431800)
         XCTAssertEqual(first.subject, "Re: Awful app")
         XCTAssertFalse(first.wasForwarded)
         XCTAssertFalse(first.wasRepliedTo)
@@ -43,10 +38,10 @@ final class PrivateMessageScrapingTests: XCTestCase {
         XCTAssert(result.hasBeenSeen)
         XCTAssert(!result.wasRepliedTo)
         XCTAssert(!result.wasForwarded)
-        XCTAssertEqual(result.sentDate?.timeIntervalSince1970, 1352408160)
+        XCTAssertEqual(result.sentDate?.timeIntervalSince1970, 1352429760)
         XCTAssert(result.body.contains("awesome app"))
         XCTAssertEqual(result.author?.userID, UserID(rawValue: "47395"))
         XCTAssertEqual(result.author?.username, "InFlames235")
-        XCTAssertEqual(result.author?.regdate?.timeIntervalSince1970, 1073952000)
+        XCTAssertEqual(result.author?.regdate?.timeIntervalSince1970, 1073973600)
     }
 }

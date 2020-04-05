@@ -30,27 +30,27 @@ internal extension HTMLNode {
 }
 
 
-internal func makeScrapingDateFormatter(format: String) -> DateFormatter {
+func makeScrapingDateFormatter(format: String) -> DateFormatter {
     let formatter = DateFormatter()
-    formatter.calendar = Calendar(identifier: .gregorian)
-    formatter.locale = Locale(identifier: "en_US")
+    formatter.locale = Locale(identifier: "en_US_POSIX")
     formatter.dateFormat = format
     return formatter
 }
 
+private let postDate12HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy h:mm a")
+private let postDate24HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy HH:mm")
 
-
-private let postDate24HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy h:mm a")
-private let postDate12HourFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy HH:mm")
-
-internal func parsePostDate(_ string: String) -> Date? {
-    return postDate24HourFormatter.date(from: string)
-        ?? postDate12HourFormatter.date(from: string)
+func parsePostDate(_ string: String) -> Date? {
+    return postDate12HourFormatter.date(from: string)
+        ?? postDate24HourFormatter.date(from: string)
 }
 
 
-internal let regdateFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy")
+private let regdateFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy")
 
+func parseRegdate(_ string: String) -> Date? {
+    return regdateFormatter.date(from: string)
+}
 
 internal extension Scanner {
     convenience init(scraping string: String) {

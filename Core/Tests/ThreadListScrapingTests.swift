@@ -6,12 +6,7 @@
 import XCTest
 
 final class ThreadListScrapingTests: XCTestCase {
-    override class func setUp() {
-        super.setUp()
 
-        makeUTCDefaultTimeZone()
-    }
-    
     func testAskTellThreadList() throws {
         let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "showthread-asktell")
         XCTAssertFalse(result.isBookmarkedThreadsPage)
@@ -54,7 +49,7 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(wireThread.replyCount, 434)
         XCTAssertNil(wireThread.ratingAverage)
         XCTAssertNil(wireThread.ratingCount)
-        XCTAssertEqual(wireThread.lastPostDate?.timeIntervalSince1970, 1357964700)
+        XCTAssertEqual(wireThread.lastPostDate?.timeIntervalSince1970, 1357986300)
         XCTAssertEqual(wireThread.lastPostAuthorUsername, "MC Fruit Stripe")
         
         let cocfaq = result.threads.first { $0.title.contains("FAQ") }!
@@ -68,7 +63,7 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(cocfaq.authorUsername, "Scaevolus")
         XCTAssertEqual(cocfaq.replyCount, 0)
         XCTAssertNil(cocfaq.ratingAverage)
-        XCTAssertEqual(cocfaq.lastPostDate?.timeIntervalSince1970, 1209381240)
+        XCTAssertEqual(cocfaq.lastPostDate?.timeIntervalSince1970, 1209399240)
         XCTAssertEqual(cocfaq.lastPostAuthorUsername, "Scaevolus")
         
         let androidAppThread = result.threads.first { $0.authorUsername == "Ferg" }!
@@ -127,7 +122,7 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(rulesThread.replyCount, 11)
         XCTAssertNil(rulesThread.ratingCount)
         XCTAssertNil(rulesThread.ratingAverage)
-        XCTAssertEqual(rulesThread.lastPostDate?.timeIntervalSince1970, 1330198920)
+        XCTAssertEqual(rulesThread.lastPostDate?.timeIntervalSince1970, 1330220520)
         XCTAssertEqual(rulesThread.lastPostAuthorUsername, "Xandu")
         
         let venezuelanThread = result.threads.first { $0.title.hasPrefix("Venezuelan") }!
@@ -142,7 +137,7 @@ final class ThreadListScrapingTests: XCTestCase {
         XCTAssertEqual(venezuelanThread.replyCount, 410)
         XCTAssertNil(venezuelanThread.ratingCount)
         XCTAssertNil(venezuelanThread.ratingAverage)
-        XCTAssertEqual(venezuelanThread.lastPostDate?.timeIntervalSince1970, 1357082460)
+        XCTAssertEqual(venezuelanThread.lastPostDate?.timeIntervalSince1970, 1357104060)
         XCTAssertEqual(venezuelanThread.lastPostAuthorUsername, "d3c0y2")
     }
     

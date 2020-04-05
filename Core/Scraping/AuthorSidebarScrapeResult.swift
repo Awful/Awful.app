@@ -57,7 +57,7 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
         regdate = html
             .firstNode(matchingSelector: "dd.registered")
             .map { $0.textContent }
-            .flatMap(regdateFormatter.date)
+            .flatMap(parseRegdate(_:))
 
         customTitle = scrapeCustomTitle(html) ?? ""
     }
