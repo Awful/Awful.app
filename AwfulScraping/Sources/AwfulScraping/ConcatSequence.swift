@@ -10,9 +10,7 @@ struct ConcatSequence<S: Sequence>: Sequence
 
     init(_ sequences: S) { self.sequences = sequences }
 
-    func makeIterator() -> Iterator {
-        Iterator(sequences.makeIterator())
-    }
+    func makeIterator() -> Iterator { .init(sequences.makeIterator()) }
 
     struct Iterator: IteratorProtocol {
         private var cur: S.Element.Iterator?
@@ -25,10 +23,14 @@ struct ConcatSequence<S: Sequence>: Sequence
         mutating func next() -> S.Element.Element? {
             if let el = cur?.next() {
                 return el
-            } else {
-                cur = it.next()?.makeIterator()
-                return cur?.next()
             }
+            while let next = it.next()?.makeIterator() {
+                cur = next
+                if let el = cur?.next() {
+                    return el
+                }
+            }
+            return nil
         }
     }
 }

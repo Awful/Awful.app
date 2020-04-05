@@ -25,6 +25,9 @@ extension DefaultEmpty: Hashable where T: Hashable {}
         if container.decodeNil() { return }
         do {
             wrappedValue = try container.decode(T.self)
+            if let string = wrappedValue as? String, string.isEmpty {
+                wrappedValue = nil
+            }
         } catch {
             if let string = (try? container.decode(String.self)), string.isEmpty {
                 wrappedValue = nil
