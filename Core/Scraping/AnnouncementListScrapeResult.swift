@@ -55,10 +55,10 @@ private extension AnnouncementListScrapeResult.Author {
         regdate = html
             .firstNode(matchingSelector: "dd.registered")
             .map {$0.textContent }
-            .flatMap(parseRegdate(_:))
+            .flatMap(RegdateFormatter.date(from:))
 
         username = try html.requiredNode(matchingSelector: "dt.author").textContent
     }
 }
 
-private let dateFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy")
+private let dateFormatter = DateFormatter(scraping: "MMM d, yyyy")

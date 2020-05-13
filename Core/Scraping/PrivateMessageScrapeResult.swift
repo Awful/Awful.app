@@ -48,7 +48,7 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
             sentDate = postDateCell
                 .flatMap { (cell: HTMLElement) -> HTMLNode? in cell.children.lastObject as? HTMLNode }
                 .map { $0.textContent }
-                .flatMap(parsePostDate)
+                .flatMap(PostDateFormatter.date(from:))
         }
 
         body = html.firstNode(matchingSelector: "td.postbody")

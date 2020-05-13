@@ -65,6 +65,6 @@ public struct PostScrapeResult {
             .firstNode(matchingSelector: "td.postdate")
             .flatMap { $0.children.lastObject as? HTMLNode }
             .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .flatMap(parsePostDate)
+            .flatMap(PostDateFormatter.date(from:))
     }
 }

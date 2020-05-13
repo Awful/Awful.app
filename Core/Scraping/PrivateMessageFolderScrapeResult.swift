@@ -103,8 +103,8 @@ private extension PrivateMessageFolderScrapeResult.Message {
     }
 }
 
-private let twelveHourSentDateFormatter = makeScrapingDateFormatter(format: "MMM d, yyyy 'at' h:mm a")
-private let twentyFourHourSentDateFormatter = makeScrapingDateFormatter(format: "MMMM d, yyyy 'at' HH:mm")
+private let twelveHourSentDateFormatter = DateFormatter(scraping: "MMM d, yyyy 'at' h:mm a")
+private let twentyFourHourSentDateFormatter = DateFormatter(scraping: "MMMM d, yyyy 'at' HH:mm")
 
 /// Private message folder IDs sure look numeric but we're gonna treat them as opaque.
 public struct PrivateMessageFolderID: Hashable, RawRepresentable {

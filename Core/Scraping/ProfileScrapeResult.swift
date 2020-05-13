@@ -106,7 +106,7 @@ public struct ProfileScrapeResult: ScrapeResult {
                 .flatMap { $0.firstNode(matchingSelector: "dd:nth-of-type(4)") }
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
-                .flatMap(parsePostDate)
+                .flatMap(PostDateFormatter.date(from:))
 
             let remainingInfo = additionalList?
                 .children

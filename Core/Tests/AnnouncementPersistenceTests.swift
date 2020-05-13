@@ -53,7 +53,7 @@ final class AnnouncementPersistenceTests: XCTestCase {
         let announcement = announcements[0]
         XCTAssertEqual(announcement.bodyHTML, "")
         XCTAssertEqual(announcement.listIndex, 0)
-        XCTAssertEqual(announcement.postedDate?.timeIntervalSince1970, 1396904400)
+        XCTAssertEqual(announcement.postedDate?.timeIntervalSince1970, 1396922400)
         XCTAssertEqual(announcement.title, "National Change Your Password Day!")
         let author = announcement.author
         XCTAssertEqual(author?.userID, "27691")
@@ -115,11 +115,11 @@ final class AnnouncementPersistenceTests: XCTestCase {
 
         let announcement = announcements[0]
         XCTAssert(announcement.authorCustomTitleHTML.contains("sa-support-robot.gif"))
-        XCTAssertEqual(announcement.authorRegdate?.timeIntervalSince1970, 1177027200)
+        XCTAssertEqual(announcement.authorRegdate?.timeIntervalSince1970, 1177045200)
         XCTAssertEqual(announcement.authorUsername, "SA Support Robot")
         XCTAssert(announcement.bodyHTML.contains("Thanks for shopping in advance!"))
         XCTAssertEqual(announcement.listIndex, 0)
-        XCTAssertEqual(announcement.postedDate?.timeIntervalSince1970, 1283644800)
+        XCTAssertEqual(announcement.postedDate?.timeIntervalSince1970, 1283662800)
         XCTAssertEqual(announcement.title, "National Change Your Password Day!")
     }
 }

@@ -267,8 +267,8 @@ private extension ThreadListScrapeResult.Thread {
     }
 }
 
-private let lastPost12DateFormatter = makeScrapingDateFormatter(format: "h:mm a MMM d, yyyy")
-private let lastPost24DateFormatter = makeScrapingDateFormatter(format: "HH:mm MMM d, yyyy")
+private let lastPost12DateFormatter = DateFormatter(scraping: "h:mm a MMM d, yyyy")
+private let lastPost24DateFormatter = DateFormatter(scraping: "HH:mm MMM d, yyyy")
 
 private func parseLastPostDate(_ s: String) -> Date? {
     return lastPost12DateFormatter.date(from: s)

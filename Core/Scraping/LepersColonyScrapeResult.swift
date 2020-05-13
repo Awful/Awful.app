@@ -94,7 +94,7 @@ private extension LepersColonyScrapeResult.Punishment.Sentence {
     }
 }
 
-private let dateFormatter = makeScrapingDateFormatter(format: "MM/dd/yy hh:mma")
+private let dateFormatter = DateFormatter(scraping: "MM/dd/yy hh:mma")
 
 private func scrapeUserIDAndUsername(_ a: HTMLElement?) -> (id: UserID?, username: String) {
     let id = a
