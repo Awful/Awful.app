@@ -10,6 +10,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     
     let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
+    private var notifiers: [NSObjectProtocol] = []
     
     lazy private(set) var rootViewController: UIViewController = {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
@@ -173,13 +174,28 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
                 splitViewController.preferredDisplayMode = .automatic
             }
         }
-        
-        if let detail = detailNavigationController?.viewControllers.first {
-            // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
-            if splitViewController.displayMode != .allVisible {
-                detail.navigationItem.leftBarButtonItem = backBarButtonItem
+
+        let updateLeftButtonItem = { [weak self] in
+            guard let self = self else { return }
+            if let detail = self.detailNavigationController?.viewControllers.first {
+                // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
+                if self.splitViewController.displayMode != .allVisible {
+                    detail.navigationItem.leftBarButtonItem = self.backBarButtonItem
+                }
             }
         }
+        updateLeftButtonItem()
+
+        // Fix missing "show sidebar" button after backgrounding.
+        // (When we enter the background, we can get sized to portrait and then landscape orientations for iOS to take snapshots. In the resulting calls to `viewWillTransitionToSize()`, we hide/show the "show sidebar" button. But when we come back to the foreground, we don't get a size transition, so the button's visibility is left in whichever state was the last snapshot we were sized for.)
+        notifiers += [
+            NotificationCenter.default.addObserver(
+                forName: UIApplication.willEnterForegroundNotification,
+                object: UIApplication.shared,
+                queue: .main, using: { notification in
+                    updateLeftButtonItem()
+            })
+        ]
     }
     
     private var primaryNavigationController: UINavigationController {
