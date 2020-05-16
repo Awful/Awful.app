@@ -63,10 +63,6 @@ class LoginViewController: ViewController {
         }
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     class func newFromStoryboard() -> LoginViewController {
         return UIStoryboard(name: "Login", bundle: nil).instantiateInitialViewController() as! LoginViewController
     }
