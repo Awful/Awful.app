@@ -75,7 +75,6 @@ There are unit tests, that don't cover much, running continuously via [GitHub Ac
 
 Dependencies not managed via CocoaPods or Swift Package Manager are placed in the [Vendor](Vendor) folder and manually kept up-to-date. If you think it's time to update, here's where you might find newer versions:
 
-* [Crashlytics and Fabric](https://fabric.io/kits/ios/crashlytics/update?type=manual). A download link and update instructions should be there.
 * [widgets.js](https://developer.twitter.com/en/docs/twitter-for-websites/javascript-api/guides/set-up-twitter-for-websites), the Twitter for Websites widget code. Partway down that page you'll find example code that sets the `src` attribute of a `script` element; that's where you can find the latest `widgets.js` (we bundle the whole thing in the app). As of last update the location is: https://platform.twitter.com/widgets.js
 
 ### Version scheme

@@ -353,20 +353,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>${DYLIB_CURRENT_VERSION}</string>
-	<key>Fabric</key>
-	<dict>
-		<key>APIKey</key>
-		<string>${CRASHLYTICS_API_KEY}</string>
-		<key>Kits</key>
-		<array>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>Crashlytics</string>
-			</dict>
-		</array>
-	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>

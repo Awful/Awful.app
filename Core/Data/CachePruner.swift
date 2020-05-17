@@ -10,8 +10,6 @@ private let Log = Logger.get()
 final class CachePruner: Operation {
     let managedObjectContext: NSManagedObjectContext
     
-    var errorObserver: ((_ error: Error) -> Void)?
-    
     init(managedObjectContext context: NSManagedObjectContext) {
         managedObjectContext = context
         super.init()
@@ -41,7 +39,6 @@ final class CachePruner: Operation {
                 }
                 catch {
                     Log.e("error fetching: \(error)")
-                    errorObserver?(error)
                 }
             }
             
@@ -58,7 +55,6 @@ final class CachePruner: Operation {
             }
             catch {
                 Log.e("error saving: \(error)")
-                errorObserver?(error)
             }
         }
     }

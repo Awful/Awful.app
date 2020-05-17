@@ -299,8 +299,6 @@
 		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
-		1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7822D259A500EA5A80 /* Fabric.framework */; };
-		1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */; };
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
 		1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */; };
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
@@ -1023,8 +1021,6 @@
 		1C5BA3E416CA445600375A72 /* ThreadPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPage.swift; sourceTree = "<group>"; };
 		1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TUSafariActivity.bundle; sourceTree = "<group>"; };
 		1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ARChromeActivity.xcassets; sourceTree = "<group>"; };
-		1C5C2C7822D259A500EA5A80 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
-		1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromeActivity.swift; sourceTree = "<group>"; };
 		1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityIndicatorView+MakeLarge.swift"; sourceTree = "<group>"; };
 		1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollIndicatorInsetBottom.swift"; sourceTree = "<group>"; };
@@ -1416,10 +1412,8 @@
 				1C453F0F23384264007AC6CD /* Nuke in Frameworks */,
 				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
-				1C5C2C7B22D259A500EA5A80 /* Crashlytics.framework in Frameworks */,
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
 				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
-				1C5C2C7A22D259A500EA5A80 /* Fabric.framework in Frameworks */,
 				1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
@@ -1456,7 +1450,6 @@
 			isa = PBXGroup;
 			children = (
 				1C5C2C5422D2584100EA5A80 /* ARChromeActivity */,
-				1C5C2C7622D259A500EA5A80 /* Crashlytics */,
 				1C453F4423384923007AC6CD /* README.md */,
 				1C5C2C4E22D254D600EA5A80 /* TUSafariActivity */,
 				8C89FAF31CAA0F4200640F3D /* widgets.js */,
@@ -2041,23 +2034,6 @@
 				1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */,
 			);
 			path = ARChromeActivity;
-			sourceTree = "<group>";
-		};
-		1C5C2C7622D259A500EA5A80 /* Crashlytics */ = {
-			isa = PBXGroup;
-			children = (
-				1C5C2C7722D259A500EA5A80 /* iOS */,
-			);
-			path = Crashlytics;
-			sourceTree = "<group>";
-		};
-		1C5C2C7722D259A500EA5A80 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				1C5C2C7922D259A500EA5A80 /* Crashlytics.framework */,
-				1C5C2C7822D259A500EA5A80 /* Fabric.framework */,
-			);
-			path = iOS;
 			sourceTree = "<group>";
 		};
 		1C66A9BA19DD3017001B9A41 /* Smilies */ = {
@@ -2852,7 +2828,6 @@
 				1C66A9DD19DD304F001B9A41 /* Embed Frameworks */,
 				1C66A9F819DD393A001B9A41 /* Embed App Extensions */,
 				FB2E294B8B502DF72F9AE6E3 /* [CP] Embed Pods Frameworks */,
-				1C15334C20708A6F0021A2BD /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -3310,24 +3285,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1C15334C20708A6F0021A2BD /* Crashlytics */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-				"$(PROJECT_DIR)/../Local.xcconfig",
-				"$(PROJECT_DIR)/../Vendor/Crashlytics/iOS/Fabric.framework/run",
-			);
-			name = Crashlytics;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -n \"$CRASHLYTICS_API_KEY\" ]\nthen \"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS/Fabric.framework/run \"$CRASHLYTICS_API_KEY\"\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		1C796A22221503300035E154 /* Sourcery */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -4183,10 +4140,6 @@
 			baseConfigurationReference = 1C1533572070A3BF0021A2BD /* Awful-Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
-				);
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -4199,10 +4152,6 @@
 			baseConfigurationReference = 1C1533582070A3CA0021A2BD /* Awful-Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$PROJECT_DIR\"/../Vendor/Crashlytics/iOS",
-				);
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";

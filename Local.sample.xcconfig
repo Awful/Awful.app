@@ -1,6 +1,3 @@
-// Crashlytics for crash logging. There's a Run Script build phase in the Awful target that uses this value. If you want to use Crashlytics, go find your API key from the Crashlytics site, paste it in the next line, then uncomment the line.
-// CRASHLYTICS_API_KEY = YOUR_API_KEY_HERE
-
 // These lines set up the .entitlements file needed to make the App Group work for communication between the Awful app and the Smilie Keyboard extension. See README.md for more details.
 // CODE_SIGN_ENTITLEMENTS = ${CODE_SIGN_ENTITLEMENTS_${TARGET_NAME}}
 // CODE_SIGN_ENTITLEMENTS_Awful = ../Local.entitlements

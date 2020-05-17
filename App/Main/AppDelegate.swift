@@ -4,8 +4,6 @@
 
 import AVFoundation
 import AwfulCore
-import Crashlytics
-import Fabric
 import Nuke
 import Smilies
 import SwiftTweaks
@@ -27,21 +25,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.instance = self
-        
-        if
-            let fabric = Bundle.main.object(forInfoDictionaryKey: "Fabric") as? [String: Any],
-            let key = fabric["APIKey"] as? String,
-            !key.isEmpty
-        {
-            Fabric.with([Crashlytics.self])
-        }
-        
-        Logger.extraHandler = { name, level, message, file, line in
-            withVaList(["[\(name)] \(level.abbreviation): \(message)"]) {
-                CLSLogv("%@", $0)
-            }
-        }
-        
+
         UserDefaults.standard.registerDefaults(SettingsSection.mainBundleSections)
         UserDefaults.standard.migrateOldAwfulSettings()
         
@@ -49,9 +33,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let storeURL = appSupport.appendingPathComponent("CachedForumData", isDirectory: true)
         let modelURL = Bundle(for: DataStore.self).url(forResource: "Awful", withExtension: "momd")!
         dataStore = DataStore(storeDirectoryURL: storeURL, modelURL: modelURL)
-        dataStore.prunerErrorObserver = { error in
-            Crashlytics.sharedInstance().recordError(error)
-        }
         
         DispatchQueue.global(qos: .background).async(execute: removeOldDataStores)
         

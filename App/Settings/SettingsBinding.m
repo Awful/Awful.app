@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SettingsBinding.h"
-@import Crashlytics;
 @import ObjectiveC.runtime;
 #import "Awful-Swift.h"
 
@@ -155,7 +154,7 @@ InfoForSettingWithKeyInSections(NSString *key, NSArray<SettingsSection *> *secti
 - (void)addAwful_overridingSetting:(NSString *)overridingSettingKey
 {
     if (self.awful_binding == nil) {
-        CLSNSLog(@"WARNING: Assigning an overriding setting to a setting with no binding. Ignoring.");
+        NSAssert(NO, @"Assigning an overriding setting to a setting with no binding.");
         return;
     }
     SettingsBinding *binding = self.awful_binding;

@@ -2,7 +2,6 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import Crashlytics
 import Foundation
 import ImgurAnonymousAPI
 import Photos
@@ -82,7 +81,7 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 case .success(let response):
                     uploadComplete(response.link, error: nil)
                 case .failure(let error):
-                    Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: ["source type": "UIImage"])
+                    Log.e("Could not upload UIImage: \(error)")
                     uploadComplete(nil, error: error)
                 }
             })
@@ -99,7 +98,7 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 case .success(let response):
                     uploadComplete(response.link, error: nil)
                 case .failure(let error):
-                    Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: ["source type": "PHAsset local identifier"])
+                    Log.e("Could not upload PHAsset: \(error)")
                     uploadComplete(nil, error: error)
                 }
             })
