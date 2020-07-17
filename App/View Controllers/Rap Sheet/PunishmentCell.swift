@@ -6,6 +6,8 @@ import UIKit
 
 /// Details a probation or ban.
 final class PunishmentCell: UITableViewCell {
+    static let reasonFont = UIFont.systemFont(ofSize: reasonFontSize)
+    static let reasonInsets = UIEdgeInsets(top: 63, left: 10, bottom: 10, right: 30)
     /// A label that explains why the infraction occurred.
     let reasonLabel = UILabel()
     
@@ -15,10 +17,10 @@ final class PunishmentCell: UITableViewCell {
         - parameter banReason: The reason for the ban that will be wrapped into several lines if necessary.
         - parameter width: The width of the cell.
      */
-    class func rowHeightWithBanReason(_ banReason: String, width: CGFloat) -> CGFloat {
-        let reasonInsets = UIEdgeInsets(top: 63, left: 10, bottom: 10, right: 30)
+    class func rowHeightWithBanReason(_ banReason: NSAttributedString, width: CGFloat) -> CGFloat {
+        let reasonInsets = PunishmentCell.reasonInsets
         let remainingWidth = width - reasonInsets.left - reasonInsets.right
-        let reasonRect = (banReason as NSString).boundingRect(with: CGSize(width: remainingWidth, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, attributes: [.font: UIFont.systemFont(ofSize: reasonFontSize)], context: nil)
+        let reasonRect = (banReason).boundingRect(with: CGSize(width: remainingWidth, height: .greatestFiniteMagnitude), options: .usesLineFragmentOrigin, context: nil)
         return ceil(reasonRect.height) + reasonInsets.top + reasonInsets.bottom
     }
     
@@ -36,7 +38,7 @@ final class PunishmentCell: UITableViewCell {
         detailTextLabel?.backgroundColor = .clear
         
         reasonLabel.numberOfLines = 0
-        reasonLabel.font = UIFont.systemFont(ofSize: reasonFontSize)
+        reasonLabel.font = PunishmentCell.reasonFont
         reasonLabel.backgroundColor = .clear
         reasonLabel.highlightedTextColor = textLabel?.highlightedTextColor
         contentView.addSubview(reasonLabel)

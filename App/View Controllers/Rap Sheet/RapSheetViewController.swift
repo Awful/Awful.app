@@ -180,7 +180,8 @@ final class RapSheetViewController: TableViewController {
             }
             return components.joined(separator: " ")
         }()
-        cell.reasonLabel.text = punishment.reason
+    
+        cell.reasonLabel.attributedText = formatReason(punishment.reasonAttributed)
         
         let description: String
         switch punishment.sentence {
@@ -228,7 +229,8 @@ final class RapSheetViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
-        return PunishmentCell.rowHeightWithBanReason(punishment.reason, width: tableView.safeAreaLayoutGuide.layoutFrame.width)
+        
+        return PunishmentCell.rowHeightWithBanReason(formatReason(punishment.reasonAttributed), width: tableView.safeAreaLayoutGuide.layoutFrame.width)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -246,6 +248,40 @@ final class RapSheetViewController: TableViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func formatReason(_ reason: NSAttributedString) -> NSAttributedString {
+        let mutableReason = NSMutableAttributedString(attributedString: reason)
+        
+        /// Resize any images in punishment reasons so they fit on the screen
+        mutableReason.enumerateAttribute(NSAttributedString.Key.attachment, in: NSMakeRange(0, mutableReason.length), options: .init(rawValue: 0), using: { (value, range, stop) in
+            if let attachement = value as? NSTextAttachment {
+                let maxWidth = tableView.safeAreaLayoutGuide.layoutFrame.width - PunishmentCell.reasonInsets.left - PunishmentCell.reasonInsets.right
+                let image = attachement.image(forBounds: attachement.bounds, textContainer: NSTextContainer(), characterIndex: range.location)!
+                if image.size.width > maxWidth {
+                    let scale = maxWidth/image.size.width
+                    let newSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+                    let rect = CGRect(origin: CGPoint.zero, size: newSize)
+
+                    UIGraphicsBeginImageContext(newSize)
+                    image.draw(in: rect)
+                    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                    UIGraphicsEndImageContext()
+                    
+                    let newAttribute = NSTextAttachment()
+                    newAttribute.image = newImage
+                    mutableReason.addAttribute(NSAttributedString.Key.attachment, value: newAttribute, range: range)
+                }
+            }
+        })
+        
+        /// Set font color to theme color
+        mutableReason.addAttribute(.foregroundColor, value: theme["listTextColor"]! as UIColor, range: NSMakeRange(0, reason.length))
+        
+        /// Set font size to cell's font size, overwrite the font size the HTML tries to set
+        mutableReason.addAttribute(.font, value: PunishmentCell.reasonFont, range: NSMakeRange(0, mutableReason.length))
+        
+        return NSAttributedString(attributedString: mutableReason)
     }
 }
 
