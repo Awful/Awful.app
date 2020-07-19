@@ -74,5 +74,6 @@ class IndexPersistentTests: XCTestCase {
         let pokeyman = User.findOrFetch(in: context, matching: .init("\(\User.userID) = \("106125")"))
         XCTAssertNotNil(pokeyman)
         XCTAssertEqual(pokeyman!.username, "pokeyman")
+        XCTAssertEqual(pokeyman!.profile!.aboutMe, "2")
     }
 }
