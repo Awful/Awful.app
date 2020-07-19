@@ -7,7 +7,7 @@ import AwfulScraping
 import CoreData
 import XCTest
 
-class IndexPersistentTexts: XCTestCase {
+class IndexPersistentTests: XCTestCase {
     var context: NSManagedObjectContext!
     var lastModified: LastModifiedContextObserver!
 
