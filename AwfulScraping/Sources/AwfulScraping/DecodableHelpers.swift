@@ -65,3 +65,16 @@ extension DefaultEmpty: Hashable where T: Hashable {}
         }
     }
 }
+
+@propertyWrapper public struct CoerceIntToString: Decodable {
+    public var wrappedValue: String?
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let stringValue = try? container.decode(String.self) {
+            wrappedValue = stringValue
+        } else {
+            wrappedValue = try? String(container.decode(Int.self))
+        }
+    }
+}

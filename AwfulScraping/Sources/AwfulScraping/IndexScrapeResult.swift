@@ -53,26 +53,26 @@ public struct IndexScrapeResult: Decodable {
     }
 
     public struct ScrapedProfile: Decodable {
-        public let aim: String?
-        public let biography: String?
+        @CoerceIntToString public private(set) var aim: String?
+        @CoerceIntToString public private(set) var biography: String?
         @IntToBool public private(set) var canReceivePrivateMessages: Bool?
         /// Probably a fragment of HTML
-        public let customTitle: String?
+        @CoerceIntToString public private(set) var customTitle: String?
         public let gender: Gender?
-        public let homepage: String?
-        public let icq: String?
-        public let interests: String?
+        @CoerceIntToString public private(set) var homepage: String?
+        @CoerceIntToString public private(set) var icq: String?
+        @CoerceIntToString public private(set) var interests: String?
         public let lastPostDate: Date?
-        public let location: String?
-        public let occupation: String?
+        @CoerceIntToString public private(set) var location: String?
+        @CoerceIntToString public private(set) var occupation: String?
         public let picture: String?
         public let postCount: Int?
         public let postsPerDay: Double?
         public let regdate: Date?
         public let role: String?
         @IntOrString public private(set) var userID: String
-        public let username: String
-        public let yahoo: String?
+        @IntOrString public private(set) var username: String
+        @CoerceIntToString public private(set) var yahoo: String?
 
         private enum CodingKeys: String, CodingKey {
             case aim = "aim"
