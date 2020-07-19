@@ -267,6 +267,14 @@
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
 		1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */; };
 		1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */; };
+		1C56972524C3F1900077CA62 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C56972424C3F1900077CA62 /* AppDelegate.swift */; };
+		1C56972824C3F1900077CA62 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C56972624C3F1900077CA62 /* Main.storyboard */; };
+		1C56972A24C3F1900077CA62 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C56972924C3F1900077CA62 /* ViewController.swift */; };
+		1C56972C24C3F1900077CA62 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C56972B24C3F1900077CA62 /* Assets.xcassets */; };
+		1C56973324C3F1910077CA62 /* CopyMarkdownExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C56973224C3F1910077CA62 /* CopyMarkdownExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1C56973724C3F1910077CA62 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C56973624C3F1910077CA62 /* Cocoa.framework */; };
+		1C56973A24C3F1910077CA62 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C56973924C3F1910077CA62 /* SafariExtensionHandler.swift */; };
+		1C56973F24C3F1910077CA62 /* copy-awful-markdown.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C56973E24C3F1910077CA62 /* copy-awful-markdown.js */; };
 		1C588D3F19EA7FDD004C7809 /* SmilieOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C588D3D19EA7FDD004C7809 /* SmilieOperation.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1C588D4019EA7FDD004C7809 /* SmilieOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D3E19EA7FDD004C7809 /* SmilieOperation.m */; };
 		1C588D4319EA9785004C7809 /* CleanupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4119EA974C004C7809 /* CleanupTests.m */; };
@@ -630,6 +638,13 @@
 			remoteGlobalIDString = 1C49CFE122CB0102004B76E6;
 			remoteInfo = CommonSPM;
 		};
+		1C56973424C3F1910077CA62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1C56973124C3F1910077CA62;
+			remoteInfo = "CopyMarkdownSafariExtension Extension";
+		};
 		1C66A9D219DD304F001B9A41 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -692,6 +707,17 @@
 				1C3A145F19DFC6970022C44C /* Smilies.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C56974924C3F1910077CA62 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1C56973324C3F1910077CA62 /* CopyMarkdownExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1C66A9DD19DD304F001B9A41 /* Embed Frameworks */ = {
@@ -988,6 +1014,19 @@
 		1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsBinding.m; sourceTree = "<group>"; };
 		1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsAvatarHeader.swift; sourceTree = "<group>"; };
 		1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsAvatarHeader.xib; sourceTree = "<group>"; };
+		1C56972124C3F1900077CA62 /* CopyMarkdownApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CopyMarkdownApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C56972324C3F1900077CA62 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		1C56972424C3F1900077CA62 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1C56972724C3F1900077CA62 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1C56972924C3F1900077CA62 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1C56972B24C3F1900077CA62 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1C56972D24C3F1900077CA62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C56973224C3F1910077CA62 /* CopyMarkdownExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CopyMarkdownExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C56973624C3F1910077CA62 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		1C56973924C3F1910077CA62 /* SafariExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariExtensionHandler.swift; sourceTree = "<group>"; };
+		1C56973E24C3F1910077CA62 /* copy-awful-markdown.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "copy-awful-markdown.js"; sourceTree = "<group>"; };
+		1C56974524C3F1910077CA62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C56974624C3F1910077CA62 /* Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Extension.entitlements; sourceTree = "<group>"; };
 		1C588D3D19EA7FDD004C7809 /* SmilieOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieOperation.h; sourceTree = "<group>"; };
 		1C588D3E19EA7FDD004C7809 /* SmilieOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieOperation.m; sourceTree = "<group>"; };
 		1C588D4119EA974C004C7809 /* CleanupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CleanupTests.m; sourceTree = "<group>"; };
@@ -1369,6 +1408,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1C56971E24C3F1900077CA62 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C56972F24C3F1910077CA62 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C56973724C3F1910077CA62 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1C66A9BC19DD304D001B9A41 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1471,6 +1525,8 @@
 				1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */,
 				1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */,
 				1C49CFE222CB0102004B76E6 /* CommonSPM.framework */,
+				1C56972124C3F1900077CA62 /* CopyMarkdownApp.app */,
+				1C56973224C3F1910077CA62 /* CopyMarkdownExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1980,6 +2036,40 @@
 			path = Bars2;
 			sourceTree = "<group>";
 		};
+		1C56972224C3F1900077CA62 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				1C56972324C3F1900077CA62 /* App.entitlements */,
+				1C56972424C3F1900077CA62 /* AppDelegate.swift */,
+				1C56972B24C3F1900077CA62 /* Assets.xcassets */,
+				1C56972D24C3F1900077CA62 /* Info.plist */,
+				1C56972624C3F1900077CA62 /* Main.storyboard */,
+				1C56972924C3F1900077CA62 /* ViewController.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		1C56973824C3F1910077CA62 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				1C56973E24C3F1910077CA62 /* copy-awful-markdown.js */,
+				1C56974624C3F1910077CA62 /* Extension.entitlements */,
+				1C56974524C3F1910077CA62 /* Info.plist */,
+				1C56973924C3F1910077CA62 /* SafariExtensionHandler.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		1C56974E24C3F39B0077CA62 /* CopyMarkdown */ = {
+			isa = PBXGroup;
+			children = (
+				1C56972224C3F1900077CA62 /* App */,
+				1C56973824C3F1910077CA62 /* Extension */,
+			);
+			name = CopyMarkdown;
+			path = ../CopyMarkdown;
+			sourceTree = "<group>";
+		};
 		1C5B83181F74ADB200BE7517 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -2421,9 +2511,10 @@
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
-				1C15334D20708EFF0021A2BD /* Config */,
-				1C3CF9671A94B9B40065C964 /* Core */,
 				1C49CFE322CB0102004B76E6 /* CommonSPM */,
+				1C15334D20708EFF0021A2BD /* Config */,
+				1C56974E24C3F39B0077CA62 /* CopyMarkdown */,
+				1C3CF9671A94B9B40065C964 /* Core */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				9D0762E16A2A66CEB1B627DC /* Pods */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -2445,6 +2536,7 @@
 				74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */,
 				BF2B976F9B0ABD1F1F0130F3 /* Pods_Awful_AwfulTests.framework */,
 				67FE9D70F7C573FD21CB30A6 /* Pods_Smilies_SmiliesTests.framework */,
+				1C56973624C3F1910077CA62 /* Cocoa.framework */,
 			);
 			name = Frameworks;
 			path = ..;
@@ -2721,6 +2813,42 @@
 			productReference = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		1C56972024C3F1900077CA62 /* CopyMarkdownApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C56974D24C3F1910077CA62 /* Build configuration list for PBXNativeTarget "CopyMarkdownApp" */;
+			buildPhases = (
+				1C56971D24C3F1900077CA62 /* Sources */,
+				1C56971E24C3F1900077CA62 /* Frameworks */,
+				1C56971F24C3F1900077CA62 /* Resources */,
+				1C56974924C3F1910077CA62 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1C56973524C3F1910077CA62 /* PBXTargetDependency */,
+			);
+			name = CopyMarkdownApp;
+			productName = CopyMarkdownSafariExtension;
+			productReference = 1C56972124C3F1900077CA62 /* CopyMarkdownApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1C56973124C3F1910077CA62 /* CopyMarkdownExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1C56974C24C3F1910077CA62 /* Build configuration list for PBXNativeTarget "CopyMarkdownExtension" */;
+			buildPhases = (
+				1C56972E24C3F1910077CA62 /* Sources */,
+				1C56972F24C3F1910077CA62 /* Frameworks */,
+				1C56973024C3F1910077CA62 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CopyMarkdownExtension;
+			productName = "CopyMarkdownSafariExtension Extension";
+			productReference = 1C56973224C3F1910077CA62 /* CopyMarkdownExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		1C66A9BF19DD304D001B9A41 /* Smilies */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C66A9D819DD304F001B9A41 /* Build configuration list for PBXNativeTarget "Smilies" */;
@@ -2857,7 +2985,7 @@
 			attributes = {
 				CLASSPREFIX = "";
 				LastSwiftMigration = 0710;
-				LastSwiftUpdateCheck = 1000;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
@@ -2878,6 +3006,12 @@
 					1C49CFE122CB0102004B76E6 = {
 						CreatedOnToolsVersion = 11.0;
 						LastSwiftMigration = 1100;
+					};
+					1C56972024C3F1900077CA62 = {
+						CreatedOnToolsVersion = 12.0;
+					};
+					1C56973124C3F1910077CA62 = {
+						CreatedOnToolsVersion = 12.0;
 					};
 					1C66A9BF19DD304D001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -2954,6 +3088,8 @@
 				1C66A9C919DD304E001B9A41 /* SmiliesTests */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
 				1CBBAAB41D949EE000A847EC /* SmilieStickers */,
+				1C56972024C3F1900077CA62 /* CopyMarkdownApp */,
+				1C56973124C3F1910077CA62 /* CopyMarkdownExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -2991,6 +3127,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C56971F24C3F1900077CA62 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C56972C24C3F1900077CA62 /* Assets.xcassets in Resources */,
+				1C56972824C3F1900077CA62 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C56973024C3F1910077CA62 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C56973F24C3F1910077CA62 /* copy-awful-markdown.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3584,6 +3737,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1C56971D24C3F1900077CA62 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C56972A24C3F1900077CA62 /* ViewController.swift in Sources */,
+				1C56972524C3F1900077CA62 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1C56972E24C3F1910077CA62 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C56973A24C3F1910077CA62 /* SafariExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1C66A9BB19DD304D001B9A41 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3848,6 +4018,11 @@
 			target = 1C49CFE122CB0102004B76E6 /* CommonSPM */;
 			targetProxy = 1C49CFF422CB01D3004B76E6 /* PBXContainerItemProxy */;
 		};
+		1C56973524C3F1910077CA62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1C56973124C3F1910077CA62 /* CopyMarkdownExtension */;
+			targetProxy = 1C56973424C3F1910077CA62 /* PBXContainerItemProxy */;
+		};
 		1C66A9D319DD304F001B9A41 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
@@ -3900,6 +4075,14 @@
 				1C3A144519DFC5D10022C44C /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		1C56972624C3F1900077CA62 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1C56972724C3F1900077CA62 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -4009,6 +4192,296 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CommonSPM;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+			};
+			name = Release;
+		};
+		1C56974724C3F1910077CA62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/App/App.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../CopyMarkdown/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CopyMarkdown;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		1C56974824C3F1910077CA62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/App/App.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../CopyMarkdown/App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.CopyMarkdown;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		1C56974A24C3F1910077CA62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/Extension/Extension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../CopyMarkdown/Extension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.CopyMarkdown-Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		1C56974B24C3F1910077CA62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/Extension/Extension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9RR6L9X39A;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = ../CopyMarkdown/Extension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.CopyMarkdown-Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -4207,6 +4680,24 @@
 			buildConfigurations = (
 				1C49CFEC22CB0102004B76E6 /* Debug */,
 				1C49CFED22CB0102004B76E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1C56974C24C3F1910077CA62 /* Build configuration list for PBXNativeTarget "CopyMarkdownExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C56974A24C3F1910077CA62 /* Debug */,
+				1C56974B24C3F1910077CA62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1C56974D24C3F1910077CA62 /* Build configuration list for PBXNativeTarget "CopyMarkdownApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1C56974724C3F1910077CA62 /* Debug */,
+				1C56974824C3F1910077CA62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

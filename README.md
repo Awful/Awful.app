@@ -95,6 +95,7 @@ If you peek in the [Xcode](Xcode) folder you'll find:
 And in the Xcode workspace itself you'll find:
 
 * `SmilieExtractor`, an iOS app that takes `showsmilies.webarchive` and extracts resources for both Smilie Keyboard and Smilie Stickers. To update smilies, first save a fresh `showsmilies.webarchive` from the Forums, then run `SmilieExtractor`, then look at `scale-stickers`.
+* `CopyMarkdownApp`, a macOS Safari App Extension that adds a "Copy Awful Markdown" context menu item to the Forums. The copied markdown is ready to be pasted into a GitHub issue. 
 
 ### Loading fixtures into the app and/or working offline
 
