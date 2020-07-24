@@ -359,6 +359,8 @@
 					<string>Switch</string>
 					<key>Default</key>
 					<true/>
+					<key>Default~ios14</key>
+					<false/>
 					<key>Key</key>
 					<string>clipboard_url_enabled</string>
 				</dict>

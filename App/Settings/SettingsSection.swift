@@ -34,23 +34,15 @@ extension SettingsSection {
     
     var defaultValues: [String: Any] {
         return settings.reduce(into: [:], { defaultValues, setting in
-            guard let key = setting.key else { return }
-
-            if #available(iOS 13.0, *), let value = setting.defaultValueAsOfiOS13 {
-                defaultValues[key] = value
-            } else if let value = setting.defaultValue {
+            if let key = setting.key, let value = setting.defaultValue {
                 defaultValues[key] = value
             }
         })
     }
     
-    var device: String? {
-        return info["Device"] as? String
-    }
+    var device: String? { info["Device"] as? String }
     
-    var deviceCapability: String? {
-        return info["DeviceCapability"] as? String
-    }
+    var deviceCapability: String? { info["DeviceCapability"] as? String }
     
     @objc(SettingsSectionSetting) final class Setting: NSObject {
         @objc let info: [String: Any]
@@ -60,16 +52,16 @@ extension SettingsSection {
         }
         
         var defaultValue: Any? {
-            return info["Default"]
+            if #available(iOS 14.0, *), let value = info["Default~ios14"] {
+                return value
+            } else if #available(iOS 13.0, *), let value = info["Default~ios13"] {
+                return value
+            } else {
+                return info["Default"]
+            }
         }
 
-        var defaultValueAsOfiOS13: Any? {
-            return info["Default~ios13"]
-        }
-        
-        @objc var key: String? {
-            return info["Key"] as? String
-        }
+        @objc var key: String? { info["Key"] as? String }
     }
     
     @objc var settings: [Setting] {
@@ -77,7 +69,5 @@ extension SettingsSection {
         return raw.map { Setting(info: $0) }
     }
     
-    var visibleInSettingsTab: Bool {
-        return info["VisibleInSettingsTab"] as? Bool ?? true
-    }
+    var visibleInSettingsTab: Bool { info["VisibleInSettingsTab"] as? Bool ?? true }
 }
