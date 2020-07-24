@@ -823,6 +823,7 @@ final class PostsPageViewController: ViewController {
             var queryItems = [
                 URLQueryItem(name: "threadid", value: self.thread.threadID),
                 URLQueryItem(name: "perpage", value: "40"),
+                URLQueryItem(name: "noseen", value: "1"),
             ]
             if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
                 queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
@@ -920,7 +921,7 @@ final class PostsPageViewController: ViewController {
         if author != nil {
             items.append(IconActionItem(.showInThread, block: {
                 // This will add the thread to the navigation stack, giving us thread->author->thread.
-                AppDelegate.instance.open(route: .post(id: post.postID))
+                AppDelegate.instance.open(route: .post(id: post.postID, .noseen))
             }))
         }
 
@@ -976,13 +977,9 @@ final class PostsPageViewController: ViewController {
     override func updateUserActivityState(_ activity: NSUserActivity) {
         guard let page = page, case .specific = page else { return }
 
-        activity.route = {
-            if let author = author {
-                return .threadPageSingleUser(threadID: thread.threadID, userID: author.userID, page: page)
-            } else {
-                return .threadPage(threadID: thread.threadID, page: page)
-            }
-        }()
+        activity.route = author.map {
+            .threadPageSingleUser(threadID: thread.threadID, userID: $0.userID, page: page, .seen)
+        } ?? .threadPage(threadID: thread.threadID, page: page, .seen)
         activity.title = thread.title
 
         Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
@@ -1246,7 +1243,7 @@ extension PostsPageViewController: RenderViewDelegate {
     
     func didTapLink(to url: URL, in view: RenderView) {
         if let route = try? AwfulRoute(url) {
-            if url.fragment == "awful-ignored", case .post(let postID) = route {
+            if url.fragment == "awful-ignored", case let .post(id: postID, _) = route {
                 if let i = posts.firstIndex(where: { $0.postID == postID }) {
                     readIgnoredPostAtIndex(i)
                 }

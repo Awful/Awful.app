@@ -551,9 +551,12 @@ public final class ForumsClient {
      - Parameter writtenBy: A `User` whose posts should be the only ones listed. If `nil`, posts from all authors are listed.
      - Parameter updateLastReadPost: If `true`, the "last read post" marker on the Forums is updated to include the posts loaded on the page (which is probably what you want). If `false`, the next time the user asks for "next unread post" they'll get the same answer again.
      */
-    public func listPosts(in thread: AwfulThread, writtenBy author: User?, page: ThreadPage, updateLastReadPost: Bool)
-        -> CancellablePromise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)>
-    {
+    public func listPosts(
+        in thread: AwfulThread,
+        writtenBy author: User?,
+        page: ThreadPage,
+        updateLastReadPost: Bool
+    ) -> CancellablePromise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)> {
         guard
             let backgroundContext = backgroundManagedObjectContext,
             let mainContext = managedObjectContext else
@@ -830,7 +833,10 @@ public final class ForumsClient {
      - Parameter postID: The post's ID. Specified directly in case no such post exists, which would make for a useless `Post`.
      - Returns: The promise of a post (with its `thread` set) and the page containing the post (may be `AwfulThreadPage.last`).
      */
-    public func locatePost(id postID: String) -> Promise<(post: Post, page: ThreadPage)> {
+    public func locatePost(
+        id postID: String,
+        updateLastReadPost: Bool
+    ) -> Promise<(post: Post, page: ThreadPage)> {
         guard let mainContext = managedObjectContext else {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
@@ -864,7 +870,8 @@ public final class ForumsClient {
 
         let parameters: KeyValuePairs<String, Any> = [
             "goto": "post",
-            "postid": postID]
+            "postid": postID,
+            "noseen": updateLastReadPost ? "0" : "1"]
 
         fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
             .promise

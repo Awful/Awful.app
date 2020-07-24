@@ -29,7 +29,7 @@ final class ThreadPeekPopController: NSObject, PreviewActionItemProvider, UIView
                 return
             }
             let thread = postsViewController.thread
-            let route = AwfulRoute.threadPage(threadID: thread.threadID, page: postsViewController.page ?? .first)
+            let route = AwfulRoute.threadPage(threadID: thread.threadID, page: postsViewController.page ?? .first, .noseen)
             let url = route.httpURL
             UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
             UIPasteboard.general.coercedURL = url

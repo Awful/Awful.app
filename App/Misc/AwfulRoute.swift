@@ -40,7 +40,7 @@ enum AwfulRoute {
     case messagesList
 
     /// A specific post, which probably needs to be located before showing.
-    case post(id: String)
+    case post(id: String, UpdateSeen)
 
     /// A modal presentation of a specific user's profile.
     case profile(userID: String)
@@ -52,10 +52,20 @@ enum AwfulRoute {
     case settings
 
     /// A particular page of posts in a particular thread.
-    case threadPage(threadID: String, page: ThreadPage)
+    case threadPage(threadID: String, page: ThreadPage, UpdateSeen)
 
     /// A particula rpage of just one user's posts in a particular thread.
-    case threadPageSingleUser(threadID: String, userID: String, page: ThreadPage)
+    case threadPageSingleUser(threadID: String, userID: String, page: ThreadPage, UpdateSeen)
+}
+
+extension AwfulRoute {
+    /// Whether following the route should update the user's "last seen" marker in the thread.
+    enum UpdateSeen {
+        /// Following the route sets the user's "last seen" marker for the thread to the end of the page.
+        case seen
+        /// Following the route will not set or update the user's "last seen" marker for the thread.
+        case noseen
+    }
 }
 
 // MARK: Parsing URLs
@@ -89,6 +99,12 @@ extension AwfulRoute {
 
     private static func parse(awful url: URL) throws -> AwfulRoute {
         let pathComponents = url.pathComponents
+
+        var updateSeen: UpdateSeen {
+            url.valueForFirstQueryItem(named: "noseen")
+                .map(UpdateSeen.init(queryValue:))
+                ?? .noseen
+        }
 
         switch url.host ?? "" {
         case "banlist":
@@ -125,7 +141,7 @@ extension AwfulRoute {
 
         case "posts":
             if pathComponents.count == 2 {
-                return .post(id: pathComponents[1])
+                return .post(id: pathComponents[1], updateSeen)
             } else {
                 throw ParseError.invalidPath(reason: "posts requires exactly one path component")
             }
@@ -163,9 +179,9 @@ extension AwfulRoute {
             }
 
             if let userID = userID, userID != "0" {
-                return .threadPageSingleUser(threadID: threadID, userID: userID, page: page)
+                return .threadPageSingleUser(threadID: threadID, userID: userID, page: page, updateSeen)
             } else {
-                return .threadPage(threadID: threadID, page: page)
+                return .threadPage(threadID: threadID, page: page, updateSeen)
             }
 
         case "users":
@@ -192,6 +208,11 @@ extension AwfulRoute {
             throw ParseError.hostNotSupported
         }
 
+        var updateSeen: UpdateSeen {
+            url.valueForFirstQueryItem(named: "noseen")
+                .map(UpdateSeen.init(queryValue:))
+                ?? .noseen
+        }
 
         switch url.path.caseInsensitive {
         case "/banlist.php":
@@ -222,12 +243,12 @@ extension AwfulRoute {
                 url.valueForFirstQueryItem(named: "goto") == "post"
                     || url.valueForFirstQueryItem(named: "action") == "showpost"
             {
-                return .post(id: postID)
+                return .post(id: postID, updateSeen)
             }
             if let fragment = url.fragment, fragment.hasPrefix("post"), fragment.count > 4 {
                 let start = fragment.index(fragment.startIndex, offsetBy: 4)
                 let postID = String(fragment[start...])
-                return .post(id: postID)
+                return .post(id: postID, updateSeen)
             }
 
             // Rest of the routes here are specific to a thread, which has a thread ID.
@@ -252,13 +273,24 @@ extension AwfulRoute {
 
             // The Forums takes a user ID of `0` to mean "no user".
             if let userID = userID, userID != "0" {
-                return .threadPageSingleUser(threadID: threadID, userID: userID, page: page)
+                return .threadPageSingleUser(threadID: threadID, userID: userID, page: page, updateSeen)
             } else {
-                return .threadPage(threadID: threadID, page: page)
+                return .threadPage(threadID: threadID, page: page, updateSeen)
             }
 
         default:
             throw ParseError.pathNotSupported
+        }
+    }
+}
+
+private extension AwfulRoute.UpdateSeen {
+    init(queryValue: String) {
+        switch queryValue {
+        case "1":
+            self = .noseen
+        default:
+            self = .seen
         }
     }
 }
@@ -274,7 +306,7 @@ extension AwfulRoute {
         case .bookmarks:
             components.path = "bookmarkthreads.php"
 
-        case .forum(let id):
+        case let .forum(id: id):
             components.path = "forumdisplay.php"
             components.queryItems = [URLQueryItem(name: "forumid", value: id)]
 
@@ -284,7 +316,7 @@ extension AwfulRoute {
         case .lepersColony:
             components.path = "banlist.php"
 
-        case .message(let id):
+        case let .message(id: id):
             components.path = "private.php"
             components.queryItems = [
                 URLQueryItem(name: "action", value: "show"),
@@ -293,39 +325,42 @@ extension AwfulRoute {
         case .messagesList:
             components.path = "private.php"
 
-        case .post(let id):
+        case let .post(id: id, updateSeen):
             components.path = "showthread.php"
             components.queryItems = [
                 URLQueryItem(name: "goto", value: "post"),
-                URLQueryItem(name: "postid", value: id)]
+                URLQueryItem(name: "postid", value: id),
+                URLQueryItem(name: "noseen", value: updateSeen.queryValue)]
 
-        case .profile(let userID):
+        case let .profile(userID: userID):
             components.path = "member.php"
             components.queryItems = [
                 URLQueryItem(name: "action", value: "getinfo"),
                 URLQueryItem(name: "userid", value: userID)]
 
-        case .rapSheet(let userID):
+        case let .rapSheet(userID: userID):
             components.path = "banlist.php"
             components.queryItems = [URLQueryItem(name: "userid", value: userID)]
 
         case .settings:
             components.path = "usercp.php"
 
-        case .threadPage(let threadID, let page):
-            components.path = "showthread.php"
-            components.queryItems = [
-                URLQueryItem(name: "threadid", value: threadID),
-                URLQueryItem(name: "perpage", value: "40"),
-                page.queryItem]
-
-        case .threadPageSingleUser(let threadID, let userID, let page):
+        case let .threadPage(threadID: threadID, page: page, updateSeen):
             components.path = "showthread.php"
             components.queryItems = [
                 URLQueryItem(name: "threadid", value: threadID),
                 URLQueryItem(name: "perpage", value: "40"),
                 page.queryItem,
-                URLQueryItem(name: "userid", value: userID)]
+                URLQueryItem(name: "noseen", value: updateSeen.queryValue)]
+
+        case let .threadPageSingleUser(threadID: threadID, userID: userID, page: page, updateSeen):
+            components.path = "showthread.php"
+            components.queryItems = [
+                URLQueryItem(name: "threadid", value: threadID),
+                URLQueryItem(name: "perpage", value: "40"),
+                page.queryItem,
+                URLQueryItem(name: "userid", value: userID),
+                URLQueryItem(name: "noseen", value: updateSeen.queryValue)]
         }
         return components.url(relativeTo: baseURL)!
     }
@@ -340,6 +375,17 @@ private extension ThreadPage {
             return .init(name: "goto", value: "newpost")
         case .specific(let number):
             return .init(name: "pagenumber", value: "\(number)")
+        }
+    }
+}
+
+private extension AwfulRoute.UpdateSeen {
+    var queryValue: String {
+        switch self {
+        case .noseen:
+            return "1"
+        case .seen:
+            return "0"
         }
     }
 }

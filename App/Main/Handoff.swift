@@ -25,9 +25,9 @@ extension NSUserActivity {
                 let page = pageNumber.map { ThreadPage.specific($0) } ?? .nextUnread
 
                 if let userID = userInfo[Keys.filteredThreadUserID] as? String {
-                    return .threadPageSingleUser(threadID: threadID, userID: userID, page: page)
+                    return .threadPageSingleUser(threadID: threadID, userID: userID, page: page, .noseen)
                 } else {
-                    return .threadPage(threadID: threadID, page: page)
+                    return .threadPage(threadID: threadID, page: page, .noseen)
                 }
 
             case Handoff.ActivityType.listingThreads:
@@ -59,16 +59,16 @@ extension NSUserActivity {
             case .bookmarks:
                 addUserInfoEntries(from: [Keys.bookmarks: true])
 
-            case .forum(let forumID):
+            case let .forum(id: forumID):
                 addUserInfoEntries(from: [Keys.forumID: forumID])
 
-            case .message(let messageID):
+            case let .message(id: messageID):
                 addUserInfoEntries(from: [Keys.messageID: messageID])
 
-            case .threadPage(let threadID, .specific(let page)):
+            case let .threadPage(threadID: threadID, page: .specific(page), _):
                 addUserInfoEntries(from: [Keys.threadID: threadID, Keys.page: page])
 
-            case .threadPageSingleUser(let threadID, let userID, .specific(let page)):
+            case let .threadPageSingleUser(threadID: threadID, userID: userID, page: .specific(page), _):
                 addUserInfoEntries(from: [
                     Keys.threadID: threadID,
                     Keys.filteredThreadUserID: userID,

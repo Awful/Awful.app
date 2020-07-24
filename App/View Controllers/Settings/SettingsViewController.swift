@@ -388,7 +388,7 @@ final class SettingsViewController: TableViewController {
                 fatalError("setting \(setting) needs a ThreadID")
             }
 
-            AppDelegate.instance.open(route: .threadPage(threadID: threadID, page: .nextUnread))
+            AppDelegate.instance.open(route: .threadPage(threadID: threadID, page: .nextUnread, .seen))
 
         case (_, "theme-picker"):
             let mode: Theme.Mode

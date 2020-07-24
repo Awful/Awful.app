@@ -237,7 +237,7 @@ final class RapSheetViewController: TableViewController {
         let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
         guard let postID = punishment.post?.rawValue else { return }
 
-        AppDelegate.instance.open(route: .post(id: postID))
+        AppDelegate.instance.open(route: .post(id: postID, .noseen))
 
         if presentingViewController != nil {
             dismiss(animated: true)

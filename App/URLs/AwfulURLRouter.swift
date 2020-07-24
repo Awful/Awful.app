@@ -30,7 +30,7 @@ final class AwfulURLRouter: NSObject {
         case .bookmarks:
             return selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self) != nil
 
-        case .forum(let forumID):
+        case let .forum(id: forumID):
             let key = ForumKey(forumID: forumID)
             guard let forum = Forum.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? Forum else { return false }
             return jumpToForum(forum)
@@ -43,7 +43,7 @@ final class AwfulURLRouter: NSObject {
             rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
             return true
 
-        case .message(let messageID):
+        case let .message(id: messageID):
             guard let inbox = selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) else { return false }
             _ = inbox.navigationController?.popToViewController(inbox, animated: false)
 
@@ -77,15 +77,20 @@ final class AwfulURLRouter: NSObject {
         case .messagesList:
             return selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) != nil
 
-        case .post(let postID):
+        case let .post(id: postID, updateSeen):
             let key = PostKey(postID: postID)
-            if
-                let post = Post.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? Post,
-                let thread = post.thread,
-                post.page > 0
+            if let post = Post.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? Post,
+               let thread = post.thread,
+               post.page > 0
             {
                 let postsVC = PostsPageViewController(thread: thread)
-                postsVC.loadPage(.specific(post.page), updatingCache: true, updatingLastReadPost: true)
+                var updateLastRead: Bool {
+                    switch updateSeen {
+                    case .noseen: return false
+                    case .seen: return true
+                    }
+                }
+                postsVC.loadPage(.specific(post.page), updatingCache: true, updatingLastReadPost: updateLastRead)
                 postsVC.scrollPostToVisible(post)
                 return showPostsViewController(postsVC)
             }
@@ -94,7 +99,14 @@ final class AwfulURLRouter: NSObject {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)
             overlay?.tintColor = Theme.defaultTheme()["tintColor"]
 
-            ForumsClient.shared.locatePost(id: key.postID)
+            var updateLastRead: Bool {
+                switch updateSeen {
+                case .noseen: return false
+                case .seen: return true
+                }
+            }
+
+            ForumsClient.shared.locatePost(id: key.postID, updateLastReadPost: updateLastRead)
                 .done { [weak self] arg in
                     let (post, page) = arg
                     overlay?.dismiss(true, completion: {
@@ -117,7 +129,7 @@ final class AwfulURLRouter: NSObject {
             }
             return true
 
-        case .profile(let userID):
+        case let .profile(userID: userID):
             fetchUser(withUserID: userID) { (error, user) in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
@@ -131,7 +143,7 @@ final class AwfulURLRouter: NSObject {
             }
             return true
 
-        case .rapSheet(let userID):
+        case let .rapSheet(userID: userID):
             fetchUser(withUserID: userID) { error, user in
                 if let error = error {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
@@ -149,18 +161,17 @@ final class AwfulURLRouter: NSObject {
         case .settings:
             return selectTopmostViewController(containingViewControllerOfClass: SettingsViewController.self) != nil
 
-        case .threadPage(let threadID, let page):
-            return showThread(threadID, page: page)
+        case let .threadPage(threadID: threadID, page: page, updateSeen):
+            return showThread(threadID, page: page, updateSeen: updateSeen)
 
-        case .threadPageSingleUser(let threadID, let userID, let page):
-            return showThread(threadID, page: page, justPostsByUser: userID)
+        case let .threadPageSingleUser(threadID: threadID, userID: userID, page: page, updateSeen):
+            return showThread(threadID, page: page, justPostsByUser: userID, updateSeen: updateSeen)
         }
     }
     
     private func jumpToForum(_ forum: Forum) -> Bool {
-        if let
-            threadsVC = rootViewController.firstDescendantOfType(ThreadsTableViewController.self)
-            , threadsVC.forum == forum
+        if let threadsVC = rootViewController.firstDescendantOfType(ThreadsTableViewController.self),
+           threadsVC.forum === forum
         {
             _ = threadsVC.navigationController?.popToViewController(threadsVC, animated: true)
             return selectTopmostViewController(containingViewControllerOfClass: ThreadsTableViewController.self) != nil
@@ -175,13 +186,15 @@ final class AwfulURLRouter: NSObject {
         return false
     }
     
-    private func selectTopmostViewController<T: UIViewController>(containingViewControllerOfClass klass: T.Type) -> T? {
+    private func selectTopmostViewController<VC: UIViewController>(
+        containingViewControllerOfClass klass: VC.Type
+    ) -> VC? {
         guard let
             splitVC = rootViewController.children.first as? UISplitViewController,
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
             else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
-            guard let match = topmost.firstDescendantOfType(T.self) else { continue }
+            guard let match = topmost.firstDescendantOfType(VC.self) else { continue }
             tabBarVC.selectedViewController = topmost
             splitVC.showPrimaryViewController()
             return match
@@ -189,7 +202,12 @@ final class AwfulURLRouter: NSObject {
         return nil
     }
     
-    private func showThread(_ threadID: String, page: ThreadPage, justPostsByUser userID: String? = nil) -> Bool {
+    private func showThread(
+        _ threadID: String,
+        page: ThreadPage,
+        justPostsByUser userID: String? = nil,
+        updateSeen: AwfulRoute.UpdateSeen
+    ) -> Bool {
         let threadKey = ThreadKey(threadID: threadID)
         let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: managedObjectContext) as! AwfulThread
         let postsVC: PostsPageViewController
@@ -203,7 +221,13 @@ final class AwfulURLRouter: NSObject {
         
         try! managedObjectContext.save()
 
-        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+        var updateLastRead: Bool {
+            switch updateSeen {
+            case .noseen: return false
+            case .seen: return true
+            }
+        }
+        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: updateLastRead)
         
         return showPostsViewController(postsVC)
     }
