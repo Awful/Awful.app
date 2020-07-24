@@ -22,7 +22,6 @@ PODS:
     - MRProgress/Helper
   - PSMenuItem (1.0.0)
   - PullToRefresher (2.0.2)
-  - SwiftTweaks (4.0.2)
 
 DEPENDENCIES:
   - FLAnimatedImage
@@ -30,10 +29,9 @@ DEPENDENCIES:
   - MRProgress/Overlay
   - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (from `https://github.com/MindSea/PullToRefresh`, branch `fix-simultaneous-access`)
-  - SwiftTweaks (from `https://github.com/Khan/SwiftTweaks`, branch `master`)
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - FLAnimatedImage
     - KVOController
     - MRProgress
@@ -45,9 +43,6 @@ EXTERNAL SOURCES:
   PullToRefresher:
     :branch: fix-simultaneous-access
     :git: https://github.com/MindSea/PullToRefresh
-  SwiftTweaks:
-    :branch: master
-    :git: https://github.com/Khan/SwiftTweaks
 
 CHECKOUT OPTIONS:
   PSMenuItem:
@@ -56,9 +51,6 @@ CHECKOUT OPTIONS:
   PullToRefresher:
     :commit: 087ec3fb5a2f7674f269b919299636d1959a4391
     :git: https://github.com/MindSea/PullToRefresh
-  SwiftTweaks:
-    :commit: c1901a615177c3cc63319a4c900f8de69178d5e8
-    :git: https://github.com/Khan/SwiftTweaks
 
 SPEC CHECKSUMS:
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
@@ -66,8 +58,7 @@ SPEC CHECKSUMS:
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   PullToRefresher: 9d66e6a86fb9e1d8fa861c4bbd263e88f5dfc0bd
-  SwiftTweaks: f23f937ed0c16c69a1063edce5a04fa5926bc3ec
 
-PODFILE CHECKSUM: f58e29d738e5fadc4b73c26df6bc863e7ec1e9af
+PODFILE CHECKSUM: 2b3690ba65dbeb861f674d5ae35000a769b37c60
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.3

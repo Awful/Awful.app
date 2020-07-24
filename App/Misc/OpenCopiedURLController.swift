@@ -40,8 +40,7 @@ final class OpenCopiedURLController {
             client.isLoggedIn,
             UserDefaults.standard.openCopiedURLAfterBecomingActive,
             let url = pasteboard.coercedURL,
-            UserDefaults.standard.lastOfferedPasteboardURLString != url.absoluteString
-                || Tweaks.defaultStore.assign(Tweaks.launch.offerToOpenSameCopiedURL),
+            UserDefaults.standard.lastOfferedPasteboardURLString != url.absoluteString,
             let scheme = url.scheme,
             !Bundle.main.urlTypes
                 .flatMap({ $0.schemes })

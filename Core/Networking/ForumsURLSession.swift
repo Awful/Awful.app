@@ -87,10 +87,8 @@ internal final class ForumsURLSession {
         method: Method,
         urlString: String,
         parameters: S?,
-        redirectBlock: WillRedirectCallback? = nil)
-        -> (promise: PromiseType, cancellable: Cancellable)
-        where S: Sequence, S.Element == Dictionary<String, Any>.Element
-    {
+        redirectBlock: WillRedirectCallback? = nil
+    ) -> (promise: PromiseType, cancellable: Cancellable) where S: Sequence, S.Element == KeyValuePairs<String, Any>.Element {
         guard
             let url = URL(string: urlString, relativeTo: baseURL),
             var components = URLComponents(url: url, resolvingAgainstBaseURL: true)

@@ -39,7 +39,7 @@ final class ReplyWorkspace: NSObject {
         let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view, animated: false)
         progressView?.titleLabelText = "Reading post…"
 
-        _ = ForumsClient.shared.findBBcodeContents(of: post)
+        ForumsClient.shared.findBBcodeContents(of: post)
             .done { [weak self] bbcode in
                 self?.compositionViewController.textView.text = bbcode
             }

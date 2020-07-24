@@ -45,7 +45,7 @@ final class RapSheetViewController: TableViewController {
     }
     
     private func load(_ page: Int) {
-        _ = ForumsClient.shared.listPunishments(of: user, page: page)
+        ForumsClient.shared.listPunishments(of: user, page: page)
             .done { [weak self] newPunishments in
                 guard let self = self else { return }
 

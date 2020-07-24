@@ -406,33 +406,6 @@
 			</array>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>Tweaks</string>
-			<key>Explanation</key>
-			<string>Tweaks are only available in beta builds. When enabled, physically shaking your device will bring up a hidden settings window. Changes to this setting will only take effect after restarting Awful (sorry).</string>
-			<key>RequiresTweaksEnabled</key>
-			<true/>
-			<key>Settings</key>
-			<array>
-				<dict>
-					<key>Title</key>
-					<string>Show Tweaks on Shake</string>
-					<key>Type</key>
-					<string>Switch</string>
-					<key>Default</key>
-					<true/>
-					<key>Key</key>
-					<string>show_tweaks_on_shake</string>
-				</dict>
-				<dict>
-					<key>Title</key>
-					<string>Show Tweaks</string>
-					<key>Action</key>
-					<string>ShowTweaks</string>
-				</dict>
-			</array>
-		</dict>
-		<dict>
 			<key>VisibleInSettingsTab</key>
 			<false/>
 			<key>Settings</key>

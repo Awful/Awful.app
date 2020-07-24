@@ -440,7 +440,7 @@ extension PostsPageView {
         }
 
         var triggeredFraction: CGFloat {
-            let effectiveControlHeight = refreshControlHeight + Tweaks.assign(Tweaks.posts.pullForNextExtraDistance)
+            let effectiveControlHeight = refreshControlHeight + 45
             return (visibleBottom / effectiveControlHeight).clamp(0 ... .greatestFiniteMagnitude)
         }
     }

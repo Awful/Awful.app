@@ -4,7 +4,6 @@
 
 import AwfulCore
 import CoreData
-import SwiftTweaks
 
 private let Log = Logger.get()
 
@@ -51,10 +50,6 @@ final class SettingsViewController: TableViewController {
                 break
             }
             
-            if section.requiresTweaksEnabled, !Tweaks.isEnabled {
-                return false
-            }
-
             if !section.visibleInSettingsTab {
                 return false
             }
@@ -394,23 +389,6 @@ final class SettingsViewController: TableViewController {
             }
 
             AppDelegate.instance.open(route: .threadPage(threadID: threadID, page: .nextUnread))
-            
-        case ("ShowTweaks"?, _):
-            var topViewController = AppDelegate.instance.window?.rootViewController
-            while topViewController?.presentedViewController != nil {
-                topViewController = topViewController?.presentedViewController
-            }
-            
-            let tweaksVC = TweaksViewController(tweakStore: Tweaks.defaultStore, delegate: self)
-            switch topViewController?.traitCollection.horizontalSizeClass {
-            case .regular?:
-                tweaksVC.modalPresentationStyle = .formSheet
-            case .compact?, .unspecified?, nil:
-                break
-            @unknown default:
-                assertionFailure("handle unknown size class")
-            }
-            topViewController?.present(tweaksVC, animated: true)
 
         case (_, "theme-picker"):
             let mode: Theme.Mode
@@ -490,12 +468,6 @@ final class SettingsViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return sections[section]["Explanation"] as? String
-    }
-}
-
-extension SettingsViewController: TweaksViewControllerDelegate {
-    func tweaksViewControllerRequestsDismiss(_ tweaksViewController: TweaksViewController, completion: (() -> ())?) {
-        tweaksViewController.dismiss(animated: true, completion: completion)
     }
 }
 

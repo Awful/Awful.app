@@ -6,7 +6,6 @@ import AVFoundation
 import AwfulCore
 import Nuke
 import Smilies
-import SwiftTweaks
 import UIKit
 import WebKit
 
@@ -55,11 +54,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         ImagePipeline.Configuration.isAnimatedImageDataEnabled = true
         
-        if Tweaks.isEnabled, UserDefaults.standard.showTweaksOnShake {
-            window = TweakWindow(frame: UIScreen.main.bounds, gestureType: .shake, tweakStore: Tweaks.defaultStore)
-        } else {
-            window = UIWindow(frame: UIScreen.main.bounds)
-        }
+        window = UIWindow(frame: UIScreen.main.bounds)
         window?.tintColor = Theme.defaultTheme()["tintColor"]
         
         if ForumsClient.shared.isLoggedIn {

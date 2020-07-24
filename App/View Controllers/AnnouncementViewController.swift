@@ -418,8 +418,14 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
             return "ipad"
-        case .phone, .carPlay, .tv, .unspecified:
+        case .phone:
             return "iphone"
+        case .carPlay, .tv, .unspecified:
+            fallthrough
+        #if swift(>=5.3)
+        case .mac:
+            fallthrough
+        #endif
         @unknown default:
             assertionFailure("handle unknown user interface idiom")
             return "iphone"

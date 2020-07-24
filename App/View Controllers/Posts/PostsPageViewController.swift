@@ -621,14 +621,7 @@ final class PostsPageViewController: ViewController {
             return
         }
 
-        // Sometimes a delay is handy when working on the refresh control (making sure it is working as expected without having the whole screen reload after 300ms).
-        let delay = Tweaks.defaultStore.assign(Tweaks.posts.delayBeforePullForNext)
-        let loadNext = { self.loadPage(nextPage, updatingCache: true, updatingLastReadPost: true) }
-        if delay > 0 {
-            after(seconds: delay).done(loadNext)
-        } else {
-            loadNext()
-        }
+        loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
     }
     
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
@@ -931,12 +924,6 @@ final class PostsPageViewController: ViewController {
             }))
         }
 
-        if Tweaks.defaultStore.assign(Tweaks.posts.showCopyAsMarkdownAction) {
-            items.append(IconActionItem(.copyTitle, title: "Copy Markdown", block: {
-                UIPasteboard.general.setValue(post.gitHubFlavoredMarkdown, forPasteboardType: kUTTypePlainText as String)
-            }))
-        }
-        
         let actionVC = InAppActionViewController()
         actionVC.items = items
         actionVC.title = "\(possessiveUsername) Post"

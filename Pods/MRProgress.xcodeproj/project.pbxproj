@@ -8,63 +8,64 @@
 
 /* Begin PBXBuildFile section */
 		2BA5ED85E38E9136EFDF9F262C8D2F40 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BE9D6660584DB07B2311A16DA121D91 /* CoreGraphics.framework */; };
-		2F746B64CE23DFB976E761A320B51B26 /* MRBlurView.h in Headers */ = {isa = PBXBuildFile; fileRef = 61CE9646659787B352ED71D2F976D15B /* MRBlurView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2F746B64CE23DFB976E761A320B51B26 /* MRBlurView.h in Headers */ = {isa = PBXBuildFile; fileRef = B41A39B29E9DEB06C900525F655EC5E0 /* MRBlurView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		317CD146D474F39A04C1F2E3F99EDEDC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3C0A9B4473109DE88F3DBC353F9C656 /* Foundation.framework */; };
-		383EE786E00C285AFEFAC043EEEAA54E /* MRStopableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 55BAF8090C4CC6CF7AB5B41314621B14 /* MRStopableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3DDEBC533628F9BBD4FB285B8BB31074 /* MRProgressOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C37E64B3C821B84237793439585B8BC /* MRProgressOverlayView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		4E5CAE910E8FE3F32F06FE270371DCFB /* MRProgress-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BABA4735B77CDAD4E52292430557751F /* MRProgress-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		50AA45F669657669BF2C4B43706A550C /* MRCircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 56E14506448A2AE5275B5CE0A4F5895B /* MRCircularProgressView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		50F80FA6F60C6D4D990A3218410567B1 /* MRProgressHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EDAF4C277C3752CF7DF47B087771DBC /* MRProgressHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		549F305ACAACE68CB6C8E7A66F122687 /* MRActivityIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 252490EAB8246E07EB4146CEBDBC49B2 /* MRActivityIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		59C8BB852F2FA26ABFB4160804113033 /* MRProgressOverlayView.h in Headers */ = {isa = PBXBuildFile; fileRef = 23BCF990A74BDF68B3CAC1BA6BC4BBB2 /* MRProgressOverlayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5DDB3350066A30E8645AA9C33D5AB731 /* MRProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4784AB77587FE8AF90922A5EF33685DA /* MRProgressView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		6208E8617D71BCC5D85192627179B5D7 /* MRProgress-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EC501EE27703FA153AF82B691E383E /* MRProgress-dummy.m */; };
-		7B6561675B6FB9BCB497A77E94E9C026 /* MRCircularProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D93A54E1BB2950BB91C7A2C3890568 /* MRCircularProgressView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7F84431F7D5AD581BDE1BF7D3C507C5D /* MRIconView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA11B9983C5130062E94D502B7BA58DE /* MRIconView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		80E303A8ABF46FB852A78F44BDB39C9A /* MRIconView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9661482AA4627119052ABBD3D1161868 /* MRIconView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8436670AC105D565E3EDB985E8108AD9 /* MRStopButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2085CA4DEA9D58D28F21BF40096DDA00 /* MRStopButton.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		383EE786E00C285AFEFAC043EEEAA54E /* MRStopableView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE023F744EABFCDE37909201EB7EF072 /* MRStopableView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3DDEBC533628F9BBD4FB285B8BB31074 /* MRProgressOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 313FF792B00F57C5FAE6EDF875291E6E /* MRProgressOverlayView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		4E5CAE910E8FE3F32F06FE270371DCFB /* MRProgress-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E22CD1DA46A8AA83E86BDD1807FA190 /* MRProgress-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		50AA45F669657669BF2C4B43706A550C /* MRCircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE33581A6CF9E4BFE29AA0D639AD53F0 /* MRCircularProgressView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		50F80FA6F60C6D4D990A3218410567B1 /* MRProgressHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B752460CBD3B7E3F9AE28AB4FE73E196 /* MRProgressHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		549F305ACAACE68CB6C8E7A66F122687 /* MRActivityIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7153545FC51BC66DEDCF24E80AB4F87E /* MRActivityIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		59C8BB852F2FA26ABFB4160804113033 /* MRProgressOverlayView.h in Headers */ = {isa = PBXBuildFile; fileRef = 46070B6DD318651C6DFC2D9813CC11A8 /* MRProgressOverlayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5DDB3350066A30E8645AA9C33D5AB731 /* MRProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8874D8D3610D08E6DE19307F0829F1E0 /* MRProgressView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		6208E8617D71BCC5D85192627179B5D7 /* MRProgress-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = CFCF0266B3BA7A06A86BE2D154B30976 /* MRProgress-dummy.m */; };
+		7B6561675B6FB9BCB497A77E94E9C026 /* MRCircularProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = 60FAC9382FE95C1A9EF4250D10E01883 /* MRCircularProgressView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7F84431F7D5AD581BDE1BF7D3C507C5D /* MRIconView.m in Sources */ = {isa = PBXBuildFile; fileRef = 49A52086AAF24DE7EDB106AA9D8AD327 /* MRIconView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		80E303A8ABF46FB852A78F44BDB39C9A /* MRIconView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B9E6CDD6BD09F8C603F23AFB07A9C4C /* MRIconView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8436670AC105D565E3EDB985E8108AD9 /* MRStopButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CB852F44DF61A5406A855C2AA7EC583 /* MRStopButton.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		8A716847C2C5E8A0AF72665C5684A82A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7B52AC48CC57791D9A25D64B4C61544 /* Accelerate.framework */; };
-		8CB842E468FEE89A6461ED3CE2942F62 /* MRBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 626D74E7CE2CF802B1CC13A44E11C9B9 /* MRBlurView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		977AEEED59A11D272D86D41AE81A8168 /* UIImage+MRImageEffects.h in Headers */ = {isa = PBXBuildFile; fileRef = FCB6A8DD951031DF184AFAA0CFEE79EC /* UIImage+MRImageEffects.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A26D1F0D7D7330141818231F4B7807BD /* UIImage+MRImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 40DF879E8FC4D982C42D5267DFD9BBFA /* UIImage+MRImageEffects.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		A9BF3C4BD208A9BD244FD33704C5380C /* MRStopButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 452778937F6F8B6DAE6EF6E562678A56 /* MRStopButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CB842E468FEE89A6461ED3CE2942F62 /* MRBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BA60AB2FF9FF28F0B12F92F876B09B5 /* MRBlurView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		977AEEED59A11D272D86D41AE81A8168 /* UIImage+MRImageEffects.h in Headers */ = {isa = PBXBuildFile; fileRef = 70305F207BF34D5A480B1C1BDB0F97F6 /* UIImage+MRImageEffects.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A26D1F0D7D7330141818231F4B7807BD /* UIImage+MRImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = B843EE97753E2A624EFF9DF0B319E460 /* UIImage+MRImageEffects.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		A9BF3C4BD208A9BD244FD33704C5380C /* MRStopButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 00436CF5E186695B24CE8BE70B63F37F /* MRStopButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CA410C67AF307DBF08EEB488956B84A8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 277BC817A5EA0F62401B9E66752D565D /* UIKit.framework */; };
-		DA684DD038DFE0D31B38565B0ABDF5EB /* MRActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 464216AB8608513DED5F31C44E03E279 /* MRActivityIndicatorView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		DA684DD038DFE0D31B38565B0ABDF5EB /* MRActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06BF0C026B9D29FA83C214363C07255A /* MRActivityIndicatorView.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		E02D04A1A6C15FD6391E28A3666A6155 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 607BCD97F8E98C50A2F110ACD73BFCA9 /* QuartzCore.framework */; };
-		E17BFFFE3A1C04037739EB13B72846E7 /* MRProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3F7A8844F03F81D2A632E489004EB5EA /* MRProgressView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E17BFFFE3A1C04037739EB13B72846E7 /* MRProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = 54A71BDE6A4BFB0F613C5795392D8305 /* MRProgressView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		00EC501EE27703FA153AF82B691E383E /* MRProgress-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MRProgress-dummy.m"; sourceTree = "<group>"; };
-		2085CA4DEA9D58D28F21BF40096DDA00 /* MRStopButton.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRStopButton.m; path = src/Components/MRStopButton.m; sourceTree = "<group>"; };
-		23BCF990A74BDF68B3CAC1BA6BC4BBB2 /* MRProgressOverlayView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRProgressOverlayView.h; path = src/Components/MRProgressOverlayView.h; sourceTree = "<group>"; };
-		252490EAB8246E07EB4146CEBDBC49B2 /* MRActivityIndicatorView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRActivityIndicatorView.h; path = src/Components/MRActivityIndicatorView.h; sourceTree = "<group>"; };
+		00436CF5E186695B24CE8BE70B63F37F /* MRStopButton.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRStopButton.h; path = src/Components/MRStopButton.h; sourceTree = "<group>"; };
+		06BF0C026B9D29FA83C214363C07255A /* MRActivityIndicatorView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRActivityIndicatorView.m; path = src/Components/MRActivityIndicatorView.m; sourceTree = "<group>"; };
+		0BA60AB2FF9FF28F0B12F92F876B09B5 /* MRBlurView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRBlurView.m; path = src/Blur/MRBlurView.m; sourceTree = "<group>"; };
+		0E22CD1DA46A8AA83E86BDD1807FA190 /* MRProgress-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MRProgress-umbrella.h"; sourceTree = "<group>"; };
 		277BC817A5EA0F62401B9E66752D565D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		29A3B208AA47703FAAC073A4A793C10E /* MRProgress.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MRProgress.framework; path = MRProgress.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		313FF792B00F57C5FAE6EDF875291E6E /* MRProgressOverlayView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRProgressOverlayView.m; path = src/Components/MRProgressOverlayView.m; sourceTree = "<group>"; };
+		3B9E6CDD6BD09F8C603F23AFB07A9C4C /* MRIconView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRIconView.h; path = src/Components/MRIconView.h; sourceTree = "<group>"; };
 		3BE9D6660584DB07B2311A16DA121D91 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
-		3EDAF4C277C3752CF7DF47B087771DBC /* MRProgressHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRProgressHelper.h; path = src/Utils/MRProgressHelper.h; sourceTree = "<group>"; };
-		3F7A8844F03F81D2A632E489004EB5EA /* MRProgressView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRProgressView.h; path = src/Components/MRProgressView.h; sourceTree = "<group>"; };
-		40DF879E8FC4D982C42D5267DFD9BBFA /* UIImage+MRImageEffects.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+MRImageEffects.m"; path = "src/Blur/UIImage+MRImageEffects.m"; sourceTree = "<group>"; };
-		452778937F6F8B6DAE6EF6E562678A56 /* MRStopButton.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRStopButton.h; path = src/Components/MRStopButton.h; sourceTree = "<group>"; };
-		464216AB8608513DED5F31C44E03E279 /* MRActivityIndicatorView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRActivityIndicatorView.m; path = src/Components/MRActivityIndicatorView.m; sourceTree = "<group>"; };
-		4784AB77587FE8AF90922A5EF33685DA /* MRProgressView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRProgressView.m; path = src/Components/MRProgressView.m; sourceTree = "<group>"; };
-		55BAF8090C4CC6CF7AB5B41314621B14 /* MRStopableView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRStopableView.h; path = src/Components/MRStopableView.h; sourceTree = "<group>"; };
-		56E14506448A2AE5275B5CE0A4F5895B /* MRCircularProgressView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRCircularProgressView.m; path = src/Components/MRCircularProgressView.m; sourceTree = "<group>"; };
+		46070B6DD318651C6DFC2D9813CC11A8 /* MRProgressOverlayView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRProgressOverlayView.h; path = src/Components/MRProgressOverlayView.h; sourceTree = "<group>"; };
+		49A52086AAF24DE7EDB106AA9D8AD327 /* MRIconView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRIconView.m; path = src/Components/MRIconView.m; sourceTree = "<group>"; };
+		54A71BDE6A4BFB0F613C5795392D8305 /* MRProgressView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRProgressView.h; path = src/Components/MRProgressView.h; sourceTree = "<group>"; };
+		582961CF79655B2E542A768E0A2DE9FC /* MRProgress.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MRProgress.modulemap; sourceTree = "<group>"; };
+		5AC3F146980FD23CD605C3BA96D8FC92 /* MRProgress.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MRProgress.debug.xcconfig; sourceTree = "<group>"; };
+		5CB852F44DF61A5406A855C2AA7EC583 /* MRStopButton.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRStopButton.m; path = src/Components/MRStopButton.m; sourceTree = "<group>"; };
 		607BCD97F8E98C50A2F110ACD73BFCA9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
-		61CE9646659787B352ED71D2F976D15B /* MRBlurView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRBlurView.h; path = src/Blur/MRBlurView.h; sourceTree = "<group>"; };
-		626D74E7CE2CF802B1CC13A44E11C9B9 /* MRBlurView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRBlurView.m; path = src/Blur/MRBlurView.m; sourceTree = "<group>"; };
-		7C37E64B3C821B84237793439585B8BC /* MRProgressOverlayView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRProgressOverlayView.m; path = src/Components/MRProgressOverlayView.m; sourceTree = "<group>"; };
-		8C45F19BF283633E131589DFCD6B525D /* MRProgress-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "MRProgress-Info.plist"; sourceTree = "<group>"; };
-		8D68E07466F9F648DB616447CA2B3281 /* MRProgress.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MRProgress.modulemap; sourceTree = "<group>"; };
-		9661482AA4627119052ABBD3D1161868 /* MRIconView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRIconView.h; path = src/Components/MRIconView.h; sourceTree = "<group>"; };
-		A9D93A54E1BB2950BB91C7A2C3890568 /* MRCircularProgressView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRCircularProgressView.h; path = src/Components/MRCircularProgressView.h; sourceTree = "<group>"; };
-		AA11B9983C5130062E94D502B7BA58DE /* MRIconView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRIconView.m; path = src/Components/MRIconView.m; sourceTree = "<group>"; };
-		ABD2D65417513AD950E93215E7F0902F /* MRProgress-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MRProgress-prefix.pch"; sourceTree = "<group>"; };
+		60FAC9382FE95C1A9EF4250D10E01883 /* MRCircularProgressView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRCircularProgressView.h; path = src/Components/MRCircularProgressView.h; sourceTree = "<group>"; };
+		6455A948F04A542986AD68E8F1CBCE06 /* MRProgress-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "MRProgress-Info.plist"; sourceTree = "<group>"; };
+		70305F207BF34D5A480B1C1BDB0F97F6 /* UIImage+MRImageEffects.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+MRImageEffects.h"; path = "src/Blur/UIImage+MRImageEffects.h"; sourceTree = "<group>"; };
+		7153545FC51BC66DEDCF24E80AB4F87E /* MRActivityIndicatorView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRActivityIndicatorView.h; path = src/Components/MRActivityIndicatorView.h; sourceTree = "<group>"; };
+		8874D8D3610D08E6DE19307F0829F1E0 /* MRProgressView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRProgressView.m; path = src/Components/MRProgressView.m; sourceTree = "<group>"; };
+		B41A39B29E9DEB06C900525F655EC5E0 /* MRBlurView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRBlurView.h; path = src/Blur/MRBlurView.h; sourceTree = "<group>"; };
+		B752460CBD3B7E3F9AE28AB4FE73E196 /* MRProgressHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRProgressHelper.h; path = src/Utils/MRProgressHelper.h; sourceTree = "<group>"; };
 		B7B52AC48CC57791D9A25D64B4C61544 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Accelerate.framework; sourceTree = DEVELOPER_DIR; };
-		BABA4735B77CDAD4E52292430557751F /* MRProgress-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MRProgress-umbrella.h"; sourceTree = "<group>"; };
+		B843EE97753E2A624EFF9DF0B319E460 /* UIImage+MRImageEffects.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+MRImageEffects.m"; path = "src/Blur/UIImage+MRImageEffects.m"; sourceTree = "<group>"; };
+		CB534B3BF0A2D321B4D7AB6451610EDC /* MRProgress.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MRProgress.release.xcconfig; sourceTree = "<group>"; };
+		CE023F744EABFCDE37909201EB7EF072 /* MRStopableView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MRStopableView.h; path = src/Components/MRStopableView.h; sourceTree = "<group>"; };
+		CE33581A6CF9E4BFE29AA0D639AD53F0 /* MRCircularProgressView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MRCircularProgressView.m; path = src/Components/MRCircularProgressView.m; sourceTree = "<group>"; };
+		CFCF0266B3BA7A06A86BE2D154B30976 /* MRProgress-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MRProgress-dummy.m"; sourceTree = "<group>"; };
 		D3C0A9B4473109DE88F3DBC353F9C656 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		E47C1F3143D9ED2ED7EB088427E3BBD5 /* MRProgress.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MRProgress.xcconfig; sourceTree = "<group>"; };
-		FCB6A8DD951031DF184AFAA0CFEE79EC /* UIImage+MRImageEffects.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+MRImageEffects.h"; path = "src/Blur/UIImage+MRImageEffects.h"; sourceTree = "<group>"; };
+		D9BDBB1968416C35004A0FF3B4E9704B /* MRProgress-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MRProgress-prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,56 +84,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		334CBEFC6D858D82C2CEBF58A50ED621 /* Helper */ = {
+		01656EB0144561FAEDB5CDD74E38760A /* Circular */ = {
 			isa = PBXGroup;
 			children = (
-				3EDAF4C277C3752CF7DF47B087771DBC /* MRProgressHelper.h */,
+				60FAC9382FE95C1A9EF4250D10E01883 /* MRCircularProgressView.h */,
+				CE33581A6CF9E4BFE29AA0D639AD53F0 /* MRCircularProgressView.m */,
 			);
-			name = Helper;
+			name = Circular;
 			sourceTree = "<group>";
 		};
-		3BABA33757A77101106D7F3FBE84705D /* Support Files */ = {
+		2FB83E71B568DAB81D18D3CDB16B35EF /* MRProgress */ = {
 			isa = PBXGroup;
 			children = (
-				8D68E07466F9F648DB616447CA2B3281 /* MRProgress.modulemap */,
-				E47C1F3143D9ED2ED7EB088427E3BBD5 /* MRProgress.xcconfig */,
-				00EC501EE27703FA153AF82B691E383E /* MRProgress-dummy.m */,
-				8C45F19BF283633E131589DFCD6B525D /* MRProgress-Info.plist */,
-				ABD2D65417513AD950E93215E7F0902F /* MRProgress-prefix.pch */,
-				BABA4735B77CDAD4E52292430557751F /* MRProgress-umbrella.h */,
+				D3B603790F2FB573DD1400FBCBD6F262 /* ActivityIndicator */,
+				A58C43BE65D5E96D3A2F499B833F7F78 /* Blur */,
+				01656EB0144561FAEDB5CDD74E38760A /* Circular */,
+				D6ADB8C48C6F0F9257BFC59E609386E7 /* Helper */,
+				57F4B34BEFAF2874C007CEB92758D75E /* Icons */,
+				E3E4E679518E9326F8A59F8AD4DE864E /* Overlay */,
+				F735687DF008256E67DFD9BF92AED129 /* ProgressBaseClass */,
+				D782662A8881D79A420CB3485D041F79 /* Stopable */,
+				F1121CCB3FB0B73A2046B642CA91AB2A /* Support Files */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/MRProgress";
+			name = MRProgress;
+			path = MRProgress;
 			sourceTree = "<group>";
 		};
-		5D5C51ADEF0AA95C1BCDE4FB1B07994E /* Blur */ = {
+		57F4B34BEFAF2874C007CEB92758D75E /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				61CE9646659787B352ED71D2F976D15B /* MRBlurView.h */,
-				626D74E7CE2CF802B1CC13A44E11C9B9 /* MRBlurView.m */,
-				FCB6A8DD951031DF184AFAA0CFEE79EC /* UIImage+MRImageEffects.h */,
-				40DF879E8FC4D982C42D5267DFD9BBFA /* UIImage+MRImageEffects.m */,
+				3B9E6CDD6BD09F8C603F23AFB07A9C4C /* MRIconView.h */,
+				49A52086AAF24DE7EDB106AA9D8AD327 /* MRIconView.m */,
 			);
-			name = Blur;
-			sourceTree = "<group>";
-		};
-		80BED147EE3C7CA85C26010E2563663A /* Stopable */ = {
-			isa = PBXGroup;
-			children = (
-				55BAF8090C4CC6CF7AB5B41314621B14 /* MRStopableView.h */,
-				452778937F6F8B6DAE6EF6E562678A56 /* MRStopButton.h */,
-				2085CA4DEA9D58D28F21BF40096DDA00 /* MRStopButton.m */,
-			);
-			name = Stopable;
-			sourceTree = "<group>";
-		};
-		8AB4982D745BDB7BB6AE01CF329EA285 /* Overlay */ = {
-			isa = PBXGroup;
-			children = (
-				23BCF990A74BDF68B3CAC1BA6BC4BBB2 /* MRProgressOverlayView.h */,
-				7C37E64B3C821B84237793439585B8BC /* MRProgressOverlayView.m */,
-			);
-			name = Overlay;
+			name = Icons;
 			sourceTree = "<group>";
 		};
 		8D2B64466EE38BDFA815270B1F6B2070 /* iOS */ = {
@@ -151,44 +135,9 @@
 			isa = PBXGroup;
 			children = (
 				A354416E1332A771214C1D7BFE86E6E1 /* Frameworks */,
-				9395821873342C56D7B79BCB7D3028DE /* MRProgress */,
+				2FB83E71B568DAB81D18D3CDB16B35EF /* MRProgress */,
 				9C3F14C33553E9EB0F59FF53428246E6 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		92A12435FAF6D486BFB1F883F992F178 /* Circular */ = {
-			isa = PBXGroup;
-			children = (
-				A9D93A54E1BB2950BB91C7A2C3890568 /* MRCircularProgressView.h */,
-				56E14506448A2AE5275B5CE0A4F5895B /* MRCircularProgressView.m */,
-			);
-			name = Circular;
-			sourceTree = "<group>";
-		};
-		9395821873342C56D7B79BCB7D3028DE /* MRProgress */ = {
-			isa = PBXGroup;
-			children = (
-				96FFE4263DDE81B84E178E89312BB042 /* ActivityIndicator */,
-				5D5C51ADEF0AA95C1BCDE4FB1B07994E /* Blur */,
-				92A12435FAF6D486BFB1F883F992F178 /* Circular */,
-				334CBEFC6D858D82C2CEBF58A50ED621 /* Helper */,
-				F64CE8E8424AC46492FABC75AA4345B7 /* Icons */,
-				8AB4982D745BDB7BB6AE01CF329EA285 /* Overlay */,
-				D1F13EFDEF1B380493E0EB4107255D26 /* ProgressBaseClass */,
-				80BED147EE3C7CA85C26010E2563663A /* Stopable */,
-				3BABA33757A77101106D7F3FBE84705D /* Support Files */,
-			);
-			name = MRProgress;
-			path = MRProgress;
-			sourceTree = "<group>";
-		};
-		96FFE4263DDE81B84E178E89312BB042 /* ActivityIndicator */ = {
-			isa = PBXGroup;
-			children = (
-				252490EAB8246E07EB4146CEBDBC49B2 /* MRActivityIndicatorView.h */,
-				464216AB8608513DED5F31C44E03E279 /* MRActivityIndicatorView.m */,
-			);
-			name = ActivityIndicator;
 			sourceTree = "<group>";
 		};
 		9C3F14C33553E9EB0F59FF53428246E6 /* Products */ = {
@@ -207,22 +156,75 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D1F13EFDEF1B380493E0EB4107255D26 /* ProgressBaseClass */ = {
+		A58C43BE65D5E96D3A2F499B833F7F78 /* Blur */ = {
 			isa = PBXGroup;
 			children = (
-				3F7A8844F03F81D2A632E489004EB5EA /* MRProgressView.h */,
-				4784AB77587FE8AF90922A5EF33685DA /* MRProgressView.m */,
+				B41A39B29E9DEB06C900525F655EC5E0 /* MRBlurView.h */,
+				0BA60AB2FF9FF28F0B12F92F876B09B5 /* MRBlurView.m */,
+				70305F207BF34D5A480B1C1BDB0F97F6 /* UIImage+MRImageEffects.h */,
+				B843EE97753E2A624EFF9DF0B319E460 /* UIImage+MRImageEffects.m */,
 			);
-			name = ProgressBaseClass;
+			name = Blur;
 			sourceTree = "<group>";
 		};
-		F64CE8E8424AC46492FABC75AA4345B7 /* Icons */ = {
+		D3B603790F2FB573DD1400FBCBD6F262 /* ActivityIndicator */ = {
 			isa = PBXGroup;
 			children = (
-				9661482AA4627119052ABBD3D1161868 /* MRIconView.h */,
-				AA11B9983C5130062E94D502B7BA58DE /* MRIconView.m */,
+				7153545FC51BC66DEDCF24E80AB4F87E /* MRActivityIndicatorView.h */,
+				06BF0C026B9D29FA83C214363C07255A /* MRActivityIndicatorView.m */,
 			);
-			name = Icons;
+			name = ActivityIndicator;
+			sourceTree = "<group>";
+		};
+		D6ADB8C48C6F0F9257BFC59E609386E7 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				B752460CBD3B7E3F9AE28AB4FE73E196 /* MRProgressHelper.h */,
+			);
+			name = Helper;
+			sourceTree = "<group>";
+		};
+		D782662A8881D79A420CB3485D041F79 /* Stopable */ = {
+			isa = PBXGroup;
+			children = (
+				CE023F744EABFCDE37909201EB7EF072 /* MRStopableView.h */,
+				00436CF5E186695B24CE8BE70B63F37F /* MRStopButton.h */,
+				5CB852F44DF61A5406A855C2AA7EC583 /* MRStopButton.m */,
+			);
+			name = Stopable;
+			sourceTree = "<group>";
+		};
+		E3E4E679518E9326F8A59F8AD4DE864E /* Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				46070B6DD318651C6DFC2D9813CC11A8 /* MRProgressOverlayView.h */,
+				313FF792B00F57C5FAE6EDF875291E6E /* MRProgressOverlayView.m */,
+			);
+			name = Overlay;
+			sourceTree = "<group>";
+		};
+		F1121CCB3FB0B73A2046B642CA91AB2A /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				582961CF79655B2E542A768E0A2DE9FC /* MRProgress.modulemap */,
+				CFCF0266B3BA7A06A86BE2D154B30976 /* MRProgress-dummy.m */,
+				6455A948F04A542986AD68E8F1CBCE06 /* MRProgress-Info.plist */,
+				D9BDBB1968416C35004A0FF3B4E9704B /* MRProgress-prefix.pch */,
+				0E22CD1DA46A8AA83E86BDD1807FA190 /* MRProgress-umbrella.h */,
+				5AC3F146980FD23CD605C3BA96D8FC92 /* MRProgress.debug.xcconfig */,
+				CB534B3BF0A2D321B4D7AB6451610EDC /* MRProgress.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/MRProgress";
+			sourceTree = "<group>";
+		};
+		F735687DF008256E67DFD9BF92AED129 /* ProgressBaseClass */ = {
+			isa = PBXGroup;
+			children = (
+				54A71BDE6A4BFB0F613C5795392D8305 /* MRProgressView.h */,
+				8874D8D3610D08E6DE19307F0829F1E0 /* MRProgressView.m */,
+			);
+			name = ProgressBaseClass;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -372,7 +374,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -384,9 +386,9 @@
 			};
 			name = Release;
 		};
-		5BA825015ADCE80F3C119EC50E6861F1 /* Debug */ = {
+		3E3D7FD6B8A796C7D28AD2E0C26E76F6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E47C1F3143D9ED2ED7EB088427E3BBD5 /* MRProgress.xcconfig */;
+			baseConfigurationReference = CB534B3BF0A2D321B4D7AB6451610EDC /* MRProgress.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -400,42 +402,6 @@
 				GCC_PREFIX_HEADER = "Target Support Files/MRProgress/MRProgress-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/MRProgress/MRProgress-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/MRProgress/MRProgress.modulemap";
-				PRODUCT_MODULE_NAME = MRProgress;
-				PRODUCT_NAME = MRProgress;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.1;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		843C382326870D6620923725BD6DD798 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E47C1F3143D9ED2ED7EB088427E3BBD5 /* MRProgress.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/MRProgress/MRProgress-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/MRProgress/MRProgress-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -454,6 +420,40 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
+		};
+		462833E40D0F91F71A1FA9153CD0C3F5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5AC3F146980FD23CD605C3BA96D8FC92 /* MRProgress.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/MRProgress/MRProgress-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/MRProgress/MRProgress-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/MRProgress/MRProgress.modulemap";
+				PRODUCT_MODULE_NAME = MRProgress;
+				PRODUCT_NAME = MRProgress;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
 		};
 		C6A6DBFBE584074F093D946B390BEDA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -506,7 +506,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -525,8 +525,8 @@
 		3370CED9412334A0D9C9D5D1FFC6224C /* Build configuration list for PBXNativeTarget "MRProgress" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5BA825015ADCE80F3C119EC50E6861F1 /* Debug */,
-				843C382326870D6620923725BD6DD798 /* Release */,
+				462833E40D0F91F71A1FA9153CD0C3F5 /* Debug */,
+				3E3D7FD6B8A796C7D28AD2E0C26E76F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

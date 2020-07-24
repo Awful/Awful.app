@@ -7,26 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0 -w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		AF880930007CD25835AEE0E31452F7A6 /* PSMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		80969541D70C8B64A93A1F7276E4FBB8 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F77CE9D3ED6DC2506320DCD336FB264 /* PSMenuItem.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0 -w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		AF880930007CD25835AEE0E31452F7A6 /* PSMenuItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 3896DD30E307B368AF08E07270129B07 /* PSMenuItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B6B903841F02FECC8E573B506AD723B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A813DE82382F632FD3D4821B5A5E9F6 /* Foundation.framework */; };
-		EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */; };
+		EB602E85E243163AFE9AA23A55BD4B99 /* PSMenuItem-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C5ADE1B310D9EF4139BD7106301D5200 /* PSMenuItem-dummy.m */; };
 		FA08B28829768C38DC1AC07379EE879A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86706842E6DD3E97FEF60F7A557477D6 /* UIKit.framework */; };
-		FC0EA1BCCE1E5CDCBB9B722A7015EB1C /* PSMenuItem-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = EED1B7DEFE44BA2055423C8E53291AC1 /* PSMenuItem-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FC0EA1BCCE1E5CDCBB9B722A7015EB1C /* PSMenuItem-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 67F7111F5B396244B9B0A652E60B184E /* PSMenuItem-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1A813DE82382F632FD3D4821B5A5E9F6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PSMenuItem.xcconfig; sourceTree = "<group>"; };
-		855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "PSMenuItem-dummy.m"; sourceTree = "<group>"; };
+		3577CDE7B3D02004D13C7A2A1C4F1004 /* PSMenuItem-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PSMenuItem-prefix.pch"; sourceTree = "<group>"; };
+		3896DD30E307B368AF08E07270129B07 /* PSMenuItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
+		607F5F9AB9BF840EAAB1CEA3B9129CE3 /* PSMenuItem.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = PSMenuItem.modulemap; sourceTree = "<group>"; };
+		67F7111F5B396244B9B0A652E60B184E /* PSMenuItem-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PSMenuItem-umbrella.h"; sourceTree = "<group>"; };
 		86706842E6DD3E97FEF60F7A557477D6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		C0AFBE06F02A973A03181773F06B1814 /* PSMenuItem-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PSMenuItem-prefix.pch"; sourceTree = "<group>"; };
-		DB58916A01FBB5AEFC99B719BC30106B /* PSMenuItem-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "PSMenuItem-Info.plist"; sourceTree = "<group>"; };
+		8AE90BEF493F4863D6408E46355C6216 /* PSMenuItem-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "PSMenuItem-Info.plist"; sourceTree = "<group>"; };
+		8F77CE9D3ED6DC2506320DCD336FB264 /* PSMenuItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
+		A5447751ACAEA62CE70D60E6A7A19CC0 /* PSMenuItem.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PSMenuItem.release.xcconfig; sourceTree = "<group>"; };
+		C5ADE1B310D9EF4139BD7106301D5200 /* PSMenuItem-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "PSMenuItem-dummy.m"; sourceTree = "<group>"; };
+		CF7F0535DAD0D57B0D68AA0D61E9260F /* PSMenuItem.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PSMenuItem.debug.xcconfig; sourceTree = "<group>"; };
 		E4BB79653E5DFA6A8F3F6BB83DEAB6A1 /* PSMenuItem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = PSMenuItem.framework; path = PSMenuItem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EED1B7DEFE44BA2055423C8E53291AC1 /* PSMenuItem-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PSMenuItem-umbrella.h"; sourceTree = "<group>"; };
-		F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
-		F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
-		F814F3180C9B312E374671D517E86E75 /* PSMenuItem.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = PSMenuItem.modulemap; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,29 +51,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		274369E228A5A1DF3AFC448CADB3F7F4 /* PSMenuItem */ = {
+		623389C49368CEFB2B7881F816951ADF /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				F2D20BA5861C86907CE91E653068EC88 /* PSMenuItem.h */,
-				F38E5B13ABD474F226E459AC3B036747 /* PSMenuItem.m */,
-				668727185A197003901A001F14B74835 /* Support Files */,
-			);
-			name = PSMenuItem;
-			path = PSMenuItem;
-			sourceTree = "<group>";
-		};
-		668727185A197003901A001F14B74835 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				F814F3180C9B312E374671D517E86E75 /* PSMenuItem.modulemap */,
-				5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */,
-				855829C4593863CF0C99A8ADB1E317F3 /* PSMenuItem-dummy.m */,
-				DB58916A01FBB5AEFC99B719BC30106B /* PSMenuItem-Info.plist */,
-				C0AFBE06F02A973A03181773F06B1814 /* PSMenuItem-prefix.pch */,
-				EED1B7DEFE44BA2055423C8E53291AC1 /* PSMenuItem-umbrella.h */,
+				607F5F9AB9BF840EAAB1CEA3B9129CE3 /* PSMenuItem.modulemap */,
+				C5ADE1B310D9EF4139BD7106301D5200 /* PSMenuItem-dummy.m */,
+				8AE90BEF493F4863D6408E46355C6216 /* PSMenuItem-Info.plist */,
+				3577CDE7B3D02004D13C7A2A1C4F1004 /* PSMenuItem-prefix.pch */,
+				67F7111F5B396244B9B0A652E60B184E /* PSMenuItem-umbrella.h */,
+				CF7F0535DAD0D57B0D68AA0D61E9260F /* PSMenuItem.debug.xcconfig */,
+				A5447751ACAEA62CE70D60E6A7A19CC0 /* PSMenuItem.release.xcconfig */,
 			);
 			name = "Support Files";
 			path = "../Target Support Files/PSMenuItem";
+			sourceTree = "<group>";
+		};
+		73913225E6F0EE6D0E178F8DD1F8589B /* PSMenuItem */ = {
+			isa = PBXGroup;
+			children = (
+				3896DD30E307B368AF08E07270129B07 /* PSMenuItem.h */,
+				8F77CE9D3ED6DC2506320DCD336FB264 /* PSMenuItem.m */,
+				623389C49368CEFB2B7881F816951ADF /* Support Files */,
+			);
+			name = PSMenuItem;
+			path = PSMenuItem;
 			sourceTree = "<group>";
 		};
 		9C52134E10A5058A1317C270E041F038 = {
@@ -80,7 +82,7 @@
 			children = (
 				B78464B7C7CD5EAC826CA7B12AFEF907 /* Frameworks */,
 				20719B2992AA38BC9581A6AC6A75F681 /* Products */,
-				274369E228A5A1DF3AFC448CADB3F7F4 /* PSMenuItem */,
+				73913225E6F0EE6D0E178F8DD1F8589B /* PSMenuItem */,
 			);
 			sourceTree = "<group>";
 		};
@@ -235,7 +237,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -248,9 +250,9 @@
 			};
 			name = Debug;
 		};
-		3C55DE9DCCF126463488E21AC1D45ECD /* Release */ = {
+		3E15E071B33894DA8B7418273D8FA449 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */;
+			baseConfigurationReference = CF7F0535DAD0D57B0D68AA0D61E9260F /* PSMenuItem.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -264,7 +266,40 @@
 				GCC_PREFIX_HEADER = "Target Support Files/PSMenuItem/PSMenuItem-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/PSMenuItem/PSMenuItem-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/PSMenuItem/PSMenuItem.modulemap";
+				PRODUCT_MODULE_NAME = PSMenuItem;
+				PRODUCT_NAME = PSMenuItem;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		79AFB9C999D357414C4E30826CFA37ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A5447751ACAEA62CE70D60E6A7A19CC0 /* PSMenuItem.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/PSMenuItem/PSMenuItem-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/PSMenuItem/PSMenuItem-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,7 +367,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -344,49 +379,14 @@
 			};
 			name = Release;
 		};
-		D082E0B8B8770983D25366131707B4FA /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5629BD35A312581466964E9D93BA220D /* PSMenuItem.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/PSMenuItem/PSMenuItem-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/PSMenuItem/PSMenuItem-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/PSMenuItem/PSMenuItem.modulemap";
-				PRODUCT_MODULE_NAME = PSMenuItem;
-				PRODUCT_NAME = PSMenuItem;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.1;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
 		7EA8F05EF2C8D46FC4753C926ED56458 /* Build configuration list for PBXNativeTarget "PSMenuItem" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D082E0B8B8770983D25366131707B4FA /* Debug */,
-				3C55DE9DCCF126463488E21AC1D45ECD /* Release */,
+				3E15E071B33894DA8B7418273D8FA449 /* Debug */,
+				79AFB9C999D357414C4E30826CFA37ED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

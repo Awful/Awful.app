@@ -52,10 +52,6 @@ extension SettingsSection {
         return info["DeviceCapability"] as? String
     }
     
-    var requiresTweaksEnabled: Bool {
-        return info["RequiresTweaksEnabled"] as? Bool ?? false
-    }
-    
     @objc(SettingsSectionSetting) final class Setting: NSObject {
         @objc let info: [String: Any]
         

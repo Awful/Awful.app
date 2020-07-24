@@ -1,5 +1,5 @@
 source 'https://cdn.cocoapods.org/'
-platform :ios, '12.0'
+platform :ios, '12.2'
 project 'Xcode/Awful'
 
 use_frameworks!
@@ -18,9 +18,6 @@ target 'Awful' do
 
   # Swift 4 support that doesn't crash in KVO. Go back to main pod when it arrives there
   pod 'PullToRefresher', :git => 'https://github.com/MindSea/PullToRefresh', :branch => 'fix-simultaneous-access'
-
-  # Frequently bumps versions without pushing podspec to CocoaPods.
-  pod 'SwiftTweaks', :git => 'https://github.com/Khan/SwiftTweaks', :branch => 'master'
 
   target :AwfulTests
 end
@@ -49,6 +46,18 @@ post_install do |installer|
     if swift_4_2_pods.include?(subproj.project_name.to_s)
       subproj.build_configurations.each do |config|
         config.build_settings['SWIFT_VERSION'] = '4.2'
+      end
+    end
+  end
+
+  deployment_target = installer.pods_project.build_configurations.first.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+  installer.pod_target_subprojects.each do |subproj|
+    subproj.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = deployment_target
+    end
+    subproj.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
       end
     end
   end

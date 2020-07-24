@@ -124,10 +124,8 @@ public final class ForumsClient {
         method: ForumsURLSession.Method,
         urlString: String,
         parameters: S?,
-        redirectBlock: ForumsURLSession.WillRedirectCallback? = nil)
-        -> (promise: ForumsURLSession.PromiseType, cancellable: Cancellable)
-        where S: Sequence, S.Element == Dictionary<String, Any>.Element
-    {
+        redirectBlock: ForumsURLSession.WillRedirectCallback? = nil
+    ) -> (promise: ForumsURLSession.PromiseType, cancellable: Cancellable) where S: Sequence, S.Element == KeyValuePairs<String, Any>.Element {
         guard let urlSession = urlSession else {
             return (Promise(error: PromiseError.missingURLSession), Operation())
         }
@@ -159,7 +157,7 @@ public final class ForumsClient {
         // Not that we'll parse any JSON from the login attempt, but it might avoid pointless server-side rendering.
         let urlString = "account.php?json=1"
 
-        let parameters = [
+        let parameters: Dictionary<String, Any> = [
             "action": "login",
             "username": username,
             "password" : password,
@@ -209,7 +207,7 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        var parameters = [
+        var parameters: Dictionary<String, Any> = [
             "forumid": forum.forumID,
             "perpage": "40",
             "pagenumber": "\(page)"]
@@ -248,7 +246,7 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "view",
             "perpage": "40",
             "pagenumber": "\(page)"]
@@ -282,7 +280,7 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "json": "1",
             "action": isBookmarked ? "add" : "remove",
             "threadid": thread.threadID]
@@ -299,7 +297,7 @@ public final class ForumsClient {
     }
 
     public func rate(_ thread: AwfulThread, as rating: Int) -> Promise<Void> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "vote": "\(rating.clamp(1...5))",
             "threadid": thread.threadID]
 
@@ -314,7 +312,7 @@ public final class ForumsClient {
             return Promise(error: error)
         }
 
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "setseen",
             "threadid": threadID,
             "index": "\(post.threadIndex)"]
@@ -324,7 +322,7 @@ public final class ForumsClient {
     }
 
     public func markUnread(_ thread: AwfulThread) -> Promise<Void> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "threadid": thread.threadID,
             "action": "resetseen",
             "json": "1"]
@@ -341,7 +339,7 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "newthread",
             "forumid": forumID]
 
@@ -563,7 +561,7 @@ public final class ForumsClient {
             return (Promise(error: PromiseError.missingManagedObjectContext), Operation())
         }
 
-        var parameters = [
+        var parameters: Dictionary<String, Any> = [
             "threadid": thread.threadID,
             "perpage": "40"]
 
@@ -643,7 +641,7 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "showpost",
             "postid": post.postID]
 
@@ -671,7 +669,7 @@ public final class ForumsClient {
 
         let wasThreadClosed = thread.closed
 
-        let startParams = [
+        let startParams: KeyValuePairs<String, Any> = [
             "action": "newreply",
             "threadid": thread.threadID]
         let params = fetch(method: .get, urlString: "newreply.php", parameters: startParams)
@@ -764,7 +762,7 @@ public final class ForumsClient {
     }
 
     public func findBBcodeContents(of post: Post) -> Promise<String> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "editpost",
             "postid": post.postID]
 
@@ -775,7 +773,7 @@ public final class ForumsClient {
     }
 
     public func quoteBBcodeContents(of post: Post) -> Promise<String> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "newreply",
             "postid": post.postID]
 
@@ -799,7 +797,7 @@ public final class ForumsClient {
     }
 
     private func editForm(for post: Post) -> CancellablePromise<Form> {
-        let startParams = [
+        let startParams: KeyValuePairs<String, Any> = [
             "action": "editpost",
             "postid": post.postID]
 
@@ -864,7 +862,7 @@ public final class ForumsClient {
             return nil
         }
 
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "goto": "post",
             "postid": postID]
 
@@ -946,7 +944,7 @@ public final class ForumsClient {
      - Parameter reason: A further explanation of what's wrong with the post. Truncated to 60 characters.
      */
     public func report(_ post: Post, reason: String) -> Promise<Void> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "submit",
             "postid": post.postID,
             "comments": String(reason.prefix(60))]
@@ -1084,7 +1082,7 @@ public final class ForumsClient {
     }
 
     public func deletePrivateMessage(_ message: PrivateMessage) -> Promise<Void> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "dodelete",
             "privatemessageid": message.messageID,
             "delete": "yes"]
@@ -1105,7 +1103,7 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "show",
             "privatemessageid": messageKey.messageID]
 
@@ -1127,7 +1125,7 @@ public final class ForumsClient {
     }
 
     public func quoteBBcodeContents(of message: PrivateMessage) -> Promise<String> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "newmessage",
             "privatemessageid": message.messageID]
 
@@ -1145,7 +1143,7 @@ public final class ForumsClient {
             return Promise(error: PromiseError.missingManagedObjectContext)
         }
 
-        let parameters = ["action": "newmessage"]
+        let parameters: KeyValuePairs<String, Any> = ["action": "newmessage"]
 
         return fetch(method: .get, urlString: "private.php", parameters: parameters)
             .promise
@@ -1167,7 +1165,7 @@ public final class ForumsClient {
         - forwarding: Should be `nil` if `regarding` is non-`nil`.
      */
     public func sendPrivateMessage(to username: String, subject: String, threadTag: ThreadTag?, bbcode: String, regarding regardingMessage: PrivateMessage?, forwarding forwardedMessage: PrivateMessage?) -> Promise<Void> {
-        var parameters = [
+        var parameters: Dictionary<String, Any> = [
             "touser": username,
             "title": subject,
             "iconid": threadTag?.threadTagID ?? "0",
@@ -1189,7 +1187,7 @@ public final class ForumsClient {
     
     /// - Returns: The promise of a form submittable to `updateIgnoredUsers()`.
     public func listIgnoredUsers() -> Promise<IgnoreListForm> {
-        let parameters = [
+        let parameters: KeyValuePairs<String, Any> = [
             "action": "viewlist",
             "userlist": "ignore"]
         

@@ -4,4 +4,3 @@ ${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework
 ${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework
 ${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework
 ${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework
-${BUILT_PRODUCTS_DIR}/SwiftTweaks/SwiftTweaks.framework
