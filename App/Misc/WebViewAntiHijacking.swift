@@ -21,10 +21,9 @@ extension WKNavigationAction {
         if host.hasSuffix("www.youtube.com"), url.path.lowercased().hasPrefix("/watch") {
             return true
         }
-        else if
-            host.hasSuffix("twitter.com"),
-            let thirdComponent = url.pathComponents.dropFirst(2).first,
-            thirdComponent.lowercased() == "status"
+        else if host.hasSuffix("twitter.com"),
+                let thirdComponent = url.pathComponents.dropFirst(2).first,
+                thirdComponent.lowercased() == "status"
         {
             return true
         }

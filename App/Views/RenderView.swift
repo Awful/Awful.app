@@ -67,14 +67,10 @@ final class RenderView: UIView {
 
     /**
      Load HTML into the render view.
-     
-     - Parameter baseURL: The base URL of the document. Note that any `https` base URL is forcibly downgraded to be an `http` URL. See **Warning** for more info.
-     
-     - Warning: If an `https` `baseURL` is provided, it will be forcibly downgraded to an `http` URL. (`WKWebView` refuses to load from custom URL schemes, calling it "insecure content".) If you would like relative URLs to be resolved against an `https` URL, consider adding a `<base>` element.
      */
     func render(html: String, baseURL: URL?) {
         Log.d("rendering \(html.count) characters of HTML with baseURL = \(baseURL as Any)")
-        webView.loadHTMLString(html, baseURL: baseURL?.downgradedToInsecureHTTP())
+        webView.loadHTMLString(html, baseURL: baseURL)
     }
 
     /**
@@ -103,28 +99,16 @@ final class RenderView: UIView {
     }
 }
 
-private extension URL {
-    /// Returns an `http` version of this URL if it's an `https` URL; otherwise just returns `self`.
-    func downgradedToInsecureHTTP() -> URL {
-        guard
-            let scheme = scheme,
-            scheme.caseInsensitive == "https",
-            var components = URLComponents(url: self, resolvingAgainstBaseURL: true)
-            else { return self }
-        
-        components.scheme = "http"
-        return components.url!
-    }
-}
-
 extension RenderView: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
         guard navigationAction.navigationType == .linkActivated
-            || navigationAction.isAttemptingToHijackWebView
-            || navigationAction.targetFrame == nil else
-        {
-            return decisionHandler(.allow)
-        }
+                || navigationAction.isAttemptingToHijackWebView
+                || navigationAction.targetFrame == nil
+        else { return decisionHandler(.allow) }
 
         guard let url = navigationAction.request.url else {
             return decisionHandler(.allow)

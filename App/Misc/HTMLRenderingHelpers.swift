@@ -258,8 +258,7 @@ extension HTMLDocument {
                 let url = URL(string: href),
                 let host = url.host
                  {
-                    print(href)
-                    if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
+                     if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
                         if(host.lowercased().hasSuffix("imgur.com")) {
                             let videoElement = HTMLElement(tagName: "video", attributes: [
                             "width": "300",
