@@ -310,7 +310,7 @@
 		1C5D570422D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */; };
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
 		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
-		1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Images.xcassets */; };
+		1C5F700617D86E0F005ABD6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Assets.xcassets */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
 		1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
@@ -1061,7 +1061,7 @@
 		1C5D570322D6C2BC00952242 /* UIActivityIndicatorView+MakeLarge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityIndicatorView+MakeLarge.swift"; sourceTree = "<group>"; };
 		1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollIndicatorInsetBottom.swift"; sourceTree = "<group>"; };
 		1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyCommand+MakeWithDiscoverabilityTitle.swift"; sourceTree = "<group>"; };
-		1C5F700517D86E0F005ABD6F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		1C5F700517D86E0F005ABD6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1C6460D11A3F1037002F5CEE /* Awful 3.2-beta6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Awful 3.2-beta6.xcdatamodel"; sourceTree = "<group>"; };
 		1C66A9C019DD304D001B9A41 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C66A9C319DD304E001B9A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2632,8 +2632,8 @@
 			isa = PBXGroup;
 			children = (
 				1C5B83181F74ADB200BE7517 /* App Icons */,
+				1C5F700517D86E0F005ABD6F /* Assets.xcassets */,
 				8CCD503B15B783FC00E5893B /* Images */,
-				1C5F700517D86E0F005ABD6F /* Images.xcassets */,
 				8CCD498215B497A700E5893B /* Info.plist */,
 				1CA45D951F2C19AA005BEEC5 /* Localizable.strings */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
@@ -3297,7 +3297,7 @@
 				1C502D441F817010001890AF /* AppIcon-staredog-20x20@2x.png in Resources */,
 				7BF3A6201F92FA86009F8603 /* AppIcon-greenface-76x76.png in Resources */,
 				7B1FF12A1F76C3A3000B64DA /* AppIconPickerCell.xib in Resources */,
-				1C5F700617D86E0F005ABD6F /* Images.xcassets in Resources */,
+				1C5F700617D86E0F005ABD6F /* Assets.xcassets in Resources */,
 				7BF090372022C7570060BDC8 /* AppIcon-Bars2_dark-1024x1024.png in Resources */,
 				1C502D311F816FFC001890AF /* AppIcon-five-83.5x83.5@2x.png in Resources */,
 				1C502D451F817010001890AF /* AppIcon-staredog-20x20@3x.png in Resources */,
