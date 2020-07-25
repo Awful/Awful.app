@@ -434,12 +434,12 @@ Awful.interestingElementsAtPoint = function(x, y) {
     }
   }
 
-  var iframe = elementAtPoint.closest('iframe[src]');
-  if (iframe && Awful.isSpoiled(iframe)) {
-    var src = iframe.getAttribute('src');
+  var video = elementAtPoint.closest('iframe[src], video[src]');
+  if (video && Awful.isSpoiled(video)) {
+    var src = video.getAttribute('src');
     if (src) {
       interesting.spoiledVideo = {
-        frame: Awful.frameOfElement(iframe),
+        frame: Awful.frameOfElement(video),
         url: src
       };
     }
