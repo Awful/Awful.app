@@ -550,6 +550,10 @@ public final class ForumsClient {
     /**
      - Parameter writtenBy: A `User` whose posts should be the only ones listed. If `nil`, posts from all authors are listed.
      - Parameter updateLastReadPost: If `true`, the "last read post" marker on the Forums is updated to include the posts loaded on the page (which is probably what you want). If `false`, the next time the user asks for "next unread post" they'll get the same answer again.
+     - Returns: A cancellable promise of:
+         - posts: The posts that appeared on the page of the thread.
+         - firstUnreadPost: The index of the first unread post on the page (this index starts at 1), or `nil` if no unread post is found.
+         - advertisementHTML: Raw HTML of an SA-hosted banner ad.
      */
     public func listPosts(
         in thread: AwfulThread,
@@ -586,7 +590,11 @@ public final class ForumsClient {
         }
 
         // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
-        func redirectBlock(task: URLSessionTask, response: HTTPURLResponse, newRequest: URLRequest) -> URLRequest? {
+        func redirectBlock(
+            task: URLSessionTask,
+            response: HTTPURLResponse,
+            newRequest: URLRequest
+        ) -> URLRequest? {
             var components = newRequest.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
             let queryItems = (components?.queryItems ?? [])
                 .filter { $0.name != "perpage" }
@@ -613,16 +621,8 @@ public final class ForumsClient {
                 return objectIDs.compactMap { context.object(with: $0) as? Post }
             }
 
-        let firstUnreadPostIndex = promise
-            .map(on: .global()) { data, response -> Int? in
-                guard case .nextUnread = page else { return nil }
-                guard let fragment = response.url?.fragment, !fragment.isEmpty else { return nil }
-
-                let scanner = Scanner(scraping: fragment)
-                guard scanner.scanString("pti") != nil else { return nil }
-
-                guard let scannedInt = scanner.scanInt(), scannedInt != 0 else { return nil }
-                return scannedInt
+        let firstUnreadPostIndex = parsed.map(on: scrapingQueue) { scrapeResult in
+            zip(scrapeResult.posts, 1...).first { !$0.0.hasBeenSeen }?.1
         }
 
         let altogether = when(fulfilled: posts, firstUnreadPostIndex, parsed)

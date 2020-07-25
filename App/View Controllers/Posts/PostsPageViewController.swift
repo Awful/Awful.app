@@ -108,7 +108,11 @@ final class PostsPageViewController: ViewController {
         - parameter updateCache: Whether to fetch posts from the client, or simply render any posts that are cached.
         - parameter updateLastReadPost: Whether to advance the "last-read post" marker on the Forums.
      */
-    func loadPage(_ newPage: ThreadPage, updatingCache: Bool, updatingLastReadPost updateLastReadPost: Bool) {
+    func loadPage(
+        _ newPage: ThreadPage,
+        updatingCache: Bool,
+        updatingLastReadPost updateLastReadPost: Bool
+    ) {
         flagRequest?.cancel()
         flagRequest = nil
         networkOperation?.cancel()
