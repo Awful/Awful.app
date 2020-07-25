@@ -379,7 +379,7 @@ header {
   color: #005ec9;
 }
 .bbc-spoiler:not(.spoiled) {
-  color: #333;
+  color: transparent;
   background: #333;
 }
 .bbc-spoiler:not(.spoiled) .bbc-block,
@@ -390,7 +390,7 @@ header {
 .bbc-spoiler:not(.spoiled) a:visited,
 .bbc-spoiler:not(.spoiled) a:active,
 .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #333;
+  color: transparent;
   background: #333;
 }
 .bbc-spoiler:not(.spoiled) li {

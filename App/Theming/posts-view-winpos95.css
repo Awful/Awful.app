@@ -431,7 +431,7 @@ footer,
   font-family: arial;
 }
 .bbc-spoiler:not(.spoiled) {
-  color: #000;
+  color: transparent;
   background: #000;
 }
 .bbc-spoiler:not(.spoiled) .bbc-block,
@@ -442,7 +442,7 @@ footer,
 .bbc-spoiler:not(.spoiled) a:visited,
 .bbc-spoiler:not(.spoiled) a:active,
 .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #000;
+  color: transparent;
   background: #000;
 }
 .bbc-spoiler:not(.spoiled) li {

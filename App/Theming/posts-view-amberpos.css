@@ -401,7 +401,7 @@ post.seen {
   color: #257a26;
 }
 .bbc-spoiler:not(.spoiled) {
-  color: #eacf4c;
+  color: transparent;
   background: #eacf4c;
 }
 .bbc-spoiler:not(.spoiled) .bbc-block,
@@ -412,7 +412,7 @@ post.seen {
 .bbc-spoiler:not(.spoiled) a:visited,
 .bbc-spoiler:not(.spoiled) a:active,
 .bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
-  color: #eacf4c;
+  color: transparent;
   background: #eacf4c;
 }
 .bbc-spoiler:not(.spoiled) li {

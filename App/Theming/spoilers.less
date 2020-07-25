@@ -3,13 +3,13 @@
 
 .spoilers(@color) {
   .bbc-spoiler:not(.spoiled) {
-    color: @color;
+    color: transparent;
     background: @color;
 
     .bbc-block, .bbc-block h4, .bbc-block h5,
     li,
     a:link, a:visited, a:active, [data-awful-linkified-image] {
-      color: @color;
+      color: transparent;
       background: @color;
     }
 
