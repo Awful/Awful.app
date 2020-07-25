@@ -116,7 +116,7 @@ Awful.loadTwitterWidgets = function() {
 
   var script = document.createElement('script');
   script.id = 'twitter-wjs';
-  script.src = "awful-resource://widgets.js";
+  script.src = "https://platform.twitter.com/widgets.js";
   document.body.appendChild(script);
 
   window.twttr = {

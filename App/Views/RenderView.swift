@@ -28,15 +28,17 @@ final class RenderView: UIView {
         let configuration = WKWebViewConfiguration()
         
         let bundle = Bundle(for: RenderView.self)
-        let mainScriptURL = bundle.url(forResource: "RenderView.js", withExtension: nil)!
-        let mainScript = try! String(contentsOf: mainScriptURL)
-        let mainUserScript = WKUserScript(source: mainScript, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-        configuration.userContentController.addUserScript(mainUserScript)
-        
-        let allFramesScriptURL = bundle.url(forResource: "RenderView-AllFrames.js", withExtension: nil)!
-        let allFramesScript = try! String(contentsOf: allFramesScriptURL)
-        let allFramesUserScript = WKUserScript(source: allFramesScript, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
-        configuration.userContentController.addUserScript(allFramesUserScript)
+        configuration.userContentController.addUserScript({
+            let url = bundle.url(forResource: "RenderView.js", withExtension: nil)!
+            let script = try! String(contentsOf: url)
+            return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+        }())
+
+        configuration.userContentController.addUserScript({
+            let url = bundle.url(forResource: "RenderView-AllFrames.js", withExtension: nil)!
+            let script = try! String(contentsOf: url)
+            return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+        }())
         
         configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
         configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
