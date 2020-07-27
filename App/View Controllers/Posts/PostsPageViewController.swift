@@ -419,6 +419,7 @@ final class PostsPageViewController: ViewController {
                 var queryItems = [
                     URLQueryItem(name: "threadid", value: self.thread.threadID),
                     URLQueryItem(name: "perpage", value: "40"),
+                    URLQueryItem(name: "noseen", value: "1"),
                 ]
                 if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
                     queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
