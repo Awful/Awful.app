@@ -621,13 +621,12 @@ public final class ForumsClient {
                 return objectIDs.compactMap { context.object(with: $0) as? Post }
             }
 
-        let firstUnreadPostIndex = parsed.map(on: scrapingQueue) { scrapeResult in
-            zip(scrapeResult.posts, 1...).first { !$0.0.hasBeenSeen }?.1
-        }
-
-        let altogether = when(fulfilled: posts, firstUnreadPostIndex, parsed)
-            .map { posts, firstUnreadPostIndex, scrapeResult in
-                return (posts: posts, firstUnreadPost: firstUnreadPostIndex, advertisementHTML: scrapeResult.advertisement)
+        let altogether = when(fulfilled: posts, parsed)
+            .map { posts, scrapeResult in
+                return (posts: posts,
+                        // post index is 1-based
+                        firstUnreadPost: scrapeResult.jumpToPostIndex.map { $0 + 1 },
+                        advertisementHTML: scrapeResult.advertisement)
         }
 
         return (altogether, cancellable)
