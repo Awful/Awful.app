@@ -8,9 +8,14 @@ public struct ForumBreadcrumbsScrapeResult: ScrapeResult {
     public let forums: [ForumBreadcrumb]
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        forums = try html
+        var breadcrumbs = try html
             .requiredNode(matchingSelector: "div.breadcrumbs")
-            .requiredNode(matchingSelector: "span.mainbodytextlarge")
+        
+        if (breadcrumbs.childElementNodes.filter { $0.tagName == "span" && $0.hasClass("mainbodytextlarge") }.count > 0) {
+            breadcrumbs = try breadcrumbs.requiredNode(matchingSelector: "span.mainbodytextlarge")
+        }
+        
+        forums = try breadcrumbs
             .nodes(matchingSelector: "a[href *= 'forumdisplay.php']")
             .enumerated()
             .map { try ForumBreadcrumb($1, depth: $0) }
