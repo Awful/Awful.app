@@ -313,6 +313,7 @@ extension Theme {
     static var forumSpecificDefaults: [String: Any] {
         let modeless = [
             "25": "Gas Chamber",
+            "26": "FYAD",
             "666": "FYAD",
             "219": "YOSPOS",
             "268": "BYOB"]
