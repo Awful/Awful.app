@@ -30,6 +30,7 @@ public final class DataStore: NSObject {
         super.init()
         
         loadPersistentStore()
+
         let noteCenter = NotificationCenter.default
         noteCenter.addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         noteCenter.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -107,6 +108,38 @@ public final class DataStore: NSObject {
                 }
             }
             fatalError("could not load persistent store at \(storeURL): \(error)")
+        }
+
+        fixParentForumSetToSelf()
+    }
+
+    private enum MetadataKey {
+        static let didFixParentForumSetToSelf = "com.awfulapp.awful did fix parent forum set to self"
+    }
+
+    /**
+     In August 2020, a change to Forums markup meant we scraped the current forum twice from the `forumdisplay.php` breadcrumbs. This results in our setting its parent forum to itself. Unsurprisingly, this ends poorly anytime we try to follow parent forum edges up the tree, such as when deciding how far to indent cells in the Forums tab.
+
+     Having fixed the scraping (for now), this does a one-time fix for any afflicted forums and severs the connection.
+     */
+    private func fixParentForumSetToSelf() {
+        guard let store = persistentStore else { fatalError("missing persistent store") }
+        mainManagedObjectContext.performAndWait {
+            var metadata = storeCoordinator.metadata(for: store)
+            if let didFix = metadata[MetadataKey.didFixParentForumSetToSelf] as? Bool, didFix {
+                return
+            }
+
+            let forums = Forum.fetch(in: mainManagedObjectContext) {
+                $0.predicate = NSPredicate(format: "%K == SELF", #keyPath(Forum.parentForum))
+            }
+            for forum in forums {
+                forum.parentForum = nil
+            }
+            try! mainManagedObjectContext.save()
+
+            metadata[MetadataKey.didFixParentForumSetToSelf] = true
+            storeCoordinator.setMetadata(metadata, for: store)
         }
     }
     
