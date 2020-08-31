@@ -6,17 +6,17 @@
         "repositoryURL": "https://github.com/nolanw/HTMLReader",
         "state": {
           "branch": null,
-          "revision": "46afbc51f008298b22716f91a36c96e398a83c3d",
-          "version": "2.1.4"
+          "revision": "26df133d06e5bd06f3e1e0727bffab589e772c1b",
+          "version": "2.1.5"
         }
       },
       {
         "package": "Nuke",
-        "repositoryURL": "https://github.com/kean/Nuke.git",
+        "repositoryURL": "https://github.com/nolanw/Nuke.git",
         "state": {
-          "branch": null,
-          "revision": "a7b63bfd0825d91c67f2d23b6c476337235444c6",
-          "version": "8.2.0"
+          "branch": "master",
+          "revision": "1953961e94e09979fdc2723e8a1c3069333ed89f",
+          "version": null
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/mxcl/PromiseKit",
         "state": {
           "branch": null,
-          "revision": "4d8d1287d2e50c53a9f8430ffe88925292838c57",
-          "version": "6.11.0"
+          "revision": "aea48ea1855f5d82e2dffa6027afce3aab8f3dd7",
+          "version": "6.13.3"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/kylef/Spectre.git",
         "state": {
           "branch": null,
-          "revision": "f14ff47f45642aa5703900980b014c2e9394b6e5",
-          "version": "0.9.0"
+          "revision": "f717bbce0e19f0129fc001b2b6bed43b70fd8b87",
+          "version": "0.9.1"
         }
       },
       {

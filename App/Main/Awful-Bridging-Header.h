@@ -3,3 +3,4 @@
 #import "AwfulErrorDomain.h"
 #import "ScrollViewDelegateMultiplexer.h"
 #import "SettingsBinding.h"
+#import "WKWebView+RegisterScheme.h"

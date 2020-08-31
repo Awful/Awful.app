@@ -7,14 +7,21 @@ This component implements pure pull-to-refresh logic and you can use it for deve
 ## Requirements
 
 - iOS 8.0+
+- Swift 5.0 (v 3.2+)
+- Swift 4.2 (v 3.1+)
 - Swift 3 (v. 2.0+)
 - Swift 2 (v. 1.4)
 
-## Installing with [CocoaPods](https://cocoapods.org)
+## Installing
 
+### with [CocoaPods](https://cocoapods.org)
 ```ruby
 use_frameworks!
-pod 'PullToRefresher', '~> 2.0'
+pod 'PullToRefresher'
+```
+### with [Carthage](https://github.com/Carthage/Carthage)
+```ruby
+github "Yalantis/PullToRefresh"
 ```
 
 ## Usage
@@ -43,7 +50,7 @@ tableView.addPullToRefresh(refresher) {
 
 ```swift
 deinit {
-tableView.removePullToRefresh(tableView.topPullToRefresh!)
+    tableView.removeAllPullToRefresh()
 }
 ```
 
@@ -61,6 +68,22 @@ tableView.startRefreshing()
 
 But you probably won’t use this component, though. *UITableViewController* and *UICollectionViewController* already have a simple type of refresher.
 It’s much more interesting to develop your own pull-to-refresh control.
+
+## Usage in UITableView with sections
+
+Unfortunaly, *UITableView* with sections currently not supported. But you can resolve this problem in two steps:
+1) Create you own *PullToRefresh* (see instructions below).
+2) Set its ```shouldBeVisibleWhileScrolling``` property to ```true```. It makes you PullToRefresh always visible while you're scrolling the table. 
+
+⚠️ By default PullToRefresh has transparent background which leads to unwanted overlapping behavour. ⚠️
+
+## Disable/Enable
+
+You can disable/enable refresher in runtime:
+
+```Swift
+yourRefresher.setEnable(isEnabled: false)
+```
 
 ## Creating custom PullToRefresh
 
@@ -169,7 +192,7 @@ P.S. We’re going to publish more awesomeness wrapped in code and a tutorial on
 
 	The MIT License (MIT)
 
-	Copyright © 2017 Yalantis
+	Copyright © 2018 Yalantis
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal

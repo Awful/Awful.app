@@ -350,7 +350,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             forumKey = ForumKey(forumID: forumID)
         }
         let managedObjectContext = AppDelegate.instance.managedObjectContext
-        let forum = Forum.objectForKey(objectKey: forumKey!, inManagedObjectContext: managedObjectContext) as! Forum
+        let forum = Forum.objectForKey(objectKey: forumKey!, in: managedObjectContext)
         let viewController = self.init(forum: forum)
         viewController.restorationIdentifier = identifierComponents.last 
         viewController.restorationClass = self
@@ -380,7 +380,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             }
         }
         if let tagKey = tagKey {
-            filterThreadTag = ThreadTag.objectForKey(objectKey: tagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
+            filterThreadTag = ThreadTag.objectForKey(objectKey: tagKey, in: forum.managedObjectContext!)
         }
         
         updateFilterButton()

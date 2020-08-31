@@ -104,7 +104,11 @@ final class AnnouncementViewController: ViewController {
     }
 
     private func updateScrollViewContentInsets() {
-        renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        if #available(iOS 11.0, *) {
+            renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        } else {
+            renderView.scrollView.contentInset.bottom = bottomLayoutGuide.length
+        }
     }
 
     // MARK: Lifecycle
@@ -186,6 +190,7 @@ final class AnnouncementViewController: ViewController {
         updateScrollViewContentInsets()
     }
 
+    @available(iOS 11.0, *)
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         updateScrollViewContentInsets()
@@ -501,7 +506,7 @@ extension AnnouncementViewController: RenderViewDelegate {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         }
         else {
-            UIApplication.shared.open(url)
+            UIApplication.shared.openURL(url)
         }
     }
     

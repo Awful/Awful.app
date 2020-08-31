@@ -178,7 +178,6 @@
 		1C42A22A1FD4D6F400F67BA1 /* Base62.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2291FD4D6F400F67BA1 /* Base62.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
-		1C453F0F23384264007AC6CD /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F0E23384264007AC6CD /* Nuke */; };
 		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
 		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
@@ -368,11 +367,13 @@
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
+		1CA85F5C24FCB33B00EE8162 /* NSPredicate+CompoundConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA85F5B24FCB33B00EE8162 /* NSPredicate+CompoundConvenience.swift */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
 		1CAE0EF92431911C0042D5F5 /* IndexPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE0EF82431911C0042D5F5 /* IndexPersistenceTests.swift */; };
 		1CAE0F0D243195800042D5F5 /* AwfulScraping in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAE0F0C243195800042D5F5 /* AwfulScraping */; };
 		1CAE0F202439845A0042D5F5 /* AwfulCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE0F1F2439845A0042D5F5 /* AwfulCoreTests.swift */; };
 		1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* MiniOnePassword */; };
+		1CAF2372250C8CE400033F61 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* Nuke */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -421,6 +422,7 @@
 		1CC362CB204C527700274E82 /* AppIcon-doggo-40x40@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */; };
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
 		1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC6645C220D224C00BEF5A6 /* Environment.swift */; };
+		1CCAFE1E25130D5C0068C152 /* WKWebView+RegisterScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAFE1D25130D5C0068C152 /* WKWebView+RegisterScheme.m */; };
 		1CCBDFFA22CB02D500E1BE6A /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1CCBDFF922CB02D500E1BE6A /* HTMLReader */; };
 		1CCBDFFB22CB03B700E1BE6A /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1CCBE00022CB03C500E1BE6A /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
@@ -1131,6 +1133,7 @@
 		1CA45D951F2C19AA005BEEC5 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Potentially-Objectionable.xcdatamodel"; sourceTree = "<group>"; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
+		1CA85F5B24FCB33B00EE8162 /* NSPredicate+CompoundConvenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPredicate+CompoundConvenience.swift"; sourceTree = "<group>"; };
 		1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Presentation.swift"; sourceTree = "<group>"; };
 		1CAE0EF82431911C0042D5F5 /* IndexPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexPersistenceTests.swift; sourceTree = "<group>"; };
 		1CAE0F1F2439845A0042D5F5 /* AwfulCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulCoreTests.swift; sourceTree = "<group>"; };
@@ -1184,6 +1187,9 @@
 		1CC362BB204C527600274E82 /* AppIcon-doggo-40x40@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-doggo-40x40@3x.png"; sourceTree = "<group>"; };
 		1CC58F5C1B5AC4330016EE83 /* UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKit.swift; sourceTree = "<group>"; };
 		1CC6645C220D224C00BEF5A6 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		1CCAFDFD2510789E0068C152 /* SmilieStickers.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SmilieStickers.xcconfig; sourceTree = "<group>"; };
+		1CCAFE1C25130D5C0068C152 /* WKWebView+RegisterScheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WKWebView+RegisterScheme.h"; sourceTree = "<group>"; };
+		1CCAFE1D25130D5C0068C152 /* WKWebView+RegisterScheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+RegisterScheme.m"; sourceTree = "<group>"; };
 		1CD005CE1BB734E900232FFD /* BookmarksTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarksTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D01BB8800800232FFD /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "InAppActionViewController+ThreadActions.swift"; sourceTree = "<group>"; };
@@ -1457,7 +1463,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C453F0F23384264007AC6CD /* Nuke in Frameworks */,
 				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
@@ -1465,6 +1470,7 @@
 				1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
+				1CAF2372250C8CE400033F61 /* Nuke in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1652,6 +1658,7 @@
 				1C153359207125F60021A2BD /* Extension.xcconfig */,
 				1C15335A2071261A0021A2BD /* SmilieKeyboard-Debug.xcconfig */,
 				1C15335B207126990021A2BD /* SmilieKeyboard-Release.xcconfig */,
+				1CCAFDFD2510789E0068C152 /* SmilieStickers.xcconfig */,
 				1C15335C20712BBA0021A2BD /* SmilieStickers-Debug.xcconfig */,
 				1C15335D20712BDF0021A2BD /* SmilieStickers-Release.xcconfig */,
 				1C15335020709D520021A2BD /* Framework.xcconfig */,
@@ -2253,6 +2260,8 @@
 				1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */,
 				1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */,
 				1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */,
+				1CCAFE1C25130D5C0068C152 /* WKWebView+RegisterScheme.h */,
+				1CCAFE1D25130D5C0068C152 /* WKWebView+RegisterScheme.m */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2453,6 +2462,7 @@
 				1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */,
 				1CB28F212425D2FC00EEAAE9 /* IndexPersistence.swift */,
 				1CB28F2E24287FC500EEAAE9 /* KeyPath+StringValue.swift */,
+				1CA85F5B24FCB33B00EE8162 /* NSPredicate+CompoundConvenience.swift */,
 				1CB28F322428829500EEAAE9 /* NSPredicate+Interpolated.swift */,
 				1C19CA4B1F70ADC50060F4DE /* PostIconPersistence.swift */,
 				1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */,
@@ -2961,8 +2971,8 @@
 			packageProductDependencies = (
 				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
 				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
-				1C453F0E23384264007AC6CD /* Nuke */,
 				1C453F272338457A007AC6CD /* Stencil */,
+				1CAF2371250C8CE400033F61 /* Nuke */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -3062,8 +3072,8 @@
 			packageReferences = (
 				1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
-				1C453F0D23384264007AC6CD /* XCRemoteSwiftPackageReference "Nuke" */,
 				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
+				1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
@@ -3643,6 +3653,7 @@
 				1C14A4BA1A94C1A20045DDF7 /* Thread.swift in Sources */,
 				1CB28F222425D2FC00EEAAE9 /* IndexPersistence.swift in Sources */,
 				1C07B8C01F009F260044B8AF /* AnnouncementPersistence.swift in Sources */,
+				1CA85F5C24FCB33B00EE8162 /* NSPredicate+CompoundConvenience.swift in Sources */,
 				1CB28F332428829500EEAAE9 /* NSPredicate+Interpolated.swift in Sources */,
 				1CF0F8ED1ED91B7600C16099 /* ForumsURLSession.swift in Sources */,
 				1C14A4DC1A94C7260045DDF7 /* Errors.swift in Sources */,
@@ -3924,6 +3935,7 @@
 				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
 				1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
+				1CCAFE1E25130D5C0068C152 /* WKWebView+RegisterScheme.m in Sources */,
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,
 				1C914ECC208B9EDF00C0E238 /* NetworkActivityIndicatorManager.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
@@ -4756,14 +4768,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1C453F0D23384264007AC6CD /* XCRemoteSwiftPackageReference "Nuke" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kean/Nuke.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.2.0;
-			};
-		};
 		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
@@ -4780,6 +4784,14 @@
 				minimumVersion = 6.10.0;
 			};
 		};
+		1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nolanw/Nuke.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nolanw/HTMLReader";
@@ -4794,11 +4806,6 @@
 		1C210D4322DA5A8F009EBB6F /* ScannerShim */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ScannerShim;
-		};
-		1C453F0E23384264007AC6CD /* Nuke */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1C453F0D23384264007AC6CD /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = Nuke;
 		};
 		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -4821,6 +4828,11 @@
 		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MiniOnePassword;
+		};
+		1CAF2371250C8CE400033F61 /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
 		};
 		1CCBDFF922CB02D500E1BE6A /* HTMLReader */ = {
 			isa = XCSwiftPackageProductDependency;

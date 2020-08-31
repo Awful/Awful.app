@@ -6,6 +6,8 @@ import CoreData
 
 @objc(Forum)
 public class Forum: AwfulManagedObject, Managed {
+    public static var entityName: String { "Forum" }
+
     @NSManaged public var canPost: Bool
     @NSManaged public var forumID: String
     @NSManaged public var index: Int32
@@ -23,10 +25,12 @@ public class Forum: AwfulManagedObject, Managed {
 
     @NSManaged private var primitiveMetadata: ForumMetadata
 
-    convenience init(context: NSManagedObjectContext) {
-        self.init(entity: Self.entity(), insertInto: context)
+    public override var objectKey: ForumKey { .init(forumID: forumID) }
 
-        metadata = ForumMetadata(context: context)
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+
+        primitiveMetadata = .insert(into: managedObjectContext!)
     }
 }
 
@@ -37,7 +41,7 @@ public final class ForumKey: AwfulObjectKey {
     public init(forumID: String) {
         assert(!forumID.isEmpty)
         self.forumID = forumID
-        super.init(entityName: Forum.entity().name!)
+        super.init(entityName: Forum.entityName)
     }
     
     public required init?(coder: NSCoder) {
@@ -51,14 +55,10 @@ public final class ForumKey: AwfulObjectKey {
 }
 private let forumIDKey = "forumID"
 
-extension Forum {
-    public override var objectKey: ForumKey {
-        return ForumKey(forumID: forumID)
-    }
-}
-
 @objc(ForumGroup)
 public class ForumGroup: AwfulManagedObject, Managed {
+    public static var entityName: String { "ForumGroup" }
+
     @NSManaged public var groupID: String
     @NSManaged public var index: Int32
     @NSManaged public var name: String?
@@ -93,6 +93,8 @@ public class ForumGroup: AwfulManagedObject, Managed {
     @objc class func keyPathsForValuesAffectingSectionIdentifier() -> Set<String> {
         return [#keyPath(ForumGroup.index), #keyPath(ForumGroup.name)]
     }
+
+    public override var objectKey: ForumGroupKey { .init(groupID: groupID) }
 }
 
 @objc(ForumGroupKey)
@@ -101,7 +103,7 @@ public final class ForumGroupKey: AwfulObjectKey {
     
     public init(groupID: String) {
         self.groupID = groupID
-        super.init(entityName: ForumGroup.entity().name!)
+        super.init(entityName: ForumGroup.entityName)
     }
     
     public required init?(coder: NSCoder) {
@@ -115,14 +117,10 @@ public final class ForumGroupKey: AwfulObjectKey {
 }
 private let groupIDKey = "groupID"
 
-extension ForumGroup {
-    public override var objectKey: ForumGroupKey {
-        return ForumGroupKey(groupID: groupID)
-    }
-}
-
 @objc(ForumMetadata)
 public class ForumMetadata: AwfulManagedObject, Managed {
+    public static var entityName: String { "ForumMetadata" }
+
     @NSManaged public var favorite: Bool
     @NSManaged public var favoriteIndex: Int32
     @NSManaged public var showsChildrenInForumList: Bool
@@ -132,9 +130,12 @@ public class ForumMetadata: AwfulManagedObject, Managed {
 }
 
 extension ForumMetadata {
-    public class func metadataForForumsWithIDs(forumIDs: [String], inManagedObjectContext context: NSManagedObjectContext) -> [ForumMetadata] {
-        let request = ForumMetadata.fetchRequest() as! NSFetchRequest<ForumMetadata>
-        request.predicate = NSPredicate(format: "forum.forumID IN %@", forumIDs)
-        return try! context.fetch(request)
+    public class func metadataForForumsWithIDs(
+        forumIDs: [String],
+        in context: NSManagedObjectContext
+    ) -> [ForumMetadata] {
+        ForumMetadata.fetch(in: context) {
+            $0.predicate = .init("\(\ForumMetadata.forum.forumID) in \(forumIDs)")
+        }
     }
 }

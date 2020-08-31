@@ -252,11 +252,11 @@ final class ThreadComposeViewController: ComposeTextViewController {
         fieldView.subjectField.textField.text = coder.decodeObject(forKey: Keys.SubjectKey.rawValue) as? String
         
         if let tagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(objectKey: tagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
+            threadTag = ThreadTag.objectForKey(objectKey: tagKey, in: forum.managedObjectContext!)
         }
         
         if let secondaryTagKey = coder.decodeObject(forKey: Keys.SecondaryThreadTagKey.rawValue) as? ThreadTagKey {
-            secondaryThreadTag = ThreadTag.objectForKey(objectKey: secondaryTagKey, inManagedObjectContext: forum.managedObjectContext!) as? ThreadTag
+            secondaryThreadTag = ThreadTag.objectForKey(objectKey: secondaryTagKey, in: forum.managedObjectContext!)
         }
         
         super.decodeRestorableState(with: coder)
@@ -297,12 +297,12 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
 }
 
 extension ThreadComposeViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        guard let
-            forumKey = coder.decodeObject(forKey: Keys.ForumKey.rawValue) as? ForumKey,
-            let forum = Forum.objectForKey(objectKey: forumKey, inManagedObjectContext: AppDelegate.instance.managedObjectContext) as? Forum
-            else { return nil }
-        
+    static func viewController(
+        withRestorationIdentifierPath identifierComponents: [String],
+        coder: NSCoder
+    ) -> UIViewController? {
+        guard let forumKey = coder.decodeObject(forKey: Keys.ForumKey.rawValue) as? ForumKey else { return nil }
+        let forum = Forum.objectForKey(objectKey: forumKey, in: AppDelegate.instance.managedObjectContext)
         let composeViewController = ThreadComposeViewController(forum: forum)
         composeViewController.restorationIdentifier = identifierComponents.last
         return composeViewController

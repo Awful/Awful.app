@@ -87,10 +87,10 @@ final class ThreadPreviewViewController: ViewController {
                 
                 guard
                     let userKey = UserDefaults.standard.loggedInUserID.map({ UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }),
-                    let context = self.managedObjectContext,
-                    let author = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
+                    let context = self.managedObjectContext
                     else { throw MissingAuthorError() }
-                
+
+                let author = User.objectForKey(objectKey: userKey, in: context)
                 self.post = PostRenderModel(author: author, isOP: true, postDate: Date(), postHTML: previewAndForm.previewHTML)
                 self.formData = previewAndForm.formData
                 self.renderPreview()
@@ -165,7 +165,12 @@ final class ThreadPreviewViewController: ViewController {
         let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width)
         threadCell.frame = CGRect(x: 0, y: -cellHeight, width: view.bounds.width, height: cellHeight)
 
-        let topInset = view.safeAreaLayoutGuide.layoutFrame.minY
+        let topInset: CGFloat
+        if #available(iOS 11.0, *) {
+            topInset = view.safeAreaLayoutGuide.layoutFrame.minY
+        } else {
+            topInset = topLayoutGuide.length
+        }
         renderView.scrollView.contentInset.top = topInset + cellHeight
     }
     
@@ -229,7 +234,7 @@ extension ThreadPreviewViewController: RenderViewDelegate {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         }
         else {
-            UIApplication.shared.open(url)
+            UIApplication.shared.openURL(url)
         }
     }
     

@@ -6,6 +6,8 @@ import CoreData
 
 @objc(Thread)
 public class AwfulThread: AwfulManagedObject, Managed {
+    public static var entityName: String { "Thread" }
+
     @NSManaged public var anyUnreadPosts: Bool
     @NSManaged var archived: Bool
     @NSManaged public var bookmarked: Bool
@@ -32,6 +34,8 @@ public class AwfulThread: AwfulManagedObject, Managed {
     @NSManaged public var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
     @NSManaged var threadFilters: Set<ThreadFilter>
     @NSManaged public var threadTag: ThreadTag? /* via threads */
+
+    public override var objectKey: ThreadKey { .init(threadID: threadID) }
 }
 
 @objc public enum StarCategory: Int16 {
@@ -136,7 +140,7 @@ public final class ThreadKey: AwfulObjectKey {
     public init(threadID: String) {
         assert(!threadID.isEmpty)
         self.threadID = threadID
-        super.init(entityName: AwfulThread.entity().name!)
+        super.init(entityName: AwfulThread.entityName)
     }
     
     public required init?(coder: NSCoder) {
@@ -150,14 +154,10 @@ public final class ThreadKey: AwfulObjectKey {
 }
 private let threadIDKey = "threadID"
 
-extension AwfulThread {
-    public override var objectKey: ThreadKey {
-        return ThreadKey(threadID: threadID)
-    }
-}
-
 @objc(ThreadFilter)
-class ThreadFilter: AwfulManagedObject {
+class ThreadFilter: AwfulManagedObject, Managed {
+    static var entityName: String { "ThreadFilter" }
+
     @NSManaged var numberOfPages: Int32
     
     @NSManaged var author: User
@@ -165,29 +165,32 @@ class ThreadFilter: AwfulManagedObject {
 }
 
 extension AwfulThread {
-    public func filteredNumberOfPagesForAuthor(author: User) -> Int32 {
-        if let filter = fetchFilter(author: author) {
-            return filter.numberOfPages
-        } else {
-            return 0
-        }
+    public func filteredNumberOfPagesForAuthor(_ author: User) -> Int32 {
+        ThreadFilter.findOrFetch(
+            in: managedObjectContext!,
+            matching: filterPredicate(author: author)
+        )?.numberOfPages ?? 0
     }
     
-    public func setFilteredNumberOfPages(numberOfPages: Int32, forAuthor author: User) {
-        var filter: ThreadFilter! = fetchFilter(author: author)
-        if filter == nil {
-            filter = ThreadFilter(context: managedObjectContext!)
-            filter.thread = self
-            filter.author = author
-        }
+    public func setFilteredNumberOfPages(
+        _ numberOfPages: Int32,
+        forAuthor author: User
+    ) {
+        let filter = ThreadFilter.findOrCreate(
+            in: managedObjectContext!,
+            matching: filterPredicate(author: author),
+            configure: {
+                $0.thread = self
+                $0.author = author
+            }
+        )
         filter.numberOfPages = numberOfPages
     }
-    
-    private func fetchFilter(author: User) -> ThreadFilter? {
-        let request = ThreadFilter.fetchRequest() as! NSFetchRequest<ThreadFilter>
-        request.predicate = NSPredicate(format: "thread = %@ AND author = %@", self, author)
-        request.fetchLimit = 1
-        let results = try! managedObjectContext!.fetch(request)
-        return results.first
+
+    private func filterPredicate(author: User) -> NSPredicate {
+        .and(
+            .init("\(\ThreadFilter.thread) = \(self)"),
+            .init("\(\ThreadFilter.author) = \(author)")
+        )
     }
 }

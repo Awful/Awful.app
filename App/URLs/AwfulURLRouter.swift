@@ -32,7 +32,7 @@ final class AwfulURLRouter: NSObject {
 
         case let .forum(id: forumID):
             let key = ForumKey(forumID: forumID)
-            guard let forum = Forum.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? Forum else { return false }
+            guard let forum = Forum.existingObjectForKey(objectKey: key, in: managedObjectContext) else { return false }
             return jumpToForum(forum)
 
         case .forumList:
@@ -48,7 +48,7 @@ final class AwfulURLRouter: NSObject {
             _ = inbox.navigationController?.popToViewController(inbox, animated: false)
 
             let key = PrivateMessageKey(messageID: messageID)
-            if let message = PrivateMessage.objectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? PrivateMessage {
+            if let message = PrivateMessage.existingObjectForKey(objectKey: key, in: managedObjectContext) {
                 inbox.showMessage(message)
                 return true
             }
@@ -79,7 +79,7 @@ final class AwfulURLRouter: NSObject {
 
         case let .post(id: postID, updateSeen):
             let key = PostKey(postID: postID)
-            if let post = Post.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? Post,
+            if let post = Post.existingObjectForKey(objectKey: key, in: managedObjectContext),
                let thread = post.thread,
                post.page > 0
             {
@@ -209,11 +209,11 @@ final class AwfulURLRouter: NSObject {
         updateSeen: AwfulRoute.UpdateSeen
     ) -> Bool {
         let threadKey = ThreadKey(threadID: threadID)
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: managedObjectContext) as! AwfulThread
+        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext) 
         let postsVC: PostsPageViewController
         if let userID = userID, !userID.isEmpty {
             let userKey = UserKey(userID: userID, username: nil)
-            let user = User.objectForKey(objectKey: userKey, inManagedObjectContext: managedObjectContext) as! User
+            let user = User.objectForKey(objectKey: userKey, in: managedObjectContext) 
             postsVC = PostsPageViewController(thread: thread, author: user)
         } else {
             postsVC = PostsPageViewController(thread: thread)
@@ -262,7 +262,7 @@ final class AwfulURLRouter: NSObject {
     
     private func fetchUser(withUserID userID: String, completion: @escaping (Error?, User?) -> Void) {
         let key = UserKey(userID: userID, username: nil)
-        if let user = User.existingObjectForKey(objectKey: key, inManagedObjectContext: managedObjectContext) as? User {
+        if let user = User.existingObjectForKey(objectKey: key, in: managedObjectContext) {
             completion(nil, user)
             return
         }

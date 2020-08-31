@@ -24,7 +24,7 @@ final class ForumsTableViewController: TableViewController {
 
         favoriteForumCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
-            entityName: ForumMetadata.entity().name!,
+            entityName: ForumMetadata.entityName,
             predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
             didChange: { [weak self] favoriteCount in
                 self?.updateEditingState(favoriteCount: favoriteCount)
@@ -33,7 +33,7 @@ final class ForumsTableViewController: TableViewController {
 
         unreadAnnouncementCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
-            entityName: Announcement.entity().name!,
+            entityName: Announcement.entityName,
             predicate: NSPredicate(format: "%K == NO", #keyPath(Announcement.hasBeenSeen)),
             didChange: { [weak self] unreadCount in
                 self?.updateBadgeValue(unreadCount) })
@@ -70,8 +70,8 @@ final class ForumsTableViewController: TableViewController {
         // TODO: this shouldn't be the view controller's responsibility.
         // In Awful 3.2, favorite forums moved from UserDefaults to the ForumMetadata entity in Core Data.
         if let forumIDs = UserDefaults.standard.oldFavoriteForums {
-            let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs: forumIDs, inManagedObjectContext: managedObjectContext)
-            for (i, metadata) in metadatas.enumerated() {
+            let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs: forumIDs, in: managedObjectContext)
+            for (i, metadata) in zip(0..., metadatas) {
                 metadata.favoriteIndex = Int32(i)
                 metadata.favorite = true
             }

@@ -378,6 +378,8 @@
 					<string>app_icon_name</string>
 				</dict>
 			</array>
+			<key>RequiresiOS10.3</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>Settings</key>

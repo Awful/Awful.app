@@ -1,5 +1,5 @@
 // Build settings for the SmilieStickers extension target in the Release configuration.
 
-#include "Extension.xcconfig"
+#include "SmilieStickers.xcconfig"
 
 PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.SmiliesStickers

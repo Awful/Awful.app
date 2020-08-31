@@ -28,7 +28,7 @@ internal extension ProfileScrapeResult {
 
         let profile: Profile = {
             if let profile = user.profile { return profile }
-            let newProfile = Profile(context: context)
+            let newProfile = Profile.insert(into: context)
             user.profile = newProfile
             return newProfile
         }()

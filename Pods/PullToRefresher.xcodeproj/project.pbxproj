@@ -198,9 +198,9 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		0EDB8F6FCAB4F41DCB869A844BAE8316 /* Debug */ = {
+		25D309D25E6B81BDD290269BB32BE666 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2DED8561500D98A4A022555B2B5FA9B1 /* PullToRefresher.debug.xcconfig */;
+			baseConfigurationReference = FC861749571F501D8FF69971CB6F68E5 /* PullToRefresher.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -225,12 +225,13 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.1;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
 		883D7ECAC106AABE7A9CBE24D1F512AE /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -280,7 +281,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -343,7 +344,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -356,9 +357,9 @@
 			};
 			name = Debug;
 		};
-		DD9C06C2B250423F5A72C7E1B7D235D1 /* Release */ = {
+		B88C87F44FF0393EECD3386C996AC2E6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FC861749571F501D8FF69971CB6F68E5 /* PullToRefresher.release.xcconfig */;
+			baseConfigurationReference = 2DED8561500D98A4A022555B2B5FA9B1 /* PullToRefresher.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -383,13 +384,12 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.1;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -406,8 +406,8 @@
 		8D5E5098DA6B64A33B64B6BECF5F2E13 /* Build configuration list for PBXNativeTarget "PullToRefresher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0EDB8F6FCAB4F41DCB869A844BAE8316 /* Debug */,
-				DD9C06C2B250423F5A72C7E1B7D235D1 /* Release */,
+				B88C87F44FF0393EECD3386C996AC2E6 /* Debug */,
+				25D309D25E6B81BDD290269BB32BE666 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

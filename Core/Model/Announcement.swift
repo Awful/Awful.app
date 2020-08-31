@@ -13,6 +13,8 @@ import CoreData
  */
 @objc(Announcement)
 public final class Announcement: AwfulManagedObject, Managed {
+    public static var entityName: String { "Announcement" }
+    
     @NSManaged public var authorCustomTitleHTML: String
     @NSManaged public var authorRegdate: Date?
     @NSManaged public var authorUsername: String

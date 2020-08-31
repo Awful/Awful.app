@@ -70,4 +70,6 @@ extension SettingsSection {
     }
     
     var visibleInSettingsTab: Bool { info["VisibleInSettingsTab"] as? Bool ?? true }
+
+    var requiresiOS10dot3: Bool { info["RequiresiOS10.3"] as? Bool ?? false }
 }

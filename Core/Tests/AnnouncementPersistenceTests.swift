@@ -34,9 +34,9 @@ final class AnnouncementPersistenceTests: XCTestCase {
     }
 
     private func fetchAnnouncements() throws -> [Announcement] {
-        let request = Announcement.fetchRequest() as! NSFetchRequest<Announcement>
-        request.sortDescriptors = [NSSortDescriptor(key: #keyPath(Announcement.listIndex), ascending: true)]
-        return try context.fetch(request)
+        Announcement.fetch(in: context) {
+            $0.sortDescriptors = [.init(key: #keyPath(Announcement.listIndex), ascending: true)]
+        }
     }
     
     func testNoAnnouncments() {
@@ -71,7 +71,7 @@ final class AnnouncementPersistenceTests: XCTestCase {
 
     func testUpdateAnnouncements() {
         do {
-            let fake = Announcement(context: context)
+            let fake = Announcement.insert(into: context)
             fake.authorCustomTitleHTML = "<marquee>wow"
             fake.authorUsername = "ugh"
             fake.bodyHTML = "</marquee>"
@@ -79,7 +79,7 @@ final class AnnouncementPersistenceTests: XCTestCase {
             fake.postedDate = Date()
             fake.title = "A fake announcement"
 
-            let madeUp = Announcement(context: context)
+            let madeUp = Announcement.insert(into: context)
             madeUp.authorCustomTitleHTML = "<sup>"
             madeUp.authorUsername = "ugh"
             madeUp.bodyHTML = "</sup>"

@@ -14,7 +14,7 @@ Remember that this script runs in the main frame too, so be careful not to mess 
 
   // Prevent default WKWebView long-press link menu in iframes. Otherwise it presents an action sheet which denies our ability to present our own action sheet on long-press.
   var bodyStyle = window.getComputedStyle(document.body);
-  if (bodyStyle.getPropertyValue('-webkit-touch-callout') === "default") {
+  if (bodyStyle && bodyStyle.getPropertyValue('-webkit-touch-callout') === "default") {
     document.body.style.webkitTouchCallout = "none";
   }
 

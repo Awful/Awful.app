@@ -16,7 +16,7 @@ internal extension PostIcon {
 internal extension PostIconListScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> (primary: [ThreadTag], secondary: [ThreadTag]) {
         let helper = PostIconPersistenceHelper(context: context, icons: primaryIcons + secondaryIcons)
-        try helper.performFetch()
+        helper.performFetch()
         return (primary: primaryIcons.map(helper.upsert),
                 secondary: secondaryIcons.map(helper.upsert))
     }
@@ -34,21 +34,22 @@ internal class PostIconPersistenceHelper {
         self.icons = icons
     }
 
-    func performFetch() throws {
-        let request = ThreadTag.fetchRequest() as! NSFetchRequest<ThreadTag>
-        let threadTagIDs = icons
-            .map { $0.id }
-            .filter { !$0.isEmpty }
-        let imageNames = icons
-            .compactMap { $0.url }
-            .map(ThreadTag.imageName)
-            .filter { !$0.isEmpty }
-        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
-            NSPredicate(format: "%K IN %@", #keyPath(ThreadTag.threadTagID), threadTagIDs),
-            NSPredicate(format: "%K IN %@", #keyPath(ThreadTag.imageName), imageNames)])
-        request.returnsObjectsAsFaults = false
-
-        for tag in try context.fetch(request) {
+    func performFetch() {
+        let tags = ThreadTag.fetch(in: context) {
+            let threadTagIDs = icons
+                .map { $0.id }
+                .filter { !$0.isEmpty }
+            let imageNames = icons
+                .compactMap { $0.url }
+                .map(ThreadTag.imageName)
+                .filter { !$0.isEmpty }
+            $0.predicate = .or(
+                .init("\(\ThreadTag.threadTagID) IN \(threadTagIDs)"),
+                .init("\(\ThreadTag.imageName) IN \(imageNames)")
+            )
+            $0.returnsObjectsAsFaults = false
+        }
+        for tag in tags {
             if let id = tag.threadTagID {
                 byID[id] = tag
             }
@@ -63,7 +64,7 @@ internal class PostIconPersistenceHelper {
         let fromID = icon.id.isEmpty ? nil : byID[icon.id]
         let imageName = icon.url.map(ThreadTag.imageName)
         let fromImageName = imageName.flatMap { byImageName[$0] }
-        let tag = fromID ?? fromImageName ?? ThreadTag(context: context)
+        let tag = fromID ?? fromImageName ?? ThreadTag.insert(into: context)
         icon.update(tag)
 
         if fromID == nil, let id = tag.threadTagID { byID[id] = tag }

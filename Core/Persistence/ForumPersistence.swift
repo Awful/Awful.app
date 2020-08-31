@@ -4,7 +4,7 @@
 
 import CoreData
 
-internal extension ForumBreadcrumb {
+extension ForumBreadcrumb {
     func update(_ forum: Forum) {
         if id.rawValue != forum.forumID { forum.forumID = id.rawValue }
         if name != forum.name { forum.name = name }
@@ -15,37 +15,39 @@ internal extension ForumBreadcrumb {
         if name != group.name { group.name = name }
     }
 
-    func upsert(into context: NSManagedObjectContext) throws -> ForumGroup {
-        let request = ForumGroup.fetchRequest() as! NSFetchRequest<ForumGroup>
-        request.predicate = NSPredicate(format: "%K = %@", #keyPath(ForumGroup.groupID), id.rawValue)
-        request.returnsObjectsAsFaults = false
-
-        let group = try context.fetch(request).first ?? ForumGroup(context: context)
-
+    func upsert(
+        into context: NSManagedObjectContext
+    ) throws -> ForumGroup {
+        let group = ForumGroup.findOrCreate(in: context, matching: .init("\(\ForumGroup.groupID) = \(id.rawValue)")) {
+            $0.groupID = id.rawValue
+        }
         update(group)
-
         return group
     }
 }
 
-internal extension ForumBreadcrumbsScrapeResult {
-    func upsert(into context: NSManagedObjectContext) throws -> (group: ForumGroup?, forums: [Forum]) {
-        let group = try self.forums.first.map { try $0.upsert(into: context) as ForumGroup }
-
+extension ForumBreadcrumbsScrapeResult {
+    func upsert(
+        into context: NSManagedObjectContext
+    ) throws -> (group: ForumGroup?, forums: [Forum]) {
+        let group = try forums.first.map {
+            try $0.upsert(into: context) as ForumGroup
+        }
         let rawForums = self.forums.dropFirst()
-        let rawForumIDs = rawForums.map { $0.id.rawValue }
-        let request = Forum.fetchRequest() as! NSFetchRequest<Forum>
-        request.predicate = NSPredicate(format: "%K IN %@", #keyPath(Forum.forumID), rawForumIDs)
-        request.returnsObjectsAsFaults = false
 
         var unorderedForums: [ForumID: Forum] = [:]
-        for forum in try context.fetch(request) {
+        let knownForums = Forum.fetch(in: context) {
+            let rawForumIDs = rawForums.map { $0.id.rawValue }
+            $0.predicate = .init("\(\Forum.forumID) in \(rawForumIDs)")
+            $0.returnsObjectsAsFaults = false
+        }
+        for forum in knownForums {
             guard let id = ForumID(rawValue: forum.forumID) else { continue }
             unorderedForums[id] = forum
         }
 
         for rawForum in rawForums where unorderedForums[rawForum.id] == nil {
-            let forum = Forum(context: context)
+            let forum = Forum.insert(into: context)
             forum.forumID = rawForum.id.rawValue
             unorderedForums[rawForum.id] = forum
         }

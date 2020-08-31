@@ -40,6 +40,12 @@ final class TextAttachment: NSTextAttachment {
     required init?(coder: NSCoder) {
         if let photoAssetIdentifier = coder.decodeObject(of: NSString.self, forKey: CodingKeys.assetIdentifier.rawValue) {
             self.photoAssetIdentifier = photoAssetIdentifier as String
+        } else {
+            #if !targetEnvironment(macCatalyst)
+            if let assetURL = coder.decodeObject(of: NSURL.self, forKey: ObsoleteCodingKeys.assetURL.rawValue) {
+                photoAssetIdentifier = PHAsset.firstAsset(withALAssetURL: assetURL as URL)?.localIdentifier
+            }
+            #endif
         }
         
         super.init(coder: coder)

@@ -22,7 +22,7 @@ internal extension PostScrapeResult {
 
 internal extension PostsPageScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [Post] {
-        let forum: Forum? = try {
+        let forum: Forum? = {
             if
                 let breadcrumbs = breadcrumbs,
                 let forums = try? breadcrumbs.upsert(into: context).forums,
@@ -32,18 +32,10 @@ internal extension PostsPageScrapeResult {
                 return last
             }
             else if let forumID = forumID {
-                let request = Forum.fetchRequest() as! NSFetchRequest<Forum>
-                request.predicate = NSPredicate(format: "%K = %@", #keyPath(Forum.forumID), forumID.rawValue)
-                request.returnsObjectsAsFaults = false
-
-                if let forum = try context.fetch(request).first {
-                    return forum
-                }
-                else {
-                    let forum = Forum(context: context)
-                    forum.forumID = forumID.rawValue
-                    return forum
-                }
+                return Forum.findOrCreate(
+                    in: context,
+                    matching: .init("\(\Forum.forumID) = \(forumID.rawValue)"),
+                    configure: { $0.forumID = forumID.rawValue })
             }
             else {
                 return nil
@@ -52,12 +44,11 @@ internal extension PostsPageScrapeResult {
 
         let users = try upsertUsers(into: context)
 
-        let thread = try threadID.map { id -> AwfulThread in
-            let request = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
-            request.predicate = NSPredicate(format: "%K = %@", #keyPath(AwfulThread.threadID), id.rawValue)
-            request.returnsObjectsAsFaults = false
-
-            let thread = try context.fetch(request).first ?? AwfulThread(context: context)
+        let thread = threadID.map { id -> AwfulThread in
+            let thread = AwfulThread.findOrCreate(
+                in: context,
+                matching: .init("\(\AwfulThread.threadID) = \(id.rawValue)"),
+                configure: { $0.threadID = id.rawValue })
 
             if let forum = forum, thread.forum != forum { thread.forum = forum }
             if id.rawValue != thread.threadID { thread.threadID = id.rawValue }
@@ -68,7 +59,7 @@ internal extension PostsPageScrapeResult {
             if let pageCount = pageCount {
                 if isSingleUserFilterEnabled {
                     if let firstAuthor = self.posts.first?.author, let user = users[firstAuthor.userID] {
-                        thread.setFilteredNumberOfPages(numberOfPages: Int32(pageCount), forAuthor: user)
+                        thread.setFilteredNumberOfPages(Int32(pageCount), forAuthor: user)
                     }
                 }
                 else {
@@ -98,18 +89,17 @@ internal extension PostsPageScrapeResult {
             return thread
         }
 
-        var existingPosts: [PostID: Post] = [:]
-        let request = Post.fetchRequest() as! NSFetchRequest<Post>
-        let postIDs = self.posts.map { $0.id.rawValue }
-        request.predicate = NSPredicate(format: "%K in %@", #keyPath(Post.postID), postIDs)
-        request.returnsObjectsAsFaults = false
-        for post in try context.fetch(request) {
-            guard let id = PostID(rawValue: post.postID) else { continue }
-            existingPosts[id] = post
-        }
+        let existingPosts = Dictionary(
+            Post.fetch(in: context) { request in
+                let postIDs = self.posts.map { $0.id.rawValue }
+                request.predicate = .init("\(\Post.postID) in \(postIDs)")
+                request.returnsObjectsAsFaults = false
+            }.map { (PostID(rawValue: $0.postID)!, $0) },
+            uniquingKeysWith: { $1 }
+        )
 
         let posts = self.posts.map { raw -> Post in
-            let post = existingPosts[raw.id] ?? Post(context: context)
+            let post = existingPosts[raw.id] ?? Post.insert(into: context)
 
             if let thread = thread, thread != post.thread { post.thread = thread }
             if let user = users[raw.author.userID], user != post.author { post.author = user }
@@ -157,27 +147,22 @@ internal extension PostsPageScrapeResult {
         return posts
     }
 
-    private func upsertUsers(into context: NSManagedObjectContext) throws -> [UserID: User] {
-        var unmergedUsers: [UserID: [User]] = [:]
-
+    private func upsertUsers(
+        into context: NSManagedObjectContext
+    ) throws -> [UserID: User] {
         let authors = posts.map { $0.author }
-        let userIDs = Set(authors.map { $0.userID.rawValue })
-        let request = User.fetchRequest() as! NSFetchRequest<User>
-        request.predicate = NSPredicate(format: "%K in %@", #keyPath(User.userID), userIDs)
-        request.returnsObjectsAsFaults = false
 
-        for user in try context.fetch(request) {
-            guard let id = UserID(rawValue: user.userID) else { continue }
-            unmergedUsers[id] = (unmergedUsers[id] ?? []) + [user]
-        }
-
-        var users: [UserID: User] = [:]
-        for (id, unmerged) in unmergedUsers {
-            users[id] = merge(unmerged)
-        }
+        var users = Dictionary(
+            grouping: User.fetch(in: context) { request in
+                let userIDs = Set(posts.map { $0.author.userID.rawValue })
+                request.predicate = .init("\(\User.userID) IN \(userIDs)")
+                request.returnsObjectsAsFaults = false
+            },
+            by: { UserID(rawValue: $0.userID)! }
+        ).mapValues(merge)
 
         for author in authors {
-            let user = users[author.userID] ?? User(context: context)
+            let user = users[author.userID] ?? User.insert(into: context)
             author.update(user)
             users[author.userID] = user
         }
@@ -187,26 +172,25 @@ internal extension PostsPageScrapeResult {
 }
 
 internal extension ShowPostScrapeResult {
-    func upsert(into context: NSManagedObjectContext) throws -> Post {
-        let request = Post.fetchRequest() as! NSFetchRequest<Post>
-        request.predicate = NSPredicate(format: "%K = %@", #keyPath(Post.postID), self.post.id.rawValue)
-        request.returnsObjectsAsFaults = false
-
-        let post = try context.fetch(request).first ?? Post(context: context)
+    func upsert(
+        into context: NSManagedObjectContext
+    ) throws -> Post {
+        let post = Post.findOrCreate(
+            in: context,
+            matching: .init("\(\Post.postID) = \(self.post.id.rawValue)"),
+            configure: { $0.postID = self.post.id.rawValue} )
 
         let user = try author.upsert(into: context)
         if user != post.author { post.author = user }
 
         self.post.update(post)
 
-        let thread = try threadID.map { id -> AwfulThread in
-            let request = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
-            request.predicate = NSPredicate(format: "%K = %@", #keyPath(AwfulThread.threadID), id.rawValue)
-            request.returnsObjectsAsFaults = false
+        let thread = threadID.map { id -> AwfulThread in
+            let thread = AwfulThread.findOrCreate(
+                in: context,
+                matching: .init("\(\AwfulThread.threadID) = \(id.rawValue)"),
+                configure: { $0.threadID = id.rawValue })
 
-            let thread = try context.fetch(request).first ?? AwfulThread(context: context)
-
-            if id.rawValue != thread.threadID { thread.threadID = id.rawValue }
             if !threadTitle.isEmpty, threadTitle != thread.title { thread.title = threadTitle }
 
             return thread

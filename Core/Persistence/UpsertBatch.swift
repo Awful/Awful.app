@@ -33,7 +33,7 @@ class UpsertBatch<T: NSManagedObject & Managed> {
         if let object = objects[id] {
             return object
         } else {
-            var object = T(context: context)
+            var object = T.insert(into: context)
             object[keyPath: idKeyPath] = id
             objects[id] = object
             return object

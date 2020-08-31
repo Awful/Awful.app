@@ -7,6 +7,8 @@ import Foundation
 /// A single reply to a thread.
 @objc(Post)
 public class Post: AwfulManagedObject, Managed {
+    public static var entityName: String { "Post" }
+    
     /// Whether the logged-in user can edit the post.
     @NSManaged public var editable: Bool
     
@@ -36,6 +38,8 @@ public class Post: AwfulManagedObject, Managed {
     
     /// Where the post is located.
     @NSManaged public var thread: AwfulThread?
+
+    public override var objectKey: PostKey { .init(postID: postID) }
 }
 
 extension Post {
@@ -73,7 +77,7 @@ public final class PostKey: AwfulObjectKey {
     public init(postID: String) {
         assert(!postID.isEmpty)
         self.postID = postID
-        super.init(entityName: Post.entity().name!)
+        super.init(entityName: Post.entityName)
     }
     
     public required init?(coder: NSCoder) {
@@ -86,9 +90,3 @@ public final class PostKey: AwfulObjectKey {
     }
 }
 private let postIDKey = "postID"
-
-extension Post {
-    public override var objectKey: PostKey {
-        return PostKey(postID: postID)
-    }
-}

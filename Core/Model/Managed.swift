@@ -6,9 +6,17 @@ import CoreData
 
 // Core Data helpers for Swift, largely copied from https://github.com/objcio/core-data (buy the book!)
 
-public protocol Managed: class, NSFetchRequestResult {}
+public protocol Managed: class, NSFetchRequestResult {
+    static var entityName: String { get }
+}
 
 extension Managed where Self: NSManagedObject {
+
+    public static func insert(
+        into context: NSManagedObjectContext
+    ) -> Self {
+        NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as! Self
+    }
 
     public static func findOrCreate(
         in context: NSManagedObjectContext,
@@ -18,7 +26,7 @@ extension Managed where Self: NSManagedObject {
         if let object = findOrFetch(in: context, matching: predicate) {
             return object
         } else {
-            let newObject = Self(context: context)
+            let newObject = Self.insert(into: context)
             configure(newObject)
             return newObject
         }
@@ -68,6 +76,6 @@ extension Managed where Self: NSManagedObject {
     }
 
     public static func makeFetchRequest() -> NSFetchRequest<Self> {
-        return fetchRequest() as! NSFetchRequest<Self>
+        .init(entityName: entityName)
     }
 }

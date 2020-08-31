@@ -3,7 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @objc(ThreadTag)
-public class ThreadTag: AwfulManagedObject {
+public class ThreadTag: AwfulManagedObject, Managed {
+    public static var entityName: String { "ThreadTag" }
+
     @NSManaged public var imageName: String?
     @NSManaged public var threadTagID: String?
 
@@ -13,6 +15,10 @@ public class ThreadTag: AwfulManagedObject {
     @NSManaged var secondaryForums: Set<Forum> /* via secondaryThreadTags */
     @NSManaged var secondaryThreads: Set<AwfulThread> /* via secondaryThreadTag */
     @NSManaged var threads: Set<AwfulThread> /* via threadTag */
+
+    public override var objectKey: ThreadTagKey {
+        .init(imageName: imageName, threadTagID: threadTagID)
+    }
 }
 
 extension ThreadTag {
@@ -30,14 +36,14 @@ public final class ThreadTagKey: AwfulObjectKey {
     @objc public let imageName: String?
     @objc public let threadTagID: String?
     
-    @objc public init(imageName: String!, threadTagID: String!) {
-        let imageName = nilIfEmpty(s: imageName)
-        let threadTagID = nilIfEmpty(s: threadTagID)
+    @objc public init(imageName: String?, threadTagID: String?) {
+        let imageName = imageName.flatMap { $0.isEmpty ? nil : $0 }
+        let threadTagID = threadTagID.flatMap { $0.isEmpty ? nil : $0 }
         precondition(imageName != nil || threadTagID != nil)
         
         self.imageName = imageName
         self.threadTagID = threadTagID
-        super.init(entityName: ThreadTag.entity().name!)
+        super.init(entityName: ThreadTag.entityName)
     }
     
     @objc public convenience init(imageURL: URL, threadTagID: String?) {
@@ -56,9 +62,3 @@ public final class ThreadTagKey: AwfulObjectKey {
 }
 private let imageNameKey = "imageName"
 private let threadTagIDKey = "threadTagID"
-
-extension ThreadTag {
-    public override var objectKey: ThreadTagKey {
-        return ThreadTagKey(imageName: imageName, threadTagID: threadTagID)
-    }
-}

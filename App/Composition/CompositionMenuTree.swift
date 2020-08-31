@@ -136,8 +136,10 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         }
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
+    func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+    ) {
         guard let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage else {
             Log.e("could not find image among image picker info")
             let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found")
@@ -145,7 +147,21 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             return
         }
         
-        if let asset = info[.phAsset] as? PHAsset {
+        var assetFromALAssetURL: PHAsset? {
+            #if targetEnvironment(macCatalyst)
+            return nil
+            #else
+            if let alAssetURL = info[.referenceURL] as? URL {
+                return PHAsset.firstAsset(withALAssetURL: alAssetURL)
+            } else {
+                return nil
+            }
+            #endif
+        }
+        
+        if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
+            insertImage(image, withAssetIdentifier: asset.localIdentifier)
+        } else if let asset = assetFromALAssetURL {
             insertImage(image, withAssetIdentifier: asset.localIdentifier)
         } else {
             insertImage(image)

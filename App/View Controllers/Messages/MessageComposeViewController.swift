@@ -234,7 +234,7 @@ final class MessageComposeViewController: ComposeTextViewController {
     override func decodeRestorableState(with coder: NSCoder) {
         let context = AppDelegate.instance.managedObjectContext
         if let threadTagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(objectKey: threadTagKey, inManagedObjectContext: context) as? ThreadTag
+            threadTag = ThreadTag.objectForKey(objectKey: threadTagKey, in: context)
         }
         
         super.decodeRestorableState(with: coder)
@@ -277,20 +277,14 @@ extension MessageComposeViewController: UIViewControllerRestoration {
         let context = AppDelegate.instance.managedObjectContext
         
         let composeViewController: MessageComposeViewController
-        if let
-            recipientKey = recipientKey,
-            let recipient = User.objectForKey(objectKey: recipientKey, inManagedObjectContext: context) as? User
-        {
+        if let recipientKey = recipientKey {
+            let recipient = User.objectForKey(objectKey: recipientKey, in: context)
             composeViewController = MessageComposeViewController(recipient: recipient)
-        } else if let
-            regardingKey = regardingKey,
-            let regardingMessage = PrivateMessage.objectForKey(objectKey: regardingKey, inManagedObjectContext: context) as? PrivateMessage
-        {
+        } else if let regardingKey = regardingKey {
+            let regardingMessage = PrivateMessage.objectForKey(objectKey: regardingKey, in: context)
             composeViewController = MessageComposeViewController(regardingMessage: regardingMessage, initialContents: initialContents)
-        } else if let
-            forwardingKey = forwardingKey,
-            let forwardingMessage = PrivateMessage.objectForKey(objectKey: forwardingKey, inManagedObjectContext: context) as? PrivateMessage
-        {
+        } else if let forwardingKey = forwardingKey {
+            let forwardingMessage = PrivateMessage.objectForKey(objectKey: forwardingKey, in: context)
             composeViewController = MessageComposeViewController(forwardingMessage: forwardingMessage, initialContents: initialContents)
         } else {
             return nil

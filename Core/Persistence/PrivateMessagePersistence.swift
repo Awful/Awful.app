@@ -5,15 +5,16 @@
 import CoreData
 
 internal extension PrivateMessageFolderScrapeResult {
-    func upsert(into context: NSManagedObjectContext) throws -> [PrivateMessage] {
+    func upsert(
+        into context: NSManagedObjectContext
+    ) throws -> [PrivateMessage] {
         var existingMessages: [PrivateMessageID: PrivateMessage] = [:]
         do {
-            let request = PrivateMessage.fetchRequest() as! NSFetchRequest<PrivateMessage>
-            let messageIDs = self.messages.map { $0.id.rawValue }
-            request.predicate = NSPredicate(format: "%K IN %@", #keyPath(PrivateMessage.messageID), messageIDs)
-            request.returnsObjectsAsFaults = false
-
-            for message in try context.fetch(request) {
+            let messages = PrivateMessage.fetch(in: context) {
+                $0.predicate = .init("\(\PrivateMessage.messageID) IN \(self.messages.map { $0.id.rawValue })")
+                $0.returnsObjectsAsFaults = false
+            }
+            for message in messages {
                 guard let id = PrivateMessageID(rawValue: message.messageID) else { continue }
                 existingMessages[id] = message
             }
@@ -21,14 +22,14 @@ internal extension PrivateMessageFolderScrapeResult {
 
         var threadTags: [String: ThreadTag] = [:]
         do {
-            let request = ThreadTag.fetchRequest() as! NSFetchRequest<ThreadTag>
-            let imageNames = self.messages
-                .compactMap { $0.iconImage }
-                .map { $0.deletingPathExtension().lastPathComponent }
-            request.predicate = NSPredicate(format: "%K IN %@", #keyPath(ThreadTag.imageName), imageNames)
-            request.returnsObjectsAsFaults = false
-
-            for threadTag in try context.fetch(request) {
+            let tags = ThreadTag.fetch(in: context) {
+                let imageNames = self.messages
+                    .compactMap { $0.iconImage }
+                    .map { $0.deletingPathExtension().lastPathComponent }
+                $0.predicate = .init("\(\ThreadTag.imageName) IN \(imageNames)")
+                $0.returnsObjectsAsFaults = false
+            }
+            for threadTag in tags {
                 guard let imageName = threadTag.imageName else { continue }
                 threadTags[imageName] = threadTag
             }
@@ -37,7 +38,7 @@ internal extension PrivateMessageFolderScrapeResult {
         var messages: [PrivateMessage] = []
 
         for rawMessage in self.messages {
-            let message = existingMessages[rawMessage.id] ?? PrivateMessage(context: context)
+            let message = existingMessages[rawMessage.id] ?? PrivateMessage.insert(into: context)
             rawMessage.update(message)
 
             let threadTag: ThreadTag?
@@ -46,7 +47,7 @@ internal extension PrivateMessageFolderScrapeResult {
                     threadTag = existing
                 }
                 else {
-                    let newTag = ThreadTag(context: context)
+                    let newTag = ThreadTag.insert(into: context)
                     newTag.imageName = imageName
                     threadTags[imageName] = newTag
                     threadTag = newTag
@@ -90,13 +91,12 @@ internal extension PrivateMessageScrapeResult {
         if wasRepliedTo != message.replied { message.replied = wasRepliedTo }
     }
 
-    func upsert(into context: NSManagedObjectContext) throws -> PrivateMessage {
-        let request = PrivateMessage.fetchRequest() as! NSFetchRequest<PrivateMessage>
-        request.predicate = NSPredicate(format: "%K = %@", #keyPath(PrivateMessage.messageID), privateMessageID.rawValue)
-        request.returnsObjectsAsFaults = false
-
-        let message = try context.fetch(request).first ?? PrivateMessage(context: context)
-
+    func upsert(
+        into context: NSManagedObjectContext
+    ) throws -> PrivateMessage {
+        let message = PrivateMessage.findOrCreate(in: context, matching: .init("\(\PrivateMessage.messageID) = \(privateMessageID.rawValue)")) {
+            $0.messageID = privateMessageID.rawValue
+        }
         let from = author.flatMap { try? $0.upsert(into: context) }
         if from != message.from { message.from = from }
 

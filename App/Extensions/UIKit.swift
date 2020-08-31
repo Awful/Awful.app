@@ -209,9 +209,23 @@ extension UIPasteboard {
      /// Gets the first URL-like item on the pasteboard. A URL-like item is either a URL or a string that can be coerced into a URL.
     var coercedURL: URL? {
         get {
-            if hasURLs, let urls = urls, let url = urls.first {
+            var urls: [URL]? {
+                if #available(iOS 10.0, *) {
+                    return hasURLs ? self.urls : nil
+                } else {
+                    return self.urls
+                }
+            }
+            var strings: [String]? {
+                if #available(iOS 10.0, *) {
+                    return hasStrings ? self.strings : nil
+                } else {
+                    return self.strings
+                }
+            }
+            if let urls = urls, let url = urls.first {
                 return url
-            } else if hasStrings, let strings = strings, let url = strings.compactMap({ URL(string: $0) }).first {
+            } else if let strings = strings, let url = strings.lazy.compactMap({ URL(string: $0) }).first {
                 return url
             } else {
                 return nil

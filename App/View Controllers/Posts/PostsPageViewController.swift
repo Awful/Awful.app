@@ -84,7 +84,7 @@ final class PostsPageViewController: ViewController {
     
     var numberOfPages: Int {
         if let author = author {
-            return Int(thread.filteredNumberOfPagesForAuthor(author: author))
+            return Int(thread.filteredNumberOfPagesForAuthor(author))
         } else {
             return Int(thread.numberOfPages)
         }
@@ -127,7 +127,7 @@ final class PostsPageViewController: ViewController {
         // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
         var newPage = newPage
         if let author = author, case .last? = page {
-            newPage = .specific(Int(thread.filteredNumberOfPagesForAuthor(author: author)))
+            newPage = .specific(Int(thread.filteredNumberOfPagesForAuthor(author)))
         }
         
         let reloadingSamePage = page == newPage
@@ -487,7 +487,7 @@ final class PostsPageViewController: ViewController {
             } else {
                 let ownPostsItem = IconActionItem(.ownPosts, block: {
                     let userKey = UserKey(userID: UserDefaults.standard.loggedInUserID!, username: UserDefaults.standard.loggedInUsername)
-                    let user = User.objectForKey(objectKey: userKey, inManagedObjectContext: self.thread.managedObjectContext!) as! User
+                    let user = User.objectForKey(objectKey: userKey, in: self.thread.managedObjectContext!)
                     let postsVC = PostsPageViewController(thread: self.thread, author: user)
                     postsVC.restorationIdentifier = "Just your posts"
                     postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
@@ -1014,8 +1014,12 @@ final class PostsPageViewController: ViewController {
          Here is where we turn off the magic. In `viewDidLayoutSubviews` we update the layout margins.
          */
         extendedLayoutIncludesOpaqueBars = true
-        postsView.insetsLayoutMarginsFromSafeArea = false
-        postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
+        if #available(iOS 11.0, *) {
+            postsView.insetsLayoutMarginsFromSafeArea = false
+            postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
+        }  else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
         view.addSubview(postsView, constrainEdges: .all)
 
         let spacer: CGFloat = 12
@@ -1069,6 +1073,7 @@ final class PostsPageViewController: ViewController {
         updatePostsViewLayoutMargins()
     }
 
+    @available(iOS 11.0, *)
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         updatePostsViewLayoutMargins()
@@ -1076,7 +1081,11 @@ final class PostsPageViewController: ViewController {
 
     private func updatePostsViewLayoutMargins() {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
-        postsView.layoutMargins = view.safeAreaInsets
+        if #available(iOS 11.0, *) {
+            postsView.layoutMargins = view.safeAreaInsets
+        } else {
+            postsView.layoutMargins = .init(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -1258,7 +1267,7 @@ extension PostsPageViewController: RenderViewDelegate {
         } else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         } else {
-            UIApplication.shared.open(url)
+            UIApplication.shared.openURL(url)
         }
     }
     
@@ -1276,14 +1285,12 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
 extension PostsPageViewController: UIViewControllerRestoration {
     static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
         let context = AppDelegate.instance.managedObjectContext
-        guard let
-            threadKey = coder.decodeObject(forKey: Keys.threadKey) as? ThreadKey,
-            let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: context) as? AwfulThread
-            else { return nil }
+        guard let threadKey = coder.decodeObject(forKey: Keys.threadKey) as? ThreadKey else { return nil }
+        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: context)
         let userKey = coder.decodeObject(forKey: Keys.authorUserKey) as? UserKey
         let author: User?
         if let userKey = userKey {
-            author = User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
+            author = User.objectForKey(objectKey: userKey, in: context)
         } else {
             author = nil
         }

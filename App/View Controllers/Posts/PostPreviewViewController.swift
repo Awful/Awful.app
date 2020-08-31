@@ -111,7 +111,7 @@ final class PostPreviewViewController: ViewController {
                         return nil
                     }
                     let userKey = UserKey(userID: userID, username: UserDefaults.standard.loggedInUsername)
-                    return User.objectForKey(objectKey: userKey, inManagedObjectContext: context) as? User
+                    return User.objectForKey(objectKey: userKey, in: context)
                 }
                 
                 guard let author = self.editingPost?.author ?? loggedInUser else {
@@ -211,7 +211,7 @@ extension PostPreviewViewController: RenderViewDelegate {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         }
         else {
-            UIApplication.shared.open(url)
+            UIApplication.shared.openURL(url)
         }
     }
     

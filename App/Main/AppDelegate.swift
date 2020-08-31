@@ -437,7 +437,11 @@ private let currentInterfaceVersion: InterfaceVersion = .version3
 
 private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
     do {
-        try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default)
+        if #available(iOS 10.0, *) {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default)
+        } else {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+        }
     } catch {
         Log.d("error setting audio session category: \(error)")
     }

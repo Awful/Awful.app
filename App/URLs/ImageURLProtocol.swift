@@ -130,6 +130,7 @@ final class ImageURLProtocol: URLProtocol {
     }
 }
 
+@available(iOS 11.0, *)
 extension ImageURLProtocol: WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start task: WKURLSchemeTask) {
         guard let (response, data) = loadImage(task.request) else {

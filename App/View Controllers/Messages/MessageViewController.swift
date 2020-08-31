@@ -329,7 +329,7 @@ extension MessageViewController: RenderViewDelegate {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
         }
         else {
-            UIApplication.shared.open(url)
+            UIApplication.shared.openURL(url)
         }
     }
     
@@ -351,10 +351,7 @@ extension MessageViewController: UIViewControllerRestoration {
         }
         
         let context = AppDelegate.instance.managedObjectContext
-        guard let privateMessage = PrivateMessage.objectForKey(objectKey: messageKey, inManagedObjectContext: context) as? PrivateMessage else {
-            return nil
-        }
-        
+        let privateMessage = PrivateMessage.objectForKey(objectKey: messageKey, in: context)
         let messageVC = self.init(privateMessage: privateMessage)
         messageVC.restorationIdentifier = identifierComponents.last
         return messageVC

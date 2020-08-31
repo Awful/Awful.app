@@ -126,10 +126,11 @@ extension IndexScrapeResult.ScrapedProfile {
         let user = User.findOrCreate(
             in: context,
             matching: .init(format: "%K = %@", #keyPath(User.userID), userID),
-            configure: { $0.userID = userID })
+            configure: { $0.userID = userID }
+        )
         update(user)
 
-        let profile = user.profile ?? Profile(context: context)
+        let profile = user.profile ?? Profile.insert(into: context)
         if profile.user != user { profile.user = user }
         update(profile)
 

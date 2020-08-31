@@ -1,5 +1,5 @@
 source 'https://cdn.cocoapods.org/'
-platform :ios, '12.2'
+platform :ios, '9.0'
 project 'Xcode/Awful'
 
 use_frameworks!
@@ -16,8 +16,7 @@ target 'Awful' do
   # Fixes a compile error; I'm happy to pin to some subsequent tagged version if that ever happens.
   pod 'PSMenuItem', :git => 'https://github.com/steipete/PSMenuItem', :commit => '489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79'
 
-  # Swift 4 support that doesn't crash in KVO. Go back to main pod when it arrives there
-  pod 'PullToRefresher', :git => 'https://github.com/MindSea/PullToRefresh', :branch => 'fix-simultaneous-access'
+  pod 'PullToRefresher'
 
   target :AwfulTests
 end

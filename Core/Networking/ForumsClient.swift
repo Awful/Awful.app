@@ -257,14 +257,14 @@ public final class ForumsClient {
             .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
                 let threads = try result.upsert(into: context)
 
-                let threadIDsToIgnore = threads.map { $0.threadID }
-                let fetchRequest = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
-                fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[
-                    NSPredicate(format: "%K = YES", #keyPath(AwfulThread.bookmarked)),
-                    NSPredicate(format: "%K >= %@", #keyPath(AwfulThread.bookmarkListPage), NSNumber(value: page)),
-                    NSPredicate(format: "NOT(%K IN %@)", #keyPath(AwfulThread.threadID), threadIDsToIgnore)])
-                let threadsToForget = try context.fetch(fetchRequest)
-                threadsToForget.forEach { $0.bookmarkListPage = 0 }
+                AwfulThread.fetch(in: context) {
+                    let threadIDsToIgnore = threads.map { $0.threadID }
+                    $0.predicate = .and(
+                        .init("\(\AwfulThread.bookmarked) = YES"),
+                        .init("\(\AwfulThread.bookmarkListPage) >= \(page)"),
+                        .init("NOT(\(\AwfulThread.threadID) IN \(threadIDsToIgnore)")
+                    )
+                }.forEach { $0.bookmarkListPage = 0 }
 
                 try context.save()
 
@@ -423,15 +423,8 @@ public final class ForumsClient {
                 return threadID
         }
 
-        return threadID
-            .map(on: mainContext) { threadID, context -> AwfulThread in
-                let key = ThreadKey(threadID: threadID)
-                guard let thread = AwfulThread.objectForKey(objectKey: key, inManagedObjectContext: context) as? AwfulThread else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "The new thread could not be saved, but it was probably made. Check the forum you posted it in."])
-                }
-
-                return thread
+        return threadID.map(on: mainContext) { threadID, context in
+            AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
         }
     }
 
@@ -718,12 +711,7 @@ public final class ForumsClient {
         return postID
             .map(on: mainContext) { postID, context -> ReplyLocation in
                 if let postID = postID {
-                    let key = PostKey(postID: postID)
-                    guard let post = Post.objectForKey(objectKey: key, inManagedObjectContext: context) as? Post else {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Could not save new post. It might've worked anyway"])
-                    }
-                    return .post(post)
+                    return .post(Post.objectForKey(objectKey: PostKey(postID: postID), in: context))
                 }
                 else {
                     return .lastPostInThread
@@ -902,15 +890,8 @@ public final class ForumsClient {
             }
             .map(on: mainContext) { parsed, context -> (post: Post, page: ThreadPage) in
                 let (threadID: threadID, page: page) = parsed
-                let postKey = PostKey(postID: postID)
-                let threadKey = ThreadKey(threadID: threadID)
-                guard
-                    let post = Post.objectForKey(objectKey: postKey, inManagedObjectContext: mainContext) as? Post,
-                    let thread = AwfulThread.objectForKey(objectKey: threadKey, inManagedObjectContext: mainContext) as? AwfulThread else
-                {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Couldn't make the post or thread"])
-                }
+                let post = Post.objectForKey(objectKey: PostKey(postID: postID), in: mainContext)
+                let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: mainContext)
 
                 post.thread = thread
                 try context.save()

@@ -5,7 +5,9 @@
 import CoreData
 
 internal extension ThreadListScrapeResult {
-    func upsert(into context: NSManagedObjectContext) throws -> [AwfulThread] {
+    func upsert(
+        into context: NSManagedObjectContext
+    ) throws -> [AwfulThread] {
         let (group: _, forums: forums) = try breadcrumbs?.upsert(into: context) ?? (nil, [])
         let forum = forums.last
 
@@ -13,46 +15,37 @@ internal extension ThreadListScrapeResult {
             + self.threads.compactMap { $0.secondaryIcon }
             + self.filterableIcons
         let iconHelper = PostIconPersistenceHelper(context: context, icons: icons)
-        try iconHelper.performFetch()
+        iconHelper.performFetch()
         
         forum?.threadTags = NSMutableOrderedSet(array: filterableIcons.map { iconHelper.upsert($0) })
 
-        var users: [UserID: User] = [:]
-        do {
-            let request = User.fetchRequest() as! NSFetchRequest<User>
-            let userIDs = self.threads.compactMap { $0.author?.rawValue }
-            request.predicate = NSPredicate(format: "%K IN %@", #keyPath(User.userID), userIDs)
-            request.returnsObjectsAsFaults = false
-
-            for user in try context.fetch(request) {
-                guard let id = UserID(rawValue: user.userID) else { continue }
-                users[id] = user
-            }
-        }
-
-        var existingThreads: [ThreadID: AwfulThread] = [:]
-        do {
-            let request = AwfulThread.fetchRequest() as! NSFetchRequest<AwfulThread>
-            let threadIDs = self.threads.map { $0.id.rawValue }
-            request.predicate = NSPredicate(format: "%K IN %@", #keyPath(AwfulThread.threadID), threadIDs)
-            request.returnsObjectsAsFaults = false
-
-            for thread in try context.fetch(request) {
-                guard let id = ThreadID(rawValue: thread.threadID) else { continue }
-                existingThreads[id] = thread
-            }
-        }
+        var users = Dictionary(
+            User.fetch(in: context, configure: { request in
+                let userIDs = self.threads.compactMap { $0.author?.rawValue }
+                request.predicate = .init("\(\User.userID) IN \(userIDs)")
+                request.returnsObjectsAsFaults = false
+            }).map { (UserID(rawValue: $0.userID)!, $0) },
+            uniquingKeysWith: { $1 }
+        )
+        let existingThreads = Dictionary(
+            AwfulThread.fetch(in: context) { request in
+                let threadIDs = self.threads.map { $0.id.rawValue }
+                request.predicate = .init("\(\AwfulThread.threadID) IN \(threadIDs)")
+                request.returnsObjectsAsFaults = false
+            }.map { (ThreadID(rawValue: $0.threadID)!, $0) },
+            uniquingKeysWith: { $1 }
+        )
 
         var threads: [AwfulThread] = []
         var stickyIndex = -self.threads.count
         for raw in self.threads {
-            let thread = existingThreads[raw.id] ?? AwfulThread(context: context)
+            let thread = existingThreads[raw.id] ?? AwfulThread.insert(into: context)
 
             raw.update(thread)
 
             if let authorID = raw.author {
                 let author = users[authorID] ?? {
-                    let author = User(context: context)
+                    let author = User.insert(into: context)
                     author.userID = authorID.rawValue
                     users[authorID] = author
                     return author

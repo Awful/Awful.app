@@ -229,8 +229,13 @@ final class RapSheetViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
-        
-        return PunishmentCell.rowHeightWithBanReason(formatReason(punishment.reasonAttributed), width: tableView.safeAreaLayoutGuide.layoutFrame.width)
+        let tableWidth: CGFloat
+        if #available(iOS 11.0, *) {
+            tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
+        } else {
+            tableWidth = tableView.bounds.width
+        }
+        return PunishmentCell.rowHeightWithBanReason(formatReason(punishment.reasonAttributed), width: tableWidth)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -256,7 +261,13 @@ final class RapSheetViewController: TableViewController {
         /// Resize any images in punishment reasons so they fit on the screen
         mutableReason.enumerateAttribute(NSAttributedString.Key.attachment, in: NSMakeRange(0, mutableReason.length), options: .init(rawValue: 0), using: { (value, range, stop) in
             if let attachement = value as? NSTextAttachment {
-                let maxWidth = tableView.safeAreaLayoutGuide.layoutFrame.width - PunishmentCell.reasonInsets.left - PunishmentCell.reasonInsets.right
+                let tableWidth: CGFloat
+                if #available(iOS 11.0, *) {
+                    tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
+                } else {
+                    tableWidth = tableView.bounds.width
+                }
+                let maxWidth = tableWidth - PunishmentCell.reasonInsets.left - PunishmentCell.reasonInsets.right
                 let image = attachement.image(forBounds: attachement.bounds, textContainer: NSTextContainer(), characterIndex: range.location)!
                 if image.size.width > maxWidth {
                     let scale = maxWidth/image.size.width

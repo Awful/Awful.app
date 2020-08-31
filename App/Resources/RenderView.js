@@ -734,16 +734,16 @@ if (document.body.classList.contains('forum-26')) {
 Awful.embedGfycat = function() {
   var postLinks = document.querySelectorAll('section.postbody a')
 
-  postLinks.forEach(link => {
-    let vidInfo = matchVidLinkurl(link);
+  Array.prototype.forEach.call(postLinks, function(link) {
+    var vidInfo = matchVidLinkurl(link);
     if (vidInfo && isGfycatLink(link)) {
       var gifyKey = link.pathname.match(/([A-Za-z]+)(?:\/*)?/i);
       if (gifyKey) {
           fetch(`https://api.gfycat.com/v1/gfycats/${gifyKey[1]}`)
-            .then(res => res.json())
-            .then(l => {
+            .then(function(res) { res.json() })
+            .then(function(l) {
               if (l.gfyItem) {
-                  let div = document.createElement('div');
+                  var div = document.createElement('div');
                   div.className = 'gifv_video';
                   div.innerHTML = gfyUrlToVideo(l.gfyItem.posterUrl, l.gfyItem.mp4Url);
                   link.replaceWith(div);
@@ -755,7 +755,7 @@ Awful.embedGfycat = function() {
   });
 
   function matchVidLinkurl(link) {
-    let match = link.pathname.match(/(\.gifv|\.webm|\.mp4)$/i);
+    var match = link.pathname.match(/(\.gifv|\.webm|\.mp4)$/i);
     if (!match)
         return null;
     return {

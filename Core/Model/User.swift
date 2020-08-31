@@ -6,6 +6,8 @@ import HTMLReader
 
 @objc(User)
 public class User: AwfulManagedObject, Managed {
+    public static var entityName: String { "User" }
+    
     @NSManaged public var administrator: Bool
     @NSManaged public var authorClasses: String?
     @NSManaged public var canReceivePrivateMessages: Bool
@@ -23,6 +25,10 @@ public class User: AwfulManagedObject, Managed {
     @NSManaged var sentPrivateMessages: Set<PrivateMessage> /* via from */
     @NSManaged var threadFilters: Set<ThreadFilter>
     @NSManaged var threads: Set<AwfulThread>
+
+    public override var objectKey: UserKey {
+        .init(userID: userID, username: username)
+    }
 }
 
 extension User {
@@ -52,7 +58,7 @@ public final class UserKey: AwfulObjectKey {
         
         self.userID = userID
         self.username = username
-        super.init(entityName: User.entity().name!)
+        super.init(entityName: User.entityName)
     }
     
     public required init?(coder: NSCoder) {
@@ -78,16 +84,3 @@ public final class UserKey: AwfulObjectKey {
 }
 private let userIDKey = "userID"
 private let usernameKey = "username"
-
-extension User {
-    public override var objectKey: UserKey {
-        return UserKey(userID: userID, username: username)
-    }
-}
-
-func nilIfEmpty(s: String!) -> String? {
-    if s != nil && s.isEmpty {
-        return nil
-    }
-    return s
-}

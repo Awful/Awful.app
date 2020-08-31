@@ -5,7 +5,9 @@
 import Foundation
 
 @objc(Profile)
-public class Profile: AwfulManagedObject {
+public class Profile: AwfulManagedObject, Managed {
+    public static var entityName: String { "Profile" }
+
     @NSManaged public var aboutMe: String?
     @NSManaged public var aimName: String?
     @NSManaged private var primitiveGender: String?

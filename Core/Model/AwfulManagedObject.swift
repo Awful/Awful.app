@@ -6,7 +6,9 @@ import CoreData
 
 /// A slightly more convenient NSManagedObject for entities with a custom class.
 public class AwfulManagedObject: NSManagedObject {
-    
+    public var objectKey: AwfulObjectKey {
+        fatalError("subclass implementation please")
+    }
 }
 
 /// An object key uniquely identifies an AwfulManagedObject, but (unlike NSManagedObjectID) in an Awful-specific away.
@@ -100,38 +102,28 @@ private extension AwfulObjectKey {
     }
 }
 
-extension AwfulManagedObject {
-    @objc public var objectKey: AwfulObjectKey {
-        fatalError("subclass implementation please")
+extension Managed where Self: AwfulManagedObject {
+    public static func existingObjectForKey(
+        objectKey: AwfulObjectKey,
+        in context: NSManagedObjectContext
+    ) -> Self? {
+        precondition(objectKey.entityName == entityName)
+        return findOrFetch(in: context, matching: objectKey.predicate)
     }
     
-    public class func existingObjectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject? {
-        let request: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: objectKey.entityName)
-        request.predicate = objectKey.predicate
-        request.fetchLimit = 1
-        var results : [AwfulManagedObject] = []
-        do {
-            results = try context.fetch(request) as! [AwfulManagedObject]
+    public static func objectForKey(
+        objectKey: AwfulObjectKey,
+        in context: NSManagedObjectContext
+    ) -> Self {
+        precondition(objectKey.entityName == entityName)
+        return findOrCreate(in: context, matching: objectKey.predicate) {
+            $0.applyObjectKey(objectKey: objectKey)
         }
-        catch {
-            print("error fetching: \(error)")
-            
-        }
-        return results.first
-    }
-    
-    public class func objectForKey(objectKey: AwfulObjectKey, inManagedObjectContext context: NSManagedObjectContext) -> AnyObject {
-        var object = existingObjectForKey(objectKey: objectKey, inManagedObjectContext: context) as! AwfulManagedObject?
-        if object == nil {
-            object = Self(context: context)
-        }
-        object?.applyObjectKey(objectKey: objectKey)
-        return object!
     }
     
     func applyObjectKey(objectKey: AwfulObjectKey) {
         for key in objectKey.keys {
-            if let value: AnyObject = objectKey.value(forKey: key) as AnyObject? {
+            if let value = objectKey.value(forKey: key) as AnyObject? {
                 setValue(value, forKey: key)
             }
         }
@@ -142,33 +134,30 @@ extension AwfulManagedObject {
     
     New objects are inserted as necessary, and only a single fetch is executed by the managedObjectContext. The returned array is sorted in the same order as objectKeys. Duplicate (or effectively duplicate) items in objectKeys is no problem and are maintained in the returned array.
     */
-    @objc public class func objectsForKeys(objectKeys: [AwfulObjectKey], inManagedObjectContext context: NSManagedObjectContext) -> [AwfulManagedObject] {
-        guard !objectKeys.isEmpty else { return [] }
-        
-        let request = Self.fetchRequest() as! NSFetchRequest<AwfulManagedObject>
-        let aggregateValues = type(of: objectKeys[0]).valuesForKeysInObjectKeys(objectKeys: objectKeys)
-        var subpredicates = [NSPredicate]()
-        for (key, values) in aggregateValues {
-            subpredicates.append(NSPredicate(format: "%K IN %@", key, values))
-        }
-        if subpredicates.count == 1 {
-            request.predicate = subpredicates[0]
-        } else {
-            request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates:subpredicates)
-        }
+    public static func objectsForKeys(
+        objectKeys: [AwfulObjectKey],
+        in context: NSManagedObjectContext
+    ) -> [Self] {
+        precondition(objectKeys.allSatisfy { $0.entityName == entityName })
 
-        let results = try! context.fetch(request)
-        
-        var existingByKey = [AwfulObjectKey: AwfulManagedObject](minimumCapacity: results.count)
-        for object in results {
-            existingByKey[object.objectKey] = object
-        }
-        
+        if objectKeys.isEmpty { return [] }
+
+        var existingByKey = Dictionary(
+            fetch(in: context) {
+            $0.predicate = .or(
+                type(of: objectKeys[0])
+                    .valuesForKeysInObjectKeys(objectKeys: objectKeys)
+                    .map { .init(format: "%K IN %@", $0, $1) }
+            )
+            }.map { ($0.objectKey, $0) },
+            uniquingKeysWith: { $1 }
+        )
+
         return objectKeys.map { objectKey in
             if let existing = existingByKey[objectKey] {
                 return existing
             } else {
-                let object = self.init(context: context)
+                let object = insert(into: context)
                 object.applyObjectKey(objectKey: objectKey)
                 existingByKey[object.objectKey] = object
                 return object

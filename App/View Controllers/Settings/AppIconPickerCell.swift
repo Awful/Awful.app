@@ -7,6 +7,9 @@ import UIKit
 
 private let Log = Logger.get()
 
+/**
+ This class is not useful before iOS 10.3, which introduced alternate app icons. However, marking this class's availability generates a Swift header that results in compile errors (something about "Overriding method introduced after overridden method on iOS (10.3 vs. 3.0)").
+ */
 final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
 
     @IBOutlet var collectionView: UICollectionView?
@@ -21,7 +24,9 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
         collectionView?.delegate = self
         collectionView?.register(UINib(nibName: "AppIconCell", bundle: Bundle(for: AppIconPickerCell.self)), forCellWithReuseIdentifier: "AppIcon")
 
-        selectedIconName = UIApplication.shared.alternateIconName ?? appIcons.first?.iconName
+        if #available(iOS 10.3, *) {
+            selectedIconName = UIApplication.shared.alternateIconName ?? appIcons.first?.iconName
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -40,6 +45,8 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard #available(iOS 10.3, *) else { return }
+
         let appIcon = appIcons[indexPath.item]
         Log.d("Selected \(appIcon.iconName ?? "") at \(indexPath)")
 

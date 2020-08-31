@@ -287,7 +287,11 @@ extension BookmarksTableViewController {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
 
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    @available(iOS 11.0, *)
+    override func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
         let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
             guard let thread = self.dataSource?.thread(at: indexPath) else { return }
             self.setThread(thread, isBookmarked: false)

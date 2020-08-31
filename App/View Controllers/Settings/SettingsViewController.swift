@@ -53,6 +53,14 @@ final class SettingsViewController: TableViewController {
             if !section.visibleInSettingsTab {
                 return false
             }
+
+            if section.requiresiOS10dot3 {
+                if #available(iOS 10.3, *) {
+                    // ok
+                } else {
+                    return false
+                }
+            }
             
             return true
         }
@@ -95,7 +103,7 @@ final class SettingsViewController: TableViewController {
     private var loggedInUser: User? {
         return UserDefaults.standard.loggedInUserID
             .map { UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }
-            .flatMap { User.objectForKey(objectKey: $0, inManagedObjectContext: managedObjectContext) as? User }
+            .flatMap { User.objectForKey(objectKey: $0, in: managedObjectContext) }
     }
     
     fileprivate func refreshIfNecessary() {
@@ -320,7 +328,7 @@ final class SettingsViewController: TableViewController {
             }
         }
         
-        if settingType == .AppIconPicker {
+        if #available(iOS 10.3, *), settingType == .AppIconPicker {
             guard let collection = (cell as! AppIconPickerCell).collectionView else { fatalError("setting should have collection view") }
             collection.awful_setting = setting["Key"] as? String
             collection.backgroundColor = theme["listBackgroundColor"]

@@ -11,16 +11,16 @@ class IndexPersistentTests: XCTestCase {
     var context: NSManagedObjectContext!
     var lastModified: LastModifiedContextObserver!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() {
+        super.setUp()
         context = makeInMemoryStoreContext()
         lastModified = LastModifiedContextObserver(managedObjectContext: context)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         context = nil
         lastModified = nil
-        try super.tearDownWithError()
+        super.tearDown()
     }
 
     func testIndexPersistence() throws {

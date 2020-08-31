@@ -21,31 +21,24 @@ internal extension AuthorSidebarScrapeResult {
     }
 
     func upsert(into context: NSManagedObjectContext) throws -> User {
-        let request = User.fetchRequest() as! NSFetchRequest<User>
-
-        request.predicate = {
-            var subpredicates: [NSPredicate] = [
-                NSPredicate(format: "%K = %@", #keyPath(User.userID), userID.rawValue)]
+        let users = User.fetch(in: context) {
+            var subs: [NSPredicate] = [.init("\(\User.userID) = \(userID.rawValue)")]
             if !username.isEmpty {
-                subpredicates.append(NSPredicate(format: "%K = %@", #keyPath(User.username), username))
+                subs.append(.init("\(\User.username) = \(username)"))
             }
-            return NSCompoundPredicate(orPredicateWithSubpredicates: subpredicates)
-        }()
+            $0.predicate = .or(subs)
+            $0.relationshipKeyPathsForPrefetching = [#keyPath(User.profile)]
+            $0.returnsObjectsAsFaults = false
+        }
 
-        request.relationshipKeyPathsForPrefetching = [#keyPath(User.profile)]
-        request.returnsObjectsAsFaults = false
-
-        let users = try context.fetch(request)
-        let user = users.isEmpty ? User(context: context) : merge(users)
-
+        let user = users.isEmpty ? User.insert(into: context) : merge(users)
         update(user)
-
         return user
     }
 }
 
 /// Merges to-many relationships into the first user in the array, then deletes all but the first user.
-internal func merge(_ users: [User]) -> User {
+func merge(_ users: [User]) -> User {
     precondition(!users.isEmpty)
     let user = users.dropFirst().reduce(users[0]) { (winner, donor) in
         for post in donor.posts {
