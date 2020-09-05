@@ -274,7 +274,10 @@ extension HTMLDocument {
                         }
                         //todo gifcat mp4 files
                     }
-                    else if(href.range(of: #"((https).+youtu)"#, options: .regularExpression) != nil) {
+
+                     // only replace youtube links that are raw URLs
+                    else if((href == a.textContent) &&
+                             href.range(of: #"((https).+youtu)"#, options: .regularExpression) != nil) {
                         guard
                             let youtubeUri = getYoutubeEmbeddedUri(uri: href)
                         else {
