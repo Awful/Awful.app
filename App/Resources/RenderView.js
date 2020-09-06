@@ -24,6 +24,9 @@ Awful.embedTweets = function() {
 
   var tweetIDsToLinks = {};
   Array.prototype.forEach.call(tweetLinks, function(a) {
+    if (a.parentElement.querySelector('img.awful-smile[title=":nws:"]')) {
+      return;
+    }
     var tweetID = a.dataset.tweetId;
     if (!(tweetID in tweetIDsToLinks)) {
       tweetIDsToLinks[tweetID] = [];
