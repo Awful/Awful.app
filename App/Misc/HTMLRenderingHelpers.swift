@@ -272,6 +272,19 @@ extension HTMLDocument {
 
                             a.parent?.replace(child: a, with: videoElement)
                         }
+                        if (host.lowercased().hasSuffix(".discordapp.com") &&
+                            href.hasSuffix(".mp4")) {
+                            let videoElement = HTMLElement(tagName: "video", attributes: [
+                            "width": "300",
+                            "preload":"metadata",
+                            "controls":"",
+                            "loop":"",
+                            "muted":"true",
+                            "src":href,
+                            "type":"video/mp4"])
+
+                            a.parent?.replace(child: a, with: videoElement)
+                        }
                         //todo gifcat mp4 files
                     }
 
