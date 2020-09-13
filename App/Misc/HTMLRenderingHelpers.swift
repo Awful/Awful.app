@@ -252,7 +252,7 @@ extension HTMLDocument {
     }
 
     func elementIsPostBody(element: HTMLElement) -> Bool {
-        return element.hasClass("postbody");
+        return element.tagName == "body";
     }
 
     func postElementContainsNWS(post: HTMLElement) -> Bool {
