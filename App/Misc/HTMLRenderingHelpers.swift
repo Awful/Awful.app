@@ -251,6 +251,26 @@ extension HTMLDocument {
         }
     }
 
+    func elementIsPostBody(element: HTMLElement) -> Bool {
+        return element.hasClass("postbody");
+    }
+
+    func postElementContainsNWS(post: HTMLElement) -> Bool {
+        let html = post.innerHTML
+        return html.range(of: #"title=":nws:""#) != nil;
+    }
+
+    func containingPostIsNWS(node: HTMLNode) -> Bool {
+        var parent = node.parentElement
+        while let maybePostBody = parent {
+            if (elementIsPostBody(element: maybePostBody)) {
+                return postElementContainsNWS(post: maybePostBody);
+            }
+            parent = maybePostBody.parentElement
+        }
+        return false
+    }
+
     func embedVideos() {
         for a in nodes(matchingSelector: "a") {
             if
@@ -258,7 +278,12 @@ extension HTMLDocument {
                 let url = URL(string: href),
                 let host = url.host
                  {
-                     if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
+                    // don't expand if the post has an NWS smilie
+                    if (containingPostIsNWS(node: a)) {
+                        continue;
+                    }
+
+                    if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
                         if(host.lowercased().hasSuffix("imgur.com")) {
                             let videoElement = HTMLElement(tagName: "video", attributes: [
                             "width": "300",
