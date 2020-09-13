@@ -256,8 +256,7 @@ extension HTMLDocument {
     }
 
     func postElementContainsNWS(post: HTMLElement) -> Bool {
-        let html = post.innerHTML
-        return html.range(of: #"title=":nws:""#) != nil;
+        return post.firstNode(matchingSelector: "img[title=':nws:']") != nil;
     }
 
     func containingPostIsNWS(node: HTMLNode) -> Bool {
