@@ -31,6 +31,7 @@ public class Forum: AwfulManagedObject, Managed {
         super.awakeFromInsert()
 
         primitiveMetadata = .insert(into: managedObjectContext!)
+        primitiveMetadata.primitiveForum = self
     }
 }
 
@@ -127,6 +128,7 @@ public class ForumMetadata: AwfulManagedObject, Managed {
     @NSManaged public var visibleInForumList: Bool
     
     @NSManaged public private(set) var forum: Forum
+    @NSManaged fileprivate var primitiveForum: Forum
 }
 
 extension ForumMetadata {
