@@ -262,7 +262,7 @@ public final class ForumsClient {
                     $0.predicate = .and(
                         .init("\(\AwfulThread.bookmarked) = YES"),
                         .init("\(\AwfulThread.bookmarkListPage) >= \(page)"),
-                        .init("NOT(\(\AwfulThread.threadID) IN \(threadIDsToIgnore)")
+                        .init("NOT(\(\AwfulThread.threadID) IN \(threadIDsToIgnore))")
                     )
                 }.forEach { $0.bookmarkListPage = 0 }
 
