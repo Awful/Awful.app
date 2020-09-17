@@ -112,7 +112,7 @@ class TableViewController: UITableViewController, Themeable {
     
     deinit {
         if isViewLoaded {
-            tableView.removePullToRefresh(at: .top)
+            tableView.removeAllPullToRefresh()
         }
     }
     
@@ -140,7 +140,8 @@ class TableViewController: UITableViewController, Themeable {
     private func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
         let niggly = NigglyRefreshView()
-        niggly.bounds.size.height = niggly.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        let targetSize = CGSize(width: tableView.bounds.width, height: 0)
+        niggly.bounds.size = niggly.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         niggly.autoresizingMask = .flexibleWidth
         niggly.backgroundColor = view.backgroundColor
         pullToRefreshView = niggly
