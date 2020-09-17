@@ -360,6 +360,8 @@
 		<string>brave</string>
 		<string>firefox</string>
 		<string>googlechrome</string>
+		<string>http</string>
+		<string>https</string>
 		<string>microsoft-edge-http</string>
 		<string>org-appextension-feature-password-management</string>
 		<string>twitter</string>
