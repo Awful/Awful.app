@@ -186,10 +186,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		13A0DD7F68E71463B83E97DAA2A70DE1 /* Debug */ = {
+		0FE1E13E6B553B69E6D6A9981102841D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -319,10 +320,11 @@
 			};
 			name = Debug;
 		};
-		897B92400FB611A2FF6377AF507DFB68 /* Release */ = {
+		DB8688C0EC234839248797635E355DAA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -394,8 +396,8 @@
 		D4D3CE0826F426CF2E36BBB59442D72B /* Build configuration list for PBXProject "PSMenuItem" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				13A0DD7F68E71463B83E97DAA2A70DE1 /* Debug */,
-				897B92400FB611A2FF6377AF507DFB68 /* Release */,
+				0FE1E13E6B553B69E6D6A9981102841D /* Debug */,
+				DB8688C0EC234839248797635E355DAA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

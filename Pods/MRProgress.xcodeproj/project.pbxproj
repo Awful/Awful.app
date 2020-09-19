@@ -326,10 +326,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		2F44168A8B1994200587E1E3A86DEADC /* Release */ = {
+		59F0794B54C01B36D576CB339F4E1290 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -386,10 +387,11 @@
 			};
 			name = Release;
 		};
-		C6A6DBFBE584074F093D946B390BEDA1 /* Debug */ = {
+		AF490F097EE110102BB2ADF4CC6F7495 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -534,8 +536,8 @@
 		93F98E8C55157511873EE268B703B64B /* Build configuration list for PBXProject "MRProgress" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C6A6DBFBE584074F093D946B390BEDA1 /* Debug */,
-				2F44168A8B1994200587E1E3A86DEADC /* Release */,
+				AF490F097EE110102BB2ADF4CC6F7495 /* Debug */,
+				59F0794B54C01B36D576CB339F4E1290 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

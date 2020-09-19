@@ -233,10 +233,11 @@
 			};
 			name = Release;
 		};
-		883D7ECAC106AABE7A9CBE24D1F512AE /* Release */ = {
+		53D506B3441D04F203158F0401F44E24 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -293,10 +294,11 @@
 			};
 			name = Release;
 		};
-		899C62B8153CCCB9FA512A557B2D2E82 /* Debug */ = {
+		AADAE5A603B07B08FDDBA2126DF3704E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -397,8 +399,8 @@
 		58F6910B3065668386C0CE8850910EB7 /* Build configuration list for PBXProject "PullToRefresher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				899C62B8153CCCB9FA512A557B2D2E82 /* Debug */,
-				883D7ECAC106AABE7A9CBE24D1F512AE /* Release */,
+				AADAE5A603B07B08FDDBA2126DF3704E /* Debug */,
+				53D506B3441D04F203158F0401F44E24 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
