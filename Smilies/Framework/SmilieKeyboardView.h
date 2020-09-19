@@ -4,7 +4,7 @@
 
 @import UIKit;
 @class Smilie;
-#import "SmilieListType.h"
+#import <Smilies/SmilieListType.h>
 @protocol SmilieKeyboardDataSource;
 @protocol SmilieKeyboardViewDelegate;
 
