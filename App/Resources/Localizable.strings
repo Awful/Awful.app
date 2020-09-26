@@ -164,6 +164,9 @@
 
 /* MARK: Compose post */
 
+/* Accessibility label of compose button in posts screen. */
+"compose.accessibility-label" = "Reply";
+
 /* Message of alert shown when there's a problem finding the author of a post that's being written. */
 "compose.post-preview.missing-author-error" = "The post author could not be determined.";
 
@@ -172,6 +175,26 @@
 
 /* Title of preview screen when writing a new post. */
 "compose.post-preview.title-new" = "Post Preview";
+
+/* Title of compose draft menu when editing another user's post. Parameters: 1. post author's username. */
+"compose.draft-menu.editing-other-post.title" = "You're currently editing %1$@'s post";
+/* Title of compose draft menu when editing an unnamed other user's post. */
+"compose.draft-menu.editing-unknown-other-post.title" = "You're currently editing someone else's post";
+/* Title of compose draft menu when editing your own post. */
+"compose.draft-menu.editing-own-post.title" = "You're currently editing your own post";
+/* Title of compose draft menu when replying to the thread. */
+"compose.draft-menu.replying.title" = "You're currently replying to the thread";
+/* Destructive button in action sheet that deletes the draft reply. */
+"compose.draft-menu.delete-draft" = "Delete Draft";
+/* Button in action sheet that resumes the draft edit. */
+"compose.draft-menu.continue-editing" = "Continue Editing";
+/* Button in action sheet that resumes the draft reply. */
+"compose.draft-menu.continue-replying" = "Continue Replying";
+
+/* Button in action sheet that keeps the draft when cancelling out of a reply or edit. */
+"compose.cancel-menu.save-draft" = "Save Draft";
+/* Destructive button in action sheet that deletes the draft. */
+"compose.cancel-menu.delete-draft" = "Delete Draft";
 
 
 /* MARK: Compose thread */

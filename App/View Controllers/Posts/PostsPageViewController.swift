@@ -323,18 +323,54 @@ final class PostsPageViewController: ViewController {
     }
     
     private lazy var composeItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Reply to thread"
-        item.actionBlock = { [weak self] (sender) in
-            guard let strongSelf = self else { return }
-            if strongSelf.replyWorkspace == nil {
-                strongSelf.replyWorkspace = ReplyWorkspace(thread: strongSelf.thread)
-                strongSelf.replyWorkspace?.completion = strongSelf.replyCompletionBlock
-            }
-            strongSelf.present(strongSelf.replyWorkspace!.viewController, animated: true, completion: nil)
-        }
+        let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
+        item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
         return item
     }()
+
+    @IBAction private func compose(
+        _ sender: UIBarButtonItem,
+        forEvent event: UIEvent
+    ) {
+        var isLongPress: Bool {
+            event.allTouches?.first?.tapCount == 0
+        }
+        func makeNewReplyWorkspace() {
+            replyWorkspace = ReplyWorkspace(thread: thread)
+            replyWorkspace!.completion = replyCompletionBlock
+        }
+        func presentReply() {
+            present(replyWorkspace!.viewController, animated: true)
+        }
+
+        switch replyWorkspace?.status {
+        case .editing:
+            presentDraftMenu(
+                from: .barButtonItem(sender),
+                options: .init(
+                    continueEditing: presentReply,
+                    deleteDraft: {
+                        makeNewReplyWorkspace()
+                        presentReply()
+                    })
+            )
+
+        case .replying where isLongPress:
+            presentDraftMenu(
+                from: .barButtonItem(sender),
+                options: .init(
+                    continueEditing: presentReply,
+                    deleteDraft: makeNewReplyWorkspace)
+            )            
+
+        case .replying:
+            presentReply()
+
+        case nil:
+            makeNewReplyWorkspace()
+            presentReply()
+        }
+    }
     
     @objc private func newReply(_ sender: UIKeyCommand) {
         if replyWorkspace == nil {
@@ -344,17 +380,23 @@ final class PostsPageViewController: ViewController {
         present(replyWorkspace!.viewController, animated: true, completion: nil)
     }
     
-    private var replyCompletionBlock: (_ saveDraft: Bool, _ didSucceed: Bool) -> Void {
-        return { [weak self] (saveDraft, didSucceed) in
-            if !saveDraft {
-                self?.replyWorkspace = nil
+    private var replyCompletionBlock: (_ result: ReplyWorkspace.CompletionResult) -> Void {
+        return { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .forgetAboutIt:
+                self.replyWorkspace = nil
+
+            case .posted:
+                self.replyWorkspace = nil
+                self.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
+
+            case .saveDraft:
+                break
             }
             
-            if didSucceed {
-                self?.loadPage(.nextUnread, updatingCache: true, updatingLastReadPost: true)
-            }
-            
-            self?.dismiss(animated: true)
+            self.dismiss(animated: true)
         }
     }
     
@@ -810,7 +852,10 @@ final class PostsPageViewController: ViewController {
         present(actionVC, animated: true, completion: nil)
     }
     
-    private func didTapActionButtonWithRect(_ frame: CGRect, forPostAtIndex postIndex: Int) {
+    private func didTapActionButtonWithRect(
+        _ frame: CGRect,
+        forPostAtIndex postIndex: Int
+    ) {
         assert(postIndex + hiddenPosts < posts.count, "post \(postIndex) beyond range (hiding \(hiddenPosts) posts")
         
         let post = posts[postIndex + hiddenPosts]
@@ -880,41 +925,75 @@ final class PostsPageViewController: ViewController {
         
         if post.editable {
             items.append(IconActionItem(.editPost, block: {
-                ForumsClient.shared.findBBcodeContents(of: post)
-                    .done { [weak self] text in
-                        guard let self = self else { return }
-                        let replyWorkspace = ReplyWorkspace(post: post)
-                        self.replyWorkspace = replyWorkspace
-                        replyWorkspace.completion = self.replyCompletionBlock
-                        self.present(replyWorkspace.viewController, animated: true)
+                func presentNewReplyWorkspace() {
+                    ForumsClient.shared.findBBcodeContents(of: post)
+                        .done { [weak self] text in
+                            guard let self = self else { return }
+                            let replyWorkspace = ReplyWorkspace(post: post)
+                            self.replyWorkspace = replyWorkspace
+                            replyWorkspace.completion = self.replyCompletionBlock
+                            self.present(replyWorkspace.viewController, animated: true)
+                        }
+                        .catch { [weak self] error in
+                            let alert = UIAlertController(title: "Could Not Edit Post", error: error)
+                            self?.present(alert, animated: true)
                     }
-                    .catch { [weak self] error in
-                        let alert = UIAlertController(title: "Could Not Edit Post", error: error)
-                        self?.present(alert, animated: true)
+                }
+
+                switch self.replyWorkspace?.status {
+                case .editing, .replying:
+                    self.presentDraftMenu(
+                        from: .view(self.postsView.renderView, sourceRect: frame),
+                        options: .init(deleteDraft: presentNewReplyWorkspace)
+                    )
+
+                case nil:
+                    presentNewReplyWorkspace()
                 }
             }))
         }
         
         if !thread.closed {
             items.append(IconActionItem(.quotePost, block: {
-                if self.replyWorkspace == nil {
+                func makeNewReplyWorkspace() {
                     self.replyWorkspace = ReplyWorkspace(thread: self.thread)
                     self.replyWorkspace?.completion = self.replyCompletionBlock
                 }
-                
-                self.replyWorkspace?.quotePost(post, completion: { [weak self] error in
-                    guard let self = self else { return }
-                    
-                    if let error = error {
-                        let alert = UIAlertController(networkError: error)
-                        self.present(alert, animated: true)
-                        return
-                    }
-                    
-                    if let vc = self.replyWorkspace?.viewController {
-                        self.present(vc, animated: true)
-                    }
-                })
+                func quotePost() {
+                    self.replyWorkspace!.quotePost(post, completion: { [weak self] error in
+                        guard let self = self else { return }
+
+                        if let error = error {
+                            let alert = UIAlertController(networkError: error)
+                            self.present(alert, animated: true)
+                            return
+                        }
+
+                        if let vc = self.replyWorkspace?.viewController {
+                            self.present(vc, animated: true)
+                        }
+                    })
+                }
+
+                switch self.replyWorkspace?.status {
+                case .editing:
+                    self.presentDraftMenu(
+                        from: .view(self.postsView.renderView, sourceRect: frame),
+                        options: .init(
+                            continueEditing: quotePost,
+                            deleteDraft: {
+                                makeNewReplyWorkspace()
+                                quotePost()
+                            })
+                    )
+
+                case .replying:
+                    quotePost()
+
+                case nil:
+                    makeNewReplyWorkspace()
+                    quotePost()
+                }
             }))
         }
         
@@ -939,6 +1018,69 @@ final class PostsPageViewController: ViewController {
             sourceView.pointee = self.postsView.renderView
         }
         present(actionVC, animated: true)
+    }
+
+    private func presentDraftMenu(
+        from source: DraftMenuSource,
+        options: DraftMenuOptions
+    ) {
+        let title: String
+        switch replyWorkspace?.status {
+        case let .editing(post) where post.author?.userID == UserDefaults.standard.loggedInUserID:
+            title = NSLocalizedString("compose.draft-menu.editing-own-post.title", comment: "")
+        case let .editing(post):
+            if let username = post.author?.username {
+                title = String(format: NSLocalizedString("compose.draft-menu.editing-other-post.title", comment: ""), username)
+            } else {
+                title = NSLocalizedString("compose.draft-menu.editing-unknown-other-post.title", comment: "")
+            }
+        case .replying:
+            title = NSLocalizedString("compose.draft-menu.replying.title", comment: "")
+        case nil:
+            return assertionFailure("No reason to show draft menu")
+        }
+
+        let actionSheet = UIAlertController(
+            title: title,
+            message: nil,
+            preferredStyle: .actionSheet)
+        if let action = options.continueEditing {
+            actionSheet.addAction(.init(
+                title: NSLocalizedString("compose.draft-menu.continue-editing", comment: ""),
+                style: .default,
+                handler: { _ in action() }
+            ))
+        }
+        if let action = options.deleteDraft {
+            actionSheet.addAction(.init(
+                title: NSLocalizedString("compose.draft-menu.delete-draft", comment: ""),
+                style: .destructive,
+                handler: { _ in action() }
+            ))
+        }
+        actionSheet.addAction(.init(
+            title: NSLocalizedString("cancel", comment: ""),
+            style: .cancel
+        ))
+        present(actionSheet, animated: true)
+
+        switch source {
+        case let .barButtonItem(item):
+            actionSheet.popoverPresentationController?.barButtonItem = item
+        case let .view(sourceView, sourceRect: sourceRect):
+            actionSheet.popoverPresentationController?.sourceRect = sourceRect
+            actionSheet.popoverPresentationController?.sourceView = sourceView
+        }
+    }
+
+    private struct DraftMenuOptions {
+        var continueEditing: (() -> Void)? = nil
+        var deleteDraft: (() -> Void)? = nil
+    }
+
+    private enum DraftMenuSource {
+        case barButtonItem(UIBarButtonItem)
+        case view(UIView, sourceRect: CGRect)
     }
     
     private func fetchNewFlag() {

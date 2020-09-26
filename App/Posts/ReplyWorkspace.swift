@@ -19,11 +19,17 @@ final class ReplyWorkspace: NSObject {
     private let restorationIdentifier: String
     
     /**
-    Called when the viewController should be dismissed. saveDraft is true if the workspace should stick around; newPost is a newly-created Post if one was made.
-    
-    The closure obviously can't be saved as part of UIKit state preservation, so be sure to set something after restoring state.
+    Called when the viewController should be dismissed.
+
+    The closure can't be saved as part of UIKit state preservation, so be sure to set something after restoring state.
     */
-    var completion: ((_ saveDraft: Bool, _ didSucceed: Bool) -> Void)?
+    var completion: (CompletionResult) -> Void = { _ in }
+
+    enum CompletionResult {
+        case forgetAboutIt
+        case posted
+        case saveDraft
+    }
     
     /// Constructs a workspace for a new reply to a thread.
     convenience init(thread: AwfulThread) {
@@ -68,6 +74,23 @@ final class ReplyWorkspace: NSObject {
         if let textViewNotificationToken: AnyObject = textViewNotificationToken {
             NotificationCenter.default.removeObserver(textViewNotificationToken)
         }
+    }
+
+    var status: Status {
+        switch draft {
+        case let draft as EditReplyDraft:
+            return .editing(draft.post)
+        case is NewReplyDraft:
+            return .replying
+        case let draft:
+            assertionFailure("Unexpected reply type \(draft)")
+            return .replying
+        }
+    }
+
+    enum Status {
+        case editing(Post)
+        case replying
     }
     
     /*
@@ -124,9 +147,48 @@ final class ReplyWorkspace: NSObject {
         }
     }
     
-    @objc fileprivate func didTapCancel(_ sender: UIBarButtonItem) {
-        let saveDraft = compositionViewController.textView.attributedText.length > 0
-        completion?(saveDraft, false)
+    @IBAction private func didTapCancel(_ sender: UIBarButtonItem) {
+        if compositionViewController.textView.attributedText.length == 0 {
+            return completion(.forgetAboutIt)
+        }
+
+        let title: String
+        switch status {
+        case let .editing(post) where post.author?.userID == UserDefaults.standard.loggedInUserID:
+            title = NSLocalizedString("compose.draft-menu.editing-own-post.title", comment: "")
+        case let .editing(post):
+            if let username = post.author?.username {
+                title = String(format: NSLocalizedString("compose.draft-menu.editing-other-post.title", comment: ""), username)
+            } else {
+                title = NSLocalizedString("compose.draft-menu.editing-unknown-other-post.title", comment: "")
+            }
+        case .replying:
+            title = NSLocalizedString("compose.draft-menu.replying.title", comment: "")
+        }
+
+        let actionSheet = UIAlertController(
+            title: title,
+            message: nil,
+            preferredStyle: .actionSheet)
+        actionSheet.addAction(.init(
+            title: NSLocalizedString("compose.cancel-menu.save-draft", comment: ""),
+            style: .default,
+            handler: { action in
+                self.completion(.saveDraft)
+            }
+        ))
+        actionSheet.addAction(.init(
+            title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: ""),
+            style: .destructive,
+            handler: { action in
+                self.completion(.forgetAboutIt)
+            }
+        ))
+        compositionViewController.present(actionSheet, animated: true)
+
+        if let popover = actionSheet.popoverPresentationController {
+            popover.barButtonItem = sender
+        }
     }
     
     @objc fileprivate func didTapPreview(_ sender: UIBarButtonItem) {
@@ -170,7 +232,7 @@ final class ReplyWorkspace: NSObject {
             } else {
                 DraftStore.sharedStore().deleteDraft(self.draft)
                 
-                self.completion?(false, true)
+                self.completion(.posted)
             }
         }
         self.submitProgress = submitProgress
