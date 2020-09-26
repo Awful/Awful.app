@@ -90,11 +90,10 @@ If you peek in the [Xcode](Xcode) folder you'll find:
 * `beta`, a script that bumps the build number and then runs `xcodebuild` to create an archive suitable for uploading to App Store Connect. See `beta --help` for more, including how to set up automatic uploads to App Store Connect.
     * If you've released to the App Store, it's time to bump at least the minor version number by passing the `--minor`  parameter, e.g. `beta --minor`.
 * `bump`, a script that can increment the build, minor, or major version number throughtout the project. See `bump --help` for more.
-* `scale-stickers`, a script that turns smilies into 3x images suitable for an iMessage sticker pack. You should probably run this after running the `SmilieExtractor` app.
 
 And in the Xcode workspace itself you'll find:
 
-* `SmilieExtractor`, an iOS app that takes `showsmilies.webarchive` and extracts resources for both Smilie Keyboard and Smilie Stickers. To update smilies, first save a fresh `showsmilies.webarchive` from the Forums, then run `SmilieExtractor`, then look at `scale-stickers`.
+* `SmilieExtractor`, an iOS app that takes `showsmilies.webarchive` and extracts resources for Smilie Keyboard. To update smilies, first save a fresh `showsmilies.webarchive` from the Forums, then run `SmilieExtractor`.
 * `CopyMarkdownApp`, a macOS Safari App Extension that adds a "Copy Awful Markdown" context menu item to the Forums. The copied markdown is ready to be pasted into a GitHub issue. 
 
 ### Loading fixtures into the app and/or working offline
@@ -179,18 +178,6 @@ Awful answers to a couple URL schemes:
     * `awful://banlist/:userid` opens the identified user's rap sheet. For example, `awful://banlist/106125` opens pokeyman's rap sheet.
 * `awfulhttp:` and `awfulhttps:` handle Forums website URLs by opening the corresponding screen when possible.
     * The idea is you take your `https://forums.somethingawful.com/…` URL, put `awful` in front, and now it opens in Awful.
-
-## Stickers
-
-There's an iMessage sticker pack with all the smilies. From a fresh start:
-
-* Save a webarchive of the Forums's [showsmilies][] page in `Smilies/Tests/showsmilies.webarchive`.
-* Build and run `Smilie Extractor` in the iOS simulator.
-* Tap the `Stickers` button.
-* Now run `make stickerscale` in Terminal.
-* You're done.
-
-[showsmilies]: http://forums.somethingawful.com/misc.php?action=showsmilies
 
 ## iOS deployment targets
 

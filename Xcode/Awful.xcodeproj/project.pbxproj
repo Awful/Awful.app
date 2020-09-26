@@ -118,7 +118,6 @@
 		1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F111CE547A600CD27DD /* MessageViewController.swift */; };
 		1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */; };
 		1C2DC7341DCEA177005040FD /* PotentiallyObjectionableStickers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */; };
-		1C2DC7351DCEA605005040FD /* SmilieStickers.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */; };
 		1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C353C081E41832600CCBA51 /* CoreAnimation.swift */; };
 		1C381206219F766B005029C1 /* NSAttributedString+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C381205219F766B005029C1 /* NSAttributedString+Format.swift */; };
@@ -391,7 +390,6 @@
 		1CBAFB1C1F93D7F7007DAB58 /* AwfulCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CBAFB1E1F944F50007DAB58 /* IgnoreListScrapingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBAFB1D1F944F50007DAB58 /* IgnoreListScrapingTests.swift */; };
 		1CBAFB201F945149007DAB58 /* IgnoreListChangeScrapeResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBAFB1F1F945149007DAB58 /* IgnoreListChangeScrapeResult.swift */; };
-		1CBBAAB81D949EE200A847EC /* Stickers.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CBBAAB71D949EE200A847EC /* Stickers.xcassets */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
 		1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */; };
@@ -595,13 +593,6 @@
 			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
 			remoteInfo = Smilies;
 		};
-		1C2DC7361DCEA605005040FD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1CBBAAB41D949EE000A847EC;
-			remoteInfo = "Smilies Stickers";
-		};
 		1C3A146019DFC6AA0022C44C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -739,7 +730,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed App Extensions */,
-				1C2DC7351DCEA605005040FD /* SmilieStickers.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1153,7 +1143,6 @@
 		1CBAFB1B1F93D7F7007DAB58 /* AwfulCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AwfulCore.h; sourceTree = "<group>"; };
 		1CBAFB1D1F944F50007DAB58 /* IgnoreListScrapingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoreListScrapingTests.swift; sourceTree = "<group>"; };
 		1CBAFB1F1F945149007DAB58 /* IgnoreListChangeScrapeResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoreListChangeScrapeResult.swift; sourceTree = "<group>"; };
-		1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SmilieStickers.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CBBAAB71D949EE200A847EC /* Stickers.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Stickers.xcassets; sourceTree = "<group>"; };
 		1CBBAAB91D949EE200A847EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CBE1B0819CA050300510187 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
@@ -1474,13 +1463,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		84009C08CEDC28CEDCAD6557 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -1521,7 +1503,6 @@
 				1C3A143319DFC5D10022C44C /* SmilieExtractor.app */,
 				1C3CF9661A94B9B40065C964 /* AwfulCore.framework */,
 				1C3CF9701A94B9B40065C964 /* AwfulCoreTests.xctest */,
-				1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */,
 				1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */,
 				1C49CFE222CB0102004B76E6 /* CommonSPM.framework */,
 				1C56972124C3F1900077CA62 /* CopyMarkdownApp.app */,
@@ -2924,22 +2905,6 @@
 			productReference = 1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		1CBBAAB41D949EE000A847EC /* SmilieStickers */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1CBBAABF1D949EE300A847EC /* Build configuration list for PBXNativeTarget "SmilieStickers" */;
-			buildPhases = (
-				1CBBAAB31D949EE000A847EC /* Resources */,
-				84009C08CEDC28CEDCAD6557 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SmilieStickers;
-			productName = "Smilies Stickers";
-			productReference = 1CBBAAB51D949EE000A847EC /* SmilieStickers.appex */;
-			productType = "com.apple.product-type.app-extension.messages-sticker-pack";
-		};
 		1D6058900D05DD3D006BFB54 /* Awful */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Awful" */;
@@ -2961,7 +2926,6 @@
 				1C3CF97C1A94B9B50065C964 /* PBXTargetDependency */,
 				1C66A9D319DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
-				1C2DC7371DCEA605005040FD /* PBXTargetDependency */,
 			);
 			name = Awful;
 			packageProductDependencies = (
@@ -3038,12 +3002,6 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
-					1CBBAAB41D949EE000A847EC = {
-						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
-						ProvisioningStyle = Automatic;
-					};
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 1000;
@@ -3084,7 +3042,6 @@
 				1C66A9BF19DD304D001B9A41 /* Smilies */,
 				1C66A9C919DD304E001B9A41 /* SmiliesTests */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
-				1CBBAAB41D949EE000A847EC /* SmilieStickers */,
 				1C56972024C3F1900077CA62 /* CopyMarkdownApp */,
 				1C56973124C3F1910077CA62 /* CopyMarkdownExtension */,
 			);
@@ -3174,14 +3131,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1CBBAAB31D949EE000A847EC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1CBBAAB81D949EE200A847EC /* Stickers.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4004,11 +3953,6 @@
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
 			targetProxy = 1C097AA21A97C48600425EEF /* PBXContainerItemProxy */;
 		};
-		1C2DC7371DCEA605005040FD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1CBBAAB41D949EE000A847EC /* SmilieStickers */;
-			targetProxy = 1C2DC7361DCEA605005040FD /* PBXContainerItemProxy */;
-		};
 		1C3A146119DFC6AA0022C44C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
@@ -4602,30 +4546,6 @@
 			};
 			name = Release;
 		};
-		1CBBAABD1D949EE200A847EC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C15335C20712BBA0021A2BD /* SmilieStickers-Debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				INFOPLIST_FILE = ../Smilies/Stickers/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		1CBBAABE1D949EE200A847EC /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C15335D20712BDF0021A2BD /* SmilieStickers-Release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				INFOPLIST_FILE = ../Smilies/Stickers/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1C1533572070A3BF0021A2BD /* Awful-Debug.xcconfig */;
@@ -4756,15 +4676,6 @@
 			buildConfigurations = (
 				1C9AEBCB210C3B2300C9A567 /* Debug */,
 				1C9AEBCC210C3B2300C9A567 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		1CBBAABF1D949EE300A847EC /* Build configuration list for PBXNativeTarget "SmilieStickers" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1CBBAABD1D949EE200A847EC /* Debug */,
-				1CBBAABE1D949EE200A847EC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
