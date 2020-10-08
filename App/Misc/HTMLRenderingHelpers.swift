@@ -13,7 +13,8 @@ extension HTMLDocument {
                 let href = a["href"],
                 let url = URL(string: href),
                 let host = url.host,
-                host.lowercased().hasSuffix("twitter.com")
+                host.lowercased().hasSuffix("twitter.com") &&
+                    a.textContent.hasPrefix("https:") // approximate raw-link check
                 else { continue }
             
             let pathComponents = url.pathComponents
