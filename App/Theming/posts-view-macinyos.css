@@ -116,10 +116,14 @@ header:after {
 .role-ik .username:before {
   color: #787373;
 }
+.role-coder .username:before {
+  color: #eacf4c;
+}
 .role-admin .username:before,
 .role-mod .username:before,
 .role-supermod .username:before,
-.role-ik .username:before {
+.role-ik .username:before,
+.role-coder .username:before {
   content: '★';
 }
 .op .username {
@@ -395,11 +399,17 @@ post.seen {
   color: transparent;
   -webkit-background-clip: text;
 }
-.role-mod .username {
+.role-mod .username,
+.role-supermod .username,
+.role-ik .username,
+.role-coder .username {
   background-image: none;
   padding: 0;
 }
-.role-mod .username:before {
+.role-mod .username:before,
+.role-supermod .username:before,
+.role-ik .username:before,
+.role-coder .username:before {
   content: " ";
 }
 .op .username {

@@ -116,10 +116,14 @@ header:after {
 .role-ik .username:before {
   color: #787373;
 }
+.role-coder .username:before {
+  color: #eacf4c;
+}
 .role-admin .username:before,
 .role-mod .username:before,
 .role-supermod .username:before,
-.role-ik .username:before {
+.role-ik .username:before,
+.role-coder .username:before {
   content: '★';
 }
 .op .username {
@@ -368,7 +372,8 @@ post.seen {
 }
 .role-mod .username:before,
 .role-supermod .username:before,
-.role-ik .username:before {
+.role-ik .username:before,
+.role-coder .username:before {
   content: '☆';
 }
 .role-admin .username,
