@@ -209,10 +209,13 @@ extension ThreadListDataSource: UITableViewDataSource {
                     color = theme["unreadBadgeGrayColor"]!
                 } else {
                     switch thread.starCategory {
-                    case .Orange: color = theme["unreadBadgeOrangeColor"]!
-                    case .Red: color = theme["unreadBadgeRedColor"]!
-                    case .Yellow: color = theme["unreadBadgeYellowColor"]!
-                    case .None: color = theme["unreadBadgeBlueColor"]!
+                    case .orange: color = theme["unreadBadgeOrangeColor"]!
+                    case .red: color = theme["unreadBadgeRedColor"]!
+                    case .yellow: color = theme["unreadBadgeYellowColor"]!
+                    case .teal: color = theme["unreadBadgeTealColor"]!
+                    case .green: color = theme["unreadBadgeGreenColor"]!
+                    case .purple: color = theme["unreadBadgePurpleColor"]!
+                    case .none: color = theme["unreadBadgeBlueColor"]!
                     }
                 }
                 return NSAttributedString(string: "\(thread.unreadPosts)", attributes: [

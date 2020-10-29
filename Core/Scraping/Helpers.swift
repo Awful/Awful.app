@@ -6,12 +6,12 @@ import Foundation
 import HTMLReader
 import class ScannerShim.Scanner
 
-internal func LocalizedString(_ key: String) -> String {
+func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")
 }
 
 
-internal extension HTMLNode {
+extension HTMLNode {
     var nextSibling: HTMLNode? {
         guard let parent = parent else { return nil }
 
@@ -26,6 +26,22 @@ internal extension HTMLNode {
             throw ScrapingError.missingExpectedElement(selector)
         }
         return node
+    }
+}
+
+
+extension HTMLElement {
+    var classList: [String] {
+        (self["class"] ?? "")
+            .components(separatedBy: .asciiWhitespace)
+            .filter { !$0.isEmpty }
+    }
+}
+
+
+extension CharacterSet {
+    static var asciiWhitespace: CharacterSet {
+        .init(charactersIn: "\t\n\u{000C}\r ")
     }
 }
 
@@ -56,7 +72,7 @@ enum RegdateFormatter {
     }
 }
 
-internal extension Scanner {
+extension Scanner {
     convenience init(scraping string: String) {
         self.init(string: string)
         charactersToBeSkipped = nil
@@ -78,7 +94,7 @@ internal extension Scanner {
 }
 
 
-internal func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
+func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
     func isSuperfluousLineBreak(_ node: HTMLNode) -> Bool {
         guard let element = node as? HTMLElement else { return false }
         return element.tagName == "br" && element.hasClass("pb")
@@ -93,7 +109,7 @@ internal func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
 }
 
 
-internal func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?) {
+func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?) {
     let pages = node.firstNode(matchingSelector: "div.pages")
     let pageSelect = pages.flatMap { $0.firstNode(matchingSelector: "select") }
 

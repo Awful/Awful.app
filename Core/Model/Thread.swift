@@ -39,7 +39,15 @@ public class AwfulThread: AwfulManagedObject, Managed {
 }
 
 @objc public enum StarCategory: Int16 {
-    case Orange, Red, Yellow, None
+    case orange = 0
+    case red = 1
+    case yellow = 2
+
+    case none = 3 // probably should've been 0, oh well
+
+    case teal = 4
+    case green = 5
+    case purple = 6
 }
 
 extension AwfulThread {
@@ -93,7 +101,7 @@ extension AwfulThread {
             willAccessValue(forKey: "starCategory")
             let starCategory = Int16(primitiveStarCategory.intValue)
             didAccessValue(forKey: "starCategory")
-            return StarCategory(rawValue: starCategory) ?? .None
+            return StarCategory(rawValue: starCategory) ?? .none
         }
         set {
             willChangeValue(forKey: "starCategory")

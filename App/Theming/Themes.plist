@@ -150,6 +150,12 @@
 			<string>#ff0000</string>
 			<key>unreadBadgeYellowColor</key>
 			<string>#f3f135</string>
+			<key>unreadBadgeGreenColor</key>
+			<string>#7ec071</string>
+			<key>unreadBadgeTealColor</key>
+			<string>#6cecf0</string>
+			<key>unreadBadgePurpleColor</key>
+			<string>#9437ff</string>
 		</dict>
 	</dict>
 	<key>dark</key>
@@ -245,6 +251,12 @@
 			<string>#83dafd</string>
 			<key>unreadBadgeGrayColor</key>
 			<string>#bebebe</string>
+			<key>unreadBadgeTealColor</key>
+			<string>#75f8fd</string>
+			<key>unreadBadgeGreenColor</key>
+			<string>#73fa79</string>
+			<key>unreadBadgePurpleColor</key>
+			<string>#d783ff</string>
 		</dict>
 	</dict>
 	<key>alternateDefault</key>
@@ -793,6 +805,12 @@
 			<string>#ff0000</string>
 			<key>unreadBadgeYellowColor</key>
 			<string>#ffff00</string>
+			<key>unreadBadgeTealColor</key>
+			<string>#008080</string>
+			<key>unreadBadgeGreenColor</key>
+			<string>#00ff00</string>
+			<key>unreadBadgePurpleColor</key>
+			<string>#ff00ff</string>
 		</dict>
 	</dict>
 	<key>YOSPOS</key>

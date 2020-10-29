@@ -51,17 +51,8 @@ public struct ThreadListScrapeResult: ScrapeResult {
         public let unreadPostCount: Int?
 
         public enum Bookmark: Equatable {
-            case none, orange, red, yellow
-
-            public static func == (lhs: Bookmark, rhs: Bookmark) -> Bool {
-                switch (lhs, rhs) {
-                case (.none, .none), (.orange, .orange), (.red, .red), (.yellow, .yellow):
-                    return true
-
-                case (.none, _), (.orange, _), (.red, _), (.yellow, _):
-                    return false
-                }
-            }
+            case none
+            case orange, red, yellow, teal, green, purple
         }
     }
 
@@ -185,19 +176,10 @@ private extension ThreadListScrapeResult.Thread {
 
         bookmark = html
             .firstNode(matchingSelector: "td.star")
-            .map { td in
-                if td.hasClass("bm0") {
-                    return .orange
-                }
-                else if td.hasClass("bm1") {
-                    return .red
-                }
-                else if td.hasClass("bm2") {
-                    return .yellow
-                }
-                else {
-                    return .none
-                }
+            .map { $0.classList }
+            .flatMap { $0.lazy
+                .compactMap { Bookmark(class: $0) }
+                .first { _ in true }
             }
             ?? .none
 
@@ -264,6 +246,23 @@ private extension ThreadListScrapeResult.Thread {
             .flatMap { $0.firstNode(matchingSelector: "b") }
             .map { $0.textContent }
             .flatMap { Int($0) }
+    }
+}
+
+private extension ThreadListScrapeResult.Thread.Bookmark {
+    init?(class c: String) {
+        // There's no single dedicated "bookmarked" class, but there's one for each star color. Assume they all match the same format so we retain bookmarks even as new colors are added.
+        guard c.hasPrefix("bm") else { return nil }
+        switch Int(c.dropFirst(2)) {
+        case 0: self = .orange
+        case 1: self = .red
+        case 2: self = .yellow
+        case 3: self = .teal
+        case 4: self = .green
+        case 5: self = .purple
+        case .some: self = .orange
+        case .none: return nil
+        }
     }
 }
 

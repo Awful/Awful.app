@@ -93,8 +93,10 @@ internal extension ThreadListScrapeResult.Thread {
     func update(_ thread: AwfulThread) {
         let isBookmarked: Bool = {
             switch bookmark {
-            case .orange, .red, .yellow: return true
-            case .none: return false
+            case .orange, .red, .yellow, .teal, .green, .purple:
+                return true
+            case .none:
+                return false
             }
         }()
         if isBookmarked != thread.bookmarked { thread.bookmarked = isBookmarked }
@@ -109,10 +111,13 @@ internal extension ThreadListScrapeResult.Thread {
 
         let starCategory: StarCategory = {
             switch bookmark {
-            case .orange: return .Orange
-            case .red: return .Red
-            case .yellow: return .Yellow
-            case .none: return .None
+            case .orange: return .orange
+            case .red: return .red
+            case .yellow: return .yellow
+            case .teal: return .teal
+            case .green: return .green
+            case .purple: return .purple
+            case .none: return .none
             }
         }()
         if starCategory != thread.starCategory { thread.starCategory = starCategory }
