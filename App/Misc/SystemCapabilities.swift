@@ -48,15 +48,15 @@ enum SystemCapabilities {
             let minor = scanner.scanInt()
             else { return false }
         switch (major, minor) {
-        case (10, 3), (10, 6): // iPhone X
-            return true
-        case (11, 2): // iPhone XS
-            return true
-        case (11, 4), (11, 6): // iPhone XS Max
-            return true
-        case (12, 3): // iPhone 11 Pro
-            return true
-        case (12, 5): // iPhone 11 Pro Max
+        case (10, 3), (10, 6), // iPhone X
+             (11, 2), // iPhone XS
+             (11, 4), (11, 6), // iPhone XS Max
+             (12, 3), // iPhone 11 Pro
+             (12, 5), // iPhone 11 Pro Max
+             (13, 1), // iPhone 12 Mini
+             (13, 2), // iPhone 12
+             (13, 3), // iPhone 12 Pro
+             (13, 4): // iPhone 12 Pro Max
             return true
         default:
             return false
