@@ -317,7 +317,7 @@ public final class ForumsClient {
             "threadid": threadID,
             "index": "\(post.threadIndex)"]
 
-        return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
+        return fetch(method: .post, urlString: "showthread.php", parameters: parameters)
             .promise.asVoid()
     }
 
