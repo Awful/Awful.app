@@ -45,6 +45,7 @@ enum SettingsKeys {
     // sourcery: valueType = String?
     static let rawDefaultBrowser = "default_browser"
     static let showAuthorAvatars = "show_avatars"
+    static let jumpToPostEndOnDoubleTap = "jump_to_post_end_on_double_tap"
     static let showImages = "show_images"
     static let showThreadTagsInThreadList = "show_thread_tags"
     static let showTweaksOnShake = "show_tweaks_on_shake"

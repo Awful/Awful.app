@@ -361,7 +361,7 @@ final class PostsPageViewController: ViewController {
                 options: .init(
                     continueEditing: presentReply,
                     deleteDraft: makeNewReplyWorkspace)
-            )            
+            )
 
         case .replying:
             presentReply()
@@ -736,6 +736,21 @@ final class PostsPageViewController: ViewController {
         
         postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView)).done {
             _ = URLMenuPresenter.presentInterestingElements($0, from: self, renderView: self.postsView.renderView)
+        }
+    }
+    
+    @objc private func didDoubleTapOnPostsView(_ sender: UITapGestureRecognizer) {
+        postsView.renderView.findPostFrame(at: sender.location(in: postsView.renderView)).done { [postsView] in
+            guard let postFrame = $0 else { return }
+            let scrollView = postsView.renderView.scrollView
+            let scrollFrame = scrollView.convert(postFrame, from: postsView.renderView)
+            let belowBottom = CGRect(
+                // Maintain the current horizontal position in case user is zoomed in.
+                x: scrollView.contentOffset.x,
+                y: scrollFrame.maxY - 1,
+                width: 1,
+                height: 1)
+            scrollView.scrollRectToVisible(belowBottom, animated: true)
         }
     }
     
@@ -1173,7 +1188,16 @@ final class PostsPageViewController: ViewController {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
         postsView.renderView.addGestureRecognizer(longPress)
-        
+
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(didDoubleTapOnPostsView))
+        doubleTap.delegate = self
+        doubleTap.numberOfTapsRequired = 2
+        postsView.renderView.addGestureRecognizer(doubleTap)
+        observers.append(UserDefaults.standard.observeOnMain(\.jumpToPostEndOnDoubleTap, options: .initial) {
+            defaults, _ in
+            doubleTap.isEnabled = defaults.jumpToPostEndOnDoubleTap
+        })
+ 
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
 
         observers += UserDefaults.standard.observeSeveral {

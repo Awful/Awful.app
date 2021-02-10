@@ -471,6 +471,17 @@ Awful.jumpToPostWithID = function(postID) {
   window.location.hash = `#${postID}`;
 };
 
+
+/**
+ Returns the web view frame of the post at (x, y) in web view coordinates.
+ */
+Awful.postElementAtPoint = function(x, y) {
+    var elementAtPoint = document.elementFromPoint(x, y);
+    var postElement = elementAtPoint && elementAtPoint.closest('post');
+    return postElement ? Awful.frameOfElement(postElement) : null;
+};
+
+
 /**
  Turns all links with `data-awful-linkified-image` attributes into img elements.
  */

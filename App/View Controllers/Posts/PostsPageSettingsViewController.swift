@@ -109,7 +109,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         view.tintColor = theme["tintColor"]
         view.backgroundColor = theme["sheetBackgroundColor"]
         popoverPresentationController?.backgroundColor = theme["sheetBackgroundColor"]
-		headerLabel.textColor = theme["sheetTitleColor"]
+        headerLabel.textColor = theme["sheetTitleColor"]
         headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"]
         for label in labels {
             label.textColor = theme["sheetTextColor"]

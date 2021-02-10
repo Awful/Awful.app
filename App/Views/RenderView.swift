@@ -58,7 +58,7 @@ final class RenderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        webView.frame = CGRect(origin: .zero, size: self.bounds.size)
+        webView.frame = CGRect(origin: .zero, size: bounds.size)
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(webView)
 
@@ -502,6 +502,24 @@ extension RenderView {
         webView.evaluateJavaScript("if (window.Awful) Awful.loadLinkifiedImages()") { rawResult, error in
             if let error = error {
                 self.mentionError(error, explanation: "could not evaluate loadLinkifiedImages")
+            }
+        }
+    }
+    
+    /// Returns the frame of the post at the given render view point, in render view coordinates.
+    func findPostFrame(at renderViewPoint: CGPoint) -> Guarantee<CGRect?> {
+        let point = convertToWebDocument(renderViewPoint: renderViewPoint)
+        let js = "if (window.Awful) Awful.postElementAtPoint(\(point.x), \(point.y))"
+        
+        return Guarantee { resolver in
+            webView.evaluateJavaScript(js) { result, error in
+                let renderViewFrame = CGRect(renderViewMessage: result as? [String: Double])
+                    .map(self.convertToRenderView(webDocumentRect:))
+                resolver(renderViewFrame)
+            
+                if let error = error {
+                    self.mentionError(error, explanation: "could not evaluate findPostFrame")
+                }
             }
         }
     }

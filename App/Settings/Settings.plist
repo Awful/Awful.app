@@ -115,6 +115,16 @@
 					<key>Key</key>
 					<string>embed_tweets</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Double-Tap Post to Jump</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>jump_to_post_end_on_double_tap</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>
