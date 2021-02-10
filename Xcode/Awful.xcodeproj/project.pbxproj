@@ -4551,6 +4551,7 @@
 			baseConfigurationReference = 1C1533572070A3BF0021A2BD /* Awful-Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUNDLE_SHORT_VERSION = 5.5;
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -4563,6 +4564,7 @@
 			baseConfigurationReference = 1C1533582070A3CA0021A2BD /* Awful-Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUNDLE_SHORT_VERSION = 5.5;
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				PRODUCT_MODULE_NAME = Awful;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";

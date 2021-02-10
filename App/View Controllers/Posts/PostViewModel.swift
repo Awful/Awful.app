@@ -31,6 +31,9 @@ struct PostRenderModel: StencilContextConvertible {
         var showAvatars: Bool {
             return UserDefaults.standard.showAuthorAvatars
         }
+        var setDoubletapPosts: Bool {
+            return UserDefaults.standard.doubletapPosts
+        }
         var hiddenAvatarURL: URL? {
             return showAvatars ? nil : post.author?.avatarURL
         }
@@ -78,7 +81,7 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
     let document = HTMLDocument(string: html)
     document.removeSpoilerStylingAndEvents()
     document.removeEmptyEditedByParagraphs()
-    document.addAttributeToTweetLinks()    
+    document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
     if let username = UserDefaults.standard.loggedInUsername {
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
@@ -97,6 +100,10 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
 
 private var showAvatars: Bool {
     return UserDefaults.standard.showAuthorAvatars
+}
+
+private var doubletapPosts: Bool {
+    return UserDefaults.standard.doubletapPosts
 }
 
 private extension HTMLDocument {

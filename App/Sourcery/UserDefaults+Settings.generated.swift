@@ -250,6 +250,16 @@ extension UserDefaults {
     @objc private class var keyPathsForValuesAffectingShowAuthorAvatars: Set<String> { [SettingsKeys.showAuthorAvatars] }
 
 
+    @objc dynamic var doubletapPosts: Bool {
+        get { return bool(forKey: SettingsKeys.doubletapPosts) }
+        set { set(newValue, forKey: SettingsKeys.doubletapPosts) }
+    }
+
+    @objc private class var automaticallyNotifiesObserversOfDoubletapPosts: Bool { false }
+
+    @objc private class var keyPathsForValuesAffectingDoubletapPosts: Set<String> { [SettingsKeys.doubletapPosts] }
+
+
     @objc dynamic var showImages: Bool {
         get { return bool(forKey: SettingsKeys.showImages) }
         set { set(newValue, forKey: SettingsKeys.showImages) }

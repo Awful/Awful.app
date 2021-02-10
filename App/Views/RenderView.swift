@@ -506,6 +506,24 @@ extension RenderView {
         }
     }
     
+    /// Calculate post sizes in webview (in order to scroll to the end double tapped posts)
+    func jumpToFooterOfCurrentPost(at renderViewPoint: CGPoint) -> Guarantee<CGPoint> {
+           let point = convertToWebDocument(renderViewPoint: renderViewPoint)
+           let js = "if (window.Awful) Awful.jumpToFooterOfCurrentPost(\(point.y))"
+        
+        return Guarantee { resolver in
+           webView.evaluateJavaScript(js) { result, error in
+                let boundingClientRecTop = result as? Double
+                let newOffset = CGPoint(x: 0, y: boundingClientRecTop ?? 0)
+                resolver(newOffset)
+            
+                if let error = error {
+                    self.mentionError(error, explanation: "could not evaluate jumpToFooterOfCurrentPost")
+                }
+            }
+        }
+    }
+    
     /// Sets the identified post, and all previous posts, to appear read; and sets all subsequent posts to appear unread.
     func markReadUpToPost(identifiedBy postID: String) {
         let escaped: String

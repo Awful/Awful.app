@@ -471,6 +471,46 @@ Awful.jumpToPostWithID = function(postID) {
   window.location.hash = `#${postID}`;
 };
 
+
+/**
+ Calculates getBoundingClientRect().top for the post AFTER the one being doubletapped.
+ If it's the last post then the original y parameter is returned unchanged.
+ Used to perform all calculations here, but window.scrollTo doesn't animate nicely. Even
+ with 'smooth' behaviour.
+ However, the calculations and scroll taking place here does result in a more precise action.
+ But precision is not critical for this
+ 
+ Block quote elements do not have a class, so needed to use tag instead.
+ */
+Awful.jumpToFooterOfCurrentPost = function(y) {
+    var x = 0;
+    var elementAtPoint = document.elementFromPoint(x, y);
+    if (!elementAtPoint || (elementAtPoint.className != 'postbody' &&
+                            elementAtPoint.tagName != 'BLOCKQUOTE')) {
+      return y;
+    }
+    var postElement;
+    if (elementAtPoint.tagName == 'BLOCKQUOTE'){
+        postElement = elementAtPoint.parentNode.parentNode.parentNode;
+    } else {
+        postElement = elementAtPoint.parentNode;
+    }
+        var threadElement = postElement.parentNode;
+        var allPosts = threadElement.getElementsByTagName('post');
+        var numberOfPosts = allPosts.length;
+        var postID = postElement.id;
+        var lastPostID = allPosts[allPosts.length - 1].id;
+  
+        if (postID != lastPostID){
+            var nextPost = postElement.nextElementSibling;
+            var nextPostID = nextPost.id;
+            y = nextPost.getBoundingClientRect().top;
+        }
+    
+    return y;
+};
+
+
 /**
  Turns all links with `data-awful-linkified-image` attributes into img elements.
  */

@@ -115,6 +115,16 @@
 					<key>Key</key>
 					<string>embed_tweets</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Doubletap Post Scroll</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>dbltap_posts</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>

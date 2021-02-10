@@ -26,6 +26,11 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @IBAction func toggleAvatars(_ sender: UISwitch) {
         UserDefaults.standard.showAuthorAvatars = sender.isOn
     }
+    
+    @IBOutlet private var dbltapPostsSwitch: UISwitch!
+    @IBAction func toggleDbltaps(_ sender: UISwitch) {
+        UserDefaults.standard.doubletapPosts = sender.isOn
+    }
 
     @IBOutlet private var imagesSwitch: UISwitch!
     @IBAction private func toggleImages(_ sender: UISwitch) {
@@ -89,6 +94,10 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
                 [avatarsSwitch] defaults in
                 avatarsSwitch?.isOn = defaults.showAuthorAvatars
             }
+            $0.observe(\.doubletapPosts, options: .initial) {
+                [dbltapPostsSwitch] defaults in
+                dbltapPostsSwitch?.isOn = defaults.doubletapPosts
+            }
             $0.observe(\.showImages, options: .initial) {
                 [imagesSwitch] defaults in
                 imagesSwitch?.isOn = defaults.showImages
@@ -109,7 +118,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         view.tintColor = theme["tintColor"]
         view.backgroundColor = theme["sheetBackgroundColor"]
         popoverPresentationController?.backgroundColor = theme["sheetBackgroundColor"]
-		headerLabel.textColor = theme["sheetTitleColor"]
+        headerLabel.textColor = theme["sheetTitleColor"]
         headerBackground.backgroundColor = theme["sheetTitleBackgroundColor"]
         for label in labels {
             label.textColor = theme["sheetTextColor"]

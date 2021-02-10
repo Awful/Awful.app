@@ -361,7 +361,7 @@ final class PostsPageViewController: ViewController {
                 options: .init(
                     continueEditing: presentReply,
                     deleteDraft: makeNewReplyWorkspace)
-            )            
+            )
 
         case .replying:
             presentReply()
@@ -736,6 +736,20 @@ final class PostsPageViewController: ViewController {
         
         postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView)).done {
             _ = URLMenuPresenter.presentInterestingElements($0, from: self, renderView: self.postsView.renderView)
+        }
+    }
+    
+    @objc private func didDoubleTapOnPostsView(_ sender: UITapGestureRecognizer) {
+        postsView.renderView.jumpToFooterOfCurrentPost(at: sender.location(in: postsView.renderView)).done {
+            let scrollView = self.postsView.renderView.scrollView
+            let proposedOffset = $0.y + (scrollView.contentOffset.y - (scrollView.bounds.height - 74))
+            let percentageScrolled = Double((proposedOffset / scrollView.contentSize.height) * 100.0)
+  
+            if percentageScrolled > 90 {
+                self.scrollToBottom(nil)
+            } else {
+                scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: proposedOffset), animated: true)
+            }
         }
     }
     
@@ -1174,6 +1188,13 @@ final class PostsPageViewController: ViewController {
         longPress.delegate = self
         postsView.renderView.addGestureRecognizer(longPress)
         
+        if UserDefaults.standard.doubletapPosts {
+            let doubleTap = UITapGestureRecognizer(target: self, action: #selector(didDoubleTapOnPostsView))
+            doubleTap.delegate = self
+            doubleTap.numberOfTapsRequired = 2
+            postsView.renderView.addGestureRecognizer(doubleTap)
+        }
+ 
         NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
 
         observers += UserDefaults.standard.observeSeveral {
