@@ -1,0 +1,326 @@
+/*
+  Localizable.strings
+
+  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+
+/* MARK: Generic */
+
+/* Title of button that dismisses without taking any action. */
+"cancel" = "Cancel";
+
+/* Title of a button that acknowledges information without offering any choice. */
+"ok" = "OK";
+
+/* Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.) */
+"table-view.action.delete" = "Delete";
+
+
+/* MARK: Acknowledgements */
+"acknowledgements.title" = "Acknowledgements";
+
+
+/* MARK: Actions */
+
+/* Title of the share URL action for an announcement, post, or thread. */
+"action.share-url" = "Share URL";
+
+
+/* MARK: Announcements */
+
+/* Fallback title of an announcement screen (the announcement's title is used when available). */
+"announcement.title" = "Announcement";
+
+
+/* MARK: Bookmarks */
+
+/* Title of the bookmarks screen, shown in the navbar and the tab bar. */
+"bookmarks.title" = "Bookmarks";
+
+
+/* MARK: Forums list */
+
+/* Title of the announcements section in the forums list. */
+"forums-list.announcements-section-title" = "Announcements";
+
+/* Title of the favorite forums section in the forums list. */
+"forums-list.favorite-forums.section-title" = "Favorite Forums";
+
+/* Name of undo action where user adds a just-deleted favorite back (more of a redo action). */
+"forums-list.undo-action.add-favorite" = "Add Favorite Forum";
+
+/* Name of undo action where user deletes a favorite. */
+"forums-list.undo-action.remove-favorite" = "Remove Favorite Forum";
+
+
+/* MARK: Handoff */
+
+/* Title of Handoff activity when reading bookmarks. */
+"handoff.bookmarks-title" = "Bookmarked Threads";
+
+/* Title of Handoff activity when reading a private message. */
+"handoff.message-title" = "Private Message";
+
+
+/* MARK: Launch messages */
+
+/* Title of alert asking about opening a copied URL when Awful comes to the foreground. Alert message is the URL in question. Parameter is the name of this app. */
+"launch-open-copied-url-alert.title" = "Would you like to open this URL in %@?";
+
+/* Button that opens the copied URL. */
+"launch-open-copied-url-alert.open-button" = "Open";
+
+
+/* MARK: Leper's Colony */
+
+/* Title of the Leper's Colony as shown in the navbar. */
+"lepers-colony.navbar-title" = "Leper's Colony";
+
+/* Title of the Leper's Colony as shown in the tab bar. */
+"lepers-colony.tabbar-title" = "Lepers";
+
+
+/* MARK: Login */
+
+/* Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately). */
+"login.consent-to-terms.full-text" = "By logging in, you agree to the %1$@ and %2$@.";
+
+/* Link on the login screen that opens the Privacy Policy when tapped. */
+"login.consent-to-terms.privacy-policy" = "Privacy Policy";
+
+/* Link on the login screen that opens the Terms of Service when tapped. */
+"login.consent-to-terms.terms-of-service" = "Terms of Service";
+
+
+/* MARK: Periodic warnings */
+
+/* Title of an alert shown on launch if the user's session expires within a week. */
+"session-expiry-imminent.title" = "Session Expires Soon";
+
+/* Message of an alert shown on launch if the user's session expires within a week. Parameter is the expiry date. */
+"session-expiry-imminent.message" = "You'll be automatically logged out on %@. Or you can log out and back in before then.";
+
+
+/* MARK: Posts page */
+
+/* Title of alert shown when failing to update the last-read post. */
+"posts-page.error.could-not-mark-read" = "Could Not Mark Read";
+
+/* Alternate text for an FYAD flag. Variables are: 1. username of flag creator; 2. date of flag creation. */
+"posts-page.fyad-flag-title" = "this flag proudly brought to you by %1$@ on %2$@";
+
+/* Title shown in HUD after the last-read post is updated. */
+"posts-page.marked-read" = "Marked Read";
+
+/* Button that opens the thread's forum. */
+"posts-page.parent-forum-button.title" = "Parent Forum";
+/* Button that opens the thread's forum. */
+"posts-page.parent-forum-button.accessibility-label" = "Parent forum";
+/* Button that opens the thread's forum. */
+"posts-page.parent-forum-button.accessibility-hint" = "Opens this thread's forum";
+
+/* Button that loads the previously-read posts on the page. */
+"posts-page.previous-posts-button.title" = "Previous Posts";
+/* Button that loads the previously-read posts on the page. */
+"posts-page.previous-posts-button.accessibility-label" = "Previous posts";
+
+/* Button that jumps to the bottom of the page. */
+"posts-page.scroll-to-end-button.title" = "Scroll To End";
+/* Button that jumps to the bottom of the page. */
+"posts-page.scroll-to-end-button.accessibility-label" = "Scroll to end";
+
+
+/* MARK: Rap sheet */
+
+/* Text shown when a user's rap sheet has no entries in it. */
+"rap-sheet.empty" = "Nothing to see here…";
+
+/* Title of the rap sheet, shown in the navbar and tab bar. */
+"rap-sheet.title" = "Rap Sheet";
+
+
+/* MARK: Share actions */
+
+/* The default title of the "copy URL" share action. */
+"copy-url.title" = "Copy URL";
+
+
+/* MARK: Thread list */
+
+/* Text shown below title of thread when at least some of the thread has been read. Parameter is the username of the last poster. */
+"thread-list.killed-by" = "Killed by %@";
+
+/* Text shown below title of thread when none of the thread has been read. Parameter is the username of the original poster. */
+"thread-list.posted-by" = "Posted by %@";
+
+/* Button title atop the thread list when no filter is set. */
+"thread-list.filter-button.no-filter" = "Filter By Tag";
+
+/* Button title atop the thread list when some filter is set. */
+"thread-list.filter-button.change-filter" = "Change Filter";
+
+/* Title of the thread tag picker screen shown when filtering a thread list. */
+"thread-list.filter.picker-title" = "Filter Threads";
+
+/* MARK: Compose post */
+
+/* Accessibility label of compose button in posts screen. */
+"compose.accessibility-label" = "Reply";
+
+/* Message of alert shown when there's a problem finding the author of a post that's being written. */
+"compose.post-preview.missing-author-error" = "The post author could not be determined.";
+
+/* Title of preview screen when editing an existing post. */
+"compose.post-preview.title-editing" = "Save";
+
+/* Title of preview screen when writing a new post. */
+"compose.post-preview.title-new" = "Post Preview";
+
+/* Title of compose draft menu when editing another user's post. Parameters: 1. post author's username. */
+"compose.draft-menu.editing-other-post.title" = "You're currently editing %1$@'s post";
+/* Title of compose draft menu when editing an unnamed other user's post. */
+"compose.draft-menu.editing-unknown-other-post.title" = "You're currently editing someone else's post";
+/* Title of compose draft menu when editing your own post. */
+"compose.draft-menu.editing-own-post.title" = "You're currently editing your own post";
+/* Title of compose draft menu when replying to the thread. */
+"compose.draft-menu.replying.title" = "You're currently replying to the thread";
+/* Destructive button in action sheet that deletes the draft reply. */
+"compose.draft-menu.delete-draft" = "Delete Draft";
+/* Button in action sheet that resumes the draft edit. */
+"compose.draft-menu.continue-editing" = "Continue Editing";
+/* Button in action sheet that resumes the draft reply. */
+"compose.draft-menu.continue-replying" = "Continue Replying";
+
+/* Button in action sheet that keeps the draft when cancelling out of a reply or edit. */
+"compose.cancel-menu.save-draft" = "Save Draft";
+/* Destructive button in action sheet that deletes the draft. */
+"compose.cancel-menu.delete-draft" = "Delete Draft";
+
+/* MARK: Compose thread */
+
+/* Text shown below the title of the thread-to-be. Parameter is the name of the forum where this will be posted. */
+"compose.thread-preview.posting-in" = "Posting in %@";
+
+/* Title of button that submits a new thread. */
+"compose.thread-preview.submit-button" = "Post";
+
+/* Title of screen showing a preview of a new thread's original post. */
+"compose.thread-preview.title" = "Thread Preview";
+
+/* Title of the thread tag picker when choosing a new thread's tag. */
+"compose.thread.tag-picker.title" = "Choose Thread Tag";
+
+
+/* MARK: Image upload */
+
+/* Title of a generic error uploading an image. */
+"image-upload.generic-error-title" = "Image Upload Failed";
+
+
+/* MARK: Link actions */
+
+/* Title of button that copies an image's URL to the pasteboard. */
+"link-action.copy-image-url" = "Copy Image URL";
+
+/* Title of button that copies a URL to the pasteboard. */
+"link-action.copy-url" = "Copy URL";
+
+/* Title of button that opens a link using the system's default handler for the URL. */
+"link-action.open" = "Open";
+
+/* Title of button that shows an image in Awful's image viewer. */
+"link-action.open-image" = "Open Image";
+
+/* Title of button that opens a link within Awful. */
+"link-action.open-in-awful" = "Open in Awful";
+
+/* Title of button that opens a link in Brave. */
+"link-action.open-in-brave" = "Open in Brave";
+
+/* Title of button that opens a link in Google Chrome. */
+"link-action.open-in-chrome" = "Open in Chrome";
+
+/* Title of button that opens a link in Microsoft Edge. */
+"link-action.open-in-edge" = "Open in Edge";
+
+/* Title of button that opens a link in Firefox. */
+"link-action.open-in-firefox" = "Open in Firefox";
+
+/* Title of button that opens a link in Safari. */
+"link-action.open-in-safari" = "Open in Safari";
+
+/* Title of button that opens a link in the Twitter app. */
+"link-action.open-in-twitter" = "Open in Twitter";
+
+/* Title of button that opens a link in the Vimeo app. */
+"link-action.open-in-vimeo" = "Open in Vimeo";
+
+/* Title of button that opens a link in the YouTube app. */
+"link-action.open-in-youtube" = "Open in YouTube";
+
+/* Title of button that shows the system share sheet for a URL. */
+"link-action.share-url" = "Share URL";
+
+
+/* MARK: Private messages list */
+
+/* Title of alert shown when there's a problem deleting a private message from the list. */
+"private-messages-list.deletion-error.title" = "Could Not Delete Message";
+
+/* Text read by VoiceOver for a cell in the private messages list. Parameters are: 1. username of sender; 2. subject of message; 3. date message was sent. */
+"private-messages-list.message.accessibility-label" = "%1$@. %2$@. %3$@";
+
+/* Text read by VoiceOver for compose button in private messages list. */
+"private-message-list.compose-button.accessibility-label" = "Compose";
+
+/* Title of private message list, shown in navigation bar. */
+"private-message-list.title" = "Private Messages";
+
+/* Title of the private messages tab bar item. */
+"private-message-tab.title" = "Messages";
+
+/* Text read by VoiceOver for private messages tab bar item. */
+"private-message-tab.accessibility-label" = "Private messages";
+
+
+/* MARK: Private message */
+
+/* Title of action sheet button that starts a new private message forwarding the currently-visible message. */
+"private-message.action-forward" = "Forward";
+
+/* Title of action sheet button that starts a new private message replying to the currently-visible message. */
+"private-message.action-reply" = "Reply";
+
+/* Title of alert shown when the user taps Reply or Forward but the quoted contents of the original message cannot be loaded. */
+"private-message.quote-error.title" = "Could Not Quote Message";
+
+
+/* MARK: Settings */
+
+/* Title of the "Default Browser" settings screen. */
+"settings.default-browser.title" = "Default Browser";
+
+/* Placeholder is the locale-formatted text scale %. */
+"settings.font-scale.title" = "Scale Text %@";
+
+
+/* MARK: Smilie actions */
+
+/* Title of button that adds a smilie to the user's favorites. Parameter is the text used to insert the smilie into a post. */
+"smilie-action.add-to-favorites" = "Add %@ to Favorites";
+
+/* Title of a button that removes a smilie from the user's favorites. Parameter is the text used to insert the smilie into a post. */
+"smilie-action.remove-from-favorites" = "Remove %@ from Favorites";
+
+
+/* MARK: Theme modes */
+
+"theme-mode.dark" = "Dark";
+"theme-mode.light" = "Light";
+
+/* MARK: User profile */
+
+/* Title of the profile screen, used when the user's username is unavailable for some reason. */
+"profile.default-title" = "Profile";
+
+"profile.default-gender" = "porpoise";
