@@ -195,8 +195,6 @@
 "compose.cancel-menu.save-draft" = "Save Draft";
 /* Destructive button in action sheet that deletes the draft. */
 "compose.cancel-menu.delete-draft" = "Delete Draft";
-/* Button in action sheet that resumes the draft reply. */
-"compose.cancel-menu.continue-replying" = "Continue Replying";
 
 /* MARK: Compose thread */
 
