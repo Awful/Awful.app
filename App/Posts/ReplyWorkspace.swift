@@ -171,6 +171,13 @@ final class ReplyWorkspace: NSObject {
             message: nil,
             preferredStyle: .actionSheet)
         actionSheet.addAction(.init(
+            title: NSLocalizedString("compose.cancel-menu.continue-replying", comment: ""),
+            style: .default,
+            handler: { action in
+                actionSheet.dismiss(animated: true, completion: nil)
+            }
+        ))
+        actionSheet.addAction(.init(
             title: NSLocalizedString("compose.cancel-menu.save-draft", comment: ""),
             style: .default,
             handler: { action in
