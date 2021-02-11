@@ -171,17 +171,17 @@ final class ReplyWorkspace: NSObject {
             message: nil,
             preferredStyle: .actionSheet)
         actionSheet.addAction(.init(
-            title: NSLocalizedString("compose.cancel-menu.save-draft", comment: ""),
-            style: .default,
-            handler: { action in
-                self.completion(.saveDraft)
-            }
-        ))
-        actionSheet.addAction(.init(
             title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: ""),
             style: .destructive,
             handler: { action in
                 self.completion(.forgetAboutIt)
+            }
+        ))
+        actionSheet.addAction(.init(
+            title: NSLocalizedString("compose.cancel-menu.save-draft", comment: ""),
+            style: .default,
+            handler: { action in
+                self.completion(.saveDraft)
             }
         ))
         actionSheet.addCancelActionWithHandler(nil)
