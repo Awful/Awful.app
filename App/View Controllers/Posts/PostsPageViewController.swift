@@ -694,13 +694,19 @@ final class PostsPageViewController: ViewController {
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
     
-    @objc private func scrollToTop(_ sender: UIKeyCommand) {
+    @objc private func scrollToTop(_ sender: UIKeyCommand?) {
         postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
     
     @objc private func scrollUp(_ sender: UIKeyCommand) {
         let scrollView = postsView.renderView.scrollView
-        scrollView.contentOffset.y = max(scrollView.contentOffset.y - 80, 0)
+        let proposedOffset = max(scrollView.contentOffset.y - 80, 0)
+        if proposedOffset > 0 {
+            let newOffset = CGPoint(x: scrollView.contentOffset.x, y: proposedOffset)
+            scrollView.setContentOffset(newOffset, animated: true)
+        } else {
+            scrollToTop(nil)
+        }
     }
     
     @objc private func scrollDown(_ sender: UIKeyCommand) {
