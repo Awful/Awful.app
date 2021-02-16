@@ -191,13 +191,13 @@ Awful.handleClickEvent = function(event) {
     return;
   }
 
-  // Tap on post header to reveal actions on the poster.
-  var header = event.target.closest('header');
+  // Tap on poster's username or avatar to reveal actions on the poster.
+  var usernameOrAvatar = event.target.closest('.username, .avatar');
   var didTapAuthorHandler = window.webkit.messageHandlers.didTapAuthorHeader;
-  if (header && didTapAuthorHandler) {
-    var postIndex = Awful.postIndexOfElement(header);
+  if (usernameOrAvatar && didTapAuthorHandler) {
+    var postIndex = Awful.postIndexOfElement(usernameOrAvatar);
     if (postIndex !== null) {
-      var frame = Awful.frameOfElement(header);
+      var frame = Awful.frameOfElement(usernameOrAvatar);
       didTapAuthorHandler.postMessage({
           "frame": frame,
           "postIndex": postIndex
