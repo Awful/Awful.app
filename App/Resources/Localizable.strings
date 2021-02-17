@@ -232,6 +232,9 @@
 /* Title of button that shows an image in Awful's image viewer. */
 "link-action.open-image" = "Open Image";
 
+/* Title of button that copies an image to the pasteboard. */
+"link-action.copy-image" = "Copy Image";
+
 /* Title of button that opens a link within Awful. */
 "link-action.open-in-awful" = "Open in Awful";
 
