@@ -8,11 +8,11 @@ private let Log = Logger.get()
 
 /// Downloads an image and shows it in a zoomable scroll view.
 final class ImageViewController: UIViewController {
-    fileprivate let imageURL: URL
-    fileprivate var doneAction: (() -> Void)?
-    fileprivate var downloadProgress: Progress!
-    fileprivate var image: DecodedImage?
-    fileprivate var rootView: RootView { return view as! RootView }
+    private let imageURL: URL
+    private var doneAction: (() -> Void)?
+    private var downloadProgress: Progress?
+    private var image: DecodedImage?
+    private var rootView: RootView { return view as! RootView }
     
     init(imageURL: URL) {
         self.imageURL = imageURL
@@ -21,7 +21,7 @@ final class ImageViewController: UIViewController {
         downloadProgress = downloadImage(imageURL, completion: didDownloadImage)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -43,7 +43,7 @@ final class ImageViewController: UIViewController {
     }
     
     fileprivate func dismiss() {
-        downloadProgress.cancel()
+        downloadProgress?.cancel()
         rootView.cancelHideOverlayAfterDelay()
         
         if let action = doneAction {
@@ -54,36 +54,29 @@ final class ImageViewController: UIViewController {
     }
     
     override var prefersStatusBarHidden: Bool {
-        Log.d("hello, image is \(String(describing: image)) and overlayHidden = \(rootView.overlayHidden)")
-        return image != nil && rootView.overlayHidden
+        image != nil && rootView.overlayHidden
     }
     
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        return .lightContent
-    }
+    override var preferredStatusBarStyle : UIStatusBarStyle { .lightContent }
     
-    @IBAction @objc fileprivate func didTapDone() {
+    @IBAction private func didTapDone() {
         dismiss()
     }
     
-    @IBAction @objc fileprivate func didTapAction(_ sender: UIButton) {
+    @IBAction private func didTapAction(_ sender: UIButton) {
         rootView.cancelHideOverlayAfterDelay()
 
-        let wrappedURL = CopyURLActivity.Box(imageURL)
-        let activityViewController: UIActivityViewController
-
-        // We need to provide the image data as the activity item so that animated GIFs stay animated.
-        if (image == nil) {
-            // Allow user to share the URL before the image has loaded fully, useful on slow connections
-            activityViewController = UIActivityViewController(activityItems: [imageURL, wrappedURL], applicationActivities: [CopyURLActivity()])
-            
-            // Only use our copy button so it's clear they're copying the URL, not the image
-            activityViewController.excludedActivityTypes = [UIActivity.ActivityType.copyToPasteboard]
-        } else {
-            activityViewController = UIActivityViewController(activityItems: [image!.data!, wrappedURL], applicationActivities: [CopyURLActivity()])
-            
-        }
-
+        let activityViewController = UIActivityViewController(
+            activityItems: [
+                imageURL,
+                CopyURLActivity.Box(imageURL),
+                image?.data as Any?,
+            ].compactMap { $0 },
+            applicationActivities: [CopyImageActivity(), CopyURLActivity()])
+   
+        // Only use our copy buttons
+        activityViewController.excludedActivityTypes = [.copyToPasteboard]
+        
         present(activityViewController, animated: true)
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
@@ -93,7 +86,7 @@ final class ImageViewController: UIViewController {
     
     // MARK: View lifecycle
     
-    fileprivate class RootView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+    private class RootView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate {
         let scrollView = UIScrollView()
         let imageView = FLAnimatedImageView()
         let statusBarBackground = UIView()
@@ -524,53 +517,9 @@ private func downloadImage(_ url: URL, completion: @escaping (DecodedImage) -> V
         } else {
             fatalError("No data and no error in data task callback")
         }
-    }) 
+    })
     task.resume()
     
     progress.cancellationHandler = { task.cancel() }
     return progress
-}
-
-/// Adds a "Preview Image" activity which uses an ImageViewController. Place the image URL in a `Box` bfore adding it to `activityItems` so the activity (and nothing else) picks it up.
-final class ImagePreviewActivity: UIActivity {
-
-    private var _activityViewController: UIViewController?
-
-    /// Wraps a URL so that only the `ImagePreviewActivity` will try to use it.
-    final class Box {
-        fileprivate let url: URL
-
-        init(_ url: URL) {
-            self.url = url
-        }
-    }
-
-    // MARK: UIActivity
-
-    override var activityViewController : UIViewController? {
-        return _activityViewController
-    }
-
-    override var activityType: UIActivity.ActivityType {
-        return UIActivity.ActivityType(rawValue: "com.awfulapp.Awful.ImagePreview")
-    }
-    
-    override var activityTitle: String? {
-        return "Preview Image"
-    }
-    
-    override var activityImage: UIImage? {
-        return UIImage(named: "quick-look")
-    }
-    
-    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        return activityItems.contains { $0 is Box }
-    }
-    
-    override func prepare(withActivityItems activityItems: [Any]) {
-        guard let url = activityItems.lazy.compactMap({ $0 as? Box }).first?.url else { return }
-        let imageViewController = ImageViewController(imageURL: url)
-        imageViewController.doneAction = { self.activityDidFinish(true) }
-        _activityViewController = imageViewController
-    }
 }
