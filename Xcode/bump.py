@@ -25,7 +25,7 @@ def build(bundle_version):
 
 def minor(bundle_version):
     return '{}00'.format(int(bundle_version[:-2]) + 1)
-    
+
 def major(bundle_version):
     return '{}0000'.format(int(bundle_version[:-4]) + 1)
 
@@ -37,21 +37,21 @@ def parse_short_version(bundle_version):
 def write_versions(path, bundle_version, short_version):
     with open(path, 'r') as f:
         xcconfig = f.read()
-    
+
     (xcconfig, count) = re.subn(r'^(\s*DYLIB_CURRENT_VERSION\s*=\s*)\S+',
                                 r'\g<1>' + bundle_version,
                                 xcconfig,
                                 flags=re.MULTILINE)
     if not count:
         _bail("Could not replace DYLIB_CURRENT_VERSION with {} in {}".format(bundle_version, path))
-    
-    (xcconfig, count) = re.subn(r'^(\s*BUNDLE_SHORT_VERSION\s*=\s*)\S+',
+
+    (xcconfig, count) = re.subn(r'^(\s*MARKETING_VERSION\s*=\s*)\S+',
                                 r'\g<1>' + short_version,
                                 xcconfig,
                                 flags=re.MULTILINE)
     if not count:
-        _bail("Could not replace BUNDLE_SHORT_VERSION with {} in {}".format(short_version, path))
-    
+        _bail("Could not replace MARKETING_VERSION with {} in {}".format(short_version, path))
+
     with open(path, 'w') as f:
         f.write(xcconfig)
 
@@ -77,15 +77,15 @@ def bump_version(bumper):
     working_dir = os.getcwd()
     script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
     os.chdir(script_dir)
-    
+
     ensure_repo_is_clean()
-    
+
     xcconfig = os.path.join(script_dir, "Config", "Common.xcconfig")
     old_bundle_version = read_bundle_version(xcconfig)
-    
+
     new_bundle_version = bumper(old_bundle_version)
     short_version = parse_short_version(new_bundle_version)
-    
+
     write_versions(xcconfig, new_bundle_version, short_version)
 
     git_commit(xcconfig, new_bundle_version, short_version)
