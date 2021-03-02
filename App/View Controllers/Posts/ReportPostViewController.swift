@@ -45,7 +45,7 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        navigationItem.rightBarButtonItem?.isEnabled = (textView.text ?? "").count <= 140
+        navigationItem.rightBarButtonItem?.isEnabled = (textView.text ?? "").count <= 960
     }
     
     fileprivate class RootView: UIView {
@@ -56,7 +56,7 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
         override init(frame: CGRect) {
             super.init(frame: frame)
             
-            instructionLabel.text = "Did this post break the forum rules? If so, please report it (limit 140 characters.)"
+            instructionLabel.text = "Did this post break the forum rules? If so, please report it (limit 960 characters.)"
             instructionLabel.numberOfLines = 0
             addSubview(instructionLabel)
             

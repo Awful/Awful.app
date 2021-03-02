@@ -928,13 +928,13 @@ public final class ForumsClient {
     }
 
     /**
-     - Parameter reason: A further explanation of what's wrong with the post. Truncated to 60 characters.
+     - Parameter reason: A further explanation of what's wrong with the post.
      */
     public func report(_ post: Post, reason: String) -> Promise<Void> {
         let parameters: KeyValuePairs<String, Any> = [
             "action": "submit",
             "postid": post.postID,
-            "comments": String(reason.prefix(60))]
+            "comments": String(reason.prefix(960))]
 
         return fetch(method: .post, urlString: "modalert.php", parameters: parameters)
             .promise.asVoid()
