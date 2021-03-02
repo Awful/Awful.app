@@ -5,7 +5,7 @@
 import AwfulCore
 import MRProgress
 
-final class ReportPostViewController: ViewController {
+final class ReportPostViewController: ViewController, UITextViewDelegate {
     fileprivate let post: Post
     
     init(post: Post) {
@@ -31,7 +31,7 @@ final class ReportPostViewController: ViewController {
         rootView.endEditing(true)
         
         let progressView = MRProgressOverlayView.showOverlayAdded(to: view.window, title: "Reporting…", mode: .indeterminate, animated: true)!
-        ForumsClient.shared.report(post, reason: rootView.commentTextField.text ?? "")
+        ForumsClient.shared.report(post, reason: rootView.commentTextView.text ?? "")
             .done { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
             }
@@ -44,23 +44,28 @@ final class ReportPostViewController: ViewController {
         }
     }
     
-    @IBAction @objc fileprivate func commentTextFieldDidChange(_ textField: UITextField) {
-        navigationItem.rightBarButtonItem?.isEnabled = (textField.text ?? "").count <= 60
+    func textViewDidChange(_ textView: UITextView) {
+        navigationItem.rightBarButtonItem?.isEnabled = (textView.text ?? "").count <= 140
     }
     
     fileprivate class RootView: UIView {
         let instructionLabel = UILabel()
-        let commentTextField = UITextField()
+        let commentFieldLabel = UILabel()
+        let commentTextView = UITextView()
         
         override init(frame: CGRect) {
             super.init(frame: frame)
             
-            instructionLabel.text = "Did this post break the forum rules? If so, please report it."
+            instructionLabel.text = "Did this post break the forum rules? If so, please report it (limit 140 characters.)"
             instructionLabel.numberOfLines = 0
             addSubview(instructionLabel)
             
-            commentTextField.placeholder = "Optional comments"
-            addSubview(commentTextField)
+            commentFieldLabel.text = "Optional comments:"
+            commentFieldLabel.numberOfLines = 0
+            addSubview(commentFieldLabel)
+            
+            commentTextView.font = commentFieldLabel.font
+            addSubview(commentTextView)
         }
 
         required init?(coder: NSCoder) {
@@ -71,10 +76,14 @@ final class ReportPostViewController: ViewController {
             let availableArea = bounds.insetBy(dx: 8, dy: 8)
             instructionLabel.frame = availableArea
             instructionLabel.sizeToFit()
-            commentTextField.frame = availableArea
-            commentTextField.sizeToFit()
-            commentTextField.frame.origin.y = instructionLabel.frame.maxY + 10
-            commentTextField.frame.size.width = availableArea.width
+            commentFieldLabel.frame = availableArea
+            commentFieldLabel.sizeToFit()
+            commentFieldLabel.frame.origin.y = instructionLabel.frame.maxY + 10
+            commentTextView.frame = availableArea
+            commentTextView.sizeToFit()
+            commentTextView.frame.origin.y = commentFieldLabel.frame.maxY + 10
+            commentTextView.frame.size.width = availableArea.width
+            commentTextView.frame.size.height = (availableArea.height - (commentTextView.frame.minY)) / 3
         }
     }
     
@@ -87,21 +96,20 @@ final class ReportPostViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        rootView.commentTextField.addTarget(self, action: #selector(commentTextFieldDidChange), for: .valueChanged)
+        rootView.commentTextView.delegate = self
     }
     
     override func themeDidChange() {
         super.themeDidChange()
         
         rootView.instructionLabel.textColor = theme["listTextColor"]
-        rootView.commentTextField.textColor = theme["listTextColor"]
-        rootView.commentTextField.attributedPlaceholder = NSAttributedString(string: "Optional comment", attributes: [
-            .foregroundColor: theme[color: "placeholderTextColor"] ?? .black])
+        rootView.commentFieldLabel.textColor = theme["listTextColor"]
+        rootView.commentTextView.textColor = theme["listTextColor"]
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        rootView.commentTextField.becomeFirstResponder()
+        rootView.commentTextView.becomeFirstResponder()
     }
 }
