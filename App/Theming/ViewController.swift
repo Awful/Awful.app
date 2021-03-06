@@ -18,7 +18,7 @@ protocol Themeable {
 }
 
 private func CommonInit(_ vc: UIViewController) {
-    vc.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    vc.navigationItem.backBarButtonItem = UIBarButtonItem(title: vc.title, style: .plain, target: nil, action: nil)
 }
 
 /**
