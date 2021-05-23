@@ -323,8 +323,8 @@ private func scrapeSubmissionStringEncoding(document: HTMLDocument?, form: HTMLE
 
     return acceptEncoding
         .components(separatedBy: asciiWhitespace)
-        .map(StringEncodingForLabel)
-        .filter { $0 != InvalidStringEncoding() }
+        .map(HTMLStringEncodingForLabel)
+        .filter { $0 != HTMLInvalidStringEncoding() }
         .compactMap(String.Encoding.init)
         .first
 }

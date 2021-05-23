@@ -309,6 +309,7 @@
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
 		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
 		1C5F700617D86E0F005ABD6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Assets.xcassets */; };
+		1C65EDFA265C7BF10095BA29 /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C65EDF9265C7BF10095BA29 /* HTMLReader */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
 		1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
@@ -421,7 +422,6 @@
 		1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC58F5C1B5AC4330016EE83 /* UIKit.swift */; };
 		1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC6645C220D224C00BEF5A6 /* Environment.swift */; };
 		1CCAFE1E25130D5C0068C152 /* WKWebView+RegisterScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCAFE1D25130D5C0068C152 /* WKWebView+RegisterScheme.m */; };
-		1CCBDFFA22CB02D500E1BE6A /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1CCBDFF922CB02D500E1BE6A /* HTMLReader */; };
 		1CCBDFFB22CB03B700E1BE6A /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1CCBE00022CB03C500E1BE6A /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1CCBE00122CB03C500E1BE6A /* CommonSPM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1393,8 +1393,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C210D4422DA5A8F009EBB6F /* ScannerShim in Frameworks */,
-				1CCBDFFA22CB02D500E1BE6A /* HTMLReader in Frameworks */,
 				1C49CFEF22CB01A4004B76E6 /* PromiseKit in Frameworks */,
+				1C65EDFA265C7BF10095BA29 /* HTMLReader in Frameworks */,
 				1CAE0F0D243195800042D5F5 /* AwfulScraping in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2786,9 +2786,9 @@
 			name = CommonSPM;
 			packageProductDependencies = (
 				1C49CFEE22CB01A4004B76E6 /* PromiseKit */,
-				1CCBDFF922CB02D500E1BE6A /* HTMLReader */,
 				1C210D4322DA5A8F009EBB6F /* ScannerShim */,
 				1CAE0F0C243195800042D5F5 /* AwfulScraping */,
+				1C65EDF9265C7BF10095BA29 /* HTMLReader */,
 			);
 			productName = CommonSPM;
 			productReference = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */;
@@ -4736,7 +4736,7 @@
 			repositoryURL = "https://github.com/nolanw/HTMLReader";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.4;
+				minimumVersion = 2.1.7;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -4760,6 +4760,11 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ImgurAnonymousAPI;
 		};
+		1C65EDF9265C7BF10095BA29 /* HTMLReader */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
+			productName = HTMLReader;
+		};
 		1CAE0F0C243195800042D5F5 /* AwfulScraping */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulScraping;
@@ -4772,11 +4777,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = Nuke;
-		};
-		1CCBDFF922CB02D500E1BE6A /* HTMLReader */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
-			productName = HTMLReader;
 		};
 /* End XCSwiftPackageProductDependency section */
 
