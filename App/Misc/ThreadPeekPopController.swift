@@ -139,7 +139,7 @@ protocol ThreadPeekPopControllerDelegate {
     func viewForThread(thread: AwfulThread) -> UIView?
 }
 
-protocol PreviewActionItemProvider: class {
+protocol PreviewActionItemProvider: AnyObject {
     var previewActionItems: [UIPreviewActionItem] { get }
 }
 

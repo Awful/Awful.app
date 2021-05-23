@@ -6,7 +6,7 @@ import CoreData
 
 // Core Data helpers for Swift, largely copied from https://github.com/objcio/core-data (buy the book!)
 
-public protocol Managed: class, NSFetchRequestResult {
+public protocol Managed: NSFetchRequestResult {
     static var entityName: String { get }
 }
 

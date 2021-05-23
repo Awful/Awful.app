@@ -134,7 +134,7 @@ extension MessageListDataSource: UITableViewDataSource {
     }
 }
 
-protocol MessageListDataSourceDeletionDelegate: class {
+protocol MessageListDataSourceDeletionDelegate: AnyObject {
     func didDeleteMessage(_ message: PrivateMessage, in dataSource: MessageListDataSource)
 }
 

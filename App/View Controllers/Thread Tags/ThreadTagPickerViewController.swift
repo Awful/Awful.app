@@ -231,7 +231,7 @@ extension ThreadTagPickerViewController: UIPopoverPresentationControllerDelegate
     }
 }
 
-protocol ThreadTagPickerViewControllerDelegate: class {
+protocol ThreadTagPickerViewControllerDelegate: AnyObject {
     func didSelectImageName(_ imageName: String?, in picker: ThreadTagPickerViewController)
     func didSelectSecondaryImageName(_ secondaryImageName: String, in picker: ThreadTagPickerViewController)
     func didDismissPicker(_ picker: ThreadTagPickerViewController)

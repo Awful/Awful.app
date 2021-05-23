@@ -1239,7 +1239,7 @@ public final class ForumsClient {
 
 
 /// A (typically network) operation that can be cancelled.
-public protocol Cancellable: class {
+public protocol Cancellable: AnyObject {
 
     /// Idempotent.
     func cancel()

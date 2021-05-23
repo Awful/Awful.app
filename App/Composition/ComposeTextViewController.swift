@@ -373,7 +373,7 @@ protocol ComposeCustomView {
     var initialFirstResponder: UIResponder? { get }
 }
 
-@objc protocol ComposeTextViewControllerDelegate: class {
+@objc protocol ComposeTextViewControllerDelegate: AnyObject {
     /**
         Sent to the delegate when composition is either submitted or cancelled.
      

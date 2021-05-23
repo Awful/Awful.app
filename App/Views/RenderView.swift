@@ -737,7 +737,7 @@ extension RenderView {
     }
 }
 
-protocol RenderViewDelegate: class {
+protocol RenderViewDelegate: AnyObject {
     func didFinishRenderingHTML(in view: RenderView)
     func didReceive(message: RenderViewMessage, in view: RenderView)
     func didTapLink(to url: URL, in view: RenderView)

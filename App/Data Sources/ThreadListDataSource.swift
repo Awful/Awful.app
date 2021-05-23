@@ -236,10 +236,10 @@ extension ThreadListDataSource: UITableViewDataSource {
 
 private let threadCellIdentifier = "ThreadListCell"
 
-protocol ThreadListDataSourceDelegate: class {
+protocol ThreadListDataSourceDelegate: AnyObject {
     func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme
 }
 
-protocol ThreadListDataSourceDeletionDelegate: class {
+protocol ThreadListDataSourceDeletionDelegate: AnyObject {
     func didDeleteThread(_ thread: AwfulThread, in dataSource: ThreadListDataSource)
 }

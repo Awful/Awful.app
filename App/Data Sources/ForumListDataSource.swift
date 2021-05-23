@@ -475,7 +475,7 @@ extension ForumListDataSource: UITableViewDataSource {
     }
 }
 
-protocol ForumListDataSourceDelegate: class {
+protocol ForumListDataSourceDelegate: AnyObject {
     func themeForCells(in dataSource: ForumListDataSource) -> Theme
 }
 

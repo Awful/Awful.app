@@ -387,7 +387,7 @@ extension PostsPageView {
 // MARK: - Refresh control
 
 /// A type that can react to changes in posts page refresh control state.
-protocol PostsPageRefreshControlContent: class {
+protocol PostsPageRefreshControlContent: AnyObject {
     var state: PostsPageView.RefreshControlState { get set }
 }
 
