@@ -2,13 +2,36 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-public class AwfulCoreError : NSObject {
-    public class var domain: String { return "AwfulCoreErrorDomain" }
-    
-    // These error codes were ported from AwfulErrorDomain.
-    public class var invalidUsernameOrPassword: Int { return 1 }
-    public class var parseError: Int { return 3 }
-    public class var forbidden: Int { return 3 }
-    public class var databaseUnavailable: Int { return 7 }
-    public class var archivesRequired: Int { return 8 }
+import Foundation
+
+public enum AwfulCoreError: Error {
+    case invalidUsernameOrPassword
+    case parseError(description: String)
+    case forbidden(description: String)
+    case databaseUnavailable
+    case archivesRequired
+}
+
+extension AwfulCoreError: CustomNSError {
+    public static var errorDomain: String { "AwfulCoreErrorDomain" }
+
+    public var errorCode: Int {
+        switch self {
+        case .invalidUsernameOrPassword: return 1
+        case .parseError: return 3
+        case .forbidden: return 6
+        case .databaseUnavailable: return 7
+        case .archivesRequired: return 8
+        }
+    }
+
+    public var errorUserInfo: [String: Any] {
+        switch self {
+        case .forbidden(description: let description) where !description.isEmpty,
+             .parseError(description: let description) where !description.isEmpty:
+            return [NSLocalizedDescriptionKey: description]
+        case .invalidUsernameOrPassword, .parseError, .forbidden, .databaseUnavailable, .archivesRequired:
+            return [:]
+        }
+    }
 }

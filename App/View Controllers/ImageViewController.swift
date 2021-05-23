@@ -469,10 +469,14 @@ private func downloadImage(_ url: URL, completion: @escaping (DecodedImage) -> V
         
         if let response = response as? HTTPURLResponse {
             if !(200...299).contains(response.statusCode) {
-                let error = NSError(domain: AwfulErrorDomain, code: AwfulErrorCodes.badServerResponse, userInfo: [
-                    NSLocalizedDescriptionKey: "Request failed (\(response.statusCode))",
-                    NSURLErrorFailingURLErrorKey: url
-                    ])
+                let error = NSError(
+                    domain: URLError.errorDomain,
+                    code: NSURLErrorBadServerResponse,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "Request failed (\(response.statusCode))",
+                        NSURLErrorFailingURLErrorKey: url,
+                    ]
+                )
                 return done(.error(error))
             }
         }
@@ -508,10 +512,14 @@ private func downloadImage(_ url: URL, completion: @escaping (DecodedImage) -> V
                     return done(.static(image: decodedImage, data: data))
                 }
                 
-                let error = NSError(domain: AwfulErrorDomain, code: AwfulErrorCodes.badServerResponse, userInfo: [
-                    NSLocalizedDescriptionKey: "Request failed (no image data)",
-                    NSURLErrorFailingURLErrorKey: url
-                    ])
+                let error = NSError(
+                    domain: URLError.errorDomain,
+                    code: NSURLErrorBadServerResponse,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "Request failed (no image data)",
+                        NSURLErrorFailingURLErrorKey: url,
+                    ]
+                )
                 return done(.error(error))
             }
         } else {

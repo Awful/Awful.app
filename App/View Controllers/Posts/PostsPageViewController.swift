@@ -227,7 +227,7 @@ final class PostsPageViewController: ViewController {
 
                 self.clearLoadingMessage()
 
-                if (error as NSError).code == AwfulErrorCodes.archivesRequired {
+                if case .archivesRequired = error as? AwfulCoreError {
                     let alert = UIAlertController(title: "Archives Required", error: error)
                     self.present(alert, animated: true)
                 } else {

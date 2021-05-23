@@ -416,8 +416,7 @@ public final class ForumsClient {
                     let threadIDPair = queryItems.first(where: { $0.name == "threadid" }),
                     let threadID = threadIDPair.value else
                 {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again."])
+                    throw AwfulCoreError.parseError(description: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again.")
                 }
 
                 return threadID
@@ -447,12 +446,10 @@ public final class ForumsClient {
                         let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
                         specialMessage.textContent.contains("accepting")
                     {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
-                            NSLocalizedDescriptionKey: "You're not allowed to post threads in this forum"])
+                        throw AwfulCoreError.forbidden(description: "You're not allowed to post threads in this forum")
                     }
                     else {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Could not find new thread form"])
+                        throw AwfulCoreError.parseError(description: "Could not find new thread form")
                     }
                 }
 
@@ -470,8 +467,7 @@ public final class ForumsClient {
             .map(on: .global(), parseHTML)
             .map(on: .global()) { parsed -> (previewHTML: String, formData: PostNewThreadFormData) in
                 guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find previewed original post"])
+                    throw AwfulCoreError.parseError(description: "Could not find previewed original post")
                 }
                 workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
 
@@ -675,8 +671,7 @@ public final class ForumsClient {
                     let description = wasThreadClosed
                         ? "Could not reply; the thread may be closed."
                         : "Could not reply; failed to find the form."
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: description])
+                    throw AwfulCoreError.parseError(description: description)
                 }
 
                 let parsedForm = try Form(htmlForm, url: parsed.url)
@@ -740,8 +735,7 @@ public final class ForumsClient {
             .map(on: .global(), parseHTML)
             .map(on: .global()) { parsed -> String in
                 guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find previewed post"])
+                    throw AwfulCoreError.parseError(description: "Could not find previewed post")
                 }
 
                 workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
@@ -801,12 +795,10 @@ public final class ForumsClient {
                         let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
                         specialMessage.textContent.contains("permission")
                     {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.forbidden, userInfo: [
-                            NSLocalizedDescriptionKey: "You're not allowed to edit posts in this thread"])
+                        throw AwfulCoreError.forbidden(description: "You're not allowed to edit posts in this thread")
                     }
                     else {
-                        throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                            NSLocalizedDescriptionKey: "Failed to edit post; could not find form"])
+                        throw AwfulCoreError.parseError(description: "Failed to edit post; could not find form")
                     }
                 }
 
@@ -845,9 +837,7 @@ public final class ForumsClient {
             task.cancel()
 
             guard let url = newRequest.url else {
-                redirectURL.resolver.reject(
-                NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                    NSLocalizedDescriptionKey: "The post could not be found (missing URL)"]))
+                redirectURL.resolver.reject(AwfulCoreError.parseError(description: "The post could not be found (missing URL)"))
                 return nil
             }
 
@@ -864,9 +854,7 @@ public final class ForumsClient {
             .promise
             .done { dataAndResponse in
                 // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
-                redirectURL.resolver.reject(
-                    NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "The post could not be found"]))
+                redirectURL.resolver.reject(AwfulCoreError.parseError(description: "The post could not be found"))
             }
             .catch { error in
                 // This catch excludes cancellation, so we've legitimately failed.
@@ -882,8 +870,7 @@ public final class ForumsClient {
                     let rawPagenumber = components.queryItems?.first(where: { $0.name == "pagenumber" })?.value,
                     let pageNumber = Int(rawPagenumber) else
                 {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "The thread ID or page number could not be found"])
+                    throw AwfulCoreError.parseError(description: "The thread ID or page number could not be found")
                 }
 
                 return (threadID: threadID, page: .specific(pageNumber))
@@ -916,8 +903,7 @@ public final class ForumsClient {
             .map(on: .global(), parseHTML)
             .map(on: .global()) { parsed -> String in
                 guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not find previewed post"])
+                    throw AwfulCoreError.parseError(description: "Could not find previewed post")
                 }
 
                 workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
@@ -968,8 +954,7 @@ public final class ForumsClient {
         return profile(parameters: ["action": "getinfo"])
             .map(on: mainContext) { objectID, context -> User in
                 guard let profile = context.object(with: objectID) as? Profile else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not save profile"])
+                    throw AwfulCoreError.parseError(description: "Could not save profile")
                 }
 
                 return profile.user
@@ -998,8 +983,7 @@ public final class ForumsClient {
         return profile(parameters: parameters)
             .map(on: mainContext) { objectID, context -> Profile in
                 guard let profile = context.object(with: objectID) as? Profile else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not save profile"])
+                    throw AwfulCoreError.parseError(description: "Could not save profile")
                 }
 
                 return profile
@@ -1104,8 +1088,7 @@ public final class ForumsClient {
             }
             .map(on: mainContext) { objectID, context -> PrivateMessage in
                 guard let privateMessage = context.object(with: objectID) as? PrivateMessage else {
-                    throw NSError(domain: AwfulCoreError.domain, code: AwfulCoreError.parseError, userInfo: [
-                        NSLocalizedDescriptionKey: "Could not save message"])
+                    throw AwfulCoreError.parseError(description: "Could not save message")
                 }
                 return privateMessage
         }
