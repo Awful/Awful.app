@@ -30,8 +30,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let storeURL = appSupport.appendingPathComponent("CachedForumData", isDirectory: true)
-        let modelURL = Bundle(for: DataStore.self).url(forResource: "Awful", withExtension: "momd")!
-        dataStore = DataStore(storeDirectoryURL: storeURL, modelURL: modelURL)
+        dataStore = DataStore(storeDirectoryURL: storeURL)
         
         DispatchQueue.global(qos: .background).async(execute: removeOldDataStores)
         

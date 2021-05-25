@@ -58,7 +58,7 @@ extension Scanner {
         case decimal
         case hexadecimal
 
-        @available(iOS 13.0, *)
+        @available(iOS 13.0, macOS 10.15, *)
         fileprivate var foundationValue: Foundation.Scanner.NumberRepresentation {
             switch self {
             case .decimal: return .decimal

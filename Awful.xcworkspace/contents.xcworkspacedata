@@ -5,10 +5,19 @@
       location = "group:Xcode/Awful.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:AwfulCore">
+   </FileRef>
+   <FileRef
       location = "group:Xcode/../AwfulScraping">
    </FileRef>
    <FileRef
+      location = "group:AwfulSwift">
+   </FileRef>
+   <FileRef
       location = "group:ImgurAnonymousAPI">
+   </FileRef>
+   <FileRef
+      location = "group:Logger">
    </FileRef>
    <FileRef
       location = "group:MiniOnePassword">
