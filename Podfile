@@ -9,7 +9,6 @@ ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 install! 'cocoapods', :generate_multiple_pod_projects => true
 
 target 'Awful' do
-  pod 'FLAnimatedImage'
   pod 'KVOController'
   pod 'MRProgress/Overlay'
 
@@ -21,27 +20,10 @@ target 'Awful' do
   target :AwfulTests
 end
 
-target :Smilies do
-  pod 'FLAnimatedImage'
-
-  target :SmiliesTests
-end
-
-target :SmilieExtractor do
-  pod 'FLAnimatedImage'
-end
-
 post_install do |installer|
-  extension_safe_pods = %w[FLAnimatedImage]
   swift_4_2_pods = %w[PullToRefresher]
 
   installer.pod_target_subprojects.each do |subproj|
-    if extension_safe_pods.include?(subproj.project_name.to_s)
-      subproj.build_configurations.each do |config|
-        config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
-      end
-    end
-
     if swift_4_2_pods.include?(subproj.project_name.to_s)
       subproj.build_configurations.each do |config|
         config.build_settings['SWIFT_VERSION'] = '4.2'

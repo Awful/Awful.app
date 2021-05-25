@@ -88,7 +88,7 @@
 		1C1BD0B32320C98400805208 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B12320C98400805208 /* platinum-member-white@2x.png */; };
 		1C1BD0B42320C98400805208 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B22320C98400805208 /* platinum-member-white@3x.png */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
-		1C210D4422DA5A8F009EBB6F /* ScannerShim in Frameworks */ = {isa = PBXBuildFile; productRef = 1C210D4322DA5A8F009EBB6F /* ScannerShim */; };
+		1C210D4422DA5A8F009EBB6F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C210D4322DA5A8F009EBB6F /* SwiftPackageProductDependency */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C24BC952002BF2F0022C85F /* ForumListCell.swift */; };
@@ -177,7 +177,7 @@
 		1C42A22A1FD4D6F400F67BA1 /* Base62.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2291FD4D6F400F67BA1 /* Base62.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
-		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
+		1C453F282338457A007AC6CD /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* SwiftPackageProductDependency */; };
 		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
@@ -185,7 +185,7 @@
 		1C49CFE622CB0102004B76E6 /* CommonSPM.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C49CFE422CB0102004B76E6 /* CommonSPM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1C49CFEA22CB0102004B76E6 /* CommonSPM.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1C49CFEF22CB01A4004B76E6 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1C49CFEE22CB01A4004B76E6 /* PromiseKit */; };
+		1C49CFEF22CB01A4004B76E6 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C49CFEE22CB01A4004B76E6 /* SwiftPackageProductDependency */; };
 		1C49CFF122CB01B6004B76E6 /* CommonSPM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C49CFF022CB01B6004B76E6 /* CommonSPM.swift */; };
 		1C49CFF222CB01D3004B76E6 /* CommonSPM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */; };
@@ -301,7 +301,7 @@
 		1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */; };
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
-		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
+		1C5C2B8D22D195BF00EA5A80 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
@@ -309,7 +309,7 @@
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
 		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
 		1C5F700617D86E0F005ABD6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Assets.xcassets */; };
-		1C65EDFA265C7BF10095BA29 /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C65EDF9265C7BF10095BA29 /* HTMLReader */; };
+		1C65EDFA265C7BF10095BA29 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C65EDF9265C7BF10095BA29 /* SwiftPackageProductDependency */; };
 		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
 		1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
@@ -369,10 +369,10 @@
 		1CA85F5C24FCB33B00EE8162 /* NSPredicate+CompoundConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA85F5B24FCB33B00EE8162 /* NSPredicate+CompoundConvenience.swift */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
 		1CAE0EF92431911C0042D5F5 /* IndexPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE0EF82431911C0042D5F5 /* IndexPersistenceTests.swift */; };
-		1CAE0F0D243195800042D5F5 /* AwfulScraping in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAE0F0C243195800042D5F5 /* AwfulScraping */; };
+		1CAE0F0D243195800042D5F5 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAE0F0C243195800042D5F5 /* SwiftPackageProductDependency */; };
 		1CAE0F202439845A0042D5F5 /* AwfulCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE0F1F2439845A0042D5F5 /* AwfulCoreTests.swift */; };
-		1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* MiniOnePassword */; };
-		1CAF2372250C8CE400033F61 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* Nuke */; };
+		1CAEA24322D14FFE009CB9EB /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */; };
+		1CAF2372250C8CE400033F61 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -431,6 +431,7 @@
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
 		1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */; };
 		1CD1ADA72272737600E075EA /* CGGeometry+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */; };
+		1CD72E67265C7FD600FF3BF4 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CD72E66265C7FD600FF3BF4 /* SwiftPackageProductDependency */; };
 		1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED5228501BF00B62865 /* CGRect+Center.swift */; };
 		1CD7EED8228504C100B62865 /* UIView+CompressedHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */; };
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
@@ -471,7 +472,6 @@
 		1CF7AB981EDD0F4D0089EF0C /* PostPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB971EDD0F4D0089EF0C /* PostPersistence.swift */; };
 		1CF7AB9A1EDD0FDE0089EF0C /* ForumPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7AB991EDD0FDE0089EF0C /* ForumPersistence.swift */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
-		2A28EF11810F46A1AA802F96 /* Pods_SmilieExtractor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */; };
 		7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */; };
@@ -577,9 +577,7 @@
 		8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */; };
 		8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */ = {isa = PBXBuildFile; fileRef = 8CF740EE1681376600C219E4 /* macinyos-heading.png */; };
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
-		BA6F56396124CA653CA313D2 /* Pods_Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */; };
 		D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A40BB24850D9A942D1E270 /* Pods_Awful.framework */; };
-		EA2B48C8DEA6D4EDFE19CA47 /* Pods_Smilies_SmiliesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67FE9D70F7C573FD21CB30A6 /* Pods_Smilies_SmiliesTests.framework */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
 		FF308D05C62669BEAFAEA2AC /* Pods_Awful_AwfulTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF2B976F9B0ABD1F1F0130F3 /* Pods_Awful_AwfulTests.framework */; };
@@ -1232,10 +1230,8 @@
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		253A5104248FE92D0D619212 /* Pods-Awful-AwfulTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful-AwfulTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests.release.xcconfig"; sourceTree = "<group>"; };
 		27F783E9D241CF6339BFCF0B /* Pods_CoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		28A3FC5A7AC8D23753D1611D /* Pods-SmilieExtractor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieExtractor.release.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor.release.xcconfig"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
-		67FE9D70F7C573FD21CB30A6 /* Pods_Smilies_SmiliesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Smilies_SmiliesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		68A40BB24850D9A942D1E270 /* Pods_Awful.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awful.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwfulTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSliderCell.swift; sourceTree = "<group>"; };
@@ -1343,15 +1339,10 @@
 		8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-wallpaper@2x.png"; sourceTree = "<group>"; };
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
-		8E36FD6D9A5DADDB9DB5F48D /* Pods-Smilies-SmiliesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies-SmiliesTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests.release.xcconfig"; sourceTree = "<group>"; };
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
-		9CA0893608B89EEBD6E53E53 /* Pods-Smilies-SmiliesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies-SmiliesTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A7B3F77323960DADE60F24B0 /* Pods_SmiliesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmiliesTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Smilies.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Smilies/Pods-Smilies.release.xcconfig"; sourceTree = "<group>"; };
-		BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF2B976F9B0ABD1F1F0130F3 /* Pods_Awful_AwfulTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awful_AwfulTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E44C0FE2E936000E7D0C5FAA /* Pods-SmilieExtractor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SmilieExtractor.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor.debug.xcconfig"; sourceTree = "<group>"; };
-		EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SmilieExtractor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 		FE2D33146748255CA57EF9FA /* Pods-Awful-AwfulTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful-AwfulTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1363,7 +1354,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CCBE00022CB03C500E1BE6A /* CommonSPM.framework in Frameworks */,
-				2A28EF11810F46A1AA802F96 /* Pods_SmilieExtractor.framework in Frameworks */,
 				1C3A145D19DFC6790022C44C /* Smilies.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1389,10 +1379,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C210D4422DA5A8F009EBB6F /* ScannerShim in Frameworks */,
-				1C49CFEF22CB01A4004B76E6 /* PromiseKit in Frameworks */,
-				1C65EDFA265C7BF10095BA29 /* HTMLReader in Frameworks */,
-				1CAE0F0D243195800042D5F5 /* AwfulScraping in Frameworks */,
+				1C210D4422DA5A8F009EBB6F /* BuildFile in Frameworks */,
+				1C49CFEF22CB01A4004B76E6 /* BuildFile in Frameworks */,
+				1CD72E67265C7FD600FF3BF4 /* BuildFile in Frameworks */,
+				1C65EDFA265C7BF10095BA29 /* BuildFile in Frameworks */,
+				1CAE0F0D243195800042D5F5 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1416,7 +1407,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CCBDFFB22CB03B700E1BE6A /* CommonSPM.framework in Frameworks */,
-				BA6F56396124CA653CA313D2 /* Pods_Smilies.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1425,7 +1415,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CCBE07222CB045100E1BE6A /* CommonSPM.framework in Frameworks */,
-				EA2B48C8DEA6D4EDFE19CA47 /* Pods_Smilies_SmiliesTests.framework in Frameworks */,
 				1C66A9EA19DD372B001B9A41 /* Smilies.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1451,14 +1440,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
-				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
+				1C453F282338457A007AC6CD /* BuildFile in Frameworks */,
+				1C5C2B8D22D195BF00EA5A80 /* BuildFile in Frameworks */,
 				1C3CF97D1A94B9B50065C964 /* AwfulCore.framework in Frameworks */,
-				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
+				1CAEA24322D14FFE009CB9EB /* BuildFile in Frameworks */,
 				1C49CFE922CB0102004B76E6 /* CommonSPM.framework in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
 				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
-				1CAF2372250C8CE400033F61 /* Nuke in Frameworks */,
+				1CAF2372250C8CE400033F61 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2487,7 +2476,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Awful */ = {
+		29B97314FDCFA39411CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -2509,13 +2498,10 @@
 			isa = PBXGroup;
 			children = (
 				68A40BB24850D9A942D1E270 /* Pods_Awful.framework */,
-				BE1882BFA77863DED1F23FB9 /* Pods_Smilies.framework */,
 				A7B3F77323960DADE60F24B0 /* Pods_SmiliesTests.framework */,
 				27F783E9D241CF6339BFCF0B /* Pods_CoreTests.framework */,
-				EDC774157D76C0C0F13DABE2 /* Pods_SmilieExtractor.framework */,
 				74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */,
 				BF2B976F9B0ABD1F1F0130F3 /* Pods_Awful_AwfulTests.framework */,
-				67FE9D70F7C573FD21CB30A6 /* Pods_Smilies_SmiliesTests.framework */,
 				1C56973624C3F1910077CA62 /* Cocoa.framework */,
 			);
 			name = Frameworks;
@@ -2652,12 +2638,8 @@
 				7F808380CDED09B0AA159709 /* Pods-Smilies.debug.xcconfig */,
 				17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */,
 				AD811E7DE24853158BE87A57 /* Pods-Smilies.release.xcconfig */,
-				E44C0FE2E936000E7D0C5FAA /* Pods-SmilieExtractor.debug.xcconfig */,
-				28A3FC5A7AC8D23753D1611D /* Pods-SmilieExtractor.release.xcconfig */,
 				FE2D33146748255CA57EF9FA /* Pods-Awful-AwfulTests.debug.xcconfig */,
 				253A5104248FE92D0D619212 /* Pods-Awful-AwfulTests.release.xcconfig */,
-				9CA0893608B89EEBD6E53E53 /* Pods-Smilies-SmiliesTests.debug.xcconfig */,
-				8E36FD6D9A5DADDB9DB5F48D /* Pods-Smilies-SmiliesTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -2709,12 +2691,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C3A145B19DFC5D10022C44C /* Build configuration list for PBXNativeTarget "SmilieExtractor" */;
 			buildPhases = (
-				9A76259C1D52DE28DC87E457 /* [CP] Check Pods Manifest.lock */,
 				1C3A142F19DFC5D10022C44C /* Sources */,
 				1C3A143019DFC5D10022C44C /* Frameworks */,
 				1C3A143119DFC5D10022C44C /* Resources */,
 				1C3A145E19DFC67F0022C44C /* Embed Frameworks */,
-				7D85AF5AE5673F5516988F40 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2780,10 +2760,11 @@
 			);
 			name = CommonSPM;
 			packageProductDependencies = (
-				1C49CFEE22CB01A4004B76E6 /* PromiseKit */,
-				1C210D4322DA5A8F009EBB6F /* ScannerShim */,
-				1CAE0F0C243195800042D5F5 /* AwfulScraping */,
-				1C65EDF9265C7BF10095BA29 /* HTMLReader */,
+				1C49CFEE22CB01A4004B76E6 /* SwiftPackageProductDependency */,
+				1C210D4322DA5A8F009EBB6F /* SwiftPackageProductDependency */,
+				1CAE0F0C243195800042D5F5 /* SwiftPackageProductDependency */,
+				1C65EDF9265C7BF10095BA29 /* SwiftPackageProductDependency */,
+				1CD72E66265C7FD600FF3BF4 /* SwiftPackageProductDependency */,
 			);
 			productName = CommonSPM;
 			productReference = 1C49CFE222CB0102004B76E6 /* CommonSPM.framework */;
@@ -2829,7 +2810,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C66A9D819DD304F001B9A41 /* Build configuration list for PBXNativeTarget "Smilies" */;
 			buildPhases = (
-				58FC1CD8E73DDDA14A520B6B /* [CP] Check Pods Manifest.lock */,
 				1C66A9BD19DD304D001B9A41 /* Headers */,
 				1C66A9BB19DD304D001B9A41 /* Sources */,
 				1C66A9BC19DD304D001B9A41 /* Frameworks */,
@@ -2849,11 +2829,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C66A9DE19DD304F001B9A41 /* Build configuration list for PBXNativeTarget "SmiliesTests" */;
 			buildPhases = (
-				9E93F8ADCC412D5641BE9475 /* [CP] Check Pods Manifest.lock */,
 				1C66A9C619DD304E001B9A41 /* Sources */,
 				1C66A9C719DD304E001B9A41 /* Frameworks */,
 				1C66A9C819DD304E001B9A41 /* Resources */,
-				505D949433EDCFF4E789B8EB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2927,10 +2905,10 @@
 			);
 			name = Awful;
 			packageProductDependencies = (
-				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
-				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
-				1C453F272338457A007AC6CD /* Stencil */,
-				1CAF2371250C8CE400033F61 /* Nuke */,
+				1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */,
+				1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */,
+				1C453F272338457A007AC6CD /* SwiftPackageProductDependency */,
+				1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -3020,12 +2998,13 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
 			packageReferences = (
-				1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */,
-				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
-				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
-				1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */,
+				1C49CE4922CAF405004B76E6 /* RemoteSwiftPackageReference */,
+				1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */,
+				1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */,
+				1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */,
+				1CD72E65265C7FD600FF3BF4 /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
@@ -3421,7 +3400,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework",
 				"${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework",
 				"${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework",
@@ -3429,7 +3407,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KVOController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MRProgress.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PSMenuItem.framework",
@@ -3438,60 +3415,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		505D949433EDCFF4E789B8EB /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		58FC1CD8E73DDDA14A520B6B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Smilies-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7D85AF5AE5673F5516988F40 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		92D192B30FE54C29B1BC2C16 /* [CP] Check Pods Manifest.lock */ = {
@@ -3510,42 +3433,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-		};
-		9A76259C1D52DE28DC87E457 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SmilieExtractor-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9E93F8ADCC412D5641BE9475 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Smilies-SmiliesTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 		E03123A9BF5AF097A60014B9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3572,7 +3459,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Awful/Pods-Awful-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework",
 				"${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework",
 				"${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework",
@@ -3580,7 +3466,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KVOController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MRProgress.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PSMenuItem.framework",
@@ -4048,7 +3933,6 @@
 /* Begin XCBuildConfiguration section */
 		1C3A145319DFC5D10022C44C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E44C0FE2E936000E7D0C5FAA /* Pods-SmilieExtractor.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ../Smilies/Extractor/Info.plist;
@@ -4063,7 +3947,6 @@
 		};
 		1C3A145419DFC5D10022C44C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 28A3FC5A7AC8D23753D1611D /* Pods-SmilieExtractor.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ../Smilies/Extractor/Info.plist;
@@ -4467,7 +4350,6 @@
 		};
 		1C66A9DF19DD304F001B9A41 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9CA0893608B89EEBD6E53E53 /* Pods-Smilies-SmiliesTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ../Smilies/Tests/Info.plist;
@@ -4478,7 +4360,6 @@
 		};
 		1C66A9E019DD304F001B9A41 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8E36FD6D9A5DADDB9DB5F48D /* Pods-Smilies-SmiliesTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ../Smilies/Tests/Info.plist;
@@ -4701,7 +4582,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
+		1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
 			requirement = {
@@ -4709,7 +4590,7 @@
 				minimumVersion = 0.13.1;
 			};
 		};
-		1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+		1C49CE4922CAF405004B76E6 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit";
 			requirement = {
@@ -4717,7 +4598,7 @@
 				minimumVersion = 6.10.0;
 			};
 		};
-		1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+		1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nolanw/Nuke.git";
 			requirement = {
@@ -4725,7 +4606,7 @@
 				kind = branch;
 			};
 		};
-		1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */ = {
+		1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nolanw/HTMLReader";
 			requirement = {
@@ -4733,44 +4614,57 @@
 				minimumVersion = 2.1.7;
 			};
 		};
+		1CD72E65265C7FD600FF3BF4 /* RemoteSwiftPackageReference */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Flipboard/FLAnimatedImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.16;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1C210D4322DA5A8F009EBB6F /* ScannerShim */ = {
+		1C210D4322DA5A8F009EBB6F /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ScannerShim;
 		};
-		1C453F272338457A007AC6CD /* Stencil */ = {
+		1C453F272338457A007AC6CD /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
+			package = 1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */;
 			productName = Stencil;
 		};
-		1C49CFEE22CB01A4004B76E6 /* PromiseKit */ = {
+		1C49CFEE22CB01A4004B76E6 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			package = 1C49CE4922CAF405004B76E6 /* RemoteSwiftPackageReference */;
 			productName = PromiseKit;
 		};
-		1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */ = {
+		1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImgurAnonymousAPI;
 		};
-		1C65EDF9265C7BF10095BA29 /* HTMLReader */ = {
+		1C65EDF9265C7BF10095BA29 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
+			package = 1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */;
 			productName = HTMLReader;
 		};
-		1CAE0F0C243195800042D5F5 /* AwfulScraping */ = {
+		1CAE0F0C243195800042D5F5 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulScraping;
 		};
-		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
+		1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MiniOnePassword;
 		};
-		1CAF2371250C8CE400033F61 /* Nuke */ = {
+		1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */;
+			package = 1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */;
 			productName = Nuke;
+		};
+		1CD72E66265C7FD600FF3BF4 /* SwiftPackageProductDependency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1CD72E65265C7FD600FF3BF4 /* RemoteSwiftPackageReference */;
+			productName = FLAnimatedImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 

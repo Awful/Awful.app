@@ -12,14 +12,13 @@
 		12C16563A3EFFA39D8E16BD3822DDCDC /* DefaultViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76799736BBA5D8F6B84663DBB32F9156 /* DefaultViewAnimator.swift */; };
 		2277224508931FF4B6EFDA90C672B406 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA2B9F81CFE5985E5BB504A712BFE4B /* State.swift */; };
 		31C8E04CDC80010CC7C957D63A1ABEBC /* RefreshViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053DB65C29DC57F5BBD4E96501A83A13 /* RefreshViewAnimator.swift */; };
-		383C7140A5EA78814EA9BEEFA4ADF8B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02D2AA4A542FE5B3D6CA3548361C6AAC /* Foundation.framework */; };
+		53248C6AAF0B2DD799A887D834131008 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7187903A3D4D66CFE9B4E328C39925AD /* Foundation.framework */; };
 		573351602B420C097AB36C16C8980C82 /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14480C0D61B1169B6C1AD64AADCF8451 /* PullToRefresh.swift */; };
 		CFD543F75C020C194D2866F3A1DCBCBF /* UIScrollView+PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069811DD56362B3F9B04F2295F4EC162 /* UIScrollView+PullToRefresh.swift */; };
 		F1E21CC280CBE5B7A3EBBDAA8A090848 /* PullToRefresher-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = EB69C2761678BDA5F1FF60722BD565C3 /* PullToRefresher-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		02D2AA4A542FE5B3D6CA3548361C6AAC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		053DB65C29DC57F5BBD4E96501A83A13 /* RefreshViewAnimator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RefreshViewAnimator.swift; path = PullToRefresh/RefreshViewAnimator.swift; sourceTree = "<group>"; };
 		069811DD56362B3F9B04F2295F4EC162 /* UIScrollView+PullToRefresh.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIScrollView+PullToRefresh.swift"; path = "PullToRefresh/UIScrollView+PullToRefresh.swift"; sourceTree = "<group>"; };
 		14480C0D61B1169B6C1AD64AADCF8451 /* PullToRefresh.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PullToRefresh.swift; path = PullToRefresh/PullToRefresh.swift; sourceTree = "<group>"; };
@@ -27,6 +26,7 @@
 		2DED8561500D98A4A022555B2B5FA9B1 /* PullToRefresher.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PullToRefresher.debug.xcconfig; sourceTree = "<group>"; };
 		3F5A2757612F75724DED610F7D6FB9CA /* PullToRefresher-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PullToRefresher-prefix.pch"; sourceTree = "<group>"; };
 		5AA2B9F81CFE5985E5BB504A712BFE4B /* State.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = State.swift; path = PullToRefresh/State.swift; sourceTree = "<group>"; };
+		7187903A3D4D66CFE9B4E328C39925AD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		76799736BBA5D8F6B84663DBB32F9156 /* DefaultViewAnimator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefaultViewAnimator.swift; path = PullToRefresh/DefaultViewAnimator.swift; sourceTree = "<group>"; };
 		8D76D9F19C053A2310EA978EECFAC62F /* PullToRefresher.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = PullToRefresher.modulemap; sourceTree = "<group>"; };
 		BA610ACA259495C62F7283276CB598A3 /* DefaultRefreshView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefaultRefreshView.swift; path = PullToRefresh/DefaultRefreshView.swift; sourceTree = "<group>"; };
@@ -41,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				383C7140A5EA78814EA9BEEFA4ADF8B3 /* Foundation.framework in Frameworks */,
+				53248C6AAF0B2DD799A887D834131008 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,9 +51,17 @@
 		07B7EB3F95C96C8B4E44FDF9E0A6F4D7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7FADCD2C870A292A6596502D476B454D /* iOS */,
+				14D22D5A6424A3ACF698AA3DB9BD775B /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		14D22D5A6424A3ACF698AA3DB9BD775B /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				7187903A3D4D66CFE9B4E328C39925AD /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 		2511960A774DB882F124E43FBAB4C0BD /* Support Files */ = {
@@ -92,14 +100,6 @@
 			);
 			name = PullToRefresher;
 			path = PullToRefresher;
-			sourceTree = "<group>";
-		};
-		7FADCD2C870A292A6596502D476B454D /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				02D2AA4A542FE5B3D6CA3548361C6AAC /* Foundation.framework */,
-			);
-			name = iOS;
 			sourceTree = "<group>";
 		};
 		C73C43DC58D0016C347FEE5F0E66B4F7 = {
@@ -198,42 +198,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		25D309D25E6B81BDD290269BB32BE666 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FC861749571F501D8FF69971CB6F68E5 /* PullToRefresher.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/PullToRefresher/PullToRefresher-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/PullToRefresher/PullToRefresher-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/PullToRefresher/PullToRefresher.modulemap";
-				PRODUCT_MODULE_NAME = PullToRefresh;
-				PRODUCT_NAME = PullToRefresh;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		53D506B3441D04F203158F0401F44E24 /* Release */ = {
+		4783150A56CBE14BFC2EB0677BBD4697 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -260,6 +225,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -294,7 +260,7 @@
 			};
 			name = Release;
 		};
-		AADAE5A603B07B08FDDBA2126DF3704E /* Debug */ = {
+		5804AD1060CF1E480D3148023D729D14 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -321,6 +287,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -359,11 +326,10 @@
 			};
 			name = Debug;
 		};
-		B88C87F44FF0393EECD3386C996AC2E6 /* Debug */ = {
+		6EA511029FE0D6555EB1F4B5E06281DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2DED8561500D98A4A022555B2B5FA9B1 /* PullToRefresher.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -393,14 +359,48 @@
 			};
 			name = Debug;
 		};
+		77211095E1E42DF66CA1B060B56EFFCD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FC861749571F501D8FF69971CB6F68E5 /* PullToRefresher.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/PullToRefresher/PullToRefresher-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/PullToRefresher/PullToRefresher-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/PullToRefresher/PullToRefresher.modulemap";
+				PRODUCT_MODULE_NAME = PullToRefresh;
+				PRODUCT_NAME = PullToRefresh;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
 		58F6910B3065668386C0CE8850910EB7 /* Build configuration list for PBXProject "PullToRefresher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AADAE5A603B07B08FDDBA2126DF3704E /* Debug */,
-				53D506B3441D04F203158F0401F44E24 /* Release */,
+				5804AD1060CF1E480D3148023D729D14 /* Debug */,
+				4783150A56CBE14BFC2EB0677BBD4697 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -408,8 +408,8 @@
 		8D5E5098DA6B64A33B64B6BECF5F2E13 /* Build configuration list for PBXNativeTarget "PullToRefresher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B88C87F44FF0393EECD3386C996AC2E6 /* Debug */,
-				25D309D25E6B81BDD290269BB32BE666 /* Release */,
+				6EA511029FE0D6555EB1F4B5E06281DF /* Debug */,
+				77211095E1E42DF66CA1B060B56EFFCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

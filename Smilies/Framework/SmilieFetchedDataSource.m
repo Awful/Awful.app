@@ -3,15 +3,15 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SmilieFetchedDataSource.h"
+#import <tgmath.h>
 @import CoreData;
-#import <FLAnimatedImage/FLAnimatedImage.h>
+@import FLAnimatedImage;
 @import MobileCoreServices;
+@import UIKit;
 #import "Smilie.h"
 #import "SmilieCell.h"
 #import "SmilieDataStore.h"
 #import "SmilieMetadata.h"
-#import <tgmath.h>
-@import UIKit;
 
 @interface SmilieFetchedDataSource () <NSFetchedResultsControllerDelegate>
 

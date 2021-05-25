@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #import "SmilieKeyboardView.h"
-#import <FLAnimatedImage/FLAnimatedImage.h>
+@import FLAnimatedImage;
 #import "Smilie.h"
 #import "SmilieAppContainer.h"
 #import "SmilieCell.h"

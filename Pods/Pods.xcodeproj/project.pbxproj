@@ -7,334 +7,191 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		05C0BAAD85D9BB07D2C5BE0303988319 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		06AC9518B4032B8A72AFD32C34C3799E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		08A463808928B20F43DF99540E70A93E /* Pods-Smilies-SmiliesTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F76F2891D726452DC7EDEDDA2B178630 /* Pods-Smilies-SmiliesTests-dummy.m */; };
-		0E16A0B98CEB2E0FCF051335D93F579B /* Pods-Smilies-SmiliesTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B09A22C708ACA5C2F6F30E326C3FF254 /* Pods-Smilies-SmiliesTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1D1133B4DED99FDFC38D5E0496363979 /* Pods-Awful-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D0CDE594B7AD631AABA8D68386DAF099 /* Pods-Awful-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3700BFEC401621AE693F0634A86C0183 /* Pods-SmilieExtractor-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8802ED645E799E170DB38DE492B9345A /* Pods-SmilieExtractor-dummy.m */; };
-		4F1E5C2468ECF882F663BA356C47D905 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		527F16E9D648EB061DEF9E2286EA44A6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		52F851C137D03955DF7A189980B5464A /* Pods-SmilieExtractor-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 019CBBF1A8EF0BBE9EF74F6427D27D43 /* Pods-SmilieExtractor-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6CBC0BE234AC88E0A0C90799C3685F5C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		83056EBF99EABDE1454A1AAE79CB2395 /* Pods-Smilies-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B5986691694629A3FB37EAE3F32DED7 /* Pods-Smilies-dummy.m */; };
-		96D24C5E595759E03B923E7154E4F332 /* Pods-Awful-AwfulTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C64B973AFD8E8AE5233D4FA7F183344 /* Pods-Awful-AwfulTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FA42AEBBDB86A105CEAFA5A9E72D33C8 /* Pods-Awful-AwfulTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E0FE1EB0970562919C77804C7322FF23 /* Pods-Awful-AwfulTests-dummy.m */; };
-		FD1EF4759B507ABF770E9A88744CCFA7 /* Pods-Smilies-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A14D4CF6EBF8734C39C084DF1BC230C /* Pods-Smilies-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FF40DDD75643FA9DCA173B4E57C32FCF /* Pods-Awful-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E653EA4F34050D02434F9A683F216F17 /* Pods-Awful-dummy.m */; };
+		37309DCB4D48EA50978719D67CEF04D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		5AB3901CC5AFB5321EF65CF68775FFE0 /* Pods-Awful-AwfulTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 85D3E3C6FBC8AD6F47C18CC1AD467920 /* Pods-Awful-AwfulTests-dummy.m */; };
+		77D635921F1699DBB22DCB20FF909E9F /* Pods-Awful-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BE55D6FB4D73468B6D471E1F858E7EF /* Pods-Awful-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		97541DE8285E23300927FC46F7DE2129 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		E9D68A52E97185B8AF914E8529323F51 /* Pods-Awful-AwfulTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CEE326D3AD1A5E2E565A3F1C29A3039 /* Pods-Awful-AwfulTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FB3BE8B2C17886E7B2D8C18EF75184F0 /* Pods-Awful-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D75FE0390E828C1C21BBE1B89EC5E068 /* Pods-Awful-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		00B85D1A75BF21FB64D6D3A7B162B219 /* PBXContainerItemProxy */ = {
+		5796C6253F4F1B15A0E58439F4A358F5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 826047D3E4BCA8012F5F18C49F12B83D /* KVOController.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 115D34919ADBF73358FDE88F22C8936E;
-			remoteInfo = KVOController;
-		};
-		08469504BA906304D6D819711BB96216 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DBC1C02E6470648CC0EF1D8E852ED684 /* PullToRefresher.xcodeproj */;
+			containerPortal = 49A34A714ABEB935C9F355D494437451 /* PullToRefresher.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = B7ABC825F7B041519FAF29EA2086C48E;
 			remoteInfo = PullToRefresher;
 		};
-		1B454F2FF44FCE6C12943FCD02D1B4EC /* PBXContainerItemProxy */ = {
+		59F13710493EE35111385931A8B21C02 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = C48D950E9484D995B639A76654DD594F /* PSMenuItem.xcodeproj */;
+			containerPortal = 948FDEDCA112A571ACE2EA9981C632FC /* PSMenuItem.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 90AD4897D9EBBEB7C6182AF1ECAACB9E;
 			remoteInfo = PSMenuItem;
 		};
-		32080E324388DD59CC158540071E5505 /* PBXContainerItemProxy */ = {
+		6828F5FF236548E349D688DAB8394660 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 81BB6A78B39B2F11BBB4BB89AB388BB1;
-			remoteInfo = FLAnimatedImage;
-		};
-		3BEEA622C96EAC14B8B4742B48E9EAA4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 81BB6A78B39B2F11BBB4BB89AB388BB1;
-			remoteInfo = FLAnimatedImage;
-		};
-		5353F24DA3063FE86E2B8A787F788EDC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C48D950E9484D995B639A76654DD594F /* PSMenuItem.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 90AD4897D9EBBEB7C6182AF1ECAACB9E;
-			remoteInfo = PSMenuItem;
-		};
-		6C01D6F01A2F0C87983F6CD2B1AECB03 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 550452E29EE4CEEBB7A4C8FB38F49E31 /* MRProgress.xcodeproj */;
+			containerPortal = EB5CD85047A09FCEEC53E9B0C0A1FFA6 /* MRProgress.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 48474EC2FF79D0A85C9BBC416E8794EB;
 			remoteInfo = MRProgress;
 		};
-		76FF359714BA687BF46B955E8B67504D /* PBXContainerItemProxy */ = {
+		8DEF01CB9EFFE4502BFF75AB22E6B300 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 81BB6A78B39B2F11BBB4BB89AB388BB1;
-			remoteInfo = FLAnimatedImage;
-		};
-		A8B9E136B7FDC05276E68A205723D8CC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 81BB6A78B39B2F11BBB4BB89AB388BB1;
-			remoteInfo = FLAnimatedImage;
-		};
-		B966A87A61BC2F08EE5B13E8E5073E5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 81BB6A78B39B2F11BBB4BB89AB388BB1;
-			remoteInfo = FLAnimatedImage;
-		};
-		BBAFB3C378AE08576505F15ABDB1B2D0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 550452E29EE4CEEBB7A4C8FB38F49E31 /* MRProgress.xcodeproj */;
+			containerPortal = EB5CD85047A09FCEEC53E9B0C0A1FFA6 /* MRProgress.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 48474EC2FF79D0A85C9BBC416E8794EB;
 			remoteInfo = MRProgress;
 		};
-		D5FAF08DF4039032F47709F9AA5A18FC /* PBXContainerItemProxy */ = {
+		96C5218EA7DE1FEAF67EDF253909F7A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DBC1C02E6470648CC0EF1D8E852ED684 /* PullToRefresher.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = B7ABC825F7B041519FAF29EA2086C48E;
-			remoteInfo = PullToRefresher;
-		};
-		DB75CAFCD58DAEB1CEA96A394E6D1053 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 826047D3E4BCA8012F5F18C49F12B83D /* KVOController.xcodeproj */;
+			containerPortal = 8E7739F3A4CC852A2066D43BB936586B /* KVOController.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 115D34919ADBF73358FDE88F22C8936E;
 			remoteInfo = KVOController;
+		};
+		A3D0A00D27B384A9545ECA1E59B4046F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 948FDEDCA112A571ACE2EA9981C632FC /* PSMenuItem.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 90AD4897D9EBBEB7C6182AF1ECAACB9E;
+			remoteInfo = PSMenuItem;
+		};
+		A51F48DC42C97479548D392DEE4A7141 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8E7739F3A4CC852A2066D43BB936586B /* KVOController.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 115D34919ADBF73358FDE88F22C8936E;
+			remoteInfo = KVOController;
+		};
+		CA7F55459756385BBC113FA9EDC34687 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49A34A714ABEB935C9F355D494437451 /* PullToRefresher.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B7ABC825F7B041519FAF29EA2086C48E;
+			remoteInfo = PullToRefresher;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		019CBBF1A8EF0BBE9EF74F6427D27D43 /* Pods-SmilieExtractor-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-SmilieExtractor-umbrella.h"; sourceTree = "<group>"; };
-		07AB2B16A1C1A36E64805C3453E76BE1 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
-		09942BC70DDF3E8BF7A5ABD52C29FE0F /* Pods-SmilieExtractor-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SmilieExtractor-Info.plist"; sourceTree = "<group>"; };
-		09CEA91353F39CD59B8B8C69A8C689C7 /* Pods-Awful-AwfulTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Awful-AwfulTests-frameworks.sh"; sourceTree = "<group>"; };
-		1C978B4862B1CFF1EA944D1E84481B66 /* Pods_SmilieExtractor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_SmilieExtractor.framework; path = "Pods-SmilieExtractor.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		208D9D46CA88D0C0C08698A5681630D4 /* Pods-Smilies-SmiliesTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Smilies-SmiliesTests-acknowledgements.plist"; sourceTree = "<group>"; };
-		22FCCAFB9AFD0F67848CDE9837F04B52 /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
-		2439B62A58C64710E90E67EE24C19E75 /* Pods-SmilieExtractor.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-SmilieExtractor.modulemap"; sourceTree = "<group>"; };
-		27DD0917A3D68467C0A3FA70B02A97A7 /* Pods_Smilies_SmiliesTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Smilies_SmiliesTests.framework; path = "Pods-Smilies-SmiliesTests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		280F07040C957106A241103F7A5466E8 /* Pods-Awful-AwfulTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-AwfulTests-acknowledgements.plist"; sourceTree = "<group>"; };
-		2971DEE8F941BA1D064DEEFF8E43F90D /* Pods-Awful-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Awful-acknowledgements.markdown"; sourceTree = "<group>"; };
-		3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		374D11EDDBBC20568E6A0DA91F7F1002 /* Pods-SmilieExtractor-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SmilieExtractor-acknowledgements.plist"; sourceTree = "<group>"; };
-		3772809A5AAA219B19CF3412317D2ADD /* Pods-Smilies-SmiliesTests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Smilies-SmiliesTests-Info.plist"; sourceTree = "<group>"; };
-		3B5986691694629A3FB37EAE3F32DED7 /* Pods-Smilies-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Smilies-dummy.m"; sourceTree = "<group>"; };
-		43377F98A27633F2FBA54213B23B0210 /* Pods-Awful-AwfulTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Awful-AwfulTests.modulemap"; sourceTree = "<group>"; };
-		497C53B6CC07341E1EBE05F87FEE9F3A /* Pods-Smilies.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Smilies.modulemap"; sourceTree = "<group>"; };
-		4A14D4CF6EBF8734C39C084DF1BC230C /* Pods-Smilies-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Smilies-umbrella.h"; sourceTree = "<group>"; };
+		2BE55D6FB4D73468B6D471E1F858E7EF /* Pods-Awful-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Awful-umbrella.h"; sourceTree = "<group>"; };
+		370D4F3EC6DD488AE212FF0BC1EB58FF /* Pods-Awful-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-acknowledgements.plist"; sourceTree = "<group>"; };
+		3F0503ED43B6E4D118CF4CC5628C8E6C /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
+		3FB6B1AB82F996A587EB5942B91F26E3 /* Pods-Awful.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Awful.modulemap"; sourceTree = "<group>"; };
+		454B4358D8B22054A497488AC005AB2C /* Pods-Awful-AwfulTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Awful-AwfulTests.modulemap"; sourceTree = "<group>"; };
+		47E94BCC0FCCC4FF5C8939A9105E2CCA /* Pods-Awful-AwfulTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful-AwfulTests.release.xcconfig"; sourceTree = "<group>"; };
+		49A34A714ABEB935C9F355D494437451 /* PullToRefresher */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PullToRefresher; path = PullToRefresher.xcodeproj; sourceTree = "<group>"; };
 		4CCF890243A794C47D4574AC2F30DB9A /* Pods_Awful.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Awful.framework; path = "Pods-Awful.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		550452E29EE4CEEBB7A4C8FB38F49E31 /* MRProgress */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MRProgress; path = MRProgress.xcodeproj; sourceTree = "<group>"; };
-		594F9DFFB4056A01F28D82B385654B39 /* Pods-Awful-AwfulTests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-AwfulTests-Info.plist"; sourceTree = "<group>"; };
-		61A885789BCB9BDD0436326482141B3C /* Pods-Smilies.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smilies.release.xcconfig"; sourceTree = "<group>"; };
-		70FBE0272AB9007C8AD33861EBD2EE4A /* Pods-Smilies-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Smilies-Info.plist"; sourceTree = "<group>"; };
-		75A7F7BEEB1EF8A80CBA2C37B83E8BFB /* Pods-Awful-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Awful-frameworks.sh"; sourceTree = "<group>"; };
-		771082FE698D702FA6281FBBACA68D50 /* Pods_Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Smilies.framework; path = "Pods-Smilies.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7777317E397725DCC0C6CE8D857F4882 /* Pods-Smilies-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Smilies-acknowledgements.plist"; sourceTree = "<group>"; };
-		7C39DEEE9F7F3BD5F25216A96C5B02D0 /* Pods-SmilieExtractor-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-SmilieExtractor-acknowledgements.markdown"; sourceTree = "<group>"; };
-		7E8D4F81DFBA232A2821BC399D15DFEA /* Pods-Smilies-SmiliesTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smilies-SmiliesTests.debug.xcconfig"; sourceTree = "<group>"; };
-		826047D3E4BCA8012F5F18C49F12B83D /* KVOController */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KVOController; path = KVOController.xcodeproj; sourceTree = "<group>"; };
-		8802ED645E799E170DB38DE492B9345A /* Pods-SmilieExtractor-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-SmilieExtractor-dummy.m"; sourceTree = "<group>"; };
-		88261A863AB1266C20127DBC203E46D9 /* Pods-Awful.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Awful.modulemap"; sourceTree = "<group>"; };
-		8AF57D09464D79BE8A1568EFCE461B09 /* Pods-Smilies-SmiliesTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Smilies-SmiliesTests-frameworks.sh"; sourceTree = "<group>"; };
-		8D9A5F6C4EEE83315550D7C9969675A0 /* Pods-Smilies-SmiliesTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Smilies-SmiliesTests-acknowledgements.markdown"; sourceTree = "<group>"; };
-		9C64B973AFD8E8AE5233D4FA7F183344 /* Pods-Awful-AwfulTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Awful-AwfulTests-umbrella.h"; sourceTree = "<group>"; };
+		5B41D1A9D55E8DB02112BEE2CD5FA686 /* Pods-Awful-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Awful-frameworks.sh"; sourceTree = "<group>"; };
+		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		77D4DD3A687944D313D238EA528DB3DF /* Pods-Awful-AwfulTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-AwfulTests-acknowledgements.plist"; sourceTree = "<group>"; };
+		7CCB438F65DCB99876C4376F9CCF26B9 /* Pods-Awful-AwfulTests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-AwfulTests-Info.plist"; sourceTree = "<group>"; };
+		7CEE326D3AD1A5E2E565A3F1C29A3039 /* Pods-Awful-AwfulTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Awful-AwfulTests-umbrella.h"; sourceTree = "<group>"; };
+		85D3E3C6FBC8AD6F47C18CC1AD467920 /* Pods-Awful-AwfulTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Awful-AwfulTests-dummy.m"; sourceTree = "<group>"; };
+		8E7739F3A4CC852A2066D43BB936586B /* KVOController */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KVOController; path = KVOController.xcodeproj; sourceTree = "<group>"; };
+		948FDEDCA112A571ACE2EA9981C632FC /* PSMenuItem */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PSMenuItem; path = PSMenuItem.xcodeproj; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		9EEAEF298ECC05713A2975FD8C5F1163 /* Pods-Smilies-SmiliesTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smilies-SmiliesTests.release.xcconfig"; sourceTree = "<group>"; };
-		A8F633EB03DA1A3EBCCF8BBF1592BA2C /* Pods-Smilies.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Smilies.debug.xcconfig"; sourceTree = "<group>"; };
-		B09A22C708ACA5C2F6F30E326C3FF254 /* Pods-Smilies-SmiliesTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Smilies-SmiliesTests-umbrella.h"; sourceTree = "<group>"; };
-		B40A537946BEA705792ECD7AB8003662 /* Pods-SmilieExtractor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SmilieExtractor.release.xcconfig"; sourceTree = "<group>"; };
-		B9E5E54386F90F8374ECE5E21FBABA83 /* Pods-SmilieExtractor-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-SmilieExtractor-frameworks.sh"; sourceTree = "<group>"; };
-		BA564CB60F6DEC86378582B6F052C3BE /* Pods-Awful-AwfulTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Awful-AwfulTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		A9A617C50ADD0AA81F10CF677B0C46B8 /* Pods-Awful-AwfulTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Awful-AwfulTests-frameworks.sh"; sourceTree = "<group>"; };
 		BEC120D5125998BA9172535CF46C41B0 /* Pods_Awful_AwfulTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Awful_AwfulTests.framework; path = "Pods-Awful-AwfulTests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C48D950E9484D995B639A76654DD594F /* PSMenuItem */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PSMenuItem; path = PSMenuItem.xcodeproj; sourceTree = "<group>"; };
-		CB46C128FE125517DCDCC399C36B7FCB /* Pods-Awful-AwfulTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful-AwfulTests.release.xcconfig"; sourceTree = "<group>"; };
-		D0CDE594B7AD631AABA8D68386DAF099 /* Pods-Awful-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Awful-umbrella.h"; sourceTree = "<group>"; };
-		D6D699FEF12B9E6BBA4B9CD02F1A5147 /* Pods-Awful-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-Info.plist"; sourceTree = "<group>"; };
-		DBC1C02E6470648CC0EF1D8E852ED684 /* PullToRefresher */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PullToRefresher; path = PullToRefresher.xcodeproj; sourceTree = "<group>"; };
-		E0FE1EB0970562919C77804C7322FF23 /* Pods-Awful-AwfulTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Awful-AwfulTests-dummy.m"; sourceTree = "<group>"; };
-		E653EA4F34050D02434F9A683F216F17 /* Pods-Awful-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Awful-dummy.m"; sourceTree = "<group>"; };
-		F1E7816889347A8FDCE7937598A2DEE3 /* Pods-Awful-AwfulTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful-AwfulTests.debug.xcconfig"; sourceTree = "<group>"; };
-		F3936F20EA2C2BB4A086494FED9A1B12 /* Pods-SmilieExtractor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SmilieExtractor.debug.xcconfig"; sourceTree = "<group>"; };
-		F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FLAnimatedImage; path = FLAnimatedImage.xcodeproj; sourceTree = "<group>"; };
-		F76F2891D726452DC7EDEDDA2B178630 /* Pods-Smilies-SmiliesTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Smilies-SmiliesTests-dummy.m"; sourceTree = "<group>"; };
-		F9DBA94F1E3231ADBA2BFFB732D7B343 /* Pods-Awful-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-acknowledgements.plist"; sourceTree = "<group>"; };
-		FA427162072B4F24195BE83633A67A07 /* Pods-Smilies-SmiliesTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Smilies-SmiliesTests.modulemap"; sourceTree = "<group>"; };
-		FE26EF0AD02C967BE86EE5229D12CC23 /* Pods-Smilies-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Smilies-acknowledgements.markdown"; sourceTree = "<group>"; };
+		D2064519F31B4413E0596A2B572F58C2 /* Pods-Awful-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Awful-Info.plist"; sourceTree = "<group>"; };
+		D75FE0390E828C1C21BBE1B89EC5E068 /* Pods-Awful-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Awful-dummy.m"; sourceTree = "<group>"; };
+		DE1D5BAD2ED8BF950168379AFCFCF45E /* Pods-Awful-AwfulTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful-AwfulTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E591BBCC1D0D2340482189FF8F2EEA89 /* Pods-Awful-AwfulTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Awful-AwfulTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		EB5CD85047A09FCEEC53E9B0C0A1FFA6 /* MRProgress */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MRProgress; path = MRProgress.xcodeproj; sourceTree = "<group>"; };
+		EF7CF626CCFA64A2064568427D0E8E31 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
+		F92BD8F1F940992B25F261B83237B990 /* Pods-Awful-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Awful-acknowledgements.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0D180622BBB6BD8F6EE9F4F0829BF420 /* Frameworks */ = {
+		457750161BC9FD35D6A53DB7C6087C46 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06AC9518B4032B8A72AFD32C34C3799E /* Foundation.framework in Frameworks */,
+				37309DCB4D48EA50978719D67CEF04D7 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1413B2309C9BF5C2D1B6A2B1F70835E8 /* Frameworks */ = {
+		498789CE6FCFD75D3A68417F27CB1DB8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				05C0BAAD85D9BB07D2C5BE0303988319 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9E54CA655D52AF78187797AEF15FFF01 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6CBC0BE234AC88E0A0C90799C3685F5C /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CD2BA415596E1EACA86C4A0FE2A48EAD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				527F16E9D648EB061DEF9E2286EA44A6 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D59AC25C4A836BF4AC20C1F0B0E14FE0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4F1E5C2468ECF882F663BA356C47D905 /* Foundation.framework in Frameworks */,
+				97541DE8285E23300927FC46F7DE2129 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		23E0877AC1090032C5BE3A2C32D6267F /* Pods */ = {
+		1BB6CAC0D94E8AB25EE64E2BD4F94BD7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage */,
-				826047D3E4BCA8012F5F18C49F12B83D /* KVOController */,
-				550452E29EE4CEEBB7A4C8FB38F49E31 /* MRProgress */,
-				C48D950E9484D995B639A76654DD594F /* PSMenuItem */,
-				DBC1C02E6470648CC0EF1D8E852ED684 /* PullToRefresher */,
+				4CCF890243A794C47D4574AC2F30DB9A /* Pods_Awful.framework */,
+				BEC120D5125998BA9172535CF46C41B0 /* Pods_Awful_AwfulTests.framework */,
 			);
-			name = Pods;
+			name = Products;
 			sourceTree = "<group>";
 		};
-		5C7CC5FAD00A77BA96C988B3122C2464 /* Pods-Awful */ = {
+		56CD252F1087F9A6E79317B0033A9F59 /* Pods-Awful-AwfulTests */ = {
 			isa = PBXGroup;
 			children = (
-				88261A863AB1266C20127DBC203E46D9 /* Pods-Awful.modulemap */,
-				2971DEE8F941BA1D064DEEFF8E43F90D /* Pods-Awful-acknowledgements.markdown */,
-				F9DBA94F1E3231ADBA2BFFB732D7B343 /* Pods-Awful-acknowledgements.plist */,
-				E653EA4F34050D02434F9A683F216F17 /* Pods-Awful-dummy.m */,
-				75A7F7BEEB1EF8A80CBA2C37B83E8BFB /* Pods-Awful-frameworks.sh */,
-				D6D699FEF12B9E6BBA4B9CD02F1A5147 /* Pods-Awful-Info.plist */,
-				D0CDE594B7AD631AABA8D68386DAF099 /* Pods-Awful-umbrella.h */,
-				22FCCAFB9AFD0F67848CDE9837F04B52 /* Pods-Awful.debug.xcconfig */,
-				07AB2B16A1C1A36E64805C3453E76BE1 /* Pods-Awful.release.xcconfig */,
-			);
-			name = "Pods-Awful";
-			path = "Target Support Files/Pods-Awful";
-			sourceTree = "<group>";
-		};
-		802F9546795B1993A89AFB6EFB6E911F /* Pods-Smilies-SmiliesTests */ = {
-			isa = PBXGroup;
-			children = (
-				FA427162072B4F24195BE83633A67A07 /* Pods-Smilies-SmiliesTests.modulemap */,
-				8D9A5F6C4EEE83315550D7C9969675A0 /* Pods-Smilies-SmiliesTests-acknowledgements.markdown */,
-				208D9D46CA88D0C0C08698A5681630D4 /* Pods-Smilies-SmiliesTests-acknowledgements.plist */,
-				F76F2891D726452DC7EDEDDA2B178630 /* Pods-Smilies-SmiliesTests-dummy.m */,
-				8AF57D09464D79BE8A1568EFCE461B09 /* Pods-Smilies-SmiliesTests-frameworks.sh */,
-				3772809A5AAA219B19CF3412317D2ADD /* Pods-Smilies-SmiliesTests-Info.plist */,
-				B09A22C708ACA5C2F6F30E326C3FF254 /* Pods-Smilies-SmiliesTests-umbrella.h */,
-				7E8D4F81DFBA232A2821BC399D15DFEA /* Pods-Smilies-SmiliesTests.debug.xcconfig */,
-				9EEAEF298ECC05713A2975FD8C5F1163 /* Pods-Smilies-SmiliesTests.release.xcconfig */,
-			);
-			name = "Pods-Smilies-SmiliesTests";
-			path = "Target Support Files/Pods-Smilies-SmiliesTests";
-			sourceTree = "<group>";
-		};
-		8D6433738C7AAB79B0883B0DAACA9FA6 /* Pods-Smilies */ = {
-			isa = PBXGroup;
-			children = (
-				497C53B6CC07341E1EBE05F87FEE9F3A /* Pods-Smilies.modulemap */,
-				FE26EF0AD02C967BE86EE5229D12CC23 /* Pods-Smilies-acknowledgements.markdown */,
-				7777317E397725DCC0C6CE8D857F4882 /* Pods-Smilies-acknowledgements.plist */,
-				3B5986691694629A3FB37EAE3F32DED7 /* Pods-Smilies-dummy.m */,
-				70FBE0272AB9007C8AD33861EBD2EE4A /* Pods-Smilies-Info.plist */,
-				4A14D4CF6EBF8734C39C084DF1BC230C /* Pods-Smilies-umbrella.h */,
-				A8F633EB03DA1A3EBCCF8BBF1592BA2C /* Pods-Smilies.debug.xcconfig */,
-				61A885789BCB9BDD0436326482141B3C /* Pods-Smilies.release.xcconfig */,
-			);
-			name = "Pods-Smilies";
-			path = "Target Support Files/Pods-Smilies";
-			sourceTree = "<group>";
-		};
-		9676AB71ED3B59447A185A99FE6A4927 /* Pods-SmilieExtractor */ = {
-			isa = PBXGroup;
-			children = (
-				2439B62A58C64710E90E67EE24C19E75 /* Pods-SmilieExtractor.modulemap */,
-				7C39DEEE9F7F3BD5F25216A96C5B02D0 /* Pods-SmilieExtractor-acknowledgements.markdown */,
-				374D11EDDBBC20568E6A0DA91F7F1002 /* Pods-SmilieExtractor-acknowledgements.plist */,
-				8802ED645E799E170DB38DE492B9345A /* Pods-SmilieExtractor-dummy.m */,
-				B9E5E54386F90F8374ECE5E21FBABA83 /* Pods-SmilieExtractor-frameworks.sh */,
-				09942BC70DDF3E8BF7A5ABD52C29FE0F /* Pods-SmilieExtractor-Info.plist */,
-				019CBBF1A8EF0BBE9EF74F6427D27D43 /* Pods-SmilieExtractor-umbrella.h */,
-				F3936F20EA2C2BB4A086494FED9A1B12 /* Pods-SmilieExtractor.debug.xcconfig */,
-				B40A537946BEA705792ECD7AB8003662 /* Pods-SmilieExtractor.release.xcconfig */,
-			);
-			name = "Pods-SmilieExtractor";
-			path = "Target Support Files/Pods-SmilieExtractor";
-			sourceTree = "<group>";
-		};
-		A471D0B58A9FFBBF689220DD3AA64BB7 /* Pods-Awful-AwfulTests */ = {
-			isa = PBXGroup;
-			children = (
-				43377F98A27633F2FBA54213B23B0210 /* Pods-Awful-AwfulTests.modulemap */,
-				BA564CB60F6DEC86378582B6F052C3BE /* Pods-Awful-AwfulTests-acknowledgements.markdown */,
-				280F07040C957106A241103F7A5466E8 /* Pods-Awful-AwfulTests-acknowledgements.plist */,
-				E0FE1EB0970562919C77804C7322FF23 /* Pods-Awful-AwfulTests-dummy.m */,
-				09CEA91353F39CD59B8B8C69A8C689C7 /* Pods-Awful-AwfulTests-frameworks.sh */,
-				594F9DFFB4056A01F28D82B385654B39 /* Pods-Awful-AwfulTests-Info.plist */,
-				9C64B973AFD8E8AE5233D4FA7F183344 /* Pods-Awful-AwfulTests-umbrella.h */,
-				F1E7816889347A8FDCE7937598A2DEE3 /* Pods-Awful-AwfulTests.debug.xcconfig */,
-				CB46C128FE125517DCDCC399C36B7FCB /* Pods-Awful-AwfulTests.release.xcconfig */,
+				454B4358D8B22054A497488AC005AB2C /* Pods-Awful-AwfulTests.modulemap */,
+				E591BBCC1D0D2340482189FF8F2EEA89 /* Pods-Awful-AwfulTests-acknowledgements.markdown */,
+				77D4DD3A687944D313D238EA528DB3DF /* Pods-Awful-AwfulTests-acknowledgements.plist */,
+				85D3E3C6FBC8AD6F47C18CC1AD467920 /* Pods-Awful-AwfulTests-dummy.m */,
+				A9A617C50ADD0AA81F10CF677B0C46B8 /* Pods-Awful-AwfulTests-frameworks.sh */,
+				7CCB438F65DCB99876C4376F9CCF26B9 /* Pods-Awful-AwfulTests-Info.plist */,
+				7CEE326D3AD1A5E2E565A3F1C29A3039 /* Pods-Awful-AwfulTests-umbrella.h */,
+				DE1D5BAD2ED8BF950168379AFCFCF45E /* Pods-Awful-AwfulTests.debug.xcconfig */,
+				47E94BCC0FCCC4FF5C8939A9105E2CCA /* Pods-Awful-AwfulTests.release.xcconfig */,
 			);
 			name = "Pods-Awful-AwfulTests";
 			path = "Target Support Files/Pods-Awful-AwfulTests";
 			sourceTree = "<group>";
 		};
-		C0834CEBB1379A84116EF29F93051C60 /* iOS */ = {
+		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */,
+				73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		CD2D2900AD1A6F3D2F9FE6BE5539CEAC /* Targets Support Files */ = {
+		5DB6B3BAF4B530CD8A5268CA8D2C9E58 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				5C7CC5FAD00A77BA96C988B3122C2464 /* Pods-Awful */,
-				A471D0B58A9FFBBF689220DD3AA64BB7 /* Pods-Awful-AwfulTests */,
-				9676AB71ED3B59447A185A99FE6A4927 /* Pods-SmilieExtractor */,
-				8D6433738C7AAB79B0883B0DAACA9FA6 /* Pods-Smilies */,
-				802F9546795B1993A89AFB6EFB6E911F /* Pods-Smilies-SmiliesTests */,
+				9CC247B1EFC51D973D956C250461FF40 /* Pods-Awful */,
+				56CD252F1087F9A6E79317B0033A9F59 /* Pods-Awful-AwfulTests */,
 			);
 			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		9CC247B1EFC51D973D956C250461FF40 /* Pods-Awful */ = {
+			isa = PBXGroup;
+			children = (
+				3FB6B1AB82F996A587EB5942B91F26E3 /* Pods-Awful.modulemap */,
+				F92BD8F1F940992B25F261B83237B990 /* Pods-Awful-acknowledgements.markdown */,
+				370D4F3EC6DD488AE212FF0BC1EB58FF /* Pods-Awful-acknowledgements.plist */,
+				D75FE0390E828C1C21BBE1B89EC5E068 /* Pods-Awful-dummy.m */,
+				5B41D1A9D55E8DB02112BEE2CD5FA686 /* Pods-Awful-frameworks.sh */,
+				D2064519F31B4413E0596A2B572F58C2 /* Pods-Awful-Info.plist */,
+				2BE55D6FB4D73468B6D471E1F858E7EF /* Pods-Awful-umbrella.h */,
+				3F0503ED43B6E4D118CF4CC5628C8E6C /* Pods-Awful.debug.xcconfig */,
+				EF7CF626CCFA64A2064568427D0E8E31 /* Pods-Awful.release.xcconfig */,
+			);
+			name = "Pods-Awful";
+			path = "Target Support Files/Pods-Awful";
+			sourceTree = "<group>";
+		};
+		C637FA50C3B3E282ED0DDE585E93A926 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8E7739F3A4CC852A2066D43BB936586B /* KVOController */,
+				EB5CD85047A09FCEEC53E9B0C0A1FFA6 /* MRProgress */,
+				948FDEDCA112A571ACE2EA9981C632FC /* PSMenuItem */,
+				49A34A714ABEB935C9F355D494437451 /* PullToRefresher */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -342,72 +199,36 @@
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
-				23E0877AC1090032C5BE3A2C32D6267F /* Pods */,
-				E7887D47DE67257FD6A9934CEEF366E3 /* Products */,
-				CD2D2900AD1A6F3D2F9FE6BE5539CEAC /* Targets Support Files */,
+				C637FA50C3B3E282ED0DDE585E93A926 /* Pods */,
+				1BB6CAC0D94E8AB25EE64E2BD4F94BD7 /* Products */,
+				5DB6B3BAF4B530CD8A5268CA8D2C9E58 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
 		D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C0834CEBB1379A84116EF29F93051C60 /* iOS */,
+				578452D2E740E91742655AC8F1636D1F /* iOS */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		E7887D47DE67257FD6A9934CEEF366E3 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				4CCF890243A794C47D4574AC2F30DB9A /* Pods_Awful.framework */,
-				BEC120D5125998BA9172535CF46C41B0 /* Pods_Awful_AwfulTests.framework */,
-				1C978B4862B1CFF1EA944D1E84481B66 /* Pods_SmilieExtractor.framework */,
-				771082FE698D702FA6281FBBACA68D50 /* Pods_Smilies.framework */,
-				27DD0917A3D68467C0A3FA70B02A97A7 /* Pods_Smilies_SmiliesTests.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		1804F935B08F195F0170FC4C9BB8C212 /* Headers */ = {
+		11635D68F41ECD5EE553815FE8C47F2B /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96D24C5E595759E03B923E7154E4F332 /* Pods-Awful-AwfulTests-umbrella.h in Headers */,
+				E9D68A52E97185B8AF914E8529323F51 /* Pods-Awful-AwfulTests-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		48AD6415B4962D11B9849FA1CC60427C /* Headers */ = {
+		7FDBA45D301A593408617703BE7FEBDB /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0E16A0B98CEB2E0FCF051335D93F579B /* Pods-Smilies-SmiliesTests-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BA645836C35B3134B92B857D557F5A40 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				52F851C137D03955DF7A189980B5464A /* Pods-SmilieExtractor-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C0E5D5B356EEBC12544538913441A8A6 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FD1EF4759B507ABF770E9A88744CCFA7 /* Pods-Smilies-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EDF3BB45D9714B2C6B16C53908794A47 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1D1133B4DED99FDFC38D5E0496363979 /* Pods-Awful-umbrella.h in Headers */,
+				77D635921F1699DBB22DCB20FF909E9F /* Pods-Awful-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,21 +237,20 @@
 /* Begin PBXNativeTarget section */
 		2BAFCD363997CE332676F30637C6A410 /* Pods-Awful */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 85737B4F5CAA650D64C2615EAF40B543 /* Build configuration list for PBXNativeTarget "Pods-Awful" */;
+			buildConfigurationList = AA5CE435D1358B0F2BA1CE8EECEFE794 /* Build configuration list for PBXNativeTarget "Pods-Awful" */;
 			buildPhases = (
-				EDF3BB45D9714B2C6B16C53908794A47 /* Headers */,
-				19C9E3BD26C62B8D7AFFF9C4ABED906A /* Sources */,
-				0D180622BBB6BD8F6EE9F4F0829BF420 /* Frameworks */,
-				D9B0F3ECB6620D51B2BDDCF1D7EA7005 /* Resources */,
+				7FDBA45D301A593408617703BE7FEBDB /* Headers */,
+				49F4E141962046EF3498640B8C41F8A1 /* Sources */,
+				457750161BC9FD35D6A53DB7C6087C46 /* Frameworks */,
+				CB67A0A7C69579B0583DD1F9BA109738 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				401A5FA9DF3611CEAF4B96DAF7F646AC /* PBXTargetDependency */,
-				BA07DF901CB9A25191E34C64F50E6B3A /* PBXTargetDependency */,
-				4B1E00E77C8759CFAB344FCAAE87F663 /* PBXTargetDependency */,
-				92F7D88E759D8C3668E3FCC1347AFED0 /* PBXTargetDependency */,
-				17B03E5FDC3D910034F85BF7D6DD1DCC /* PBXTargetDependency */,
+				CB1391487C210E7519A7BF3DF4D8648E /* PBXTargetDependency */,
+				7545E9DBC333F95911512D11141022CD /* PBXTargetDependency */,
+				D6725FF3046DCD02F736FB4AA853F947 /* PBXTargetDependency */,
+				A4DEAECFA6C818DB26FB9AC69D79BE46 /* PBXTargetDependency */,
 			);
 			name = "Pods-Awful";
 			productName = "Pods-Awful";
@@ -439,82 +259,24 @@
 		};
 		455D2F26A1989DC4A735D4BE77E04406 /* Pods-Awful-AwfulTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E987B77F45D189F4C03DC092E665CA8E /* Build configuration list for PBXNativeTarget "Pods-Awful-AwfulTests" */;
+			buildConfigurationList = 9288078396600851B6A4775F75F49256 /* Build configuration list for PBXNativeTarget "Pods-Awful-AwfulTests" */;
 			buildPhases = (
-				1804F935B08F195F0170FC4C9BB8C212 /* Headers */,
-				A432C35169EDE1BC795183B5247B7E54 /* Sources */,
-				9E54CA655D52AF78187797AEF15FFF01 /* Frameworks */,
-				AD9A0718558033B863B0E9D48750FC01 /* Resources */,
+				11635D68F41ECD5EE553815FE8C47F2B /* Headers */,
+				1BCACD93AF3F3E7A0F9C39958D3D79C4 /* Sources */,
+				498789CE6FCFD75D3A68417F27CB1DB8 /* Frameworks */,
+				00743E8614FF368332789BED4C140B56 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				23AC4AF435826CE4344FBE2D1703A88C /* PBXTargetDependency */,
-				50ED6A477287E2F18A6C995A3ACE7C62 /* PBXTargetDependency */,
-				E4E9391A145E45887E06A66C4E3CAB63 /* PBXTargetDependency */,
-				ABCAD8FB208FC37CF49B42AB7DA0132F /* PBXTargetDependency */,
-				452F23EE928FFCEC6A412476D61AAB2D /* PBXTargetDependency */,
+				3200CDA3DAA44BD2D64D751D089FE4DD /* PBXTargetDependency */,
+				09F38B15E596B926E02B636DD8E9CD4C /* PBXTargetDependency */,
+				4B2585771B8CA51AC0947E4EEA56A179 /* PBXTargetDependency */,
+				4864618445441DBAAE7BCDD9BF5CEA47 /* PBXTargetDependency */,
 			);
 			name = "Pods-Awful-AwfulTests";
 			productName = "Pods-Awful-AwfulTests";
 			productReference = BEC120D5125998BA9172535CF46C41B0 /* Pods_Awful_AwfulTests.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		4810557DDA52D2A5D888C770F1663374 /* Pods-Smilies */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2D6F2095554649D316F87433F6711764 /* Build configuration list for PBXNativeTarget "Pods-Smilies" */;
-			buildPhases = (
-				C0E5D5B356EEBC12544538913441A8A6 /* Headers */,
-				F7D20673C7D2586FA5DEC5B152ABC212 /* Sources */,
-				1413B2309C9BF5C2D1B6A2B1F70835E8 /* Frameworks */,
-				B94CC9B6C7A0C71D134C6A83EE7B6BA2 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				5B0B7D1BF544AB3FD5C367853204E6F6 /* PBXTargetDependency */,
-			);
-			name = "Pods-Smilies";
-			productName = "Pods-Smilies";
-			productReference = 771082FE698D702FA6281FBBACA68D50 /* Pods_Smilies.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		9049E11E91C38A1D5A28B56CFECEBE24 /* Pods-Smilies-SmiliesTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7641342E9264753ECED8125E621DA856 /* Build configuration list for PBXNativeTarget "Pods-Smilies-SmiliesTests" */;
-			buildPhases = (
-				48AD6415B4962D11B9849FA1CC60427C /* Headers */,
-				FA9EB34A380E9807CDE3CE44DE53379E /* Sources */,
-				D59AC25C4A836BF4AC20C1F0B0E14FE0 /* Frameworks */,
-				C87E8C31C1CC20A55504FB329C6E6B12 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				623AE97A988CDA8C1042155E290A8F08 /* PBXTargetDependency */,
-			);
-			name = "Pods-Smilies-SmiliesTests";
-			productName = "Pods-Smilies-SmiliesTests";
-			productReference = 27DD0917A3D68467C0A3FA70B02A97A7 /* Pods_Smilies_SmiliesTests.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		9E079B64B7BE0844D9AD8EFB1EF86D25 /* Pods-SmilieExtractor */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 959A4A0EC85AF54B613AB7F7BADD0BA7 /* Build configuration list for PBXNativeTarget "Pods-SmilieExtractor" */;
-			buildPhases = (
-				BA645836C35B3134B92B857D557F5A40 /* Headers */,
-				A8F4FBE7B2C77276C61EC5E32C0B680B /* Sources */,
-				CD2BA415596E1EACA86C4A0FE2A48EAD /* Frameworks */,
-				0B8DDDBAA6B45A41DF04A2F4443945E5 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				0F191C14EE5541D5D46FD356BF0C439E /* PBXTargetDependency */,
-			);
-			name = "Pods-SmilieExtractor";
-			productName = "Pods-SmilieExtractor";
-			productReference = 1C978B4862B1CFF1EA944D1E84481B66 /* Pods_SmilieExtractor.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -535,66 +297,39 @@
 				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = E7887D47DE67257FD6A9934CEEF366E3 /* Products */;
+			productRefGroup = 1BB6CAC0D94E8AB25EE64E2BD4F94BD7 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProjectRef = F602C36629FC9ECBC7BEAD827A736ED9 /* FLAnimatedImage */;
+					ProjectRef = 8E7739F3A4CC852A2066D43BB936586B /* KVOController */;
 				},
 				{
-					ProjectRef = 826047D3E4BCA8012F5F18C49F12B83D /* KVOController */;
+					ProjectRef = EB5CD85047A09FCEEC53E9B0C0A1FFA6 /* MRProgress */;
 				},
 				{
-					ProjectRef = 550452E29EE4CEEBB7A4C8FB38F49E31 /* MRProgress */;
+					ProjectRef = 948FDEDCA112A571ACE2EA9981C632FC /* PSMenuItem */;
 				},
 				{
-					ProjectRef = C48D950E9484D995B639A76654DD594F /* PSMenuItem */;
-				},
-				{
-					ProjectRef = DBC1C02E6470648CC0EF1D8E852ED684 /* PullToRefresher */;
+					ProjectRef = 49A34A714ABEB935C9F355D494437451 /* PullToRefresher */;
 				},
 			);
 			projectRoot = "";
 			targets = (
 				2BAFCD363997CE332676F30637C6A410 /* Pods-Awful */,
 				455D2F26A1989DC4A735D4BE77E04406 /* Pods-Awful-AwfulTests */,
-				9E079B64B7BE0844D9AD8EFB1EF86D25 /* Pods-SmilieExtractor */,
-				4810557DDA52D2A5D888C770F1663374 /* Pods-Smilies */,
-				9049E11E91C38A1D5A28B56CFECEBE24 /* Pods-Smilies-SmiliesTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0B8DDDBAA6B45A41DF04A2F4443945E5 /* Resources */ = {
+		00743E8614FF368332789BED4C140B56 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AD9A0718558033B863B0E9D48750FC01 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B94CC9B6C7A0C71D134C6A83EE7B6BA2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C87E8C31C1CC20A55504FB329C6E6B12 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D9B0F3ECB6620D51B2BDDCF1D7EA7005 /* Resources */ = {
+		CB67A0A7C69579B0583DD1F9BA109738 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -604,229 +339,69 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		19C9E3BD26C62B8D7AFFF9C4ABED906A /* Sources */ = {
+		1BCACD93AF3F3E7A0F9C39958D3D79C4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF40DDD75643FA9DCA173B4E57C32FCF /* Pods-Awful-dummy.m in Sources */,
+				5AB3901CC5AFB5321EF65CF68775FFE0 /* Pods-Awful-AwfulTests-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A432C35169EDE1BC795183B5247B7E54 /* Sources */ = {
+		49F4E141962046EF3498640B8C41F8A1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA42AEBBDB86A105CEAFA5A9E72D33C8 /* Pods-Awful-AwfulTests-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A8F4FBE7B2C77276C61EC5E32C0B680B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3700BFEC401621AE693F0634A86C0183 /* Pods-SmilieExtractor-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F7D20673C7D2586FA5DEC5B152ABC212 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				83056EBF99EABDE1454A1AAE79CB2395 /* Pods-Smilies-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		FA9EB34A380E9807CDE3CE44DE53379E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				08A463808928B20F43DF99540E70A93E /* Pods-Smilies-SmiliesTests-dummy.m in Sources */,
+				FB3BE8B2C17886E7B2D8C18EF75184F0 /* Pods-Awful-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0F191C14EE5541D5D46FD356BF0C439E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FLAnimatedImage;
-			targetProxy = 76FF359714BA687BF46B955E8B67504D /* PBXContainerItemProxy */;
-		};
-		17B03E5FDC3D910034F85BF7D6DD1DCC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = PullToRefresher;
-			targetProxy = 08469504BA906304D6D819711BB96216 /* PBXContainerItemProxy */;
-		};
-		23AC4AF435826CE4344FBE2D1703A88C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FLAnimatedImage;
-			targetProxy = A8B9E136B7FDC05276E68A205723D8CC /* PBXContainerItemProxy */;
-		};
-		401A5FA9DF3611CEAF4B96DAF7F646AC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FLAnimatedImage;
-			targetProxy = 3BEEA622C96EAC14B8B4742B48E9EAA4 /* PBXContainerItemProxy */;
-		};
-		452F23EE928FFCEC6A412476D61AAB2D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = PullToRefresher;
-			targetProxy = D5FAF08DF4039032F47709F9AA5A18FC /* PBXContainerItemProxy */;
-		};
-		4B1E00E77C8759CFAB344FCAAE87F663 /* PBXTargetDependency */ = {
+		09F38B15E596B926E02B636DD8E9CD4C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = MRProgress;
-			targetProxy = 6C01D6F01A2F0C87983F6CD2B1AECB03 /* PBXContainerItemProxy */;
+			targetProxy = 8DEF01CB9EFFE4502BFF75AB22E6B300 /* PBXContainerItemProxy */;
 		};
-		50ED6A477287E2F18A6C995A3ACE7C62 /* PBXTargetDependency */ = {
+		3200CDA3DAA44BD2D64D751D089FE4DD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = KVOController;
-			targetProxy = 00B85D1A75BF21FB64D6D3A7B162B219 /* PBXContainerItemProxy */;
+			targetProxy = 96C5218EA7DE1FEAF67EDF253909F7A9 /* PBXContainerItemProxy */;
 		};
-		5B0B7D1BF544AB3FD5C367853204E6F6 /* PBXTargetDependency */ = {
+		4864618445441DBAAE7BCDD9BF5CEA47 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = FLAnimatedImage;
-			targetProxy = B966A87A61BC2F08EE5B13E8E5073E5C /* PBXContainerItemProxy */;
+			name = PullToRefresher;
+			targetProxy = 5796C6253F4F1B15A0E58439F4A358F5 /* PBXContainerItemProxy */;
 		};
-		623AE97A988CDA8C1042155E290A8F08 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FLAnimatedImage;
-			targetProxy = 32080E324388DD59CC158540071E5505 /* PBXContainerItemProxy */;
-		};
-		92F7D88E759D8C3668E3FCC1347AFED0 /* PBXTargetDependency */ = {
+		4B2585771B8CA51AC0947E4EEA56A179 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = PSMenuItem;
-			targetProxy = 1B454F2FF44FCE6C12943FCD02D1B4EC /* PBXContainerItemProxy */;
+			targetProxy = A3D0A00D27B384A9545ECA1E59B4046F /* PBXContainerItemProxy */;
 		};
-		ABCAD8FB208FC37CF49B42AB7DA0132F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = PSMenuItem;
-			targetProxy = 5353F24DA3063FE86E2B8A787F788EDC /* PBXContainerItemProxy */;
-		};
-		BA07DF901CB9A25191E34C64F50E6B3A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = KVOController;
-			targetProxy = DB75CAFCD58DAEB1CEA96A394E6D1053 /* PBXContainerItemProxy */;
-		};
-		E4E9391A145E45887E06A66C4E3CAB63 /* PBXTargetDependency */ = {
+		7545E9DBC333F95911512D11141022CD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = MRProgress;
-			targetProxy = BBAFB3C378AE08576505F15ABDB1B2D0 /* PBXContainerItemProxy */;
+			targetProxy = 6828F5FF236548E349D688DAB8394660 /* PBXContainerItemProxy */;
+		};
+		A4DEAECFA6C818DB26FB9AC69D79BE46 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PullToRefresher;
+			targetProxy = CA7F55459756385BBC113FA9EDC34687 /* PBXContainerItemProxy */;
+		};
+		CB1391487C210E7519A7BF3DF4D8648E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = KVOController;
+			targetProxy = A51F48DC42C97479548D392DEE4A7141 /* PBXContainerItemProxy */;
+		};
+		D6725FF3046DCD02F736FB4AA853F947 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PSMenuItem;
+			targetProxy = 59F13710493EE35111385931A8B21C02 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		33295FF065E104C49332D1E12C81AEE6 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 22FCCAFB9AFD0F67848CDE9837F04B52 /* Pods-Awful.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Awful/Pods-Awful-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Awful/Pods-Awful.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		3949ABD9803ACAC842ED0AD12F324154 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1E7816889347A8FDCE7937598A2DEE3 /* Pods-Awful-AwfulTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		4582ED811A2135D63922C881CBA43A82 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F3936F20EA2C2BB4A086494FED9A1B12 /* Pods-SmilieExtractor.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		4EBC741460BC710C963D24CAAB3BC925 /* Debug */ = {
+		25AD9454612BF454A1E3DC4CD4FA8C6D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -853,6 +428,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -891,12 +467,11 @@
 			};
 			name = Debug;
 		};
-		67BB036F6F5F7767CDE045F47530954D /* Release */ = {
+		31131C6661845F9E4E13112EAA078369 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 07AB2B16A1C1A36E64805C3453E76BE1 /* Pods-Awful.release.xcconfig */;
+			baseConfigurationReference = EF7CF626CCFA64A2064568427D0E8E31 /* Pods-Awful.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -929,12 +504,11 @@
 			};
 			name = Release;
 		};
-		81E3C289873793AF8C03C781148141EF /* Debug */ = {
+		8626CC8AE7C4F39844460EE2AC0072C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7E8D4F81DFBA232A2821BC399D15DFEA /* Pods-Smilies-SmiliesTests.debug.xcconfig */;
+			baseConfigurationReference = 3F0503ED43B6E4D118CF4CC5628C8E6C /* Pods-Awful.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -943,7 +517,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/Pods-Awful/Pods-Awful-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -952,7 +526,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests.modulemap";
+				MODULEMAP_FILE = "Target Support Files/Pods-Awful/Pods-Awful.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
@@ -966,50 +540,11 @@
 			};
 			name = Debug;
 		};
-		8BCF4D9406A04EF4AE0E6E61DA53B510 /* Release */ = {
+		C66BE6C8DAF24A127E8224BFC4D8DB76 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9EEAEF298ECC05713A2975FD8C5F1163 /* Pods-Smilies-SmiliesTests.release.xcconfig */;
+			baseConfigurationReference = 47E94BCC0FCCC4FF5C8939A9105E2CCA /* Pods-Awful-AwfulTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Smilies-SmiliesTests/Pods-Smilies-SmiliesTests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		949A06A144DD671FCEAB64BA21FC9858 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CB46C128FE125517DCDCC399C36B7FCB /* Pods-Awful-AwfulTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1042,82 +577,7 @@
 			};
 			name = Release;
 		};
-		9BADF23E9DCE1C9F03E733E9AFC01B9F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = B40A537946BEA705792ECD7AB8003662 /* Pods-SmilieExtractor.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-SmilieExtractor/Pods-SmilieExtractor.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		9D95E20764CC1FE445C17B220E62506D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A8F633EB03DA1A3EBCCF8BBF1592BA2C /* Pods-Smilies.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Smilies/Pods-Smilies-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Smilies/Pods-Smilies.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		A40FB7C4B9460AE765A736AB575EEB32 /* Release */ = {
+		CA547D2C7E9A8A153DC2B27FBE00B112 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1144,6 +604,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1178,12 +639,11 @@
 			};
 			name = Release;
 		};
-		EF4840BE3C3B968EDE7EF79FEB204102 /* Release */ = {
+		E58786B3B4CDEA8E5AF514C5B60F0E06 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 61A885789BCB9BDD0436326482141B3C /* Pods-Smilies.release.xcconfig */;
+			baseConfigurationReference = DE1D5BAD2ED8BF950168379AFCFCF45E /* Pods-Awful-AwfulTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -1192,7 +652,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-Smilies/Pods-Smilies-Info.plist";
+				INFOPLIST_FILE = "Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1201,7 +661,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-Smilies/Pods-Smilies.modulemap";
+				MODULEMAP_FILE = "Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
@@ -1210,65 +670,37 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2D6F2095554649D316F87433F6711764 /* Build configuration list for PBXNativeTarget "Pods-Smilies" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9D95E20764CC1FE445C17B220E62506D /* Debug */,
-				EF4840BE3C3B968EDE7EF79FEB204102 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4EBC741460BC710C963D24CAAB3BC925 /* Debug */,
-				A40FB7C4B9460AE765A736AB575EEB32 /* Release */,
+				25AD9454612BF454A1E3DC4CD4FA8C6D /* Debug */,
+				CA547D2C7E9A8A153DC2B27FBE00B112 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7641342E9264753ECED8125E621DA856 /* Build configuration list for PBXNativeTarget "Pods-Smilies-SmiliesTests" */ = {
+		9288078396600851B6A4775F75F49256 /* Build configuration list for PBXNativeTarget "Pods-Awful-AwfulTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				81E3C289873793AF8C03C781148141EF /* Debug */,
-				8BCF4D9406A04EF4AE0E6E61DA53B510 /* Release */,
+				E58786B3B4CDEA8E5AF514C5B60F0E06 /* Debug */,
+				C66BE6C8DAF24A127E8224BFC4D8DB76 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		85737B4F5CAA650D64C2615EAF40B543 /* Build configuration list for PBXNativeTarget "Pods-Awful" */ = {
+		AA5CE435D1358B0F2BA1CE8EECEFE794 /* Build configuration list for PBXNativeTarget "Pods-Awful" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				33295FF065E104C49332D1E12C81AEE6 /* Debug */,
-				67BB036F6F5F7767CDE045F47530954D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		959A4A0EC85AF54B613AB7F7BADD0BA7 /* Build configuration list for PBXNativeTarget "Pods-SmilieExtractor" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4582ED811A2135D63922C881CBA43A82 /* Debug */,
-				9BADF23E9DCE1C9F03E733E9AFC01B9F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E987B77F45D189F4C03DC092E665CA8E /* Build configuration list for PBXNativeTarget "Pods-Awful-AwfulTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3949ABD9803ACAC842ED0AD12F324154 /* Debug */,
-				949A06A144DD671FCEAB64BA21FC9858 /* Release */,
+				8626CC8AE7C4F39844460EE2AC0072C7 /* Debug */,
+				31131C6661845F9E4E13112EAA078369 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
