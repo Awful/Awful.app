@@ -177,13 +177,11 @@ code_sign_if_enabled() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then

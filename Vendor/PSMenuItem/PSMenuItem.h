@@ -33,13 +33,13 @@
 @interface PSMenuItem : UIMenuItem
 
 // Initialize PSMenuItem with a block.
-- (id)initWithTitle:(NSString *)title block:(void(^)())block;
+- (id)initWithTitle:(NSString *)title block:(void(^)(void))block;
 
 // Menu Item can be enabled/disabled. (disable simply hides it from the UIMenuController)
 @property(nonatomic, assign, getter=isEnabled) BOOL enabled;
 
 // Action block.
-@property(nonatomic, copy) void(^block)();
+@property(nonatomic, copy) void(^block)(void);
 
 
 /**

@@ -4,7 +4,6 @@
 
 import MobileCoreServices
 import Photos
-import PSMenuItem
 import UIKit
 
 private let Log = Logger.get()

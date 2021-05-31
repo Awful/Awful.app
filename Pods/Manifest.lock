@@ -19,13 +19,11 @@ PODS:
   - MRProgress/ProgressBaseClass (0.8.3)
   - MRProgress/Stopable (0.8.3):
     - MRProgress/Helper
-  - PSMenuItem (1.0.0)
   - PullToRefresher (3.2)
 
 DEPENDENCIES:
   - KVOController
   - MRProgress/Overlay
-  - PSMenuItem (from `https://github.com/steipete/PSMenuItem`, commit `489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79`)
   - PullToRefresher (= 3.2)
 
 SPEC REPOS:
@@ -34,22 +32,11 @@ SPEC REPOS:
     - MRProgress
     - PullToRefresher
 
-EXTERNAL SOURCES:
-  PSMenuItem:
-    :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
-    :git: https://github.com/steipete/PSMenuItem
-
-CHECKOUT OPTIONS:
-  PSMenuItem:
-    :commit: 489dbb1c42f8c2c43ac04f0a34faf9aea3b7aa79
-    :git: https://github.com/steipete/PSMenuItem
-
 SPEC CHECKSUMS:
   KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
-  PSMenuItem: 12d6bc3716fa44c91eabc2539abb4b3ca46a3e22
   PullToRefresher: 746c1089710eb74a3a584921549296a2fe573314
 
-PODFILE CHECKSUM: ee4a52517d01a4e1d9bc871ff21c09088a3819cb
+PODFILE CHECKSUM: f41e14ceac139bcf6461e8a6444d009273f37ca0
 
 COCOAPODS: 1.10.1

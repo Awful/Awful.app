@@ -61,7 +61,7 @@
 		1C1BD0B32320C98400805208 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B12320C98400805208 /* platinum-member-white@2x.png */; };
 		1C1BD0B42320C98400805208 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B22320C98400805208 /* platinum-member-white@3x.png */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
-		1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* Smilies */; };
+		1C1F8A2D2664BDF4003EA62C /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* SwiftPackageProductDependency */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C24BC952002BF2F0022C85F /* ForumListCell.swift */; };
@@ -117,11 +117,12 @@
 		1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
-		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
+		1C453F282338457A007AC6CD /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* SwiftPackageProductDependency */; };
 		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
-		1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C4712292664CB8000E5AA74 /* Smilies */; };
-		1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* Smilies */; };
-		1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* WebArchive */; };
+		1C47122A2664CB8000E5AA74 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C4712292664CB8000E5AA74 /* SwiftPackageProductDependency */; };
+		1C47122C2664CB8C00E5AA74 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* SwiftPackageProductDependency */; };
+		1C47122F2664CE4E00E5AA74 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* SwiftPackageProductDependency */; };
+		1C4712352665640A00E5AA74 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4712332665640500E5AA74 /* PSMenuItem.m */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
@@ -225,7 +226,7 @@
 		1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */; };
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
-		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
+		1C5C2B8D22D195BF00EA5A80 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
@@ -239,8 +240,8 @@
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C6BDD22265CB307005475CE /* Imports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BDD21265CB307005475CE /* Imports.swift */; };
-		1C6BDD24265CB31E005475CE /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* Logger */; };
-		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
+		1C6BDD24265CB31E005475CE /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* SwiftPackageProductDependency */; };
+		1C6BDD26265CB337005475CE /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* SwiftPackageProductDependency */; };
 		1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */; };
 		1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A26221505A00035E154 /* UserDefaults+Settings.swift */; };
 		1C796A292218C41F0035E154 /* DefaultBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A282218C41F0035E154 /* DefaultBrowser.swift */; };
@@ -271,8 +272,8 @@
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
-		1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* MiniOnePassword */; };
-		1CAF2372250C8CE400033F61 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* Nuke */; };
+		1CAEA24322D14FFE009CB9EB /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */; };
+		1CAF2372250C8CE400033F61 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -313,7 +314,7 @@
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
 		1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */; };
 		1CD1ADA72272737600E075EA /* CGGeometry+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */; };
-		1CD72E79265CA0D500FF3BF4 /* AwfulCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CD72E78265CA0D500FF3BF4 /* AwfulCore */; };
+		1CD72E79265CA0D500FF3BF4 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CD72E78265CA0D500FF3BF4 /* SwiftPackageProductDependency */; };
 		1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED5228501BF00B62865 /* CGRect+Center.swift */; };
 		1CD7EED8228504C100B62865 /* UIView+CompressedHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */; };
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
@@ -651,6 +652,10 @@
 		1C453F4423384923007AC6CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
 		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
+		1C4712312665640500E5AA74 /* PSMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
+		1C4712322665640500E5AA74 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1C4712332665640500E5AA74 /* PSMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
+		1C4712342665640500E5AA74 /* LICENCE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENCE; sourceTree = "<group>"; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelpers.swift; sourceTree = "<group>"; };
@@ -1004,8 +1009,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */,
-				1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */,
+				1C47122F2664CE4E00E5AA74 /* BuildFile in Frameworks */,
+				1C47122C2664CB8C00E5AA74 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1028,7 +1033,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */,
+				1C1F8A2D2664BDF4003EA62C /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1036,7 +1041,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */,
+				1C6BDD26265CB337005475CE /* BuildFile in Frameworks */,
 				FF308D05C62669BEAFAEA2AC /* Pods_Awful_AwfulTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1045,14 +1050,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
-				1CD72E79265CA0D500FF3BF4 /* AwfulCore in Frameworks */,
-				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
-				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
+				1C453F282338457A007AC6CD /* BuildFile in Frameworks */,
+				1CD72E79265CA0D500FF3BF4 /* BuildFile in Frameworks */,
+				1C5C2B8D22D195BF00EA5A80 /* BuildFile in Frameworks */,
+				1CAEA24322D14FFE009CB9EB /* BuildFile in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
-				1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */,
-				1C6BDD24265CB31E005475CE /* Logger in Frameworks */,
-				1CAF2372250C8CE400033F61 /* Nuke in Frameworks */,
+				1C47122A2664CB8000E5AA74 /* BuildFile in Frameworks */,
+				1C6BDD24265CB31E005475CE /* BuildFile in Frameworks */,
+				1CAF2372250C8CE400033F61 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1078,6 +1083,7 @@
 			isa = PBXGroup;
 			children = (
 				1C5C2C5422D2584100EA5A80 /* ARChromeActivity */,
+				1C4712302665640500E5AA74 /* PSMenuItem */,
 				1C453F4423384923007AC6CD /* README.md */,
 				1C5C2C4E22D254D600EA5A80 /* TUSafariActivity */,
 			);
@@ -1360,6 +1366,17 @@
 				1C3A143D19DFC5D10022C44C /* ViewController.m */,
 			);
 			path = Extractor;
+			sourceTree = "<group>";
+		};
+		1C4712302665640500E5AA74 /* PSMenuItem */ = {
+			isa = PBXGroup;
+			children = (
+				1C4712312665640500E5AA74 /* PSMenuItem.h */,
+				1C4712322665640500E5AA74 /* README.md */,
+				1C4712332665640500E5AA74 /* PSMenuItem.m */,
+				1C4712342665640500E5AA74 /* LICENCE */,
+			);
+			path = PSMenuItem;
 			sourceTree = "<group>";
 		};
 		1C502CCE1F816A0B001890AF /* staredog */ = {
@@ -1842,7 +1859,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Awful */ = {
+		29B97314FDCFA39411CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -2026,8 +2043,8 @@
 			);
 			name = SmilieExtractor;
 			packageProductDependencies = (
-				1C47122B2664CB8C00E5AA74 /* Smilies */,
-				1C47122E2664CE4E00E5AA74 /* WebArchive */,
+				1C47122B2664CB8C00E5AA74 /* SwiftPackageProductDependency */,
+				1C47122E2664CE4E00E5AA74 /* SwiftPackageProductDependency */,
 			);
 			productName = SmilieExtractor;
 			productReference = 1C3A143319DFC5D10022C44C /* SmilieExtractor.app */;
@@ -2083,7 +2100,7 @@
 			);
 			name = SmilieKeyboard;
 			packageProductDependencies = (
-				1C1F8A2C2664BDF4003EA62C /* Smilies */,
+				1C1F8A2C2664BDF4003EA62C /* SwiftPackageProductDependency */,
 			);
 			productName = "Smilie Keyboard";
 			productReference = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */;
@@ -2106,7 +2123,7 @@
 			);
 			name = AwfulTests;
 			packageProductDependencies = (
-				1C6BDD25265CB337005475CE /* HTMLReader */,
+				1C6BDD25265CB337005475CE /* SwiftPackageProductDependency */,
 			);
 			productName = AwfulTests;
 			productReference = 1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */;
@@ -2133,13 +2150,13 @@
 			);
 			name = Awful;
 			packageProductDependencies = (
-				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
-				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
-				1C453F272338457A007AC6CD /* Stencil */,
-				1CAF2371250C8CE400033F61 /* Nuke */,
-				1CD72E78265CA0D500FF3BF4 /* AwfulCore */,
-				1C6BDD23265CB31E005475CE /* Logger */,
-				1C4712292664CB8000E5AA74 /* Smilies */,
+				1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */,
+				1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */,
+				1C453F272338457A007AC6CD /* SwiftPackageProductDependency */,
+				1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */,
+				1CD72E78265CA0D500FF3BF4 /* SwiftPackageProductDependency */,
+				1C6BDD23265CB31E005475CE /* SwiftPackageProductDependency */,
+				1C4712292664CB8000E5AA74 /* SwiftPackageProductDependency */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -2205,13 +2222,13 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
 			packageReferences = (
-				1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */,
-				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
-				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
-				1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */,
-				1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */,
+				1C49CE4922CAF405004B76E6 /* RemoteSwiftPackageReference */,
+				1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */,
+				1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */,
+				1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */,
+				1CD72E65265C7FD600FF3BF4 /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
@@ -2562,14 +2579,12 @@
 				"${PODS_ROOT}/Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework",
 				"${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework",
-				"${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework",
 				"${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KVOController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MRProgress.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PSMenuItem.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PullToRefresh.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2621,14 +2636,12 @@
 				"${PODS_ROOT}/Target Support Files/Pods-Awful/Pods-Awful-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework",
 				"${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework",
-				"${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework",
 				"${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KVOController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MRProgress.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PSMenuItem.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PullToRefresh.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2786,6 +2799,7 @@
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
 				1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */,
 				1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */,
+				1C4712352665640A00E5AA74 /* PSMenuItem.m in Sources */,
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				1CE0357D1AA2371F007F5277 /* SettingsDefaultBrowserController.swift in Sources */,
 				1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */,
@@ -3391,7 +3405,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
+		1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
 			requirement = {
@@ -3399,7 +3413,7 @@
 				minimumVersion = 0.13.1;
 			};
 		};
-		1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+		1C49CE4922CAF405004B76E6 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit";
 			requirement = {
@@ -3407,7 +3421,7 @@
 				minimumVersion = 6.10.0;
 			};
 		};
-		1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+		1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nolanw/Nuke.git";
 			requirement = {
@@ -3415,7 +3429,7 @@
 				kind = branch;
 			};
 		};
-		1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */ = {
+		1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nolanw/HTMLReader";
 			requirement = {
@@ -3423,7 +3437,7 @@
 				minimumVersion = 2.1.7;
 			};
 		};
-		1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */ = {
+		1CD72E65265C7FD600FF3BF4 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Flipboard/FLAnimatedImage";
 			requirement = {
@@ -3434,50 +3448,50 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1C1F8A2C2664BDF4003EA62C /* Smilies */ = {
+		1C1F8A2C2664BDF4003EA62C /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Smilies;
 		};
-		1C453F272338457A007AC6CD /* Stencil */ = {
+		1C453F272338457A007AC6CD /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
+			package = 1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */;
 			productName = Stencil;
 		};
-		1C4712292664CB8000E5AA74 /* Smilies */ = {
+		1C4712292664CB8000E5AA74 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Smilies;
 		};
-		1C47122B2664CB8C00E5AA74 /* Smilies */ = {
+		1C47122B2664CB8C00E5AA74 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Smilies;
 		};
-		1C47122E2664CE4E00E5AA74 /* WebArchive */ = {
+		1C47122E2664CE4E00E5AA74 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WebArchive;
 		};
-		1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */ = {
+		1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImgurAnonymousAPI;
 		};
-		1C6BDD23265CB31E005475CE /* Logger */ = {
+		1C6BDD23265CB31E005475CE /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Logger;
 		};
-		1C6BDD25265CB337005475CE /* HTMLReader */ = {
+		1C6BDD25265CB337005475CE /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
+			package = 1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */;
 			productName = HTMLReader;
 		};
-		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
+		1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MiniOnePassword;
 		};
-		1CAF2371250C8CE400033F61 /* Nuke */ = {
+		1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */;
+			package = 1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */;
 			productName = Nuke;
 		};
-		1CD72E78265CA0D500FF3BF4 /* AwfulCore */ = {
+		1CD72E78265CA0D500FF3BF4 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulCore;
 		};

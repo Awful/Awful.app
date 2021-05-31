@@ -77,6 +77,8 @@ BOOL PSPDFPIsMenuItemSelector(SEL selector) {
             Class objectClass = class_isMetaClass(object_getClass(object)) ? object : [object class];
 
             // check if menu handler has been already installed.
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wundeclared-selector"
             SEL canPerformActionSEL = @selector(pspdf_canPerformAction:withSender:);
             if (!class_getInstanceMethod(objectClass, canPerformActionSEL)) {
 
@@ -122,6 +124,7 @@ BOOL PSPDFPIsMenuItemSelector(SEL selector) {
                 }));
                 PSPDFReplaceMethod(objectClass, @selector(forwardInvocation:), forwardInvocationSEL, forwardInvocationIMP);
             }
+            #pragma clang diagnostic pop
         }
     }
 }
@@ -129,7 +132,7 @@ BOOL PSPDFPIsMenuItemSelector(SEL selector) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - NSObject
 
-- (id)initWithTitle:(NSString *)title block:(void(^)())block {
+- (id)initWithTitle:(NSString *)title block:(void(^)(void))block {
     // Create a unique, still debuggable selector unique per PSMenuItem.
     NSString *strippedTitle = [[[title componentsSeparatedByCharactersInSet:[[NSCharacterSet letterCharacterSet] invertedSet]] componentsJoinedByString:@""] lowercaseString];
     CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
