@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
-import KVOController
 import MRProgress
 
 private let Log = Logger.get()
@@ -14,7 +13,7 @@ A place for someone to compose a reply to a thread.
 ReplyWorkspace conforms to UIStateRestoring, so it is ok to involve it in UIKit state preservation and restoration.
 */
 final class ReplyWorkspace: NSObject {
-    let draft: ReplyDraft
+    let draft: NSObject & ReplyDraft
     private var observers: [NSKeyValueObservation] = []
     private let restorationIdentifier: String
     
@@ -62,7 +61,7 @@ final class ReplyWorkspace: NSObject {
     }
     
     /// A nil restorationIdentifier implies that we were not created by UIKit state restoration.
-    fileprivate init(draft: ReplyDraft, didRestoreWithRestorationIdentifier restorationIdentifier: String?) {
+    fileprivate init(draft: NSObject & ReplyDraft, didRestoreWithRestorationIdentifier restorationIdentifier: String?) {
         self.draft = draft
         self.restorationIdentifier = restorationIdentifier ?? UUID().uuidString
         super.init()
@@ -92,6 +91,8 @@ final class ReplyWorkspace: NSObject {
         case editing(Post)
         case replying
     }
+
+    private var draftTitleObserver: NSKeyValueObservation?
     
     /*
     Dealing with compositionViewController is annoyingly complicated. Ideally it'd be a constant ivar, so we could either restore state by passing it in via init() or make a new one if we're not restoring state.
@@ -104,10 +105,19 @@ final class ReplyWorkspace: NSObject {
             
             let textView = compositionViewController.textView
             textView.attributedText = draft.text
-            kvoController.observe(draft, keyPath: "thread.title", options: [.initial, .new], block: { [unowned self] (observer: Any?, object: Any?, change: [String: Any]) -> Void in
-                self.compositionViewController.title = self.draft.title
-            })
-            
+
+            let changeHandler: (ReplyDraft) -> Void = { [weak self] draft in
+                self?.compositionViewController.title = draft.title
+            }
+            switch draft {
+            case let draft as NewReplyDraft:
+                draftTitleObserver = draft.observe(\.thread.title) { draft, change in changeHandler(draft) }
+            case let draft as EditReplyDraft:
+                draftTitleObserver = draft.observe(\.thread.title) { draft, change in changeHandler(draft) }
+            case let unknown:
+                fatalError("unexpected draft type \(type(of: unknown))")
+            }
+
             textViewNotificationToken = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
                 self.rightButtonItem.isEnabled = textView.hasText
             }
@@ -240,15 +250,21 @@ final class ReplyWorkspace: NSObject {
         
         progressView?.stopBlock = { _ in
             submitProgress.cancel() }
-        
-        kvoController.observe(submitProgress, keyPaths: ["cancelled", "fractionCompleted"], options: []) { [weak self] _, object, _ in
-            if let progress = object as? Progress {
-                if progress.fractionCompleted >= 1 || progress.isCancelled {
-                    progressView?.stopBlock = nil
-                    self?.kvoController.unobserve(progress)
-                }
+
+        var progressObservations: [NSKeyValueObservation] = []
+        let changeHandler: (Progress) -> Void = { progress in
+            if progress.fractionCompleted >= 1 || progress.isCancelled {
+                progressView?.stopBlock = nil
+                progressObservations.forEach { $0.invalidate() }
+                progressObservations.removeAll()
             }
         }
+        progressObservations.append(submitProgress.observe(\.isCancelled, options: []) { progress, change in
+            changeHandler(progress)
+        })
+        progressObservations.append(submitProgress.observe(\.fractionCompleted, options: []) { progress, change in
+            changeHandler(progress)
+        })
     }
     fileprivate var submitProgress: Progress?
     
@@ -319,7 +335,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     
     class func object(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIStateRestoring? {
         if let path = coder.decodeObject(forKey: Keys.draftPath) as! String? {
-            if let draft = DraftStore.sharedStore().loadDraft(path) as! ReplyDraft? {
+            if let draft = DraftStore.sharedStore().loadDraft(path) as! (NSObject & ReplyDraft)? {
                 return self.init(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last )
             }
         }

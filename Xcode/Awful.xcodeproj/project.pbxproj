@@ -318,7 +318,6 @@
 		1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED5228501BF00B62865 /* CGRect+Center.swift */; };
 		1CD7EED8228504C100B62865 /* UIView+CompressedHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */; };
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
-		1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDBF2361BD2C13400ADC7DA /* KVOController.swift */; };
 		1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */; };
 		1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */; };
 		1CDC53E0220669640086BD2B /* Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53DF220669640086BD2B /* Photos.swift */; };
@@ -651,7 +650,7 @@
 		1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Selections.swift"; sourceTree = "<group>"; };
 		1C453F4423384923007AC6CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
-		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
+		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
 		1C4712312665640500E5AA74 /* PSMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PSMenuItem.h; sourceTree = "<group>"; };
 		1C4712322665640500E5AA74 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C4712332665640500E5AA74 /* PSMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PSMenuItem.m; sourceTree = "<group>"; };
@@ -863,7 +862,6 @@
 		1CD7EED5228501BF00B62865 /* CGRect+Center.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Center.swift"; sourceTree = "<group>"; };
 		1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+CompressedHeight.swift"; sourceTree = "<group>"; };
 		1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NigglyRefreshView.swift; sourceTree = "<group>"; };
-		1CDBF2361BD2C13400ADC7DA /* KVOController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOController.swift; sourceTree = "<group>"; };
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImgurAnonymousAPI+Shared.swift"; sourceTree = "<group>"; };
 		1CDC53DF220669640086BD2B /* Photos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photos.swift; sourceTree = "<group>"; };
@@ -1622,7 +1620,6 @@
 				1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */,
 				1C0060A42170347300E5329A /* HTMLReader.swift */,
 				1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */,
-				1CDBF2361BD2C13400ADC7DA /* KVOController.swift */,
 				1C381205219F766B005029C1 /* NSAttributedString+Format.swift */,
 				1CDC53DF220669640086BD2B /* Photos.swift */,
 				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
@@ -2577,13 +2574,11 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Awful-AwfulTests/Pods-Awful-AwfulTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework",
 				"${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework",
 				"${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KVOController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MRProgress.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PullToRefresh.framework",
 			);
@@ -2634,13 +2629,11 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Awful/Pods-Awful-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework",
 				"${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework",
 				"${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KVOController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MRProgress.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PullToRefresh.framework",
 			);
@@ -2822,7 +2815,6 @@
 				1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
-				1CDBF2371BD2C13400ADC7DA /* KVOController.swift in Sources */,
 				1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
 				1CCAFE1E25130D5C0068C152 /* WKWebView+RegisterScheme.m in Sources */,

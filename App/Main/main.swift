@@ -9,7 +9,7 @@ if #available(iOS 13.0, *) {
     // Bug fixed upstream. (Note: iOS 12.2 ships with its own Swift stdlib that is affected by this bug. The app bundles a copy of the Swift stdlib for pre-iOS 12.2, but I don't know if the bundled stdlib includes the fix.)
 } else {
     class SR6795Workaround: NSObject {
-        @objc dynamic var dummy = 0
+        @objc dynamic var dummy: Bool = false
     }
     let instance = SR6795Workaround()
     let observer = instance.observe(\.dummy, changeHandler: { _, _ in })

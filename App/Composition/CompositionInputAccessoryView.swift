@@ -13,6 +13,7 @@ final class CompositionInputAccessoryView: UIInputView {
     fileprivate var widthConstraints: [NSLayoutConstraint] = []
     fileprivate var heightConstraints: [NSLayoutConstraint] = []
     fileprivate var edgeConstraints: [NSLayoutConstraint] = []
+    private var observers: [NSKeyValueObservation] = []
     
     fileprivate lazy var smilieButton: KeyboardButton = {
         let button = KeyboardButton()
@@ -54,10 +55,10 @@ final class CompositionInputAccessoryView: UIInputView {
         super.init(frame: frame, inputViewStyle: .default)
         
         isOpaque = true
-        
-        kvoController.observe(autocloseCommand, keyPath: "enabled", options: [.initial], typedBlock: { [weak self] (command, change) in
-            self?.autocloseButton.isEnabled = command.enabled
-            })
+
+        observers.append(autocloseCommand.observe(\.enabled) { [weak self] command, change in
+            self?.autocloseButton.isEnabled = change.newValue!
+        })
         
         smilieButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(smilieButton)

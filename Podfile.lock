@@ -1,5 +1,4 @@
 PODS:
-  - KVOController (1.2.0)
   - MRProgress/ActivityIndicator (0.8.3):
     - MRProgress/Stopable
   - MRProgress/Blur (0.8.3):
@@ -22,21 +21,18 @@ PODS:
   - PullToRefresher (3.2)
 
 DEPENDENCIES:
-  - KVOController
   - MRProgress/Overlay
   - PullToRefresher (= 3.2)
 
 SPEC REPOS:
   trunk:
-    - KVOController
     - MRProgress
     - PullToRefresher
 
 SPEC CHECKSUMS:
-  KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
   MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   PullToRefresher: 746c1089710eb74a3a584921549296a2fe573314
 
-PODFILE CHECKSUM: f41e14ceac139bcf6461e8a6444d009273f37ca0
+PODFILE CHECKSUM: f4aef878a68c55ec9ced3cc72ec36910927a3daf
 
 COCOAPODS: 1.10.1
