@@ -448,7 +448,7 @@ footer {
   color: rgba(255, 255, 255, 0.3);
 }
 .action-button img {
-  -webkit-filter: invert() brightness(55.68627451%);
+  -webkit-filter: invert() brightness(29.80392157%);
 }
 .editedby span.mention.highlight {
   color: #dd89ff;
