@@ -28,4 +28,7 @@
    <FileRef
       location = "group:ScannerShim">
    </FileRef>
+   <FileRef
+      location = "group:Smilies">
+   </FileRef>
 </Workspace>

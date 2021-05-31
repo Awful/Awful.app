@@ -31,7 +31,7 @@
 
 + (instancetype)newFromNib
 {
-    return [[NSBundle bundleForClass:[SmilieKeyboardView class]] loadNibNamed:@"SmilieKeyboardView" owner:nil options:nil][0];
+    return [SWIFTPM_MODULE_BUNDLE loadNibNamed:@"SmilieKeyboardView" owner:nil options:nil][0];
 }
 
 - (void)setDataSource:(id<SmilieKeyboardDataSource>)dataSource

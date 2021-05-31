@@ -6,7 +6,7 @@
 
 SmilieWebArchive * FixtureWebArchive(void)
 {
-    NSURL *URL = [[NSBundle bundleForClass:[TestDataStore class]] URLForResource:@"showsmilies" withExtension:@"webarchive"];
+    NSURL *URL = [SWIFTPM_MODULE_BUNDLE URLForResource:@"showsmilies" withExtension:@"webarchive"];
     return [[SmilieWebArchive alloc] initWithURL:URL];
 }
 

@@ -3,8 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 @import Foundation;
-#import <Smilies/SmilieKeyboardView.h>
-#import <Smilies/SmilieListType.h>
+#import "SmilieKeyboardView.h"
+#import "SmilieListType.h"
 @class Smilie;
 @class SmilieDataStore;
 

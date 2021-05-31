@@ -61,6 +61,7 @@
 		1C1BD0B32320C98400805208 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B12320C98400805208 /* platinum-member-white@2x.png */; };
 		1C1BD0B42320C98400805208 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B22320C98400805208 /* platinum-member-white@3x.png */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
+		1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* Smilies */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C24BC952002BF2F0022C85F /* ForumListCell.swift */; };
@@ -94,27 +95,11 @@
 		1C397C901BCAEAC300CA7FD5 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */; };
 		1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */; };
 		1C397CA91BCC473A00CA7FD5 /* post-dots.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C397CA81BCC473A00CA7FD5 /* post-dots.png */; };
-		1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */; };
-		1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A13FA19DF78610022C44C /* SmilieMetadata.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C3A13FD19DF78610022C44C /* SmilieMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A13FB19DF78610022C44C /* SmilieMetadata.m */; };
-		1C3A140219DFC1FC0022C44C /* SmilieManagedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C3A140319DFC1FC0022C44C /* SmilieManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A140119DFC1FC0022C44C /* SmilieManagedObject.m */; };
 		1C3A143819DFC5D10022C44C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A143719DFC5D10022C44C /* main.m */; };
 		1C3A143B19DFC5D10022C44C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A143A19DFC5D10022C44C /* AppDelegate.m */; };
 		1C3A143E19DFC5D10022C44C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A143D19DFC5D10022C44C /* ViewController.m */; };
 		1C3A144119DFC5D10022C44C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A143F19DFC5D10022C44C /* Main.storyboard */; };
 		1C3A144619DFC5D10022C44C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A144419DFC5D10022C44C /* LaunchScreen.xib */; };
-		1C3A145D19DFC6790022C44C /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
-		1C3A145F19DFC6970022C44C /* Smilies.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1C3A146819DFC7130022C44C /* SmilieDataStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3A146619DFC7130022C44C /* SmilieDataStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C3A146919DFC7130022C44C /* SmilieDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A146719DFC7130022C44C /* SmilieDataStore.m */; };
-		1C3A146D19DFCD9A0022C44C /* SmilieWebArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A146C19DFCD9A0022C44C /* SmilieWebArchive.m */; };
-		1C3A146E19DFCD9A0022C44C /* SmilieWebArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A146C19DFCD9A0022C44C /* SmilieWebArchive.m */; };
-		1C3A147019DFD04C0022C44C /* WebArchiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A146F19DFD04C0022C44C /* WebArchiveTests.m */; };
-		1C3A147219DFD0D00022C44C /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147119DFD0D00022C44C /* showsmilies.webarchive */; };
-		1C3A147319DFD0D00022C44C /* showsmilies.webarchive in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147119DFD0D00022C44C /* showsmilies.webarchive */; };
-		1C3A147519DFDE380022C44C /* Smilies.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A147419DFDE380022C44C /* Smilies.sqlite */; };
-		1C3A147719DFDEC30022C44C /* BundledSmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */; };
 		1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */; };
 		1C3E1815224C632A00BD88E5 /* UIImage+Decompression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */; };
 		1C3E1817224C659500BD88E5 /* CGImage+IsOpaque.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */; };
@@ -134,16 +119,14 @@
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
 		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
 		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
+		1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C4712292664CB8000E5AA74 /* Smilies */; };
+		1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* Smilies */; };
+		1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* WebArchive */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */; };
 		1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */; };
-		1C4EFEA719ED2D4600CD423E /* ImageDownloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */; };
-		1C4EFEAA19ED59E900CD423E /* SmilieKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C4EFEAB19ED59E900CD423E /* SmilieKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EFEA919ED59E900CD423E /* SmilieKeyboard.m */; };
-		1C4F8ED319E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		1C4F8ED419E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */; };
 		1C502D121F816FF3001890AF /* AppIcon-Bars2-1024x1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C502D021F816BAF001890AF /* AppIcon-Bars2-1024x1024.png */; };
 		1C502D131F816FF3001890AF /* AppIcon-Bars2-20x20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C502D031F816BAF001890AF /* AppIcon-Bars2-20x20.png */; };
 		1C502D141F816FF3001890AF /* AppIcon-Bars2-20x20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C502D041F816BAF001890AF /* AppIcon-Bars2-20x20@2x.png */; };
@@ -208,8 +191,6 @@
 		1C502D4F1F817010001890AF /* AppIcon-staredog-76x76.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C502CDC1F816A0B001890AF /* AppIcon-staredog-76x76.png */; };
 		1C502D501F817010001890AF /* AppIcon-staredog-76x76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C502CDD1F816A0B001890AF /* AppIcon-staredog-76x76@2x.png */; };
 		1C502D511F817010001890AF /* AppIcon-staredog-83.5x83.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C502CDE1F816A0B001890AF /* AppIcon-staredog-83.5x83.5@2x.png */; };
-		1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C54B4BA19E12E850004DD57 /* SmilieAppContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */; };
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
 		1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */; };
 		1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */; };
@@ -221,11 +202,6 @@
 		1C56973724C3F1910077CA62 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C56973624C3F1910077CA62 /* Cocoa.framework */; };
 		1C56973A24C3F1910077CA62 /* SafariExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C56973924C3F1910077CA62 /* SafariExtensionHandler.swift */; };
 		1C56973F24C3F1910077CA62 /* copy-awful-markdown.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C56973E24C3F1910077CA62 /* copy-awful-markdown.js */; };
-		1C588D3F19EA7FDD004C7809 /* SmilieOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C588D3D19EA7FDD004C7809 /* SmilieOperation.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		1C588D4019EA7FDD004C7809 /* SmilieOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D3E19EA7FDD004C7809 /* SmilieOperation.m */; };
-		1C588D4319EA9785004C7809 /* CleanupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4119EA974C004C7809 /* CleanupTests.m */; };
-		1C588D4619EA9909004C7809 /* Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4519EA9909004C7809 /* Helpers.m */; };
-		1C588D4819EAB0B6004C7809 /* ScrapingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C588D4719EAB0B6004C7809 /* ScrapingTests.m */; };
 		1C5B83491F74B1F200BE7517 /* AppIcon-v-1024x1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B83391F74B1E800BE7517 /* AppIcon-v-1024x1024.png */; };
 		1C5B834A1F74B1F200BE7517 /* AppIcon-v-20x20.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B833A1F74B1E800BE7517 /* AppIcon-v-20x20.png */; };
 		1C5B834B1F74B1F200BE7517 /* AppIcon-v-20x20@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B833B1F74B1E800BE7517 /* AppIcon-v-20x20@2x.png */; };
@@ -257,26 +233,11 @@
 		1C5D570622D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */; };
 		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
 		1C5F700617D86E0F005ABD6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Assets.xcassets */; };
-		1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9C419DD304E001B9A41 /* Smilies.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9D019DD304F001B9A41 /* SmiliesTests.m */; };
-		1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
-		1C66A9D519DD304F001B9A41 /* Smilies.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1C66A9E819DD345D001B9A41 /* Smilie.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66A9E619DD345D001B9A41 /* Smilie.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9E719DD345D001B9A41 /* Smilie.m */; };
-		1C66A9EA19DD372B001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
 		1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */; };
 		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1C66AA0419DD39AF001B9A41 /* Smilies.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C66A9C019DD304D001B9A41 /* Smilies.framework */; };
 		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
-		1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66AA1019DDF54A001B9A41 /* SmilieButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1119DDF54A001B9A41 /* SmilieButton.m */; };
-		1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA1419DDF6E6001B9A41 /* Images.xcassets */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
-		1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C66E34719E78B83007FC27C /* SmilieListType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
-		1C6BDD1C265CB2B3005475CE /* FLAnimatedImage in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD1B265CB2B3005475CE /* FLAnimatedImage */; };
-		1C6BDD1E265CB2BD005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD1D265CB2BD005475CE /* HTMLReader */; };
-		1C6BDD20265CB2E7005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD1F265CB2E7005475CE /* HTMLReader */; };
 		1C6BDD22265CB307005475CE /* Imports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BDD21265CB307005475CE /* Imports.swift */; };
 		1C6BDD24265CB31E005475CE /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* Logger */; };
 		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
@@ -284,11 +245,6 @@
 		1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A26221505A00035E154 /* UserDefaults+Settings.swift */; };
 		1C796A292218C41F0035E154 /* DefaultBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A282218C41F0035E154 /* DefaultBrowser.swift */; };
 		1C796A2D2219EC1C0035E154 /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A2C2219EC1C0035E154 /* SettingsSection.swift */; };
-		1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */; };
-		1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */; };
-		1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7B010819DE89B000542293 /* SmilieCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B010919DE89B000542293 /* SmilieCell.m */; };
 		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
@@ -309,8 +265,6 @@
 		1C914ECE208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */; };
 		1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
-		1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */; };
 		1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */; };
 		1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* main.swift */; };
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
@@ -494,20 +448,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1C097AA21A97C48600425EEF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
-			remoteInfo = Smilies;
-		};
-		1C3A146019DFC6AA0022C44C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
-			remoteInfo = Smilies;
-		};
 		1C56973424C3F1910077CA62 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -515,26 +455,12 @@
 			remoteGlobalIDString = 1C56973124C3F1910077CA62;
 			remoteInfo = "CopyMarkdownSafariExtension Extension";
 		};
-		1C66A9D219DD304F001B9A41 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
-			remoteInfo = Smilies;
-		};
 		1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1C66A9EE19DD3939001B9A41;
 			remoteInfo = "Smilie Keyboard";
-		};
-		1C66AA0219DD39A9001B9A41 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C66A9BF19DD304D001B9A41;
-			remoteInfo = Smilies;
 		};
 		1C9AEBC8210C3B2300C9A567 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -552,7 +478,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1C3A145F19DFC6970022C44C /* Smilies.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -574,7 +499,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1C66A9D519DD304F001B9A41 /* Smilies.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -601,7 +525,6 @@
 		1C0060A8217171CD00E5329A /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C015BBE21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScrollViewDelegateMultiplexer.h; sourceTree = "<group>"; };
 		1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScrollViewDelegateMultiplexer.m; sourceTree = "<group>"; };
-		1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Smilies.xcdatamodel; sourceTree = "<group>"; };
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate-dark.css"; sourceTree = "<group>"; };
@@ -699,10 +622,6 @@
 		1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
 		1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceURLProtocol.swift; sourceTree = "<group>"; };
 		1C397CA81BCC473A00CA7FD5 /* post-dots.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots.png"; sourceTree = "<group>"; };
-		1C3A13FA19DF78610022C44C /* SmilieMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieMetadata.h; sourceTree = "<group>"; };
-		1C3A13FB19DF78610022C44C /* SmilieMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieMetadata.m; sourceTree = "<group>"; };
-		1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieManagedObject.h; sourceTree = "<group>"; };
-		1C3A140119DFC1FC0022C44C /* SmilieManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieManagedObject.m; sourceTree = "<group>"; };
 		1C3A143319DFC5D10022C44C /* SmilieExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmilieExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C3A143619DFC5D10022C44C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C3A143719DFC5D10022C44C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -712,14 +631,6 @@
 		1C3A143D19DFC5D10022C44C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		1C3A144019DFC5D10022C44C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1C3A144519DFC5D10022C44C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		1C3A146619DFC7130022C44C /* SmilieDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieDataStore.h; sourceTree = "<group>"; };
-		1C3A146719DFC7130022C44C /* SmilieDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieDataStore.m; sourceTree = "<group>"; };
-		1C3A146B19DFCD9A0022C44C /* SmilieWebArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieWebArchive.h; sourceTree = "<group>"; };
-		1C3A146C19DFCD9A0022C44C /* SmilieWebArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieWebArchive.m; sourceTree = "<group>"; };
-		1C3A146F19DFD04C0022C44C /* WebArchiveTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebArchiveTests.m; sourceTree = "<group>"; };
-		1C3A147119DFD0D00022C44C /* showsmilies.webarchive */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = showsmilies.webarchive; sourceTree = "<group>"; };
-		1C3A147419DFDE380022C44C /* Smilies.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Smilies.sqlite; sourceTree = "<group>"; };
-		1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BundledSmiliesTests.m; sourceTree = "<group>"; };
 		1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FLAnimatedImageView+Nuke.swift"; sourceTree = "<group>"; };
 		1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Decompression.swift"; sourceTree = "<group>"; };
 		1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+IsOpaque.swift"; sourceTree = "<group>"; };
@@ -739,16 +650,12 @@
 		1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Selections.swift"; sourceTree = "<group>"; };
 		1C453F4423384923007AC6CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
+		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
 		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
 		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelpers.swift; sourceTree = "<group>"; };
 		1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListSectionHeaderView.swift; sourceTree = "<group>"; };
 		1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulCore.swift; sourceTree = "<group>"; };
-		1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloadTests.m; sourceTree = "<group>"; };
-		1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboard.h; sourceTree = "<group>"; };
-		1C4EFEA919ED59E900CD423E /* SmilieKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboard.m; sourceTree = "<group>"; };
-		1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCollectionViewFlowLayout.h; sourceTree = "<group>"; };
-		1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		1C502CCF1F816A0B001890AF /* AppIcon-staredog-1024x1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-staredog-1024x1024.png"; sourceTree = "<group>"; };
 		1C502CD01F816A0B001890AF /* AppIcon-staredog-20x20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-staredog-20x20.png"; sourceTree = "<group>"; };
 		1C502CD11F816A0B001890AF /* AppIcon-staredog-20x20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-staredog-20x20@2x.png"; sourceTree = "<group>"; };
@@ -813,8 +720,6 @@
 		1C502D0F1F816BAF001890AF /* AppIcon-Bars2-76x76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Bars2-76x76.png"; sourceTree = "<group>"; };
 		1C502D101F816BAF001890AF /* AppIcon-Bars2-76x76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Bars2-76x76@2x.png"; sourceTree = "<group>"; };
 		1C502D111F816BAF001890AF /* AppIcon-Bars2-83.5x83.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Bars2-83.5x83.5@2x.png"; sourceTree = "<group>"; };
-		1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieAppContainer.h; sourceTree = "<group>"; };
-		1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieAppContainer.m; sourceTree = "<group>"; };
 		1C54D30919BBC717002AC6B9 /* SettingsBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsBinding.h; sourceTree = "<group>"; };
 		1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsBinding.m; sourceTree = "<group>"; };
 		1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsAvatarHeader.swift; sourceTree = "<group>"; };
@@ -832,12 +737,6 @@
 		1C56973E24C3F1910077CA62 /* copy-awful-markdown.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "copy-awful-markdown.js"; sourceTree = "<group>"; };
 		1C56974524C3F1910077CA62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C56974624C3F1910077CA62 /* Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Extension.entitlements; sourceTree = "<group>"; };
-		1C588D3D19EA7FDD004C7809 /* SmilieOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieOperation.h; sourceTree = "<group>"; };
-		1C588D3E19EA7FDD004C7809 /* SmilieOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieOperation.m; sourceTree = "<group>"; };
-		1C588D4119EA974C004C7809 /* CleanupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CleanupTests.m; sourceTree = "<group>"; };
-		1C588D4419EA9909004C7809 /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
-		1C588D4519EA9909004C7809 /* Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Helpers.m; sourceTree = "<group>"; };
-		1C588D4719EAB0B6004C7809 /* ScrapingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScrapingTests.m; sourceTree = "<group>"; };
 		1C5B83391F74B1E800BE7517 /* AppIcon-v-1024x1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-v-1024x1024.png"; sourceTree = "<group>"; };
 		1C5B833A1F74B1E800BE7517 /* AppIcon-v-20x20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-v-20x20.png"; sourceTree = "<group>"; };
 		1C5B833B1F74B1E800BE7517 /* AppIcon-v-20x20@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-v-20x20@2x.png"; sourceTree = "<group>"; };
@@ -868,26 +767,14 @@
 		1C5D570522D6C4F200952242 /* UIScrollView+ScrollIndicatorInsetBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollIndicatorInsetBottom.swift"; sourceTree = "<group>"; };
 		1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKeyCommand+MakeWithDiscoverabilityTitle.swift"; sourceTree = "<group>"; };
 		1C5F700517D86E0F005ABD6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1C66A9C019DD304D001B9A41 /* Smilies.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Smilies.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1C66A9C319DD304E001B9A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1C66A9C419DD304E001B9A41 /* Smilies.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Smilies.h; sourceTree = "<group>"; };
-		1C66A9CA19DD304E001B9A41 /* SmiliesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmiliesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1C66A9CF19DD304F001B9A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1C66A9D019DD304F001B9A41 /* SmiliesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SmiliesTests.m; sourceTree = "<group>"; };
-		1C66A9E619DD345D001B9A41 /* Smilie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Smilie.h; sourceTree = "<group>"; };
-		1C66A9E719DD345D001B9A41 /* Smilie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Smilie.m; sourceTree = "<group>"; };
 		1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SmilieKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C66A9F219DD393A001B9A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C66A9F319DD393A001B9A41 /* KeyboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardViewController.h; sourceTree = "<group>"; };
 		1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyboardViewController.m; sourceTree = "<group>"; };
 		1C66AA0719DD3CCD001B9A41 /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Keyboard.entitlements; sourceTree = "<group>"; };
 		1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NeedsFullAccessView.xib; sourceTree = "<group>"; };
-		1C66AA1019DDF54A001B9A41 /* SmilieButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieButton.h; sourceTree = "<group>"; };
-		1C66AA1119DDF54A001B9A41 /* SmilieButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieButton.m; sourceTree = "<group>"; };
-		1C66AA1419DDF6E6001B9A41 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
-		1C66E34719E78B83007FC27C /* SmilieListType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieListType.h; sourceTree = "<group>"; };
 		1C6821A81F113A760083F204 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
 		1C6BDD21265CB307005475CE /* Imports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Imports.swift; sourceTree = "<group>"; };
 		1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.generated.swift"; sourceTree = "<group>"; };
@@ -895,11 +782,6 @@
 		1C796A26221505A00035E154 /* UserDefaults+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.swift"; sourceTree = "<group>"; };
 		1C796A282218C41F0035E154 /* DefaultBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowser.swift; sourceTree = "<group>"; };
 		1C796A2C2219EC1C0035E154 /* SettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
-		1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieKeyboardView.h; sourceTree = "<group>"; };
-		1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieKeyboardView.m; sourceTree = "<group>"; };
-		1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SmilieKeyboardView.xib; sourceTree = "<group>"; };
-		1C7B010819DE89B000542293 /* SmilieCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieCell.h; sourceTree = "<group>"; };
-		1C7B010919DE89B000542293 /* SmilieCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieCell.m; sourceTree = "<group>"; };
 		1C82AC49199F584F00CB15FE /* Awful-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Awful-Bridging-Header.h"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
@@ -920,15 +802,12 @@
 		1C914ECB208B9EDE00C0E238 /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewNetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
 		1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Promises.swift"; sourceTree = "<group>"; };
-		1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilieFetchedDataSource.h; sourceTree = "<group>"; };
-		1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilieFetchedDataSource.m; sourceTree = "<group>"; };
 		1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagTests.swift; sourceTree = "<group>"; };
 		1C9AEBC7210C3B2300C9A567 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C9AEBCD210C3BAF00C9A567 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		1CA45D931F2C0AD1005BEEC5 /* RenderView.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = RenderView.js; sourceTree = "<group>"; };
 		1CA45D951F2C19AA005BEEC5 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Potentially-Objectionable.xcdatamodel"; sourceTree = "<group>"; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
 		1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Presentation.swift"; sourceTree = "<group>"; };
 		1CB15BCE1A9CEB8800176E73 /* Themes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
@@ -1125,7 +1004,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C3A145D19DFC6790022C44C /* Smilies.framework in Frameworks */,
+				1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */,
+				1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1144,29 +1024,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1C66A9BC19DD304D001B9A41 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C6BDD1E265CB2BD005475CE /* HTMLReader in Frameworks */,
-				1C6BDD1C265CB2B3005475CE /* FLAnimatedImage in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9C719DD304E001B9A41 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C6BDD20265CB2E7005475CE /* HTMLReader in Frameworks */,
-				1C66A9EA19DD372B001B9A41 /* Smilies.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1C66A9EC19DD3939001B9A41 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C66AA0419DD39AF001B9A41 /* Smilies.framework in Frameworks */,
+				1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1188,7 +1050,7 @@
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
 				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
-				1C66A9D419DD304F001B9A41 /* Smilies.framework in Frameworks */,
+				1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */,
 				1C6BDD24265CB31E005475CE /* Logger in Frameworks */,
 				1CAF2372250C8CE400033F61 /* Nuke in Frameworks */,
 			);
@@ -1227,8 +1089,6 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* AwfulDebug.app */,
-				1C66A9C019DD304D001B9A41 /* Smilies.framework */,
-				1C66A9CA19DD304E001B9A41 /* SmiliesTests.xctest */,
 				1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */,
 				1C3A143319DFC5D10022C44C /* SmilieExtractor.app */,
 				1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */,
@@ -1502,15 +1362,6 @@
 			path = Extractor;
 			sourceTree = "<group>";
 		};
-		1C3A146A19DFCD6D0022C44C /* Web Archives */ = {
-			isa = PBXGroup;
-			children = (
-				1C3A146B19DFCD9A0022C44C /* SmilieWebArchive.h */,
-				1C3A146C19DFCD9A0022C44C /* SmilieWebArchive.m */,
-			);
-			path = "Web Archives";
-			sourceTree = "<group>";
-		};
 		1C502CCE1F816A0B001890AF /* staredog */ = {
 			isa = PBXGroup;
 			children = (
@@ -1697,69 +1548,11 @@
 			isa = PBXGroup;
 			children = (
 				1C3A143419DFC5D10022C44C /* Extractor */,
-				1C66A9E419DD30ED001B9A41 /* Framework */,
 				1C66AA0119DD3971001B9A41 /* Keyboard */,
 				1CBBAAB61D949EE100A847EC /* Stickers */,
-				1C66A9E319DD3090001B9A41 /* Tests */,
-				1C3A146A19DFCD6D0022C44C /* Web Archives */,
 			);
 			name = Smilies;
-			path = ../Smilies;
-			sourceTree = "<group>";
-		};
-		1C66A9E319DD3090001B9A41 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				1C3A147619DFDEC30022C44C /* BundledSmiliesTests.m */,
-				1C588D4119EA974C004C7809 /* CleanupTests.m */,
-				1C588D4419EA9909004C7809 /* Helpers.h */,
-				1C588D4519EA9909004C7809 /* Helpers.m */,
-				1C4EFEA619ED2D4600CD423E /* ImageDownloadTests.m */,
-				1C66A9CF19DD304F001B9A41 /* Info.plist */,
-				1C588D4719EAB0B6004C7809 /* ScrapingTests.m */,
-				1C3A147119DFD0D00022C44C /* showsmilies.webarchive */,
-				1C66A9D019DD304F001B9A41 /* SmiliesTests.m */,
-				1C3A146F19DFD04C0022C44C /* WebArchiveTests.m */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		1C66A9E419DD30ED001B9A41 /* Framework */ = {
-			isa = PBXGroup;
-			children = (
-				1C66AA1419DDF6E6001B9A41 /* Images.xcassets */,
-				1C66A9C319DD304E001B9A41 /* Info.plist */,
-				1C66A9E619DD345D001B9A41 /* Smilie.h */,
-				1C66A9E719DD345D001B9A41 /* Smilie.m */,
-				1C54B4B719E12E850004DD57 /* SmilieAppContainer.h */,
-				1C54B4B819E12E850004DD57 /* SmilieAppContainer.m */,
-				1C66AA1019DDF54A001B9A41 /* SmilieButton.h */,
-				1C66AA1119DDF54A001B9A41 /* SmilieButton.m */,
-				1C7B010819DE89B000542293 /* SmilieCell.h */,
-				1C7B010919DE89B000542293 /* SmilieCell.m */,
-				1C4F8ED119E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h */,
-				1C4F8ED219E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m */,
-				1C3A146619DFC7130022C44C /* SmilieDataStore.h */,
-				1C3A146719DFC7130022C44C /* SmilieDataStore.m */,
-				1C972CB619E0FBA300769A6E /* SmilieFetchedDataSource.h */,
-				1C972CB719E0FBA300769A6E /* SmilieFetchedDataSource.m */,
-				1C4EFEA819ED59E900CD423E /* SmilieKeyboard.h */,
-				1C4EFEA919ED59E900CD423E /* SmilieKeyboard.m */,
-				1C7B010219DE7B0100542293 /* SmilieKeyboardView.h */,
-				1C7B010319DE7B0100542293 /* SmilieKeyboardView.m */,
-				1C7B010619DE7B1100542293 /* SmilieKeyboardView.xib */,
-				1C66E34719E78B83007FC27C /* SmilieListType.h */,
-				1C3A140019DFC1FC0022C44C /* SmilieManagedObject.h */,
-				1C3A140119DFC1FC0022C44C /* SmilieManagedObject.m */,
-				1C3A13FA19DF78610022C44C /* SmilieMetadata.h */,
-				1C3A13FB19DF78610022C44C /* SmilieMetadata.m */,
-				1C588D3D19EA7FDD004C7809 /* SmilieOperation.h */,
-				1C588D3E19EA7FDD004C7809 /* SmilieOperation.m */,
-				1C66A9C419DD304E001B9A41 /* Smilies.h */,
-				1C3A147419DFDE380022C44C /* Smilies.sqlite */,
-				1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */,
-			);
-			path = Framework;
+			path = "../Smilies Extra";
 			sourceTree = "<group>";
 		};
 		1C66AA0119DD3971001B9A41 /* Keyboard */ = {
@@ -1851,6 +1644,7 @@
 		1C9AEBC4210C3B2300C9A567 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				1C47122D2664CCE700E5AA74 /* Awful.xctestplan */,
 				1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */,
 				1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */,
 				1C9AEBC7210C3B2300C9A567 /* Info.plist */,
@@ -2216,30 +2010,6 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		1C66A9BD19DD304D001B9A41 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C4F8ED319E8FBED002201E3 /* SmilieCollectionViewFlowLayout.h in Headers */,
-				1C588D3F19EA7FDD004C7809 /* SmilieOperation.h in Headers */,
-				1C66A9C519DD304E001B9A41 /* Smilies.h in Headers */,
-				1C54B4B919E12E850004DD57 /* SmilieAppContainer.h in Headers */,
-				1C3A146819DFC7130022C44C /* SmilieDataStore.h in Headers */,
-				1C7B010A19DE89B000542293 /* SmilieCell.h in Headers */,
-				1C7B010419DE7B0100542293 /* SmilieKeyboardView.h in Headers */,
-				1C4EFEAA19ED59E900CD423E /* SmilieKeyboard.h in Headers */,
-				1C66E34819E78B84007FC27C /* SmilieListType.h in Headers */,
-				1C3A140219DFC1FC0022C44C /* SmilieManagedObject.h in Headers */,
-				1C66A9E819DD345D001B9A41 /* Smilie.h in Headers */,
-				1C972CB819E0FBA300769A6E /* SmilieFetchedDataSource.h in Headers */,
-				1C66AA1219DDF54A001B9A41 /* SmilieButton.h in Headers */,
-				1C3A13FC19DF78610022C44C /* SmilieMetadata.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		1C3A143219DFC5D10022C44C /* SmilieExtractor */ = {
 			isa = PBXNativeTarget;
@@ -2253,9 +2023,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C3A146119DFC6AA0022C44C /* PBXTargetDependency */,
 			);
 			name = SmilieExtractor;
+			packageProductDependencies = (
+				1C47122B2664CB8C00E5AA74 /* Smilies */,
+				1C47122E2664CE4E00E5AA74 /* WebArchive */,
+			);
 			productName = SmilieExtractor;
 			productReference = 1C3A143319DFC5D10022C44C /* SmilieExtractor.app */;
 			productType = "com.apple.product-type.application";
@@ -2296,49 +2069,6 @@
 			productReference = 1C56973224C3F1910077CA62 /* CopyMarkdownExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		1C66A9BF19DD304D001B9A41 /* Smilies */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1C66A9D819DD304F001B9A41 /* Build configuration list for PBXNativeTarget "Smilies" */;
-			buildPhases = (
-				1C66A9BD19DD304D001B9A41 /* Headers */,
-				1C66A9BB19DD304D001B9A41 /* Sources */,
-				1C66A9BC19DD304D001B9A41 /* Frameworks */,
-				1C66A9BE19DD304D001B9A41 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Smilies;
-			packageProductDependencies = (
-				1C6BDD1B265CB2B3005475CE /* FLAnimatedImage */,
-				1C6BDD1D265CB2BD005475CE /* HTMLReader */,
-			);
-			productName = Smilies;
-			productReference = 1C66A9C019DD304D001B9A41 /* Smilies.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		1C66A9C919DD304E001B9A41 /* SmiliesTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1C66A9DE19DD304F001B9A41 /* Build configuration list for PBXNativeTarget "SmiliesTests" */;
-			buildPhases = (
-				1C66A9C619DD304E001B9A41 /* Sources */,
-				1C66A9C719DD304E001B9A41 /* Frameworks */,
-				1C66A9C819DD304E001B9A41 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1C097AA31A97C48600425EEF /* PBXTargetDependency */,
-			);
-			name = SmiliesTests;
-			packageProductDependencies = (
-				1C6BDD1F265CB2E7005475CE /* HTMLReader */,
-			);
-			productName = SmiliesTests;
-			productReference = 1C66A9CA19DD304E001B9A41 /* SmiliesTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */;
@@ -2350,9 +2080,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C66AA0319DD39A9001B9A41 /* PBXTargetDependency */,
 			);
 			name = SmilieKeyboard;
+			packageProductDependencies = (
+				1C1F8A2C2664BDF4003EA62C /* Smilies */,
+			);
 			productName = "Smilie Keyboard";
 			productReference = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -2397,7 +2129,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C66A9D319DD304F001B9A41 /* PBXTargetDependency */,
 				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 			);
 			name = Awful;
@@ -2408,6 +2139,7 @@
 				1CAF2371250C8CE400033F61 /* Nuke */,
 				1CD72E78265CA0D500FF3BF4 /* AwfulCore */,
 				1C6BDD23265CB31E005475CE /* Logger */,
+				1C4712292664CB8000E5AA74 /* Smilies */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -2422,7 +2154,7 @@
 				CLASSPREFIX = "";
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
 					1C3A143219DFC5D10022C44C = {
@@ -2434,16 +2166,6 @@
 					};
 					1C56973124C3F1910077CA62 = {
 						CreatedOnToolsVersion = 12.0;
-					};
-					1C66A9BF19DD304D001B9A41 = {
-						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
-					};
-					1C66A9C919DD304E001B9A41 = {
-						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
 					};
 					1C66A9EE19DD3939001B9A41 = {
 						CreatedOnToolsVersion = 6.0.1;
@@ -2498,8 +2220,6 @@
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1C9AEBC2210C3B2200C9A567 /* AwfulTests */,
 				1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */,
-				1C66A9BF19DD304D001B9A41 /* Smilies */,
-				1C66A9C919DD304E001B9A41 /* SmiliesTests */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
 				1C56972024C3F1900077CA62 /* CopyMarkdownApp */,
 				1C56973124C3F1910077CA62 /* CopyMarkdownExtension */,
@@ -2514,7 +2234,6 @@
 			files = (
 				1C2DC7341DCEA177005040FD /* PotentiallyObjectionableStickers.plist in Resources */,
 				1C3A144119DFC5D10022C44C /* Main.storyboard in Resources */,
-				1C3A147319DFD0D00022C44C /* showsmilies.webarchive in Resources */,
 				1C3A144619DFC5D10022C44C /* LaunchScreen.xib in Resources */,
 				1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */,
 			);
@@ -2534,24 +2253,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C56973F24C3F1910077CA62 /* copy-awful-markdown.js in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9BE19DD304D001B9A41 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C3A147519DFDE380022C44C /* Smilies.sqlite in Resources */,
-				1C7B010719DE7B1100542293 /* SmilieKeyboardView.xib in Resources */,
-				1C66AA1519DDF6E6001B9A41 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9C819DD304E001B9A41 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C3A147219DFD0D00022C44C /* showsmilies.webarchive in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2945,7 +2646,6 @@
 				1C3A143E19DFC5D10022C44C /* ViewController.m in Sources */,
 				1C3A143B19DFC5D10022C44C /* AppDelegate.m in Sources */,
 				1C3A143819DFC5D10022C44C /* main.m in Sources */,
-				1C3A146E19DFCD9A0022C44C /* SmilieWebArchive.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2963,41 +2663,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C56973A24C3F1910077CA62 /* SafariExtensionHandler.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9BB19DD304D001B9A41 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C3A13FD19DF78610022C44C /* SmilieMetadata.m in Sources */,
-				1C7B010519DE7B0100542293 /* SmilieKeyboardView.m in Sources */,
-				1C66AA1319DDF54A001B9A41 /* SmilieButton.m in Sources */,
-				1C972CB919E0FBA300769A6E /* SmilieFetchedDataSource.m in Sources */,
-				1C7B010B19DE89B000542293 /* SmilieCell.m in Sources */,
-				1C3A13F919DF76400022C44C /* Smilies.xcdatamodeld in Sources */,
-				1C54B4BA19E12E850004DD57 /* SmilieAppContainer.m in Sources */,
-				1C4EFEAB19ED59E900CD423E /* SmilieKeyboard.m in Sources */,
-				1C66A9E919DD345D001B9A41 /* Smilie.m in Sources */,
-				1C588D4019EA7FDD004C7809 /* SmilieOperation.m in Sources */,
-				1C3A146919DFC7130022C44C /* SmilieDataStore.m in Sources */,
-				1C4F8ED419E8FBED002201E3 /* SmilieCollectionViewFlowLayout.m in Sources */,
-				1C3A140319DFC1FC0022C44C /* SmilieManagedObject.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9C619DD304E001B9A41 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C66A9D119DD304F001B9A41 /* SmiliesTests.m in Sources */,
-				1C588D4819EAB0B6004C7809 /* ScrapingTests.m in Sources */,
-				1C3A147019DFD04C0022C44C /* WebArchiveTests.m in Sources */,
-				1C3A146D19DFCD9A0022C44C /* SmilieWebArchive.m in Sources */,
-				1C588D4619EA9909004C7809 /* Helpers.m in Sources */,
-				1C4EFEA719ED2D4600CD423E /* ImageDownloadTests.m in Sources */,
-				1C3A147719DFDEC30022C44C /* BundledSmiliesTests.m in Sources */,
-				1C588D4319EA9785004C7809 /* CleanupTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3194,35 +2859,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1C097AA31A97C48600425EEF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
-			targetProxy = 1C097AA21A97C48600425EEF /* PBXContainerItemProxy */;
-		};
-		1C3A146119DFC6AA0022C44C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
-			targetProxy = 1C3A146019DFC6AA0022C44C /* PBXContainerItemProxy */;
-		};
 		1C56973524C3F1910077CA62 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1C56973124C3F1910077CA62 /* CopyMarkdownExtension */;
 			targetProxy = 1C56973424C3F1910077CA62 /* PBXContainerItemProxy */;
 		};
-		1C66A9D319DD304F001B9A41 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
-			targetProxy = 1C66A9D219DD304F001B9A41 /* PBXContainerItemProxy */;
-		};
 		1C66A9F719DD393A001B9A41 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */;
 			targetProxy = 1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */;
-		};
-		1C66AA0319DD39A9001B9A41 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1C66A9BF19DD304D001B9A41 /* Smilies */;
-			targetProxy = 1C66AA0219DD39A9001B9A41 /* PBXContainerItemProxy */;
 		};
 		1C9AEBC9210C3B2300C9A567 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3263,7 +2908,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = ../Smilies/Extractor/Info.plist;
+				INFOPLIST_FILE = "../Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3277,7 +2922,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = ../Smilies/Extractor/Info.plist;
+				INFOPLIST_FILE = "../Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -3577,53 +3222,11 @@
 			};
 			name = Release;
 		};
-		1C66A9D919DD304F001B9A41 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C15335420709FD90021A2BD /* Smilies-Debug.xcconfig */;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				INFOPLIST_FILE = ../Smilies/Framework/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		1C66A9DA19DD304F001B9A41 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1C15335520709FF10021A2BD /* Smilies-Release.xcconfig */;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				INFOPLIST_FILE = ../Smilies/Framework/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		1C66A9DF19DD304F001B9A41 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = ../Smilies/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		1C66A9E019DD304F001B9A41 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = ../Smilies/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		1C66A9FD19DD393A001B9A41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1C15335A2071261A0021A2BD /* SmilieKeyboard-Debug.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
+				INFOPLIST_FILE = "../Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -3632,7 +3235,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1C15335B207126990021A2BD /* SmilieKeyboard-Release.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = ../Smilies/Keyboard/Info.plist;
+				INFOPLIST_FILE = "../Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -3749,24 +3352,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		1C66A9D819DD304F001B9A41 /* Build configuration list for PBXNativeTarget "Smilies" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1C66A9D919DD304F001B9A41 /* Debug */,
-				1C66A9DA19DD304F001B9A41 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		1C66A9DE19DD304F001B9A41 /* Build configuration list for PBXNativeTarget "SmiliesTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1C66A9DF19DD304F001B9A41 /* Debug */,
-				1C66A9E019DD304F001B9A41 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3849,29 +3434,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1C1F8A2C2664BDF4003EA62C /* Smilies */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Smilies;
+		};
 		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
 			productName = Stencil;
 		};
+		1C4712292664CB8000E5AA74 /* Smilies */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Smilies;
+		};
+		1C47122B2664CB8C00E5AA74 /* Smilies */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Smilies;
+		};
+		1C47122E2664CE4E00E5AA74 /* WebArchive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WebArchive;
+		};
 		1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImgurAnonymousAPI;
-		};
-		1C6BDD1B265CB2B3005475CE /* FLAnimatedImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */;
-			productName = FLAnimatedImage;
-		};
-		1C6BDD1D265CB2BD005475CE /* HTMLReader */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
-			productName = HTMLReader;
-		};
-		1C6BDD1F265CB2E7005475CE /* HTMLReader */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
-			productName = HTMLReader;
 		};
 		1C6BDD23265CB31E005475CE /* Logger */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -3896,20 +3482,6 @@
 			productName = AwfulCore;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		1C3A13F719DF76400022C44C /* Smilies.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */,
-				1C09419F19F07D8D0098393F /* Smilies.xcdatamodel */,
-			);
-			currentVersion = 1CA56FE91A00353F009A91AE /* Potentially-Objectionable.xcdatamodel */;
-			path = Smilies.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
 }

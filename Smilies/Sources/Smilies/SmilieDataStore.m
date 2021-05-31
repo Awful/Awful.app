@@ -64,7 +64,7 @@
 
 static NSURL * BundledSmilieStoreURL(void)
 {
-    return [[NSBundle bundleForClass:[SmilieDataStore class]] URLForResource:@"Smilies" withExtension:@"sqlite"];
+    return [SWIFTPM_MODULE_BUNDLE URLForResource:@"Smilies" withExtension:@"sqlite"];
 }
 
 static NSURL * AppContainerSmilieStoreURL(void)
@@ -83,7 +83,7 @@ static NSURL * AppContainerSmilieStoreURL(void)
 
 + (NSManagedObjectModel *)managedObjectModel
 {
-    NSURL *modelURL = [[NSBundle bundleForClass:[SmilieDataStore class]] URLForResource:@"Smilies" withExtension:@"momd"];
+    NSURL *modelURL = [SWIFTPM_MODULE_BUNDLE URLForResource:@"Smilies" withExtension:@"momd"];
     return [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 }
 

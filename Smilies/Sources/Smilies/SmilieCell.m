@@ -54,7 +54,7 @@
 - (UIImageView *)removeControl
 {
     if (!_removeControl) {
-        UIImage *image = [UIImage imageNamed:@"remove" inBundle:[NSBundle bundleForClass:[SmilieCell class]] compatibleWithTraitCollection:nil];
+        UIImage *image = [UIImage imageNamed:@"remove" inBundle:SWIFTPM_MODULE_BUNDLE compatibleWithTraitCollection:nil];
         _removeControl = [[UIImageView alloc] initWithImage:image];
         _removeControl.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_removeControl];

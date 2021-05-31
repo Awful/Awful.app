@@ -1,0 +1,60 @@
+{
+  "configurations" : [
+    {
+      "id" : "F816C7DD-7918-471A-82CD-76702D9537E6",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-com.apple.CoreData.SQLDebug 1",
+        "enabled" : false
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Awful.xcodeproj",
+      "identifier" : "1D6058900D05DD3D006BFB54",
+      "name" : "Awful"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Awful.xcodeproj",
+        "identifier" : "1C9AEBC2210C3B2200C9A567",
+        "name" : "AwfulTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:..\/AwfulCore",
+        "identifier" : "AwfulCoreTests",
+        "name" : "AwfulCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:..\/AwfulScraping",
+        "identifier" : "AwfulScrapingTests",
+        "name" : "AwfulScrapingTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:..\/Smilies",
+        "identifier" : "SmiliesTests",
+        "name" : "SmiliesTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -88,8 +88,7 @@
 
 static UIImage * FrameworkImageNamed(NSString *imageName)
 {
-    NSBundle *frameworkBundle = [NSBundle bundleForClass:[SmilieButton class]];
-    return [UIImage imageNamed:imageName inBundle:frameworkBundle compatibleWithTraitCollection:nil];
+    return [UIImage imageNamed:imageName inBundle:SWIFTPM_MODULE_BUNDLE compatibleWithTraitCollection:nil];
 }
 
 @implementation SmilieDeleteButton

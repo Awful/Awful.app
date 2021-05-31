@@ -4,8 +4,7 @@
 
 @import CoreData;
 @import Smilies;
-#import "SmilieOperation.h"
-#import "SmilieWebArchive.h"
+@import WebArchive;
 @import XCTest;
 
 extern SmilieWebArchive * FixtureWebArchive(void);

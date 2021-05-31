@@ -7,7 +7,7 @@
 @import HTMLReader;
 @import ImageIO;
 @import Smilies;
-#import "SmilieWebArchive.h"
+@import WebArchive;
 
 @interface ViewController ()
 
@@ -54,7 +54,10 @@
 - (SmilieWebArchive *)archive
 {
     if (!_archive) {
-        NSURL *URL = [[NSBundle bundleForClass:[ViewController class]] URLForResource:@"showsmilies" withExtension:@"webarchive"];
+        NSURL *URL = [[[SmiliesPackageURL()
+                        URLByAppendingPathComponent:@"Tests" isDirectory:YES]
+                       URLByAppendingPathComponent:@"SmiliesTests" isDirectory:YES]
+                      URLByAppendingPathComponent:@"showsmilies.webarchive" isDirectory:NO];
         _archive = [[SmilieWebArchive alloc] initWithURL:URL];
     }
     return _archive;
@@ -62,7 +65,7 @@
 
 - (IBAction)didTapStickers:(UIBarButtonItem *)sender
 {
-    self.textView.text = @"Stickering…";
+    self.textView.text = NSLocalizedString(@"Stickering…", @"");
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self extractStickers];
@@ -173,7 +176,7 @@ static void EnumerateSmiliesInHTML(SmilieWebArchive *webArchive, void (^block)(N
 {
     sender.enabled = NO;
     self.replaceBarButtonItem.enabled = NO;
-    self.textView.text = @"Extracting…";
+    self.textView.text = NSLocalizedString(@"Extracting…", @"");
     
     [[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:nil];
     
@@ -196,7 +199,7 @@ extern void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie);
 - (void)scrapeSmiliesCompletionHandler:(void (^)(void))completionHandler
 {
     [self.managedObjectContext performBlock:^{
-        void (^save)() = ^{
+        void (^save)(void) = ^{
             NSError *error;
             BOOL ok = [self.managedObjectContext save:&error];
             if (!ok) {
@@ -233,12 +236,21 @@ static NSURL * SmiliesFolderURL(void) {
     return [[thisFileURL URLByDeletingLastPathComponent] URLByDeletingLastPathComponent];
 }
 
+static NSURL * SmiliesPackageURL(void) {
+    NSURL *thisFileURL = [NSURL fileURLWithPath:[NSString stringWithCString:__FILE__ encoding:NSUTF8StringEncoding]];
+    NSURL *ancestor = [[[thisFileURL URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] URLByDeletingLastPathComponent];
+    return [ancestor URLByAppendingPathComponent:@"Smilies" isDirectory:YES];
+}
+
 - (IBAction)didTapReplace:(UIBarButtonItem *)sender
 {
     sender.enabled = NO;
-    
-    NSURL *frameworkURL = [SmiliesFolderURL() URLByAppendingPathComponent:@"Framework"];
-    NSURL *destinationURL = [frameworkURL URLByAppendingPathComponent:@"Smilies.sqlite"];
+
+    NSURL *destinationURL = [[[[SmiliesPackageURL()
+                                URLByAppendingPathComponent:@"Sources" isDirectory:YES]
+                               URLByAppendingPathComponent:@"Smilies" isDirectory:YES]
+                              URLByAppendingPathComponent:@"Resources" isDirectory:YES]
+                             URLByAppendingPathComponent:@"Smilies.sqlite"];
     
     NSMutableDictionary *newMetadata;
     NSError *error;
