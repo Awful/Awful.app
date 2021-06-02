@@ -70,7 +70,9 @@ final class ReplyWorkspace: NSObject {
     }
     
     deinit {
-        if let textViewNotificationToken: AnyObject = textViewNotificationToken {
+        draftTitleObserver?.invalidate()
+
+        if let textViewNotificationToken = textViewNotificationToken {
             NotificationCenter.default.removeObserver(textViewNotificationToken)
         }
     }
@@ -111,9 +113,9 @@ final class ReplyWorkspace: NSObject {
             }
             switch draft {
             case let draft as NewReplyDraft:
-                draftTitleObserver = draft.observe(\.thread.title) { draft, change in changeHandler(draft) }
+                draftTitleObserver = draft.observe(\.thread.title, options: [.initial]) { draft, change in changeHandler(draft) }
             case let draft as EditReplyDraft:
-                draftTitleObserver = draft.observe(\.thread.title) { draft, change in changeHandler(draft) }
+                draftTitleObserver = draft.observe(\.thread.title, options: [.initial]) { draft, change in changeHandler(draft) }
             case let unknown:
                 fatalError("unexpected draft type \(type(of: unknown))")
             }

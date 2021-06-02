@@ -56,7 +56,7 @@ final class CompositionInputAccessoryView: UIInputView {
         
         isOpaque = true
 
-        observers.append(autocloseCommand.observe(\.enabled) { [weak self] command, change in
+        observers.append(autocloseCommand.observe(\.enabled, options: [.initial, .new]) { [weak self] command, change in
             self?.autocloseButton.isEnabled = change.newValue!
         })
         
@@ -96,6 +96,10 @@ final class CompositionInputAccessoryView: UIInputView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        observers.forEach { $0.invalidate() }
     }
     
     @objc fileprivate func didPressSingleCharacterKey(_ button: KeyboardButton) {
