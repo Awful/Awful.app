@@ -380,20 +380,20 @@ void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie)
     
     NSMutableArray *newTexts = [NSMutableArray new];
     {{
-        NSUInteger scrapedIndex = 0, knownIndex = 0;
-        for (; scrapedIndex < scrapedTexts.count && knownIndex < knownTexts.count; scrapedIndex++) {
-            NSString *scraped = scrapedTexts[scrapedIndex];
+        NSUInteger knownIndex = 0;
+        
+        for (; knownIndex < knownTexts.count ; knownIndex++) {
             NSString *known = knownTexts[knownIndex];
-            if ([scraped isEqualToString:known]) {
-                knownIndex++;
-            } else {
-                [newTexts addObject:scraped];
+            NSUInteger matchIndex = [scrapedTexts indexOfObject:known];
+            
+            if (matchIndex >= 0 && matchIndex < scrapedTexts.count){
+                [scrapedTexts removeObjectAtIndex:matchIndex];
             }
         }
-        [newTexts addObjectsFromArray:[scrapedTexts subarrayWithRange:NSMakeRange(scrapedIndex, scrapedTexts.count - scrapedIndex)]];
+ 
     }}
     
-    if (newTexts.count == 0 || self.cancelled) return;
+    if (scrapedTexts.count == 0 || self.cancelled) return;
     
     [self.context performBlockAndWait:^{
         [headers enumerateObjectsUsingBlock:^(HTMLElement *header, NSUInteger i, BOOL *stop) {
@@ -402,7 +402,7 @@ void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie)
             HTMLElement *section = lists[i];
             for (HTMLElement *item in [section nodesMatchingSelector:@"li"]) {
                 NSString *text = [item firstNodeMatchingSelector:@".text"].textContent;
-                if (![newTexts containsObject:text]) continue;
+                if (![scrapedTexts containsObject:text]) continue;
                 
                 Smilie *smilie = [Smilie newInManagedObjectContext:self.context];
                 smilie.text = text;
