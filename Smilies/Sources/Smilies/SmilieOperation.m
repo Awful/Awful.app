@@ -377,23 +377,37 @@ void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie)
     }}
     
     if (self.cancelled) return;
-    
-    NSMutableArray *newTexts = [NSMutableArray new];
+
+    NSMutableSet *deletedTexts = [NSMutableSet new];
+    NSMutableSet *newTexts = [NSMutableSet new];
     {{
-        NSUInteger scrapedIndex = 0, knownIndex = 0;
-        for (; scrapedIndex < scrapedTexts.count && knownIndex < knownTexts.count; scrapedIndex++) {
+        NSUInteger knownIndex = 0, knownCount = knownTexts.count;
+        NSUInteger scrapedIndex = 0, scrapedCount = scrapedTexts.count;
+        while (knownIndex < knownCount && scrapedIndex < scrapedCount) {
             NSString *scraped = scrapedTexts[scrapedIndex];
             NSString *known = knownTexts[knownIndex];
-            if ([scraped isEqualToString:known]) {
-                knownIndex++;
-            } else {
-                [newTexts addObject:scraped];
+            switch ([known compare:scraped]) {
+                case NSOrderedAscending:
+                    [deletedTexts addObject:known];
+                    knownIndex++;
+                    break;
+                case NSOrderedSame:
+                    knownIndex++;
+                    scrapedIndex++;
+                    break;
+                case NSOrderedDescending:
+                    [newTexts addObject:scraped];
+                    scrapedIndex++;
+                    break;
             }
         }
-        [newTexts addObjectsFromArray:[scrapedTexts subarrayWithRange:NSMakeRange(scrapedIndex, scrapedTexts.count - scrapedIndex)]];
+        if (scrapedIndex < scrapedCount) {
+            NSArray *remainder = [scrapedTexts subarrayWithRange:NSMakeRange(scrapedIndex, scrapedCount - scrapedIndex)];
+            [newTexts addObjectsFromArray:remainder];
+        }
     }}
     
-    if (newTexts.count == 0 || self.cancelled) return;
+    if ((deletedTexts.count == 0 && newTexts.count == 0) || self.cancelled) return;
     
     [self.context performBlockAndWait:^{
         [headers enumerateObjectsUsingBlock:^(HTMLElement *header, NSUInteger i, BOOL *stop) {
@@ -412,9 +426,20 @@ void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie)
                 smilie.summary = img[@"title"];
             }
         }];
-        
-        if (self.cancelled) return;
-        
+
+        if (deletedTexts.count > 0) {
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
+            fetchRequest.predicate = [NSPredicate predicateWithFormat:@"text IN %@", deletedTexts];
+            NSError *error;
+            NSArray *toDelete = [self.context executeFetchRequest:fetchRequest error:&error];
+            if (!toDelete) {
+                NSLog(@"%s error deleting: %@", __PRETTY_FUNCTION__, error);
+            }
+            for (Smilie *smilie in toDelete) {
+                [self.context deleteObject:smilie];
+            }
+        }
+
         NSMutableDictionary *newMetadata = [metadata mutableCopy];
         newMetadata[SmilieLastSuccessfulScrapeDateKey] = [NSDate date];
         [self.dataStore.storeCoordinator setMetadata:newMetadata forPersistentStore:self.dataStore.appContainerSmilieStore];
