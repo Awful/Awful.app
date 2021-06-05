@@ -97,4 +97,30 @@
     XCTAssertEqual(endcount, self.bundledSmilieCount, @"possible error: %@", error);
 }
 
+- (void)testRemoveSmilieScrape
+{
+    SmilieDataStore *dataStore = [TestDataStore newNothingBundledDataStore];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
+    NSError *error;
+    NSUInteger precount = [dataStore.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    XCTAssert(precount == 0, @"possible error: %@", error);
+
+    SmilieScrapeAndInsertNewSmiliesOperation *operation = [[SmilieScrapeAndInsertNewSmiliesOperation alloc] initWithDataStore:dataStore smilieListHTML:self.webArchive.mainFrameHTML];
+    [operation start];
+
+    NSUInteger midcount = [dataStore.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    XCTAssertEqual(midcount, self.bundledSmilieCount, @"possible error: %@", error);
+
+    HTMLDocument *holeyDocument = [HTMLDocument documentWithString:self.webArchive.mainFrameHTML];
+    HTMLElement *second = [holeyDocument firstNodeMatchingSelector:@"img[title='smile']"];
+    [second.parentNode removeFromParentNode];
+    NSString *holeyHTML = [holeyDocument innerHTML];
+
+    operation = [[SmilieScrapeAndInsertNewSmiliesOperation alloc] initWithDataStore:dataStore smilieListHTML:holeyHTML];
+    [operation start];
+
+    NSUInteger endcount = [dataStore.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    XCTAssertEqual(endcount, self.bundledSmilieCount - 1, @"possible error: %@", error);
+}
+
 @end
