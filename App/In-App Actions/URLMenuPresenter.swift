@@ -5,6 +5,7 @@
 import AwfulCore
 import Smilies
 import UIKit
+import Photos
 
 private let Log = Logger.get()
 
@@ -441,14 +442,75 @@ final class URLMenuPresenter: NSObject {
             return true
         }
         
-        for case .spoiledVideo(frame: let frame, url: let unresolved) in elements {
+        for case .spoiledVideo(frame: _, url: let unresolved) in elements {
             if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
-                let presenter = URLMenuPresenter(videoURL: resolved)
-                presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
+                let actionSheet = UIAlertController.makeActionSheet()
+                
+                actionSheet.addAction(.init(title: "Copy URL", style: .default, handler: { _ in
+                    UIPasteboard.general.coercedURL = resolved
+                }))
+      
+                let path = resolved.path.lowercased()
+                if (path.hasSuffix(".mp4") || path.hasSuffix(".webm") || path.hasSuffix(".gifv")) {
+                
+                actionSheet.addAction(.init(title: "Save video", style: .default, handler: { _ in
+                    let randomURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(resolved.lastPathComponent)")
+                  
+                    PHPhotoLibrary.requestAuthorization({ _ in })
+
+                    let alertError: (ErrorWorkaround) -> Void = {error in
+                        let title = "Error"
+                        let message = "Failed to save"
+                        DispatchQueue.main.async {
+                            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil))
+                            presentingViewController.present(alert, animated: true)
+                        }
+                    }
+                    
+                    URLSession.shared.dataTask(with: resolved) { (data: Data?, response: URLResponse?, error: Error?) in
+                        do {
+                            try data!.write(to: randomURL)
+                                if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(randomURL.relativePath) {
+                                    UISaveVideoAtPathToSavedPhotosAlbum(randomURL.relativePath, nil, nil, nil)
+                                    DispatchQueue.main.async {
+                                        let alert = UIAlertController(title: "Saved!", message: "", preferredStyle: .alert)
+                                        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil))
+                                        presentingViewController.present(alert, animated: true)
+                                    }
+                                }
+                        } catch {
+                            return alertError(.error(error))
+                        }
+                        
+                        if let response = response as? HTTPURLResponse {
+                            if !(200...299).contains(response.statusCode) {
+                                let error = NSError(
+                                    domain: URLError.errorDomain,
+                                    code: NSURLErrorBadServerResponse,
+                                    userInfo: [
+                                        NSLocalizedDescriptionKey: "Request failed (\(response.statusCode))",
+                                        NSURLErrorFailingURLErrorKey: resolved,
+                                    ]
+                                )
+                                return alertError(.error(error))
+                            }
+                        }
+                        
+                    }.resume()
+                }))
+                }
+                actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
+            
+                presentingViewController.present(actionSheet, animated: true)
                 return true
             }
         }
         
         return false
     }
+}
+
+private enum ErrorWorkaround {
+    case error(Error)
 }

@@ -68,7 +68,6 @@ final class ImageViewController: UIViewController {
 
         let activityViewController = UIActivityViewController(
             activityItems: [
-                imageURL,
                 CopyURLActivity.Box(imageURL),
                 image?.data as Any?,
             ].compactMap { $0 },
