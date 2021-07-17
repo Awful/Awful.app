@@ -31,6 +31,17 @@ extension HTMLDocument {
     }
     
     /**
+     Modifies the document in place, adding an additional class to quote blocks if the quoted post ID ends in 420.
+     The regular CSS files contain the styling required for this feature, applied against this injected class.
+     This function is only called if the forum is Imp Zone. It is important to know when one has found magic cake.
+     */
+    func addImpZoneMagicCakeCSS() {
+        for h4 in nodes(matchingSelector: ".quote_link[href$=\"420\"]") {
+            h4.toggleClass("magic_cake")
+        }
+    }
+    
+    /**
      Modifies the document in place, wrapping any occurrences of `username` in a post body within a `<span class="mention">` element. Additionally, if `isHighlighted` is `true`, the class `highlight` is added to the wrapping span elements.
      */
     func identifyMentionsOfUser(named username: String, shouldHighlight isHighlighted: Bool) {

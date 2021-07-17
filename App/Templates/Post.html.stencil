@@ -23,10 +23,12 @@
             </span>
             {% endfor %}
 
-			<time class="regdate">
+            {% if showRegdate %}
+            <time class="regdate">
                 Joined {{ author.regdate|formatRegdate }}
             </time>
-		</section>
+            {% endif %}
+        </section>
     </header>
   
     <section class="postbody">

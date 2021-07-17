@@ -28,6 +28,15 @@ struct PostRenderModel: StencilContextConvertible {
                 .map { spokenRoles[$0] ?? $0 }
                 .joined(separator: "; ")
         }
+        var forumID: String {
+            return post.thread?.forum?.forumID ?? ""
+        }
+        var showRegdate: Bool {
+            if let tweaks = ForumTweaks(forumID: forumID) {
+                return tweaks.showRegdate
+            }
+            return true
+        }
         var showAvatars: Bool {
             return UserDefaults.standard.showAuthorAvatars
         }
@@ -35,7 +44,7 @@ struct PostRenderModel: StencilContextConvertible {
             return showAvatars ? nil : post.author?.avatarURL
         }
         var htmlContents: String {
-            return massageHTML(post.innerHTML ?? "", isIgnored: post.ignored)
+            return massageHTML(post.innerHTML ?? "", isIgnored: post.ignored, forumID: forumID)
         }
         var visibleAvatarURL: URL? {
             return showAvatars ? post.author?.avatarURL : nil
@@ -54,6 +63,7 @@ struct PostRenderModel: StencilContextConvertible {
             "postID": post.postID,
             "roles": roles,
             "showAvatars": showAvatars,
+            "showRegdate": showRegdate,
             "visibleAvatarURL": visibleAvatarURL as Any]
     }
     
@@ -65,7 +75,7 @@ struct PostRenderModel: StencilContextConvertible {
                 "username": author.username as Any],
             "beenSeen": false,
             "hiddenAvatarURL": (showAvatars ? author.avatarURL : nil) as Any,
-            "htmlContents": massageHTML(postHTML, isIgnored: false),
+            "htmlContents": massageHTML(postHTML, isIgnored: false, forumID: ""),
             "postDate": postDate,
             "postID": "fake",
             "roles": (isOP ? "op " : "") + (author.authorClasses ?? ""),
@@ -74,7 +84,7 @@ struct PostRenderModel: StencilContextConvertible {
     }
 }
 
-private func massageHTML(_ html: String, isIgnored: Bool) -> String {
+private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> String {
     let document = HTMLDocument(string: html)
     document.removeSpoilerStylingAndEvents()
     document.removeEmptyEditedByParagraphs()
@@ -90,6 +100,9 @@ private func massageHTML(_ html: String, isIgnored: Bool) -> String {
     }
     if isIgnored {
         document.markRevealIgnoredPostLink()
+    }
+    if forumID == "267" {
+        document.addImpZoneMagicCakeCSS()
     }
     document.embedVideos()
     return document.bodyElement?.innerHTML ?? ""

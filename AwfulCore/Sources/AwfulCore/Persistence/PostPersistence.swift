@@ -190,9 +190,10 @@ internal extension ShowPostScrapeResult {
                 in: context,
                 matching: .init("\(\AwfulThread.threadID) = \(id.rawValue)"),
                 configure: { $0.threadID = id.rawValue })
-
-            if !threadTitle.isEmpty, threadTitle != thread.title { thread.title = threadTitle }
-
+            
+            let ignoredPostThreadTitle = "The Something Awful Forums"
+            if !threadTitle.isEmpty, threadTitle != thread.title, threadTitle != ignoredPostThreadTitle { thread.title = threadTitle }
+           
             return thread
         }
 
