@@ -37,4 +37,23 @@
     XCTAssert(CGSizeEqualToSize(smilie.imageSize, CGSizeMake(38, 25)));
 }
 
+- (void)testDeletion
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"text = %@", @":backtowork:"];
+    // Honestly not sure what deletion means for a read-only persistent store, but as long as it doesn't crash I'm ok with it.
+    fetchRequest.affectedStores = @[self.dataStore.bundledSmilieStore];
+    NSError *error;
+    NSArray *results = [self.dataStore.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    XCTAssertEqual(results.count, 1U);
+
+    Smilie *smilie = results[0];
+    NSManagedObjectContext *context = smilie.managedObjectContext;
+    [context deleteObject:smilie];
+    [context save:&error];
+
+    NSArray *newResults = [self.dataStore.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    XCTAssertEqual(newResults.count, 0U);
+}
+
 @end
