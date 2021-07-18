@@ -321,6 +321,7 @@ func saveToPhotos(_ url: URL, overlay: MRProgressOverlayView?, completion: @esca
     PHPhotoLibrary.requestAuthorization { status in
         guard status == .authorized else {
             return DispatchQueue.main.async {
+                overlay?.dismiss(true)
                 completion(.accessDenied)
             }
         }
@@ -332,11 +333,11 @@ func saveToPhotos(_ url: URL, overlay: MRProgressOverlayView?, completion: @esca
             try? FileManager.default.removeItem(at: url)
             DispatchQueue.main.async {
                 if saved, error == nil {
-                    overlay?.dismiss(true)
                     completion(nil)
                 } else {
                     completion(.unknown)
                 }
+                overlay?.dismiss(true)
             }
         }
     }
@@ -543,14 +544,13 @@ final class URLMenuPresenter: NSObject {
                                 }
                             }
                         }))
-                        
-                        actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
-                        presentingViewController.present(actionSheet, animated: true)
-                        actionSheet.popoverPresentationController?.sourceRect = frame
-                        actionSheet.popoverPresentationController?.sourceView = renderView
-                        return true
                     }
                 }
+                actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
+                presentingViewController.present(actionSheet, animated: true)
+                actionSheet.popoverPresentationController?.sourceRect = frame
+                actionSheet.popoverPresentationController?.sourceView = renderView
+                return true
             }
         }
         return false
