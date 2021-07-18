@@ -501,10 +501,6 @@ footer {
   background-image:-webkit-linear-gradient(135deg, #ff80bf, #9580ff);
   background-image:linear-gradient(135deg, #ff80bf, #9580ff);
   background-size:100%;
-  background-clip:text;
   -webkit-background-clip:text;
-  -moz-background-clip:text;
   -webkit-text-fill-color:transparent;
-  -moz-text-fill-color:transparent;
-  -webkit-box-decoration-break:clone
 }

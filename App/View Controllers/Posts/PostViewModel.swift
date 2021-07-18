@@ -101,8 +101,8 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     if isIgnored {
         document.markRevealIgnoredPostLink()
     }
-    if forumID == "267" {
-        document.addImpZoneMagicCakeCSS()
+    if (ForumTweaks(forumID: forumID)?.magicCake) != nil {
+        document.addMagicCakeCSS()
     }
     document.embedVideos()
     return document.bodyElement?.innerHTML ?? ""

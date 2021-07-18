@@ -35,7 +35,7 @@ extension HTMLDocument {
      The regular CSS files contain the styling required for this feature, applied against this injected class.
      This function is only called if the forum is Imp Zone. It is important to know when one has found magic cake.
      */
-    func addImpZoneMagicCakeCSS() {
+    func addMagicCakeCSS() {
         for h4 in nodes(matchingSelector: ".quote_link[href$=\"420\"]") {
             h4.toggleClass("magic_cake")
         }

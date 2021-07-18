@@ -12,6 +12,7 @@ final class ForumTweaks: NSObject {
     let showRatings: Bool
     let showRatingsAsThreadTags: Bool
     let showRegdate: Bool
+    let magicCake: Bool
     
     fileprivate init(dictionary: [String: AnyObject]) {
         postButton = dictionary["postButton"] as? String
@@ -37,6 +38,7 @@ final class ForumTweaks: NSObject {
         showRatings = dictionary["showRatings"] as? Bool ?? true
         showRatingsAsThreadTags = dictionary["showRatingsAsThreadTags"] as? Bool ?? false
         showRegdate = dictionary["showRegdate"] as? Bool ?? true
+        magicCake = dictionary["magicCake"] as? Bool ?? false
         
         super.init()
     }
