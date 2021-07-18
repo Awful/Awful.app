@@ -218,6 +218,27 @@
 "image-upload.generic-error-title" = "Image Upload Failed";
 
 
+/* MARK: Save actions */
+
+/* Title of progress view presented while downloading a video. */
+"save-action.saving-video" = "Saving video";
+
+/* Title of button that saves a video to the gallery. */
+"save-action.save-video" = "Save video";
+
+/* Title of error message presented when saving video fails. */
+"save-action.error" = "Error";
+
+/* Description of error message presented when saving video fails. */
+"save-action.error_description" = "Failed to save";
+
+/* Title of success message presented when saving video succeeds. */
+"save-action.success" = "Success!";
+
+/* Title of button that saves a video to the gallery. */
+"save-action.save-video" = "Save video";
+
+
 /* MARK: Link actions */
 
 /* Title of button that copies an image's URL to the pasteboard. */
