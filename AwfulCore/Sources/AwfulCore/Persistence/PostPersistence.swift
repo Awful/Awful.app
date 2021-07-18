@@ -191,8 +191,6 @@ internal extension ShowPostScrapeResult {
                 matching: .init("\(\AwfulThread.threadID) = \(id.rawValue)"),
                 configure: { $0.threadID = id.rawValue })
 
-            if !threadTitle.isEmpty, threadTitle != thread.title { thread.title = threadTitle }
-
             return thread
         }
 

@@ -514,3 +514,21 @@ post.seen {
 .seen .postdate {
   color: #57ff57;
 }
+
+.magic_cake {
+  position:static;
+}
+
+.magic_cake:after {
+  content:"You Found: " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAXBAMAAAAMzfkgAAAAJFBMVEX////39/fnxpRKORhCQkrva7X3QkKUlJxKISG9vcaEISFzc4RR+YyQAAAAAXRSTlMAQObYZgAAAKpJREFUeF6Fy7EKwjAQx+GDdugaUMS1TyAW9w6BPkEqPkAO7VZQQu3SQSRrQZC8gJSMXXw9z9jY4uJv+MPHcTAUaZiku2aCK47HSEvcN19ZmRdeXKPI8eIQ8o+61CEzZ5SIHXdgbG4faHckAmUKe2C3FHjJfDMS+5V5ox20UC1N5VQu655+62dLCjPVx8rc+7giBdlJiK1SNEeAYCN8CWkd+/4pGQOAESt4AQWWPMukF4bRAAAAAElFTkSuQmCC) " Magic Cake (Very Rare)";
+  display:inline-block;
+  position:relative;
+  white-space:nowrap;
+  vertical-align:top;
+  background-image:-webkit-gradient(linear,left top,left bottom,from(135deg), color-stop(#ff80bf), to(#9580ff));
+  background-image:-webkit-linear-gradient(135deg, #ff80bf, #9580ff);
+  background-image:linear-gradient(135deg, #ff80bf, #9580ff);
+  background-size:100%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}

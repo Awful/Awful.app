@@ -314,9 +314,11 @@ extension Theme {
         let modeless = [
             "25": "Gas Chamber",
             "26": "FYAD",
+            "154": "FYAD",
             "666": "FYAD",
             "219": "YOSPOS",
-            "268": "BYOB"]
+            "268": "BYOB",
+            "196": "BYOB"]
         var altogether: [String: Any] = [:]
         for (forumID, themeName) in modeless {
             altogether["theme-dark-\(forumID)"] = themeName
