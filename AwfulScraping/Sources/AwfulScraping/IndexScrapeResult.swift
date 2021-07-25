@@ -28,7 +28,7 @@ public struct IndexScrapeResult: Decodable {
         @DefaultEmpty public private(set) var moderators: [Moderator]
         public let shortTitle: String?
         @DefaultEmpty public private(set) var subforums: [ScrapedForum]
-        public let title: String
+        @DecodingEntities public private(set) var title: String
 
         private enum CodingKeys: String, CodingKey {
             case description

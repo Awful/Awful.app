@@ -3,6 +3,19 @@
 //  Copyright 2020 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
+import HTMLReader
+
+@propertyWrapper public struct DecodingEntities: Decodable {
+    public var wrappedValue: String
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawString = try container.decode(String.self)
+        wrappedValue = (rawString as NSString).html_stringByUnescapingHTML
+    }
+}
+
+// MARK: -
 
 @propertyWrapper public struct DefaultEmpty<T: Decodable>: Decodable {
     public var wrappedValue: [T]
