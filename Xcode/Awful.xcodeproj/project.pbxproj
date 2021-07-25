@@ -61,7 +61,7 @@
 		1C1BD0B32320C98400805208 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B12320C98400805208 /* platinum-member-white@2x.png */; };
 		1C1BD0B42320C98400805208 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B22320C98400805208 /* platinum-member-white@3x.png */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
-		1C1F8A2D2664BDF4003EA62C /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* SwiftPackageProductDependency */; };
+		1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* Smilies */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
 		1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2434D81A4190F300DC8EA4 /* DraftStore.swift */; };
 		1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C24BC952002BF2F0022C85F /* ForumListCell.swift */; };
@@ -117,11 +117,11 @@
 		1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */; };
 		1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4506C31A2BAB3800767306 /* Handoff.swift */; };
 		1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */; };
-		1C453F282338457A007AC6CD /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* SwiftPackageProductDependency */; };
+		1C453F282338457A007AC6CD /* Stencil in Frameworks */ = {isa = PBXBuildFile; productRef = 1C453F272338457A007AC6CD /* Stencil */; };
 		1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C453F45233849C2007AC6CD /* SafariActivity.swift */; };
-		1C47122A2664CB8000E5AA74 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C4712292664CB8000E5AA74 /* SwiftPackageProductDependency */; };
-		1C47122C2664CB8C00E5AA74 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* SwiftPackageProductDependency */; };
-		1C47122F2664CE4E00E5AA74 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* SwiftPackageProductDependency */; };
+		1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C4712292664CB8000E5AA74 /* Smilies */; };
+		1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* Smilies */; };
+		1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* WebArchive */; };
 		1C4712352665640A00E5AA74 /* PSMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C4712332665640500E5AA74 /* PSMenuItem.m */; };
 		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
 		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
@@ -226,7 +226,7 @@
 		1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */; };
 		1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */; };
 		1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B9C3E17F21BFC00D4981D /* posts-view-dark.css */; };
-		1C5C2B8D22D195BF00EA5A80 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */; };
+		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
@@ -240,8 +240,8 @@
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C6BDD22265CB307005475CE /* Imports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BDD21265CB307005475CE /* Imports.swift */; };
-		1C6BDD24265CB31E005475CE /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* SwiftPackageProductDependency */; };
-		1C6BDD26265CB337005475CE /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* SwiftPackageProductDependency */; };
+		1C6BDD24265CB31E005475CE /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* Logger */; };
+		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
 		1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */; };
 		1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A26221505A00035E154 /* UserDefaults+Settings.swift */; };
 		1C796A292218C41F0035E154 /* DefaultBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A282218C41F0035E154 /* DefaultBrowser.swift */; };
@@ -272,8 +272,8 @@
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
-		1CAEA24322D14FFE009CB9EB /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */; };
-		1CAF2372250C8CE400033F61 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */; };
+		1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* MiniOnePassword */; };
+		1CAF2372250C8CE400033F61 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* Nuke */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -314,13 +314,13 @@
 		1CD005D31BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD005D21BB8D84900232FFD /* InAppActionViewController+ThreadActions.swift */; };
 		1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */; };
 		1CD1ADA72272737600E075EA /* CGGeometry+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */; };
-		1CD72E79265CA0D500FF3BF4 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 1CD72E78265CA0D500FF3BF4 /* SwiftPackageProductDependency */; };
+		1CD72E79265CA0D500FF3BF4 /* AwfulCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CD72E78265CA0D500FF3BF4 /* AwfulCore */; };
 		1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED5228501BF00B62865 /* CGRect+Center.swift */; };
 		1CD7EED8228504C100B62865 /* UIView+CompressedHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */; };
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
 		1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */; };
 		1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */; };
-		1CDC53E0220669640086BD2B /* Photos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53DF220669640086BD2B /* Photos.swift */; };
+		1CDC53E0220669640086BD2B /* Photos+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53DF220669640086BD2B /* Photos+.swift */; };
 		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
 		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD48BB17EE288A00E4DAE3 /* Themes.plist */; };
@@ -864,7 +864,7 @@
 		1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NigglyRefreshView.swift; sourceTree = "<group>"; };
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImgurAnonymousAPI+Shared.swift"; sourceTree = "<group>"; };
-		1CDC53DF220669640086BD2B /* Photos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photos.swift; sourceTree = "<group>"; };
+		1CDC53DF220669640086BD2B /* Photos+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photos+.swift"; sourceTree = "<group>"; };
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDD48BB17EE288A00E4DAE3 /* Themes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
@@ -1007,8 +1007,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C47122F2664CE4E00E5AA74 /* BuildFile in Frameworks */,
-				1C47122C2664CB8C00E5AA74 /* BuildFile in Frameworks */,
+				1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */,
+				1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1031,7 +1031,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C1F8A2D2664BDF4003EA62C /* BuildFile in Frameworks */,
+				1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,7 +1039,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C6BDD26265CB337005475CE /* BuildFile in Frameworks */,
+				1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */,
 				FF308D05C62669BEAFAEA2AC /* Pods_Awful_AwfulTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1048,14 +1048,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C453F282338457A007AC6CD /* BuildFile in Frameworks */,
-				1CD72E79265CA0D500FF3BF4 /* BuildFile in Frameworks */,
-				1C5C2B8D22D195BF00EA5A80 /* BuildFile in Frameworks */,
-				1CAEA24322D14FFE009CB9EB /* BuildFile in Frameworks */,
+				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
+				1CD72E79265CA0D500FF3BF4 /* AwfulCore in Frameworks */,
+				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
+				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
-				1C47122A2664CB8000E5AA74 /* BuildFile in Frameworks */,
-				1C6BDD24265CB31E005475CE /* BuildFile in Frameworks */,
-				1CAF2372250C8CE400033F61 /* BuildFile in Frameworks */,
+				1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */,
+				1C6BDD24265CB31E005475CE /* Logger in Frameworks */,
+				1CAF2372250C8CE400033F61 /* Nuke in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1621,7 +1621,7 @@
 				1C0060A42170347300E5329A /* HTMLReader.swift */,
 				1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */,
 				1C381205219F766B005029C1 /* NSAttributedString+Format.swift */,
-				1CDC53DF220669640086BD2B /* Photos.swift */,
+				1CDC53DF220669640086BD2B /* Photos+.swift */,
 				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
 				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
@@ -1856,7 +1856,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA = {
+		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -2040,8 +2040,8 @@
 			);
 			name = SmilieExtractor;
 			packageProductDependencies = (
-				1C47122B2664CB8C00E5AA74 /* SwiftPackageProductDependency */,
-				1C47122E2664CE4E00E5AA74 /* SwiftPackageProductDependency */,
+				1C47122B2664CB8C00E5AA74 /* Smilies */,
+				1C47122E2664CE4E00E5AA74 /* WebArchive */,
 			);
 			productName = SmilieExtractor;
 			productReference = 1C3A143319DFC5D10022C44C /* SmilieExtractor.app */;
@@ -2097,7 +2097,7 @@
 			);
 			name = SmilieKeyboard;
 			packageProductDependencies = (
-				1C1F8A2C2664BDF4003EA62C /* SwiftPackageProductDependency */,
+				1C1F8A2C2664BDF4003EA62C /* Smilies */,
 			);
 			productName = "Smilie Keyboard";
 			productReference = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */;
@@ -2120,7 +2120,7 @@
 			);
 			name = AwfulTests;
 			packageProductDependencies = (
-				1C6BDD25265CB337005475CE /* SwiftPackageProductDependency */,
+				1C6BDD25265CB337005475CE /* HTMLReader */,
 			);
 			productName = AwfulTests;
 			productReference = 1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */;
@@ -2147,13 +2147,13 @@
 			);
 			name = Awful;
 			packageProductDependencies = (
-				1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */,
-				1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */,
-				1C453F272338457A007AC6CD /* SwiftPackageProductDependency */,
-				1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */,
-				1CD72E78265CA0D500FF3BF4 /* SwiftPackageProductDependency */,
-				1C6BDD23265CB31E005475CE /* SwiftPackageProductDependency */,
-				1C4712292664CB8000E5AA74 /* SwiftPackageProductDependency */,
+				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
+				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
+				1C453F272338457A007AC6CD /* Stencil */,
+				1CAF2371250C8CE400033F61 /* Nuke */,
+				1CD72E78265CA0D500FF3BF4 /* AwfulCore */,
+				1C6BDD23265CB31E005475CE /* Logger */,
+				1C4712292664CB8000E5AA74 /* Smilies */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -2219,13 +2219,13 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			packageReferences = (
-				1C49CE4922CAF405004B76E6 /* RemoteSwiftPackageReference */,
-				1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */,
-				1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */,
-				1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */,
-				1CD72E65265C7FD600FF3BF4 /* RemoteSwiftPackageReference */,
+				1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
+				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
+				1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */,
+				1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
@@ -2811,7 +2811,7 @@
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,
 				1C16FC041CC3D84500C88BD1 /* PostsPageView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
-				1CDC53E0220669640086BD2B /* Photos.swift in Sources */,
+				1CDC53E0220669640086BD2B /* Photos+.swift in Sources */,
 				1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
@@ -3397,7 +3397,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */ = {
+		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
 			requirement = {
@@ -3405,7 +3405,7 @@
 				minimumVersion = 0.13.1;
 			};
 		};
-		1C49CE4922CAF405004B76E6 /* RemoteSwiftPackageReference */ = {
+		1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mxcl/PromiseKit";
 			requirement = {
@@ -3413,7 +3413,7 @@
 				minimumVersion = 6.10.0;
 			};
 		};
-		1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */ = {
+		1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nolanw/Nuke.git";
 			requirement = {
@@ -3421,7 +3421,7 @@
 				kind = branch;
 			};
 		};
-		1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */ = {
+		1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nolanw/HTMLReader";
 			requirement = {
@@ -3429,7 +3429,7 @@
 				minimumVersion = 2.1.7;
 			};
 		};
-		1CD72E65265C7FD600FF3BF4 /* RemoteSwiftPackageReference */ = {
+		1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Flipboard/FLAnimatedImage";
 			requirement = {
@@ -3440,50 +3440,50 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1C1F8A2C2664BDF4003EA62C /* SwiftPackageProductDependency */ = {
+		1C1F8A2C2664BDF4003EA62C /* Smilies */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Smilies;
 		};
-		1C453F272338457A007AC6CD /* SwiftPackageProductDependency */ = {
+		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1C453F262338457A007AC6CD /* RemoteSwiftPackageReference */;
+			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
 			productName = Stencil;
 		};
-		1C4712292664CB8000E5AA74 /* SwiftPackageProductDependency */ = {
+		1C4712292664CB8000E5AA74 /* Smilies */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Smilies;
 		};
-		1C47122B2664CB8C00E5AA74 /* SwiftPackageProductDependency */ = {
+		1C47122B2664CB8C00E5AA74 /* Smilies */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Smilies;
 		};
-		1C47122E2664CE4E00E5AA74 /* SwiftPackageProductDependency */ = {
+		1C47122E2664CE4E00E5AA74 /* WebArchive */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WebArchive;
 		};
-		1C5C2B8C22D195BF00EA5A80 /* SwiftPackageProductDependency */ = {
+		1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImgurAnonymousAPI;
 		};
-		1C6BDD23265CB31E005475CE /* SwiftPackageProductDependency */ = {
+		1C6BDD23265CB31E005475CE /* Logger */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Logger;
 		};
-		1C6BDD25265CB337005475CE /* SwiftPackageProductDependency */ = {
+		1C6BDD25265CB337005475CE /* HTMLReader */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1CCBDFF822CB02D500E1BE6A /* RemoteSwiftPackageReference */;
+			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
 			productName = HTMLReader;
 		};
-		1CAEA24222D14FFE009CB9EB /* SwiftPackageProductDependency */ = {
+		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MiniOnePassword;
 		};
-		1CAF2371250C8CE400033F61 /* SwiftPackageProductDependency */ = {
+		1CAF2371250C8CE400033F61 /* Nuke */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1CAF2370250C8CE400033F61 /* RemoteSwiftPackageReference */;
+			package = 1CAF2370250C8CE400033F61 /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = Nuke;
 		};
-		1CD72E78265CA0D500FF3BF4 /* SwiftPackageProductDependency */ = {
+		1CD72E78265CA0D500FF3BF4 /* AwfulCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulCore;
 		};

@@ -379,7 +379,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Awful will upload to Imgur any photos you take and choose to include in your post when you tap Post</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Awful can save images from posts</string>
+	<string>Awful can save images and videos from posts</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Awful will upload to Imgur any photos you choose from your library when you tap Post</string>
 	<key>NSUserActivityTypes</key>

@@ -318,32 +318,30 @@ func downloadVideo(with url: URL, completion: @escaping (URL?) -> ()) {
 }
 
 func saveToPhotos(_ url: URL, overlay: MRProgressOverlayView?, completion: @escaping (ErrorWorkaround?) -> ()) {
-    PHPhotoLibrary.requestAuthorization { status in
-        guard status == .authorized else {
-            return DispatchQueue.main.async {
-                overlay?.dismiss(true)
-                completion(.accessDenied)
+    PHPhotoLibrary.shared().performChanges({
+        PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
+    }) { saved, error in
+        try? FileManager.default.removeItem(at: url)
+        DispatchQueue.main.async {
+            if saved, error == nil {
+                completion(nil)
+            } else {
+                completion(.unknown)
             }
-        }
-        PHPhotoLibrary.shared().performChanges({
-            Log.d("videoFileUrl creation path: \(url.path)")
-            Log.d("videoFileUrl creation url: \(url.absoluteURL)")
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
-        }) { saved, error in
-            try? FileManager.default.removeItem(at: url)
-            DispatchQueue.main.async {
-                if saved, error == nil {
-                    completion(nil)
-                } else {
-                    completion(.unknown)
-                }
-                overlay?.dismiss(true)
-            }
+            overlay?.dismiss(true)
         }
     }
 }
 
 func downloadVideoAndSaveToPhotos(_ remoteUrl: URL, renderView: RenderView, completion: @escaping (ErrorWorkaround?) -> ()) {
+    PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+        guard status == .authorized else {
+            return DispatchQueue.main.async {
+                completion(.accessDenied)
+            }
+        }
+    }
+
     let title = LocalizedString("save-action.saving-video")
     let overlay = MRProgressOverlayView.showOverlayAdded(to: renderView, title: title, mode: .indeterminate, animated: true)
 
@@ -353,7 +351,7 @@ func downloadVideoAndSaveToPhotos(_ remoteUrl: URL, renderView: RenderView, comp
                 completion(.unknown)
             }
         }
-        Log.d("url: \(videoUrl)")
+
         saveToPhotos(videoUrl, overlay: overlay) { error in
             completion(error)
         }
@@ -516,7 +514,8 @@ final class URLMenuPresenter: NSObject {
                     UIPasteboard.general.coercedURL = resolved
                 }))
                 
-                if PHPhotoLibrary.authorizationStatus() != .denied {
+                switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
+                case .authorized, .limited, .notDetermined:
                     let path = resolved.path.lowercased()
                     if path.hasSuffix(".mp4") || path.hasSuffix(".webm") || path.hasSuffix(".gifv") {
                         actionSheet.addAction(.init(title: LocalizedString("save-action.save-video"), style: .default, handler: { _ in
@@ -545,6 +544,11 @@ final class URLMenuPresenter: NSObject {
                             }
                         }))
                     }
+
+                case .denied, .restricted:
+                    break
+                @unknown default:
+                    break
                 }
                 actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
                 presentingViewController.present(actionSheet, animated: true)
