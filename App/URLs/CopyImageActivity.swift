@@ -27,6 +27,14 @@ final class CopyImageActivity: UIActivity {
         LocalizedString("link-action.copy-image")
     }
     
+    override var activityImage: UIImage? {
+        if #available(iOS 13.0, *) {
+            return UIImage(systemName: "doc.on.doc")
+        } else {
+            return UIImage(named: "copy")
+        }
+    }
+    
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         activityItems.contains {
             switch $0 {

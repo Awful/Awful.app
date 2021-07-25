@@ -5,6 +5,8 @@
 import AwfulCore
 import Smilies
 import UIKit
+import Photos
+import MRProgress
 
 private let Log = Logger.get()
 
@@ -292,6 +294,70 @@ private func chromifyURL(_ url: URL) -> URL {
     return components.url!
 }
 
+func downloadVideo(with url: URL, completion: @escaping (URL?) -> ()) {
+    URLSession.shared.downloadTask(with: url) { url, response, error in
+        guard let tempUrl = url, error == nil else {
+            return completion(nil)
+        }
+  
+        let fileManager = FileManager.default
+        let documentsUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let videoFileUrl = documentsUrl.appendingPathComponent(response?.suggestedFilename ?? "temp.mp4")
+        
+        if fileManager.fileExists(atPath: videoFileUrl.path) {
+            try? fileManager.removeItem(at: videoFileUrl)
+        }
+        do {
+            try fileManager.moveItem(at: tempUrl, to: videoFileUrl)
+            Log.d("url: \(videoFileUrl)")
+            completion(videoFileUrl)
+        } catch {
+            completion(nil)
+        }
+    }.resume()
+}
+
+func saveToPhotos(_ url: URL, overlay: MRProgressOverlayView?, completion: @escaping (ErrorWorkaround?) -> ()) {
+    PHPhotoLibrary.shared().performChanges({
+        PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
+    }) { saved, error in
+        try? FileManager.default.removeItem(at: url)
+        DispatchQueue.main.async {
+            if saved, error == nil {
+                completion(nil)
+            } else {
+                completion(.unknown)
+            }
+            overlay?.dismiss(true)
+        }
+    }
+}
+
+func downloadVideoAndSaveToPhotos(_ remoteUrl: URL, renderView: RenderView, completion: @escaping (ErrorWorkaround?) -> ()) {
+    PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+        guard status == .authorized else {
+            return DispatchQueue.main.async {
+                completion(.accessDenied)
+            }
+        }
+    }
+
+    let title = LocalizedString("save-action.saving-video")
+    let overlay = MRProgressOverlayView.showOverlayAdded(to: renderView, title: title, mode: .indeterminate, animated: true)
+
+    downloadVideo(with: remoteUrl) { videoUrl in
+        guard let videoUrl = videoUrl else {
+            return DispatchQueue.main.async {
+                completion(.unknown)
+            }
+        }
+
+        saveToPhotos(videoUrl, overlay: overlay) { error in
+            completion(error)
+        }
+    }
+}
+
 private func edgifyURL(_ url: URL) -> URL {
     // https://stackoverflow.com/a/51109646
     var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
@@ -441,14 +507,61 @@ final class URLMenuPresenter: NSObject {
             return true
         }
         
-        for case .spoiledVideo(frame: let frame, url: let unresolved) in elements {
+        for case let .spoiledVideo(frame: frame, url: unresolved) in elements {
             if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
-                let presenter = URLMenuPresenter(videoURL: resolved)
-                presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
+                let actionSheet = UIAlertController.makeActionSheet()
+                actionSheet.addAction(.init(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
+                    UIPasteboard.general.coercedURL = resolved
+                }))
+                
+                switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
+                case .authorized, .limited, .notDetermined:
+                    let path = resolved.path.lowercased()
+                    if path.hasSuffix(".mp4") || path.hasSuffix(".webm") || path.hasSuffix(".gifv") {
+                        actionSheet.addAction(.init(title: LocalizedString("save-action.save-video"), style: .default, handler: { _ in
+                            downloadVideoAndSaveToPhotos(resolved, renderView: renderView) { error in
+                                if let error = error {
+                                    DispatchQueue.main.async {
+                                        let alert = UIAlertController(title: LocalizedString("save-action.error"),
+                                                                      message: LocalizedString("save-action.error_description"),
+                                                                      preferredStyle: .alert)
+                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                        
+                                        presentingViewController.present(alert, animated: true)
+                                    }
+                                    Log.d("Save video error: \(error)")
+                                } else {
+                                    DispatchQueue.main.async {
+                                        let alert = UIAlertController(title: LocalizedString("save-action.success"),
+                                                                      message: "",
+                                                                      preferredStyle: .alert)
+                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    
+                                        presentingViewController.present(alert, animated: true)
+                                    }
+                                    Log.d("Save video Success")
+                                }
+                            }
+                        }))
+                    }
+
+                case .denied, .restricted:
+                    break
+                @unknown default:
+                    break
+                }
+                actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
+                presentingViewController.present(actionSheet, animated: true)
+                actionSheet.popoverPresentationController?.sourceRect = frame
+                actionSheet.popoverPresentationController?.sourceView = renderView
                 return true
             }
         }
-        
         return false
     }
+}
+
+enum ErrorWorkaround {
+    case accessDenied
+    case unknown
 }
