@@ -40,6 +40,7 @@ final class IconActionItem: NSObject {
     case markReadUpToHere
     case ownPosts
     case quotePost
+    case copyPost
     case rapSheet
     case removeBookmark
     case reportPost
@@ -63,6 +64,7 @@ final class IconActionItem: NSObject {
         case .markReadUpToHere: return "Mark Read"
         case .ownPosts: return "Your Posts"
         case .quotePost: return "Quote"
+        case .copyPost: return "Copy Post"
         case .rapSheet: return "Rap Sheet"
         case .reportPost: return "Report"
         case .removeBookmark: return "Unmark"
@@ -88,6 +90,7 @@ final class IconActionItem: NSObject {
         case .markReadUpToHere: return "mark-read-up-to-here"
         case .ownPosts: return "single-users-posts"
         case .quotePost: return "quote-post"
+        case .copyPost: return "quote-post"
         case .rapSheet: return "rap-sheet"
         case .reportPost: return "rap-sheet"
         case .removeBookmark: return "remove-bookmark"
@@ -113,6 +116,7 @@ final class IconActionItem: NSObject {
         case .markReadUpToHere: return "markReadUpToHereIconColor"
         case .ownPosts: return "singleUserIconColor"
         case .quotePost: return "quoteIconColor"
+        case .copyPost: return "quoteIconColor"
         case .rapSheet: return "rapSheetIconColor"
         case .reportPost: return "rapSheetIconColor"
         case .removeBookmark: return "removeBookmarkIconColor"

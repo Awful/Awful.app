@@ -129,6 +129,14 @@
 /* Button that jumps to the bottom of the page. */
 "posts-page.scroll-to-end-button.accessibility-label" = "Scroll to end";
 
+/* Title of alert shown when post successfully copied to pasteboard. */
+"posts-page.copied-post" = "Copied post!";
+
+/* Title of alert shown when failing to copy post to pasteboard. */
+"posts-page.error.could-not-copy-post" = "Could not copy post";
+
+/* Title of alert shown when failing to edit post. */
+"posts-page.error.could-not-edit-post" = "Could Not Edit Post";
 
 /* MARK: Rap sheet */
 
