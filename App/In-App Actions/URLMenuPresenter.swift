@@ -509,15 +509,15 @@ final class URLMenuPresenter: NSObject {
         
         for case let .spoiledVideo(frame: frame, url: unresolved) in elements {
             if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
-                let actionSheet = UIAlertController.makeActionSheet()
-                actionSheet.addAction(.init(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
-                    UIPasteboard.general.coercedURL = resolved
-                }))
-                
-                switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
-                case .authorized, .limited, .notDetermined:
-                    let path = resolved.path.lowercased()
-                    if path.hasSuffix(".mp4") || path.hasSuffix(".webm") || path.hasSuffix(".gifv") {
+                let path = resolved.path.lowercased()
+                if path.hasSuffix(".mp4") {
+                    let actionSheet = UIAlertController.makeActionSheet()
+                    actionSheet.addAction(.init(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
+                        UIPasteboard.general.coercedURL = resolved
+                    }))
+                    
+                    switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
+                    case .authorized, .limited, .notDetermined:
                         actionSheet.addAction(.init(title: LocalizedString("save-action.save-video"), style: .default, handler: { _ in
                             downloadVideoAndSaveToPhotos(resolved, renderView: renderView) { error in
                                 if let error = error {
@@ -543,17 +543,19 @@ final class URLMenuPresenter: NSObject {
                                 }
                             }
                         }))
+                    case .denied, .restricted:
+                        break
+                    @unknown default:
+                        break
                     }
-
-                case .denied, .restricted:
-                    break
-                @unknown default:
-                    break
+                    actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
+                    presentingViewController.present(actionSheet, animated: true)
+                    actionSheet.popoverPresentationController?.sourceRect = frame
+                    actionSheet.popoverPresentationController?.sourceView = renderView
+                } else {
+                    let presenter = URLMenuPresenter(videoURL: resolved)
+                    presenter.present(fromViewController: presentingViewController, fromRect: frame, inView: renderView)
                 }
-                actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
-                presentingViewController.present(actionSheet, animated: true)
-                actionSheet.popoverPresentationController?.sourceRect = frame
-                actionSheet.popoverPresentationController?.sourceView = renderView
                 return true
             }
         }
