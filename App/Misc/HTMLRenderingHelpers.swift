@@ -453,6 +453,6 @@ private func getYoutubeEmbeddedUri(uri: String) -> String? {
         return nil
     }
     return """
-    https://www.youtube-nocookie.com/embed/\(id!)\(secondsString)
+    https://www.youtube.com/embed/\(id!)\(secondsString)
     """
 }
