@@ -637,7 +637,7 @@ final class PostsPageViewController: ViewController {
             }
         }()
         
-        composeItem.isEnabled = !thread.closed
+        composeItem.isEnabled = !thread.closed && thread.forum?.canPost == true
     }
     
     private func showLoadingView() {
@@ -1018,31 +1018,25 @@ final class PostsPageViewController: ViewController {
             }))
         } else {
             items.append(IconActionItem(.copyPost, block: {
-                func copyPost(_ post: Post) {
-                    let overlay = MRProgressOverlayView.showOverlayAdded(to: self.postsView.renderView,
-                                                                         title: LocalizedString("posts-page.copied-post"),
-                                                                         mode: .checkmark,
-                                                                         animated: true)
-                    overlay?.tintColor = self.theme["tintColor"]
-                 
-                    ForumsClient.shared.quoteBBcodeContents(of: post)
-                        .done { [weak self] bbcode in
-                            guard self != nil else { return }
-                            UIPasteboard.general.string = bbcode
-                        }
-                        .catch { [weak self] error in
-                            guard let self = self else { return }
-                            let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-copy-post"), error: error)
-                            self.present(alert, animated: true)
-                        }
-                        .finally {
-                            DispatchQueue.main.async {
-                                overlay?.dismiss(true)
-                            }
-                        }
-                }
+                let overlay = MRProgressOverlayView.showOverlayAdded(to: self.postsView.renderView,
+                                                                     title: LocalizedString("posts-page.copied-post"),
+                                                                     mode: .checkmark,
+                                                                     animated: true)
+                overlay?.tintColor = self.theme["tintColor"]
                 
-                copyPost(post)
+                ForumsClient.shared.quoteBBcodeContents(of: post)
+                    .done { [weak self] bbcode in
+                        guard self != nil else { return }
+                        UIPasteboard.general.string = bbcode
+                    }
+                    .catch { [weak self] error in
+                        guard let self = self else { return }
+                        let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-copy-post"), error: error)
+                        self.present(alert, animated: true)
+                    }
+                    .finally {
+                        overlay?.dismiss(true)
+                    }
             }))
         }
         

@@ -221,7 +221,6 @@ public final class ForumsClient {
                 let threads = try result.upsert(into: context)
                 _ = try result.upsertAnnouncements(into: context)
                 
-                // we only know if the forum allows posting while scraping forumdisplay.php
                 forum.canPost = result.canPostNewThread
                 
                 if
