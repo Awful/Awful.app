@@ -272,7 +272,6 @@
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
-		1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAEA24222D14FFE009CB9EB /* MiniOnePassword */; };
 		1CAF2372250C8CE400033F61 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1CAF2371250C8CE400033F61 /* Nuke */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
@@ -1051,7 +1050,6 @@
 				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
 				1CD72E79265CA0D500FF3BF4 /* AwfulCore in Frameworks */,
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
-				1CAEA24322D14FFE009CB9EB /* MiniOnePassword in Frameworks */,
 				D5035BC16B0E9C1817003AF2 /* Pods_Awful.framework in Frameworks */,
 				1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */,
 				1C6BDD24265CB31E005475CE /* Logger in Frameworks */,
@@ -2147,7 +2145,6 @@
 			);
 			name = Awful;
 			packageProductDependencies = (
-				1CAEA24222D14FFE009CB9EB /* MiniOnePassword */,
 				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
 				1C453F272338457A007AC6CD /* Stencil */,
 				1CAF2371250C8CE400033F61 /* Nuke */,
@@ -3473,10 +3470,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */;
 			productName = HTMLReader;
-		};
-		1CAEA24222D14FFE009CB9EB /* MiniOnePassword */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = MiniOnePassword;
 		};
 		1CAF2371250C8CE400033F61 /* Nuke */ = {
 			isa = XCSwiftPackageProductDependency;
