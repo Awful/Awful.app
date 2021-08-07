@@ -124,13 +124,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func applicationWillResignActive(_ application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(false)
         
         updateShortcutItems()
     }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(true)
         
         // Screen brightness may have changed while the app wasn't paying attention.
@@ -158,12 +158,19 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         try! managedObjectContext.save()
     }
     
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        AppDelegate.instance.application(app, open: url,
+                                         sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+                                         annotation: options[UIApplication.OpenURLOptionsKey.annotation] as Any
+        )
+    }
+    
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         guard
             ForumsClient.shared.isLoggedIn,
             let route = try? AwfulRoute(url)
-            else { return false }
-
+        else { return false }
+        
         open(route: route)
         return true
     }
