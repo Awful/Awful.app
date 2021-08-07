@@ -370,26 +370,45 @@ final class SettingsViewController: TableViewController {
         defer { tableView.deselectRow(at: indexPath, animated: true) }
 
         let setting = self.setting(at: indexPath)
+        let settingTitle = setting["Title"] as? String
+        
         switch (setting["Action"] as? String, setting["ViewController"] as? String) {
         case ("LogOut"?, _):
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-            alert.title = "Log Out"
+            alert.title = settingTitle ?? "Log Out"
             alert.message = "Are you sure you want to log out?"
             alert.addCancelActionWithHandler(nil)
-            alert.addActionWithTitle("Log Out", handler: { AppDelegate.instance.logOut() })
+            alert.addActionWithTitle(settingTitle ?? "Log Out", handler: {
+                AppDelegate.instance.logOut()
+            })
             present(alert, animated: true)
             
         case ("EmptyCache"?, _):
-            let usageBefore = URLCache.shared.currentDiskUsage
-            AppDelegate.instance.emptyCache();
-            let usageAfter = URLCache.shared.currentDiskUsage
-            let message = "You cleared up \((usageBefore - usageAfter)/(1024*1024)) megabytes! Great job, go hog wild!!"
-            let alertController = UIAlertController(title: "Cache Cleared", message: message, preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default) { action in
-                self.dismiss(animated: true)
-            }
-            alertController.addAction(okAction)
-            self.present(alertController, animated: true)
+            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+            alert.title = settingTitle ?? "Empty Cache"
+            alert.message = "Are you sure you want to empty the cache?"
+            alert.addCancelActionWithHandler(nil)
+            alert.addActionWithTitle(settingTitle ?? "Empty Cache", handler: {
+                AppDelegate.instance.emptyCache();
+                let message = "You emptied the cache! Great job, go hog wild!!"
+                let alertController = UIAlertController(title: "Cache Cleared", message: message, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default) { action in
+                    self.dismiss(animated: true)
+                }
+                alertController.addAction(okAction)
+                self.present(alertController, animated: true)
+            })
+            present(alert, animated: true)
+            
+        case ("FullReset"?, _):
+            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+            alert.title = settingTitle ?? "Full Reset"
+            alert.message = "This will reset all settings, clear all caches and log out. Are you sure?"
+            alert.addCancelActionWithHandler(nil)
+            alert.addActionWithTitle(settingTitle ?? "Full Reset", handler: {
+                AppDelegate.instance.fullReset()
+            })
+            present(alert, animated: true)
             
         case ("GoToAwfulThread"?, _):
             guard let threadID = setting["ThreadID"] as? String else {
