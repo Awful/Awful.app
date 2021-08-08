@@ -637,7 +637,7 @@ final class PostsPageViewController: ViewController {
             }
         }()
         
-        composeItem.isEnabled = !thread.closed && thread.forum?.canPost == true
+        composeItem.isEnabled = !thread.closed
     }
     
     private func showLoadingView() {
