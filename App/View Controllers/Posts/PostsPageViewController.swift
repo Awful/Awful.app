@@ -956,7 +956,7 @@ final class PostsPageViewController: ViewController {
                             self.present(replyWorkspace.viewController, animated: true)
                         }
                         .catch { [weak self] error in
-                            let alert = UIAlertController(title: "Could Not Edit Post", error: error)
+                            let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-edit-post"), error: error)
                             self?.present(alert, animated: true)
                     }
                 }
@@ -1015,6 +1015,28 @@ final class PostsPageViewController: ViewController {
                     makeNewReplyWorkspace()
                     quotePost()
                 }
+            }))
+        } else {
+            items.append(IconActionItem(.copyPost, block: {
+                let overlay = MRProgressOverlayView.showOverlayAdded(to: self.postsView.renderView,
+                                                                     title: LocalizedString("posts-page.copied-post"),
+                                                                     mode: .checkmark,
+                                                                     animated: true)
+                overlay?.tintColor = self.theme["tintColor"]
+                
+                ForumsClient.shared.quoteBBcodeContents(of: post)
+                    .done { [weak self] bbcode in
+                        guard self != nil else { return }
+                        UIPasteboard.general.string = bbcode
+                    }
+                    .catch { [weak self] error in
+                        guard let self = self else { return }
+                        let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-copy-post"), error: error)
+                        self.present(alert, animated: true)
+                    }
+                    .finally {
+                        overlay?.dismiss(true)
+                    }
             }))
         }
         

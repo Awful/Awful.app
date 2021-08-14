@@ -220,7 +220,9 @@ public final class ForumsClient {
             .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
                 let threads = try result.upsert(into: context)
                 _ = try result.upsertAnnouncements(into: context)
-
+                
+                forum.canPost = result.canPostNewThread
+                
                 if
                     page == 1,
                     var threadsToForget = threads.first?.forum?.threads

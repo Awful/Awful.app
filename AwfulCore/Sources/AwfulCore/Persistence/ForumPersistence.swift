@@ -65,6 +65,10 @@ extension ForumBreadcrumbsScrapeResult {
 
         for forum in forums {
             if group != forum.group { forum.group = group }
+
+            if forum.group?.groupID == ForumGroupID.archives.rawValue {
+                forum.canPost = false
+            }
         }
 
         return (group: group, forums: forums)

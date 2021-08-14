@@ -127,3 +127,7 @@ func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?)
 
     return (pageNumber: pageNumber, pageCount: pageCount)
 }
+
+enum ForumGroupID: String {
+    case archives = "49"
+}
