@@ -59,6 +59,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         if ForumsClient.shared.isLoggedIn {
             setRootViewController(rootViewControllerStack.rootViewController, animated: false, completion: nil)
         } else {
+            if loginViewController == nil {
+                newLoginController()
+            }
             setRootViewController(loginViewController.enclosingNavigationController, animated: false, completion: nil)
         }
         
@@ -121,13 +124,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func applicationWillResignActive(_ application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(false)
         
         updateShortcutItems()
     }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(true)
         
         // Screen brightness may have changed while the app wasn't paying attention.
@@ -155,12 +158,19 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         try! managedObjectContext.save()
     }
     
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        AppDelegate.instance.application(app, open: url,
+                                         sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+                                         annotation: options[UIApplication.OpenURLOptionsKey.annotation] as Any
+        )
+    }
+    
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         guard
             ForumsClient.shared.isLoggedIn,
             let route = try? AwfulRoute(url)
-            else { return false }
-
+        else { return false }
+        
         open(route: route)
         return true
     }
@@ -170,23 +180,29 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return router.route(route)
     }
     
+    func fullReset() {
+        UserDefaults.standard.removeAllObjectsInMainBundleDomain()
+        emptyCache()
+        dataStore.deleteStoreAndReset()
+        logOut()
+    }
+    
     func logOut() {
-        // Logging out doubles as an "empty cache" button.
         let cookieJar = HTTPCookieStorage.shared
         for cookie in cookieJar.cookies ?? [] {
             cookieJar.deleteCookie(cookie)
         }
-        UserDefaults.standard.removeAllObjectsInMainBundleDomain()
-        emptyCache()
-        
-        // Do this after resetting settings so that it gets the default baseURL.
+   
         updateClientBaseURL()
+        
+        if loginViewController == nil {
+            newLoginController()
+        }
         
         setRootViewController(loginViewController.enclosingNavigationController, animated: true) { [weak self] in
             self?._rootViewControllerStack = nil
+       
             self?.urlRouter = nil
-            
-            self?.dataStore.deleteStoreAndReset()
         }
     }
     
@@ -255,7 +271,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return stack
     }
     
-    private lazy var loginViewController: LoginViewController! = {
+    private func createLoginViewController() -> LoginViewController! {
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
             guard let self = self else { return }
@@ -266,7 +282,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             })
         }
         return loginVC
+    }
+    
+    private lazy var loginViewController : LoginViewController! = {
+        return self.createLoginViewController()
     }()
+
+    private func newLoginController() {
+        loginViewController = createLoginViewController()
+    }
+    
 }
 
 private extension AppDelegate {

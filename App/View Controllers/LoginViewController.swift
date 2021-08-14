@@ -3,7 +3,6 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
-import MiniOnePassword
 import UIKit
 
 private let Log = Logger.get()
@@ -22,9 +21,6 @@ class LoginViewController: ViewController {
     @IBOutlet weak var forgotPasswordButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private var consentToTermsTextView: UITextView!
-    
-    @IBOutlet weak var onePasswordButton: UIButton!
-    @IBOutlet var onePasswordUnavailableConstraints: [NSLayoutConstraint]!
     
     fileprivate enum State {
         case awaitingUsername
@@ -72,13 +68,6 @@ class LoginViewController: ViewController {
         
         // Can't set this in the storyboard for some reason.
         nextBarButtonItem.isEnabled = false
-
-        onePasswordButton.setImage(UIImage(named: "onepassword-button"), for: .normal)
-        
-        if !OnePassword.isAvailable {
-            onePasswordButton.removeFromSuperview()
-            view.addConstraints(onePasswordUnavailableConstraints)
-        }
         
         consentToTermsTextView.attributedText = {
             let format = NSAttributedString(string: LocalizedString("login.consent-to-terms.full-text"))
@@ -127,29 +116,6 @@ class LoginViewController: ViewController {
         } else {
             state = .canAttemptLogin
         }
-    }
-    
-    @IBAction func didTapOnePassword(_ sender: UIButton) {
-        view.endEditing(true)
-
-        OnePassword.findLogin(
-            urlString: "forums.somethingawful.com",
-            presentingViewController: self,
-            sender: .view(sender),
-            completion: { result in
-                switch result {
-                case let .success(loginInfo):
-                    self.usernameTextField.text = loginInfo.username
-                    self.passwordTextField.text = loginInfo.password
-                    self.state = .canAttemptLogin
-
-                case .failure(.userCancelled):
-                    break
-
-                case let .failure(error):
-                    Log.e("1Password extension failed: \(error)")
-                }
-        })
     }
     
     fileprivate func attemptToLogIn() {

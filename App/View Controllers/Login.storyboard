@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="sm1-AH-1Nj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="sm1-AH-1Nj">
     <device id="retina4_0" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -42,7 +43,7 @@
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Forums Poster" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hSE-Zs-GjL">
                                                         <rect key="frame" x="101" y="35" width="211" height="21"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="username"/>
                                                         <connections>
                                                             <action selector="didChangeUsername:" destination="sm1-AH-1Nj" eventType="editingChanged" id="I7Q-Mb-cLz"/>
                                                             <outlet property="delegate" destination="sm1-AH-1Nj" id="ruk-IC-WBb"/>
@@ -63,27 +64,14 @@
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Required" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w4M-UU-wrF">
                                                         <rect key="frame" x="101" y="79.5" width="180" height="20"/>
                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
+                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES" smartDashesType="no" smartQuotesType="no" textContentType="password"/>
                                                         <connections>
                                                             <action selector="didChangePassword:" destination="sm1-AH-1Nj" eventType="editingChanged" id="VYn-PQ-oDY"/>
                                                             <outlet property="delegate" destination="sm1-AH-1Nj" id="aKX-yX-zJ3"/>
                                                         </connections>
                                                     </textField>
-                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b7d-gZ-1G0" userLabel="1Password Button">
-                                                        <rect key="frame" x="285" y="63.5" width="35" height="43"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="43" id="BQj-bL-Ppq"/>
-                                                            <constraint firstAttribute="width" constant="35" id="ITm-Wr-xnM"/>
-                                                        </constraints>
-                                                        <state key="normal">
-                                                            <color key="titleShadowColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                        </state>
-                                                        <connections>
-                                                            <action selector="didTapOnePassword:" destination="sm1-AH-1Nj" eventType="touchUpInside" id="Vwa-P5-7JJ"/>
-                                                        </connections>
-                                                    </button>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s58-Hg-Zd4" userLabel="Separator 2">
-                                                        <rect key="frame" x="8" y="106.5" width="304" height="0.5"/>
+                                                        <rect key="frame" x="8" y="101" width="304" height="0.5"/>
                                                         <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="0.5" id="LaD-ad-dfw"/>
@@ -96,10 +84,7 @@
                                                     <constraint firstAttribute="bottom" secondItem="s58-Hg-Zd4" secondAttribute="bottom" id="3qs-uL-Mx9"/>
                                                     <constraint firstItem="s58-Hg-Zd4" firstAttribute="top" secondItem="w4M-UU-wrF" secondAttribute="bottom" constant="7" id="5Wu-2K-WDC"/>
                                                     <constraint firstItem="hSE-Zs-GjL" firstAttribute="top" secondItem="Q00-dp-PD7" secondAttribute="top" constant="35" id="5d1-rX-pLQ"/>
-                                                    <constraint firstItem="b7d-gZ-1G0" firstAttribute="top" secondItem="EGY-WJ-vf1" secondAttribute="bottom" id="6WJ-hv-TIb"/>
-                                                    <constraint firstAttribute="trailing" secondItem="b7d-gZ-1G0" secondAttribute="trailing" id="7cQ-O8-ooj"/>
                                                     <constraint firstItem="w4M-UU-wrF" firstAttribute="leading" secondItem="hSE-Zs-GjL" secondAttribute="leading" id="CwA-26-CpY"/>
-                                                    <constraint firstItem="b7d-gZ-1G0" firstAttribute="leading" secondItem="w4M-UU-wrF" secondAttribute="trailing" constant="4" id="F2V-uR-a0i"/>
                                                     <constraint firstItem="mPk-Lj-l4y" firstAttribute="baseline" secondItem="hSE-Zs-GjL" secondAttribute="baseline" id="GMQ-l0-L78"/>
                                                     <constraint firstItem="mPk-Lj-l4y" firstAttribute="leading" secondItem="Q00-dp-PD7" secondAttribute="leading" constant="8" id="OY2-kG-uYf"/>
                                                     <constraint firstItem="mx3-qK-CFW" firstAttribute="leading" secondItem="Q00-dp-PD7" secondAttribute="leading" constant="8" id="Ty9-3p-XfW"/>
@@ -207,11 +192,9 @@
                         <outlet property="consentToTermsTextView" destination="d8m-a5-QTw" id="ZWy-hs-YuA"/>
                         <outlet property="forgotPasswordButton" destination="c0R-8r-wig" id="kwM-LU-plp"/>
                         <outlet property="nextBarButtonItem" destination="qPx-kd-mE6" id="2xV-N5-d7X"/>
-                        <outlet property="onePasswordButton" destination="b7d-gZ-1G0" id="e6f-bg-2Cz"/>
                         <outlet property="passwordTextField" destination="w4M-UU-wrF" id="mPI-pt-5M8"/>
                         <outlet property="scrollView" destination="BeK-WF-6SC" id="Acb-9a-7Du"/>
                         <outlet property="usernameTextField" destination="hSE-Zs-GjL" id="QSh-Tf-HjP"/>
-                        <outletCollection property="onePasswordUnavailableConstraints" destination="eCb-Dd-FKt" collectionClass="NSMutableArray" id="maH-Bt-4Ac"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Cp-xe-tET" userLabel="First Responder" sceneMemberID="firstResponder"/>

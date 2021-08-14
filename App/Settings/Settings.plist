@@ -8,7 +8,7 @@
 			<key>TitleKey</key>
 			<string>username</string>
 			<key>Explanation</key>
-			<string>Logging out erases all cached forums, threads, and posts.</string>
+			<string>Full reset erases all cached forums, threads, and posts.</string>
 			<key>Action</key>
 			<string>ShowProfile</string>
 			<key>Settings</key>
@@ -24,6 +24,12 @@
 					<string>Empty Cache</string>
 					<key>Action</key>
 					<string>EmptyCache</string>
+				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Full Reset</string>
+					<key>Action</key>
+					<string>FullReset</string>
 				</dict>
 			</array>
 		</dict>
