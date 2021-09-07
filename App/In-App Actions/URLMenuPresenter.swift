@@ -28,18 +28,18 @@ private enum _URLMenuPresenter {
         }
         
         if canOpenInYouTube(url), UserDefaults.standard.openYouTubeLinksInYouTube {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
             return
         }
         
         if canOpenInTwitter(url), UserDefaults.standard.openTwitterLinksInTwitter {
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
             return
         }
         
         if canOpenInVLC(url) {
             let vlcURL = URL(string: "vlc://\(url.host!)\(url.path)")!
-            UIApplication.shared.openURL(vlcURL)
+            UIApplication.shared.open(vlcURL)
             return
         }
         
@@ -47,15 +47,15 @@ private enum _URLMenuPresenter {
         case .awful:
             AwfulBrowser.presentBrowserForURL(url, fromViewController: presenter)
         case .safari:
-            UIApplication.shared.openURL(url)
+            UIApplication.shared.open(url)
         case .brave:
-            UIApplication.shared.openURL(bravifyURL(url))
+            UIApplication.shared.open(bravifyURL(url))
         case .chrome:
-            UIApplication.shared.openURL(chromifyURL(url))
+            UIApplication.shared.open(chromifyURL(url))
         case .edge:
-            UIApplication.shared.openURL(edgifyURL(url))
+            UIApplication.shared.open(edgifyURL(url))
         case .firefox:
-            UIApplication.shared.openURL(firefoxifyURL(url))
+            UIApplication.shared.open(firefoxifyURL(url))
         }
     }
     
@@ -88,35 +88,35 @@ private enum _URLMenuPresenter {
                     title = LocalizedString("link-action.open-in-safari")
                 }
                 alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
-                    UIApplication.shared.openURL(linkURL)
+                    UIApplication.shared.open(linkURL)
                     return
                 }))
             }
                     
             if browsers.contains(.chrome) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-chrome"), style: .default, handler: { _ in
-                    UIApplication.shared.openURL(chromifyURL(linkURL))
+                    UIApplication.shared.open(chromifyURL(linkURL))
                     return
                 }))
             }
                     
             if browsers.contains(.firefox) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-firefox"), style: .default, handler: { _ in
-                    UIApplication.shared.openURL(firefoxifyURL(linkURL))
+                    UIApplication.shared.open(firefoxifyURL(linkURL))
                     return
                 }))
             }
 
             if browsers.contains(.brave) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-brave"), style: .default, handler: { _ in
-                    UIApplication.shared.openURL(bravifyURL(linkURL))
+                    UIApplication.shared.open(bravifyURL(linkURL))
                     return
                 }))
             }
 
             if browsers.contains(.edge) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-edge"), style: .default, handler: { _ in
-                    UIApplication.shared.openURL(edgifyURL(linkURL))
+                    UIApplication.shared.open(edgifyURL(linkURL))
                     return
                 }))
             }
@@ -174,7 +174,7 @@ private enum _URLMenuPresenter {
                     return
                 }))
                 alert.addAction(UIAlertAction(title: videoURL.actionTitle, style: .default, handler: { _ in
-                    UIApplication.shared.openURL(videoURL.actionURL)
+                    UIApplication.shared.open(videoURL.actionURL)
                     return
                 }))
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.share-url"), style: .default, handler: { _ in

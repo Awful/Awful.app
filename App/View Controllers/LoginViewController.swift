@@ -170,7 +170,7 @@ class LoginViewController: ViewController {
     }
     
     @IBAction func didTapForgetPassword() {
-        UIApplication.shared.openURL(lostPasswordURL)
+        UIApplication.shared.open(lostPasswordURL)
     }
 }
 
@@ -198,7 +198,7 @@ extension LoginViewController: UITextFieldDelegate {
 
 extension LoginViewController: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange) -> Bool {
-        UIApplication.shared.openURL(url)
+        UIApplication.shared.open(url)
         return false
     }
 }

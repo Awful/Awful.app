@@ -235,13 +235,15 @@
 		1C5D570822D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */; };
 		1C5F700617D86E0F005ABD6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5F700517D86E0F005ABD6F /* Assets.xcassets */; };
 		1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */; };
-		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C6BDD22265CB307005475CE /* Imports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BDD21265CB307005475CE /* Imports.swift */; };
 		1C6BDD24265CB31E005475CE /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* Logger */; };
 		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
+		1C725A8326E715A6009713DC /* UIApplication+Catalyst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C725A8226E715A6009713DC /* UIApplication+Catalyst.swift */; };
+		1C725A8526E718D4009713DC /* UIAccessibility+Catalyst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C725A8426E718D4009713DC /* UIAccessibility+Catalyst.swift */; };
 		1C725A8926E71C6D009713DC /* MRProgress in Frameworks */ = {isa = PBXBuildFile; productRef = 1C725A8826E71C6D009713DC /* MRProgress */; };
 		1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */; };
 		1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A26221505A00035E154 /* UserDefaults+Settings.swift */; };
@@ -782,6 +784,8 @@
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C6821A81F113A760083F204 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
 		1C6BDD21265CB307005475CE /* Imports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Imports.swift; sourceTree = "<group>"; };
+		1C725A8226E715A6009713DC /* UIApplication+Catalyst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Catalyst.swift"; sourceTree = "<group>"; };
+		1C725A8426E718D4009713DC /* UIAccessibility+Catalyst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAccessibility+Catalyst.swift"; sourceTree = "<group>"; };
 		1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.generated.swift"; sourceTree = "<group>"; };
 		1C796A24221505180035E154 /* UserDefaults+Settings.stencil */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UserDefaults+Settings.stencil"; sourceTree = "<group>"; };
 		1C796A26221505A00035E154 /* UserDefaults+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.swift"; sourceTree = "<group>"; };
@@ -1186,6 +1190,8 @@
 				1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */,
 				1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */,
 				1C397C8D1BC9B12F00CA7FD5 /* ThreadPeekPopController.swift */,
+				1C725A8426E718D4009713DC /* UIAccessibility+Catalyst.swift */,
+				1C725A8226E715A6009713DC /* UIApplication+Catalyst.swift */,
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
 				1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */,
 				1C914ECD208BAD2A00C0E238 /* WebViewNetworkActivityIndicatorManager.swift */,
@@ -2711,6 +2717,7 @@
 				1C796A292218C41F0035E154 /* DefaultBrowser.swift in Sources */,
 				1CB5F7F5201527550046D080 /* ThreadListCell.swift in Sources */,
 				1C25AC4B1F537A9600977D6F /* WebViewAntiHijacking.swift in Sources */,
+				1C725A8526E718D4009713DC /* UIAccessibility+Catalyst.swift in Sources */,
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */,
 				2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */,
@@ -2758,6 +2765,7 @@
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
+				1C725A8326E715A6009713DC /* UIApplication+Catalyst.swift in Sources */,
 				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */,
 				1C6BDD22265CB307005475CE /* Imports.swift in Sources */,
@@ -2871,6 +2879,7 @@
 		};
 		1C66A9F719DD393A001B9A41 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */;
 			targetProxy = 1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */;
 		};
@@ -3233,6 +3242,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = "../Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Debug;
 		};
@@ -3242,6 +3252,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = "../Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Release;
 		};
@@ -3292,8 +3303,10 @@
 				BUNDLE_SHORT_VERSION = 5.5;
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				PRODUCT_MODULE_NAME = Awful;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -3305,7 +3318,9 @@
 				BUNDLE_SHORT_VERSION = 5.5;
 				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
 				PRODUCT_MODULE_NAME = Awful;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

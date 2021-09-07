@@ -41,7 +41,7 @@ final class ChromeActivity: UIActivity {
         components.queryItems = [
             .init(name: "url", value: url.absoluteString),
             .init(name: "x-source", value: Bundle.main.localizedName)]
-        UIApplication.shared.openURL(components.url!)
+        UIApplication.shared.open(components.url!)
         activityDidFinish(true)
     }
 }

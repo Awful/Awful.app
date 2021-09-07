@@ -196,7 +196,7 @@ final class PostsPageView: UIView {
 
         super.init(frame: frame)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: NSNotification.Name(rawValue: UIAccessibilityVoiceOverStatusChanged), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusChangedNotification, object: nil)
 
         addSubview(renderView)
         addSubview(topBarContainer)
