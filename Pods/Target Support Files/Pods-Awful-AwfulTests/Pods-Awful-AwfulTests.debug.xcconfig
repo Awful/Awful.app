@@ -1,11 +1,11 @@
 ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
 CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/MRProgress" "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/MRProgress/MRProgress.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher/PullToRefresh.framework/Headers"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher/PullToRefresh.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/MRProgress/MRProgress.framework/Headers" -isystem "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher/PullToRefresh.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/MRProgress" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher"
-OTHER_LDFLAGS = $(inherited) -framework "Accelerate" -framework "CoreGraphics" -framework "MRProgress" -framework "PullToRefresh" -framework "QuartzCore" -framework "UIKit"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher/PullToRefresh.framework/Headers" -iframework "${PODS_CONFIGURATION_BUILD_DIR}/PullToRefresher"
+OTHER_LDFLAGS = $(inherited) -framework "PullToRefresh"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

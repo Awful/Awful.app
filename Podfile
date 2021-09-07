@@ -9,8 +9,6 @@ ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 install! 'cocoapods', :generate_multiple_pod_projects => true
 
 target 'Awful' do
-  pod 'MRProgress/Overlay'
-
   pod 'PullToRefresher', '3.2' # 3.3 breaks custom refresher views
 
   target :AwfulTests

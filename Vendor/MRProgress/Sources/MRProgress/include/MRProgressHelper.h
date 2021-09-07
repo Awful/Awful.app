@@ -38,7 +38,20 @@ static inline CGRect MRCenterCGSizeInCGRect(CGSize innerRectSize, CGRect outerRe
 
 
 static inline CGFloat MRRotationForStatusBarOrientation() {
-    UIInterfaceOrientation orientation = UIApplication.sharedApplication.statusBarOrientation;
+    UIInterfaceOrientation orientation = UIInterfaceOrientationUnknown;
+    #if TARGET_OS_MACCATALYST
+    for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+        if ([scene isKindOfClass:[UIWindowScene class]]) {
+            if (scene.activationState == UISceneActivationStateForegroundActive) {
+                orientation = ((UIWindowScene *)scene).interfaceOrientation;
+                break;
+            }
+        }
+    }
+    #else
+    orientation = UIApplication.sharedApplication.statusBarOrientation;
+    #endif
+
     if (orientation == UIInterfaceOrientationLandscapeLeft) {
         return -M_PI_2;
     } else if (orientation == UIInterfaceOrientationLandscapeRight) {

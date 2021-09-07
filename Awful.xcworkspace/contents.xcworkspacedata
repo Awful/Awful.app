@@ -23,6 +23,9 @@
       location = "group:MiniOnePassword">
    </FileRef>
    <FileRef
+      location = "group:Vendor/MRProgress">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
    <FileRef

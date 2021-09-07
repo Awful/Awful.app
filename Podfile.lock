@@ -1,38 +1,16 @@
 PODS:
-  - MRProgress/ActivityIndicator (0.8.3):
-    - MRProgress/Stopable
-  - MRProgress/Blur (0.8.3):
-    - MRProgress/Helper
-  - MRProgress/Circular (0.8.3):
-    - MRProgress/Helper
-    - MRProgress/ProgressBaseClass
-    - MRProgress/Stopable
-  - MRProgress/Helper (0.8.3)
-  - MRProgress/Icons (0.8.3)
-  - MRProgress/Overlay (0.8.3):
-    - MRProgress/ActivityIndicator
-    - MRProgress/Blur
-    - MRProgress/Circular
-    - MRProgress/Helper
-    - MRProgress/Icons
-  - MRProgress/ProgressBaseClass (0.8.3)
-  - MRProgress/Stopable (0.8.3):
-    - MRProgress/Helper
   - PullToRefresher (3.2)
 
 DEPENDENCIES:
-  - MRProgress/Overlay
   - PullToRefresher (= 3.2)
 
 SPEC REPOS:
   trunk:
-    - MRProgress
     - PullToRefresher
 
 SPEC CHECKSUMS:
-  MRProgress: 16de7cc9f347e8846797a770db102a323fe7ef09
   PullToRefresher: 746c1089710eb74a3a584921549296a2fe573314
 
-PODFILE CHECKSUM: f4aef878a68c55ec9ced3cc72ec36910927a3daf
+PODFILE CHECKSUM: 1b6d936c96e63c8af1f00c4a9d42507298ed58ee
 
 COCOAPODS: 1.10.1
