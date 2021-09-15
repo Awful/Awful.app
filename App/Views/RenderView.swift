@@ -52,6 +52,10 @@ final class RenderView: UIView {
         webView.navigationDelegate = self
         webView.scrollView.backgroundColor = nil
         webView.scrollView.decelerationRate = .normal
+        
+        // this fixes youtube embeds in multiple ways!
+        webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
+        
         return webView
     }()
 
