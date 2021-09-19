@@ -30,7 +30,7 @@
 		76799736BBA5D8F6B84663DBB32F9156 /* DefaultViewAnimator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefaultViewAnimator.swift; path = PullToRefresh/DefaultViewAnimator.swift; sourceTree = "<group>"; };
 		8D76D9F19C053A2310EA978EECFAC62F /* PullToRefresher.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = PullToRefresher.modulemap; sourceTree = "<group>"; };
 		BA610ACA259495C62F7283276CB598A3 /* DefaultRefreshView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefaultRefreshView.swift; path = PullToRefresh/DefaultRefreshView.swift; sourceTree = "<group>"; };
-		C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresh.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = PullToRefresh.framework; path = PullToRefresher.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresh.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PullToRefresh.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE67E80BBA9B8FF9B395091326D13E28 /* PullToRefresher-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "PullToRefresher-Info.plist"; sourceTree = "<group>"; };
 		EB69C2761678BDA5F1FF60722BD565C3 /* PullToRefresher-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "PullToRefresher-dummy.m"; sourceTree = "<group>"; };
 		FC861749571F501D8FF69971CB6F68E5 /* PullToRefresher.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PullToRefresher.release.xcconfig; sourceTree = "<group>"; };
@@ -98,7 +98,6 @@
 				069811DD56362B3F9B04F2295F4EC162 /* UIScrollView+PullToRefresh.swift */,
 				2511960A774DB882F124E43FBAB4C0BD /* Support Files */,
 			);
-			name = PullToRefresher;
 			path = PullToRefresher;
 			sourceTree = "<group>";
 		};
@@ -150,7 +149,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1100;
+				LastUpgradeCheck = 1300;
 			};
 			buildConfigurationList = 58F6910B3065668386C0CE8850910EB7 /* Build configuration list for PBXProject "PullToRefresher" */;
 			compatibilityVersion = "Xcode 11.0";
