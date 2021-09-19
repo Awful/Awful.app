@@ -10,10 +10,10 @@ on:
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: macos-11
     env:
-      DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
     - name: xcodebuild test
-      run: xcodebuild -workspace Awful.xcworkspace -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 11,OS=latest" test
+      run: xcodebuild -workspace Awful.xcworkspace -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 13,OS=latest" test
