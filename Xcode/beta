@@ -88,7 +88,7 @@ def export_archive(archive_path, export_path, platform):
     else:
         archive_base = os.path.basename(archive_path)
         archive_name_root = os.path.splitext(archive_base)[0]
-        ipa_filename = archive_name_root + '.ipa'
+        ipa_filename = 'Awful.ipa'
         return ("", os.path.join(export_path, ipa_filename))
 
 
