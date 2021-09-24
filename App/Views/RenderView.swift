@@ -47,14 +47,58 @@ final class RenderView: UIView {
             registerURLProtocolsForWKWebView_iOS10AndBelow()
         }
 
+        // this doesn't have any impact on any known issues, but leaving it here as it might be worth setting?
+//        if #available(iOS 13.0, *) {
+//            let pref = WKWebpagePreferences()
+//            pref.preferredContentMode = .mobile
+//            configuration.defaultWebpagePreferences = pref
+//        }
+        
         let webView = WKWebView(frame: .zero, configuration: configuration)
-        webView.isOpaque = false
+        
+        // setting isOpaque to true fixes dark scroll thumbs in dark mode on iOS 15
+        if #available(iOS 15, *) {
+            webView.isOpaque = true
+        } else {
+            webView.isOpaque = false
+        }
         webView.navigationDelegate = self
         webView.scrollView.backgroundColor = nil
         webView.scrollView.decelerationRate = .normal
         
-        // this fixes youtube embeds in multiple ways!
-        webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
+        // tested this custom user agent with the youtube play while scrolling issue and all good!
+        webView.customUserAgent = {
+             let info = Bundle.main.infoDictionary!
+             let executable = info[kCFBundleExecutableKey as String] as? String ?? "Unknown"
+             let bundle = info[kCFBundleIdentifierKey as String] as? String ?? "Unknown"
+             let appVersion = info["CFBundleShortVersionString"] as? String ?? "Unknown"
+             let appBuild = info[kCFBundleVersionKey as String] as? String ?? "Unknown"
+
+             let osNameVersion: String = {
+                 let version = ProcessInfo.processInfo.operatingSystemVersion
+                 let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+
+                 let osName: String = {
+                     #if os(iOS)
+                         return "iOS"
+                     #elseif os(watchOS)
+                         return "watchOS"
+                     #elseif os(tvOS)
+                         return "tvOS"
+                     #elseif os(macOS)
+                         return "OS X"
+                     #elseif os(Linux)
+                         return "Linux"
+                     #else
+                         return "Unknown"
+                     #endif
+                 }()
+
+                 return "\(osName) \(versionString)"
+             }()
+
+             return "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
+         }()
         
         return webView
     }()
@@ -80,6 +124,15 @@ final class RenderView: UIView {
      */
     func render(html: String, baseURL: URL?) {
         Log.d("rendering \(html.count) characters of HTML with baseURL = \(baseURL as Any)")
+        
+        
+        
+   
+//        webView.scrollView.isOpaque = false
+//        webView.scrollView.backgroundColor = .black
+//        webView.scrollView.indicatorStyle = .black
+//        webView.scrollView.tintColor = .white
+        
         webView.loadHTMLString(html, baseURL: baseURL)
     }
 

@@ -27,6 +27,27 @@ final class ResourceURLProtocol: URLProtocol {
     
     static let scheme = "awful-resource"
     
+    @available(iOS 11.0, *)
+    private func loadResource(url initialURL: URL, client: URLClientWrapper_iOS11) {
+        let resource = Resource(initialURL)
+        do {
+            let bundledURL = try findBundledURL(resource)
+            let resourceData = try loadData(from: bundledURL)
+            
+            let response = URLResponse(url: initialURL, mimeType: resource.mimeType, expectedContentLength: resourceData.count, textEncodingName: nil)
+            client.didReceive(response, in: self)
+            
+            client.didReceive(resourceData, in: self)
+        } catch {
+            Log.e("Could not load \(initialURL): \(error)")
+            client.didFailWithError(error, in: self)
+            return
+        }
+        
+        client.didFinish(in: self)
+    }
+    
+    @available(iOS 10.0, *)
     private func loadResource(url initialURL: URL, client: URLClientWrapper) {
         let resource = Resource(initialURL)
         do {
@@ -78,7 +99,7 @@ final class ResourceURLProtocol: URLProtocol {
     }
     
     override func startLoading() {
-        guard let client = client else { return }
+        guard let client = client, #available(iOS 10, *) else { return }
         loadResource(url: request.url!, client: .foundation(client))
     }
     
@@ -90,7 +111,7 @@ final class ResourceURLProtocol: URLProtocol {
 @available(iOS 11.0, *)
 extension ResourceURLProtocol: WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start task: WKURLSchemeTask) {
-        loadResource(url: task.request.url!, client: .webkit(.init(task)))
+        loadResource(url: task.request.url!, client: .webkit(task))
     }
     
     func webView(_ webView: WKWebView, stop task: WKURLSchemeTask) {
@@ -165,30 +186,52 @@ private struct Resource {
         }
     }
 }
-
+ 
 private enum URLClientWrapper {
     case foundation(URLProtocolClient)
-    case webkit(TaskAvailabilityWrapper)
-
-    struct TaskAvailabilityWrapper {
-        let _task: Any
-
-        @available(iOS 11.0, *)
-        var task: WKURLSchemeTask { _task as! WKURLSchemeTask }
-
-        @available(iOS 11.0, *)
-        init(_ task: WKURLSchemeTask) { _task = task }
+    
+    func didFailWithError(_ error: Error, in urlProtocol: URLProtocol) {
+        switch self {
+        case .foundation(let client):
+            client.urlProtocol(urlProtocol, didFailWithError: error)
+        }
     }
+    
+    func didReceive(_ response: URLResponse, in urlProtocol: URLProtocol) {
+        switch self {
+        case .foundation(let client):
+            client.urlProtocol(urlProtocol, didReceive: response, cacheStoragePolicy: .notAllowed)
+        }
+    }
+    
+    func didReceive(_ data: Data, in urlProtocol: URLProtocol) {
+        switch self {
+        case .foundation(let client):
+            client.urlProtocol(urlProtocol, didLoad: data)
+        }
+    }
+    
+    func didFinish(in urlProtocol: URLProtocol) {
+        switch self {
+        case .foundation(let client):
+            client.urlProtocolDidFinishLoading(urlProtocol)
+        }
+    }
+}
+        
+@available(iOS 11.0, *)
+private enum URLClientWrapper_iOS11 {
+    case foundation(URLProtocolClient)
+    
+    case webkit(WKURLSchemeTask)
     
     func didFailWithError(_ error: Error, in urlProtocol: URLProtocol) {
         switch self {
         case .foundation(let client):
             client.urlProtocol(urlProtocol, didFailWithError: error)
             
-        case .webkit(let wrapper):
-            if #available(iOS 11.0, *) {
-                wrapper.task.didFailWithError(error)
-            }
+        case .webkit(let task):
+            task.didFailWithError(error)
         }
     }
     
@@ -197,10 +240,8 @@ private enum URLClientWrapper {
         case .foundation(let client):
             client.urlProtocol(urlProtocol, didReceive: response, cacheStoragePolicy: .notAllowed)
             
-        case .webkit(let wrapper):
-            if #available(iOS 11.0, *) {
-                wrapper.task.didReceive(response)
-            }
+        case .webkit(let task):
+            task.didReceive(response)
         }
     }
     
@@ -209,10 +250,8 @@ private enum URLClientWrapper {
         case .foundation(let client):
             client.urlProtocol(urlProtocol, didLoad: data)
             
-        case .webkit(let wrapper):
-            if #available(iOS 11.0, *) {
-                wrapper.task.didReceive(data)
-            }
+        case .webkit(let task):
+            task.didReceive(data)
         }
     }
     
@@ -221,10 +260,8 @@ private enum URLClientWrapper {
         case .foundation(let client):
             client.urlProtocolDidFinishLoading(urlProtocol)
             
-        case .webkit(let wrapper):
-            if #available(iOS 11.0, *) {
-                wrapper.task.didFinish()
-            }
+        case .webkit(let task):
+            task.didFinish()
         }
     }
 }
