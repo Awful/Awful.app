@@ -31,7 +31,7 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
         rootView.endEditing(true)
         
         let progressView = MRProgressOverlayView.showOverlayAdded(to: view.window, title: "Reporting…", mode: .indeterminate, animated: true)!
-        ForumsClient.shared.report(post, reason: rootView.commentTextView.text ?? "")
+        ForumsClient.shared.report(post, nws: rootView.nwsSwitch.isOn, reason: rootView.commentTextView.text ?? "")
             .done { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
             }
@@ -50,6 +50,8 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
     
     fileprivate class RootView: UIView {
         let instructionLabel = UILabel()
+        let nwsLabel = UILabel()
+        let nwsSwitch = UISwitch()
         let commentFieldLabel = UILabel()
         let commentTextView = UITextView()
         
@@ -59,6 +61,12 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
             instructionLabel.text = "Did this post break the forum rules? If so, please report it (limit 960 characters.)"
             instructionLabel.numberOfLines = 0
             addSubview(instructionLabel)
+            
+            nwsLabel.text = "Reported post contains NWS content"
+            nwsLabel.numberOfLines = 0
+            addSubview(nwsLabel)
+            
+            addSubview(nwsSwitch)
             
             commentFieldLabel.text = "Optional comments:"
             commentFieldLabel.numberOfLines = 0
@@ -76,9 +84,19 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
             let availableArea = bounds.insetBy(dx: 8, dy: 8)
             instructionLabel.frame = availableArea
             instructionLabel.sizeToFit()
+            
+            nwsLabel.frame = availableArea
+            nwsLabel.sizeToFit()
+            nwsLabel.frame.origin.y = instructionLabel.frame.maxY + 10
+            
+            nwsSwitch.frame = availableArea
+            nwsSwitch.sizeToFit()
+            nwsSwitch.frame.origin.y = nwsLabel.frame.maxY + 10
+            
             commentFieldLabel.frame = availableArea
             commentFieldLabel.sizeToFit()
-            commentFieldLabel.frame.origin.y = instructionLabel.frame.maxY + 10
+            commentFieldLabel.frame.origin.y = nwsSwitch.frame.maxY + 10
+            
             commentTextView.frame = availableArea
             commentTextView.sizeToFit()
             commentTextView.frame.origin.y = commentFieldLabel.frame.maxY + 10

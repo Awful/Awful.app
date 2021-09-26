@@ -918,10 +918,11 @@ public final class ForumsClient {
     /**
      - Parameter reason: A further explanation of what's wrong with the post.
      */
-    public func report(_ post: Post, reason: String) -> Promise<Void> {
+    public func report(_ post: Post, nws: Bool, reason: String) -> Promise<Void> {
         let parameters: KeyValuePairs<String, Any> = [
             "action": "submit",
             "postid": post.postID,
+            "nws": (nws ? "yes" : "no"),
             "comments": String(reason.prefix(960))]
 
         return fetch(method: .post, urlString: "modalert.php", parameters: parameters)
