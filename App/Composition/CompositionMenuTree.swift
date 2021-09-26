@@ -305,6 +305,12 @@ fileprivate func videoTagURLForURL(_ url: URL) -> URL? {
             return components.url
         }
         return nil
+    case let (host?, path) where host.hasSuffix("tiktok.com") && path.hasPrefix("/embed"):
+        return url
+    case let (host?, path) where host.hasSuffix("tiktok.com")
+        // Share URL from TikTok has this format: /@{user}/video/{videoID} but the forums will convert
+        && path.range(of: "/@[^/]+/video/.+", options: [.regularExpression, .anchored]) != nil:
+        return url
     default:
         return nil
     }
