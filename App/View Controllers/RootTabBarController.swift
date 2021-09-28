@@ -43,6 +43,21 @@ final class RootTabBarController: UITabBarController, Themeable {
         tabBar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
         tabBar.tintColor = theme["tintColor"]
         tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
+        
+        if #available(iOS 15.0, *) {
+            // Fix tab bar having no background when scrolled to bottom on iOS 15.
+            let appearance = UITabBarAppearance()
+            if (tabBar.isTranslucent) {
+                appearance.configureWithDefaultBackground()
+            } else {
+                appearance.configureWithOpaqueBackground()
+            }
+            
+            appearance.backgroundColor = theme["tabBarTintColor"]
+            
+            tabBar.standardAppearance = appearance;
+            tabBar.scrollEdgeAppearance = tabBar.standardAppearance
+        }
     }
 }
 

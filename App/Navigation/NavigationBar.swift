@@ -36,7 +36,7 @@ final class NavigationBar: UINavigationBar {
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
         
         if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top.
+            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
             scrollEdgeAppearance = standardAppearance
             
             //Set the status bar to use white text

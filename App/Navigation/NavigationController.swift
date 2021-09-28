@@ -98,7 +98,7 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
         
         if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top.
+            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = theme["navigationBarTintColor"]
