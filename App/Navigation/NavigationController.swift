@@ -96,6 +96,19 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
         awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
+        
+        if #available(iOS 15.0, *) {
+            // Fix odd grey navigation bar background when scrolled to top.
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = theme["navigationBarTintColor"]
+            
+            let textColor: UIColor? = theme["navigationBarTextColor"]
+            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!]
+            
+            navigationBar.standardAppearance = appearance;
+            navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance
+        }
     }
     
     override func encodeRestorableState(with coder: NSCoder) {

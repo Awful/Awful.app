@@ -34,6 +34,15 @@ final class NavigationBar: UINavigationBar {
         titleTextAttributes = [.font: UIFont.systemFont(ofSize: 17, weight: .regular)]
         
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
+        
+        if #available(iOS 15.0, *) {
+            // Fix odd grey navigation bar background when scrolled to top.
+            scrollEdgeAppearance = standardAppearance
+            
+            //Set the status bar to use white text
+            //TODO: We should compute this or save it in the theme plist, but currently there isn't a single theme where the statusbar shouldn't be white.
+            overrideUserInterfaceStyle = .dark
+        }
     }
     
     required init?(coder: NSCoder) {
