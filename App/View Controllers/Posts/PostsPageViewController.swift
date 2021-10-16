@@ -1286,6 +1286,7 @@ final class PostsPageViewController: ViewController {
         super.viewDidAppear(animated)
         
         configureUserActivityIfPossible()
+        self.postsView.renderView.makeOpaqueToFixIOS15ScrollThumbColor()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
