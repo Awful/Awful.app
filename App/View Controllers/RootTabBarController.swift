@@ -53,7 +53,7 @@ final class RootTabBarController: UITabBarController, Themeable {
                 appearance.configureWithOpaqueBackground()
             }
             
-            appearance.backgroundColor = theme["tabBarTintColor"]
+            appearance.backgroundColor = theme["tabBarBackgroundColor"]
             
             tabBar.standardAppearance = appearance;
             tabBar.scrollEdgeAppearance = tabBar.standardAppearance

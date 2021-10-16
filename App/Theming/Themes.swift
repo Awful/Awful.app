@@ -232,8 +232,14 @@ extension Theme {
         switch mode {
         case .dark:
             themeName = UserDefaults.standard.defaultDarkTheme
+            if #available(iOS 13.0, *) {
+                UIWindow.appearance().overrideUserInterfaceStyle = .dark
+            }
         case .light:
             themeName = UserDefaults.standard.defaultLightTheme
+            if #available(iOS 13.0, *) {
+                UIWindow.appearance().overrideUserInterfaceStyle = .light
+            }
         }
         
         // If a theme was renamed, this will prevent a crash on launch

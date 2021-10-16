@@ -5,6 +5,7 @@
 import PromiseKit
 import UIKit
 import WebKit
+import AwfulCore
 
 private let Log = Logger.get()
 
@@ -24,6 +25,8 @@ final class RenderView: UIView {
 
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
+    private let awfulUserAgent: String = ForumsClient.shared.awfulUserAgent
+    
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         
@@ -54,7 +57,7 @@ final class RenderView: UIView {
         webView.scrollView.decelerationRate = .normal
         
         // this fixes youtube embeds in multiple ways!
-        webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
+        webView.customUserAgent = awfulUserAgent
         
         return webView
     }()
