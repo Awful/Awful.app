@@ -309,9 +309,10 @@ extension RenderView {
     }
     
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied
-    /// making the webView opaque after it has loaded means white scroll indicator works and no white flashes on page loads
-    func makeWebViewOpaqueToFixIOS15ScrollThumbColor() {
-        webView.isOpaque = true
+    /// webview must be transparent to prevent white flashes during content refreshes. setting opaque to true in viewDidAppear helped, but still sometimes produced white flashes.
+    /// instead, we toggle the webview to opaque while it's being scrolled and return it to transparent seconds after
+    func toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: Bool) {
+        webView.isOpaque = setOpaqueTo
     }
     
     /**

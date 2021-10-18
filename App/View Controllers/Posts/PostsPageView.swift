@@ -474,6 +474,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         willBeginDraggingContentOffset = scrollView.contentOffset
+        
+        self.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -528,6 +530,10 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         updateTopBarDidEndDecelerating()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: false)
+        }
     }
 
     private func updateTopBarDidEndDecelerating() {
