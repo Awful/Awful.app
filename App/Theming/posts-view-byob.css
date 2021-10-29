@@ -5,6 +5,7 @@
  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 */
 body {
+  background-color: #9999ff;
   min-height: 100vh;
   font: -apple-system-body;
   margin: 0;
