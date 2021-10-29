@@ -22,7 +22,7 @@ This app is not endorsed by Something Awful.
 
 ## Build
 
-You need Xcode 11 or 12 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
+You need Xcode 13 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
 
 1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
 2. Open the Xcode workspace and build away: `xed Awful-app`
@@ -38,8 +38,7 @@ If you'd like to build to your device, set the `DEVELOPMENT_TEAM` build setting 
 There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app.
 
 * Swift Package Manager is the preferred way to add dependencies. If at all possible, please use it.
-    * Running into "duplicate symbol" warnings? Add the dependency to the `CommonSPM` target instead.
-* Manual installation is totally fine. Drag the built binary or xcodeproj on in.
+* Manual installation is totally fine. Drag the files or xcodeproj on in.
 * [CocoaPods][] manages some of our dependencies.
     * There's a `Gemfile` nearby if you want to use a known working version of CocoaPods.
 * **No matter how you add a dependency**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency. We do not use CocoaPods-generated acknowledgements.
@@ -183,11 +182,11 @@ Awful answers to a couple URL schemes:
 
 For iOS | Check out tag/branch
 ------- | --------------------
-13 | master
-12 | master
-11 | master
-10 | master
-9  | master
+13 | main
+12 | main
+11 | main
+10 | main
+9  | main
 8  | ios-8
 7  | ios-7
 6  | ios-6

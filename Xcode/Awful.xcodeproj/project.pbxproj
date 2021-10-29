@@ -528,6 +528,7 @@
 		1C0060A8217171CD00E5329A /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C015BBE21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScrollViewDelegateMultiplexer.h; sourceTree = "<group>"; };
 		1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScrollViewDelegateMultiplexer.m; sourceTree = "<group>"; };
+		1C065F8D272B8D12007005ED /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate-dark.css"; sourceTree = "<group>"; };
@@ -1126,6 +1127,14 @@
 				1C16FC051CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift */,
 			);
 			path = Navigation;
+			sourceTree = "<group>";
+		};
+		1C065F8C272B8CEE007005ED /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				1C065F8D272B8D12007005ED /* ci_post_clone.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 		1C15334D20708EFF0021A2BD /* Config */ = {
@@ -1868,6 +1877,7 @@
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
+				1C065F8C272B8CEE007005ED /* ci_scripts */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				1C56974E24C3F39B0077CA62 /* CopyMarkdown */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
