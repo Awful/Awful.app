@@ -203,7 +203,9 @@ Awful development is led by [pokeyman][] aka [Nolan Waite](https://github.com/no
 Awful includes contributions from:
 
 - [awesomeolion](https://forums.somethingawful.com/member.php?action=getinfo&userid=127057)
+- [carry on then](https://forums.somethingawful.com/member.php?action=getinfo&userid=165974)
 - [CLAM DOWN](https://forums.somethingawful.com/member.php?action=getinfo&userid=110481)
+- [commie kong](https://forums.somethingawful.com/member.php?action=getinfo&userid=224355)
 - [Diabolik900][]
 - [enigma105](http://forums.somethingawful.com/member.php?action=getinfo&userid=51258)
 - [Froist](http://forums.somethingawful.com/member.php?action=getinfo&userid=56411)
