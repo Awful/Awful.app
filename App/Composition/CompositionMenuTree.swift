@@ -61,20 +61,12 @@ final class CompositionMenuTree: NSObject {
         // Simply calling UIMenuController.update() here doesn't suffice; the menu simply hides. Instead we need to hide the menu then show it again.
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = true
 
-        #if targetEnvironment(macCatalyst)
         UIMenuController.shared.hideMenu()
         if textView.selectedTextRange != nil {
             UIMenuController.shared.showMenu(from: textView, rect: targetRect)
         } else {
             UIMenuController.shared.showMenu(from: textView, rect: textView.bounds)
         }
-        #else
-        UIMenuController.shared.isMenuVisible = false
-        if textView.selectedTextRange != nil {
-            UIMenuController.shared.setTargetRect(targetRect, in: textView)
-        }
-        UIMenuController.shared.setMenuVisible(true, animated: true)
-        #endif
         
         shouldPopWhenMenuHides = true
     }
@@ -146,21 +138,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             return
         }
         
-        var assetFromALAssetURL: PHAsset? {
-            #if targetEnvironment(macCatalyst)
-            return nil
-            #else
-            if let alAssetURL = info[.referenceURL] as? URL {
-                return PHAsset.firstAsset(withALAssetURL: alAssetURL)
-            } else {
-                return nil
-            }
-            #endif
-        }
-        
-        if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
-            insertImage(image, withAssetIdentifier: asset.localIdentifier)
-        } else if let asset = assetFromALAssetURL {
+        if let asset = info[.phAsset] as? PHAsset {
             insertImage(image, withAssetIdentifier: asset.localIdentifier)
         } else {
             insertImage(image)

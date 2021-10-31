@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "ImgurAnonymousAPI",
     platforms: [
-        .iOS(.v9),
+        .iOS(.v13),
     ],
     products: [
         .library(

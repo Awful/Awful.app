@@ -4,7 +4,6 @@
 
 import Foundation
 import HTMLReader
-import class ScannerShim.Scanner
 
 public struct PostScrapeResult {
     public let author: AuthorSidebarScrapeResult

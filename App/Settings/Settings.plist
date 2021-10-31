@@ -259,8 +259,6 @@
 			<key>Title</key>
 			<string>Themes</string>
 			<key>Explanation</key>
-			<string>Awful can automatically switch between light and dark themes based on screen brightness. Use the slider to set when to switch.</string>
-			<key>Explanation~ios13</key>
 			<string>Awful can automatically switch between light and dark themes alongside iOS.</string>
 			<key>Settings</key>
 			<array>
@@ -310,31 +308,9 @@
 					<key>Type</key>
 					<string>Switch</string>
 					<key>Default</key>
-					<false/>
+					<true/>
 					<key>Key</key>
 					<string>auto_dark_theme</string>
-					<key>Default~ios13</key>
-					<true/>
-				</dict>
-				<dict>
-					<key>MaximumImage</key>
-					<string>brightness-up</string>
-					<key>MinimumImage</key>
-					<string>brightness-down</string>
-					<key>Title</key>
-					<string>Threshold</string>
-					<key>Type</key>
-					<string>Slider</string>
-					<key>Minimum</key>
-					<real>0</real>
-					<key>Maximum</key>
-					<integer>100</integer>
-					<key>Default</key>
-					<integer>40</integer>
-					<key>Key</key>
-					<string>auto_theme_threshold</string>
-					<key>VisibleOniOS13</key>
-					<false/>
 				</dict>
 			</array>
 		</dict>
@@ -388,8 +364,6 @@
 					<string>app_icon_name</string>
 				</dict>
 			</array>
-			<key>RequiresiOS10.3</key>
-			<true/>
 		</dict>
 		<dict>
 			<key>Settings</key>

@@ -138,17 +138,12 @@ internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
     
     /// Returns `true` when the app has a photo library usage description and the user has authorized said access.
     static var hasRequiredPhotoLibraryAuthorization: Bool {
-        
-        // "Apps linked on or after iOS 10 will crash if [the NSPhotoLibraryUsageDescription] key is not present."
-        if #available(iOS 10.0, *), Bundle.main.infoDictionary?["NSPhotoLibraryUsageDescription"] == nil {
-            return false
-        }
 
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
         case .denied, .notDetermined, .restricted:
             return false
-        case .authorized:
+        case .authorized, .limited:
             return true
         @unknown default:
             assertionFailure("handle unknown photo library authorization status: \(status.rawValue)")
@@ -262,17 +257,11 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
             throw ImageError.destinationCreationFailed
         }
 
-        CGImageDestinationAddImage(destination, cgImage, {
-            var options: [AnyHashable: Any] = [
-                kCGImagePropertyHasAlpha: true,
-                kCGImagePropertyOrientation: image.imageOrientation.cgOrientation.rawValue]
-
-            if #available(iOS 9.3, tvOS 9.3, watchOS 2.3, *) {
-                options[kCGImageDestinationOptimizeColorForSharing] = true
-            }
-
-            return options as NSDictionary
-        }())
+        CGImageDestinationAddImage(destination, cgImage, [
+            kCGImagePropertyHasAlpha: true,
+            kCGImagePropertyOrientation: image.imageOrientation.cgOrientation.rawValue,
+            kCGImageDestinationOptimizeColorForSharing: true
+        ] as NSDictionary)
 
         log(.debug, "saving \(image) to \(imageURL)")
         CGImageDestinationFinalize(destination)

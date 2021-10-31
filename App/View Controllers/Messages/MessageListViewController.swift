@@ -170,7 +170,6 @@ extension MessageListViewController {
         showMessage(message)
     }
 
-    @available(iOS 11.0, *)
     override func tableView(
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath

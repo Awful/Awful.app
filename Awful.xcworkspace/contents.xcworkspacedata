@@ -29,9 +29,6 @@
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:ScannerShim">
-   </FileRef>
-   <FileRef
       location = "group:Smilies">
    </FileRef>
 </Workspace>

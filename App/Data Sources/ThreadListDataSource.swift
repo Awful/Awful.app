@@ -131,12 +131,7 @@ extension ThreadListDataSource: UITableViewDataSource {
     // This is actually a UITableViewDelegate method.
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let viewModel = viewModelForCell(at: indexPath)
-        let tableWidth: CGFloat
-        if #available(iOS 11.0, *) {
-            tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
-        } else {
-            tableWidth = tableView.bounds.width
-        }
+        let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
         return ThreadListCell.heightForViewModel(viewModel, inTableWithWidth: tableWidth)
     }
 

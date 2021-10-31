@@ -2,7 +2,6 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import class ScannerShim.Scanner
 import UIKit
 
 private let Log = Logger.get()

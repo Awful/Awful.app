@@ -95,7 +95,7 @@ final class ImageViewController: UIViewController {
         var overlayButtons: [UIButton] { return [doneButton, actionButton] }
         var overlayHidden = false
         var hideOverlayTimer: Timer?
-        let spinner = UIActivityIndicatorView.makeLarge()
+        let spinner = UIActivityIndicatorView(style: .large)
         let tap = UITapGestureRecognizer()
         let panToDismiss = UIPanGestureRecognizer()
         var panToDismissAction: (() -> Void)?
@@ -236,11 +236,7 @@ final class ImageViewController: UIViewController {
                 #if targetEnvironment(macCatalyst)
                 frame = .zero
                 #else
-                if #available(iOS 13, *) {
-                    frame = window?.windowScene?.statusBarManager?.statusBarFrame ?? .zero
-                } else {
-                    frame = UIApplication.shared.statusBarFrame
-                }
+                frame = window?.windowScene?.statusBarManager?.statusBarFrame ?? .zero
                 #endif
 
                 // Status bar frame is in screen coordinates, so may be rotated. (Is this still true? Original comment dates back many years. Also, if our minimum iOS version supports safe areas, let's use that.)

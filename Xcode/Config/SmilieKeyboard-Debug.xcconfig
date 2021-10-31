@@ -1,5 +1,0 @@
-// Build settings for the SmilieKeyboard extension target in the Debug configuration.
-
-#include "Extension.xcconfig"
-
-PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug.SmilieKeyboard

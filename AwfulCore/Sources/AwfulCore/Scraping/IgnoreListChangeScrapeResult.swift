@@ -3,7 +3,6 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import HTMLReader
-import class ScannerShim.Scanner
 
 /**
  Scrapes the page shown after submitting the ignore list form.

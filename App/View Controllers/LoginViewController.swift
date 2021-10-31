@@ -92,10 +92,8 @@ class LoginViewController: ViewController {
             attributedText.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .footnote), range: NSRange(location: 0, length: attributedText.length))
             return attributedText
         }()
-        
-        if #available(iOS 13.0, *) {
-            consentToTermsTextView.textColor = .label
-        }
+
+        consentToTermsTextView.textColor = .label
         
         NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
@@ -223,7 +221,7 @@ extension LoginViewController {
                 let insetBottom = localKeyboardFrame.intersection(self.view.bounds).height
 
                 self.scrollView.contentInset.bottom = insetBottom
-                self.scrollView.scrollIndicatorInsetBottom = insetBottom
+                self.scrollView.verticalScrollIndicatorInsets.bottom = insetBottom
             }
             
         }, completion: nil)

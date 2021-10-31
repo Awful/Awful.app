@@ -167,7 +167,7 @@ class ComposeTextViewController: ViewController {
         
         UIView.animate(withDuration: duration, delay: 0, options: options, animations: { 
             self.textView.contentInset.bottom = overlap.height
-            self.textView.scrollIndicatorInsetBottom = overlap.height
+            self.textView.verticalScrollIndicatorInsets.bottom = overlap.height
         }, completion: { isFinished in
             if let endPosition = self.textView.selectedTextRange?.end {
                 let caretRect = self.textView.caretRect(for: endPosition)

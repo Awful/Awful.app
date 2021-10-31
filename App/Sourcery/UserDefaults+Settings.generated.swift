@@ -40,16 +40,6 @@ extension UserDefaults {
     @objc private class var keyPathsForValuesAffectingAutomaticallyPlayGIFs: Set<String> { [SettingsKeys.automaticallyPlayGIFs] }
 
 
-    @objc dynamic var automaticDarkModeBrightnessThresholdPercent: Double {
-        get { return double(forKey: SettingsKeys.automaticDarkModeBrightnessThresholdPercent) }
-        set { set(newValue, forKey: SettingsKeys.automaticDarkModeBrightnessThresholdPercent) }
-    }
-
-    @objc private class var automaticallyNotifiesObserversOfAutomaticDarkModeBrightnessThresholdPercent: Bool { false }
-
-    @objc private class var keyPathsForValuesAffectingAutomaticDarkModeBrightnessThresholdPercent: Set<String> { [SettingsKeys.automaticDarkModeBrightnessThresholdPercent] }
-
-
     @objc dynamic var confirmNewPosts: Bool {
         get { return bool(forKey: SettingsKeys.confirmNewPosts) }
         set { set(newValue, forKey: SettingsKeys.confirmNewPosts) }

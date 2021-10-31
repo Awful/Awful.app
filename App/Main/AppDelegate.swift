@@ -40,9 +40,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             self?.logOut()
         }
 
-        ForumsClient.shared.fetchDidBegin = NetworkActivityIndicatorManager.shared.incrementActivityCount
-        ForumsClient.shared.fetchDidEnd = NetworkActivityIndicatorManager.shared.decrementActivityCount
-
         URLCache.shared = {
             #if targetEnvironment(macCatalyst)
             return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), directory: nil)
@@ -86,18 +83,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
         NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
-
-        if #available(iOS 13.0, *) {
-            // We'll use trait collection's userInterfaceStyle.
-        } else {
-            NotificationCenter.default.addObserver(self, selector: #selector(mainScreenBrightnessDidChange), name: UIScreen.brightnessDidChangeNotification, object: UIScreen.main)
-        }
         
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.automaticallyEnableDarkMode) { [weak self] defaults in
-                self?.automaticallyUpdateDarkModeEnabledIfNecessary()
-            }
-            $0.observe(\.automaticDarkModeBrightnessThresholdPercent) { [weak self] defaults in
                 self?.automaticallyUpdateDarkModeEnabledIfNecessary()
             }
             $0.observe(\.customBaseURLString) { [weak self] defaults in
@@ -309,23 +297,11 @@ private extension AppDelegate {
             themeDidChange()
         }
     }
-    
-    @objc private func mainScreenBrightnessDidChange(_ notification: Notification) {
-        automaticallyUpdateDarkModeEnabledIfNecessary()
-    }
-    
+
     private func automaticallyUpdateDarkModeEnabledIfNecessary() {
         guard UserDefaults.standard.automaticallyEnableDarkMode else { return }
 
-        let shouldDarkModeBeEnabled: Bool = {
-            if #available(iOS 13.0, *) {
-                return window?.traitCollection.userInterfaceStyle == .dark
-            } else {
-                let threshold = CGFloat(UserDefaults.standard.automaticDarkModeBrightnessThresholdPercent / 100)
-                return UIScreen.main.brightness <= threshold
-            }
-        }()
-
+        let shouldDarkModeBeEnabled = window?.traitCollection.userInterfaceStyle == .dark
         if shouldDarkModeBeEnabled != UserDefaults.standard.isDarkModeEnabled {
             UserDefaults.standard.isDarkModeEnabled.toggle()
         }
@@ -436,11 +412,7 @@ private let currentInterfaceVersion: InterfaceVersion = .version3
 
 private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
     do {
-        if #available(iOS 10.0, *) {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default)
-        } else {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
-        }
+        try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default)
     } catch {
         Log.d("error setting audio session category: \(error)")
     }

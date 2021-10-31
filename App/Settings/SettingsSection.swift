@@ -54,8 +54,6 @@ extension SettingsSection {
         var defaultValue: Any? {
             if #available(iOS 14.0, *), let value = info["Default~ios14"] {
                 return value
-            } else if #available(iOS 13.0, *), let value = info["Default~ios13"] {
-                return value
             } else {
                 return info["Default"]
             }
@@ -70,6 +68,4 @@ extension SettingsSection {
     }
     
     var visibleInSettingsTab: Bool { info["VisibleInSettingsTab"] as? Bool ?? true }
-
-    var requiresiOS10dot3: Bool { info["RequiresiOS10.3"] as? Bool ?? false }
 }

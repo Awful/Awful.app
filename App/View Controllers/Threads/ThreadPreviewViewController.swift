@@ -165,12 +165,7 @@ final class ThreadPreviewViewController: ViewController {
         let cellHeight = ThreadListCell.heightForViewModel(threadCell.viewModel, inTableWithWidth: view.bounds.width)
         threadCell.frame = CGRect(x: 0, y: -cellHeight, width: view.bounds.width, height: cellHeight)
 
-        let topInset: CGFloat
-        if #available(iOS 11.0, *) {
-            topInset = view.safeAreaLayoutGuide.layoutFrame.minY
-        } else {
-            topInset = topLayoutGuide.length
-        }
+        let topInset = view.safeAreaLayoutGuide.layoutFrame.minY
         renderView.scrollView.contentInset.top = topInset + cellHeight
     }
     

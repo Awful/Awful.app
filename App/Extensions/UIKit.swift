@@ -3,7 +3,6 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import MobileCoreServices
-import class ScannerShim.Scanner
 import UIKit
 
 extension CGRect {
@@ -209,33 +208,16 @@ extension UIPasteboard {
      /// Gets the first URL-like item on the pasteboard. A URL-like item is either a URL or a string that can be coerced into a URL.
     var coercedURL: URL? {
         get {
-            var urls: [URL]? {
-                if #available(iOS 10.0, *) {
-                    return hasURLs ? self.urls : nil
-                } else {
-                    return self.urls
-                }
-            }
-            var strings: [String]? {
-                if #available(iOS 10.0, *) {
-                    return hasStrings ? self.strings : nil
-                } else {
-                    return self.strings
-                }
-            }
-            if let urls = urls, let url = urls.first {
+            if hasURLs, let url = urls?.first {
                 return url
-            } else if let strings = strings, let url = strings.lazy.compactMap({ URL(string: $0) }).first {
+            } else if hasStrings, let url = strings?.lazy.compactMap({ URL(string: $0) }).first(where: { _ in true }) {
                 return url
             } else {
                 return nil
             }
         }
         set {
-            items = newValue.map { [[
-                kUTTypeURL as String: $0,
-                kUTTypePlainText as String: $0.absoluteString]] }
-            ?? []
+            string = newValue?.absoluteString
         }
     }
 }

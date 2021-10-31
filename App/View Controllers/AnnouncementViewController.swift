@@ -104,11 +104,7 @@ final class AnnouncementViewController: ViewController {
     }
 
     private func updateScrollViewContentInsets() {
-        if #available(iOS 11.0, *) {
-            renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
-        } else {
-            renderView.scrollView.contentInset.bottom = bottomLayoutGuide.length
-        }
+        renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
     }
 
     // MARK: Lifecycle
@@ -190,7 +186,6 @@ final class AnnouncementViewController: ViewController {
         updateScrollViewContentInsets()
     }
 
-    @available(iOS 11.0, *)
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         updateScrollViewContentInsets()

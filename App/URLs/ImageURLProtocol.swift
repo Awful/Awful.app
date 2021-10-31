@@ -50,12 +50,7 @@ final class ImageURLProtocol: URLProtocol {
         let resultHandler = { (imageData: Data?, uti: String?, orientation: Any, info: [AnyHashable: Any]?) in
             maybeData = imageData
         }
-        #if targetEnvironment(macCatalyst)
         PHImageManager.default().requestImageDataAndOrientation(for: asset, options: options, resultHandler: resultHandler)
-        #else
-        PHImageManager.default().requestImageData(for: asset, options: options, resultHandler: resultHandler)
-        #endif
-
         guard let data = maybeData, !data.isEmpty else { return nil }
         return serveImageData(data, atPath: path)
     }
@@ -130,7 +125,6 @@ final class ImageURLProtocol: URLProtocol {
     }
 }
 
-@available(iOS 11.0, *)
 extension ImageURLProtocol: WKURLSchemeHandler {
     func webView(_ webView: WKWebView, start task: WKURLSchemeTask) {
         guard let (response, data) = loadImage(task.request) else {

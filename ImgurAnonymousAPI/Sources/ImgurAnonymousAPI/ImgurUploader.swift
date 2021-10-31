@@ -176,18 +176,7 @@ public final class ImgurUploader {
                 log(.debug, "not using photo library to obtain image data as the user has not authorized photo library use")
                 return nil
             }
-            
-            if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
-                return asset
-            }
-
-            #if canImport(AssetsLibrary)
-            if let assetURL = info[.referenceURL] as? URL {
-                return PHAsset.fetchAssets(withALAssetURLs: [assetURL], options: nil).firstObject
-            }
-            #endif
-
-            return nil
+            return info[.phAsset] as? PHAsset
         }
 
         var image: UIImage? {

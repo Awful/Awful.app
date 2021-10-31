@@ -23,11 +23,6 @@ static inline CGFloat MRCGFloatCeil(CGFloat);
 #endif
 
 
-static inline BOOL MRSystemVersionGreaterThanOrEqualTo8() {
-    return [NSProcessInfo.processInfo respondsToSelector:@selector(isOperatingSystemAtLeastVersion:)];
-}
-
-
 static inline CGRect MRCenterCGSizeInCGRect(CGSize innerRectSize, CGRect outerRect) {
     CGRect innerRect;
     innerRect.size = innerRectSize;
@@ -39,7 +34,6 @@ static inline CGRect MRCenterCGSizeInCGRect(CGSize innerRectSize, CGRect outerRe
 
 static inline CGFloat MRRotationForStatusBarOrientation() {
     UIInterfaceOrientation orientation = UIInterfaceOrientationUnknown;
-    #if TARGET_OS_MACCATALYST
     for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
         if ([scene isKindOfClass:[UIWindowScene class]]) {
             if (scene.activationState == UISceneActivationStateForegroundActive) {
@@ -48,9 +42,6 @@ static inline CGFloat MRRotationForStatusBarOrientation() {
             }
         }
     }
-    #else
-    orientation = UIApplication.sharedApplication.statusBarOrientation;
-    #endif
 
     if (orientation == UIInterfaceOrientationLandscapeLeft) {
         return -M_PI_2;

@@ -367,14 +367,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
 
 - (void)awful_overridingSettingDidChange:(id)overridingSetting
 {
-    NSString *key = (NSString *)overridingSetting;
-    
-    if ([self.awful_setting isEqualToString:NSUserDefaults.automaticDarkModeBrightnessThresholdPercentKey]) {
-        if ([key isEqualToString:NSUserDefaults.automaticallyEnableDarkModeKey]) {
-            // If autoDarkTheme is turned on, enable the threshold slider, otherwise disable it.
-            self.enabled = NSUserDefaults.standardUserDefaults.automaticallyEnableDarkMode;
-        }
-    }
+    // nop
 }
 
 @end

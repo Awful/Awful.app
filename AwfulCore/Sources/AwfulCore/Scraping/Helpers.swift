@@ -4,7 +4,6 @@
 
 import Foundation
 import HTMLReader
-import class ScannerShim.Scanner
 
 func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")

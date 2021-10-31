@@ -15,14 +15,6 @@ final class BookmarksTableViewController: TableViewController {
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
-
-    #if !targetEnvironment(macCatalyst)
-    private var peekPopController: ThreadPeekPopController?
-    #endif
-    
-    private lazy var longPressRecognizer: UIGestureRecognizer = {
-        return UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
-    }()
     
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
         return ScrollViewDelegateMultiplexer(scrollView: tableView)
@@ -79,7 +71,8 @@ final class BookmarksTableViewController: TableViewController {
         guard loadMoreFooter == nil else { return }
         
         loadMoreFooter = LoadMoreFooter(tableView: tableView, multiplexer: multiplexer, loadMore: { [weak self] loadMoreFooter in
-            self?.loadMore()
+            guard let self = self else { return }
+            self.loadPage(page: self.latestPage + 1)
         })
     }
     
@@ -95,7 +88,6 @@ final class BookmarksTableViewController: TableViewController {
         
         multiplexer.addDelegate(self)
 
-        tableView.addGestureRecognizer(longPressRecognizer)
         tableView.hideExtraneousSeparators()
         tableView.restorationIdentifier = "Bookmarks table"
 
@@ -104,12 +96,6 @@ final class BookmarksTableViewController: TableViewController {
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
 
-        #if !targetEnvironment(macCatalyst)
-        if traitCollection.forceTouchCapability == .available {
-            peekPopController = ThreadPeekPopController(previewingViewController: self)
-        }
-        #endif
-        
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.isHandoffEnabled) { [weak self] defaults in
                 self?.prepareUserActivity()
@@ -160,39 +146,7 @@ final class BookmarksTableViewController: TableViewController {
     }
     
     // MARK: Actions
-    
-    @objc private func didLongPress(_ sender: UIGestureRecognizer) {
-        guard case .began = sender.state else { return }
 
-        guard let indexPath = tableView.indexPathForRow(at: sender.location(in: tableView)) else {
-            Log.d("ignoring long press, wasn't on a cell")
-            return
-        }
-
-        guard let thread = dataSource?.thread(at: indexPath) else {
-            Log.e("couldn't find thread?")
-            return
-        }
-
-        let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
-        actionViewController.popoverPositioningBlock = { [weak self] sourceRect, sourceView in
-            guard let self = self else { return }
-            
-            let targetView: UIView = self.dataSource
-                .flatMap { $0.indexPath(of: thread) }
-                .flatMap { self.tableView.cellForRow(at: $0) }
-                ?? self.tableView
-
-            sourceRect.pointee = targetView.bounds
-            sourceView.pointee = targetView
-        }
-        present(actionViewController, animated: true)
-    }
-    
-    private func loadMore() {
-        loadPage(page: latestPage + 1)
-    }
-    
     private func refresh() {
         startAnimatingPullToRefresh()
         loadPage(page: 1)
@@ -253,23 +207,6 @@ final class BookmarksTableViewController: TableViewController {
     }
 }
 
-// MARK: ThreadPeekPopControllerDelegate
-#if !targetEnvironment(macCatalyst)
-extension BookmarksTableViewController: ThreadPeekPopControllerDelegate {
-    func threadForLocation(location: CGPoint) -> AwfulThread? {
-        return tableView
-            .indexPathForRow(at: location)
-            .flatMap { dataSource?.thread(at: $0) }
-    }
-
-    func viewForThread(thread: AwfulThread) -> UIView? {
-        return dataSource?
-            .indexPath(of: thread)
-            .flatMap { tableView.cellForRow(at: $0) }
-    }
-}
-#endif
-
 // MARK: UITableViewDelegate
 extension BookmarksTableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -287,7 +224,6 @@ extension BookmarksTableViewController {
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
 
-    @available(iOS 11.0, *)
     override func tableView(
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
@@ -300,6 +236,17 @@ extension BookmarksTableViewController {
         let config = UISwipeActionsConfiguration(actions: [delete])
         config.performsFirstActionWithFullSwipe = false
         return config
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        return .makeFromThreadList(
+            for: dataSource!.thread(at: indexPath),
+               presenter: self
+        )
     }
 }
 

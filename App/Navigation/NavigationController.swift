@@ -198,9 +198,7 @@ extension NavigationController: UINavigationControllerDelegate {
                 }
             }
 
-            if #available(iOS 10.0, *) {
-                navigationController.transitionCoordinator?.notifyWhenInteractionChanges(interactionChanges)
-            }
+            navigationController.transitionCoordinator?.notifyWhenInteractionChanges(interactionChanges)
         }
         
         realDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)

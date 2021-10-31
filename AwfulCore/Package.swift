@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "AwfulCore",
+    platforms: [
+        .iOS(.v13),
+    ],
     products: [
         .library(name: "AwfulCore", targets: ["AwfulCore"]),
     ],
@@ -11,7 +14,6 @@ let package = Package(
         .package(path: "../AwfulScraping"),
         .package(path: "../AwfulSwift"),
         .package(path: "../Logger"),
-        .package(path: "../ScannerShim"),
         .package(url: "https://github.com/mxcl/PromiseKit", .upToNextMajor(from: "6.0.0")),
         .package(url: "https://github.com/nolanw/HTMLReader", .upToNextMajor(from: "2.1.7")),
     ],
@@ -24,7 +26,6 @@ let package = Package(
                 "HTMLReader",
                 "Logger",
                 "PromiseKit",
-                "ScannerShim",
             ],
             resources: [
                 .process("Localizable.strings"),

@@ -3,7 +3,6 @@
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
-import class ScannerShim.Scanner
 
 // MARK: Keys
 
@@ -15,8 +14,6 @@ import class ScannerShim.Scanner
 enum SettingsKeys {
     static let automaticallyEnableDarkMode = "auto_dark_theme"
     static let automaticallyPlayGIFs = "autoplay_gifs"
-    // sourcery: valueType = Double
-    static let automaticDarkModeBrightnessThresholdPercent = "auto_theme_threshold"
     static let confirmNewPosts = "confirm_before_replying"
     // sourcery: valueType = String?
     static let customBaseURLString = "custom_base_URL"
@@ -59,11 +56,7 @@ enum SettingsKeys {
 extension UserDefaults {
     
     // If you can't find anywhere these properties are used, please delete them!
-    
-    @objc class var automaticDarkModeBrightnessThresholdPercentKey: String {
-        SettingsKeys.automaticDarkModeBrightnessThresholdPercent
-    }
-    
+
     @objc class var automaticallyEnableDarkModeKey: String {
         SettingsKeys.automaticallyEnableDarkMode
     }
@@ -261,3 +254,9 @@ extension UserDefaults {
         set { set(newValue, forKey: OldSettingsKeys.favoriteForums) }
     }
 }
+
+// MARK: - Previously-used keys
+
+// Keys that we no longer use, but are documented here so we hopefully don't accidentally reuse a key and get surprised by existing values:
+
+// static let automaticDarkModeBrightnessThresholdPercent = "auto_theme_threshold"

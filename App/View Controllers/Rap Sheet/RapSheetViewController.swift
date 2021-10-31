@@ -229,12 +229,7 @@ final class RapSheetViewController: TableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
-        let tableWidth: CGFloat
-        if #available(iOS 11.0, *) {
-            tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
-        } else {
-            tableWidth = tableView.bounds.width
-        }
+        let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
         return PunishmentCell.rowHeightWithBanReason(formatReason(punishment.reasonAttributed), width: tableWidth)
     }
     
@@ -261,12 +256,7 @@ final class RapSheetViewController: TableViewController {
         /// Resize any images in punishment reasons so they fit on the screen
         mutableReason.enumerateAttribute(NSAttributedString.Key.attachment, in: NSMakeRange(0, mutableReason.length), options: .init(rawValue: 0), using: { (value, range, stop) in
             if let attachement = value as? NSTextAttachment {
-                let tableWidth: CGFloat
-                if #available(iOS 11.0, *) {
-                    tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
-                } else {
-                    tableWidth = tableView.bounds.width
-                }
+                let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
                 let maxWidth = tableWidth - PunishmentCell.reasonInsets.left - PunishmentCell.reasonInsets.right
                 let image = attachement.image(forBounds: attachement.bounds, textContainer: NSTextContainer(), characterIndex: range.location)!
                 if image.size.width > maxWidth {

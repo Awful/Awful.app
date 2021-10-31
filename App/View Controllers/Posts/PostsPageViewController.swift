@@ -29,12 +29,6 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
 
-    #if targetEnvironment(macCatalyst)
-    weak var previewActionItemProvider: AnyObject?
-    #else
-    weak var previewActionItemProvider: PreviewActionItemProvider?
-    #endif
-    
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
     }
@@ -1191,7 +1185,7 @@ final class PostsPageViewController: ViewController {
         super.viewDidLoad()
 
         /*
-         Laying this screen out is a challenge: there are bars on the top and bottom, and between our deployment target and the latest SDK we span a few different schools of layout thought. Here's the plan:
+         Laying this screen out used to be a challenge: there are bars on the top and bottom, and between our old deployment target and the latest SDK we spanned a few different schools of layout thought. This is probably not necessary anymore. But here was the plan:
 
          1. Turn off all UIKit magic automated everything. We'll handle all scroll view content insets and safe area insets ourselves.
          2. Set layout margins on `postsView` in lieu of the above. Layout margins are available on all iOS versions that Awful supports.
@@ -1199,12 +1193,8 @@ final class PostsPageViewController: ViewController {
          Here is where we turn off the magic. In `viewDidLayoutSubviews` we update the layout margins.
          */
         extendedLayoutIncludesOpaqueBars = true
-        if #available(iOS 11.0, *) {
-            postsView.insetsLayoutMarginsFromSafeArea = false
-            postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
-        }  else {
-            automaticallyAdjustsScrollViewInsets = false
-        }
+        postsView.insetsLayoutMarginsFromSafeArea = false
+        postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
 
         let spacer: CGFloat = 12
@@ -1267,19 +1257,14 @@ final class PostsPageViewController: ViewController {
         updatePostsViewLayoutMargins()
     }
 
-    @available(iOS 11.0, *)
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
         updatePostsViewLayoutMargins()
     }
 
     private func updatePostsViewLayoutMargins() {
-        // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
-        if #available(iOS 11.0, *) {
-            postsView.layoutMargins = view.safeAreaInsets
-        } else {
-            postsView.layoutMargins = .init(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
-        }
+        // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
+        postsView.layoutMargins = view.safeAreaInsets
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -1292,16 +1277,6 @@ final class PostsPageViewController: ViewController {
         super.viewDidDisappear(animated)
         
         userActivity = nil
-    }
-
-    override func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
-        guard parent != nil || previewActionItemProvider == nil else {
-            // RDAR: 36754995 presenting an alert in a peek view controller often results in a screen-covering blurred view that eats all touches. Peek view controllers seem to have no parent, and as a double-check we'll see if we seem to be configured with a preview action item provider (which should only happen when we're peeking), then we'll just swallow any attempted presentation.
-            Log.w("ignoring attempt to present \(viewController) as we're pretty sure we're part of an ongoing peek 3D Touch action, and that's a bad time to present something")
-            return
-        }
-
-        super.present(viewController, animated: animated, completion: completion)
     }
     
     override func encodeRestorableState(with coder: NSCoder) {
@@ -1506,14 +1481,6 @@ private struct Keys {
     static let scrolledFractionOfContent = "AwfulScrolledFractionOfContentSize"
     static let replyWorkspace = "Reply workspace"
 }
-
-#if !targetEnvironment(macCatalyst)
-extension PostsPageViewController {
-    override var previewActionItems: [UIPreviewActionItem] {
-        return previewActionItemProvider?.previewActionItems ?? []
-    }
-}
-#endif
 
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {

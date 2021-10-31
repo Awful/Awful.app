@@ -32,7 +32,7 @@ final class ScrollViewKeyboardAvoider {
             let options = UIView.AnimationOptions(rawValue: UInt(rawCurve) << 16)
             UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
                 scrollView.contentInset.bottom = bottomInset
-                scrollView.scrollIndicatorInsetBottom = bottomInset
+                scrollView.verticalScrollIndicatorInsets.bottom = bottomInset
                 }, completion: nil)
         }
     }

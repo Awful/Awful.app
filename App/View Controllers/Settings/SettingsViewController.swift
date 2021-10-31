@@ -53,14 +53,6 @@ final class SettingsViewController: TableViewController {
             if !section.visibleInSettingsTab {
                 return false
             }
-
-            if section.requiresiOS10dot3 {
-                if #available(iOS 10.3, *) {
-                    // ok
-                } else {
-                    return false
-                }
-            }
             
             return true
         }
@@ -70,13 +62,6 @@ final class SettingsViewController: TableViewController {
             .map { section -> [String: Any] in
                 guard let settings = section.info["Settings"] as? [[String: Any]] else { return section.info }
                 var section = section.info
-
-                if
-                    let ios13Explanation = section.removeValue(forKey: "Explanation~ios13") as? String,
-                    #available(iOS 13.0, *)
-                {
-                    section["Explanation"] = ios13Explanation
-                }
                 
                 section["Settings"] = settings.filter { setting in
                     if let device = setting["Device"] as? String, !device.hasPrefix(currentDevice) {
@@ -88,10 +73,6 @@ final class SettingsViewController: TableViewController {
                         let url = URL(string: urlString)
                     {
                         return UIApplication.shared.canOpenURL(url)
-                    }
-
-                    if #available(iOS 13.0, *), let visibleOniOS13 = setting["VisibleOniOS13"] as? Bool, !visibleOniOS13 {
-                        return false
                     }
 
                     return true
@@ -321,14 +302,9 @@ final class SettingsViewController: TableViewController {
         if settingType == .Slider {
             guard let slider = (cell as! SettingsSliderCell).slider as UISlider? else { fatalError("setting should have a UISlider accessory") }
             slider.awful_setting = setting["Key"] as? String
-            
-            // Add overriding settings
-            if slider.awful_setting == SettingsKeys.automaticDarkModeBrightnessThresholdPercent {
-                slider.addAwful_overridingSetting(SettingsKeys.automaticallyEnableDarkMode)
-            }
         }
         
-        if #available(iOS 10.3, *), settingType == .AppIconPicker {
+        if settingType == .AppIconPicker {
             guard let collection = (cell as! AppIconPickerCell).collectionView else { fatalError("setting should have collection view") }
             collection.awful_setting = setting["Key"] as? String
             collection.backgroundColor = theme["listBackgroundColor"]

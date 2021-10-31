@@ -17,8 +17,7 @@ private let Log = Logger.get()
  While it's probably pretty clear that `RenderView` uses a web view to do its work, that fact shouldn't leak out into its public interface. In theory, we should be able to switch to something else completely (e.g. TextKit (hold me)) without breaking any callers.
  */
 final class RenderView: UIView {
-    
-    private var activityIndicatorManager: WebViewActivityIndicatorManager?
+
     weak var delegate: RenderViewDelegate?
     
     var scrollView: UIScrollView { return webView.scrollView }
@@ -42,13 +41,9 @@ final class RenderView: UIView {
             let script = try! String(contentsOf: url)
             return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
         }())
-        
-        if #available(iOS 11.0, *) {
-            configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
-            configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
-        }  else {
-            registerURLProtocolsForWKWebView_iOS10AndBelow()
-        }
+
+        configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
+        configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.isOpaque = false
@@ -68,8 +63,6 @@ final class RenderView: UIView {
         webView.frame = CGRect(origin: .zero, size: bounds.size)
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(webView)
-
-        activityIndicatorManager = .init(webView: webView)
     }
     
     deinit {
@@ -111,30 +104,6 @@ final class RenderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-/**
- Makes the URL protocols we use for rendering available in all instances of `WKWebView`. This function uses private API and should only be called on iOS 10 and below, where no equivalent public API is available.
- 
- This function only needs to be called once, though it's safe to call it many times. The schemes are added only once; as we're touching private API, it seems prudent not to prod more than necessary.
- 
- (This is a property holding a closure, instead of just a function, so we can call it like a function but enforce our "only add once" requirement.)
- 
- - Note: `WKWebView` gained public API for using custom URL protocols in iOS 11. You should use `WKWebViewConfiguration.setURLSchemeHandler(…)` when it's available.
- */
-private let registerURLProtocolsForWKWebView_iOS10AndBelow: () -> Void = {
-    
-    // We only want to register these schemes once, so we do that here when this top-level property lazily initializes.
-    let schemes = [
-        ImageURLProtocol.scheme: ImageURLProtocol.self,
-        ResourceURLProtocol.scheme: ResourceURLProtocol.self]
-    for (scheme, proto) in schemes {
-        WKWebView.registerCustomURLScheme(scheme)
-        URLProtocol.registerClass(proto)
-    }
-    
-    // After initialzation, and on all subsequent calls, we simply run an empty closure; our work here is done.
-    return {}
-}()
 
 extension RenderView: WKNavigationDelegate {
     func webView(
@@ -483,16 +452,8 @@ extension RenderView {
      */
     private var documentToScrollViewOffset: CGPoint {
         let contentOffset = scrollView.contentOffset
-        if #available(iOS 12.0, *) {
-            // As of iOS 12, `window.scrollY` equals `scrollView.contentOffset.y`, so as long as we deal with a negative content offset (due to scrolling into the `contentInset` area) we're all set.
-            return CGPoint(x: max(contentOffset.x, 0), y: max(contentOffset.y, 0))
-        } else {
-            // Pre-iOS 12, `window.scrollY` is offset by `scrollView.contentInset.top` at all times.
-            let contentInset = scrollView.contentInset
-            return CGPoint(
-                x: max(contentOffset.x + contentInset.left, 0),
-                y: max(contentOffset.y + contentInset.top, 0))
-        }
+        // As of iOS 12, `window.scrollY` equals `scrollView.contentOffset.y`, so as long as we deal with a negative content offset (due to scrolling into the `contentInset` area) we're all set.
+        return CGPoint(x: max(contentOffset.x, 0), y: max(contentOffset.y, 0))
     }
     
     /// Scrolls so the identified post begins at the top of the viewport.

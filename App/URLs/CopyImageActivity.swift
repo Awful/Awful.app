@@ -28,11 +28,7 @@ final class CopyImageActivity: UIActivity {
     }
     
     override var activityImage: UIImage? {
-        if #available(iOS 13.0, *) {
-            return UIImage(systemName: "doc.on.doc")
-        } else {
-            return UIImage(named: "copy")
-        }
+        return UIImage(systemName: "doc.on.doc")
     }
     
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {

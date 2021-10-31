@@ -16,14 +16,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
     private var observers: [NSKeyValueObservation] = []
-
-    #if !targetEnvironment(macCatalyst)
-    private var peekPopController: ThreadPeekPopController?
-    #endif
-    
-    private lazy var longPressRecognizer: UIGestureRecognizer = {
-        return UILongPressGestureRecognizer(target: self, action: #selector(didLongPress))
-    }()
     
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
         return ScrollViewDelegateMultiplexer(scrollView: tableView)
@@ -105,7 +97,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         guard loadMoreFooter == nil else { return }
         
         loadMoreFooter = LoadMoreFooter(tableView: tableView, multiplexer: multiplexer, loadMore: { [weak self] loadMoreFooter in
-            self?.loadNextPage()
+            guard let self = self else { return }
+            self.loadPage(self.latestPage + 1)
         })
     }
     
@@ -116,7 +109,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         
         multiplexer.addDelegate(self)
 
-        tableView.addGestureRecognizer(longPressRecognizer)
         tableView.estimatedRowHeight = ThreadListCell.estimatedHeight
         tableView.hideExtraneousSeparators()
         tableView.restorationIdentifier = "Threads table view"
@@ -125,12 +117,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         tableView.reloadData()
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
-
-        #if !targetEnvironment(macCatalyst)
-        if traitCollection.forceTouchCapability == .available {
-            peekPopController = ThreadPeekPopController(previewingViewController: self)
-        }
-        #endif
         
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.isHandoffEnabled) { [weak self] defaults in
@@ -183,38 +169,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     // MARK: Actions
-
-    @objc private func didLongPress(_ sender: UIGestureRecognizer) {
-        guard case .began = sender.state else { return }
-        
-        guard let indexPath = tableView.indexPathForRow(at: sender.location(in: tableView)) else {
-            Log.d("ignoring long press, wasn't on a cell")
-            return
-        }
-
-        guard let thread = dataSource?.thread(at: indexPath) else {
-            Log.e("couldn't find thread?")
-            return
-        }
-
-        let actionViewController = InAppActionViewController(thread: thread, presentingViewController: self)
-        actionViewController.popoverPositioningBlock = { [weak self] (sourceRect, sourceView) in
-            guard let self = self else { return }
-            
-            let targetView: UIView = self.dataSource
-                .flatMap { $0.indexPath(of: thread) }
-                .flatMap { self.tableView.cellForRow(at: $0) }
-                ?? self.tableView
-            
-            sourceRect.pointee = targetView.bounds
-            sourceView.pointee = targetView
-        }
-        present(actionViewController, animated: true)
-    }
-    
-    private func loadNextPage() {
-        loadPage(latestPage + 1)
-    }
     
     private func refresh() {
         startAnimatingPullToRefresh()
@@ -410,23 +364,6 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
     }
 }
 
-// MARK: ThreadPeekPopControllerDelegate
-#if !targetEnvironment(macCatalyst)
-extension ThreadsTableViewController: ThreadPeekPopControllerDelegate {
-    func threadForLocation(location: CGPoint) -> AwfulThread? {
-        return tableView
-            .indexPathForRow(at: location)
-            .flatMap { dataSource?.thread(at: $0) }
-    }
-
-    func viewForThread(thread: AwfulThread) -> UIView? {
-        return dataSource?
-            .indexPath(of: thread)
-            .flatMap { tableView.cellForRow(at: $0) }
-    }
-}
-#endif
-
 // MARK: UITableViewDelegate
 extension ThreadsTableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -442,5 +379,16 @@ extension ThreadsTableViewController {
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    override func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        return .makeFromThreadList(
+            for: dataSource!.thread(at: indexPath),
+               presenter: self
+        )
     }
 }

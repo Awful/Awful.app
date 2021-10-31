@@ -182,11 +182,13 @@ Awful answers to a couple URL schemes:
 
 For iOS | Check out tag/branch
 ------- | --------------------
+15 | main
+14 | main
 13 | main
-12 | main
-11 | main
-10 | main
-9  | main
+12 | ios-12
+11 | ios-11
+10 | ios-10
+9  | ios-9
 8  | ios-8
 7  | ios-7
 6  | ios-6

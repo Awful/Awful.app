@@ -200,7 +200,7 @@ final class ViewController: UIViewController {
     }
 
     private func obtainPHAsset() throws -> PHAsset {
-        if #available(iOS 11.0, *), let asset = imagePickerInfo?[.phAsset] as? PHAsset {
+        if let asset = imagePickerInfo?[.phAsset] as? PHAsset {
             return asset
         } else {
             throw MissingImage()

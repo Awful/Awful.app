@@ -2,7 +2,6 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import class ScannerShim.Scanner
 import UIKit
 
 private let Log = Logger.get()
@@ -24,9 +23,7 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
         collectionView?.delegate = self
         collectionView?.register(UINib(nibName: "AppIconCell", bundle: Bundle(for: AppIconPickerCell.self)), forCellWithReuseIdentifier: "AppIcon")
 
-        if #available(iOS 10.3, *) {
-            selectedIconName = UIApplication.shared.alternateIconName ?? appIcons.first?.iconName
-        }
+        selectedIconName = UIApplication.shared.alternateIconName ?? appIcons.first?.iconName
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -45,8 +42,6 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard #available(iOS 10.3, *) else { return }
-
         let appIcon = appIcons[indexPath.item]
         Log.d("Selected \(appIcon.iconName ?? "") at \(indexPath)")
 
