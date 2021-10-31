@@ -67,8 +67,10 @@ private enum _URLMenuPresenter {
             alert.title = linkURL.absoluteString
             
             let browsers = DefaultBrowser.installedBrowsers
+            let isHTTP = ["http", "https"].contains((linkURL.scheme ?? "").lowercased())
+            let route = try? AwfulRoute(linkURL)
             
-            if browsers.contains(.awful) {
+            if browsers.contains(.awful) && (route != nil || isHTTP) {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-awful"), style: .default, handler: { _ in
                     if let route = try? AwfulRoute(linkURL) {
                         AppDelegate.instance.open(route: route)
@@ -93,28 +95,28 @@ private enum _URLMenuPresenter {
                 }))
             }
                     
-            if browsers.contains(.chrome) {
+            if browsers.contains(.chrome) && isHTTP {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-chrome"), style: .default, handler: { _ in
                     UIApplication.shared.open(chromifyURL(linkURL))
                     return
                 }))
             }
                     
-            if browsers.contains(.firefox) {
+            if browsers.contains(.firefox) && isHTTP {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-firefox"), style: .default, handler: { _ in
                     UIApplication.shared.open(firefoxifyURL(linkURL))
                     return
                 }))
             }
 
-            if browsers.contains(.brave) {
+            if browsers.contains(.brave) && isHTTP {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-brave"), style: .default, handler: { _ in
                     UIApplication.shared.open(bravifyURL(linkURL))
                     return
                 }))
             }
 
-            if browsers.contains(.edge) {
+            if browsers.contains(.edge) && isHTTP {
                 alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-edge"), style: .default, handler: { _ in
                     UIApplication.shared.open(edgifyURL(linkURL))
                     return
