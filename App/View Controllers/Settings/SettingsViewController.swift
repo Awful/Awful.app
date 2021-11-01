@@ -43,13 +43,6 @@ final class SettingsViewController: TableViewController {
                 return false
             }
 
-            switch section.deviceCapability {
-            case "Handoff"? where !SystemCapabilities.handoff:
-                return false
-            default:
-                break
-            }
-            
             if section.requiresSupportsAlternateAppIcons == true {
                 return UIApplication.shared.supportsAlternateIcons
             }

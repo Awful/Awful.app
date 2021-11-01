@@ -317,8 +317,6 @@
 		<dict>
 			<key>Explanation</key>
 			<string>Handoff allows you to continue reading threads on nearby devices.</string>
-			<key>DeviceCapability</key>
-			<string>Handoff</string>
 			<key>Settings</key>
 			<array>
 				<dict>

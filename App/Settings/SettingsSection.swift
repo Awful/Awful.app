@@ -41,8 +41,6 @@ extension SettingsSection {
     }
     
     var device: String? { info["Device"] as? String }
-    
-    var deviceCapability: String? { info["DeviceCapability"] as? String }
 
     var requiresSupportsAlternateAppIcons: Bool? { info["RequiresSupportsAlternateAppIcons"] as? Bool }
     

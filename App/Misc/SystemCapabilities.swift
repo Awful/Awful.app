@@ -8,34 +8,6 @@ private let Log = Logger.get()
 
 enum SystemCapabilities {
 
-    /**
-     Whether the current device is capable of Handoff.
-
-     - Note: Does not take into account the user's current Handoff settings. That is, `handoff` can return `true` when the user has turned off Handoff.
-     */
-    static let handoff: Bool = {
-        #if targetEnvironment(macCatalyst)
-        // Supported Handoff devices: https://support.apple.com/en-ca/HT204689
-        // Macs that can run 10.15 Catalina (when UIKit for Mac shipped): https://www.apple.com/ca/macos/catalina-preview/
-        // 100% overlap :)
-        return true
-        #else
-        // Handoff starts at iPhone 5, iPod Touch 5G, iPad 4G, iPad Mini 1: http://support.apple.com/en-us/HT6555
-        // Models are listed at https://ipsw.me/ and/or http://theiphonewiki.com/wiki/Models
-        // Let's assume all future models also support Handoff.
-        let scanner = Scanner(string: modelIdentifier)
-        if scanner.scanString("iPad") != nil, let major = scanner.scanInt() {
-            return major >= 2
-        } else if scanner.scanString("iPhone") != nil, let major = scanner.scanInt() {
-            return major >= 5
-        } else if scanner.scanString("iPod") != nil, let major = scanner.scanInt() {
-            return major >= 5
-        } else {
-            return false
-        }
-        #endif
-    }()
-
     static let oled: Bool = {
         // Models are listed at https://ipsw.me/ and/or http://theiphonewiki.com/wiki/Models
         // Not gonna bother trying to guess at future models.
@@ -45,17 +17,21 @@ enum SystemCapabilities {
             let major = scanner.scanInt(),
             scanner.scanString(",") != nil,
             let minor = scanner.scanInt()
-            else { return false }
+        else { return false }
         switch (major, minor) {
         case (10, 3), (10, 6), // iPhone X
-             (11, 2), // iPhone XS
-             (11, 4), (11, 6), // iPhone XS Max
-             (12, 3), // iPhone 11 Pro
-             (12, 5), // iPhone 11 Pro Max
-             (13, 1), // iPhone 12 Mini
-             (13, 2), // iPhone 12
-             (13, 3), // iPhone 12 Pro
-             (13, 4): // iPhone 12 Pro Max
+            (11, 2), // iPhone XS
+            (11, 4), (11, 6), // iPhone XS Max
+            (12, 3), // iPhone 11 Pro
+            (12, 5), // iPhone 11 Pro Max
+            (13, 1), // iPhone 12 Mini
+            (13, 2), // iPhone 12
+            (13, 3), // iPhone 12 Pro
+            (13, 4), // iPhone 12 Pro Max
+            (14, 2), // iPhone 13 Pro
+            (14, 3), // iPhone 13 Pro Max
+            (14, 4), // iPhone 13 Mini
+            (14, 5): // iPhone 13
             return true
         default:
             return false
