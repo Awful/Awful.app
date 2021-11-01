@@ -80,10 +80,6 @@
 	<string>LaunchScreen</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>
-	<key>UIRequiresFullScreen</key>
-	<true/>
-	<key>UIRequiresFullScreen~ipad</key>
-	<false/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>

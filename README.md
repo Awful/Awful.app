@@ -22,6 +22,8 @@ This app is not endorsed by Something Awful.
 
 ## Build
 
+Please drop by [the thread][current thread] if you could use a hand with any of these steps!
+
 You need Xcode 13 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
 
 1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
@@ -101,15 +103,15 @@ If you've stashed some .html files from the Forums, you can load those into a de
 
 ## Contribute
 
-You can help! See our [contribution guidelines](CONTRIBUTING.md).
+You can help! See our [contribution guidelines](CONTRIBUTING.md) and please come visit [the thread][current thread] to say hi.
 
 ### Project Structure
 
 Awful is broken down somewhat:
 
 * `Awful` is the iOS app.
-* `AwfulCore` is a framework that does the scraping and networking with the Forums. It's meant to be compatible with all Apple platforms, but nobody's really tried beyond iOS.
-* `Smilies` is a framework that downloads smilies and presents them as a keyboard. It's meant to be compatible with all Apple platforms, but nobody's really tried beyond iOS.
+* `AwfulCore` is a Swift package that does the scraping and networking with the Forums. It's meant to be compatible with all Apple platforms, but nobody's really tried beyond iOS.
+* `Smilies` is a Swift package that downloads smilies and presents them as a keyboard. It's meant to be compatible with all Apple platforms, but nobody's really tried beyond iOS.
 
 ### Theming
 
