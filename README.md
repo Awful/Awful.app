@@ -149,14 +149,7 @@ To add a new thread tag you just made:
 
 ### Alternate App Icons
 
-Since Awful supports both iOS 10.3 and iOS 11+, there's some hoops to jump through to support alternate app icons. Here's a mini checklist for adding a new alternate app icon:
-
-* Pick a name for the alternate icon. The icon picker in the Settings tab sorts icons alphabetically by this name. (e.g. the :getout: frog is called `getout`.)
-* Name the image files according to the scheme you see for the existing icons, but using your chosen name.
-* Add new key and values to *both* `CFBundleIcons` and `CFBundleIcons~ipad`. Your added key/values will be identical between those two locations, so go ahead and copypasta.
-* Add the image files to the Xcode project, and *double-check that the images get added to the target*. Seems like Xcode doesn't always add everything even if you ticked the target on the sheet.
-
-The reason for this silliness: iOS 10.3 requires alternate icons to be loose in the app bundle, while iOS 11+ supports alternate icons in an asset catalog; App Store Connect requires all submissions built using the iOS 11 SDK to have the main app icon in an asset catalog. It seems like the asset catalog compiler merges any `CFBundleIcons` values it comes across with its own generated values so it works out ok for us.
+Alternate app icons go in `Assets.xcassets`, in the "App Icons" folder. To add a new alternate app icon, create a new iOS App Icon image set in that folder and drag your images in. There's no Info.plist changes required.
 
 ## URL schemes
 

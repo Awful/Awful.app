@@ -364,6 +364,8 @@
 					<string>app_icon_name</string>
 				</dict>
 			</array>
+			<key>RequiresSupportsAlternateAppIcons</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>Settings</key>

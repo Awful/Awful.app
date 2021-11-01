@@ -50,6 +50,10 @@ final class SettingsViewController: TableViewController {
                 break
             }
             
+            if section.requiresSupportsAlternateAppIcons == true {
+                return UIApplication.shared.supportsAlternateIcons
+            }
+
             if !section.visibleInSettingsTab {
                 return false
             }

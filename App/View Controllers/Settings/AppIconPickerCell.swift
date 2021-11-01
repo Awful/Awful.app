@@ -6,9 +6,6 @@ import UIKit
 
 private let Log = Logger.get()
 
-/**
- This class is not useful before iOS 10.3, which introduced alternate app icons. However, marking this class's availability generates a Swift header that results in compile errors (something about "Overriding method introduced after overridden method on iOS (10.3 vs. 3.0)").
- */
 final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
 
     @IBOutlet var collectionView: UICollectionView?
@@ -43,7 +40,7 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let appIcon = appIcons[indexPath.item]
-        Log.d("Selected \(appIcon.iconName ?? "") at \(indexPath)")
+        Log.d("Selected \(appIcon.iconName) at \(indexPath)")
 
         let previousSelection = selectedIconName
         selectedIconName = appIcon.iconName
@@ -53,7 +50,7 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
                 Log.e("could not set alternate app icon: \(error)")
             }
             else {
-                Log.i("changed app icon to \(appIcon.iconName ?? "")")
+                Log.i("changed app icon to \(appIcon.iconName)")
             }
         })
 
@@ -67,15 +64,7 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
 
 private struct AppIcon: Equatable {
     let filename: String
-
-    var iconName: String? {
-        let scanner = Scanner(string: filename)
-        guard
-            scanner.scanString("AppIcon-") != nil,
-            let iconName = scanner.scanUpToString("-")
-            else { return nil }
-        return iconName
-    }
+    let iconName: String
 }
 
 private func findAppIcons() -> [AppIcon] {
@@ -89,8 +78,9 @@ private func findAppIcons() -> [AppIcon] {
         return []
     }
 
+
     func filenameContainsHandySize(_ filename: String) -> Bool {
-        return filename.contains("60x60")
+        return filename.contains(handySize)
     }
 
     guard
@@ -109,5 +99,14 @@ private func findAppIcons() -> [AppIcon] {
         .sorted()
 
     let filenames = [primaryFilename] + alternateFilenames
-    return filenames.map { AppIcon(filename: $0) }
+    func iconName(_ filename: String) -> String {
+        var iconName = filename
+        if let dimensions = iconName.range(of: handySize, options: .backwards) {
+            iconName.removeSubrange(dimensions)
+        }
+        return iconName
+    }
+    return filenames.map { AppIcon(filename: $0, iconName: iconName($0)) }
 }
+
+private let handySize = "60x60"
