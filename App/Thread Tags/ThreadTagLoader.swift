@@ -23,11 +23,11 @@ final class ThreadTagLoader {
         named imageName: String?,
         placeholder: Placeholder?,
         into view: ImageDisplayingView,
-        completion: ImageTask.Completion? = nil)
-    {
+        completion: @escaping (_ result: Result<ImageResponse, ImagePipeline.Error>) -> Void = { _ in }
+    ) {
         guard let imageName = imageName, let url = makeURLForImage(named: imageName) else {
             cancelRequest(for: view)
-            view.nuke_display(image: placeholder?.image)
+            view.nuke_display(image: placeholder?.image, data: nil)
             return
         }
         
@@ -35,7 +35,7 @@ final class ThreadTagLoader {
         options.pipeline = pipeline
         Nuke.loadImage(with: url, options: options, into: view, completion: { result in
             self.recordMissingTagImage(named: imageName, result)
-            completion?(result)
+            completion(result)
         })
     }
     
@@ -43,7 +43,10 @@ final class ThreadTagLoader {
         Nuke.cancelRequest(for: view)
     }
     
-    func loadImage(named imageName: String?, completion: @escaping ImageTask.Completion) -> ImageTask? {
+    func loadImage(
+        named imageName: String?,
+        completion: @escaping (_ result: Result<ImageResponse, ImagePipeline.Error>) -> Void
+    ) -> ImageTask? {
         guard let imageName = imageName, let url = makeURLForImage(named: imageName) else {
             completion(.failure(.dataLoadingFailed(CocoaError(.fileNoSuchFile))))
             return nil
@@ -92,7 +95,7 @@ final class ThreadTagLoader {
             return Set(imageNamesArray)
         }()
         let dataLoader = ThreadTagDataLoader(bundle: bundle, objectionableImageNames: objectionableImageNames, fallback: DataLoader())
-        let pipeline = ImagePipeline(configuration: .init(dataLoader: dataLoader, imageCache: ImageCache.shared))
+        let pipeline = ImagePipeline(configuration: .init(dataLoader: dataLoader))
         return ThreadTagLoader(baseURL: baseURL, pipeline: pipeline)
     }()
     

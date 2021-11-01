@@ -6,10 +6,13 @@ import FLAnimatedImage
 import Nuke
 
 extension FLAnimatedImageView {
-    open override func nuke_display(image: PlatformImage?) {
+    open override func nuke_display(
+        image: PlatformImage?,
+        data: Data?
+    ) {
         self.image = image
 
-        guard let image = image, let data = image.animatedImageData else {
+        guard let image = image, let data = data else {
             animatedImage = nil
             return
         }

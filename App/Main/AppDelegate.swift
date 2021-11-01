@@ -47,8 +47,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
             #endif
         }()
-
-        ImagePipeline.Configuration.isAnimatedImageDataEnabled = true
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.tintColor = Theme.defaultTheme()["tintColor"]
