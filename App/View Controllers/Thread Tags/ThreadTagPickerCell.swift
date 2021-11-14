@@ -61,9 +61,9 @@ final class ThreadTagPickerCell: UICollectionViewCell {
             completion: { [weak self] response in
                 switch response {
                 case .success:
-                    self?.imageNameLabel.isHidden = false
-                case .failure:
                     break
+                case .failure:
+                    self?.imageNameLabel.isHidden = false
                 }
         })
     }
