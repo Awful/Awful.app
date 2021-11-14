@@ -20,9 +20,6 @@
       location = "group:Logger">
    </FileRef>
    <FileRef
-      location = "group:MiniOnePassword">
-   </FileRef>
-   <FileRef
       location = "group:Vendor/MRProgress">
    </FileRef>
    <FileRef
