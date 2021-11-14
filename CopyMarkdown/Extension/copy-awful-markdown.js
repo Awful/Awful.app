@@ -45,6 +45,9 @@ function copyMarkdown(event) {
                     case 'I':
                         return `*${markdownifyChildren(node)}*`;
                     case 'IMG':
+                        if (isSmilie(node)) {
+                            return node.alt.trim();
+                        }
                         return `![${node.alt.trim() || ""}](${node.src || ""})`;
                     case 'OL':
                         return `\n${markdownifyListItems(node, "1.")}\n`;
@@ -70,5 +73,34 @@ function copyMarkdown(event) {
             .filter(n => n.tagName == 'LI')
             .map(n => `${prefix} ${markdownify(n)}`)
             .join("");
+    }
+
+    function isSmilie(img) {
+        if (!img.alt) return false;
+        let url;
+        try {
+            url = new URL(img.src || "");
+        } catch {
+            return false;
+        }
+        const pathComponents = url.pathname.split('/');
+        switch (url.host.toLowerCase()) {
+            case 'fi.somethingawful.com':
+                return (pathComponents.includes("smilies")
+                    || pathComponents.includes("posticons")
+                    || pathComponents.includes("customtitles"));
+            case 'i.somethingawful.com':
+                return (pathComponents.includes("emot")
+                    || pathComponents.includes("emoticons")
+                    || pathComponents.includes("images")
+                    || (pathComponents.includes("u")
+                        && (pathComponents.includes("adminuploads")
+                            || pathComponents.includes("garbageday"))));
+            case 'forumimages.somethingawful.com':
+                return (pathComponents[1] == "images"
+                    || pathComponents.includes("posticons"));
+            default:
+                return false
+        }
     }
 }

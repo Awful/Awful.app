@@ -6,8 +6,8 @@ import Cocoa
 import SafariServices.SFSafariApplication
 import SafariServices.SFSafariExtensionManager
 
-let appName = "CopyMarkdownSafariExtension"
-let extensionBundleIdentifier = "com.awfulapp.CopyMarkdownSafariExtension-Extension"
+let extensionName = "Copy Awful Markdown"
+let extensionBundleIdentifier = "com.awfulapp.CopyMarkdown-Extension"
 
 class ViewController: NSViewController {
 
@@ -15,7 +15,7 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.appNameLabel.stringValue = appName
+        self.appNameLabel.stringValue = extensionName
         SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
             guard let state = state, error == nil else {
                 // Insert code to inform the user that something went wrong.
@@ -24,9 +24,9 @@ class ViewController: NSViewController {
 
             DispatchQueue.main.async {
                 if (state.isEnabled) {
-                    self.appNameLabel.stringValue = "\(appName)'s extension is currently on."
+                    self.appNameLabel.stringValue = "The \(extensionName) extension is currently on."
                 } else {
-                    self.appNameLabel.stringValue = "\(appName)'s extension is currently off. You can turn it on in Safari Extensions preferences."
+                    self.appNameLabel.stringValue = "The \(extensionName) extension is currently off. You can turn it on in Safari Extensions preferences."
                 }
             }
         }
