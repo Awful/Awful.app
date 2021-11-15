@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17147" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="xXo-oT-qIL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="xXo-oT-qIL">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17120"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -14,7 +15,13 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="RZw-EV-Uc3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" red="0.078431372549019607" green="0.51372549019607838" blue="0.69411764705882351" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="barTintColor" name="LaunchNavigationBar"/>
+                        <navigationBarAppearance key="standardAppearance">
+                            <color key="backgroundColor" name="LaunchNavigationBar"/>
+                        </navigationBarAppearance>
+                        <navigationBarAppearance key="scrollEdgeAppearance">
+                            <color key="backgroundColor" name="LaunchNavigationBar"/>
+                        </navigationBarAppearance>
                     </navigationBar>
                     <connections>
                         <segue destination="Ja0-XC-PtS" kind="relationship" relationship="rootViewController" id="zwY-Ep-tnU"/>
@@ -35,17 +42,7 @@
                     <view key="view" userInteractionEnabled="NO" contentMode="scaleToFill" id="rpz-EF-slh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchBackground" translatesAutoresizingMaskIntoConstraints="NO" id="w6m-4G-dEc" userLabel="Background">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
-                            </imageView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstAttribute="bottom" secondItem="w6m-4G-dEc" secondAttribute="bottom" id="Hsg-EQ-sGc"/>
-                            <constraint firstItem="w6m-4G-dEc" firstAttribute="top" secondItem="rpz-EF-slh" secondAttribute="top" id="csq-s9-Ji4"/>
-                            <constraint firstAttribute="trailing" secondItem="w6m-4G-dEc" secondAttribute="trailing" id="dC5-je-Mcg"/>
-                            <constraint firstItem="w6m-4G-dEc" firstAttribute="leading" secondItem="rpz-EF-slh" secondAttribute="leading" id="jHJ-RI-tqQ"/>
-                        </constraints>
+                        <color key="backgroundColor" name="LaunchBackground"/>
                     </view>
                     <navigationItem key="navigationItem" id="SGL-hx-MOm"/>
                 </viewController>
@@ -55,6 +52,11 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchBackground" width="1" height="1"/>
+        <namedColor name="LaunchBackground">
+            <color red="0.95686274509803926" green="0.95294117647058818" blue="0.95294117647058818" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="LaunchNavigationBar">
+            <color red="0.078431372549019607" green="0.51372549019607838" blue="0.69411764705882351" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
