@@ -12,9 +12,9 @@ private let Log = Logger.get()
  Since both the top bar and refresh control depend on scroll view shenanigans, it makes sense to manage them in the same place (mostly so we can mediate any conflict between them). And since our supported iOS versions include several different approaches to safe areas, top/bottom anchors, and layout margins, we can deal with some of that here too. For more about the layout margins, see commentary in `PostsPageViewController.viewDidLoad()`.
  */
 final class PostsPageView: UIView {
-    
-    var isScrolling: Bool = false
 
+    var viewHasBeenScrolledOnce: Bool = false
+    
     // MARK: Loading view
 
     var loadingView: UIView? {
@@ -467,11 +467,11 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         willBeginDraggingContentOffset = scrollView.contentOffset
-   
-        self.isScrolling = true
         
-        if #available(iOS 15, *), UserDefaults.standard.isDarkModeEnabled {
+        // disable transparency so that scroll thumbs work in dark mode
+        if #available(iOS 15, *), UserDefaults.standard.isDarkModeEnabled, !self.viewHasBeenScrolledOnce {
             self.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
+            self.viewHasBeenScrolledOnce = true
         }
     }
 
@@ -518,8 +518,6 @@ extension PostsPageView: ScrollViewDelegateExtras {
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.isScrolling = false
-        
         switch refreshControlState {
         case .awaitingScrollEnd:
             refreshControlState = .ready
@@ -529,14 +527,6 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         updateTopBarDidEndDecelerating()
-        
-        if #available(iOS 15, *), !self.isScrolling, UserDefaults.standard.isDarkModeEnabled {
-            // give it a second for the scroll thumb to fade away
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: false)
-            }
-        }
-      
     }
 
     private func updateTopBarDidEndDecelerating() {

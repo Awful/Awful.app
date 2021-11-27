@@ -115,6 +115,7 @@ final class PostsPageViewController: ViewController {
         // prevent white flash caused by webview being opaque during refreshes
         if #available(iOS 15, *), UserDefaults.standard.isDarkModeEnabled {
             self.postsView.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: false)
+            self.postsView.viewHasBeenScrolledOnce = false
         }
         
         // Clear the post or fractional offset to scroll to. It's assumed that whatever calls this will
