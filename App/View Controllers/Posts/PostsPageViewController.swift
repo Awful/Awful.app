@@ -112,6 +112,11 @@ final class PostsPageViewController: ViewController {
         networkOperation?.cancel()
         networkOperation = nil
         
+        // prevent white flash caused by webview being opaque during refreshes
+        if #available(iOS 15, *), UserDefaults.standard.isDarkModeEnabled {
+            self.postsView.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: false)
+        }
+        
         // Clear the post or fractional offset to scroll to. It's assumed that whatever calls this will
         // take care of re-establishing where to scroll to after calling loadPage().
         jumpToPostIDAfterLoading = nil
