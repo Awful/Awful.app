@@ -15,7 +15,7 @@ let package = Package(
         .package(path: "../AwfulSwift"),
         .package(path: "../Logger"),
         .package(url: "https://github.com/mxcl/PromiseKit", .upToNextMajor(from: "6.0.0")),
-        .package(url: "https://github.com/nolanw/HTMLReader", .upToNextMajor(from: "2.1.7")),
+        .package(url: "https://github.com/nolanw/HTMLReader", .upToNextMajor(from: "2.1.8")),
     ],
     targets: [
         .target(

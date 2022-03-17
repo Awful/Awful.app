@@ -12,7 +12,18 @@ internal extension PostScrapeResult {
             if authorCanReceivePrivateMessages != user.canReceivePrivateMessages { user.canReceivePrivateMessages = authorCanReceivePrivateMessages }
         }
 
-        if !body.isEmpty, body != post.innerHTML { post.innerHTML = body }
+        if !body.isEmpty, body != post.innerHTML {
+            // converting between charsets resolves an issue with smart punctuation rendering in posts
+            if let latin1Data = body.data(using: .isoLatin1) {
+                if let windowsCP1252String = String(data: latin1Data, encoding: .windowsCP1252){
+                    post.innerHTML = windowsCP1252String
+                } else {
+                    post.innerHTML = body
+                }
+            } else {
+                post.innerHTML = body
+            }
+        }
         if id.rawValue != post.postID { post.postID = id.rawValue }
         if isEditable != post.editable { post.editable = isEditable }
         if isIgnored != post.ignored { post.ignored = isIgnored }

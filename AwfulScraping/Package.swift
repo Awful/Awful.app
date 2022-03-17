@@ -10,7 +10,7 @@ let package = Package(
             targets: ["AwfulScraping"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/nolanw/HTMLReader", from: "2.1.4"),
+        .package(url: "https://github.com/nolanw/HTMLReader", from: "2.1.8"),
     ],
     targets: [
         .target(
