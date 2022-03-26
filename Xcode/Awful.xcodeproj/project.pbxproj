@@ -2667,7 +2667,7 @@
 			repositoryURL = "https://github.com/nolanw/HTMLReader";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.7;
+				minimumVersion = 2.2.0;
 			};
 		};
 		1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */ = {

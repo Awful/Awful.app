@@ -47,11 +47,6 @@ public struct PostScrapeResult {
 
         body = table.firstNode(matchingSelector: "div.complete_shit")?.innerHTML
             ?? table.firstNode(matchingSelector: "td.postbody")?.innerHTML
-        // this is replacing smart quotes with normal quotes.
-        // do not be fooled, there actually are hidden characters in of: "" that are being replaced!
-            .replacingOccurrences(of: "", with: "'")
-            .replacingOccurrences(of: "", with: "\"")
-            .replacingOccurrences(of: "", with: "\"")
             ?? ""
         
         hasBeenSeen = table.firstNode(matchingSelector: "tr.seen1")
