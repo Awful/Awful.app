@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
 import os
-from plistlib import readPlistFromString
+import plistlib
 from subprocess import CalledProcessError, check_call, check_output
 import sys
 import time
@@ -41,12 +40,12 @@ def _notarize(zip_path, apple_id_username):
 
 def notarize_and_staple(app_path, zip_path, apple_id_username):
     upload_output = _notarize(zip_path, apple_id_username)
-    upload_plist = readPlistFromString(upload_output)
+    upload_plist = plistlib.loads(upload_output)
 
     request_uuid = upload_plist['notarization-upload']['RequestUUID']
     while True:
         info_output = _get_notarization_info(request_uuid, apple_id_username)
-        info_plist = readPlistFromString(info_output)
+        info_plist = plistlib.loads(info_output)
         status = info_plist['notarization-info']['Status']
         if status == "in progress":
             time.sleep(60)
