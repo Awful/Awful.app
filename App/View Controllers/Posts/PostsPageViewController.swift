@@ -14,10 +14,15 @@ private let Log = Logger.get()
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
     
+    var actionMappings: [UIAction.Identifier: UIActionHandler] = [:]
+    var selectedPost: Post? = nil
+    var selectedUser: User? = nil
+    var selectedFrame: CGRect? = nil
     private var advertisementHTML: String?
     private let author: User?
     private var flagRequest: Cancellable?
     private var jumpToLastPost = false
+    var postIndex: Int = 0
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
     private weak var networkOperation: Cancellable?
@@ -459,101 +464,10 @@ final class PostsPageViewController: ViewController {
         return item
     }()
     
-    private lazy var actionsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: nil)
-        item.actionBlock = { [unowned self] (sender) in
-            let actionVC = InAppActionViewController()
-            actionVC.title = self.title
-
-            let copyURLItem = IconActionItem(.copyURL, block: {
-                let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
-                var queryItems = [
-                    URLQueryItem(name: "threadid", value: self.thread.threadID),
-                    URLQueryItem(name: "perpage", value: "40"),
-                    URLQueryItem(name: "noseen", value: "1"),
-                ]
-                if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
-                    queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
-                }
-                components.queryItems = queryItems
-                let url = components.url!
-                
-                UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
-                UIPasteboard.general.coercedURL = url
-            })
-            copyURLItem.title = "Copy URL"
-            
-            let voteItem = IconActionItem(.vote, block: { [unowned self] in
-                let actionSheet = UIAlertController.makeActionSheet()
-                for i in stride(from: 5, to: 0, by: -1) {
-                    actionSheet.addActionWithTitle("\(i)", handler: {
-                        let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
-                        overlay?.tintColor = self.theme["tintColor"]
-                        
-                        ForumsClient.shared.rate(self.thread, as: i)
-                            .done {
-                                overlay?.mode = .checkmark
-
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                    overlay?.dismiss(true)
-                                }
-                            }
-                            .catch { [weak self] error in
-
-                                overlay?.dismiss(false)
-
-                                let alert = UIAlertController(title: "Vote Failed", error: error)
-                                self?.present(alert, animated: true)
-                        }
-                    })
-                }
-                actionSheet.addCancelActionWithHandler(nil)
-                self.present(actionSheet, animated: false)
-                
-                if let popover = actionSheet.popoverPresentationController {
-                    popover.barButtonItem = sender
-                }
-            })
-            
-            let bookmarkType: IconAction = self.thread.bookmarked ? .removeBookmark : .addBookmark
-            let bookmarkItem = IconActionItem(bookmarkType, block: {
-                ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked)
-                    .done { [weak self] in
-                        guard let strongSelf = self else { return }
-
-                        let status = strongSelf.thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
-                        let overlay = MRProgressOverlayView.showOverlayAdded(to: strongSelf.view, title: status, mode: .checkmark, animated: true)
-                        overlay?.tintColor = strongSelf.theme["tintColor"]
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            overlay?.dismiss(true)
-                        }
-                    }
-                    .catch { error in
-                        print("\(#function) error marking thread: \(error)")
-                }
-            })
-            
-            if let author = self.author {
-                actionVC.items = [copyURLItem, voteItem, bookmarkItem]
-            } else {
-                let ownPostsItem = IconActionItem(.ownPosts, block: {
-                    let userKey = UserKey(userID: UserDefaults.standard.loggedInUserID!, username: UserDefaults.standard.loggedInUsername)
-                    let user = User.objectForKey(objectKey: userKey, in: self.thread.managedObjectContext!)
-                    let postsVC = PostsPageViewController(thread: self.thread, author: user)
-                    postsVC.restorationIdentifier = "Just your posts"
-                    postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
-                    self.navigationController?.pushViewController(postsVC, animated: true)
-                })
-                ownPostsItem.title = "Your Posts"
-
-                actionVC.items = [copyURLItem, ownPostsItem, voteItem, bookmarkItem]
-            }
-            self.present(actionVC, animated: true, completion: nil)
-            
-            if let popover = actionVC.popoverPresentationController {
-                popover.barButtonItem = sender
-            }
-        }
+    
+    lazy var actionsItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: #selector(didTapHamburgerMenu))
+        
         return item
     }()
     
@@ -678,6 +592,61 @@ final class PostsPageViewController: ViewController {
         }
 
         loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
+    }
+    
+    @objc private func didTapHamburgerMenu() {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        var threadActions: [UIMenuElement] = []
+        
+        let threadActionMenu: UIMenu = {
+            let bookmarkTitle = self.thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
+            let bookmarkImage = self.thread.bookmarked ?
+                UIImage(named: "remove-bookmark")!.withRenderingMode(.alwaysTemplate)
+            :
+                UIImage(named: "add-bookmark")!.withRenderingMode(.alwaysTemplate)
+            let yourPostsImage = UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate)
+            let copyURLImage = UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate)
+            let voteImage = UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate)
+            
+            // Copy link
+            let copyLink = UIAction.Identifier("copyLink")
+            actionMappings[copyLink] = copyLink(action:)
+            let copyLinkAction = UIAction(title: "Copy link", image: copyURLImage, identifier: copyLink, handler: copyLink(action:))
+            threadActions.append(copyLinkAction)
+            
+            // Vote
+            let vote = UIAction.Identifier("vote")
+            actionMappings[vote] = vote(action:)
+            let voteAction = UIAction(title: "Vote", image: voteImage, identifier: vote, handler: vote(action:))
+            threadActions.append(voteAction)
+            
+            // Your posts
+            let yourPosts = UIAction.Identifier("yourPosts")
+            actionMappings[yourPosts] = yourPosts(action:)
+            let yourPostsAction = UIAction(title: "Your posts", image: yourPostsImage, identifier: yourPosts, handler: yourPosts(action:))
+            threadActions.append(yourPostsAction)
+            
+            // Remove bookmark
+            let bookmark = UIAction.Identifier("bookmark")
+            actionMappings[bookmark] = bookmark(action:)
+            let bookmarkAction = UIAction(title: bookmarkTitle, image: bookmarkImage, identifier: bookmark, handler: bookmark(action:))
+            bookmarkAction.attributes = self.thread.bookmarked ? [.destructive] : []
+            threadActions.append(bookmarkAction)
+            
+            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: threadActions)
+            return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
+        }()
+        
+        let chidoriMenu = ChidoriMenu(menu: threadActionMenu,
+                                      summonPoint: CGPoint(x: self.postsView.toolbar.frame.maxX - 80,
+                                                           y: self.postsView.toolbar.frame.maxY - 230)
+        )
+        
+        chidoriMenu.delegate = self
+        
+        present(chidoriMenu, animated: true, completion: nil)
     }
     
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
@@ -807,121 +776,112 @@ final class PostsPageViewController: ViewController {
     }
     
     private func didTapUserHeaderWithRect(_ frame: CGRect, forPostAtIndex postIndex: Int) {
-        let post = posts[postIndex + hiddenPosts]
-        guard let user = post.author else { return }
-        let actionVC = InAppActionViewController()
-        var items: [IconActionItem] = []
-        
-        items.append(IconActionItem(.userProfile, block: {
-            let profileVC = ProfileViewController(user: user)
-            self.present(profileVC.enclosingNavigationController, animated: true, completion: nil)
-        }))
-        
-        if author == nil {
-            items.append(IconActionItem(.singleUsersPosts, block: {
-                let postsVC = PostsPageViewController(thread: self.thread, author: user)
-                postsVC.restorationIdentifier = "Just their posts"
-                postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
-                self.navigationController?.pushViewController(postsVC, animated: true)
-            }))
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
+        self.selectedPost = posts[postIndex + hiddenPosts]
+        self.selectedFrame = frame
         
-        if
-            UserDefaults.standard.loggedInUserCanSendPrivateMessages &&
-            user.canReceivePrivateMessages &&
-            user.userID != UserDefaults.standard.loggedInUserID
-        {
-            items.append(IconActionItem(.sendPrivateMessage, block: {
-                let messageVC = MessageComposeViewController(recipient: user)
-                self.messageViewController = messageVC
-                messageVC.delegate = self
-                messageVC.restorationIdentifier = "New PM from posts view"
-                self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
-            }))
-        }
+        var postActions: [UIMenuElement] = []
+        guard let user = self.selectedPost!.author else { return }
+        self.selectedUser = user
         
-        items.append(IconActionItem(.rapSheet, block: {
-            let rapSheetVC = RapSheetViewController(user: user)
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                self.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
+        let postActionMenu: UIMenu = {
+            // Profile
+            let profile = UIAction.Identifier("profile")
+            actionMappings[profile] = profile(action:)
+            let profileAction = UIAction(title: "Profile",
+                                         image: UIImage(named: "user-profile")!.withRenderingMode(.alwaysTemplate),
+                                         identifier: profile,
+                                         handler: profile(action:))
+            postActions.append(profileAction)
+            
+            // Their posts
+            if author == nil {
+                let theirPosts = UIAction.Identifier("theirPosts")
+                actionMappings[theirPosts] = theirPosts(action:)
+                let theirPostsAction = UIAction(title: "Their posts",
+                                                image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
+                                                identifier: theirPosts,
+                                                handler: theirPosts(action:))
+                postActions.append(theirPostsAction)
+            }
+            // Private Message
+            if UserDefaults.standard.loggedInUserCanSendPrivateMessages &&
+                user.canReceivePrivateMessages &&
+                user.userID != UserDefaults.standard.loggedInUserID
+            {
+                let privateMessage = UIAction.Identifier("privateMessage")
+                actionMappings[privateMessage] = privateMessage(action:)
+                let privateMessageAction = UIAction(title: "Private message",
+                                                    image: UIImage(named: "send-private-message")!.withRenderingMode(.alwaysTemplate),
+                                                    identifier: privateMessage,
+                                                    handler: privateMessage(action:))
+                postActions.append(privateMessageAction)
+            }
+            // Rap Sheet
+            let rapSheet = UIAction.Identifier("rapSheet")
+            actionMappings[rapSheet] = rapSheet(action:)
+            let rapSheetAction = UIAction(title: "Rap sheet",
+                                          image: UIImage(named: "rap-sheet")!.withRenderingMode(.alwaysTemplate),
+                                          identifier: rapSheet,
+                                          handler: rapSheet(action:))
+            postActions.append(rapSheetAction)
+            
+            // Ignore user
+            if self.selectedPost!.ignored {
+                let ignoreUser = UIAction.Identifier("ignoreUser")
+                actionMappings[ignoreUser] = ignoreUser(action:)
+                let ignoreAction = UIAction(title: "Ignore user",
+                                            image: UIImage(named: "ignore")!.withRenderingMode(.alwaysTemplate),
+                                            identifier: ignoreUser,
+                                            handler: ignoreUser(action:))
+                postActions.append(ignoreAction)
             } else {
-                self.navigationController?.pushViewController(rapSheetVC, animated: true)
+                let ignoreUser = UIAction.Identifier("ignoreUser")
+                actionMappings[ignoreUser] = ignoreUser(action:)
+                let ignoreAction = UIAction(title: "Ignore user",
+                                            image: UIImage(named: "ignore")!.withRenderingMode(.alwaysTemplate),
+                                            identifier: ignoreUser,
+                                            handler: ignoreUser(action:))
+                postActions.append(ignoreAction)
             }
-        }))
+            
+            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: postActions)
+            return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
+        }()
         
-        if let username = user.username {
-            let ignoreAction: IconAction
-            let ignoreBlock: (_ username: String) -> Promise<Void>
-            if post.ignored {
-                ignoreAction = .unignoreUser
-                ignoreBlock = ForumsClient.shared.removeUserFromIgnoreList
-            }
-            else {
-                ignoreAction = .ignoreUser
-                ignoreBlock = ForumsClient.shared.addUserToIgnoreList
-            }
-            items.append(IconActionItem(ignoreAction, block: {
-                let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Updating Ignore List", mode: .indeterminate, animated: true)
-                overlay?.tintColor = self.theme["tintColor"]
-                
-                ignoreBlock(username)
-                    .done {
-                        overlay?.mode = .checkmark
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            overlay?.dismiss(true)
-                        }
-                    }
-                    .catch { [weak self] error in
-                        overlay?.dismiss(false)
-                        
-                        let alert = UIAlertController(title: "Could Not Update Ignore List", error: error)
-                        self?.present(alert, animated: true)
-                }
-            }))
+        if UserDefaults.standard.hideSidebarInLandscape, traitCollection.userInterfaceIdiom == .pad {
+            let chidoriMenu = ChidoriMenu(menu: postActionMenu, summonPoint: .init(x: 550, y: frame.origin.y))
+            chidoriMenu.delegate = self
+            
+            present(chidoriMenu, animated: true, completion: nil)
+        } else {
+            let chidoriMenu = ChidoriMenu(menu: postActionMenu, summonPoint: frame.origin)
+            chidoriMenu.delegate = self
+            
+            present(chidoriMenu, animated: true, completion: nil)
         }
-        
-        actionVC.items = items
-        actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
-            // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
-            sourceRect.pointee = frame
-            sourceView.pointee = self.postsView.renderView
-        }
-        
-        present(actionVC, animated: true, completion: nil)
     }
     
-    private func didTapActionButtonWithRect(
-        _ frame: CGRect,
-        forPostAtIndex postIndex: Int
-    ) {
-        assert(postIndex + hiddenPosts < posts.count, "post \(postIndex) beyond range (hiding \(hiddenPosts) posts")
-        
-        let post = posts[postIndex + hiddenPosts]
-        let possessiveUsername: String
-        if post.author?.username == UserDefaults.standard.loggedInUsername {
-            possessiveUsername = "Your"
-        } else {
-            possessiveUsername = "\(post.author?.username ?? "")'s"
+    
+    private func shareURL(action: UIAction) {
+        print("shareURL called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
-        var items: [IconActionItem] = []
-        
-        let shareItem = IconActionItem(.copyURL, block: {
+        self.dismiss(animated: false) {
             let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
             var queryItems = [
                 URLQueryItem(name: "threadid", value: self.thread.threadID),
                 URLQueryItem(name: "perpage", value: "40"),
                 URLQueryItem(name: "noseen", value: "1"),
             ]
-            if self.author != nil {
-                queryItems.append(URLQueryItem(name: "userid", value: self.author?.userID))
-            }
             if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
                 queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
             }
             components.queryItems = queryItems
-            components.fragment = "post\(post.postID)"
+            components.fragment = "post\(self.selectedPost!.postID)"
             let url = components.url!
             
             let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [SafariActivity(), ChromeActivity(url: url)])
@@ -934,156 +894,453 @@ final class PostsPageViewController: ViewController {
             
             if let popover = activityVC.popoverPresentationController {
                 // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
-                popover.sourceRect = frame
+                popover.sourceRect = self.selectedFrame!
                 popover.sourceView = self.postsView.renderView
             }
-        })
-        shareItem.title = "Share URL"
-        items.append(shareItem)
-        
-        if author == nil {
-            items.append(IconActionItem(.markReadUpToHere, block: {
-                ForumsClient.shared.markThreadAsReadUpTo(post)
-                    .done { [weak self] in
-                        post.thread?.seenPosts = post.threadIndex
+        }
+    }
 
-                        guard let self = self else { return }
+    private func markThreadAsSeenUpTo(action: UIAction) {
+        print("markThreadAsSeenUpTo called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) {
+            ForumsClient.shared.markThreadAsSeenUpTo(self.selectedPost!)
+                .done { [weak self] in
+                    guard let self = self else { return }
+                    
+                    self.selectedPost!.thread?.seenPosts = self.selectedPost!.threadIndex
+                    self.postsView.renderView.markReadUpToPost(identifiedBy: self.selectedPost!.postID)
+                    
+                    let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: LocalizedString("posts-page.marked-seen"), mode: .checkmark, animated: true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        overlay?.dismiss(true)
+                    }
+                }
+                .catch { [weak self] error in
+                    guard let self = self else { return }
+                    
+                    let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-mark-seen"), error: error)
+                    self.present(alert, animated: true)
+                }
+        }
+    }
+    
+    private func quote(action: UIAction) {
+        print("quote called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        func makeNewReplyWorkspace() {
+            self.replyWorkspace = ReplyWorkspace(thread: self.thread)
+            self.replyWorkspace?.completion = self.replyCompletionBlock
+        }
+        func quotePost() {
+            self.replyWorkspace!.quotePost(self.selectedPost!, completion: { [weak self] error in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    let alert = UIAlertController(networkError: error)
+                    self.present(alert, animated: true)
+                    return
+                }
+                
+                if let vc = self.replyWorkspace?.viewController {
+                    self.present(vc, animated: true)
+                }
+            })
+        }
+        self.dismiss(animated: false) {
+            switch self.replyWorkspace?.status {
+            case .editing:
+                self.presentDraftMenu(
+                    from: .view(self.postsView.renderView, sourceRect: self.selectedFrame!),
+                    options: .init(
+                        continueEditing: quotePost,
+                        deleteDraft: {
+                            makeNewReplyWorkspace()
+                            quotePost()
+                        })
+                )
+                
+            case .replying:
+                quotePost()
+                
+            case nil:
+                makeNewReplyWorkspace()
+                quotePost()
+            }
+        }
+    }
+    
+    private func yourPosts(action: UIAction) {
+        print("yourPosts called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) {
+            
+            let userKey = UserKey(userID: UserDefaults.standard.loggedInUserID!, username: UserDefaults.standard.loggedInUsername)
+            let user = User.objectForKey(objectKey: userKey, in: self.thread.managedObjectContext!)
+            
+            let postsVC = PostsPageViewController(thread: self.thread, author: user)
+            postsVC.restorationIdentifier = "Just your posts"
+            postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
+            
+            self.navigationController?.pushViewController(postsVC, animated: true)
+            
+            print("Your Posts")
+            
+        }
+    }
+    
+    private func bookmark(action: UIAction) {
+        print("bookmark called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) {
+            ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked)
+                .done { [weak self] in
+                    guard let strongSelf = self else { return }
+                    
+                    let status = strongSelf.thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
+                    let overlay = MRProgressOverlayView.showOverlayAdded(to: strongSelf.view, title: status, mode: .checkmark, animated: true)
+                    overlay?.tintColor = strongSelf.theme["tintColor"]
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        overlay?.dismiss(true)
+                    }
+                }
+                .catch { error in
+                    print("\(#function) error marking thread: \(error)")
+                }
+        }
+    }
+    
+    private func copyLink(action: UIAction) {
+        print("copyLink called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) {
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Copied Link", mode: .checkmark, animated: true)
+            overlay?.tintColor = self.theme["tintColor"]
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                overlay?.dismiss(true)
+            }
+            let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
+            var queryItems = [
+                URLQueryItem(name: "threadid", value: self.thread.threadID),
+                URLQueryItem(name: "perpage", value: "40"),
+                URLQueryItem(name: "noseen", value: "1"),
+            ]
+            if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
+                queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
+            }
+            components.queryItems = queryItems
+            let url = components.url!
+            
+            UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
+            UIPasteboard.general.coercedURL = url
+        }
+    }
+    
+    private func copy(action: UIAction) {
+        print("copy called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) {
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: self.postsView.renderView,
+                                                                 title: LocalizedString("posts-page.copied-post"),
+                                                                 mode: .checkmark,
+                                                                 animated: true)
+            overlay?.tintColor = self.theme["tintColor"]
+            
+            ForumsClient.shared.quoteBBcodeContents(of: self.selectedPost!)
+                .done { [weak self] bbcode in
+                    guard self != nil else { return }
+                    UIPasteboard.general.string = bbcode
+                }
+                .catch { [weak self] error in
+                    guard let self = self else { return }
+                    let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-copy-post"), error: error)
+                    self.present(alert, animated: true)
+                }
+                .finally {
+                    overlay?.dismiss(true)
+                }
+        }
+    }
+    
+    private func report(action: UIAction) {
+        print("report called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        let reportVC = ReportPostViewController(post: self.selectedPost!)
+        
+        self.dismiss(animated: false) {
+            self.present(reportVC.enclosingNavigationController, animated: true, completion: nil)
+        }
+    }
+    
+    private func vote(action: UIAction) {
+        print("vote called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) {
+        let actionSheet = UIAlertController.makeActionSheet()
+        for i in stride(from: 5, to: 0, by: -1) {
+            actionSheet.addActionWithTitle("\(i)", handler: {
+                let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
+                overlay?.tintColor = self.theme["tintColor"]
+                
+                ForumsClient.shared.rate(self.thread, as: i)
+                    .done {
+                        overlay?.mode = .checkmark
                         
-                        self.postsView.renderView.markReadUpToPost(identifiedBy: post.postID)
-                        
-                        let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: LocalizedString("posts-page.marked-read"), mode: .checkmark, animated: true)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                             overlay?.dismiss(true)
                         }
                     }
                     .catch { [weak self] error in
-                        guard let self = self else { return }
                         
-                        let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-mark-read"), error: error)
-                        self.present(alert, animated: true)
-                }
-            }))
+                        overlay?.dismiss(false)
+                        
+                        let alert = UIAlertController(title: "Vote Failed", error: error)
+                        self?.present(alert, animated: true)
+                    }
+            })
+        }
+        actionSheet.addCancelActionWithHandler(nil)
+        self.present(actionSheet, animated: false)
+        
+//        if let popover = actionSheet.popoverPresentationController {
+//            popover.barButtonItem = item
+//        }
+        }
+    }
+    
+    private func profile(action: UIAction) {
+        print("profile called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        let profileVC = ProfileViewController(user: self.selectedUser!)
+        
+        self.dismiss(animated: false) {
+            self.present(profileVC.enclosingNavigationController, animated: true, completion: nil)
+        }
+    }
+    
+    private func theirPosts(action: UIAction) {
+        print("theirPosts called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         
-        if post.editable {
-            items.append(IconActionItem(.editPost, block: {
-                func presentNewReplyWorkspace() {
-                    ForumsClient.shared.findBBcodeContents(of: post)
-                        .done { [weak self] text in
-                            guard let self = self else { return }
-                            let replyWorkspace = ReplyWorkspace(post: post)
-                            self.replyWorkspace = replyWorkspace
-                            replyWorkspace.completion = self.replyCompletionBlock
-                            self.present(replyWorkspace.viewController, animated: true)
-                        }
-                        .catch { [weak self] error in
-                            let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-edit-post"), error: error)
-                            self?.present(alert, animated: true)
-                    }
-                }
-
-                switch self.replyWorkspace?.status {
-                case .editing, .replying:
-                    self.presentDraftMenu(
-                        from: .view(self.postsView.renderView, sourceRect: frame),
-                        options: .init(deleteDraft: presentNewReplyWorkspace)
-                    )
-
-                case nil:
-                    presentNewReplyWorkspace()
-                }
-            }))
+        self.dismiss(animated: false) {
+            let postsVC = PostsPageViewController(thread: self.thread, author: self.selectedUser!)
+            postsVC.restorationIdentifier = "Just their posts"
+            postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
+            self.navigationController?.pushViewController(postsVC, animated: true)
+        }
+    }
+    
+    private func privateMessage(action: UIAction) {
+        print("privateMessage called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         
-        if !thread.closed {
-            items.append(IconActionItem(.quotePost, block: {
-                func makeNewReplyWorkspace() {
-                    self.replyWorkspace = ReplyWorkspace(thread: self.thread)
-                    self.replyWorkspace?.completion = self.replyCompletionBlock
-                }
-                func quotePost() {
-                    self.replyWorkspace!.quotePost(post, completion: { [weak self] error in
-                        guard let self = self else { return }
-
-                        if let error = error {
-                            let alert = UIAlertController(networkError: error)
-                            self.present(alert, animated: true)
-                            return
-                        }
-
-                        if let vc = self.replyWorkspace?.viewController {
-                            self.present(vc, animated: true)
-                        }
-                    })
-                }
-
-                switch self.replyWorkspace?.status {
-                case .editing:
-                    self.presentDraftMenu(
-                        from: .view(self.postsView.renderView, sourceRect: frame),
-                        options: .init(
-                            continueEditing: quotePost,
-                            deleteDraft: {
-                                makeNewReplyWorkspace()
-                                quotePost()
-                            })
-                    )
-
-                case .replying:
-                    quotePost()
-
-                case nil:
-                    makeNewReplyWorkspace()
-                    quotePost()
-                }
-            }))
-        } else {
-            items.append(IconActionItem(.copyPost, block: {
-                let overlay = MRProgressOverlayView.showOverlayAdded(to: self.postsView.renderView,
-                                                                     title: LocalizedString("posts-page.copied-post"),
-                                                                     mode: .checkmark,
-                                                                     animated: true)
-                overlay?.tintColor = self.theme["tintColor"]
-                
-                ForumsClient.shared.quoteBBcodeContents(of: post)
-                    .done { [weak self] bbcode in
-                        guard self != nil else { return }
-                        UIPasteboard.general.string = bbcode
-                    }
-                    .catch { [weak self] error in
-                        guard let self = self else { return }
-                        let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-copy-post"), error: error)
-                        self.present(alert, animated: true)
-                    }
-                    .finally {
+        self.dismiss(animated: false) {
+            let messageVC = MessageComposeViewController(recipient: self.selectedUser!)
+            self.messageViewController = messageVC
+            messageVC.delegate = self
+            messageVC.restorationIdentifier = "New PM from posts view"
+            self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
+        }
+    }
+    
+    private func rapSheet(action: UIAction) {
+        print("rapSheet called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        
+        self.dismiss(animated: false) {
+            let rapSheetVC = RapSheetViewController(user: self.selectedUser!)
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                self.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
+            } else {
+                self.navigationController?.pushViewController(rapSheetVC, animated: true)
+            }
+        }
+    }
+    
+    private func ignoreUser(action: UIAction) {
+        print("ignoreUser called")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        
+        self.dismiss(animated: false) {
+            let ignoreBlock: (_ username: String) -> Promise<Void>
+            // TODO: this needs to toggle the menu between Ignore / Unignore
+            if self.selectedPost!.ignored {
+                ignoreBlock = ForumsClient.shared.removeUserFromIgnoreList
+            } else {
+                ignoreBlock = ForumsClient.shared.addUserToIgnoreList
+            }
+            
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Updating Ignore List", mode: .indeterminate, animated: true)
+            overlay?.tintColor = self.theme["tintColor"]
+            
+            ignoreBlock(self.selectedUser!.username!)
+                .done {
+                    overlay?.mode = .checkmark
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                         overlay?.dismiss(true)
                     }
-            }))
+                }
+                .catch { [weak self] error in
+                    overlay?.dismiss(false)
+                    
+                    let alert = UIAlertController(title: "Could Not Update Ignore List", error: error)
+                    self?.present(alert, animated: true)
+                }
+        }
+    }
+    
+    private func edit(action: UIAction) {
+        print("edit called")
+        
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         
-        items.append(IconActionItem(.reportPost, block: {
-            let reportVC = ReportPostViewController(post: post)
-            self.present(reportVC.enclosingNavigationController, animated: true, completion: nil)
-        }))
+        func presentNewReplyWorkspace() {
+            ForumsClient.shared.findBBcodeContents(of: self.selectedPost!)
+                .done { [weak self] text in
+                    guard let self = self else { return }
+                    let replyWorkspace = ReplyWorkspace(post: self.selectedPost!)
+                    self.replyWorkspace = replyWorkspace
+                    replyWorkspace.completion = self.replyCompletionBlock
+                    self.present(replyWorkspace.viewController, animated: true)
+                }
+                .catch { [weak self] error in
+                    let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-edit-post"), error: error)
+                    self?.present(alert, animated: true)
+                }
+        }
         
-        if author != nil {
-            items.append(IconActionItem(.showInThread, block: {
-                // This will add the thread to the navigation stack, giving us thread->author->thread.
-                AppDelegate.instance.open(route: .post(id: post.postID, .noseen))
-            }))
+        switch self.replyWorkspace?.status {
+        case .editing, .replying:
+            self.presentDraftMenu(
+                from: .view(self.postsView.renderView, sourceRect: self.selectedFrame!),
+                options: .init(deleteDraft: presentNewReplyWorkspace)
+            )
+            
+        case nil:
+            presentNewReplyWorkspace()
         }
-
-        let actionVC = InAppActionViewController()
-        actionVC.items = items
-        actionVC.title = "\(possessiveUsername) Post"
-        actionVC.popoverPositioningBlock = { (sourceRect, sourceView) in
-            // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
-            sourceRect.pointee = frame
-            sourceView.pointee = self.postsView.renderView
-        }
-        present(actionVC, animated: true)
     }
 
+    private func didTapActionButtonWithRect(
+        _ frame: CGRect,
+        forPostAtIndex postIndex: Int
+    ) {
+        assert(postIndex + hiddenPosts < posts.count, "post \(postIndex) beyond range (hiding \(hiddenPosts) posts")
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        var postActions: [UIMenuElement] = []
+        
+        self.selectedPost = posts[postIndex + hiddenPosts]
+        self.selectedFrame = frame
+        
+        let possessiveUsername: String
+        if self.selectedPost!.author?.username == UserDefaults.standard.loggedInUsername {
+            possessiveUsername = "Your"
+        } else {
+            possessiveUsername = "\(self.selectedPost!.author?.username ?? "")'s"
+        }
+        
+        print("\(possessiveUsername)")
+        
+        let postActionMenu: UIMenu = {
+            // Mark Read Up To Here
+            if author == nil {
+                let markRead = UIAction.Identifier("markread")
+                actionMappings[markRead] = markThreadAsSeenUpTo(action:)
+                let markreadAction = UIAction(title: "Seen",
+                                              image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
+                                              identifier: markRead,
+                                              handler: markThreadAsSeenUpTo(action:))
+                postActions.append(markreadAction)
+            }
+            // edit post
+            if self.selectedPost!.editable {
+                let edit = UIAction.Identifier("edit")
+                actionMappings[edit] = edit(action:)
+                let editAction = UIAction(title: "Edit",
+                                          image: UIImage(named: "edit-post")!.withRenderingMode(.alwaysTemplate),
+                                          identifier: edit,
+                                          handler: edit(action:))
+                postActions.append(editAction)
+            }
+            
+            // Share URL
+            let shareURL = UIAction.Identifier("shareurl")
+            actionMappings[shareURL] = shareURL(action:)
+            let shareURLAction = UIAction(title: "Share",
+                                          image: UIImage(named: "share")!.withRenderingMode(.alwaysTemplate),
+                                          identifier: shareURL,
+                                          handler: shareURL(action:))
+            postActions.append(shareURLAction)
+            
+            // Quote
+            if !thread.closed {
+                let quote = UIAction.Identifier("quote")
+                actionMappings[quote] = quote(action:)
+                let quoteAction = UIAction(title: "Quote",
+                                           image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
+                                           identifier: quote,
+                                           handler: quote(action:))
+                postActions.append(quoteAction)
+            } else {
+                // Copy post
+                let copy = UIAction.Identifier("copy")
+                actionMappings[copy] = copy(action:)
+                let copyAction = UIAction(title: "Copy",
+                                          image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
+                                          identifier: copy,
+                                          handler: copy(action:))
+                postActions.append(copyAction)
+            }
+            // Report
+            let report = UIAction.Identifier("report")
+            actionMappings[report] = report(action:)
+            let reportAction = UIAction(title: "Report",
+                                        image: UIImage(named: "rap-sheet")!.withRenderingMode(.alwaysTemplate),
+                                        identifier: report,
+                                        handler: report(action:))
+            postActions.append(reportAction)
+            
+            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: postActions)
+            return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
+        }()
+        
+        let chidoriMenu = ChidoriMenu(menu: postActionMenu, summonPoint: frame.origin)
+        chidoriMenu.delegate = self
+        present(chidoriMenu, animated: true, completion: nil)
+
+    }
+    
     private func presentDraftMenu(
         from source: DraftMenuSource,
         options: DraftMenuOptions
@@ -1531,5 +1788,12 @@ extension PostsPageViewController {
         keyCommands.append(UIKeyCommand.make(input: "N", modifierFlags: .command, action: #selector(newReply), discoverabilityTitle: "New Reply"))
         
         return keyCommands
+    }
+}
+
+
+extension PostsPageViewController: ChidoriDelegate {
+    func didSelectAction(_ action: UIAction) {
+        actionMappings[action.identifier]?(action)
     }
 }
