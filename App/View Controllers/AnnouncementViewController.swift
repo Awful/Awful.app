@@ -250,6 +250,9 @@ final class AnnouncementViewController: ViewController {
     // MARK: Actions
 
     private func didTapAuthorHeaderInPost(at postIndex: Int, frame: CGRect) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         assert(postIndex == 0, "why was there more than one announcement?")
         guard let user = announcement.author else {
             Log.e("tapped author header but announcement has no author?")
@@ -494,6 +497,9 @@ extension AnnouncementViewController: RenderViewDelegate {
     }
 
     func didTapLink(to url: URL, in view: RenderView) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         if let route = try? AwfulRoute(url) {
             AppDelegate.instance.open(route: route)
         }

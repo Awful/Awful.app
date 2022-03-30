@@ -26,6 +26,11 @@ final class AwfulURLRouter: NSObject {
     /// Show the screen appropriate for an "awful" URL.
     @discardableResult
     func route(_ route: AwfulRoute) -> Bool {
+        
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        
         switch route {
         case .bookmarks:
             return selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self) != nil
@@ -170,6 +175,9 @@ final class AwfulURLRouter: NSObject {
     }
     
     private func jumpToForum(_ forum: Forum) -> Bool {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         if let threadsVC = rootViewController.firstDescendantOfType(ThreadsTableViewController.self),
            threadsVC.forum === forum
         {
@@ -189,6 +197,9 @@ final class AwfulURLRouter: NSObject {
     private func selectTopmostViewController<VC: UIViewController>(
         containingViewControllerOfClass klass: VC.Type
     ) -> VC? {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         guard let
             splitVC = rootViewController.children.first as? UISplitViewController,
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController

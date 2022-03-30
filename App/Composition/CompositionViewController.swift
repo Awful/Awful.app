@@ -20,6 +20,9 @@ final class CompositionViewController: ViewController {
     }
     
     @objc fileprivate func didTapCancel() {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         dismiss(animated: true, completion: nil)
     }
     

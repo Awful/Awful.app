@@ -24,22 +24,34 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     @IBOutlet private var avatarsSwitch: UISwitch!
     @IBAction func toggleAvatars(_ sender: UISwitch) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         UserDefaults.standard.showAuthorAvatars = sender.isOn
     }
 
     @IBOutlet private var imagesSwitch: UISwitch!
     @IBAction private func toggleImages(_ sender: UISwitch) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         UserDefaults.standard.showImages = sender.isOn
     }
     
     @IBOutlet private var scaleTextLabel: UILabel!
     @IBOutlet private var scaleTextStepper: UIStepper!
     @IBAction private func scaleStepperDidChange(_ sender: UIStepper) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         UserDefaults.standard.fontScale = sender.value
     }
     
     @IBOutlet private var automaticDarkModeSwitch: UISwitch!
     @IBAction func toggleAutomaticDarkMode(_ sender: UISwitch) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         UserDefaults.standard.automaticallyEnableDarkMode = sender.isOn
     }
 
@@ -47,6 +59,9 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @IBOutlet private var darkModeLabel: UILabel!
     @IBOutlet private var darkModeSwitch: UISwitch!
     @IBAction func toggleDarkMode(_ sender: UISwitch) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         UserDefaults.standard.isDarkModeEnabled = sender.isOn
     }
 

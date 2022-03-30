@@ -255,6 +255,9 @@ class ComposeTextViewController: ViewController {
     }
     
     @objc fileprivate func didTapSubmit() {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         disableEverythingButTheCancelButton()
         shouldSubmit({ [weak self] (ok: Bool) in
             if ok {
@@ -271,6 +274,9 @@ class ComposeTextViewController: ViewController {
     }
     
     @objc fileprivate func didTapCancel() {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         if let progress = imageUploadProgress {
             progress.cancel()
             imageUploadProgress = nil

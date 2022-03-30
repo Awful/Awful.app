@@ -131,6 +131,9 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     @objc private func didTapThreadTagButton(_ sender: UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         guard let picker = threadTagPicker else { return }
         
         picker.selectImageName(threadTag?.imageName)

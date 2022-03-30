@@ -31,6 +31,10 @@ final class ThreadTagPickerViewController: ViewController {
     }()
     
     @objc private func didTapCancel(_ sender: UIBarButtonItem) {
+        if UserDefaults.standard.enableHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+        }
         dismiss()
         delegate?.didDismissPicker(self)
     }
@@ -40,6 +44,10 @@ final class ThreadTagPickerViewController: ViewController {
     }()
     
     @objc private func didTapDone(_ sender: UIBarButtonItem) {
+        if UserDefaults.standard.enableHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+        }
         dismiss()
         delegate?.didDismissPicker(self)
     }

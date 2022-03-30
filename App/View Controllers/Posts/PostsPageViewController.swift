@@ -332,6 +332,9 @@ final class PostsPageViewController: ViewController {
         _ sender: UIBarButtonItem,
         forEvent event: UIEvent
     ) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         var isLongPress: Bool {
             event.allTouches?.first?.tapCount == 0
         }
@@ -419,6 +422,9 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = "Previous page"
         item.actionBlock = { [unowned self] (sender) in
             guard case .specific(let pageNumber)? = self.page, pageNumber > 1 else { return }
+            if UserDefaults.standard.enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
             self.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
         }
         return item
@@ -445,6 +451,9 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = "Next page"
         item.actionBlock = { [unowned self] (sender) in
             guard case .specific(let pageNumber)? = self.page, pageNumber < self.numberOfPages, pageNumber > 0 else { return }
+            if UserDefaults.standard.enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
             self.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
         }
         return item
@@ -672,11 +681,17 @@ final class PostsPageViewController: ViewController {
     }
     
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         guard case .specific(let pageNumber)? = page, pageNumber > 1 else { return }
         loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
     }
     
     @objc private func loadNextPage(_ sender: UIKeyCommand) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         guard case .specific(let pageNumber)? = page else { return }
         loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
     }
@@ -738,6 +753,9 @@ final class PostsPageViewController: ViewController {
     }
     
     @objc private func didLongPressOnPostsView(_ sender: UILongPressGestureRecognizer) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         guard sender.state == .began else { return }
         
         postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView)).done {

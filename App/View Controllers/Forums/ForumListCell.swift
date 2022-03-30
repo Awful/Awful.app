@@ -115,10 +115,16 @@ final class ForumListCell: UITableViewCell {
     }
 
     @objc private func didTapExpandButton(_ sender: UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         didTapExpand?(self)
     }
 
     @objc private func didTapFavoriteButton(_ sender: UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         didTapFavorite?(self)
     }
 

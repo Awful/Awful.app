@@ -61,6 +61,9 @@ final class MessageViewController: ViewController {
     // MARK: Actions
     
     @objc private func didTapReplyButtonItem(_ sender: UIBarButtonItem) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         let actionSheet = UIAlertController.makeActionSheet()
         
         actionSheet.addActionWithTitle(LocalizedString("private-message.action-reply")) {

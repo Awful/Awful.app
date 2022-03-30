@@ -28,6 +28,9 @@ final class ForumsTableViewController: TableViewController {
             predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
             didChange: { [weak self] favoriteCount in
                 self?.updateEditingState(favoriteCount: favoriteCount)
+                if UserDefaults.standard.enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
         })
         updateEditingState(favoriteCount: favoriteForumCountObserver.count)
 
@@ -104,6 +107,9 @@ final class ForumsTableViewController: TableViewController {
     }
     
     func openForum(_ forum: Forum, animated: Bool) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         let threadList = ThreadsTableViewController(forum: forum)
         threadList.restorationClass = ThreadsTableViewController.self
         threadList.restorationIdentifier = "Thread"
@@ -111,6 +117,9 @@ final class ForumsTableViewController: TableViewController {
     }
 
     func openAnnouncement(_ announcement: Announcement) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         let vc = AnnouncementViewController(announcement: announcement)
         vc.restorationIdentifier = "Announcement"
         showDetailViewController(vc, sender: self)
@@ -172,6 +181,9 @@ final class ForumsTableViewController: TableViewController {
     // MARK: Actions
 
     private func didTapDisclosureButton(in cell: UITableViewCell) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         guard
             let indexPath = tableView.indexPath(for: cell),
             let forum = listDataSource.item(at: indexPath) as? Forum
@@ -188,6 +200,9 @@ final class ForumsTableViewController: TableViewController {
     }
 
     private func didTapStarButton(in cell: UITableViewCell) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         guard
             let indexPath = tableView.indexPath(for: cell),
             let forum = listDataSource.item(at: indexPath) as? Forum

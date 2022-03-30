@@ -59,6 +59,9 @@ final class MessageListViewController: TableViewController {
     private var composeViewController: MessageComposeViewController?
     
     @objc private func didTapComposeButtonItem(_ sender: UIBarButtonItem) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         if composeViewController == nil {
             let compose = MessageComposeViewController()
             compose.restorationIdentifier = "New message"
@@ -103,6 +106,9 @@ final class MessageListViewController: TableViewController {
     }
     
     func showMessage(_ message: PrivateMessage) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         let viewController = MessageViewController(privateMessage: message)
         viewController.restorationIdentifier = "Message"
         showDetailViewController(viewController, sender: self)
@@ -142,6 +148,18 @@ final class MessageListViewController: TableViewController {
         pullToRefreshBlock = { [unowned self] in
             self.refresh()
         }
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        // Takes care of toggling the button's title.
+        super.setEditing(editing, animated: true)
+
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        
+        // Toggle table view editing.
+        tableView.setEditing(editing, animated: true)
     }
     
     override func themeDidChange() {

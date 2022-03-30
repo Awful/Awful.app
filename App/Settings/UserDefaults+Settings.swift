@@ -43,6 +43,7 @@ enum SettingsKeys {
     static let rawDefaultBrowser = "default_browser"
     static let showAuthorAvatars = "show_avatars"
     static let jumpToPostEndOnDoubleTap = "jump_to_post_end_on_double_tap"
+    static let enableHaptics = "enable_haptics"
     static let showImages = "show_images"
     static let showThreadTagsInThreadList = "show_thread_tags"
     static let showTweaksOnShake = "show_tweaks_on_shake"

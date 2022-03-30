@@ -125,6 +125,16 @@
 					<key>Key</key>
 					<string>jump_to_post_end_on_double_tap</string>
 				</dict>
+				<dict>
+					<key>Title</key>
+					<string>Enable Haptics</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>enable_haptics</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>

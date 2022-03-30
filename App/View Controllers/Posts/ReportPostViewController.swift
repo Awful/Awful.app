@@ -24,10 +24,16 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
     }
     
     @IBAction @objc fileprivate func didTapCancel() {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         dismiss(animated: true, completion: nil)
     }
     
     @IBAction @objc fileprivate func didTapSubmit() {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         rootView.endEditing(true)
         
         let progressView = MRProgressOverlayView.showOverlayAdded(to: view.window, title: "Reporting…", mode: .indeterminate, animated: true)!

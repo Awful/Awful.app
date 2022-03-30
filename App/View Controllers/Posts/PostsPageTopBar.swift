@@ -75,6 +75,10 @@ final class PostsPageTopBar: UIView {
     }
 
     @objc private func didTapParentForum(_ sender: UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+        }
         self.goToParentForum?()
     }
     var goToParentForum: (() -> Void)? {
@@ -82,6 +86,10 @@ final class PostsPageTopBar: UIView {
     }
 
     @objc private func didTapPreviousPosts(_ sender: UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+        }
         self.showPreviousPosts?()
     }
     var showPreviousPosts: (() -> Void)? {
@@ -89,6 +97,10 @@ final class PostsPageTopBar: UIView {
     }
 
     @objc private func didTapScrollToEnd(_ sender: UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            let generator = UIImpactFeedbackGenerator(style: .medium)
+            generator.impactOccurred()
+        }
         self.scrollToEnd?()
     }
     var scrollToEnd: (() -> Void)? {

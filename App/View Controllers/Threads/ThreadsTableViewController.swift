@@ -196,6 +196,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     @objc func didTapCompose() {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         present(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
     }
     
@@ -237,6 +240,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }()
     
     @objc private func didTapFilterButton(_ sender: UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         threadTagPicker.selectImageName(filterThreadTag?.imageName)
         threadTagPicker.present(from: self, sourceView: sender)
     }
@@ -251,6 +257,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     // MARK: ThreadTagPickerViewControllerDelegate
     
     func didSelectImageName(_ imageName: String?, in picker: ThreadTagPickerViewController) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         if let imageName = imageName {
             filterThreadTag = forum.threadTags.array
                 .compactMap { $0 as? ThreadTag }
@@ -371,6 +380,9 @@ extension ThreadsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         let thread = dataSource!.thread(at: indexPath)
         let postsViewController = PostsPageViewController(thread: thread)
         postsViewController.restorationIdentifier = "Posts"

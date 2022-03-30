@@ -250,6 +250,16 @@ extension UserDefaults {
     @objc private class var keyPathsForValuesAffectingJumpToPostEndOnDoubleTap: Set<String> { [SettingsKeys.jumpToPostEndOnDoubleTap] }
 
 
+    @objc dynamic var enableHaptics: Bool {
+        get { return bool(forKey: SettingsKeys.enableHaptics) }
+        set { set(newValue, forKey: SettingsKeys.enableHaptics) }
+    }
+
+    @objc private class var automaticallyNotifiesObserversOfEnableHaptics: Bool { false }
+
+    @objc private class var keyPathsForValuesAffectingEnableHaptics: Set<String> { [SettingsKeys.enableHaptics] }
+
+
     @objc dynamic var showImages: Bool {
         get { return bool(forKey: SettingsKeys.showImages) }
         set { set(newValue, forKey: SettingsKeys.showImages) }

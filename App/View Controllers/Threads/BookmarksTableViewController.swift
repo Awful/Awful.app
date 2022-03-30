@@ -44,6 +44,9 @@ final class BookmarksTableViewController: TableViewController {
     }
     
     private func loadPage(page: Int) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
         ForumsClient.shared.listBookmarkedThreads(page: page)
             .done { threads in
                 self.latestPage = page

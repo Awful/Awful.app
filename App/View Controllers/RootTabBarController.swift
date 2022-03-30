@@ -5,7 +5,7 @@
 import UIKit
 
 /// A themeable tab bar controller that fixes an iOS 11 layout problem.
-final class RootTabBarController: UITabBarController, Themeable {
+final class RootTabBarController: UITabBarController, UITabBarControllerDelegate, Themeable {
 
     /// Returns a tab bar controller whose tab bar is an instance of `TabBar_FixiOS11iPadLayout`.
     static func makeWithTabBarFixedForiOS11iPadLayout() -> RootTabBarController {
@@ -35,9 +35,17 @@ final class RootTabBarController: UITabBarController, Themeable {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+            self.delegate = self
         themeDidChange()
     }
 
+    // called whenever a tab button is tapped
+     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+         if UserDefaults.standard.enableHaptics {
+             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+         }
+     }
+        
     func themeDidChange() {
         tabBar.barTintColor = theme["tabBarBackgroundColor"]
         tabBar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true

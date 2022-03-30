@@ -51,6 +51,9 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         case (.armed, .triggered):
             rotateArrow(Angles.triggered, animated: true)
             
+            if UserDefaults.standard.enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
         case (.refreshing, .refreshing):
             break
         case (_, .refreshing):
