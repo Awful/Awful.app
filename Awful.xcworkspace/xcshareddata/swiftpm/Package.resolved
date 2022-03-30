@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "Gifu",
+        "repositoryURL": "https://github.com/kaishin/Gifu",
+        "state": {
+          "branch": null,
+          "revision": "51f2eab32903e336f590c013267cfa4d7f8b06c4",
+          "version": "3.3.1"
+        }
+      },
+      {
         "package": "HTMLReader",
         "repositoryURL": "https://github.com/nolanw/HTMLReader",
         "state": {
@@ -26,6 +35,15 @@
           "branch": null,
           "revision": "472a03c15f39592007d94f25abe554350bc8aa2b",
           "version": "10.5.1"
+        }
+      },
+      {
+        "package": "NukeUI",
+        "repositoryURL": "https://github.com/kean/NukeUI.git",
+        "state": {
+          "branch": null,
+          "revision": "17f26c07e6b1d3b9258287f99f528111fcd7b7ad",
+          "version": "0.8.1"
         }
       },
       {

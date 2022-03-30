@@ -4,6 +4,7 @@
 
 import CoreData
 import UIKit
+import SwiftUI
 
 /// The RootViewControllerStack initializes the logged-in root view controller, implements releated delegate methods, and handles state restoration.
 final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate {
@@ -44,8 +45,34 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         
         let lepers = RapSheetViewController()
         lepers.restorationIdentifier = "Leper's Colony"
+   
+        var settings: UIViewController
         
-        let settings = SettingsViewController(managedObjectContext: managedObjectContext)
+        if #available(iOS 14, *) {
+            settings = UIHostingController(rootView: SettingsView(viewModel: .init()).environment(\.managedObjectContext, managedObjectContext))
+            settings.title = LocalizedString("Settings")
+            settings.tabBarItem.title = LocalizedString("Settings")
+        
+            if Theme.defaultTheme().showRootTabBarLabel {
+                settings.tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                settings.tabBarItem.title = LocalizedString("Settings")
+            } else {
+                settings.tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+                settings.tabBarItem.title = nil
+            }
+            
+            settings.tabBarItem.image = UIImage(named: "cog")!
+                                        .withTintColor(Theme.defaultTheme()["tabBarTintColor"]!)
+                                        .withRenderingMode(.alwaysTemplate)
+            
+            settings.tabBarItem.selectedImage = UIImage(named: "cog-filled")!
+                                        .withTintColor(Theme.defaultTheme()["tintColor"]!)
+                                        .withRenderingMode(.alwaysTemplate)
+            
+        } else {
+            settings = SettingsViewController(managedObjectContext: managedObjectContext)
+        }
+    
         settings.restorationIdentifier = "Settings"
         
         tabBarController.restorationIdentifier = "Tabbar"
