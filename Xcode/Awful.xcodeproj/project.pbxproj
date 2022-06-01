@@ -128,6 +128,7 @@
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */; };
 		1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */; };
+		1C4EE1CE28470C2400A7507E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D0BB35827F440AF00242D2A /* Assets.xcassets */; };
 		1C54D30B19BBC717002AC6B9 /* SettingsBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D30A19BBC717002AC6B9 /* SettingsBinding.m */; };
 		1C54D31119BE1441002AC6B9 /* SettingsAvatarHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C54D31019BE1441002AC6B9 /* SettingsAvatarHeader.swift */; };
 		1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C54D31219BE1708002AC6B9 /* SettingsAvatarHeader.xib */; };
@@ -233,7 +234,6 @@
 		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
-		2D0BB35927F440AF00242D2A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D0BB35827F440AF00242D2A /* Assets.xcassets */; };
 		2D0BB37427F453B600242D2A /* ChidoriMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37027F453B600242D2A /* ChidoriMenu.swift */; };
 		2D0BB37527F453B600242D2A /* ChidoriPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */; };
 		2D0BB37627F453B600242D2A /* ChidoriMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */; };
@@ -1730,7 +1730,6 @@
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				7B1FF12A1F76C3A3000B64DA /* AppIconPickerCell.xib in Resources */,
-				1C5F700617D86E0F005ABD6F /* Assets.xcassets in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */,
 				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
@@ -1752,6 +1751,7 @@
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
+				1C4EE1CE28470C2400A7507E /* Assets.xcassets in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */,
 				1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */,
