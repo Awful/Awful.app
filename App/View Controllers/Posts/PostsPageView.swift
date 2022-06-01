@@ -182,7 +182,7 @@ final class PostsPageView: UIView {
 
     private var scrollViewDelegateMux: ScrollViewDelegateMultiplexer?
 
-    private let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
+    let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
     var toolbarItems: [UIBarButtonItem] {
         get { return toolbar.items ?? [] }

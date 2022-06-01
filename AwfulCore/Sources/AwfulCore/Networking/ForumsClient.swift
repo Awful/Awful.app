@@ -330,7 +330,7 @@ public final class ForumsClient {
             .promise.asVoid()
     }
 
-    public func markThreadAsReadUpTo(_ post: Post) -> Promise<Void> {
+    public func markThreadAsSeenUpTo(_ post: Post) -> Promise<Void> {
         guard let threadID = post.thread?.threadID else {
             assertionFailure("post needs a thread ID")
             let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
