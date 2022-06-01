@@ -99,22 +99,34 @@ extension MessageListDataSource: UITableViewDataSource {
           
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "d MMM"
+
+        var sentDateRawFont: UIFont
+        var senderFont: UIFont
+        var subjectFont: UIFont
         
+         if Theme.defaultTheme().roundedFonts {
+             sentDateRawFont = roundedFont(ofSize: 12, weight: .semibold)
+             senderFont = roundedFont(ofSize: 13, weight: .semibold)
+             subjectFont = roundedFont(ofSize: 17, weight: .regular)
+         } else {
+             sentDateRawFont = UIFont.systemFont(ofSize: 12)
+             senderFont = UIFont.systemFont(ofSize: 15, weight: .regular)
+             subjectFont = UIFont.systemFont(ofSize: 15, weight: .regular)
+         }
         return MessageListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
             sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
-                .font: UIFont.boldSystemFont(ofSize: UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.subheadline).pointSize),
                 .foregroundColor: theme[color: "listTextColor"]!]),
+                .font: senderFont,
             sentDate: message.sentDate ?? .distantPast,
             sentDateAttributes: [
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
                 .foregroundColor: theme[color: "listTextColor"]!],
             sentDateRaw: NSAttributedString(string: dateFormatter.string(from: message.sentDate!), attributes: [
-                .font: UIFont.systemFont(ofSize: 12),
+                .font: sentDateRawFont,
                 .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
+                .font: subjectFont,
                 .foregroundColor: theme[color: "listTextColor"]!]),
             tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
             tagOverlayImage: {

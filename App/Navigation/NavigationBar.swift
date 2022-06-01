@@ -24,6 +24,12 @@ final class NavigationBar: UINavigationBar {
         
         // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
         isTranslucent = false
+        var font: UIFont
+        if Theme.defaultTheme().roundedFonts {
+            font = roundedFont(ofSize: 17, weight: .medium)
+        } else {
+            font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        }
         
         // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
         barStyle = .black
@@ -31,8 +37,9 @@ final class NavigationBar: UINavigationBar {
         backIndicatorImage = UIImage(named: "back")
         backIndicatorTransitionMaskImage = UIImage(named: "back")
         
-        titleTextAttributes = [.font: UIFont.systemFont(ofSize: 17, weight: .regular)]
-        
+        titleTextAttributes = [
+            .font: font,
+        ]
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
         
         if #available(iOS 15.0, *) {

@@ -148,9 +148,19 @@ extension ThreadListDataSource: UITableViewDataSource {
 
         return ThreadListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
-            pageCount: NSAttributedString(string: "\(thread.numberOfPages)", attributes: [
-                .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
-                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
+            pageCount: {
+                var pagecountFont: UIFont
+                if Theme.defaultTheme().roundedFonts {
+                    pagecountFont = roundedFont(ofSize: 13, weight: .semibold)
+                } else {
+                    pagecountFont = UIFont.systemFont(ofSize: 13, weight: .medium)
+                }
+                
+                return NSAttributedString(string: "\(thread.numberOfPages)", attributes: [
+                                            /* thread list view grey page count text */
+                                            .font: pagecountFont,
+                                            .foregroundColor: theme[color: "listSecondaryTextColor"]!])
+            }(),
             pageIconColor: theme["threadListPageIconColor"]!,
             postInfo: {
                 let text: String
@@ -159,9 +169,15 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
                 else {
                     text = String(format: LocalizedString("thread-list.posted-by"), thread.author?.username ?? "")
+                
+                var killedByFont: UIFont
+                if Theme.defaultTheme().roundedFonts {
+                    killedByFont = roundedFont(ofSize: 13, weight: .semibold)
+                } else {
+                    killedByFont = UIFont.systemFont(ofSize: 13, weight: .medium)
                 }
                 return NSAttributedString(string: text, attributes: [
-                    .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
+                                            .font: killedByFont,
                     .foregroundColor: theme[color: "listSecondaryTextColor"]!])
             }(),
             ratingImage: {
@@ -194,9 +210,19 @@ extension ThreadListDataSource: UITableViewDataSource {
                     return .image(name: thread.threadTag?.imageName, placeholder: placeholder)
                 }
             }(),
-            title: NSAttributedString(string: thread.title ?? "", attributes: [
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
-                .foregroundColor: theme[color: thread.closed ? "listSecondaryTextColor" : "listTextColor"]!]),
+            title: {
+                var threadTitleFont: UIFont
+                if Theme.defaultTheme().roundedFonts {
+                    threadTitleFont = roundedFont(ofSize: 17, weight: .regular)
+                } else {
+                    threadTitleFont = UIFont.systemFont(ofSize: 17, weight: .regular)
+                }
+
+                return NSAttributedString(string: thread.title ?? "", attributes: [
+                    .font: threadTitleFont,
+                    .foregroundColor: theme[color: thread.closed ? "listSecondaryTextColor" : "listTextColor"]!])
+            }()
+                ,
             unreadCount: {
                 guard thread.beenSeen else { return NSAttributedString() }
                 let color: UIColor
@@ -213,9 +239,16 @@ extension ThreadListDataSource: UITableViewDataSource {
                     case .none: color = theme["unreadBadgeBlueColor"]!
                     }
                 }
+                var unreadCountFont: UIFont
+                if Theme.defaultTheme().roundedFonts {
+                    unreadCountFont = roundedFont(ofSize: 13, weight: .semibold)
+                } else {
+                    unreadCountFont = UIFont.systemFont(ofSize: 13, weight: .semibold)
+                }
+
                 return NSAttributedString(string: "\(thread.unreadPosts)", attributes: [
-                    .font: UIFont.preferredFontForTextStyle(.caption1, fontName: theme["listFontName"], sizeAdjustment: 2),
-                    .foregroundColor: color])
+                                            .font: unreadCountFont,
+                                            .foregroundColor: color])
         }())
     }
 

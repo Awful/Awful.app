@@ -101,6 +101,13 @@ final class ForumsTableViewController: TableViewController {
     private func updateEditingState(favoriteCount: Int) {
         navigationItem.setRightBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
 
+        var font: UIFont
+        if Theme.defaultTheme().roundedFonts {
+            font = roundedFont(ofSize: 17, weight: .medium)
+        } else {
+            font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        }
+        editButtonItem.setTitleTextAttributes([NSAttributedString.Key.font: font,], for: .normal)
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)
         }
@@ -239,11 +246,18 @@ extension ForumsTableViewController {
             assertionFailure("where's the header")
             return nil
         }
+        
+        var font: UIFont
+        if Theme.defaultTheme().roundedFonts {
+            font = roundedFont(ofSize: 13, weight: .semibold)
+        } else {
+            font = UIFont.preferredFont(forTextStyle: .body)
+        }
 
         header.viewModel = .init(
             backgroundColor: theme["listHeaderBackgroundColor"],
-            font: UIFont.preferredFont(forTextStyle: .body),
             sectionName: listDataSource.titleForSection(section),
+            font: font,
             textColor: theme["listHeaderTextColor"])
 
         return header

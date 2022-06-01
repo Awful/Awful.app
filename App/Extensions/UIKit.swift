@@ -191,11 +191,19 @@ extension UINavigationItem {
         label.textAlignment = .center
         label.textColor = .white
         label.accessibilityTraits.insert(UIAccessibilityTraits.header)
+        
+        var font: UIFont
+        if Theme.defaultTheme().roundedFonts {
+            font = roundedFont(ofSize: 16, weight: .medium)
+        } else {
+            font = UIFont.systemFont(ofSize: 13, weight: .medium)
+        }
+    
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            label.font = UIFont.systemFont(ofSize: 17)
+            label.font = font
         default:
-            label.font = UIFont.systemFont(ofSize: 13)
+            label.font = font
             label.numberOfLines = 2
         }
         titleView = label

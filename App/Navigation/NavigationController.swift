@@ -97,18 +97,27 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
         awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
         
-        if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = theme["navigationBarTintColor"]
-            
-            let textColor: UIColor? = theme["navigationBarTextColor"]
-            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!]
-            
-            navigationBar.standardAppearance = appearance;
-            navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance
+        var font: UIFont
+        if Theme.defaultTheme().roundedFonts {
+            font = roundedFont(ofSize: 17, weight: .semibold)
+        } else {
+            font = UIFont.systemFont(ofSize: 17, weight: .medium)
         }
+        
+        // Fix odd grey navigation bar background when scrolled to top on iOS 15.
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.shadowColor = nil
+        appearance.shadowImage = nil
+        appearance.backgroundColor = theme["navigationBarTintColor"]
+        
+        let textColor: UIColor? = theme["navigationBarTextColor"]
+        appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
+                                          NSAttributedString.Key.font: font
+        ]
+        navigationBar.compactAppearance = appearance
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
     }
     
     override func encodeRestorableState(with coder: NSCoder) {

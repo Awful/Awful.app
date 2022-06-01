@@ -38,6 +38,14 @@ final class MessageListViewController: TableViewController {
             didChange: updateBadgeValue)
         updateBadgeValue(unreadMessageCountObserver.count)
         
+        var font: UIFont
+        if Theme.defaultTheme().roundedFonts {
+            font = roundedFont(ofSize: 17, weight: .medium)
+        } else {
+            font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        }
+        editButtonItem.setTitleTextAttributes([NSAttributedString.Key.font: font,], for: .normal)
+        
         navigationItem.leftBarButtonItem = editButtonItem
         let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = LocalizedString("private-message-list.compose-button.accessibility-label")

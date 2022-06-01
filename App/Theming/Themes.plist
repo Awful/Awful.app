@@ -55,6 +55,8 @@
 	</dict>
 	<key>default</key>
 	<dict>
+		<key>roundedFonts</key>
+		<false/>
 		<key>description</key>
 		<string>Light</string>
 		<key>descriptiveColor</key>
