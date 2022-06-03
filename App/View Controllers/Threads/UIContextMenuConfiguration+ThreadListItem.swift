@@ -16,7 +16,7 @@ extension UIContextMenuConfiguration {
         var copyTitle: UIMenuElement {
             UIAction(
                 title: NSLocalizedString("Copy Title", comment: ""),
-                image: UIImage(named: "copy-thread-title"),
+                image: UIImage(named: "copy-title"),
                 handler: { action in UIPasteboard.general.string = thread.title }
             )
         }

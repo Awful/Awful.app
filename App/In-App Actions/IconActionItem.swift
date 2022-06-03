@@ -81,7 +81,7 @@ final class IconActionItem: NSObject {
         switch self {
         case .addBookmark: return "add-bookmark"
         case .copyURL: return "copy-url"
-        case .copyTitle: return "copy-thread-title"
+        case .copyTitle: return "copy-title"
         case .editPost: return "edit-post"
         case .ignoreUser: return "ignore"
         case .jumpToFirstPage: return "jump-to-first-page"

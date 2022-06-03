@@ -24,7 +24,7 @@ final class CopyURLActivity: UIActivity {
     
     override class var activityCategory: UIActivity.Category { .action }
     override var activityTitle: String? { LocalizedString("copy-url.title") }
-    override var activityImage: UIImage? { UIImage(named: "copy") }
+    override var activityImage: UIImage? { UIImage(named: "copy-url") }
     
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         activityItems.contains { $0 is Box }
