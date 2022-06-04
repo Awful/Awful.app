@@ -397,9 +397,6 @@ post.seen {
 .gifWrap.overlay:before {
   width: 1.85em;
 }
-.action-button img {
-  -webkit-filter: invert() sepia() saturate(10000%) hue-rotate(60deg);
-}
 .postbody a,
 [data-awful-linkified-image] {
   color: #57ff57;
@@ -514,6 +511,16 @@ post.seen {
 .seen .postdate {
   color: #57ff57;
 }
+.action-button img {
+  color: #000000;
+  /* below filter is a perfect match for #000 -> #57ff57 as per https://codepen.io/sosuke/pen/Pjoqqp */
+  -webkit-filter: invert(68%) sepia(88%) saturate(391%) hue-rotate(64deg) brightness(111%) contrast(105%);
+}
+.platinum .username:after {
+  color: #000000;
+  /* below filter is a perfect match for #000 -> #57ff57 as per https://codepen.io/sosuke/pen/Pjoqqp */
+  -webkit-filter: invert(68%) sepia(88%) saturate(391%) hue-rotate(64deg) brightness(111%) contrast(105%);
+}
 .dead-tweet-container {
   display: grid;
   grid-column: 2;
@@ -540,7 +547,7 @@ post.seen {
   grid-row: 4;
   place-items: start;
   padding-right: 23px;
-  color: #1682b2;
+  color: #57ff57;
   font: -apple-system-headline;
   font-weight: 450;
 }
