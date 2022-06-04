@@ -11,23 +11,39 @@
 @import "yospos.less";
 @import "posts-view-dark-emoticons.less";
 
-.postbody { 
+
+.postbody {
 	letter-spacing: -.01em;
-	line-height:1.18em;
-	padding-bottom:15px;
-	padding-top:10px;
+	line-height: 1.18em;
+	padding-bottom: 15px;
+	padding-top: 10px;
 }
 
 @postdate-color: #eacf4c;
+
 .postdate {
-  color: #eacf4c;
+	color: #eacf4c;
+}
+
+.platinum .username:after {
+	/* below filter is a perfect match for #000 -> #eacf4c as per https://codepen.io/sosuke/pen/Pjoqqp */
+	-webkit-filter: invert(81%) sepia(64%) saturate(418%) hue-rotate(357deg) brightness(92%) contrast(90%);
+}
+
+.action-button img {
+	color: rgba(0, 0, 0, 100);
+	/* below filter is a perfect match for #000 -> #eacf4c as per https://codepen.io/sosuke/pen/Pjoqqp */
+	-webkit-filter: invert(81%) sepia(64%) saturate(418%) hue-rotate(357deg) brightness(92%) contrast(90%);
 }
 
 .seen .postdate {
-  @seen-postdate-color: #eacf4c;
-  color: @seen-postdate-color;
+	@seen-postdate-color: #eacf4c;
+	color: @seen-postdate-color;
 }
 
 [title~=":ins:"] {
 	content: url('awful-resource://amberpos-ins.gif');
 }
+
+@import "dead-tweet-ghost.less";
+.dead-tweet(@postdate-color, #151515, @postdate-color); //@tweetLinkColor, @backgroundColor, @ghostColor

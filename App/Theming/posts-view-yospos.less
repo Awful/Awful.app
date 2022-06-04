@@ -11,20 +11,38 @@
 @import "yospos.less";
 @import "posts-view-dark-emoticons.less";
 
-
-.postbody { 
+ 
+.postbody {
 	letter-spacing: -.01em;
-	line-height:1.18em;
-	padding-bottom:15px;
-	padding-top:10px;
+	line-height: 1.18em;
+	padding-bottom: 15px;
+	padding-top: 10px;
 }
 
 @postdate-color: #57ff57;
+
 .postdate {
-  color: #57ff57;
+	color: #57ff57;
 }
 
+
 .seen .postdate {
-  @seen-postdate-color: #57ff57;
-  color: @seen-postdate-color;
+	@seen-postdate-color: #57ff57;
+	color: @seen-postdate-color;
 }
+
+.action-button img {
+	color: rgba(0, 0, 0, 100);
+	/* below filter is a perfect match for #000 -> #57ff57 as per https://codepen.io/sosuke/pen/Pjoqqp */
+	-webkit-filter: invert(68%) sepia(88%) saturate(391%) hue-rotate(64deg) brightness(111%) contrast(105%);
+}
+
+.platinum .username:after {
+	color: rgba(0, 0, 0, 100);
+	/* below filter is a perfect match for #000 -> #57ff57 as per https://codepen.io/sosuke/pen/Pjoqqp */
+	-webkit-filter: invert(68%) sepia(88%) saturate(391%) hue-rotate(64deg) brightness(111%) contrast(105%);
+}
+
+
+@import "dead-tweet-ghost.less";
+.dead-tweet(@color, #151515, @color); //@tweetLinkColor, @backgroundColor, @ghostColor

@@ -8,32 +8,66 @@
 @import "base.less";
 
 .postbody {
-	font-family: ChalkboardSE-Regular;
+  font-family: ChalkboardSE-Regular;
 }
 
 body {
-	background-image: url('awful-resource://cat.gif');
-	background-repeat: no-repeat;
-	padding-top: 80px;
+  background-color: #9999ff;
+  background-image: url('awful-resource://cat.gif');
+  background-repeat: no-repeat;
+  padding-top: 80px;
 }
 
-post {	
-	&:nth-of-type(even) {
-		background-color:#ccf;
-	}
-	&:nth-of-type(odd) {
-		background-color:#b9e7e7;
-	}
+post {
+  &:nth-of-type(even) {
+    background-color: #ccf;
+  }
+
+  &:nth-of-type(odd) {
+    background-color: #b9e7e7;
+  }
 }
 
 time.regdate {
-	display: none;
+  display: none;
 }
 
-.postbody a, [data-awful-linkified-image] {
+.postbody a,
+[data-awful-linkified-image] {
   color: #1682b2;
 }
 
 .bbc-block {
-	font-family: ChalkboardSE-Regular;
+  font-family: ChalkboardSE-Regular;
 }
+
+.bbc-spoiler:not(.spoiled) {
+  color: transparent;
+  background: #000;
+}
+
+.bbc-spoiler:not(.spoiled) .bbc-block,
+.bbc-spoiler:not(.spoiled) .bbc-block h4,
+.bbc-spoiler:not(.spoiled) .bbc-block h5,
+.bbc-spoiler:not(.spoiled) li,
+.bbc-spoiler:not(.spoiled) a:link,
+.bbc-spoiler:not(.spoiled) a:visited,
+.bbc-spoiler:not(.spoiled) a:active,
+.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
+  color: transparent;
+  background: #000;
+}
+
+.bbc-spoiler:not(.spoiled) li {
+  list-style: none;
+}
+
+.bbc-spoiler:not(.spoiled) img {
+  opacity: 0;
+  height: 0;
+  width: 100%;
+}
+
+
+@import "dead-tweet-ghost.less";
+.dead-tweet(#1682b2, #9999ff, #b9e7e7); //@tweetLinkColor, @backgroundColor, @ghostColor

@@ -95,7 +95,7 @@ header:after {
 .regdate {
   display: block;
   font-size: 0.8em;
-  font-weight: lighter;
+  font-weight: medium;
   margin: -0.4em 0 0;
 }
 .username {
@@ -511,20 +511,42 @@ footer {
 [title~=":yohoho:"] {
   -webkit-filter: invert(100%);
 }
-
-.magic_cake {
-  position:static;
+.dead-tweet-container {
+  display: grid;
+  grid-column: 2;
+  place-items: start;
+  max-width: -webkit-fit-content;
+  border-radius: 1em;
+  background: #000;
 }
-
-.magic_cake:after {
-  content:"You Found: " url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAXBAMAAAAMzfkgAAAAJFBMVEX////39/fnxpRKORhCQkrva7X3QkKUlJxKISG9vcaEISFzc4RR+YyQAAAAAXRSTlMAQObYZgAAAKpJREFUeF6Fy7EKwjAQx+GDdugaUMS1TyAW9w6BPkEqPkAO7VZQQu3SQSRrQZC8gJSMXXw9z9jY4uJv+MPHcTAUaZiku2aCK47HSEvcN19ZmRdeXKPI8eIQ8o+61CEzZ5SIHXdgbG4faHckAmUKe2C3FHjJfDMS+5V5ox20UC1N5VQu655+62dLCjPVx8rc+7giBdlJiK1SNEeAYCN8CWkd+/4pGQOAESt4AQWWPMukF4bRAAAAAElFTkSuQmCC) " Magic Cake (Very Rare)";
-  display:inline-block;
-  position:relative;
-  vertical-align:top;
-  background-image:-webkit-gradient(linear,left top,left bottom,from(135deg), color-stop(#ff80bf), to(#9580ff));
-  background-image:-webkit-linear-gradient(135deg, #ff80bf, #9580ff);
-  background-image:linear-gradient(135deg, #ff80bf, #9580ff);
-  background-size:100%;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+.ghost-lottie {
+  grid-column: 1;
+  grid-row: 1 / span 6;
+  width: 6em;
+}
+.dead-tweet-title {
+  grid-column: 2;
+  grid-row: 3;
+  place-items: start;
+  color: #fff;
+  font: -apple-system-headline;
+  font-weight: 600;
+}
+.dead-tweet-link {
+  grid-column: 2;
+  grid-row: 4;
+  place-items: start;
+  padding-right: 23px;
+  color: #005ec9;
+  font: -apple-system-headline;
+  font-weight: 450;
+}
+.ghost-fill {
+  fill: #fff;
+}
+.ghost-eyes {
+  fill: #fff;
+}
+.ghost-stroke {
+  stroke: #fff;
 }

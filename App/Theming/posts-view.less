@@ -6,6 +6,7 @@
 */
 
 @import "base.less";
+@import "magic-cake.less";
 
 body {
   background-color: #f4f3f3;
@@ -59,3 +60,8 @@ footer {
   color: @postdate-color;
   line-height: 3em;
 }
+
+@import "dead-tweet-ghost.less";
+.dead-tweet(#1682b2, #f4f3f3, #8e8e8e); //@tweetLinkColor, @backgroundColor, @ghostColor
+
+@import "ipad-responsive-postheader.less";
