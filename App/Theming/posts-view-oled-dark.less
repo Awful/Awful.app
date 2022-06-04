@@ -29,13 +29,15 @@ header {
 }
 
 .platinum .username:after {
-		background-image: url('awful-resource://platinum-member-white.png');
+  background-image: url('awful-resource://platinum-member-white.png');
 }
+
 .op .username {
   color: #005ec9;
 }
 
-.postbody a, [data-awful-linkified-image] {
+.postbody a,
+[data-awful-linkified-image] {
   color: #005ec9;
 }
 
@@ -43,6 +45,7 @@ header {
 .spoilers(#333);
 
 .bbc-block {
+
   h4,
   h5 {
     color: #fff;
@@ -53,12 +56,15 @@ header {
 }
 
 .bbc-block {
-  &.mention.highlight, &.mention.highlight h4, &.mention.highlight h4 a {
+
+  &.mention.highlight,
+  &.mention.highlight h4,
+  &.mention.highlight h4 a {
     color: #b837ed;
     border-color: #b837ed;
   }
 
-  &.mention.highlight h4 span.mention.highlight{
+  &.mention.highlight h4 span.mention.highlight {
     color: #dd89ff;
   }
 }
@@ -91,9 +97,12 @@ footer {
 }
 
 @postdate-color: rgba(255, 255, 255, 30%);
-.postdate, .regdate {
+
+.postdate,
+.regdate {
   color: @postdate-color;
 }
+
 .action-button img {
   .tint-black-template-image-gray(#4c4c4c);
 }
@@ -108,3 +117,6 @@ footer {
 }
 
 @import "posts-view-dark-emoticons.less";
+
+@import "dead-tweet-ghost.less";
+.dead-tweet(#005ec9, #000, #fff); //@tweetLinkColor, @backgroundColor, @ghostColor

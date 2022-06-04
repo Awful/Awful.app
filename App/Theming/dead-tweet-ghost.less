@@ -1,0 +1,47 @@
+.dead-tweet(@tweetLinkColor, @backgroundColor, @ghostColor) {
+    .dead-tweet-container {
+        display: grid;
+        grid-column: 2;
+        place-items: start;
+        max-width: -webkit-fit-content;
+        border-radius: 1em;
+        background: @backgroundColor;
+    }
+
+    .ghost-lottie {
+        grid-column: 1;
+        grid-row: 1 / span 6;
+        width: 6em;
+    }
+
+    .dead-tweet-title {
+        grid-column: 2;
+        grid-row: 3;
+        place-items: start;
+        color: @ghostColor;
+        font: -apple-system-headline;
+        font-weight: 600;
+    }
+
+    .dead-tweet-link {
+        grid-column: 2;
+        grid-row: 4;
+        place-items: start;
+        padding-right: 23px;
+        color: @tweetLinkColor;
+        font: -apple-system-headline;
+        font-weight: 450;
+    }
+
+    .ghost-fill {
+        fill: @ghostColor;
+    }
+
+    .ghost-eyes {
+        fill: @ghostColor;
+    }
+
+    .ghost-stroke {
+        stroke: @ghostColor;
+    }
+}
