@@ -239,6 +239,8 @@
 		2D0BB37627F453B600242D2A /* ChidoriMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */; };
 		2D0BB37727F453B600242D2A /* ChidoriAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
+		2DE12C16284C9719007FD9A4 /* posts-view-spankykong-oled-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 2DE12C14284C9719007FD9A4 /* posts-view-spankykong-oled-dark.css */; };
+		2DE12C17284C9719007FD9A4 /* posts-view-spankykong-light.css in Resources */ = {isa = PBXBuildFile; fileRef = 2DE12C15284C9719007FD9A4 /* posts-view-spankykong-light.css */; };
 		7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */; };
 		7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */; };
 		7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1FF1271F76C3A3000B64DA /* AppIconPickerCell.swift */; };
@@ -613,6 +615,8 @@
 		2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriMenuTableViewCell.swift; sourceTree = "<group>"; };
 		2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriAnimationController.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		2DE12C14284C9719007FD9A4 /* posts-view-spankykong-oled-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-spankykong-oled-dark.css"; sourceTree = "<group>"; };
+		2DE12C15284C9719007FD9A4 /* posts-view-spankykong-light.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-spankykong-light.css"; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
 		68A40BB24850D9A942D1E270 /* Pods_Awful.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awful.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwfulTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1312,6 +1316,8 @@
 				1C5B9C3417F20BB800D4981D /* posts-view-gas-chamber.css */,
 				1C5B9C3517F20BB800D4981D /* posts-view-macinyos.css */,
 				1C29BD502251203400E1217A /* posts-view-oled-dark.css */,
+				2DE12C14284C9719007FD9A4 /* posts-view-spankykong-oled-dark.css */,
+				2DE12C15284C9719007FD9A4 /* posts-view-spankykong-light.css */,
 				1C5B9C3617F20BB800D4981D /* posts-view-winpos95.css */,
 				1C5B9C3717F20BB800D4981D /* posts-view-yospos.css */,
 				1C40E5B11640FC2C004AAFA6 /* posts-view.css */,
@@ -1716,6 +1722,7 @@
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
 				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
 				8C8FA48319AD7CA300B67AAA /* redpill.png in Resources */,
+				2DE12C16284C9719007FD9A4 /* posts-view-spankykong-oled-dark.css in Resources */,
 				1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */,
 				1C8F68012221BE7C007E61ED /* Post.html.stencil in Resources */,
 				1C8F68032221C545007E61ED /* PostsView.html.stencil in Resources */,
@@ -1723,6 +1730,7 @@
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
 				1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */,
 				8C8FA47F19AD7CA300B67AAA /* diamond-icon.png in Resources */,
+				2DE12C17284C9719007FD9A4 /* posts-view-spankykong-light.css in Resources */,
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,

@@ -95,7 +95,7 @@ header:after {
 .regdate {
   display: block;
   font-size: 0.8em;
-  font-weight: lighter;
+  font-weight: medium;
   margin: -0.4em 0 0;
 }
 .username {
