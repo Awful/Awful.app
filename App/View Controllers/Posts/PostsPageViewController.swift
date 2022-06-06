@@ -866,7 +866,6 @@ final class PostsPageViewController: ViewController {
     
     
     private func shareURL(action: UIAction) {
-        print("shareURL called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -901,7 +900,6 @@ final class PostsPageViewController: ViewController {
     }
 
     private func markThreadAsSeenUpTo(action: UIAction) {
-        print("markThreadAsSeenUpTo called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -928,7 +926,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func quote(action: UIAction) {
-        print("quote called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -975,7 +972,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func yourPosts(action: UIAction) {
-        print("yourPosts called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -996,7 +992,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func bookmark(action: UIAction) {
-        print("bookmark called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1019,7 +1014,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func copyLink(action: UIAction) {
-        print("copyLink called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1047,7 +1041,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func copy(action: UIAction) {
-        print("copy called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1075,7 +1068,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func report(action: UIAction) {
-        print("report called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1086,8 +1078,12 @@ final class PostsPageViewController: ViewController {
         }
     }
     
+    private func findPost(action: UIAction) {
+        // This will add the thread to the navigation stack, giving us thread->author->thread.
+        AppDelegate.instance.open(route: .post(id: self.selectedPost!.postID, .noseen))
+    }
+    
     private func vote(action: UIAction) {
-        print("vote called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1125,7 +1121,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func profile(action: UIAction) {
-        print("profile called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1137,7 +1132,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func theirPosts(action: UIAction) {
-        print("theirPosts called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1151,7 +1145,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func privateMessage(action: UIAction) {
-        print("privateMessage called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1166,7 +1159,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func rapSheet(action: UIAction) {
-        print("rapSheet called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1182,7 +1174,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func ignoreUser(action: UIAction) {
-        print("ignoreUser called")
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1217,8 +1208,6 @@ final class PostsPageViewController: ViewController {
     }
     
     private func edit(action: UIAction) {
-        print("edit called")
-        
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -1282,6 +1271,16 @@ final class PostsPageViewController: ViewController {
                                               identifier: markRead,
                                               handler: markThreadAsSeenUpTo(action:))
                 postActions.append(markreadAction)
+            } else {
+                // Find post
+                let findPost = UIAction.Identifier("find")
+                actionMappings[findPost] = findPost(action:)
+                let findPostAction = UIAction(title: "Find post",
+                                              image: UIImage(named: "quick-look")!.withRenderingMode(.alwaysTemplate),
+                                              identifier: findPost,
+                                              handler: findPost(action:))
+                
+                postActions.append(findPostAction)
             }
             // edit post
             if self.selectedPost!.editable {
@@ -1331,6 +1330,7 @@ final class PostsPageViewController: ViewController {
                                         handler: report(action:))
             postActions.append(reportAction)
             
+    
             let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: postActions)
             return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
         }()
