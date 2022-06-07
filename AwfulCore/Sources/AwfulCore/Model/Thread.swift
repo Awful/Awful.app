@@ -22,6 +22,7 @@ public class AwfulThread: AwfulManagedObject, Managed {
     @NSManaged internal var primitiveSeenPosts: NSNumber // Would prefer Int32 but that throws EXC_BAD_ACCESS.
     @NSManaged internal var primitiveStarCategory: NSNumber
     @NSManaged public var sticky: Bool
+    @NSManaged public var ratingImageBasename: String?
     @NSManaged public var stickyIndex: Int32
     @NSManaged public var threadID: String
     @NSManaged public var threadListPage: Int32

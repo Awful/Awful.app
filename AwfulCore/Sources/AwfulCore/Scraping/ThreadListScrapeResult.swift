@@ -37,6 +37,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
         public let lastPostDate: Date?
         public let ratingAverage: Float?
         public let ratingCount: Int?
+        public let ratingImageBasename: String?
 
         /// Does not include the original post.
         public let replyCount: Int?
@@ -186,6 +187,7 @@ private extension ThreadListScrapeResult.Thread {
 
         let iconImage = html.firstNode(matchingSelector: "td.icon")?.firstNode(matchingSelector: "img")
             ?? ratingCell?.firstNode(matchingSelector: "img[src *= '/rate/reviews']")
+        
         icon = iconImage.flatMap { try? PostIcon($0) }
 
         isClosed = html.hasClass("closed")
@@ -211,8 +213,7 @@ private extension ThreadListScrapeResult.Thread {
             .flatMap(parseLastPostDate)
 
         (ratingAverage, ratingCount) = ratingCell
-            .flatMap { $0.firstNode(matchingSelector: "img[title]") }
-            .flatMap { $0["title"] }
+            .flatMap { $0.firstNode(matchingSelector: "img[title]")?["title"] }
             .map { title in
                 let scanner = Scanner(scraping: title)
                 _ = scanner.scanUpToCharacters(from: .decimalDigits)
@@ -224,6 +225,11 @@ private extension ThreadListScrapeResult.Thread {
                 return (average, count)
             }
             ?? (nil, nil)
+        
+        
+        ratingImageBasename = ratingCell
+            .flatMap { $0.firstNode(matchingSelector: "img[src]")?["src"] }
+            .flatMap { URL(string: $0)?.deletingPathExtension().lastPathComponent }
 
         replyCount = html
             .firstNode(matchingSelector: "td.replies")
