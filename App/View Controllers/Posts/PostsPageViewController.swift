@@ -911,7 +911,7 @@ final class PostsPageViewController: ViewController {
                     self.selectedPost!.thread?.seenPosts = self.selectedPost!.threadIndex
                     self.postsView.renderView.markReadUpToPost(identifiedBy: self.selectedPost!.postID)
                     
-                    let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: LocalizedString("posts-page.marked-seen"), mode: .checkmark, animated: true)
+                    let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: LocalizedString("posts-page.marked-read"), mode: .checkmark, animated: true)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                         overlay?.dismiss(true)
                     }
@@ -1266,7 +1266,7 @@ final class PostsPageViewController: ViewController {
             if author == nil {
                 let markRead = UIAction.Identifier("markread")
                 actionMappings[markRead] = markThreadAsSeenUpTo(action:)
-                let markreadAction = UIAction(title: "Seen",
+                let markreadAction = UIAction(title: "Mark as last read",
                                               image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
                                               identifier: markRead,
                                               handler: markThreadAsSeenUpTo(action:))
