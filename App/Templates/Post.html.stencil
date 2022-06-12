@@ -26,7 +26,7 @@
 
             {% if showRegdate %}
             <time class="regdate">
-                Joined {{ author.regdate|formatRegdate }}
+                {{ author.regdateRaw }}
             </time>
             {% endif %}
         </section>
@@ -44,7 +44,7 @@
 
 	<footer>
         <span class="divider{% if beenSeen %} divider-seen {% endif %}"></span>
-        <span class="postdate">{{ postDate|formatPostDate }}</span>
+        <span class="postdate">{{ postDateRaw }}</span>
 
         <button class="action-button" title="Post actions">
             <img src="awful-resource://post-dots.png">

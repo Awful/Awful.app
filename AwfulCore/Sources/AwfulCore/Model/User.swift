@@ -15,6 +15,7 @@ public class User: AwfulManagedObject, Managed {
     @NSManaged var lastModifiedDate: Date
     @NSManaged public var moderator: Bool
     @NSManaged public var regdate: Date?
+    @NSManaged public var regdateRaw: String?
     @NSManaged public var userID: String
     @NSManaged public var username: String?
 

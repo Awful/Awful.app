@@ -393,8 +393,10 @@ private struct RenderModel: StencilContextConvertible {
             "htmlContents": htmlContents as Any,
             "messageID": message.messageID,
             "regdate": message.from?.regdate as Any,
+            "regdateRaw": message.from?.regdateRaw as Any,
             "seen": message.seen,
             "sentDate": message.sentDate as Any,
+            "sentDateRaw": message.sentDateRaw as Any,
             "showAvatars": showAvatars,
             "stylesheet": stylesheet as Any,
             "visibleAvatarURL": visibleAvatarURL as Any]

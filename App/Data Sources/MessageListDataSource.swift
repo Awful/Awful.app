@@ -96,6 +96,10 @@ extension MessageListDataSource: UITableViewDataSource {
     private func viewModelForMessage(at indexPath: IndexPath) -> MessageListCell.ViewModel {
         let message = self.message(at: indexPath)
         let theme = Theme.defaultTheme()
+          
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMM"
+        
         return MessageListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
@@ -106,6 +110,9 @@ extension MessageListDataSource: UITableViewDataSource {
             sentDateAttributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
                 .foregroundColor: theme[color: "listTextColor"]!],
+            sentDateRaw: NSAttributedString(string: dateFormatter.string(from: message.sentDate!), attributes: [
+                .font: UIFont.systemFont(ofSize: 12),
+                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
                 .foregroundColor: theme[color: "listTextColor"]!]),

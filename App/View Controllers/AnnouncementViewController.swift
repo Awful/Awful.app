@@ -360,6 +360,7 @@ extension AnnouncementViewController: UIViewControllerRestoration {
 
 private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilContextConvertible {
     let authorRegdate: Date?
+    let authorRegdateRaw: String?
     let authorRolesDescription: String
     let authorUserID: String?
     let authorUsername: String
@@ -368,6 +369,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
     let hasBeenSeen: Bool
     let innerHTML: String
     let postedDate: Date?
+    let postedDateRaw: String?
     let roles: [String]
     private let showsAvatar: Bool
 
@@ -375,6 +377,8 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
         guard !announcement.bodyHTML.isEmpty else { return nil }
 
         authorRegdate = announcement.author?.regdate ?? announcement.authorRegdate
+        
+        authorRegdateRaw = announcement.author?.regdateRaw ?? announcement.authorRegdateRaw
 
         authorRolesDescription = (announcement.author?.accessibilityRoles(in: announcement) ?? [])
             .joined(separator: "; ")
@@ -407,7 +411,14 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
         }()
 
         postedDate = announcement.postedDate
-
+        postedDateRaw = {
+            let document = HTMLDocument(string: announcement.bodyHTML)
+            return document
+                .firstNode(matchingSelector: "td.postdate")
+                .flatMap { $0.children.lastObject as? HTMLNode }
+                .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
+        }()
+            
         roles = announcement.author?.roles(in: announcement) ?? []
 
         showsAvatar = UserDefaults.standard.showAuthorAvatars
@@ -451,6 +462,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
     var context: [String : Any] {
         return [
             "authorRegdate": authorRegdate as Any,
+            "authorRegdateRaw": authorRegdateRaw as Any,
             "authorRolesDescription": authorRolesDescription,
             "authorUserID": authorUserID as Any,
             "authorUsername": authorUsername,
@@ -458,6 +470,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
             "hiddenAvatarURL": hiddenAvatarURL as Any,
             "innerHTML": innerHTML,
             "postedDate": postedDate as Any,
+            "postedDateRaw": (postedDateRaw ?? "") as String,
             "roles": roles,
             "stylesheet": css,
             "userInterfaceIdiom": userInterfaceIdiom,
