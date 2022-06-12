@@ -4,6 +4,7 @@
 
 import AwfulCore
 import MRProgress
+import SwiftUI
 import UIKit
 
 private let Log = Logger.get()
@@ -46,6 +47,20 @@ extension UIContextMenuConfiguration {
                 title: NSLocalizedString("Jump to First Page", comment: ""),
                 image: UIImage(named: "jump-to-first-page")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in jump(to: .first) }
+            )
+        }
+        var setBookmarkColor: UIMenuElement {
+            UIAction(
+                title: "Set color",
+                image: UIImage(named: "rainbow")!.withRenderingMode(.alwaysTemplate),
+                attributes: [],
+                handler: { action in
+                    let profile = UIHostingController(rootView: BookmarkColorPicker(
+                        setBookmarkColor: ForumsClient.shared.setBookmarkColor(_:as:),
+                        thread: thread
+                    ))
+                    presenter.present(profile, animated: true)
+                }
             )
         }
         var jumpToLastPage: UIMenuElement {
@@ -153,6 +168,7 @@ extension UIContextMenuConfiguration {
                 copyTitle,
                 markThreadRead,
                 markThreadUnread,
+                setBookmarkColor,
             ].compactMap { $0 })
         })
     }

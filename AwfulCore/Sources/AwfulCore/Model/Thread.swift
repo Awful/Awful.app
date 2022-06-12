@@ -39,7 +39,7 @@ public class AwfulThread: AwfulManagedObject, Managed {
     public override var objectKey: ThreadKey { .init(threadID: threadID) }
 }
 
-@objc public enum StarCategory: Int16 {
+@objc public enum StarCategory: Int16, CaseIterable {
     case orange = 0
     case red = 1
     case yellow = 2
@@ -59,16 +59,16 @@ extension AwfulThread {
     public var numberOfPages: Int32 {
         get {
             willAccessValue(forKey: "numberOfPages")
-            let numberOfPages = Int32(primitiveNumberOfPages.intValue)
+            let numberOfPages = primitiveNumberOfPages.int32Value
             didAccessValue(forKey: "numberOfPages")
             return numberOfPages
         }
         set {
             willChangeValue(forKey: "numberOfPages")
-            primitiveNumberOfPages = NSNumber(value: Int32(newValue))
+            primitiveNumberOfPages = NSNumber(value: newValue)
             didChangeValue(forKey: "numberOfPages")
             
-            let minimumTotalReplies: Int32 = (newValue - 1) * 40
+            let minimumTotalReplies = (newValue - 1) * 40
             if minimumTotalReplies > totalReplies {
                 willChangeValue(forKey: "totalReplies")
                 primitiveTotalReplies = NSNumber(value: minimumTotalReplies)
@@ -81,7 +81,7 @@ extension AwfulThread {
     public var seenPosts: Int32 {
         get {
             willAccessValue(forKey: "seenPosts")
-            let seenPosts = Int32(primitiveSeenPosts.intValue)
+            let seenPosts = primitiveSeenPosts.int32Value
             didAccessValue(forKey: "seenPosts")
             return seenPosts
         }
@@ -100,7 +100,7 @@ extension AwfulThread {
     public var starCategory: StarCategory {
         get {
             willAccessValue(forKey: "starCategory")
-            let starCategory = Int16(primitiveStarCategory.intValue)
+            let starCategory = primitiveStarCategory.int16Value
             didAccessValue(forKey: "starCategory")
             return StarCategory(rawValue: starCategory) ?? .none
         }
@@ -114,7 +114,7 @@ extension AwfulThread {
     public var totalReplies: Int32 {
         get {
             willAccessValue(forKey: "totalReplies")
-            let totalReplies = Int32(primitiveTotalReplies.intValue)
+            let totalReplies = primitiveTotalReplies.int32Value
             didAccessValue(forKey: "totalReplies")
             return totalReplies
         }

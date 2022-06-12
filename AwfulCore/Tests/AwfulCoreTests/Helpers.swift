@@ -13,14 +13,12 @@ func htmlFixture(named basename: String) throws -> HTMLDocument {
 }
 
 func makeInMemoryStoreContext() -> NSManagedObjectContext {
-    let psc = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+    let psc = NSPersistentStoreCoordinator(managedObjectModel: DataStore.model)
     try! psc.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil)
     let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
     context.persistentStoreCoordinator = psc
     return context
 }
-
-private let managedObjectModel: NSManagedObjectModel = .init(contentsOf: DataStore.modelURL)!
 
 func scrapeHTMLFixture<T: ScrapeResult>(_: T.Type, named fixtureName: String) throws -> T {
     return try T(htmlFixture(named: fixtureName), url: URL(string: "https://example.com/?perpage=40"))

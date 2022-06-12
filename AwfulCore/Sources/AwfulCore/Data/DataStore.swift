@@ -20,7 +20,8 @@ public final class DataStore: NSObject {
     private let storeCoordinator: NSPersistentStoreCoordinator
     private let lastModifiedObserver: LastModifiedContextObserver
 
-    static var modelURL: URL { Bundle.module.url(forResource: "Awful", withExtension: "momd")! }
+    // Creating multiple model instances with the same classes (e.g. SwiftUI Previews) breaks things. Ensure we only load it once.
+    public static let model: NSManagedObjectModel = .init(contentsOf: Bundle.module.url(forResource: "Awful", withExtension: "momd")!)!
     
     /**
     :param: storeDirectoryURL A directory to save the store. Created if it doesn't already exist. The directory will be excluded from backups to iCloud or iTunes.
@@ -28,8 +29,7 @@ public final class DataStore: NSObject {
     public init(storeDirectoryURL: URL) {
         self.storeDirectoryURL = storeDirectoryURL
         mainManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        let model = NSManagedObjectModel(contentsOf: DataStore.modelURL)!
-        storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
+        storeCoordinator = NSPersistentStoreCoordinator(managedObjectModel: Self.model)
         mainManagedObjectContext.persistentStoreCoordinator = storeCoordinator
         lastModifiedObserver = LastModifiedContextObserver(managedObjectContext: mainManagedObjectContext)
         super.init()

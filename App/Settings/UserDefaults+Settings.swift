@@ -150,7 +150,7 @@ extension UserDefaults {
 
 extension UserDefaults {
     func registerDefaults(_ sections: [SettingsSection]) {
-        var defaults = SettingsSection.mainBundleSections.reduce(into: [:]) { defaults, section in
+        var defaults = sections.reduce(into: [:]) { defaults, section in
             defaults.merge(section.defaultValues, uniquingKeysWith: { $1 })
         }
         defaults[SettingsKeys.defaultDarkTheme] = SystemCapabilities.oled ? "oledDark" : "dark"
