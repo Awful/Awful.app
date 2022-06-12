@@ -67,6 +67,10 @@ internal extension ThreadListScrapeResult {
 
             if forum != thread.forum { thread.forum = forum }
 
+            if let ratingImageBasename = raw.ratingImageBasename {
+                if ratingImageBasename != thread.ratingImageBasename { thread.ratingImageBasename = ratingImageBasename }
+            }
+          
             if let icon = raw.icon {
                 let tag = iconHelper.upsert(icon)
                 if tag != thread.threadTag { thread.threadTag = tag }
@@ -104,6 +108,11 @@ internal extension ThreadListScrapeResult.Thread {
         if id.rawValue != thread.threadID { thread.threadID = id.rawValue }
         if isClosed != thread.closed { thread.closed = isClosed }
         if isSticky != thread.sticky { thread.sticky = isSticky }
+        
+        if let ratingImageBasename = ratingImageBasename, ratingImageBasename != thread.ratingImageBasename {
+            thread.ratingImageBasename = ratingImageBasename
+        }
+        
         if !lastPostAuthorUsername.isEmpty, lastPostAuthorUsername != thread.lastPostAuthorName { thread.lastPostAuthorName = lastPostAuthorUsername }
         if let lastPostDate = lastPostDate, lastPostDate != thread.lastPostDate as Date? { thread.lastPostDate = lastPostDate as NSDate }
         if let ratingAverage = ratingAverage, ratingAverage != Float(thread.rating) { thread.rating = Float32(ratingAverage) }
