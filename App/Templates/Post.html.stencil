@@ -30,7 +30,7 @@
             </time>
             {% endif %}
         </section>
-        
+
         {% if visibleAvatarURL and customTitleHTML %}
             <div class="customTitle responsive">
                 {{ customTitleHTML }}
