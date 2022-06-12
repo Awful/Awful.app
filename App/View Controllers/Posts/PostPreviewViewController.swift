@@ -55,7 +55,10 @@ final class PostPreviewViewController: ViewController {
     }
     
     deinit {
-        networkOperation?.cancel()
+        // Avoid warning in Xcode 14 beta 1 "cannot access property with a non-sendable type from a non-isolated deinit"
+        // UIViewController actually does guarantee deinit on the main queue, but the Swift compiler doesn't know that.
+        // (Also, it seems like an oversight that wrapping the access in an immediately-executed closure avoids the warning, so be prepared for more warnings here.)
+        { networkOperation?.cancel() }()
     }
     
     private var managedObjectContext: NSManagedObjectContext? {
