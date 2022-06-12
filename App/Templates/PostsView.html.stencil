@@ -38,8 +38,8 @@
     </div>
 
     {% if endMessage %}
-    <div id="end">
-        End of the thread
+    <div id="end" class=".end" style="height: 100px;">
+
     </div>
     {% endif %}
 </body>

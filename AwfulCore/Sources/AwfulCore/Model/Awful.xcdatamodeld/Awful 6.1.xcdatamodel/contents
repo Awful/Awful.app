@@ -165,6 +165,7 @@
     <entity name="User" representedClassName="User" syncable="YES">
         <attribute name="administrator" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO"/>
         <attribute name="authorClasses" optional="YES" attributeType="String"/>
+        <attribute name="avatarURLString" optional="YES" attributeType="String"/>
         <attribute name="canReceivePrivateMessages" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO"/>
         <attribute name="customTitleHTML" optional="YES" attributeType="String"/>
         <attribute name="lastModifiedDate" attributeType="Date" usesScalarValueType="NO"/>

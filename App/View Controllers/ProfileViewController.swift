@@ -235,7 +235,7 @@ private struct RenderModel: StencilContextConvertible {
                 || !(profile.yahooName ?? "").isEmpty
                 || profile.homepageURL != nil
         }()
-        avatarURL = profile.user.avatarURL
+        avatarURL = URL(string: profile.user.avatarURLString)
         customTitleHTML = {
             let html = profile.user.customTitleHTML
             return html == "<br/>" ? nil : html

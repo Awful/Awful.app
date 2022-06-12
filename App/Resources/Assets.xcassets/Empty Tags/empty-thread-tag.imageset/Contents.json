@@ -1,22 +1,24 @@
 {
   "images" : [
     {
+      "filename" : "EmptyThreadTag@3x(1)-2.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "EmptyThreadTag@3x(1)-1.png",
       "idiom" : "universal",
-      "filename" : "empty-thread-tag@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "EmptyThreadTag@3x(1).png",
       "idiom" : "universal",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   },
   "properties" : {
     "template-rendering-intent" : "original"

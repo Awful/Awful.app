@@ -16,8 +16,18 @@ final class SettingsViewController: TableViewController {
         
         title = "Settings"
         
-        tabBarItem.image = UIImage(named: "cog")
-        tabBarItem.selectedImage = UIImage(named: "cog-filled")
+        tabBarItem.title = nil
+   
+        tabBarItem.image = UIImage(named: "cog")!
+                                    .withTintColor(Theme.defaultTheme()["tabBarTintColor"]!)
+                                    .withRenderingMode(.alwaysTemplate)
+        
+        tabBarItem.selectedImage = UIImage(named: "cog-filled")!
+                                    .withTintColor(Theme.defaultTheme()["tintColor"]!)
+                                    .withRenderingMode(.alwaysTemplate)
+        
+        tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+       
     }
     
     required init?(coder: NSCoder) {
@@ -436,7 +446,7 @@ final class SettingsViewController: TableViewController {
         }
 
         header.configure(
-            avatarURL: loggedInUser?.avatarURL,
+            avatarURL: URL(string: loggedInUser?.avatarURLString ?? ""),
             horizontalPadding: tableView.separatorInset.left,
             textColor: theme["listTextColor"])
         

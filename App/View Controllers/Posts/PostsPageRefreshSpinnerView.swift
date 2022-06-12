@@ -3,20 +3,63 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import UIKit
+import Lottie
 
 final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent {
-    fileprivate let arrows: UIImageView
+    private var animationView: AnimationView?
     
-    init() {
-        arrows = UIImageView(image: UIImage(named: "pull-to-refresh")!)
-        super.init(frame: CGRect.zero)
+    init(theme: Theme) {
+        animationView = .init(name: "getout_vP3_120")
+        super.init(frame: .zero)
+        animationView!.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
+        animationView!.contentMode = .scaleAspectFit
+        animationView!.respectAnimationFrameRate = true
+        animationView!.loopMode = .loop
+        animationView!.animationSpeed = 1
         
-        arrows.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(arrows)
         
-        arrows.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        arrows.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        arrows.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        let mainColor = ColorValueProvider(theme["getOutFrogColor"]!.lottieColorValue)
+        let clearColor = ColorValueProvider(UIColor.clear.lottieColorValue)
+        
+        let mainOutline = AnimationKeypath(keys: ["**", "Stroke 1", "**", "Color"])
+        let nostrils = AnimationKeypath(keys: ["**", "Group 1", "**", "Color"])
+        
+        let leftEye = AnimationKeypath(keys: ["**", "EyeA", "**", "Color"])
+        let rightEye = AnimationKeypath(keys: ["**", "EyeB", "**", "Color"])
+        
+        let pupilA = AnimationKeypath(keys: ["**", "PupilA", "**", "Color"])
+        let pupilB = AnimationKeypath(keys: ["**", "PupilB", "**", "Color"])
+        
+        if theme["keyboardAppearance"] == "Light" {
+            // outer eye stroke opaque in light mode
+            animationView!.setValueProvider(FloatValueProvider(100), keypath: AnimationKeypath(keys: ["**", "Outline", "**", "Opacity"]))
+            animationView!.setValueProvider(mainColor, keypath: pupilA)
+            animationView!.setValueProvider(mainColor, keypath: pupilB)
+            
+            // make eye whites invisible in light mode
+            animationView!.setValueProvider(clearColor, keypath: leftEye)
+            animationView!.setValueProvider(clearColor, keypath: rightEye)
+        } else {
+            // outer eye stroke invisible in dark mode
+            animationView!.setValueProvider(FloatValueProvider(0), keypath: AnimationKeypath(keys: ["**", "Outline", "**", "Opacity"]))
+            
+            // make eye whites opaque in dark mode theme
+            animationView!.setValueProvider(mainColor, keypath: leftEye)
+            animationView!.setValueProvider(mainColor, keypath: rightEye)
+        }
+        
+        animationView!.setValueProvider(mainColor, keypath: nostrils)
+        animationView!.setValueProvider(mainColor, keypath: mainOutline)
+        
+        animationView!.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(animationView!)
+
+        animationView!.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        animationView!.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        animationView!.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        animationView!.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        animationView!.widthAnchor.constraint(equalToConstant: 60).isActive = true
     }
 
     required init?(coder: NSCoder) {
@@ -24,65 +67,42 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
     }
     
     private func transition(from oldState: PostsPageView.RefreshControlState, to newState: PostsPageView.RefreshControlState) {
-        switch (oldState, newState) {
-        case (.armed, .triggered):
-            rotateArrows(CGFloat(Double.pi / 2))
-
-        case (.refreshing, .refreshing):
-            break
-        case (_, .refreshing):
-            rotateArrowsForever()
-            
-        case (.armed, .armed):
-            break
-        case (_, .armed):
-            rotateArrows(0)
-            stopRotatingForever()
-            
-        case (.disabled, _),
-             (.ready, _),
-             (.armed, _),
-             (.awaitingScrollEnd, _),
-             (.triggered, _),
-             (.refreshing, _):
-            break
-        }
-    }
-    
-    private func rotateArrows(_ angle: CGFloat) {
-        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [], animations: {
-            self.arrowsRotation = angle
-            }, completion: nil)
-    }
-    
-    private var arrowsRotation: CGFloat = 0 {
-        didSet {
-            if arrowsRotation == 0 {
-                arrows.transform = CGAffineTransform.identity
-            } else {
-                arrows.transform = CGAffineTransform(rotationAngle: arrowsRotation)
-            }
-        }
-    }
-    
-    private func rotateArrowsForever() {
-        let existingAnimationKeys = arrows.layer.animationKeys() ?? []
-        guard !existingAnimationKeys.contains(indefiniteRotationAnimationKey) else {
-            return
-        }
         
-        let animation = CABasicAnimation(keyPath: "transform.rotation.z")
-        animation.fromValue = arrowsRotation
-        animation.toValue = arrowsRotation + (2 * CGFloat(Double.pi))
-        animation.duration = 1
-        animation.repeatCount = .infinity
-        arrows.layer.add(animation, forKey: indefiniteRotationAnimationKey)
-        
-        arrowsRotation = 0
-    }
-    
-    fileprivate func stopRotatingForever() {
-        arrows.layer.removeAnimation(forKey: indefiniteRotationAnimationKey)
+         switch (oldState, newState) {
+         case (_, .disabled):
+             animationView!.currentFrame = 0
+             break
+         case (_, .ready),
+              (_, .awaitingScrollEnd):
+             animationView!.currentFrame = 0
+             break
+         case (_, .armed(triggeredFraction: 0.0)):
+             animationView!.play(fromFrame: 50, toFrame: 0, loopMode: .playOnce)
+             break
+         case (.armed, .triggered):
+             animationView!.play(fromFrame: 0, toFrame: 50, loopMode: .playOnce)
+             if UserDefaults.standard.enableHaptics {
+                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+             }
+             break
+         case (.refreshing, .refreshing):
+             break
+         case (_, .refreshing):
+             animationView!.play(fromFrame: 50, toFrame: 1000, loopMode: .playOnce)
+             if UserDefaults.standard.enableHaptics {
+                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+             }
+         case (_, .armed):
+             break
+         case (.disabled, _),
+              (.ready, _),
+              (.armed, _),
+              (.awaitingScrollEnd, _),
+              (.triggered, _),
+              (.refreshing, _):
+            break
+         }
+ 
     }
     
     // MARK: PostsPageRefreshControlContent

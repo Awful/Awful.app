@@ -277,6 +277,14 @@ extension RenderView {
         }
     }
     
+    func loadLottiePlayer() {
+        webView.evaluateJavaScript("if (window.Awful) Awful.loadLotties()") { rawResult, error in
+            if let error = error {
+                self.mentionError(error, explanation: "could not evaluate loadLotties")
+            }
+        }
+    }
+    
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied
     /// webview must be transparent to prevent white flashes during content refreshes. setting opaque to true in viewDidAppear helped, but still sometimes produced white flashes.
     /// instead, we toggle the webview to opaque while it's being scrolled and return it to transparent seconds after

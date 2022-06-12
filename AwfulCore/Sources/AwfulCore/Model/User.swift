@@ -26,28 +26,13 @@ public class User: AwfulManagedObject, Managed {
     @NSManaged var sentPrivateMessages: Set<PrivateMessage> /* via from */
     @NSManaged var threadFilters: Set<ThreadFilter>
     @NSManaged var threads: Set<AwfulThread>
+    @NSManaged public var avatarURLString: String
 
     public override var objectKey: UserKey {
         .init(userID: userID, username: username)
     }
 }
 
-extension User {
-    public var avatarURL: URL? {
-        return customTitleHTML.flatMap(extractAvatarURL)
-    }
-}
-
-// TODO: this is very stupid, just handle it during scraping
-public func extractAvatarURL(fromCustomTitleHTML customTitleHTML: String) -> URL? {
-    let document = HTMLDocument(string: customTitleHTML)
-    let img = document.firstNode(matchingSelector: "div > img:first-child") ??
-        document.firstNode(matchingSelector: "body > img:first-child") ??
-        document.firstNode(matchingSelector: "a > img:first-child")
-
-    let src = img?["data-cfsrc"] ?? img?["src"]
-    return src.flatMap { URL(string: $0) }
-}
 
 @objc(UserKey)
 public final class UserKey: AwfulObjectKey {

@@ -106,6 +106,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.addBackButton()
         
         multiplexer.addDelegate(self)
 

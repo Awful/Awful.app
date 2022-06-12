@@ -169,13 +169,16 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
                 else {
                     text = String(format: LocalizedString("thread-list.posted-by"), thread.author?.username ?? "")
+                }/* killed by text */
                 
                 var killedByFont: UIFont
+                
                 if Theme.defaultTheme().roundedFonts {
                     killedByFont = roundedFont(ofSize: 13, weight: .semibold)
                 } else {
                     killedByFont = UIFont.systemFont(ofSize: 13, weight: .medium)
                 }
+             
                 return NSAttributedString(string: text, attributes: [
                                             .font: killedByFont,
                     .foregroundColor: theme[color: "listSecondaryTextColor"]!])
@@ -188,8 +191,16 @@ extension ThreadListDataSource: UITableViewDataSource {
                 if let tweaks = tweaks, tweaks.showRatingsAsThreadTags {
                     return nil
                 }
-
-                return thread.ratingImageName.flatMap { UIImage(named: $0) }
+                
+                return thread.ratingImageName.flatMap {
+                    if $0 != "Vote0.0" {
+                        return UIImage(named: "Vote0")!
+                            .withTintColor(Theme.defaultTheme()["ratingIconEmptyColor"]!)
+                            .mergeWith(topImage: UIImage(named: $0)!)
+                    }
+                    return UIImage(named: "Vote0")!
+                        .withTintColor(Theme.defaultTheme()["ratingIconEmptyColor"]!)
+                }
             }(),
             secondaryTagImageName: {
                 if !showsTagAndRating {

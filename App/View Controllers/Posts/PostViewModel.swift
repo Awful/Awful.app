@@ -37,17 +37,26 @@ struct PostRenderModel: StencilContextConvertible {
             }
             return true
         }
+        var showQuoteIcon: Bool {
+            if let tweaks = ForumTweaks(forumID: forumID) {
+               _ = massageHTML(post.innerHTML ?? "", isIgnored: post.ignored, forumID: forumID)
+                
+                print(tweaks)
+                return true
+            }
+            return false
+        }
         var showAvatars: Bool {
             return UserDefaults.standard.showAuthorAvatars
         }
         var hiddenAvatarURL: URL? {
-            return showAvatars ? nil : post.author?.avatarURL
+            return showAvatars ? nil : URL(string: post.author?.avatarURLString ?? "")
         }
         var htmlContents: String {
             return massageHTML(post.innerHTML ?? "", isIgnored: post.ignored, forumID: forumID)
         }
-        var visibleAvatarURL: URL? {
-            return showAvatars ? post.author?.avatarURL : nil
+        var visibleAvatarURL: String? {
+            return showAvatars ? post.author?.avatarURLString : nil
         }
         var customTitleHTML: String {
             let html = post.author?.customTitleHTML
@@ -60,6 +69,7 @@ struct PostRenderModel: StencilContextConvertible {
         context = [
             "accessibilityRoles": accessibilityRoles,
             "author": [
+                "avatarURL": post.author?.avatarURLString as Any,
                 "regdate": post.author?.regdate as Any,
                 "regdateRaw": post.author?.regdateRaw as Any,
                 "userID": post.author?.userID as Any,
@@ -80,11 +90,12 @@ struct PostRenderModel: StencilContextConvertible {
     init(author: User, isOP: Bool, postDate: Date, postHTML: String) {
         context = [
             "author": [
+                "avatarURL": author.avatarURLString as Any,
                 "regdate": author.regdate as Any,
                 "userID": author.userID,
                 "username": author.username as Any],
             "beenSeen": false,
-            "hiddenAvatarURL": (showAvatars ? author.avatarURL : nil) as Any,
+            "hiddenAvatarURL": (showAvatars ? author.avatarURLString : nil) as Any,
             "customTitleHTML": (enableCustomTitlePostLayout ? author.customTitleHTML : nil) as Any,
             "htmlContents": massageHTML(postHTML, isIgnored: false, forumID: ""),
             "postDate": postDate,
@@ -92,7 +103,7 @@ struct PostRenderModel: StencilContextConvertible {
             "postID": "fake",
             "roles": (isOP ? "op " : "") + (author.authorClasses ?? ""),
             "showAvatars": showAvatars,
-            "visibleAvatarURL": (showAvatars ? author.avatarURL : nil) as Any]
+            "visibleAvatarURL": (showAvatars ? author.avatarURLString : nil) as Any]
     }
 }
 
@@ -100,6 +111,7 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     let document = HTMLDocument(string: html)
     document.removeSpoilerStylingAndEvents()
     document.removeEmptyEditedByParagraphs()
+    document.addAttributeToTweetLinks()
     document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
     if let username = UserDefaults.standard.loggedInUsername {
@@ -113,6 +125,7 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     if isIgnored {
         document.markRevealIgnoredPostLink()
     }
+    document.addQuoteIcons()
     if (ForumTweaks(forumID: forumID)?.magicCake) == true {
         document.addMagicCakeCSS()
     }

@@ -14,7 +14,7 @@ extension AwfulThread {
     var ratingImageName: String? {
         let scanner = Scanner(string: ratingImageBasename ?? "")
         _ = scanner.scanUpToCharacters(from: .decimalDigits)
-        return scanner.scanCharacters(from: .decimalDigits).map { "rating\($0)" }
+        return scanner.scanCharacters(from: .decimalDigits).map { "Vote\($0)" }
     }
 
     /// Name of an image suitable for showing the rating as the thread tag itself.

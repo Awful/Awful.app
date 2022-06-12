@@ -173,6 +173,7 @@ final class MessageViewController: ViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.addBackButton()
         
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -367,7 +368,7 @@ private struct RenderModel: StencilContextConvertible {
     
     init(message: PrivateMessage, stylesheet: String?) {
         let showAvatars = UserDefaults.standard.showAuthorAvatars
-        let hiddenAvataruRL = showAvatars ? nil : message.from?.avatarURL
+        let hiddenAvataruRL = showAvatars ? nil : message.from?.avatarURLString
         var htmlContents: String? {
             guard let originalHTML = message.innerHTML else { return nil }
             let document = HTMLDocument(string: originalHTML)
@@ -385,7 +386,19 @@ private struct RenderModel: StencilContextConvertible {
             document.embedVideos()
             return document.bodyElement?.innerHTML
         }
-        let visibleAvatarURL = showAvatars ? message.from?.avatarURL : nil
+        let visibleAvatarURL = showAvatars ? message.from?.avatarURLString : nil
+        
+        var customTitleHTML: String {
+            let html = message.from?.customTitleHTML
+            return html ?? ""
+        }
+        
+        var ipadPostsViewTemplate: Bool {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                return true
+            }
+            return false
+        }
         
         context = [
             "fromUsername": message.fromUsername ?? "",
@@ -394,11 +407,13 @@ private struct RenderModel: StencilContextConvertible {
             "messageID": message.messageID,
             "regdate": message.from?.regdate as Any,
             "regdateRaw": message.from?.regdateRaw as Any,
+            "customTitleHTML": message.from?.customTitleHTML as Any,
             "seen": message.seen,
             "sentDate": message.sentDate as Any,
             "sentDateRaw": message.sentDateRaw as Any,
             "showAvatars": showAvatars,
             "stylesheet": stylesheet as Any,
-            "visibleAvatarURL": visibleAvatarURL as Any]
+            "visibleAvatarURL": visibleAvatarURL as Any,
+            "ipadPostsViewTemplate": ipadPostsViewTemplate as Any]
     }
 }

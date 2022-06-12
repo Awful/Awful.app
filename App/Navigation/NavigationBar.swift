@@ -7,8 +7,11 @@ import UIKit
 /// Long-tapping the back button of an AwfulNavigationBar will pop its navigation controller to its root view controller.
 final class NavigationBar: UINavigationBar {
 
-    private lazy var bottomBorder: HairlineView = {
+    let theme = Theme.defaultTheme()
+
+    lazy var bottomBorder: HairlineView = {
         let bottomBorder = HairlineView()
+        bottomBorder.backgroundColor = theme["navigationBarTintColor"]
         bottomBorder.translatesAutoresizingMaskIntoConstraints = false
         addSubview(bottomBorder, constrainEdges: [.bottom, .left, .right])
         return bottomBorder
@@ -24,6 +27,9 @@ final class NavigationBar: UINavigationBar {
         
         // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
         isTranslucent = false
+
+        let textColor: UIColor = Theme.defaultTheme()["navigationBarTextColor"]!
+
         var font: UIFont
         if Theme.defaultTheme().roundedFonts {
             font = roundedFont(ofSize: 17, weight: .medium)
@@ -31,25 +37,13 @@ final class NavigationBar: UINavigationBar {
             font = UIFont.systemFont(ofSize: 17, weight: .medium)
         }
         
-        // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
-        barStyle = .black
-        
-        backIndicatorImage = UIImage(named: "back")
-        backIndicatorTransitionMaskImage = UIImage(named: "back")
-        
         titleTextAttributes = [
             .font: font,
+            NSAttributedString.Key.foregroundColor: textColor
         ]
+
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
-        
-        if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
-            scrollEdgeAppearance = standardAppearance
-            
-            //Set the status bar to use white text
-            //TODO: We should compute this or save it in the theme plist, but currently there isn't a single theme where the statusbar shouldn't be white.
-            overrideUserInterfaceStyle = .dark
-        }
+
     }
     
     required init?(coder: NSCoder) {

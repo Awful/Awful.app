@@ -5,6 +5,7 @@
 import AwfulCore
 import CoreData
 import UIKit
+import HTMLReader
 
 private let Log = Logger.get()
 
@@ -97,7 +98,9 @@ extension MessageListDataSource: UITableViewDataSource {
         let message = self.message(at: indexPath)
         let theme = Theme.defaultTheme()
           
+        // Create Date Formatter
         let dateFormatter = DateFormatter()
+        // Set Date/Time Style
         dateFormatter.dateFormat = "d MMM"
 
         var sentDateRawFont: UIFont
@@ -113,15 +116,18 @@ extension MessageListDataSource: UITableViewDataSource {
              senderFont = UIFont.systemFont(ofSize: 15, weight: .regular)
              subjectFont = UIFont.systemFont(ofSize: 15, weight: .regular)
          }
+
         return MessageListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
             sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
-                .foregroundColor: theme[color: "listTextColor"]!]),
                 .font: senderFont,
+                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             sentDate: message.sentDate ?? .distantPast,
-            sentDateAttributes: [
-                .foregroundColor: theme[color: "listTextColor"]!],
+            sentDateAttributes: [:
+//                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
+//                .foregroundColor: theme[color: "listTextColor"]!
+            ],
             sentDateRaw: NSAttributedString(string: dateFormatter.string(from: message.sentDate!), attributes: [
                 .font: sentDateRawFont,
                 .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
@@ -129,13 +135,31 @@ extension MessageListDataSource: UITableViewDataSource {
                 .font: subjectFont,
                 .foregroundColor: theme[color: "listTextColor"]!]),
             tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
+            
             tagOverlayImage: {
                 if message.replied {
-                    return UIImage(named: "pmreplied")
+                    let image = UIImage(named: "pmreplied")?
+                        .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
+                        .withRenderingMode(.alwaysTemplate)
+                    
+                    let imageView = UIImageView(image: image)
+                    imageView.tintColor = theme["listBackgroundColor"]!
+                    
+                    return imageView
                 } else if message.forwarded {
-                    return UIImage(named: "pmforwarded")
+                    let image = UIImage(named: "pmforwarded")?
+                        .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
+                        .withRenderingMode(.alwaysTemplate)
+                    
+                    let imageView = UIImageView(image: image)
+                    imageView.tintColor = theme["listBackgroundColor"]!
+                    
+                    return imageView
                 } else if !message.seen {
-                    return UIImage(named: "newpm")
+                    let image = UIImage(named: "newpm")
+                    let imageView = UIImageView(image: image)
+                    
+                    return imageView
                 } else {
                     return nil
                 }

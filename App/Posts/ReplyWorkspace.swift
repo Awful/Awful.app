@@ -220,13 +220,11 @@ final class ReplyWorkspace: NSObject {
     @objc fileprivate func didTapPost(_ sender: UIBarButtonItem) {
         saveTextToDraft()
         
-        let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view.window, animated: true)
-        progressView?.tintColor = viewController.view.tintColor
-        progressView?.titleLabelText = draft.progressViewTitle
+        let loadingView = PostedTootLoadingView()
+   
+        viewController.view.addSubview(loadingView)
         
         let submitProgress = draft.submit { [unowned self] error in
-            progressView?.dismiss(true)
-
             if let error = error {
                 if (error as? CocoaError)?.code != .userCancelled {
                     let alert: UIAlertController
@@ -249,14 +247,10 @@ final class ReplyWorkspace: NSObject {
             }
         }
         self.submitProgress = submitProgress
-        
-        progressView?.stopBlock = { _ in
-            submitProgress.cancel() }
 
         var progressObservations: [NSKeyValueObservation] = []
         let changeHandler: (Progress) -> Void = { progress in
             if progress.fractionCompleted >= 1 || progress.isCancelled {
-                progressView?.stopBlock = nil
                 progressObservations.forEach { $0.invalidate() }
                 progressObservations.removeAll()
             }

@@ -15,6 +15,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     
     init() {
         let image = UIImage(named: "arrowright")!
+            .withTintColor(Theme.defaultTheme()["expansionTintColor"]!)
         arrow = UIImageView(image: image)
         spinner = UIActivityIndicatorView(style: .large)
         

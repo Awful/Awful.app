@@ -18,9 +18,16 @@ final class ForumsTableViewController: TableViewController {
         self.managedObjectContext = managedObjectContext
         super.init(style: .grouped)
         
-        title = "Forums"
-        tabBarItem.image = UIImage(named: "forum-list")
-        tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
+        title = LocalizedString("Forums")
+        tabBarItem.title = LocalizedString("Forums")
+        
+        tabBarItem.image = UIImage(named: "forum-list")!.withRenderingMode(.alwaysTemplate)
+        tabBarItem.selectedImage = UIImage(named: "forum-list-filled")!.withRenderingMode(.alwaysTemplate)
+        
+        if !Theme.defaultTheme().showRootTabBarLabel {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        }
 
         favoriteForumCountObserver = ManagedObjectCountObserver(
             context: managedObjectContext,
@@ -99,8 +106,6 @@ final class ForumsTableViewController: TableViewController {
     }
 
     private func updateEditingState(favoriteCount: Int) {
-        navigationItem.setRightBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
-
         var font: UIFont
         if Theme.defaultTheme().roundedFonts {
             font = roundedFont(ofSize: 17, weight: .medium)
@@ -108,6 +113,9 @@ final class ForumsTableViewController: TableViewController {
             font = UIFont.systemFont(ofSize: 17, weight: .medium)
         }
         editButtonItem.setTitleTextAttributes([NSAttributedString.Key.font: font,], for: .normal)
+        
+        navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+ 
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)
         }
@@ -157,6 +165,18 @@ final class ForumsTableViewController: TableViewController {
         pullToRefreshBlock = { [weak self] in
             self?.refresh()
         }
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        // Takes care of toggling the button's title.
+        super.setEditing(editing, animated: true)
+
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        
+        // Toggle table view editing.
+        tableView.setEditing(editing, animated: true)
     }
 
     override func themeDidChange() {
@@ -256,8 +276,8 @@ extension ForumsTableViewController {
 
         header.viewModel = .init(
             backgroundColor: theme["listHeaderBackgroundColor"],
-            sectionName: listDataSource.titleForSection(section),
             font: font,
+            sectionName: listDataSource.titleForSection(section).uppercased(),
             textColor: theme["listHeaderTextColor"])
 
         return header

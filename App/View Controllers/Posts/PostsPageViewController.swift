@@ -8,6 +8,7 @@ import MobileCoreServices
 import MRProgress
 import PromiseKit
 import WebKit
+import UIKit
 
 private let Log = Logger.get()
 
@@ -409,17 +410,18 @@ final class PostsPageViewController: ViewController {
     }
     
     private lazy var settingsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "page-settings"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Settings"
-        item.actionBlock = { [unowned self] (sender) in
-            let settings = PostsPageSettingsViewController()
-            self.present(settings, animated: true)
-            
-            if let popover = settings.popoverPresentationController {
-                popover.barButtonItem = sender
+        let button = UIBarButtonItem(image: UIImage(named: "page-settings"), style: .plain, target: nil, action: nil)
+            button.actionBlock = { [unowned self] (sender) in
+                let settings = PostsPageSettingsViewController()
+                self.present(settings, animated: true)
+                
+                if let popover = settings.popoverPresentationController {
+                    popover.barButtonItem = sender
+                }
             }
-        }
-        return item
+        
+        button.accessibilityLabel = "Settings"
+        return button
     }()
     
     private lazy var backItem: UIBarButtonItem = {
@@ -527,7 +529,7 @@ final class PostsPageViewController: ViewController {
                 }
             } else {
                 if !(postsView.refreshControl is PostsPageRefreshSpinnerView) {
-                    postsView.refreshControl = PostsPageRefreshSpinnerView()
+                    postsView.refreshControl = PostsPageRefreshSpinnerView(theme: theme)
                 }
             }
         } else {
@@ -549,6 +551,23 @@ final class PostsPageViewController: ViewController {
         } else {
             currentPageItem.title = ""
             currentPageItem.accessibilityLabel = nil
+        }
+        
+        let barAppearance = UIToolbarAppearance()
+        barAppearance.backgroundColor = theme["tabBarBackgroundColor"]
+        
+        // below lines prevent weird unwanted grey bar from appearing. can be confused with "hairline" border
+        barAppearance.shadowImage = nil
+        barAppearance.backgroundImage = nil
+        barAppearance.shadowColor = nil
+        
+        postsView.toolbar.standardAppearance = barAppearance
+        postsView.toolbar.compactAppearance = barAppearance
+        
+        if Theme.defaultTheme().roundedFonts {
+            currentPageItem.setTitleTextAttributes([.font: roundedFont(ofSize: 17, weight: .medium)], for: .normal)
+        } else {
+            currentPageItem.setTitleTextAttributes([.font: UIFont.systemFont(ofSize: 17, weight: .medium)], for: .normal)
         }
         
         forwardItem.isEnabled = {
@@ -1458,6 +1477,10 @@ final class PostsPageViewController: ViewController {
 
         postsView.themeDidChange(theme)
         
+        // this fixes the thread title color on theme mode change from within posts view
+        //TODO: may need to be done elsewhere, but it works from here only afaik
+        //navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+        
         if postsView.loadingView != nil {
             postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
         }
@@ -1467,10 +1490,11 @@ final class PostsPageViewController: ViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.addBackButton()
+        definesPresentationContext = true
         /*
-         Laying this screen out used to be a challenge: there are bars on the top and bottom, and between our old deployment target and the latest SDK we spanned a few different schools of layout thought. This is probably not necessary anymore. But here was the plan:
-
+         Laying this screen out is a challenge: there are bars on the top and bottom, and between our deployment target and the latest SDK we span a few different schools of layout thought. Here's the plan:
+         
          1. Turn off all UIKit magic automated everything. We'll handle all scroll view content insets and safe area insets ourselves.
          2. Set layout margins on `postsView` in lieu of the above. Layout margins are available on all iOS versions that Awful supports.
 
@@ -1487,6 +1511,25 @@ final class PostsPageViewController: ViewController {
             backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
             .flexibleSpace(), actionsItem]
 
+        // Fix tab bar having no background when scrolled to bottom on iOS 15.
+        let appearance = UIToolbarAppearance()
+        if (postsView.toolbar.isTranslucent) {
+            appearance.configureWithDefaultBackground()
+        } else {
+            appearance.configureWithOpaqueBackground()
+        }
+        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        appearance.shadowImage = nil
+        appearance.shadowColor = nil
+        
+        postsView.toolbar.standardAppearance = appearance
+        postsView.toolbar.compactAppearance = appearance
+      
+        if #available(iOS 15.0, *) {
+            postsView.toolbar.scrollEdgeAppearance = appearance
+            postsView.toolbar.compactScrollEdgeAppearance = appearance
+        }
+        
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
         postsView.renderView.addGestureRecognizer(longPress)
@@ -1539,6 +1582,9 @@ final class PostsPageViewController: ViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updatePostsViewLayoutMargins()
+        self.addBackButton()
+        // this fixes the thread title color on theme mode change from within posts view
+        navigationItem.titleLabel.text = title
     }
 
     override func viewSafeAreaInsetsDidChange() {
@@ -1547,8 +1593,7 @@ final class PostsPageViewController: ViewController {
     }
 
     private func updatePostsViewLayoutMargins() {
-        // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
-        postsView.layoutMargins = view.safeAreaInsets
+        postsView.layoutMargins = view.layoutMargins
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -1657,6 +1702,8 @@ extension PostsPageViewController: RenderViewDelegate {
         if UserDefaults.standard.embedTweets {
             view.embedTweets()
         }
+        
+        view.loadLottiePlayer()
         
         webViewDidLoadOnce = true
         

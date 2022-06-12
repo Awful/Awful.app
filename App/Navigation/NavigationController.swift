@@ -104,6 +104,7 @@ final class NavigationController: UINavigationController, Themeable {
             font = UIFont.systemFont(ofSize: 17, weight: .medium)
         }
         
+        
         // Fix odd grey navigation bar background when scrolled to top on iOS 15.
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -115,9 +116,17 @@ final class NavigationController: UINavigationController, Themeable {
         appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
                                           NSAttributedString.Key.font: font
         ]
+        
+        if theme["keyboardAppearance"] == "Light" {
+            overrideUserInterfaceStyle = .light
+        } else {
+            overrideUserInterfaceStyle = .dark
+        }
+        
         navigationBar.compactAppearance = appearance
         navigationBar.standardAppearance = appearance
         navigationBar.scrollEdgeAppearance = appearance
+        
     }
     
     override func encodeRestorableState(with coder: NSCoder) {
@@ -247,3 +256,33 @@ extension NavigationController: UIViewControllerRestoration {
         return nav
     }
 }
+
+
+extension UIViewController {
+    
+    func addBackButton() {
+        let btnLeftMenu: UIButton = UIButton()
+        let image = UIImage(named: "back")!
+            .withRenderingMode(.alwaysTemplate)
+        btnLeftMenu.setImage(image, for: .normal)
+        btnLeftMenu.setTitle("", for: .normal);
+        btnLeftMenu.imageEdgeInsets = UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 0)
+        btnLeftMenu.titleEdgeInsets = UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 0)
+        btnLeftMenu.sizeToFit()
+        
+        btnLeftMenu.addTarget(self, action: #selector(backButtonClick(sender:)), for: .touchUpInside)
+        let barButton = UIBarButtonItem(customView: btnLeftMenu)
+        
+        self.navigationItem.leftBarButtonItem = barButton
+        
+    }
+    
+    @objc func backButtonClick(sender : UIButton) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        print("bzzt back button pressed")
+        self.navigationController?.popViewController(animated: true);
+    }
+}
+

@@ -4,6 +4,7 @@
 
 import FLAnimatedImage
 import UIKit
+import Lottie
 
 /// A view that covers its superview with an indeterminate progress indicator.
 class LoadingView: UIView {
@@ -48,20 +49,38 @@ class LoadingView: UIView {
 }
 
 private class DefaultLoadingView: LoadingView {
-    lazy var spinner: SpriteSheetView = {
-        let image = UIImage(named: "v-throbber")!
-        let view = SpriteSheetView(spriteSheet: image, followsTheme: true)
-        view.frameRate = 30
-        view.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(view)
+    
+    override init(theme: Theme?) {
+        super.init(theme: theme)
         
-        NSLayoutConstraint.activate([
-            self.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            self.centerYAnchor.constraint(equalTo: view.bottomAnchor),
-            ])
+        let animationView: AnimationView = .init(name: "MainThrobberX120")
+        animationView.respectAnimationFrameRate = true
+        animationView.currentFrame = 0
+        animationView.contentMode = .scaleAspectFit
+        animationView.animationSpeed = 1
+        animationView.isOpaque = true
+        animationView.translatesAutoresizingMaskIntoConstraints = false
         
-        return view
-    }()
+        addSubview(animationView)
+        
+        animationView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        animationView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+    
+        animationView.play(fromFrame: 0, toFrame: 50, loopMode: .playOnce, completion: { (finished) in
+            if finished {
+                // first animation complete! start second one and loop
+                animationView.play(fromFrame: 50, toFrame: 200, loopMode: .loop, completion: nil)
+            } else {
+               // animation cancelled
+            }
+        })
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func retheme() {
         super.retheme()
@@ -72,11 +91,50 @@ private class DefaultLoadingView: LoadingView {
     fileprivate override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
         
-        if newSuperview == nil {
-            spinner.stopAnimating()
-        } else {
-            spinner.startAnimating()
+    }
+}
+
+class PostedTootLoadingView: LoadingView {
+    
+    override init(theme: Theme?) {
+        super.init(theme: theme)
+        
+        let animationView: AnimationView = .init(name: "TootX120")
+        animationView.respectAnimationFrameRate = true
+        animationView.currentFrame = 0
+        animationView.contentMode = .scaleAspectFit
+        animationView.animationSpeed = 1
+        animationView.isOpaque = true
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        
+        if Theme.defaultTheme()["keyboardAppearance"] == "Light" {
+            let backgroundColor = ColorValueProvider(Theme.defaultTheme()["backgroundColor"]!.lottieColorValue)
+            let stroke = AnimationKeypath(keys: ["**", "Stroke 1", "**", "Color"])
+            let eyes = AnimationKeypath(keys: ["**", "Eye*", "**", "Color"])
+
+            animationView.setValueProvider(backgroundColor, keypath: stroke)
+            animationView.setValueProvider(backgroundColor, keypath: eyes)
         }
+        
+        addSubview(animationView)
+        
+        animationView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        animationView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+    
+        animationView.play(fromFrame: 0, toFrame: 206, loopMode: .playOnce)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func retheme() {
+        super.retheme()
+        
+        backgroundColor = theme?[color: "postsLoadingViewTintColor"]
     }
 }
 

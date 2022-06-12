@@ -387,8 +387,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
 
         authorUsername = announcement.author?.username ?? announcement.authorUsername
 
-        avatarURL = announcement.author?.avatarURL
-            ?? extractAvatarURL(fromCustomTitleHTML: announcement.authorCustomTitleHTML)
+        avatarURL = URL(string: announcement.author?.avatarURLString ?? "") ?? nil
 
         css = theme[string: "postsViewCSS"] ?? ""
 

@@ -4,6 +4,8 @@
 <dict>
 	<key>BYOB</key>
 	<dict>
+		<key>keyboardAppearance</key>
+		<string>Light</string>
 		<key>relevantForumID</key>
 		<string>268</string>
 		<key>description</key>
@@ -55,6 +57,10 @@
 	</dict>
 	<key>default</key>
 	<dict>
+		<key>favoriteStarTintColor</key>
+		<string>#1e84af</string>
+		<key>settingsSwitchColor</key>
+		<string>#1e84af</string>
 		<key>roundedFonts</key>
 		<false/>
 		<key>description</key>
@@ -75,6 +81,10 @@
 		<string>#999999</string>
 		<key>Lists</key>
 		<dict>
+			<key>expansionTintColor</key>
+			<string>#808080</string>
+			<key>ratingIconEmptyColor</key>
+			<string>#cccccc</string>
 			<key>listHeaderTextColor</key>
 			<string>#838383</string>
 			<key>listHeaderBackgroundColor</key>
@@ -92,8 +102,23 @@
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
 		</dict>
+		<key>Lotties</key>
+		<dict>
+			<key>getOutFrogColor</key>
+			<string>#1e84af</string>
+			<key>nigglyColor</key>
+			<string>#000000</string>
+		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
+			<key>showRootTabBarLabel</key>
+			<true/>
+			<key>tabBarTintColor</key>
+			<string>#1e84af</string>
+			<key>tabBarIconNormalColor</key>
+			<string>#cccccc</string>
+			<key>tabBarIconSelectedColor</key>
+			<string>#1e84af</string>
 			<key>tabBarBackgroundColor</key>
 			<string>#f7f7f7</string>
 			<key>navigationBarTextColor</key>
@@ -655,6 +680,8 @@
 	</dict>
 	<key>FYAD</key>
 	<dict>
+		<key>keyboardAppearance</key>
+		<string>Light</string>
 		<key>relevantForumID</key>
 		<string>666</string>
 		<key>description</key>
@@ -775,6 +802,356 @@
 		<key>postsViewCSS</key>
 		<string>posts-view-macinyos.css</string>
 	</dict>
+	<key>spankykongDark</key>
+	<dict>
+		<key>roundedFonts</key>
+		<true/>
+		<key>Lotties</key>
+		<dict>
+			<key>getOutFrogColor</key>
+			<string>#4d4d4d</string>
+			<key>nigglyColor</key>
+			<string>#4d4d4d</string>
+		</dict>
+		<key>Action icons</key>
+		<dict>
+			<key>addBookmarkIconColor</key>
+			<string>#FFFFFF</string>
+			<key>copyURLIconColor</key>
+			<string>#FFFFFF</string>
+			<key>editPostIconColor</key>
+			<string>#FFFFFF</string>
+			<key>ignoreUserIconColor</key>
+			<string>#FFFFFF</string>
+			<key>jumpToFirstPageIconColor</key>
+			<string>#FFFFFF</string>
+			<key>jumpToLastPageIconColor</key>
+			<string>#FFFFFF</string>
+			<key>markUnreadIconColor</key>
+			<string>#FFFFFF</string>
+			<key>markReadUpToHereIconColor</key>
+			<string>#FFFFFF</string>
+			<key>profileIconColor</key>
+			<string>#FFFFFF</string>
+			<key>quoteIconColor</key>
+			<string>#FFFFFF</string>
+			<key>rapSheetIconColor</key>
+			<string>#FFFFFF</string>
+			<key>removeBookmarkIconColor</key>
+			<string>#FFFFFF</string>
+			<key>sendPMIconColor</key>
+			<string>#FFFFFF</string>
+			<key>singleUserIconColor</key>
+			<string>#FFFFFF</string>
+			<key>unignoreUserIconColor</key>
+			<string>#FFFFFF</string>
+			<key>voteIconColor</key>
+			<string>#FFFFFF</string>
+		</dict>
+		<key>description</key>
+		<string>SpankyKong Dark Theme</string>
+		<key>descriptiveColor</key>
+		<string>#000000</string>
+		<key>descriptiveName</key>
+		<string>SpankyKong OLED Dark</string>
+		<key>favoriteStarTintColor</key>
+		<string>#4d4d4d</string>
+		<key>tintColor</key>
+		<string>#0066ff</string>
+		<key>backgroundColor</key>
+		<string>#000000</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Light</string>
+		<key>keyboardAppearance</key>
+		<string>Dark</string>
+		<key>actionIconTintColor</key>
+		<string>#0066ff</string>
+		<key>placeholderTextColor</key>
+		<string>#666666</string>
+		<key>settingsSwitchColor</key>
+		<string>#0066ff</string>
+		<key>Lists</key>
+		<dict>
+			<key>ratingIconEmptyColor</key>
+			<string>#4d4d4d</string>
+			<key>expansionTintColor</key>
+			<string>#4d4d4d</string>
+			<key>listHeaderTextColor</key>
+			<string>#4d4d4d</string>
+			<key>listHeaderBackgroundColor</key>
+			<string>#000000</string>
+			<key>listTextColor</key>
+			<string>#dddddd</string>
+			<key>listSecondaryTextColor</key>
+			<string>#4d4d4d</string>
+			<key>listBackgroundColor</key>
+			<string>#000000</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#333333</string>
+			<key>listSeparatorColor</key>
+			<string>#000000</string>
+			<key>threadListPageIconColor</key>
+			<string>#4d4d4d</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>showRootTabBarLabel</key>
+			<false/>
+			<key>tabBarIconSelectedColor</key>
+			<string>#0066ff</string>
+			<key>tabBarIconNormalColor</key>
+			<string>#4d4d4d</string>
+			<key>tabBarTintColor</key>
+			<string>#ff0000</string>
+			<key>bottomBarTopBorderColor</key>
+			<string>#000000</string>
+			<key>navigationBarShadowOpacity</key>
+			<integer>0</integer>
+			<key>navigationBarTextColor</key>
+			<string>#ffffff</string>
+			<key>navigationBarTintColor</key>
+			<string>#000000</string>
+			<key>tabBarBackgroundColor</key>
+			<string>#000000</string>
+			<key>tabBarIsTranslucent</key>
+			<false/>
+			<key>toolbarTextColor</key>
+			<string>#ffffff</string>
+			<key>toolbarTintColor</key>
+			<string>#000000</string>
+			<key>topBarBottomBorderColor</key>
+			<string>#000000</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#000000</string>
+			<key>postsPullForNextColor</key>
+			<string>#4d4d4d</string>
+			<key>postsTopBarTextColor</key>
+			<string>#eeeeee</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#000000</string>
+			<key>postsTweetTheme</key>
+			<string>dark</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-spankykong-oled-dark.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#000000</string>
+			<key>sheetTitleColor</key>
+			<string>#ffffff</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#0c0c0c</string>
+			<key>sheetTextColor</key>
+			<string>#ffffff</string>
+			<key>sheetDimColor</key>
+			<string>#202020f2</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#151515</string>
+			<key>tagPickerTextColor</key>
+			<string>#dddddd</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#4d4d4d</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#4d4d4d</string>
+			<key>unreadBadgeOrangeColor</key>
+			<string>#DB5800</string>
+			<key>unreadBadgeRedColor</key>
+			<string>#DD1000</string>
+			<key>unreadBadgeYellowColor</key>
+			<string>#FFCD00</string>
+			<key>unreadBadgeGreenColor</key>
+			<string>#5AA000</string>
+			<key>unreadBadgePurpleColor</key>
+			<string>#9337FD</string>
+			<key>unreadBadgeTealColor</key>
+			<string>#0066FF</string>
+		</dict>
+	</dict>
+	<key>spankykongLight</key>
+	<dict>
+		<key>roundedFonts</key>
+		<true/>
+		<key>Lotties</key>
+		<dict>
+			<key>getOutFrogColor</key>
+			<string>#999999</string>
+			<key>nigglyColor</key>
+			<string>#999999</string>
+		</dict>
+		<key>Action icons</key>
+		<dict>
+			<key>addBookmarkIconColor</key>
+			<string>#000000</string>
+			<key>copyURLIconColor</key>
+			<string>#000000</string>
+			<key>editPostIconColor</key>
+			<string>#000000</string>
+			<key>ignoreUserIconColor</key>
+			<string>#000000</string>
+			<key>jumpToFirstPageIconColor</key>
+			<string>#000000</string>
+			<key>jumpToLastPageIconColor</key>
+			<string>#000000</string>
+			<key>markUnreadIconColor</key>
+			<string>#000000</string>
+			<key>markReadUpToHereIconColor</key>
+			<string>#000000</string>
+			<key>profileIconColor</key>
+			<string>#000000</string>
+			<key>quoteIconColor</key>
+			<string>#000000</string>
+			<key>rapSheetIconColor</key>
+			<string>#000000</string>
+			<key>removeBookmarkIconColor</key>
+			<string>#000000</string>
+			<key>sendPMIconColor</key>
+			<string>#000000</string>
+			<key>singleUserIconColor</key>
+			<string>#000000</string>
+			<key>unignoreUserIconColor</key>
+			<string>#000000</string>
+			<key>voteIconColor</key>
+			<string>#000000</string>
+		</dict>
+		<key>description</key>
+		<string>SpankyKong Light Theme</string>
+		<key>descriptiveColor</key>
+		<string>#000000</string>
+		<key>descriptiveName</key>
+		<string>SpankyKong Light Theme</string>
+		<key>favoriteStarTintColor</key>
+		<string>#999999</string>
+		<key>tintColor</key>
+		<string>#0066ff</string>
+		<key>backgroundColor</key>
+		<string>#e6e6e6</string>
+		<key>scrollIndicatorStyle</key>
+		<string>Dark</string>
+		<key>keyboardAppearance</key>
+		<string>Light</string>
+		<key>actionIconTintColor</key>
+		<string>#0066ff</string>
+		<key>placeholderTextColor</key>
+		<string>#999999</string>
+		<key>settingsSwitchColor</key>
+		<string>#0066ff</string>
+		<key>Lists</key>
+		<dict>
+			<key>ratingIconEmptyColor</key>
+			<string>#cccccc</string>
+			<key>expansionTintColor</key>
+			<string>#999999</string>
+			<key>listHeaderTextColor</key>
+			<string>#999999</string>
+			<key>listHeaderBackgroundColor</key>
+			<string>#e6e6e6</string>
+			<key>listTextColor</key>
+			<string>#000000</string>
+			<key>listSecondaryTextColor</key>
+			<string>#999999</string>
+			<key>listBackgroundColor</key>
+			<string>#e6e6e6</string>
+			<key>listSelectedBackgroundColor</key>
+			<string>#999999</string>
+			<key>listSeparatorColor</key>
+			<string>#e6e6e6</string>
+			<key>threadListPageIconColor</key>
+			<string>#999999</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>showRootTabBarLabel</key>
+			<false/>
+			<key>tabBarIconNormalColor</key>
+			<string>#000000</string>
+			<key>tabBarIconSelectedColor</key>
+			<string>#0066ff</string>
+			<key>tabBarTintColor</key>
+			<string>#999999</string>
+			<key>bottomBarTopBorderColor</key>
+			<string>#e6e6e6</string>
+			<key>navigationBarShadowOpacity</key>
+			<integer>0</integer>
+			<key>navigationBarTextColor</key>
+			<string>#000000</string>
+			<key>navigationBarTintColor</key>
+			<string>#e6e6e6</string>
+			<key>tabBarBackgroundColor</key>
+			<string>#e6e6e6</string>
+			<key>tabBarIsTranslucent</key>
+			<false/>
+			<key>toolbarTextColor</key>
+			<string>#000000</string>
+			<key>toolbarTintColor</key>
+			<string>#e6e6e6</string>
+			<key>topBarBottomBorderColor</key>
+			<string>#e6e6e6</string>
+		</dict>
+		<key>Posts</key>
+		<dict>
+			<key>postsLoadingViewTintColor</key>
+			<string>#e6e6e6</string>
+			<key>postsPullForNextColor</key>
+			<string>#999999</string>
+			<key>postsTopBarTextColor</key>
+			<string>#000000</string>
+			<key>postsTopBarBackgroundColor</key>
+			<string>#e6e6e6</string>
+			<key>postsTweetTheme</key>
+			<string>light</string>
+			<key>postsViewCSS</key>
+			<string>posts-view-spankykong-light.css</string>
+		</dict>
+		<key>Sheets</key>
+		<dict>
+			<key>sheetBackgroundColor</key>
+			<string>#e6e6e6</string>
+			<key>sheetTitleColor</key>
+			<string>#000000</string>
+			<key>sheetTitleBackgroundColor</key>
+			<string>#e6e6e6</string>
+			<key>sheetTextColor</key>
+			<string>#000000</string>
+			<key>sheetDimColor</key>
+			<string>#999999</string>
+		</dict>
+		<key>Tag picker</key>
+		<dict>
+			<key>tagPickerBackgroundColor</key>
+			<string>#151515</string>
+			<key>tagPickerTextColor</key>
+			<string>#dddddd</string>
+		</dict>
+		<key>Unread badges</key>
+		<dict>
+			<key>unreadBadgeBlueColor</key>
+			<string>#999999</string>
+			<key>unreadBadgeGrayColor</key>
+			<string>#999999</string>
+			<key>unreadBadgeOrangeColor</key>
+			<string>#DB5800</string>
+			<key>unreadBadgeRedColor</key>
+			<string>#DD1000</string>
+			<key>unreadBadgeYellowColor</key>
+			<string>#FFCD00</string>
+			<key>unreadBadgeGreenColor</key>
+			<string>#5AA000</string>
+			<key>unreadBadgePurpleColor</key>
+			<string>#9337FD</string>
+			<key>unreadBadgeTealColor</key>
+			<string>#0066FF</string>
+		</dict>
+	</dict>
 	<key>Winpos 95</key>
 	<dict>
 		<key>relevantForumID</key>
@@ -817,6 +1194,15 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>keyboardAppearance</key>
+		<string>Dark</string>
+		<key>Lotties</key>
+		<dict>
+			<key>nigglyColor</key>
+			<string>#57ff57</string>
+			<key>getOutFrogColor</key>
+			<string>#57ff57</string>
+		</dict>
 		<key>relevantForumID</key>
 		<string>219</string>
 		<key>parent</key>
@@ -909,6 +1295,15 @@
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
+		<key>keyboardAppearance</key>
+		<string>Dark</string>
+		<key>Lotties</key>
+		<dict>
+			<key>nigglyColor</key>
+			<string>#ebd04b</string>
+			<key>getOutFrogColor</key>
+			<string>#ebd04b</string>
+		</dict>
 		<key>relevantForumID</key>
 		<string>219</string>
 		<key>parent</key>

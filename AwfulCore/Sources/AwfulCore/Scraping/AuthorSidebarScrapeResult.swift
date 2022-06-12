@@ -8,6 +8,7 @@ import HTMLReader
 /// Scrapes the sidebar with author info that appears alongside posts, private messages, and user profiles.
 public struct AuthorSidebarScrapeResult: ScrapeResult {
     public let additionalAuthorClasses: Set<String>
+    public let avatarURLString: String
     public let customTitle: RawHTML
     public let isAdministrator: Bool
     public let isModerator: Bool
@@ -62,7 +63,10 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
         regdateRaw = html
             .firstNode(matchingSelector: "dd.registered")?.textContent ?? ""
 
-        customTitle = scrapeCustomTitle(html) ?? ""
+        avatarURLString = scrapeAvatarURLString(html)
+        
+        customTitle = scrapeCustomTitle(html, avatarURLString) ?? ""
+        
     }
 }
 

@@ -139,14 +139,16 @@ class TableViewController: UITableViewController, Themeable {
     
     private func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
-        let niggly = NigglyRefreshView()
+        
+        let niggly = NigglyRefreshLottieView()
         let targetSize = CGSize(width: tableView.bounds.width, height: 0)
+       
         niggly.bounds.size = niggly.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         niggly.autoresizingMask = .flexibleWidth
         niggly.backgroundColor = view.backgroundColor
         pullToRefreshView = niggly
         
-        let animator = NigglyRefreshView.RefreshAnimator(view: niggly)
+        let animator = NigglyRefreshLottieView.RefreshAnimator(view: niggly)
         let pullToRefresh = PullToRefresh(refreshView: niggly, animator: animator, height: niggly.bounds.height, position: .top)
         pullToRefresh.animationDuration = 0.3
         pullToRefresh.initialSpringVelocity = 0

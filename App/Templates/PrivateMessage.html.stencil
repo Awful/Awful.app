@@ -30,7 +30,12 @@
             {% if hiddenAvatarURL %}data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}"{% endif %}>
             
             {% if visibleAvatarURL %}
-            <img class="avatar" src="{{ visibleAvatarURL|htmlEscape }}" alt="">
+                <img class="avatar" src="{{ visibleAvatarURL|htmlEscape }}" alt="">
+            {% endif %}
+            {% if ipadPostsViewTemplate %}
+                <div class="customTitle">
+                    {{ customTitleHTML }}
+                </div>
             {% endif %}
             
             <section class="nameanddate">

@@ -179,12 +179,13 @@ class ComposeTextViewController: ViewController {
     fileprivate var imageUploadProgress: Progress?
     
     fileprivate func submit() {
-        let overlay = MRProgressOverlayView.showOverlayAdded(to: viewToOverlay, title: submissionInProgressTitle, mode: .indeterminate, animated: true)
-        overlay?.tintColor = theme["tintColor"]
+        let loadingView = PostedTootLoadingView()
+        loadingView.backgroundColor = theme["backgroundColor"]
+
+        view.addSubview(loadingView)
         
         imageUploadProgress = uploadImages(attachedTo: textView.attributedText, completion: { [weak self] (plainText, error) in
             if let error = error {
-                overlay?.dismiss(false)
                 
                 self?.enableEverything()
 

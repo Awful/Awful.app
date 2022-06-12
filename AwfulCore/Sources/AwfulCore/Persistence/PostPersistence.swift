@@ -21,7 +21,7 @@ internal extension PostScrapeResult {
     }
 }
 
-internal extension PostsPageScrapeResult {
+public extension PostsPageScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [Post] {
         let forum: Forum? = {
             if
@@ -191,6 +191,8 @@ internal extension ShowPostScrapeResult {
                 in: context,
                 matching: .init("\(\AwfulThread.threadID) = \(id.rawValue)"),
                 configure: { $0.threadID = id.rawValue })
+
+            if !threadTitle.isEmpty, threadTitle != thread.title { thread.title = threadTitle }
 
             return thread
         }
