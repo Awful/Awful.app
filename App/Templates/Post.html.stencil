@@ -3,20 +3,20 @@
     class="{% if beenSeen %} seen {% endif %}
            {{ roles|htmlEscape }}
            {% if not visibleAvatarURL %} no-avatar {% endif %}">
-    
+
     <header
         class="userid-{{ author.userID|htmlEscape }}"
         {% if hiddenAvatarURL %} data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}" {% endif %}>
-        
+
         {% if visibleAvatarURL %}
         <img class="avatar" src="{{ visibleAvatarURL }}" alt="">
         {% endif %}
 
 		<section class="nameanddate">
-			<h1 class="username">
+            <span class="username">
                 {{ author.username|htmlEscape }}
-            </h1>
-      
+            </span>
+
             {% for role in accessibilityRoles %}
             <span class="voiceover-only">
                 {{ role|htmlEscape }}
@@ -29,16 +29,20 @@
             </time>
             {% endif %}
         </section>
+        {% if customTitleHTML %}
+        <div class="customTitle">
+            {{ customTitleHTML }}
+        </div>
+        {% endif %}
     </header>
-  
+
     <section class="postbody">
         {{ htmlContents }}
     </section>
-	
+
 	<footer>
-        <span class="postdate">
-            {{ postDate|formatPostDate }}
-        </span>
+        <span class="divider{% if beenSeen %} divider-seen {% endif %}"></span>
+        <span class="postdate">{{ postDate|formatPostDate }}</span>
 
         <button class="action-button" title="Post actions">
             <img src="awful-resource://post-dots.png">

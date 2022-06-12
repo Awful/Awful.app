@@ -49,6 +49,18 @@ struct PostRenderModel: StencilContextConvertible {
         var visibleAvatarURL: URL? {
             return showAvatars ? post.author?.avatarURL : nil
         }
+        var showCustomTitle: Bool {
+            switch UIDevice.current.userInterfaceIdiom {
+            case .mac, .pad:
+                return true
+            default:
+                return false
+            }
+        }
+        var customTitleHTML: String {
+            let html = post.author?.customTitleHTML
+            return html ?? ""
+        }
 
         context = [
             "accessibilityRoles": accessibilityRoles,
@@ -57,6 +69,7 @@ struct PostRenderModel: StencilContextConvertible {
                 "userID": post.author?.userID as Any,
                 "username": post.author?.username as Any],
             "beenSeen": post.beenSeen,
+            "customTitleHTML": (showCustomTitle ? post.author?.customTitleHTML : nil) as Any,
             "hiddenAvatarURL": hiddenAvatarURL as Any,
             "htmlContents": htmlContents,
             "postDate": post.postDate as Any,
@@ -75,6 +88,7 @@ struct PostRenderModel: StencilContextConvertible {
                 "username": author.username as Any],
             "beenSeen": false,
             "hiddenAvatarURL": (showAvatars ? author.avatarURL : nil) as Any,
+            "customTitleHTML": author.customTitleHTML as Any,
             "htmlContents": massageHTML(postHTML, isIgnored: false, forumID: ""),
             "postDate": postDate,
             "postID": "fake",
