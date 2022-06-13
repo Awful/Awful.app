@@ -29,10 +29,11 @@
             </time>
             {% endif %}
         </section>
-        {% if customTitleHTML %}
-        <div class="customTitle">
-            {{ customTitleHTML }}
-        </div>
+        
+        {% if customTitleHTML and userInterfaceIdiom == "ipad" %}
+            <div class="customTitle">
+                {{ customTitleHTML }}
+            </div>
         {% endif %}
     </header>
 
