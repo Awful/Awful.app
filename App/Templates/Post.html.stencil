@@ -30,7 +30,7 @@
             {% endif %}
         </section>
         
-        {% if customTitleHTML and userInterfaceIdiom == "ipad" %}
+        {% if customTitleHTML %}
             <div class="customTitle">
                 {{ customTitleHTML }}
             </div>
