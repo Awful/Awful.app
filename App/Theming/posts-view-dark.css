@@ -452,9 +452,6 @@ post,
     overflow: auto;
     margin-bottom: 1.07em;
   }
-  .ipad .customTitle img:first-child {
-    display: none;
-  }
   .ipad .customTitle img {
     border-radius: 3px;
   }

@@ -8,7 +8,7 @@
         class="userid-{{ author.userID|htmlEscape }}"
         {% if hiddenAvatarURL %} data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}" {% endif %}>
 
-        {% if visibleAvatarURL %}
+        {% if visibleAvatarURL and userInterfaceIdiom == "iphone" %}
         <img class="avatar" src="{{ visibleAvatarURL }}" alt="">
         {% endif %}
 
@@ -30,7 +30,7 @@
             {% endif %}
         </section>
         
-        {% if customTitleHTML %}
+        {% if customTitleHTML and userInterfaceIdiom == "ipad" %}
             <div class="customTitle">
                 {{ customTitleHTML }}
             </div>
