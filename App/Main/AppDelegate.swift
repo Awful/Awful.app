@@ -168,7 +168,17 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         // Do this after resetting settings so that it gets the default baseURL.
         updateClientBaseURL()
         
-        setRootViewController(loginViewController.enclosingNavigationController, animated: true) { [weak self] in
+        let loginVC = LoginViewController.newFromStoryboard()
+        loginVC.completionBlock = { [weak self] (login) in
+            guard let self = self else { return }
+            self.setRootViewController(self.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
+                guard let self = self else { return }
+                self.rootViewControllerStack.didAppear()
+                self.loginViewController = nil
+            })
+        }
+        
+        setRootViewController(loginVC.enclosingNavigationController, animated: true) { [weak self] in
             self?._rootViewControllerStack = nil
             self?.urlRouter = nil
             
