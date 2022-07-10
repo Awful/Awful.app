@@ -16,14 +16,14 @@ extension UIContextMenuConfiguration {
         var copyTitle: UIMenuElement {
             UIAction(
                 title: NSLocalizedString("Copy Title", comment: ""),
-                image: UIImage(named: "copy-title"),
+                image: UIImage(named: "copy-title")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in UIPasteboard.general.string = thread.title }
             )
         }
         var copyURL: UIMenuElement {
             UIAction(
                 title: NSLocalizedString("Copy URL", comment: ""),
-                image: UIImage(named: "copy-url"),
+                image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let url = AwfulRoute.threadPage(
                         threadID: thread.threadID,
@@ -44,21 +44,22 @@ extension UIContextMenuConfiguration {
         var jumpToFirstPage: UIMenuElement {
             UIAction(
                 title: NSLocalizedString("Jump to First Page", comment: ""),
-                image: UIImage(named: "jump-to-first-page"),
+                image: UIImage(named: "jump-to-first-page")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in jump(to: .first) }
             )
         }
         var jumpToLastPage: UIMenuElement {
             UIAction(
                 title: NSLocalizedString("Last Page", comment: ""),
-                image: UIImage(named: "jump-to-last-page"),
+                image: UIImage(named: "jump-to-last-page")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in jump(to: .last) }
             )
         }
-        var markThreadRead: UIMenuElement {
-            UIAction(
+        var markThreadRead: UIMenuElement? {
+            guard !thread.beenSeen else { return nil }
+            return UIAction(
                 title: NSLocalizedString("Mark Thread As Read", comment: ""),
-                image: UIImage(named: "mark-read-up-to-here"),
+                image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     _ = ForumsClient.shared.listPosts(
                         in: thread,
@@ -78,7 +79,7 @@ extension UIContextMenuConfiguration {
             guard thread.beenSeen else { return nil }
             return UIAction(
                 title: NSLocalizedString("Mark Unread", comment: ""),
-                image: UIImage(named: "mark-as-unread"),
+                image: UIImage(named: "mark-as-unread")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let oldSeen = thread.seenPosts
                     thread.seenPosts = 0
@@ -98,7 +99,7 @@ extension UIContextMenuConfiguration {
             guard let author = thread.author else { return nil }
             return UIAction(
                 title: NSLocalizedString("Author Profile", comment: ""),
-                image: UIImage(named: "user-profile"),
+                image: UIImage(named: "user-profile")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let profile = ProfileViewController(user: author)
                     if presenter.traitCollection.userInterfaceIdiom == .pad {
@@ -116,7 +117,7 @@ extension UIContextMenuConfiguration {
                         : NSLocalizedString("Add Bookmark", comment: "")),
                 image: UIImage(named: thread.bookmarked
                                ? "remove-bookmark"
-                               : "add-bookmark"),
+                               : "add-bookmark")!.withRenderingMode(.alwaysTemplate),
                 attributes: thread.bookmarked ? .destructive : [],
                 handler: { action in
                     _ = ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
