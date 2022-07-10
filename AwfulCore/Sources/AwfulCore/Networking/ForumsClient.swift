@@ -78,14 +78,12 @@ public final class ForumsClient {
             return updatedObjects.map { $0.objectID }
         }()
 
-        if context.hasChanges {
-            context.perform {
-                updatedObjectIDs
-                    .compactMap { context.object(with: $0) }
-                    .forEach { $0.willAccessValue(forKey: nil) }
-                
-                context.mergeChanges(fromContextDidSave: notification)
-            }
+        context.perform {
+            updatedObjectIDs
+                .compactMap { context.object(with: $0) }
+                .forEach { $0.willAccessValue(forKey: nil) }
+            
+            context.mergeChanges(fromContextDidSave: notification)
         }
     }
 
