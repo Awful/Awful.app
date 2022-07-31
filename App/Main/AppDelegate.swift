@@ -311,7 +311,9 @@ private extension AppDelegate {
     }
     
     private func setShowAvatarsSetting() {
-        UserDefaults.standard.showAuthorAvatars = UserDefaults.standard.enableCustomTitlePostLayout
+        if UserDefaults.standard.enableCustomTitlePostLayout {
+            UserDefaults.standard.showAuthorAvatars = true
+        }
     }
 
     private func automaticallyUpdateDarkModeEnabledIfNecessary() {
