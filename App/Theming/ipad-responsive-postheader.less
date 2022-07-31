@@ -47,89 +47,83 @@
   }
   
   @media screen and (min-width: 400px) {
-    .ipad post header {
-        grid-column: 1 / 2;
-        grid-row: 1 / 2;
-        min-width: 260px;
-        max-height: 500px;
-        display: grid;
+    .hidden {
+      display: none;
     }
-    .ipad post header,
-    .ipad post {
-        padding-left: 1.07em;
-        padding-right: 1.07em;
-    }
-    .ipad post {
+    post.responsive header {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+      min-width: 250px;
+      max-width: 250px;
+      max-height: 500px;
       display: grid;
-      grid-template-columns: 230px 1fr;
+      word-wrap: break-word;
+    }
+    post.responsive {
+      display: grid;
+      grid-template-columns: 250px 1fr;
       grid-template-rows: auto auto;
     }
-  
-    .ipad post footer {
-        padding-left: 1.07em;
+     .responsive post footer {
+      padding-left: 1.07em;
     }
     .ipad post .action-button {
-        padding-right: 1.07em;
+      padding-right: 1.07em;
     }
-    .ipad .avatar {
-        max-width: 8em;
-        max-height: 8em;
-        vertical-align: top;
-        grid-row: 3;
-        margin-top: 8px;
-        margin-left: 4px;
+    .customTitle img:first-child {
+      max-width: 5em;
+      max-height: 5em;
+      vertical-align: top;
+      grid-row: 3;
+      margin-top: 8px;
+      margin-left: 4px;
     }
-    .ipad .customTitle {
-        grid-row: 4 / 5;
-        grid-column: 1 / 5;
-        max-width: 210px;
-        max-height: 160px;
-        overflow: auto;
-        font: -apple-system-headline;
-        transform-origin: top left;
-        -webkit-transform: scale(0.8);
-        margin-left: 8px;
-        margin-top: 4px;
+    .customTitle {
+      grid-row: 4 / 5;
+      grid-column: 1 / 5;
+      overflow: auto;
+      font: -apple-system-headline;
+      transform-origin: top left;
+      -webkit-transform: scale(0.8);
+      margin-left: 8px;
+      margin-top: 4px;
     }
-    .ipad .bbc-center {
-        grid-row: 4 / 5;
-        grid-column: 1 / 5;
-        max-width: 210px;
-        max-height: 150px;
-        overflow: auto;
-        margin-bottom: 1.07em;
-    }
-    .ipad .customTitle img {
-        border-radius: 3px;
-    }
-    .ipad .bbc-center img {
-        border-radius: 3px;
+    post.responsive .bbc-center {
+      grid-row: 4 / 5;
+      grid-column: 1 / 5;
+      max-width: 210px;
+      max-height: 150px;
+      overflow: auto;
+      margin-bottom: 1.07em;
     }
     .ipad .customTitle a {
-        text-decoration: none;
-        color: var(--link-color);
+      text-decoration: none;
+      color: var(--link-color);
     }
-    .ipad .nameanddate {
-        vertical-align: middle;
-        grid-row: 1;
+    post.responsive .nameanddate {
+      min-width: 250px;
+      max-width: 250px;
+      vertical-align: middle;
+      grid-row: 1;
     }
-    .ipad .username,
-    .ipad .regdate {
-        margin-left: 6px;
+    post.responsive .username,
+    post.responsive .regdate {
+      word-wrap: break-word;
+      margin-left: 6px;
     }
-    .ipad .postbody {
+    post.responsive .postbody {
       grid-row: 1 / 4;
       grid-column: 2 / 4;
       margin-top: 1.07em;
     }
     .ipad #ad {
-        padding: 1.07em;
-        padding-bottom: 0;
+      padding: 1.07em;
+      padding-bottom: 0;
     }
     .ipad .bbc-block {
-        margin: 0;
+      margin: 0;
     }
-    .ipad footer {
+    post.responsive footer {
       grid-row: 5;
       grid-column: 1 / span 4;
       align-items: center;

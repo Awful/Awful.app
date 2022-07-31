@@ -693,6 +693,17 @@ Awful.setShowAvatars = function(showAvatars) {
 
       img.remove();
     });
+      
+    // hide custom titles, which replace avatars when enabled on ipad
+    var customTitles = document.querySelectorAll('.customTitle');
+
+    Array.prototype.forEach.call(customTitles, function(customTitle) {
+        if (customTitle.classList.contains('hidden')) {
+            customTitle.classList.remove('hidden')
+        } else {
+            customTitle.classList.add('hidden')
+        }
+    });
   }
 };
 

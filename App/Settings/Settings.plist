@@ -135,6 +135,18 @@
 					<key>Key</key>
 					<string>enable_haptics</string>
 				</dict>
+				<dict>
+					<key>Device</key>
+					<string>iPad-only</string>
+					<key>Title</key>
+					<string>Enable Custom Title Post Layout</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<false/>
+					<key>Key</key>
+					<string>enable_custom_title_post_layout</string>
+				</dict>
 			</array>
 		</dict>
 		<dict>

@@ -61,7 +61,7 @@ final class SettingsViewController: TableViewController {
                 var section = section.info
                 
                 section["Settings"] = settings.filter { setting in
-                    if let device = setting["Device"] as? String, !device.hasPrefix(currentDevice) {
+                    if let device = setting["Device"] as? String, !device.hasPrefix(currentDevice) || device == "iPad-only", UIDevice.current.userInterfaceIdiom != .pad {
                         return false
                     }
 

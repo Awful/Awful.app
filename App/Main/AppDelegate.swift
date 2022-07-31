@@ -102,6 +102,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             $0.observe(\.isDarkModeEnabled) { [weak self] defaults in
                 self?.showSnapshotDuringThemeDidChange()
             }
+            // whenever custom title layout is changed, also set show avatars accordingly
+            $0.observe(\.enableCustomTitlePostLayout) { [weak self] defaults in
+                self?.setShowAvatarsSetting()
+            }
         }
 
         return true
@@ -304,6 +308,10 @@ private extension AppDelegate {
         } else {
             themeDidChange()
         }
+    }
+    
+    private func setShowAvatarsSetting() {
+        UserDefaults.standard.showAuthorAvatars = UserDefaults.standard.enableCustomTitlePostLayout
     }
 
     private func automaticallyUpdateDarkModeEnabledIfNecessary() {

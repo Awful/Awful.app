@@ -2,13 +2,14 @@
     id="{{ postID }}"
     class="{% if beenSeen %} seen {% endif %}
            {{ roles|htmlEscape }}
-           {% if not visibleAvatarURL %} no-avatar {% endif %}">
+           {% if not visibleAvatarURL %} no-avatar {% endif %}
+           {% if customTitleHTML %} responsive {% endif %}">
 
     <header
-        class="userid-{{ author.userID|htmlEscape }}"
+        class="userid-{{ author.userID|htmlEscape }} {% if customTitleHTML %} responsive {% endif %}"
         {% if hiddenAvatarURL %} data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}" {% endif %}>
 
-        {% if visibleAvatarURL and userInterfaceIdiom == "iphone" %}
+        {% if visibleAvatarURL and not customTitleHTML %}
         <img class="avatar" src="{{ visibleAvatarURL }}" alt="">
         {% endif %}
 
@@ -30,14 +31,14 @@
             {% endif %}
         </section>
         
-        {% if customTitleHTML and userInterfaceIdiom == "ipad" %}
-            <div class="customTitle">
+        {% if visibleAvatarURL and customTitleHTML %}
+            <div class="customTitle responsive">
                 {{ customTitleHTML }}
             </div>
         {% endif %}
     </header>
 
-    <section class="postbody">
+    <section class="postbody {% if customTitleHTML %} responsive {% endif %}">
         {{ htmlContents }}
     </section>
 

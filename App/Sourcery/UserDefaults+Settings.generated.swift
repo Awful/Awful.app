@@ -260,6 +260,16 @@ extension UserDefaults {
     @objc private class var keyPathsForValuesAffectingEnableHaptics: Set<String> { [SettingsKeys.enableHaptics] }
 
 
+    @objc dynamic var enableCustomTitlePostLayout: Bool {
+        get { return bool(forKey: SettingsKeys.enableCustomTitlePostLayout) }
+        set { set(newValue, forKey: SettingsKeys.enableCustomTitlePostLayout) }
+    }
+
+    @objc private class var automaticallyNotifiesObserversOfEnableCustomTitlePostLayout: Bool { false }
+
+    @objc private class var keyPathsForValuesAffectingEnableCustomTitlePostLayout: Set<String> { [SettingsKeys.enableCustomTitlePostLayout] }
+
+
     @objc dynamic var showImages: Bool {
         get { return bool(forKey: SettingsKeys.showImages) }
         set { set(newValue, forKey: SettingsKeys.showImages) }

@@ -401,42 +401,40 @@ post,
   }
 }
 @media screen and (min-width: 400px) {
-  .ipad post header {
+  .hidden {
+    display: none;
+  }
+  post.responsive header {
     grid-column: 1 / 2;
     grid-row: 1 / 2;
-    min-width: 260px;
+    min-width: 250px;
+    max-width: 250px;
     max-height: 500px;
     display: grid;
+    word-wrap: break-word;
   }
-  .ipad post header,
-  .ipad post {
-    padding-left: 1.07em;
-    padding-right: 1.07em;
-  }
-  .ipad post {
+  post.responsive {
     display: grid;
-    grid-template-columns: 230px 1fr;
+    grid-template-columns: 250px 1fr;
     grid-template-rows: auto auto;
   }
-  .ipad post footer {
+  .responsive post footer {
     padding-left: 1.07em;
   }
   .ipad post .action-button {
     padding-right: 1.07em;
   }
-  .ipad .avatar {
-    max-width: 8em;
-    max-height: 8em;
+  .customTitle img:first-child {
+    max-width: 5em;
+    max-height: 5em;
     vertical-align: top;
     grid-row: 3;
     margin-top: 8px;
     margin-left: 4px;
   }
-  .ipad .customTitle {
+  .customTitle {
     grid-row: 4 / 5;
     grid-column: 1 / 5;
-    max-width: 210px;
-    max-height: 160px;
     overflow: auto;
     font: -apple-system-headline;
     transform-origin: top left;
@@ -444,7 +442,7 @@ post,
     margin-left: 8px;
     margin-top: 4px;
   }
-  .ipad .bbc-center {
+  post.responsive .bbc-center {
     grid-row: 4 / 5;
     grid-column: 1 / 5;
     max-width: 210px;
@@ -452,25 +450,22 @@ post,
     overflow: auto;
     margin-bottom: 1.07em;
   }
-  .ipad .customTitle img {
-    border-radius: 3px;
-  }
-  .ipad .bbc-center img {
-    border-radius: 3px;
-  }
   .ipad .customTitle a {
     text-decoration: none;
     color: var(--link-color);
   }
-  .ipad .nameanddate {
+  post.responsive .nameanddate {
+    min-width: 250px;
+    max-width: 250px;
     vertical-align: middle;
     grid-row: 1;
   }
-  .ipad .username,
-  .ipad .regdate {
+  post.responsive .username,
+  post.responsive .regdate {
+    word-wrap: break-word;
     margin-left: 6px;
   }
-  .ipad .postbody {
+  post.responsive .postbody {
     grid-row: 1 / 4;
     grid-column: 2 / 4;
     margin-top: 1.07em;
@@ -482,7 +477,7 @@ post,
   .ipad .bbc-block {
     margin: 0;
   }
-  .ipad footer {
+  post.responsive footer {
     grid-row: 5;
     grid-column: 1 / span 4;
     align-items: center;
