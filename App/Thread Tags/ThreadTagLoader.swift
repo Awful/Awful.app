@@ -115,7 +115,7 @@ extension ThreadTagLoader {
         static let privateMessage = Placeholder(imageName: "empty-pm-tag", tintColor: nil)
         
         static func thread(tintColor: UIColor?) -> Placeholder {
-            return Placeholder(imageName: "empty-thread-tag", tintColor: tintColor)
+            return Placeholder(imageName: "empty-thread-tag", tintColor: nil)
         }
         
         static func thread(in forum: Forum) -> Placeholder {
@@ -129,8 +129,46 @@ extension ThreadTagLoader {
         private let tintColor: UIColor?
         
         var image: UIImage? {
-            let image = UIImage(named: imageName)
-            return tintColor.flatMap { image?.withTint($0) } ?? image
+            if imageName == "empty-thread-tag" {
+                let image = UIImage(named: imageName)!
+                    .withRenderingMode(.alwaysTemplate)
+                    .withTintColor(Theme.defaultTheme()["tintColor"]!)
+                
+                let backgroundImage = UIImage(named: "thread-tag-background")!
+                    .withRenderingMode(.alwaysTemplate)
+                    .withTintColor(Theme.defaultTheme()["backgroundColor"]!)
+                
+                let borderImage = UIImage(named: "thread-tag-border")!
+                    .withRenderingMode(.alwaysTemplate)
+                    .withTintColor(Theme.defaultTheme()["listSecondaryTextColor"]!)
+                
+                let finalImage = backgroundImage
+                    .mergeWith(topImage: image)
+                    .mergeWith(topImage: borderImage)
+                    
+                return finalImage //tintColor.flatMap { image?.withTint($0) } ?? image
+            } else if imageName == "empty-pm-tag" {
+                let image = UIImage(named: imageName)!
+                    .withRenderingMode(.alwaysTemplate)
+                    .withTintColor(Theme.defaultTheme()["listSecondaryTextColor"]!)
+                
+                let backgroundImage = UIImage(named: "thread-tag-background")!
+                    .withRenderingMode(.alwaysTemplate)
+                    .withTintColor(Theme.defaultTheme()["backgroundColor"]!)
+                
+                let borderImage = UIImage(named: "thread-tag-border")!
+                    .withRenderingMode(.alwaysTemplate)
+                    .withTintColor(Theme.defaultTheme()["listSecondaryTextColor"]!)
+                
+                let finalImage = backgroundImage
+                    .mergeWith(topImage: image)
+                    .mergeWith(topImage: borderImage)
+                    
+                return finalImage //tintColor.flatMap { image?.withTint($0) } ?? image
+            } else {
+                let image = UIImage(named: imageName)
+                return image //tintColor.flatMap { image?.withTint($0) } ?? image
+            }
         }
     }
 }

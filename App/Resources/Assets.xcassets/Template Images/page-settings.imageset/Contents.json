@@ -1,22 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "page_settings@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "page_settings@2x.png",
       "idiom" : "universal",
-      "filename" : "page-settings@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "page_settings@3x.png",
       "idiom" : "universal",
-      "filename" : "page-settings@3x.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

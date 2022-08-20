@@ -92,17 +92,25 @@ extension Scanner {
     }
 }
 
+func scrapeAvatarURLString(_ html: HTMLNode) -> String {
+    guard
+        let avatarNode = html.firstNode(matchingSelector: "dl.userinfo dd.title img:first-child") else { return "" }
 
-func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
-    func isSuperfluousLineBreak(_ node: HTMLNode) -> Bool {
-        guard let element = node as? HTMLElement else { return false }
-        return element.tagName == "br" && element.hasClass("pb")
+    let src = avatarNode["data-cfsrc"] ?? avatarNode["src"]
+ 
+    return src ?? ""
+}
+
+func scrapeCustomTitle(_ html: HTMLNode, _ avatarURLString: String) -> RawHTML? {
+    for br in html.nodes(matchingSelector: "dl.userinfo dd.title img:first-child ~ br") {
+        br.removeFromParentNode()
     }
-
+    for img in html.nodes(matchingSelector: "dl.userinfo dd.title img:first-child") {
+        img.removeFromParentNode()
+    }
     return html
         .firstNode(matchingSelector: "dl.userinfo dd.title")
         .flatMap { $0.children.array as? [HTMLNode] }?
-        .filter { !isSuperfluousLineBreak($0) }
         .map { $0.serializedFragment }
         .joined()
 }

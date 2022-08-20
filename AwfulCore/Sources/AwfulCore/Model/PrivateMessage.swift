@@ -17,6 +17,7 @@ public class PrivateMessage: AwfulManagedObject, Managed {
     @NSManaged public var replied: Bool
     @NSManaged public var seen: Bool
     @NSManaged public var sentDate: Date?
+    @NSManaged public var sentDateRaw: String
     @NSManaged public var subject: String?
     
     @NSManaged internal var primitiveFrom: User? /* via sentPrivateMessages */

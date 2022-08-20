@@ -60,7 +60,7 @@ final class MessageListCell: UITableViewCell {
         didSet {
             backgroundColor = viewModel.backgroundColor
 
-            dateLabel.attributedText = viewModel.formattedSentDate
+            dateLabel.attributedText = viewModel.sentDateRaw
 
             selectedBackgroundColor = viewModel.selectedBackgroundColor
 
@@ -70,7 +70,11 @@ final class MessageListCell: UITableViewCell {
 
             ThreadTagLoader.shared.loadNamedImage(viewModel.tagImage, into: tagImageView)
 
-            tagOverlayView.image = viewModel.tagOverlayImage
+            tagImageView.layer.cornerRadius = 3
+            tagImageView.layer.masksToBounds = true
+            
+            // badges
+            tagOverlayView.image = viewModel.tagOverlayImage?.image
             tagOverlayView.isHidden = viewModel.tagOverlayImage == nil
 
             setNeedsLayout()
@@ -83,20 +87,18 @@ final class MessageListCell: UITableViewCell {
         let sender: NSAttributedString
         let sentDate: Date
         let sentDateAttributes: [NSAttributedString.Key: Any]
+        let sentDateRaw: NSAttributedString
         let subject: NSAttributedString
         let tagImage: NamedThreadTag
-        let tagOverlayImage: UIImage?
+        let tagOverlayImage: UIImageView?
 
         fileprivate var accessibilityLabel: String {
             return String(
                 format: LocalizedString("private-messages-list.message.accessibility-label"),
                 sender.string,
                 subject.string,
-                stringForSentDate(sentDate))
-        }
-
-        fileprivate var formattedSentDate: NSAttributedString {
-            return NSAttributedString(string: stringForSentDate(sentDate), attributes: sentDateAttributes)
+                sentDateRaw
+            )
         }
 
         static let empty: ViewModel = ViewModel(
@@ -105,6 +107,7 @@ final class MessageListCell: UITableViewCell {
             sender: .init(),
             sentDate: .distantPast,
             sentDateAttributes: [:],
+            sentDateRaw: .init(),
             subject: .init(),
             tagImage: .none,
             tagOverlayImage: nil)
@@ -149,7 +152,7 @@ final class MessageListCell: UITableViewCell {
         private static let minimumHeight: CGFloat = 65
         private static let subjectTopMargin: CGFloat = 2
         private static let tagRightMargin: CGFloat = 8
-        private static let tagOverlayOffset = UIOffset(horizontal: 2, vertical: 3)
+        private static let tagOverlayOffset = UIOffset(horizontal: 4, vertical: 4)
 
         init(width: CGFloat, viewModel: ViewModel) {
             // 1. See how much width we have for the subject.
@@ -163,7 +166,7 @@ final class MessageListCell: UITableViewCell {
 
             // 2. Figure out how tall things are.
             let senderHeight = viewModel.sender.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.height
-            let dateSize = viewModel.formattedSentDate.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound
+            let dateSize = viewModel.sentDateRaw.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound
 
             let textHeight = max(senderHeight, dateSize.height) + Layout.subjectTopMargin + subjectHeight
             height = max(Layout.minimumHeight,
@@ -184,30 +187,35 @@ final class MessageListCell: UITableViewCell {
                 width: tagOverlaySize.width,
                 height: tagOverlaySize.height)
 
+   
+
+            // 5. Sender
+            let senderX = tagSize.width > 0
+                ? tagFrame.maxX + Layout.tagRightMargin
+                : Layout.cellHorizontalMargin
+            
+            subjectFrame = CGRect(
+                x: senderX,
+                y: (height - textHeight) / 2,
+                width: subjectWidth,
+                height: subjectHeight)
+
+   
+            
             // 4. Date
             dateFrame = CGRect(
                 x: width - Layout.cellHorizontalMargin - dateSize.width,
                 y: (height - textHeight) / 2,
                 width: dateSize.width,
                 height: dateSize.height)
-                .pixelRound
-
-            // 5. Sender
-            let senderX = tagSize.width > 0
-                ? tagFrame.maxX + Layout.tagRightMargin
-                : Layout.cellHorizontalMargin
+            
+            
+            // 6. Subject
             senderFrame = CGRect(
-                x: senderX,
-                y: (height - textHeight) / 2,
+                x: subjectFrame.minX,
+                y: subjectFrame.maxY,
                 width: dateFrame.maxX - senderX - Layout.dateLeftMargin,
                 height: senderHeight)
-
-            // 6. Subject
-            subjectFrame = CGRect(
-                x: senderFrame.minX,
-                y: senderFrame.maxY + Layout.subjectTopMargin,
-                width: dateFrame.maxX - senderFrame.minX,
-                height: subjectHeight)
         }
     }
 
@@ -224,6 +232,7 @@ final class MessageListCell: UITableViewCell {
             sender: .init(),
             sentDate: .distantPast,
             sentDateAttributes: [:],
+            sentDateRaw: .init(),
             subject: .init(),
             tagImage: showsTagAndRating ? .spacer : .none,
             tagOverlayImage: nil)

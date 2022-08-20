@@ -90,7 +90,7 @@ final class ForumListCell: UITableViewCell {
             return ViewModel(
                 backgroundColor: .white,
                 expansion: .none,
-                expansionTintColor: .black,
+                expansionTintColor: .clear,
                 favoriteStar: .hidden,
                 favoriteStarTintColor: .black,
                 forumName: .init(),
@@ -180,8 +180,8 @@ final class ForumListCell: UITableViewCell {
             let contentRect = CGRect(x: 0, y: 0, width: width, height: height)
 
             var remainder: CGRect
-            (favoriteStarFrame, remainder) = contentRect.divided(atDistance: starWidth, from: .minXEdge)
-            (expandFrame, remainder) = remainder.divided(atDistance: expandWidth, from: .maxXEdge)
+            (favoriteStarFrame, remainder) = contentRect.divided(atDistance: starWidth, from: .maxXEdge)
+            (expandFrame, remainder) = remainder.divided(atDistance: expandWidth, from: .minXEdge)
             nameFrame = remainder
                 .insetBy(dx: Layout.nameMargin, dy: Layout.nameMargin)
                 .divided(atDistance: indentation, from: .minXEdge).remainder
@@ -199,8 +199,19 @@ final class ExpandForumButton: UIButton {
     init() {
         super.init(frame: .zero)
 
-        setImage(UIImage(named: "forum-arrow-down"), for: .normal)
-        setImage(UIImage(named: "forum-arrow-minus"), for: .selected)
+        setImage(
+            UIImage(named: "forum-arrow-right")!
+                .withRenderingMode(.alwaysTemplate)
+                .withTintColor(Theme.defaultTheme()["listSecondaryTextColor"]!),
+            for: .normal
+        )
+        
+        setImage(
+            UIImage(named: "forum-arrow-down")!
+                .withRenderingMode(.alwaysTemplate)
+                .withTintColor(Theme.defaultTheme()["listSecondaryTextColor"]!),
+            for: .selected
+        )
     }
 
     required init?(coder: NSCoder) {
@@ -212,7 +223,9 @@ final class FavoriteForumButton: UIButton {
     init() {
         super.init(frame: .zero)
 
-        setImage(UIImage(named: "star-off"), for: .normal)
+        setImage(UIImage(named: "star-off")!
+                    .withTintColor(Theme.defaultTheme()["expansionTintColor"]!)
+                 , for: .normal)
         setImage(UIImage(named: "star-on"), for: .selected)
     }
 

@@ -11,6 +11,7 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
     public let hasBeenSeen: Bool
     public let privateMessageID: PrivateMessageID
     public let sentDate: Date?
+    public let sentDateRaw: String?
     public let subject: String
     public let wasForwarded: Bool
     public let wasRepliedTo: Bool
@@ -49,6 +50,10 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
                 .flatMap { (cell: HTMLElement) -> HTMLNode? in cell.children.lastObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap(PostDateFormatter.date(from:))
+            
+            sentDateRaw = postDateCell
+                .flatMap { (cell: HTMLElement) -> HTMLNode? in cell.children.lastObject as? HTMLNode }
+                .map { $0.textContent }
         }
 
         body = html.firstNode(matchingSelector: "td.postbody")

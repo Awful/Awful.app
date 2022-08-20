@@ -23,6 +23,7 @@ public struct PrivateMessageFolderScrapeResult: ScrapeResult {
         public let id: PrivateMessageID
         public let senderUsername: String
         public let sentDate: Date?
+        public let sentDateRaw: String?
         public let subject: String
         public let wasForwarded: Bool
         public let wasRepliedTo: Bool
@@ -90,11 +91,13 @@ private extension PrivateMessageFolderScrapeResult.Message {
             .flatMap { URL(string: $0) }
 
         senderUsername = tr.firstNode(matchingSelector: "td.sender")?.textContent ?? ""
-
-        sentDate = tr.firstNode(matchingSelector: "td.date")
+        
+        sentDateRaw = tr.firstNode(matchingSelector: "td.date")
             .map { $0.textContent }
-            .flatMap { twelveHourSentDateFormatter.date(from: $0)
-                ?? twentyFourHourSentDateFormatter.date(from: $0) }
+        
+        sentDate = tr.firstNode(matchingSelector: "td.date")
+            .flatMap { twelveHourSentDateFormatter.date(from: $0.textContent)
+                ?? twentyFourHourSentDateFormatter.date(from: $0.textContent) }
 
         let statusImageSource = tr.firstNode(matchingSelector: "td.status img[src]")?["src"]
         hasBeenSeen = !(statusImageSource?.contains("newpm") ?? false)

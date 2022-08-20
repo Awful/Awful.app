@@ -5,6 +5,7 @@
 import AwfulCore
 import MRProgress
 import UIKit
+import SwiftUI
 
 private let Log = Logger.get()
 
@@ -22,7 +23,7 @@ extension UIContextMenuConfiguration {
         }
         var copyURL: UIMenuElement {
             UIAction(
-                title: NSLocalizedString("Copy URL", comment: ""),
+                title: NSLocalizedString("Copy Link", comment: ""),
                 image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in
                     let url = AwfulRoute.threadPage(
@@ -43,9 +44,22 @@ extension UIContextMenuConfiguration {
         }
         var jumpToFirstPage: UIMenuElement {
             UIAction(
-                title: NSLocalizedString("Jump to First Page", comment: ""),
+                title: NSLocalizedString("First Page", comment: ""),
                 image: UIImage(named: "jump-to-first-page")!.withRenderingMode(.alwaysTemplate),
                 handler: { action in jump(to: .first) }
+            )
+        }
+        var setBookmarkColor: UIMenuElement {
+            UIAction(
+                title: "Set color",
+                image: UIImage(named: "rainbow")!.withRenderingMode(.alwaysTemplate),
+                attributes: [],
+                handler: { action in
+
+                    let profile = UIHostingController(rootView: BookmarkColorPicker(thread: thread))
+                    presenter.present(profile, animated: true)
+
+                }
             )
         }
         var jumpToLastPage: UIMenuElement {
@@ -147,12 +161,13 @@ extension UIContextMenuConfiguration {
             UIMenu(children: [
                 jumpToFirstPage,
                 jumpToLastPage,
-                toggleBookmark,
                 profileAuthor,
                 copyURL,
                 copyTitle,
                 markThreadRead,
                 markThreadUnread,
+                setBookmarkColor,
+                toggleBookmark,
             ].compactMap { $0 })
         })
     }

@@ -38,6 +38,7 @@ extension AnnouncementListScrapeResult {
                     user.customTitleHTML = author.customTitle
                 }
                 if let regdate = author.regdate, regdate != user.regdate { user.regdate = regdate }
+                if let regdateRaw = author.regdateRaw, regdateRaw != user.regdateRaw { user.regdateRaw = regdateRaw }
             }
 
             announcements.append(existing)
@@ -65,10 +66,12 @@ private extension AnnouncementListScrapeResult.Announcement {
         if let author = author {
             if author.customTitle != announcement.authorCustomTitleHTML { announcement.authorCustomTitleHTML = author.customTitle }
             if let regdate = author.regdate, regdate != announcement.authorRegdate { announcement.authorRegdate = regdate }
+            if let regdateRaw = author.regdateRaw, regdateRaw != announcement.authorRegdateRaw { announcement.authorRegdateRaw = regdateRaw }
             if !author.username.isEmpty, author.username != announcement.authorUsername { announcement.authorUsername = author.username }
         }
         if !body.isEmpty, body != announcement.bodyHTML { announcement.bodyHTML = body }
         if let date = date, date != announcement.postedDate { announcement.postedDate = date }
+        if let dateRaw = dateRaw, dateRaw != announcement.postedDateRaw { announcement.postedDateRaw = dateRaw }
     }
 }
 

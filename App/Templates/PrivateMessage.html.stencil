@@ -30,13 +30,18 @@
             {% if hiddenAvatarURL %}data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}"{% endif %}>
             
             {% if visibleAvatarURL %}
-            <img class="avatar" src="{{ visibleAvatarURL|htmlEscape }}" alt="">
+                <img class="avatar" src="{{ visibleAvatarURL|htmlEscape }}" alt="">
+            {% endif %}
+            {% if ipadPostsViewTemplate %}
+                <div class="customTitle">
+                    {{ customTitleHTML }}
+                </div>
             {% endif %}
             
             <section class="nameanddate">
                 <h1 class="username">{{ fromUsername|htmlEscape }}</h1>
 
-                <time class="regdate">Joined {{ regdate|formatRegdate }}</time>
+                <time class="regdate">Joined {{ regdateRaw }}</time>
             </section>
         </header>
         
@@ -45,7 +50,7 @@
         </section>
         
         <footer>
-            <time class="postdate">{{ sentDate|formatSentDate }}</time>
+            <time class="postdate">{{ sentDateRaw }}</time>
         </footer>
     </post>
 </body>

@@ -69,6 +69,14 @@ extension Theme {
         return dictionary["relevantForumID"] as! String?
     }
     
+    var roundedFonts: Bool {
+        return dictionary["roundedFonts"] as? Bool ?? false
+    }
+    
+    var showRootTabBarLabel: Bool {
+        return dictionary["showRootTabBarLabel"] as? Bool ?? true
+    }
+    
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
     var keyboardAppearance: UIKeyboardAppearance {
         let appearance = dictionary["keyboardAppearance"] as? String

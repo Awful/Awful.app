@@ -19,3 +19,12 @@ extension UIFontDescriptor {
         return addingAttributes([.featureSettings: featureSettings])
     }
 }
+
+public func roundedFont(ofSize fontSize: CGFloat, weight: UIFont.Weight) -> UIFont {
+    // Will be SF Compact or standard SF in case of failure.
+    if let descriptor = UIFont.systemFont(ofSize: fontSize, weight: weight).fontDescriptor.withDesign(.rounded) {
+        return UIFont(descriptor: descriptor, size: fontSize)
+    } else {
+        return UIFont.systemFont(ofSize: fontSize, weight: weight)
+    }
+}

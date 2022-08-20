@@ -22,9 +22,21 @@ final class MessageListViewController: TableViewController {
         title = LocalizedString("private-message-list.title")
         
         tabBarItem.title = LocalizedString("private-message-tab.title")
+        
+        if !Theme.defaultTheme().showRootTabBarLabel {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        }
+        
         tabBarItem.accessibilityLabel = LocalizedString("private-message-tab.accessibility-label")
-        tabBarItem.image = UIImage(named: "pm-icon")
-        tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
+        
+        tabBarItem.image = UIImage(named: "pm-icon")!
+                                    .withTintColor(Theme.defaultTheme()["tabBarTintColor"]!)
+                                    .withRenderingMode(.alwaysTemplate)
+        
+        tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")!
+                                    .withTintColor(Theme.defaultTheme()["tintColor"]!)
+                                    .withRenderingMode(.alwaysTemplate)
         
         let updateBadgeValue = { [weak self] (unreadCount: Int) -> Void in
             self?.tabBarItem?.badgeValue = unreadCount > 0
@@ -37,6 +49,14 @@ final class MessageListViewController: TableViewController {
             predicate: NSPredicate(format: "%K == NO", #keyPath(PrivateMessage.seen)),
             didChange: updateBadgeValue)
         updateBadgeValue(unreadMessageCountObserver.count)
+        
+        var font: UIFont
+        if Theme.defaultTheme().roundedFonts {
+            font = roundedFont(ofSize: 17, weight: .medium)
+        } else {
+            font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        }
+        editButtonItem.setTitleTextAttributes([NSAttributedString.Key.font: font,], for: .normal)
         
         navigationItem.leftBarButtonItem = editButtonItem
         let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))

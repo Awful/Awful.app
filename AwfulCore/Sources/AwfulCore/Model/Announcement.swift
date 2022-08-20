@@ -17,11 +17,13 @@ public final class Announcement: AwfulManagedObject, Managed {
     
     @NSManaged public var authorCustomTitleHTML: String
     @NSManaged public var authorRegdate: Date?
+    @NSManaged public var authorRegdateRaw: String?
     @NSManaged public var authorUsername: String
     @NSManaged public var bodyHTML: String
     @NSManaged public var hasBeenSeen: Bool
     @NSManaged public var listIndex: Int32
     @NSManaged public var postedDate: Date?
+    @NSManaged public var postedDateRaw: String?
     @NSManaged public var title: String
 
     @NSManaged public var author: User?

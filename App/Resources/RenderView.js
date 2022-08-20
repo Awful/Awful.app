@@ -59,11 +59,34 @@ Awful.embedTweets = function() {
       didCompleteFetch();
     };
 
-    script.onerror = function() {
-      cleanUp(this);
-      console.error(`The embed markup for tweet ${tweetID} failed to load`);
-      didCompleteFetch();
-    };
+      script.onerror = function() {
+          cleanUp(this);
+          
+          console.error(`The embed markup for tweet ${tweetID} failed to load`);
+          
+          tweetIDsToLinks[tweetID].forEach(function(a) {
+              if (a.parentNode) {
+                  var div = document.createElement('div');
+                  div.classList.add('dead-tweet-container');
+                  div.innerHTML = Awful.deadTweetBadgeHTML(a.href.toString(), `${tweetID}`);
+                  a.parentNode.replaceChild(div, a);
+
+              }
+          });
+          
+          const ghostContainers = document.querySelectorAll(`.left-ghost-${tweetID}`);
+          Array.prototype.forEach.call(ghostContainers, function(ghostContainer) {
+                lottie.loadAnimation({
+                container: ghostContainer,
+                renderer: "svg",
+                loop: true,
+                autoplay: true,
+                path: 'https://assets2.lottiefiles.com/packages/lf20_zsa5zkbq.json'
+              });
+          })
+          
+          didCompleteFetch();
+      };
 
     function cleanUp(script) {
       delete window[callback];
@@ -128,6 +151,20 @@ Awful.loadTwitterWidgets = function() {
       twttr._e.push(f);
     }
   };
+};
+
+/**
+ Loads the Lottie player library into the document
+ */
+Awful.loadLotties = function() {
+  if (document.getElementById('lottie-web')) {
+    return;
+  }
+
+  var script = document.createElement('script');
+  script.id = 'lottie-web';
+  script.src = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.11/lottie.min.js";
+  document.body.appendChild(script);
 };
 
 
@@ -509,6 +546,11 @@ Awful.markReadUpToPostWithID = function(postID) {
   var currentPost = lastReadPost;
   while (currentPost) {
     currentPost.classList.add('seen');
+   
+    Array.from(currentPost.querySelectorAll('.divider')).forEach(function(el) {
+        el.classList.add('divider-seen');
+    });
+      
     currentPost = currentPost.previousElementSibling;
   }
 
@@ -516,6 +558,11 @@ Awful.markReadUpToPostWithID = function(postID) {
   var currentPost = lastReadPost.nextElementSibling;
   while (currentPost) {
     currentPost.classList.remove('seen');
+      
+    Array.from(currentPost.querySelectorAll('.divider-seen')).forEach(function(el) {
+        el.classList.remove('divider-seen');
+    });
+      
     currentPost = currentPost.nextElementSibling;
   }
 };
@@ -577,6 +624,23 @@ Awful.setAnnouncementHTML = function(html) {
   }
 
   document.body.insertAdjacentHTML('beforeend', html);
+};
+
+
+Awful.deadTweetBadgeHTML = function(url, tweetID){
+    // get twitter username from url
+    var tweeter = url.match(/(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)/)[1];
+    
+    var html =
+    `<div class="ghost-lottie">
+            <div id="left-ghost-${tweetID}" class="left-ghost-${tweetID}">
+            </div>
+     </div>
+    <span class="dead-tweet-title">DEAD TWEET</span>
+    <a class="dead-tweet-link" href="${url}">@${tweeter}</a>
+ `;
+    
+    return html;
 };
 
 

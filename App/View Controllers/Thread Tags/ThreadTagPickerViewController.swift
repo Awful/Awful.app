@@ -129,8 +129,8 @@ final class ThreadTagPickerViewController: ViewController {
     private lazy var collectionView: UICollectionView = {
         let layout = ThreadTagPickerLayout()
         layout.itemSize = CGSize(width: 60, height: 60)
-        layout.minimumInteritemSpacing = 5
-        layout.minimumLineSpacing = 5
+        layout.minimumInteritemSpacing = 3
+        layout.minimumLineSpacing = 3
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.allowsMultipleSelection = true
@@ -188,16 +188,22 @@ extension ThreadTagPickerViewController: UICollectionViewDataSource, UICollectio
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: secondaryCellID, for: indexPath as IndexPath) as! SecondaryThreadTagPickerCell
             cell.tagImageName = secondaryImageNames[indexPath.item]
             cell.titleTextColor = theme["tagPickerTextColor"] ?? .black
+            cell.layer.cornerRadius = 3
+            cell.layer.masksToBounds = true
             return cell
             
         case .threadTag where indexPath.item == 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath as IndexPath) as! ThreadTagPickerCell
+            cell.layer.cornerRadius = 3
+            cell.layer.masksToBounds = true
             cell.configure(placeholder: firstTag)
             return cell
             
         case .threadTag:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath as IndexPath) as! ThreadTagPickerCell
             cell.configure(tagImageName: imageNames[indexPath.item - 1])
+            cell.layer.cornerRadius = 3
+            cell.layer.masksToBounds = true
             return cell
         }
     }

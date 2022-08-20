@@ -330,6 +330,29 @@ public final class ForumsClient {
             .promise.asVoid()
     }
 
+    public func setBookmarkColor(_ thread: AwfulThread, as rating: Int) -> Promise<Void> {
+        guard let mainContext = managedObjectContext else {
+            return Promise(error: PromiseError.missingManagedObjectContext)
+        }
+
+        // we can set the bookmark color by sending a "category_id" parameter with an "add" action
+        let parameters: KeyValuePairs<String, Any> = [
+            "threadid": thread.threadID,
+            "action": "add",
+            "category_id": "\(rating)",
+            "json": "1",
+        ]
+
+        return fetch(method: .post, urlString: "bookmarkthreads.php", parameters: parameters)
+            .promise
+            .map(on: mainContext) { response, context in
+                if thread.bookmarkListPage <= 0 {
+                    thread.bookmarkListPage = 1
+                }
+                try context.save()
+        }
+    }
+    
     public func markThreadAsSeenUpTo(_ post: Post) -> Promise<Void> {
         guard let threadID = post.thread?.threadID else {
             assertionFailure("post needs a thread ID")

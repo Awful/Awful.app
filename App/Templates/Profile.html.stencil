@@ -26,7 +26,7 @@
             There have been <b>{{ postCount }}</b> posts
             made by <i>{{ username }}</i>,
             an average of {{ postRate }} posts per day,
-            since registering on <b>{{ regdate|formatRegdate }}</b>.
+            since registering on <b>{{ regdateRaw }}</b>.
             <i>{{ username }}</i> claims to be a {{ gender }}.
         </p>
 
@@ -67,8 +67,8 @@
         <table>
             <caption>Additional Information</caption>
             
-            {% if regdate %}
-            <tr><th>Member Since</th><td>{{ regdate|formatRegdate }}</td></tr>
+            {% if regdateRaw %}
+            <tr><th>Member Since</th><td>{{ regdateRaw }}</td></tr>
             {% endif %}
             
             {% if postCount %}

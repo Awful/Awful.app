@@ -636,3 +636,186 @@ blockquote {
 .ghost-stroke {
   stroke: #000;
 }
+.dead-tweet-container {
+    display: grid;
+    grid-column: 2;
+    place-items: start;
+    max-width: -webkit-fit-content;
+    border-radius: 1em !important;
+    background: #000 !important;
+}
+.ghost-lottie {
+    grid-column: 1;
+    grid-row: 1 / span 6;
+    width: 6em;
+}
+.dead-tweet-title {
+    grid-column: 2;
+    grid-row: 3;
+    place-items: start;
+    color: var(--regdate-color);
+    font: -apple-system-headline;
+    font-family: ui-rounded;
+    font-weight: 600 !important;
+    font-size: var(--regdate-font-size);
+}
+.dead-tweet-link {
+    grid-column: 2;
+    grid-row: 4;
+    place-items: start;
+    padding-right: 23px;
+    color: var(--link-color);
+    font: -apple-system-headline;
+    font-family: ui-rounded;
+    font-weight: 450 !important;
+    font-size: var(--regdate-font-size);
+}
+.ghost-fill {
+  fill: #57ff57 !important;
+}
+.ghost-eyes {
+  fill: #57ff57 !important;
+}
+.ghost-stroke {
+  stroke: #57ff57 !important;
+}
+
+/* iPad should switch to iPhone view when split screen reduces width*/
+@media screen and (max-width: 399px) {
+    .customTitle {
+        display: none;
+    }
+    .ipad post header {
+        display: grid;
+        grid-column: 1 / span 2;
+        grid-row: 1 / 2;
+        align-items: center;
+        justify-content: start;
+        margin-bottom: 8px;
+    }
+    .ipad post header,
+    .ipad post .postbody {
+        padding-left: 0.6em;
+        padding-right: 0.6em;
+    }
+    .ipad post footer {
+        padding-left: 0.6em;
+    }
+    .ipad post .action-button {
+        padding-right: 0.6em;
+    }
+    .ipad .avatar {
+        max-width: 4em;
+        max-height: 4em;
+        margin-bottom: 6px;
+        margin-right: 12px;
+        vertical-align: middle;
+        grid-column: 1 / 2;
+    }
+    .ipad .nameanddate {
+        vertical-align: middle;
+        grid-column: 2 / 4;
+        align-items: start;
+    }
+    .ipad .postbody ol,
+    .ipad .postbody ul {
+        margin: 0;
+        padding-left: 1.5em;
+    }
+    .ipad .postbody {
+        grid-column: 1 / span 2;
+        grid-row: 2 / 4;
+    }
+}
+
+@media screen and (min-width: 400px) {
+    .ipad post header {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        min-width: 260px;
+        max-height: 500px;
+        display: grid;
+    }
+    .ipad post header,
+    .ipad post .postbody {
+        padding-left: 1.07em;
+        padding-right: 1.07em;
+    }
+    .ipad post {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .ipad post footer {
+        padding-left: 1.07em;
+    }
+    .ipad post .action-button {
+        padding-right: 1.07em;
+    }
+    .ipad .avatar {
+        max-width: 8em;
+        max-height: 8em;
+        vertical-align: top;
+        grid-row: 3;
+        margin-top: 8px;
+        margin-left: 4px;
+    }
+    .ipad .customTitle {
+        grid-row: 4 / 5;
+        grid-column: 1 / 5;
+        max-width: 210px;
+        max-height: 160px;
+        overflow: auto;
+        font: -apple-system-headline;
+        transform-origin: top left;
+        -webkit-transform: scale(0.9);
+        margin-left: 8px;
+        margin-top: 4px;
+    }
+
+    .ipad .bbc-center {
+        grid-row: 4 / 5;
+        grid-column: 1 / 5;
+        max-width: 210px;
+        max-height: 150px;
+        overflow: auto;
+    }
+
+    .ipad .customTitle img {
+        border-radius: 3px;
+    }
+    .ipad .bbc-center img {
+        border-radius: 3px;
+    }
+    .ipad .customTitle a {
+        text-decoration: none;
+        color: var(--link-color);
+    }
+    .ipad .nameanddate {
+        vertical-align: middle;
+        grid-row: 1;
+    }
+    .ipad .username,
+    .ipad .regdate {
+        margin-left: 6px;
+    }
+    .ipad .postbody {
+      grid-row: 1 / 4;
+      grid-column: 2 / 4;
+      margin-top: 10px;
+    }
+    .ipad #ad {
+        padding: 1.07em;
+        padding-bottom: 0;
+    }
+    .ipad .bbc-block {
+        margin: 0;
+    }
+    .ipad footer {
+      grid-row: 5;
+      grid-column: 1 / span 4;
+      align-items: center;
+      justify-content: start;
+    }
+}

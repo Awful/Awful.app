@@ -31,6 +31,31 @@ extension HTMLDocument {
     }
     
     /**
+     Modifies the document in place, adding an additional element to quote blocks for quote-post.png.
+     This has been done to facilitate more styling than is possible with background-image in css, namely color changes.
+     The regular CSS files contain the styling required for this feature, applied against this injected element.
+     */
+    func addQuoteIcons() {
+        for div in nodes(matchingSelector: ".bbc-block") {
+            let quoteposticon = HTMLElement(
+                tagName: "span",
+                attributes: [
+                    "class": "quotepost-span"
+            ])
+            div.addChild(quoteposticon)
+            
+            let quoteHeaderSpan = HTMLElement(tagName: "span", attributes: [
+                                    "class": "quoteheader"])
+            
+            for quoteheaderLink in div.nodes(matchingSelector: ".quote_link") {
+                let link = HTMLDocument(string: quoteheaderLink.parentElement!.innerHTML)
+                quoteHeaderSpan.addChild(link)
+                div.replace(child: quoteheaderLink.parent!, with: quoteHeaderSpan)
+            }
+        }
+    }
+    
+    /**
      Modifies the document in place, adding an additional class to quote blocks if the quoted post ID ends in 420.
      The regular CSS files contain the styling required for this feature, applied against this injected class.
      This function is only called if the forum is Imp Zone. It is important to know when one has found magic cake.

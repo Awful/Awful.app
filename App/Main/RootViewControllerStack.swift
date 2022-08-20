@@ -236,6 +236,18 @@ extension RootViewControllerStack {
         
         // This ugliness fixes the resulting navigation controller's toolbar appearing empty despite having the correct items. (i.e. none of the items' views are in the toolbar's view hierarchy.) Presumably if some fix is discovered for the grey screen mentioned atop kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior, I think this will be fixed too. Or at least it's worth testing out.
         let toolbar = primaryNavigationController.toolbar
+        
+        if #available(iOS 14.0, *) {
+            let barAppearance = UIToolbarAppearance()
+            barAppearance.backgroundColor = .clear
+            
+            // below two lines prevent weird unwanted grey bar from appearing. can be confused with "hairline" border!
+            barAppearance.shadowImage = UIImage()
+            barAppearance.backgroundImage = UIImage()
+            
+            toolbar?.standardAppearance = barAppearance
+        }
+        
         let items = toolbar?.items
         toolbar?.items = nil
         toolbar?.items = items

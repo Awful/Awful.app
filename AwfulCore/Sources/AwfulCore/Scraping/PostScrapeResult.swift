@@ -19,6 +19,7 @@ public struct PostScrapeResult {
     public let isEditable: Bool
     public let isIgnored: Bool
     public let postDate: Date?
+    public let postDateRaw: String?
 
     public init(_ html: HTMLNode, url: URL?) throws {
         let table = try html.requiredNode(matchingSelector: "table.post[id]")
@@ -60,10 +61,12 @@ public struct PostScrapeResult {
 
         isIgnored = table.hasClass("ignored")
 
-        postDate = table
+        postDateRaw = table
             .firstNode(matchingSelector: "td.postdate")
             .flatMap { $0.children.lastObject as? HTMLNode }
-            .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) } ?? ""
+        
+        postDate = postDateRaw
             .flatMap(PostDateFormatter.date(from:))
     }
 }

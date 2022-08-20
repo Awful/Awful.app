@@ -27,8 +27,22 @@ final class BookmarksTableViewController: TableViewController {
         
         title = LocalizedString("bookmarks.title")
         
-        tabBarItem.image = UIImage(named: "bookmarks")
-        tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
+        tabBarItem.image = UIImage(named: "forum-list")!.withRenderingMode(.alwaysTemplate)
+        tabBarItem.selectedImage = UIImage(named: "forum-list-filled")!.withRenderingMode(.alwaysTemplate)
+        
+        if !Theme.defaultTheme().showRootTabBarLabel {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        }
+        
+        tabBarItem.image = UIImage(named: "bookmarks")!
+                                    .withTintColor(Theme.defaultTheme()["tabBarTintColor"]!)
+                                    .withRenderingMode(.alwaysTemplate)
+        
+        tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")!
+                                    .withTintColor(Theme.defaultTheme()["tintColor"]!)
+                                    .withRenderingMode(.alwaysTemplate)
+
     }
     
     deinit {

@@ -62,12 +62,12 @@ final class AppIconPickerCell: UITableViewCell, UICollectionViewDataSource, UICo
     }
 }
 
-private struct AppIcon: Equatable {
+public struct AppIcon: Equatable {
     let filename: String
     let iconName: String
 }
 
-private func findAppIcons() -> [AppIcon] {
+public func findAppIcons() -> [AppIcon] {
     guard let icons = Bundle(for: AppIconPickerCell.self).object(forInfoDictionaryKey: "CFBundleIcons") as? [String: Any] else {
         Log.e("could not find CFBundleIcons in Info.plist")
         return []

@@ -17,7 +17,12 @@ final class PostsPageTopBar: UIView {
         parentForumButton.accessibilityLabel = LocalizedString("posts-page.parent-forum-button.accessibility-label")
         parentForumButton.accessibilityHint = LocalizedString("posts-page.parent-forum-button.accessibility-hint")
         parentForumButton.setTitle(LocalizedString("posts-page.parent-forum-button.title"), for: .normal)
-        parentForumButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        /* parent forum button */
+        if Theme.defaultTheme().roundedFonts {
+            parentForumButton.titleLabel?.font = roundedFont(ofSize: 12, weight: .medium)
+        } else {
+            parentForumButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        }
         return parentForumButton
     }()
 
@@ -25,7 +30,12 @@ final class PostsPageTopBar: UIView {
         let previousPostsButton = UIButton(type: .system)
         previousPostsButton.accessibilityLabel = LocalizedString("posts-page.previous-posts-button.accessibility-label")
         previousPostsButton.setTitle(LocalizedString("posts-page.previous-posts-button.title"), for: .normal)
-        previousPostsButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        /* previous posts button */
+        if Theme.defaultTheme().roundedFonts {
+            previousPostsButton.titleLabel?.font = roundedFont(ofSize: 12, weight: .medium)
+        } else {
+            previousPostsButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        }
         return previousPostsButton
     }()
 
@@ -33,7 +43,12 @@ final class PostsPageTopBar: UIView {
         let scrollToEndButton = UIButton(type: .system)
         scrollToEndButton.accessibilityLabel = LocalizedString("posts-page.scroll-to-end-button.accessibility-label")
         scrollToEndButton.setTitle(LocalizedString("posts-page.scroll-to-end-button.title"), for: .normal)
-        scrollToEndButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        /* scroll to end button */
+        if Theme.defaultTheme().roundedFonts {
+            scrollToEndButton.titleLabel?.font = roundedFont(ofSize: 12, weight: .medium)
+        } else {
+            scrollToEndButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        }
         return scrollToEndButton
     }()
 
