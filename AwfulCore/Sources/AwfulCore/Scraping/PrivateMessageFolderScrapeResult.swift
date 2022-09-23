@@ -89,7 +89,7 @@ private extension PrivateMessageFolderScrapeResult.Message {
             .flatMap { $0["src"] }
             .flatMap { URL(string: $0) }
 
-        senderUsername = tr.firstNode(matchingSelector: "td.sender")?.textContent ?? ""
+        senderUsername = tr.firstNode(matchingSelector: "td.sender a")?.textContent ?? ""
 
         sentDate = tr.firstNode(matchingSelector: "td.date")
             .map { $0.textContent }
