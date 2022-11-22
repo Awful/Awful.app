@@ -33,6 +33,51 @@ final class PostsPageViewController: ViewController {
     private var scrollToFractionAfterLoading: CGFloat?
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
+    
+    lazy var threadActionsMenu: UIMenu = {
+        var threadActions: [UIMenuElement] = []
+        
+        let threadActionMenu: UIMenu = {
+            let bookmarkTitle = self.thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
+            let bookmarkImage = self.thread.bookmarked ?
+            UIImage(named: "remove-bookmark")!.withRenderingMode(.alwaysTemplate)
+            :
+            UIImage(named: "add-bookmark")!.withRenderingMode(.alwaysTemplate)
+            let yourPostsImage = UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate)
+            let copyURLImage = UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate)
+            let voteImage = UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate)
+            
+            // Copy link
+            let copyLink = UIAction.Identifier("copyLink")
+            actionMappings[copyLink] = copyLink(action:)
+            let copyLinkAction = UIAction(title: "Copy link", image: copyURLImage, identifier: copyLink, handler: copyLink(action:))
+            threadActions.append(copyLinkAction)
+            
+            // Vote
+            let vote = UIAction.Identifier("vote")
+            actionMappings[vote] = vote(action:)
+            let voteAction = UIAction(title: "Vote", image: voteImage, identifier: vote, handler: vote(action:))
+            threadActions.append(voteAction)
+            
+            // Your posts
+            let yourPosts = UIAction.Identifier("yourPosts")
+            actionMappings[yourPosts] = yourPosts(action:)
+            let yourPostsAction = UIAction(title: "Your posts", image: yourPostsImage, identifier: yourPosts, handler: yourPosts(action:))
+            threadActions.append(yourPostsAction)
+            
+            // Remove bookmark
+            let bookmark = UIAction.Identifier("bookmark")
+            actionMappings[bookmark] = bookmark(action:)
+            let bookmarkAction = UIAction(title: bookmarkTitle, image: bookmarkImage, identifier: bookmark, handler: bookmark(action:))
+            bookmarkAction.attributes = self.thread.bookmarked ? [.destructive] : []
+            threadActions.append(bookmarkAction)
+            
+            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: threadActions)
+            return UIMenu(title: self.thread.title ?? "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
+        }()
+        return threadActionMenu
+    }()
+    
 
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
@@ -298,6 +343,10 @@ final class PostsPageViewController: ViewController {
             context["endMessage"] = true
         }
         
+        context["enableFrogAndGhost"] = UserDefaults.standard.enableFrogAndGhost
+        
+        context["ghostJsonData"] = try? String(contentsOf: URL(string: "ghost.json", relativeTo: Bundle.main.resourceURL)!, encoding: .utf8)
+      
         if let username = UserDefaults.standard.loggedInUsername, !username.isEmpty {
             context["loggedInUsername"] = username
         }
@@ -466,7 +515,12 @@ final class PostsPageViewController: ViewController {
     
     
     lazy var actionsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: #selector(didTapHamburgerMenu))
+        var item: UIBarButtonItem
+        if #available(iOS 14.0, *) {
+            item = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu)
+        } else {
+            item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: #selector(didTapHamburgerMenu))
+        }
         
         return item
     }()
@@ -527,7 +581,11 @@ final class PostsPageViewController: ViewController {
                 }
             } else {
                 if !(postsView.refreshControl is PostsPageRefreshSpinnerView) {
-                    postsView.refreshControl = PostsPageRefreshSpinnerView()
+                    if !UserDefaults.standard.enableFrogAndGhost {
+                        postsView.refreshControl = PostsPageRefreshSpinnerView()
+                    } else {
+                        postsView.refreshControl = GetOutFrogRefreshSpinnerView(theme: theme)
+                    }
                 }
             }
         } else {
@@ -598,48 +656,8 @@ final class PostsPageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        var threadActions: [UIMenuElement] = []
         
-        let threadActionMenu: UIMenu = {
-            let bookmarkTitle = self.thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
-            let bookmarkImage = self.thread.bookmarked ?
-                UIImage(named: "remove-bookmark")!.withRenderingMode(.alwaysTemplate)
-            :
-                UIImage(named: "add-bookmark")!.withRenderingMode(.alwaysTemplate)
-            let yourPostsImage = UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate)
-            let copyURLImage = UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate)
-            let voteImage = UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate)
-            
-            // Copy link
-            let copyLink = UIAction.Identifier("copyLink")
-            actionMappings[copyLink] = copyLink(action:)
-            let copyLinkAction = UIAction(title: "Copy link", image: copyURLImage, identifier: copyLink, handler: copyLink(action:))
-            threadActions.append(copyLinkAction)
-            
-            // Vote
-            let vote = UIAction.Identifier("vote")
-            actionMappings[vote] = vote(action:)
-            let voteAction = UIAction(title: "Vote", image: voteImage, identifier: vote, handler: vote(action:))
-            threadActions.append(voteAction)
-            
-            // Your posts
-            let yourPosts = UIAction.Identifier("yourPosts")
-            actionMappings[yourPosts] = yourPosts(action:)
-            let yourPostsAction = UIAction(title: "Your posts", image: yourPostsImage, identifier: yourPosts, handler: yourPosts(action:))
-            threadActions.append(yourPostsAction)
-            
-            // Remove bookmark
-            let bookmark = UIAction.Identifier("bookmark")
-            actionMappings[bookmark] = bookmark(action:)
-            let bookmarkAction = UIAction(title: bookmarkTitle, image: bookmarkImage, identifier: bookmark, handler: bookmark(action:))
-            bookmarkAction.attributes = self.thread.bookmarked ? [.destructive] : []
-            threadActions.append(bookmarkAction)
-            
-            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: threadActions)
-            return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
-        }()
-        
-        let chidoriMenu = ChidoriMenu(menu: threadActionMenu,
+        let chidoriMenu = ChidoriMenu(menu: threadActionsMenu,
                                       summonPoint: CGPoint(x: self.postsView.toolbar.frame.maxX - 80,
                                                            y: self.postsView.toolbar.frame.maxY - 230)
         )
@@ -1658,6 +1676,10 @@ extension PostsPageViewController: RenderViewDelegate {
             view.embedTweets()
         }
         
+        if UserDefaults.standard.enableFrogAndGhost {
+            view.loadLottiePlayer()
+        }
+       
         webViewDidLoadOnce = true
         
         if jumpToLastPost {

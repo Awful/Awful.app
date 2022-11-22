@@ -36,9 +36,19 @@
     <div id="ad">
         {{ advertisementHTML }}
     </div>
-
-    {% if endMessage %}
-    <div id="end">
+    
+    {% if enableFrogAndGhost %}
+    <div id="ghost-json-data" style="display:none;">
+        {{ ghostJsonData }}
+    </div>
+    {% endif %}
+    
+    {% if endMessage and enableFrogAndGhost %}
+        <div id="endf" class=".end" style="height: 100px;"></div>
+    {% endif %}
+    
+    {% if endMessage and not enableFrogAndGhost %}
+    <div id="end" class=".end">
         End of the thread
     </div>
     {% endif %}

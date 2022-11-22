@@ -45,6 +45,7 @@ enum SettingsKeys {
     static let jumpToPostEndOnDoubleTap = "jump_to_post_end_on_double_tap"
     static let enableHaptics = "enable_haptics"
     static let enableCustomTitlePostLayout = "enable_custom_title_post_layout"
+    static let enableFrogAndGhost = "frog_and_ghost_enabled"
     static let showImages = "show_images"
     static let showThreadTagsInThreadList = "show_thread_tags"
     static let showTweaksOnShake = "show_tweaks_on_shake"

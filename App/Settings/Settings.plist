@@ -355,6 +355,23 @@
 		</dict>
 		<dict>
 			<key>Explanation</key>
+			<string>Turn off the end of thread frog and dead tweet ghost</string>
+			<key>Settings</key>
+			<array>
+				<dict>
+					<key>Title</key>
+					<string>Enable frog and ghost</string>
+					<key>Type</key>
+					<string>Switch</string>
+					<key>Default</key>
+					<true/>
+					<key>Key</key>
+					<string>frog_and_ghost_enabled</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Explanation</key>
 			<string>Checking the clipboard for a forums URL when you open the app allows you to jump straight to a copied URL in Awful.</string>
 			<key>Settings</key>
 			<array>

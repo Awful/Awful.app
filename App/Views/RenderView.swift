@@ -270,12 +270,22 @@ extension RenderView {
     
     /// Turns any links that look like tweets into an actual tweet embed.
     func embedTweets() {
-        webView.evaluateJavaScript("if (window.Awful) Awful.embedTweets()") { rawResult, error in
+        let renderGhostTweets = UserDefaults.standard.enableFrogAndGhost
+        webView.evaluateJavaScript("if (window.Awful) window.Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets()") { rawResult, error in
             if let error = error {
                 self.mentionError(error, explanation: "could not evaluate embedTweets")
             }
         }
     }
+    
+    func loadLottiePlayer() {
+        webView.evaluateJavaScript("if (window.Awful) Awful.loadLotties()") { rawResult, error in
+            if let error = error {
+                self.mentionError(error, explanation: "could not evaluate loadLotties")
+            }
+        }
+    }
+    
     
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied
     /// webview must be transparent to prevent white flashes during content refreshes. setting opaque to true in viewDidAppear helped, but still sometimes produced white flashes.

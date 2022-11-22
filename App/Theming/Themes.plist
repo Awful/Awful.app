@@ -90,6 +90,13 @@
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
 		</dict>
+		<key>Lotties</key>
+		<dict>
+			<key>getOutFrogColor</key>
+			<string>#1e84af</string>
+			<key>nigglyColor</key>
+			<string>#000000</string>
+		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
 			<key>tabBarBackgroundColor</key>
@@ -815,6 +822,13 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>Lotties</key>
+		<dict>
+			<key>nigglyColor</key>
+			<string>#57ff57</string>
+			<key>getOutFrogColor</key>
+			<string>#57ff57</string>
+		</dict>
 		<key>relevantForumID</key>
 		<string>219</string>
 		<key>parent</key>
@@ -907,6 +921,13 @@
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
+		<key>Lotties</key>
+		<dict>
+			<key>nigglyColor</key>
+			<string>#ebd04b</string>
+			<key>getOutFrogColor</key>
+			<string>#ebd04b</string>
+		</dict>
 		<key>relevantForumID</key>
 		<string>219</string>
 		<key>parent</key>
