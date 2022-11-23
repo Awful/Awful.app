@@ -10,6 +10,7 @@ internal extension AuthorSidebarScrapeResult {
         if customTitle != user.customTitleHTML { user.customTitleHTML = customTitle }
         if isModerator != user.moderator { user.moderator = isModerator }
         if let regdate = regdate, user.regdate != regdate { user.regdate = regdate }
+        if let regdateRaw = regdateRaw, user.regdateRaw != regdateRaw { user.regdateRaw = regdateRaw }
         if userID.rawValue != user.userID { user.userID = userID.rawValue }
         if !username.isEmpty, username != user.username { user.username = username }
 

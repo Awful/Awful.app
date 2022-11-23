@@ -150,6 +150,9 @@ extension IndexScrapeResult.ScrapedProfile {
         if let regdate = regdate, user.regdate != regdate {
             user.regdate = regdate
         }
+        if let regdateRaw = regdateRaw, user.regdateRaw != regdateRaw {
+            user.regdateRaw = regdateRaw
+        }
         if user.username != username {
             user.username = username
         }

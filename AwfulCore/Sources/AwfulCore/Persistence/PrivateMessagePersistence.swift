@@ -73,6 +73,7 @@ private extension PrivateMessageFolderScrapeResult.Message {
         if id.rawValue != message.messageID { message.messageID = id.rawValue }
         if !senderUsername.isEmpty, senderUsername != message.rawFromUsername { message.rawFromUsername = senderUsername }
         if let sentDate = sentDate, sentDate != message.sentDate { message.sentDate = sentDate }
+        if let sentDateRaw = sentDateRaw, sentDateRaw != message.sentDateRaw { message.sentDateRaw = sentDateRaw }
         if !subject.isEmpty, subject != message.subject { message.subject = subject }
         if wasForwarded != message.forwarded { message.forwarded = wasForwarded }
         if wasRepliedTo != message.replied { message.replied = wasRepliedTo }
@@ -86,6 +87,7 @@ internal extension PrivateMessageScrapeResult {
         if hasBeenSeen != message.seen { message.seen = hasBeenSeen }
         if privateMessageID.rawValue != message.messageID { message.messageID = privateMessageID.rawValue }
         if let sentDate = sentDate, sentDate != message.sentDate { message.sentDate = sentDate }
+        if let sentDateRaw = sentDateRaw, sentDateRaw != message.sentDateRaw { message.sentDateRaw = sentDateRaw }
         if subject != message.subject { message.subject = subject }
         if wasForwarded != message.forwarded { message.forwarded = wasForwarded }
         if wasRepliedTo != message.replied { message.replied = wasRepliedTo }

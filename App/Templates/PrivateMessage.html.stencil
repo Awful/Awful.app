@@ -36,7 +36,7 @@
             <section class="nameanddate">
                 <h1 class="username">{{ fromUsername|htmlEscape }}</h1>
 
-                <time class="regdate">Joined {{ regdate|formatRegdate }}</time>
+                <time class="regdate">{{ regdateRaw }}</time>
             </section>
         </header>
         
@@ -45,7 +45,7 @@
         </section>
         
         <footer>
-            <time class="postdate">{{ sentDate|formatSentDate }}</time>
+            <time class="postdate">{{ sentDateRaw }}</time>
         </footer>
     </post>
 </body>

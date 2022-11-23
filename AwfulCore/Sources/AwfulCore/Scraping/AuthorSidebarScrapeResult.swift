@@ -12,6 +12,7 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
     public let isAdministrator: Bool
     public let isModerator: Bool
     public let regdate: Date?
+    public let regdateRaw: String?
     public let userID: UserID
     public let username: String
 
@@ -57,6 +58,9 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
             .firstNode(matchingSelector: "dd.registered")
             .map { $0.textContent }
             .flatMap(RegdateFormatter.date(from:))
+        
+        regdateRaw = html
+            .firstNode(matchingSelector: "dd.registered")?.textContent ?? ""
 
         customTitle = scrapeCustomTitle(html) ?? ""
     }
