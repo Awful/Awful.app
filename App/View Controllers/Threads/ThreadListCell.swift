@@ -9,7 +9,7 @@ private let Log = Logger.get(level: .debug)
 final class ThreadListCell: UITableViewCell {
 
     private let pageCountLabel = UILabel()
-    private let pageIconView = PageIconView()
+    private let pageIconView = UIImageView()
     private let postInfoLabel = UILabel()
     private let ratingImageView = UIImageView()
     private let secondaryTagImageView = UIImageView()
@@ -30,8 +30,8 @@ final class ThreadListCell: UITableViewCell {
 
             pageCountLabel.attributedText = viewModel.pageCount
 
-            pageIconView.borderColor = viewModel.pageIconColor
-
+            pageIconView.image = UIImage(named: "page")?.withTintColor(viewModel.pageIconColor)
+            
             postInfoLabel.attributedText = viewModel.postInfo
 
             ratingImageView.image = viewModel.ratingImage
@@ -110,6 +110,10 @@ final class ThreadListCell: UITableViewCell {
         tagImageView.frame = layout.tagImageFrame
         titleLabel.frame = layout.titleFrame
         unreadCountLabel.frame = layout.unreadCountFrame
+        
+        // rounded corners
+        tagImageView.layer.masksToBounds = true
+        tagImageView.layer.cornerRadius = 3
     }
 
     private struct Layout {
@@ -223,7 +227,7 @@ final class ThreadListCell: UITableViewCell {
 
             let pageCountFont = viewModel.pageCount.attribute(.font, at: 0, effectiveRange: nil) as? UIFont ?? UIFont.systemFont(ofSize: 12)
             let pageIconHeight = pixelCeil(pageCountFont.capHeight)
-            let pageIconWidth = pageIconHeight * PageIconView.aspectRatio
+            let pageIconWidth = CGFloat(9)
             pageIconFrame = CGRect(
                 x: pageCountFrame.maxX + Layout.pageCountRightMargin,
                 y: pageCountFrame.minY + pageCountFont.ascender - pageIconHeight,

@@ -26,6 +26,8 @@
 			<string>#ccccff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#e7e7ff</string>
+			<key>ratingIconEmptyColor</key>
+			<string>#99f</string>
 		</dict>
 		<key>Posts</key>
 		<dict>
@@ -57,6 +59,8 @@
 	<dict>
 		<key>roundedFonts</key>
 		<false/>
+		<key>favoriteStarTintColor</key>
+		<string>#1e84af</string>
 		<key>description</key>
 		<string>Light</string>
 		<key>descriptiveColor</key>
@@ -75,6 +79,10 @@
 		<string>#999999</string>
 		<key>Lists</key>
 		<dict>
+			<key>expansionTintColor</key>
+			<string>#808080</string>
+			<key>ratingIconEmptyColor</key>
+			<string>#cccccc</string>
 			<key>listHeaderTextColor</key>
 			<string>#838383</string>
 			<key>listHeaderBackgroundColor</key>
@@ -107,6 +115,12 @@
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
+			<key>tabBarTintColor</key>
+			<string>#1e84af</string>
+			<key>tabBarIconNormalColor</key>
+			<string>#cccccc</string>
+			<key>tabBarIconSelectedColor</key>
+			<string>#1e84af</string>
 			<key>tabBarBackgroundColor</key>
 			<string>#f7f7f7</string>
 			<key>navigationBarTextColor</key>
@@ -713,6 +727,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>ratingIconEmptyColor</key>
+			<string>#ff80ff</string>
 			<key>listTextColor</key>
 			<string>#000000</string>
 			<key>listSeparatorColor</key>
@@ -884,6 +900,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>ratingIconEmptyColor</key>
+			<string>#4d4d4d</string>
 			<key>listSecondaryTextColor</key>
 			<string>#57ff57</string>
 			<key>listFontName</key>
@@ -983,6 +1001,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>ratingIconEmptyColor</key>
+			<string>#4d4d4d</string>
 			<key>listFontName</key>
 			<string>Courier</string>
 			<key>listSecondaryTextColor</key>

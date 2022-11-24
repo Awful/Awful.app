@@ -116,11 +116,28 @@ extension MessageListDataSource: UITableViewDataSource {
             tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
             tagOverlayImage: {
                 if message.replied {
-                    return UIImage(named: "pmreplied")
+                    let image = UIImage(named: "pmreplied")?
+                        .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
+                        .withRenderingMode(.alwaysTemplate)
+                    
+                    let imageView = UIImageView(image: image)
+                    imageView.tintColor = theme["listBackgroundColor"]!
+                    
+                    return imageView
                 } else if message.forwarded {
-                    return UIImage(named: "pmforwarded")
+                    let image = UIImage(named: "pmforwarded")?
+                        .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
+                        .withRenderingMode(.alwaysTemplate)
+                    
+                    let imageView = UIImageView(image: image)
+                    imageView.tintColor = theme["listBackgroundColor"]!
+                    
+                    return imageView
                 } else if !message.seen {
-                    return UIImage(named: "newpm")
+                    let image = UIImage(named: "newpm")
+                    let imageView = UIImageView(image: image)
+                    
+                    return imageView
                 } else {
                     return nil
                 }
@@ -160,3 +177,4 @@ private let sentTimeFormatter: DateFormatter = {
     formatter.timeStyle = .short
     return formatter
 }()
+
