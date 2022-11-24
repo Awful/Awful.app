@@ -29,7 +29,14 @@ header {
 }
 
 .platinum .username:after {
-		background-image: url('awful-resource://platinum-member.png');
+  background-image: url('awful-resource://platinum-member.png');
+  background-position: -100% 0;
+  -webkit-filter: black;
+  content: "";
+  background-size: 14px;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
 }
 .op .username {
   color: #004696;
@@ -66,7 +73,6 @@ header {
 .bbc-block {
   border: none;
   background-color: #f0f0f0;
-  background-image: url("awful-resource://quote-post.png");
   background-repeat: no-repeat;
   background-position-x: 10px;
   background-position-y: 12px;
@@ -75,13 +81,26 @@ header {
   padding-left: 40px;
   padding-bottom: 13px;
   border-radius: 1em;
-
+  position: relative;
+  
   .ipad & {
     margin: 0;
   }
 
   a {
     color: unset;
+  }
+
+  h4::before {
+    content: "";
+    height: 25px;
+    width: 25px;
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: #0066ff;
+    -webkit-mask-box-image: url("awful-resource://quote-post.png");
   }
 }
 
