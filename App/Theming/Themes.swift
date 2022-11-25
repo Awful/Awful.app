@@ -69,6 +69,11 @@ extension Theme {
         return dictionary["relevantForumID"] as! String?
     }
     
+    /// Does the theme use standed system font or rounded
+    var roundedFonts: Bool {
+        return dictionary["roundedFonts"] as? Bool ?? false
+    }
+    
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
     var keyboardAppearance: UIKeyboardAppearance {
         let appearance = dictionary["keyboardAppearance"] as? String

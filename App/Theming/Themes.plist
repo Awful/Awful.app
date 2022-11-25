@@ -55,6 +55,8 @@
 	</dict>
 	<key>default</key>
 	<dict>
+		<key>roundedFonts</key>
+		<false/>
 		<key>description</key>
 		<string>Light</string>
 		<key>descriptiveColor</key>
@@ -87,6 +89,12 @@
 			<string>#ffffff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#cccccc</string>
+			<key>messageListSenderFontSizeAdjustment</key>
+			<integer>-2</integer>
+			<key>messageListSentDateFontSizeAdjustment</key>
+			<integer>-2</integer>
+			<key>messageListSubjectFontSizeAdjustment</key>
+			<integer>0</integer>
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
 		</dict>

@@ -46,7 +46,7 @@ class ChidoriMenuTableViewCell: UITableViewCell {
         selectionStyle = .none
         accessibilityTraits = [.button]
 
-        menuTitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
+        menuTitleLabel.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, weight: .medium)
         menuTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         menuTitleLabel.numberOfLines = 0
         

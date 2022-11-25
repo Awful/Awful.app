@@ -138,11 +138,11 @@ final class ImageViewController: UIViewController {
             statusBarBackground.backgroundColor = overlaidBackgroundColor
             addSubview(statusBarBackground)
             
-            let bodyFontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.body)
             let title = NSAttributedString(string: "Done", attributes: [
                 .foregroundColor: overlaidForegroundColor,
-                .font: UIFont.boldSystemFont(ofSize: bodyFontDescriptor.pointSize)
+                .font: UIFont.preferredFontForTextStyle(.body, weight: .bold)
                 ])
+
             doneButton.setAttributedTitle(title, for: UIControl.State())
             doneButton.contentEdgeInsets = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
             doneButton.horizontalSlop = 10

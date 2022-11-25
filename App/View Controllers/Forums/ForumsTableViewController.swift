@@ -242,7 +242,7 @@ extension ForumsTableViewController {
 
         header.viewModel = .init(
             backgroundColor: theme["listHeaderBackgroundColor"],
-            font: UIFont.preferredFont(forTextStyle: .body),
+            font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular),
             sectionName: listDataSource.titleForSection(section),
             textColor: theme["listHeaderTextColor"])
 

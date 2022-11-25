@@ -135,13 +135,13 @@ final class ThreadPreviewViewController: ViewController {
         threadCell.viewModel = ThreadListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             pageCount: NSAttributedString(string: "1", attributes: [
-                .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
+                .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], weight: .regular),
                 .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             pageIconColor: theme["listSecondaryTextColor"]!,
             postInfo: {
                 let text = String(format: LocalizedString("compose.thread-preview.posting-in"), forum.name ?? "")
                 return NSAttributedString(string: text, attributes: [
-                    .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
+                    .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listSecondaryTextColor"]!])
             }(),
             ratingImage: nil,
@@ -153,7 +153,7 @@ final class ThreadPreviewViewController: ViewController {
                 var subject = self.subject
                 subject.collapseWhitespace()
                 return NSAttributedString(string: subject, attributes: [
-                    .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
+                    .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listTextColor"]!])
             }(),
             unreadCount: NSAttributedString())

@@ -140,16 +140,25 @@ extension UIFont {
         - textStyle: The base style for the returned font.
         - fontName: An optional font name. If nil (the default), returns the system font.
         - sizeAdjustment: A positive or negative adjustment to apply to the text style's font size. The default is 0.
+        - weight: A positive or negative adjustment to apply to the text style's font size. The default is 0.
     - returns:
         A font associated with the text style, scaled for the user's Dynamic Type settings, in the requested font family.
     **/
-    class func preferredFontForTextStyle(_ textStyle: TypedTextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0) -> UIFont {
-        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle(rawValue: textStyle.UIKitRawValue))
+    class func preferredFontForTextStyle(_ textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0, weight: UIFont.Weight) -> UIFont {
+        let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle)
+        let metrics = UIFontMetrics(forTextStyle: textStyle)
+        var font = metrics.scaledFont(for: UIFont.systemFont(ofSize: descriptor.pointSize + sizeAdjustment, weight: weight))
+        
         if let fontName = fontName {
             return UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!
         } else {
-            return UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment)
+            if let descriptor = UIFont.systemFont(ofSize: descriptor.pointSize + sizeAdjustment, weight: weight).fontDescriptor.withDesign(.rounded) {
+                if Theme.defaultTheme().roundedFonts {
+                    font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment))
+                }
+            }
         }
+        return font
     }
 }
 
@@ -193,9 +202,9 @@ extension UINavigationItem {
         label.accessibilityTraits.insert(UIAccessibilityTraits.header)
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            label.font = UIFont.systemFont(ofSize: 17)
+            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
         default:
-            label.font = UIFont.systemFont(ofSize: 13)
+            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2, weight: .regular)
             label.numberOfLines = 2
         }
         titleView = label

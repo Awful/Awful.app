@@ -546,6 +546,7 @@ final class PostsPageViewController: ViewController {
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
             currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+            currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
         } else {
             currentPageItem.title = ""
             currentPageItem.accessibilityLabel = nil

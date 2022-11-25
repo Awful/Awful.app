@@ -100,14 +100,14 @@ extension MessageListDataSource: UITableViewDataSource {
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
             sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
-                .font: UIFont.boldSystemFont(ofSize: UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFont.TextStyle.subheadline).pointSize),
-                .foregroundColor: theme[color: "listTextColor"]!]),
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSenderFontSizeAdjustment"]!, weight: .semibold),
+                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             sentDate: message.sentDate ?? .distantPast,
             sentDateAttributes: [
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSentDateFontSizeAdjustment"]!, weight: .semibold),
                 .foregroundColor: theme[color: "listTextColor"]!],
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2),
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSubjectFontSizeAdjustment"]!, weight: .regular),
                 .foregroundColor: theme[color: "listTextColor"]!]),
             tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
             tagOverlayImage: {

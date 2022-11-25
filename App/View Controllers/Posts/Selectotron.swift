@@ -83,6 +83,7 @@ final class Selectotron : ViewController {
     public func updateJumpButtonTitle() {
         let title = .specific(selectedPage) == postsViewController.page ? "Reload" : "Jump"
         jumpButton.setTitle(title, for: .normal)
+        jumpButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, weight: .medium)
     }
     
     fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -112,7 +113,7 @@ extension Selectotron: UIPickerViewDataSource, UIPickerViewAccessibilityDelegate
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let attributes = [
             NSAttributedString.Key.foregroundColor: theme["sheetTextColor"]!,
-            .font: UIFont.preferredFont(forTextStyle: .body)
+            .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
         ]
         return NSAttributedString(string: "\(row + 1)", attributes: attributes)
     }
