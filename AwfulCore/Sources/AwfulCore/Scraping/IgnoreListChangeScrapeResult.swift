@@ -31,8 +31,12 @@ public enum IgnoreListChangeScrapeResult: ScrapeResult {
         }
         else {
             do {
+                // responses to successfully adding a new ignorelist value differ depending on whether performed via profile page or ignore list page
+                let profileAddlistResponseMessage = "Your ignore list has been updated"
+                let ignorelistUpdatelistResponseMessage = "has now been successfully added to your ignore list"
+                
                 let inner = try html.requiredNode(matchingSelector: "div.inner")
-                if inner.textContent.contains("Your ignore list has been updated") {
+                if inner.textContent.contains(profileAddlistResponseMessage) || inner.textContent.contains(ignorelistUpdatelistResponseMessage){
                     self = .success
                 }
                 else {

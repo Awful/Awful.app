@@ -1247,16 +1247,31 @@ public final class ForumsClient {
         }
     }
     
-    /// Attempts to add a user to the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
-    public func addUserToIgnoreList(username: String) -> Promise<Void> {
-        return listIgnoredUsers()
-            .then { form -> Promise<Void> in
-                var form = form
-                guard !form.usernames.contains(username) else { return Promise.value(()) }
-                
-                form.usernames.append(username)
-                return self.updateIgnoredUsers(form)
-        }
+    /// Attempts to add a user to the ignore list. Using the method provided on profile page, which can add single users without error (so long as the user in question is not a moderator)
+    /**
+     - Parameters:
+        - userid: The ignored user's userid
+        - action: Will be `addlist` while using the profile page (`member.php`) method
+        - formkey: Will be `c171e9239a0684719b61b943b7e3e091` while using the profile page (`member.php`) method
+        - userlist: Always `ignore` for the ignore list
+     */
+    public func addUserToIgnoreList(userid: String) -> Promise<Void> {
+        let parameters: Dictionary<String, Any> = [
+            "userid": userid,
+            "action": "addlist",
+            "formkey": "c171e9239a0684719b61b943b7e3e091",
+            "userlist": "ignore"
+        ]
+
+        // actual network call is made to member2.php for both profile/ignore list methods
+        return fetch(method: .post, urlString: "member2.php", parameters: parameters)
+            .promise
+            .scrape(as: IgnoreListChangeScrapeResult.self, on: scrapingQueue)
+            .done(on: .global()) {
+                if case .failure(let error) = $0 {
+                    throw error
+                }
+            }
     }
     
     /// Attempts to remove a user from the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.

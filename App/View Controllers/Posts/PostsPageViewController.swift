@@ -832,7 +832,7 @@ final class PostsPageViewController: ViewController {
             if self.selectedPost!.ignored {
                 let ignoreUser = UIAction.Identifier("ignoreUser")
                 actionMappings[ignoreUser] = ignoreUser(action:)
-                let ignoreAction = UIAction(title: "Ignore user",
+                let ignoreAction = UIAction(title: "Unignore user",
                                             image: UIImage(named: "ignore")!.withRenderingMode(.alwaysTemplate),
                                             identifier: ignoreUser,
                                             handler: ignoreUser(action:))
@@ -1179,8 +1179,11 @@ final class PostsPageViewController: ViewController {
         }
         
         self.dismiss(animated: false) {
+            // removing ignored users requires username. adding a new user requires userid
+            guard let userKey = self.selectedPost!.ignored ? self.selectedUser!.username : self.selectedUser!.userID else { return }
+            
             let ignoreBlock: (_ username: String) -> Promise<Void>
-            // TODO: this needs to toggle the menu between Ignore / Unignore
+            
             if self.selectedPost!.ignored {
                 ignoreBlock = ForumsClient.shared.removeUserFromIgnoreList
             } else {
@@ -1190,7 +1193,7 @@ final class PostsPageViewController: ViewController {
             let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Updating Ignore List", mode: .indeterminate, animated: true)
             overlay?.tintColor = self.theme["tintColor"]
             
-            ignoreBlock(self.selectedUser!.username!)
+            ignoreBlock(userKey)
                 .done {
                     overlay?.mode = .checkmark
                     
