@@ -48,13 +48,35 @@ final class PostsPageView: UIView {
 
                 refreshControl.translatesAutoresizingMaskIntoConstraints = false
                 refreshControlContainer.addSubview(refreshControl)
+                
                 let containerMargins = refreshControlContainer.layoutMarginsGuide
-                NSLayoutConstraint.activate([
-                    refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
-                    containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
-                    refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
-                    containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)])
-
+                
+                if UserDefaults.standard.enableFrogAndGhost == false {
+                    NSLayoutConstraint.activate([
+                        refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
+                        containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                        refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
+                        containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)])
+                } else {
+                    // arrow view is hidden behind the toolbar and revealed when pulled up
+                    if refreshControl is PostsPageRefreshArrowView {
+                        NSLayoutConstraint.activate([
+                            refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
+                            refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
+                            containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                            containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
+                        ])
+                    }
+                    // spinner view is visible above the toolbar, before any scroll triggers occur
+                    if refreshControl is GetOutFrogRefreshSpinnerView {
+                        NSLayoutConstraint.activate([
+                            refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
+                            containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                            containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
+                        ])
+                    }
+                }
+   
                 refreshControl.state = refreshControlState
             }
 
@@ -435,7 +457,7 @@ extension PostsPageView {
             targetScrollViewBoundsMaxY = (targetContentOffset?.y ?? scrollView.contentOffset.y) + scrollView.bounds.height
         }
 
-        static let closeEnoughToBottom: CGFloat = -50
+        static let closeEnoughToBottom: CGFloat = -10
 
         var visibleBottom: CGFloat {
             return targetScrollViewBoundsMaxY - effectiveContentHeight

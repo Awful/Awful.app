@@ -270,6 +270,16 @@ extension UserDefaults {
     @objc private class var keyPathsForValuesAffectingEnableCustomTitlePostLayout: Set<String> { [SettingsKeys.enableCustomTitlePostLayout] }
 
 
+    @objc dynamic var enableFrogAndGhost: Bool {
+        get { return bool(forKey: SettingsKeys.enableFrogAndGhost) }
+        set { set(newValue, forKey: SettingsKeys.enableFrogAndGhost) }
+    }
+
+    @objc private class var automaticallyNotifiesObserversOfEnableFrogAndGhost: Bool { false }
+
+    @objc private class var keyPathsForValuesAffectingEnableFrogAndGhost: Set<String> { [SettingsKeys.enableFrogAndGhost] }
+
+
     @objc dynamic var showImages: Bool {
         get { return bool(forKey: SettingsKeys.showImages) }
         set { set(newValue, forKey: SettingsKeys.showImages) }
