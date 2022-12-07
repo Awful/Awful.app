@@ -28,7 +28,7 @@ public class Post: AwfulManagedObject, Managed {
     @NSManaged public var postDate: Date?
     
     /// Raw post date straight from the forums
-    @NSManaged public var postDateRaw: String
+    @NSManaged public var postDateRaw: String?
     
     /// An ID assigned by the Forums that presumably uniquely identifies it.
     @NSManaged public var postID: String

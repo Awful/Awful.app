@@ -54,7 +54,7 @@ struct PostRenderModel: StencilContextConvertible {
             return html ?? ""
         }
         var postDateRaw: String {
-            return post.postDateRaw
+            return post.postDateRaw ?? ""
         }
 
         context = [
