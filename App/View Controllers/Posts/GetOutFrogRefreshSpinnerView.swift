@@ -5,16 +5,16 @@
 import Lottie
 
 final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent {
-    private var animationView: LottieAnimationView?
+    private let animationView: LottieAnimationView
     
     init(theme: Theme) {
         animationView = .init(name: "frog")
         super.init(frame: .zero)
-        animationView!.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
-        animationView!.contentMode = .scaleAspectFit
-        animationView!.respectAnimationFrameRate = true
-        animationView!.loopMode = .loop
-        animationView!.animationSpeed = 1
+        animationView.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
+        animationView.contentMode = .scaleAspectFit
+        animationView.respectAnimationFrameRate = true
+        animationView.loopMode = .loop
+        animationView.animationSpeed = 1
         
         let mainColor = ColorValueProvider(theme["getOutFrogColor"]!.lottieColorValue)
         let clearColor = ColorValueProvider(UIColor.clear.lottieColorValue)
@@ -30,34 +30,34 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
         
         if theme["keyboardAppearance"] == "Light" {
             // outer eye stroke opaque in light mode
-            animationView!.setValueProvider(FloatValueProvider(100), keypath: AnimationKeypath(keys: ["**", "Outline", "**", "Opacity"]))
-            animationView!.setValueProvider(mainColor, keypath: pupilA)
-            animationView!.setValueProvider(mainColor, keypath: pupilB)
+            animationView.setValueProvider(FloatValueProvider(100), keypath: AnimationKeypath(keys: ["**", "Outline", "**", "Opacity"]))
+            animationView.setValueProvider(mainColor, keypath: pupilA)
+            animationView.setValueProvider(mainColor, keypath: pupilB)
             
             // make eye whites invisible in light mode
-            animationView!.setValueProvider(clearColor, keypath: leftEye)
-            animationView!.setValueProvider(clearColor, keypath: rightEye)
+            animationView.setValueProvider(clearColor, keypath: leftEye)
+            animationView.setValueProvider(clearColor, keypath: rightEye)
         } else {
             // outer eye stroke invisible in dark mode
-            animationView!.setValueProvider(FloatValueProvider(0), keypath: AnimationKeypath(keys: ["**", "Outline", "**", "Opacity"]))
+            animationView.setValueProvider(FloatValueProvider(0), keypath: AnimationKeypath(keys: ["**", "Outline", "**", "Opacity"]))
             
             // make eye whites opaque in dark mode theme
-            animationView!.setValueProvider(mainColor, keypath: leftEye)
-            animationView!.setValueProvider(mainColor, keypath: rightEye)
+            animationView.setValueProvider(mainColor, keypath: leftEye)
+            animationView.setValueProvider(mainColor, keypath: rightEye)
         }
         
-        animationView!.setValueProvider(mainColor, keypath: nostrils)
-        animationView!.setValueProvider(mainColor, keypath: mainOutline)
+        animationView.setValueProvider(mainColor, keypath: nostrils)
+        animationView.setValueProvider(mainColor, keypath: mainOutline)
         
-        animationView!.translatesAutoresizingMaskIntoConstraints = false
+        animationView.translatesAutoresizingMaskIntoConstraints = false
         
-        addSubview(animationView!)
+        addSubview(animationView)
 
-        animationView!.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        animationView!.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        animationView!.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        animationView!.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        animationView!.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        animationView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        animationView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        animationView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        animationView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        animationView.widthAnchor.constraint(equalToConstant: 60).isActive = true
     }
 
     required init?(coder: NSCoder) {
@@ -68,17 +68,17 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
         
          switch (oldState, newState) {
          case (_, .disabled):
-             animationView!.currentFrame = 0
+             animationView.currentFrame = 0
              break
          case (_, .ready),
               (_, .awaitingScrollEnd):
-             animationView!.currentFrame = 0
+             animationView.currentFrame = 0
              break
          case (_, .armed(triggeredFraction: 0.0)):
-             animationView!.play(fromFrame: 50, toFrame: 0, loopMode: .playOnce)
+             animationView.play(fromFrame: 50, toFrame: 0, loopMode: .playOnce)
              break
          case (.armed, .triggered):
-             animationView!.play(fromFrame: 0, toFrame: 50, loopMode: .playOnce)
+             animationView.play(fromFrame: 0, toFrame: 50, loopMode: .playOnce)
              if UserDefaults.standard.enableHaptics {
                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
              }
@@ -86,7 +86,7 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
          case (.refreshing, .refreshing):
              break
          case (_, .refreshing):
-             animationView!.play(fromFrame: 50, toFrame: 1000, loopMode: .playOnce)
+             animationView.play(fromFrame: 50, toFrame: 1000, loopMode: .playOnce)
              if UserDefaults.standard.enableHaptics {
                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
              }

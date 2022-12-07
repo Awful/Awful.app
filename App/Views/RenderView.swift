@@ -271,7 +271,7 @@ extension RenderView {
     /// Turns any links that look like tweets into an actual tweet embed.
     func embedTweets() {
         let renderGhostTweets = UserDefaults.standard.enableFrogAndGhost
-        webView.evaluateJavaScript("if (window.Awful) window.Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets()") { rawResult, error in
+        webView.evaluateJavaScript("if (window.Awful) { Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets(); }") { rawResult, error in
             if let error = error {
                 self.mentionError(error, explanation: "could not evaluate embedTweets")
             }
