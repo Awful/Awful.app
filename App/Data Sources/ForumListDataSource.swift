@@ -423,7 +423,7 @@ extension ForumListDataSource: UITableViewDataSource {
                 favoriteStar: announcement.hasBeenSeen ? .hidden : .isFavorite,
                 favoriteStarTintColor: theme["tintColor"]!,
                 forumName: NSAttributedString(string: announcement.title, attributes: [
-                    .font: UIFont.preferredFont(forTextStyle: .body),
+                    .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listTextColor"]!]),
                 indentationLevel: 0,
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
@@ -436,7 +436,7 @@ extension ForumListDataSource: UITableViewDataSource {
                 favoriteStar: .isFavorite,
                 favoriteStarTintColor: theme["tintColor"]!,
                 forumName: NSAttributedString(string: forum.name ?? "", attributes: [
-                    .font: UIFont.preferredFont(forTextStyle: .body),
+                    .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listTextColor"]!]),
                 indentationLevel: 0,
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
@@ -459,7 +459,7 @@ extension ForumListDataSource: UITableViewDataSource {
                 favoriteStar: forum.metadata.favorite ? .hidden : .canFavorite,
                 favoriteStarTintColor: theme["tintColor"]!,
                 forumName: NSAttributedString(string: forum.name ?? "", attributes: [
-                    .font: UIFont.preferredFont(forTextStyle: .body),
+                    .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listTextColor"]!]),
                 indentationLevel: forum.ancestors.reduce(0) { i, _ in i + 1 },
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)

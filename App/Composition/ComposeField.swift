@@ -12,13 +12,13 @@ final class ComposeField: UIView {
         super.init(frame: frame)
         
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .medium)
         label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         addSubview(label)
         
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.font = UIFont.systemFont(ofSize: 16)
+        textField.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         addSubview(textField)
         
         label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4).isActive = true

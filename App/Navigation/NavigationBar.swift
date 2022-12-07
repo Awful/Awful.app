@@ -31,7 +31,7 @@ final class NavigationBar: UINavigationBar {
         backIndicatorImage = UIImage(named: "back")
         backIndicatorTransitionMaskImage = UIImage(named: "back")
         
-        titleTextAttributes = [.font: UIFont.systemFont(ofSize: 17, weight: .regular)]
+        titleTextAttributes = [.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)]
         
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
         

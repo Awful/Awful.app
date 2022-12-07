@@ -58,7 +58,7 @@ final class CompositionViewController: ViewController {
         super.themeDidChange()
         
         textView.textColor = theme["listTextColor"]
-        textView.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
+        textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.keyboardAppearance = theme.keyboardAppearance
         BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
     }

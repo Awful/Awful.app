@@ -14,7 +14,7 @@ final class IconActionCell: UICollectionViewCell {
         iconImageView.contentMode = .center
         contentView.addSubview(iconImageView)
         
-        titleLabel.font = UIFont.systemFont(ofSize: 12)
+        titleLabel.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .medium)
         titleLabel.textColor = .white
         titleLabel.backgroundColor = .clear
         titleLabel.numberOfLines = 2

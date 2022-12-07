@@ -250,7 +250,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private func updateFilterButton() {
         let title = LocalizedString(filterThreadTag == nil ? "thread-list.filter-button.no-filter" : "thread-list.filter-button.change-filter")
         filterButton.setTitle(title, for: .normal)
-        
+        filterButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .medium)
         filterButton.tintColor = theme["tintColor"]
     }
     

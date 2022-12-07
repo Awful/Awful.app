@@ -104,7 +104,8 @@ final class NavigationController: UINavigationController, Themeable {
             appearance.backgroundColor = theme["navigationBarTintColor"]
             
             let textColor: UIColor? = theme["navigationBarTextColor"]
-            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!]
+            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
+                                              NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
             
             navigationBar.standardAppearance = appearance;
             navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance

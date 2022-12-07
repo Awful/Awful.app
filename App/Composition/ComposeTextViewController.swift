@@ -292,7 +292,7 @@ class ComposeTextViewController: ViewController {
     override func loadView() {
         let textView = ComposeTextView()
         textView.restorationIdentifier = "ComposeTextView"
-        textView.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
+        textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.delegate = self
         view = textView
     }

@@ -322,6 +322,8 @@ final class SettingsViewController: TableViewController {
         
         cell.backgroundColor = theme["listBackgroundColor"]
         cell.textLabel?.textColor = theme["listTextColor"]
+        cell.textLabel?.font = UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular)
+        
         cell.selectedBackgroundColor = theme["listSelectedBackgroundColor"]
         
         if let switchView = cell.accessoryView as? UISwitch {

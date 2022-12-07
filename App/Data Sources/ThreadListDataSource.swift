@@ -149,7 +149,7 @@ extension ThreadListDataSource: UITableViewDataSource {
         return ThreadListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             pageCount: NSAttributedString(string: "\(thread.numberOfPages)", attributes: [
-                .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
+                .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], sizeAdjustment: 0, weight: .semibold),
                 .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             pageIconColor: theme["threadListPageIconColor"]!,
             postInfo: {
@@ -161,7 +161,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                     text = String(format: LocalizedString("thread-list.posted-by"), thread.author?.username ?? "")
                 }
                 return NSAttributedString(string: text, attributes: [
-                    .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"]),
+                    .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], sizeAdjustment: 0, weight: .semibold),
                     .foregroundColor: theme[color: "listSecondaryTextColor"]!])
             }(),
             ratingImage: {
@@ -195,7 +195,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
             }(),
             title: NSAttributedString(string: thread.title ?? "", attributes: [
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"]),
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], sizeAdjustment: 0, weight: .regular),
                 .foregroundColor: theme[color: thread.closed ? "listSecondaryTextColor" : "listTextColor"]!]),
             unreadCount: {
                 guard thread.beenSeen else { return NSAttributedString() }
@@ -214,7 +214,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                     }
                 }
                 return NSAttributedString(string: "\(thread.unreadPosts)", attributes: [
-                    .font: UIFont.preferredFontForTextStyle(.caption1, fontName: theme["listFontName"], sizeAdjustment: 2),
+                    .font: UIFont.preferredFontForTextStyle(.caption1, fontName: theme["listFontName"], sizeAdjustment: 2, weight: .semibold),
                     .foregroundColor: color])
         }())
     }

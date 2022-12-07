@@ -42,7 +42,7 @@ final class SecondaryThreadTagPickerCell: UICollectionViewCell {
         
         let titleAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: titleTextColor,
-            .font: UIFont.systemFont(ofSize: 12)]
+            .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2, weight: .regular)]
         let titleSize = titleText.size(withAttributes: titleAttributes)
         let titleOrigin = CGPoint(x: (bounds.width - titleSize.width) / 2, y: bounds.height - titleSize.height)
         let titleFrame = CGRect(origin: titleOrigin, size: titleSize)
@@ -59,7 +59,7 @@ final class SecondaryThreadTagPickerCell: UICollectionViewCell {
         let firstLetter = String(titleText.first ?? "?")
         let letterAttributes = [
             NSAttributedString.Key.foregroundColor: isSelected ? UIColor.white : drawColor,
-            .font: UIFont.systemFont(ofSize: 24)]
+            .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 4, weight: .regular)]
         let letterSize = firstLetter.size(withAttributes: letterAttributes)
         let letterOrigin = CGPoint(
             x: circleFrame.midX - letterSize.width / 2,
