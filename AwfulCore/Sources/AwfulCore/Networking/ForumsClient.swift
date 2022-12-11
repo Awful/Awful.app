@@ -1247,31 +1247,55 @@ public final class ForumsClient {
         }
     }
     
-    /// Attempts to add a user to the ignore list. Using the method provided on profile page, which can add single users without error (so long as the user in question is not a moderator)
+    /// Attempts to parse the `formkey` string value from a user's profile page (`member.php`)
+    /// This page has two formkey elements, one for the buddy list and one for the ignorelist, so we parse using `findIgnoreFormkey`
     /**
      - Parameters:
-        - userid: The ignored user's userid
-        - action: Will be `addlist` while using the profile page (`member.php`) method
-        - formkey: Will be `c171e9239a0684719b61b943b7e3e091` while using the profile page (`member.php`) method
-        - userlist: Always `ignore` for the ignore list
+     - userid: The user we're ignoring's userid
+     - action:: Will be `getinfo` while using the profile page (`member.php`) method
      */
-    public func addUserToIgnoreList(userid: String) -> Promise<Void> {
+    private func getProfilePageIgnoreFormkey(userid: String) -> Promise<String> {
         let parameters: Dictionary<String, Any> = [
             "userid": userid,
-            "action": "addlist",
-            "formkey": "c171e9239a0684719b61b943b7e3e091",
-            "userlist": "ignore"
+            "action": "getinfo"
         ]
-
-        // actual network call is made to member2.php for both profile/ignore list methods
-        return fetch(method: .post, urlString: "member2.php", parameters: parameters)
+        
+        return fetch(method: .get, urlString: "member.php", parameters: parameters)
             .promise
-            .scrape(as: IgnoreListChangeScrapeResult.self, on: scrapingQueue)
-            .done(on: .global()) {
-                if case .failure(let error) = $0 {
-                    throw error
+            .map(on: .global(), parseHTML)
+            .map(on: .global(), findIgnoreFormkey)
+    }
+    
+    /// Attempts to add a user to the ignore list using the profile page ignore form.
+    /// This allows addition of new ignore list entries without the error caused by a potential preexisting ignore list containing a moderator, so long as this new entry attempt is not themselves a moderator
+    /// (in which case an error is correct)
+    /**
+     - Parameters:
+     - userid: The ignored user's userid
+     - action: `addlist` is the action used by the SA profile page (`member.php`) ignore button
+     - formkey: Scraped key from profile page (`member.php`) and required for the subsequent member2.php action
+     - userlist: Always `ignore` for the ignore list
+     */
+    public func addUserToIgnoreList(userid: String) -> Promise<Void> {
+        return firstly {
+            getProfilePageIgnoreFormkey(userid: userid)
+        }.then {
+            let parameters: Dictionary<String, Any> = [
+                "userid": userid,
+                "action": "addlist",
+                "formkey": $0,
+                "userlist": "ignore"
+            ]
+            
+            return self.fetch(method: .post, urlString: "member2.php", parameters: parameters)
+                .promise
+                .scrape(as: IgnoreListChangeScrapeResult.self, on: self.scrapingQueue)
+                .done(on: .global()) {
+                    if case .failure(let error) = $0 {
+                        throw error
+                    }
                 }
-            }
+        }
     }
     
     /// Attempts to remove a user from the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
@@ -1283,7 +1307,7 @@ public final class ForumsClient {
                 
                 form.usernames.remove(at: i)
                 return self.updateIgnoredUsers(form)
-        }
+            }
     }
 }
 
@@ -1419,4 +1443,11 @@ private func findMessageText(in parsed: ParsedDocument) throws -> String {
         throw ScrapingError.missingExpectedElement("textarea[name = 'message']")
     }
     return (message.value as NSString).html_stringByUnescapingHTML
+}
+
+private func findIgnoreFormkey(in parsed: ParsedDocument) throws -> String {
+    return parsed.document.firstNode(matchingSelector: "input[value='ignore']")
+        .flatMap { $0.parent?.firstNode(matchingSelector: "input[name = 'formkey']") }
+        .map { $0["value"] }
+    ?? ""
 }
