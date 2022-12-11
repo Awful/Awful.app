@@ -70,7 +70,11 @@ final class MessageListCell: UITableViewCell {
 
             ThreadTagLoader.shared.loadNamedImage(viewModel.tagImage, into: tagImageView)
 
-            tagOverlayView.image = viewModel.tagOverlayImage
+            tagImageView.layer.cornerRadius = 3
+            tagImageView.layer.masksToBounds = true
+            
+            // badges
+            tagOverlayView.image = viewModel.tagOverlayImage?.image
             tagOverlayView.isHidden = viewModel.tagOverlayImage == nil
 
             setNeedsLayout()
@@ -86,7 +90,7 @@ final class MessageListCell: UITableViewCell {
         let sentDateRaw: NSAttributedString
         let subject: NSAttributedString
         let tagImage: NamedThreadTag
-        let tagOverlayImage: UIImage?
+        let tagOverlayImage: UIImageView?
 
         fileprivate var accessibilityLabel: String {
             return String(
@@ -148,7 +152,7 @@ final class MessageListCell: UITableViewCell {
         private static let minimumHeight: CGFloat = 65
         private static let subjectTopMargin: CGFloat = 2
         private static let tagRightMargin: CGFloat = 8
-        private static let tagOverlayOffset = UIOffset(horizontal: 2, vertical: 3)
+        private static let tagOverlayOffset = UIOffset(horizontal: 4, vertical: 4)
 
         init(width: CGFloat, viewModel: ViewModel) {
             // 1. See how much width we have for the subject.

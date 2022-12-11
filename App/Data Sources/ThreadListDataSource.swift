@@ -132,6 +132,7 @@ extension ThreadListDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let viewModel = viewModelForCell(at: indexPath)
         let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
+
         return ThreadListCell.heightForViewModel(viewModel, inTableWithWidth: tableWidth)
     }
 
@@ -172,8 +173,16 @@ extension ThreadListDataSource: UITableViewDataSource {
                 if let tweaks = tweaks, tweaks.showRatingsAsThreadTags {
                     return nil
                 }
-
-                return thread.ratingImageName.flatMap { UIImage(named: $0) }
+                
+                return thread.ratingImageName.flatMap {
+                    if $0 != "Vote0.0" {
+                        return UIImage(named: "Vote0")!
+                            .withTintColor(Theme.defaultTheme()["ratingIconEmptyColor"]!)
+                            .mergeWith(topImage: UIImage(named: $0)!)
+                    }
+                    return UIImage(named: "Vote0")!
+                        .withTintColor(Theme.defaultTheme()["ratingIconEmptyColor"]!)
+                }
             }(),
             secondaryTagImageName: {
                 if !showsTagAndRating {

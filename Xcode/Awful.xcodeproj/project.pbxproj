@@ -58,8 +58,6 @@
 		1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */; };
 		1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */; };
 		1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */; };
-		1C1BD0B32320C98400805208 /* platinum-member-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B12320C98400805208 /* platinum-member-white@2x.png */; };
-		1C1BD0B42320C98400805208 /* platinum-member-white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BD0B22320C98400805208 /* platinum-member-white@3x.png */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* Smilies */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -245,16 +243,13 @@
 		2D265F92292CC137001336ED /* v.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D265F91292CC137001336ED /* v.json */; };
 		2D265F95292CC19B001336ED /* NigglyRefreshLottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F94292CC19B001336ED /* NigglyRefreshLottieView.swift */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
+		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */; };
 		7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */; };
 		7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1FF1271F76C3A3000B64DA /* AppIconPickerCell.swift */; };
 		7B1FF12A1F76C3A3000B64DA /* AppIconPickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B1FF1281F76C3A3000B64DA /* AppIconPickerCell.xib */; };
 		7B1FF12C1F76E690000B64DA /* AppIconPickerCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1FF12B1F76E690000B64DA /* AppIconPickerCollectionViewLayout.swift */; };
-		7B502E261F2513B400B1B305 /* post-dots@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E251F25139600B1B305 /* post-dots@2x.png */; };
-		7B502E271F2513B400B1B305 /* post-dots@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E241F25139600B1B305 /* post-dots@3x.png */; };
-		7B502E2C1F25140F00B1B305 /* platinum-member@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E2A1F25140200B1B305 /* platinum-member@2x.png */; };
-		7B502E2D1F25140F00B1B305 /* platinum-member@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7B502E2B1F25140200B1B305 /* platinum-member@3x.png */; };
 		7B82D6671F7809E3002291C7 /* AppIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B82D6651F7809E3002291C7 /* AppIconCell.swift */; };
 		7B82D6681F7809E3002291C7 /* AppIconCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B82D6661F7809E3002291C7 /* AppIconCell.xib */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
@@ -421,8 +416,6 @@
 		1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageComposeViewController.swift; sourceTree = "<group>"; };
 		1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextViewController.swift; sourceTree = "<group>"; };
 		1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPreviewViewController.swift; sourceTree = "<group>"; };
-		1C1BD0B12320C98400805208 /* platinum-member-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@2x.png"; sourceTree = "<group>"; };
-		1C1BD0B22320C98400805208 /* platinum-member-white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white@3x.png"; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
 		1C23C7041A7AB8940089BD5C /* SlopButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlopButton.swift; sourceTree = "<group>"; };
 		1C2434D81A4190F300DC8EA4 /* DraftStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DraftStore.swift; sourceTree = "<group>"; };
@@ -625,6 +618,7 @@
 		2D265F91292CC137001336ED /* v.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v.json; sourceTree = "<group>"; };
 		2D265F94292CC19B001336ED /* NigglyRefreshLottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NigglyRefreshLottieView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
+		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
 		68A40BB24850D9A942D1E270 /* Pods_Awful.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awful.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -634,10 +628,6 @@
 		7B1FF1271F76C3A3000B64DA /* AppIconPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconPickerCell.swift; sourceTree = "<group>"; };
 		7B1FF1281F76C3A3000B64DA /* AppIconPickerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppIconPickerCell.xib; sourceTree = "<group>"; };
 		7B1FF12B1F76E690000B64DA /* AppIconPickerCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconPickerCollectionViewLayout.swift; sourceTree = "<group>"; };
-		7B502E241F25139600B1B305 /* post-dots@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@3x.png"; sourceTree = "<group>"; };
-		7B502E251F25139600B1B305 /* post-dots@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "post-dots@2x.png"; sourceTree = "<group>"; };
-		7B502E2A1F25140200B1B305 /* platinum-member@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member@2x.png"; sourceTree = "<group>"; };
-		7B502E2B1F25140200B1B305 /* platinum-member@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member@3x.png"; sourceTree = "<group>"; };
 		7B82D6651F7809E3002291C7 /* AppIconCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconCell.swift; sourceTree = "<group>"; };
 		7B82D6661F7809E3002291C7 /* AppIconCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppIconCell.xib; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
@@ -1279,6 +1269,7 @@
 		1CD33EDB16F397FC0059587E /* Posts View Theming */ = {
 			isa = PBXGroup;
 			children = (
+				2D921268292F588100B16011 /* platinum-member.png */,
 				8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */,
 				8C8FA47719AD7CA300B67AAA /* award.png */,
 				8C8FA47819AD7CA300B67AAA /* diamond-icon.png */,
@@ -1293,13 +1284,7 @@
 				8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */,
 				8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */,
 				8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */,
-				1C1BD0B12320C98400805208 /* platinum-member-white@2x.png */,
-				1C1BD0B22320C98400805208 /* platinum-member-white@3x.png */,
-				7B502E2A1F25140200B1B305 /* platinum-member@2x.png */,
-				7B502E2B1F25140200B1B305 /* platinum-member@3x.png */,
 				1C397CA81BCC473A00CA7FD5 /* post-dots.png */,
-				7B502E251F25139600B1B305 /* post-dots@2x.png */,
-				7B502E241F25139600B1B305 /* post-dots@3x.png */,
 				1C29BD522251208200E1217A /* quote-post.png */,
 				8C8FA47C19AD7CA300B67AAA /* redpill.png */,
 				8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */,
@@ -1725,10 +1710,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B502E2C1F25140F00B1B305 /* platinum-member@2x.png in Resources */,
-				7B502E2D1F25140F00B1B305 /* platinum-member@3x.png in Resources */,
-				7B502E261F2513B400B1B305 /* post-dots@2x.png in Resources */,
-				7B502E271F2513B400B1B305 /* post-dots@3x.png in Resources */,
 				8CCD500615B497A900E5893B /* Settings.plist in Resources */,
 				1C273AA021C1DC25002875A9 /* RenderView-AllFrames.js in Resources */,
 				2D265F92292CC137001336ED /* v.json in Resources */,
@@ -1736,7 +1717,6 @@
 				8C8FA48119AD7CA300B67AAA /* image-coder.png in Resources */,
 				8C8FA47E19AD7CA300B67AAA /* award.png in Resources */,
 				1C0AFAE31ECA96E6002D4003 /* posts-view-alternate.css in Resources */,
-				1C1BD0B32320C98400805208 /* platinum-member-white@2x.png in Resources */,
 				1C5B9C3A17F20BB800D4981D /* posts-view-gas-chamber.css in Resources */,
 				1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */,
 				1C397CA91BCC473A00CA7FD5 /* post-dots.png in Resources */,
@@ -1759,7 +1739,6 @@
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
-				1C1BD0B42320C98400805208 /* platinum-member-white@3x.png in Resources */,
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				7B1FF12A1F76C3A3000B64DA /* AppIconPickerCell.xib in Resources */,
@@ -1781,6 +1760,7 @@
 				8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */,
 				8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */,
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
+				2D921269292F588100B16011 /* platinum-member.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
