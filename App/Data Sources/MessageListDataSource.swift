@@ -96,6 +96,7 @@ extension MessageListDataSource: UITableViewDataSource {
     private func viewModelForMessage(at indexPath: IndexPath) -> MessageListCell.ViewModel {
         let message = self.message(at: indexPath)
         let theme = Theme.defaultTheme()
+          
         return MessageListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
@@ -106,6 +107,9 @@ extension MessageListDataSource: UITableViewDataSource {
             sentDateAttributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSentDateFontSizeAdjustment"]!, weight: .semibold),
                 .foregroundColor: theme[color: "listTextColor"]!],
+            sentDateRaw: NSAttributedString(string: sentDateFormatter.string(from: message.sentDate!), attributes: [
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -3),
+                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSubjectFontSizeAdjustment"]!, weight: .regular),
                 .foregroundColor: theme[color: "listTextColor"]!]),
@@ -146,9 +150,7 @@ private func stringForSentDate(_ date: Date?) -> String {
 
 private let sentDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .none
-    formatter.doesRelativeDateFormatting = true
+    formatter.dateFormat = "d MMM YY"
     return formatter
 }()
 

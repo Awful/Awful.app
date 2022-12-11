@@ -38,7 +38,7 @@
             <span class="voiceover-only">{{ authorRolesDescription|htmlEscape }}</span>
             {% endif %}
 
-            <time class="regdate">Joined {{ authorRegdate|formatRegdate }}</time>
+            <time class="regdate">{{ authorRegdateRaw }}</time>
         </section>
     </header>
 
@@ -48,7 +48,7 @@
 
     <footer>
         <span class="postdate">
-            {{ postedDate|formatAnnouncementDate }}
+            {{ postedDateRaw }}
         </span>
     </footer>
 </post>

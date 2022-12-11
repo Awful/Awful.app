@@ -53,11 +53,15 @@ struct PostRenderModel: StencilContextConvertible {
             let html = post.author?.customTitleHTML
             return html ?? ""
         }
+        var postDateRaw: String {
+            return post.postDateRaw ?? ""
+        }
 
         context = [
             "accessibilityRoles": accessibilityRoles,
             "author": [
                 "regdate": post.author?.regdate as Any,
+                "regdateRaw": post.author?.regdateRaw as Any,
                 "userID": post.author?.userID as Any,
                 "username": post.author?.username as Any],
             "beenSeen": post.beenSeen,
@@ -65,6 +69,7 @@ struct PostRenderModel: StencilContextConvertible {
             "hiddenAvatarURL": hiddenAvatarURL as Any,
             "htmlContents": htmlContents,
             "postDate": post.postDate as Any,
+            "postDateRaw": postDateRaw as String,
             "postID": post.postID,
             "roles": roles,
             "showAvatars": showAvatars,
@@ -83,6 +88,7 @@ struct PostRenderModel: StencilContextConvertible {
             "customTitleHTML": (enableCustomTitlePostLayout ? author.customTitleHTML : nil) as Any,
             "htmlContents": massageHTML(postHTML, isIgnored: false, forumID: ""),
             "postDate": postDate,
+            "postDateRaw": "",
             "postID": "fake",
             "roles": (isOP ? "op " : "") + (author.authorClasses ?? ""),
             "showAvatars": showAvatars,

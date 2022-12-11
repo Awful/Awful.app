@@ -219,6 +219,7 @@ private struct RenderModel: StencilContextConvertible {
     let privateMessagesWork: Bool
     let profilePictureURL: URL?
     let regdate: Date?
+    let regdateRaw: String?
     let username: String?
     let yahooName: String?
     
@@ -256,6 +257,7 @@ private struct RenderModel: StencilContextConvertible {
         self.privateMessagesWork = privateMessagesWork
         profilePictureURL = profile.profilePictureURL
         regdate = profile.user.regdate
+        regdateRaw = profile.user.regdateRaw
         username = profile.user.username
         yahooName = profile.yahooName
     }
@@ -281,6 +283,7 @@ private struct RenderModel: StencilContextConvertible {
             "privateMessagesWork": privateMessagesWork,
             "profilePictureURL": profilePictureURL as Any,
             "regdate": regdate as Any,
+            "regdateRaw": regdateRaw as Any,
             "username": username as Any,
             "yahooName": yahooName as Any]
     }

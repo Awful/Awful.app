@@ -60,7 +60,7 @@ final class MessageListCell: UITableViewCell {
         didSet {
             backgroundColor = viewModel.backgroundColor
 
-            dateLabel.attributedText = viewModel.formattedSentDate
+            dateLabel.attributedText = viewModel.sentDateRaw
 
             selectedBackgroundColor = viewModel.selectedBackgroundColor
 
@@ -83,6 +83,7 @@ final class MessageListCell: UITableViewCell {
         let sender: NSAttributedString
         let sentDate: Date
         let sentDateAttributes: [NSAttributedString.Key: Any]
+        let sentDateRaw: NSAttributedString
         let subject: NSAttributedString
         let tagImage: NamedThreadTag
         let tagOverlayImage: UIImage?
@@ -92,11 +93,8 @@ final class MessageListCell: UITableViewCell {
                 format: LocalizedString("private-messages-list.message.accessibility-label"),
                 sender.string,
                 subject.string,
-                stringForSentDate(sentDate))
-        }
-
-        fileprivate var formattedSentDate: NSAttributedString {
-            return NSAttributedString(string: stringForSentDate(sentDate), attributes: sentDateAttributes)
+                sentDateRaw
+            )
         }
 
         static let empty: ViewModel = ViewModel(
@@ -105,6 +103,7 @@ final class MessageListCell: UITableViewCell {
             sender: .init(),
             sentDate: .distantPast,
             sentDateAttributes: [:],
+            sentDateRaw: .init(),
             subject: .init(),
             tagImage: .none,
             tagOverlayImage: nil)
@@ -163,7 +162,7 @@ final class MessageListCell: UITableViewCell {
 
             // 2. Figure out how tall things are.
             let senderHeight = viewModel.sender.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.height
-            let dateSize = viewModel.formattedSentDate.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound
+            let dateSize = viewModel.sentDateRaw.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound
 
             let textHeight = max(senderHeight, dateSize.height) + Layout.subjectTopMargin + subjectHeight
             height = max(Layout.minimumHeight,
@@ -224,6 +223,7 @@ final class MessageListCell: UITableViewCell {
             sender: .init(),
             sentDate: .distantPast,
             sentDateAttributes: [:],
+            sentDateRaw: .init(),
             subject: .init(),
             tagImage: showsTagAndRating ? .spacer : .none,
             tagOverlayImage: nil)

@@ -69,6 +69,7 @@ public struct IndexScrapeResult: Decodable {
         public let postCount: Int?
         public let postsPerDay: Double?
         public let regdate: Date?
+        public let regdateRaw: String?
         public let role: String?
         @IntOrString public private(set) var userID: String
         @IntOrString public private(set) var username: String
@@ -90,6 +91,7 @@ public struct IndexScrapeResult: Decodable {
             case postCount = "posts"
             case postsPerDay = "postsperday"
             case regdate = "joindate"
+            case regdateRaw = "joindateRaw"
             case role = "role"
             case userID = "userid"
             case username = "username"

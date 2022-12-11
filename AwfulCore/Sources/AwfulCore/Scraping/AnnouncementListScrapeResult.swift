@@ -12,11 +12,13 @@ public struct AnnouncementListScrapeResult: ScrapeResult {
         let author: Author?
         let body: RawHTML
         let date: Date?
+        let dateRaw: String?
     }
 
     public struct Author {
         public let customTitle: RawHTML
         public let regdate: Date?
+        public let regdateRaw: String?
         public let username: String
     }
 
@@ -41,9 +43,11 @@ private extension AnnouncementListScrapeResult.Announcement {
             .map(AnnouncementListScrapeResult.Author.init)
 
         body = try bodyRow.requiredNode(matchingSelector: "td.postbody").innerHTML
-
-        date = dateRow.firstNode(matchingSelector: "td.postdate")
+        
+        dateRaw = dateRow.firstNode(matchingSelector: "td.postdate")
             .map { $0.textContent }
+        
+        date = dateRaw
             .flatMap(dateFormatter.date)
     }
 }
@@ -52,9 +56,11 @@ private extension AnnouncementListScrapeResult.Author {
     init(_ html: HTMLNode) throws {
         customTitle = scrapeCustomTitle(html) ?? ""
 
-        regdate = html
+        regdateRaw = html
             .firstNode(matchingSelector: "dd.registered")
             .map {$0.textContent }
+        
+        regdate = regdateRaw
             .flatMap(RegdateFormatter.date(from:))
 
         username = try html.requiredNode(matchingSelector: "dt.author").textContent
