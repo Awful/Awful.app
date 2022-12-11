@@ -1247,15 +1247,54 @@ public final class ForumsClient {
         }
     }
     
-    /// Attempts to add a user to the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
-    public func addUserToIgnoreList(username: String) -> Promise<Void> {
-        return listIgnoredUsers()
-            .then { form -> Promise<Void> in
-                var form = form
-                guard !form.usernames.contains(username) else { return Promise.value(()) }
-                
-                form.usernames.append(username)
-                return self.updateIgnoredUsers(form)
+    /// Attempts to parse the `formkey` string value from a user's profile page (`member.php`)
+    /// This page has two formkey elements, one for the buddy list and one for the ignorelist, so we parse using `findIgnoreFormkey`
+    /**
+     - Parameters:
+     - userid: The user we're ignoring's userid
+     - action:: Will be `getinfo` while using the profile page (`member.php`) method
+     */
+    private func getProfilePageIgnoreFormkey(userid: String) -> Promise<String> {
+        let parameters: Dictionary<String, Any> = [
+            "userid": userid,
+            "action": "getinfo"
+        ]
+        
+        return fetch(method: .get, urlString: "member.php", parameters: parameters)
+            .promise
+            .map(on: .global(), parseHTML)
+            .map(on: .global(), findIgnoreFormkey)
+    }
+    
+    /// Attempts to add a user to the ignore list using the profile page ignore form.
+    /// This allows addition of new ignore list entries without the error caused by a potential preexisting ignore list containing a moderator, so long as this new entry attempt is not themselves a moderator
+    /// (in which case an error is correct)
+    /**
+     - Parameters:
+     - userid: The ignored user's userid
+     - action: `addlist` is the action used by the SA profile page (`member.php`) ignore button
+     - formkey: Scraped key from profile page (`member.php`) and required for the subsequent member2.php action
+     - userlist: Always `ignore` for the ignore list
+     */
+    public func addUserToIgnoreList(userid: String) -> Promise<Void> {
+        return firstly {
+            getProfilePageIgnoreFormkey(userid: userid)
+        }.then {
+            let parameters: Dictionary<String, Any> = [
+                "userid": userid,
+                "action": "addlist",
+                "formkey": $0,
+                "userlist": "ignore"
+            ]
+            
+            return self.fetch(method: .post, urlString: "member2.php", parameters: parameters)
+                .promise
+                .scrape(as: IgnoreListChangeScrapeResult.self, on: self.scrapingQueue)
+                .done(on: .global()) {
+                    if case .failure(let error) = $0 {
+                        throw error
+                    }
+                }
         }
     }
     
@@ -1268,7 +1307,7 @@ public final class ForumsClient {
                 
                 form.usernames.remove(at: i)
                 return self.updateIgnoredUsers(form)
-        }
+            }
     }
 }
 
@@ -1404,4 +1443,11 @@ private func findMessageText(in parsed: ParsedDocument) throws -> String {
         throw ScrapingError.missingExpectedElement("textarea[name = 'message']")
     }
     return (message.value as NSString).html_stringByUnescapingHTML
+}
+
+private func findIgnoreFormkey(in parsed: ParsedDocument) throws -> String {
+    return parsed.document.firstNode(matchingSelector: "input[value='ignore']")
+        .flatMap { $0.parent?.firstNode(matchingSelector: "input[name = 'formkey']") }
+        .map { $0["value"] }
+    ?? ""
 }
