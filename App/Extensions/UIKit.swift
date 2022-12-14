@@ -147,14 +147,29 @@ extension UIFont {
     class func preferredFontForTextStyle(_ textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0, weight: UIFont.Weight) -> UIFont {
         let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle)
         let metrics = UIFontMetrics(forTextStyle: textStyle)
-        var font = metrics.scaledFont(for: UIFont.systemFont(ofSize: descriptor.pointSize + sizeAdjustment, weight: weight))
+        let preferredContentSizeCategory: UIContentSizeCategory
+        
+        // overwrite these to effectively set a minimum font size, regardless of user's dynamic type setting
+        switch UIApplication.shared.preferredContentSizeCategory {
+        case .extraSmall, .small, .medium:
+            preferredContentSizeCategory = .extraLarge
+        case .accessibilityExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            preferredContentSizeCategory =  .accessibilityLarge
+        default:
+            preferredContentSizeCategory = UIApplication.shared.preferredContentSizeCategory
+        }
+        
+        let traitCollection = UITraitCollection(preferredContentSizeCategory: preferredContentSizeCategory)
+        
+        // set a maximum font size of 30pt
+        var font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: traitCollection)
         
         if let fontName = fontName {
-            return UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!
+            return metrics.scaledFont(for: UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!, maximumPointSize: 30, compatibleWith: traitCollection)
         } else {
-            if let descriptor = UIFont.systemFont(ofSize: descriptor.pointSize + sizeAdjustment, weight: weight).fontDescriptor.withDesign(.rounded) {
+            if let descriptor = font.fontDescriptor.withDesign(.rounded) {
                 if Theme.defaultTheme().roundedFonts {
-                    font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment))
+                    font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: traitCollection)
                 }
             }
         }
