@@ -246,10 +246,6 @@ span.mention.highlight {
 .bbc-spoiler:not(.spoiled) .gif-wrap {
   visibility: hidden;
 }
-.gif-wrap + br,
-.gif-wrap + br + br {
-  display: none;
-}
 blockquote {
   margin: 0;
 }
@@ -549,6 +545,7 @@ time.regdate {
   grid-column: 2;
   grid-row: 3;
   place-items: start;
+  padding-right: 23px;
   color: #b9e7e7;
   font: -apple-system-headline;
   font-weight: 600;
