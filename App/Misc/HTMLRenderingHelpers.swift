@@ -26,16 +26,7 @@ extension HTMLDocument {
             let id = pathComponents[3]
             guard id.unicodeScalars.allSatisfy(CharacterSet.decimalDigits.contains) else { continue }
             
-            
-//            let iframe = HTMLElement(tagName: "iframe", attributes: ["loading": "lazy"])
-//            let noscript = HTMLElement(tagName: "noscript", attributes: ["class": "loading-lazy"])
-//            noscript.addChild(iframe)
-  
             a["data-tweet-id"] = id
-            
-            a.toggleClass("")
-     //       a.parent?.addChild(noscript)
-     //       a.parent?.replace(child: a, with: noscript)
         }
     }
     

@@ -11,115 +11,90 @@ if (!window.Awful) {
 }
 
 
+Awful.embedTweetNow = function(thisPostElement) {
+    if (!thisPostElement.classList.contains("embed-processed")) {
+        thisPostElement.classList.add("embed-processed");
+        
+        thisPostElement.querySelectorAll("a[data-tweet-id]").forEach((tweetLink) => {
+            window.twttr.widgets.createTweet(tweetLink.dataset["tweet-id"], tweetLink, {
+            theme: "dark",
+            dnt: true,
+            })
+            .then(function (el) {
+                if (el) {
+                    // replace this link with the tweet
+                    tweetLink.replaceWith(el);
+                    twttr.widgets.load(tweetLink);
+                    
+                    console.log(`replaced link with tweet ${tweetLink.dataset["tweet-id"]}`);
+                    // also replace any other links for this tweet in the page
+                    document.body.querySelectorAll(`a[data-tweet-id="${tweetLink.dataset["tweet-id"]}"]`)
+                    .forEach((otherTweetLink) => {
+                        otherTweetLink.replaceWith(el.cloneNode(true));
+                        console.log(`replaced other link with tweet ${tweetLink.dataset["tweet-id"]}`);
+                        twttr.widgets.load(otherTweetLink);
+                    });
+                } else {
+                    // when a tweet errors out, insert a floating ghost lottie in somber rememberence of the tweet that used to be
+                    if (window.Awful.renderGhostTweets) {
+                        var div = document.createElement('div');
+                        div.classList.add('dead-tweet-container');
+                        div.innerHTML = Awful.deadTweetBadgeHTML(tweetLink.href.toString(), `${tweetLink.dataset["tweet-id"]}`);
+                        
+                        tweetLink.replaceWith(div.cloneNode(true));
+                        
+                        const player = thisPostElement.querySelectorAll("lottie-player");
+                        player.forEach((lottiePlayer) => {
+                            lottiePlayer.addEventListener("rendered", (e) => {
+                                lottiePlayer.load(document.getElementById("ghost-json-data").innerText);
+                            });
+                        });
+                    }
+                }
+            });
+        });
+    }
+};
+
 /**
  Turns apparent links to tweets into actual embedded tweets.
+ Updated to observe scroll position. Embeds visible tweets and then - while scrolling - scans a few posts ahead for tweet links, embedding them.
  */
 Awful.embedTweets = function() {
-  Awful.loadTwitterWidgets();
-
-  var tweetLinks = document.querySelectorAll('a[data-tweet-id]');
-  if (tweetLinks.length == 0) {
-    return;
-  }
-
-  var tweetIDsToLinks = {};
-  Array.prototype.forEach.call(tweetLinks, function(a) {
-    if (a.parentElement.querySelector('img.awful-smile[title=":nws:"]')) {
-      return;
-    }
-    var tweetID = a.dataset.tweetId;
-    if (!(tweetID in tweetIDsToLinks)) {
-      tweetIDsToLinks[tweetID] = [];
-    }
-    tweetIDsToLinks[tweetID].push(a);
-  });
-
-  var totalFetchCount = Object.keys(tweetIDsToLinks).length;
-  var completedFetchCount = 0;
-
-  Object.keys(tweetIDsToLinks).forEach(function(tweetID) {
-    var callback = `jsonp_callback_${tweetID}`;
-    var tweetTheme = Awful.tweetTheme();
-
-    var script = document.createElement('script');
-    script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${tweetTheme}&callback=${callback}`;
-
-    window[callback] = function(data) {
-      cleanUp(script);
-
-      tweetIDsToLinks[tweetID].forEach(function(a) {
-        if (a.parentNode) {
-          var div = document.createElement('div');
-          div.classList.add('tweet');
-          div.innerHTML = data.html;
-          a.parentNode.replaceChild(div, a);
-        }
-      });
-
-      didCompleteFetch();
+    Awful.loadTwitterWidgets();
+    const enableGhost = (window.Awful.renderGhostTweets == true);
+    // 0 = no offset aka as soon as the tweet enters the viewport.
+    // 600+ = functions fire a few posts ahead of viewport
+    const topMarginOffset = 100;
+    
+    let config = {
+        root: document.body.posts,
+        rootMargin: `${topMarginOffset}px 0px`,
+        threshold: 0.000001,
     };
-
-      script.onerror = function() {
-          cleanUp(this);
-          console.error(`The embed markup for tweet ${tweetID} failed to load`);
-         
-         // when a tweet errors out, insert a floating ghost lottie in somber rememberence of the tweet that used to be
-         if (window.Awful.renderGhostTweets) {
-              tweetIDsToLinks[tweetID].forEach(function(a) {
-                  if (a.parentNode) {
-                      var div = document.createElement('div');
-                      div.classList.add('dead-tweet-container');
-                      div.innerHTML = Awful.deadTweetBadgeHTML(a.href.toString(), `${tweetID}`);
-                      a.parentNode.replaceChild(div, a);
-                      
-                  }
-              });
-              
-              const ghostContainers = document.querySelectorAll(`.left-ghost-${tweetID}`);
-              var ghostJsonData = document.getElementById("ghost-json-data").innerText
-              ghostJsonData = JSON.parse(ghostJsonData);
-              
-              Array.prototype.forEach.call(ghostContainers, function(ghostContainer) {
-                  lottie.loadAnimation({
-                  container: ghostContainer,
-                  renderer: "svg",
-                  loop: true,
-                  autoplay: true,
-                  animationData: ghostJsonData // 'animationData' can be replaced with 'path' and a (local?) url string. for now, parse JSON from a hidden div
-                  });
-              })
-          }
-          
-          didCompleteFetch();
-      };
-
-    function cleanUp(script) {
-      delete window[callback];
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-    }
-
-    document.body.appendChild(script);
-  });
-
-  function didCompleteFetch() {
-    completedFetchCount += 1;
-
-    if (completedFetchCount == totalFetchCount) {
-      if (window.twttr) {
-        twttr.ready(function() {
-          twttr.widgets.load();
+    
+    let observer = new IntersectionObserver(function (entries, observer) {
+        
+        entries.forEach((entry, index) => {
+            const thisPostElement = entry.target;
+ 
+            if (window.Awful.renderGhostTweets && !entry.isIntersecting) {
+                const player = thisPostElement.querySelectorAll("lottie-player");
+                player.forEach((lottiePlayer) => {
+                    lottiePlayer.pause();
+                    console.log("Lottie paused.");
+                });
+             } else {
+                 Awful.embedTweetNow(thisPostElement);
+             }
         });
-
-        if (webkit.messageHandlers.didFinishLoadingTweets) {
-          twttr.events.bind('loaded', function() {
-            webkit.messageHandlers.didFinishLoadingTweets.postMessage({});
-          });
-        }
-      }
-    }
-  }
+        
+    }, config);
+    
+    const viewbox = document.querySelectorAll("post");
+    viewbox.forEach((post) => {
+        observer.observe(post);
+    });
 };
 
 Awful.tweetTheme = function() {
@@ -162,13 +137,13 @@ Awful.loadTwitterWidgets = function() {
  Loads the Lottie player library into the document
  */
 Awful.loadLotties = function() {
-  if (document.getElementById('lottie-web')) {
+  if (document.getElementById('lottie-js')) {
     return;
   }
 
   var script = document.createElement('script');
-  script.id = 'lottie-web';
-  script.src = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.11/lottie.min.js";
+  script.id = 'lottie-js';
+  script.src = "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js";
   document.body.appendChild(script);
 };
 
@@ -628,8 +603,8 @@ Awful.deadTweetBadgeHTML = function(url, tweetID){
     
     var html =
     `<div class="ghost-lottie">
-            <div id="left-ghost-${tweetID}" class="left-ghost-${tweetID}">
-            </div>
+            <lottie-player background="transparent" speed="1" loop autoplay>
+            </lottie-player>
      </div>
     <span class="dead-tweet-title">DEAD TWEET</span>
     <a class="dead-tweet-link" href="${url}">@${tweeter}</a>
