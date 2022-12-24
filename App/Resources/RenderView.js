@@ -84,7 +84,7 @@ Awful.embedTweets = function() {
                   container: ghostContainer,
                   renderer: "svg",
                   loop: true,
-                  autoplay: true,
+                  autoplay: false,
                   animationData: ghostJsonData // 'animationData' can be replaced with 'path' and a (local?) url string. for now, parse JSON from a hidden div
                   });
               })
