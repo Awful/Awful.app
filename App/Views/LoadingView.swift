@@ -53,8 +53,10 @@ private class DefaultLoadingView: LoadingView {
     override init(theme: Theme?) {
         super.init(theme: theme)
         
-        let animationView: LottieAnimationView = .init(name: "v")
-        animationView.respectAnimationFrameRate = true
+        let animationView = LottieAnimationView(
+            animation: LottieAnimation.named("v"),
+            configuration: LottieConfiguration(renderingEngine: .mainThread))
+
         animationView.currentFrame = 0
         animationView.contentMode = .scaleAspectFit
         animationView.animationSpeed = 1

@@ -13,8 +13,7 @@ private let Log = Logger.get()
 
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
-    
-    var actionMappings: [UIAction.Identifier: UIActionHandler] = [:]
+    private lazy var actionMappings: [UIAction.Identifier: UIActionHandler] = [:]
     var selectedPost: Post? = nil
     var selectedUser: User? = nil
     var selectedFrame: CGRect? = nil
@@ -37,45 +36,54 @@ final class PostsPageViewController: ViewController {
     lazy var threadActionsMenu: UIMenu = {
         var threadActions: [UIMenuElement] = []
         
-        let threadActionMenu: UIMenu = {
-            let bookmarkTitle = self.thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
-            let bookmarkImage = self.thread.bookmarked ?
-            UIImage(named: "remove-bookmark")!.withRenderingMode(.alwaysTemplate)
-            :
-            UIImage(named: "add-bookmark")!.withRenderingMode(.alwaysTemplate)
-            let yourPostsImage = UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate)
-            let copyURLImage = UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate)
-            let voteImage = UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate)
-            
-            // Copy link
-            let copyLink = UIAction.Identifier("copyLink")
-            actionMappings[copyLink] = copyLink(action:)
-            let copyLinkAction = UIAction(title: "Copy link", image: copyURLImage, identifier: copyLink, handler: copyLink(action:))
-            threadActions.append(copyLinkAction)
-            
-            // Vote
-            let vote = UIAction.Identifier("vote")
-            actionMappings[vote] = vote(action:)
-            let voteAction = UIAction(title: "Vote", image: voteImage, identifier: vote, handler: vote(action:))
-            threadActions.append(voteAction)
-            
-            // Your posts
-            let yourPosts = UIAction.Identifier("yourPosts")
-            actionMappings[yourPosts] = yourPosts(action:)
-            let yourPostsAction = UIAction(title: "Your posts", image: yourPostsImage, identifier: yourPosts, handler: yourPosts(action:))
-            threadActions.append(yourPostsAction)
-            
-            // Remove bookmark
-            let bookmark = UIAction.Identifier("bookmark")
-            actionMappings[bookmark] = bookmark(action:)
-            let bookmarkAction = UIAction(title: bookmarkTitle, image: bookmarkImage, identifier: bookmark, handler: bookmark(action:))
-            bookmarkAction.attributes = self.thread.bookmarked ? [.destructive] : []
-            threadActions.append(bookmarkAction)
-            
-            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: threadActions)
-            return UIMenu(title: self.thread.title ?? "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
-        }()
-        return threadActionMenu
+        let bookmarkTitle = self.thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
+        let bookmarkImage = self.thread.bookmarked ?
+        UIImage(named: "remove-bookmark")!.withRenderingMode(.alwaysTemplate)
+        :
+        UIImage(named: "add-bookmark")!.withRenderingMode(.alwaysTemplate)
+        let yourPostsImage = UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate)
+        let copyURLImage = UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate)
+        let voteImage = UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate)
+        
+        // Bookmark
+        let bookmarkIdentifier = UIAction.Identifier("bookmark")
+        let bookmarkAction = UIAction(title: bookmarkTitle, image: bookmarkImage, identifier: bookmarkIdentifier, handler: { [unowned self] action in
+            bookmark(action: action)
+        })
+        bookmarkAction.attributes = self.thread.bookmarked ? [.destructive] : []
+        threadActions.append(bookmarkAction)
+        
+        // Copy link
+        let copyLinkIdentifier = UIAction.Identifier("copyLink")
+        let copyLinkAction = UIAction(title: "Copy link", image: copyURLImage, identifier: copyLinkIdentifier, handler: { [unowned self] action in
+            copyLink(action: action)
+        })
+        threadActions.append(copyLinkAction)
+        
+        // Vote
+        let voteIdentifier = UIAction.Identifier("vote")
+        let voteAction = UIAction(title: "Vote", image: voteImage, identifier: voteIdentifier, handler: { [unowned self] action in
+            vote(action: action)
+        })
+        threadActions.append(voteAction)
+        
+        // Your posts
+        let yourPostsIdentifier = UIAction.Identifier("yourPosts")
+        let yourPostsAction = UIAction(title: "Your posts", image: yourPostsImage, identifier: yourPostsIdentifier, handler: { [unowned self] action in
+            yourPosts(action: action)
+        })
+        threadActions.append(yourPostsAction)
+        
+        if #available(iOS 14.0, *) {
+            // no op. iOS14+ uses UIMenu, 13 uses Chidori third party menus
+        } else {
+            actionMappings[bookmarkIdentifier] = bookmark(action:)
+            actionMappings[copyLinkIdentifier] = copyLink(action:)
+            actionMappings[voteIdentifier] = vote(action:)
+            actionMappings[yourPostsIdentifier] = yourPosts(action:)
+        }
+        
+        return UIMenu(title: self.thread.title ?? "", image: nil, identifier: nil, options: [.displayInline], children: threadActions)
     }()
     
 
@@ -514,7 +522,7 @@ final class PostsPageViewController: ViewController {
     }()
     
     
-    lazy var actionsItem: UIBarButtonItem = {
+    private lazy var actionsItem: UIBarButtonItem = {
         var item: UIBarButtonItem
         if #available(iOS 14.0, *) {
             item = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu)
@@ -1130,12 +1138,9 @@ final class PostsPageViewController: ViewController {
                     }
             })
         }
+            
         actionSheet.addCancelActionWithHandler(nil)
         self.present(actionSheet, animated: false)
-        
-//        if let popover = actionSheet.popoverPresentationController {
-//            popover.barButtonItem = item
-//        }
         }
     }
     

@@ -5,15 +5,19 @@
 import Lottie
 
 final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent {
-    private let animationView: LottieAnimationView
-    
+    private let animationView = LottieAnimationView(
+        animation: LottieAnimation.named("frog"),
+        configuration: LottieConfiguration(renderingEngine: .mainThread))
+ 
+
     init(theme: Theme) {
-        animationView = .init(name: "frog")
+    
         super.init(frame: .zero)
+        
         animationView.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
         animationView.contentMode = .scaleAspectFit
-        animationView.respectAnimationFrameRate = true
-        animationView.loopMode = .loop
+        animationView.backgroundBehavior = .pauseAndRestore
+    
         animationView.animationSpeed = 1
         
         let mainColor = ColorValueProvider(theme["getOutFrogColor"]!.lottieColorValue)

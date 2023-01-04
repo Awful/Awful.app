@@ -9,7 +9,9 @@ import UIKit
 private let verticalMargin: CGFloat = 10
 
 final class NigglyRefreshLottieView: UIView {
-    fileprivate var animationView: LottieAnimationView?
+    private let animationView = LottieAnimationView(
+        animation: LottieAnimation.named("niggly"),
+        configuration: LottieConfiguration(renderingEngine: .mainThread))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -22,48 +24,45 @@ final class NigglyRefreshLottieView: UIView {
     }
     
     private func commonInit() {
-        animationView = .init(name: "niggly")
-        
         var theme: Theme {
             return Theme.defaultTheme()
         }
         
-        animationView!.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        animationView!.translatesAutoresizingMaskIntoConstraints = true
-        animationView!.respectAnimationFrameRate = true
-        animationView!.contentMode = .scaleAspectFit
-        animationView!.loopMode = .loop
-        animationView!.animationSpeed = 1
+        animationView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        animationView.translatesAutoresizingMaskIntoConstraints = true
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        animationView.animationSpeed = 1
         
-        addSubview(animationView!)
+        addSubview(animationView)
         
         backgroundColor = Theme.defaultTheme()["backgroundColor"]!
         
         NSLayoutConstraint.activate([
-            animationView!.centerXAnchor.constraint(equalTo: centerXAnchor),
-            animationView!.centerYAnchor.constraint(equalTo: centerYAnchor)])
+            animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            animationView.centerYAnchor.constraint(equalTo: centerYAnchor)])
     }
     
     override func layoutSubviews() {
         let gray = ColorValueProvider(Theme.defaultTheme()["nigglyColor"]!.lottieColorValue)
         let mainOutline = AnimationKeypath(keys: ["**", "**", "**", "Color"])
     
-        animationView!.setValueProvider(gray, keypath: mainOutline)
-        animationView!.center = CGPoint(x: bounds.midX, y: bounds.midY)
+        animationView.setValueProvider(gray, keypath: mainOutline)
+        animationView.center = CGPoint(x: bounds.midX, y: bounds.midY)
     }
     
     override var intrinsicContentSize: CGSize {
-        let spriteSheetSize = animationView!.intrinsicContentSize
+        let spriteSheetSize = animationView.intrinsicContentSize
         let margin: CGFloat = 6
         return CGSize(width: UIView.noIntrinsicMetric, height: spriteSheetSize.height + (margin * 2))
     }
     
     func startAnimating() {
-        animationView!.play()
+        animationView.play()
     }
     
     func stopAnimating() {
-        animationView!.stop()
+        animationView.stop()
     }
 }
 
@@ -78,17 +77,17 @@ extension NigglyRefreshLottieView {
         func animate(_ state: State) {
             switch state {
             case .initial:
-                view.animationView?.play()
-                view.animationView?.pause()
+                view.animationView.play()
+                view.animationView.pause()
                 
             case .releasing(let progress) where progress < 1:
-                view.animationView?.pause()
+                view.animationView.pause()
                 
             case .loading, .releasing:
-                view.animationView?.play()
+                view.animationView.play()
                 
             case .finished:
-                view.animationView?.stop()
+                view.animationView.stop()
             }
         }
     }

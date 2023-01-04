@@ -220,6 +220,8 @@ final class PostsPageView: UIView {
 
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
 
+        toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["keyboardAppearance"] == "Light" ? .light : .dark
+        
         addSubview(renderView)
         addSubview(topBarContainer)
         addSubview(loadingViewContainer)
