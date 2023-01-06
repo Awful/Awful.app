@@ -12,8 +12,9 @@ extension AwfulThread {
 
     /// Name of an image suitable for showing the rating below the thread tag.
     var ratingImageName: String? {
-        let rounded = lroundf(rating).clamp(0...5)
-        return rounded != -1 ? "Vote\(rating)" : nil
+        let scanner = Scanner(string: ratingImageBasename ?? "")
+        _ = scanner.scanUpToCharacters(from: .decimalDigits)
+        return (scanner.scanCharacters(from: .decimalDigits).map { "Vote\($0)" }) ?? "Vote0"
     }
 
     /// Name of an image suitable for showing the rating as the thread tag itself.

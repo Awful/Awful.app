@@ -175,7 +175,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
                 
                 return thread.ratingImageName.flatMap {
-                    if $0 != "Vote0.0" {
+                    if $0 != "Vote0" {
                         return UIImage(named: "Vote0")!
                             .withTintColor(Theme.defaultTheme()["ratingIconEmptyColor"]!)
                             .mergeWith(topImage: UIImage(named: $0)!)
