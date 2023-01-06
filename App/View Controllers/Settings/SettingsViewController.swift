@@ -409,48 +409,62 @@ final class SettingsViewController: TableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection sectionIndex: Int) -> String? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection sectionIndex: Int) -> UIView? {
         let section = sections[sectionIndex]
-        if let title = section["TitleKey"] as? String, title == "username" {
-            return UserDefaults.standard.loggedInUsername
+        
+        if let action = section["Action"] as? String, action == "ShowProfile" {
+            let avatarHeader = SettingsAvatarHeader.newFromNib()
+            avatarHeader.setTarget(self, action: #selector(showProfile))
+            avatarHeader.configure(
+                avatarURL: loggedInUser?.avatarURL,
+                horizontalPadding: tableView.separatorInset.left,
+                textColor: theme["listTextColor"])
+            return avatarHeader
         }
+        
         guard let title = section["Title"] as? String else { return nil }
+        
+        var cellTitleText = title
+        
+        if let title = section["TitleKey"] as? String, title == "username" {
+            cellTitleText = UserDefaults.standard.loggedInUsername ?? "Not logged in??"
+        }
+        
         if title == "Awful x.y.z" {
             var components = [Bundle.main.localizedName, Bundle.main.shortVersionString]
             if Environment.isDebugBuild || Environment.isSimulator || Environment.isInstalledViaTestFlight {
                 components.append(Bundle.main.version.map { "(\($0))" })
             }
-            return components.compactMap { $0 }.joined(separator: " ")
+            cellTitleText = components.compactMap { $0 }.joined(separator: " ")
         }
-        return title
-    }
-    
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection sectionIndex: Int) -> UIView? {
-        let section = sections[sectionIndex]
-        guard let action = section["Action"] as? String else { return nil }
-
-        let header = SettingsAvatarHeader.newFromNib()
-
-        if action == "ShowProfile" {
-            header.setTarget(self, action: #selector(showProfile))
-        } else {
-            header.setTarget(nil, action: nil)
-        }
-
-        header.configure(
-            avatarURL: loggedInUser?.avatarURL,
-            horizontalPadding: tableView.separatorInset.left,
-            textColor: theme["listTextColor"])
         
-        return header
+        let textHeader = UITextView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
+        textHeader.textAlignment = .left
+        textHeader.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        textHeader.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: 0, weight: .semibold)
+        textHeader.textColor = theme["listSecondaryTextColor"]
+        textHeader.backgroundColor = theme["listBackgroundColor"]
+        textHeader.text = cellTitleText
+        textHeader.isEditable = false
+        
+        return textHeader
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
-    
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return sections[section]["Explanation"] as? String
+
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footer = UITextView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
+        footer.text = sections[section]["Explanation"] as? String
+        footer.textAlignment = .left
+        footer.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        footer.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: 1, weight: .semibold)
+        footer.textColor = theme["listSecondaryTextColor"]
+        footer.backgroundColor = theme["listBackgroundColor"]
+        footer.isEditable = false
+        
+        return footer
     }
 }
 

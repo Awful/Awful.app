@@ -6,7 +6,7 @@ import UIKit
 
 enum DefaultBrowser: String, CaseIterable {
     case awful = "Awful"
-    case safari = "Safari"
+    case defaultiOSBrowser = "Default iOS Browser"
     case brave = "Brave"
     case chrome = "Chrome"
     case edge = "Edge"
@@ -16,7 +16,7 @@ enum DefaultBrowser: String, CaseIterable {
 extension DefaultBrowser {
     var isInstalled: Bool {
         switch self {
-        case .awful, .safari:
+        case .awful, .defaultiOSBrowser:
             return true
         case .brave:
             return UIApplication.shared.canOpenURL(URL(string: "brave://")!)
@@ -29,7 +29,7 @@ extension DefaultBrowser {
         }
     }
     
-    fileprivate static var fallback: DefaultBrowser = .safari
+    fileprivate static var fallback: DefaultBrowser = .defaultiOSBrowser
     
     static var installedBrowsers: [DefaultBrowser] {
         return allCases.filter { $0.isInstalled }

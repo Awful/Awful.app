@@ -46,7 +46,7 @@ private enum _URLMenuPresenter {
         switch UserDefaults.standard.defaultBrowser {
         case .awful:
             AwfulBrowser.presentBrowserForURL(url, fromViewController: presenter)
-        case .safari:
+        case .defaultiOSBrowser:
             UIApplication.shared.open(url)
         case .brave:
             UIApplication.shared.open(bravifyURL(url))
@@ -80,14 +80,14 @@ private enum _URLMenuPresenter {
                 }))
             }
             
-            if browsers.contains(.safari) {
+            if browsers.contains(.defaultiOSBrowser) {
                 let title: String
                 if canOpenInYouTube(linkURL) {
                     title = LocalizedString("link-action.open-in-youtube")
                 } else if canOpenInTwitter(linkURL) {
                     title = LocalizedString("link-action.open-in-twitter")
                 } else {
-                    title = LocalizedString("link-action.open-in-safari")
+                    title = LocalizedString("link-action.open-in-default-browser")
                 }
                 alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
                     UIApplication.shared.open(linkURL)
@@ -256,13 +256,13 @@ private enum _URLMenuPresenter {
                 if appInstalled {
                     return LocalizedString("link-action.open-in-vimeo")
                 } else {
-                    return LocalizedString("link-action.open-in-safari")
+                    return LocalizedString("link-action.open-in-default-browser")
                 }
             case .youTube:
                 if appInstalled {
                     return LocalizedString("link-action.open-in-youtube")
                 } else {
-                    return LocalizedString("link-action.open-in-safari")
+                    return LocalizedString("link-action.open-in-default-browser")
                 }
             }
         }

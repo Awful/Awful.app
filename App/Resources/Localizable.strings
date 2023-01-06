@@ -276,8 +276,8 @@
 /* Title of button that opens a link in Firefox. */
 "link-action.open-in-firefox" = "Open in Firefox";
 
-/* Title of button that opens a link in Safari. */
-"link-action.open-in-safari" = "Open in Safari";
+/* Title of button that opens a link in the default iOS browser (Safari unless modified by user) */
+"link-action.open-in-default-browser" = "Open in Default iOS Browser";
 
 /* Title of button that opens a link in the Twitter app. */
 "link-action.open-in-twitter" = "Open in Twitter";
