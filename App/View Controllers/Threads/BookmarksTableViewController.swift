@@ -29,6 +29,7 @@ final class BookmarksTableViewController: TableViewController {
         
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
+        navigationItem.leftBarButtonItem = editButtonItem
     }
     
     deinit {
@@ -112,6 +113,18 @@ final class BookmarksTableViewController: TableViewController {
         }
     }
 
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        // Takes care of toggling the button's title.
+        super.setEditing(editing, animated: true)
+
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        
+        // Toggle table view editing.
+        tableView.setEditing(editing, animated: true)
+    }
+    
     override func themeDidChange() {
         super.themeDidChange()
 
@@ -231,16 +244,26 @@ extension BookmarksTableViewController {
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
-            guard let thread = self.dataSource?.thread(at: indexPath) else { return }
-            self.setThread(thread, isBookmarked: false)
-            completion(true)
-        })
-        let config = UISwipeActionsConfiguration(actions: [delete])
-        config.performsFirstActionWithFullSwipe = false
-        return config
+        if tableView.isEditing {
+            let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
+                guard let thread = self.dataSource?.thread(at: indexPath) else { return }
+                self.setThread(thread, isBookmarked: false)
+                completion(true)
+            })
+            let config = UISwipeActionsConfiguration(actions: [delete])
+            config.performsFirstActionWithFullSwipe = false
+            return config
+        }
+        return nil
     }
 
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        if tableView.isEditing {
+            return .delete
+        }
+        return .none
+    }
+        
     override func tableView(
         _ tableView: UITableView,
         contextMenuConfigurationForRowAt indexPath: IndexPath,

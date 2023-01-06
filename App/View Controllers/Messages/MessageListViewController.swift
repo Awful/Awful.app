@@ -192,14 +192,24 @@ extension MessageListViewController {
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
-            guard let message = self.dataSource?.message(at: indexPath) else { return }
-            self.deleteMessage(message)
-            completion(true)
-        })
-        let config = UISwipeActionsConfiguration(actions: [delete])
-        config.performsFirstActionWithFullSwipe = false
-        return config
+        if tableView.isEditing {
+            let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
+                guard let message = self.dataSource?.message(at: indexPath) else { return }
+                self.deleteMessage(message)
+                completion(true)
+            })
+            let config = UISwipeActionsConfiguration(actions: [delete])
+            config.performsFirstActionWithFullSwipe = false
+            return config
+        }
+        return nil
+    }
+    
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        if tableView.isEditing {
+            return .delete
+        }
+        return .none
     }
 }
 
