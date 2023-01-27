@@ -12,6 +12,8 @@ public struct PostsPageScrapeResult: ScrapeResult {
     public let jumpToPostIndex: Int?
     public let pageCount: Int?
     public let pageNumber: Int?
+    public var pollID: String?
+    public var pollHTML: RawHTML?
     public let posts: [PostScrapeResult]
     public let postsPerPage: Int?
     public let threadID: ThreadID?
@@ -34,6 +36,34 @@ public struct PostsPageScrapeResult: ScrapeResult {
         isSingleUserFilterEnabled = body.firstNode(matchingSelector: "table.post a.user_jump[title *= 'Remove']") != nil
 
         (pageNumber: pageNumber, pageCount: pageCount) = scrapePageDropdown(body)
+        
+        // edit poll link is always present whether poll has been completed yet or not
+        let hasPoll = body.firstNode(matchingSelector: "a[href *= 'poll.php']") != nil
+        
+        // this element will be present if poll is open: <input type="hidden" name="action" value="pollvote">
+        let hasOpenPoll = hasPoll && body.firstNode(matchingSelector: "input[value = 'pollvote']") != nil
+    
+        if hasPoll {
+            pollID = body.firstNode(matchingSelector: "a[href *= 'poll.php?action=polledit&pollid=']")
+                .flatMap { $0["href"] }
+                .flatMap { URLComponents(string: $0) }
+                .flatMap { $0.queryItems }
+                .flatMap { $0.first(where: { $0.name == "pollid" }) }
+                .flatMap { $0.value }
+      
+            
+            if hasOpenPoll {
+                self.pollHTML = body
+                    .firstNode(matchingSelector: "form table#main_full")?
+                    .serializedFragment
+                ?? ""
+            } else {
+                self.pollHTML = body
+                    .firstNode(matchingSelector: "table[class = 'standard']")?
+                    .serializedFragment
+                ?? ""
+            }
+        }
 
         let posts = try body
             .nodes(matchingSelector: "table.post")

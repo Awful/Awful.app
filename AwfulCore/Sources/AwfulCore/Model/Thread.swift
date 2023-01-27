@@ -35,7 +35,11 @@ public class AwfulThread: AwfulManagedObject, Managed {
     @NSManaged public var secondaryThreadTag: ThreadTag? /* via secondaryThreads */
     @NSManaged var threadFilters: Set<ThreadFilter>
     @NSManaged public var threadTag: ThreadTag? /* via threads */
-
+    
+    // support for answering polls and viewing results
+    @NSManaged public var pollID: String?
+    @NSManaged public var pollHTML: String?
+    
     public override var objectKey: ThreadKey { .init(threadID: threadID) }
 }
 

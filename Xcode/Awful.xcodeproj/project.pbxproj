@@ -245,6 +245,7 @@
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
+		2DEFC248296824CA00218BCD /* PollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DEFC247296824CA00218BCD /* PollView.swift */; };
 		7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */; };
 		7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */; };
 		7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1FF1271F76C3A3000B64DA /* AppIconPickerCell.swift */; };
@@ -620,6 +621,7 @@
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		2DEFC247296824CA00218BCD /* PollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollView.swift; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
 		68A40BB24850D9A942D1E270 /* Pods_Awful.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awful.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwfulTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1354,6 +1356,7 @@
 				1C16FBBF1CB950BE00C88BD1 /* ThreadTagButton.swift */,
 				2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */,
 				2D265F94292CC19B001336ED /* NigglyRefreshLottieView.swift */,
+				2DEFC247296824CA00218BCD /* PollView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2024,6 +2027,7 @@
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
 				1C381206219F766B005029C1 /* NSAttributedString+Format.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
+				2DEFC248296824CA00218BCD /* PollView.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,

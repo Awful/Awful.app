@@ -57,6 +57,9 @@ internal extension PostsPageScrapeResult {
             if threadIsClosed != thread.closed { thread.closed = threadIsClosed }
             if !threadTitle.isEmpty, threadTitle != thread.title { thread.title = threadTitle }
 
+            if let pollHTML = pollHTML, pollHTML != thread.pollHTML { thread.pollHTML = pollHTML }
+            if let pollID = pollID, pollID != thread.pollID { thread.pollID = pollID }
+            
             if let pageCount = pageCount {
                 if isSingleUserFilterEnabled {
                     if let firstAuthor = self.posts.first?.author, let user = users[firstAuthor.userID] {

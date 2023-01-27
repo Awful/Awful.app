@@ -8,6 +8,7 @@ import MobileCoreServices
 import MRProgress
 import PromiseKit
 import WebKit
+import SwiftUI
 
 private let Log = Logger.get()
 
@@ -73,6 +74,18 @@ final class PostsPageViewController: ViewController {
             yourPosts(action: action)
         })
         threadActions.append(yourPostsAction)
+        
+        if self.thread.pollID != nil {
+            // View poll
+            let viewPollIdentifier = UIAction.Identifier("viewPoll")
+            let viewPollAction = UIAction(title: "View poll", image: UIImage(systemName: "chart.bar"), identifier: viewPollIdentifier, handler: { [unowned self] action in
+                viewPoll(action: action)
+            })
+            threadActions.append(viewPollAction)
+            if #available(iOS 14.0, *) {} else {
+                actionMappings[viewPollIdentifier] = viewPoll(action:)
+            }
+        }
         
         if #available(iOS 14.0, *) {
             // no op. iOS14+ uses UIMenu, 13 uses Chidori third party menus
@@ -1015,6 +1028,25 @@ final class PostsPageViewController: ViewController {
             
             print("Your Posts")
             
+        }
+    }
+    
+    private func viewPoll(action: UIAction) {
+        if UserDefaults.standard.enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) {
+            guard let pollHtml = self.thread.pollHTML else { return }
+            guard let pollID = self.thread.pollID else { return }
+         
+            let pollModel = OptionViewModel(destination: .openPoll,
+                                            pollHTMLString: pollHtml,
+                                            poll: Poll(pollID: pollID))
+            
+            let pollview = UIHostingController(rootView: PollView(model: pollModel))
+            pollview.restorationIdentifier = "Poll view"
+            
+            self.navigationController?.pushViewController(pollview, animated: true)
         }
     }
     

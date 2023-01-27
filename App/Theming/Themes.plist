@@ -57,6 +57,8 @@
 	</dict>
 	<key>default</key>
 	<dict>
+		<key>selectedTextColor</key>
+		<string>#ffffff</string>
 		<key>roundedFonts</key>
 		<false/>
 		<key>favoriteStarTintColor</key>
@@ -134,6 +136,8 @@
 		</dict>
 		<key>Posts</key>
 		<dict>
+			<key>pollBarColor</key>
+			<string>#fcba03</string>
 			<key>postsLoadingViewTintColor</key>
 			<string>#f5f5f5</string>
 			<key>postsPullForNextColor</key>
