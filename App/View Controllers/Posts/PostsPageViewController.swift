@@ -1596,7 +1596,7 @@ final class PostsPageViewController: ViewController {
 
         if #available(iOS 14.0, *) {
             deferredHamburgerElements.append(
-                UIDeferredMenuElement { completion in
+                UIDeferredMenuElement { [unowned self] completion in
                     var threadActions: [UIMenuElement] = []
                     
                     // Bookmark / Unbookmark
