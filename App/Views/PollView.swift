@@ -30,8 +30,7 @@ struct PollView: View {
     @SwiftUI.Environment(\.theme) var theme
     
     var body: some View {
-        NavigationView {
-            
+
             VStack {
                 if self.model.poll.pollStatus == .open {
                     Picker("", selection: self.$model.selection) {
@@ -101,7 +100,6 @@ struct PollView: View {
             .alert(isPresented: self.$model.pollSubmitError) {
                 Alert(title: Text("Title"), message: Text("This is the alert message"), dismissButton: .default(Text("OK")))
             }
-        }
         .navigationBarTitle(Text(self.model.poll.pollQuestion), displayMode: .inline)
         
     }

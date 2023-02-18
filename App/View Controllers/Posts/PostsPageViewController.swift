@@ -34,6 +34,10 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
     
+    // for ios14, hamburger elements are populated in viewDidLoad (to allow for detection of polls in the page html)
+    var deferredHamburgerElements: [UIMenuElement] = []
+    
+    // this var exists purely for ios13 and chidori menu. can be deleted when raising the target to 14
     lazy var threadActionsMenu: UIMenu = {
         var threadActions: [UIMenuElement] = []
         
@@ -534,16 +538,12 @@ final class PostsPageViewController: ViewController {
         return item
     }()
     
-    
-    private lazy var actionsItem: UIBarButtonItem = {
-        var item: UIBarButtonItem
+    lazy private var actionsItem: UIBarButtonItem = {
         if #available(iOS 14.0, *) {
-            item = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu)
+            return UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: UIMenu())
         } else {
-            item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: #selector(didTapHamburgerMenu))
+            return UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: #selector(didTapHamburgerMenu))
         }
-        
-        return item
     }()
     
     @objc private func externalStylesheetDidUpdate(_ rawNotification: Notification) {
@@ -1593,8 +1593,71 @@ final class PostsPageViewController: ViewController {
                 }
             }
         }
-    }
 
+        if #available(iOS 14.0, *) {
+            deferredHamburgerElements.append(
+                UIDeferredMenuElement { completion in
+                    var threadActions: [UIMenuElement] = []
+                    
+                    // Bookmark / Unbookmark
+                    let bookmarkTitle = self.thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
+                    let bookmarkImage = self.thread.bookmarked ?
+                    UIImage(named: "remove-bookmark")!.withRenderingMode(.alwaysTemplate)
+                    :
+                    UIImage(named: "add-bookmark")!.withRenderingMode(.alwaysTemplate)
+                    let bookmarkIdentifier = UIAction.Identifier("bookmark")
+                    let bookmarkAction = UIAction(title: bookmarkTitle, image: bookmarkImage, identifier: bookmarkIdentifier, handler: {  action in
+                        self.bookmark(action: action)
+                    })
+                    bookmarkAction.attributes = self.thread.bookmarked ? [.destructive] : []
+
+                    threadActions.append(bookmarkAction)
+
+                    // View poll
+                    if self.thread.pollID != nil {
+                        let viewPollIdentifier = UIAction.Identifier("viewPoll")
+                        let viewPollAction = UIAction(title: "View poll", image: UIImage(systemName: "chart.bar"), identifier: viewPollIdentifier, handler: { [unowned self] action in
+                            viewPoll(action: action)
+                        })
+                        threadActions.append(viewPollAction)
+                        self.actionMappings[viewPollIdentifier] = self.viewPoll(action:)
+                    }
+                    
+                    // Copy link
+                    let copyURLImage = UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate)
+                    let copyLinkIdentifier = UIAction.Identifier("copyLink")
+                    let copyLinkAction = UIAction(title: "Copy link", image: copyURLImage, identifier: copyLinkIdentifier, handler: { [unowned self] action in
+                        copyLink(action: action)
+                    })
+                    threadActions.append(copyLinkAction)
+                    
+                    // Vote
+                    let voteImage = UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate)
+                    let voteIdentifier = UIAction.Identifier("vote")
+                    let voteAction = UIAction(title: "Vote", image: voteImage, identifier: voteIdentifier, handler: { [unowned self] action in
+                        vote(action: action)
+                    })
+                    threadActions.append(voteAction)
+                    
+                    // Your posts
+                    let yourPostsImage = UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate)
+                    let yourPostsIdentifier = UIAction.Identifier("yourPosts")
+                    let yourPostsAction = UIAction(title: "Your posts", image: yourPostsImage, identifier: yourPostsIdentifier, handler: { [unowned self] action in
+                        yourPosts(action: action)
+                    })
+                    threadActions.append(yourPostsAction)
+  
+                    self.actionMappings[bookmarkIdentifier] = self.bookmark(action:)
+                    self.actionMappings[copyLinkIdentifier] = self.copyLink(action:)
+                    self.actionMappings[voteIdentifier] = self.vote(action:)
+                    self.actionMappings[yourPostsIdentifier] = self.yourPosts(action:)
+                    
+                    completion(threadActions)
+                }
+            )
+        }
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updatePostsViewLayoutMargins()
@@ -1622,6 +1685,15 @@ final class PostsPageViewController: ViewController {
         userActivity = nil
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if #available(iOS 14.0, *) {
+            // Set the menu property of the UIBarButtonItem with the deferred elements
+            let menu = UIMenu(title: "", children: deferredHamburgerElements)
+            actionsItem.menu = menu
+        }
+    }
+
     override func encodeRestorableState(with coder: NSCoder) {
         super.encodeRestorableState(with: coder)
         
