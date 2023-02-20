@@ -1,0 +1,566 @@
+/*
+ posts-view-spankykong-oled-dark.css
+ Awful
+
+ Copyright 2022 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+*/
+
+@import "base.less";
+
+ :root {
+    font-family: ui-rounded;
+    --username-font-size: 1.1em;
+    --username-color: #fffefe;
+    
+    --regdate-font-size: 0.75em;
+    --regdate-color: #4d4d4d;
+    
+    --postbody-font-size: 1.05em;
+    --postbody-color: #fffefe;
+    
+    --link-font-size: 1.05em;
+    --link-color: #0066ff;
+    
+    --editedby-font-size: 0.75em;
+    --editedby-color: #4d4d4d;
+    
+    --postdate-font-size: 0.75em;
+    --postdate-color: #4d4d4d;
+    
+    --quoteheader-font-size: .98em;
+    --quoteheader-color: #fffefe;
+    
+    --quotebody-font-size: 0.85em;
+    --quotebody-color: #fffefe;
+    
+    --quotelink-font-size: 0.85em;
+    --quotelink-color: #0066ff;
+}
+* {
+ box-sizing: border-box;
+ font-family: ui-rounded !important;
+}
+
+body {
+    min-height: 100vh;
+    font: -apple-system-caption1;
+    font-size: var(--postbody-font-size);
+    font-family: ui-rounded;
+    margin: 0;
+    -webkit-text-size-adjust: 100%;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    word-wrap: break-word;
+}
+
+post:first-child {
+    margin-top: 3px;
+}
+post {
+    background-color: #000000;
+    border-bottom: none;
+    border-top: none;
+    padding-bottom: 0.25em;
+}
+header {
+    border-bottom: none;
+}
+.iphone post header {
+    display: grid;
+    grid-column: 1 / span 2;
+    grid-row: 1 / 2;
+    align-items: center;
+    justify-content: start;
+    padding-bottom: 7px;
+}
+.iphone post header,
+.iphone post .postbody {
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+}
+.iphone post footer {
+    padding-left: 0.6em;
+}
+.iphone post .action-button {
+    padding-right: 0.6em;
+}
+.avatar {
+    border-radius: 3px;
+    margin-top: 6px;
+    margin-right: 12px;
+}
+.iphone .avatar {
+    max-width: 4em;
+    max-height: 4em;
+    margin-bottom: 6px;
+    vertical-align: middle;
+    grid-column: 1 / 2;
+}
+.iphone .nameanddate {
+    vertical-align: middle;
+    grid-column: 2 / 4;
+    align-items: start;
+}
+.username {
+    word-break: break-word;
+}
+.postdate {
+    font-size: var(--postdate-font-size);
+    font: -apple-system-footnote;
+    font-weight: 600 !important;
+    font-family: ui-rounded;
+    color: var(--postdate-color);
+    -webkit-flex-grow: 1;
+    -webkit-flex-wrap: wrap-reverse;
+    text-align: right;
+    position: relative;
+}
+.regdate {
+    display: block;
+    color: var(--regdate-color);
+    font: -apple-system-caption1;
+    font-weight: 600 !important;
+    font-family: ui-rounded;
+    font-size: var(--regdate-font-size);
+    margin: 0 0 2px 0px;
+}
+.username {
+    display: inline-block;
+    font: -apple-system-caption1;
+    font-weight: 600 !important;
+    font-family: ui-rounded;
+    font-size: var(--username-font-size);
+    color: var(--username-color);
+}
+.role-admin .username:before {
+    color: #DD1000; /* red */
+}
+.role-mod .username:before {
+    color: #0066FF; /* blue */
+}
+.role-supermod .username:before {
+    color: #f3a5aa; /* pink? never seen a supermod */
+}
+.role-ik .username:before {
+    color: #4d4d4d; /* grey */
+}
+.role-coder .username:before {
+    color: #FFCD00; /* yellow */
+}
+.role-admin .username:before,
+.role-mod .username:before,
+.role-supermod .username:before,
+.role-ik .username:before,
+.role-coder .username:before {
+    content: '★';
+}
+.op .username {
+    color: var(--link-color);
+}
+.platinum .username:after {
+    background-image: url('awful-resource://platinum-member.png');
+    background-position: -100% 0;
+    /* determine (close enough to) #4d4d4d from black using https://codepen.io/sosuke/pen/Pjoqqp */
+    -webkit-filter: invert(27%) sepia(44%) saturate(0%) hue-rotate(257deg) brightness(90%) contrast(86%);
+    content: "";
+    background-size: 14px;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+}
+.coder .username:before {
+    content: url('awful-resource://image-coder.png');
+}
+.idiotking .username:before {
+    content: url('awful-resource://ik.png');
+}
+.diamond .username:before {
+    content: url('awful-resource://diamond-icon.png');
+}
+.redpill .username:before {
+    content: url('awful-resource://redpill.png');
+}
+.award .username:before {
+    content: url('awful-resource://award.png');
+}
+.platinum .username:after {
+  background-image: url('awful-resource://platinum-member.png');
+}
+.op .username {
+    color: var(--link-color);
+}
+.postbody img,
+.postbody iframe,
+.postbody embed {
+    max-width: 100%;
+}
+.postbody img,
+#fyad-flag {
+    -webkit-user-select: none;
+}
+.postbody div.code pre {
+    white-space: break-spaces;
+}
+.postbody a {
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    font-weight: 450;
+}
+.postbody b::before,
+.postbody i::before,
+.postbody s::before,
+.postbody span.bbc-spoiler::before,
+.postbody sub::before,
+.postbody sup::before,
+.postbody tt::before,
+.postbody u::before {
+    content: "\200C";
+}
+.iphone .postbody ol,
+.iphone .postbody ul {
+    margin: 0;
+    padding-left: 1.5em;
+}
+.postbody > img {
+    border-radius: 3px !important;
+}
+
+.postbody > iframe {
+    border-radius: 3px !important;
+}
+.postbody a,
+[data-awful-linkified-image] {
+    color: var(--link-color);
+}
+.iphone .postbody {
+    grid-column: 1 / span 2;
+    grid-row: 2 / 4;
+}
+.bbc-block {
+    border-left: 2px solid #999;
+    font-size: var(--quotebody-font-size);
+    padding: 0 6px 5px 3px;
+    margin: 7px 0px;
+}
+
+.bbc-block h4 {
+    margin: 0;
+    font: -apple-system-headline;
+    font-weight: 700 !important;
+    font-size: var(--quoteheader-font-size);
+    font-family: ui-rounded;
+    text-align: top;
+}
+.bbc-block h4 span.mention.highlight {
+    color: #9337fd;
+    border-color: #7409a0;
+}
+blockquote {
+    margin: 0;
+}
+blockquote img {
+    max-width: 160px;
+    max-height: 100px;
+    border-radius: 3px !important;
+}
+.bbc-block.code pre {
+    margin: 0;
+}
+.bbc-block h5 {
+    margin: 0;
+}
+.bbc-block.mention.highlight,
+.bbc-block.mention.highlight h4 a {
+    color: #9337fd;
+    border-color: #7409a0;
+}
+.ipad .bbc-block {
+    margin: 0 6px 1em 6px;
+}
+code,
+pre,
+tt {
+    font-family: menlo;
+    font-size: 0.9em;
+}
+span.mention.highlight {
+    color: #9337fd;
+}
+.quote_link {
+    text-decoration: none;
+    font-family: ui-rounded;
+    color: var(--quotelink-color);
+}
+[data-awful-linkified-image] {
+    cursor: pointer;
+    font-family: ui-rounded;
+    text-decoration: underline;
+}
+.gif-wrap {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+}
+.gif-wrap:before {
+    content: "GIF";
+    display: block;
+    background-color: rgba(255, 255, 255, 0.5);
+    background-image: url('awful-resource://play-button.png');
+    background-size: 0.85em;
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    color: #000;
+    height: 1.35em;
+    margin: auto;
+    position: absolute;
+    width: 1.75em;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0.25em;
+    padding-right: 1.25em;
+    border-radius: 0.125em;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+}
+.gif-wrap.loading:before {
+    background-image: url('awful-resource://spinner-button.png');
+}
+.gif-wrap.playing:before {
+    display: none;
+}
+.bbc-spoiler:not(.spoiled) .gif-wrap {
+    visibility: hidden;
+}
+.gif-wrap + br,
+.gif-wrap + br + br {
+    display: none;
+}
+#fyad-flag {
+    width: 100%;
+    height: 102px;
+}
+#fyad-flag img {
+    border: 1px solid black;
+}
+
+#ad {
+    text-align: center;
+}
+#ad img {
+    max-width: 100%;
+}
+.iphone #ad {
+    padding: 0.6em;
+    padding-bottom: 0;
+}
+
+#end {
+    font-weight: normal;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 10px;
+    -webkit-user-select: none;
+}
+.voiceover-only {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+header,
+footer {
+    -webkit-user-select: none;
+}
+header img.avatar,
+header section.nameanddate {
+    cursor: pointer;
+}
+.bbc-spoiler {
+    cursor: pointer;
+}
+footer button.action-button {
+    cursor: pointer;
+}
+post,
+#ad,
+#end {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-left: constant(safe-area-inset-left);
+    padding-right: constant(safe-area-inset-right);
+}
+.bbc-spoiler:not(.spoiled) {
+    color: transparent;
+    background: #333;
+    border-radius: 6px;
+}
+.bbc-spoiler:not(.spoiled) .bbc-block,
+.bbc-spoiler:not(.spoiled) .bbc-block h4,
+.bbc-spoiler:not(.spoiled) .bbc-block h5,
+.bbc-spoiler:not(.spoiled) li,
+.bbc-spoiler:not(.spoiled) a:link,
+.bbc-spoiler:not(.spoiled) a:visited,
+.bbc-spoiler:not(.spoiled) a:active,
+.bbc-spoiler:not(.spoiled) [data-awful-linkified-image] {
+    color: transparent;
+    background: #333;
+    border-radius: 6px;
+}
+.bbc-spoiler:not(.spoiled) li {
+    list-style: none;
+}
+.bbc-spoiler:not(.spoiled) img {
+    opacity: 0;
+    height: 0;
+    width: 100%;
+}
+.bbc-block h4,
+.bbc-block h5 {
+    font-size: var(--quoteheader-font-size);
+    margin-bottom: 6px;
+}
+.bbc-block h4 a,
+.bbc-block h5 a {
+ color: var(--quoteheader-color);
+}
+.bbc-block.mention.highlight,
+.bbc-block.mention.highlight h4,
+.bbc-block.mention.highlight h4 a {
+    color: #9337fd;
+    border-color: #b837ed;
+}
+.bbc-block.mention.highlight h4 span.mention.highlight {
+    color: #9337fd;
+}
+.bbc-block.mention > .quoteheader > a {
+    color: #9337fd;
+}
+.bbc-block {
+    border: none;
+    background-color: #1a1a1a;
+    font-size: var(quote-font-size);
+    font-family: ui-rounded;
+    padding: 10px;
+    padding-left: 40px;
+    padding-bottom: 20px;
+    border-radius: 1em;
+    position: relative;
+}
+.quotepost-span {
+    height: 25px;
+    width: 25px;
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: var(--quotelink-color);
+    -webkit-mask-box-image: url("awful-resource://quote-post.png");
+}
+.bbc-block a {
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+}
+
+@import "posts-view-dark-emoticons.less";
+
+footer {
+    white-space: nowrap;
+}
+.divider {
+  background-color: #1a1a1a;
+  content: "";
+  border-radius: 0.3em;
+  display: inline-block;
+  height: 0.2em;
+  position: relative;
+  vertical-align: middle;
+  overflow: auto;
+  width: 100%;
+}
+.divider {
+  margin-right: 0.8em;
+  left: 1px;
+  overflow: auto;
+}
+.divider-seen {
+    background-color: #0066FF;
+    height: 0.15em;
+}
+.quoteheader > a {
+    margin-bottom: 8px;
+    color: var(--quoteheader-color);
+    font-family: ui-rounded;
+    font: -apple-system-headline;
+    font-weight: 600 !important;
+    font-size: var(--quoteheader-font-size);
+    text-align: top;
+}
+.quote_link {
+    color: var(--username-color);
+    margin-bottom: 8px;
+    font: -apple-system-headline;
+    font-family: ui-rounded;
+    font-weight: 450 !important;
+    font-size: var(--quotelink-font-size);
+    display: inline-block;
+}
+img.awful-smile {
+    border-radius: 0px;
+}
+.editedby {
+    margin-top: 2em;
+    margin-bottom: 0;
+    font: -apple-system-caption1;
+    font-style: italic;
+    font-weight: 600;
+    font-size: var(--editedby-font-size);
+    color: var(--editedby-color);
+}
+.attachment {
+    margin: 0;
+}
+footer {
+    display: -webkit-flex;
+    -webkit-align-items: center;
+}
+footer:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+.iphone footer {
+    grid-column: 1 / span 2;
+    grid-row: 5 / 6;
+    align-items: center;
+    justify-content: start;
+}
+footer {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+.action-button {
+  margin: 0;
+  border: none;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+}
+.action-button img {
+  width: 24px;
+  height: 8px;
+  -webkit-filter: invert(27%) sepia(44%) saturate(0%) hue-rotate(257deg) brightness(90%) contrast(86%);
+}
+.editedby span.mention.highlight {
+    color: #9337fd;
+}
+#end {
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 3em;
+}
+body {
+    color: #fffefe;
+    background-color: #000000;
+}
+
+@import "dead-tweet-ghost.less";
+.dead-tweet(#0066FF, #000, #fffefe); //@tweetLinkColor, @backgroundColor, @ghostColor
