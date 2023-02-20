@@ -49,8 +49,28 @@ final class NavigationController: UINavigationController, Themeable {
         return Theme.defaultTheme()
     }
     
-    // dynamically set the status icons (clock, wifi, battery) to black or white depending on the mode of the theme
-    override var preferredStatusBarStyle : UIStatusBarStyle { Theme.defaultTheme()["mode"] == "light" ? .lightContent : .darkContent }
+    // MARK: set the status icons (clock, wifi, battery) to black or white depending on the mode of the theme
+    // thanks sarunw https://sarunw.com/posts/how-to-set-status-bar-style/
+    var isDarkContentBackground = false
+
+    func statusBarEnterLightBackground() {
+        isDarkContentBackground = false
+        setNeedsStatusBarAppearanceUpdate()
+    }
+
+    func statusBarEnterDarkBackground() {
+        isDarkContentBackground = true
+        setNeedsStatusBarAppearanceUpdate()
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        if isDarkContentBackground {
+            return .lightContent
+        } else {
+            return .darkContent
+        }
+    }
+    
     
     // MARK: Swipe to unpop
     
@@ -100,6 +120,12 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
         awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
         
+        if Theme.defaultTheme()["mode"] == "light" {
+            statusBarEnterLightBackground()
+        } else {
+            statusBarEnterDarkBackground()
+        }
+
         if #available(iOS 15.0, *) {
             // Fix odd grey navigation bar background when scrolled to top on iOS 15.
             let appearance = UINavigationBarAppearance()

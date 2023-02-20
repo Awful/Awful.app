@@ -1484,11 +1484,39 @@ final class PostsPageViewController: ViewController {
         super.themeDidChange()
 
         postsView.themeDidChange(theme)
+        navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+  
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .regular)
+        default:
+            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .regular)
+            navigationItem.titleLabel.numberOfLines = 2
+        }
+     
         
         if postsView.loadingView != nil {
             postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
         }
+        
+        let appearance = UIToolbarAppearance()
+        if (postsView.toolbar.isTranslucent) {
+            appearance.configureWithDefaultBackground()
+        } else {
+            appearance.configureWithOpaqueBackground()
+        }
+        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        appearance.shadowImage = nil
+        appearance.shadowColor = nil
 
+        postsView.toolbar.standardAppearance = appearance
+        postsView.toolbar.compactAppearance = appearance
+
+        if #available(iOS 15.0, *) {
+            postsView.toolbar.scrollEdgeAppearance = appearance
+            postsView.toolbar.compactScrollEdgeAppearance = appearance
+        }
+  
         messageViewController?.themeDidChange()
     }
     
