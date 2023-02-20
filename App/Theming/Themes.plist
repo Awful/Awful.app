@@ -67,8 +67,6 @@
 		<string>#1e84af</string>
 		<key>roundedFonts</key>
 		<false/>
-		<key>favoriteStarTintColor</key>
-		<string>#1e84af</string>
 		<key>description</key>
 		<string>Light</string>
 		<key>descriptiveColor</key>
@@ -123,8 +121,6 @@
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
-			<key>postsViewThreadTitleFontSize</key>
-			<integer>13</integer>
 			<key>showRootTabBarLabel</key>
 			<true/>
 			<key>tabBarTintColor</key>
@@ -146,6 +142,10 @@
 		</dict>
 		<key>Posts</key>
 		<dict>
+			<key>postTitleFontSizeAdjustmentPhone</key>
+			<integer>-2</integer>
+			<key>postTitleFontSizeAdjustmentPad</key>
+			<integer>0</integer>
 			<key>postsLoadingViewTintColor</key>
 			<string>#f5f5f5</string>
 			<key>postsPullForNextColor</key>
@@ -960,6 +960,10 @@
 		</dict>
 		<key>Posts</key>
 		<dict>
+			<key>postTitleFontSizeAdjustmentPad</key>
+			<real>0.45</real>
+			<key>postTitleFontSizeAdjustmentPhone</key>
+			<real>0.45</real>
 			<key>postsLoadingViewTintColor</key>
 			<string>#000000</string>
 			<key>postsPullForNextColor</key>
@@ -1108,8 +1112,6 @@
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
-			<key>postsViewThreadTitleFontSize</key>
-			<integer>16</integer>
 			<key>showRootTabBarLabel</key>
 			<false/>
 			<key>tabBarIconNormalColor</key>
@@ -1139,6 +1141,10 @@
 		</dict>
 		<key>Posts</key>
 		<dict>
+			<key>postTitleFontSizeAdjustmentPad</key>
+			<real>0.45</real>
+			<key>postTitleFontSizeAdjustmentPhone</key>
+			<real>0.45</real>
 			<key>postsLoadingViewTintColor</key>
 			<string>#e6e6e6</string>
 			<key>postsPullForNextColor</key>

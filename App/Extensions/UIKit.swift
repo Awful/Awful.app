@@ -207,19 +207,21 @@ extension UIImage {
 }
 
 extension UINavigationItem {
+    // MARK: THREAD TITLE Posts View
     /// A replacement label for the title that shows two lines on iPhone.
     var titleLabel: UILabel {
+        let theme = Theme.defaultTheme()
         if let label = titleView as? UILabel { return label }
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 375, height: 44))
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         label.textAlignment = .center
-        label.textColor = .white
+        label.textColor = theme["navigationBarTextColor"]!
         label.accessibilityTraits.insert(UIAccessibilityTraits.header)
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .regular)
         default:
-            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -2, weight: .regular)
+            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .regular)
             label.numberOfLines = 2
         }
         titleView = label
