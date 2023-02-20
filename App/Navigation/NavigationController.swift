@@ -50,7 +50,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
     
     // dynamically set the status icons (clock, wifi, battery) to black or white depending on the mode of the theme
-    override var preferredStatusBarStyle : UIStatusBarStyle { Theme.defaultTheme()["mode"] == "light" ? .darkContent : .lightContent }
+    override var preferredStatusBarStyle : UIStatusBarStyle { Theme.defaultTheme()["mode"] == "light" ? .lightContent : .darkContent }
     
     // MARK: Swipe to unpop
     
