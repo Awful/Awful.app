@@ -38,10 +38,6 @@ final class NavigationBar: UINavigationBar {
         if #available(iOS 15.0, *) {
             // Fix odd grey navigation bar background when scrolled to top on iOS 15.
             scrollEdgeAppearance = standardAppearance
-            
-            //Set the status bar to use white text
-            //TODO: We should compute this or save it in the theme plist, but currently there isn't a single theme where the statusbar shouldn't be white.
-            overrideUserInterfaceStyle = .dark
         }
     }
     

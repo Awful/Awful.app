@@ -245,6 +245,8 @@
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
+		2DFDF71329A366BA0078CE52 /* posts-view-spankykong-oled-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 2DFDF71229A366BA0078CE52 /* posts-view-spankykong-oled-dark.css */; };
+		2DFDF71529A366E20078CE52 /* posts-view-spankykong-light.css in Resources */ = {isa = PBXBuildFile; fileRef = 2DFDF71429A366E20078CE52 /* posts-view-spankykong-light.css */; };
 		7B0EA0B81D96B17B008B0A90 /* SettingsSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B71D96B17B008B0A90 /* SettingsSliderCell.swift */; };
 		7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7B0EA0B91D96BF82008B0A90 /* SettingsSliderCell.xib */; };
 		7B1FF1291F76C3A3000B64DA /* AppIconPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B1FF1271F76C3A3000B64DA /* AppIconPickerCell.swift */; };
@@ -620,6 +622,8 @@
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		2DFDF71229A366BA0078CE52 /* posts-view-spankykong-oled-dark.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "posts-view-spankykong-oled-dark.css"; sourceTree = "<group>"; };
+		2DFDF71429A366E20078CE52 /* posts-view-spankykong-light.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "posts-view-spankykong-light.css"; sourceTree = "<group>"; };
 		3DEC84CD16F06A21949AA42D /* Pods-Awful.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.debug.xcconfig"; sourceTree = "<group>"; };
 		68A40BB24850D9A942D1E270 /* Pods_Awful.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Awful.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74067F2D002D797BC328EF39 /* Pods_AwfulTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwfulTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1318,6 +1322,8 @@
 				1CDD48BB17EE288A00E4DAE3 /* Themes.plist */,
 				1CB15BCE1A9CEB8800176E73 /* Themes.swift */,
 				1C0D80051CFA0CD7003EE2D1 /* ViewController.swift */,
+				2DFDF71229A366BA0078CE52 /* posts-view-spankykong-oled-dark.css */,
+				2DFDF71429A366E20078CE52 /* posts-view-spankykong-light.css */,
 			);
 			path = Theming;
 			sourceTree = "<group>";
@@ -1749,6 +1755,7 @@
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
+				2DFDF71529A366E20078CE52 /* posts-view-spankykong-light.css in Resources */,
 				1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */,
 				7B82D6681F7809E3002291C7 /* AppIconCell.xib in Resources */,
 				1C29BD512251203400E1217A /* posts-view-oled-dark.css in Resources */,
@@ -1765,6 +1772,7 @@
 				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
 				1C4EE1CE28470C2400A7507E /* Assets.xcassets in Resources */,
+				2DFDF71329A366BA0078CE52 /* posts-view-spankykong-oled-dark.css in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				1C54D31319BE1708002AC6B9 /* SettingsAvatarHeader.xib in Resources */,
 				1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */,

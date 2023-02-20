@@ -52,19 +52,31 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         tabBar.tintColor = theme["tintColor"]
         tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
         
+        // Fix tab bar having no background when scrolled to bottom on iOS 15.
+        let appearance = UITabBarAppearance()
+        if (tabBar.isTranslucent) {
+            appearance.configureWithDefaultBackground()
+        } else {
+            appearance.configureWithOpaqueBackground()
+        }
+        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        appearance.shadowImage = nil
+        appearance.shadowColor = nil
+        
+        let itemAppearance = UITabBarItemAppearance()
+        itemAppearance.selected.iconColor = Theme.defaultTheme()["tabBarIconSelectedColor"]!
+        itemAppearance.normal.iconColor = Theme.defaultTheme()["tabBarIconNormalColor"]!
+        
+        
+        appearance.inlineLayoutAppearance = itemAppearance
+        appearance.stackedLayoutAppearance = itemAppearance
+        appearance.compactInlineLayoutAppearance = itemAppearance
+        // tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+        
+        tabBar.standardAppearance = appearance;
+    
         if #available(iOS 15.0, *) {
-            // Fix tab bar having no background when scrolled to bottom on iOS 15.
-            let appearance = UITabBarAppearance()
-            if (tabBar.isTranslucent) {
-                appearance.configureWithDefaultBackground()
-            } else {
-                appearance.configureWithOpaqueBackground()
-            }
-            
-            appearance.backgroundColor = theme["tabBarBackgroundColor"]
-            
-            tabBar.standardAppearance = appearance;
-            tabBar.scrollEdgeAppearance = tabBar.standardAppearance
+            tabBar.scrollEdgeAppearance = appearance
         }
     }
 }
