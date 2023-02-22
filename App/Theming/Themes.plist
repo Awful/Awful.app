@@ -59,6 +59,8 @@
 	</dict>
 	<key>default</key>
 	<dict>
+		<key>statusBarBackground</key>
+		<string>dark</string>
 		<key>mode</key>
 		<string>light</string>
 		<key>favoriteStarTintColor</key>
@@ -85,6 +87,8 @@
 		<string>#999999</string>
 		<key>Lists</key>
 		<dict>
+			<key>unreadPostCountFontSizeAdjustment</key>
+			<string>2</string>
 			<key>expansionTintColor</key>
 			<string>#808080</string>
 			<key>ratingIconEmptyColor</key>
@@ -906,6 +910,14 @@
 		<string>#0066ff</string>
 		<key>Lists</key>
 		<dict>
+			<key>unreadPostCountFontSizeAdjustment</key>
+			<string>0</string>
+			<key>messageListSubjectFontSizeAdjustment</key>
+			<integer>0</integer>
+			<key>messageListSentDateFontSizeAdjustment</key>
+			<integer>-1</integer>
+			<key>messageListSenderFontSizeAdjustment</key>
+			<integer>0</integer>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>expansionTintColor</key>
@@ -1019,6 +1031,8 @@
 	</dict>
 	<key>spankykongLight</key>
 	<dict>
+		<key>statusBarBackground</key>
+		<string>light</string>
 		<key>mode</key>
 		<string>light</string>
 		<key>roundedFonts</key>
@@ -1089,6 +1103,14 @@
 		<string>#0066ff</string>
 		<key>Lists</key>
 		<dict>
+			<key>unreadPostCountFontSizeAdjustment</key>
+			<string>0</string>
+			<key>messageListSenderFontSizeAdjustment</key>
+			<integer>0</integer>
+			<key>messageListSentDateFontSizeAdjustment</key>
+			<integer>-1</integer>
+			<key>messageListSubjectFontSizeAdjustment</key>
+			<integer>0</integer>
 			<key>ratingIconEmptyColor</key>
 			<string>#cccccc</string>
 			<key>expansionTintColor</key>

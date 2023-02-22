@@ -108,7 +108,7 @@ extension MessageListDataSource: UITableViewDataSource {
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSentDateFontSizeAdjustment"]!, weight: .semibold),
                 .foregroundColor: theme[color: "listTextColor"]!],
             sentDateRaw: NSAttributedString(string: sentDateFormatter.string(from: message.sentDate!), attributes: [
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: -3, weight: .semibold),
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSentDateFontSizeAdjustment"]!, weight: .semibold),
                 .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSubjectFontSizeAdjustment"]!, weight: .regular),
