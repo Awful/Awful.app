@@ -60,7 +60,6 @@ post {
     background-color: #000000;
     border-bottom: none;
     border-top: none;
-    padding-bottom: 0.25em;
 }
 header {
     border-bottom: none;
@@ -107,7 +106,7 @@ header {
 .postdate {
     font-size: var(--postdate-font-size);
     font: -apple-system-footnote;
-    font-weight: 600 !important;
+    font-weight: 600;
     font-family: ui-rounded;
     color: var(--postdate-color);
     -webkit-flex-grow: 1;
@@ -119,7 +118,7 @@ header {
     display: block;
     color: var(--regdate-color);
     font: -apple-system-caption1;
-    font-weight: 600 !important;
+    font-weight: 600;
     font-family: ui-rounded;
     font-size: var(--regdate-font-size);
     margin: 0 0 2px 0px;
@@ -127,7 +126,7 @@ header {
 .username {
     display: inline-block;
     font: -apple-system-caption1;
-    font-weight: 600 !important;
+    font-weight: 600;
     font-family: ui-rounded;
     font-size: var(--username-font-size);
     color: var(--username-color);
@@ -241,6 +240,38 @@ header {
     font-size: var(--quotebody-font-size);
     padding: 0 6px 5px 3px;
     margin: 7px 0px;
+    border: none;
+    background-color: #1a1a1a;
+    background-repeat: no-repeat;
+    background-position-x: 10px;
+    background-position-y: 12px;
+    background-size: 20px;
+    background-blend-mode: lighten;
+    padding: 10px;
+    padding-left: 40px;
+    padding-bottom: 13px;
+    border-radius: 1em;
+    position: relative;
+  
+    .ipad & {
+      margin: 0;
+    }
+  
+    a {
+      color: unset;
+    }
+  
+    h4::before {
+      content: "";
+      height: 25px;
+      width: 25px;
+      display: block;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background-color: #0066ff;
+      -webkit-mask-box-image: url("awful-resource://quote-post.png");
+    }
 }
 
 .bbc-block h4 {
@@ -354,7 +385,6 @@ span.mention.highlight {
     padding: 0.6em;
     padding-bottom: 0;
 }
-
 #end {
     font-weight: normal;
     text-align: center;
@@ -432,9 +462,6 @@ post,
 .bbc-block.mention.highlight h4 span.mention.highlight {
     color: #9337fd;
 }
-.bbc-block.mention > .quoteheader > a {
-    color: #9337fd;
-}
 .bbc-block {
     border: none;
     background-color: #1a1a1a;
@@ -486,22 +513,24 @@ footer {
     background-color: #0066FF;
     height: 0.15em;
 }
-.quoteheader > a {
-    margin-bottom: 8px;
-    color: var(--quoteheader-color);
-    font-family: ui-rounded;
-    font: -apple-system-headline;
-    font-weight: 600 !important;
-    font-size: var(--quoteheader-font-size);
-    text-align: top;
-}
+.bbc-block {
+    h4,
+    h5 {
+        margin-bottom: 8px;
+        color: var(--quoteheader-color);
+        font-family: ui-rounded;
+        font: -apple-system-headline;
+        font-weight: 600 !important;
+        font-size: var(--quoteheader-font-size);
+        text-align: top;
+    }
+  }
+
 .quote_link {
     color: var(--username-color);
     margin-bottom: 8px;
     font: -apple-system-headline;
     font-family: ui-rounded;
-    font-weight: 450 !important;
-    font-size: var(--quotelink-font-size);
     display: inline-block;
 }
 img.awful-smile {
