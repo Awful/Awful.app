@@ -168,6 +168,15 @@ final class MessageListViewController: TableViewController {
         composeViewController?.themeDidChange()
 
         tableView.separatorColor = theme["listSeparatorColor"]
+        
+        if theme[bool: "showRootTabBarLabel"] == false {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        } else {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tabBarItem.title = LocalizedString("private-message-tab.title")
+            title = LocalizedString("private-message-tab.title")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

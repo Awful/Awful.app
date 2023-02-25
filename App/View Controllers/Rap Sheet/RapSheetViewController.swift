@@ -244,6 +244,21 @@ final class RapSheetViewController: TableViewController {
         }
     }
     
+    override func themeDidChange() {
+        super.themeDidChange()
+
+        tableView.separatorColor = theme["listSeparatorColor"]
+        
+        if theme[bool: "showRootTabBarLabel"] == false {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        } else {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tabBarItem.title = LocalizedString("rap-sheet.title")
+            title = LocalizedString("rap-sheet.title")
+        }
+    }
+    
     // MARK: Gunk
     
     required init?(coder: NSCoder) {

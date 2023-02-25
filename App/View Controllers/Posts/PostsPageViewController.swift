@@ -496,15 +496,7 @@ final class PostsPageViewController: ViewController {
         let item = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         item.possibleTitles = ["2345 / 2345"]
         item.accessibilityHint = "Opens page picker"
-        item.actionBlock = { [unowned self] (sender) in
-            guard self.postsView.loadingView == nil else { return }
-            let selectotron = Selectotron(postsViewController: self)
-            self.present(selectotron, animated: true, completion: nil)
-            
-            if let popover = selectotron.popoverPresentationController {
-                popover.barButtonItem = sender
-            }
-        }
+
         return item
     }()
     
@@ -611,6 +603,25 @@ final class PostsPageViewController: ViewController {
         
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
             currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
+
+            let button = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
+            label.text = currentPageItem.title
+            label.textAlignment = .center
+            button.addSubview(label)
+            
+            label.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+                label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 16),
+                label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -16)
+            ])
+            
+            button.addTarget(self, action: #selector(currentPageButtonTapped), for: .touchUpInside)
+            
+            currentPageItem.customView = button
+            
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
         } else {
@@ -674,6 +685,16 @@ final class PostsPageViewController: ViewController {
         chidoriMenu.delegate = self
         
         present(chidoriMenu, animated: true, completion: nil)
+    }
+    
+    @objc func currentPageButtonTapped(_ sender: UIBarButtonItem) {
+        guard self.postsView.loadingView == nil else { return }
+        let selectotron = Selectotron(postsViewController: self)
+        self.present(selectotron, animated: true, completion: nil)
+        
+        if let popover = selectotron.popoverPresentationController {
+            popover.barButtonItem = sender
+        }
     }
     
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
