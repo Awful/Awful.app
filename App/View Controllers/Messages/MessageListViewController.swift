@@ -19,9 +19,8 @@ final class MessageListViewController: TableViewController {
         self.managedObjectContext = managedObjectContext
         super.init(nibName: nil, bundle: nil)
         
-        title = LocalizedString("private-message-list.title")
+        title = LocalizedString("private-message-tab.title")
         
-        tabBarItem.title = LocalizedString("private-message-tab.title")
         tabBarItem.accessibilityLabel = LocalizedString("private-message-tab.accessibility-label")
         tabBarItem.image = UIImage(named: "pm-icon")
         tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
@@ -42,6 +41,8 @@ final class MessageListViewController: TableViewController {
         let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = LocalizedString("private-message-list.compose-button.accessibility-label")
         navigationItem.rightBarButtonItem = composeItem
+        
+        themeDidChange()
     }
 
     required init(coder: NSCoder) {
@@ -168,15 +169,6 @@ final class MessageListViewController: TableViewController {
         composeViewController?.themeDidChange()
 
         tableView.separatorColor = theme["listSeparatorColor"]
-        
-        if theme[bool: "showRootTabBarLabel"] == false {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
-            tabBarItem.title = nil
-        } else {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tabBarItem.title = LocalizedString("private-message-tab.title")
-            title = LocalizedString("private-message-tab.title")
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

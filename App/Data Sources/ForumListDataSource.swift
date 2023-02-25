@@ -419,9 +419,9 @@ extension ForumListDataSource: UITableViewDataSource {
             return ForumListCell.ViewModel(
                 backgroundColor: theme["listBackgroundColor"]!,
                 expansion: .none,
-                expansionTintColor: theme["tintColor"]!,
+                expansionTintColor: theme["expansionTintColor"]!,
                 favoriteStar: announcement.hasBeenSeen ? .hidden : .isFavorite,
-                favoriteStarTintColor: theme["tintColor"]!,
+                favoriteStarTintColor: theme["favoriteStarTintColor"]!,
                 forumName: NSAttributedString(string: announcement.title, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listTextColor"]!]),
@@ -432,9 +432,9 @@ extension ForumListDataSource: UITableViewDataSource {
             return ForumListCell.ViewModel(
                 backgroundColor: theme["listBackgroundColor"]!,
                 expansion: .none,
-                expansionTintColor: theme["tintColor"]!,
+                expansionTintColor: theme["expansionTintColor"]!,
                 favoriteStar: .isFavorite,
-                favoriteStarTintColor: theme["tintColor"]!,
+                favoriteStarTintColor: theme["favoriteStarTintColor"]!,
                 forumName: NSAttributedString(string: forum.name ?? "", attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listTextColor"]!]),
@@ -455,9 +455,9 @@ extension ForumListDataSource: UITableViewDataSource {
                         return .canExpand
                     }
                 }(),
-                expansionTintColor: theme["tintColor"]!,
+                expansionTintColor: theme["expansionTintColor"]!,
                 favoriteStar: forum.metadata.favorite ? .hidden : .canFavorite,
-                favoriteStarTintColor: theme["tintColor"]!,
+                favoriteStarTintColor: theme["favoriteStarTintColor"]!,
                 forumName: NSAttributedString(string: forum.name ?? "", attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
                     .foregroundColor: theme[color: "listTextColor"]!]),

@@ -30,6 +30,8 @@ final class BookmarksTableViewController: TableViewController {
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
         navigationItem.leftBarButtonItem = editButtonItem
+        
+        themeDidChange()
     }
     
     deinit {
@@ -132,14 +134,6 @@ final class BookmarksTableViewController: TableViewController {
 
         tableView.separatorColor = theme["listSeparatorColor"]
         tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
-        
-        if theme[bool: "showRootTabBarLabel"] == false {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
-            tabBarItem.title = nil
-        } else {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tabBarItem.title = LocalizedString("bookmarks.title")
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
