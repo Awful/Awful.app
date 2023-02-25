@@ -4,6 +4,7 @@
 
 import AwfulCore
 import CoreData
+import SwiftUI
 
 private let Log = Logger.get()
 
@@ -302,9 +303,35 @@ final class SettingsViewController: TableViewController {
         }
         
         if settingType == .AppIconPicker {
-            guard let collection = (cell as! AppIconPickerCell).collectionView else { fatalError("setting should have collection view") }
-            collection.awful_setting = setting["Key"] as? String
-            collection.backgroundColor = theme["listBackgroundColor"]
+            if #available(iOS 16, *) {
+                cell.contentConfiguration = UIHostingConfiguration {
+                    ScrollView(.horizontal) {
+                        HStack {
+                            let appIcons: [AppIcon] = findAppIcons()
+                            ForEach(appIcons, id: \.iconName) { icon in
+                                Button(action: {
+                                    if icon.iconName == "AppIcon" {
+                                        UIApplication.shared.setAlternateIconName(nil)
+                                    } else {
+                                        UIApplication.shared.setAlternateIconName(icon.iconName)
+                                    }
+                                }){
+                                    Image("\(icon.iconName)Image")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(idealWidth: 55, idealHeight: 55)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                }
+                            }
+                        }
+                        .padding(.bottom)
+                    }
+                }
+            } else {
+                guard let collection = (cell as! AppIconPickerCell).collectionView else { fatalError("setting should have collection view") }
+                collection.awful_setting = setting["Key"] as? String
+                collection.backgroundColor = theme["listBackgroundColor"]
+            }
         }
         switch settingType {
         case .Button, .Disclosure, .DisclosureDetail:

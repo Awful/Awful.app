@@ -1488,9 +1488,9 @@ final class PostsPageViewController: ViewController {
   
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .regular)
+            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .semibold)
         default:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .regular)
+            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .semibold)
             navigationItem.titleLabel.numberOfLines = 2
         }
      
