@@ -1104,6 +1104,10 @@ header {
   padding-top: 0px;
   padding-bottom: 7px;
 }
+.ipad header {
+  padding-top: 0px;
+  padding-bottom: 1.22em;
+}
 .quote_link {
   font-size: 14px;
   font-weight: 600 !important;

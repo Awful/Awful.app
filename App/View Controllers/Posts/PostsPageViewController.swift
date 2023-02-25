@@ -899,7 +899,7 @@ final class PostsPageViewController: ViewController {
             return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
         }()
         
-        if UserDefaults.standard.hideSidebarInLandscape, traitCollection.userInterfaceIdiom == .pad {
+        if !UserDefaults.standard.hideSidebarInLandscape, traitCollection.userInterfaceIdiom == .pad {
             let chidoriMenu = ChidoriMenu(menu: postActionMenu, summonPoint: .init(x: 550, y: frame.origin.y))
             chidoriMenu.delegate = self
             
