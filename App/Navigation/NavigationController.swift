@@ -120,7 +120,7 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
         awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
 
-        if Theme.defaultTheme()["statusBarBackground"] == "light" {
+        if theme["statusBarBackground"] == "light" {
             statusBarEnterLightBackground()
         } else {
             statusBarEnterDarkBackground()
