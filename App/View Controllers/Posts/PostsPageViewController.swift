@@ -1517,7 +1517,7 @@ final class PostsPageViewController: ViewController {
             postsView.toolbar.compactScrollEdgeAppearance = appearance
         }
   
-        postsView.toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
+        postsView.toolbar.overrideUserInterfaceStyle = theme["mode"] == "light" ? .light : .dark
         
         messageViewController?.themeDidChange()
     }
