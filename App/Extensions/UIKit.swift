@@ -219,9 +219,9 @@ extension UINavigationItem {
         label.accessibilityTraits.insert(UIAccessibilityTraits.header)
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .regular)
+            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .semibold)
         default:
-            label.font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .regular)
+            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .semibold)
             label.numberOfLines = 2
         }
         titleView = label

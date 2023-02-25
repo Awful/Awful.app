@@ -16,7 +16,46 @@ if (!window.Awful) {
  */
 Awful.embedTweets = function() {
   Awful.loadTwitterWidgets();
+  const enableGhost = (window.Awful.renderGhostTweets == true);
 
+  // if ghost is enabled, add IntersectionObserver so that we know when to play and stop the animations
+  if (enableGhost) {
+    const topMarginOffset = 0;
+        
+    let config = {
+        root: document.body.posts,
+        rootMargin: `${topMarginOffset}px 0px`,
+        threshold: 0.000001,
+    };
+      
+    let observer = new IntersectionObserver(function (posts, observer) {
+      // each <post> element will be checked by the browser as scolling occurs
+      posts.forEach((post, index) => {
+        if (post.isIntersecting) {
+          const player = post.target.querySelectorAll("lottie-player");
+          player.forEach((lottiePlayer) => {
+            lottiePlayer.play();
+            // comment out when not testing
+            //console.log("Lottie playing.");
+          });
+        } else {
+            // pause all lottie players if this post is not intersecting
+            const player = post.target.querySelectorAll("lottie-player");
+            player.forEach((lottiePlayer) => {
+              lottiePlayer.pause();
+              // this log is to confirm that pausing actually occurs while scrolling. comment out when not testing
+              //console.log("Lottie paused.");
+            });
+        }
+      });
+    }, config);
+      
+    const viewbox = document.querySelectorAll("post");
+      viewbox.forEach((post) => {
+        observer.observe(post);
+    });
+  }
+    
   var tweetLinks = document.querySelectorAll('a[data-tweet-id]');
   if (tweetLinks.length == 0) {
     return;
@@ -64,30 +103,22 @@ Awful.embedTweets = function() {
           console.error(`The embed markup for tweet ${tweetID} failed to load`);
          
          // when a tweet errors out, insert a floating ghost lottie in somber rememberence of the tweet that used to be
-         if (window.Awful.renderGhostTweets) {
-              tweetIDsToLinks[tweetID].forEach(function(a) {
-                  if (a.parentNode) {
-                      var div = document.createElement('div');
-                      div.classList.add('dead-tweet-container');
-                      div.innerHTML = Awful.deadTweetBadgeHTML(a.href.toString(), `${tweetID}`);
-                      a.parentNode.replaceChild(div, a);
+         if (enableGhost) {
+           tweetIDsToLinks[tweetID].forEach(function(a) {
+             if (a.parentNode) {
+               var div = document.createElement('div');
+               div.classList.add('dead-tweet-container');
+               div.innerHTML = Awful.deadTweetBadgeHTML(a.href.toString(), `${tweetID}`);
+               a.parentNode.replaceChild(div, a);
                       
-                  }
-              });
-              
-              const ghostContainers = document.querySelectorAll(`.left-ghost-${tweetID}`);
-              var ghostJsonData = document.getElementById("ghost-json-data").innerText
-              ghostJsonData = JSON.parse(ghostJsonData);
-              
-              Array.prototype.forEach.call(ghostContainers, function(ghostContainer) {
-                  lottie.loadAnimation({
-                  container: ghostContainer,
-                  renderer: "svg",
-                  loop: true,
-                  autoplay: false,
-                  animationData: ghostJsonData // 'animationData' can be replaced with 'path' and a (local?) url string. for now, parse JSON from a hidden div
-                  });
-              })
+               const player = div.querySelectorAll("lottie-player");
+               player.forEach((lottiePlayer) => {
+                 lottiePlayer.addEventListener("rendered", (e) => {
+                   lottiePlayer.load(document.getElementById("ghost-json-data").innerText);
+                 });
+               });
+              }
+            });
           }
           
           didCompleteFetch();
@@ -162,13 +193,13 @@ Awful.loadTwitterWidgets = function() {
  Loads the Lottie player library into the document
  */
 Awful.loadLotties = function() {
-  if (document.getElementById('lottie-web')) {
+  if (document.getElementById('lottie-js')) {
     return;
   }
 
   var script = document.createElement('script');
-  script.id = 'lottie-web';
-  script.src = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.11/lottie.min.js";
+  script.id = 'lottie-js';
+  script.src = "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js";
   document.body.appendChild(script);
 };
 
@@ -628,12 +659,12 @@ Awful.deadTweetBadgeHTML = function(url, tweetID){
     
     var html =
     `<div class="ghost-lottie">
-            <div id="left-ghost-${tweetID}" class="left-ghost-${tweetID}">
-            </div>
+            <lottie-player id="left-ghost-${tweetID}" class="left-ghost-${tweetID}" background="transparent" speed="1" loop autoplay>
+            </lottie-player>
      </div>
     <span class="dead-tweet-title">DEAD TWEET</span>
     <a class="dead-tweet-link" href="${url}">@${tweeter}</a>
- `;
+    `;
     
     return html;
 };

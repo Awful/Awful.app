@@ -147,7 +147,7 @@
 		<key>Posts</key>
 		<dict>
 			<key>postTitleFontSizeAdjustmentPhone</key>
-			<integer>-2</integer>
+			<integer>-1</integer>
 			<key>postTitleFontSizeAdjustmentPad</key>
 			<integer>0</integer>
 			<key>postsLoadingViewTintColor</key>
@@ -973,9 +973,9 @@
 		<key>Posts</key>
 		<dict>
 			<key>postTitleFontSizeAdjustmentPad</key>
-			<real>0.45</real>
+			<integer>0</integer>
 			<key>postTitleFontSizeAdjustmentPhone</key>
-			<real>0.45</real>
+			<integer>0</integer>
 			<key>postsLoadingViewTintColor</key>
 			<string>#000000</string>
 			<key>postsPullForNextColor</key>
@@ -1164,9 +1164,9 @@
 		<key>Posts</key>
 		<dict>
 			<key>postTitleFontSizeAdjustmentPad</key>
-			<real>0.45</real>
+			<integer>0</integer>
 			<key>postTitleFontSizeAdjustmentPhone</key>
-			<real>0.45</real>
+			<integer>0</integer>
 			<key>postsLoadingViewTintColor</key>
 			<string>#e6e6e6</string>
 			<key>postsPullForNextColor</key>

@@ -61,16 +61,13 @@ post {
     border-bottom: none;
     border-top: none;
 }
-header {
-    border-bottom: none;
-}
 .iphone post header {
     display: grid;
     grid-column: 1 / span 2;
     grid-row: 1 / 2;
     align-items: center;
     justify-content: start;
-    padding-bottom: 7px;
+
 }
 
 .iphone post header,
@@ -273,15 +270,17 @@ header {
       -webkit-mask-box-image: url("awful-resource://quote-post.png");
     }
 }
-
-.bbc-block h4 {
-    margin: 0;
-    font: -apple-system-headline;
-    font-weight: 700 !important;
-    font-size: var(--quoteheader-font-size);
-    font-family: ui-rounded;
-    text-align: top;
-}
+.bbc-block {
+    h4,
+    h5 {
+        margin: 0;
+        font: -apple-system-headline;
+        font-weight: 700;
+        font-size: var(--quoteheader-font-size);
+        font-family: ui-rounded;
+        text-align: top;
+    }
+  }
 .bbc-block h4 span.mention.highlight {
     color: #9337fd;
     border-color: #7409a0;
@@ -444,15 +443,6 @@ post,
     height: 0;
     width: 100%;
 }
-.bbc-block h4,
-.bbc-block h5 {
-    font-size: var(--quoteheader-font-size);
-    margin-bottom: 6px;
-}
-.bbc-block h4 a,
-.bbc-block h5 a {
- color: var(--quoteheader-color);
-}
 .bbc-block.mention.highlight,
 .bbc-block.mention.highlight h4,
 .bbc-block.mention.highlight h4 a {
@@ -511,18 +501,6 @@ footer {
     background-color: #0066FF;
     height: 0.15em;
 }
-.bbc-block {
-    h4,
-    h5 {
-        margin-bottom: 8px;
-        color: var(--quoteheader-color);
-        font-family: ui-rounded;
-        font: -apple-system-headline;
-        font-weight: 600 !important;
-        font-size: var(--quoteheader-font-size);
-        text-align: top;
-    }
-  }
 .quote_link {
     color: var(--username-color);
     margin-bottom: 8px;
@@ -588,6 +566,14 @@ body {
     color: #000000;
     background-color: #e6e6e6;
 }
-
+header {
+    border-bottom: none;
+    padding-top: 0px;
+    padding-bottom: 7px;
+}
+.quote_link {
+    font-size: 14px;
+    font-weight: 600 !important;
+}
 @import "dead-tweet-ghost.less";
 .dead-tweet(#0066FF, #e6e6e6, #999999); //@tweetLinkColor, @backgroundColor, @ghostColor
