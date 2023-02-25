@@ -42,6 +42,8 @@ final class RapSheetViewController: TableViewController {
             hidesBottomBarWhenPushed = true
             modalPresentationStyle = .formSheet
         }
+        
+        themeDidChange()
     }
     
     private func load(_ page: Int) {

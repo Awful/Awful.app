@@ -48,6 +48,8 @@ final class ForumsTableViewController: TableViewController {
                 self.updateBadgeValue(self.unreadAnnouncementCountObserver.count)
             }
         }
+        
+        themeDidChange()
     }
 
     required init?(coder: NSCoder) {
@@ -156,14 +158,6 @@ final class ForumsTableViewController: TableViewController {
         super.themeDidChange()
 
         tableView.separatorColor = theme["listSeparatorColor"]
-        
-        if theme[bool: "showRootTabBarLabel"] == false {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
-            tabBarItem.title = nil
-        } else {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tabBarItem.title = "Forums"
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
