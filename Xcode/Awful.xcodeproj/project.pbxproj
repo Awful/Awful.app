@@ -236,11 +236,13 @@
 		2D0BB37527F453B600242D2A /* ChidoriPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */; };
 		2D0BB37627F453B600242D2A /* ChidoriMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */; };
 		2D0BB37727F453B600242D2A /* ChidoriAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */; };
-		2D265F88292CB3B8001336ED /* ghost.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D265F87292CB3B7001336ED /* ghost.json */; };
-		2D265F8A292CB3FC001336ED /* frog.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D265F89292CB3FC001336ED /* frog.json */; };
+		2D19BA3329C330A2009DD94F /* mainthrobber60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3229C330A2009DD94F /* mainthrobber60.json */; };
+		2D19BA3529C33273009DD94F /* ghost60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3429C33273009DD94F /* ghost60.json */; };
+		2D19BA3929C33303009DD94F /* niggly60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3629C33302009DD94F /* niggly60.json */; };
+		2D19BA3A29C33303009DD94F /* frogrefresh60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3729C33302009DD94F /* frogrefresh60.json */; };
+		2D19BA3B29C33303009DD94F /* toot60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3829C33302009DD94F /* toot60.json */; };
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
-		2D265F92292CC137001336ED /* v.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D265F91292CC137001336ED /* v.json */; };
 		2D265F95292CC19B001336ED /* NigglyRefreshLottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F94292CC19B001336ED /* NigglyRefreshLottieView.swift */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
@@ -614,10 +616,12 @@
 		2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriPresentationController.swift; sourceTree = "<group>"; };
 		2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriMenuTableViewCell.swift; sourceTree = "<group>"; };
 		2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriAnimationController.swift; sourceTree = "<group>"; };
-		2D265F87292CB3B7001336ED /* ghost.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ghost.json; sourceTree = "<group>"; };
-		2D265F89292CB3FC001336ED /* frog.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = frog.json; sourceTree = "<group>"; };
+		2D19BA3229C330A2009DD94F /* mainthrobber60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mainthrobber60.json; sourceTree = "<group>"; };
+		2D19BA3429C33273009DD94F /* ghost60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ghost60.json; sourceTree = "<group>"; };
+		2D19BA3629C33302009DD94F /* niggly60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = niggly60.json; sourceTree = "<group>"; };
+		2D19BA3729C33302009DD94F /* frogrefresh60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = frogrefresh60.json; sourceTree = "<group>"; };
+		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
-		2D265F91292CC137001336ED /* v.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v.json; sourceTree = "<group>"; };
 		2D265F94292CC19B001336ED /* NigglyRefreshLottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NigglyRefreshLottieView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
@@ -1398,9 +1402,11 @@
 		2D265F90292CC0C7001336ED /* Lotties */ = {
 			isa = PBXGroup;
 			children = (
-				2D265F91292CC137001336ED /* v.json */,
-				2D265F89292CB3FC001336ED /* frog.json */,
-				2D265F87292CB3B7001336ED /* ghost.json */,
+				2D19BA3729C33302009DD94F /* frogrefresh60.json */,
+				2D19BA3629C33302009DD94F /* niggly60.json */,
+				2D19BA3829C33302009DD94F /* toot60.json */,
+				2D19BA3429C33273009DD94F /* ghost60.json */,
+				2D19BA3229C330A2009DD94F /* mainthrobber60.json */,
 			);
 			path = Lotties;
 			sourceTree = "<group>";
@@ -1718,7 +1724,6 @@
 			files = (
 				8CCD500615B497A900E5893B /* Settings.plist in Resources */,
 				1C273AA021C1DC25002875A9 /* RenderView-AllFrames.js in Resources */,
-				2D265F92292CC137001336ED /* v.json in Resources */,
 				1C5B9C3D17F20BB800D4981D /* posts-view-yospos.css in Resources */,
 				8C8FA48119AD7CA300B67AAA /* image-coder.png in Resources */,
 				8C8FA47E19AD7CA300B67AAA /* award.png in Resources */,
@@ -1730,13 +1735,12 @@
 				1C0AFAE21ECA96E6002D4003 /* posts-view-alternate-dark.css in Resources */,
 				8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
+				2D19BA3A29C33303009DD94F /* frogrefresh60.json in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
 				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
 				8C8FA48319AD7CA300B67AAA /* redpill.png in Resources */,
 				1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */,
 				1C8F68012221BE7C007E61ED /* Post.html.stencil in Resources */,
-				2D265F8A292CB3FC001336ED /* frog.json in Resources */,
-				2D265F88292CB3B8001336ED /* ghost.json in Resources */,
 				1C8F68032221C545007E61ED /* PostsView.html.stencil in Resources */,
 				8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */,
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
@@ -1746,6 +1750,7 @@
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
 				8CF740EF1681376600C219E4 /* macinyos-heading.png in Resources */,
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
+				2D19BA3329C330A2009DD94F /* mainthrobber60.json in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
 				7B1FF12A1F76C3A3000B64DA /* AppIconPickerCell.xib in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
@@ -1760,6 +1765,7 @@
 				7B82D6681F7809E3002291C7 /* AppIconCell.xib in Resources */,
 				1C29BD512251203400E1217A /* posts-view-oled-dark.css in Resources */,
 				1C29BD532251208200E1217A /* quote-post.png in Resources */,
+				2D19BA3B29C33303009DD94F /* toot60.json in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
 				1C8F67FA2221AFB1007E61ED /* Announcement.html.stencil in Resources */,
 				8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */,
@@ -1780,6 +1786,7 @@
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
 				1C0060AA217171CD00E5329A /* profile.css in Resources */,
 				F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */,
+				2D19BA3929C33303009DD94F /* niggly60.json in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
 				837D67EE1861C25000464055 /* ForumTweaks.plist in Resources */,
@@ -1795,6 +1802,7 @@
 				0C6C11B422FCE5800084C406 /* posts-view-bright-light.css in Resources */,
 				8C8FA48019AD7CA300B67AAA /* ik.png in Resources */,
 				8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */,
+				2D19BA3529C33273009DD94F /* ghost60.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

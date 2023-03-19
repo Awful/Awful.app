@@ -10,7 +10,7 @@ private let verticalMargin: CGFloat = 10
 
 final class NigglyRefreshLottieView: UIView {
     private let animationView = LottieAnimationView(
-        animation: LottieAnimation.named("niggly"),
+        animation: LottieAnimation.named("niggly60"),
         configuration: LottieConfiguration(renderingEngine: .mainThread))
     
     override init(frame: CGRect) {

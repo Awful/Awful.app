@@ -6,7 +6,7 @@ import Lottie
 
 final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent {
     private let animationView = LottieAnimationView(
-        animation: LottieAnimation.named("frog"),
+        animation: LottieAnimation.named("frogrefresh60"),
         configuration: LottieConfiguration(renderingEngine: .mainThread))
  
 
@@ -79,10 +79,10 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
              animationView.currentFrame = 0
              break
          case (_, .armed(triggeredFraction: 0.0)):
-             animationView.play(fromFrame: 50, toFrame: 0, loopMode: .playOnce)
+             animationView.play(fromFrame: 25, toFrame: 0, loopMode: .playOnce)
              break
          case (.armed, .triggered):
-             animationView.play(fromFrame: 0, toFrame: 50, loopMode: .playOnce)
+             animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce)
              if UserDefaults.standard.enableHaptics {
                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
              }
@@ -90,7 +90,7 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
          case (.refreshing, .refreshing):
              break
          case (_, .refreshing):
-             animationView.play(fromFrame: 50, toFrame: 1000, loopMode: .playOnce)
+             animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .playOnce)
              if UserDefaults.standard.enableHaptics {
                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
              }

@@ -253,10 +253,6 @@ post {
       margin: 0;
     }
   
-    a {
-      color: unset;
-    }
-  
     h4::before {
       content: "";
       height: 25px;
@@ -267,6 +263,10 @@ post {
       left: 8px;
       background-color: #0066ff;
       -webkit-mask-box-image: url("awful-resource://quote-post.png");
+    }
+
+    h4 a {
+      color: unset;
     }
 }
 .bbc-block {
@@ -476,6 +476,7 @@ post,
 .bbc-block a {
     -webkit-tap-highlight-color: transparent;
     text-decoration: none;
+    color: #0066ff;
 }
 footer {
     white-space: nowrap;

@@ -718,9 +718,6 @@ post {
 .ipad .bbc-block {
   margin: 0;
 }
-.bbc-block a {
-  color: unset;
-}
 .bbc-block h4::before {
   content: "";
   height: 25px;
@@ -731,6 +728,9 @@ post {
   left: 8px;
   background-color: #0066ff;
   -webkit-mask-box-image: url("awful-resource://quote-post.png");
+}
+.bbc-block h4 a {
+  color: unset;
 }
 .bbc-block h4,
 .bbc-block h5 {
@@ -935,6 +935,7 @@ post,
 .bbc-block a {
   -webkit-tap-highlight-color: transparent;
   text-decoration: none;
+  color: #0066ff;
 }
 footer {
   white-space: nowrap;
