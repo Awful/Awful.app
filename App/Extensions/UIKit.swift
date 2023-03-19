@@ -136,43 +136,41 @@ extension UIFont {
     }
     
     /**
-    - parameters:
-        - textStyle: The base style for the returned font.
-        - fontName: An optional font name. If nil (the default), returns the system font.
-        - sizeAdjustment: A positive or negative adjustment to apply to the text style's font size. The default is 0.
-        - weight: A positive or negative adjustment to apply to the text style's font size. The default is 0.
-    - returns:
-        A font associated with the text style, scaled for the user's Dynamic Type settings, in the requested font family.
-    **/
-    class func preferredFontForTextStyle(_ textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0, weight: UIFont.Weight) -> UIFont {
+     - parameters:
+     - textStyle: The base style for the returned font.
+     - fontName: An optional font name. If nil (the default), returns the system font.
+     - sizeAdjustment: A positive or negative adjustment to apply to the text style's font size. The default is 0.
+     - weight: A positive or negative adjustment to apply to the text style's font size. The default is 0.
+     - returns:
+     A font associated with the text style, scaled for the user's Dynamic Type settings, in the requested font family.
+     **/
+    class func preferredFontForTextStyle(_ textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0, weight: UIFont.Weight, for traitCollection: UITraitCollection? = nil) -> UIFont {
         let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle)
         let metrics = UIFontMetrics(forTextStyle: textStyle)
-        let preferredContentSizeCategory: UIContentSizeCategory
-        
-        // overwrite these to effectively set a minimum font size, regardless of user's dynamic type setting
-        switch UIApplication.shared.preferredContentSizeCategory {
-        case .extraSmall, .small, .medium:
-            preferredContentSizeCategory = .extraLarge
-        case .accessibilityExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
-            preferredContentSizeCategory =  .accessibilityLarge
-        default:
-            preferredContentSizeCategory = UIApplication.shared.preferredContentSizeCategory
-        }
-        
-        let traitCollection = UITraitCollection(preferredContentSizeCategory: preferredContentSizeCategory)
         
         // set a maximum font size of 30pt
         var font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: traitCollection)
         
+        // overwrite these to effectively set a minimum font size, regardless of user's dynamic type setting
+        switch UIApplication.shared.preferredContentSizeCategory {
+        case .extraSmall, .small, .medium:
+            font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: UITraitCollection(preferredContentSizeCategory: .extraLarge))
+        case .accessibilityExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: UITraitCollection(preferredContentSizeCategory: .accessibilityLarge))
+        default:
+            font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: UITraitCollection(preferredContentSizeCategory: UIApplication.shared.preferredContentSizeCategory))
+        }
+        
         if let fontName = fontName {
-            return metrics.scaledFont(for: UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!, maximumPointSize: 30, compatibleWith: traitCollection)
+            font = metrics.scaledFont(for: UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!, maximumPointSize: 30, compatibleWith: traitCollection)
         } else {
             if let descriptor = font.fontDescriptor.withDesign(.rounded) {
                 if Theme.defaultTheme().roundedFonts {
-                    font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: traitCollection)
+                    font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: traitCollection).withWeight(weight)
                 }
             }
         }
+        
         return font
     }
 }
@@ -219,9 +217,9 @@ extension UINavigationItem {
         label.accessibilityTraits.insert(UIAccessibilityTraits.header)
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .semibold)
+            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
         default:
-            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .semibold)
+            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
             label.numberOfLines = 2
         }
         titleView = label
@@ -542,5 +540,12 @@ extension CGPoint {
         let x = origin.x + radius * cos(newAzimuth)
         let y = origin.y + radius * sin(newAzimuth)
         return CGPoint(x: x, y: y)
+    }
+}
+
+
+extension UIFont {
+    func withWeight(_ weight: UIFont.Weight) -> UIFont {
+        UIFont.systemFont(ofSize: pointSize, weight: weight)
     }
 }

@@ -332,3 +332,43 @@ extension Theme {
         return altogether
     }
 }
+
+enum FontWeight: String, CaseIterable {
+    case ultraLight = "ultraLight"
+    case thin = "thin"
+    case light = "light"
+    case regular = "regular"
+    case medium = "medium"
+    case semibold = "semibold"
+    case bold = "bold"
+    case heavy = "heavy"
+    case black = "black"
+    
+    var weight: UIFont.Weight {
+        switch self {
+        case .ultraLight:
+            return .ultraLight
+        case .thin:
+            return .thin
+        case .light:
+            return .light
+        case .regular:
+            return .regular
+        case .medium:
+            return .medium
+        case .semibold:
+            return .semibold
+        case .bold:
+            return .bold
+        case .heavy:
+            return .heavy
+        case .black:
+            return .black
+        }
+    }
+    
+    static func weight(for string: String) -> UIFont.Weight? {
+        return FontWeight(rawValue: string)?.weight
+    }
+}
+

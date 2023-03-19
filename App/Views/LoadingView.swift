@@ -54,7 +54,7 @@ private class DefaultLoadingView: LoadingView {
         super.init(theme: theme)
         
         let animationView = LottieAnimationView(
-            animation: LottieAnimation.named("v"),
+            animation: LottieAnimation.named("mainthrobber60"),
             configuration: LottieConfiguration(renderingEngine: .mainThread))
 
         animationView.currentFrame = 0
@@ -70,10 +70,10 @@ private class DefaultLoadingView: LoadingView {
         animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     
-        animationView.play(fromFrame: 0, toFrame: 50, loopMode: .playOnce, completion: { (finished) in
+        animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce, completion: { (finished) in
             if finished {
                 // first animation complete! start second one and loop
-                animationView.play(fromFrame: 50, toFrame: 200, loopMode: .loop, completion: nil)
+                animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .loop, completion: nil)
             } else {
                // animation cancelled
             }

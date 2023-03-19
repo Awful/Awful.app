@@ -947,6 +947,7 @@ post,
 .bbc-block a {
   -webkit-tap-highlight-color: transparent;
   text-decoration: none;
+  color: #0066ff;
 }
 /*
  posts-view-dark-emoticons.css

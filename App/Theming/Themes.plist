@@ -148,8 +148,12 @@
 		<dict>
 			<key>postTitleFontSizeAdjustmentPhone</key>
 			<integer>-1</integer>
+			<key>postTitleFontWeightPhone</key>
+			<string>semibold</string>
 			<key>postTitleFontSizeAdjustmentPad</key>
 			<integer>0</integer>
+			<key>postTitleFontWeightPad</key>
+			<string>semibold</string>
 			<key>postsLoadingViewTintColor</key>
 			<string>#f5f5f5</string>
 			<key>postsPullForNextColor</key>
@@ -976,6 +980,10 @@
 			<integer>0</integer>
 			<key>postTitleFontSizeAdjustmentPhone</key>
 			<integer>0</integer>
+			<key>postTitleFontWeightPhone</key>
+			<string>medium</string>
+			<key>postTitleFontWeightPad</key>
+			<string>medium</string>
 			<key>postsLoadingViewTintColor</key>
 			<string>#000000</string>
 			<key>postsPullForNextColor</key>
@@ -1167,6 +1175,10 @@
 			<integer>0</integer>
 			<key>postTitleFontSizeAdjustmentPhone</key>
 			<integer>0</integer>
+			<key>postTitleFontWeightPhone</key>
+			<string>medium</string>
+			<key>postTitleFontWeightPad</key>
+			<string>medium</string>
 			<key>postsLoadingViewTintColor</key>
 			<string>#e6e6e6</string>
 			<key>postsPullForNextColor</key>

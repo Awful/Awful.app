@@ -353,7 +353,7 @@ final class PostsPageViewController: ViewController {
         
         context["enableFrogAndGhost"] = UserDefaults.standard.enableFrogAndGhost
         
-        context["ghostJsonData"] = try? String(contentsOf: URL(string: "ghost.json", relativeTo: Bundle.main.resourceURL)!, encoding: .utf8)
+        context["ghostJsonData"] = try? String(contentsOf: URL(string: "ghost60.json", relativeTo: Bundle.main.resourceURL)!, encoding: .utf8)
       
         if let username = UserDefaults.standard.loggedInUsername, !username.isEmpty {
             context["loggedInUsername"] = username
@@ -1509,9 +1509,9 @@ final class PostsPageViewController: ViewController {
   
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: .semibold)
+            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
         default:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: .semibold)
+            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
             navigationItem.titleLabel.numberOfLines = 2
         }
      
