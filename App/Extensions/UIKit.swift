@@ -146,6 +146,8 @@ extension UIFont {
      **/
     class func preferredFontForTextStyle(_ textStyle: TextStyle, fontName: String? = nil, sizeAdjustment: CGFloat = 0, weight: UIFont.Weight, for traitCollection: UITraitCollection? = nil) -> UIFont {
         let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle)
+            .addingAttributes([.traits: [UIFontDescriptor.TraitKey.weight: weight]])
+        
         let metrics = UIFontMetrics(forTextStyle: textStyle)
         
         // set a maximum font size of 30pt
@@ -166,7 +168,7 @@ extension UIFont {
         } else {
             if let descriptor = font.fontDescriptor.withDesign(.rounded) {
                 if Theme.defaultTheme().roundedFonts {
-                    font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: traitCollection).withWeight(weight)
+                    font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: traitCollection)
                 }
             }
         }
@@ -540,12 +542,5 @@ extension CGPoint {
         let x = origin.x + radius * cos(newAzimuth)
         let y = origin.y + radius * sin(newAzimuth)
         return CGPoint(x: x, y: y)
-    }
-}
-
-
-extension UIFont {
-    func withWeight(_ weight: UIFont.Weight) -> UIFont {
-        UIFont.systemFont(ofSize: pointSize, weight: weight)
     }
 }
