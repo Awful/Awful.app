@@ -33,7 +33,9 @@ final class DraftStore {
     func loadDraft(_ path: String) -> AnyObject? {
         do {
             let data = try Data(contentsOf: URLForDraftAtPath(path))
-            return try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as AnyObject
+            let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+            unarchiver.requiresSecureCoding = false
+            return unarchiver.decodeObject(forKey: NSKeyedArchiveRootObjectKey) as AnyObject?
         } catch {
             Log.e("could not load draft at \(path): \(error)")
             return nil
