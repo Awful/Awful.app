@@ -156,10 +156,12 @@ public final class ForumsClient {
             return (Promise(error: PromiseError.missingURLSession), Operation())
         }
 
+        let wasLoggedIn = isLoggedIn
+
         let tuple = urlSession.fetch(method: method, urlString: urlString, parameters: parameters, redirectBlock: redirectBlock)
 
         _ = tuple.promise.done { data, response in
-            if !self.isLoggedIn, let block = self.didRemotelyLogOut {
+            if wasLoggedIn, !self.isLoggedIn, let block = self.didRemotelyLogOut {
                 DispatchQueue.main.async(execute: block)
             }
         }
