@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1033F53517AD127EFC9659EE439DEA7E /* PullToRefresher-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 21F6E679CD735FEAD0DD49C10CF74E78 /* PullToRefresher-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1104EA92241788F64F422C6FFF5A5F7D /* DefaultRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA610ACA259495C62F7283276CB598A3 /* DefaultRefreshView.swift */; };
-		12C16563A3EFFA39D8E16BD3822DDCDC /* DefaultViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76799736BBA5D8F6B84663DBB32F9156 /* DefaultViewAnimator.swift */; };
-		2277224508931FF4B6EFDA90C672B406 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA2B9F81CFE5985E5BB504A712BFE4B /* State.swift */; };
-		31C8E04CDC80010CC7C957D63A1ABEBC /* RefreshViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053DB65C29DC57F5BBD4E96501A83A13 /* RefreshViewAnimator.swift */; };
-		53248C6AAF0B2DD799A887D834131008 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7187903A3D4D66CFE9B4E328C39925AD /* Foundation.framework */; };
-		573351602B420C097AB36C16C8980C82 /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14480C0D61B1169B6C1AD64AADCF8451 /* PullToRefresh.swift */; };
-		CFD543F75C020C194D2866F3A1DCBCBF /* UIScrollView+PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069811DD56362B3F9B04F2295F4EC162 /* UIScrollView+PullToRefresh.swift */; };
-		F1E21CC280CBE5B7A3EBBDAA8A090848 /* PullToRefresher-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = EB69C2761678BDA5F1FF60722BD565C3 /* PullToRefresher-dummy.m */; };
+		181C6726D2910A69F26959875D02A842 /* UIScrollView+PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069811DD56362B3F9B04F2295F4EC162 /* UIScrollView+PullToRefresh.swift */; };
+		1C9A1B66E885BE1BB9383896633139EE /* PullToRefresher-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 21F6E679CD735FEAD0DD49C10CF74E78 /* PullToRefresher-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		521D0BAC4C29AB6E4F526AD3511336D5 /* RefreshViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 053DB65C29DC57F5BBD4E96501A83A13 /* RefreshViewAnimator.swift */; };
+		762EC5F87D5F4B8014FE301B845A55DE /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14480C0D61B1169B6C1AD64AADCF8451 /* PullToRefresh.swift */; };
+		98F6EC95B19C697869BF202BAED18552 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA2B9F81CFE5985E5BB504A712BFE4B /* State.swift */; };
+		A4D5A2867DA83AAF98D4D62F356D2E0C /* DefaultViewAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76799736BBA5D8F6B84663DBB32F9156 /* DefaultViewAnimator.swift */; };
+		B8D80C202137FA468EDC827A0F4C4DBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7187903A3D4D66CFE9B4E328C39925AD /* Foundation.framework */; };
+		E81CF66DD164E113BC8DA3BD5B9AFAD5 /* DefaultRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA610ACA259495C62F7283276CB598A3 /* DefaultRefreshView.swift */; };
+		F21B96C5780C5F49B778E4646ACE7C38 /* PullToRefresher-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = EB69C2761678BDA5F1FF60722BD565C3 /* PullToRefresher-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,18 +30,18 @@
 		76799736BBA5D8F6B84663DBB32F9156 /* DefaultViewAnimator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefaultViewAnimator.swift; path = PullToRefresh/DefaultViewAnimator.swift; sourceTree = "<group>"; };
 		8D76D9F19C053A2310EA978EECFAC62F /* PullToRefresher.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = PullToRefresher.modulemap; sourceTree = "<group>"; };
 		BA610ACA259495C62F7283276CB598A3 /* DefaultRefreshView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DefaultRefreshView.swift; path = PullToRefresh/DefaultRefreshView.swift; sourceTree = "<group>"; };
-		C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresh.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PullToRefresh.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresher */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = PullToRefresher; path = PullToRefresh.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE67E80BBA9B8FF9B395091326D13E28 /* PullToRefresher-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "PullToRefresher-Info.plist"; sourceTree = "<group>"; };
 		EB69C2761678BDA5F1FF60722BD565C3 /* PullToRefresher-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "PullToRefresher-dummy.m"; sourceTree = "<group>"; };
 		FC861749571F501D8FF69971CB6F68E5 /* PullToRefresher.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PullToRefresher.release.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		9BA85E5634915F9E2E5490973F7E4CC5 /* Frameworks */ = {
+		8EB2DC60B09E4920A81FDE4DBE188097 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53248C6AAF0B2DD799A887D834131008 /* Foundation.framework in Frameworks */,
+				B8D80C202137FA468EDC827A0F4C4DBA /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,10 +79,10 @@
 			path = "../Target Support Files/PullToRefresher";
 			sourceTree = "<group>";
 		};
-		381FF1B7BE88006AD8285E146EFCB0B1 /* Products */ = {
+		418426B82CAC43FB7F8C66884E521E28 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresh.framework */,
+				C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresher */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,6 +98,7 @@
 				069811DD56362B3F9B04F2295F4EC162 /* UIScrollView+PullToRefresh.swift */,
 				2511960A774DB882F124E43FBAB4C0BD /* Support Files */,
 			);
+			name = PullToRefresher;
 			path = PullToRefresher;
 			sourceTree = "<group>";
 		};
@@ -105,7 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				07B7EB3F95C96C8B4E44FDF9E0A6F4D7 /* Frameworks */,
-				381FF1B7BE88006AD8285E146EFCB0B1 /* Products */,
+				418426B82CAC43FB7F8C66884E521E28 /* Products */,
 				641836D56B491B2D760C8C30EE10997E /* PullToRefresher */,
 			);
 			sourceTree = "<group>";
@@ -113,11 +114,11 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		799049C5907CD0B1CF5F58342959E9C4 /* Headers */ = {
+		74171774A138C57B9115A29C56190AB5 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1033F53517AD127EFC9659EE439DEA7E /* PullToRefresher-umbrella.h in Headers */,
+				1C9A1B66E885BE1BB9383896633139EE /* PullToRefresher-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,20 +127,20 @@
 /* Begin PBXNativeTarget section */
 		B7ABC825F7B041519FAF29EA2086C48E /* PullToRefresher */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8D5E5098DA6B64A33B64B6BECF5F2E13 /* Build configuration list for PBXNativeTarget "PullToRefresher" */;
+			buildConfigurationList = 23909FC3CD840BBF0B77E3CB4728CF6B /* Build configuration list for PBXNativeTarget "PullToRefresher" */;
 			buildPhases = (
-				799049C5907CD0B1CF5F58342959E9C4 /* Headers */,
-				BCA1E3B0D58A13E411D62E174BE88A1C /* Sources */,
-				9BA85E5634915F9E2E5490973F7E4CC5 /* Frameworks */,
-				BDF2A568E80D1E0EF16B21AB2C3C1BC6 /* Resources */,
+				74171774A138C57B9115A29C56190AB5 /* Headers */,
+				30ACF54BCD8384FFB96D86112936E3FE /* Sources */,
+				8EB2DC60B09E4920A81FDE4DBE188097 /* Frameworks */,
+				F6AC25F79B97CAE09C09BB3C988C2883 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = PullToRefresher;
-			productName = PullToRefresher;
-			productReference = C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresh.framework */;
+			productName = PullToRefresh;
+			productReference = C9EFDAC297CD3A721D4CEA92857B7000 /* PullToRefresher */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -148,7 +149,7 @@
 		287154DB603693B642C053D2B35901F9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1100;
+				LastSwiftUpdateCheck = 1300;
 				LastUpgradeCheck = 1300;
 			};
 			buildConfigurationList = 58F6910B3065668386C0CE8850910EB7 /* Build configuration list for PBXProject "PullToRefresher" */;
@@ -156,11 +157,11 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 			);
 			mainGroup = C73C43DC58D0016C347FEE5F0E66B4F7;
-			productRefGroup = 381FF1B7BE88006AD8285E146EFCB0B1 /* Products */;
+			productRefGroup = 418426B82CAC43FB7F8C66884E521E28 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -170,7 +171,7 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		BDF2A568E80D1E0EF16B21AB2C3C1BC6 /* Resources */ = {
+		F6AC25F79B97CAE09C09BB3C988C2883 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -180,17 +181,17 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		BCA1E3B0D58A13E411D62E174BE88A1C /* Sources */ = {
+		30ACF54BCD8384FFB96D86112936E3FE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1104EA92241788F64F422C6FFF5A5F7D /* DefaultRefreshView.swift in Sources */,
-				12C16563A3EFFA39D8E16BD3822DDCDC /* DefaultViewAnimator.swift in Sources */,
-				573351602B420C097AB36C16C8980C82 /* PullToRefresh.swift in Sources */,
-				F1E21CC280CBE5B7A3EBBDAA8A090848 /* PullToRefresher-dummy.m in Sources */,
-				31C8E04CDC80010CC7C957D63A1ABEBC /* RefreshViewAnimator.swift in Sources */,
-				2277224508931FF4B6EFDA90C672B406 /* State.swift in Sources */,
-				CFD543F75C020C194D2866F3A1DCBCBF /* UIScrollView+PullToRefresh.swift in Sources */,
+				E81CF66DD164E113BC8DA3BD5B9AFAD5 /* DefaultRefreshView.swift in Sources */,
+				A4D5A2867DA83AAF98D4D62F356D2E0C /* DefaultViewAnimator.swift in Sources */,
+				762EC5F87D5F4B8014FE301B845A55DE /* PullToRefresh.swift in Sources */,
+				F21B96C5780C5F49B778E4646ACE7C38 /* PullToRefresher-dummy.m in Sources */,
+				521D0BAC4C29AB6E4F526AD3511336D5 /* RefreshViewAnimator.swift in Sources */,
+				98F6EC95B19C697869BF202BAED18552 /* State.swift in Sources */,
+				181C6726D2910A69F26959875D02A842 /* UIScrollView+PullToRefresh.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +260,39 @@
 			};
 			name = Release;
 		};
+		4E71D6E443BCC841B0DCF6F65C5E99D8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2DED8561500D98A4A022555B2B5FA9B1 /* PullToRefresher.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/PullToRefresher/PullToRefresher-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/PullToRefresher/PullToRefresher-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/PullToRefresher/PullToRefresher.modulemap";
+				PRODUCT_MODULE_NAME = PullToRefresh;
+				PRODUCT_NAME = PullToRefresh;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		5804AD1060CF1E480D3148023D729D14 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -325,40 +359,7 @@
 			};
 			name = Debug;
 		};
-		6EA511029FE0D6555EB1F4B5E06281DF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2DED8561500D98A4A022555B2B5FA9B1 /* PullToRefresher.debug.xcconfig */;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/PullToRefresher/PullToRefresher-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/PullToRefresher/PullToRefresher-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/PullToRefresher/PullToRefresher.modulemap";
-				PRODUCT_MODULE_NAME = PullToRefresh;
-				PRODUCT_NAME = PullToRefresh;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		77211095E1E42DF66CA1B060B56EFFCD /* Release */ = {
+		DFAD16C697829748650BA6AAA7BB491E /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FC861749571F501D8FF69971CB6F68E5 /* PullToRefresher.release.xcconfig */;
 			buildSettings = {
@@ -395,20 +396,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		23909FC3CD840BBF0B77E3CB4728CF6B /* Build configuration list for PBXNativeTarget "PullToRefresher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E71D6E443BCC841B0DCF6F65C5E99D8 /* Debug */,
+				DFAD16C697829748650BA6AAA7BB491E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		58F6910B3065668386C0CE8850910EB7 /* Build configuration list for PBXProject "PullToRefresher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5804AD1060CF1E480D3148023D729D14 /* Debug */,
 				4783150A56CBE14BFC2EB0677BBD4697 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8D5E5098DA6B64A33B64B6BECF5F2E13 /* Build configuration list for PBXNativeTarget "PullToRefresher" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6EA511029FE0D6555EB1F4B5E06281DF /* Debug */,
-				77211095E1E42DF66CA1B060B56EFFCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
