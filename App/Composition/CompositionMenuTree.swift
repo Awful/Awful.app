@@ -192,7 +192,21 @@ fileprivate let rootItems = [
             tree.showSubmenu(URLItems)
         }
     }),
-    MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
+    /**
+        Temporarily disabling the menu items that attempt image uploads. This is a bandaid fix and no imgur uploading code is being removed from the app at this time.
+        TODO: Re-enable these menu items as part of a proper imgur replacement update. (imgur is deleting anonymous inactive images)
+     
+        original line: MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
+     */
+    MenuItem(title: "[img]", action: { tree in
+        if UIPasteboard.general.coercedURL == nil {
+            linkifySelection(tree)
+        } else {
+            if let textRange = tree.textView.selectedTextRange {
+                tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
+            }
+        }
+    }),
     MenuItem(title: "Format", action: { $0.showSubmenu(formattingItems) }),
     MenuItem(title: "[video]", action: { tree in
         if let URL = UIPasteboard.general.coercedURL {
