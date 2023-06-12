@@ -51,6 +51,12 @@ final class RenderView: UIView {
         webView.scrollView.backgroundColor = nil
         webView.scrollView.decelerationRate = .normal
         
+        // newer iOS requires this for allowing Safari page inspector
+        // https://webkit.org/blog/13936/enabling-the-inspection-of-web-content-in-apps/
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+        
         // this fixes youtube embeds in multiple ways!
         webView.customUserAgent = awfulUserAgent
         
