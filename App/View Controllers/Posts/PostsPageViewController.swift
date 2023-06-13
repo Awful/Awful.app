@@ -1071,18 +1071,14 @@ final class PostsPageViewController: ViewController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 overlay?.dismiss(true)
             }
-            let components = NSURLComponents(string: "https://forums.somethingawful.com/showthread.php")!
-            var queryItems = [
-                URLQueryItem(name: "threadid", value: self.thread.threadID),
-                URLQueryItem(name: "perpage", value: "40"),
-                URLQueryItem(name: "noseen", value: "1"),
-            ]
-            if case .specific(let pageNumber)? = self.page, pageNumber > 1 {
-                queryItems.append(URLQueryItem(name: "pagenumber", value: "\(pageNumber)"))
+            let route: AwfulRoute
+            let page = self.page ?? .first
+            if let singleUserID = self.author?.userID {
+                route = .threadPageSingleUser(threadID: self.thread.threadID, userID: singleUserID, page: page, .noseen)
+            } else {
+                route = .threadPage(threadID: self.thread.threadID, page: page, .noseen)
             }
-            components.queryItems = queryItems
-            let url = components.url!
-            
+            let url = route.httpURL
             UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
             UIPasteboard.general.coercedURL = url
         }
