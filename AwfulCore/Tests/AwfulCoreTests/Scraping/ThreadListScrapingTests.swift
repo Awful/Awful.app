@@ -172,4 +172,19 @@ final class ThreadListScrapingTests: XCTestCase {
             XCTAssertFalse(result.canPostNewThread)
         }
     }
+
+    func testSomethingAwfulDiscussion() throws {
+        let result = try scrapeHTMLFixture(ThreadListScrapeResult.self, named: "forumdisplay-sad")
+        XCTAssertEqual(result.threads.count, 18)
+        XCTAssertEqual(result.pageNumber, 1)
+
+        let first = result.threads[0]
+        XCTAssertEqual(first.title, "The Small Questions and Topics Thread")
+        XCTAssertTrue(first.isSticky)
+        XCTAssertEqual(first.authorUsername, "docbeard")
+
+        let last = result.threads.last!
+        XCTAssertEqual(last.title, "State of the Forums - July 2021 [From Dec 9, 2022]")
+        XCTAssertEqual(last.authorUsername, "Jeffrey of YOSPOS")
+    }
 }

@@ -109,14 +109,17 @@ func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
 
 
 func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?) {
-    let pageSelect = node.firstNode(matchingSelector: "div.pages select")
-    let pageCount = (pageSelect?.childElementNodes.count) ?? 1
+    guard let pageDiv = node.firstNode(matchingSelector: "div.pages") else {
+        return (nil, nil)
+    }
+    let pageSelect = pageDiv.firstNode(matchingSelector: "select")
+    let pageCount = pageSelect?.childElementNodes.count ?? 1
 
     let pageNumber = pageSelect
         .flatMap { $0.firstNode(matchingSelector: "option[selected]") }
         .flatMap { $0["value"] }
         .flatMap { Int($0) }
-        ?? pageSelect.map { _ in 1 }
+        ?? 1
 
     return (pageNumber: pageNumber, pageCount: pageCount)
 }
