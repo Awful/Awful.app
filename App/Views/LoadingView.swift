@@ -49,13 +49,15 @@ class LoadingView: UIView {
 }
 
 private class DefaultLoadingView: LoadingView {
+
+    private let animationView: LottieAnimationView
     
     override init(theme: Theme?) {
-        super.init(theme: theme)
-        
-        let animationView = LottieAnimationView(
+        animationView = LottieAnimationView(
             animation: LottieAnimation.named("mainthrobber60"),
             configuration: LottieConfiguration(renderingEngine: .mainThread))
+
+        super.init(theme: theme)
 
         animationView.currentFrame = 0
         animationView.contentMode = .scaleAspectFit
@@ -70,10 +72,10 @@ private class DefaultLoadingView: LoadingView {
         animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     
-        animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce, completion: { (finished) in
+        animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce, completion: { [weak self] (finished) in
             if finished {
                 // first animation complete! start second one and loop
-                animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .loop, completion: nil)
+                self?.animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .loop, completion: nil)
             } else {
                // animation cancelled
             }
@@ -88,6 +90,12 @@ private class DefaultLoadingView: LoadingView {
         super.retheme()
         
         backgroundColor = theme?[color: "postsLoadingViewTintColor"]
+        if let tintColor = theme?[color: "tintColor"] {
+            animationView.setValueProvider(
+                ColorValueProvider(tintColor.lottieColorValue),
+                keypath: "**.Fill 1.Color"
+            )
+        }
     }
     
     fileprivate override func willMove(toSuperview newSuperview: UIView?) {
