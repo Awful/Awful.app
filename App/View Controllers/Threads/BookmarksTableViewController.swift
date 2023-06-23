@@ -29,7 +29,7 @@ final class BookmarksTableViewController: TableViewController {
         
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
-        navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.rightBarButtonItem = editButtonItem
         
         themeDidChange()
     }

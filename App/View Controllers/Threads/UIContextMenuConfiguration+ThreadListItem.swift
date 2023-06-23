@@ -162,13 +162,13 @@ extension UIContextMenuConfiguration {
             UIMenu(children: [
                 jumpToFirstPage,
                 jumpToLastPage,
-                toggleBookmark,
                 profileAuthor,
                 copyURL,
                 copyTitle,
                 markThreadRead,
                 markThreadUnread,
                 setBookmarkColor,
+                toggleBookmark,
             ].compactMap { $0 })
         })
     }

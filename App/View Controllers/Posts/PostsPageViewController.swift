@@ -389,7 +389,29 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
         return item
     }()
-
+    
+   
+    lazy var currentPageButtonLabel16: UIButton = {
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
+        label.text = currentPageItem.title
+        label.textAlignment = .center
+        button.addSubview(label)
+        
+        label.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
+            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 16),
+            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -16)
+        ])
+        
+        button.addTarget(self, action: #selector(currentPageButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     @IBAction private func compose(
         _ sender: UIBarButtonItem,
         forEvent event: UIEvent
@@ -497,6 +519,16 @@ final class PostsPageViewController: ViewController {
         item.possibleTitles = ["2345 / 2345"]
         item.accessibilityHint = "Opens page picker"
 
+        item.actionBlock = { [unowned self] (sender) in
+            guard self.postsView.loadingView == nil else { return }
+            let selectotron = Selectotron(postsViewController: self)
+            self.present(selectotron, animated: true, completion: nil)
+            
+            if let popover = selectotron.popoverPresentationController {
+                popover.barButtonItem = sender
+            }
+        }
+        
         return item
     }()
     
@@ -603,24 +635,12 @@ final class PostsPageViewController: ViewController {
         
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
             currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
-
-            let button = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
-            label.text = currentPageItem.title
-            label.textAlignment = .center
-            button.addSubview(label)
             
-            label.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-                label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-                label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 16),
-                label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -16)
-            ])
-            
-            button.addTarget(self, action: #selector(currentPageButtonTapped), for: .touchUpInside)
-            
-            currentPageItem.customView = button
+            // iOS 14,15 doesn't like this customView and crashes
+            // iOS 16+ seems fine. this just fixes the pagecount alignment
+            if #available(iOS 16.0, *) {
+                currentPageItem.customView = currentPageButtonLabel16
+            }
             
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
@@ -1506,9 +1526,11 @@ final class PostsPageViewController: ViewController {
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
             navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
         default:
             navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
             navigationItem.titleLabel.numberOfLines = 2
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
         }
      
         
