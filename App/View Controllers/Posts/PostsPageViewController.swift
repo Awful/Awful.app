@@ -613,13 +613,6 @@ final class PostsPageViewController: ViewController {
         
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
             currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
-            
-            // iOS 14,15 doesn't like this customView and crashes
-            // iOS 16+ seems fine. this just fixes the pagecount alignment
-//            if #available(iOS 16.0, *) {
-//                currentPageItem.customView = currentPageButtonLabel16
-//            }
-            
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
         } else {

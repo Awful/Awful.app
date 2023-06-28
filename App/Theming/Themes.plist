@@ -1172,7 +1172,7 @@
 			<key>toolbarTextColor</key>
 			<string>#000000</string>
 			<key>toolbarTintColor</key>
-			<string>#e6e6e6</string>
+			<string>#000000</string>
 			<key>topBarBottomBorderColor</key>
 			<string>#e6e6e6</string>
 		</dict>
