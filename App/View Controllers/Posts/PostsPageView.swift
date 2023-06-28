@@ -303,17 +303,20 @@ final class PostsPageView: UIView {
     // MARK: Theming
 
     func themeDidChange(_ theme: Theme) {
+        /**
+         A theme is being passed in here but this conflicts with the chrome objects when the posts page view theme differs from the main default theme. e.g. if SpankyKong Light is the default theme, the top and bottom buttons were being affected by a forum-specific theme, such as YOSPOS.
+         
+         Now Theme.defaultTheme() is used in most places to avoid this issue. The scroll thumb and actual posts view stylesheet remains dynamic based on the theme passed in.
+         */
         refreshControlContainer.tintColor = theme["postsPullForNextColor"]
-
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        toolbar.barTintColor = theme["toolbarTintColor"]
-        toolbar.tintColor = theme["toolbarTextColor"]
-        toolbar.topBorderColor = theme["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
+        toolbar.tintColor =  Theme.defaultTheme()["toolbarTintColor"]!
+        toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
+        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
 
-        topBar.themeDidChange(theme)
+        topBar.themeDidChange(Theme.defaultTheme())
     }
 
     // MARK: Gunk

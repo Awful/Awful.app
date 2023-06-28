@@ -32,7 +32,7 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
         let pupilA = AnimationKeypath(keys: ["**", "PupilA", "**", "Color"])
         let pupilB = AnimationKeypath(keys: ["**", "PupilB", "**", "Color"])
         
-        if theme["keyboardAppearance"] == "Light" {
+        if theme["mode"] == "light" {
             // outer eye stroke opaque in light mode
             animationView.setValueProvider(FloatValueProvider(100), keypath: AnimationKeypath(keys: ["**", "Outline", "**", "Opacity"]))
             animationView.setValueProvider(mainColor, keypath: pupilA)

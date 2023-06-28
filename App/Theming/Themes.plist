@@ -571,7 +571,7 @@
 			<key>toolbarTextColor</key>
 			<string>#ffffff</string>
 			<key>toolbarTintColor</key>
-			<string>#000000</string>
+			<string>#ffffff</string>
 			<key>topBarBottomBorderColor</key>
 			<string>#555555</string>
 		</dict>
@@ -1241,6 +1241,8 @@
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
+		<key>toolbarTintColor</key>
+		<string>#000000</string>
 		<key>relevantForumID</key>
 		<string>219</string>
 		<key>description</key>

@@ -77,7 +77,7 @@ struct PostRenderModel: StencilContextConvertible {
             "visibleAvatarURL": visibleAvatarURL as Any]
     }
     
-    init(author: User, isOP: Bool, postDate: Date, postHTML: String) {
+    init(author: User, isOP: Bool, postDate: String, postHTML: String) {
         context = [
             "author": [
                 "regdate": author.regdate as Any,

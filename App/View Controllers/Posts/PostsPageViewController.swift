@@ -390,28 +390,6 @@ final class PostsPageViewController: ViewController {
         return item
     }()
     
-   
-    lazy var currentPageButtonLabel16: UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 60, height: 44))
-        label.text = currentPageItem.title
-        label.textAlignment = .center
-        button.addSubview(label)
-        
-        label.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -16)
-        ])
-        
-        button.addTarget(self, action: #selector(currentPageButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
     @IBAction private func compose(
         _ sender: UIBarButtonItem,
         forEvent event: UIEvent
@@ -638,9 +616,9 @@ final class PostsPageViewController: ViewController {
             
             // iOS 14,15 doesn't like this customView and crashes
             // iOS 16+ seems fine. this just fixes the pagecount alignment
-            if #available(iOS 16.0, *) {
-                currentPageItem.customView = currentPageButtonLabel16
-            }
+//            if #available(iOS 16.0, *) {
+//                currentPageItem.customView = currentPageButtonLabel16
+//            }
             
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
@@ -1326,26 +1304,6 @@ final class PostsPageViewController: ViewController {
         print("\(possessiveUsername)")
         
         let postActionMenu: UIMenu = {
-            // Mark Read Up To Here
-            if author == nil {
-                let markRead = UIAction.Identifier("markread")
-                actionMappings[markRead] = markThreadAsSeenUpTo(action:)
-                let markreadAction = UIAction(title: "Mark as last read",
-                                              image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
-                                              identifier: markRead,
-                                              handler: markThreadAsSeenUpTo(action:))
-                postActions.append(markreadAction)
-            } else {
-                // Find post
-                let findPost = UIAction.Identifier("find")
-                actionMappings[findPost] = findPost(action:)
-                let findPostAction = UIAction(title: "Find post",
-                                              image: UIImage(named: "quick-look")!.withRenderingMode(.alwaysTemplate),
-                                              identifier: findPost,
-                                              handler: findPost(action:))
-                
-                postActions.append(findPostAction)
-            }
             // edit post
             if self.selectedPost!.editable {
                 let edit = UIAction.Identifier("edit")
@@ -1356,15 +1314,6 @@ final class PostsPageViewController: ViewController {
                                           handler: edit(action:))
                 postActions.append(editAction)
             }
-            
-            // Share URL
-            let shareURL = UIAction.Identifier("shareurl")
-            actionMappings[shareURL] = shareURL(action:)
-            let shareURLAction = UIAction(title: "Share",
-                                          image: UIImage(named: "share")!.withRenderingMode(.alwaysTemplate),
-                                          identifier: shareURL,
-                                          handler: shareURL(action:))
-            postActions.append(shareURLAction)
             
             // Quote
             if !thread.closed {
@@ -1385,6 +1334,38 @@ final class PostsPageViewController: ViewController {
                                           handler: copy(action:))
                 postActions.append(copyAction)
             }
+
+            // Mark Read Up To Here
+            if author == nil {
+                let markRead = UIAction.Identifier("markread")
+                actionMappings[markRead] = markThreadAsSeenUpTo(action:)
+                let markreadAction = UIAction(title: "Mark as last read",
+                                              image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
+                                              identifier: markRead,
+                                              handler: markThreadAsSeenUpTo(action:))
+                postActions.append(markreadAction)
+            } else {
+                // Find post
+                let findPost = UIAction.Identifier("find")
+                actionMappings[findPost] = findPost(action:)
+                let findPostAction = UIAction(title: "Find post",
+                                              image: UIImage(named: "quick-look")!.withRenderingMode(.alwaysTemplate),
+                                              identifier: findPost,
+                                              handler: findPost(action:))
+                
+                postActions.append(findPostAction)
+            }
+            
+            // Share URL
+            let shareURL = UIAction.Identifier("shareurl")
+            actionMappings[shareURL] = shareURL(action:)
+            let shareURLAction = UIAction(title: "Share",
+                                          image: UIImage(named: "share")!.withRenderingMode(.alwaysTemplate),
+                                          identifier: shareURL,
+                                          handler: shareURL(action:))
+            postActions.append(shareURLAction)
+            
+ 
             // Report
             let report = UIAction.Identifier("report")
             actionMappings[report] = report(action:)

@@ -17,7 +17,7 @@ class ChidoriMenu: UIViewController {
     /// Where in the window the menu is being summond from
     let summonPoint: CGPoint
 
-    let visualEffectView = Theme.defaultTheme()["keyboardAppearance"] == "Light" ? UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialLight)) : UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialDark))
+    let visualEffectView = Theme.defaultTheme()["mode"] == "light" ? UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialLight)) : UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialDark))
     
     private let shadowLayer = CALayer()
     

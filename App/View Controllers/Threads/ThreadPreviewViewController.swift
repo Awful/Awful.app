@@ -87,11 +87,11 @@ final class ThreadPreviewViewController: ViewController {
                 
                 guard
                     let userKey = UserDefaults.standard.loggedInUserID.map({ UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }),
-                    let context = self.managedObjectContext
+                    let context = self.managedObjectContext,
+                    let author = User.objectForKey(objectKey: userKey, in: context) as User?
                     else { throw MissingAuthorError() }
-
-                let author = User.objectForKey(objectKey: userKey, in: context)
-                self.post = PostRenderModel(author: author, isOP: true, postDate: Date(), postHTML: previewAndForm.previewHTML)
+                
+                self.post = PostRenderModel(author: author, isOP: true, postDate: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short), postHTML: previewAndForm.previewHTML)
                 self.formData = previewAndForm.formData
                 self.renderPreview()
             }
@@ -115,7 +115,7 @@ final class ThreadPreviewViewController: ViewController {
         
         let context: [String: Any] = [
             "stylesheet": theme[string: "postsViewCSS"] ?? "",
-            "post": post]
+            "post": post.context]
         do {
             let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)

@@ -140,7 +140,7 @@ class TableViewController: UITableViewController, Themeable {
     private func createRefreshControl() {
         guard tableView.topPullToRefresh == nil else { return }
         
-        let niggly = NigglyRefreshLottieView()
+        let niggly = NigglyRefreshLottieView(theme: theme)
         let targetSize = CGSize(width: tableView.bounds.width, height: 0)
        
         niggly.bounds.size = niggly.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)

@@ -44,7 +44,13 @@
 
 	<footer>
         <span class="divider{% if beenSeen %} divider-seen {% endif %}"></span>
-        <span class="postdate">{{ postDateRaw }}</span>
+        <span class="postdate">
+            {% if postDateRaw %}
+                {{ postDateRaw }}
+            {% else %}
+                {{ postDate }}
+            {% endif %}
+        </span>
 
         <button class="action-button" title="Post actions">
             <img src="awful-resource://post-dots.png">

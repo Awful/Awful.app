@@ -9,25 +9,24 @@ import UIKit
 private let verticalMargin: CGFloat = 10
 
 final class NigglyRefreshLottieView: UIView {
+    fileprivate let theme: Theme
+    
     private let animationView = LottieAnimationView(
         animation: LottieAnimation.named("niggly60"),
         configuration: LottieConfiguration(renderingEngine: .mainThread))
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(theme: Theme) {
+        self.theme = theme
+        super.init(frame: .zero)
+        
         commonInit()
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func commonInit() {
-        var theme: Theme {
-            return Theme.defaultTheme()
-        }
-        
         animationView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         animationView.translatesAutoresizingMaskIntoConstraints = true
         animationView.contentMode = .scaleAspectFit
@@ -36,7 +35,7 @@ final class NigglyRefreshLottieView: UIView {
         
         addSubview(animationView)
         
-        backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        backgroundColor = theme["backgroundColor"]!
         
         NSLayoutConstraint.activate([
             animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -44,7 +43,7 @@ final class NigglyRefreshLottieView: UIView {
     }
     
     override func layoutSubviews() {
-        let gray = ColorValueProvider(Theme.defaultTheme()["nigglyColor"]!.lottieColorValue)
+        let gray = ColorValueProvider(theme["nigglyColor"]!.lottieColorValue)
         let mainOutline = AnimationKeypath(keys: ["**", "**", "**", "Color"])
     
         animationView.setValueProvider(gray, keypath: mainOutline)

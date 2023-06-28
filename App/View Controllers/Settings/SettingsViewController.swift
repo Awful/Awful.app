@@ -474,6 +474,7 @@ final class SettingsViewController: TableViewController {
         textHeader.backgroundColor = theme["listBackgroundColor"]
         textHeader.text = cellTitleText
         textHeader.isEditable = false
+        textHeader.isScrollEnabled = false
         
         return textHeader
     }
@@ -491,6 +492,7 @@ final class SettingsViewController: TableViewController {
         footer.textColor = theme["listSecondaryTextColor"]
         footer.backgroundColor = theme["listBackgroundColor"]
         footer.isEditable = false
+        footer.isScrollEnabled = false
         
         return footer
     }

@@ -121,7 +121,7 @@ final class PostPreviewViewController: ViewController {
                     throw MissingAuthorError()
                 }
                 
-                let postDate = self.editingPost?.postDate ?? Date()
+                let postDate = self.editingPost?.postDateRaw ?? DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
                 
                 let isOP = self.editingPost?.author == author
                 
