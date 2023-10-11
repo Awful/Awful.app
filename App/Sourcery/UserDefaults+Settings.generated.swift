@@ -1,6 +1,5 @@
-// Generated using Sourcery 0.17.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 2.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
 //  UserDefaults+Settings
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
