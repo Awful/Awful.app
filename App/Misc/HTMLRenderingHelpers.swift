@@ -8,13 +8,15 @@ extension HTMLDocument {
     
     /// Finds links that appear to be to tweets and adds a `data-tweet-id` attribute to those links.
     func addAttributeToTweetLinks() {
-        for a in nodes(matchingSelector: "a[href *= 'twitter.com']") {
+        for a in nodes(matchingSelector: "a[href *= 'twitter.com'], a[href *= 'x.com']") {
             guard
                 let href = a["href"],
                 let url = URL(string: href),
                 let host = url.host,
-                host.lowercased().hasSuffix("twitter.com") &&
-                    a.textContent.hasPrefix("https:") // approximate raw-link check
+                (host.lowercased().hasSuffix("twitter.com") ||
+                 host.lowercased().hasSuffix(".x.com") ||
+                 host.lowercased() == "x.com") &&
+                a.textContent.hasPrefix("https:") // approximate raw-link check
                 else { continue }
             
             let pathComponents = url.pathComponents
