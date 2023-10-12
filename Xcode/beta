@@ -109,10 +109,10 @@ def open_archive_in_xcode(archive_path):
 
 
 def create_github_release(tag):
-    check_call(['gh', 'release', 'create',
-                '--notes', '',
-                tag,
-                ])
+    call(['gh', 'release', 'create',
+          '--notes', '',
+          tag,
+          ])
 
 
 def upload_to_github(tag, *paths):
