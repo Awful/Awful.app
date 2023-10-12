@@ -286,19 +286,18 @@ extension HTMLDocument {
 
     func embedVideos() {
         for a in nodes(matchingSelector: "a") {
-            if
-                let href = a["href"],
-                let url = URL(string: href),
-                let host = url.host
-                 {
-                    // don't expand if the post has an NWS smilie
-                    if (containingPostIsNWS(node: a)) {
-                        continue;
-                    }
+            if let href = a["href"],
+               let url = URL(string: href),
+               let host = url.host
+            {
+                // don't expand if the post has an NWS smilie
+                if containingPostIsNWS(node: a) {
+                    continue
+                }
 
-                    if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
-                        if(host.lowercased().hasSuffix("imgur.com")) {
-                            let videoElement = HTMLElement(tagName: "video", attributes: [
+                if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
+                    if host.lowercased().hasSuffix("imgur.com") {
+                        let videoElement = HTMLElement(tagName: "video", attributes: [
                             "width": "300",
                             "preload":"metadata",
                             "controls":"",
@@ -308,11 +307,12 @@ extension HTMLDocument {
                             "src":href.replacingCharacters(in: ext, with: ".mp4"),
                             "type":"video/mp4"])
 
-                            a.parent?.replace(child: a, with: videoElement)
-                        }
-                        if (host.lowercased().hasSuffix(".discordapp.com") &&
-                            href.hasSuffix(".mp4")) {
-                            let videoElement = HTMLElement(tagName: "video", attributes: [
+                        a.parent?.replace(child: a, with: videoElement)
+                    }
+                    if host.lowercased().hasSuffix(".discordapp.com") &&
+                        href.hasSuffix(".mp4")
+                    {
+                        let videoElement = HTMLElement(tagName: "video", attributes: [
                             "width": "300",
                             "preload":"metadata",
                             "controls":"",
@@ -321,41 +321,36 @@ extension HTMLDocument {
                             "src":href,
                             "type":"video/mp4"])
 
-                            a.parent?.replace(child: a, with: videoElement)
-                        }
-                        //todo gifcat mp4 files
+                        a.parent?.replace(child: a, with: videoElement)
                     }
+                    //todo gifcat mp4 files
+                }
 
-                     // only replace youtube links that are raw URLs
-                    else if((href == a.textContent) &&
-                             href.range(of: #"((https).+youtu)"#, options: .regularExpression) != nil) {
-                        guard
-                            let youtubeUri = getYoutubeEmbeddedUri(uri: href)
-                        else {
-                            continue
-                        }
+                // only replace youtube links that are raw URLs
+                else if href == a.textContent &&
+                            href.range(of: #"https.+youtu"#, options: .regularExpression) != nil
+                {
+                    if let youtubeUri = getYoutubeEmbeddedUri(href: href) {
                         let embedElement = HTMLElement(tagName: "iframe", attributes: [
-                            "width":"500",
-                            "height":"315",
-                            "src": youtubeUri,
-                            "frameborder":"0",
-                            "allow":"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
-                            "allowfullscreen":""
+                            "width": "500",
+                            "height": "315",
+                            "src": youtubeUri.absoluteString,
+                            "frameborder": "0",
+                            "allow": "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
+                            "allowfullscreen": "",
                         ])
                         a.parent?.replace(child: a, with: embedElement)
                     }
-
                 }
-
             }
-
         }
+    }
 }
 
 extension URL {
     func valueForFirstQueryItem(named name: String) -> String? {
-        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true) else { return nil }
-        return (components.queryItems ?? []).first { $0.name == name }?.value
+        let components = URLComponents(url: self, resolvingAgainstBaseURL: true)
+        return components?.queryItems?.first { $0.name == name }?.value
     }
 }
 
@@ -424,37 +419,36 @@ private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
     return components.url
 }
 
-private func getYoutubeEmbeddedUri(uri: String) -> String? {
-    guard
-        let sourceUrl = URLComponents(string: uri)
-    else{
-        return nil
-    }
-    var seconds: Int?
-    var id: String?
-    if(sourceUrl.host == "youtu.be") {
-        let t = sourceUrl.queryItems?.filter({$0.name == "t"}).first
-        if(t != nil && t?.value != nil){
-            seconds = Int(t!.value!)
-        }
-        let str: String = sourceUrl.path
-        id = String(str[str.index(str.startIndex, offsetBy: 1)...])
+private func getYoutubeEmbeddedUri(href: String) -> URL? {
+    guard let source = URLComponents(string: href) else { return nil }
+    let seconds: Int?
+    let id: String
+    if source.host == "youtu.be" {
+        id = String(source.path.dropFirst())
+
+        seconds = source.queryItems?
+            .first { $0.name == "t" }?
+            .value
+            .flatMap { Int($0) }
     } else {
-        let pair = sourceUrl.fragment?.split(separator: "=")
-        if(pair?[0] == "t" && pair?[1] != nil){
-            seconds = Int(pair![1])
-        }
-        let v = sourceUrl.queryItems?.filter({$0.name == "v"}).first
-        if(v != nil && v?.value != nil) {
-            id = v!.value
+        id = source.queryItems?.first(where: { $0.name == "v" })?.value ?? ""
+
+        if let fragment = source.fragment,
+           case let pair = fragment.split(separator: "=", maxSplits: 1),
+           pair.count == 2,
+           pair[0] == "t"
+        {
+            seconds = Int(pair[1])
+        } else {
+            seconds = nil
         }
     }
 
-    let secondsString = seconds != nil ? "?start=\(seconds!)" : ""
-    if(id == nil) {
-        return nil
+    guard !id.isEmpty,
+          var embed = URLComponents(string: "https://www.youtube.com/embed/\(id)")
+    else { return nil }
+    if let seconds {
+        embed.queryItems = [.init(name: "start", value: "\(seconds)")]
     }
-    return """
-    https://www.youtube.com/embed/\(id!)\(secondsString)
-    """
+    return embed.url
 }

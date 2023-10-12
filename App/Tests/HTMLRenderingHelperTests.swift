@@ -58,4 +58,13 @@ final class HTMLRenderingHelperTests: XCTestCase {
             hello there <span class="mention">^cool&gt;$user\\\"</span>
             """)
     }
+
+    func testEmbedVideosForIncompleteYouTubeURL() {
+        let doc = HTMLDocument(string: """
+            <a href="https://youtu.be" target="_blank" rel="nofollow">https://youtu.be</a>
+            """)
+        doc.embedVideos()
+        XCTAssertNil(doc.firstNode(matchingSelector: "iframe"))
+        XCTAssertNotNil(doc.firstNode(matchingSelector: "a"))
+    }
 }
