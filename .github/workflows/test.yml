@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches:
+      - ci
       - main
   pull_request:
     branches:
@@ -10,10 +11,10 @@ on:
 
 jobs:
   test:
-    runs-on: macos-11
+    runs-on: macos-13
     env:
-      DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
     - name: xcodebuild test
-      run: xcodebuild -workspace Awful.xcworkspace -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 13,OS=latest" test
+      run: xcodebuild -workspace Awful.xcworkspace -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 14,OS=latest" test
