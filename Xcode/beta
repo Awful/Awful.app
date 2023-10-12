@@ -144,8 +144,10 @@ def main():
     platform.add_argument('--ios-only', dest='platform', action='store_const', const="ios",
                           help="Only build for iOS (default is to build for both Catalyst and iOS)")
 
-    parser.add_argument('--appleid', dest='apple_id_username',
+    parser.add_argument('--appleid', dest='apple_id',
                         help="Apple ID username for uploading to App Store Connect (defaults to environment variable APPLE_ID_USERNAME)")
+    parser.add_argument('--teamid', dest='team_id',
+                        help="Apple Developer team ID for uploading to App Store Connect (defaults to environment variable APPLE_TEAM_ID)")
     parser.add_argument('--skip-upload', action='store_true',
                         help="Don't export a .ipa/.zip and upload it to App Store Connect/GitHub Releases")
 
@@ -153,9 +155,12 @@ def main():
 
     platforms = ['catalyst', 'ios'] if args.platform is None else [args.platform]
 
-    apple_id_username = args.apple_id_username or os.environ.get('APPLE_ID_USERNAME')
-    if not (apple_id_username or args.skip_upload):
-        _bail("Must either specify Apple ID username via the  --appleid command-line argument or the APPLE_ID_USERNAME environment variable, or skip upload by specifying --skip-upload")
+    apple_id = args.apple_id or os.environ.get('APPLE_ID_USERNAME')
+    if not (apple_id or args.skip_upload):
+        _bail("Must either specify Apple ID username via the --appleid command-line argument or the APPLE_ID_USERNAME environment variable, or skip upload by specifying --skip-upload")
+    team_id = args.team_id or os.environ.get('APPLE_TEAM_ID')
+    if not (team_id or args.skip_upload):
+        _bail("Must either specify Apple Developer team ID via the --teamid command-line argument or the APPLE_TEAM_ID environment variable, or skip upload by specifying --skip-upload")
 
     ensure_repo_is_clean()
 
@@ -177,7 +182,7 @@ def main():
         if not args.skip_upload:
             (app_path, zip_path) = export_archive(archive_path, build_dir, 'catalyst')
             print("Notarizing, this can take awhile…")
-            notarize_and_staple(app_path, zip_path, apple_id_username)
+            notarize_and_staple(app_path, zip_path, apple_id, team_id)
             _make_zip(app_path, zip_path)
 
             print("Uploading to GitHub release {}…".format(tag))
@@ -190,7 +195,7 @@ def main():
         if not args.skip_upload:
             (_, ipa_path) = export_archive(archive_path, build_dir, 'ios')
             print("Uploading to App Store Connect, this can take awhile…")
-            upload_to_app_store(ipa_path, apple_id_username)
+            upload_to_app_store(ipa_path, apple_id)
 
             dsyms_path = os.path.join(archive_path, 'dSYMs')
             dsyms_zip = os.path.join(build_dir, 'Awful-iOS-dSYMs.zip')
