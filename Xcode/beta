@@ -177,11 +177,11 @@ def main():
         if not args.skip_upload:
             (app_path, zip_path) = export_archive(archive_path, build_dir, 'catalyst')
             print("Notarizing, this can take awhile…")
-            notarize_and_staple(app_path, app_zip, apple_id_username)
-            _make_zip(app_path, app_zip)
+            notarize_and_staple(app_path, zip_path, apple_id_username)
+            _make_zip(app_path, zip_path)
 
             print("Uploading to GitHub release {}…".format(tag))
-            upload_to_github(tag, app_zip)
+            upload_to_github(tag, zip_path)
 
 
     if 'ios' in platforms:
