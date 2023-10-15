@@ -152,6 +152,30 @@ header:after {
 .award .username:before {
   content: url('awful-resource://award.png');
 }
+
+/* Maybe only show these in October? */
+.pumpkin .username:after {
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    background-image: url('awful-resource://pumpkin.svg');
+    content: "";
+}
+.ghost .username:after {
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    background-image: url('awful-resource://ghost.svg');
+    content: "";
+}
+.bat .username:after {
+  width: 20px;
+  height: 20px;
+  background-size: 20px;
+  background-image: url('awful-resource://bat.svg');
+  content: "";
+}
+
 .action-button {
   margin: 0;
   padding: 0.6em;

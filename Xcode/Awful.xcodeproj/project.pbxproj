@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0C6C11B422FCE5800084C406 /* posts-view-bright-light.css in Resources */ = {isa = PBXBuildFile; fileRef = 0C6C11B322FCE5800084C406 /* posts-view-bright-light.css */; };
+		1AB84FD92ADC611B00E7334D /* bat.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1AB84FD62ADC611B00E7334D /* bat.svg */; };
+		1AB84FDA2ADC611B00E7334D /* ghost.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1AB84FD72ADC611B00E7334D /* ghost.svg */; };
+		1AB84FDB2ADC611B00E7334D /* pumpkin.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1AB84FD82ADC611B00E7334D /* pumpkin.svg */; };
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
 		1C0060AA217171CD00E5329A /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0060A8217171CD00E5329A /* profile.css */; };
@@ -363,6 +366,9 @@
 /* Begin PBXFileReference section */
 		0C6C11B322FCE5800084C406 /* posts-view-bright-light.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-bright-light.css"; sourceTree = "<group>"; };
 		17772A1C53EBF44D059D4CD0 /* Pods-Awful.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Awful.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Awful/Pods-Awful.release.xcconfig"; sourceTree = "<group>"; };
+		1AB84FD62ADC611B00E7334D /* bat.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = bat.svg; sourceTree = "<group>"; };
+		1AB84FD72ADC611B00E7334D /* ghost.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ghost.svg; sourceTree = "<group>"; };
+		1AB84FD82ADC611B00E7334D /* pumpkin.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = pumpkin.svg; sourceTree = "<group>"; };
 		1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelperTests.swift; sourceTree = "<group>"; };
 		1C0060A42170347300E5329A /* HTMLReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLReader.swift; sourceTree = "<group>"; };
 		1C0060A7217171CD00E5329A /* profile.less */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = profile.less; sourceTree = "<group>"; };
@@ -1277,6 +1283,9 @@
 		1CD33EDB16F397FC0059587E /* Posts View Theming */ = {
 			isa = PBXGroup;
 			children = (
+				1AB84FD62ADC611B00E7334D /* bat.svg */,
+				1AB84FD72ADC611B00E7334D /* ghost.svg */,
+				1AB84FD82ADC611B00E7334D /* pumpkin.svg */,
 				2D921268292F588100B16011 /* platinum-member.png */,
 				8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */,
 				8C8FA47719AD7CA300B67AAA /* award.png */,
@@ -1735,6 +1744,7 @@
 				1C0AFAE21ECA96E6002D4003 /* posts-view-alternate-dark.css in Resources */,
 				8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */,
 				1C5B9C3C17F20BB800D4981D /* posts-view-winpos95.css in Resources */,
+				1AB84FDB2ADC611B00E7334D /* pumpkin.svg in Resources */,
 				2D19BA3A29C33303009DD94F /* frogrefresh60.json in Resources */,
 				1C5B9C3817F20BB800D4981D /* posts-view-amberpos.css in Resources */,
 				1C5B9C3F17F21BFC00D4981D /* posts-view-dark.css in Resources */,
@@ -1752,6 +1762,7 @@
 				8CE8F2E31BBB754C00E81544 /* stop-button.png in Resources */,
 				2D19BA3329C330A2009DD94F /* mainthrobber60.json in Resources */,
 				8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */,
+				1AB84FD92ADC611B00E7334D /* bat.svg in Resources */,
 				7B1FF12A1F76C3A3000B64DA /* AppIconPickerCell.xib in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */,
@@ -1799,6 +1810,7 @@
 				1CDD48BC17EE288A00E4DAE3 /* Themes.plist in Resources */,
 				7B0EA0BA1D96BF82008B0A90 /* SettingsSliderCell.xib in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
+				1AB84FDA2ADC611B00E7334D /* ghost.svg in Resources */,
 				0C6C11B422FCE5800084C406 /* posts-view-bright-light.css in Resources */,
 				8C8FA48019AD7CA300B67AAA /* ik.png in Resources */,
 				8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */,
