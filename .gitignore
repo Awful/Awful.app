@@ -9,7 +9,10 @@
 /Local.entitlements
 /Local.xcconfig
 
-# OS X and Xcode junk
+# macOS and Xcode junk
 .DS_Store
 xcuserdata
 /Awful.xcworkspace/xcshareddata/Awful.xccheckout
+
+# Optional CSS compiler possible location
+/node_modules/
