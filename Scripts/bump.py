@@ -79,7 +79,7 @@ def bump_version(bumper):
 
     ensure_repo_is_clean()
 
-    xcconfig = os.path.join(script_dir, "Config", "Common.xcconfig")
+    xcconfig = os.path.join(script_dir, "..", "Config", "Common.xcconfig")
     old_bundle_version = read_bundle_version(xcconfig)
 
     new_bundle_version = bumper(old_bundle_version)

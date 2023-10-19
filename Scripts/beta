@@ -19,11 +19,11 @@ def attempt_git_push():
     call(['git', 'push'])
 
 
-def build_and_archive(build_dir, workspace, scheme, configuration, platform):
+def build_and_archive(build_dir, xcodeproj, scheme, configuration, platform):
     archive_path = os.path.join(build_dir, 'Awful-' + platform + '.xcarchive')
     if platform == 'catalyst':
         check_call(['xcodebuild',
-                    '-workspace', workspace,
+                    '-project', xcodeproj,
                     '-scheme', scheme,
                     '-configuration', configuration,
                     '-archivePath', archive_path,
@@ -35,7 +35,7 @@ def build_and_archive(build_dir, workspace, scheme, configuration, platform):
                     ])
     else:
         check_call(['xcodebuild',
-                    '-workspace', workspace,
+                    '-project', xcodeproj,
                     '-scheme', scheme,
                     '-configuration', configuration,
                     '-archivePath', archive_path,
@@ -174,10 +174,10 @@ def main():
         create_github_release(tag)
 
     build_dir = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'build.noindex'))
-    workspace = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'Awful.xcworkspace'))
+    xcodeproj = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'Awful.xcodeproj'))
 
     if 'catalyst' in platforms:
-        archive_path = build_and_archive(build_dir, workspace, 'Awful', 'Release', 'catalyst')
+        archive_path = build_and_archive(build_dir, xcodeproj, 'Awful', 'Release', 'catalyst')
 
         if not args.skip_upload:
             (app_path, zip_path) = export_archive(archive_path, build_dir, 'catalyst')
@@ -190,7 +190,7 @@ def main():
 
 
     if 'ios' in platforms:
-        archive_path = build_and_archive(build_dir, workspace, 'Awful', 'Release', 'ios')
+        archive_path = build_and_archive(build_dir, xcodeproj, 'Awful', 'Release', 'ios')
 
         if not args.skip_upload:
             (_, ipa_path) = export_archive(archive_path, build_dir, 'ios')

@@ -34,7 +34,7 @@
     {
       "parallelizable" : true,
       "target" : {
-        "containerPath" : "container:..\/AwfulCore",
+        "containerPath" : "container:AwfulCore",
         "identifier" : "AwfulCoreTests",
         "name" : "AwfulCoreTests"
       }
@@ -42,15 +42,7 @@
     {
       "parallelizable" : true,
       "target" : {
-        "containerPath" : "container:..\/AwfulScraping",
-        "identifier" : "AwfulScrapingTests",
-        "name" : "AwfulScrapingTests"
-      }
-    },
-    {
-      "parallelizable" : true,
-      "target" : {
-        "containerPath" : "container:..\/Smilies",
+        "containerPath" : "container:Smilies",
         "identifier" : "SmiliesTests",
         "name" : "SmiliesTests"
       }

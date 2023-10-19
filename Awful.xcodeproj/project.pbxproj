@@ -374,7 +374,6 @@
 		1C015BBE21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScrollViewDelegateMultiplexer.h; sourceTree = "<group>"; };
 		1C015BBF21A9C8D00027C9F1 /* ScrollViewDelegateMultiplexer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScrollViewDelegateMultiplexer.m; sourceTree = "<group>"; };
 		1C0396372AE1059F00ABF9FA /* PullToRefresh */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PullToRefresh; sourceTree = "<group>"; };
-		1C065F8D272B8D12007005ED /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate-dark.css"; sourceTree = "<group>"; };
@@ -389,7 +388,7 @@
 		1C15334B20707EB10021A2BD /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		1C15334E20708F140021A2BD /* Common-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Common-Debug.xcconfig"; sourceTree = "<group>"; };
 		1C15334F20708F250021A2BD /* Common-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Common-Release.xcconfig"; sourceTree = "<group>"; };
-		1C15335220709E950021A2BD /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Local.xcconfig; path = ../../Local.xcconfig; sourceTree = "<group>"; };
+		1C15335220709E950021A2BD /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = SOURCE_ROOT; };
 		1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeField.swift; sourceTree = "<group>"; };
 		1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelfHostingAttachmentInterpolator.swift; sourceTree = "<group>"; };
 		1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextView.swift; sourceTree = "<group>"; };
@@ -468,6 +467,14 @@
 		1C3A143D19DFC5D10022C44C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		1C3A144019DFC5D10022C44C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1C3A144519DFC5D10022C44C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		1C3A8D3E2AE10AF9003E9A07 /* MRProgress */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MRProgress; sourceTree = "<group>"; };
+		1C3A8D402AE10D3B003E9A07 /* beta */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = beta; sourceTree = "<group>"; };
+		1C3A8D412AE10D3B003E9A07 /* submit.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = submit.py; sourceTree = "<group>"; };
+		1C3A8D422AE10D3B003E9A07 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Awful.xctestplan; sourceTree = "<group>"; };
+		1C3A8D432AE10D3B003E9A07 /* fix-copyright.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = "fix-copyright.rb"; sourceTree = "<group>"; };
+		1C3A8D442AE10D3B003E9A07 /* submit */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = submit; sourceTree = "<group>"; };
+		1C3A8D452AE10D3B003E9A07 /* bump.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = bump.py; sourceTree = "<group>"; };
+		1C3A8D462AE10D3B003E9A07 /* bump */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = bump; sourceTree = "<group>"; };
 		1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FLAnimatedImageView+Nuke.swift"; sourceTree = "<group>"; };
 		1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Decompression.swift"; sourceTree = "<group>"; };
 		1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+IsOpaque.swift"; sourceTree = "<group>"; };
@@ -594,6 +601,12 @@
 		1CD7EED5228501BF00B62865 /* CGRect+Center.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Center.swift"; sourceTree = "<group>"; };
 		1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+CompressedHeight.swift"; sourceTree = "<group>"; };
 		1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NigglyRefreshView.swift; sourceTree = "<group>"; };
+		1CDAC85B2AE10966006CEE88 /* ImgurAnonymousAPI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ImgurAnonymousAPI; sourceTree = "<group>"; };
+		1CDAC85C2AE10966006CEE88 /* AwfulCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulCore; sourceTree = "<group>"; };
+		1CDAC85E2AE10966006CEE88 /* AwfulSwift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSwift; sourceTree = "<group>"; };
+		1CDAC85F2AE10966006CEE88 /* AwfulScraping */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulScraping; sourceTree = "<group>"; };
+		1CDAC8602AE10966006CEE88 /* Smilies */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Smilies; sourceTree = "<group>"; };
+		1CDAC8612AE10966006CEE88 /* Logger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Logger; sourceTree = "<group>"; };
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImgurAnonymousAPI+Shared.swift"; sourceTree = "<group>"; };
 		1CDC53DF220669640086BD2B /* Photos+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photos+.swift"; sourceTree = "<group>"; };
@@ -605,7 +618,7 @@
 		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
 		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
-		1CF0A6C520A50FC5004C26EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		1CF0A6C520A50FC5004C26EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILayoutPriority+IntegerLiteral.swift"; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RootTabBarController.storyboard; sourceTree = "<group>"; };
@@ -751,13 +764,13 @@
 			isa = PBXGroup;
 			children = (
 				1C5C2C5422D2584100EA5A80 /* ARChromeActivity */,
+				1C3A8D3E2AE10AF9003E9A07 /* MRProgress */,
 				1C4712302665640500E5AA74 /* PSMenuItem */,
 				1C0396372AE1059F00ABF9FA /* PullToRefresh */,
 				1C453F4423384923007AC6CD /* README.md */,
 				1C5C2C4E22D254D600EA5A80 /* TUSafariActivity */,
 			);
-			name = Vendor;
-			path = ../Vendor;
+			path = Vendor;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -793,17 +806,10 @@
 			path = Navigation;
 			sourceTree = "<group>";
 		};
-		1C065F8C272B8CEE007005ED /* ci_scripts */ = {
-			isa = PBXGroup;
-			children = (
-				1C065F8D272B8D12007005ED /* ci_post_clone.sh */,
-			);
-			path = ci_scripts;
-			sourceTree = "<group>";
-		};
 		1C15334D20708EFF0021A2BD /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				1C3A8D422AE10D3B003E9A07 /* Awful.xctestplan */,
 				1C15334E20708F140021A2BD /* Common-Debug.xcconfig */,
 				1C15334F20708F250021A2BD /* Common-Release.xcconfig */,
 				1C15334B20707EB10021A2BD /* Common.xcconfig */,
@@ -1011,8 +1017,7 @@
 				1CD005CD1BB734C900232FFD /* View Controllers */,
 				1CF7FACB1BB60C2200A077F2 /* Views */,
 			);
-			name = App;
-			path = ../App;
+			path = App;
 			sourceTree = "<group>";
 		};
 		1C3A143419DFC5D10022C44C /* Extractor */ = {
@@ -1030,6 +1035,19 @@
 				1C3A143D19DFC5D10022C44C /* ViewController.m */,
 			);
 			path = Extractor;
+			sourceTree = "<group>";
+		};
+		1C3A8D3F2AE10D3B003E9A07 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				1C3A8D402AE10D3B003E9A07 /* beta */,
+				1C3A8D462AE10D3B003E9A07 /* bump */,
+				1C3A8D452AE10D3B003E9A07 /* bump.py */,
+				1C3A8D432AE10D3B003E9A07 /* fix-copyright.rb */,
+				1C3A8D442AE10D3B003E9A07 /* submit */,
+				1C3A8D412AE10D3B003E9A07 /* submit.py */,
+			);
+			path = Scripts;
 			sourceTree = "<group>";
 		};
 		1C4712302665640500E5AA74 /* PSMenuItem */ = {
@@ -1073,8 +1091,7 @@
 				1C56972224C3F1900077CA62 /* App */,
 				1C56973824C3F1910077CA62 /* Extension */,
 			);
-			name = CopyMarkdown;
-			path = ../CopyMarkdown;
+			path = CopyMarkdown;
 			sourceTree = "<group>";
 		};
 		1C5C2C4E22D254D600EA5A80 /* TUSafariActivity */ = {
@@ -1093,15 +1110,14 @@
 			path = ARChromeActivity;
 			sourceTree = "<group>";
 		};
-		1C66A9BA19DD3017001B9A41 /* Smilies */ = {
+		1C66A9BA19DD3017001B9A41 /* Smilies Extra */ = {
 			isa = PBXGroup;
 			children = (
 				1C3A143419DFC5D10022C44C /* Extractor */,
 				1C66AA0119DD3971001B9A41 /* Keyboard */,
 				1CBBAAB61D949EE100A847EC /* Stickers */,
 			);
-			name = Smilies;
-			path = "../Smilies Extra";
+			path = "Smilies Extra";
 			sourceTree = "<group>";
 		};
 		1C66AA0119DD3971001B9A41 /* Keyboard */ = {
@@ -1372,13 +1388,19 @@
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
-				1C065F8C272B8CEE007005ED /* ci_scripts */,
+				1CDAC85C2AE10966006CEE88 /* AwfulCore */,
+				1CDAC85F2AE10966006CEE88 /* AwfulScraping */,
+				1CDAC85E2AE10966006CEE88 /* AwfulSwift */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				1C56974E24C3F39B0077CA62 /* CopyMarkdown */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				1CDAC85B2AE10966006CEE88 /* ImgurAnonymousAPI */,
+				1CDAC8612AE10966006CEE88 /* Logger */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				1CF0A6C520A50FC5004C26EA /* README.md */,
-				1C66A9BA19DD3017001B9A41 /* Smilies */,
+				1C3A8D3F2AE10D3B003E9A07 /* Scripts */,
+				1CDAC8602AE10966006CEE88 /* Smilies */,
+				1C66A9BA19DD3017001B9A41 /* Smilies Extra */,
 				1190F76913BE4ECB00B9D271 /* Vendor */,
 			);
 			name = Awful;
@@ -1800,15 +1822,20 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(PROJECT_DIR)/Vendor/Sourcery/bin/sourcery",
+				"$(PROJECT_DIR)/Config/sourcery.yml",
+				"$(PROJECT_DIR)/App/Sourcery/UserDefaults+Settings.stencil",
+				"$(PROJECT_DIR)/App/Settings/UserDefaults+Settings.swift",
 			);
 			name = Sourcery;
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(PROJECT_DIR)/App/Sourcery/UserDefaults+Settings.generated",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$PROJECT_DIR/../Vendor/Sourcery/bin/sourcery\" --config \"$PROJECT_DIR/sourcery-config.yml\"\n";
+			shellScript = "\"$PROJECT_DIR/Vendor/Sourcery/bin/sourcery\" --config \"$PROJECT_DIR/Config/sourcery.yml\"\n";
 			showEnvVarsInLog = 0;
 		};
 		1C8F0DE6191CFA2200CE8DEE /* Compile CSS */ = {
@@ -1823,7 +1850,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "set -eu -o pipefail\n\nPATH=\"${PROJECT_DIR}/../node_modules/less/bin:$PATH:/usr/local/bin:/usr/local/share/npm/bin:/opt/local/bin:/opt/homebrew/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! brew install less\"; exit 0; }\n\ncd \"${PROJECT_DIR}/../App\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Profiles:Theming\" \"$@\"\n}\n\nLESSFILES=(Stylesheets/profile.less)\nLESSFILES+=(Theming/posts-view*.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
+			shellScript = "set -eu -o pipefail\n\nPATH=\"${PROJECT_DIR}/node_modules/less/bin:$PATH:/usr/local/bin:/usr/local/share/npm/bin:/opt/local/bin:/opt/homebrew/bin\"\nhash lessc 2>/dev/null || { echo \"Please install less! brew install less\"; exit 0; }\n\ncd \"${PROJECT_DIR}/App\"\n\n# lessc ain't quick so we'll only compile what's changed.\n# Updating any imported LESS files should also trigger recompilation.\nIMPORTED=$(find . -name \"*.less\" -not -name \"posts-view*\" -exec stat -f %m {} \\; | sort -n -r | head -n 1)\n\nmtime() {\n    echo `stat -f %m \"${1}\" 2>/dev/null`\n}\n\nlessc() {\n    command lessc --no-color --include-path=\"Profiles:Theming\" \"$@\"\n}\n\nLESSFILES=(Stylesheets/profile.less)\nLESSFILES+=(Theming/posts-view*.less)\n\nfor s in \"${LESSFILES[@]}\"; do\n    c=\"${s%.less}.css\"\n    smodified=$(mtime \"$s\")\n    cmodified=$(mtime \"$c\")\n    if [[ ! -e \"$c\" || smodified -gt cmodified || IMPORTED -gt cmodified ]]; then\n        echo \"Compiling $s\"\n        lessc \"$s\" \"$c\"\n    fi\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2099,7 +2126,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "../Smilies Extra/Extractor/Info.plist";
+				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2113,7 +2140,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "../Smilies Extra/Extractor/Info.plist";
+				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2159,7 +2186,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/App/App.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CopyMarkdown/App/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2183,7 +2210,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../CopyMarkdown/App/Info.plist;
+				INFOPLIST_FILE = CopyMarkdown/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -2237,7 +2264,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/App/App.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CopyMarkdown/App/App.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2255,7 +2282,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../CopyMarkdown/App/Info.plist;
+				INFOPLIST_FILE = CopyMarkdown/App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -2305,7 +2332,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/Extension/Extension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CopyMarkdown/Extension/Extension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2328,7 +2355,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../CopyMarkdown/Extension/Info.plist;
+				INFOPLIST_FILE = CopyMarkdown/Extension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -2381,7 +2408,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = ../CopyMarkdown/Extension/Extension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = CopyMarkdown/Extension/Extension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2398,7 +2425,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ../CopyMarkdown/Extension/Info.plist;
+				INFOPLIST_FILE = CopyMarkdown/Extension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -2420,7 +2447,7 @@
 		1C66A9FD19DD393A001B9A41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "../Smilies Extra/Keyboard/Info.plist";
+				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug.SmilieKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -2430,7 +2457,7 @@
 		1C66A9FE19DD393A001B9A41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "../Smilies Extra/Keyboard/Info.plist";
+				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.SmilieKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -2448,7 +2475,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = ../App/Tests/Info.plist;
+				INFOPLIST_FILE = App/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
@@ -2467,7 +2494,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = ../App/Tests/Info.plist;
+				INFOPLIST_FILE = App/Tests/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
@@ -2480,13 +2507,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
-				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
+				INFOPLIST_FILE = App/Resources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = AwfulDebug;
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "App/Main/Awful-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -2496,12 +2523,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
-				INFOPLIST_FILE = "$(SRCROOT)/../App/Resources/Info.plist";
+				INFOPLIST_FILE = App/Resources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = Awful;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "../App/Main/Awful-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "App/Main/Awful-Bridging-Header.h";
 			};
 			name = Release;
 		};
