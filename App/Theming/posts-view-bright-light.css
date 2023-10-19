@@ -152,6 +152,23 @@ header:after {
 .award .username:before {
   content: url('awful-resource://award.png');
 }
+.pumpkin .username:after,
+.ghost .username:after,
+.bat .username:after {
+  width: 20px;
+  height: 20px;
+  background-size: 20px;
+  content: "";
+}
+.pumpkin .username:after {
+  background-image: url('awful-resource://pumpkin.svg');
+}
+.ghost .username:after {
+  background-image: url('awful-resource://ghost.svg');
+}
+.bat .username:after {
+  background-image: url('awful-resource://bat.svg');
+}
 .action-button {
   margin: 0;
   padding: 0.6em;
