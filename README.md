@@ -41,16 +41,13 @@ There are optional dependencies for building Awful. You only need them if you're
 
 * Swift Package Manager is the preferred way to add dependencies. If at all possible, please use it.
 * Manual installation is totally fine. Drag the files or xcodeproj on in.
-* [CocoaPods][] manages some of our dependencies.
-    * There's a `Gemfile` nearby if you want to use a known working version of CocoaPods.
-* **No matter how you add a dependency**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency. We do not use CocoaPods-generated acknowledgements.
+* **No matter how you add a dependency**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node`.
-    3. In Terminal, install less: `npm install less -g`.
+    3. In Terminal, switch to Awful's folder and install less: `npm install less`.
     4. Now build the Xcode project and the CSS files will be regenerated.
 
-[CocoaPods]: http://cocoapods.org/
 [LESS]: http://lesscss.org/#usage
 [thread-tags]: https://github.com/Awful/thread-tags
 
@@ -74,7 +71,7 @@ There are unit tests, that don't cover much, running continuously via [GitHub Ac
 
 ### Updating dependencies
 
-Dependencies not managed via CocoaPods or Swift Package Manager are placed in the [Vendor](Vendor) folder and manually kept up-to-date. They include:
+Dependencies not managed via Swift Package Manager are placed in the [Vendor](Vendor) folder and manually kept up-to-date. They include:
 
 * ARChromeActivity and TUSafariActivity assets. We've implemented our own `UIActivity` subclasses but continue to use the libraries' images.
 

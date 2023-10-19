@@ -23,9 +23,6 @@
       location = "group:Vendor/MRProgress">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Smilies">
    </FileRef>
 </Workspace>
