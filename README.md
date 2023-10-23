@@ -24,10 +24,10 @@ This app is not endorsed by Something Awful.
 
 Please drop by [the thread][current thread] if you could use a hand with any of these steps!
 
-You need Xcode 13 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
+You need Xcode 14 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
 
 1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
-2. Open the Xcode workspace and build away: `xed Awful-app`
+2. Open the Xcode project and build away: `xed Awful-app`
 
 You may see build warnings of the form "Unable to find included file '../Local.xcconfig'". You should still be able to build and run, just with a couple of features turned off. If you'd like to enable those features, or just make the warnings go away, please scroll on down to the "Local build settings" section below.
 
@@ -83,13 +83,13 @@ Also, when changing the iOS deployment target, please tag the last commit that s
 
 ### Handy utilities
 
-If you peek in the [Xcode](Xcode) folder you'll find:
+If you peek in the [Scripts](Scripts) folder you'll find:
 
 * `beta`, a script that bumps the build number and then runs `xcodebuild` to create an archive suitable for uploading to App Store Connect. See `beta --help` for more, including how to set up automatic uploads to App Store Connect.
     * If you've released to the App Store, it's time to bump at least the minor version number by passing the `--minor`  parameter, e.g. `beta --minor`.
 * `bump`, a script that can increment the build, minor, or major version number throughtout the project. See `bump --help` for more.
 
-And in the Xcode workspace itself you'll find:
+And in the Xcode project itself you'll find:
 
 * `SmilieExtractor`, an iOS app that takes `showsmilies.webarchive` and extracts resources for Smilie Keyboard. To update smilies, first save a fresh `showsmilies.webarchive` from the Forums, then run `SmilieExtractor`.
 * `CopyMarkdownApp`, a macOS Safari App Extension that adds a "Copy Awful Markdown" context menu item to the Forums. The copied markdown is ready to be pasted into a GitHub issue. 
