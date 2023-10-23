@@ -1,6 +1,0 @@
-${PODS_ROOT}/Target Support Files/Pods-Awful/Pods-Awful-frameworks.sh
-${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework
-${BUILT_PRODUCTS_DIR}/KVOController/KVOController.framework
-${BUILT_PRODUCTS_DIR}/MRProgress/MRProgress.framework
-${BUILT_PRODUCTS_DIR}/PSMenuItem/PSMenuItem.framework
-${BUILT_PRODUCTS_DIR}/PullToRefresher/PullToRefresh.framework

@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import argparse
+import os
+from subprocess import call, check_call, check_output
+import sys
+from tempfile import NamedTemporaryFile
+from textwrap import dedent
+
+import bump
+from bump import ensure_repo_is_clean
+from submit import notarize_and_staple, upload_to_app_store
+
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+
+def attempt_git_push():
+    call(['git', 'push'])
+
+
+def build_and_archive(build_dir, xcodeproj, scheme, configuration, platform):
+    archive_path = os.path.join(build_dir, 'Awful-' + platform + '.xcarchive')
+    if platform == 'catalyst':
+        check_call(['xcodebuild',
+                    '-project', xcodeproj,
+                    '-scheme', scheme,
+                    '-configuration', configuration,
+                    '-archivePath', archive_path,
+                    '-derivedDataPath', os.path.join(build_dir, 'DerivedData'),
+                    '-destination', 'generic/platform=macOS,variant=Mac Catalyst',
+                    'clean',
+                    'archive',
+                    'ARCHS=x86_64',
+                    ])
+    else:
+        check_call(['xcodebuild',
+                    '-project', xcodeproj,
+                    '-scheme', scheme,
+                    '-configuration', configuration,
+                    '-archivePath', archive_path,
+                    '-derivedDataPath', os.path.join(build_dir, 'DerivedData'),
+                    '-destination', 'generic/platform=iOS',
+                    'clean',
+                    'archive',
+                    ])
+    return archive_path
+
+
+def export_archive(archive_path, export_path, platform):
+    options_plist_file = NamedTemporaryFile(suffix='-exportOptions.plist')
+    if platform == 'catalyst':
+        options_plist_file.write(dedent("""\
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            <dict>
+                <key>method</key>
+                <string>developer-id</string>
+            </dict>
+            </plist>
+            """).encode('utf-8'))
+    else:
+        options_plist_file.write(dedent("""\
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            <dict>
+                <key>method</key>
+                <string>app-store</string>
+            </dict>
+            </plist>
+            """).encode('utf-8'))
+    options_plist_file.flush()
+    check_call(['xcodebuild',
+                '-exportArchive',
+                '-archivePath', archive_path,
+                '-exportPath', export_path,
+                '-exportOptionsPlist', options_plist_file.name,
+                '-allowProvisioningUpdates'])
+
+    if platform == 'catalyst':
+        app_path = os.path.join(export_path, 'Awful.app')
+        zip_path = os.path.join(export_path, 'Awful-IntelMac.zip')
+        _make_zip(app_path, zip_path)
+        return (app_path, zip_path)
+    else:
+        archive_base = os.path.basename(archive_path)
+        archive_name_root = os.path.splitext(archive_base)[0]
+        ipa_filename = 'Awful.ipa'
+        return ("", os.path.join(export_path, ipa_filename))
+
+
+def _make_zip(input_path, zip_path, keep_parent=True):
+    check_call([a for a in [
+                'ditto',
+                '-ck',
+                '-rsrc',
+                '--sequesterRsrc',
+                '--keepParent' if keep_parent else '',
+                input_path,
+                zip_path,
+                ] if a])
+
+
+def open_archive_in_xcode(archive_path):
+    check_call(['open', archive_path])
+
+
+
+def create_github_release(tag):
+    call(['gh', 'release', 'create',
+          '--notes', '',
+          tag,
+          ])
+
+
+def upload_to_github(tag, *paths):
+    check_call(['gh', 'release', 'upload',
+                tag,
+                *paths,
+                ])
+
+
+def _bail(message):
+    print(message, file=sys.stderr)
+    sys.exit(1)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Make a beta build ready for uploading to App Store Connect")
+
+    component = parser.add_mutually_exclusive_group()
+    component.add_argument('--minor', dest='bumper', action='store_const', const=bump.minor,
+                           help="Bump the minor build number (default is to bump the build number)")
+    component.add_argument('--major', dest='bumper', action='store_const', const=bump.major,
+                           help="Bump the major build number (default is to bump the build number)")
+    component.add_argument('--skip-bump', action='store_true',
+                           help="Don't bump the bundle version, just make an .xcarchive (default is to bump the build number)")
+
+    platform = parser.add_mutually_exclusive_group()
+    platform.add_argument('--catalyst-only', dest='platform', action='store_const', const="catalyst",
+                          help="Only build for Catalyst (Mac) (default is to build for both Catalyst and iOS)")
+    platform.add_argument('--ios-only', dest='platform', action='store_const', const="ios",
+                          help="Only build for iOS (default is to build for both Catalyst and iOS)")
+
+    parser.add_argument('--appleid', dest='apple_id',
+                        help="Apple ID username for uploading to App Store Connect (defaults to environment variable APPLE_ID_USERNAME)")
+    parser.add_argument('--teamid', dest='team_id',
+                        help="Apple Developer team ID for uploading to App Store Connect (defaults to environment variable APPLE_TEAM_ID)")
+    parser.add_argument('--skip-upload', action='store_true',
+                        help="Don't export a .ipa/.zip and upload it to App Store Connect/GitHub Releases")
+
+    args = parser.parse_args()
+
+    platforms = ['catalyst', 'ios'] if args.platform is None else [args.platform]
+
+    apple_id = args.apple_id or os.environ.get('APPLE_ID_USERNAME')
+    if not (apple_id or args.skip_upload):
+        _bail("Must either specify Apple ID username via the --appleid command-line argument or the APPLE_ID_USERNAME environment variable, or skip upload by specifying --skip-upload")
+    team_id = args.team_id or os.environ.get('APPLE_TEAM_ID')
+    if not (team_id or args.skip_upload):
+        _bail("Must either specify Apple Developer team ID via the --teamid command-line argument or the APPLE_TEAM_ID environment variable, or skip upload by specifying --skip-upload")
+
+    ensure_repo_is_clean()
+
+    if not args.skip_bump:
+        bump.bump_version(bump.build if args.bumper is None else args.bumper)
+        attempt_git_push()
+
+    tag = check_output(['git', 'describe', '--abbrev=0']).strip()
+
+    if not args.skip_upload:
+        create_github_release(tag)
+
+    build_dir = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'build.noindex'))
+    xcodeproj = os.path.normpath(os.path.join(SCRIPT_DIR, '..', 'Awful.xcodeproj'))
+
+    if 'catalyst' in platforms:
+        archive_path = build_and_archive(build_dir, xcodeproj, 'Awful', 'Release', 'catalyst')
+
+        if not args.skip_upload:
+            (app_path, zip_path) = export_archive(archive_path, build_dir, 'catalyst')
+            print("Notarizing, this can take awhile…")
+            notarize_and_staple(app_path, zip_path, apple_id, team_id)
+            _make_zip(app_path, zip_path)
+
+            print("Uploading to GitHub release {}…".format(tag))
+            upload_to_github(tag, zip_path)
+
+
+    if 'ios' in platforms:
+        archive_path = build_and_archive(build_dir, xcodeproj, 'Awful', 'Release', 'ios')
+
+        if not args.skip_upload:
+            (_, ipa_path) = export_archive(archive_path, build_dir, 'ios')
+            print("Uploading to App Store Connect, this can take awhile…")
+            upload_to_app_store(ipa_path, apple_id)
+
+            dsyms_path = os.path.join(archive_path, 'dSYMs')
+            dsyms_zip = os.path.join(build_dir, 'Awful-iOS-dSYMs.zip')
+            _make_zip(dsyms_path, dsyms_zip, keep_parent=False)
+            print("Uploading dSYMs to GitHub release{}…".format(tag))
+            upload_to_github(tag, dsyms_zip)
+
+        open_archive_in_xcode(archive_path)
+
+
+if __name__ == '__main__':
+    main()
