@@ -610,6 +610,7 @@
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImgurAnonymousAPI+Shared.swift"; sourceTree = "<group>"; };
 		1CDC53DF220669640086BD2B /* Photos+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photos+.swift"; sourceTree = "<group>"; };
+		1CDC9F652AE5FB19005DA08D /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = test.yml; path = .github/workflows/test.yml; sourceTree = SOURCE_ROOT; };
 		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CDD48BB17EE288A00E4DAE3 /* Themes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Themes.plist; sourceTree = "<group>"; };
@@ -1046,6 +1047,7 @@
 				1C3A8D432AE10D3B003E9A07 /* fix-copyright.rb */,
 				1C3A8D442AE10D3B003E9A07 /* submit */,
 				1C3A8D412AE10D3B003E9A07 /* submit.py */,
+				1CDC9F652AE5FB19005DA08D /* test.yml */,
 			);
 			path = Scripts;
 			sourceTree = "<group>";
