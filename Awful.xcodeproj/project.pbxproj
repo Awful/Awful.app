@@ -2642,7 +2642,7 @@
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.13.1;
+				minimumVersion = 0.15.1;
 			};
 		};
 		1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
