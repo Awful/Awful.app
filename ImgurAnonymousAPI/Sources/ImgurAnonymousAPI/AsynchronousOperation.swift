@@ -93,10 +93,10 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
 
 extension AsynchronousOperation {
     
-    /// Finds the first `AsynchronousOperation` among this operation's dependencies that resulted in a `T`. Throws an error if no such operation is found.
-    func firstDependencyValue<T>(ofType resultType: T.Type) throws -> T {
+    /// Finds the first `AsynchronousOperation` among this operation's dependencies that resulted in a `U`. Throws an error if no such operation is found.
+    func firstDependencyValue<U>(ofType resultType: U.Type) throws -> U {
         let candidates = dependencies.lazy
-            .compactMap { $0 as? AsynchronousOperation<T> }
+            .compactMap { $0 as? AsynchronousOperation<U> }
 
         for op in candidates.dropLast() {
             if let value = op.result?.value {
@@ -105,7 +105,7 @@ extension AsynchronousOperation {
         }
 
         guard let lastResult = candidates.last?.result else {
-            throw MissingDependency(dependentResultValueType: T.self)
+            throw MissingDependency(dependentResultValueType: U.self)
         }
 
         return try lastResult.unwrap()

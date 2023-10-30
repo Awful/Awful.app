@@ -15,7 +15,7 @@
 static NSString *const MRCircularProgressViewProgressAnimationKey = @"MRCircularProgressViewProgressAnimationKey";
 
 
-@interface MRCircularProgressView ()
+@interface MRCircularProgressView () <CAAnimationDelegate>
 
 @property (nonatomic, strong, readwrite) NSNumberFormatter *numberFormatter;
 @property (nonatomic, strong, readwrite) NSTimer *valueLabelUpdateTimer;

@@ -136,7 +136,7 @@ extension PullToRefresh {
     
     fileprivate struct KVO {
         
-        static var context = "PullToRefreshKVOContext"
+        static var context = 0
         
         enum ScrollViewPath {
             static let contentOffset = #keyPath(UIScrollView.contentOffset)
