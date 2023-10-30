@@ -74,8 +74,8 @@ final class CompositionMenuTree: NSObject {
     func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
-        let mediaType : NSString = kUTTypeImage as NSString
-        picker.mediaTypes = [mediaType as String]
+        let mediaType = UTType.image
+        picker.mediaTypes = [mediaType.identifier]
         picker.allowsEditing = false
         picker.delegate = self
         if UIDevice.current.userInterfaceIdiom == .pad && sourceType == .photoLibrary {

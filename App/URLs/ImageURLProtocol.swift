@@ -82,7 +82,7 @@ final class ImageURLProtocol: URLProtocol {
             let data = ImageURLProtocol.imageDatas[url.canonicalPath]
             else { return nil }
         
-        let mimeType = UTTypeCopyPreferredTagWithClass(kUTTypePNG, kUTTagClassMIMEType)!.takeRetainedValue() as String
+        let mimeType = UTType.png.preferredMIMEType!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: [
             "Content-Type": mimeType,
             "Content-Length": "\(data.count)"])!

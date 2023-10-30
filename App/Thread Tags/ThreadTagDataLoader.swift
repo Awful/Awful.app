@@ -5,6 +5,7 @@
 import Foundation
 import MobileCoreServices
 import Nuke
+import UniformTypeIdentifiers
 
 private let Log = Logger.get()
 
@@ -55,10 +56,10 @@ final class ThreadTagDataLoader: DataLoading {
         
         Log.d("\(targetURL) is bundled, returning image data directly")
         
-        let mimeType = UTTypeCopyPreferredTagWithClass(kUTTypePNG, kUTTagClassMIMEType)?.takeRetainedValue() as String?
+        let mimeType = UTType.png.preferredMIMEType!
         let response = HTTPURLResponse(url: targetURL, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: [
             "Content-Length": "\(data.count)",
-            "Content-Type": mimeType ?? "image/png",
+            "Content-Type": mimeType,
             "Cache-Control": "no-cache, no-store, must-revalidate", // skip Nuke's disk cache
             ])!
         didReceiveData(data, response)

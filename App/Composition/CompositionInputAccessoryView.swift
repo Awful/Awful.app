@@ -216,12 +216,12 @@ private final class KeyboardButton: SmilieButton {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        guard previousTraitCollection?.userInterfaceIdiom != traitCollection.userInterfaceIdiom else { return }
-        
+        if previousTraitCollection?.userInterfaceIdiom == traitCollection.userInterfaceIdiom { return }
+
         if traitCollection.userInterfaceIdiom == .phone {
-            contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 5, right: 0)
+            configuration?.contentInsets = .init(top: 0, leading: 0, bottom: 5, trailing: 0)
         } else {
-            contentEdgeInsets = UIEdgeInsets()
+            configuration?.contentInsets = .zero
         }
     }
 }

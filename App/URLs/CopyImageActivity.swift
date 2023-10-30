@@ -5,13 +5,14 @@
 import CoreServices
 import ImageIO
 import UIKit
+import UniformTypeIdentifiers
 
 final class CopyImageActivity: UIActivity {
 
     private var image: Image?
 
     private enum Image {
-        case data(Data, uti: CFString)
+        case data(Data, UTType)
         case ui(UIImage)
     }
 
@@ -45,23 +46,23 @@ final class CopyImageActivity: UIActivity {
     }
     
     override func prepare(withActivityItems activityItems: [Any]) {
-        image = activityItems.lazy.compactMap {
-            switch $0 {
+        image = activityItems.lazy.compactMap { (item: Any) -> Image? in
+            switch item {
             case let data as Data:
                 guard let uti = imageUTI(data) else { return nil }
-                return .data(data, uti: uti)
+                return .data(data, uti)
             case let image as UIImage:
                 return .ui(image)
             default:
                 return nil
             }
-        }.first
+        }.first { _ in true }
     }
 
     override func perform() {
         switch image {
-        case let .data(data, uti: uti):
-            UIPasteboard.general.setData(data, forPasteboardType: uti as String)
+        case let .data(data, uti):
+            UIPasteboard.general.setData(data, forPasteboardType: uti.identifier)
         case let .ui(image):
             UIPasteboard.general.image = image
         case nil:
@@ -74,12 +75,12 @@ final class CopyImageActivity: UIActivity {
 
 private func isImage(_ data: Data) -> Bool {
     guard let type = imageUTI(data) else { return false }
-    return UTTypeConformsTo(type, kUTTypeImage)
+    return type.conforms(to: .image)
 }
 
-private func imageUTI(_ data: Data) -> CFString? {
+private func imageUTI(_ data: Data) -> UTType? {
     guard let source = CGImageSourceCreateWithData(data as CFData, [
         kCGImageSourceShouldCache: false
     ] as CFDictionary) else { return nil }
-    return CGImageSourceGetType(source)
+    return CGImageSourceGetType(source).flatMap { UTType($0 as String) }
 }
