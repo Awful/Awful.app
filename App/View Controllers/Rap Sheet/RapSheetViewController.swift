@@ -46,40 +46,34 @@ final class RapSheetViewController: TableViewController {
         themeDidChange()
     }
     
-    private func load(_ page: Int) {
-        ForumsClient.shared.listPunishments(of: user, page: page)
-            .done { [weak self] newPunishments in
-                guard let self = self else { return }
+    private func load(_ page: Int) async {
+        do {
+            let newPunishments = try await ForumsClient.shared.listPunishments(of: user, page: page)
+            mostRecentlyLoadedPage = page
 
-                self.mostRecentlyLoadedPage = page
+            if page == 1 {
+                punishments.removeAllObjects()
+                punishments.addObjects(from: newPunishments)
+                tableView.reloadData()
 
-                if page == 1 {
-                    self.punishments.removeAllObjects()
-                    self.punishments.addObjects(from: newPunishments)
-                    self.tableView.reloadData()
-
-                    if self.punishments.count == 0 {
-                        self.showNothingToSeeView()
-                    } else {
-                        self.enableLoadMore()
-                    }
+                if punishments.count == 0 {
+                    showNothingToSeeView()
                 } else {
-                    let oldCount = self.punishments.count
-                    self.punishments.addObjects(from: newPunishments)
-                    let newCount = self.punishments.count
-                    let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
-                    self.tableView.insertRows(at: indexPaths, with: .automatic)
+                    enableLoadMore()
                 }
+            } else {
+                let oldCount = punishments.count
+                punishments.addObjects(from: newPunishments)
+                let newCount = punishments.count
+                let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+                tableView.insertRows(at: indexPaths, with: .automatic)
             }
-            .catch { [weak self] error in
-                self?.present(UIAlertController(networkError: error), animated: true)
-            }
-            .finally { [weak self] in
-                guard let self = self else { return }
-                
-                self.stopAnimatingPullToRefresh()
-                self.loadMoreFooter?.didFinish()
+        } catch {
+            present(UIAlertController(networkError: error), animated: true)
         }
+
+        stopAnimatingPullToRefresh()
+        loadMoreFooter?.didFinish()
     }
     
     private func showNothingToSeeView() {
@@ -96,9 +90,8 @@ final class RapSheetViewController: TableViewController {
         guard loadMoreFooter == nil else { return }
         
         loadMoreFooter = LoadMoreFooter(tableView: tableView, multiplexer: multiplexer, loadMore: { [weak self] loadMoreFooter in
-            guard let self = self else { return }
-            
-            self.load(self.mostRecentlyLoadedPage + 1)
+            guard let self else { return }
+            Task { await self.load(self.mostRecentlyLoadedPage + 1) }
         })
     }
     
@@ -113,7 +106,7 @@ final class RapSheetViewController: TableViewController {
     
     @objc private func refresh() {
         startAnimatingPullToRefresh()
-        load(1)
+        Task { await load(1) }
     }
     
     // MARK: - View lifecycle

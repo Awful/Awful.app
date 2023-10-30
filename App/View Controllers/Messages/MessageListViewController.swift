@@ -90,19 +90,17 @@ final class MessageListViewController: TableViewController {
     @objc private func refresh() {
         startAnimatingPullToRefresh()
         
-        ForumsClient.shared.listPrivateMessagesInInbox()
-            .done { messages in
+        Task {
+            do {
+                _ = try await ForumsClient.shared.listPrivateMessagesInInbox()
                 RefreshMinder.sharedMinder.didRefresh(.privateMessagesInbox)
-            }
-            .catch { [weak self] error in
-                guard let self = self else { return }
-                if self.visible {
+            } catch {
+                if visible {
                     let alert = UIAlertController(networkError: error)
-                    self.present(alert, animated: true)
+                    present(alert, animated: true)
                 }
             }
-            .finally { [weak self] in
-                self?.stopAnimatingPullToRefresh()
+            stopAnimatingPullToRefresh()
         }
     }
     
@@ -121,13 +119,15 @@ final class MessageListViewController: TableViewController {
         Log.d("deleting")
         context.delete(message)
 
-        ForumsClient.shared
-            .deletePrivateMessage(message)
-            .catch { [weak self] (error) in
-                guard let self = self, self.visible else { return }
-                
-                let alert = UIAlertController(title: LocalizedString("private-messages-list.deletion-error.title"), error: error)
-                self.present(alert, animated: true)
+        Task {
+            do {
+                try await ForumsClient.shared.deletePrivateMessage(message)
+            } catch {
+                if visible {
+                    let alert = UIAlertController(title: LocalizedString("private-messages-list.deletion-error.title"), error: error)
+                    present(alert, animated: true)
+                }
+            }
         }
     }
 

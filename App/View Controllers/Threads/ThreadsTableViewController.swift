@@ -64,32 +64,33 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     private func loadPage(_ page: Int) {
-        ForumsClient.shared.listThreads(in: forum, tagged: filterThreadTag, page: page)
-            .done { threads in
-                self.latestPage = page
+        Task {
+            do {
+                _ = try await ForumsClient.shared.listThreads(in: forum, tagged: filterThreadTag, page: page)
 
-                self.enableLoadMore()
+                latestPage = page
 
-                self.tableView.tableHeaderView = self.filterButton
+                enableLoadMore()
 
-                if self.filterThreadTag == nil {
-                    RefreshMinder.sharedMinder.didRefreshForum(self.forum)
+                tableView.tableHeaderView = filterButton
+
+                if filterThreadTag == nil {
+                    RefreshMinder.sharedMinder.didRefreshForum(forum)
                 } else {
-                    RefreshMinder.sharedMinder.didRefreshFilteredForum(self.forum)
+                    RefreshMinder.sharedMinder.didRefreshFilteredForum(forum)
                 }
 
                 // Announcements appear in all thread lists.
                 RefreshMinder.sharedMinder.didRefresh(.announcements)
 
-                self.updateComposeBarButtonItem()
-            }
-            .catch { (error) in
+                updateComposeBarButtonItem()
+            } catch {
                 let alert = UIAlertController(networkError: error)
-                self.present(alert, animated: true)
+                present(alert, animated: true)
             }
-            .finally {
-                self.stopAnimatingPullToRefresh()
-                self.loadMoreFooter?.didFinish()
+
+            stopAnimatingPullToRefresh()
+            loadMoreFooter?.didFinish()
         }
     }
     

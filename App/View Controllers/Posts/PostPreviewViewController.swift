@@ -19,9 +19,9 @@ final class PostPreviewViewController: ViewController {
     private let editingPost: Post?
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private var loadingView: LoadingView?
-    private weak var networkOperation: Cancellable?
+    private var networkOperation: Task<Void, Never>?
     private var post: PostRenderModel?
-    private var postHTML: Promise<String>?
+    private var postHTML: Swift.Result<String, Error>?
     var submitBlock: (() -> Void)?
     private let thread: AwfulThread?
     
@@ -86,29 +86,32 @@ final class PostPreviewViewController: ViewController {
     // MARK: Rendering the preview
     
     func fetchPreviewIfNecessary() {
-        guard postHTML == nil || postHTML?.isRejected == true else { return }
-        
+        if case .success = postHTML { return }
+        guard networkOperation == nil else { return }
+
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
         
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(bbcode)
 
-        let html: Promise<String>
-        let cancellable: Cancellable
-        if let editingPost = editingPost {
-            (promise: html, cancellable: cancellable) = ForumsClient.shared.previewEdit(to: editingPost, bbcode: interpolatedBBcode)
-        } else if let thread = thread {
-            (promise: html, cancellable: cancellable) = ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode)
+        let fetchPreview: () async throws -> String
+        if let editingPost {
+            fetchPreview = { try await ForumsClient.shared.previewEdit(to: editingPost, bbcode: interpolatedBBcode) }
+        } else if let thread {
+            fetchPreview = { try await ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode) }
         } else {
             return Log.e("nothing to do??")
         }
-        networkOperation = cancellable
-        
-        postHTML = html
-        html
-            .done { [weak self] html in
-                guard let self = self, let context = self.managedObjectContext else { return }
-                
+        networkOperation = Task { [weak self] in
+            do {
+                let html = try await fetchPreview()
+
+                guard let self,
+                      let context = managedObjectContext
+                else { return }
+
+                try Task.checkCancellation()
+
                 var loggedInUser: User? {
                     guard let userID = UserDefaults.standard.loggedInUserID else {
                         return nil
@@ -117,22 +120,22 @@ final class PostPreviewViewController: ViewController {
                     return User.objectForKey(objectKey: userKey, in: context)
                 }
                 
-                guard let author = self.editingPost?.author ?? loggedInUser else {
+                guard let author = editingPost?.author ?? loggedInUser else {
                     throw MissingAuthorError()
                 }
                 
-                let postDate = self.editingPost?.postDateRaw ?? DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+                let postDate = editingPost?.postDateRaw ?? DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
                 
-                let isOP = self.editingPost?.author == author
+                let isOP = editingPost?.author == author
                 
-                self.post = PostRenderModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
-                
-                self.renderPreview()
-            }
-            .catch { [weak self] error in
+                post = PostRenderModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
+
+                renderPreview()
+            } catch {
                 Log.e("could not preview post: \(error)")
-                
+
                 self?.present(UIAlertController(networkError: error), animated: true)
+            }
         }
     }
     

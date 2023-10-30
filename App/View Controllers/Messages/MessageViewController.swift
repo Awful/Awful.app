@@ -66,33 +66,33 @@ final class MessageViewController: ViewController {
         }
         let actionSheet = UIAlertController.makeActionSheet()
         
-        actionSheet.addActionWithTitle(LocalizedString("private-message.action-reply")) {
-            ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
-                .done { [weak self] bbcode in
-                    guard let privateMessage = self?.privateMessage else { return }
+        actionSheet.addActionWithTitle(LocalizedString("private-message.action-reply")) { [self] in
+            Task {
+                do {
+                    let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: privateMessage)
                     let composeVC = MessageComposeViewController(regardingMessage: privateMessage, initialContents: bbcode)
                     composeVC.delegate = self
                     composeVC.restorationIdentifier = "New private message replying to private message"
-                    self?.composeVC = composeVC
-                    self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
+                    self.composeVC = composeVC
+                    present(composeVC.enclosingNavigationController, animated: true, completion: nil)
+                } catch {
+                    present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
-                .catch { [weak self] error in
-                    self?.present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
             }
         }
         
-        actionSheet.addActionWithTitle(LocalizedString("private-message.action-forward")) {
-            ForumsClient.shared.quoteBBcodeContents(of: self.privateMessage)
-                .done { [weak self] bbcode in
-                    guard let privateMessage = self?.privateMessage else { return }
+        actionSheet.addActionWithTitle(LocalizedString("private-message.action-forward")) { [self] in
+            Task {
+                do {
+                    let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: privateMessage)
                     let composeVC = MessageComposeViewController(forwardingMessage: privateMessage, initialContents: bbcode)
                     composeVC.delegate = self
                     composeVC.restorationIdentifier = "New private message forwarding private message"
-                    self?.composeVC = composeVC
-                    self?.present(composeVC.enclosingNavigationController, animated: true, completion: nil)
+                    self.composeVC = composeVC
+                    present(composeVC.enclosingNavigationController, animated: true)
+                } catch {
+                    present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
-                .catch { [weak self] error in
-                    self?.present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
             }
         }
         
@@ -213,22 +213,23 @@ final class MessageViewController: ViewController {
             self.loadingView = loadingView
             view.addSubview(loadingView)
 
-            ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
-                .done { [weak self] message in
-                    self?.title = message.subject
+            Task {
+                do {
+                    let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
+                    title = message.subject
 
                     if message.seen == false {
                         message.seen = true
-                        
-                        try message.managedObjectContext?.save()
+                        try await message.managedObjectContext?.perform {
+                            try message.managedObjectContext?.save()
+                        }
                     }
+                } catch {
+                    title = ""
                 }
-                .catch { [weak self] error in
-                    self?.title = ""
-                }
-                .finally { [weak self] in
-                    self?.renderMessage()
-                    self?.userActivity?.needsSave = true
+
+                renderMessage()
+                userActivity?.needsSave = true
             }
         } else {
             renderMessage()

@@ -185,6 +185,8 @@
 		1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */; };
 		1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
+		1C9623A12B002ECB000B232B /* UIViewController+async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9623A02B002ECB000B232B /* UIViewController+async.swift */; };
+		1C9623A32B003159000B232B /* Task+sleepUnits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9623A22B003159000B232B /* Task+sleepUnits.swift */; };
 		1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */; };
 		1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* main.swift */; };
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
@@ -564,6 +566,8 @@
 		1C8F6808222B7940007E61ED /* SecondaryThreadTagPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryThreadTagPickerCell.swift; sourceTree = "<group>"; };
 		1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedThreadTag.swift; sourceTree = "<group>"; };
 		1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Promises.swift"; sourceTree = "<group>"; };
+		1C9623A02B002ECB000B232B /* UIViewController+async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+async.swift"; sourceTree = "<group>"; };
+		1C9623A22B003159000B232B /* Task+sleepUnits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+sleepUnits.swift"; sourceTree = "<group>"; };
 		1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagTests.swift; sourceTree = "<group>"; };
 		1C9AEBC7210C3B2300C9A567 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1164,14 +1168,14 @@
 			isa = PBXGroup;
 			children = (
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
-				2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */,
-				2D0BB37027F453B600242D2A /* ChidoriMenu.swift */,
-				2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */,
-				2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */,
 				1C16FBDA1CBAA5A900C88BD1 /* CGContext+WithGState.swift */,
 				1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */,
 				1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */,
 				1CD7EED5228501BF00B62865 /* CGRect+Center.swift */,
+				2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */,
+				2D0BB37027F453B600242D2A /* ChidoriMenu.swift */,
+				2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */,
+				2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */,
 				1C353C081E41832600CCBA51 /* CoreAnimation.swift */,
 				1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
@@ -1183,6 +1187,7 @@
 				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
 				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
+				1C9623A22B003159000B232B /* Task+sleepUnits.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
 				1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */,
 				1C5D570722D6C64A00952242 /* UIKeyCommand+MakeWithDiscoverabilityTitle.swift */,
@@ -1190,6 +1195,7 @@
 				1CF171FF225A4D78004B2ABB /* UILayoutPriority+IntegerLiteral.swift */,
 				1C453EDD2336B694007AC6CD /* UITextView+Selections.swift */,
 				1CD7EED7228504C100B62865 /* UIView+CompressedHeight.swift */,
+				1C9623A02B002ECB000B232B /* UIViewController+async.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1975,6 +1981,7 @@
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
+				1C9623A32B003159000B232B /* Task+sleepUnits.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
 				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostViewModel.swift in Sources */,
@@ -2066,6 +2073,7 @@
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
+				1C9623A12B002ECB000B232B /* UIViewController+async.swift in Sources */,
 				1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C353C091E41832600CCBA51 /* CoreAnimation.swift in Sources */,

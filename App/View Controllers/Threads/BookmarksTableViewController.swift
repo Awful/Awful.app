@@ -50,26 +50,25 @@ final class BookmarksTableViewController: TableViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        ForumsClient.shared.listBookmarkedThreads(page: page)
-            .done { threads in
-                self.latestPage = page
+        Task {
+            do {
+                let threads = try await ForumsClient.shared.listBookmarkedThreads(page: page)
+                latestPage = page
                 RefreshMinder.sharedMinder.didRefresh(.bookmarks)
 
                 if threads.count >= 40 {
-                    self.enableLoadMore()
+                    enableLoadMore()
+                } else {
+                    disableLoadMore()
                 }
-                else {
-                    self.disableLoadMore()
+            } catch {
+                if visible {
+                    let alert = UIAlertController(networkError: error)
+                    present(alert, animated: true)
                 }
             }
-            .catch { error in
-                guard self.visible else { return }
-                let alert = UIAlertController(networkError: error)
-                self.present(alert, animated: true)
-            }
-            .finally {
-                self.stopAnimatingPullToRefresh()
-                self.loadMoreFooter?.didFinish()
+            stopAnimatingPullToRefresh()
+            loadMoreFooter?.didFinish()
         }
     }
     
@@ -211,10 +210,13 @@ final class BookmarksTableViewController: TableViewController {
         
         thread.bookmarked = false
 
-        ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
-            .catch { [weak self] (error) -> Void in
+        Task { [weak self] in
+            do {
+                try await ForumsClient.shared.setThread(thread, isBookmarked: isBookmarked)
+            } catch {
                 let alert = UIAlertController(networkError: error)
                 self?.present(alert, animated: true)
+            }
         }
     }
     

@@ -237,6 +237,6 @@ typedef NS_ENUM(NSUInteger, MRProgressOverlayViewMode){
  @param animated Specify YES to animate the transition or NO if you do not want the transition to be animated.
  @param completionBlock block will be called, when the animation has finished.
  */
-- (void)dismiss:(BOOL)animated completion:(void(^)())completionBlock;
+- (void)dismiss:(BOOL)animated completion:(void(^)())completionBlock NS_SWIFT_DISABLE_ASYNC;
 
 @end

@@ -119,17 +119,20 @@ class LoginViewController: ViewController {
     fileprivate func attemptToLogIn() {
         assert(state == .canAttemptLogin, "unexpected state")
         state = .attemptingLogin
-        ForumsClient.shared.logIn(username: usernameTextField.text ?? "",
-                                  password: passwordTextField.text ?? "")
-            .done { user in
+        Task {
+            do {
+                let user = try await ForumsClient.shared.logIn(
+                    username: usernameTextField.text ?? "",
+                    password: passwordTextField.text ?? ""
+                )
                 UserDefaults.standard.loggedInUserCanSendPrivateMessages = user.canReceivePrivateMessages
                 UserDefaults.standard.loggedInUserID = user.userID
                 UserDefaults.standard.loggedInUsername = user.username
-                
-                self.completionBlock?(self)
+                completionBlock?(self)
+            } catch {
+                Log.e("Could not log in: \(error)")
+                state = .failedLogin
             }
-            .catch { error in
-                self.state = .failedLogin
         }
     }
     

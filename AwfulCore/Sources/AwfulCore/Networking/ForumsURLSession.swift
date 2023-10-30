@@ -53,44 +53,33 @@ internal final class ForumsURLSession {
 
     typealias PromiseType = Promise<(data: Data, response: URLResponse)>
 
-    internal func fetch<S>(
+    func fetch(
         method: Method,
         urlString: String,
-        parameters: S?,
-        redirectBlock: WillRedirectCallback? = nil
-    ) -> (promise: PromiseType, cancellable: Cancellable) where S: Sequence, S.Element == KeyValuePairs<String, Any>.Element {
-        guard
-            let url = URL(string: urlString, relativeTo: baseURL),
-            var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
-            else { return (Promise(error: ForumsClient.PromiseError.invalidBaseURL), Operation()) }
+        parameters: some Sequence<KeyValuePairs<String, Any>.Element>,
+        willRedirect: @escaping (_ response: HTTPURLResponse, _ newRequest: URLRequest) async -> URLRequest?
+    ) async throws -> (Data, URLResponse) {
+        guard let url = URL(string: urlString, relativeTo: baseURL),
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        else { throw ForumsClient.Error.invalidBaseURL }
 
-        let parameters = win1252Escaped(parameters.map(Array.init) ?? [])
+        let parameters = parameters.lazy.map(win1252Escaped(_:))
 
-        let request: URLRequest
-        do {
-            switch method {
-            case .get:
-                let queryItems = parameters.map { URLQueryItem(name: $0, value: $1) }
-                components.queryItems = (components.queryItems ?? []) + queryItems
-                var mutableRequest = URLRequest(url: components.url!)
-                mutableRequest.httpMethod = "GET"
-                request = mutableRequest
+        var request: URLRequest
+        switch method {
+        case .get:
+            var queryItems = components.queryItems ?? []
+            queryItems.append(contentsOf: parameters.map { URLQueryItem(name: $0, value: $1) })
+            var components = components
+            components.queryItems = queryItems
+            request = URLRequest(url: components.url!)
 
-            case .post:
-                var mutableRequest = URLRequest(url: url)
-                mutableRequest.httpMethod = "POST"
-                try mutableRequest.setMultipartFormData(parameters, encoding: .windowsCP1252)
-                request = mutableRequest
-            }
+        case .post:
+            request = URLRequest(url: url)
+            try request.setMultipartFormData(parameters, encoding: .windowsCP1252)
         }
-        catch {
-            return (Promise(error: error), Operation())
-        }
-
-        let task: URLSessionDataTask = urlSession.dataTask(with: request)
-        let promise = sessionDelegate.register(task, redirectBlock: redirectBlock)
-        task.resume()
-        return (promise: promise, cancellable: task)
+        request.httpMethod = method.rawValue
+        return try await urlSession.data(for: request, willRedirect: willRedirect)
     }
 }
 
@@ -216,7 +205,10 @@ private extension URLRequest {
      
      - Note: The default `httpMethod` is `GET`, and `GET` requests do not typically have a response body. Remember to set the `httpMethod` to e.g. `POST` before sending the request.
      */
-    mutating func setMultipartFormData(_ parameters: [Dictionary<String, String>.Element], encoding: String.Encoding) throws {
+    mutating func setMultipartFormData(
+        _ parameters: some Sequence<KeyValuePairs<String, String>.Element>,
+        encoding: String.Encoding
+    ) throws {
         let boundary = String(format: "------------------------%08X%08X", arc4random(), arc4random())
 
         let contentType: String = try {
@@ -262,19 +254,9 @@ private extension URLRequest {
 
 /// Turns parameter values into strings, then turns everything in parameter key/values outside win1252 into HTML entities.
 private func win1252Escaped(_ parameters: [Dictionary<String, Any>.Element]) -> [Dictionary<String, String>.Element] {
-    func iswin1252(c: UnicodeScalar) -> Bool {
-        // http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/bestfit1252.txt
-        switch c.value {
-        case 0...0x7f, 0x81, 0x8d, 0x8f, 0x90, 0x9d, 0xa0...0xff, 0x152, 0x153, 0x160, 0x161, 0x178, 0x17d, 0x17e, 0x192, 0x2c6, 0x2dc, 0x2013, 0x2014, 0x2018...0x201a, 0x201c...0x201e, 0x2020...0x2022, 0x2026, 0x2030, 0x2039, 0x203a, 0x20ac, 0x2122:
-            return true
-        default:
-            return false
-        }
-    }
-
     func escape(_ s: String) -> String {
         let scalars = s.unicodeScalars.flatMap { (c: UnicodeScalar) -> [UnicodeScalar] in
-            if iswin1252(c: c) {
+            if c.isWin1252 {
                 return [c]
             } else {
                 return Array("&#\(c.value);".unicodeScalars)
@@ -288,4 +270,32 @@ private func win1252Escaped(_ parameters: [Dictionary<String, Any>.Element]) -> 
         escapedParameters.append((escape(key), escape("\(value)")))
     }
     return escapedParameters
+}
+
+private func win1252Escaped(
+    _ pair: KeyValuePairs<String, Any>.Element
+) -> KeyValuePairs<String, String>.Element {
+    func escape(_ s: String) -> String {
+        let escaped = s.unicodeScalars.lazy.flatMap { (c: Unicode.Scalar) -> String.UnicodeScalarView in
+            if c.isWin1252 {
+                return String.UnicodeScalarView([c])
+            } else {
+                return "&#\(c.value);".unicodeScalars
+            }
+        }
+        return String(String.UnicodeScalarView(escaped))
+    }
+    return (key: escape(pair.key), value: escape("\(pair.value)"))
+}
+
+private extension Unicode.Scalar {
+    var isWin1252: Bool {
+        // http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WindowsBestFit/bestfit1252.txt
+        switch value {
+        case 0...0x7f, 0x81, 0x8d, 0x8f, 0x90, 0x9d, 0xa0...0xff, 0x152, 0x153, 0x160, 0x161, 0x178, 0x17d, 0x17e, 0x192, 0x2c6, 0x2dc, 0x2013, 0x2014, 0x2018...0x201a, 0x201c...0x201e, 0x2020...0x2022, 0x2026, 0x2030, 0x2039, 0x203a, 0x20ac, 0x2122:
+            return true
+        default:
+            return false
+        }
+    }
 }

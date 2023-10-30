@@ -62,7 +62,7 @@ private struct BookmarkColor: View {
 
 struct BookmarkColorPicker: View {
     @SwiftUI.Environment(\.presentationMode) var presentationMode
-    let setBookmarkColor: (AwfulThread, StarCategory) -> Promise<Void>
+    let setBookmarkColor: (AwfulThread, StarCategory) async throws -> Void
     @SwiftUI.Environment(\.theme) var theme
     @ObservedObject var thread: AwfulThread
 
@@ -71,13 +71,16 @@ struct BookmarkColorPicker: View {
         thread.starCategory = starCategory
         try! thread.managedObjectContext?.save()
 
-        setBookmarkColor(thread, starCategory)
-            .done { _ in self.presentationMode.wrappedValue.dismiss() }
-            .catch { error in
+        Task {
+            do {
+                try await setBookmarkColor(thread, starCategory)
+                presentationMode.wrappedValue.dismiss()
+            } catch {
                 Log.e("Could not set thread \(thread.threadID) category to \(starCategory.rawValue)")
                 thread.starCategory = oldSelection
                 try! thread.managedObjectContext?.save()
             }
+        }
     }
     
     var body: some View {
@@ -129,7 +132,7 @@ struct BookmarkColorPicker_Previews: PreviewProvider {
         UserDefaults.standard.register(defaults: [SettingsKeys.defaultLightTheme: "default"])
 
         let context = makeContext()
-        return BookmarkColorPicker(setBookmarkColor: { _, _ in .value }, thread: makeThread(in: context))
+        return BookmarkColorPicker(setBookmarkColor: { _, _ in }, thread: makeThread(in: context))
             .environment(\.managedObjectContext, context) // keep context around
     }
 }

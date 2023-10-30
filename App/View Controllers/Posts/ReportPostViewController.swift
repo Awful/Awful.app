@@ -30,23 +30,17 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction @objc fileprivate func didTapSubmit() {
+    @IBAction fileprivate func didTapSubmit() {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         rootView.endEditing(true)
         
         let progressView = MRProgressOverlayView.showOverlayAdded(to: view.window, title: "Reporting…", mode: .indeterminate, animated: true)!
-        ForumsClient.shared.report(post, nws: rootView.nwsSwitch.isOn, reason: rootView.commentTextView.text ?? "")
-            .done { [weak self] in
-                self?.dismiss(animated: true, completion: nil)
-            }
-            .catch { [weak self] error in
-                let alert = UIAlertController(networkError: error)
-                self?.present(alert, animated: true)
-            }
-            .finally {
-                progressView.dismiss(true)
+        Task {
+            try? await ForumsClient.shared.report(post, nws: rootView.nwsSwitch.isOn, reason: rootView.commentTextView.text ?? "")
+            progressView.dismiss(true)
+            await dismiss(animated: true)
         }
     }
     

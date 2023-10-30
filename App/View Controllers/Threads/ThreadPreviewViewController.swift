@@ -17,9 +17,9 @@ final class ThreadPreviewViewController: ViewController {
     private let forum: Forum
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private var loadingView: LoadingView?
-    private weak var networkOperation: Cancellable?
+    private var networkOperation: Task<Void, Error>?
     private var post: PostRenderModel?
-    private var postHTML: Promise<HTMLAndForm>?
+    private var postHTML: Swift.Result<HTMLAndForm, Error>?
     private let secondaryThreadTag: ThreadTag?
     private let subject: String
     var submitBlock: (() -> Void)?
@@ -70,37 +70,41 @@ final class ThreadPreviewViewController: ViewController {
     // MARK: Rendering preview
     
     func fetchPreviewIfNecessary() {
-        guard postHTML == nil || postHTML?.isRejected == true else { return }
-        
+        if case .success = postHTML { return }
+        guard networkOperation == nil else { return }
+
         let imageInterpolator = SelfHostingAttachmentInterpolator()
         self.imageInterpolator = imageInterpolator
         let interpolatedBBcode = imageInterpolator.interpolateImagesInString(bbcode)
-        let (html, cancellable) = ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode)
-        networkOperation = cancellable
-        
-        postHTML = html
-        html
-            .done { [weak self] previewAndForm in
-                guard let self = self else { return }
-                
-                self.networkOperation = nil
-                
-                guard
-                    let userKey = UserDefaults.standard.loggedInUserID.map({ UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }),
-                    let context = self.managedObjectContext,
-                    let author = User.objectForKey(objectKey: userKey, in: context) as User?
-                    else { throw MissingAuthorError() }
-                
-                self.post = PostRenderModel(author: author, isOP: true, postDate: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short), postHTML: previewAndForm.previewHTML)
-                self.formData = previewAndForm.formData
+        let previewTask = Task {
+            try await ForumsClient.shared.previewOriginalPostForThread(in: forum, bbcode: interpolatedBBcode)
+        }
+        networkOperation = Task { [weak self] in
+            do {
+                let (previewHTML, formData) = try await previewTask.value
+
+                guard let self,
+                      let userKey = UserDefaults.standard.loggedInUserID.map({ UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }),
+                      let context = self.managedObjectContext,
+                      let author = User.objectForKey(objectKey: userKey, in: context) as User?
+                else { throw MissingAuthorError() }
+
+                postHTML = .success((previewHTML, formData))
+
+                self.post = PostRenderModel(author: author, isOP: true, postDate: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short), postHTML: previewHTML)
+                self.formData = formData
                 self.renderPreview()
+            } catch {
+                if let self {
+                    postHTML = .failure(error)
+                    present(UIAlertController(networkError: error), animated: true)
+                }
             }
-            .catch { [weak self] error in
-                self?.present(UIAlertController(networkError: error), animated: true)
+            self?.networkOperation = nil
         }
     }
     
-    struct MissingAuthorError: Error {
+    struct MissingAuthorError: LocalizedError {
         var localizedDescription: String {
             return LocalizedString("compose.post-preview.missing-author-error")
         }

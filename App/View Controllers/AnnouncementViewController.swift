@@ -15,7 +15,7 @@ final class AnnouncementViewController: ViewController {
     
     private let announcement: Announcement
     private var announcementObserver: ManagedObjectObserver?
-    private var clientCancellable: Cancellable?
+    private var clientCancellable: Task<Void, Never>?
     private var desiredFractionalContentOffsetAfterRendering: CGFloat?
     private let hadBeenSeenAlready: Bool
 
@@ -143,18 +143,17 @@ final class AnnouncementViewController: ViewController {
 
         // TODO: long-press menu (links/images/embeds)
 
-        let fetch = ForumsClient.shared.listAnnouncements()
-        clientCancellable = fetch.cancellable
-        fetch.promise
-            .tap { Log.d("list announcements: \($0)") }
-            .catch { [weak self] error in
+        clientCancellable = Task { [weak self] in
+            do {
+                let announcements = try await ForumsClient.shared.listAnnouncements()
+                Log.d("list announcements: \(announcements)")
+            } catch {
                 Log.e("couldn't list announcements: \(error)")
 
-                guard let self = self else { return }
-
-                if case .loading = self.state {
+                if let self, case .loading = self.state {
                     self.state = .failed(error)
                 }
+            }
         }
     }
 
