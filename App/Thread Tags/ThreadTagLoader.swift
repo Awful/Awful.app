@@ -4,6 +4,7 @@
 
 import AwfulCore
 import Nuke
+import NukeExtensions
 import PromiseKit
 import UIKit
 
@@ -19,6 +20,7 @@ private let Log = Logger.get(level: .debug)
 final class ThreadTagLoader {
     
     /// Loads a thread tag image directly into an image view.
+    @MainActor
     func loadImage(
         named imageName: String?,
         placeholder: Placeholder?,
@@ -33,14 +35,15 @@ final class ThreadTagLoader {
         
         var options = ImageLoadingOptions(placeholder: placeholder?.image)
         options.pipeline = pipeline
-        Nuke.loadImage(with: url, options: options, into: view, completion: { result in
+        NukeExtensions.loadImage(with: url, options: options, into: view, completion: { result in
             self.recordMissingTagImage(named: imageName, result)
             completion(result)
         })
     }
     
+    @MainActor
     func cancelRequest(for view: ImageDisplayingView) {
-        Nuke.cancelRequest(for: view)
+        NukeExtensions.cancelRequest(for: view)
     }
     
     func loadImage(
@@ -48,7 +51,7 @@ final class ThreadTagLoader {
         completion: @escaping (_ result: Result<ImageResponse, ImagePipeline.Error>) -> Void
     ) -> ImageTask? {
         guard let imageName = imageName, let url = makeURLForImage(named: imageName) else {
-            completion(.failure(.dataLoadingFailed(CocoaError(.fileNoSuchFile))))
+            completion(.failure(.dataLoadingFailed(error: CocoaError(.fileNoSuchFile))))
             return nil
         }
         

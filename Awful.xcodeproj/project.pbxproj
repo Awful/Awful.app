@@ -191,6 +191,7 @@
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
+		1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB0B9AA2AEF668500678615 /* NukeExtensions */; };
 		1CB15BCF1A9CEB8800176E73 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BCE1A9CEB8800176E73 /* Themes.swift */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -739,6 +740,7 @@
 				1C725A8926E71C6D009713DC /* MRProgress in Frameworks */,
 				1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */,
 				1C6BDD24265CB31E005475CE /* Logger in Frameworks */,
+				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1589,6 +1591,7 @@
 				1C6B2A99272F992E00671F0C /* Nuke */,
 				2D265F8E292CB447001336ED /* Lottie */,
 				1C88EC9A2AE1062300FA766F /* PullToRefresh */,
+				1CB0B9AA2AEF668500678615 /* NukeExtensions */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -2655,7 +2658,7 @@
 			repositoryURL = "https://github.com/kean/Nuke";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 10.5.1;
+				minimumVersion = 11.6.4;
 			};
 		};
 		1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */ = {
@@ -2731,6 +2734,11 @@
 		1C88EC9A2AE1062300FA766F /* PullToRefresh */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PullToRefresh;
+		};
+		1CB0B9AA2AEF668500678615 /* NukeExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C6B2A98272F992E00671F0C /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeExtensions;
 		};
 		1CD72E78265CA0D500FF3BF4 /* AwfulCore */ = {
 			isa = XCSwiftPackageProductDependency;
