@@ -84,9 +84,12 @@
 
 - (void)registerForNotificationCenter {
     NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [center addObserver:self
                selector:@selector(statusBarOrientationDidChange:)
                    name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+#pragma clang diagnostic pop
 }
 
 - (void)unregisterFromNotificationCenter {
@@ -155,7 +158,10 @@
     
     // Absolute origin of receiver
     CGPoint origin = self.bounds.origin;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication.statusBarOrientation)) {
+#pragma clang diagnostic pop
         origin = CGPointMake(origin.y, origin.x);
     }
     origin = [self convertPoint:origin toView:window];

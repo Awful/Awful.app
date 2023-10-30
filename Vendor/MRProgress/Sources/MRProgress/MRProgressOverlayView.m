@@ -795,7 +795,8 @@ static void *MRProgressOverlayViewObservationContext = &MRProgressOverlayViewObs
                       NSStringFromSelector(@selector(setProgress:animated:)));
             #endif
         }
-        [((id)self.modeView) setProgress:self.progress];
+        // `self.modeView` may not in fact be a `UIProgressView` but it's enough to tell the compiler that we want the `-setProgress:` that takes a `float` parameter.
+        [((UIProgressView *)self.modeView) setProgress:self.progress];
     } else {
         NSAssert(self.mode == MRProgressOverlayViewModeDeterminateCircular
                  || self.mode == MRProgressOverlayViewModeDeterminateHorizontalBar,

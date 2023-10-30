@@ -434,12 +434,8 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
             return "ipad"
         case .phone:
             return "iphone"
-        case .carPlay, .tv, .unspecified:
+        case .carPlay, .mac, .tv, .unspecified, .vision:
             fallthrough
-        #if swift(>=5.3)
-        case .mac:
-            fallthrough
-        #endif
         @unknown default:
             assertionFailure("handle unknown user interface idiom")
             return "iphone"

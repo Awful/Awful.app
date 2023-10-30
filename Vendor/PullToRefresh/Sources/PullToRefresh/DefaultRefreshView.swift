@@ -11,11 +11,7 @@ import UIKit
 class DefaultRefreshView: UIView {
     
     fileprivate(set) lazy var activityIndicator: UIActivityIndicatorView! = {
-        #if swift(>=4.2)
-        let activityIndicator = UIActivityIndicatorView(style: .gray)
-        #else
-        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-        #endif
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         self.addSubview(activityIndicator)
         return activityIndicator
     }()
