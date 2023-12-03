@@ -187,6 +187,7 @@
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1C9623A12B002ECB000B232B /* UIViewController+async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9623A02B002ECB000B232B /* UIViewController+async.swift */; };
 		1C9623A32B003159000B232B /* Task+sleepUnits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9623A22B003159000B232B /* Task+sleepUnits.swift */; };
+		1C9623A52B1D26C4000B232B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1C9623A42B1D26C4000B232B /* PromiseKit */; };
 		1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */; };
 		1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* main.swift */; };
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
@@ -738,6 +739,7 @@
 				1C6B2A9A272F992E00671F0C /* Nuke in Frameworks */,
 				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
 				2D265F8F292CB447001336ED /* Lottie in Frameworks */,
+				1C9623A52B1D26C4000B232B /* PromiseKit in Frameworks */,
 				1CD72E79265CA0D500FF3BF4 /* AwfulCore in Frameworks */,
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
 				1C88EC9B2AE1062300FA766F /* PullToRefresh in Frameworks */,
@@ -1598,6 +1600,7 @@
 				2D265F8E292CB447001336ED /* Lottie */,
 				1C88EC9A2AE1062300FA766F /* PullToRefresh */,
 				1CB0B9AA2AEF668500678615 /* NukeExtensions */,
+				1C9623A42B1D26C4000B232B /* PromiseKit */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -2742,6 +2745,11 @@
 		1C88EC9A2AE1062300FA766F /* PullToRefresh */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PullToRefresh;
+		};
+		1C9623A42B1D26C4000B232B /* PromiseKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			productName = PromiseKit;
 		};
 		1CB0B9AA2AEF668500678615 /* NukeExtensions */ = {
 			isa = XCSwiftPackageProductDependency;

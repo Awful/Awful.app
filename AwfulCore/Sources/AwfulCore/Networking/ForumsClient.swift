@@ -11,9 +11,9 @@ private let Log = Logger.get()
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
-    private var urlSession: ForumsURLSession?
     private var backgroundManagedObjectContext: NSManagedObjectContext?
     private var lastModifiedObserver: LastModifiedContextObserver?
+    private var urlSession: URLSession?
 
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
     public var didRemotelyLogOut: (() -> Void)?
@@ -30,7 +30,22 @@ public final class ForumsClient {
     public var baseURL: URL? {
         didSet {
             guard oldValue != baseURL else { return }
-            urlSession = baseURL.map(ForumsURLSession.init)
+            urlSession?.invalidateAndCancel()
+            urlSession = nil
+
+            if baseURL != nil {
+                let config = URLSessionConfiguration.default
+                var headers = config.httpAdditionalHeaders ?? [:]
+                headers["User-Agent"] = awfulUserAgent
+                config.httpAdditionalHeaders = headers
+
+#if DEBUG
+                let protocolClasses = [FixtureURLProtocol.self] + (config.protocolClasses ?? [])
+                config.protocolClasses = protocolClasses
+#endif
+
+                urlSession = URLSession(configuration: config, delegate: CachebustingSessionDelegate(), delegateQueue: nil)
+            }
         }
     }
 
@@ -86,7 +101,7 @@ public final class ForumsClient {
 
     private var loginCookie: HTTPCookie? {
         return baseURL
-            .flatMap { urlSession?.httpCookieStorage?.cookies(for: $0) }?
+            .flatMap { urlSession?.configuration.httpCookieStorage?.cookies(for: $0) }?
             .first { $0.name == "bbuserid" }
     }
 
@@ -95,39 +110,6 @@ public final class ForumsClient {
         return loginCookie != nil
     }
     
-    public var awfulUserAgent: String {
-        let info = Bundle.main.infoDictionary!
-        let executable = info[kCFBundleExecutableKey as String] as? String ?? "Unknown"
-        let bundle = info[kCFBundleIdentifierKey as String] as? String ?? "Unknown"
-        let appVersion = info["CFBundleShortVersionString"] as? String ?? "Unknown"
-        let appBuild = info[kCFBundleVersionKey as String] as? String ?? "Unknown"
-        
-        let osNameVersion: String = {
-            let version = ProcessInfo.processInfo.operatingSystemVersion
-            let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
-            
-            let osName: String = {
-                #if os(iOS)
-                    return "iOS"
-                #elseif os(watchOS)
-                    return "watchOS"
-                #elseif os(tvOS)
-                    return "tvOS"
-                #elseif os(macOS)
-                    return "OS X"
-                #elseif os(Linux)
-                    return "Linux"
-                #else
-                    return "Unknown"
-                #endif
-            }()
-            
-            return "\(osName) \(versionString)"
-        }()
-        
-        return "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
-    }
-
     /// When the valid, logged-in session expires.
     public var loginCookieExpiryDate: Date? {
         return loginCookie?.expiresDate
@@ -143,13 +125,18 @@ public final class ForumsClient {
         case unexpectedContentType(String, expected: String)
     }
 
+    private enum Method: String {
+        case get = "GET"
+        case post = "POST"
+    }
+
     private func fetch(
-        method: ForumsURLSession.Method,
+        method: Method,
         urlString: String,
         parameters: some Sequence<KeyValuePairs<String, Any>.Element>,
         willRedirect: @escaping (_ response: HTTPURLResponse, _ newRequest: URLRequest) async -> URLRequest? = { $1 }
     ) async throws -> (Data, URLResponse) {
-        guard let urlSession = urlSession else {
+        guard let urlSession else {
             throw Error.missingURLSession
         }
 
@@ -157,7 +144,27 @@ public final class ForumsClient {
 
         let result: Result<(Data, URLResponse), Swift.Error>
         do {
-            let tuple = try await urlSession.fetch(method: method, urlString: urlString, parameters: parameters, willRedirect: willRedirect)
+            guard let url = URL(string: urlString, relativeTo: baseURL),
+                  let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            else { throw ForumsClient.Error.invalidBaseURL }
+
+            let parameters = parameters.lazy.map(win1252Escaped(_:))
+
+            var request: URLRequest
+            switch method {
+            case .get:
+                var queryItems = components.queryItems ?? []
+                queryItems.append(contentsOf: parameters.map { URLQueryItem(name: $0, value: $1) })
+                var components = components
+                components.queryItems = queryItems
+                request = URLRequest(url: components.url!)
+
+            case .post:
+                request = URLRequest(url: url)
+                try request.setMultipartFormData(parameters, encoding: .windowsCP1252)
+            }
+            request.httpMethod = method.rawValue
+            let tuple = try await urlSession.data(for: request, willRedirect: willRedirect)
             result = .success(tuple)
         } catch {
             result = .failure(error)
@@ -170,7 +177,6 @@ public final class ForumsClient {
         }
 
         return try result.get()
-
     }
 
     // MARK: Forums Session

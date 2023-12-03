@@ -24,8 +24,6 @@ final class RenderView: UIView {
 
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
-    private let awfulUserAgent: String = ForumsClient.shared.awfulUserAgent
-    
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         
