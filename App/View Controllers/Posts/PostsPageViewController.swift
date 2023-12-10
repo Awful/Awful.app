@@ -19,12 +19,12 @@ final class PostsPageViewController: ViewController {
     var selectedFrame: CGRect? = nil
     private var advertisementHTML: String?
     private let author: User?
-    private var flagRequest: Cancellable?
+    private var flagRequest: Task<Void, Error>?
     private var jumpToLastPost = false
     var postIndex: Int = 0
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private weak var networkOperation: Cancellable?
+    private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>?
     private var observers: [NSKeyValueObservation] = []
     private(set) var page: ThreadPage?
     private var replyWorkspace: ReplyWorkspace?
@@ -131,7 +131,11 @@ final class PostsPageViewController: ViewController {
         
         hidesBottomBarWhenPushed = true
     }
-    
+
+    deinit {
+        networkOperation?.cancel()
+    }
+
     var posts: [Post] = []
     
     var numberOfPages: Int {
@@ -220,12 +224,14 @@ final class PostsPageViewController: ViewController {
 
         let initialTheme = theme
 
-        let (promise, cancellable) = ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
-        networkOperation = cancellable
-
-        promise
-            .done { [weak self] posts, firstUnreadPost, advertisementHTML in
-                guard let self = self else { return }
+        let fetch = Task {
+            try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+        }
+        networkOperation = fetch
+        Task { [weak self] in
+            do {
+                let (posts, firstUnreadPost, _) = try await fetch.value
+                guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 guard self.page == newPage else { return }
@@ -276,9 +282,8 @@ final class PostsPageViewController: ViewController {
                 }
 
                 self.postsView.endRefreshing()
-            }
-            .catch { [weak self] error in
-                guard let self = self else { return }
+            } catch {
+                guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 if self.page != newPage { return }
@@ -305,6 +310,7 @@ final class PostsPageViewController: ViewController {
                 case .last, .nextUnread, .specific:
                     break
                 }
+            }
         }
     }
     
@@ -798,19 +804,18 @@ final class PostsPageViewController: ViewController {
     
     private func readIgnoredPostAtIndex(_ i: Int) {
         let post = posts[i]
-        ForumsClient.shared.readIgnoredPost(post)
-            .done { [weak self] in
+        Task {
+            do {
+                try await ForumsClient.shared.readIgnoredPost(post)
+
                 // Grabbing the index here ensures we're still on the same page as the post to replace, and that we have the right post index (in case it got hidden).
-                guard
-                    let self = self,
-                    let i = self.posts.firstIndex(of: post)
-                    else { return }
-                
-                self.postsView.renderView.replacePostHTML(self.renderedPostAtIndex(i), at: i - self.hiddenPosts)
-            }
-            .catch { [weak self] error in
+                if let i = posts.firstIndex(of: post) {
+                    postsView.renderView.replacePostHTML(renderedPostAtIndex(i), at: i - hiddenPosts)
+                }
+            } catch {
                 let alert = UIAlertController(networkError: error)
-                self?.present(alert, animated: true)
+                present(alert, animated: true)
+            }
         }
     }
     
@@ -942,25 +947,20 @@ final class PostsPageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.dismiss(animated: false) {
-            ForumsClient.shared.markThreadAsSeenUpTo(self.selectedPost!)
-                .done { [weak self] in
-                    guard let self = self else { return }
-                    
-                    self.selectedPost!.thread?.seenPosts = self.selectedPost!.threadIndex
-                    self.postsView.renderView.markReadUpToPost(identifiedBy: self.selectedPost!.postID)
-                    
-                    let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: LocalizedString("posts-page.marked-read"), mode: .checkmark, animated: true)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        overlay?.dismiss(true)
-                    }
-                }
-                .catch { [weak self] error in
-                    guard let self = self else { return }
-                    
-                    let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-mark-seen"), error: error)
-                    self.present(alert, animated: true)
-                }
+        Task {
+            await dismiss(animated: false)
+            do {
+                try await ForumsClient.shared.markThreadAsSeenUpTo(selectedPost!)
+                selectedPost!.thread?.seenPosts = selectedPost!.threadIndex
+                postsView.renderView.markReadUpToPost(identifiedBy: selectedPost!.postID)
+
+                let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: LocalizedString("posts-page.marked-read"), mode: .checkmark, animated: true)!
+                try? await Task.sleep(timeInterval: 0.7)
+                overlay.dismiss(true)
+            } catch {
+                let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-mark-seen"), error: error)
+                present(alert, animated: true)
+            }
         }
     }
     
@@ -973,19 +973,17 @@ final class PostsPageViewController: ViewController {
             self.replyWorkspace?.completion = self.replyCompletionBlock
         }
         func quotePost() {
-            self.replyWorkspace!.quotePost(self.selectedPost!, completion: { [weak self] error in
-                guard let self = self else { return }
-                
-                if let error = error {
+            Task { @MainActor in
+                do {
+                    try await replyWorkspace!.quotePost(self.selectedPost!)
+                    if let vc = self.replyWorkspace?.viewController {
+                        self.present(vc, animated: true)
+                    }
+                } catch {
                     let alert = UIAlertController(networkError: error)
                     self.present(alert, animated: true)
-                    return
                 }
-                
-                if let vc = self.replyWorkspace?.viewController {
-                    self.present(vc, animated: true)
-                }
-            })
+            }
         }
         self.dismiss(animated: false) {
             switch self.replyWorkspace?.status {
@@ -1034,21 +1032,20 @@ final class PostsPageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.dismiss(animated: false) {
-            ForumsClient.shared.setThread(self.thread, isBookmarked: !self.thread.bookmarked)
-                .done { [weak self] in
-                    guard let strongSelf = self else { return }
-                    
-                    let status = strongSelf.thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
-                    let overlay = MRProgressOverlayView.showOverlayAdded(to: strongSelf.view, title: status, mode: .checkmark, animated: true)
-                    overlay?.tintColor = strongSelf.theme["tintColor"]
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        overlay?.dismiss(true)
-                    }
+        Task {
+            await dismiss(animated: false)
+            do {
+                try await ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
+                if isViewLoaded, view.window != nil {
+                    let status = thread.bookmarked ? "Added Bookmark" : "Removed Bookmark"
+                    let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: status, mode: .checkmark, animated: true)!
+                    overlay.tintColor = theme["tintColor"]
+                    try? await Task.sleep(timeInterval: 0.7)
+                    overlay.dismiss(true)
                 }
-                .catch { error in
-                    print("\(#function) error marking thread: \(error)")
-                }
+            } catch {
+                Log.e("error marking thread: \(error)")
+            }
         }
     }
     
@@ -1079,26 +1076,24 @@ final class PostsPageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.dismiss(animated: false) {
-            let overlay = MRProgressOverlayView.showOverlayAdded(to: self.postsView.renderView,
-                                                                 title: LocalizedString("posts-page.copied-post"),
-                                                                 mode: .checkmark,
-                                                                 animated: true)
-            overlay?.tintColor = self.theme["tintColor"]
-            
-            ForumsClient.shared.quoteBBcodeContents(of: self.selectedPost!)
-                .done { [weak self] bbcode in
-                    guard self != nil else { return }
-                    UIPasteboard.general.string = bbcode
-                }
-                .catch { [weak self] error in
-                    guard let self = self else { return }
-                    let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-copy-post"), error: error)
-                    self.present(alert, animated: true)
-                }
-                .finally {
-                    overlay?.dismiss(true)
-                }
+        Task {
+            await dismiss(animated: false)
+            let overlay = MRProgressOverlayView.showOverlayAdded(
+                to: postsView.renderView,
+                title: LocalizedString("posts-page.copied-post"),
+                mode: .checkmark,
+                animated: true
+            )!
+            overlay.tintColor = self.theme["tintColor"]
+
+            do {
+                let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: selectedPost!)
+                UIPasteboard.general.string = bbcode
+            } catch {
+                let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-copy-post"), error: error)
+                present(alert, animated: true)
+            }
+            overlay.dismiss(true)
         }
     }
     
@@ -1122,33 +1117,38 @@ final class PostsPageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.dismiss(animated: false) {
-        let actionSheet = UIAlertController.makeActionSheet()
-        for i in stride(from: 5, to: 0, by: -1) {
-            actionSheet.addActionWithTitle("\(i)", handler: {
-                let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Voting \(i)", mode: .indeterminate, animated: true)
-                overlay?.tintColor = self.theme["tintColor"]
-                
-                ForumsClient.shared.rate(self.thread, as: i)
-                    .done {
-                        overlay?.mode = .checkmark
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            overlay?.dismiss(true)
+        Task {
+            await dismiss(animated: false)
+            
+            let actionSheet = UIAlertController.makeActionSheet()
+            for i in stride(from: 5, to: 0, by: -1) {
+                actionSheet.addActionWithTitle("\(i)", handler: { [self] in
+                    let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: "Voting \(i)", mode: .indeterminate, animated: true)!
+                    overlay.tintColor = theme["tintColor"]
+
+                    Task {
+                        do {
+                            try await ForumsClient.shared.rate(thread, as: i)
+
+                            overlay.mode = .checkmark
+                            try? await Task.sleep(timeInterval: 0.7)
+                            overlay.dismiss(true)
+                        } catch {
+                            overlay.dismiss(false)
+
+                            let alert = UIAlertController(title: "Vote Failed", error: error)
+                            present(alert, animated: true)
                         }
                     }
-                    .catch { [weak self] error in
-                        
-                        overlay?.dismiss(false)
-                        
-                        let alert = UIAlertController(title: "Vote Failed", error: error)
-                        self?.present(alert, animated: true)
-                    }
-            })
-        }
-            
-        actionSheet.addCancelActionWithHandler(nil)
-        self.present(actionSheet, animated: false)
+                })
+            }
+
+            actionSheet.addCancelActionWithHandler(nil)
+            present(actionSheet, animated: false)
+
+            if let popover = actionSheet.popoverPresentationController {
+                popover.barButtonItem = actionsItem
+            }
         }
     }
     
@@ -1209,36 +1209,33 @@ final class PostsPageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
-        self.dismiss(animated: false) {
+        Task {
+            await dismiss(animated: false)
             // removing ignored users requires username. adding a new user requires userid
-            guard let userKey = self.selectedPost!.ignored ? self.selectedUser!.username : self.selectedUser!.userID else { return }
+            guard let userKey = selectedPost!.ignored ? selectedUser!.username : selectedUser!.userID else { return }
             
-            let ignoreBlock: (_ username: String) -> Promise<Void>
-            
-            if self.selectedPost!.ignored {
+            let ignoreBlock: (_ username: String) async throws -> Void
+
+            if selectedPost!.ignored {
                 ignoreBlock = ForumsClient.shared.removeUserFromIgnoreList
             } else {
                 ignoreBlock = ForumsClient.shared.addUserToIgnoreList
             }
             
-            let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Updating Ignore List", mode: .indeterminate, animated: true)
-            overlay?.tintColor = self.theme["tintColor"]
-            
-            ignoreBlock(userKey)
-                .done {
-                    overlay?.mode = .checkmark
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        overlay?.dismiss(true)
-                    }
-                }
-                .catch { [weak self] error in
-                    overlay?.dismiss(false)
-                    
-                    let alert = UIAlertController(title: "Could Not Update Ignore List", error: error)
-                    self?.present(alert, animated: true)
-                }
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: "Updating Ignore List", mode: .indeterminate, animated: true)!
+            overlay.tintColor = self.theme["tintColor"]
+
+            do {
+                try await ignoreBlock(userKey)
+                overlay.mode = .checkmark
+                try? await Task.sleep(timeInterval: 0.7)
+                overlay.dismiss(true)
+            } catch {
+                overlay.dismiss(false)
+
+                let alert = UIAlertController(title: "Could Not Update Ignore List", error: error)
+                present(alert, animated: true)
+            }
         }
     }
     
@@ -1248,18 +1245,18 @@ final class PostsPageViewController: ViewController {
         }
         
         func presentNewReplyWorkspace() {
-            ForumsClient.shared.findBBcodeContents(of: self.selectedPost!)
-                .done { [weak self] text in
-                    guard let self = self else { return }
-                    let replyWorkspace = ReplyWorkspace(post: self.selectedPost!)
+            Task {
+                do {
+                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost!)
+                    let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
                     self.replyWorkspace = replyWorkspace
-                    replyWorkspace.completion = self.replyCompletionBlock
-                    self.present(replyWorkspace.viewController, animated: true)
-                }
-                .catch { [weak self] error in
+                    replyWorkspace.completion = replyCompletionBlock
+                    present(replyWorkspace.viewController, animated: true)
+                } catch {
                     let alert = UIAlertController(title: LocalizedString("posts-page.error.could-not-edit-post"), error: error)
-                    self?.present(alert, animated: true)
+                    present(alert, animated: true)
                 }
+            }
         }
         
         switch self.replyWorkspace?.status {
@@ -1447,26 +1444,25 @@ final class PostsPageViewController: ViewController {
         
         guard let forum = thread.forum else { return }
         
-        let (promise, cancellable) = ForumsClient.shared.flagForThread(in: forum)
-        flagRequest = cancellable
-        
-        promise
-            .compactMap(on: .global()) { flag in
+        flagRequest = Task { [weak self] in
+            let flagInfo: RenderView.FlagInfo?
+            do {
+                let flag = try await ForumsClient.shared.flagForThread(in: forum)
                 var components = URLComponents(string: "https://fi.somethingawful.com")!
                 components.path = "/flags\(flag.path)"
                 if let username = flag.username {
                     components.queryItems = [URLQueryItem(name: "by", value: username)]
                 }
-                guard let src = components.url else { return nil }
-                let title = String(format: LocalizedString("posts-page.fyad-flag-title"), flag.username ?? "", flag.created ?? "")
-                return RenderView.FlagInfo(src: src, title: title)
-            }
-            .done {
-                self.postsView.renderView.setFYADFlag($0)
-            }
-            .catch { error in
+                let src = components.url
+                flagInfo = src.map { src in
+                    let title = String(format: LocalizedString("posts-page.fyad-flag-title"), flag.username ?? "", flag.created ?? "")
+                    return RenderView.FlagInfo(src: src, title: title)
+                }
+            } catch {
                 Log.w("could not fetch FYAD flag: \(error)")
-                self.postsView.renderView.setFYADFlag(nil)
+                flagInfo = nil
+            }
+            self?.postsView.renderView.setFYADFlag(flagInfo)
         }
     }
     

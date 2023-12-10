@@ -83,15 +83,15 @@ final class ProfileViewController: ViewController {
         if !didFetchProfile {
             didFetchProfile = true
             
-            let userID = user.userID, username = user.username
-            ForumsClient.shared.profileUser(id: userID, username: username)
-                .done { [weak self] profile in
-                    guard let self = self else { return }
-                    self.user = profile.user
-                    self.renderProfile()
-                }
-                .catch { error in
+            Task {
+                let userID = user.userID, username = user.username
+                do {
+                    let profile = try await ForumsClient.shared.profileUser(.userID(userID, username: username))
+                    user = profile.user
+                    renderProfile()
+                } catch {
                     Log.e("error fetching user profile for \(username ?? "") (ID \(userID)): \(error)")
+                }
             }
         }
     }

@@ -48,18 +48,19 @@ final class PrivateMessageInboxRefresher {
             return startTimer(reason: .failure)
         }
         
-        _ = client.listPrivateMessagesInInbox()
-            .done { [weak self, minder] messages in
+        Task {
+            do {
+                _ = try await client.listPrivateMessagesInInbox()
                 Log.d("successfully refreshed private message inbox")
                 
                 minder.didRefresh(.privateMessagesInbox)
                 
-                self?.startTimer(reason: .success)
-            }
-            .catch { [weak self] error in
+                startTimer(reason: .success)
+            } catch {
                 Log.w("error refreshing private message inbox, will try again later: \(error)")
                 
-                self?.startTimer(reason: .failure)
+                startTimer(reason: .failure)
+            }
         }
     }
     

@@ -4,6 +4,7 @@
 
 import MobileCoreServices
 import UIKit
+import UniformTypeIdentifiers
 import WebKit
 
 private let Log = Logger.get()
@@ -141,26 +142,15 @@ private struct Resource {
     }
     
     var isImage: Bool {
-        if let UTI = UTI {
-            return UTTypeConformsTo(UTI as CFString, kUTTypeImage)
-        } else {
-            return false
-        }
+        uti?.conforms(to: .image) ?? false
     }
     
-    fileprivate var UTI: String? {
-        return UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (path as NSString).pathExtension as CFString, nil)?.takeRetainedValue() as String?
+    fileprivate var uti: UTType? {
+        UTType(filenameExtension: (path as NSString).pathExtension)
     }
     
     var mimeType: String {
-        if let
-            UTI = UTI,
-            let MIMEType = UTTypeCopyPreferredTagWithClass(UTI as CFString, kUTTagClassMIMEType)?.takeRetainedValue()
-        {
-            return MIMEType as String
-        } else {
-            return "application/octet-stream"
-        }
+        uti?.preferredMIMEType ?? "application/octet-stream"
     }
 }
 

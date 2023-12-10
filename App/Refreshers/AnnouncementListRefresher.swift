@@ -40,48 +40,39 @@ final class AnnouncementListRefresher {
     func refreshIfNecessary() {
         timer?.invalidate()
 
-        guard
-            let context = client.managedObjectContext,
+        guard let context = client.managedObjectContext,
             client.isLoggedIn,
-            minder.shouldRefresh(.announcements) else
-        {
+            minder.shouldRefresh(.announcements)
+        else {
             Log.d("can't refresh announcements yet, will try again later")
             return startTimer(reason: .failure)
         }
 
-        let fetchRequest = Forum.makeFetchRequest()
-        fetchRequest.fetchBatchSize = 1
-        fetchRequest.propertiesToFetch = [#keyPath(Forum.forumID)]
+        Task {
+            // Essential announcement information comes via forum thread lists, so we need to fetch threads from an arbitrary forum. Since forums come and go, we can't really hardcode a forum here.
+            // For extra credit (?), we'll pick a random forum so we spread out our effect on "# users browsing" stats. If there's some other way to fetch the list of announcements, we should probably do that instead!
+            let fetchRequest = Forum.makeFetchRequest() as! NSFetchRequest<NSManagedObjectID>
+            fetchRequest.fetchLimit = 100
+            fetchRequest.resultType = .managedObjectIDResultType
+            guard let arbitraryForum: Forum = await context.perform({
+                let forumIDs = try! context.fetch(fetchRequest)
+                let arbitraryForumID = forumIDs.randomElement()
+                return arbitraryForumID.map { context.object(with: $0) as! Forum }
+            }) else {
+                Log.d("we don't know of any forums, so we can't refresh announcements; will try again later")
+                return startTimer(reason: .failure)
+            }
 
-        /// Essential announcement information comes via forum thread lists, so we need to fetch threads from an arbitrary forum. Since forums come and go, we can't really hardcode a forum here. For extra credit (?), we'll pick a random forum so we spread out our effect on "# users browsing" stats.
-        let forums: [Forum] = {
+            // SA: Requesting page -1 of a forum still fetches the announcements, but doesn't fetch any threads. Seems like it's maybe less work for the server? Definitely less work for us.
             do {
-                return try context.fetch(fetchRequest)
-            }
-            catch {
-                fatalError("couldn't fetch an arbitrary forum: \(error)")
-            }
-        }()
-        guard !forums.isEmpty else {
-            Log.d("we don't know of any forums, so we can't refresh announcements; will try again later")
-
-            return startTimer(reason: .failure)
-        }
-        let arbitraryForum = forums[Int(arc4random_uniform(UInt32(forums.count)))]
-
-        // SA: Requesting page -1 of a forum still fetches the announcements, but doesn't fetch any threads. Seems like it's maybe less work for the server? Definitely less work for us.
-        client.listThreads(in: arbitraryForum, tagged: nil, page: -1)
-            .done { [weak self, minder] threads in
+                _ = try await client.listThreads(in: arbitraryForum, tagged: nil, page: -1)
                 Log.d("successfully refreshed announcements")
-
                 minder.didRefresh(.announcements)
-
-                self?.startTimer(reason: .success)
-            }
-            .catch { [weak self] error in
+                startTimer(reason: .success)
+            } catch {
                 Log.w("error refreshing announcements, will try again later: \(error)")
-
-                self?.startTimer(reason: .failure)
+                startTimer(reason: .failure)
+            }
         }
     }
 

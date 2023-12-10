@@ -5,7 +5,7 @@
 #if DEBUG
 
 import Foundation
-import MobileCoreServices
+import UniformTypeIdentifiers
 
 private let Log = Logger.get()
 
@@ -123,8 +123,10 @@ public final class FixtureURLProtocol: URLProtocol {
         }
         
         let resourceValues = try? fixtureURL.resourceValues(forKeys: [.typeIdentifierKey])
-        let mimeType = resourceValues?.typeIdentifier.flatMap { UTTypeCopyPreferredTagWithClass($0 as CFString, kUTTagClassMIMEType)?.takeRetainedValue() as String? }
-        
+        let mimeType = resourceValues?.typeIdentifier
+            .flatMap(UTType.init(_:))
+            .flatMap(\.preferredMIMEType)
+
         let data: Data
         do {
             data = try Data(contentsOf: fixtureURL)

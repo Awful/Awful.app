@@ -74,8 +74,6 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        scaleTextLabel.font = scaleTextLabel.font.monospacedDigitFont
-
         observers += UserDefaults.standard.observeSeveral {
             $0.observe(\.automaticallyEnableDarkMode, \.isDarkModeEnabled, options: .initial) {
                 [weak self] defaults in

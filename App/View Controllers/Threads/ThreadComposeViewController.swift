@@ -166,20 +166,20 @@ final class ThreadComposeViewController: ComposeTextViewController {
         guard availableThreadTags == nil && !updatingThreadTags else { return }
         
         updatingThreadTags = true
-        ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
-            .done { [weak self] tags in
-                guard let self = self else { return }
-                self.updatingThreadTags = false
-                self.availableThreadTags = tags.primary
-                self.availableSecondaryThreadTags = tags.secondary
-                
-                guard let tags = self.availableThreadTags else { return }
-                let secondaryImageNames = self.availableSecondaryThreadTags?.compactMap { $0.imageName } ?? []
+        Task {
+            do {
+                let tags = try await ForumsClient.shared.listAvailablePostIcons(inForumIdentifiedBy: forum.forumID)
+                updatingThreadTags = false
+                availableThreadTags = tags.primary
+                availableSecondaryThreadTags = tags.secondary
+
+                guard let tags = availableThreadTags else { return }
+                let secondaryImageNames = availableSecondaryThreadTags?.compactMap { $0.imageName } ?? []
                 let picker = ThreadTagPickerViewController(
-                    firstTag: .thread(in: self.forum),
+                    firstTag: .thread(in: forum),
                     imageNames: tags.compactMap { $0.imageName },
                     secondaryImageNames: secondaryImageNames)
-                self.threadTagPicker = picker
+                threadTagPicker = picker
                 picker.delegate = self
                 picker.title = LocalizedString("compose.thread.tag-picker.title")
                 if secondaryImageNames.isEmpty {
@@ -187,12 +187,11 @@ final class ThreadComposeViewController: ComposeTextViewController {
                 } else {
                     picker.navigationItem.rightBarButtonItem = picker.doneButtonItem
                 }
+            } catch {
+                updatingThreadTags = false
+                availableThreadTags = nil
+                availableSecondaryThreadTags = nil
             }
-            .catch { [weak self] error in
-                guard let self = self else { return }
-                self.updatingThreadTags = false
-                self.availableThreadTags = nil
-                self.availableSecondaryThreadTags = nil
         }
     }
     
@@ -229,16 +228,23 @@ final class ThreadComposeViewController: ComposeTextViewController {
             let formData = formData
             else { return completion(false) }
         
-        ForumsClient.shared.postThread(using: formData, subject: subject, threadTag: threadTag, secondaryTag: secondaryThreadTag, bbcode: composition)
-            .done { [weak self] thread in
-                self?.thread = thread
+        Task {
+            do {
+                let thread = try await ForumsClient.shared.postThread(
+                    using: formData,
+                    subject: subject,
+                    threadTag: threadTag,
+                    secondaryTag: secondaryThreadTag,
+                    bbcode: composition
+                )
+                self.thread = thread
                 completion(true)
-            }
-            .catch { [weak self] error in
+            } catch {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: {
                     completion(false)
                 })
-                self?.present(alert, animated: true)
+                present(alert, animated: true)
+            }
         }
     }
     

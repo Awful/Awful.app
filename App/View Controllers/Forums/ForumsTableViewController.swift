@@ -6,6 +6,8 @@ import AwfulCore
 import CoreData
 import UIKit
 
+private let Log = Logger.get()
+
 final class ForumsTableViewController: TableViewController {
     
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
@@ -63,12 +65,17 @@ final class ForumsTableViewController: TableViewController {
     }
     
     private func refresh() {
-        _ = ForumsClient.shared.taxonomizeForums()
-            .done { forums in
+        Task {
+            do {
+                try await ForumsClient.shared.taxonomizeForums()
                 RefreshMinder.sharedMinder.didRefresh(.forumList)
-                self.migrateFavoriteForumsFromSettings()
+                migrateFavoriteForumsFromSettings()
+            } catch {
+                Log.e("Could not taxonomize forums: \(error)")
             }
-            .ensure { self.stopAnimatingPullToRefresh() }
+
+            stopAnimatingPullToRefresh()
+        }
     }
     
     private func migrateFavoriteForumsFromSettings() {

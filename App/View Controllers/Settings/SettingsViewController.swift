@@ -88,18 +88,19 @@ final class SettingsViewController: TableViewController {
     
     fileprivate func refreshIfNecessary() {
         guard RefreshMinder.sharedMinder.shouldRefresh(.loggedInUser) else { return }
-        ForumsClient.shared.profileLoggedInUser()
-            .done { [weak self] user in
+        Task {
+            do {
+                let user = try await ForumsClient.shared.profileLoggedInUser()
                 RefreshMinder.sharedMinder.didRefresh(.loggedInUser)
 
                 UserDefaults.standard.loggedInUserCanSendPrivateMessages = user.canReceivePrivateMessages
                 UserDefaults.standard.loggedInUserID = user.userID
                 UserDefaults.standard.loggedInUsername = user.username
 
-                self?.tableView.reloadData()
-            }
-            .catch { error in
+                tableView.reloadData()
+            } catch {
                 Log.i("failed refreshing user info: \(error)")
+            }
         }
     }
 

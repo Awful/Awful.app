@@ -6,15 +6,14 @@ import AwfulScraping
 import CoreData
 import Foundation
 import HTMLReader
-import PromiseKit
+
+private let Log = Logger.get()
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
-    private var urlSession: ForumsURLSession?
     private var backgroundManagedObjectContext: NSManagedObjectContext?
     private var lastModifiedObserver: LastModifiedContextObserver?
-
-    private let scrapingQueue = DispatchQueue(label: "com.awfulapp.ForumsClient.Scraping")
+    private var urlSession: URLSession?
 
     /// A block to call when the login session is destroyed. Not called when logging out from Awful.
     public var didRemotelyLogOut: (() -> Void)?
@@ -23,8 +22,6 @@ public final class ForumsClient {
     public static let shared = ForumsClient()
     private init() {}
     
-    public typealias CancellablePromise<T> = (promise: Promise<T>, cancellable: Cancellable)
-
     /**
      The Forums endpoint for the client. Typically https://forums.somethingawful.com
 
@@ -33,7 +30,22 @@ public final class ForumsClient {
     public var baseURL: URL? {
         didSet {
             guard oldValue != baseURL else { return }
-            urlSession = baseURL.map(ForumsURLSession.init)
+            urlSession?.invalidateAndCancel()
+            urlSession = nil
+
+            if baseURL != nil {
+                let config = URLSessionConfiguration.default
+                var headers = config.httpAdditionalHeaders ?? [:]
+                headers["User-Agent"] = awfulUserAgent
+                config.httpAdditionalHeaders = headers
+
+#if DEBUG
+                let protocolClasses = [FixtureURLProtocol.self] + (config.protocolClasses ?? [])
+                config.protocolClasses = protocolClasses
+#endif
+
+                urlSession = URLSession(configuration: config, delegate: CachebustingSessionDelegate(), delegateQueue: nil)
+            }
         }
     }
 
@@ -89,7 +101,7 @@ public final class ForumsClient {
 
     private var loginCookie: HTTPCookie? {
         return baseURL
-            .flatMap { urlSession?.httpCookieStorage?.cookies(for: $0) }?
+            .flatMap { urlSession?.configuration.httpCookieStorage?.cookies(for: $0) }?
             .first { $0.name == "bbuserid" }
     }
 
@@ -98,45 +110,12 @@ public final class ForumsClient {
         return loginCookie != nil
     }
     
-    public var awfulUserAgent: String {
-        let info = Bundle.main.infoDictionary!
-        let executable = info[kCFBundleExecutableKey as String] as? String ?? "Unknown"
-        let bundle = info[kCFBundleIdentifierKey as String] as? String ?? "Unknown"
-        let appVersion = info["CFBundleShortVersionString"] as? String ?? "Unknown"
-        let appBuild = info[kCFBundleVersionKey as String] as? String ?? "Unknown"
-        
-        let osNameVersion: String = {
-            let version = ProcessInfo.processInfo.operatingSystemVersion
-            let versionString = "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
-            
-            let osName: String = {
-                #if os(iOS)
-                    return "iOS"
-                #elseif os(watchOS)
-                    return "watchOS"
-                #elseif os(tvOS)
-                    return "tvOS"
-                #elseif os(macOS)
-                    return "OS X"
-                #elseif os(Linux)
-                    return "Linux"
-                #else
-                    return "Unknown"
-                #endif
-            }()
-            
-            return "\(osName) \(versionString)"
-        }()
-        
-        return "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion))"
-    }
-
     /// When the valid, logged-in session expires.
     public var loginCookieExpiryDate: Date? {
         return loginCookie?.expiresDate
     }
 
-    enum PromiseError: Error {
+    enum Error: Swift.Error {
         case failedTransferToMainContext
         case missingURLSession
         case invalidBaseURL
@@ -146,91 +125,116 @@ public final class ForumsClient {
         case unexpectedContentType(String, expected: String)
     }
 
-    private func fetch<S>(
-        method: ForumsURLSession.Method,
+    private enum Method: String {
+        case get = "GET"
+        case post = "POST"
+    }
+
+    private func fetch(
+        method: Method,
         urlString: String,
-        parameters: S?,
-        redirectBlock: ForumsURLSession.WillRedirectCallback? = nil
-    ) -> (promise: ForumsURLSession.PromiseType, cancellable: Cancellable) where S: Sequence, S.Element == KeyValuePairs<String, Any>.Element {
-        guard let urlSession = urlSession else {
-            return (Promise(error: PromiseError.missingURLSession), Operation())
+        parameters: some Sequence<KeyValuePairs<String, Any>.Element>,
+        willRedirect: @escaping (_ response: HTTPURLResponse, _ newRequest: URLRequest) async -> URLRequest? = { $1 }
+    ) async throws -> (Data, URLResponse) {
+        guard let urlSession else {
+            throw Error.missingURLSession
         }
 
         let wasLoggedIn = isLoggedIn
 
-        let tuple = urlSession.fetch(method: method, urlString: urlString, parameters: parameters, redirectBlock: redirectBlock)
+        let result: Result<(Data, URLResponse), Swift.Error>
+        do {
+            guard let url = URL(string: urlString, relativeTo: baseURL),
+                  let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            else { throw ForumsClient.Error.invalidBaseURL }
 
-        _ = tuple.promise.done { data, response in
-            if wasLoggedIn, !self.isLoggedIn, let block = self.didRemotelyLogOut {
-                DispatchQueue.main.async(execute: block)
+            let parameters = parameters.lazy.map(win1252Escaped(_:))
+
+            var request: URLRequest
+            switch method {
+            case .get:
+                var queryItems = components.queryItems ?? []
+                queryItems.append(contentsOf: parameters.map { URLQueryItem(name: $0, value: $1) })
+                var components = components
+                components.queryItems = queryItems
+                request = URLRequest(url: components.url!)
+
+            case .post:
+                request = URLRequest(url: url)
+                try request.setMultipartFormData(parameters, encoding: .windowsCP1252)
+            }
+            request.httpMethod = method.rawValue
+            let tuple = try await urlSession.data(for: request, willRedirect: willRedirect)
+            result = .success(tuple)
+        } catch {
+            result = .failure(error)
+        }
+
+        if wasLoggedIn, !isLoggedIn, let didRemotelyLogOut {
+            Task { @MainActor in
+                didRemotelyLogOut()
             }
         }
 
-        return tuple
+        return try result.get()
     }
 
     // MARK: Forums Session
 
-    public func logIn(username: String, password: String) -> Promise<User> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
+    public func logIn(
+        username: String,
+        password: String
+    ) async throws -> User {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
-        // Not that we'll parse any JSON from the login attempt, but it might avoid pointless server-side rendering.
-        let urlString = "account.php?json=1"
-
-        let parameters: Dictionary<String, Any> = [
+        // Not that we'll parse any JSON from the login attempt, but tacking `json=1` on to `urlString` might avoid pointless server-side rendering.
+        let (data, _) = try await fetch(method: .post, urlString: "account.php?json=1", parameters: [
             "action": "login",
             "username": username,
             "password" : password,
-            "next": "/index.php?json=1"]
-
-        return fetch(method: .post, urlString: urlString, parameters: parameters)
-            .promise
-            .decode(as: IndexScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
-                let result = try scrapeResult.upsert(into: context)
-                try context.save()
-                return result.currentUser.objectID
+            "next": "/index.php?json=1",
+        ])
+        let result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
+        let backgroundUser = try await backgroundContext.perform {
+            let managed = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return managed.currentUser
+        }
+        return try await mainContext.perform {
+            guard let user = mainContext.object(with: backgroundUser.objectID) as? User else {
+                throw Error.failedTransferToMainContext
             }
-            .map(on: mainContext) { objectID, context in
-                guard let user = context.object(with: objectID) as? User else {
-                    throw PromiseError.failedTransferToMainContext
-                }
-                return user
+            return user
         }
     }
 
     // MARK: Forums
 
-    public func taxonomizeForums() -> Promise<Void> {
-        guard let backgroundContext = backgroundManagedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+    public func taxonomizeForums() async throws {
+        guard let context = backgroundManagedObjectContext else {
+            throw Error.missingManagedObjectContext
         }
-
-        // Seems like only `forumdisplay.php` and `showthread.php` have the `<select>` with a complete list of forums. We'll use the Main "forum" as it's the smallest page with the drop-down list.
-        return fetch(method: .get, urlString: "index.php?json=1", parameters: [])
-            .promise
-            .decode(as: IndexScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { scrapeResult, context -> Void in
-                try scrapeResult.upsert(into: context)
-                try context.save()
-            }
+        let (data, _) = try await fetch(method: .get, urlString: "index.php?json=1", parameters: [])
+        let result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
+        try await context.perform {
+            try result.upsert(into: context)
+            try context.save()
+        }
     }
 
     // MARK: Threads
 
     /// - Parameter tagged: A thread tag to use for filtering forums, or `nil` for no filtering.
-    public func listThreads(in forum: Forum, tagged threadTag: ThreadTag?, page: Int) -> Promise<[AwfulThread]> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
+    public func listThreads(
+        in forum: Forum,
+        tagged threadTag: ThreadTag? = nil,
+        page: Int
+    ) async throws -> [AwfulThread] {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
         var parameters: Dictionary<String, Any> = [
             "forumid": forum.forumID,
@@ -240,240 +244,226 @@ public final class ForumsClient {
             parameters["posticon"] = threadTagID
         }
 
-        return fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters).promise
-            .scrape(as: ThreadListScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
-                let threads = try result.upsert(into: context)
-                _ = try result.upsertAnnouncements(into: context)
-                
-                forum.canPost = result.canPostNewThread
-                
-                if
-                    page == 1,
-                    var threadsToForget = threads.first?.forum?.threads
-                {
-                    threadsToForget.subtract(threads)
-                    threadsToForget.forEach { $0.threadListPage = 0 }
-                }
+        let (data, response) = try await fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try ThreadListScrapeResult(document, url: url)
+        let backgroundThreads = try await backgroundContext.perform {
+            let threads = try result.upsert(into: backgroundContext)
+            _ = try result.upsertAnnouncements(into: backgroundContext)
 
-                try context.save()
+            forum.canPost = result.canPostNewThread
 
-                return threads.map { $0.objectID }
+            if
+                page == 1,
+                var threadsToForget = threads.first?.forum?.threads
+            {
+                threadsToForget.subtract(threads)
+                threadsToForget.forEach { $0.threadListPage = 0 }
             }
-            .map(on: mainContext) { objectIDs, context -> [AwfulThread] in
-                return objectIDs.compactMap { context.object(with: $0) as? AwfulThread }
+
+            try backgroundContext.save()
+            return threads
+        }
+        return await mainContext.perform {
+            backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
         }
     }
 
-    public func listBookmarkedThreads(page: Int) -> Promise<[AwfulThread]> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
+    public func listBookmarkedThreads(
+        page: Int
+    ) async throws -> [AwfulThread] {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
-        let parameters: KeyValuePairs<String, Any> = [
+        let (data, response) = try await fetch(method: .get, urlString: "bookmarkthreads.php", parameters: [
             "action": "view",
             "perpage": "40",
-            "pagenumber": "\(page)"]
+            "pagenumber": "\(page)",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try ThreadListScrapeResult(document, url: url)
+        let backgroundThreads = try await backgroundContext.perform {
+            let threads = try result.upsert(into: backgroundContext)
 
-        return fetch(method: .get, urlString: "bookmarkthreads.php", parameters: parameters)
-            .promise
-            .scrape(as: ThreadListScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
-                let threads = try result.upsert(into: context)
+            AwfulThread.fetch(in: backgroundContext) {
+                let threadIDsToIgnore = threads.map { $0.threadID }
+                $0.predicate = .and(
+                    .init("\(\AwfulThread.bookmarked) = YES"),
+                    .init("\(\AwfulThread.bookmarkListPage) >= \(page)"),
+                    .init("NOT(\(\AwfulThread.threadID) IN \(threadIDsToIgnore))")
+                )
+            }.forEach { $0.bookmarkListPage = 0 }
 
-                AwfulThread.fetch(in: context) {
-                    let threadIDsToIgnore = threads.map { $0.threadID }
-                    $0.predicate = .and(
-                        .init("\(\AwfulThread.bookmarked) = YES"),
-                        .init("\(\AwfulThread.bookmarkListPage) >= \(page)"),
-                        .init("NOT(\(\AwfulThread.threadID) IN \(threadIDsToIgnore))")
-                    )
-                }.forEach { $0.bookmarkListPage = 0 }
-
-                try context.save()
-
-                return threads.map { $0.objectID }
-            }
-            .map(on: mainContext) { objectIDs, context -> [AwfulThread] in
-                return objectIDs.compactMap { context.object(with: $0) as? AwfulThread }
+            try backgroundContext.save()
+            return threads
+        }
+        return await mainContext.perform {
+            backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
         }
     }
 
-    public func setThread(_ thread: AwfulThread, isBookmarked: Bool) -> Promise<Void> {
+    public func setThread(
+        _ thread: AwfulThread,
+        isBookmarked: Bool
+    ) async throws {
         guard let mainContext = managedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+            throw Error.missingManagedObjectContext
         }
 
-        let parameters: KeyValuePairs<String, Any> = [
+        _ = try await fetch(method: .post, urlString: "bookmarkthreads.php", parameters: [
             "json": "1",
             "action": isBookmarked ? "add" : "remove",
-            "threadid": thread.threadID]
-
-        return fetch(method: .post, urlString: "bookmarkthreads.php", parameters: parameters)
-            .promise
-            .map(on: mainContext) { response, context in
-                thread.bookmarked = isBookmarked
-                if isBookmarked, thread.bookmarkListPage <= 0 {
-                    thread.bookmarkListPage = 1
-                }
-                try context.save()
+            "threadid": thread.threadID,
+        ])
+        try await mainContext.perform {
+            thread.bookmarked = isBookmarked
+            if isBookmarked, thread.bookmarkListPage <= 0 {
+                thread.bookmarkListPage = 1
+            }
+            try mainContext.save()
         }
     }
 
-    public func rate(_ thread: AwfulThread, as rating: Int) -> Promise<Void> {
-        let parameters: KeyValuePairs<String, Any> = [
+    public func rate(
+        _ thread: AwfulThread,
+        as rating: Int
+    ) async throws {
+        _ = try await fetch(method: .post, urlString: "threadrate.php", parameters: [
             "vote": "\(rating.clamped(to: 1...5))",
-            "threadid": thread.threadID]
-
-        return fetch(method: .post, urlString: "threadrate.php", parameters: parameters)
-            .promise.asVoid()
+            "threadid": thread.threadID,
+        ])
     }
 
-    public func setBookmarkColor(_ thread: AwfulThread, as category: StarCategory) -> Promise<Void> {
+    public func setBookmarkColor(
+        _ thread: AwfulThread,
+        as category: StarCategory
+    ) async throws {
         guard let mainContext = managedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+            throw Error.missingManagedObjectContext
         }
 
         // we can set the bookmark color by sending a "category_id" parameter with an "add" action
-        let parameters: KeyValuePairs<String, Any> = [
+        _ = try await fetch(method: .post, urlString: "bookmarkthreads.php", parameters: [
             "threadid": thread.threadID,
             "action": "add",
             "category_id": "\(category.rawValue)",
             "json": "1",
-        ]
-
-        return fetch(method: .post, urlString: "bookmarkthreads.php", parameters: parameters)
-            .promise
-            .map(on: mainContext) { response, context in
-                if thread.bookmarkListPage <= 0 {
-                    thread.bookmarkListPage = 1
-                }
-                try context.save()
+        ])
+        try await mainContext.perform {
+            if thread.bookmarkListPage <= 0 {
+                thread.bookmarkListPage = 1
+            }
+            try mainContext.save()
         }
     }
-    
-    public func markThreadAsSeenUpTo(_ post: Post) -> Promise<Void> {
+
+    public func markThreadAsSeenUpTo(
+        _ post: Post
+    ) async throws {
         guard let threadID = post.thread?.threadID else {
             assertionFailure("post needs a thread ID")
             let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
-            return Promise(error: error)
+            throw error
         }
-
-        let parameters: KeyValuePairs<String, Any> = [
+        _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
             "action": "setseen",
             "threadid": threadID,
-            "index": "\(post.threadIndex)"]
-
-        return fetch(method: .post, urlString: "showthread.php", parameters: parameters)
-            .promise.asVoid()
+            "index": "\(post.threadIndex)",
+        ])
     }
 
-    public func markUnread(_ thread: AwfulThread) -> Promise<Void> {
-        let parameters: KeyValuePairs<String, Any> = [
+    public func markUnread(
+        _ thread: AwfulThread
+    ) async throws {
+        _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
             "threadid": thread.threadID,
             "action": "resetseen",
-            "json": "1"]
-
-        return fetch(method: .post, urlString: "showthread.php", parameters: parameters)
-            .promise.asVoid()
+            "json": "1",
+        ])
     }
 
-    public func listAvailablePostIcons(inForumIdentifiedBy forumID: String) -> Promise<(primary: [ThreadTag], secondary: [ThreadTag])> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
+    public func listAvailablePostIcons(
+        inForumIdentifiedBy forumID: String
+    ) async throws -> (primary: [ThreadTag], secondary: [ThreadTag]) {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
-        let parameters: KeyValuePairs<String, Any> = [
+        let (data, response) = try await fetch(method: .get, urlString: "newthread.php", parameters: [
             "action": "newthread",
-            "forumid": forumID]
-
-        return fetch(method: .get, urlString: "newthread.php", parameters: parameters)
-            .promise
-            .scrape(as: PostIconListScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { parsed, context -> (primary: [NSManagedObjectID], secondary: [NSManagedObjectID]) in
-                let managed = try parsed.upsert(into: context)
-                try context.save()
-                return (primary: managed.primary.map { $0.objectID },
-                        secondary: managed.secondary.map { $0.objectID })
-            }
-            .map(on: mainContext) { objectIDs, context -> (primary: [ThreadTag], secondary: [ThreadTag]) in
-                return (
-                    primary: objectIDs.primary.compactMap { context.object(with: $0) as? ThreadTag },
-                    secondary: objectIDs.secondary.compactMap { context.object(with: $0) as? ThreadTag })
+            "forumid": forumID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try PostIconListScrapeResult(document, url: url)
+        let backgroundTags = try await backgroundContext.perform {
+            let managed = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return (primary: managed.primary, secondary: managed.secondary)
+        }
+        return await mainContext.perform {
+            (
+                primary: backgroundTags.primary.compactMap { mainContext.object(with: $0.objectID) as? ThreadTag },
+                secondary: backgroundTags.secondary.compactMap { mainContext.object(with: $0.objectID) as? ThreadTag }
+            )
         }
     }
 
     /// - Parameter postData: A `PostNewThreadFormData` returned by `previewOriginalPostForThread(in:bbcode:)`.
-    public func postThread(using formData: PostNewThreadFormData, subject: String, threadTag: ThreadTag?, secondaryTag: ThreadTag?, bbcode: String) -> Promise<AwfulThread> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+    public func postThread(
+        using formData: PostNewThreadFormData,
+        subject: String,
+        threadTag someThreadTag: ThreadTag?,
+        secondaryTag someSecondaryTag: ThreadTag?,
+        bbcode: String
+    ) async throws -> AwfulThread {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
+
+        let form = SubmittableForm(formData.form)
+        try form.enter(text: subject, for: "subject")
+        try form.enter(text: bbcode, for: "message")
+
+        let (tagImageName, secondaryTagImageName) = try await backgroundContext.perform {
+            _ = try formData.postIcons.upsert(into: backgroundContext)
+            try backgroundContext.save()
+
+            let tagImageName = someThreadTag
+                .flatMap { backgroundContext.object(with: $0.objectID) as? ThreadTag }
+                .flatMap(\.imageName)
+            let secondaryTagImageName = someSecondaryTag
+                .flatMap { backgroundContext.object(with: $0.objectID) as? ThreadTag }
+                .flatMap(\.imageName)
+            return (tagImageName: tagImageName, secondaryTagImageName: secondaryTagImageName)
         }
-
-        let threadTagObjectID = threadTag?.objectID
-        let secondaryTagObjectID = secondaryTag?.objectID
-
-        let params = backgroundContext.perform(.promise) { context -> [Dictionary<String, Any>.Element] in
-            _ = try formData.postIcons.upsert(into: context)
-            try context.save()
-
-            let form = SubmittableForm(formData.form)
-
-            try form.enter(text: subject, for: "subject")
-            try form.enter(text: bbcode, for: "message")
-
-            if
-                let objectID = threadTagObjectID,
-                let threadTag = context.object(with: objectID) as? ThreadTag,
-                let imageName = threadTag.imageName,
-                let icon = formData.postIcons.primaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == imageName }),
-                !formData.postIcons.selectedPrimaryIconFormName.isEmpty
-            {
-                try form.select(value: icon.id, for: formData.postIcons.selectedPrimaryIconFormName)
-            }
-
-            if
-                let objectID = secondaryTagObjectID,
-                let threadTag = context.object(with: objectID) as? ThreadTag,
-                let imageName = threadTag.imageName,
-                let icon = formData.postIcons.secondaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == imageName }),
-                !formData.postIcons.selectedSecondaryIconFormName.isEmpty
-            {
-                try form.select(value: icon.id, for: formData.postIcons.selectedSecondaryIconFormName)
-            }
-
-            let submission = form.submit(button: formData.form.submitButton(named: "submit"))
-            return prepareFormEntries(submission)
+        if let tagImageName,
+           let icon = formData.postIcons.primaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == tagImageName }),
+           !formData.postIcons.selectedPrimaryIconFormName.isEmpty
+       {
+           try form.select(value: icon.id, for: formData.postIcons.selectedPrimaryIconFormName)
+       }
+        if let secondaryTagImageName,
+           let icon = formData.postIcons.secondaryIcons.first(where: { $0.url.map(ThreadTag.imageName) == secondaryTagImageName }),
+           !formData.postIcons.selectedSecondaryIconFormName.isEmpty
+       {
+           try form.select(value: icon.id, for: formData.postIcons.selectedSecondaryIconFormName)
+       }
+        let submission = form.submit(button: formData.form.submitButton(named: "submit"))
+        let params = prepareFormEntries(submission)
+        let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
+        let (document, _) = try parseHTML(data: data, response: response)
+        guard let link = document.firstNode(matchingSelector: "a[href *= 'showthread']"),
+              let href = link["href"],
+              let components = URLComponents(string: href),
+              let queryItems = components.queryItems,
+              let threadIDPair = queryItems.first(where: { $0.name == "threadid" }),
+              let threadID = threadIDPair.value
+        else {
+            throw AwfulCoreError.parseError(description: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again.")
         }
-
-        let threadID = params
-            .then { self.fetch(method: .post, urlString: "newthread.php", parameters: $0).promise }
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> String in
-                guard
-                    let link = parsed.document.firstNode(matchingSelector: "a[href *= 'showthread']"),
-                    let href = link["href"],
-                    let components = URLComponents(string: href),
-                    let queryItems = components.queryItems,
-                    let threadIDPair = queryItems.first(where: { $0.name == "threadid" }),
-                    let threadID = threadIDPair.value else
-                {
-                    throw AwfulCoreError.parseError(description: "The new thread could not be located. Maybe it didn't actually get made. Double-check if your thread has appeared, then try again.")
-                }
-
-                return threadID
-        }
-
-        return threadID.map(on: mainContext) { threadID, context in
-            AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
+        return await mainContext.perform {
+            AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: mainContext)
         }
     }
 
@@ -483,52 +473,54 @@ public final class ForumsClient {
     }
 
     /// - Returns: The promise of the previewed post's HTML.
-    public func previewOriginalPostForThread(in forum: Forum, bbcode: String) -> CancellablePromise<(previewHTML: String, formData: PostNewThreadFormData)> {
-        let (previewForm, cancellable) = fetch(method: .get, urlString: "newthread.php", parameters: [
-            "action": "newthread",
-            "forumid": forum.forumID])
-
-        let previewParameters = previewForm
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> [Dictionary<String, Any>.Element] in
-                guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name = 'vbform']") else {
-                    if
-                        let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
-                        specialMessage.textContent.contains("accepting")
-                    {
-                        throw AwfulCoreError.forbidden(description: "You're not allowed to post threads in this forum")
-                    }
-                    else {
-                        throw AwfulCoreError.parseError(description: "Could not find new thread form")
-                    }
+    public func previewOriginalPostForThread(
+        in forum: Forum,
+        bbcode: String
+    ) async throws -> (previewHTML: String, formData: PostNewThreadFormData) {
+        let previewParameters: [KeyValuePairs<String, Any>.Element]
+        do {
+            let (data, response) = try await fetch(method: .get, urlString: "newthread.php", parameters: [
+                "action": "newthread",
+                "forumid": forum.forumID,
+            ])
+            let (document, url) = try parseHTML(data: data, response: response)
+            guard let htmlForm = document.firstNode(matchingSelector: "form[name = 'vbform']") else {
+                if
+                    let specialMessage = document.firstNode(matchingSelector: "#content center div.standard"),
+                    specialMessage.textContent.contains("accepting")
+                {
+                    throw AwfulCoreError.forbidden(description: "You're not allowed to post threads in this forum")
                 }
+                else {
+                    throw AwfulCoreError.parseError(description: "Could not find new thread form")
+                }
+            }
 
-                let form = try Form(htmlForm, url: parsed.url)
-                let submittable = SubmittableForm(form)
+            let form = try Form(htmlForm, url: url)
+            let submittable = SubmittableForm(form)
 
-                try submittable.enter(text: bbcode, for: "message")
+            try submittable.enter(text: bbcode, for: "message")
 
-                let submission = submittable.submit(button: form.submitButton(named: "preview"))
-                return prepareFormEntries(submission)
+            let submission = submittable.submit(button: form.submitButton(named: "preview"))
+            previewParameters = prepareFormEntries(submission)
         }
 
-        let htmlAndFormData = previewParameters
-            .then { self.fetch(method: .post, urlString: "newthread.php", parameters: $0).promise }
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> (previewHTML: String, formData: PostNewThreadFormData) in
-                guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
-                    throw AwfulCoreError.parseError(description: "Could not find previewed original post")
-                }
-                workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+        try Task.checkCancellation()
 
-                let htmlForm = try parsed.document.requiredNode(matchingSelector: "form[name = 'vbform']")
-                let form = try Form(htmlForm, url: parsed.url)
-                let postIcons = try PostIconListScrapeResult(htmlForm, url: parsed.url)
-                let postData = PostNewThreadFormData(form: form, postIcons: postIcons)
-                return (previewHTML: postbody.innerHTML, formData: postData)
+        do {
+            let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: previewParameters)
+            let (document, url) = try parseHTML(data: data, response: response)
+            guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+                throw AwfulCoreError.parseError(description: "Could not find previewed original post")
+            }
+            workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+
+            let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
+            let form = try Form(htmlForm, url: url)
+            let postIcons = try PostIconListScrapeResult(htmlForm, url: url)
+            let postData = PostNewThreadFormData(form: form, postIcons: postIcons)
+            return (previewHTML: postbody.innerHTML, formData: postData)
         }
-
-        return (htmlAndFormData, cancellable)
     }
     
     /**
@@ -536,15 +528,13 @@ public final class ForumsClient {
      
      Generally only seen in FYAD.
      */
-    public func flagForThread(in forum: Forum) -> CancellablePromise<Flag> {
-        let (promise, cancellable) = fetch(method: .get, urlString: "flag.php", parameters: ["forumid": forum.forumID])
-        
-        let result = promise
-            .map(on: .global()) { data, response in
-                try JSONDecoder().decode(Flag.self, from: data)
-        }
-        
-        return (promise: result, cancellable: cancellable)
+    public func flagForThread(
+        in forum: Forum
+    ) async throws -> Flag {
+        let (data, _) = try await fetch(method: .get, urlString: "flag.php", parameters: [
+            "forumid": forum.forumID,
+        ])
+        return try JSONDecoder().decode(Flag.self, from: data)
     }
     
     public struct Flag: Decodable {
@@ -560,28 +550,24 @@ public final class ForumsClient {
      
      - Note: Announcements must first be scraped as part of a thread list for this method to do anything.
      */
-    public func listAnnouncements() -> CancellablePromise<[Announcement]> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            return (promise: Promise(error: PromiseError.missingManagedObjectContext), cancellable: Operation())
+    public func listAnnouncements() async throws -> [Announcement] {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
+
+        let (data, response) = try await fetch(method: .get, urlString: "announcement.php", parameters: [
+            "forumid": "1",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try AnnouncementListScrapeResult(document, url: url)
+        let backgroundAnnouncements = try await backgroundContext.perform {
+            let announcements = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return announcements
         }
-
-        let (promise, cancellable) = fetch(method: .get, urlString: "announcement.php", parameters: ["forumid": "1"])
-
-        let result = promise
-            .scrape(as: AnnouncementListScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
-                let announcements = try scrapeResult.upsert(into: context)
-                try context.save()
-                return announcements.map { $0.objectID }
-            }
-            .map(on: mainContext) { objectIDs, context -> [Announcement] in
-                return objectIDs.compactMap { context.object(with: $0) as? Announcement }
+        return await mainContext.perform {
+            backgroundAnnouncements.compactMap { mainContext.object(with: $0.objectID) as? Announcement }
         }
-
-        return (promise: result, cancellable: cancellable)
     }
 
     // MARK: Posts
@@ -599,17 +585,15 @@ public final class ForumsClient {
         writtenBy author: User?,
         page: ThreadPage,
         updateLastReadPost: Bool
-    ) -> CancellablePromise<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let mainContext = managedObjectContext else
-        {
-            return (Promise(error: PromiseError.missingManagedObjectContext), Operation())
-        }
+    ) async throws -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String) {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
         var parameters: Dictionary<String, Any> = [
             "threadid": thread.threadID,
-            "perpage": "40"]
+            "perpage": "40",
+        ]
 
         switch page {
         case .nextUnread:
@@ -629,11 +613,10 @@ public final class ForumsClient {
         }
 
         // SA: We set perpage=40 above to effectively ignore the user's "number of posts per page" setting on the Forums proper. When we get redirected (i.e. goto=newpost or goto=lastpost), the page we're redirected to is appropriate for our hardcoded perpage=40. However, the redirected URL has **no** perpage parameter, so it defaults to the user's setting from the Forums proper. This block maintains our hardcoded perpage value.
-        func redirectBlock(
-            task: URLSessionTask,
+        func redirect(
             response: HTTPURLResponse,
             newRequest: URLRequest
-        ) -> URLRequest? {
+        ) async -> URLRequest? {
             var components = newRequest.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: true) }
             let queryItems = (components?.queryItems ?? [])
                 .filter { $0.name != "perpage" }
@@ -645,56 +628,50 @@ public final class ForumsClient {
             return request
         }
 
-        let (promise, cancellable) = fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
+        let (data, response) = try await fetch(method: .get, urlString: "showthread.php", parameters: parameters, willRedirect: redirect)
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try PostsPageScrapeResult(document, url: url)
 
-        let parsed = promise
-            .scrape(as: PostsPageScrapeResult.self, on: scrapingQueue)
+        try Task.checkCancellation()
 
-        let posts = parsed
-            .map(on: backgroundContext) { scrapeResult, context -> [NSManagedObjectID] in
-                let posts = try scrapeResult.upsert(into: context)
-                try context.save()
-                return posts.map { $0.objectID }
-            }
-            .map(on: mainContext) { objectIDs, context -> [Post] in
-                return objectIDs.compactMap { context.object(with: $0) as? Post }
-            }
-
-        let altogether = when(fulfilled: posts, parsed)
-            .map { posts, scrapeResult in
-                return (posts: posts,
-                        // post index is 1-based
-                        firstUnreadPost: scrapeResult.jumpToPostIndex.map { $0 + 1 },
-                        advertisementHTML: scrapeResult.advertisement)
+        let backgroundPosts = try await backgroundContext.perform {
+            let posts = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return posts
         }
-
-        return (altogether, cancellable)
+        let posts = await mainContext.perform {
+            backgroundPosts.compactMap { mainContext.object(with: $0.objectID) as? Post }
+        }
+        return (
+            posts: posts,
+            // post index is 1-based
+            firstUnreadPost: result.jumpToPostIndex.map { $0 + 1 },
+            advertisementHTML: result.advertisement
+        )
     }
 
     /**
      - Parameter post: An ignored post whose author and innerHTML should be filled.
      */
-    public func readIgnoredPost(_ post: Post) -> Promise<Void> {
-        guard
-            let backgroundContext = backgroundManagedObjectContext,
-            let postContext = post.managedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
+    public func readIgnoredPost(
+        _ post: Post
+    ) async throws {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let postContext = post.managedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
-        let parameters: KeyValuePairs<String, Any> = [
+        let (data, response) = try await fetch(method: .get, urlString: "showthread.php", parameters: [
             "action": "showpost",
-            "postid": post.postID]
-
-        return fetch(method: .get, urlString: "showthread.php", parameters: parameters)
-            .promise
-            .scrape(as: ShowPostScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { scrapeResult, context -> Void in
-                _ = try scrapeResult.upsert(into: context)
-                try context.save()
-            }
-            .map(on: postContext) { (_, context) -> Void in
-                context.refresh(post, mergeChanges: true)
+            "postid": post.postID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try ShowPostScrapeResult(document, url: url)
+        try await backgroundContext.perform {
+            _ = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+        }
+        await postContext.perform {
+            postContext.refresh(post, mergeChanges: true)
         }
     }
 
@@ -703,159 +680,147 @@ public final class ForumsClient {
         case post(Post)
     }
 
-    public func reply(to thread: AwfulThread, bbcode: String) -> Promise<ReplyLocation> {
+    public func reply(
+        to thread: AwfulThread,
+        bbcode: String
+    ) async throws -> ReplyLocation {
         guard let mainContext = managedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+            throw Error.missingManagedObjectContext
         }
 
         let wasThreadClosed = thread.closed
-
-        let startParams: KeyValuePairs<String, Any> = [
-            "action": "newreply",
-            "threadid": thread.threadID]
-        let params = fetch(method: .get, urlString: "newreply.php", parameters: startParams)
-            .promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> [Dictionary<String, Any>.Element] in
-                guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']") else {
-                    let description = wasThreadClosed
-                        ? "Could not reply; the thread may be closed."
-                        : "Could not reply; failed to find the form."
-                    throw AwfulCoreError.parseError(description: description)
+        let formParams: [KeyValuePairs<String, Any>.Element]
+        do {
+            let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
+                "action": "newreply",
+                "threadid": thread.threadID,
+            ])
+            let (document, url) = try parseHTML(data: data, response: response)
+            guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
+                let description = if wasThreadClosed {
+                    "Could not reply; the thread may be closed."
+                } else {
+                    "Could not reply; failed to find the form."
                 }
-
-                let parsedForm = try Form(htmlForm, url: parsed.url)
-                let form = SubmittableForm(parsedForm)
-                try form.enter(text: bbcode, for: "message")
-                let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
-                return prepareFormEntries(submission)
-        }
-
-        let postID = params
-            .then { self.fetch(method: .post, urlString: "newreply.php", parameters: $0).promise }
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> String? in
-                let link = parsed.document.firstNode(matchingSelector: "a[href *= 'goto=post']")
-                    ?? parsed.document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
-                let queryItems = link
-                    .flatMap { $0["href"] }
-                    .flatMap { URLComponents(string: $0) }
-                    .flatMap { $0.queryItems }
-                if
-                    let goto = queryItems?.first(where: { $0.name == "goto" }),
-                    goto.value == "post",
-                    let postID = queryItems?.first(where: { $0.name == "postid" })?.value
-                {
-                    return postID
-                }
-                else {
-                    return nil
-                }
-        }
-
-        return postID
-            .map(on: mainContext) { postID, context -> ReplyLocation in
-                if let postID = postID {
-                    return .post(Post.objectForKey(objectKey: PostKey(postID: postID), in: context))
-                }
-                else {
-                    return .lastPostInThread
-                }
-        }
-    }
-
-    public func previewReply(to thread: AwfulThread, bbcode: String) -> CancellablePromise<String> {
-        let (promise, cancellable) = fetch(method: .get, urlString: "newreply.php", parameters: [
-            "action": "newreply",
-            "threadid": thread.threadID])
-
-        let params = promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> [Dictionary<String, Any>.Element] in
-                let htmlForm = try parsed.document.requiredNode(matchingSelector: "form[name = 'vbform']")
-                let scrapedForm = try Form(htmlForm, url: parsed.url)
-                let form = SubmittableForm(scrapedForm)
-                try form.enter(text: bbcode, for: "message")
-                let submission = form.submit(button: scrapedForm.submitButton(named: "preview"))
-                return prepareFormEntries(submission)
-        }
-
-        let parsed = params
-            .then { self.fetch(method: .post, urlString: "newreply.php", parameters: $0).promise }
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> String in
-                guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
-                    throw AwfulCoreError.parseError(description: "Could not find previewed post")
-                }
-
-                workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
-                return postbody.innerHTML
-        }
-
-        return (promise: parsed, cancellable: cancellable)
-    }
-
-    public func findBBcodeContents(of post: Post) -> Promise<String> {
-        let parameters: KeyValuePairs<String, Any> = [
-            "action": "editpost",
-            "postid": post.postID]
-
-        return fetch(method: .get, urlString: "editpost.php", parameters: parameters)
-            .promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global(), findMessageText)
-    }
-
-    public func quoteBBcodeContents(of post: Post) -> Promise<String> {
-        let parameters: KeyValuePairs<String, Any> = [
-            "action": "newreply",
-            "postid": post.postID]
-
-        return fetch(method: .get, urlString: "newreply.php", parameters: parameters)
-            .promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global(), findMessageText)
-    }
-
-    public func edit(_ post: Post, bbcode: String) -> Promise<Void> {
-        return editForm(for: post)
-            .promise
-            .map(on: .global()) { parsedForm -> [Dictionary<String, Any>.Element] in
-                let form = SubmittableForm(parsedForm)
-                try form.enter(text: bbcode, for: "message")
-                let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
-                return prepareFormEntries(submission)
+                throw AwfulCoreError.parseError(description: description)
             }
-            .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
-            .asVoid()
+            let parsedForm = try Form(htmlForm, url: url)
+            let form = SubmittableForm(parsedForm)
+            try form.enter(text: bbcode, for: "message")
+            let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+            formParams = prepareFormEntries(submission)
+        }
+        
+        let postID: String?
+        do {
+            let (data, response) = try await fetch(method: .post, urlString: "newreply.php", parameters: formParams)
+            let (document, _) = try parseHTML(data: data, response: response)
+            let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
+            ?? document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
+            let queryItems = link
+                .flatMap { $0["href"] }
+                .flatMap { URLComponents(string: $0) }
+                .flatMap { $0.queryItems }
+            postID = if let goto = queryItems?.first(where: { $0.name == "goto" }), goto.value == "post" {
+                queryItems?.first(where: { $0.name == "postid" })?.value
+            } else {
+                nil
+            }
+        }
+        return await mainContext.perform {
+            if let postID {
+                .post(Post.objectForKey(objectKey: PostKey(postID: postID), in: mainContext))
+            } else {
+                .lastPostInThread
+            }
+        }
     }
 
-    private func editForm(for post: Post) -> CancellablePromise<Form> {
-        let startParams: KeyValuePairs<String, Any> = [
-            "action": "editpost",
-            "postid": post.postID]
-
-        let (promise: promise, cancellable: cancellable) = fetch(method: .get, urlString: "editpost.php", parameters: startParams)
-
-        let parsed = promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> Form in
-                guard let htmlForm = parsed.document.firstNode(matchingSelector: "form[name='vbform']") else {
-                    if
-                        let specialMessage = parsed.document.firstNode(matchingSelector: "#content center div.standard"),
-                        specialMessage.textContent.contains("permission")
-                    {
-                        throw AwfulCoreError.forbidden(description: "You're not allowed to edit posts in this thread")
-                    }
-                    else {
-                        throw AwfulCoreError.parseError(description: "Failed to edit post; could not find form")
-                    }
-                }
-
-                return try Form(htmlForm, url: parsed.url)
+    public func previewReply(
+        to thread: AwfulThread,
+        bbcode: String
+    ) async throws -> String {
+        let params: [KeyValuePairs<String, Any>.Element]
+        do {
+            let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
+                "action": "newreply",
+                "threadid": thread.threadID,
+            ])
+            let (document, url) = try parseHTML(data: data, response: response)
+            let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
+            let scrapedForm = try Form(htmlForm, url: url)
+            let form = SubmittableForm(scrapedForm)
+            try form.enter(text: bbcode, for: "message")
+            let submission = form.submit(button: scrapedForm.submitButton(named: "preview"))
+            params = prepareFormEntries(submission)
         }
 
-        return (promise: parsed, cancellable: cancellable)
+        try Task.checkCancellation()
+
+        do {
+            let (data, response) = try await fetch(method: .post, urlString: "newreply.php", parameters: params)
+            let (document, _) = try parseHTML(data: data, response: response)
+            guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+                throw AwfulCoreError.parseError(description: "Could not find previewed post")
+            }
+            workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+            return postbody.innerHTML
+        }
+    }
+
+    public func findBBcodeContents(
+        of post: Post
+    ) async throws -> String {
+        let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
+            "action": "editpost",
+            "postid": post.postID,
+        ])
+        let document = try parseHTML(data: data, response: response)
+        return try findMessageText(in: document)
+    }
+
+    public func quoteBBcodeContents(of post: Post) async throws -> String {
+        let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
+            "action": "newreply",
+            "postid": post.postID,
+        ])
+        let parsed = try parseHTML(data: data, response: response)
+        return try findMessageText(in: parsed)
+    }
+
+    public func edit(
+        _ post: Post,
+        bbcode: String
+    ) async throws {
+        let params: [KeyValuePairs<String, Any>.Element]
+        do {
+            let parsedForm = try await editForm(for: post)
+            let form = SubmittableForm(parsedForm)
+            try form.enter(text: bbcode, for: "message")
+            let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+            params = prepareFormEntries(submission)
+        }
+        _ = try await fetch(method: .post, urlString: "editpost.php", parameters: params)
+    }
+
+    private func editForm(
+        for post: Post
+    ) async throws -> Form {
+        let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
+            "action": "editpost",
+            "postid": post.postID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
+            if let specialMessage = document.firstNode(matchingSelector: "#content center div.standard"),
+               specialMessage.textContent.contains("permission")
+            {
+                throw AwfulCoreError.forbidden(description: "You're not allowed to edit posts in this thread")
+            } else {
+                throw AwfulCoreError.parseError(description: "Failed to edit post; could not find form")
+            }
+        }
+        return try Form(htmlForm, url: url)
     }
 
     /**
@@ -865,320 +830,276 @@ public final class ForumsClient {
     public func locatePost(
         id postID: String,
         updateLastReadPost: Bool
-    ) -> Promise<(post: Post, page: ThreadPage)> {
+    ) async throws -> (post: Post, page: ThreadPage) {
         guard let mainContext = managedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+            throw Error.missingManagedObjectContext
         }
 
-        // The SA Forums will direct a certain URL to the thread with a given post. We'll wait for that redirect, then parse out the info we need.
-        let redirectURL = Promise<URL>.pending()
+        // The SA Forums redirects to a URL with the info we need, so we'll watch for that and then cancel the load (we don't actually want the content).
+        var result: (threadID: String, page: ThreadPage)?
+        func redirect(response: HTTPURLResponse, newRequest: URLRequest) -> URLRequest? {
+            guard let url = newRequest.url,
+                  let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+                  let threadID = components.queryItems?.first(where: { $0.name == "threadid" })?.value,
+                  !threadID.isEmpty,
+                  let rawPagenumber = components.queryItems?.first(where: { $0.name == "pagenumber" })?.value,
+                  let pageNumber = Int(rawPagenumber)
+            else { return newRequest }
 
-        func redirectBlock(task: URLSessionTask, response: HTTPURLResponse, newRequest: URLRequest) -> URLRequest? {
-            if
-                let url = newRequest.url,
-                url.lastPathComponent == "showthread.php",
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-                let queryItems = components.queryItems,
-                queryItems.first(where: { $0.name == "goto" }) != nil
-            {
-                return newRequest
-            }
-
-            task.cancel()
-
-            guard let url = newRequest.url else {
-                redirectURL.resolver.reject(AwfulCoreError.parseError(description: "The post could not be found (missing URL)"))
-                return nil
-            }
-
-            redirectURL.resolver.fulfill(url)
+            result = (threadID: threadID, page: .specific(pageNumber))
             return nil
         }
-
-        let parameters: KeyValuePairs<String, Any> = [
-            "goto": "post",
-            "postid": postID,
-            "noseen": updateLastReadPost ? "0" : "1"]
-
-        fetch(method: .get, urlString: "showthread.php", parameters: parameters, redirectBlock: redirectBlock)
-            .promise
-            .done { dataAndResponse in
-                // Once we have the redirect we want, we cancel the operation. So if this "success" callback gets called, we've actually failed.
-                redirectURL.resolver.reject(AwfulCoreError.parseError(description: "The post could not be found"))
-            }
-            .catch { error in
-                // This catch excludes cancellation, so we've legitimately failed.
-                redirectURL.resolver.reject(error)
+        do {
+            _ = try await fetch(method: .get, urlString: "showthread.php", parameters: [
+                "goto": "post",
+                "postid": postID,
+                "noseen": updateLastReadPost ? "0" : "1",
+            ], willRedirect: redirect)
+        } catch URLError.cancelled {
+            // ok so long as we got the info.
+        }
+        guard let (threadID, page) = result else {
+            throw AwfulCoreError.parseError(description: "The thread ID or page number could not be found")
         }
 
-        return redirectURL.promise
-            .map(on: .global()) { url -> (threadID: String, page: ThreadPage) in
-                guard
-                    let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-                    let threadID = components.queryItems?.first(where: { $0.name == "threadid" })?.value,
-                    !threadID.isEmpty,
-                    let rawPagenumber = components.queryItems?.first(where: { $0.name == "pagenumber" })?.value,
-                    let pageNumber = Int(rawPagenumber) else
-                {
-                    throw AwfulCoreError.parseError(description: "The thread ID or page number could not be found")
-                }
+        return try await mainContext.perform {
+            let post = Post.objectForKey(objectKey: PostKey(postID: postID), in: mainContext)
+            let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: mainContext)
 
-                return (threadID: threadID, page: .specific(pageNumber))
-            }
-            .map(on: mainContext) { parsed, context -> (post: Post, page: ThreadPage) in
-                let (threadID: threadID, page: page) = parsed
-                let post = Post.objectForKey(objectKey: PostKey(postID: postID), in: mainContext)
-                let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: mainContext)
+            post.thread = thread
+            try mainContext.save()
 
-                post.thread = thread
-                try context.save()
-
-                return (post: post, page: page)
+            return (post: post, page: page)
         }
     }
 
-    public func previewEdit(to post: Post, bbcode: String) -> CancellablePromise<String> {
-        let (promise, cancellable) = editForm(for: post)
-
-        let params = promise
-            .map(on: .global()) { parsedForm -> [Dictionary<String, Any>.Element] in
-                let form = SubmittableForm(parsedForm)
-                try form.enter(text: bbcode, for: "message")
-                let submission = form.submit(button: parsedForm.submitButton(named: "preview"))
-                return prepareFormEntries(submission)
+    public func previewEdit(
+        to post: Post,
+        bbcode: String
+    ) async throws -> String {
+        let params: [KeyValuePairs<String, Any>.Element]
+        do {
+            let parsedForm = try await editForm(for: post)
+            let form = SubmittableForm(parsedForm)
+            try form.enter(text: bbcode, for: "message")
+            let submission = form.submit(button: parsedForm.submitButton(named: "preview"))
+            params = prepareFormEntries(submission)
         }
 
-        let parsed = params
-            .then { self.fetch(method: .post, urlString: "editpost.php", parameters: $0).promise }
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { parsed -> String in
-                guard let postbody = parsed.document.firstNode(matchingSelector: ".postbody") else {
-                    throw AwfulCoreError.parseError(description: "Could not find previewed post")
-                }
-
-                workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
-                return postbody.innerHTML
+        do {
+            let (data, response) = try await fetch(method: .post, urlString: "editpost.php", parameters: params)
+            let (document, _) = try parseHTML(data: data, response: response)
+            guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+                throw AwfulCoreError.parseError(description: "Could not find previewed post")
+            }
+            workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+            return postbody.innerHTML
         }
-
-        return (promise: parsed, cancellable: cancellable)
     }
 
     /**
      - Parameter reason: A further explanation of what's wrong with the post.
      */
-    public func report(_ post: Post, nws: Bool, reason: String) -> Promise<Void> {
-        var parameters: Dictionary<String, Any> = [
+    public func report(
+        _ post: Post,
+        nws: Bool,
+        reason: String
+    ) async throws {
+        var parameters: [String: Any] = [
             "action": "submit",
             "postid": post.postID,
-            "comments": String(reason.prefix(960))]
-        
-        if (nws) {
+            "comments": String(reason.prefix(960)),
+        ]
+        if nws {
             parameters["nws"] = "yes"
         }
-
-        return fetch(method: .post, urlString: "modalert.php", parameters: parameters)
-            .promise.asVoid()
-            .recover { error in
-                print("error reporting post \(post.postID): \(error)")
-        }
+        _ = try await fetch(method: .post, urlString: "modalert.php", parameters: parameters)
     }
 
     // MARK: Users
 
-    private func profile(parameters: [String: Any]) -> Promise<NSManagedObjectID> {
+    private func profile(
+        parameters: some Sequence<KeyValuePairs<String, Any>.Element>
+    ) async throws -> Profile {
         guard let backgroundContext = backgroundManagedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+            throw Error.missingManagedObjectContext
         }
 
-        return fetch(method: .get, urlString: "member.php", parameters: parameters)
-            .promise
-            .scrape(as: ProfileScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
-                let profile = try scrapeResult.upsert(into: context)
-                try context.save()
-                return profile.objectID
+        let (data, response) = try await fetch(method: .get, urlString: "member.php", parameters: parameters)
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try ProfileScrapeResult(document, url: url)
+        return try await backgroundContext.perform {
+            let profile = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return profile
+        }
+    }
+
+    public func profileLoggedInUser() async throws -> User {
+        guard let mainContext = managedObjectContext else {
+            throw Error.missingManagedObjectContext
+        }
+
+        let backgroundProfile = try await profile(parameters: ["action": "getinfo"])
+        return try await mainContext.perform {
+            guard let profile = mainContext.object(with: backgroundProfile.objectID) as? Profile else {
+                throw AwfulCoreError.parseError(description: "Could not save profile")
             }
-    }
 
-    public func profileLoggedInUser() -> Promise<User> {
-        guard let mainContext = managedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
-
-        return profile(parameters: ["action": "getinfo"])
-            .map(on: mainContext) { objectID, context -> User in
-                guard let profile = context.object(with: objectID) as? Profile else {
-                    throw AwfulCoreError.parseError(description: "Could not save profile")
-                }
-
-                return profile.user
+            return profile.user
         }
     }
 
-    /**
-     - Parameter id: The user's ID. Specified directly in case no such user exists, which would make for a useless `User`.
-     - Parameter username: The user's username. If userID is not given, username must be given.
-     */
-    public func profileUser(id userID: String?, username: String?) -> Promise<Profile> {
-        assert(userID != nil || username != nil)
-
+    public func profileUser(
+        _ request: UserProfileSearchRequest
+    ) async throws -> Profile {
         guard let mainContext = managedObjectContext else {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+            throw Error.missingManagedObjectContext
         }
 
         var parameters = ["action": "getinfo"]
-        if let userID = userID, !userID.isEmpty {
+        switch request {
+        case let .userID(userID, username: username):
             parameters["userid"] = userID
-        }
-        else if let username = username {
+            if let username {
+                parameters["username"] = username
+            }
+        case .username(let username):
             parameters["username"] = username
         }
 
-        return profile(parameters: parameters)
-            .map(on: mainContext) { objectID, context -> Profile in
-                guard let profile = context.object(with: objectID) as? Profile else {
-                    throw AwfulCoreError.parseError(description: "Could not save profile")
-                }
-
-                return profile
+        let backgroundProfile = try await profile(parameters: parameters)
+        return try await mainContext.perform {
+            guard let profile = mainContext.object(with: backgroundProfile.objectID) as? Profile else {
+                throw AwfulCoreError.parseError(description: "Could not save profile")
+            }
+            return profile
         }
     }
 
-    private func lepersColony(parameters: [String: Any]) -> Promise<[LepersColonyScrapeResult.Punishment]> {
-        return fetch(method: .get, urlString: "banlist.php", parameters: parameters)
-            .promise
-            .map(on: .global()) { data, response -> [LepersColonyScrapeResult.Punishment] in
-                let (document: document, url: url) = try parseHTML(data: data, response: response)
-                let result = try LepersColonyScrapeResult(document, url: url)
-                return result.punishments
-        }
+    public enum UserProfileSearchRequest {
+        case userID(String, username: String? = nil)
+        case username(String)
     }
 
-    public func listPunishments(of user: User?, page: Int) -> Promise<[LepersColonyScrapeResult.Punishment]> {
-        guard let user = user else {
-            return lepersColony(parameters: ["pagenumber": "\(page)"])
+    private func lepersColony(
+        parameters: some Sequence<KeyValuePairs<String, Any>.Element>
+    ) async throws -> [LepersColonyScrapeResult.Punishment] {
+        let (data, response) = try await fetch(method: .get, urlString: "banlist.php", parameters: parameters)
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try LepersColonyScrapeResult(document, url: url)
+        return result.punishments
+    }
+
+    public func listPunishments(
+        of user: User?,
+        page: Int
+    ) async throws -> [LepersColonyScrapeResult.Punishment] {
+        guard let user else {
+            return try await lepersColony(parameters: ["pagenumber": "\(page)"])
         }
 
-        let userID: Promise<String>
+        let userID: String
         if !user.userID.isEmpty {
-            userID = .value(user.userID)
-        }
-        else {
+            userID = user.userID
+        } else {
             guard let username = user.username else {
                 assertionFailure("need user ID or username")
-                return lepersColony(parameters: ["pagenumber": "\(page)"])
+                return try await lepersColony(parameters: ["pagenumber": "\(page)"])
             }
-
-            userID = profileUser(id: nil, username: username)
-                .map { $0.user.userID }
+            userID = try await profileUser(.username(username)).user.userID
         }
 
-        return userID
-            .then { userID -> Promise<[LepersColonyScrapeResult.Punishment]> in
-                let parameters = [
-                    "pagenumber": "\(page)",
-                    "userid": userID]
-                return self.lepersColony(parameters: parameters)
-        }
+        return try await lepersColony(parameters: [
+            "pagenumber": "\(page)",
+            "userid": userID,
+        ])
     }
 
     // MARK: Private Messages
 
-    public func listPrivateMessagesInInbox() -> Promise<[PrivateMessage]> {
-        guard
-            let mainContext = managedObjectContext,
-            let backgroundContext = backgroundManagedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+    public func listPrivateMessagesInInbox() async throws -> [PrivateMessage] {
+        guard let mainContext = managedObjectContext,
+            let backgroundContext = backgroundManagedObjectContext
+        else { throw Error.missingManagedObjectContext }
+
+        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try PrivateMessageFolderScrapeResult(document, url: url)
+        let backgroundMessages = try await backgroundContext.perform {
+            let messages = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return messages
         }
-
-        return fetch(method: .get, urlString: "private.php", parameters: [])
-            .promise
-            .scrape(as: PrivateMessageFolderScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { result, context -> [NSManagedObjectID] in
-                let messages = try result.upsert(into: context)
-                try context.save()
-
-                return messages.map { $0.objectID }
-            }
-            .map(on: mainContext) { (objectIDs, context) -> [PrivateMessage] in
-                return objectIDs.compactMap { context.object(with: $0) as? PrivateMessage }
+        return await mainContext.perform {
+            backgroundMessages.compactMap { mainContext.object(with: $0.objectID) as? PrivateMessage }
         }
     }
 
-    public func deletePrivateMessage(_ message: PrivateMessage) -> Promise<Void> {
-        let parameters: KeyValuePairs<String, Any> = [
+    public func deletePrivateMessage(
+        _ message: PrivateMessage
+    ) async throws {
+        let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: [
             "action": "dodelete",
             "privatemessageid": message.messageID,
-            "delete": "yes"]
-
-        return fetch(method: .post, urlString: "private.php", parameters: parameters)
-            .promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { document, url -> Void in
-                try checkServerErrors(document)
-            }
+            "delete": "yes",
+        ])
+        let (document, _) = try parseHTML(data: data, response: response)
+        try checkServerErrors(document)
     }
 
-    public func readPrivateMessage(identifiedBy messageKey: PrivateMessageKey) -> Promise<PrivateMessage> {
-        guard
-            let mainContext = managedObjectContext,
-            let backgroundContext = backgroundManagedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
-        }
+    public func readPrivateMessage(
+        identifiedBy messageKey: PrivateMessageKey
+    ) async throws -> PrivateMessage {
+        guard let mainContext = managedObjectContext,
+            let backgroundContext = backgroundManagedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
-        let parameters: KeyValuePairs<String, Any> = [
+        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [
             "action": "show",
-            "privatemessageid": messageKey.messageID]
-
-        return fetch(method: .get, urlString: "private.php", parameters: parameters)
-            .promise
-            .scrape(as: PrivateMessageScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { scrapeResult, context -> NSManagedObjectID in
-                let message = try scrapeResult.upsert(into: context)
-                try context.save()
-                return message.objectID
+            "privatemessageid": messageKey.messageID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try PrivateMessageScrapeResult(document, url: url)
+        let backgroundMessage = try await backgroundContext.perform {
+            let message = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return message
+        }
+        return try await mainContext.perform {
+            guard let privateMessage = mainContext.object(with: backgroundMessage.objectID) as? PrivateMessage else {
+                throw AwfulCoreError.parseError(description: "Could not save message")
             }
-            .map(on: mainContext) { objectID, context -> PrivateMessage in
-                guard let privateMessage = context.object(with: objectID) as? PrivateMessage else {
-                    throw AwfulCoreError.parseError(description: "Could not save message")
-                }
-                return privateMessage
+            return privateMessage
         }
     }
 
-    public func quoteBBcodeContents(of message: PrivateMessage) -> Promise<String> {
-        let parameters: KeyValuePairs<String, Any> = [
+    public func quoteBBcodeContents(
+        of message: PrivateMessage
+    ) async throws -> String {
+        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [
             "action": "newmessage",
-            "privatemessageid": message.messageID]
-
-        return fetch(method: .get, urlString: "private.php", parameters: parameters)
-            .promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global(), findMessageText)
+            "privatemessageid": message.messageID,
+        ])
+        let parsed = try parseHTML(data: data, response: response)
+        return try findMessageText(in: parsed)
     }
 
-    public func listAvailablePrivateMessageThreadTags() -> Promise<[ThreadTag]> {
-        guard
-            let mainContext = managedObjectContext,
-            let backgroundContext = backgroundManagedObjectContext else
-        {
-            return Promise(error: PromiseError.missingManagedObjectContext)
+    public func listAvailablePrivateMessageThreadTags() async throws -> [ThreadTag] {
+        guard let mainContext = managedObjectContext,
+            let backgroundContext = backgroundManagedObjectContext
+        else { throw Error.missingManagedObjectContext }
+
+        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: ["action": "newmessage"])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try PostIconListScrapeResult(document, url: url)
+        let backgroundTags = try await backgroundContext.perform {
+            let managed = try result.upsert(into: backgroundContext)
+            try backgroundContext.save()
+            return managed.primary
         }
-
-        let parameters: KeyValuePairs<String, Any> = ["action": "newmessage"]
-
-        return fetch(method: .get, urlString: "private.php", parameters: parameters)
-            .promise
-            .scrape(as: PostIconListScrapeResult.self, on: scrapingQueue)
-            .map(on: backgroundContext) { parsed, context -> [NSManagedObjectID] in
-                let managed = try parsed.upsert(into: context)
-                try context.save()
-                return managed.primary.map { $0.objectID }
-            }
-            .map(on: mainContext) { managedObjectIDs, context -> [ThreadTag] in
-                return managedObjectIDs.compactMap { context.object(with: $0) as? ThreadTag }
+        return await mainContext.perform {
+            backgroundTags.compactMap { mainContext.object(with: $0.objectID) as? ThreadTag }
         }
     }
 
@@ -1188,64 +1109,72 @@ public final class ForumsClient {
         - regarding: Should be `nil` if `forwarding` parameter is non-`nil`.
         - forwarding: Should be `nil` if `regarding` is non-`nil`.
      */
-    public func sendPrivateMessage(to username: String, subject: String, threadTag: ThreadTag?, bbcode: String, regarding regardingMessage: PrivateMessage?, forwarding forwardedMessage: PrivateMessage?) -> Promise<Void> {
+    public func sendPrivateMessage(
+        to username: String,
+        subject: String,
+        threadTag: ThreadTag?,
+        bbcode: String,
+        about relevantMessage: RelevantMessage
+    ) async throws {
         var parameters: Dictionary<String, Any> = [
             "touser": username,
             "title": subject,
             "iconid": threadTag?.threadTagID ?? "0",
             "message": bbcode,
             "action": "dosend",
-            "forward": forwardedMessage?.messageID == nil ? "" : "true",
             "savecopy": "yes",
-            "submit": "Send Message"]
-
-        if let prevmessageID = (regardingMessage ?? forwardedMessage)?.messageID {
-            parameters["prevmessageid"] = prevmessageID
+            "submit": "Send Message",
+        ]
+        switch relevantMessage {
+        case .none:
+            break
+        case .forwarding(let relevant):
+            parameters["forward"] = "true"
+            parameters["prevmessageid"] = relevant.messageID
+        case .replyingTo(let relevant):
+            parameters["forward"] = ""
+            parameters["prevmessageid"] = relevant.messageID
         }
 
-        return fetch(method: .post, urlString: "private.php", parameters: parameters)
-            .promise.asVoid()
+        _ = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
     }
-    
+
+    public enum RelevantMessage {
+        case none
+        case forwarding(PrivateMessage)
+        case replyingTo(PrivateMessage)
+    }
+
     // MARK: Ignore List
     
     /// - Returns: The promise of a form submittable to `updateIgnoredUsers()`.
-    public func listIgnoredUsers() -> Promise<IgnoreListForm> {
-        let parameters: KeyValuePairs<String, Any> = [
+    public func listIgnoredUsers() async throws -> IgnoreListForm {
+        let (data, response) = try await fetch(method: .get, urlString: "member2.php", parameters: [
             "action": "viewlist",
-            "userlist": "ignore"]
-        
-        return fetch(method: .get, urlString: "member2.php", parameters: parameters)
-            .promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global()) { (parsed: ParsedDocument) -> IgnoreListForm in
-                let el = try parsed.document.requiredNode(matchingSelector: "form[action = 'member2.php']")
-                let form = try Form(el, url: parsed.url)
-                return try IgnoreListForm(form)
-        }
+            "userlist": "ignore",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let el = try document.requiredNode(matchingSelector: "form[action = 'member2.php']")
+        let form = try Form(el, url: url)
+        return try IgnoreListForm(form)
     }
     
     /**
      - Parameter form: An `IgnoreListForm` that originated from a call to `listIgnoredUsers()`.
      - Note: The promise can fail with an `IgnoreListChangeError`, which may be useful to consider separately from the usual network-related errors and `ScrapingError`.
      */
-    public func updateIgnoredUsers(_ form: IgnoreListForm) -> Promise<Void> {
-        let submittable: SubmittableForm
-        do {
-            submittable = try form.makeSubmittableForm()
-        }
-        catch {
-            return Promise(error: error)
-        }
-        
+    public func updateIgnoredUsers(
+        _ form: IgnoreListForm
+    ) async throws {
+        let submittable = try form.makeSubmittableForm()
         let parameters = prepareFormEntries(submittable.submit(button: form.submitButton))
-        return fetch(method: .post, urlString: "member2.php", parameters: parameters)
-            .promise
-            .scrape(as: IgnoreListChangeScrapeResult.self, on: scrapingQueue)
-            .done(on: .global()) {
-                if case .failure(let error) = $0 {
-                    throw error
-                }
+        let (data, response) = try await fetch(method: .post, urlString: "member2.php", parameters: parameters)
+        let (html, url) = try parseHTML(data: data, response: response)
+        switch try IgnoreListChangeScrapeResult(html, url: url) {
+        case .success:
+            break
+        case .failure(let error):
+            throw error
         }
     }
     
@@ -1256,60 +1185,55 @@ public final class ForumsClient {
      - userid: The user we're ignoring's userid
      - action:: Will be `getinfo` while using the profile page (`member.php`) method
      */
-    private func getProfilePageIgnoreFormkey(userid: String) -> Promise<String> {
-        let parameters: Dictionary<String, Any> = [
+    private func getProfilePageIgnoreFormkey(
+        userid: String
+    ) async throws -> String {
+        let (data, response) = try await fetch(method: .get, urlString: "member.php", parameters: [
             "userid": userid,
-            "action": "getinfo"
-        ]
-        
-        return fetch(method: .get, urlString: "member.php", parameters: parameters)
-            .promise
-            .map(on: .global(), parseHTML)
-            .map(on: .global(), findIgnoreFormkey)
+            "action": "getinfo",
+        ])
+        let parsed = try parseHTML(data: data, response: response)
+        return try findIgnoreFormkey(in: parsed)
     }
     
-    /// Attempts to add a user to the ignore list using the profile page ignore form.
-    /// This allows addition of new ignore list entries without the error caused by a potential preexisting ignore list containing a moderator, so long as this new entry attempt is not themselves a moderator
-    /// (in which case an error is correct)
     /**
+     Attempts to add a user to the ignore list using the profile page ignore form.
+    
+     This allows addition of new ignore list entries without the error caused by a potential preexisting ignore list containing a moderator, so long as this new entry attempt is not themselves a moderator (in which case an error is correct).
+
      - Parameters:
-     - userid: The ignored user's userid
-     - action: `addlist` is the action used by the SA profile page (`member.php`) ignore button
-     - formkey: Scraped key from profile page (`member.php`) and required for the subsequent member2.php action
-     - userlist: Always `ignore` for the ignore list
+        - userid: The ignored user's userid
+        - action: `addlist` is the action used by the SA profile page (`member.php`) ignore button
+        - formkey: Scraped key from profile page (`member.php`) and required for the subsequent member2.php action
+        - userlist: Always `ignore` for the ignore list
      */
-    public func addUserToIgnoreList(userid: String) -> Promise<Void> {
-        return firstly {
-            getProfilePageIgnoreFormkey(userid: userid)
-        }.then {
-            let parameters: Dictionary<String, Any> = [
-                "userid": userid,
-                "action": "addlist",
-                "formkey": $0,
-                "userlist": "ignore"
-            ]
-            
-            return self.fetch(method: .post, urlString: "member2.php", parameters: parameters)
-                .promise
-                .scrape(as: IgnoreListChangeScrapeResult.self, on: self.scrapingQueue)
-                .done(on: .global()) {
-                    if case .failure(let error) = $0 {
-                        throw error
-                    }
-                }
+    public func addUserToIgnoreList(
+        userid: String
+    ) async throws {
+        let formkey = try await getProfilePageIgnoreFormkey(userid: userid)
+        let (data, response) = try await fetch(method: .post, urlString: "member2.php", parameters: [
+            "userid": userid,
+            "action": "addlist",
+            "formkey": formkey,
+            "userlist": "ignore",
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+        switch try IgnoreListChangeScrapeResult(document, url: url) {
+        case .success:
+            break
+        case .failure(let error):
+            throw error
         }
     }
     
     /// Attempts to remove a user from the ignore list. This can fail for many reasons, including having a moderator or admin on your ignore list.
-    public func removeUserFromIgnoreList(username: String) -> Promise<Void> {
-        return listIgnoredUsers()
-            .then { form -> Promise<Void> in
-                var form = form
-                guard let i = form.usernames.firstIndex(of: username) else { return Promise.value(()) }
-                
-                form.usernames.remove(at: i)
-                return self.updateIgnoredUsers(form)
-            }
+    public func removeUserFromIgnoreList(
+        username: String
+    ) async throws {
+        var form = try await listIgnoredUsers()
+        guard let i = form.usernames.firstIndex(of: username) else { return }
+        form.usernames.remove(at: i)
+        try await updateIgnoredUsers(form)
     }
 }
 
@@ -1340,7 +1264,7 @@ private func parseHTML(data: Data, response: URLResponse) throws -> ParsedDocume
 private func parseJSONDict(data: Data, response: URLResponse) throws -> [String: Any] {
     let json = try JSONSerialization.jsonObject(with: data, options: [])
     guard let dict = json as? [String: Any] else {
-        throw ForumsClient.PromiseError.unexpectedContentType("\(type(of: json))", expected: "Dictionary<String, Any>")
+        throw ForumsClient.Error.unexpectedContentType("\(type(of: json))", expected: "Dictionary<String, Any>")
     }
     return dict
 }
@@ -1354,62 +1278,6 @@ private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElemen
         }
     }
 }
-
-
-extension NSManagedObjectContext {
-    fileprivate func perform<T>(_: PMKNamespacer, execute body: @escaping (_ context: NSManagedObjectContext) throws -> T) -> Promise<T> {
-        let (promise, resolver) = Promise<T>.pending()
-        perform {
-            do {
-                resolver.fulfill(try body(self))
-            } catch {
-                resolver.reject(error)
-            }
-        }
-        return promise
-    }
-}
-
-private extension Promise {
-    func map<U>(on context: NSManagedObjectContext, _ transform: @escaping (T, _ context: NSManagedObjectContext) throws -> U) -> Promise<U> {
-        return then { value -> Promise<U> in
-            let (promise, resolver) = Promise<U>.pending()
-            context.perform {
-                do {
-                    resolver.fulfill(try transform(value, context))
-                }
-                catch {
-                    resolver.reject(error)
-                }
-            }
-            return promise
-        }
-    }
-}
-
-private extension Promise where T == (data: Data, response: URLResponse) {
-    func scrape<U: ScrapeResult>(
-        as _: U.Type,
-        on queue: DispatchQueue
-    ) -> Promise<U> {
-        map(on: queue) {
-            let parsed = try parseHTML(data: $0.data, response: $0.response)
-            return try U.init(parsed.document, url: parsed.url)
-        }
-    }
-
-    func decode<U: Decodable>(
-        as _: U.Type,
-        on queue: DispatchQueue
-    ) -> Promise<U> {
-        map(on: queue) {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .awful
-            return try decoder.decode(U.self, from: $0.data)
-        }
-    }
-}
-
 
 enum ServerError: LocalizedError {
     case databaseUnavailable(title: String, message: String)

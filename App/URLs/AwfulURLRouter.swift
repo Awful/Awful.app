@@ -8,7 +8,7 @@ import MRProgress
 import UIKit
 
 /// Translates URLs with the scheme "awful" into an appropriate shown screen.
-final class AwfulURLRouter: NSObject {
+struct AwfulURLRouter {
 
     private let managedObjectContext: NSManagedObjectContext
     private let rootViewController: UIViewController
@@ -20,7 +20,6 @@ final class AwfulURLRouter: NSObject {
     init(rootViewController: UIViewController, managedObjectContext: NSManagedObjectContext) {
         self.rootViewController = rootViewController
         self.managedObjectContext = managedObjectContext
-        super.init()
     }
     
     /// Show the screen appropriate for an "awful" URL.
@@ -59,24 +58,22 @@ final class AwfulURLRouter: NSObject {
             }
 
             guard let rootView = rootViewController.view else { return false }
-            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)
-            overlay?.tintColor = Theme.defaultTheme()["tintColor"]
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)!
+            overlay.tintColor = Theme.defaultTheme()["tintColor"]
 
-            ForumsClient.shared.readPrivateMessage(identifiedBy: key)
-                .done { message in
-                    overlay?.dismiss(true, completion: {
+            Task { @MainActor in
+                do {
+                    let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: key)
+                    overlay.dismiss(true, completion: {
                         inbox.showMessage(message)
                     })
+                } catch {
+                    overlay.titleLabelText = "Message Not Found"
+                    overlay.mode = .cross
+                    try? await Task.sleep(timeInterval: 0.7)
+                    overlay.dismiss(true)
                 }
-                .catch { error in
-                    overlay?.titleLabelText = "Message Not Found"
-                    overlay?.mode = .cross
-
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        overlay?.dismiss(true)
-                    }
             }
-
             return true
 
         case .messagesList:
@@ -101,8 +98,8 @@ final class AwfulURLRouter: NSObject {
             }
 
             guard let rootView = rootViewController.view else { return false }
-            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)
-            overlay?.tintColor = Theme.defaultTheme()["tintColor"]
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)!
+            overlay.tintColor = Theme.defaultTheme()["tintColor"]
 
             var updateLastRead: Bool {
                 switch updateSeen {
@@ -111,56 +108,49 @@ final class AwfulURLRouter: NSObject {
                 }
             }
 
-            ForumsClient.shared.locatePost(id: key.postID, updateLastReadPost: updateLastRead)
-                .done { [weak self] arg in
-                    let (post, page) = arg
-                    overlay?.dismiss(true, completion: {
-                        guard
-                            let self = self,
-                            let thread = post.thread
-                            else { return }
+            Task { @MainActor in
+                do {
+                    let (post, page) = try await ForumsClient.shared.locatePost(id: key.postID, updateLastReadPost: updateLastRead)
+                    overlay.dismiss(true) {
+                        guard let thread = post.thread else { return }
                         let postsVC = PostsPageViewController(thread: thread)
                         postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
                         postsVC.scrollPostToVisible(post)
                         _ = self.showPostsViewController(postsVC)
-                    })
-                }
-                .catch { error in
-                    overlay?.titleLabelText = "Post Not Found"
-                    overlay?.mode = .cross
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        overlay?.dismiss(true)
                     }
+                } catch {
+                    overlay.titleLabelText = "Post Not Found"
+                    overlay.mode = .cross
+                    try? await Task.sleep(timeInterval: 3)
+                    overlay.dismiss(true)
+                }
             }
             return true
 
         case let .profile(userID: userID):
-            fetchUser(withUserID: userID) { (error, user) in
-                if let error = error {
+            Task { @MainActor in
+                do {
+                    let user = try await fetchUser(withUserID: userID)
+                    let profileVC = ProfileViewController(user: user)
+                    rootViewController.present(profileVC.enclosingNavigationController, animated: true)
+                } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    self.rootViewController.present(alert, animated: true)
-                    return
+                    rootViewController.present(alert, animated: true)
                 }
-
-                guard let user = user else { fatalError("no error should mean yes user") }
-                let profileVC = ProfileViewController(user: user)
-                self.rootViewController.present(profileVC.enclosingNavigationController, animated: true)
             }
             return true
 
         case let .rapSheet(userID: userID):
-            fetchUser(withUserID: userID) { error, user in
-                if let error = error {
+            Task { @MainActor in
+                do {
+                    let user = try await fetchUser(withUserID: userID)
+                    let rapSheetVC = RapSheetViewController(user: user)
+                    rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
+                } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    self.rootViewController.present(alert, animated: true)
-                    return
+                    rootViewController.present(alert, animated: true)
                 }
-
-                guard let user = user else { fatalError("no error should mean yes user") }
-                let rapSheetVC = RapSheetViewController(user: user)
-                self.rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
             }
-
             return true
 
         case .settings:
@@ -271,15 +261,12 @@ final class AwfulURLRouter: NSObject {
         return true
     }
     
-    private func fetchUser(withUserID userID: String, completion: @escaping (Error?, User?) -> Void) {
+    private func fetchUser(withUserID userID: String) async throws -> User {
         let key = UserKey(userID: userID, username: nil)
         if let user = User.existingObjectForKey(objectKey: key, in: managedObjectContext) {
-            completion(nil, user)
-            return
+            return user
         }
         
-        ForumsClient.shared.profileUser(id: userID, username: nil)
-            .done { completion(nil, $0.user) }
-            .catch { completion($0, nil) }
+        return try await ForumsClient.shared.profileUser(.userID(userID)).user
     }
 }

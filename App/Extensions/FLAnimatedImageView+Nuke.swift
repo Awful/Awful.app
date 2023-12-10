@@ -3,11 +3,11 @@
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import FLAnimatedImage
-import Nuke
+import NukeExtensions
 
 extension FLAnimatedImageView {
     open override func nuke_display(
-        image: PlatformImage?,
+        image: UIImage?,
         data: Data?
     ) {
         self.image = image

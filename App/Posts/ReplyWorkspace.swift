@@ -37,27 +37,10 @@ final class ReplyWorkspace: NSObject {
     }
     
     /// Constructs a workspace for editing a reply.
-    convenience init(post: Post) {
+    convenience init(post: Post, bbcode: String) {
         let draft = EditReplyDraft(post: post)
         self.init(draft: draft, didRestoreWithRestorationIdentifier: nil)
-        
-        let progressView = MRProgressOverlayView.showOverlayAdded(to: viewController.view, animated: false)
-        progressView?.titleLabelText = "Reading post…"
-
-        ForumsClient.shared.findBBcodeContents(of: post)
-            .done { [weak self] bbcode in
-                self?.compositionViewController.textView.text = bbcode
-            }
-            .catch { [weak self] error in
-                guard let self = self else { return }
-                if self.compositionViewController.visible {
-                    let alert = UIAlertController(title: "Couldn't Find BBcode", error: error)
-                    self.viewController.present(alert, animated: true)
-                }
-            }
-            .finally {
-                progressView?.dismiss(true)
-        }
+        bbcodeForNewlyCreatedCompositionViewController = bbcode
     }
     
     /// A nil restorationIdentifier implies that we were not created by UIKit state restoration.
@@ -96,6 +79,9 @@ final class ReplyWorkspace: NSObject {
 
     private var draftTitleObserver: NSKeyValueObservation?
     
+    // compositionViewController isn't available at init time, but sometimes we already know the bbcode.
+    private var bbcodeForNewlyCreatedCompositionViewController: String?
+
     /*
     Dealing with compositionViewController is annoyingly complicated. Ideally it'd be a constant ivar, so we could either restore state by passing it in via init() or make a new one if we're not restoring state.
     Unfortunately, any compositionViewController that we preserve in encodeRestorableStateWithCoder() is not yet available in objectWithRestorationIdentifierPath(_:coder:); it only becomes available in decodeRestorableStateWithCoder().
@@ -284,42 +270,41 @@ final class ReplyWorkspace: NSObject {
         if compositionViewController == nil {
             compositionViewController = CompositionViewController()
             compositionViewController.restorationIdentifier = "\(self.restorationIdentifier) Reply composition"
+
+            if let bbcodeForNewlyCreatedCompositionViewController {
+                compositionViewController.textView.text = bbcodeForNewlyCreatedCompositionViewController
+                self.bbcodeForNewlyCreatedCompositionViewController = nil
+            }
         }
     }
     
     /// Append a quoted post to the reply.
-    func quotePost(_ post: Post, completion: @escaping (Error?) -> Void) {
+    @MainActor
+    func quotePost(_ post: Post) async throws {
         createCompositionViewController()
 
-        ForumsClient.shared.quoteBBcodeContents(of: post)
-            .done { [weak self] bbcode in
-                guard let self = self else { return }
+        let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: post)
+        let textView = compositionViewController.textView
+        var replacement = bbcode
+        let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
 
-                let textView = self.compositionViewController.textView
-                var replacement = bbcode
-                let selectedRange = textView.selectedTextRange ?? textView.textRange(from: textView.endOfDocument, to: textView.endOfDocument)!
-
-                // Yep. This is just a delight.
-                let precedingOffset = max(-2, textView.offset(from: selectedRange.start, to: textView.beginningOfDocument))
-                if
-                    precedingOffset < 0,
-                    let precedingStart = textView.position(from: selectedRange.start, offset: precedingOffset),
-                    let precedingRange = textView.textRange(from: precedingStart, to: selectedRange.start),
-                    let preceding = textView.text(in: precedingRange),
-                    preceding != "\n\n"
-                {
-                    if preceding.hasSuffix("\n") {
-                        replacement = "\n" + replacement
-                    } else {
-                        replacement = "\n\n" + replacement
-                    }
-                }
-
-                textView.replaceSelection(with: replacement)
-
-                completion(nil)
+        // Yep. This is just a delight.
+        let precedingOffset = max(-2, textView.offset(from: selectedRange.start, to: textView.beginningOfDocument))
+        if
+            precedingOffset < 0,
+            let precedingStart = textView.position(from: selectedRange.start, offset: precedingOffset),
+            let precedingRange = textView.textRange(from: precedingStart, to: selectedRange.start),
+            let preceding = textView.text(in: precedingRange),
+            preceding != "\n\n"
+        {
+            if preceding.hasSuffix("\n") {
+                replacement = "\n" + replacement
+            } else {
+                replacement = "\n\n" + replacement
             }
-            .catch(completion)
+        }
+
+        textView.replaceSelection(with: replacement)
     }
 }
 
@@ -455,9 +440,14 @@ extension NewReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                ForumsClient.shared.reply(to: self.thread, bbcode: plainText ?? "")
-                    .done { _ in completion(nil) }
-                    .catch { completion($0) }
+                Task { @MainActor in
+                    do {
+                        _ = try await ForumsClient.shared.reply(to: thread, bbcode: plainText ?? "")
+                        completion(nil)
+                    } catch {
+                        completion(error)
+                    }
+                }
             }
         }
     }
@@ -469,9 +459,14 @@ extension EditReplyDraft: SubmittableDraft {
             if let error = error {
                 completion(error)
             } else {
-                ForumsClient.shared.edit(self.post, bbcode: plainText ?? "")
-                    .done { completion(nil) }
-                    .catch { completion($0) }
+                Task { @MainActor in
+                    do {
+                        try await ForumsClient.shared.edit(post, bbcode: plainText ?? "")
+                        completion(nil)
+                    } catch {
+                        completion(error)
+                    }
+                }
             }
         }
     }

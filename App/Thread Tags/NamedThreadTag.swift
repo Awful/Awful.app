@@ -3,7 +3,7 @@
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreGraphics
-import Nuke
+import NukeExtensions
 
 /// A thread tag that will be loaded by a cell when configured, but in the meantime knows its size.
 enum NamedThreadTag {
@@ -40,6 +40,7 @@ enum NamedThreadTag {
 }
 
 extension ThreadTagLoader {
+    @MainActor
     func loadNamedImage(_ tag: NamedThreadTag, into imageView: ImageDisplayingView) {
         loadImage(named: tag.imageName, placeholder: tag.placeholder, into: imageView)
     }

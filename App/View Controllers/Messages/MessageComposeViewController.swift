@@ -6,6 +6,8 @@ import AwfulCore
 import Nuke
 import UIKit
 
+private let Log = Logger.get()
+
 /// For writing private messages.
 final class MessageComposeViewController: ComposeTextViewController {
     fileprivate let recipient: User?
@@ -94,9 +96,10 @@ final class MessageComposeViewController: ComposeTextViewController {
     fileprivate func updateAvailableThreadTagsIfNecessary() {
         guard availableThreadTags?.isEmpty ?? true else { return }
         guard !updatingThreadTags else { return }
-        _ = ForumsClient.shared.listAvailablePrivateMessageThreadTags()
-            .done { [weak self] threadTags in
-                self?.availableThreadTags = threadTags
+        Task {
+            do {
+                let threadTags = try await ForumsClient.shared.listAvailablePrivateMessageThreadTags()
+                availableThreadTags = threadTags
 
                 let picker = ThreadTagPickerViewController(
                     firstTag: .privateMessage,
@@ -104,10 +107,12 @@ final class MessageComposeViewController: ComposeTextViewController {
                     secondaryImageNames: [])
                 picker.delegate = self
                 picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
-                self?.threadTagPicker = picker
+                threadTagPicker = picker
+            } catch {
+                Log.e("Could not list available private message thread tags: \(error)")
             }
-            .ensure { [weak self] in
-                self?.updatingThreadTags = false
+
+            updatingThreadTags = false
         }
     }
     
@@ -122,17 +127,27 @@ final class MessageComposeViewController: ComposeTextViewController {
     }
     
     override func submit(_ composition: String, completion: @escaping (Bool) -> Void) {
-        guard let
-            to = fieldView.toField.textField.text,
-            let subject = fieldView.subjectField.textField.text
-            else { return }
-        _ = ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, regarding: regardingMessage, forwarding: forwardingMessage)
-            .done {
+        guard let to = fieldView.toField.textField.text,
+              !to.isEmpty,
+              let subject = fieldView.subjectField.textField.text,
+              !subject.isEmpty
+        else { return }
+        Task {
+            do {
+                let relevant: ForumsClient.RelevantMessage
+                if let regardingMessage {
+                    relevant = .replyingTo(regardingMessage)
+                } else if let forwardingMessage {
+                    relevant = .forwarding(forwardingMessage)
+                } else {
+                    relevant = .none
+                }
+                try await ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, about: relevant)
                 completion(true)
-            }
-            .catch { [weak self] error in
+            } catch {
                 completion(false)
-                self?.present(UIAlertController(networkError: error), animated: true)
+                present(UIAlertController(networkError: error), animated: true)
+            }
         }
     }
     

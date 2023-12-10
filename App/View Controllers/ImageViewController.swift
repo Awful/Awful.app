@@ -138,26 +138,38 @@ final class ImageViewController: UIViewController {
             statusBarBackground.backgroundColor = overlaidBackgroundColor
             addSubview(statusBarBackground)
             
-            let title = NSAttributedString(string: "Done", attributes: [
-                .foregroundColor: overlaidForegroundColor,
-                .font: UIFont.preferredFontForTextStyle(.body, weight: .bold)
-                ])
-
-            doneButton.setAttributedTitle(title, for: UIControl.State())
-            doneButton.contentEdgeInsets = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
+            doneButton.configuration = {
+                var config = UIButton.Configuration.plain()
+                config.attributedTitle = .init("Done", attributes: .init([
+                    .foregroundColor: overlaidForegroundColor,
+                    .font: UIFont.preferredFontForTextStyle(.body, weight: .bold),
+                ]))
+                var background = UIBackgroundConfiguration.clear()
+                background.backgroundColor = overlaidBackgroundColor
+                background.cornerRadius = buttonCornerRadius
+                config.background = background
+                config.contentInsets = .init(top: 4, leading: 6, bottom: 4, trailing: 6)
+                config.cornerStyle = .fixed
+                return config
+            }()
             doneButton.horizontalSlop = 10
             doneButton.verticalSlop = 20
-            doneButton.backgroundColor = overlaidBackgroundColor
-            doneButton.layer.cornerRadius = buttonCornerRadius
             addSubview(doneButton)
 
-            actionButton.setImage(UIImage(named: "action"), for: UIControl.State())
-            actionButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 7, bottom: 7, right: 7)
+            actionButton.configuration = {
+                var config = UIButton.Configuration.plain()
+                config.contentInsets = .init(top: 5, leading: 7, bottom: 7, trailing: 7)
+                config.image = .init(named: "action")
+                var background = UIBackgroundConfiguration.clear()
+                background.backgroundColor = overlaidBackgroundColor
+                background.cornerRadius = buttonCornerRadius
+                config.background = background
+                config.cornerStyle = .fixed
+                return config
+            }()
             actionButton.horizontalSlop = 10
             actionButton.verticalSlop = 20
             actionButton.tintColor = overlaidForegroundColor
-            actionButton.backgroundColor = overlaidBackgroundColor
-            actionButton.layer.cornerRadius = buttonCornerRadius
             addSubview(actionButton)
             
             spinner.startAnimating()

@@ -3,7 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import FLAnimatedImage
-import Nuke
+import NukeExtensions
 import UIKit
 
 final class SettingsAvatarHeader: UIView {
@@ -48,7 +48,7 @@ final class SettingsAvatarHeader: UIView {
         usernameLabel.textColor = textColor
 
         guard let avatarURL = avatarURL else {
-            Nuke.cancelRequest(for: avatarImageView)
+            NukeExtensions.cancelRequest(for: avatarImageView)
             avatarImageView.image = nil
             avatarImageView.isHidden = true
             return
@@ -56,7 +56,7 @@ final class SettingsAvatarHeader: UIView {
 
         avatarImageView.isHidden = false
 
-        Nuke.loadImage(with: avatarURL, into: avatarImageView, completion: {
+        NukeExtensions.loadImage(with: avatarURL, into: avatarImageView, completion: {
             [weak self] result in
             self?.avatarImageView.isHidden = {
                 switch result {

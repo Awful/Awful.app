@@ -122,9 +122,9 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         if UserDefaults.standard.hideSidebarInLandscape {
             switch splitViewController.displayMode {
             case .primaryOverlay, .allVisible:
-                splitViewController.preferredDisplayMode = .primaryOverlay
+                splitViewController.preferredDisplayMode = .oneOverSecondary
             case .primaryHidden:
-                splitViewController.preferredDisplayMode = .primaryHidden
+                splitViewController.preferredDisplayMode = .secondaryOnly
             default:
                 fatalError("unexpected display mode \(splitViewController.displayMode)")
             }
@@ -164,13 +164,13 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         let isPortrait = splitViewController.view.frame.width < splitViewController.view.frame.height
         if !splitViewController.isCollapsed {
             // One possibility is restoring in portrait orientation with the sidebar always visible.
-            if isPortrait && splitViewController.displayMode == .allVisible {
-                splitViewController.preferredDisplayMode = .primaryHidden
+            if isPortrait && splitViewController.displayMode == .oneBesideSecondary {
+                splitViewController.preferredDisplayMode = .secondaryOnly
             }
             
             // Another possibility is restoring in landscape orientation with the sidebar always hidden, and no button to show it.
-            if !isPortrait && splitViewController.displayMode == .primaryHidden && splitViewController.preferredDisplayMode == .automatic {
-                splitViewController.preferredDisplayMode = .allVisible
+            if !isPortrait && splitViewController.displayMode == .secondaryOnly && splitViewController.preferredDisplayMode == .automatic {
+                splitViewController.preferredDisplayMode = .oneBesideSecondary
                 splitViewController.preferredDisplayMode = .automatic
             }
         }
@@ -179,7 +179,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
             guard let self = self else { return }
             if let detail = self.detailNavigationController?.viewControllers.first {
                 // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
-                if self.splitViewController.displayMode != .allVisible {
+                if self.splitViewController.displayMode != .oneBesideSecondary {
                     detail.navigationItem.leftBarButtonItem = self.backBarButtonItem
                 }
             }
@@ -287,7 +287,7 @@ extension RootViewControllerStack {
         if splitViewController.isCollapsed {
             primaryNavigationController.pushViewController(viewController, animated: true)
         } else {
-            if splitViewController.displayMode != .allVisible {
+            if splitViewController.displayMode != .oneBesideSecondary {
                 viewController.navigationItem.leftBarButtonItem = backBarButtonItem
             }
             
@@ -315,7 +315,7 @@ extension RootViewControllerStack {
                 let root = detailNav.viewControllers.first
             {
                 let displayMode = self.splitViewController.displayMode
-                root.navigationItem.leftBarButtonItem = displayMode == .allVisible ? nil : self.backBarButtonItem
+                root.navigationItem.leftBarButtonItem = displayMode == .oneBesideSecondary ? nil : self.backBarButtonItem
             }
         })
     }
