@@ -1,6 +1,6 @@
 # Awful
 
-[Awful][App Store] is an iOS 13.2+ app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and the [thread before that][third thread] (and [the thread before that][second thread] (and [the thread before that][first thread]))).
+[Awful][App Store] is an iOS 15.0+ app that's *Better Than Safari* for browsing the [Something Awful Forums][forums]. Its story is told in [its thread][current thread] (and the [thread before that][third thread] (and [the thread before that][second thread] (and [the thread before that][first thread]))).
 
 Not sure what to work on? There's a [list of issues](https://github.com/awful/Awful.app/issues), or just post in the thread and someone will share their pet peeves for your amusement!
 
@@ -24,7 +24,7 @@ This app is not endorsed by Something Awful.
 
 Please drop by [the thread][current thread] if you could use a hand with any of these steps!
 
-You need Xcode 14 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
+You need Xcode 15 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
 
 1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
 2. Open the Xcode project and build away: `xed Awful-app`
@@ -174,9 +174,11 @@ Awful answers to a couple URL schemes:
 
 For iOS | Check out tag/branch
 ------- | --------------------
+17 | main
+16 | main
 15 | main
-14 | main
-13 | main
+14 | ios-14
+13 | ios-13
 12 | ios-12
 11 | ios-11
 10 | ios-10
