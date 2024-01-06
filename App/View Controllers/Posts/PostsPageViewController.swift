@@ -33,56 +33,43 @@ final class PostsPageViewController: ViewController {
     private var webViewDidLoadOnce = false
     
     lazy var threadActionsMenu: UIMenu = {
-        var threadActions: [UIMenuElement] = []
-        
-        let bookmarkTitle = self.thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread"
-        let bookmarkImage = self.thread.bookmarked ?
-        UIImage(named: "remove-bookmark")!.withRenderingMode(.alwaysTemplate)
-        :
-        UIImage(named: "add-bookmark")!.withRenderingMode(.alwaysTemplate)
-        let yourPostsImage = UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate)
-        let copyURLImage = UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate)
-        let voteImage = UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate)
-        
+        var threadActions: [UIAction] = []
+
         // Bookmark
-        let bookmarkIdentifier = UIAction.Identifier("bookmark")
-        let bookmarkAction = UIAction(title: bookmarkTitle, image: bookmarkImage, identifier: bookmarkIdentifier, handler: { [unowned self] action in
-            bookmark(action: action)
-        })
-        bookmarkAction.attributes = self.thread.bookmarked ? [.destructive] : []
+        let bookmarkAction = UIAction(
+            title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread",
+            image: UIImage(named: thread.bookmarked ? "remove-bookmark" : "add-bookmark")!.withRenderingMode(.alwaysTemplate),
+            identifier: .init("bookmark"),
+            handler: { [unowned self] in bookmark(action: $0) }
+        )
+        bookmarkAction.attributes = thread.bookmarked ? .destructive : []
         threadActions.append(bookmarkAction)
         
         // Copy link
-        let copyLinkIdentifier = UIAction.Identifier("copyLink")
-        let copyLinkAction = UIAction(title: "Copy link", image: copyURLImage, identifier: copyLinkIdentifier, handler: { [unowned self] action in
-            copyLink(action: action)
-        })
-        threadActions.append(copyLinkAction)
-        
+        threadActions.append(.init(
+            title: "Copy link",
+            image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
+            identifier: .init("copyLink"),
+            handler: { [unowned self] in copyLink(action: $0) }
+        ))
+
         // Vote
-        let voteIdentifier = UIAction.Identifier("vote")
-        let voteAction = UIAction(title: "Vote", image: voteImage, identifier: voteIdentifier, handler: { [unowned self] action in
-            vote(action: action)
-        })
-        threadActions.append(voteAction)
-        
+        threadActions.append(.init(
+            title: "Vote",
+            image: UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate),
+            identifier: .init("vote"),
+            handler: { [unowned self] in vote(action: $0) }
+        ))
+
         // Your posts
-        let yourPostsIdentifier = UIAction.Identifier("yourPosts")
-        let yourPostsAction = UIAction(title: "Your posts", image: yourPostsImage, identifier: yourPostsIdentifier, handler: { [unowned self] action in
-            yourPosts(action: action)
-        })
-        threadActions.append(yourPostsAction)
-        
-        if #available(iOS 14.0, *) {
-            // no op. iOS14+ uses UIMenu, 13 uses Chidori third party menus
-        } else {
-            actionMappings[bookmarkIdentifier] = bookmark(action:)
-            actionMappings[copyLinkIdentifier] = copyLink(action:)
-            actionMappings[voteIdentifier] = vote(action:)
-            actionMappings[yourPostsIdentifier] = yourPosts(action:)
-        }
-        
-        return UIMenu(title: self.thread.title ?? "", image: nil, identifier: nil, options: [.displayInline], children: threadActions)
+        threadActions.append(.init(
+            title: "Your posts",
+            image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
+            identifier: .init("yourPosts"),
+            handler: { [unowned self] in yourPosts(action: $0) }
+        ))
+
+        return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: threadActions)
     }()
     
 
@@ -1026,8 +1013,6 @@ final class PostsPageViewController: ViewController {
             
             self.navigationController?.pushViewController(postsVC, animated: true)
             
-            print("Your Posts")
-            
         }
     }
     
@@ -1286,15 +1271,6 @@ final class PostsPageViewController: ViewController {
         
         self.selectedPost = posts[postIndex + hiddenPosts]
         self.selectedFrame = frame
-        
-        let possessiveUsername: String
-        if self.selectedPost!.author?.username == UserDefaults.standard.loggedInUsername {
-            possessiveUsername = "Your"
-        } else {
-            possessiveUsername = "\(self.selectedPost!.author?.username ?? "")'s"
-        }
-        
-        print("\(possessiveUsername)")
         
         let postActionMenu: UIMenu = {
             // edit post

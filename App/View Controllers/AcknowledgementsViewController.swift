@@ -64,17 +64,19 @@ final class AcknowledgementsViewController: ViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
-        
-        let js = """
-            var s = document.body.style;
-            s.backgroundColor = "\(backgroundColor.hexCode)";
-            s.color = "\(textColor.hexCode)";
-            """
-        webView.evaluateJavaScript(js, completionHandler: { result, error in
-            if let error = error {
+
+        Task {
+            let js = """
+                var s = document.body.style;
+                s.backgroundColor = "\(backgroundColor.hexCode)";
+                s.color = "\(textColor.hexCode)";
+                """
+            do {
+                try await webView.eval(js)
+            } catch {
                 Log.e("error running script `\(js)` in acknowledgements screen: \(error)")
             }
-        })
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

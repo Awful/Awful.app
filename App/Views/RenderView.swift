@@ -90,15 +90,17 @@ final class RenderView: UIView {
      - Seealso: `UIScrollView.fractionalContentOffset`.
      */
     func scrollToFractionalOffset(_ fractionalOffset: CGPoint) {
-        webView.evaluateJavaScript("""
-            window.scrollTo(
-                document.body.scrollWidth * \(fractionalOffset.x),
-                document.body.scrollHeight * \(fractionalOffset.y));
-            """, completionHandler: { result, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("""
+                    window.scrollTo(
+                        document.body.scrollWidth * \(fractionalOffset.x),
+                        document.body.scrollHeight * \(fractionalOffset.y));
+                    """)
+            } catch {
                 Log.e("error attempting to scroll: \(error)")
             }
-        })
+        }
     }
     
     // MARK: Gunk
@@ -274,22 +276,25 @@ extension RenderView {
     /// Turns any links that look like tweets into an actual tweet embed.
     func embedTweets() {
         let renderGhostTweets = UserDefaults.standard.enableFrogAndGhost
-        webView.evaluateJavaScript("if (window.Awful) { Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets(); }") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) { Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets(); }")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate embedTweets")
             }
         }
     }
     
     func loadLottiePlayer() {
-        webView.evaluateJavaScript("if (window.Awful) Awful.loadLotties()") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.loadLotties()")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate loadLotties")
             }
         }
     }
-    
-    
+
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied
     /// webview must be transparent to prevent white flashes during content refreshes. setting opaque to true in viewDidAppear helped, but still sometimes produced white flashes.
     /// instead, we toggle the webview to opaque while it's being scrolled and return it to transparent seconds after
@@ -317,7 +322,7 @@ extension RenderView {
 
         do {
             // There's a bit of subtlety here: `document.open()` returns a Document, which can't be serialized back to the native-side of the app; and if we don't include a `<body>`, we get console logs attempting to e.g. retrieve `document.body.scrollWidth`.
-            try await webView.evaluateJavaScript("document.open(), document.write('<body>')")
+            try await webView.eval("document.open(), document.write('<body>')")
             Log.d("did erase document")
         } catch {
             mentionError(error, explanation: "could not remove content")
@@ -371,7 +376,7 @@ extension RenderView {
 
         let rawResult: Any?
         do {
-            rawResult = try await webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))")
+            rawResult = try await webView.eval("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))")
         } catch {
             mentionError(error, explanation: "could not evaluate interestingElementsAtPoint")
             return []
@@ -470,8 +475,10 @@ extension RenderView {
             Log.w("could not JSON-escape the post ID: \(error)")
             return
         }
-        webView.evaluateJavaScript("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate jumpToPostWithID")
             }
         }
@@ -479,8 +486,10 @@ extension RenderView {
     
     /// Turns each link with a `data-awful-linkified-image` attribute into a a proper `img` element.
     func loadLinkifiedImages() {
-        webView.evaluateJavaScript("if (window.Awful) Awful.loadLinkifiedImages()") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.loadLinkifiedImages()")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate loadLinkifiedImages")
             }
         }
@@ -492,7 +501,7 @@ extension RenderView {
         let js = "if (window.Awful) Awful.postElementAtPoint(\(point.x), \(point.y))"
         let result: Any?
         do {
-            result = try await webView.evaluateJavaScript(js)
+            result = try await webView.eval(js)
         } catch {
             mentionError(error, explanation: "could not evaluate findPostFrame")
             return nil
@@ -511,8 +520,10 @@ extension RenderView {
             return
         }
         
-        webView.evaluateJavaScript("if (window.Awful) Awful.markReadUpToPostWithID(\(escaped))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.markReadUpToPostWithID(\(escaped))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate markReadUpToPostWithID")
             }
         }
@@ -528,8 +539,10 @@ extension RenderView {
             return
         }
         
-        webView.evaluateJavaScript("if (window.Awful) Awful.prependPosts(\(escaped))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.prependPosts(\(escaped))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate prependPosts")
             }
         }
@@ -545,8 +558,10 @@ extension RenderView {
             return
         }
         
-        webView.evaluateJavaScript("if (window.Awful) Awful.setPostHTMLAtIndex(\(escaped), \(i))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setPostHTMLAtIndex(\(escaped), \(i))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate setPostHTMLAtIndex")
             }
         }
@@ -562,8 +577,10 @@ extension RenderView {
             return
         }
         
-        webView.evaluateJavaScript("if (window.Awful) Awful.setExternalStylesheet(\(escaped))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setExternalStylesheet(\(escaped))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate setExternalStylesheet")
             }
         }
@@ -571,8 +588,10 @@ extension RenderView {
     
     /// Sets the font scale to the specified number of percentage points. e.g. for `font-scale: 50%` you would pass in `50`.
     func setFontScale(_ scale: Double) {
-        webView.evaluateJavaScript("if (window.Awful) Awful.setFontScale(\(scale))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setFontScale(\(scale))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate setFontScale")
             }
         }
@@ -592,8 +611,10 @@ extension RenderView {
             return
         }
         
-        webView.evaluateJavaScript("if (window.Awful) Awful.fyadFlag.setFlag(\(escaped))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.fyadFlag.setFlag(\(escaped))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate setFYADFlag")
             }
         }
@@ -606,8 +627,10 @@ extension RenderView {
     
     /// Toggles the `highlight` class in all username mentions in post bodies, adding it when `true` or removing it when `false`.
     func setHighlightMentions(_ highlightMentions: Bool) {
-        webView.evaluateJavaScript("if (window.Awful) Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate setHighlightMentions")
             }
         }
@@ -615,8 +638,10 @@ extension RenderView {
     
     /// Turns all avatars on (when `true`) or off (when `false`).
     func setShowAvatars(_ showAvatars: Bool) {
-        webView.evaluateJavaScript("if (window.Awful) Awful.setShowAvatars(\(showAvatars ? "true" : "false"))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setShowAvatars(\(showAvatars ? "true" : "false"))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate setShowAvatars")
             }
         }
@@ -632,8 +657,10 @@ extension RenderView {
             return
         }
         
-        webView.evaluateJavaScript("if (window.Awful) Awful.setThemeStylesheet(\(escaped))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                _ = try await webView.eval("if (window.Awful) Awful.setThemeStylesheet(\(escaped))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate setThemeStylesheet")
             }
         }
@@ -648,8 +675,10 @@ extension RenderView {
             return
         }
 
-        webView.evaluateJavaScript("if (window.Awful) Awful.setTweetTheme(\(escaped))") { rawResult, error in
-            if let error = error {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setTweetTheme(\(escaped))")
+            } catch {
                 self.mentionError(error, explanation: "could not evaluate Awful.setTweetTheme")
             }
         }
@@ -675,7 +704,7 @@ extension RenderView {
             Awful.unionFrameOfElements(
                 document.querySelectorAll(\(escapedSelector)));
             """
-            rawResult = try await webView.evaluateJavaScript(js)
+            rawResult = try await webView.eval(js)
         } catch {
             mentionError(error, explanation: "could not evaluate unionFrameOfElements")
             return .null
