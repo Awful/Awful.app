@@ -1026,8 +1026,6 @@ final class PostsPageViewController: ViewController {
             
             self.navigationController?.pushViewController(postsVC, animated: true)
             
-            print("Your Posts")
-            
         }
     }
     
@@ -1293,8 +1291,6 @@ final class PostsPageViewController: ViewController {
         } else {
             possessiveUsername = "\(self.selectedPost!.author?.username ?? "")'s"
         }
-        
-        print("\(possessiveUsername)")
         
         let postActionMenu: UIMenu = {
             // edit post
