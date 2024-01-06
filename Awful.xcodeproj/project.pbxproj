@@ -162,6 +162,7 @@
 		1C6BDD24265CB31E005475CE /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* Logger */; };
 		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
 		1C725A8926E71C6D009713DC /* MRProgress in Frameworks */ = {isa = PBXBuildFile; productRef = 1C725A8826E71C6D009713DC /* MRProgress */; };
+		1C78E9052B268395001D675A /* Task+AnyCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C78E9042B268395001D675A /* Task+AnyCancellable.swift */; };
 		1C796A25221505250035E154 /* UserDefaults+Settings.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */; };
 		1C796A27221505A00035E154 /* UserDefaults+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A26221505A00035E154 /* UserDefaults+Settings.swift */; };
 		1C796A292218C41F0035E154 /* DefaultBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A282218C41F0035E154 /* DefaultBrowser.swift */; };
@@ -183,11 +184,9 @@
 		1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F6806222B6DD9007E61ED /* ThreadTagDataLoader.swift */; };
 		1C8F6809222B7940007E61ED /* SecondaryThreadTagPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F6808222B7940007E61ED /* SecondaryThreadTagPickerCell.swift */; };
 		1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */; };
-		1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1C9623A12B002ECB000B232B /* UIViewController+async.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9623A02B002ECB000B232B /* UIViewController+async.swift */; };
 		1C9623A32B003159000B232B /* Task+sleepUnits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9623A22B003159000B232B /* Task+sleepUnits.swift */; };
-		1C9623A52B1D26C4000B232B /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1C9623A42B1D26C4000B232B /* PromiseKit */; };
 		1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */; };
 		1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* main.swift */; };
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
@@ -544,6 +543,7 @@
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C6821A81F113A760083F204 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
 		1C6BDD21265CB307005475CE /* Imports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Imports.swift; sourceTree = "<group>"; };
+		1C78E9042B268395001D675A /* Task+AnyCancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+AnyCancellable.swift"; sourceTree = "<group>"; };
 		1C796A23221505170035E154 /* UserDefaults+Settings.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.generated.swift"; sourceTree = "<group>"; };
 		1C796A24221505180035E154 /* UserDefaults+Settings.stencil */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UserDefaults+Settings.stencil"; sourceTree = "<group>"; };
 		1C796A26221505A00035E154 /* UserDefaults+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Settings.swift"; sourceTree = "<group>"; };
@@ -566,7 +566,6 @@
 		1C8F6806222B6DD9007E61ED /* ThreadTagDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadTagDataLoader.swift; sourceTree = "<group>"; };
 		1C8F6808222B7940007E61ED /* SecondaryThreadTagPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryThreadTagPickerCell.swift; sourceTree = "<group>"; };
 		1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedThreadTag.swift; sourceTree = "<group>"; };
-		1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Promises.swift"; sourceTree = "<group>"; };
 		1C9623A02B002ECB000B232B /* UIViewController+async.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+async.swift"; sourceTree = "<group>"; };
 		1C9623A22B003159000B232B /* Task+sleepUnits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+sleepUnits.swift"; sourceTree = "<group>"; };
 		1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -739,7 +738,6 @@
 				1C6B2A9A272F992E00671F0C /* Nuke in Frameworks */,
 				1C453F282338457A007AC6CD /* Stencil in Frameworks */,
 				2D265F8F292CB447001336ED /* Lottie in Frameworks */,
-				1C9623A52B1D26C4000B232B /* PromiseKit in Frameworks */,
 				1CD72E79265CA0D500FF3BF4 /* AwfulCore in Frameworks */,
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
 				1C88EC9B2AE1062300FA766F /* PullToRefresh in Frameworks */,
@@ -1181,7 +1179,6 @@
 				1C353C081E41832600CCBA51 /* CoreAnimation.swift */,
 				1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
-				1C914ECF208BBAF800C0E238 /* Foundation+Promises.swift */,
 				1C0060A42170347300E5329A /* HTMLReader.swift */,
 				1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */,
 				1C381205219F766B005029C1 /* NSAttributedString+Format.swift */,
@@ -1189,6 +1186,7 @@
 				1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */,
 				1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */,
 				1CC256C01A3B154A003FA7A8 /* Swift.swift */,
+				1C78E9042B268395001D675A /* Task+AnyCancellable.swift */,
 				1C9623A22B003159000B232B /* Task+sleepUnits.swift */,
 				1C8D114819AF7241005D46CB /* UIAlertController+AwfulConvenient.swift */,
 				1C3E1814224C632A00BD88E5 /* UIImage+Decompression.swift */,
@@ -1600,7 +1598,6 @@
 				2D265F8E292CB447001336ED /* Lottie */,
 				1C88EC9A2AE1062300FA766F /* PullToRefresh */,
 				1CB0B9AA2AEF668500678615 /* NukeExtensions */,
-				1C9623A42B1D26C4000B232B /* PromiseKit */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -1668,7 +1665,6 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
 			packageReferences = (
-				1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
 				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
 				1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */,
@@ -1928,7 +1924,6 @@
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
 				2D0BB37527F453B600242D2A /* ChidoriPresentationController.swift in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
-				1C914ED0208BBAF800C0E238 /* Foundation+Promises.swift in Sources */,
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
 				1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */,
 				1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */,
@@ -2014,6 +2009,7 @@
 				1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */,
 				2D0BB37727F453B600242D2A /* ChidoriAnimationController.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
+				1C78E9052B268395001D675A /* Task+AnyCancellable.swift in Sources */,
 				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,
 				1C25AC471F53788900977D6F /* RenderView.swift in Sources */,
 				1CD7EED8228504C100B62865 /* UIView+CompressedHeight.swift in Sources */,
@@ -2656,14 +2652,6 @@
 				minimumVersion = 0.15.1;
 			};
 		};
-		1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/mxcl/PromiseKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.10.0;
-			};
-		};
 		1C6B2A98272F992E00671F0C /* XCRemoteSwiftPackageReference "Nuke" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kean/Nuke";
@@ -2745,11 +2733,6 @@
 		1C88EC9A2AE1062300FA766F /* PullToRefresh */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PullToRefresh;
-		};
-		1C9623A42B1D26C4000B232B /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1C49CE4922CAF405004B76E6 /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
 		};
 		1CB0B9AA2AEF668500678615 /* NukeExtensions */ = {
 			isa = XCSwiftPackageProductDependency;

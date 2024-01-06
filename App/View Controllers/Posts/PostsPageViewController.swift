@@ -6,7 +6,6 @@ import AwfulCore
 import CoreData
 import MobileCoreServices
 import MRProgress
-import PromiseKit
 import WebKit
 
 private let Log = Logger.get()
@@ -385,7 +384,8 @@ final class PostsPageViewController: ViewController {
             html = ""
         }
         
-        postsView.renderView.eraseDocument().done {
+        Task {
+            await postsView.renderView.eraseDocument()
             self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
@@ -772,14 +772,17 @@ final class PostsPageViewController: ViewController {
         }
         guard sender.state == .began else { return }
         
-        postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView)).done {
-            _ = URLMenuPresenter.presentInterestingElements($0, from: self, renderView: self.postsView.renderView)
+        Task {
+            let elements = await postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView))
+            _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.postsView.renderView)
         }
     }
     
     @objc private func didDoubleTapOnPostsView(_ sender: UITapGestureRecognizer) {
-        postsView.renderView.findPostFrame(at: sender.location(in: postsView.renderView)).done { [postsView] in
-            guard let postFrame = $0 else { return }
+        Task {
+            guard let postFrame = await postsView.renderView.findPostFrame(at: sender.location(in: postsView.renderView)) else {
+                return
+            }
             let scrollView = postsView.renderView.scrollView
             let scrollFrame = scrollView.convert(postFrame, from: postsView.renderView)
             let belowBottom = CGRect(

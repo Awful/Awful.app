@@ -4,7 +4,6 @@
 
 import AwfulCore
 import CoreData
-import PromiseKit
 
 private let Log = Logger.get()
 

@@ -2,7 +2,6 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import PromiseKit
 import UIKit
 import WebKit
 import AwfulCore
@@ -313,20 +312,15 @@ extension RenderView {
          // Happens in the order written: erasure, then render.
          rv.eraseDocument().done { rv.render(html: "<h1>Hi!</h1>", baseURL: nil) }
      */
-    func eraseDocument() -> Guarantee<Void> {
+    func eraseDocument() async {
         Log.d("erasing document")
-        
-        return Guarantee { resolver in
-            
+
+        do {
             // There's a bit of subtlety here: `document.open()` returns a Document, which can't be serialized back to the native-side of the app; and if we don't include a `<body>`, we get console logs attempting to e.g. retrieve `document.body.scrollWidth`.
-            webView.evaluateJavaScript("document.open(), document.write('<body>')") { result, error in
-                Log.d("did erase document")
-                resolver(())
-                
-                if let error = error {
-                    self.mentionError(error, explanation: "could not remove content")
-                }
-            }
+            try await webView.evaluateJavaScript("document.open(), document.write('<body>')")
+            Log.d("did erase document")
+        } catch {
+            mentionError(error, explanation: "could not remove content")
         }
     }
     
@@ -372,66 +366,63 @@ extension RenderView {
      - Parameter renderViewPoint: The point of curiosity, expressed in the render view's coordinate system.
      - Returns: A guaranteed (though possibly empty) array of interesting elements.
      */
-    func interestingElements(at renderViewPoint: CGPoint) -> Guarantee<[InterestingElement]> {
-        let (guarantee, resolver) = Guarantee<[InterestingElement]>.pending()
-
+    func interestingElements(at renderViewPoint: CGPoint) async -> [InterestingElement] {
         let point = convertToWebDocument(renderViewPoint: renderViewPoint)
 
-        webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))") { rawResult, error in
-            if let error = error {
-                self.mentionError(error, explanation: "could not evaluate interestingElementsAtPoint")
-                return resolver([])
-            }
-            
-            guard let result = rawResult as? [String: Any] else {
-                Log.w("expected interestingElementsAtPoint to return a dictionary but got \(rawResult as Any)")
-                return resolver([])
-            }
-            
-            var interesting: [InterestingElement] = []
-            
-            if let hasUnspoiledLink = result["hasUnspoiledLink"] as? Bool, hasUnspoiledLink {
-                interesting.append(.unspoiledLink)
-            }
-            
-            if
-                let rawImageURL = result["spoiledImageURL"] as? String,
-                let imageURL = URL(string: rawImageURL)
-            {
-                let title = result["spoiledImageTitle"] as? String ?? ""
-                let frame = (result["spoiledImageFrame"] as? [String: Double])
-                    .flatMap(CGRect.init(renderViewMessage:))
-                    .map(self.convertToRenderView(webDocumentRect:))
-                let location = (result["postContainerElement"] as? String).flatMap(LocationWithinPost.init(rawValue:))
-                interesting.append(.spoiledImage(title: title, url: imageURL, frame: frame, location: location))
-            }
-            
-            if
-                let linkInfo = result["spoiledLink"] as? [String: Any],
-                let rawFrame = linkInfo["frame"] as? [String: Double],
-                let documentFrame = CGRect(renderViewMessage: rawFrame),
-                let rawURL = linkInfo["url"] as? String,
-                let url = URL(string: rawURL)
-            {
-                let frame = self.convertToRenderView(webDocumentRect: documentFrame)
-                interesting.append(.spoiledLink(frame: frame, url: url))
-            }
-            
-            if
-                let videoInfo = result["spoiledVideo"] as? [String: Any],
-                let rawFrame = videoInfo["frame"] as? [String: Double],
-                let documentFrame = CGRect(renderViewMessage: rawFrame),
-                let rawURL = videoInfo["url"] as? String,
-                let url = URL(string: rawURL)
-            {
-                let frame = self.convertToRenderView(webDocumentRect: documentFrame)
-                interesting.append(.spoiledVideo(frame: frame, url: url))
-            }
-            
-            resolver(interesting)
+        let rawResult: Any?
+        do {
+            rawResult = try await webView.evaluateJavaScript("if (window.Awful) Awful.interestingElementsAtPoint(\(point.x), \(point.y))")
+        } catch {
+            mentionError(error, explanation: "could not evaluate interestingElementsAtPoint")
+            return []
         }
-        
-        return guarantee
+
+        guard let result = rawResult as? [String: Any] else {
+            Log.w("expected interestingElementsAtPoint to return a dictionary but got \(rawResult as Any)")
+            return []
+        }
+
+        var interesting: [InterestingElement] = []
+
+        if let hasUnspoiledLink = result["hasUnspoiledLink"] as? Bool, hasUnspoiledLink {
+            interesting.append(.unspoiledLink)
+        }
+
+        if
+            let rawImageURL = result["spoiledImageURL"] as? String,
+            let imageURL = URL(string: rawImageURL)
+        {
+            let title = result["spoiledImageTitle"] as? String ?? ""
+            let frame = (result["spoiledImageFrame"] as? [String: Double])
+                .flatMap(CGRect.init(renderViewMessage:))
+                .map(self.convertToRenderView(webDocumentRect:))
+            let location = (result["postContainerElement"] as? String).flatMap(LocationWithinPost.init(rawValue:))
+            interesting.append(.spoiledImage(title: title, url: imageURL, frame: frame, location: location))
+        }
+
+        if
+            let linkInfo = result["spoiledLink"] as? [String: Any],
+            let rawFrame = linkInfo["frame"] as? [String: Double],
+            let documentFrame = CGRect(renderViewMessage: rawFrame),
+            let rawURL = linkInfo["url"] as? String,
+            let url = URL(string: rawURL)
+        {
+            let frame = self.convertToRenderView(webDocumentRect: documentFrame)
+            interesting.append(.spoiledLink(frame: frame, url: url))
+        }
+
+        if
+            let videoInfo = result["spoiledVideo"] as? [String: Any],
+            let rawFrame = videoInfo["frame"] as? [String: Double],
+            let documentFrame = CGRect(renderViewMessage: rawFrame),
+            let rawURL = videoInfo["url"] as? String,
+            let url = URL(string: rawURL)
+        {
+            let frame = self.convertToRenderView(webDocumentRect: documentFrame)
+            interesting.append(.spoiledVideo(frame: frame, url: url))
+        }
+
+        return interesting
     }
 
     func convertToWebDocument(renderViewPoint: CGPoint) -> CGPoint {
@@ -496,21 +487,18 @@ extension RenderView {
     }
     
     /// Returns the frame of the post at the given render view point, in render view coordinates.
-    func findPostFrame(at renderViewPoint: CGPoint) -> Guarantee<CGRect?> {
+    func findPostFrame(at renderViewPoint: CGPoint) async -> CGRect? {
         let point = convertToWebDocument(renderViewPoint: renderViewPoint)
         let js = "if (window.Awful) Awful.postElementAtPoint(\(point.x), \(point.y))"
-        
-        return Guarantee { resolver in
-            webView.evaluateJavaScript(js) { result, error in
-                let renderViewFrame = CGRect(renderViewMessage: result as? [String: Double])
-                    .map(self.convertToRenderView(webDocumentRect:))
-                resolver(renderViewFrame)
-            
-                if let error = error {
-                    self.mentionError(error, explanation: "could not evaluate findPostFrame")
-                }
-            }
+        let result: Any?
+        do {
+            result = try await webView.evaluateJavaScript(js)
+        } catch {
+            mentionError(error, explanation: "could not evaluate findPostFrame")
+            return nil
         }
+        return CGRect(renderViewMessage: result as? [String: Double])
+            .map(convertToRenderView(webDocumentRect:))
     }
     
     /// Sets the identified post, and all previous posts, to appear read; and sets all subsequent posts to appear unread.
@@ -672,38 +660,35 @@ extension RenderView {
      
      - Returns: A frame encompassing all elements matching the selector; or `CGRect.null` if there are no matching elements; or `CGRect.null` if there is an error.
      */
-    func unionFrameOfElements(matchingSelector selector: String) -> Guarantee<CGRect> {
+    func unionFrameOfElements(matchingSelector selector: String) async -> CGRect {
         let escapedSelector: String
         do {
             escapedSelector = try escapeForEval(selector)
         } catch {
             Log.w("could not JSON-encode selector \(selector): \(error)")
-            return .value(.null)
+            return .null
         }
-        
-        let (guarantee, resolver) = Guarantee<CGRect>.pending()
-        
-        let js = """
+
+        let rawResult: Any?
+        do {
+            let js = """
             Awful.unionFrameOfElements(
                 document.querySelectorAll(\(escapedSelector)));
             """
-        webView.evaluateJavaScript(js) { rawResult, error in
-            if let error = error {
-                self.mentionError(error, explanation: "could not evaluate unionFrameOfElements")
-                return resolver(.null)
-            }
-            
-            guard let rect = CGRect(renderViewMessage: rawResult as? [String: Double]) else {
-                Log.w("expected unionFrameOfElements to return a rect via dictionary but got \(rawResult as Any)")
-                return resolver(.null)
-            }
-            
-            resolver(rect)
+            rawResult = try await webView.evaluateJavaScript(js)
+        } catch {
+            mentionError(error, explanation: "could not evaluate unionFrameOfElements")
+            return .null
         }
-        
-        return guarantee
+
+        guard let rect = CGRect(renderViewMessage: rawResult as? [String: Double]) else {
+            Log.w("expected unionFrameOfElements to return a rect via dictionary but got \(rawResult as Any)")
+            return .null
+        }
+
+        return rect
     }
-    
+
     private func mentionError(_ error: Error, explanation: String, file: String = #file, function: StaticString = #function, line: Int = #line) {
         
         // Getting many reports of features handled by user script (e.g. tapping spoilers, author headers in posts) not working correctly. Grasping at straws, I'm wondering if the web view is somehow getting invalidated or is otherwise throwing errors that we're not picking up. See e.g. https://github.com/Awful/Awful.app/issues/813
