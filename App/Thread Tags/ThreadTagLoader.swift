@@ -5,7 +5,6 @@
 import AwfulCore
 import Nuke
 import NukeExtensions
-import PromiseKit
 import UIKit
 
 import enum Swift.Result

@@ -30,16 +30,13 @@ final class AppIconCell: UICollectionViewCell {
 
         imageView.image = nil
         loadingImageName = imageName
-        DispatchQueue.global()
-            .async(.promise) {
+        Task { [weak self] in
+            let image = await Task.detached {
                 UIImage(named: imageName)?.makeDecompressedCopy()
+            }.value
+            if let self, self.loadingImageName == imageName {
+                self.imageView.image = image
             }
-            .done { [weak self] image in
-                guard let self = self else { return }
-
-                if self.loadingImageName == imageName {
-                    self.imageView.image = image
-                }
         }
     }
 }

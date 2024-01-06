@@ -107,7 +107,8 @@ final class MessageViewController: ViewController {
     @objc private func didLongPressWebView(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
 
-        renderView.interestingElements(at: sender.location(in: renderView)).done { elements in
+        Task {
+            let elements = await renderView.interestingElements(at: sender.location(in: renderView))
             _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.renderView)
         }
     }
@@ -123,7 +124,8 @@ final class MessageViewController: ViewController {
             }
         }
         
-        renderView.unionFrameOfElements(matchingSelector: ".avatar, .nameanddate").done { rect in
+        Task {
+            var rect = await renderView.unionFrameOfElements(matchingSelector: ".avatar, .nameanddate")
             let actionVC = InAppActionViewController()
             actionVC.items = [
                 IconActionItem(.userProfile, block: {
@@ -133,17 +135,16 @@ final class MessageViewController: ViewController {
                     present(RapSheetViewController(user: user))
                 })
             ]
-            
-            var rect = rect
+
             if rect.isNull {
-                rect = CGRect(origin: .zero, size: CGSize(width: self.renderView.bounds.width, height: 1))
+                rect = CGRect(origin: .zero, size: CGSize(width: renderView.bounds.width, height: 1))
             }
-            
+
             actionVC.popoverPositioningBlock = { sourceRect, sourceView in
                 sourceRect.pointee = rect
                 sourceView.pointee = self.renderView
             }
-            
+
             self.present(actionVC, animated: true)
         }
     }

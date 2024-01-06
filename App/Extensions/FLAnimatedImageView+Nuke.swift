@@ -17,12 +17,13 @@ extension FLAnimatedImageView {
             return
         }
 
-        DispatchQueue.global()
-            .async(.promise) { FLAnimatedImage(animatedGIFData: data) }
-            .done {
-                if self.image === image {
-                    self.animatedImage = $0
-                }
+        Task {
+            let animated = await Task.detached {
+                FLAnimatedImage(animatedGIFData: data)
+            }.value
+            if self.image === image {
+                self.animatedImage = animated
+            }
         }
     }
 }
