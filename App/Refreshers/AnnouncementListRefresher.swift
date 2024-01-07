@@ -101,7 +101,7 @@ final class AnnouncementListRefresher {
 
         Log.d("next automatic announcement list refresh is in \(interval) seconds")
 
-        timer = Timer.scheduledTimerWithInterval(interval) { [weak self] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] timer in
             self?.refreshIfNecessary()
         }
     }

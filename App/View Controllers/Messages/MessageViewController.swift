@@ -64,9 +64,8 @@ final class MessageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        let actionSheet = UIAlertController.makeActionSheet()
-        
-        actionSheet.addActionWithTitle(LocalizedString("private-message.action-reply")) { [self] in
+        var actions: [UIAlertAction] = []
+        actions.append(.default(title: LocalizedString("private-message.action-reply")) { [self] in
             Task {
                 do {
                     let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: privateMessage)
@@ -79,9 +78,8 @@ final class MessageViewController: ViewController {
                     present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
             }
-        }
-        
-        actionSheet.addActionWithTitle(LocalizedString("private-message.action-forward")) { [self] in
+        })
+        actions.append(.default(title: LocalizedString("private-message.action-forward")) { [self] in
             Task {
                 do {
                     let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: privateMessage)
@@ -94,10 +92,11 @@ final class MessageViewController: ViewController {
                     present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
             }
-        }
+        })
+        actions.append(.cancel())
         
-        actionSheet.addCancelActionWithHandler(nil)
-        present(actionSheet, animated: true, completion: nil)
+        let actionSheet = UIAlertController(actionSheetActions: actions)
+        present(actionSheet, animated: true)
         
         if let popover = actionSheet.popoverPresentationController {
             popover.barButtonItem = sender

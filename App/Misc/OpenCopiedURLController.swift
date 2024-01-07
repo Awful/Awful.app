@@ -53,11 +53,11 @@ final class OpenCopiedURLController {
         let alert = UIAlertController(
             title: String(format: LocalizedString("launch-open-copied-url-alert.title"), Bundle.main.localizedName),
             message: url.absoluteString,
-            preferredStyle: .alert)
-        alert.addCancelActionWithHandler(nil)
-        alert.addActionWithTitle(LocalizedString("launch-open-copied-url-alert.open-button"), handler: {
-            self.router(route)
-        })
+            alertActions: [
+                    .default(title: LocalizedString("launch-open-copied-url-alert.open-button")) { self.router(route) },
+                    .cancel(),
+            ]
+        )
         window.rootViewController?.present(alert, animated: true)
     }
 }

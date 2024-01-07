@@ -1,6 +1,8 @@
-//  Comparable+Clamped.swift
+//  Comparable+.swift
 //
 //  Copyright 2021 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+
+// MARK: Clamped
 
 public extension Comparable {
 

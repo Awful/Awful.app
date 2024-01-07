@@ -168,14 +168,14 @@ struct AwfulURLRouter {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        if let threadsVC = rootViewController.firstDescendantOfType(ThreadsTableViewController.self),
+        if let threadsVC = rootViewController.firstDescendant(ofType: ThreadsTableViewController.self),
            threadsVC.forum === forum
         {
             _ = threadsVC.navigationController?.popToViewController(threadsVC, animated: true)
             return selectTopmostViewController(containingViewControllerOfClass: ThreadsTableViewController.self) != nil
         }
         
-        if let forumsVC = rootViewController.firstDescendantOfType(ForumsTableViewController.self) {
+        if let forumsVC = rootViewController.firstDescendant(ofType: ForumsTableViewController.self) {
             _ = forumsVC.navigationController?.popToViewController(forumsVC, animated: false)
             forumsVC.openForum(forum, animated: false)
             return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
@@ -195,7 +195,7 @@ struct AwfulURLRouter {
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
             else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
-            guard let match = topmost.firstDescendantOfType(VC.self) else { continue }
+            guard let match = topmost.firstDescendant(ofType: VC.self) else { continue }
             tabBarVC.selectedViewController = topmost
             splitVC.showPrimaryViewController()
             return match

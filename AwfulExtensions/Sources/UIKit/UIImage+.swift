@@ -1,10 +1,12 @@
-//  UIImage+Decompression.swift
+//  UIImage+.swift
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import UIKit
 
-extension UIImage {
+// MARK: Ready for display
+
+public extension UIImage {
 
     /**
      Returns a copy of this image that's ready for display without further processing. If that's not possible, the receiver is returned instead.

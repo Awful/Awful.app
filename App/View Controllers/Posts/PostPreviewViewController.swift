@@ -65,15 +65,14 @@ final class PostPreviewViewController: ViewController {
         return forum?.managedObjectContext
     }
     
-    private lazy var postButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: "Post", style: .plain, target: nil, action: nil)
-        buttonItem.actionBlock = { [weak self] item in
-            item.isEnabled = false
-            self?.submitBlock?()
+    private lazy var postButtonItem = UIBarButtonItem(primaryAction: UIAction(
+        title: "Post",
+        handler: { [unowned self] action in
+            (action.sender as? UIBarButtonItem)?.isEnabled = false
+            self.submitBlock?()
         }
-        return buttonItem
-    }()
-    
+    ))
+
     override var theme: Theme {
         guard
             let thread = thread ?? editingPost?.thread,

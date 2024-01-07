@@ -88,7 +88,7 @@ final class CompositionViewController: ViewController {
     
     override var keyCommands: [UIKeyCommand]? {
         return [
-            UIKeyCommand.make(input: UIKeyCommand.inputEscape, action: #selector(cancel(_:)), discoverabilityTitle: "Cancel"),
+            UIKeyCommand(action: #selector(cancel(_:)), input: UIKeyCommand.inputEscape, discoverabilityTitle: "Cancel"),
         ]
     }
 }

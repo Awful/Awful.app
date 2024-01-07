@@ -353,13 +353,13 @@ private extension AppDelegate {
         let lastPromptDate = UserDefaults.standard.object(forKey: loginCookieLastExpiryPromptDateKey) as? Date ?? .distantFuture
         guard lastPromptDate.timeIntervalSinceNow < -loginCookieExpiryPromptFrequency else { return }
         
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-        alert.title = LocalizedString("session-expiry-imminent.title")
-        let dateString = DateFormatter.localizedString(from: expiryDate, dateStyle: .short, timeStyle: .none)
-        alert.message = String(format: LocalizedString("session-expiry-imminent.message"), dateString)
-        alert.addActionWithTitle(LocalizedString("ok")) {
-            UserDefaults.standard.set(Date(), forKey: loginCookieLastExpiryPromptDateKey)
-        }
+        let alert = UIAlertController(
+            title: LocalizedString("session-expiry-imminent.title"),
+            message: String(format: LocalizedString("session-expiry-imminent.message"), DateFormatter.localizedString(from: expiryDate, dateStyle: .short, timeStyle: .none)),
+            alertActions: [.default(title: LocalizedString("ok"), handler: {
+                UserDefaults.standard.set(Date(), forKey: loginCookieLastExpiryPromptDateKey)
+            })]
+        )
         window?.rootViewController?.present(alert, animated: true, completion: nil)
     }
 }

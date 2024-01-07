@@ -199,10 +199,10 @@ class ComposeTextViewController: ViewController {
 
                 switch error {
                 case let error as LocalizedError where error.failureReason != nil:
-                    alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "")
+                    alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "", alertActions: [.ok()])
 
                 case let error as LocalizedError:
-                    alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription)
+                    alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription, alertActions: [.ok()])
 
                 case let error:
                     alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), error: error)

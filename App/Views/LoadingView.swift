@@ -151,7 +151,7 @@ private class YOSPOSLoadingView: LoadingView {
     
     fileprivate func startAnimating() {
         stopAnimating()
-        timer = Timer.scheduledTimerWithInterval(0.12, repeats: true, handler: { [unowned self] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.12, repeats: true, block: { [unowned self] timer in
             self.advanceSpinner()
         })
     }

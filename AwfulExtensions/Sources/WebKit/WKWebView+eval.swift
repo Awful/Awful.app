@@ -1,10 +1,10 @@
 //  WKWebView+eval.swift
 //
-//  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+//  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import WebKit
 
-extension WKWebView {
+public extension WKWebView {
     /**
      Evaluates the specified JavaScript string.
 

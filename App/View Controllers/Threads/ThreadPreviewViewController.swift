@@ -29,15 +29,14 @@ final class ThreadPreviewViewController: ViewController {
     
     private typealias HTMLAndForm = (previewHTML: String, formData: ForumsClient.PostNewThreadFormData)
     
-    private lazy var postButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: LocalizedString("compose.thread-preview.submit-button"), style: .plain, target: nil, action: nil)
-        buttonItem.actionBlock = { [weak self] item in
-            item.isEnabled = false
-            self?.submitBlock?()
+    private lazy var postButtonItem = UIBarButtonItem(primaryAction: UIAction(
+        title: LocalizedString("compose.thread-preview.submit-button"),
+        handler: { [unowned self] action in
+            (action.sender as? UIBarButtonItem)?.isEnabled = false
+            self.submitBlock?()
         }
-        return buttonItem
-    }()
-    
+    ))
+
     private lazy var renderView: RenderView = {
         let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
         renderView.delegate = self

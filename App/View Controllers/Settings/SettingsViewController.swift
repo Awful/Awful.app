@@ -376,11 +376,10 @@ final class SettingsViewController: TableViewController {
         let setting = self.setting(at: indexPath)
         switch (setting["Action"] as? String, setting["ViewController"] as? String) {
         case ("LogOut"?, _):
-            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-            alert.title = "Log Out"
-            alert.message = "Are you sure you want to log out?"
-            alert.addCancelActionWithHandler(nil)
-            alert.addActionWithTitle("Log Out", handler: { AppDelegate.instance.logOut() })
+            let alert = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", alertActions: [
+                .cancel(),
+                .default(title: "Log Out", handler: AppDelegate.instance.logOut),
+            ])
             present(alert, animated: true)
             
         case ("EmptyCache"?, _):

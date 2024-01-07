@@ -166,23 +166,16 @@ final class ReplyWorkspace: NSObject {
 
         let actionSheet = UIAlertController(
             title: title,
-            message: nil,
-            preferredStyle: .actionSheet)
-        actionSheet.addAction(.init(
-            title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: ""),
-            style: .destructive,
-            handler: { action in
-                self.completion(.forgetAboutIt)
-            }
-        ))
-        actionSheet.addAction(.init(
-            title: NSLocalizedString("compose.cancel-menu.save-draft", comment: ""),
-            style: .default,
-            handler: { action in
-                self.completion(.saveDraft)
-            }
-        ))
-        actionSheet.addCancelActionWithHandler(nil)
+            actionSheetActions: [
+                .destructive(title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: "")) {
+                    self.completion(.forgetAboutIt)
+                },
+                .default(title: NSLocalizedString("compose.cancel-menu.save-draft", comment: "")) {
+                    self.completion(.saveDraft)
+                },
+                .cancel(),
+            ]
+        )
         compositionViewController.present(actionSheet, animated: true)
 
         if let popover = actionSheet.popoverPresentationController {
@@ -218,10 +211,10 @@ final class ReplyWorkspace: NSObject {
                     let alert: UIAlertController
                     switch error {
                     case let error as LocalizedError where error.failureReason != nil:
-                        alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "")
+                        alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "", alertActions: [.ok()])
 
                     case let error as LocalizedError:
-                        alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription)
+                        alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription, alertActions: [.ok()])
 
                     case let error:
                         alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), error: error)

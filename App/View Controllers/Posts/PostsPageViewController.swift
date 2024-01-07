@@ -6,6 +6,7 @@ import AwfulCore
 import CoreData
 import MobileCoreServices
 import MRProgress
+import UIKit
 import WebKit
 
 private let Log = Logger.get()
@@ -473,60 +474,63 @@ final class PostsPageViewController: ViewController {
     }
     
     private lazy var settingsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "page-settings"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Settings"
-        item.actionBlock = { [unowned self] (sender) in
-            let settings = PostsPageSettingsViewController()
-            self.present(settings, animated: true)
-            
-            if let popover = settings.popoverPresentationController {
-                popover.barButtonItem = sender
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "page-settings"),
+            handler: { [unowned self] action in
+                let settings = PostsPageSettingsViewController()
+                self.present(settings, animated: true)
+
+                if let popover = settings.popoverPresentationController {
+                    popover.barButtonItem = action.sender as? UIBarButtonItem
+                }
             }
-        }
+        ))
+        item.accessibilityLabel = "Settings"
         return item
     }()
     
     private lazy var backItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "arrowleft"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Previous page"
-        item.actionBlock = { [unowned self] (sender) in
-            guard case .specific(let pageNumber)? = self.page, pageNumber > 1 else { return }
-            if UserDefaults.standard.enableHaptics {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "arrowleft"),
+            handler: { [unowned self] action in
+                guard case .specific(let pageNumber)? = self.page, pageNumber > 1 else { return }
+                if UserDefaults.standard.enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                self.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
             }
-            self.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
-        }
+        ))
+        item.accessibilityLabel = "Previous page"
         return item
     }()
     
     private lazy var currentPageItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        item.possibleTitles = ["2345 / 2345"]
-        item.accessibilityHint = "Opens page picker"
-
-        item.actionBlock = { [unowned self] (sender) in
+        let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
             guard self.postsView.loadingView == nil else { return }
             let selectotron = Selectotron(postsViewController: self)
-            self.present(selectotron, animated: true, completion: nil)
-            
+            self.present(selectotron, animated: true)
+
             if let popover = selectotron.popoverPresentationController {
-                popover.barButtonItem = sender
+                popover.barButtonItem = action.sender as? UIBarButtonItem
             }
-        }
-        
+        })
+        item.possibleTitles = ["2345 / 2345"]
+        item.accessibilityHint = "Opens page picker"
         return item
     }()
     
     private lazy var forwardItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "arrowright"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Next page"
-        item.actionBlock = { [unowned self] (sender) in
-            guard case .specific(let pageNumber)? = self.page, pageNumber < self.numberOfPages, pageNumber > 0 else { return }
-            if UserDefaults.standard.enableHaptics {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "arrowright"),
+            handler: { [unowned self] action in
+                guard case .specific(let pageNumber)? = self.page, pageNumber < self.numberOfPages, pageNumber > 0 else { return }
+                if UserDefaults.standard.enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                self.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
             }
-            self.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
-        }
+        ))
+        item.accessibilityLabel = "Next page"
         return item
     }()
     
@@ -571,8 +575,8 @@ final class PostsPageViewController: ViewController {
     }
     
     private func updateUserInterface() {
-        title = thread.title?.stringByCollapsingWhitespace
-        
+        title = thread.title?.collapsingWhitespace()
+
         if page == .last || page == .nextUnread || posts.isEmpty {
             showLoadingView()
         }
@@ -1089,10 +1093,9 @@ final class PostsPageViewController: ViewController {
         }
         Task {
             await dismiss(animated: false)
-            
-            let actionSheet = UIAlertController.makeActionSheet()
-            for i in stride(from: 5, to: 0, by: -1) {
-                actionSheet.addActionWithTitle("\(i)", handler: { [self] in
+
+            var actions = stride(from: 5, to: 0, by: -1).map { i in
+                UIAlertAction.default(title: "\(i)", handler: { [self] in
                     let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: "Voting \(i)", mode: .indeterminate, animated: true)!
                     overlay.tintColor = theme["tintColor"]
 
@@ -1112,8 +1115,8 @@ final class PostsPageViewController: ViewController {
                     }
                 })
             }
-
-            actionSheet.addCancelActionWithHandler(nil)
+            actions.append(.cancel())
+            let actionSheet = UIAlertController(actionSheetActions: actions)
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
@@ -1790,23 +1793,23 @@ private struct Keys {
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {
         var keyCommands: [UIKeyCommand] = [
-            UIKeyCommand.make(input: UIKeyCommand.inputUpArrow, action: #selector(scrollUp), discoverabilityTitle: "Up"),
-            UIKeyCommand.make(input: UIKeyCommand.inputDownArrow, action: #selector(scrollDown), discoverabilityTitle: "Down"),
-            UIKeyCommand.make(input: " ", modifierFlags: .shift, action: #selector(pageUp), discoverabilityTitle: "Page Up"),
-            UIKeyCommand.make(input: " ", action: #selector(pageDown), discoverabilityTitle: "Page Down"),
-            UIKeyCommand.make(input: UIKeyCommand.inputUpArrow, modifierFlags: .command, action: #selector(scrollToTop), discoverabilityTitle: "Scroll to Top"),
-            UIKeyCommand.make(input: UIKeyCommand.inputDownArrow, modifierFlags: .command, action: #selector(scrollToBottom(_:)), discoverabilityTitle: "Scroll to Bottom"),
+            UIKeyCommand(action: #selector(scrollUp), input: UIKeyCommand.inputUpArrow, discoverabilityTitle: "Up"),
+            UIKeyCommand(action: #selector(scrollDown), input: UIKeyCommand.inputDownArrow, discoverabilityTitle: "Down"),
+            UIKeyCommand(action: #selector(pageUp), input: " ", modifierFlags: .shift, discoverabilityTitle: "Page Up"),
+            UIKeyCommand(action: #selector(pageDown), input: " ", discoverabilityTitle: "Page Down"),
+            UIKeyCommand(action: #selector(scrollToTop), input: UIKeyCommand.inputUpArrow, modifierFlags: .command, discoverabilityTitle: "Scroll to Top"),
+            UIKeyCommand(action: #selector(scrollToBottom(_:)), input: UIKeyCommand.inputDownArrow, modifierFlags: .command, discoverabilityTitle: "Scroll to Bottom"),
         ]
         
         if case .specific(let pageNumber)? = page, pageNumber > 1 {
-            keyCommands.append(UIKeyCommand.make(input: "[", modifierFlags: .command, action: #selector(loadPreviousPage), discoverabilityTitle: "Previous Page"))
+            keyCommands.append(UIKeyCommand(action: #selector(loadPreviousPage), input: "[", modifierFlags: .command, discoverabilityTitle: "Previous Page"))
         }
         
         if case .specific(let pageNumber)? = page, pageNumber < numberOfPages {
-            keyCommands.append(UIKeyCommand.make(input: "]", modifierFlags: .command, action: #selector(loadNextPage), discoverabilityTitle: "Next Page"))
+            keyCommands.append(UIKeyCommand(action: #selector(loadNextPage), input: "]", modifierFlags: .command, discoverabilityTitle: "Next Page"))
         }
         
-        keyCommands.append(UIKeyCommand.make(input: "N", modifierFlags: .command, action: #selector(newReply), discoverabilityTitle: "New Reply"))
+        keyCommands.append(UIKeyCommand(action: #selector(newReply), input: "N", modifierFlags: .command, discoverabilityTitle: "New Reply"))
         
         return keyCommands
     }

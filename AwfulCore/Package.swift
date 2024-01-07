@@ -11,8 +11,8 @@ let package = Package(
         .library(name: "AwfulCore", targets: ["AwfulCore"]),
     ],
     dependencies: [
+        .package(path: "../AwfulExtensions"),
         .package(path: "../AwfulScraping"),
-        .package(path: "../AwfulSwift"),
         .package(path: "../Logger"),
         .package(url: "https://github.com/nolanw/HTMLReader", .upToNextMajor(from: "2.1.7")),
     ],
@@ -20,8 +20,8 @@ let package = Package(
         .target(
             name: "AwfulCore",
             dependencies: [
+                "AwfulExtensions",
                 "AwfulScraping",
-                "AwfulSwift",
                 "HTMLReader",
                 "Logger",
             ],

@@ -72,11 +72,9 @@ final class ProfileViewController: ViewController {
         super.viewWillAppear(animated)
         
         if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
-            let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
-            doneItem.actionBlock = { _ in
+            navigationItem.leftBarButtonItem = .init(systemItem: .done, primaryAction: UIAction { _ in
                 self.dismiss(animated: true, completion: nil)
-            }
-            navigationItem.leftBarButtonItem = doneItem
+            })
         }
         
         if !didFetchProfile {

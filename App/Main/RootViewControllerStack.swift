@@ -226,7 +226,7 @@ extension RootViewControllerStack {
         }
         
         // We have no need for the empty view controller when collapsed.
-        if secondaryViewController.firstDescendantOfType(EmptyViewController.self) != nil {
+        if secondaryViewController.firstDescendant(ofType: EmptyViewController.self) != nil {
             return true
         }
         

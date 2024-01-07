@@ -133,7 +133,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     ) {
         guard let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage else {
             Log.e("could not find image among image picker info")
-            let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found")
+            let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found", alertActions: [.ok()])
             textView.nearestViewController?.present(alert, animated: true)
             return
         }
