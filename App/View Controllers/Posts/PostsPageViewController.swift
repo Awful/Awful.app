@@ -12,7 +12,6 @@ private let Log = Logger.get()
 
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
-    private lazy var actionMappings: [UIAction.Identifier: UIActionHandler] = [:]
     var selectedPost: Post? = nil
     var selectedUser: User? = nil
     var selectedFrame: CGRect? = nil
@@ -32,46 +31,39 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
     
-    lazy var threadActionsMenu: UIMenu = {
-        var threadActions: [UIAction] = []
-
-        // Bookmark
-        let bookmarkAction = UIAction(
-            title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread",
-            image: UIImage(named: thread.bookmarked ? "remove-bookmark" : "add-bookmark")!.withRenderingMode(.alwaysTemplate),
-            identifier: .init("bookmark"),
-            handler: { [unowned self] in bookmark(action: $0) }
-        )
-        bookmarkAction.attributes = thread.bookmarked ? .destructive : []
-        threadActions.append(bookmarkAction)
-        
-        // Copy link
-        threadActions.append(.init(
-            title: "Copy link",
-            image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
-            identifier: .init("copyLink"),
-            handler: { [unowned self] in copyLink(action: $0) }
-        ))
-
-        // Vote
-        threadActions.append(.init(
-            title: "Vote",
-            image: UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate),
-            identifier: .init("vote"),
-            handler: { [unowned self] in vote(action: $0) }
-        ))
-
-        // Your posts
-        threadActions.append(.init(
-            title: "Your posts",
-            image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
-            identifier: .init("yourPosts"),
-            handler: { [unowned self] in yourPosts(action: $0) }
-        ))
-
-        return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: threadActions)
-    }()
-    
+    var threadActionsMenu: UIMenu {
+        UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
+            // Bookmark
+            UIAction(
+                title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread",
+                image: UIImage(named: thread.bookmarked ? "remove-bookmark" : "add-bookmark")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("bookmark"),
+                attributes: thread.bookmarked ? .destructive : [],
+                handler: { [unowned self] in bookmark(action: $0) }
+            ),
+            // Copy link
+            UIAction(
+                title: "Copy link",
+                image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("copyLink"),
+                handler: { [unowned self] in copyLink(action: $0) }
+            ),
+            // Vote
+            UIAction(
+                title: "Vote",
+                image: UIImage(named: "vote")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("vote"),
+                handler: { [unowned self] in vote(action: $0) }
+            ),
+            // Your posts
+            UIAction(
+                title: "Your posts",
+                image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("yourPosts"),
+                handler: { [unowned self] in yourPosts(action: $0) }
+            ),
+        ])
+    }
 
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
@@ -93,6 +85,28 @@ final class PostsPageViewController: ViewController {
         }
         return postsView
     }()
+
+    /// A hidden button that we misuse to show a proper iOS context menu on tap (as opposed to long-tap).
+    private lazy var hiddenMenuButton: HiddenMenuButton = {
+        let postActionButton = HiddenMenuButton()
+        postActionButton.alpha = 0
+        postsView.addSubview(postActionButton)
+        return postActionButton
+    }()
+    private class HiddenMenuButton: UIButton {
+        init() {
+            super.init(frame: .zero)
+            showsMenuAsPrimaryAction = true
+        }
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        func show(menu: UIMenu, from rect: CGRect) {
+            frame = rect
+            self.menu = menu
+            gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
+        }
+    }
 
     private struct FYADFlagRequest: RenderViewMessage {
         static let messageName = "fyadFlagRequest"
@@ -517,17 +531,8 @@ final class PostsPageViewController: ViewController {
     }()
     
     
-    private lazy var actionsItem: UIBarButtonItem = {
-        var item: UIBarButtonItem
-        if #available(iOS 14.0, *) {
-            item = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu)
-        } else {
-            item = UIBarButtonItem(image: UIImage(named: "steamed-ham"), style: .plain, target: nil, action: #selector(didTapHamburgerMenu))
-        }
-        
-        return item
-    }()
-    
+    private lazy var actionsItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu)
+
     @objc private func externalStylesheetDidUpdate(_ rawNotification: Notification) {
         guard let notification = PostsViewExternalStylesheetLoader.DidUpdateNotification(rawNotification) else {
             return Log.e("got an unexpected or invalid notification: \(rawNotification)")
@@ -655,22 +660,7 @@ final class PostsPageViewController: ViewController {
 
         loadPage(nextPage, updatingCache: true, updatingLastReadPost: true)
     }
-    
-    @objc private func didTapHamburgerMenu() {
-        if UserDefaults.standard.enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
-        
-        let chidoriMenu = ChidoriMenu(menu: threadActionsMenu,
-                                      summonPoint: CGPoint(x: self.postsView.toolbar.frame.maxX - 80,
-                                                           y: self.postsView.toolbar.frame.maxY - 230)
-        )
-        
-        chidoriMenu.delegate = self
-        
-        present(chidoriMenu, animated: true, completion: nil)
-    }
-    
+
     @objc func currentPageButtonTapped(_ sender: UIBarButtonItem) {
         guard self.postsView.loadingView == nil else { return }
         let selectotron = Selectotron(postsViewController: self)
@@ -816,29 +806,27 @@ final class PostsPageViewController: ViewController {
         self.selectedPost = posts[postIndex + hiddenPosts]
         self.selectedFrame = frame
         
-        var postActions: [UIMenuElement] = []
+        var userActions: [UIMenuElement] = []
         guard let user = self.selectedPost!.author else { return }
         self.selectedUser = user
         
-        let postActionMenu: UIMenu = {
+        let userActionMenu: UIMenu = {
             // Profile
             let profile = UIAction.Identifier("profile")
-            actionMappings[profile] = profile(action:)
             let profileAction = UIAction(title: "Profile",
                                          image: UIImage(named: "user-profile")!.withRenderingMode(.alwaysTemplate),
                                          identifier: profile,
                                          handler: profile(action:))
-            postActions.append(profileAction)
+            userActions.append(profileAction)
             
             // Their posts
             if author == nil {
                 let theirPosts = UIAction.Identifier("theirPosts")
-                actionMappings[theirPosts] = theirPosts(action:)
                 let theirPostsAction = UIAction(title: "Their posts",
                                                 image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
                                                 identifier: theirPosts,
                                                 handler: theirPosts(action:))
-                postActions.append(theirPostsAction)
+                userActions.append(theirPostsAction)
             }
             // Private Message
             if UserDefaults.standard.loggedInUserCanSendPrivateMessages &&
@@ -846,58 +834,43 @@ final class PostsPageViewController: ViewController {
                 user.userID != UserDefaults.standard.loggedInUserID
             {
                 let privateMessage = UIAction.Identifier("privateMessage")
-                actionMappings[privateMessage] = privateMessage(action:)
                 let privateMessageAction = UIAction(title: "Private message",
                                                     image: UIImage(named: "send-private-message")!.withRenderingMode(.alwaysTemplate),
                                                     identifier: privateMessage,
                                                     handler: privateMessage(action:))
-                postActions.append(privateMessageAction)
+                userActions.append(privateMessageAction)
             }
             // Rap Sheet
             let rapSheet = UIAction.Identifier("rapSheet")
-            actionMappings[rapSheet] = rapSheet(action:)
             let rapSheetAction = UIAction(title: "Rap sheet",
                                           image: UIImage(named: "rap-sheet")!.withRenderingMode(.alwaysTemplate),
                                           identifier: rapSheet,
                                           handler: rapSheet(action:))
-            postActions.append(rapSheetAction)
+            userActions.append(rapSheetAction)
             
             // Ignore user
             if self.selectedPost!.ignored {
                 let ignoreUser = UIAction.Identifier("ignoreUser")
-                actionMappings[ignoreUser] = ignoreUser(action:)
                 let ignoreAction = UIAction(title: "Unignore user",
                                             image: UIImage(named: "ignore")!.withRenderingMode(.alwaysTemplate),
                                             identifier: ignoreUser,
                                             handler: ignoreUser(action:))
-                postActions.append(ignoreAction)
+                userActions.append(ignoreAction)
             } else {
                 let ignoreUser = UIAction.Identifier("ignoreUser")
-                actionMappings[ignoreUser] = ignoreUser(action:)
                 let ignoreAction = UIAction(title: "Ignore user",
                                             image: UIImage(named: "ignore")!.withRenderingMode(.alwaysTemplate),
                                             identifier: ignoreUser,
                                             handler: ignoreUser(action:))
-                postActions.append(ignoreAction)
+                userActions.append(ignoreAction)
             }
             
-            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: postActions)
+            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: userActions)
             return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
         }()
-        
-        if !UserDefaults.standard.hideSidebarInLandscape, traitCollection.userInterfaceIdiom == .pad {
-            let chidoriMenu = ChidoriMenu(menu: postActionMenu, summonPoint: .init(x: 550, y: frame.origin.y))
-            chidoriMenu.delegate = self
-            
-            present(chidoriMenu, animated: true, completion: nil)
-        } else {
-            let chidoriMenu = ChidoriMenu(menu: postActionMenu, summonPoint: frame.origin)
-            chidoriMenu.delegate = self
-            
-            present(chidoriMenu, animated: true, completion: nil)
-        }
+
+        hiddenMenuButton.show(menu: userActionMenu, from: frame)
     }
-    
     
     private func shareURL(action: UIAction) {
         if UserDefaults.standard.enableHaptics {
@@ -1267,92 +1240,82 @@ final class PostsPageViewController: ViewController {
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        var postActions: [UIMenuElement] = []
-        
+
         self.selectedPost = posts[postIndex + hiddenPosts]
         self.selectedFrame = frame
         
         let postActionMenu: UIMenu = {
+            var postActions: [UIAction] = []
             // edit post
-            if self.selectedPost!.editable {
-                let edit = UIAction.Identifier("edit")
-                actionMappings[edit] = edit(action:)
-                let editAction = UIAction(title: "Edit",
-                                          image: UIImage(named: "edit-post")!.withRenderingMode(.alwaysTemplate),
-                                          identifier: edit,
-                                          handler: edit(action:))
-                postActions.append(editAction)
+            if selectedPost!.editable {
+                postActions.append(.init(
+                    title: "Edit",
+                    image: UIImage(named: "edit-post")!.withRenderingMode(.alwaysTemplate),
+                    identifier: .init("edit"),
+                    handler: edit(action:)
+                ))
             }
             
             // Quote
             if !thread.closed {
-                let quote = UIAction.Identifier("quote")
-                actionMappings[quote] = quote(action:)
-                let quoteAction = UIAction(title: "Quote",
-                                           image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
-                                           identifier: quote,
-                                           handler: quote(action:))
-                postActions.append(quoteAction)
-            } else {
-                // Copy post
-                let copy = UIAction.Identifier("copy")
-                actionMappings[copy] = copy(action:)
-                let copyAction = UIAction(title: "Copy",
-                                          image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
-                                          identifier: copy,
-                                          handler: copy(action:))
-                postActions.append(copyAction)
+                postActions.append(.init(
+                    title: "Quote",
+                    image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
+                    identifier: .init("quote"),
+                    handler: quote(action:)
+                ))
+            } 
+
+            // Copy post
+            if thread.closed {
+                postActions.append(.init(
+                    title: "Copy",
+                    image: UIImage(named: "quote-post")!.withRenderingMode(.alwaysTemplate),
+                    identifier: .init("copy"),
+                    handler: copy(action:)
+                ))
             }
 
             // Mark Read Up To Here
             if author == nil {
-                let markRead = UIAction.Identifier("markread")
-                actionMappings[markRead] = markThreadAsSeenUpTo(action:)
-                let markreadAction = UIAction(title: "Mark as last read",
-                                              image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
-                                              identifier: markRead,
-                                              handler: markThreadAsSeenUpTo(action:))
-                postActions.append(markreadAction)
-            } else {
-                // Find post
-                let findPost = UIAction.Identifier("find")
-                actionMappings[findPost] = findPost(action:)
-                let findPostAction = UIAction(title: "Find post",
-                                              image: UIImage(named: "quick-look")!.withRenderingMode(.alwaysTemplate),
-                                              identifier: findPost,
-                                              handler: findPost(action:))
-                
-                postActions.append(findPostAction)
+                postActions.append(.init(
+                    title: "Mark as last read",
+                    image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
+                    identifier: .init("markread"),
+                    handler: markThreadAsSeenUpTo(action:)
+                ))
+            }
+
+            // Find post
+            if author != nil {
+                postActions.append(.init(
+                    title: "Find post",
+                    image: UIImage(named: "quick-look")!.withRenderingMode(.alwaysTemplate),
+                    identifier: .init("find"),
+                    handler: findPost(action:)
+                ))
             }
             
             // Share URL
-            let shareURL = UIAction.Identifier("shareurl")
-            actionMappings[shareURL] = shareURL(action:)
-            let shareURLAction = UIAction(title: "Share",
-                                          image: UIImage(named: "share")!.withRenderingMode(.alwaysTemplate),
-                                          identifier: shareURL,
-                                          handler: shareURL(action:))
-            postActions.append(shareURLAction)
-            
+            postActions.append(.init(
+                title: "Share",
+                image: UIImage(named: "share")!.withRenderingMode(.alwaysTemplate),
+                identifier: UIAction.Identifier("shareurl"),
+                handler: shareURL(action:)
+            ))
  
             // Report
-            let report = UIAction.Identifier("report")
-            actionMappings[report] = report(action:)
-            let reportAction = UIAction(title: "Report",
-                                        image: UIImage(named: "rap-sheet")!.withRenderingMode(.alwaysTemplate),
-                                        identifier: report,
-                                        handler: report(action:))
-            postActions.append(reportAction)
-            
-    
-            let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: postActions)
-            return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
-        }()
-        
-        let chidoriMenu = ChidoriMenu(menu: postActionMenu, summonPoint: frame.origin)
-        chidoriMenu.delegate = self
-        present(chidoriMenu, animated: true, completion: nil)
+            postActions.append(.init(
+                title: "Report",
+                image: UIImage(named: "rap-sheet")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("report"),
+                handler: report(action:)
+            ))
 
+            return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: postActions)
+        }()
+
+        hiddenMenuButton.show(menu: postActionMenu, from: frame)
     }
     
     private func presentDraftMenu(
@@ -1837,12 +1800,5 @@ extension PostsPageViewController {
         keyCommands.append(UIKeyCommand.make(input: "N", modifierFlags: .command, action: #selector(newReply), discoverabilityTitle: "New Reply"))
         
         return keyCommands
-    }
-}
-
-
-extension PostsPageViewController: ChidoriDelegate {
-    func didSelectAction(_ action: UIAction) {
-        actionMappings[action.identifier]?(action)
     }
 }

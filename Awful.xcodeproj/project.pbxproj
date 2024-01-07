@@ -239,10 +239,6 @@
 		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
-		2D0BB37427F453B600242D2A /* ChidoriMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37027F453B600242D2A /* ChidoriMenu.swift */; };
-		2D0BB37527F453B600242D2A /* ChidoriPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */; };
-		2D0BB37627F453B600242D2A /* ChidoriMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */; };
-		2D0BB37727F453B600242D2A /* ChidoriAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */; };
 		2D19BA3329C330A2009DD94F /* mainthrobber60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3229C330A2009DD94F /* mainthrobber60.json */; };
 		2D19BA3529C33273009DD94F /* ghost60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3429C33273009DD94F /* ghost60.json */; };
 		2D19BA3929C33303009DD94F /* niggly60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3629C33302009DD94F /* niggly60.json */; };
@@ -635,10 +631,6 @@
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D0BB35827F440AF00242D2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		2D0BB37027F453B600242D2A /* ChidoriMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriMenu.swift; sourceTree = "<group>"; };
-		2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriPresentationController.swift; sourceTree = "<group>"; };
-		2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriMenuTableViewCell.swift; sourceTree = "<group>"; };
-		2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChidoriAnimationController.swift; sourceTree = "<group>"; };
 		2D19BA3229C330A2009DD94F /* mainthrobber60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mainthrobber60.json; sourceTree = "<group>"; };
 		2D19BA3429C33273009DD94F /* ghost60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ghost60.json; sourceTree = "<group>"; };
 		2D19BA3629C33302009DD94F /* niggly60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = niggly60.json; sourceTree = "<group>"; };
@@ -1174,10 +1166,6 @@
 				1CD1ADA62272737600E075EA /* CGGeometry+Math.swift */,
 				1C3E1816224C659500BD88E5 /* CGImage+IsOpaque.swift */,
 				1CD7EED5228501BF00B62865 /* CGRect+Center.swift */,
-				2D0BB37327F453B600242D2A /* ChidoriAnimationController.swift */,
-				2D0BB37027F453B600242D2A /* ChidoriMenu.swift */,
-				2D0BB37227F453B600242D2A /* ChidoriMenuTableViewCell.swift */,
-				2D0BB37127F453B600242D2A /* ChidoriPresentationController.swift */,
 				1C353C081E41832600CCBA51 /* CoreAnimation.swift */,
 				1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */,
 				1C397C8F1BCAEAC300CA7FD5 /* Foundation.swift */,
@@ -1926,7 +1914,6 @@
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
-				2D0BB37527F453B600242D2A /* ChidoriPresentationController.swift in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
 				1C8D114919AF7241005D46CB /* UIAlertController+AwfulConvenient.swift in Sources */,
 				1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */,
@@ -1971,7 +1958,6 @@
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C16FBCC1CB96F9300C88BD1 /* ForumTweaks.swift in Sources */,
 				1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */,
-				2D0BB37627F453B600242D2A /* ChidoriMenuTableViewCell.swift in Sources */,
 				7B82D6671F7809E3002291C7 /* AppIconCell.swift in Sources */,
 				1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */,
 				1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */,
@@ -2011,7 +1997,6 @@
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				1CD7EED6228501BF00B62865 /* CGRect+Center.swift in Sources */,
-				2D0BB37727F453B600242D2A /* ChidoriAnimationController.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				1C78E9052B268395001D675A /* Task+AnyCancellable.swift in Sources */,
 				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,
@@ -2071,7 +2056,6 @@
 				7B1FF12C1F76E690000B64DA /* AppIconPickerCollectionViewLayout.swift in Sources */,
 				1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */,
 				1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */,
-				2D0BB37427F453B600242D2A /* ChidoriMenu.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
