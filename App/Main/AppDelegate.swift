@@ -4,6 +4,7 @@
 
 import AVFoundation
 import AwfulCore
+import AwfulSettings
 import Nuke
 import Smilies
 import UIKit
@@ -25,7 +26,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.instance = self
 
-        UserDefaults.standard.registerDefaults(SettingsSection.mainBundleSections)
+        UserDefaults.standard.registerDefaults(SettingsSection.bundled)
         UserDefaults.standard.migrateOldAwfulSettings()
         
         let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)

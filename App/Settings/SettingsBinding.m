@@ -4,6 +4,7 @@
 
 #import "SettingsBinding.h"
 @import ObjectiveC.runtime;
+@import AwfulSettings;
 #import "Awful-Swift.h"
 
 @interface SettingsBinding : NSObject
@@ -231,7 +232,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
             [self addTarget:self action:@selector(awful_valueChanged) forControlEvents:UIControlEventValueChanged];
         }
         
-        NSDictionary<NSString *, id> *info = InfoForSettingWithKeyInSections(settingsKey, SettingsSection.mainBundleSections);
+        NSDictionary<NSString *, id> *info = InfoForSettingWithKeyInSections(settingsKey, SettingsSection.bundledSections);
         if (info[@"Minimum"]) {
             self.minimumValue = [info[@"Minimum"] doubleValue];
         }
@@ -326,7 +327,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
         if (![[self actionsForTarget:self forControlEvent:UIControlEventValueChanged] containsObject:NSStringFromSelector(@selector(awful_valueChanged))]) {
             [self addTarget:self action:@selector(awful_valueChanged) forControlEvents:UIControlEventValueChanged];
         }
-        NSDictionary *info = InfoForSettingWithKeyInSections(settingsKey, SettingsSection.mainBundleSections);
+        NSDictionary *info = InfoForSettingWithKeyInSections(settingsKey, SettingsSection.bundledSections);
         if (info[@"Minimum"]) {
             self.minimumValue = [info[@"Minimum"] floatValue];
         }

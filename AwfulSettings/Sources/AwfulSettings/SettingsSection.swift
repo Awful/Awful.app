@@ -2,22 +2,25 @@
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Foundation
+
 // These types are classes, and they inherit from NSObject, and some properties are `@objc`, in order to expose them to Objective-C. As soon as that's not necessary (i.e. SettingsBinding is gone or works a different way), these can all be changed to structs.
 
-final class SettingsSection: NSObject {
-    let info: [String: Any]
-    
+public final class SettingsSection: NSObject {
+    public let info: [String: Any]
+
     init(info: [String: Any]) {
         self.info = info
     }
     
-    @objc static let mainBundleSections = loadSections()!
+    @objc(bundledSections)
+    public static let bundled = loadSections(in: .module)!
 }
 
 // MARK: Loading settings from a plist
 
 extension SettingsSection {
-    static func loadSections(from resource: String = "Settings", in bundle: Bundle = .main) -> [SettingsSection]? {
+    static func loadSections(from resource: String = "Settings", in bundle: Bundle) -> [SettingsSection]? {
         guard
             let url = bundle.url(forResource: resource, withExtension: "plist"),
             let plist = NSDictionary(contentsOf: url),
@@ -30,8 +33,7 @@ extension SettingsSection {
 
 // MARK: Convenient accessors
 
-extension SettingsSection {
-    
+public extension SettingsSection {
     var defaultValues: [String: Any] {
         return settings.reduce(into: [:], { defaultValues, setting in
             if let key = setting.key, let value = setting.defaultValue {
@@ -43,10 +45,10 @@ extension SettingsSection {
     var device: String? { info["Device"] as? String }
 
     var requiresSupportsAlternateAppIcons: Bool? { info["RequiresSupportsAlternateAppIcons"] as? Bool }
-    
+
     @objc(SettingsSectionSetting) final class Setting: NSObject {
-        @objc let info: [String: Any]
-        
+        @objc public let info: [String: Any]
+
         init(info: [String: Any]) {
             self.info = info
         }
@@ -59,7 +61,7 @@ extension SettingsSection {
             }
         }
 
-        @objc var key: String? { info["Key"] as? String }
+        @objc public var key: String? { info["Key"] as? String }
     }
     
     @objc var settings: [Setting] {

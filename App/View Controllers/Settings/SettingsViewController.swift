@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import CoreData
 import SwiftUI
 
@@ -38,8 +39,8 @@ final class SettingsViewController: TableViewController {
             }
         }()
 
-        let sections = SettingsSection.mainBundleSections
-        
+        let sections = SettingsSection.bundled
+
         func validSection(_ section: SettingsSection) -> Bool {
             if let device = section.device, !device.hasPrefix(currentDevice) {
                 return false
