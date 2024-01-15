@@ -1,4 +1,4 @@
-//  SettingsViewController.swift
+//  SettingsViewController_Old.swift
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -9,7 +9,7 @@ import SwiftUI
 
 private let Log = Logger.get()
 
-final class SettingsViewController: TableViewController {
+final class SettingsViewController_Old: TableViewController {
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
     @FoilDefaultStorageOptional(Settings.username) private var loggedInUsername
@@ -131,8 +131,8 @@ final class SettingsViewController: TableViewController {
         registerTransformers()
         
         tableView.separatorStyle = .singleLine
-        tableView.register(UINib(nibName: "SettingsSliderCell", bundle: Bundle(for: SettingsViewController.self)), forCellReuseIdentifier: SettingType.Slider.cellIdentifier)
-        tableView.register(UINib(nibName: "AppIconPickerCell", bundle: Bundle(for: SettingsViewController.self)), forCellReuseIdentifier: SettingType.AppIconPicker.cellIdentifier)
+        tableView.register(UINib(nibName: "SettingsSliderCell", bundle: Bundle(for: SettingsViewController_Old.self)), forCellReuseIdentifier: SettingType.Slider.cellIdentifier)
+        tableView.register(UINib(nibName: "AppIconPickerCell", bundle: Bundle(for: SettingsViewController_Old.self)), forCellReuseIdentifier: SettingType.AppIconPicker.cellIdentifier)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -289,7 +289,7 @@ final class SettingsViewController: TableViewController {
             
             // Add overriding settings
             if switchView.awful_setting == Settings.darkMode.key {
-                switchView.addAwful_overridingSetting(Settings.darkMode.key)
+                switchView.addAwful_overridingSetting(Settings.autoDarkTheme.key)
             }
             else {
                 switchView.isEnabled = true

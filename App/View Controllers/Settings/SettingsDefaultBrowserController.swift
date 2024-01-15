@@ -44,18 +44,6 @@ final class SettingsDefaultBrowserController: TableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = UITextView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
-        footer.text = "iOS14+ users may set a third party browser as their default system browser via iOS Settings."
-        footer.textAlignment = .left
-        footer.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        footer.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: 1, weight: .semibold)
-        footer.textColor = theme["listSecondaryTextColor"]
-        footer.backgroundColor = theme["listBackgroundColor"]
-        footer.isEditable = false
-        return footer
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         

@@ -2,6 +2,7 @@
 //
 //  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import Foil
 import Foundation
 import SystemCapabilities
@@ -147,9 +148,20 @@ public enum BuiltInTheme: String, UserDefaultsSerializable {
 public enum DefaultBrowser: String, CaseIterable, UserDefaultsSerializable {
     // These raw values are persisted in user defaults, so don't change them willy nilly.
     case awful = "Awful"
+    case defaultiOSBrowser = "Default iOS Browser"
     case brave = "Brave"
     case chrome = "Chrome"
-    case defaultiOSBrowser = "Default iOS Browser"
     case edge = "Edge"
     case firefox = "Firefox"
+
+    /// Passing the returned URL to `UIApplication.canOpenURL(_:)` indicates whether the browser is available. When the returned URL is `nil`, it's always available.
+    public var checkCanOpenURL: URL? {
+        switch self {
+        case .awful, .defaultiOSBrowser: nil
+        case .brave: URL("brave://")
+        case .chrome: URL("googlechrome://")
+        case .edge: URL("microsoft-edge-http://")
+        case .firefox: URL("firefox://")
+        }
+    }
 }
