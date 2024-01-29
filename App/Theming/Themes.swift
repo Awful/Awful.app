@@ -3,6 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import UIKit
 
 /**
@@ -232,27 +233,33 @@ extension Theme {
 // MARK: - Getting themes with settings
 
 extension Theme {
-    static func defaultTheme(mode: Mode = currentMode) -> Theme {
-        let themeName: String
-        switch mode {
+    static func defaultTheme(
+        mode: Mode = currentMode
+    ) -> Theme {
+        let theme: BuiltInTheme = switch mode {
         case .dark:
-            themeName = UserDefaults.standard.defaultDarkTheme
+            defaultDarkTheme
         case .light:
-            themeName = UserDefaults.standard.defaultLightTheme
+            defaultLightTheme
         }
         
         // If a theme was renamed, this will prevent a crash on launch
-        return bundledThemes[themeName] ?? (mode == .light ? bundledThemes["default"] : bundledThemes["dark"])!
+        return bundledThemes[theme.rawValue] ?? (mode == .light ? bundledThemes["default"] : bundledThemes["dark"])!
     }
+
+    @FoilDefaultStorage(Settings.defaultDarkThemeName) private static var defaultDarkTheme
+    @FoilDefaultStorage(Settings.defaultLightThemeName) private static var defaultLightTheme
 
     class var allThemes: [Theme] {
         return bundledThemes.values.sorted()
     }
 
     private static var currentMode: Mode {
-        return UserDefaults.standard.isDarkModeEnabled ? .dark : .light
+        return darkMode ? .dark : .light
     }
-    
+
+    @FoilDefaultStorage(Settings.darkMode) private static var darkMode
+
     static func currentTheme(for forum: Forum, mode: Mode = currentMode) -> Theme {
         if let themeName = themeNameForForum(identifiedBy: forum.forumID, mode: mode) {
             return bundledThemes[themeName]!

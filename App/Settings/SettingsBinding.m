@@ -311,7 +311,7 @@ const static void * AssociatedFormatString = &AssociatedFormatString;
     if ([self.awful_setting isEqualToString:NSUserDefaults.isDarkModeEnabledKey]) {
         if ([key isEqualToString:NSUserDefaults.automaticallyEnableDarkModeKey]) {
             // If autoDarkTheme is turned on, disable the dark theme switch, since the setting will be toggled automatically
-            self.enabled = !NSUserDefaults.standardUserDefaults.automaticallyEnableDarkMode;
+            self.enabled = ![NSUserDefaults.standardUserDefaults boolForKey:NSUserDefaults.automaticallyEnableDarkModeKey];
         }
     }
 }

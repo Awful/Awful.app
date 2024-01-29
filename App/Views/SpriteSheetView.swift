@@ -2,6 +2,8 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import Combine
 import UIKit
 
 /**
@@ -13,8 +15,9 @@ import UIKit
  */
 public final class SpriteSheetView: UIView {
     
+    private var cancellables: Set<AnyCancellable> = []
     private var colorFollowsTheme = false
-    private var observers: [NSKeyValueObservation] = []
+    @FoilDefaultStorage(Settings.darkMode) private var darkMode
     private let spriteLayer = CALayer()
     
     /// An image of multiple frames stacked in a single column. Each frame is assumed to be a square.
@@ -40,7 +43,11 @@ public final class SpriteSheetView: UIView {
     
     /// Initializes the view with an appropriate size for the sprite sheet.
     // Optionally, provide a color to tint the
-    public convenience init(spriteSheet: UIImage, followsTheme: Bool = false, tint color: UIColor? = nil) {
+    public convenience init(
+        spriteSheet: UIImage,
+        followsTheme: Bool = false,
+        tint color: UIColor? = nil
+    ) {
         self.init(frame: CGRect(origin: .zero, size: spriteSheet.size))
         
         let chosenColor: UIColor?
@@ -58,18 +65,19 @@ public final class SpriteSheetView: UIView {
         }
         
         if colorFollowsTheme {
-            observers += UserDefaults.standard.observeSeveral {
-                $0.observe(\.isDarkModeEnabled) { [weak self] defaults in
-                    guard let self = self else { return }
-                    if
-                        let currentSheet = self.spriteSheet,
-                        let tintColor = Theme.defaultTheme()[color: "tintColor"],
-                        let newSheet = currentSheet.withTint(tintColor)
+            $darkMode
+                .dropFirst()
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in
+                    guard let self else { return }
+                    if let currentSheet = self.spriteSheet,
+                       let tintColor = Theme.defaultTheme()[color: "tintColor"],
+                       let newSheet = currentSheet.withTint(tintColor)
                     {
                         self.spriteSheet = newSheet
                     }
                 }
-            }
+                .store(in: &cancellables)
         }
         
         updateForSpriteSheet()

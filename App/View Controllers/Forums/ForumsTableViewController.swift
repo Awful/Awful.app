@@ -3,6 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
+import Combine
 import CoreData
 import UIKit
 
@@ -10,10 +12,12 @@ private let Log = Logger.get()
 
 final class ForumsTableViewController: TableViewController {
     
+    private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var listDataSource: ForumListDataSource!
     let managedObjectContext: NSManagedObjectContext
-    private var observers: [NSKeyValueObservation] = []
+    @FoilDefaultStorage(Settings.showUnreadAnnouncementsBadge) private var showUnreadAnnouncementsBadge
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
     
     init(managedObjectContext: NSManagedObjectContext) {
@@ -29,8 +33,9 @@ final class ForumsTableViewController: TableViewController {
             entityName: ForumMetadata.entityName,
             predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
             didChange: { [weak self] favoriteCount in
-                self?.updateEditingState(favoriteCount: favoriteCount)
-                if UserDefaults.standard.enableHaptics {
+                guard let self else { return }
+                updateEditingState(favoriteCount: favoriteCount)
+                if enableHaptics {
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 }
         })
@@ -42,14 +47,14 @@ final class ForumsTableViewController: TableViewController {
             predicate: NSPredicate(format: "%K == NO", #keyPath(Announcement.hasBeenSeen)),
             didChange: { [weak self] unreadCount in
                 self?.updateBadgeValue(unreadCount) })
-        updateBadgeValue(unreadAnnouncementCountObserver.count)
         
-        observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.showUnreadAnnouncementsBadge) { [weak self] defaults in
-                guard let self = self else { return }
-                self.updateBadgeValue(self.unreadAnnouncementCountObserver.count)
+        $showUnreadAnnouncementsBadge
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                updateBadgeValue(unreadAnnouncementCountObserver.count)
             }
-        }
+            .store(in: &cancellables)
         
         themeDidChange()
     }
@@ -99,8 +104,8 @@ final class ForumsTableViewController: TableViewController {
     
     private func updateBadgeValue(_ unreadCount: Int) {
         tabBarItem?.badgeValue = {
-            guard UserDefaults.standard.showUnreadAnnouncementsBadge else { return nil }
-            
+            guard showUnreadAnnouncementsBadge else { return nil }
+
             return unreadCount > 0
                 ? NumberFormatter.localizedString(from: unreadCount as NSNumber, number: .none)
                 : nil
@@ -116,7 +121,7 @@ final class ForumsTableViewController: TableViewController {
     }
     
     func openForum(_ forum: Forum, animated: Bool) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let threadList = ThreadsTableViewController(forum: forum)
@@ -126,7 +131,7 @@ final class ForumsTableViewController: TableViewController {
     }
 
     func openAnnouncement(_ announcement: Announcement) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let vc = AnnouncementViewController(announcement: announcement)
@@ -190,13 +195,12 @@ final class ForumsTableViewController: TableViewController {
     // MARK: Actions
 
     private func didTapDisclosureButton(in cell: UITableViewCell) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        guard
-            let indexPath = tableView.indexPath(for: cell),
-            let forum = listDataSource.item(at: indexPath) as? Forum
-            else { return }
+        guard let indexPath = tableView.indexPath(for: cell),
+              let forum = listDataSource.item(at: indexPath) as? Forum
+        else { return }
 
         if forum.metadata.showsChildrenInForumList {
             forum.collapse()
@@ -209,7 +213,7 @@ final class ForumsTableViewController: TableViewController {
     }
 
     private func didTapStarButton(in cell: UITableViewCell) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         guard

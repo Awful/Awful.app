@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import UIKit
 import WebKit
 
@@ -221,8 +222,8 @@ private struct RenderModel: StencilContextConvertible {
     let yahooName: String?
     
     init(_ profile: Profile) {
-        let privateMessagesWork = profile.user.canReceivePrivateMessages && UserDefaults.standard.loggedInUserCanSendPrivateMessages
-        
+        let privateMessagesWork = profile.user.canReceivePrivateMessages && FoilDefaultStorage(Settings.canSendPrivateMessages).wrappedValue
+
         aboutMe = profile.aboutMe
         aimName = profile.aimName
         anyContactInfo = {
@@ -241,7 +242,7 @@ private struct RenderModel: StencilContextConvertible {
             let url = Bundle(for: ProfileViewController.self).url(forResource: "profile.css", withExtension: nil)!
             return try! String(contentsOf: url, encoding: .utf8)
         }()
-        dark = UserDefaults.standard.isDarkModeEnabled
+        dark = FoilDefaultStorage(Settings.darkMode).wrappedValue
         gender = profile.gender?.rawValue ?? LocalizedString("profile.default-gender")
         homepageURL = profile.homepageURL
         icqName = profile.icqName

@@ -3,11 +3,13 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import Nuke
 import UIKit
 
 /// For writing the OP of a new thread.
 final class ThreadComposeViewController: ComposeTextViewController {
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     /// The newly-posted thread.
     private(set) var thread: AwfulThread?
     private let forum: Forum
@@ -131,7 +133,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     @objc private func didTapThreadTagButton(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         guard let picker = threadTagPicker else { return }

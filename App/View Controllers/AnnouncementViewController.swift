@@ -3,6 +3,7 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import CoreData
 import HTMLReader
 import UIKit
@@ -15,8 +16,12 @@ final class AnnouncementViewController: ViewController {
     
     private let announcement: Announcement
     private var announcementObserver: ManagedObjectObserver?
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var clientCancellable: Task<Void, Never>?
     private var desiredFractionalContentOffsetAfterRendering: CGFloat?
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
+    @FoilDefaultStorageOptional(Settings.username) private var loggedInUsername
     private let hadBeenSeenAlready: Bool
 
     private lazy var loadingView: LoadingView = {
@@ -249,7 +254,7 @@ final class AnnouncementViewController: ViewController {
     // MARK: Actions
 
     private func didTapAuthorHeaderInPost(at postIndex: Int, frame: CGRect) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         assert(postIndex == 0, "why was there more than one announcement?")
@@ -265,9 +270,9 @@ final class AnnouncementViewController: ViewController {
             self.present(profileVC.enclosingNavigationController, animated: true)
         }))
 
-        if UserDefaults.standard.loggedInUserCanSendPrivateMessages
+        if canSendPrivateMessages
             && user.canReceivePrivateMessages
-            && user.userID != UserDefaults.standard.loggedInUserID
+            && user.userID != loggedInUserID
         {
             items.append(IconActionItem(.sendPrivateMessage, block: {
                 let messageVC = MessageComposeViewController(recipient: user)
@@ -398,12 +403,12 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
             document.removeSpoilerStylingAndEvents()
             document.removeEmptyEditedByParagraphs()
             document.useHTML5VimeoPlayer()
-            if let username = UserDefaults.standard.loggedInUsername {
+            if let username = FoilDefaultStorageOptional(Settings.username).wrappedValue {
                 document.identifyMentionsOfUser(named: username, shouldHighlight: true)
                 document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
             }
-            document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.showImages)
-            if !UserDefaults.standard.automaticallyPlayGIFs {
+            document.processImgTags(shouldLinkifyNonSmilies: !FoilDefaultStorage(Settings.loadImages).wrappedValue)
+            if !FoilDefaultStorage(Settings.autoplayGIFs).wrappedValue {
                 document.stopGIFAutoplay()
             }
             return document.bodyElement?.innerHTML ?? ""
@@ -420,7 +425,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
             
         roles = announcement.author?.roles(in: announcement) ?? []
 
-        showsAvatar = UserDefaults.standard.showAuthorAvatars
+        showsAvatar = FoilDefaultStorage(Settings.showAvatars).wrappedValue
     }
 
     var hiddenAvatarURL: URL? {
@@ -505,7 +510,7 @@ extension AnnouncementViewController: RenderViewDelegate {
     }
 
     func didTapLink(to url: URL, in view: RenderView) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         if let route = try? AwfulRoute(url) {

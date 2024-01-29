@@ -3,6 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import MRProgress
 import SwiftUI
 import UIKit
@@ -31,7 +32,8 @@ extension UIContextMenuConfiguration {
                         page: .first,
                         .noseen
                     ).httpURL
-                    UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
+                    @FoilDefaultStorageOptional(Settings.lastOfferedPasteboardURLString) var lastOfferedPasteboardURLString
+                    lastOfferedPasteboardURLString = url.absoluteString
                     UIPasteboard.general.coercedURL = url
                 }
             )

@@ -3,6 +3,8 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
+import Combine
 import MRProgress
 
 private let Log = Logger.get()
@@ -13,8 +15,10 @@ A place for someone to compose a reply to a thread.
 ReplyWorkspace conforms to UIStateRestoring, so it is ok to involve it in UIKit state preservation and restoration.
 */
 final class ReplyWorkspace: NSObject {
+    private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorage(Settings.confirmBeforeReplying) private var confirmBeforeReplying
     let draft: NSObject & ReplyDraft
-    private var observers: [NSKeyValueObservation] = []
+    @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
     private let restorationIdentifier: String
     
     /**
@@ -114,10 +118,11 @@ final class ReplyWorkspace: NSObject {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
             navigationItem.rightBarButtonItem = rightButtonItem
             
-            observers += [UserDefaults.standard.observeOnMain(\.confirmNewPosts, options: .initial, changeHandler: { [weak self] defaults, change in
-                self?.updateRightButtonItem()
-            })]
-            
+            $confirmBeforeReplying
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.updateRightButtonItem() }
+                .store(in: &cancellables)
+
             if let
                 forumID = draft.thread.forum?.forumID,
                 let tweaks = ForumTweaks(forumID: forumID)
@@ -136,7 +141,7 @@ final class ReplyWorkspace: NSObject {
         }()
     
     fileprivate func updateRightButtonItem() {
-        if UserDefaults.standard.confirmNewPosts {
+        if confirmBeforeReplying {
             rightButtonItem.title = "Preview"
             rightButtonItem.action = #selector(ReplyWorkspace.didTapPreview(_:))
         } else {
@@ -152,7 +157,7 @@ final class ReplyWorkspace: NSObject {
 
         let title: String
         switch status {
-        case let .editing(post) where post.author?.userID == UserDefaults.standard.loggedInUserID:
+        case let .editing(post) where post.author?.userID == loggedInUserID:
             title = NSLocalizedString("compose.draft-menu.editing-own-post.title", comment: "")
         case let .editing(post):
             if let username = post.author?.username {

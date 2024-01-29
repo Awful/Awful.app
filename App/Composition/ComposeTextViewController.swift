@@ -2,9 +2,13 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import MRProgress
+import UIKit
 
 class ComposeTextViewController: ViewController {
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         navigationItem.leftBarButtonItem = cancelButtonItem
@@ -255,7 +259,7 @@ class ComposeTextViewController: ViewController {
     }
     
     @objc fileprivate func didTapSubmit() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         disableEverythingButTheCancelButton()
@@ -274,7 +278,7 @@ class ComposeTextViewController: ViewController {
     }
     
     @objc fileprivate func didTapCancel() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         if let progress = imageUploadProgress {

@@ -3,6 +3,7 @@
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import Stencil
 
 /// An entrypoint for Stencil templates without having to `import Stencil` everywhere.
@@ -128,7 +129,7 @@ extension Stencil.Environment {
 // MARK: - Custom filters and tags
 
 private func fontScaleStyle(_ context: Context) -> String {
-    let fontScale = NumberFormatter.localizedString(from: UserDefaults.standard.fontScale as NSNumber, number: .none)
+    let fontScale = NumberFormatter.localizedString(from: FoilDefaultStorage(Settings.fontScale).wrappedValue as NSNumber, number: .none)
     return """
         <style id="awful-font-scale-style">
         .nameanddate, .postbody, footer {

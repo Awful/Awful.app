@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import Foundation
 import ImgurAnonymousAPI
 import Photos
@@ -151,10 +152,9 @@ private struct ImageTag {
     
     func BBcode(_ url: URL) -> String {
         let t: String
-        if
-            UserDefaults.standard.postLargeImagesAsThumbnails &&
+        if FoilDefaultStorage(Settings.automaticTimg).wrappedValue &&
             (size.width > TextAttachment.requiresThumbnailImageSize.width ||
-            size.height > TextAttachment.requiresThumbnailImageSize.height)
+             size.height > TextAttachment.requiresThumbnailImageSize.height)
         {
             t = "t"
         } else {

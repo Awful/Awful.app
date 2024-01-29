@@ -2,6 +2,7 @@
 //
 //  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import Foundation
 
 extension UserDefaults {
@@ -43,6 +44,7 @@ extension UserDefaults {
 
         switch userSpecifiedSettings[OldSettingsKeys.keepSidebarOpen] as? String {
         case "never", "portrait":
+            @FoilDefaultStorage(Settings.hideSidebarInLandscape, userDefaults: self) var hideSidebarInLandscape
             hideSidebarInLandscape = true
             removeObject(forKey: OldSettingsKeys.keepSidebarOpen)
         default:
@@ -51,8 +53,10 @@ extension UserDefaults {
 
         // "Alternate App Theme" used to be a separate setting. Now we have default theme settings for each mode.
         if userSpecifiedSettings[OldSettingsKeys.isAlternateThemeEnabled] as? Bool == true {
-            defaultDarkTheme = "alternateDark"
-            defaultLightTheme = "alternateDefault"
+            @FoilDefaultStorage(Settings.defaultDarkThemeName, userDefaults: self) var darkTheme
+            darkTheme = .alternateDark
+            @FoilDefaultStorage(Settings.defaultLightThemeName, userDefaults: self) var lightTheme
+            lightTheme = .alternateDefault
             removeObject(forKey: OldSettingsKeys.isAlternateThemeEnabled)
         }
 

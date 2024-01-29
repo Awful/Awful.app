@@ -2,6 +2,8 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import Combine
 import FLAnimatedImage
 import NukeExtensions
 import UIKit
@@ -12,8 +14,9 @@ final class SettingsAvatarHeader: UIView {
     @IBOutlet private var stackView: UIStackView!
     @IBOutlet private var usernameLabel: UILabel!
 
-    private var observer: NSKeyValueObservation?
-    
+    private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorageOptional(Settings.username) private var username
+
     class func newFromNib() -> SettingsAvatarHeader {
         return Bundle.main.loadNibNamed("SettingsAvatarHeader", owner: nil, options: nil)![0] as! SettingsAvatarHeader
     }
@@ -34,12 +37,10 @@ final class SettingsAvatarHeader: UIView {
     }
     
     private func commonAwake() {
-        let defaults = UserDefaults.standard
-        observer = defaults.observeOnMain(\.loggedInUsername) {
-            [weak self] defaults, change in
-            self?.usernameLabel.text = defaults.loggedInUsername
-        }
-        usernameLabel.text = defaults.loggedInUsername
+        $username
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.usernameLabel.text = $0 }
+            .store(in: &cancellables)
     }
 
     func configure(avatarURL: URL?, horizontalPadding: CGFloat, textColor: UIColor?) {

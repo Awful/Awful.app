@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import Foundation
 import HTMLReader
 
@@ -37,9 +38,7 @@ struct PostRenderModel: StencilContextConvertible {
             }
             return true
         }
-        var showAvatars: Bool {
-            return UserDefaults.standard.showAuthorAvatars
-        }
+        @FoilDefaultStorage(Settings.showAvatars) var showAvatars
         var hiddenAvatarURL: URL? {
             return showAvatars ? nil : post.author?.avatarURL
         }
@@ -102,12 +101,12 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     document.removeEmptyEditedByParagraphs()
     document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
-    if let username = UserDefaults.standard.loggedInUsername {
+    if let username = FoilDefaultStorageOptional(Settings.username).wrappedValue {
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
         document.identifyMentionsOfUser(named: username, shouldHighlight: true)
     }
-    document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.showImages)
-    if !UserDefaults.standard.automaticallyPlayGIFs {
+    document.processImgTags(shouldLinkifyNonSmilies: !FoilDefaultStorage(Settings.loadImages).wrappedValue)
+    if !FoilDefaultStorage(Settings.autoplayGIFs).wrappedValue {
         document.stopGIFAutoplay()
     }
     if isIgnored {
@@ -120,14 +119,14 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     return document.bodyElement?.innerHTML ?? ""
 }
 
-private var showAvatars: Bool {
-    return UserDefaults.standard.showAuthorAvatars
+ private var showAvatars: Bool {
+     FoilDefaultStorage(Settings.showAvatars).wrappedValue
 }
 
 private var enableCustomTitlePostLayout: Bool {
     switch UIDevice.current.userInterfaceIdiom {
     case .mac, .pad:
-        return UserDefaults.standard.enableCustomTitlePostLayout
+        return FoilDefaultStorage(Settings.enableCustomTitlePostLayout).wrappedValue
     default:
         return false
     }

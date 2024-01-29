@@ -3,6 +3,8 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
+import Combine
 import CoreData
 import UIKit
 
@@ -10,12 +12,16 @@ private let Log = Logger.get()
 
 final class BookmarksTableViewController: TableViewController {
     
+    private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
-    private var observers: [NSKeyValueObservation] = []
-    
+    @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
+    @FoilDefaultStorage(Settings.forumThreadsSortedUnread) private var sortUnreadToTop
+
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
         return ScrollViewDelegateMultiplexer(scrollView: tableView)
     }()
@@ -41,13 +47,18 @@ final class BookmarksTableViewController: TableViewController {
     }
 
     private func makeDataSource() -> ThreadListDataSource {
-        let dataSource = try! ThreadListDataSource(bookmarksSortedByUnread: UserDefaults.standard.sortUnreadBookmarksFirst, showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, managedObjectContext: managedObjectContext, tableView: tableView)
+        let dataSource = try! ThreadListDataSource(
+            bookmarksSortedByUnread: sortUnreadToTop,
+            showsTagAndRating: showThreadTags,
+            managedObjectContext: managedObjectContext,
+            tableView: tableView
+        )
         dataSource.deletionDelegate = self
         return dataSource
     }
     
     private func loadPage(page: Int) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         Task {
@@ -101,24 +112,27 @@ final class BookmarksTableViewController: TableViewController {
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
 
-        observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
-                self?.prepareUserActivity()
+        $handoffEnabled
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.prepareUserActivity() }
+            .store(in: &cancellables)
+
+        Publishers.Merge($showThreadTags.dropFirst(), $sortUnreadToTop.dropFirst())
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                dataSource = makeDataSource()
+                tableView.reloadData()
             }
-            $0.observe(\.showThreadTagsInThreadList, \.sortUnreadBookmarksFirst) {
-                [weak self] defaults in
-                guard let self = self else { return }
-                self.dataSource = self.makeDataSource()
-                self.tableView.reloadData()
-            }
-        }
+            .store(in: &cancellables)
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {
         // Takes care of toggling the button's title.
         super.setEditing(editing, animated: true)
 
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         
@@ -132,7 +146,10 @@ final class BookmarksTableViewController: TableViewController {
         loadMoreFooter?.themeDidChange()
 
         tableView.separatorColor = theme["listSeparatorColor"]
-        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
+        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(
+            showsTagAndRating: showThreadTags,
+            inTableWithWidth: tableView.bounds.width
+        )
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -172,7 +189,7 @@ final class BookmarksTableViewController: TableViewController {
     // MARK: Handoff
     
     private func prepareUserActivity() {
-        guard UserDefaults.standard.isHandoffEnabled else {
+        guard handoffEnabled else {
             userActivity = nil
             return
         }

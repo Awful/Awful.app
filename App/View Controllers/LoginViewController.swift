@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import UIKit
 
 private let Log = Logger.get()
@@ -21,7 +22,11 @@ class LoginViewController: ViewController {
     @IBOutlet weak var forgotPasswordButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private var consentToTermsTextView: UITextView!
-    
+
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @FoilDefaultStorageOptional(Settings.userID) private var userID
+    @FoilDefaultStorageOptional(Settings.username) private var username
+
     fileprivate enum State {
         case awaitingUsername
         case awaitingPassword
@@ -125,9 +130,9 @@ class LoginViewController: ViewController {
                     username: usernameTextField.text ?? "",
                     password: passwordTextField.text ?? ""
                 )
-                UserDefaults.standard.loggedInUserCanSendPrivateMessages = user.canReceivePrivateMessages
-                UserDefaults.standard.loggedInUserID = user.userID
-                UserDefaults.standard.loggedInUsername = user.username
+                canSendPrivateMessages = user.canReceivePrivateMessages
+                userID = user.userID
+                username = user.username
                 completionBlock?(self)
             } catch {
                 Log.e("Could not log in: \(error)")

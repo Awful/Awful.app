@@ -129,7 +129,7 @@ struct BookmarkColorPicker_Previews: PreviewProvider {
     }
 
     static var previews: some View {
-        UserDefaults.standard.register(defaults: [SettingsKeys.defaultLightTheme: "default"])
+        UserDefaults.standard.register(defaults: [Settings.defaultLightThemeName.key: "default"])
 
         let context = makeContext()
         return BookmarkColorPicker(setBookmarkColor: { _, _ in }, thread: makeThread(in: context))

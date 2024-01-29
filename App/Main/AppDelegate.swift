@@ -5,6 +5,7 @@
 import AVFoundation
 import AwfulCore
 import AwfulSettings
+import Combine
 import Nuke
 import Smilies
 import UIKit
@@ -16,17 +17,24 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private(set) static var instance: AppDelegate!
 
     private var announcementListRefresher: AnnouncementListRefresher?
+    @FoilDefaultStorage(Settings.autoDarkTheme) private var automaticDarkTheme
+    private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorage(Settings.customBaseURL) private var customBaseURL
+    @FoilDefaultStorage(Settings.darkMode) private var darkMode
     private var dataStore: DataStore!
+    @FoilDefaultStorage(Settings.defaultDarkThemeName) private var defaultDarkTheme
+    @FoilDefaultStorage(Settings.defaultLightThemeName) private var defaultLightTheme
     private var inboxRefresher: PrivateMessageInboxRefresher?
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
-    private var observers: [NSKeyValueObservation] = []
     private var openCopiedURLController: OpenCopiedURLController?
+    @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
+    @FoilDefaultStorage(Settings.enableCustomTitlePostLayout) private var showCustomTitles
     var window: UIWindow?
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.instance = self
 
-        UserDefaults.standard.registerDefaults(SettingsSection.bundled)
+        UserDefaults.standard.register(defaults: Theme.forumSpecificDefaults)
         UserDefaults.standard.migrateOldAwfulSettings()
         
         let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -68,7 +76,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         // Don't want to lazily create it now.
         _rootViewControllerStack?.didAppear()
         
@@ -80,33 +91,51 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         PostsViewExternalStylesheetLoader.shared.refreshIfNecessary()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
-        NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
-        
-        observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.automaticallyEnableDarkMode) { [weak self] defaults in
-                self?.automaticallyUpdateDarkModeEnabledIfNecessary()
-            }
-            $0.observe(\.customBaseURLString) { [weak self] defaults in
-                self?.updateClientBaseURL()
-            }
-            $0.observe(\.defaultDarkTheme) { [weak self] defaults in
-                if defaults.isDarkModeEnabled {
-                    self?.showSnapshotDuringThemeDidChange()
-                }
-            }
-            $0.observe(\.defaultLightTheme) { [weak self] defaults in
-                if !defaults.isDarkModeEnabled {
-                    self?.showSnapshotDuringThemeDidChange()
-                }
-            }
-            $0.observe(\.isDarkModeEnabled) { [weak self] defaults in
-                self?.showSnapshotDuringThemeDidChange()
-            }
-            // whenever custom title layout is changed, also set show avatars accordingly
-            $0.observe(\.enableCustomTitlePostLayout) { [weak self] defaults in
-                self?.setShowAvatarsSetting()
-            }
+        do {
+            NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
+            NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
+        }
+
+        do {
+            $automaticDarkTheme
+                .dropFirst()
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.automaticallyUpdateDarkModeEnabledIfNecessary() }
+                .store(in: &cancellables)
+
+            $customBaseURL
+                .dropFirst()
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.updateClientBaseURL() }
+                .store(in: &cancellables)
+
+            $darkMode
+                .dropFirst()
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.showSnapshotDuringThemeDidChange() }
+                .store(in: &cancellables)
+
+            // if darkMode changes,
+            // or if defaultDarkTheme changes while in dark mode,
+            // or if defaultLightTheme changes while in light mode:
+            // snapshot!
+            
+            let darkDefaultChange = $defaultDarkTheme
+                .dropFirst()
+                .filter { [weak self] _ in self?.darkMode == true }
+            let lightDefaultChange = $defaultLightTheme
+                .dropFirst()
+                .filter { [weak self] _ in self?.darkMode == false }
+            Publishers.Merge(darkDefaultChange, lightDefaultChange)
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.showSnapshotDuringThemeDidChange() }
+                .store(in: &cancellables)
+
+            $showCustomTitles
+                .dropFirst()
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.setShowAvatarsSetting() }
+                .store(in: &cancellables)
         }
 
         return true
@@ -312,17 +341,17 @@ private extension AppDelegate {
     }
     
     private func setShowAvatarsSetting() {
-        if UserDefaults.standard.enableCustomTitlePostLayout {
-            UserDefaults.standard.showAuthorAvatars = true
+        if showCustomTitles {
+            showAvatars = true
         }
     }
 
     private func automaticallyUpdateDarkModeEnabledIfNecessary() {
-        guard UserDefaults.standard.automaticallyEnableDarkMode else { return }
+        guard automaticDarkTheme else { return }
 
         let shouldDarkModeBeEnabled = window?.traitCollection.userInterfaceStyle == .dark
-        if shouldDarkModeBeEnabled != UserDefaults.standard.isDarkModeEnabled {
-            UserDefaults.standard.isDarkModeEnabled.toggle()
+        if shouldDarkModeBeEnabled != darkMode {
+            darkMode.toggle()
         }
     }
     
@@ -331,19 +360,7 @@ private extension AppDelegate {
     }
     
     func updateClientBaseURL() {
-        let urlString = UserDefaults.standard.customBaseURLString ?? defaultBaseURLString
-        guard var components = URLComponents(string: urlString) else { return }
-        if components.scheme?.isEmpty ?? true {
-            components.scheme = "http"
-        }
-        
-        // Bare IP address is parsed by NSURLComponents as a path.
-        if components.host == nil {
-            components.host = components.path
-            components.path = ""
-        }
-        
-        ForumsClient.shared.baseURL = components.url
+        ForumsClient.shared.baseURL = customBaseURL
     }
     
     func showPromptIfLoginCookieExpiresSoon() {
@@ -440,5 +457,3 @@ private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
 private let loginCookieExpiringSoonThreshold = days(7)
 private let loginCookieLastExpiryPromptDateKey = "com.awfulapp.Awful.LastCookieExpiringPromptDate"
 private let loginCookieExpiryPromptFrequency = days(2)
-
-private let defaultBaseURLString = "https://forums.somethingawful.com"

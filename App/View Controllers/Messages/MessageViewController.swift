@@ -3,6 +3,8 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
+import Combine
 import HTMLReader
 
 private let Log = Logger.get()
@@ -10,14 +12,21 @@ private let Log = Logger.get()
 /// Displays a single private message.
 final class MessageViewController: ViewController {
     
+    @FoilDefaultStorage(Settings.autoplayGIFs) private var autoplayGIFs
+    private var cancellables: Set<AnyCancellable> = []
     private var composeVC: MessageComposeViewController?
     private var didLoadOnce = false
     private var didRender = false
+    @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    @FoilDefaultStorage(Settings.fontScale) private var fontScale
     private var fractionalContentOffsetOnLoad: CGFloat = 0
+    @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var loadingView: LoadingView?
-    private var observers: [NSKeyValueObservation] = []
     private let privateMessage: PrivateMessage
-    
+    @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
+    @FoilDefaultStorage(Settings.loadImages) private var showImages
+
     private lazy var renderView: RenderView = {
         let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
         renderView.delegate = self
@@ -61,7 +70,7 @@ final class MessageViewController: ViewController {
     // MARK: Actions
     
     @objc private func didTapReplyButtonItem(_ sender: UIBarButtonItem) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         var actions: [UIAlertAction] = []
@@ -151,7 +160,7 @@ final class MessageViewController: ViewController {
     // MARK: Handoff
     
     private func configureUserActivity() {
-        guard UserDefaults.standard.isHandoffEnabled else { return }
+        guard handoffEnabled else { return }
         userActivity = NSUserActivity(activityType: Handoff.ActivityType.readingMessage)
         userActivity?.needsSave = true
     }
@@ -185,29 +194,42 @@ final class MessageViewController: ViewController {
         longPress.delegate = self
         renderView.addGestureRecognizer(longPress)
         
-        observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.embedTweets) { [weak self] defaults in
-                if defaults.embedTweets {
-                    self?.renderView.embedTweets()
+        $embedTweets
+            .dropFirst()
+            .filter { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.renderView.embedTweets() }
+            .store(in: &cancellables)
+
+        $fontScale
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.renderView.setFontScale(Double($0)) }
+            .store(in: &cancellables)
+
+        $handoffEnabled
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                if visible {
+                    configureUserActivity()
                 }
             }
-            $0.observe(\.fontScale) { [weak self] defaults in
-                self?.renderView.setFontScale(defaults.fontScale)
-            }
-            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
-                guard let self = self else { return }
-                if self.visible {
-                    self.configureUserActivity()
-                }
-            }
-            $0.observe(\.showAuthorAvatars) { [weak self] defaults in
-                self?.renderView.setShowAvatars(defaults.showAuthorAvatars)
-            }
-            $0.observe(\.showImages) { [weak self] defaults in
-                self?.renderView.loadLinkifiedImages()
-            }
-        }
-        
+            .store(in: &cancellables)
+
+        $showAvatars
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.renderView.setShowAvatars($0) }
+            .store(in: &cancellables)
+
+        $showImages
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.renderView.loadLinkifiedImages() }
+            .store(in: &cancellables)
+
         if privateMessage.innerHTML == nil || privateMessage.innerHTML?.isEmpty == true || privateMessage.from == nil {
             let loadingView = LoadingView.loadingViewWithTheme(theme)
             self.loadingView = loadingView
@@ -305,7 +327,7 @@ extension MessageViewController: RenderViewDelegate {
         loadingView?.removeFromSuperview()
         loadingView = nil
         
-        if UserDefaults.standard.embedTweets {
+        if embedTweets {
             renderView.embedTweets()
         }
     }
@@ -367,20 +389,20 @@ private struct RenderModel: StencilContextConvertible {
     let context: [String: Any]
     
     init(message: PrivateMessage, stylesheet: String?) {
-        let showAvatars = UserDefaults.standard.showAuthorAvatars
+        let showAvatars = FoilDefaultStorage(Settings.showAvatars).wrappedValue
         let hiddenAvataruRL = showAvatars ? nil : message.from?.avatarURL
         var htmlContents: String? {
             guard let originalHTML = message.innerHTML else { return nil }
             let document = HTMLDocument(string: originalHTML)
             document.addAttributeToTweetLinks()
-            if let username = UserDefaults.standard.loggedInUsername {
+            if let username = FoilDefaultStorageOptional(Settings.username).wrappedValue {
                 document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
                 document.identifyMentionsOfUser(named: username, shouldHighlight: true)
             }
             document.removeSpoilerStylingAndEvents()
             document.useHTML5VimeoPlayer()
-            document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.showImages)
-            if !UserDefaults.standard.automaticallyPlayGIFs {
+            document.processImgTags(shouldLinkifyNonSmilies: !FoilDefaultStorage(Settings.loadImages).wrappedValue)
+            if !FoilDefaultStorage(Settings.autoplayGIFs).wrappedValue {
                 document.stopGIFAutoplay()
             }
             document.embedVideos()

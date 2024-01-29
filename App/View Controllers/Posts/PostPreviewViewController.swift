@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import CoreData
 
 private let Log = Logger.get()
@@ -100,7 +101,7 @@ final class PostPreviewViewController: ViewController {
         } else {
             return Log.e("nothing to do??")
         }
-        networkOperation = Task { [weak self] in
+        networkOperation = Task { @MainActor [weak self] in
             do {
                 let html = try await fetchPreview()
 
@@ -111,10 +112,12 @@ final class PostPreviewViewController: ViewController {
                 try Task.checkCancellation()
 
                 var loggedInUser: User? {
-                    guard let userID = UserDefaults.standard.loggedInUserID else {
+                    @FoilDefaultStorageOptional(Settings.userID) var loggedInUserID
+                    guard let userID = loggedInUserID else {
                         return nil
                     }
-                    let userKey = UserKey(userID: userID, username: UserDefaults.standard.loggedInUsername)
+                    @FoilDefaultStorageOptional(Settings.username) var loggedInUsername
+                    let userKey = UserKey(userID: userID, username: loggedInUsername)
                     return User.objectForKey(objectKey: userKey, in: context)
                 }
                 

@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import CoreData
 import UIKit
 
@@ -11,8 +12,11 @@ private let Log = Logger.get()
 @objc(MessageListViewController)
 final class MessageListViewController: TableViewController {
 
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var dataSource: MessageListDataSource?
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let managedObjectContext: NSManagedObjectContext
+    @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
     private var unreadMessageCountObserver: ManagedObjectCountObserver!
     
     init(managedObjectContext: NSManagedObjectContext) {
@@ -60,7 +64,7 @@ final class MessageListViewController: TableViewController {
     private var composeViewController: MessageComposeViewController?
     
     @objc private func didTapComposeButtonItem(_ sender: UIBarButtonItem) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         if composeViewController == nil {
@@ -76,8 +80,8 @@ final class MessageListViewController: TableViewController {
     }
     
     private func refreshIfNecessary() {
-        if !UserDefaults.standard.loggedInUserCanSendPrivateMessages { return }
-        
+        if !canSendPrivateMessages { return }
+
         if tableView.numberOfSections >= 1, tableView.numberOfRows(inSection: 0) == 0 {
             return refresh()
         }
@@ -105,7 +109,7 @@ final class MessageListViewController: TableViewController {
     }
     
     func showMessage(_ message: PrivateMessage) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let viewController = MessageViewController(privateMessage: message)
@@ -132,7 +136,10 @@ final class MessageListViewController: TableViewController {
     }
 
     private func recalculateSeparatorInset() {
-        tableView.separatorInset.left = MessageListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
+        tableView.separatorInset.left = MessageListCell.separatorLeftInset(
+            showsTagAndRating: showThreadTags,
+            inTableWithWidth: tableView.bounds.width
+        )
     }
 
     // MARK: View lifecycle
@@ -155,7 +162,7 @@ final class MessageListViewController: TableViewController {
         // Takes care of toggling the button's title.
         super.setEditing(editing, animated: true)
 
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         

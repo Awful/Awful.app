@@ -2,14 +2,18 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import Combine
 import CoreData
 import UIKit
 
 /// The RootViewControllerStack initializes the logged-in root view controller, implements releated delegate methods, and handles state restoration.
 final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate {
     
+    private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @FoilDefaultStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
     let managedObjectContext: NSManagedObjectContext
-    private var observers: [NSKeyValueObservation] = []
     private var notifiers: [NSObjectProtocol] = []
     
     lazy private(set) var rootViewController: UIViewController = {
@@ -70,15 +74,18 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         
         updateMessagesTabPresence()
         
-        observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.hideSidebarInLandscape) { [weak self] defaults in
-                self?.configureSplitViewControllerDisplayMode()
-            }
-            $0.observe(\.loggedInUserCanSendPrivateMessages) { [weak self] defaults in
-                self?.updateMessagesTabPresence()
-            }
-        }
-        
+        $hideSidebarInLandscape
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.configureSplitViewControllerDisplayMode() }
+            .store(in: &cancellables)
+
+        $canSendPrivateMessages
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.updateMessagesTabPresence() }
+            .store(in: &cancellables)
+
         configureSplitViewControllerDisplayMode()
     }
 
@@ -102,7 +109,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
             }
         }
         
-        if UserDefaults.standard.loggedInUserCanSendPrivateMessages {
+        if canSendPrivateMessages {
             if messagesTabIndex == nil {
                 let messages = MessageListViewController(managedObjectContext: managedObjectContext)
                 messages.restorationIdentifier = messagesRestorationIdentifier
@@ -119,7 +126,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     }
 	
     private func configureSplitViewControllerDisplayMode() {
-        if UserDefaults.standard.hideSidebarInLandscape {
+        if hideSidebarInLandscape {
             switch splitViewController.displayMode {
             case .primaryOverlay, .allVisible:
                 splitViewController.preferredDisplayMode = .oneOverSecondary

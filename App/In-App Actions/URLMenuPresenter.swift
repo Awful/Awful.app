@@ -3,6 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import Smilies
 import UIKit
 import Photos
@@ -27,12 +28,12 @@ private enum _URLMenuPresenter {
             }
         }
         
-        if canOpenInYouTube(url), UserDefaults.standard.openYouTubeLinksInYouTube {
+        if canOpenInYouTube(url), FoilDefaultStorage(Settings.openYouTubeLinksInYouTube).wrappedValue {
             UIApplication.shared.open(url)
             return
         }
         
-        if canOpenInTwitter(url), UserDefaults.standard.openTwitterLinksInTwitter {
+        if canOpenInTwitter(url), FoilDefaultStorage(Settings.openTwitterLinksInTwitter).wrappedValue {
             UIApplication.shared.open(url)
             return
         }
@@ -43,7 +44,7 @@ private enum _URLMenuPresenter {
             return
         }
         
-        switch UserDefaults.standard.defaultBrowser {
+        switch FoilDefaultStorage(Settings.defaultBrowser).wrappedValue {
         case .awful:
             AwfulBrowser.presentBrowserForURL(url, fromViewController: presenter)
         case .defaultiOSBrowser:

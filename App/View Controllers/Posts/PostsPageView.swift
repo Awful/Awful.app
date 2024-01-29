@@ -2,6 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import UIKit
 
 private let Log = Logger.get()
@@ -13,6 +14,8 @@ private let Log = Logger.get()
  */
 final class PostsPageView: UIView {
 
+    @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     var viewHasBeenScrolledOnce: Bool = false
     
     // MARK: Loading view
@@ -51,7 +54,7 @@ final class PostsPageView: UIView {
                 
                 let containerMargins = refreshControlContainer.layoutMarginsGuide
                 
-                if UserDefaults.standard.enableFrogAndGhost == false {
+                if frogAndGhostEnabled == false {
                     NSLayoutConstraint.activate([
                         refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
                         containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
@@ -496,9 +499,9 @@ extension PostsPageView: ScrollViewDelegateExtras {
         willBeginDraggingContentOffset = scrollView.contentOffset
         
         // disable transparency so that scroll thumbs work in dark mode
-        if #available(iOS 15, *), UserDefaults.standard.isDarkModeEnabled, !self.viewHasBeenScrolledOnce {
-            self.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
-            self.viewHasBeenScrolledOnce = true
+        if darkMode, !viewHasBeenScrolledOnce {
+            renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
+            viewHasBeenScrolledOnce = true
         }
     }
 

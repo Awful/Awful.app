@@ -17,9 +17,9 @@ final class SettingsThemePickerViewController: TableViewController {
 
         switch mode {
         case .dark:
-            settingsKey = SettingsKeys.defaultDarkTheme
+            settingsKey = Settings.defaultDarkThemeName.key
         case .light:
-            settingsKey = SettingsKeys.defaultLightTheme
+            settingsKey = Settings.defaultLightThemeName.key
         }
 
         super.init(style: .plain)

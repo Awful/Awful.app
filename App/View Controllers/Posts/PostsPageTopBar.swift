@@ -2,6 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import UIKit
 
 final class PostsPageTopBar: UIView {
@@ -39,6 +40,8 @@ final class PostsPageTopBar: UIView {
 
     private let bottomBorder = HairlineView()
 
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -75,33 +78,30 @@ final class PostsPageTopBar: UIView {
     }
 
     @objc private func didTapParentForum(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.goToParentForum?()
+        goToParentForum?()
     }
     var goToParentForum: (() -> Void)? {
         didSet { updateButtonsEnabled() }
     }
 
     @objc private func didTapPreviousPosts(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.showPreviousPosts?()
+        showPreviousPosts?()
     }
     var showPreviousPosts: (() -> Void)? {
         didSet { updateButtonsEnabled() }
     }
 
     @objc private func didTapScrollToEnd(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.scrollToEnd?()
+        scrollToEnd?()
     }
     var scrollToEnd: (() -> Void)? {
         didSet { updateButtonsEnabled() }

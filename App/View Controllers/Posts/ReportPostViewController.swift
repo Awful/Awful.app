@@ -3,9 +3,11 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import MRProgress
 
 final class ReportPostViewController: ViewController, UITextViewDelegate {
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     fileprivate let post: Post
     
     init(post: Post) {
@@ -24,14 +26,14 @@ final class ReportPostViewController: ViewController, UITextViewDelegate {
     }
     
     @IBAction @objc fileprivate func didTapCancel() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         dismiss(animated: true, completion: nil)
     }
     
     @IBAction fileprivate func didTapSubmit() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         rootView.endEditing(true)

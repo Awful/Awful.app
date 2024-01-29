@@ -2,8 +2,11 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+
 final class SettingsDefaultBrowserController: TableViewController {
     
+    @FoilDefaultStorage(Settings.defaultBrowser) private var defaultBrowser
     private lazy var installedBrowsers = DefaultBrowser.installedBrowsers
     private var observer: NSKeyValueObservation?
     
@@ -31,8 +34,8 @@ final class SettingsDefaultBrowserController: TableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) 
         let browser = installedBrowsers[indexPath.row]
         cell.textLabel?.text = browser.rawValue
-        cell.accessoryType = browser == UserDefaults.standard.defaultBrowser ? .checkmark : .none
-        
+        cell.accessoryType = browser == defaultBrowser ? .checkmark : .none
+
         let theme = self.theme
         cell.textLabel?.textColor = theme["listTextColor"]
         cell.backgroundColor = theme["listBackgroundColor"]
@@ -57,9 +60,9 @@ final class SettingsDefaultBrowserController: TableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let browser = installedBrowsers[indexPath.row]
-        if UserDefaults.standard.defaultBrowser == browser { return }
-        
-        UserDefaults.standard.defaultBrowser = browser
+        if defaultBrowser == browser { return }
+
+        defaultBrowser = browser
         
         tableView.indexPathsForVisibleRows?
             .filter { $0 != indexPath }

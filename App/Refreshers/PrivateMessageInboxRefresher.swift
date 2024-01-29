@@ -3,12 +3,14 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import Foundation
 
 private let Log = Logger.get()
 
 /// Periodically checks for new private messages in the logged-in user's inbox.
 final class PrivateMessageInboxRefresher {
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private let client: ForumsClient
     private let minder: RefreshMinder
     private var timer: Timer?
@@ -39,10 +41,9 @@ final class PrivateMessageInboxRefresher {
     func refreshIfNecessary() {
         timer?.invalidate()
         
-        guard
-            client.isLoggedIn,
-            UserDefaults.standard.loggedInUserCanSendPrivateMessages,
-            minder.shouldRefresh(.privateMessagesInbox) else
+        guard client.isLoggedIn,
+              canSendPrivateMessages,
+              minder.shouldRefresh(.privateMessagesInbox) else
         {
             Log.d("can't refresh private message inbox yet, will try again later")
             return startTimer(reason: .failure)

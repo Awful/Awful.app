@@ -10,6 +10,9 @@ import SwiftUI
 private let Log = Logger.get()
 
 final class SettingsViewController: TableViewController {
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
+    @FoilDefaultStorageOptional(Settings.username) private var loggedInUsername
     fileprivate let managedObjectContext: NSManagedObjectContext
     
     init(managedObjectContext: NSManagedObjectContext) {
@@ -82,8 +85,8 @@ final class SettingsViewController: TableViewController {
     }()
     
     private var loggedInUser: User? {
-        return UserDefaults.standard.loggedInUserID
-            .map { UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }
+        loggedInUserID
+            .map { UserKey(userID: $0, username: loggedInUsername) }
             .flatMap { User.objectForKey(objectKey: $0, in: managedObjectContext) }
     }
     
@@ -94,9 +97,9 @@ final class SettingsViewController: TableViewController {
                 let user = try await ForumsClient.shared.profileLoggedInUser()
                 RefreshMinder.sharedMinder.didRefresh(.loggedInUser)
 
-                UserDefaults.standard.loggedInUserCanSendPrivateMessages = user.canReceivePrivateMessages
-                UserDefaults.standard.loggedInUserID = user.userID
-                UserDefaults.standard.loggedInUsername = user.username
+                canSendPrivateMessages = user.canReceivePrivateMessages
+                loggedInUserID = user.userID
+                loggedInUsername = user.username
 
                 tableView.reloadData()
             } catch {
@@ -277,7 +280,7 @@ final class SettingsViewController: TableViewController {
         }
         
         if settingType == .Immutable, let valueID = setting["ValueIdentifier"] as? String , valueID == "Username" {
-            cell.detailTextLabel?.text = UserDefaults.standard.loggedInUsername
+            cell.detailTextLabel?.text = loggedInUsername
         }
         
         if settingType == .OnOff {
@@ -285,8 +288,8 @@ final class SettingsViewController: TableViewController {
             switchView.awful_setting = setting["Key"] as? String
             
             // Add overriding settings
-            if switchView.awful_setting == SettingsKeys.isDarkModeEnabled {
-                switchView.addAwful_overridingSetting(SettingsKeys.automaticallyEnableDarkMode)
+            if switchView.awful_setting == Settings.darkMode.key {
+                switchView.addAwful_overridingSetting(Settings.darkMode.key)
             }
             else {
                 switchView.isEnabled = true
@@ -405,9 +408,9 @@ final class SettingsViewController: TableViewController {
         case (_, "theme-picker"):
             let mode: Theme.Mode
             switch setting["Key"] as! String {
-            case SettingsKeys.defaultDarkTheme:
+            case Settings.defaultDarkThemeName.key:
                 mode = .dark
-            case SettingsKeys.defaultLightTheme:
+            case Settings.defaultLightThemeName.key:
                 mode = .light
             default:
                 fatalError("unknown default theme key \(setting["Key"] as Any)")
@@ -456,7 +459,7 @@ final class SettingsViewController: TableViewController {
         var cellTitleText = title
         
         if let title = section["TitleKey"] as? String, title == "username" {
-            cellTitleText = UserDefaults.standard.loggedInUsername ?? "Not logged in??"
+            cellTitleText = loggedInUsername ?? "Not logged in??"
         }
         
         if title == "Awful x.y.z" {

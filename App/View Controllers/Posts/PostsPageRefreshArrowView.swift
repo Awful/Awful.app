@@ -2,10 +2,12 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import UIKit
 
 final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     private let arrow: UIImageView
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let spinner: UIActivityIndicatorView
     
     private struct Angles {
@@ -51,7 +53,7 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         case (.armed, .triggered):
             rotateArrow(Angles.triggered, animated: true)
             
-            if UserDefaults.standard.enableHaptics {
+            if enableHaptics {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             }
         case (.refreshing, .refreshing):

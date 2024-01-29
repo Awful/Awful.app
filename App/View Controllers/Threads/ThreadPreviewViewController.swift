@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import CoreData
 
 private let Log = Logger.get()
@@ -82,7 +83,7 @@ final class ThreadPreviewViewController: ViewController {
                 let (previewHTML, formData) = try await previewTask.value
 
                 guard let self,
-                      let userKey = UserDefaults.standard.loggedInUserID.map({ UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }),
+                      let userKey = FoilDefaultStorageOptional(Settings.userID).wrappedValue.map({ UserKey(userID: $0, username: FoilDefaultStorageOptional(Settings.username).wrappedValue) }),
                       let context = self.managedObjectContext,
                       let author = User.objectForKey(objectKey: userKey, in: context) as User?
                 else { throw MissingAuthorError() }
