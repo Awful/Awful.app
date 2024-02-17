@@ -241,10 +241,12 @@ final class ReplyWorkspace: NSObject {
 
         var progressObservations: [NSKeyValueObservation] = []
         let changeHandler: (Progress) -> Void = { progress in
-            if progress.fractionCompleted >= 1 || progress.isCancelled {
-                progressView?.stopBlock = nil
-                progressObservations.forEach { $0.invalidate() }
-                progressObservations.removeAll()
+            DispatchQueue.main.async {
+                if progress.fractionCompleted >= 1 || progress.isCancelled {
+                    progressView?.stopBlock = nil
+                    progressObservations.forEach { $0.invalidate() }
+                    progressObservations.removeAll()
+                }
             }
         }
         progressObservations.append(submitProgress.observe(\.isCancelled, options: []) { progress, change in
