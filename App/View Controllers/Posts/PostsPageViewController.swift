@@ -31,8 +31,8 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
     
-    var threadActionsMenu: UIMenu {
-        UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
+    func threadActionsMenu() -> UIMenu {
+        return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
             // Bookmark
             UIAction(
                 title: thread.bookmarked ? "Remove Bookmark" : "Bookmark Thread",
@@ -531,7 +531,9 @@ final class PostsPageViewController: ViewController {
     }()
     
     
-    private lazy var actionsItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu)
+    private func actionsItem() -> UIBarButtonItem {
+        UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu())
+    }
 
     @objc private func externalStylesheetDidUpdate(_ rawNotification: Notification) {
         guard let notification = PostsViewExternalStylesheetLoader.DidUpdateNotification(rawNotification) else {
@@ -1003,6 +1005,12 @@ final class PostsPageViewController: ViewController {
                     overlay.tintColor = theme["tintColor"]
                     try? await Task.sleep(timeInterval: 0.7)
                     overlay.dismiss(true)
+
+                    // update toolbar so menu reflects new bookmarked state
+                    var newItems = postsView.toolbarItems
+                    newItems.removeLast()
+                    newItems.append(actionsItem())
+                    postsView.toolbarItems = newItems
                 }
             } catch {
                 Log.e("error marking thread: \(error)")
@@ -1108,7 +1116,7 @@ final class PostsPageViewController: ViewController {
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
-                popover.barButtonItem = actionsItem
+                popover.barButtonItem = actionsItem()
             }
         }
     }
@@ -1493,7 +1501,7 @@ final class PostsPageViewController: ViewController {
         postsView.toolbarItems = [
             settingsItem, .flexibleSpace(),
             backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
-            .flexibleSpace(), actionsItem]
+            .flexibleSpace(), actionsItem()]
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
