@@ -3,6 +3,7 @@
 //  Copyright 2022 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Lottie
+import UIKit
 
 final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent {
     private let animationView = LottieAnimationView(
