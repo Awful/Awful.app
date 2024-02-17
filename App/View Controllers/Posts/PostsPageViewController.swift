@@ -32,7 +32,6 @@ final class PostsPageViewController: ViewController {
     private var webViewDidLoadOnce = false
     
     func threadActionsMenu() -> UIMenu {
-        print("in tAM bookmarked state is now ", thread.bookmarked)
         return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
             // Bookmark
             UIAction(
@@ -1007,12 +1006,11 @@ final class PostsPageViewController: ViewController {
                     try? await Task.sleep(timeInterval: 0.7)
                     overlay.dismiss(true)
 
-                    print("bookmarked state is now ", thread.bookmarked)
                     // update toolbar so menu reflects new bookmarked state
                     var newItems = postsView.toolbarItems
                     newItems.removeLast()
                     newItems.append(actionsItem())
-                    toolbarItems = newItems
+                    postsView.toolbarItems = newItems
                 }
             } catch {
                 Log.e("error marking thread: \(error)")
