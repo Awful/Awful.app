@@ -746,10 +746,11 @@ final class PostsPageViewController: ViewController {
     }
     
     @objc private func didLongPressOnPostsView(_ sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began else { return }
+        
         if UserDefaults.standard.enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        guard sender.state == .began else { return }
         
         Task {
             let elements = await postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView))
