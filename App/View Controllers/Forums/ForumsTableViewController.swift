@@ -86,8 +86,8 @@ final class ForumsTableViewController: TableViewController {
     private func migrateFavoriteForumsFromSettings() {
         // TODO: this shouldn't be the view controller's responsibility.
         // In Awful 3.2, favorite forums moved from UserDefaults to the ForumMetadata entity in Core Data.
-        if let forumIDs = UserDefaults.standard.oldFavoriteForums {
-            let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs: forumIDs, in: managedObjectContext)
+        if let forumIDs = SettingsMigration.favoriteForums(.standard) {
+            let metadatas = ForumMetadata.metadataForForumsWithIDs(forumIDs: forumIDs.map(\.rawValue), in: managedObjectContext)
             for (i, metadata) in zip(0..., metadatas) {
                 metadata.favoriteIndex = Int32(i)
                 metadata.favorite = true
@@ -98,7 +98,7 @@ final class ForumsTableViewController: TableViewController {
             catch {
                 fatalError("error saving: \(error)")
             }
-            UserDefaults.standard.oldFavoriteForums = nil
+            SettingsMigration.forgetFavoriteForums(.standard)
         }
     }
     

@@ -7,5 +7,8 @@ let package = Package(
     defaultLocalization: "en",
     platforms: [.iOS(.v15)],
     products: [.library(name: "AwfulExtensions", targets: ["AwfulExtensions"])],
-    targets: [.target(name: "AwfulExtensions")]
+    targets: [
+        .target(name: "AwfulExtensions"),
+        .testTarget(name: "AwfulExtensionsTests", dependencies: ["AwfulExtensions"]),
+    ]
 )

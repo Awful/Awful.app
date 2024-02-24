@@ -35,8 +35,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         AppDelegate.instance = self
 
         UserDefaults.standard.register(defaults: Theme.forumSpecificDefaults)
-        UserDefaults.standard.migrateOldAwfulSettings()
-        
+        SettingsMigration.migrate(.standard)
+
         let appSupport = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let storeURL = appSupport.appendingPathComponent("CachedForumData", isDirectory: true)
         dataStore = DataStore(storeDirectoryURL: storeURL)

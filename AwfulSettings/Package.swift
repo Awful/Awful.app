@@ -13,6 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../AwfulExtensions"),
+        .package(path: "../AwfulModelTypes"),
         .package(path: "../SystemCapabilities"),
         .package(url: "http://github.com/jessesquires/Foil", from: "5.0.1"),
         .package(url: "https://github.com/kean/Nuke", from: "12.1.6"),
@@ -22,6 +23,7 @@ let package = Package(
             name: "AwfulSettings",
             dependencies: [
                 "AwfulExtensions",
+                "AwfulModelTypes",
                 "Foil",
                 "SystemCapabilities",
             ],
