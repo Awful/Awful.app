@@ -38,9 +38,6 @@ public enum Settings {
     /// Show a post preview before submitting a reply to a thread.
     public static let confirmBeforeReplying = Setting(key: "confirm_before_replying", default: true)
 
-    /// The base URL for all Forums requests.
-    public static let customBaseURL = Setting(key: "custom_base_URL", default: URL(string: "https://forums.somethingawful.com/")!)
-
     /// Render using dark mode. See also: `autoDarkTheme`.
     public static let darkMode = Setting(key: "dark_theme", default: false)
 

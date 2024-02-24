@@ -19,7 +19,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private var announcementListRefresher: AnnouncementListRefresher?
     @FoilDefaultStorage(Settings.autoDarkTheme) private var automaticDarkTheme
     private var cancellables: Set<AnyCancellable> = []
-    @FoilDefaultStorage(Settings.customBaseURL) private var customBaseURL
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     private var dataStore: DataStore!
     @FoilDefaultStorage(Settings.defaultDarkThemeName) private var defaultDarkTheme
@@ -44,7 +43,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         DispatchQueue.global(qos: .background).async(execute: removeOldDataStores)
         
         ForumsClient.shared.managedObjectContext = managedObjectContext
-        updateClientBaseURL()
+        ForumsClient.shared.baseURL = URL("https://forums.somethingawful.com/")
         ForumsClient.shared.didRemotelyLogOut = { [weak self] in
             self?.logOut()
         }
@@ -101,12 +100,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 .dropFirst()
                 .receive(on: RunLoop.main)
                 .sink { [weak self] _ in self?.automaticallyUpdateDarkModeEnabledIfNecessary() }
-                .store(in: &cancellables)
-
-            $customBaseURL
-                .dropFirst()
-                .receive(on: RunLoop.main)
-                .sink { [weak self] _ in self?.updateClientBaseURL() }
                 .store(in: &cancellables)
 
             $darkMode
@@ -198,9 +191,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         UserDefaults.standard.removeAllObjectsInMainBundleDomain()
         emptyCache()
-        
-        // Do this after resetting settings so that it gets the default baseURL.
-        updateClientBaseURL()
         
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
@@ -358,11 +348,7 @@ private extension AppDelegate {
     @objc func preferredContentSizeDidChange(_ notification: Notification) {
         themeDidChange()
     }
-    
-    func updateClientBaseURL() {
-        ForumsClient.shared.baseURL = customBaseURL
-    }
-    
+
     func showPromptIfLoginCookieExpiresSoon() {
         guard
             let expiryDate = ForumsClient.shared.loginCookieExpiryDate,
