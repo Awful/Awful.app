@@ -6,24 +6,13 @@ import AwfulSettings
 import UIKit
 
 extension DefaultBrowser {
-    var isInstalled: Bool {
-        switch self {
-        case .awful, .defaultiOSBrowser:
-            return true
-        case .brave:
-            return UIApplication.shared.canOpenURL(URL(string: "brave://")!)
-        case .chrome:
-            return UIApplication.shared.canOpenURL(URL(string: "googlechrome://")!)
-        case .edge:
-            return UIApplication.shared.canOpenURL(URL(string: "microsoft-edge-http://")!)
-        case .firefox:
-            return UIApplication.shared.canOpenURL(URL(string: "firefox://")!)
-        }
-    }
-    
-    fileprivate static var fallback: Self = .defaultiOSBrowser
-
     static var installedBrowsers: [Self] {
-        return allCases.filter { $0.isInstalled }
+        allCases.filter {
+            if let url = $0.checkCanOpenURL {
+                UIApplication.shared.canOpenURL(url)
+            } else {
+                true
+            }
+        }
     }
 }

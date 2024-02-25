@@ -77,9 +77,6 @@
 		1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C273A9D21B316DB002875A9 /* LoadMoreFooter.swift */; };
 		1C273AA021C1DC25002875A9 /* RenderView-AllFrames.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C273A9F21C1DC25002875A9 /* RenderView-AllFrames.js */; };
 		1C29BD4922505AD500E1217A /* ThemeNameTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */; };
-		1C29BD4B22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */; };
-		1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */; };
-		1C29BD4F225114C600E1217A /* ThemeMode+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */; };
 		1C29BD512251203400E1217A /* posts-view-oled-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C29BD502251203400E1217A /* posts-view-oled-dark.css */; };
 		1C29BD532251208200E1217A /* quote-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C29BD522251208200E1217A /* quote-post.png */; };
 		1C29BD55225121F100E1217A /* RootTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD54225121F100E1217A /* RootTabBarController.swift */; };
@@ -404,9 +401,6 @@
 		1C273A9D21B316DB002875A9 /* LoadMoreFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreFooter.swift; sourceTree = "<group>"; };
 		1C273A9F21C1DC25002875A9 /* RenderView-AllFrames.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "RenderView-AllFrames.js"; sourceTree = "<group>"; };
 		1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeNameTransformer.swift; sourceTree = "<group>"; };
-		1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsForumSpecificThemesViewController.swift; sourceTree = "<group>"; };
-		1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsThemePickerViewController.swift; sourceTree = "<group>"; };
-		1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ThemeMode+Presentation.swift"; sourceTree = "<group>"; };
 		1C29BD502251203400E1217A /* posts-view-oled-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-oled-dark.css"; sourceTree = "<group>"; };
 		1C29BD522251208200E1217A /* quote-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-post.png"; sourceTree = "<group>"; };
 		1C29BD54225121F100E1217A /* RootTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarController.swift; sourceTree = "<group>"; };
@@ -877,15 +871,6 @@
 			path = Messages;
 			sourceTree = "<group>";
 		};
-		1C29C386225854BE00E1217A /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				1C29BD4A22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift */,
-				1C29BD4C22505E8100E1217A /* SettingsThemePickerViewController.swift */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
 		1C29C3872258551700E1217A /* Thread Tags */ = {
 			isa = PBXGroup;
 			children = (
@@ -1092,7 +1077,6 @@
 			isa = PBXGroup;
 			children = (
 				1C42A2261FD47AEB00F67BA1 /* Forum+Presentation.swift */,
-				1C29BD4E225114C600E1217A /* ThemeMode+Presentation.swift */,
 				1CB5F7F6201547D90046D080 /* Thread+Presentation.swift */,
 				1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */,
 			);
@@ -1142,7 +1126,6 @@
 				1C29C3842258544B00E1217A /* Rap Sheet */,
 				1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */,
 				1C29BD54225121F100E1217A /* RootTabBarController.swift */,
-				1C29C386225854BE00E1217A /* Settings */,
 				1C29C3872258551700E1217A /* Thread Tags */,
 				1C29C3832258543200E1217A /* Threads */,
 			);
@@ -1792,7 +1775,6 @@
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
-				1C29BD4B22505E6400E1217A /* SettingsForumSpecificThemesViewController.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */,
@@ -1858,7 +1840,6 @@
 				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
-				1C29BD4D22505E8100E1217A /* SettingsThemePickerViewController.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
@@ -1881,7 +1862,6 @@
 				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
-				1C29BD4F225114C600E1217A /* ThemeMode+Presentation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

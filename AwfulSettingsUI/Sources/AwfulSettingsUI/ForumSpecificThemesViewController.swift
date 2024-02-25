@@ -1,4 +1,4 @@
-//  SettingsForumSpecificThemesViewController.swift
+//  ForumSpecificThemesViewController.swift
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -6,9 +6,10 @@ import AwfulCore
 import AwfulModelTypes
 import AwfulTheming
 import CoreData
+import SwiftUI
 import UIKit
 
-final class SettingsForumSpecificThemesViewController: TableViewController {
+final class ForumSpecificThemesViewController: TableViewController {
 
     private let context: NSManagedObjectContext
 
@@ -83,7 +84,7 @@ final class SettingsForumSpecificThemesViewController: TableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let forum = forums[indexPath.section]
         let mode = Theme.Mode.allCases[indexPath.row]
-        let picker = SettingsThemePickerViewController(forumID: forum.forumID, mode: mode)
+        let picker = ThemePickerViewController(forumID: forum.forumID, mode: mode)
         picker.title = "\(forum.name ?? "") \(mode.localizedDescription)"
         show(picker, sender: self)
     }
@@ -95,8 +96,20 @@ final class SettingsForumSpecificThemesViewController: TableViewController {
     }
 }
 
-extension SettingsForumSpecificThemesViewController: NSFetchedResultsControllerDelegate {
+extension ForumSpecificThemesViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.reloadData()
+    }
+}
+
+struct ForumSpecificThemesView: UIViewControllerRepresentable {
+    @Environment(\.managedObjectContext) var managedObjectContext
+
+    func makeUIViewController(context: Context) -> ForumSpecificThemesViewController {
+        .init(context: managedObjectContext)
+    }
+
+    func updateUIViewController(_ uiViewController: ForumSpecificThemesViewController, context: Context) {
+        // nop
     }
 }

@@ -1,12 +1,13 @@
-//  SettingsThemePickerViewController.swift
+//  ThemePickerViewController.swift
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulSettings
 import AwfulTheming
+import SwiftUI
 import UIKit
 
-final class SettingsThemePickerViewController: TableViewController {
+final class ThemePickerViewController: TableViewController {
 
     private let forumID: String?
     private let mode: Theme.Mode
@@ -126,3 +127,15 @@ final class SettingsThemePickerViewController: TableViewController {
 }
 
 private var KVOContext = 0
+
+struct DefaultThemePickerView: UIViewControllerRepresentable {
+    let mode: Theme.Mode
+
+    func makeUIViewController(context: Context) -> ThemePickerViewController {
+        .init(defaultMode: mode)
+    }
+
+    func updateUIViewController(_ uiViewController: ThemePickerViewController, context: Context) {
+        // nop
+    }
+}

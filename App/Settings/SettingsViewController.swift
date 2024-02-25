@@ -45,8 +45,7 @@ final class SettingsViewController: UIHostingController<SettingsContainerView> {
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
             makeAcknowledgements: { AnyView(AcknowledgementsView()) },
-            makeDefaultThemePicker: { AnyView(DefaultThemePickerView(mode: $0)) },
-            makeForumSpecificThemes: { AnyView(ForumSpecificThemesView().environment(\.managedObjectContext, managedObjectContext)) }
+            managedObjectContext: managedObjectContext
         ))
         box.contents = self
 
@@ -108,8 +107,7 @@ struct SettingsContainerView: View {
     let isPad: Bool
     let logOut: () -> Void
     let makeAcknowledgements: () -> AnyView
-    let makeDefaultThemePicker: (Theme.Mode) -> AnyView
-    let makeForumSpecificThemes: () -> AnyView
+    let managedObjectContext: NSManagedObjectContext
 
     var body: some View {
         SettingsView(
@@ -122,10 +120,9 @@ struct SettingsContainerView: View {
             hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
             isPad: isPad,
             logOut: logOut,
-            makeAcknowledgements: makeAcknowledgements,
-            makeDefaultThemePicker: makeDefaultThemePicker,
-            makeForumSpecificThemes: makeForumSpecificThemes
+            makeAcknowledgements: makeAcknowledgements
         )
+        .environment(\.managedObjectContext, managedObjectContext)
         .themed()
     }
 }
@@ -136,34 +133,6 @@ struct AcknowledgementsView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: AcknowledgementsViewController, context: Context) {
-        // nop
-    }
-}
-
-struct DefaultThemePickerView: UIViewControllerRepresentable {
-    let mode: Theme.Mode
-
-    func makeUIViewController(context: Context) -> SettingsThemePickerViewController {
-        let defaultMode: Theme.Mode = switch mode {
-        case .dark: .dark
-        case .light: .light
-        }
-        return .init(defaultMode: defaultMode)
-    }
-
-    func updateUIViewController(_ uiViewController: SettingsThemePickerViewController, context: Context) {
-        // nop
-    }
-}
-
-struct ForumSpecificThemesView: UIViewControllerRepresentable {
-    @SwiftUI.Environment(\.managedObjectContext) var managedObjectContext
-
-    func makeUIViewController(context: Context) -> SettingsForumSpecificThemesViewController {
-        .init(context: managedObjectContext)
-    }
-    
-    func updateUIViewController(_ uiViewController: SettingsForumSpecificThemesViewController, context: Context) {
         // nop
     }
 }

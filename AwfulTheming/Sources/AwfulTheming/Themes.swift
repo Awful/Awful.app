@@ -35,6 +35,15 @@ public class Theme {
 
     public enum Mode: CaseIterable, Hashable {
         case light, dark
+
+        public var localizedDescription: String {
+            switch self {
+            case .light:
+                String(localized: "Light", bundle: .module)
+            case .dark:
+                String(localized: "Dark", bundle: .module)
+            }
+        }
     }
 }
 

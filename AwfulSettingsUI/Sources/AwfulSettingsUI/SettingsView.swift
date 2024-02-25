@@ -9,9 +9,7 @@ import NukeUI
 import SwiftUI
 
 public struct SettingsView<
-    AcknowledgementsView: View,
-    DefaultThemePickerView: View,
-    ForumSpecificThemesView: View
+    AcknowledgementsView: View
 >: View {
     @AppStorage(Settings.autoplayGIFs) private var alwaysAnimateGIFs
     @AppStorage(Settings.confirmBeforeReplying) private var alwaysPreviewNewPosts
@@ -49,8 +47,7 @@ public struct SettingsView<
     let isPad: Bool
     let logOut: () -> Void
     let makeAcknowledgements: () -> AcknowledgementsView
-    let makeDefaultThemePicker: (Theme.Mode) -> DefaultThemePickerView
-    let makeForumSpecificThemes: () -> ForumSpecificThemesView
+    @Environment(\.managedObjectContext) var managedObjectContext
     @Environment(\.theme) var theme
 
     struct BuildInfo {
@@ -88,9 +85,7 @@ public struct SettingsView<
         hasRegularSizeClassInLandscape: Bool,
         isPad: Bool,
         logOut: @escaping () -> Void,
-        makeAcknowledgements: @escaping () -> AcknowledgementsView,
-        makeDefaultThemePicker: @escaping (Theme.Mode) -> DefaultThemePickerView,
-        makeForumSpecificThemes: @escaping () -> ForumSpecificThemesView
+        makeAcknowledgements: @escaping () -> AcknowledgementsView
     ) {
         self.appIconDataSource = appIconDataSource
         self.avatarURL = avatarURL
@@ -102,8 +97,6 @@ public struct SettingsView<
         self.isPad = isPad
         self.logOut = logOut
         self.makeAcknowledgements = makeAcknowledgements
-        self.makeDefaultThemePicker = makeDefaultThemePicker
-        self.makeForumSpecificThemes = makeForumSpecificThemes
     }
 
     public var body: some View {
@@ -216,15 +209,16 @@ public struct SettingsView<
 
             Section {
                 NavigationLink("Default Light Theme", bundle: .module) {
-                    makeDefaultThemePicker(.light)
+                    DefaultThemePickerView(mode: .light)
                         .navigationTitle("Default Light Theme", bundle: .module)
                 }
                 NavigationLink("Default Dark Theme", bundle: .module) {
-                    makeDefaultThemePicker(.dark)
+                    DefaultThemePickerView(mode: .dark)
                         .navigationTitle("Default Dark Theme", bundle: .module)
                 }
                 NavigationLink("Forum-Specific Themes", bundle: .module) {
-                    makeForumSpecificThemes()
+                    ForumSpecificThemesView()
+                        .environment(\.managedObjectContext, managedObjectContext) // Not inherited from SettingsView's environment?
                         .navigationTitle("Forum-Specific Themes", bundle: .module)
                 }
                 Toggle("Dark Mode", bundle: .module, isOn: $darkModeManuallyEnabled)
@@ -340,9 +334,7 @@ private struct SectionModifier: ViewModifier {
             hasRegularSizeClassInLandscape: true,
             isPad: true,
             logOut: { print("logging out") },
-            makeAcknowledgements: { Text(verbatim: "tyvm") },
-            makeDefaultThemePicker: { Text(verbatim: "Default \("\($0)") Picker") },
-            makeForumSpecificThemes: { Text(verbatim: "Forum-specific themes!") }
+            makeAcknowledgements: { Text(verbatim: "tyvm") }
         )
         .navigationTitle(Text(verbatim: "Settings"))
         .environment(\.theme, Theme.defaultTheme(mode: .dark))

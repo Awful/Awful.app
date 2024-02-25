@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "AwfulTheming",
+    defaultLocalization: "en",
     platforms: [.iOS(.v15)],
     products: [
         .library(name: "AwfulTheming", targets: ["AwfulTheming"]),
