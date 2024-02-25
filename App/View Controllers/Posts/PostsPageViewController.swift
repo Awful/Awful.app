@@ -1464,11 +1464,11 @@ final class PostsPageViewController: ViewController {
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
             navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
         default:
             navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
             navigationItem.titleLabel.numberOfLines = 2
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
         }
 
 

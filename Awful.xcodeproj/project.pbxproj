@@ -431,6 +431,7 @@
 		1C2C1F111CE547A600CD27DD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableStickers.plist; sourceTree = "<group>"; };
+		1C2F1B7E2B8BD05D00808818 /* AwfulSettingsUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSettingsUI; sourceTree = "<group>"; };
 		1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteSheetView.swift; sourceTree = "<group>"; };
 		1C397C8D1BC9B12F00CA7FD5 /* UIContextMenuConfiguration+ThreadListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIContextMenuConfiguration+ThreadListItem.swift"; sourceTree = "<group>"; };
 		1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceURLProtocol.swift; sourceTree = "<group>"; };
@@ -1317,6 +1318,7 @@
 				1C1F0F0E2B8A8C9700F097D3 /* AwfulModelTypes */,
 				1CDAC85F2AE10966006CEE88 /* AwfulScraping */,
 				1C13FF0A2B54978300B39A0D /* AwfulSettings */,
+				1C2F1B7E2B8BD05D00808818 /* AwfulSettingsUI */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				1C56974E24C3F39B0077CA62 /* CopyMarkdown */,

@@ -141,13 +141,13 @@ final class ThreadPreviewViewController: ViewController {
             backgroundColor: theme["listBackgroundColor"]!,
             pageCount: NSAttributedString(string: "1", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], weight: .regular),
-                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
+                .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!]),
             pageIconColor: theme["listSecondaryTextColor"]!,
             postInfo: {
                 let text = String(format: LocalizedString("compose.thread-preview.posting-in"), forum.name ?? "")
                 return NSAttributedString(string: text, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], weight: .regular),
-                    .foregroundColor: theme[color: "listSecondaryTextColor"]!])
+                    .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!])
             }(),
             ratingImage: nil,
             secondaryTagImageName: secondaryThreadTag?.imageName,
@@ -159,7 +159,7 @@ final class ThreadPreviewViewController: ViewController {
                 subject.collapseWhitespace()
                 return NSAttributedString(string: subject, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
-                    .foregroundColor: theme[color: "listTextColor"]!])
+                    .foregroundColor: theme[uicolor: "listTextColor"]!])
             }(),
             unreadCount: NSAttributedString())
         

@@ -3,6 +3,8 @@
 //  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulExtensions
+import AwfulSettings
+import AwfulTheming
 import NukeUI
 import SwiftUI
 
@@ -47,8 +49,9 @@ public struct SettingsView<
     let isPad: Bool
     let logOut: () -> Void
     let makeAcknowledgements: () -> AcknowledgementsView
-    let makeDefaultThemePicker: (SettingsViewThemeMode) -> DefaultThemePickerView
+    let makeDefaultThemePicker: (Theme.Mode) -> DefaultThemePickerView
     let makeForumSpecificThemes: () -> ForumSpecificThemesView
+    @Environment(\.theme) var theme
 
     struct BuildInfo {
         let build: String?
@@ -86,7 +89,7 @@ public struct SettingsView<
         isPad: Bool,
         logOut: @escaping () -> Void,
         makeAcknowledgements: @escaping () -> AcknowledgementsView,
-        makeDefaultThemePicker: @escaping (SettingsViewThemeMode) -> DefaultThemePickerView,
+        makeDefaultThemePicker: @escaping (Theme.Mode) -> DefaultThemePickerView,
         makeForumSpecificThemes: @escaping () -> ForumSpecificThemesView
     ) {
         self.appIconDataSource = appIconDataSource
@@ -109,32 +112,41 @@ public struct SettingsView<
                 Button("Log Out", bundle: .module) { logOut() }
                 Button("Empty Cache", bundle: .module) { emptyCache() }
             } header: {
-                HStack {
-                    if let avatarURL {
-                        LazyImage(url: avatarURL) {
-                            if let image = $0.image {
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
+                VStack(alignment: .leading) {
+                    Group {
+                        if let avatarURL {
+                            LazyImage(url: avatarURL) {
+                                if let image = $0.image {
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                }
                             }
                         }
                     }
+                    .frame(height: 60)
+
                     Text(currentUsername)
                 }
-                .frame(height: 60)
+                .header()
             } footer: {
                 Text("Logging out erases all cached forums, threads, and posts.", bundle: .module)
+                    .footer()
             }
+            .section()
 
             Section {
                 Button("Go to Awful’s Thread", bundle: .module) { goToAwfulThread() }
             } header: {
                 Text(buildInfo.localizedDescription)
+                    .header()
             } footer: {
                 Text("Post feedback, bug reports, and feature suggestions. Do not contact anyone who works for Something Awful about this app.", bundle: .module)
+                    .footer()
             }
+            .section()
 
-            Section("Posts", bundle: .module) {
+            Section {
                 Toggle("Show Avatars", bundle: .module, isOn: $showAvatars)
                 Toggle("Load Images", bundle: .module, isOn: $loadImages)
                 Stepper("Scale Text \(fontScale.formatted())%", bundle: .module, value: $fontScale, in: 50...200, step: 10)
@@ -146,23 +158,39 @@ public struct SettingsView<
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)
                 }
+            } header: {
+                Text("Posts", bundle: .module)
+                    .header()
             }
+            .section()
 
-            Section("Posting", bundle: .module) {
+            Section {
                 Toggle("[timg] Large Images", bundle: .module, isOn: $timgLargeImages)
+            } header: {
+                Text("Posting", bundle: .module)
+                    .header()
             }
+            .section()
 
-            Section("Threads", bundle: .module) {
+            Section {
                 Toggle("Show Thread Tags", bundle: .module, isOn: $showThreadTags)
                 Toggle("Sort Unread Bookmarks First", bundle: .module, isOn: $sortFirstUnreadBookmarks)
                 Toggle("Sort Unread Threads First", bundle: .module, isOn: $sortFirstUnreadThreads)
                 Toggle("Pull for Next Page", bundle: .module, isOn: $pullForNextPage)
+            } header: {
+                Text("Threads", bundle: .module)
+                    .header()
             }
+            .section()
 
             if hasRegularSizeClassInLandscape {
-                Section("Sidebar", bundle: .module) {
+                Section {
                     Toggle("Hide Sidebar in Landscape", bundle: .module, isOn: $hideSidebarInLandscape)
+                } header: {
+                    Text("Sidebar", bundle: .module)
+                        .header()
                 }
+                .section()
             }
 
             Section {
@@ -179,9 +207,12 @@ public struct SettingsView<
                 }
             } header: {
                 Text("Links", bundle: .module)
+                    .header()
             } footer: {
                 Text("What to open when tapping an external link. Long-press any link for more options.", bundle: .module)
+                    .footer()
             }
+            .section()
 
             Section {
                 NavigationLink("Default Light Theme", bundle: .module) {
@@ -201,151 +232,94 @@ public struct SettingsView<
                 Toggle("Automatic Dark Mode", bundle: .module, isOn: $darkModeAutomatic)
             } header: {
                 Text("Themes", bundle: .module)
+                    .header()
             } footer: {
                 Text("Awful can automatically switch between light and dark themes alongside iOS.", bundle: .module)
+                    .footer()
             }
+            .section()
 
             Section {
                 Toggle("Handoff", bundle: .module, isOn: $handoffEnabled)
             } footer: {
                 Text("Handoff allows you to continue reading threads on nearby devices.", bundle: .module)
+                    .footer()
             }
+            .section()
 
             Section {
                 Toggle("Show End-of-Thread Frog and Dead Tweet Ghost", bundle: .module, isOn: $frogAndGhostEnabled)
             }
+            .section()
 
             Section {
                 Toggle("Check Clipboard for URL", bundle: .module, isOn: $checkClipboardForURLOnBecomeActive)
             } footer: {
                 Text("Checking the clipboard for a forums URL when you open th eapp allows you to jump straight to a copied URL in Awful.", bundle: .module)
+                    .footer()
             }
+            .section()
 
-            Section("App Icon", bundle: .module) {
+            Section {
                 AppIconPicker(appIconDataSource: appIconDataSource)
+            } header: {
+                Text("App Icon", bundle: .module)
+                    .header()
             }
+            .section()
 
-            Section("Tabs", bundle: .module) {
+            Section {
                 Toggle("Unread Announcements Badge", bundle: .module, isOn: $showUnreadAnnouncementsBadge)
+            } header: {
+                Text("Tabs", bundle: .module)
+                    .header()
             }
+            .section()
 
-            Section("Thank You", bundle: .module) {
+            Section {
                 NavigationLink("Acknowledgements", bundle: .module) {
                     makeAcknowledgements()
                         .navigationTitle("Acknowledgements", bundle: .module)
                 }
+            } header: {
+                Text("Thank You", bundle: .module)
+                    .header()
             }
+            .section()
         }
+        .foregroundStyle(theme[color: "listText"]!)
+        .tint(theme[color: "tint"]!)
+        .backport.scrollContentBackground(.hidden)
+        .background(theme[color: "background"]!)
         .task { await appIconDataSource.loadAppIcons() }
     }
 }
 
-private struct AppIconPicker: View {
-    @ObservedObject private var appIconDataSource: AppIconDataSource
-
-    init(appIconDataSource: AppIconDataSource) {
-        self.appIconDataSource = appIconDataSource
+private extension View {
+    func header() -> some View {
+        modifier(HeaderFooterModifier(weight: .semibold))
     }
-
-    struct IconButton: View {
-        let appIconName: AppIconDataSource.AppIconName
-        let image: Image
-        let isSelected: Bool
-        let select: () -> Void
-
-        var body: some View {
-            Button(action: { select() }) {
-                ZStack(alignment: .bottomTrailing) {
-                    image
-                        .resizable()
-                        .frame(width: 57, height: 57)
-
-                    if isSelected {
-                        Image(systemName: "checkmark.circle.fill")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                    }
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
-        }
+    func footer() -> some View {
+        modifier(HeaderFooterModifier(weight: .regular))
     }
-
-    var body: some View {
-        ScrollView(.horizontal) {
-            LazyHStack {
-                ForEach(appIconDataSource.appIcons, id: \.rawValue) { appIcon in
-                    if let image = appIconDataSource.image(for: appIcon) {
-                        IconButton(
-                            appIconName: appIcon,
-                            image: image,
-                            isSelected: appIconDataSource.selectedIconName == appIcon,
-                            select: { appIconDataSource.select(appIcon) }
-                        )
-                    }
-                }
-            }
-        }
+    func section() -> some View {
+        modifier(SectionModifier())
     }
 }
-
-// Should be replaced with Theme.Mode once that's moved out of the Awful module.
-public enum SettingsViewThemeMode {
-    case dark, light
+private struct HeaderFooterModifier: ViewModifier {
+    @Environment(\.theme) var theme
+    let weight: Font.Weight?
+    func body(content: Content) -> some View {
+        content
+            .backport.fontWeight(weight)
+            .foregroundStyle(theme[color: "listSecondaryText"]!)
+            .textCase(nil)
+    }
 }
-
-@MainActor public class AppIconDataSource: ObservableObject {
-    @Published var appIcons: [AppIconName] = []
-    let iconsLoader: () async -> [AppIconName]
-    let imageLoader: (AppIconName) -> Image?
-    @Published private(set) var selectedIconName: AppIconName?
-    let setCurrentIconName: (AppIconName?) async throws -> Void
-
-    public struct AppIconName: Hashable, LosslessStringConvertible {
-        public let rawValue: String
-        public init(_ rawValue: String) {
-            self.rawValue = rawValue
-        }
-        public var description: String { rawValue }
-    }
-
-    public init(
-        iconsLoader: @escaping () async -> [AppIconName],
-        imageLoader: @escaping (AppIconName) -> Image?,
-        selectedIconName: AppIconName?,
-        setCurrentIconName: @escaping (AppIconName?) async throws -> Void
-    ) {
-        self.iconsLoader = iconsLoader
-        self.imageLoader = imageLoader
-        self.selectedIconName = selectedIconName
-        self.setCurrentIconName = setCurrentIconName
-    }
-
-    @MainActor public func loadAppIcons() async {
-        appIcons = await iconsLoader()
-        if selectedIconName == nil {
-            selectedIconName = appIcons.first
-        }
-    }
-
-    func image(for appIcon: AppIconName) -> Image? {
-        imageLoader(appIcon)
-    }
-
-    func select(_ appIcon: AppIconName) {
-        let revert = selectedIconName
-        // Assume the first icon is the "primary", which UIApplication calls `nil`.
-        // Probably makes more sense to bake this knowledge into the passed-in blocks.
-        let target = appIcon == appIcons.first ? nil : appIcon
-        selectedIconName = appIcon
-        Task {
-            do {
-                try await setCurrentIconName(target)
-            } catch {
-                print("Could not set alternate app icon to \(target as Any), reverting to \(revert as Any): \(error)")
-                selectedIconName = revert
-            }
-        }
+private struct SectionModifier: ViewModifier {
+    @Environment(\.theme) var theme
+    func body(content: Content) -> some View {
+        content.listRowBackground(theme[color: "listBackground"]!)
     }
 }
 
@@ -371,5 +345,6 @@ public enum SettingsViewThemeMode {
             makeForumSpecificThemes: { Text(verbatim: "Forum-specific themes!") }
         )
         .navigationTitle(Text(verbatim: "Settings"))
+        .environment(\.theme, Theme.defaultTheme(mode: .dark))
     }
 }

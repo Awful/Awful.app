@@ -1,6 +1,7 @@
 //  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import AwfulSettingsUI
 import AwfulTheming
 import CoreData
@@ -107,7 +108,7 @@ struct SettingsContainerView: View {
     let isPad: Bool
     let logOut: () -> Void
     let makeAcknowledgements: () -> AnyView
-    let makeDefaultThemePicker: (SettingsViewThemeMode) -> AnyView
+    let makeDefaultThemePicker: (Theme.Mode) -> AnyView
     let makeForumSpecificThemes: () -> AnyView
 
     var body: some View {
@@ -125,6 +126,7 @@ struct SettingsContainerView: View {
             makeDefaultThemePicker: makeDefaultThemePicker,
             makeForumSpecificThemes: makeForumSpecificThemes
         )
+        .themed()
     }
 }
 
@@ -139,7 +141,7 @@ struct AcknowledgementsView: UIViewControllerRepresentable {
 }
 
 struct DefaultThemePickerView: UIViewControllerRepresentable {
-    let mode: SettingsViewThemeMode
+    let mode: Theme.Mode
 
     func makeUIViewController(context: Context) -> SettingsThemePickerViewController {
         let defaultMode: Theme.Mode = switch mode {

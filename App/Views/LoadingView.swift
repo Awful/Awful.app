@@ -90,8 +90,8 @@ private class DefaultLoadingView: LoadingView {
     override func retheme() {
         super.retheme()
         
-        backgroundColor = theme?[color: "postsLoadingViewTintColor"]
-        if let tintColor = theme?[color: "tintColor"] {
+        backgroundColor = theme?[uicolor: "postsLoadingViewTintColor"]
+        if let tintColor = theme?[uicolor: "tintColor"] {
             animationView.setValueProvider(
                 ColorValueProvider(tintColor.lottieColorValue),
                 keypath: "**.Fill 1.Color"

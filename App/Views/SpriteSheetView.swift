@@ -72,7 +72,7 @@ public final class SpriteSheetView: UIView {
                 .sink { [weak self] _ in
                     guard let self else { return }
                     if let currentSheet = self.spriteSheet,
-                       let tintColor = Theme.defaultTheme()[color: "tintColor"],
+                       let tintColor = Theme.defaultTheme()[uicolor: "tintColor"],
                        let newSheet = currentSheet.withTint(tintColor)
                     {
                         self.spriteSheet = newSheet

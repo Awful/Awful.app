@@ -33,11 +33,6 @@ private extension StarCategory {
         }
     }
 }
-extension Theme {
-    subscript(swiftColor colorName: String) -> Color? {
-        return self[color: colorName].map { Color($0) }
-    }
-}
 
 private struct BookmarkColor: View {
     @Binding var selection: StarCategory
@@ -45,7 +40,7 @@ private struct BookmarkColor: View {
     @SwiftUI.Environment(\.theme) var theme
 
     var body: some View {
-        let color = theme[swiftColor: starCategory.themeKey]!
+        let color = theme[color: starCategory.themeKey]!
         ZStack {
             Circle()
                 .fill(color)
@@ -87,7 +82,7 @@ struct BookmarkColorPicker: View {
     var body: some View {
         return VStack {
             Text(thread.title ?? "")
-                .foregroundColor(theme[swiftColor: "sheetTitleColor"]!)
+                .foregroundColor(theme[color: "sheetTitleColor"]!)
                 .font(.system(size: 16.0, weight: .regular, design: .rounded))
                 .padding()
 
@@ -104,7 +99,7 @@ struct BookmarkColorPicker: View {
 
             Spacer()
         }
-        .background(theme[swiftColor: "sheetBackgroundColor"]!)
+        .background(theme[color: "sheetBackgroundColor"]!)
         .edgesIgnoringSafeArea(.all)
     }
         

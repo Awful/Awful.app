@@ -103,17 +103,17 @@ extension MessageListDataSource: UITableViewDataSource {
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
             sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSenderFontSizeAdjustment"]!, weight: .semibold),
-                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
+                .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!]),
             sentDate: message.sentDate ?? .distantPast,
             sentDateAttributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSentDateFontSizeAdjustment"]!, weight: .semibold),
-                .foregroundColor: theme[color: "listTextColor"]!],
+                .foregroundColor: theme[uicolor: "listTextColor"]!],
             sentDateRaw: NSAttributedString(string: sentDateFormatter.string(from: message.sentDate!), attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSentDateFontSizeAdjustment"]!, weight: .semibold),
-                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
+                .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!]),
             subject: NSAttributedString(string: message.subject ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSubjectFontSizeAdjustment"]!, weight: .regular),
-                .foregroundColor: theme[color: "listTextColor"]!]),
+                .foregroundColor: theme[uicolor: "listTextColor"]!]),
             tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
             tagOverlayImage: {
                 if message.replied {

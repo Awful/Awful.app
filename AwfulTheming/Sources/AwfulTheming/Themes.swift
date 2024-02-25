@@ -4,6 +4,7 @@
 
 import AwfulModelTypes
 import AwfulSettings
+import SwiftUI
 import UIKit
 
 /**
@@ -112,7 +113,7 @@ extension Theme {
     }
 
     /// The named color (the "Color" suffix is optional).
-    public subscript(color colorName: String) -> UIColor? {
+    public subscript(uicolor colorName: String) -> UIColor? {
         let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
         guard let value = dictionary[key] as? String else { return parent?[key] }
 
@@ -130,10 +131,15 @@ extension Theme {
     /**
      The named color (the "Color" suffix in the key is optional).
 
-     - Note: If type inference is leading you to do things like `theme["coolKey"] as UIColor?`, consider `theme[color: "coolKey"]` instead.
+     - Note: If type inference is leading you to do things like `theme["coolKey"] as UIColor?`, consider `theme[uicolor: "coolKey"]` instead.
      */
     public subscript(colorName: String) -> UIColor? {
-        return self[color: colorName]
+        return self[uicolor: colorName]
+    }
+
+    /// The named color (the "Color" suffix in the key is optional).
+    public subscript(color colorName: String) -> Color? {
+        self[uicolor: colorName].map { Color($0) }
     }
 
     public subscript(double key: String) -> Double? {
