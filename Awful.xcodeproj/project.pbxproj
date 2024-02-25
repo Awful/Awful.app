@@ -163,7 +163,6 @@
 		1C88EC9B2AE1062300FA766F /* PullToRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = 1C88EC9A2AE1062300FA766F /* PullToRefresh */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
-		1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */; };
 		1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */; };
 		1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67F722210DED007E61ED /* Profile.html.stencil */; };
 		1C8F67FA2221AFB1007E61ED /* Announcement.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67F92221AFB1007E61ED /* Announcement.html.stencil */; };
@@ -513,7 +512,6 @@
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
-		1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemCapabilities.swift; sourceTree = "<group>"; };
 		1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilEnvironment.swift; sourceTree = "<group>"; };
 		1C8F67F722210DED007E61ED /* Profile.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Profile.html.stencil; sourceTree = "<group>"; };
 		1C8F67F92221AFB1007E61ED /* Announcement.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Announcement.html.stencil; sourceTree = "<group>"; };
@@ -803,7 +801,6 @@
 				1C16FBAB1CB8578C00C88BD1 /* RefreshMinder.swift */,
 				1C453F45233849C2007AC6CD /* SafariActivity.swift */,
 				1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */,
-				1C8E2AAC1F7FF41D00328048 /* SystemCapabilities.swift */,
 				1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */,
 				1C25AC481F537A0B00977D6F /* WeakTrampoline.swift */,
 				1C25AC4A1F537A9600977D6F /* WebViewAntiHijacking.swift */,
@@ -1893,7 +1890,6 @@
 				1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
-				1C8E2AAD1F7FF41D00328048 /* SystemCapabilities.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
