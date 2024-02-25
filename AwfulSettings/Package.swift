@@ -1,6 +1,5 @@
 // swift-tools-version: 5.9
 
-import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -24,8 +23,7 @@ let package = Package(
                 "AwfulModelTypes",
                 "Foil",
                 "SystemCapabilities",
-            ],
-            resources: [.process("Settings.plist")]
+            ]
         ),
     ]
 )

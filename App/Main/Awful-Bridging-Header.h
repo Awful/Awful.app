@@ -2,4 +2,3 @@
 
 #import "PSMenuItem.h"
 #import "ScrollViewDelegateMultiplexer.h"
-#import "SettingsBinding.h"
