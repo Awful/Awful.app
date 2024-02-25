@@ -4,6 +4,7 @@
 
 import AwfulSettings
 import AwfulTheming
+import ScrollViewDelegateMultiplexer
 import UIKit
 
 private let Log = Logger.get()

@@ -4,7 +4,7 @@
 
 import AwfulCore
 import AwfulSettings
-import Foundation
+import UIKit
 
 private let Log = Logger.get()
 

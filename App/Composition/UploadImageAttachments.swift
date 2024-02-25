@@ -6,6 +6,7 @@ import AwfulSettings
 import Foundation
 import ImgurAnonymousAPI
 import Photos
+import UIKit
 
 private let Log = Logger.get()
 

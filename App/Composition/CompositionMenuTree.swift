@@ -4,13 +4,15 @@
 
 import MobileCoreServices
 import Photos
+import PSMenuItem
 import UIKit
 
 private let Log = Logger.get()
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
-// This classes exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
 final class CompositionMenuTree: NSObject {
+    // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
+    
     let textView: UITextView
     
     /// The textView's class will have some responder chain methods swizzled.

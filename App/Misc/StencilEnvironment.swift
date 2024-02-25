@@ -5,6 +5,7 @@
 import AwfulCore
 import AwfulSettings
 import Stencil
+import UIKit
 
 /// An entrypoint for Stencil templates without having to `import Stencil` everywhere.
 final class StencilEnvironment {

@@ -7,6 +7,7 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import CoreData
+import ScrollViewDelegateMultiplexer
 import UIKit
 
 private let Log = Logger.get()

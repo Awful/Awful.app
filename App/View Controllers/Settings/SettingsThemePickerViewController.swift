@@ -4,6 +4,7 @@
 
 import AwfulSettings
 import AwfulTheming
+import UIKit
 
 final class SettingsThemePickerViewController: TableViewController {
 

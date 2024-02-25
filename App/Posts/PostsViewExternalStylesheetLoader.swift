@@ -3,7 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Combine
-import Foundation
+import UIKit
 
 private let Log = Logger.get()
 

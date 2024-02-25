@@ -2,6 +2,8 @@
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Foundation
+
 /// A smilie found in a post (or PM, or announcement, etc.)
 struct PostedSmilie {
     let imageURL: URL

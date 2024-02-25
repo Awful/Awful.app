@@ -6,6 +6,7 @@ import AwfulCore
 import AwfulModelTypes
 import AwfulTheming
 import CoreData
+import UIKit
 
 final class SettingsForumSpecificThemesViewController: TableViewController {
 

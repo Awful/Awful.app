@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulTheming
+import ScrollViewDelegateMultiplexer
 import UIKit
 
 /// Displays a list of probations and bans.

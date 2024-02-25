@@ -7,6 +7,7 @@ import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
 import CoreData
+import UIKit
 
 private let Log = Logger.get()
 

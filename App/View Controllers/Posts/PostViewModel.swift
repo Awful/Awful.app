@@ -6,8 +6,8 @@ import AwfulCore
 import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
-import Foundation
 import HTMLReader
+import UIKit
 
 struct PostRenderModel: StencilContextConvertible {
     let context: [String: Any]
