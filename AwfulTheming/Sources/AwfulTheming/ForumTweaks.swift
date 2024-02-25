@@ -2,17 +2,18 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulModelTypes
 import UIKit
 
-final class ForumTweaks: NSObject {
+public struct ForumTweaks {
     let postButton: String?
-    let autocorrectionType: UITextAutocorrectionType
-    let autocapitalizationType: UITextAutocapitalizationType
-    let spellCheckingType: UITextSpellCheckingType
+    public let autocorrectionType: UITextAutocorrectionType
+    public let autocapitalizationType: UITextAutocapitalizationType
+    public let spellCheckingType: UITextSpellCheckingType
     let showRatings: Bool
-    let showRatingsAsThreadTags: Bool
-    let showRegdate: Bool
-    let magicCake: Bool
+    public let showRatingsAsThreadTags: Bool
+    public let showRegdate: Bool
+    public let magicCake: Bool
     
     fileprivate init(dictionary: [String: AnyObject]) {
         postButton = dictionary["postButton"] as? String
@@ -39,8 +40,6 @@ final class ForumTweaks: NSObject {
         showRatingsAsThreadTags = dictionary["showRatingsAsThreadTags"] as? Bool ?? false
         showRegdate = dictionary["showRegdate"] as? Bool ?? true
         magicCake = dictionary["magicCake"] as? Bool ?? false
-        
-        super.init()
     }
 }
 
@@ -63,7 +62,7 @@ private extension UITextSpellCheckingType {
 }
 
 private let tweaks: [String: [String: AnyObject]] = {
-    guard let URL = Bundle(for: ForumTweaks.self).url(forResource: "ForumTweaks.plist", withExtension: nil) else {
+    guard let URL = Bundle.module.url(forResource: "ForumTweaks.plist", withExtension: nil) else {
         fatalError("missing ForumTweaks.plist")
     }
     guard let dict = NSDictionary(contentsOf: URL) as? [String: [String: AnyObject]] else {
@@ -72,9 +71,9 @@ private let tweaks: [String: [String: AnyObject]] = {
     return dict
 }()
 
-extension ForumTweaks {
-    convenience init?(forumID: String) {
-        let dict = tweaks[forumID] ?? [:]
+public extension ForumTweaks {
+    init?(_ forumID: ForumID) {
+        let dict = tweaks[forumID.rawValue] ?? [:]
         self.init(dictionary: dict)
     }
 }

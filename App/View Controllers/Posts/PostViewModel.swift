@@ -3,7 +3,9 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
 import AwfulSettings
+import AwfulTheming
 import Foundation
 import HTMLReader
 
@@ -33,7 +35,7 @@ struct PostRenderModel: StencilContextConvertible {
             return post.thread?.forum?.forumID ?? ""
         }
         var showRegdate: Bool {
-            if let tweaks = ForumTweaks(forumID: forumID) {
+            if let tweaks = ForumTweaks(ForumID(forumID)) {
                 return tweaks.showRegdate
             }
             return true
@@ -112,7 +114,7 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     if isIgnored {
         document.markRevealIgnoredPostLink()
     }
-    if (ForumTweaks(forumID: forumID)?.magicCake) == true {
+    if (ForumTweaks(ForumID(forumID))?.magicCake) == true {
         document.addMagicCakeCSS()
     }
     document.embedVideos()

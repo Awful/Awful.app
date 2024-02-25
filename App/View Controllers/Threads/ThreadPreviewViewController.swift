@@ -3,7 +3,9 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
 import AwfulSettings
+import AwfulTheming
 import CoreData
 
 private let Log = Logger.get()
@@ -63,7 +65,7 @@ final class ThreadPreviewViewController: ViewController {
     }
     
     override var theme: Theme {
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
     
     // MARK: Rendering preview

@@ -2,13 +2,14 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Logger
 import PullToRefresh
 import UIKit
 import WebKit
 
 private let Log = Logger.get()
 
-protocol Themeable {
+public protocol Themeable {
 
     /// The current theme.
     var theme: Theme { get }
@@ -17,7 +18,7 @@ protocol Themeable {
     func themeDidChange()
 }
 
-private func CommonInit(_ vc: UIViewController) {
+private func commonInit(_ vc: UIViewController) {
     vc.navigationItem.backBarButtonItem = UIBarButtonItem(title: vc.title, style: .plain, target: nil, action: nil)
 }
 
@@ -26,44 +27,45 @@ private func CommonInit(_ vc: UIViewController) {
  
     Instances call `themeDidChange()` after loading their view. `ViewController`'s implementation of `themeDidChange()` sets the view background color and updates the scroll view's indicator (if appropriate).
  */
-class ViewController: UIViewController, Themeable {
-    override init(nibName: String?, bundle: Bundle?) {
+open class ViewController: UIViewController, Themeable {
+    public override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
-        CommonInit(self)
+        commonInit(self)
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
-        CommonInit(self)
+        commonInit(self)
     }
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
-    var theme: Theme {
+    open var theme: Theme {
         return Theme.defaultTheme()
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
-    private(set) var visible = false
-    
+    public private(set) var visible = false
+
     // MARK: View lifecycle
     
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         themeDidChange()
     }
     
-    func themeDidChange() {
+    open func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
         let scrollView: UIScrollView? = {
-            var candidates = view.subviews + [view]
+            var candidates = view.subviews + [view!]
             while let candidate = candidates.popLast() {
-                switch candidate {
-                case let rv as RenderView: return rv.scrollView
-                case let sv as UIScrollView: return sv
-                case let wv as WKWebView: return wv.scrollView
-                default: continue
+                if let scrollView = candidate as? UIScrollView {
+                    return scrollView
+                } else if candidate.responds(to: Selector(("scrollView"))),
+                          let scrollView = candidate.value(forKey: "scrollView") as? UIScrollView
+                {
+                    return scrollView
                 }
             }
             return nil
@@ -71,13 +73,13 @@ class ViewController: UIViewController, Themeable {
         scrollView?.indicatorStyle = theme.scrollIndicatorStyle
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         visible = true
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         visible = false
@@ -89,25 +91,25 @@ class ViewController: UIViewController, Themeable {
  
  For load more, please see `LoadMoreFooter`.
  */
-class TableViewController: UITableViewController, Themeable {
+open class TableViewController: UITableViewController, Themeable {
     private var viewIsLoading = false
     
-    override init(nibName: String?, bundle: Bundle?) {
+    public override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
-        CommonInit(self)
+        commonInit(self)
     }
     
-    override init(style: UITableView.Style) {
+    public override init(style: UITableView.Style) {
         super.init(style: style)
         
-        CommonInit(self)
+        commonInit(self)
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        CommonInit(self)
+        commonInit(self)
     }
     
     deinit {
@@ -117,15 +119,15 @@ class TableViewController: UITableViewController, Themeable {
     }
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
-    var theme: Theme {
+    open var theme: Theme {
         return Theme.defaultTheme()
     }
     
     /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
-    private(set) var visible = false
+    public private(set) var visible = false
     
     /// A block to call when the table is pulled down to refresh. If nil, no refresh control is shown.
-    var pullToRefreshBlock: (() -> Void)? {
+    public var pullToRefreshBlock: (() -> Void)? {
         didSet {
             if pullToRefreshBlock != nil {
                 createRefreshControl()
@@ -162,17 +164,17 @@ class TableViewController: UITableViewController, Themeable {
     
     private weak var pullToRefreshView: UIView?
     
-    func startAnimatingPullToRefresh() {
+    public func startAnimatingPullToRefresh() {
         guard isViewLoaded else { return }
         tableView.startRefreshing(at: .top)
     }
     
-    func stopAnimatingPullToRefresh() {
+    public func stopAnimatingPullToRefresh() {
         guard isViewLoaded else { return }
         tableView.endRefreshing(at: .top)
     }
     
-    override var refreshControl: UIRefreshControl? {
+    open override var refreshControl: UIRefreshControl? {
         get { return super.refreshControl }
         set {
             Log.w("we usually use the custom refresh controller")
@@ -182,7 +184,7 @@ class TableViewController: UITableViewController, Themeable {
     
     // MARK: View lifecycle
     
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
         viewIsLoading = true
         
         super.viewDidLoad()
@@ -196,7 +198,7 @@ class TableViewController: UITableViewController, Themeable {
         viewIsLoading = false
     }
     
-    func themeDidChange() {
+    open func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
         pullToRefreshView?.backgroundColor = view.backgroundColor
@@ -218,13 +220,13 @@ class TableViewController: UITableViewController, Themeable {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         visible = true
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         visible = false
@@ -238,13 +240,13 @@ class CollectionViewController: UICollectionViewController, Themeable {
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
-        CommonInit(self)
+        commonInit(self)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        CommonInit(self)
+        commonInit(self)
     }
     
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.

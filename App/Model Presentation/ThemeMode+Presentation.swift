@@ -2,6 +2,8 @@
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
+
 extension Theme.Mode {
     var localizedDescription: String {
         switch self {

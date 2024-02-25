@@ -2,6 +2,7 @@
 
 import AwfulCore
 import AwfulSettingsUI
+import AwfulTheming
 import CoreData
 import SwiftUI
 

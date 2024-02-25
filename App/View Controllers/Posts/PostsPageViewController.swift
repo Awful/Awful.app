@@ -3,7 +3,9 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
 import AwfulSettings
+import AwfulTheming
 import Combine
 import CoreData
 import MobileCoreServices
@@ -168,7 +170,7 @@ final class PostsPageViewController: ViewController {
         guard let forum = thread.forum, !forum.forumID.isEmpty else {
             return Theme.defaultTheme()
         }
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
 
     override var title: String? {

@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulSettings
+import AwfulTheming
 import UIKit
 import WebKit
 

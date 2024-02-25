@@ -117,7 +117,7 @@ public enum Settings {
     public static let themeGasChamber = Setting<BuiltInTheme>(key: "theme-25", default: .gasChamber)
 
     /// The default theme for threads in YOSPOS.
-    public static let themeYOSPOS = Setting<BuiltInTheme>(key: "theme-219", default: .yospos)
+    public static let themeYOSPOS = Setting<BuiltInTheme>(key: "theme-219", default: .yosposGreen)
 
     /// The logged-in user's ID. This really shouldn't be a setting :/
     public static let userID = Setting<String?>(key: "userID")
@@ -137,8 +137,13 @@ public enum BuiltInTheme: String, UserDefaultsSerializable {
     case `default` = "default"
     case fyad = "FYAD"
     case gasChamber = "Gas Chamber"
+    case macinyos = "Macinyos"
     case oledDark = "oledDark"
-    case yospos = "YOSPOS"
+    case spankykongDark = "spankykongDark"
+    case spankykongLight = "spankykongLight"
+    case winpos95 = "Winpos 95"
+    case yosposAmber = "YOSPOS (amber)"
+    case yosposGreen = "YOSPOS"
 }
 
 /// The default browser set by the user via `UserDefaults` and `Settings.defaultBrowser`.

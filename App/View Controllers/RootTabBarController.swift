@@ -3,6 +3,7 @@
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulSettings
+import AwfulTheming
 import UIKit
 
 /// A themeable tab bar controller that fixes an iOS 11 layout problem.

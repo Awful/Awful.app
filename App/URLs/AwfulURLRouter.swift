@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulSettings
+import AwfulTheming
 import CoreData
 import MRProgress
 import UIKit

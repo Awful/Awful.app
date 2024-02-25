@@ -3,7 +3,9 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
 import AwfulSettings
+import AwfulTheming
 import Nuke
 import UIKit
 
@@ -64,7 +66,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     override var theme: Theme {
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
     
     override func themeDidChange() {
@@ -91,7 +93,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     private func updateTweaks() {
-        guard let tweaks = ForumTweaks(forumID: forum.forumID) else { return }
+        guard let tweaks = ForumTweaks(ForumID(forum.forumID)) else { return }
         fieldView.subjectField.textField.autocapitalizationType = tweaks.autocapitalizationType
         fieldView.subjectField.textField.autocorrectionType = tweaks.autocorrectionType
         fieldView.subjectField.textField.spellCheckingType = tweaks.spellCheckingType

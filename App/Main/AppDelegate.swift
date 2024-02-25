@@ -5,6 +5,7 @@
 import AVFoundation
 import AwfulCore
 import AwfulSettings
+import AwfulTheming
 import Combine
 import Nuke
 import Smilies

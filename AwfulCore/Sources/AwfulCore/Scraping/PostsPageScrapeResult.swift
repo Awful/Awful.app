@@ -2,6 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulModelTypes
 import HTMLReader
 
 public struct PostsPageScrapeResult: ScrapeResult {
@@ -29,7 +30,7 @@ public struct PostsPageScrapeResult: ScrapeResult {
 
         breadcrumbs = try? ForumBreadcrumbsScrapeResult(body, url: url)
 
-        forumID = (body["data-forum"] as String?).flatMap { ForumID(rawValue: $0) }
+        forumID = (body["data-forum"] as String?).map { ForumID($0) }
 
         isSingleUserFilterEnabled = body.firstNode(matchingSelector: "table.post a.user_jump[title *= 'Remove']") != nil
 

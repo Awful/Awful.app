@@ -20,7 +20,8 @@ final class RenderView: UIView {
 
     weak var delegate: RenderViewDelegate?
     
-    var scrollView: UIScrollView { return webView.scrollView }
+    @objc(scrollView) // so AwfulTheming.ViewController can find it
+    var scrollView: UIScrollView { webView.scrollView }
 
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 

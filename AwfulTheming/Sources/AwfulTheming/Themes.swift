@@ -2,7 +2,7 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AwfulCore
+import AwfulModelTypes
 import AwfulSettings
 import UIKit
 
@@ -22,8 +22,8 @@ import UIKit
 
     The theme named "default" is special: it is the parent of all themes that do not specify a parent. It's the root theme. All themes eventually point back to the default theme.
 */
-final class Theme {
-    let name: String
+public class Theme {
+    public let name: String
     fileprivate let dictionary: [String: Any]
     fileprivate var parent: Theme?
     
@@ -32,7 +32,7 @@ final class Theme {
         self.dictionary = flatten(dictionary)
     }
 
-    enum Mode: CaseIterable, Hashable {
+    public enum Mode: CaseIterable, Hashable {
         case light, dark
     }
 }
@@ -56,7 +56,7 @@ private func flatten<K, V>(_ dictionary: [K: V]) -> [K: V] {
 extension Theme {
 
     /// The name of the theme, suitable for presentation.
-    var descriptiveName: String {
+    public var descriptiveName: String {
         return dictionary["descriptiveName"] as? String ?? name
     }
     
@@ -71,12 +71,12 @@ extension Theme {
     }
     
     /// Does the theme use standed system font or rounded
-    var roundedFonts: Bool {
+    public var roundedFonts: Bool {
         return dictionary["roundedFonts"] as? Bool ?? false
     }
     
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
-    var keyboardAppearance: UIKeyboardAppearance {
+    public var keyboardAppearance: UIKeyboardAppearance {
         let appearance = dictionary["keyboardAppearance"] as? String
             ?? parent?["keyboardAppearance"]
             ?? "default"
@@ -94,7 +94,7 @@ extension Theme {
     }
     
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
-    var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
+    public var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
         guard let style = dictionary["scrollIndicatorStyle"] as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
 
         switch style {
@@ -107,12 +107,12 @@ extension Theme {
         }
     }
 
-    subscript(bool key: String) -> Bool? {
+    public subscript(bool key: String) -> Bool? {
         return dictionary[key] as? Bool ?? parent?[bool: key]
     }
 
     /// The named color (the "Color" suffix is optional).
-    subscript(color colorName: String) -> UIColor? {
+    public subscript(color colorName: String) -> UIColor? {
         let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
         guard let value = dictionary[key] as? String else { return parent?[key] }
 
@@ -132,16 +132,16 @@ extension Theme {
 
      - Note: If type inference is leading you to do things like `theme["coolKey"] as UIColor?`, consider `theme[color: "coolKey"]` instead.
      */
-    subscript(colorName: String) -> UIColor? {
+    public subscript(colorName: String) -> UIColor? {
         return self[color: colorName]
     }
 
-    subscript(double key: String) -> Double? {
+    public subscript(double key: String) -> Double? {
         return dictionary[key] as? Double ?? parent?[double: key]
     }
 
     /// The named theme attribute as a string.
-    subscript(string key: String) -> String? {
+    public subscript(string key: String) -> String? {
         guard let value = dictionary[key] as? String ?? parent?[key] else { return nil }
         if key.hasSuffix("CSS") {
             guard let url = Bundle.main.url(forResource: value, withExtension: nil) else {
@@ -165,7 +165,7 @@ extension Theme {
 
      - Note: If type inference is leading you to do things like `theme["coolKey"] as String?`, consider `theme[string: "coolKey"]` instead.
      */
-    subscript(key: String) -> String? {
+    public subscript(key: String) -> String? {
         return self[string: key]
     }
 }
@@ -173,11 +173,11 @@ extension Theme {
 // MARK: - Comparable
 
 extension Theme: Comparable {
-    static func == (lhs: Theme, rhs: Theme) -> Bool {
+    public static func == (lhs: Theme, rhs: Theme) -> Bool {
         return lhs === rhs
     }
 
-    static func < (lhs: Theme, rhs: Theme) -> Bool {
+    public static func < (lhs: Theme, rhs: Theme) -> Bool {
         func givePriority(to name: String) -> Bool? {
             if lhs.name == name {
                 return rhs.name != name
@@ -201,7 +201,7 @@ extension Theme: Comparable {
 // MARK: - Bundled themes
 
 private let bundledThemes: [String: Theme] = {
-    let URL = Bundle.main.url(forResource: "Themes", withExtension: "plist")!
+    let URL = Bundle.module.url(forResource: "Themes", withExtension: "plist")!
     let plist = NSDictionary(contentsOf: URL) as! [String: Any]
 
     var themes = [String: Theme]()
@@ -221,11 +221,11 @@ private let bundledThemes: [String: Theme] = {
 }()
 
 extension Theme {
-    static func theme(named themeName: String) -> Theme? {
+    public static func theme(named themeName: String) -> Theme? {
         return bundledThemes.values.first { $0.name == themeName }
     }
 
-    static func theme(describedAs description: String) -> Theme? {
+    public static func theme(describedAs description: String) -> Theme? {
         return bundledThemes.values.first { $0.descriptiveName == description }
     }
 }
@@ -233,10 +233,10 @@ extension Theme {
 // MARK: - Getting themes with settings
 
 extension Theme {
-    static func defaultTheme(
-        mode: Mode = currentMode
+    public static func defaultTheme(
+        mode: Mode? = nil /* currentMode */
     ) -> Theme {
-        let theme: BuiltInTheme = switch mode {
+        let theme: BuiltInTheme = switch mode ?? currentMode {
         case .dark:
             defaultDarkTheme
         case .light:
@@ -250,7 +250,7 @@ extension Theme {
     @FoilDefaultStorage(Settings.defaultDarkThemeName) private static var defaultDarkTheme
     @FoilDefaultStorage(Settings.defaultLightThemeName) private static var defaultLightTheme
 
-    class var allThemes: [Theme] {
+    public class var allThemes: [Theme] {
         return bundledThemes.values.sorted()
     }
 
@@ -260,8 +260,9 @@ extension Theme {
 
     @FoilDefaultStorage(Settings.darkMode) private static var darkMode
 
-    static func currentTheme(for forum: Forum, mode: Mode = currentMode) -> Theme {
-        if let themeName = themeNameForForum(identifiedBy: forum.forumID, mode: mode) {
+    public static func currentTheme(for forumID: ForumID, mode: Mode? = nil /* currentMode */) -> Theme {
+        let mode = mode ?? currentMode
+        if let themeName = themeNameForForum(identifiedBy: forumID.rawValue, mode: mode) {
             return bundledThemes[themeName]!
         } else {
             return defaultTheme(mode: mode)
@@ -273,7 +274,7 @@ extension Theme {
     }
     
     /// Posts `Themes.themeForForumDidChangeNotification`.
-    static func setThemeName(_ themeName: String?, forForumIdentifiedBy forumID: String, modes: Set<Mode>) {
+    public static func setThemeName(_ themeName: String?, forForumIdentifiedBy forumID: String, modes: Set<Mode>) {
         for mode in modes {
             UserDefaults.standard.set(themeName, forKey: defaultsKeyForForum(identifiedBy: forumID, mode: mode))
         }
@@ -285,7 +286,7 @@ extension Theme {
         NotificationCenter.default.post(name: Theme.themeForForumDidChangeNotification, object: self, userInfo: userInfo)
     }
 
-    static func defaultsKeyForForum(identifiedBy forumID: String, mode: Mode) -> String {
+    public static func defaultsKeyForForum(identifiedBy forumID: String, mode: Mode) -> String {
         switch mode {
         case .light:
             return "theme-light-\(forumID)"
@@ -294,7 +295,7 @@ extension Theme {
         }
     }
 
-    static var forumsWithSpecificThemes: Set<String> {
+    public static var forumsWithSpecificThemes: Set<String> {
         func extractForumID(_ key: String) -> String? {
             let components = key.split(separator: "-")
             guard
@@ -313,16 +314,14 @@ extension Theme {
     /**
      Posted when `Theme.setThemeName(_:forForumIdentifiedBy:)` is called. The notification object is the `Theme` class itself. The user info dictionary always includes a value for `Theme.forumIDKey`, and it includes a value for `Theme.themeNameKey` if a theme name was specified.
      */
-    static var themeForForumDidChangeNotification: Notification.Name {
-        return Notification.Name("Awful theme for forum did change")
-    }
+    public static let themeForForumDidChangeNotification: Notification.Name = .init("Awful theme for forum did change")
     
     static let forumIDKey = "forumID"
     static let themeNameKey = "themeName"
 }
 
 extension Theme {
-    static var forumSpecificDefaults: [String: Any] {
+    public static var forumSpecificDefaults: [String: Any] {
         let modeless = [
             "25": "Gas Chamber",
             "26": "FYAD",
@@ -340,7 +339,7 @@ extension Theme {
     }
 }
 
-enum FontWeight: String, CaseIterable {
+public enum FontWeight: String, CaseIterable {
     case ultraLight = "ultraLight"
     case thin = "thin"
     case light = "light"
@@ -351,7 +350,7 @@ enum FontWeight: String, CaseIterable {
     case heavy = "heavy"
     case black = "black"
     
-    var weight: UIFont.Weight {
+    public var weight: UIFont.Weight {
         switch self {
         case .ultraLight:
             return .ultraLight

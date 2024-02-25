@@ -3,6 +3,8 @@
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulTheming
 import CoreData
 import UIKit
 
@@ -145,7 +147,7 @@ extension ThreadListDataSource: UITableViewDataSource {
     private func viewModelForCell(at indexPath: IndexPath) -> ThreadListCell.ViewModel {
         let thread = resultsController.object(at: indexPath)
         let theme = delegate?.themeForItem(at: indexPath, in: self) ?? .defaultTheme()
-        let tweaks = thread.forum.flatMap { ForumTweaks(forumID: $0.forumID) }
+        let tweaks = thread.forum.flatMap { ForumTweaks(ForumID($0.forumID)) }
 
         return ThreadListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,

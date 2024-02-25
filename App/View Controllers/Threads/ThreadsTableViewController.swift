@@ -3,7 +3,9 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
 import AwfulSettings
+import AwfulTheming
 import Combine
 import CoreData
 
@@ -50,7 +52,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     override var theme: Theme {
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
 
     private func makeDataSource() -> ThreadListDataSource {

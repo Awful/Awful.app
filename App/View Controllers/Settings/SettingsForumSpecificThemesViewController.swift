@@ -3,6 +3,8 @@
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulTheming
 import CoreData
 
 final class SettingsForumSpecificThemesViewController: TableViewController {
@@ -69,7 +71,7 @@ final class SettingsForumSpecificThemesViewController: TableViewController {
 
         let forum = forums[indexPath.section]
         let mode = Theme.Mode.allCases[indexPath.row]
-        let theme = Theme.currentTheme(for: forum, mode: mode)
+        let theme = Theme.currentTheme(for: ForumID(forum.forumID), mode: mode)
 
         cell.textLabel?.text = mode.localizedDescription
         cell.detailTextLabel?.text = theme.descriptiveName

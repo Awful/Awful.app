@@ -3,7 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
 import AwfulSettings
+import AwfulTheming
 import Combine
 import MRProgress
 
@@ -123,9 +125,8 @@ final class ReplyWorkspace: NSObject {
                 .sink { [weak self] _ in self?.updateRightButtonItem() }
                 .store(in: &cancellables)
 
-            if let
-                forumID = draft.thread.forum?.forumID,
-                let tweaks = ForumTweaks(forumID: forumID)
+            if let forumID = draft.thread.forum?.forumID,
+               let tweaks = ForumTweaks(ForumID(forumID))
             {
                 textView.autocapitalizationType = tweaks.autocapitalizationType
                 textView.autocorrectionType = tweaks.autocorrectionType
