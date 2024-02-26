@@ -99,8 +99,6 @@
 		1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */; };
 		1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */; };
 		1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4079691A228DA6004A082F /* CopyURLActivity.swift */; };
-		1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */; };
-		1C40D4AB1A85F57400D9F793 /* AcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */; };
 		1C40E5B21640FC2D004AAFA6 /* posts-view.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C40E5B11640FC2C004AAFA6 /* posts-view.css */; };
 		1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A416CD573D00718F79 /* title-banned.gif */; };
 		1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */ = {isa = PBXBuildFile; fileRef = 1C41B8A516CD573D00718F79 /* title-permabanned.gif */; };
@@ -436,8 +434,6 @@
 		1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmilieDataStore+Shared.swift"; sourceTree = "<group>"; };
 		1C3E181C224FAE9500BD88E5 /* SmilieDataStore+Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmilieDataStore+Query.swift"; sourceTree = "<group>"; };
 		1C4079691A228DA6004A082F /* CopyURLActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyURLActivity.swift; sourceTree = "<group>"; };
-		1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Acknowledgements.html.stencil; sourceTree = "<group>"; };
-		1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcknowledgementsViewController.swift; sourceTree = "<group>"; };
 		1C40E5B11640FC2C004AAFA6 /* posts-view.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view.css"; sourceTree = "<group>"; };
 		1C41B8A416CD573D00718F79 /* title-banned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-banned.gif"; sourceTree = "<group>"; };
 		1C41B8A516CD573D00718F79 /* title-permabanned.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "title-permabanned.gif"; sourceTree = "<group>"; };
@@ -1051,7 +1047,6 @@
 		1C8F67F22221050A007E61ED /* Templates */ = {
 			isa = PBXGroup;
 			children = (
-				1C40D4A81A85F57400D9F793 /* Acknowledgements.html.stencil */,
 				1C8F67F92221AFB1007E61ED /* Announcement.html.stencil */,
 				1C8F68002221BE7C007E61ED /* Post.html.stencil */,
 				1C8F67FE2221BDE8007E61ED /* PostPreview.html.stencil */,
@@ -1113,7 +1108,6 @@
 		1CD005CD1BB734C900232FFD /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				1C40D4A91A85F57400D9F793 /* AcknowledgementsViewController.swift */,
 				1C6821A81F113A760083F204 /* AnnouncementViewController.swift */,
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1C29C3812258538A00E1217A /* Forums */,
@@ -1465,7 +1459,7 @@
 				CLASSPREFIX = "";
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1520;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
 					1C3A143219DFC5D10022C44C = {
@@ -1607,7 +1601,6 @@
 				1C8F68032221C545007E61ED /* PostsView.html.stencil in Resources */,
 				8CE6100618CAACF9002E92DA /* posts-view-byob.css in Resources */,
 				1C5B9C3917F20BB800D4981D /* posts-view-fyad.css in Resources */,
-				1C40D4AA1A85F57400D9F793 /* Acknowledgements.html.stencil in Resources */,
 				8C8FA47F19AD7CA300B67AAA /* diamond-icon.png in Resources */,
 				8CEBABEB168000B800680935 /* macinyos-wallpaper@2x.png in Resources */,
 				8CEBABED16800A9300680935 /* macinyos-postactions-bg.png in Resources */,
@@ -1817,7 +1810,6 @@
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */,
 				1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */,
-				1C40D4AB1A85F57400D9F793 /* AcknowledgementsViewController.swift in Sources */,
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,

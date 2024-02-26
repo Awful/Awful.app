@@ -8,9 +8,7 @@ import AwfulTheming
 import NukeUI
 import SwiftUI
 
-public struct SettingsView<
-    AcknowledgementsView: View
->: View {
+public struct SettingsView: View {
     @AppStorage(Settings.autoplayGIFs) private var alwaysAnimateGIFs
     @AppStorage(Settings.confirmBeforeReplying) private var alwaysPreviewNewPosts
     @AppStorage(Settings.clipboardURLEnabled) private var checkClipboardForURLOnBecomeActive
@@ -46,7 +44,6 @@ public struct SettingsView<
     let hasRegularSizeClassInLandscape: Bool
     let isPad: Bool
     let logOut: () -> Void
-    let makeAcknowledgements: () -> AcknowledgementsView
     @Environment(\.managedObjectContext) var managedObjectContext
     @Environment(\.theme) var theme
 
@@ -84,8 +81,7 @@ public struct SettingsView<
         goToAwfulThread: @escaping () -> Void,
         hasRegularSizeClassInLandscape: Bool,
         isPad: Bool,
-        logOut: @escaping () -> Void,
-        makeAcknowledgements: @escaping () -> AcknowledgementsView
+        logOut: @escaping () -> Void
     ) {
         self.appIconDataSource = appIconDataSource
         self.avatarURL = avatarURL
@@ -96,7 +92,6 @@ public struct SettingsView<
         self.hasRegularSizeClassInLandscape = hasRegularSizeClassInLandscape
         self.isPad = isPad
         self.logOut = logOut
-        self.makeAcknowledgements = makeAcknowledgements
     }
 
     public var body: some View {
@@ -272,8 +267,9 @@ public struct SettingsView<
 
             Section {
                 NavigationLink("Acknowledgements", bundle: .module) {
-                    makeAcknowledgements()
+                    AcknowledgementsView()
                         .navigationTitle("Acknowledgements", bundle: .module)
+                        .environment(\.theme, theme) // Not inherited?
                 }
             } header: {
                 Text("Thank You", bundle: .module)
@@ -333,10 +329,10 @@ private struct SectionModifier: ViewModifier {
             goToAwfulThread: { print("navigating to Awful's thread") },
             hasRegularSizeClassInLandscape: true,
             isPad: true,
-            logOut: { print("logging out") },
-            makeAcknowledgements: { Text(verbatim: "tyvm") }
+            logOut: { print("logging out") }
         )
         .navigationTitle(Text(verbatim: "Settings"))
-        .environment(\.theme, Theme.defaultTheme(mode: .dark))
+        .navigationBarTitleDisplayMode(.inline)
+        .environment(\.theme, Theme.defaultTheme())
     }
 }

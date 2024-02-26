@@ -41,7 +41,7 @@ There are optional dependencies for building Awful. You only need them if you're
 
 * Swift Package Manager is the preferred way to add dependencies. If at all possible, please use it.
 * Manual installation is totally fine. Drag the files or xcodeproj on in.
-* **No matter how you add a dependency**, please update `App/Templates/Acknowledgements.html.stencil` with the name and license of the dependency.
+* **No matter how you add a dependency**, please update `AwfulSettingsUI/Sources/AwfulSettingsUI/AcknowledgementsView.swift` with the name, URL, and license of the dependency.
 * [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
     1. [Install homebrew](http://mxcl.github.com/homebrew/).
     2. Open Terminal and install node: `brew install node`.
@@ -74,6 +74,7 @@ There are unit tests, that don't cover much, running continuously via [GitHub Ac
 Dependencies not managed via Swift Package Manager are placed in the [Vendor](Vendor) folder and manually kept up-to-date. They include:
 
 * ARChromeActivity and TUSafariActivity assets. We've implemented our own `UIActivity` subclasses but continue to use the libraries' images.
+* MRProgress, PSMenuItem, and PullToRefresh, which do not have their own `Package.swift`. (If you know otherwise, let's move it over!)
 
 ### Version scheme
 

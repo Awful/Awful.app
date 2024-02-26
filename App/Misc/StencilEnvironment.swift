@@ -12,7 +12,6 @@ final class StencilEnvironment {
     
     /// Templates available in the app bundle.
     enum Template: String {
-        case acknowledgements = "Acknowledgements.html.stencil"
         case announcement = "Announcement.html.stencil"
         case post = "Post.html.stencil"
         case postPreview = "PostPreview.html.stencil"

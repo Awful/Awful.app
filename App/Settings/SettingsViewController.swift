@@ -44,7 +44,6 @@ final class SettingsViewController: UIHostingController<SettingsContainerView> {
             hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
-            makeAcknowledgements: { AnyView(AcknowledgementsView()) },
             managedObjectContext: managedObjectContext
         ))
         box.contents = self
@@ -106,7 +105,6 @@ struct SettingsContainerView: View {
     let hasRegularSizeClassInLandscape: Bool
     let isPad: Bool
     let logOut: () -> Void
-    let makeAcknowledgements: () -> AnyView
     let managedObjectContext: NSManagedObjectContext
 
     var body: some View {
@@ -119,20 +117,9 @@ struct SettingsContainerView: View {
             goToAwfulThread: goToAwfulThread,
             hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
             isPad: isPad,
-            logOut: logOut,
-            makeAcknowledgements: makeAcknowledgements
+            logOut: logOut
         )
         .environment(\.managedObjectContext, managedObjectContext)
         .themed()
-    }
-}
-
-struct AcknowledgementsView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> AcknowledgementsViewController {
-        .init()
-    }
-
-    func updateUIViewController(_ uiViewController: AcknowledgementsViewController, context: Context) {
-        // nop
     }
 }

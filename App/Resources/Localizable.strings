@@ -16,10 +16,6 @@
 "table-view.action.delete" = "Delete";
 
 
-/* MARK: Acknowledgements */
-"acknowledgements.title" = "Acknowledgements";
-
-
 /* MARK: Actions */
 
 /* Title of the share URL action for an announcement, post, or thread. */
