@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "AwfulSettingsUI", targets: ["AwfulSettingsUI"]),
     ],
     dependencies: [
+        .package(path: "../AwfulCore"),
         .package(path: "../AwfulExtensions"),
         .package(path: "../AwfulSettings"),
         .package(path: "../AwfulTheming"),
@@ -19,6 +20,7 @@ let package = Package(
         .target(
             name: "AwfulSettingsUI",
             dependencies: [
+                "AwfulCore",
                 "AwfulExtensions",
                 "AwfulSettings",
                 "AwfulTheming",
