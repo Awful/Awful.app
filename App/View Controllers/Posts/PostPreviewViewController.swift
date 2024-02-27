@@ -3,7 +3,11 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulSettings
+import AwfulTheming
 import CoreData
+import UIKit
 
 private let Log = Logger.get()
 
@@ -65,21 +69,20 @@ final class PostPreviewViewController: ViewController {
         return forum?.managedObjectContext
     }
     
-    private lazy var postButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: "Post", style: .plain, target: nil, action: nil)
-        buttonItem.actionBlock = { [weak self] item in
-            item.isEnabled = false
-            self?.submitBlock?()
+    private lazy var postButtonItem = UIBarButtonItem(primaryAction: UIAction(
+        title: "Post",
+        handler: { [unowned self] action in
+            (action.sender as? UIBarButtonItem)?.isEnabled = false
+            self.submitBlock?()
         }
-        return buttonItem
-    }()
-    
+    ))
+
     override var theme: Theme {
         guard
             let thread = thread ?? editingPost?.thread,
             let forum = thread.forum
             else { return Theme.defaultTheme() }
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
     
     // MARK: Rendering the preview
@@ -101,7 +104,7 @@ final class PostPreviewViewController: ViewController {
         } else {
             return Log.e("nothing to do??")
         }
-        networkOperation = Task { [weak self] in
+        networkOperation = Task { @MainActor [weak self] in
             do {
                 let html = try await fetchPreview()
 
@@ -112,10 +115,12 @@ final class PostPreviewViewController: ViewController {
                 try Task.checkCancellation()
 
                 var loggedInUser: User? {
-                    guard let userID = UserDefaults.standard.loggedInUserID else {
+                    @FoilDefaultStorageOptional(Settings.userID) var loggedInUserID
+                    guard let userID = loggedInUserID else {
                         return nil
                     }
-                    let userKey = UserKey(userID: userID, username: UserDefaults.standard.loggedInUsername)
+                    @FoilDefaultStorageOptional(Settings.username) var loggedInUsername
+                    let userKey = UserKey(userID: userID, username: loggedInUsername)
                     return User.objectForKey(objectKey: userKey, in: context)
                 }
                 

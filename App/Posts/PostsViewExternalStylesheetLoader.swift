@@ -3,7 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Combine
-import Foundation
+import UIKit
 
 private let Log = Logger.get()
 
@@ -49,8 +49,8 @@ private let Log = Logger.get()
     private var cancellables: Set<AnyCancellable> = []
     private let session = URLSession(configuration: .ephemeral)
     private var checkingForUpdate = false
-    private var updateTimer: Timer?
-    
+    private var updateTimer: Task<Void, Never>?
+
     private init(stylesheetURL: URL, cacheFolder: URL) {
         self.stylesheetURL = stylesheetURL
         self.cacheFolder = cacheFolder
@@ -72,7 +72,11 @@ private let Log = Logger.get()
 
         startTimer()
     }
-    
+
+    deinit {
+        updateTimer?.cancel()
+    }
+
     func refreshIfNecessary() {
         guard !checkingForUpdate else { return }
 
@@ -95,7 +99,7 @@ private let Log = Logger.get()
            let oldURL = oldResponse.url,
            oldURL.absoluteURL == stylesheetURL.absoluteURL
         {
-            request.setCacheHeadersWithResponse(oldResponse)
+            request.setCacheHeaders(oldResponse)
         }
 
         createCacheFolderIfNecessary()
@@ -170,16 +174,18 @@ private let Log = Logger.get()
     
     private func startTimer() {
         let interval = RefreshMinder.sharedMinder.suggestedRefreshDate(.externalStylesheet).timeIntervalSinceNow
-        updateTimer = Timer.scheduledTimerWithInterval(interval, handler: { [weak self] timer in
-            if self?.updateTimer === timer {
-                self?.updateTimer = nil
-            }
-            self?.refreshIfNecessary()
-        })
+        updateTimer = Task { [weak self] in
+            do {
+                if interval > 0 {
+                    try await Task.sleep(timeInterval: interval)
+                }
+                self?.refreshIfNecessary()
+            } catch {}
+        }
     }
     
     private func stopTimer() {
-        updateTimer?.invalidate()
+        updateTimer?.cancel()
         updateTimer = nil
     }
 }

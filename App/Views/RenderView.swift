@@ -2,9 +2,10 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
+import AwfulSettings
 import UIKit
 import WebKit
-import AwfulCore
 
 private let Log = Logger.get()
 
@@ -19,7 +20,8 @@ final class RenderView: UIView {
 
     weak var delegate: RenderViewDelegate?
     
-    var scrollView: UIScrollView { return webView.scrollView }
+    @objc(scrollView) // so AwfulTheming.ViewController can find it
+    var scrollView: UIScrollView { webView.scrollView }
 
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
@@ -275,7 +277,7 @@ extension RenderView {
     
     /// Turns any links that look like tweets into an actual tweet embed.
     func embedTweets() {
-        let renderGhostTweets = UserDefaults.standard.enableFrogAndGhost
+        let renderGhostTweets = FoilDefaultStorage(Settings.frogAndGhostEnabled).wrappedValue
         Task {
             do {
                 try await webView.eval("if (window.Awful) { Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets(); }")

@@ -2,6 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulModelTypes
 import CoreData
 
 extension ForumBreadcrumb {
@@ -42,7 +43,7 @@ extension ForumBreadcrumbsScrapeResult {
             $0.returnsObjectsAsFaults = false
         }
         for forum in knownForums {
-            guard let id = ForumID(rawValue: forum.forumID) else { continue }
+            let id = ForumID(forum.forumID)
             unorderedForums[id] = forum
         }
 

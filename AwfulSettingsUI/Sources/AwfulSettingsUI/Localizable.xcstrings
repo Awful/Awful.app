@@ -1,0 +1,180 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "[timg] Large Images" : {
+
+    },
+    "Acknowledgements" : {
+
+    },
+    "Always Animate GIFs" : {
+
+    },
+    "Always Preview New Posts" : {
+
+    },
+    "App Icon" : {
+
+    },
+    "appname=%@ build=%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "appname=%@ version=%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "appname=%@ version=%@ build=%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        }
+      }
+    },
+    "Automatic Dark Mode" : {
+
+    },
+    "Awful can automatically switch between light and dark themes alongside iOS." : {
+
+    },
+    "Awful is made possible by these fantastic projects. Thank you!" : {
+
+    },
+    "Check Clipboard for URL" : {
+
+    },
+    "Checking the clipboard for a forums URL when you open th eapp allows you to jump straight to a copied URL in Awful." : {
+
+    },
+    "Dark Mode" : {
+
+    },
+    "Default Browser" : {
+
+    },
+    "Default Dark Theme" : {
+
+    },
+    "Default Light Theme" : {
+
+    },
+    "Double-Tap Post to Jump" : {
+
+    },
+    "Embed Tweets" : {
+
+    },
+    "Empty Cache" : {
+
+    },
+    "Enable Custom Title Post Layout" : {
+
+    },
+    "Enable Haptics" : {
+
+    },
+    "Forum-Specific Themes" : {
+
+    },
+    "Go to Awful’s Thread" : {
+
+    },
+    "Handoff" : {
+
+    },
+    "Handoff allows you to continue reading threads on nearby devices." : {
+
+    },
+    "Hide Sidebar in Landscape" : {
+
+    },
+    "Links" : {
+
+    },
+    "Load Images" : {
+
+    },
+    "Log Out" : {
+
+    },
+    "Logging out erases all cached forums, threads, and posts." : {
+
+    },
+    "Open Twitter in Twitter" : {
+
+    },
+    "Open YouTube in YouTube" : {
+
+    },
+    "Post feedback, bug reports, and feature suggestions. Do not contact anyone who works for Something Awful about this app." : {
+
+    },
+    "Posting" : {
+
+    },
+    "Posts" : {
+
+    },
+    "Pull for Next Page" : {
+
+    },
+    "Scale Text %@%%" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Show Avatars" : {
+
+    },
+    "Show End-of-Thread Frog and Dead Tweet Ghost" : {
+
+    },
+    "Show Thread Tags" : {
+
+    },
+    "Sidebar" : {
+
+    },
+    "Sort Unread Bookmarks First" : {
+
+    },
+    "Sort Unread Threads First" : {
+
+    },
+    "Tabs" : {
+
+    },
+    "Thank You" : {
+
+    },
+    "Themes" : {
+
+    },
+    "Threads" : {
+
+    },
+    "Unread Announcements Badge" : {
+
+    },
+    "What to open when tapping an external link. Long-press any link for more options." : {
+
+    }
+  },
+  "version" : "1.0"
+}

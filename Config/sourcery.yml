@@ -1,6 +1,0 @@
-sources:
-  - "../App/Settings/UserDefaults+Settings.swift"
-templates:
-  - "../App/Sourcery"
-output:
-  "../App/Sourcery"

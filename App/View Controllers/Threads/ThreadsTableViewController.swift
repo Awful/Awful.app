@@ -3,20 +3,30 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulSettings
+import AwfulTheming
+import Combine
 import CoreData
+import ScrollViewDelegateMultiplexer
+import UIKit
 
 private let Log = Logger.get()
 
 final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration {
     
+    private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var filterThreadTag: ThreadTag?
     let forum: Forum
+    @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
-    private var observers: [NSKeyValueObservation] = []
-    
+    @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
+    @FoilDefaultStorage(Settings.forumThreadsSortedUnread) private var sortUnreadThreadsToTop
+
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
         return ScrollViewDelegateMultiplexer(scrollView: tableView)
     }()
@@ -44,7 +54,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     override var theme: Theme {
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
 
     private func makeDataSource() -> ThreadListDataSource {
@@ -54,8 +64,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         }
         let dataSource = try! ThreadListDataSource(
             forum: forum,
-            sortedByUnread: UserDefaults.standard.sortUnreadForumThreadsFirst,
-            showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList,
+            sortedByUnread: sortUnreadThreadsToTop,
+            showsTagAndRating: showThreadTags,
             threadTagFilter: filter,
             managedObjectContext: managedObjectContext,
             tableView: tableView)
@@ -119,20 +129,28 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         
         pullToRefreshBlock = { [weak self] in self?.refresh() }
         
-        observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
-                guard let self = self else { return }
-                if self.visible {
-                    self.prepareUserActivity()
+        $handoffEnabled
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                if visible {
+                    prepareUserActivity()
                 }
             }
-            $0.observe(\.sortUnreadForumThreadsFirst, \.showThreadTagsInThreadList) {
-                [weak self] defaults in
-                guard let self = self else { return }
-                self.dataSource = self.makeDataSource()
-                self.tableView.reloadData()
-            }
+            .store(in: &cancellables)
+
+        Publishers.Merge(
+            $showThreadTags.dropFirst(),
+            $sortUnreadThreadsToTop.dropFirst()
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in
+            guard let self else { return }
+            dataSource = makeDataSource()
+            tableView.reloadData()
         }
+        .store(in: &cancellables)
     }
     
     override func themeDidChange() {
@@ -143,7 +161,10 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         updateFilterButton()
 
         tableView.separatorColor = theme["listSeparatorColor"]
-        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(showsTagAndRating: UserDefaults.standard.showThreadTagsInThreadList, inTableWithWidth: tableView.bounds.width)
+        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(
+            showsTagAndRating: showThreadTags,
+            inTableWithWidth: tableView.bounds.width
+        )
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -197,7 +218,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
     
     @objc func didTapCompose() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         present(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
@@ -241,7 +262,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }()
     
     @objc private func didTapFilterButton(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         threadTagPicker.selectImageName(filterThreadTag?.imageName)
@@ -257,8 +278,11 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     // MARK: ThreadTagPickerViewControllerDelegate
     
-    func didSelectImageName(_ imageName: String?, in picker: ThreadTagPickerViewController) {
-        if UserDefaults.standard.enableHaptics {
+    func didSelectImageName(
+        _ imageName: String?,
+        in picker: ThreadTagPickerViewController
+    ) {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         if let imageName = imageName {
@@ -289,7 +313,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     // MARK: Handoff
     
     private func prepareUserActivity() {
-        guard UserDefaults.standard.isHandoffEnabled else {
+        guard handoffEnabled else {
             userActivity = nil
             return
         }
@@ -381,7 +405,7 @@ extension ThreadsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let thread = dataSource!.thread(at: indexPath)

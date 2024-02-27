@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulTheming
 import UIKit
 
 /**
@@ -86,7 +87,7 @@ final class Selectotron : ViewController {
         jumpButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, weight: .medium)
     }
     
-    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    fileprivate override init(nibName: String?, bundle: Bundle?) {
         fatalError("Selectotron needs a posts view controller")
     }
     

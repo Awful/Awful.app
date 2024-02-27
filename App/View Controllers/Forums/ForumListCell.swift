@@ -2,6 +2,7 @@
 //
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import UIKit
 
 /// In the Forum list, each cell represents either a favorite forum or a plain old forum.
@@ -13,6 +14,7 @@ final class ForumListCell: UITableViewCell {
     /// Called when the favorite star is tapped.
     var didTapFavorite: ((ForumListCell) -> Void)?
 
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let expandButton = ExpandForumButton()
     private let favoriteButton = FavoriteForumButton()
 
@@ -115,14 +117,14 @@ final class ForumListCell: UITableViewCell {
     }
 
     @objc private func didTapExpandButton(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         didTapExpand?(self)
     }
 
     @objc private func didTapFavoriteButton(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         didTapFavorite?(self)

@@ -3,6 +3,8 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulTheming
 import Nuke
 import NukeExtensions
 import UIKit
@@ -123,7 +125,7 @@ extension ThreadTagLoader {
         static func thread(in forum: Forum) -> Placeholder {
             return Placeholder(
                 imageName: "empty-thread-tag",
-                tintColor: Theme.currentTheme(for: forum)["listTextColor"])
+                tintColor: Theme.currentTheme(for: ForumID(forum.forumID))["listTextColor"])
         }
         
         

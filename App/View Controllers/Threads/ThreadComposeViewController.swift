@@ -3,11 +3,15 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulSettings
+import AwfulTheming
 import Nuke
 import UIKit
 
 /// For writing the OP of a new thread.
 final class ThreadComposeViewController: ComposeTextViewController {
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     /// The newly-posted thread.
     private(set) var thread: AwfulThread?
     private let forum: Forum
@@ -62,7 +66,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     override var theme: Theme {
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
     
     override func themeDidChange() {
@@ -89,7 +93,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     private func updateTweaks() {
-        guard let tweaks = ForumTweaks(forumID: forum.forumID) else { return }
+        guard let tweaks = ForumTweaks(ForumID(forum.forumID)) else { return }
         fieldView.subjectField.textField.autocapitalizationType = tweaks.autocapitalizationType
         fieldView.subjectField.textField.autocorrectionType = tweaks.autocorrectionType
         fieldView.subjectField.textField.spellCheckingType = tweaks.spellCheckingType
@@ -131,7 +135,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
     }
     
     @objc private func didTapThreadTagButton(_ sender: UIButton) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         guard let picker = threadTagPicker else { return }

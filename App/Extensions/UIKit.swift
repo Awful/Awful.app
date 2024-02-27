@@ -2,7 +2,7 @@
 //
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import MobileCoreServices
+import AwfulTheming
 import UIKit
 
 extension CGRect {
@@ -29,96 +29,6 @@ func pixelCeil(_ val: CGFloat, scale: CGFloat = defaultScale) -> CGFloat {
 
 func pixelRound(_ val: CGFloat, scale: CGFloat = defaultScale) -> CGFloat {
     return round(val * scale) / scale
-}
-
-extension UIBarButtonItem {
-    /// Returns a UIBarButtonItem of type UIBarButtonSystemItemFlexibleSpace configured with no target.
-    class func flexibleSpace() -> Self {
-        return self.init(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-    }
-    
-    /// Returns a UIBarButtonItem of type UIBarButtonSystemItemFixedSpace.
-    class func fixedSpace(_ width: CGFloat) -> Self {
-        let item = self.init(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        item.width = width
-        return item
-    }
-    
-    var actionBlock: ((UIBarButtonItem) -> Void)? {
-        get {
-            guard let wrapper = objc_getAssociatedObject(self, &actionBlockKey) as? BlockWrapper else { return nil }
-            return wrapper.block
-        }
-        set {
-            guard let block = newValue else {
-                target = nil
-                action = nil
-                return objc_setAssociatedObject(self, &actionBlockKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            }
-            let wrapper = BlockWrapper(block)
-            target = wrapper
-            action = #selector(BlockWrapper.invoke(_:))
-            objc_setAssociatedObject(self, &actionBlockKey, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-}
-
-private class BlockWrapper {
-    let block: (UIBarButtonItem) -> Void
-    init(_ block: @escaping (UIBarButtonItem) -> Void) { self.block = block }
-    @objc func invoke(_ sender: UIBarButtonItem) { block(sender) }
-}
-
-private var actionBlockKey = 0
-
-extension UIColor {
-    convenience init?(hex hexString: String) {
-        let scanner = Scanner(string: hexString)
-        _ = scanner.scanString("#")
-        let start = scanner.currentIndex
-        guard let hex = scanner.scanUInt64(representation: .hexadecimal) else { return nil }
-        let length = scanner.string.distance(from: start, to: scanner.currentIndex)
-        switch length {
-        case 3:
-            self.init(
-                red: CGFloat((hex & 0xF00) >> 8) / 15,
-                green: CGFloat((hex & 0x0F0) >> 4) / 15,
-                blue: CGFloat((hex & 0x00F) >> 0) / 15,
-                alpha: 1)
-        case 4:
-            self.init(
-                red: CGFloat((hex & 0xF000) >> 12) / 15,
-                green: CGFloat((hex & 0x0F00) >> 8) / 15,
-                blue: CGFloat((hex & 0x00F0) >> 4) / 15,
-                alpha: CGFloat((hex & 0x000F) >> 0) / 15)
-        case 6:
-            self.init(
-                red: CGFloat((hex & 0xFF0000) >> 16) / 255,
-                green: CGFloat((hex & 0x00FF00) >> 8) / 255,
-                blue: CGFloat((hex & 0x0000FF) >> 0) / 255,
-                alpha: 1)
-        case 8:
-            self.init(
-                red: CGFloat((hex & 0xFF000000) >> 24) / 255,
-                green: CGFloat((hex & 0x00FF0000) >> 16) / 255,
-                blue: CGFloat((hex & 0x0000FF00) >> 8) / 255,
-                alpha: CGFloat((hex & 0x000000FF) >> 0) / 255)
-        default:
-            return nil
-        }
-    }
-    
-    var hexCode: String {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        guard getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return "" }
-        func hexy(_ f: CGFloat) -> String {
-            return String(lround(Double(f) * 255), radix: 16, uppercase: false)
-        }
-        return "#" + [red, green, blue].map(hexy).joined(separator: "")
-    }
 }
 
 extension UIFont {
@@ -248,16 +158,6 @@ extension UIPasteboard {
     }
 }
 
-extension UIScrollView {
-
-    /// The scroll view's content offset as a proportion of the content size (where content size does not include any content inset).
-    var fractionalContentOffset: CGPoint {
-        return CGPoint(
-            x: contentSize.width != 0 ? contentOffset.x / contentSize.width : 0,
-            y: contentSize.height != 0 ? contentOffset.y / contentSize.height : 0)
-    }
-}
-
 extension UISplitViewController {
     /// Animates the primary view controller into view if it is not already visible.
     func showPrimaryViewController() {
@@ -279,71 +179,11 @@ extension UISplitViewController {
 }
 
 extension UITableView {
-    /// Stops the table view from showing any cell separators after the last cell.
-    func hideExtraneousSeparators() {
-        tableFooterView = UIView()
-    }
-    
     /// Causes the section headers not to stick to the top of a table view.
     func unstickSectionHeaders() {
         let headerFrame = CGRect(x: 0, y: 0, width: 0, height: sectionHeaderHeight * 2)
         tableHeaderView = UIView(frame: headerFrame)
         contentInset.top -= headerFrame.height
-    }
-}
-
-extension UITableViewCell {
-    /// Gets/sets the background color of the selectedBackgroundView (inserting one if necessary).
-    var selectedBackgroundColor: UIColor? {
-        get {
-            return selectedBackgroundView?.backgroundColor
-        }
-        set {
-            selectedBackgroundView = UIView()
-            selectedBackgroundView?.backgroundColor = newValue
-        }
-    }
-}
-
-extension Sequence where Element == NSLayoutConstraint {
-    func activate() {
-        forEach { $0.isActive = true }
-    }
-}
-
-extension UIView {
-    func constrain(to view: UIView, edges: UIRectEdge, insets: UIEdgeInsets = .zero) -> [NSLayoutConstraint] {
-        var constraints: [NSLayoutConstraint] = []
-        if edges.contains(.top) {
-            constraints.append(topAnchor.constraint(equalTo: view.topAnchor, constant: insets.top))
-        }
-        if edges.contains(.bottom) {
-            constraints.append(view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: insets.bottom))
-        }
-        if edges.contains(.left) {
-            constraints.append(leftAnchor.constraint(equalTo: view.leftAnchor, constant: insets.left))
-        }
-        if edges.contains(.right) {
-            constraints.append(view.rightAnchor.constraint(equalTo: rightAnchor, constant: insets.right))
-        }
-        return constraints
-    }
-    
-    func addSubview(_ subview: UIView, constrainEdges edges: UIRectEdge, insets: UIEdgeInsets = .zero) {
-        subview.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(subview)
-        subview.constrain(to: self, edges: edges, insets: insets).activate()
-    }
-}
-
-extension UIView {
-    var nearestViewController: UIViewController? {
-        var responder: UIResponder? = self
-        while responder != nil {
-            responder = responder?.next
-            if let vc = responder as? UIViewController { return vc }
-        }
-        return nil
     }
 }
 
@@ -360,68 +200,6 @@ extension UIViewController {
     }
 }
 
-extension UIViewController {
-    /**
-     Basically `childViewControllers` plus:
-     
-         * The presented view controller, if any.
-         * Any currently hidden view controllers if this is one of the common container view controllers (e.g. `UITabBarController` tabs that are not the current tab).
-     */
-    var immediateDescendants: [UIViewController] {
-        var immediateDescendants: [UIViewController] = []
-        var alreadyAdded: Set<UIViewController> = []
-        
-        let add = { (vc: UIViewController) in
-            guard !alreadyAdded.contains(vc) else { return }
-            immediateDescendants.append(vc)
-            alreadyAdded.insert(vc)
-        }
-        
-        if let presented = presentedViewController {
-            add(presented)
-        }
-        
-        children.forEach(add)
-        
-        switch self {
-        case let nav as UINavigationController:
-            nav.viewControllers.forEach(add)
-        case let split as UISplitViewController:
-            split.viewControllers.forEach(add)
-        case let tab as UITabBarController:
-            tab.viewControllers?.forEach(add)
-        default:
-            break
-        }
-        
-        return immediateDescendants
-    }
-    
-    var subtree: AnySequence<UIViewController> {
-        return AnySequence { () -> AnyIterator<UIViewController> in
-            var viewControllers: [UIViewController] = [self]
-
-            return AnyIterator {
-                guard !viewControllers.isEmpty else { return nil }
-                let vc = viewControllers.removeFirst()
-
-                viewControllers.insert(contentsOf: vc.immediateDescendants, at: 0)
-                
-                return vc
-            }
-        }
-    }
-
-    func firstDescendantOfType<VC: UIViewController>(_ type: VC.Type) -> VC? {
-        for vc in subtree {
-            if let vc = vc as? VC {
-                return vc
-            }
-        }
-        return nil
-    }
-}
-
 public extension UIImage {
     /**
     Returns the flat colorized version of the image, or self when something was wrong
@@ -429,7 +207,7 @@ public extension UIImage {
         - color: The colors to user. By defaut, uses the ``UIColor.white`
     - Returns: the flat colorized version of the image, or the self if something was wrong
     */
-    func colorized(with color: UIColor = .white) -> UIImage {
+    private func colorized(with color: UIColor = .white) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
 
         defer {
@@ -525,7 +303,7 @@ public extension UIImage {
 }
 
 
-extension CGPoint {
+private extension CGPoint {
     /**
     Rotates the point from the center `origin` by `byDegrees` degrees along the Z axis.
     - Parameters:

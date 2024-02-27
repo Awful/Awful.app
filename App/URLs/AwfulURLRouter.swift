@@ -3,6 +3,8 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
+import AwfulTheming
 import CoreData
 import MRProgress
 import UIKit
@@ -10,6 +12,7 @@ import UIKit
 /// Translates URLs with the scheme "awful" into an appropriate shown screen.
 struct AwfulURLRouter {
 
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let managedObjectContext: NSManagedObjectContext
     private let rootViewController: UIViewController
     
@@ -26,7 +29,7 @@ struct AwfulURLRouter {
     @discardableResult
     func route(_ route: AwfulRoute) -> Bool {
         
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         
@@ -165,17 +168,17 @@ struct AwfulURLRouter {
     }
     
     private func jumpToForum(_ forum: Forum) -> Bool {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        if let threadsVC = rootViewController.firstDescendantOfType(ThreadsTableViewController.self),
+        if let threadsVC = rootViewController.firstDescendant(ofType: ThreadsTableViewController.self),
            threadsVC.forum === forum
         {
             _ = threadsVC.navigationController?.popToViewController(threadsVC, animated: true)
             return selectTopmostViewController(containingViewControllerOfClass: ThreadsTableViewController.self) != nil
         }
         
-        if let forumsVC = rootViewController.firstDescendantOfType(ForumsTableViewController.self) {
+        if let forumsVC = rootViewController.firstDescendant(ofType: ForumsTableViewController.self) {
             _ = forumsVC.navigationController?.popToViewController(forumsVC, animated: false)
             forumsVC.openForum(forum, animated: false)
             return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
@@ -187,7 +190,7 @@ struct AwfulURLRouter {
     private func selectTopmostViewController<VC: UIViewController>(
         containingViewControllerOfClass klass: VC.Type
     ) -> VC? {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         guard let
@@ -195,7 +198,7 @@ struct AwfulURLRouter {
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
             else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
-            guard let match = topmost.firstDescendantOfType(VC.self) else { continue }
+            guard let match = topmost.firstDescendant(ofType: VC.self) else { continue }
             tabBarVC.selectedViewController = topmost
             splitVC.showPrimaryViewController()
             return match

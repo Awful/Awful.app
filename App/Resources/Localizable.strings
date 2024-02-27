@@ -16,10 +16,6 @@
 "table-view.action.delete" = "Delete";
 
 
-/* MARK: Acknowledgements */
-"acknowledgements.title" = "Acknowledgements";
-
-
 /* MARK: Actions */
 
 /* Title of the share URL action for an announcement, post, or thread. */
@@ -342,11 +338,6 @@
 /* Title of a button that removes a smilie from the user's favorites. Parameter is the text used to insert the smilie into a post. */
 "smilie-action.remove-from-favorites" = "Remove %@ from Favorites";
 
-
-/* MARK: Theme modes */
-
-"theme-mode.dark" = "Dark";
-"theme-mode.light" = "Light";
 
 /* MARK: User profile */
 

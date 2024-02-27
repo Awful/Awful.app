@@ -2,12 +2,14 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import Foundation
+import AwfulSettings
+import UIKit
 
 /// Hosts image data via the `awful-image` URL protocol so it can be shown from a UIWebView.
 final class SelfHostingAttachmentInterpolator: NSObject {
+    @FoilDefaultStorage(Settings.automaticTimg) private var automaticTimg
     fileprivate var URLs: [URL] = []
-    
+
     func interpolateImagesInString(_ string: NSAttributedString) -> String {
         let basePath = "/\(UUID().uuidString)" as NSString
         let mutableString = string.mutableCopy() as! NSMutableAttributedString
@@ -20,7 +22,7 @@ final class SelfHostingAttachmentInterpolator: NSObject {
             self.URLs.append(URL)
             
             let imageSize = attachment.image?.size ?? .zero
-            let requiresThumbnailing = UserDefaults.standard.postLargeImagesAsThumbnails
+            let requiresThumbnailing = automaticTimg
                 && (imageSize.width > TextAttachment.requiresThumbnailImageSize.width
                     || imageSize.height > TextAttachment.requiresThumbnailImageSize.height)
             let t = requiresThumbnailing ? "t" : ""

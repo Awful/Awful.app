@@ -2,10 +2,14 @@
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import AwfulTheming
 import UIKit
 
 /// A themeable tab bar controller that fixes an iOS 11 layout problem.
 final class RootTabBarController: UITabBarController, UITabBarControllerDelegate, Themeable {
+
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
     /// Returns a tab bar controller whose tab bar is an instance of `TabBar_FixiOS11iPadLayout`.
     static func makeWithTabBarFixedForiOS11iPadLayout() -> RootTabBarController {
@@ -40,8 +44,11 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
     }
 
     // called whenever a tab button is tapped
-     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-         if UserDefaults.standard.enableHaptics {
+     func tabBarController(
+        _ tabBarController: UITabBarController,
+        didSelect viewController: UIViewController
+     ) {
+         if enableHaptics {
              UIImpactFeedbackGenerator(style: .medium).impactOccurred()
          }
      }

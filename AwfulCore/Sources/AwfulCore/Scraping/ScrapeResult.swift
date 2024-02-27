@@ -14,17 +14,6 @@ public protocol ScrapeResult {
 
 // MARK: - Types common to several scrapers
 
-/// Forum IDs sure look numeric but we're gonna treat them as opaque.
-public struct ForumID: Hashable, RawRepresentable {
-    public let rawValue: String
-
-    public init?(rawValue: String) {
-        guard !rawValue.isEmpty else { return nil }
-        self.rawValue = rawValue
-    }
-}
-
-
 /// Post IDs sure look numeric but we're gonna treat them as opaque.
 public struct PostID: Hashable, RawRepresentable {
     public let rawValue: String

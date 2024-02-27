@@ -26,6 +26,21 @@
     {
       "parallelizable" : true,
       "target" : {
+        "containerPath" : "container:AwfulCore",
+        "identifier" : "AwfulCoreTests",
+        "name" : "AwfulCoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:AwfulExtensions",
+        "identifier" : "AwfulExtensionsTests",
+        "name" : "AwfulExtensionsTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
         "containerPath" : "container:Awful.xcodeproj",
         "identifier" : "1C9AEBC2210C3B2200C9A567",
         "name" : "AwfulTests"
@@ -34,17 +49,17 @@
     {
       "parallelizable" : true,
       "target" : {
-        "containerPath" : "container:AwfulCore",
-        "identifier" : "AwfulCoreTests",
-        "name" : "AwfulCoreTests"
+        "containerPath" : "container:Smilies",
+        "identifier" : "SmiliesTests",
+        "name" : "SmiliesTests"
       }
     },
     {
       "parallelizable" : true,
       "target" : {
-        "containerPath" : "container:Smilies",
-        "identifier" : "SmiliesTests",
-        "name" : "SmiliesTests"
+        "containerPath" : "container:AwfulScraping",
+        "identifier" : "AwfulScrapingTests",
+        "name" : "AwfulScrapingTests"
       }
     }
   ],

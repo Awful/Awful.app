@@ -3,6 +3,8 @@
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulTheming
 import CoreData
 import UIKit
 
@@ -145,13 +147,13 @@ extension ThreadListDataSource: UITableViewDataSource {
     private func viewModelForCell(at indexPath: IndexPath) -> ThreadListCell.ViewModel {
         let thread = resultsController.object(at: indexPath)
         let theme = delegate?.themeForItem(at: indexPath, in: self) ?? .defaultTheme()
-        let tweaks = thread.forum.flatMap { ForumTweaks(forumID: $0.forumID) }
+        let tweaks = thread.forum.flatMap { ForumTweaks(ForumID($0.forumID)) }
 
         return ThreadListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             pageCount: NSAttributedString(string: "\(thread.numberOfPages)", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], sizeAdjustment: 0, weight: .semibold),
-                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
+                .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!]),
             pageIconColor: theme["threadListPageIconColor"]!,
             postInfo: {
                 let text: String
@@ -163,7 +165,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                 }
                 return NSAttributedString(string: text, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], sizeAdjustment: 0, weight: .semibold),
-                    .foregroundColor: theme[color: "listSecondaryTextColor"]!])
+                    .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!])
             }(),
             ratingImage: {
                 if !showsTagAndRating {
@@ -205,7 +207,7 @@ extension ThreadListDataSource: UITableViewDataSource {
             }(),
             title: NSAttributedString(string: thread.title ?? "", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], sizeAdjustment: 0, weight: .regular),
-                .foregroundColor: theme[color: thread.closed ? "listSecondaryTextColor" : "listTextColor"]!]),
+                .foregroundColor: theme[uicolor: thread.closed ? "listSecondaryTextColor" : "listTextColor"]!]),
             unreadCount: {
                 guard thread.beenSeen else { return NSAttributedString() }
                 let color: UIColor

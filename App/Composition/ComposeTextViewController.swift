@@ -2,9 +2,14 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import AwfulTheming
 import MRProgress
+import UIKit
 
 class ComposeTextViewController: ViewController {
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         navigationItem.leftBarButtonItem = cancelButtonItem
@@ -199,10 +204,10 @@ class ComposeTextViewController: ViewController {
 
                 switch error {
                 case let error as LocalizedError where error.failureReason != nil:
-                    alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "")
+                    alert = UIAlertController(title: error.localizedDescription, message: error.failureReason ?? "", alertActions: [.ok()])
 
                 case let error as LocalizedError:
-                    alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription)
+                    alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), message: error.localizedDescription, alertActions: [.ok()])
 
                 case let error:
                     alert = UIAlertController(title: LocalizedString("image-upload.generic-error-title"), error: error)
@@ -255,7 +260,7 @@ class ComposeTextViewController: ViewController {
     }
     
     @objc fileprivate func didTapSubmit() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         disableEverythingButTheCancelButton()
@@ -274,7 +279,7 @@ class ComposeTextViewController: ViewController {
     }
     
     @objc fileprivate func didTapCancel() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         if let progress = imageUploadProgress {

@@ -3,9 +3,14 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulSettings
+import AwfulTheming
+import Combine
 import CoreData
 import MobileCoreServices
 import MRProgress
+import UIKit
 import WebKit
 
 private let Log = Logger.get()
@@ -17,20 +22,35 @@ final class PostsPageViewController: ViewController {
     var selectedFrame: CGRect? = nil
     private var advertisementHTML: String?
     private let author: User?
+    private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var flagRequest: Task<Void, Error>?
+    @FoilDefaultStorage(Settings.fontScale) private var fontScale
+    @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
+    @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var jumpToLastPost = false
+    @FoilDefaultStorageOptional(Settings.lastOfferedPasteboardURLString) private var lastOfferedPasteboardURLString
+    @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
+    @FoilDefaultStorageOptional(Settings.username) private var loggedInUsername
     var postIndex: Int = 0
+    @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
     private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>?
     private var observers: [NSKeyValueObservation] = []
     private(set) var page: ThreadPage?
+    @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
     private var restoringState = false
     private var scrollToFractionAfterLoading: CGFloat?
+    @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
+    @FoilDefaultStorage(Settings.loadImages) private var showImages
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
-    
+
     func threadActionsMenu() -> UIMenu {
         return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
             // Bookmark
@@ -68,7 +88,7 @@ final class PostsPageViewController: ViewController {
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
     }
-    
+
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
         postsView.didStartRefreshing = { [weak self] in
@@ -124,11 +144,11 @@ final class PostsPageViewController: ViewController {
         self.thread = thread
         self.author = author
         super.init(nibName: nil, bundle: nil)
-        
+
         restorationClass = type(of: self)
-        
+
         navigationItem.rightBarButtonItem = composeItem
-        
+
         hidesBottomBarWhenPushed = true
     }
 
@@ -137,7 +157,7 @@ final class PostsPageViewController: ViewController {
     }
 
     var posts: [Post] = []
-    
+
     var numberOfPages: Int {
         if let author = author {
             return Int(thread.filteredNumberOfPagesForAuthor(author))
@@ -145,21 +165,21 @@ final class PostsPageViewController: ViewController {
             return Int(thread.numberOfPages)
         }
     }
-    
+
     override var theme: Theme {
         guard let forum = thread.forum, !forum.forumID.isEmpty else {
             return Theme.defaultTheme()
         }
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
-    
+
     override var title: String? {
         didSet { navigationItem.titleLabel.text = title }
     }
-    
+
     /**
         Changes the page.
-     
+
         - parameter page: The page to load.
         - parameter updateCache: Whether to fetch posts from the client, or simply render any posts that are cached.
         - parameter updateLastReadPost: Whether to advance the "last-read post" marker on the Forums.
@@ -173,50 +193,50 @@ final class PostsPageViewController: ViewController {
         flagRequest = nil
         networkOperation?.cancel()
         networkOperation = nil
-        
+
         // prevent white flash caused by webview being opaque during refreshes
-        if #available(iOS 15, *), UserDefaults.standard.isDarkModeEnabled {
-            self.postsView.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: false)
-            self.postsView.viewHasBeenScrolledOnce = false
+        if darkMode {
+            postsView.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: false)
+            postsView.viewHasBeenScrolledOnce = false
         }
-        
+
         // Clear the post or fractional offset to scroll to. It's assumed that whatever calls this will
         // take care of re-establishing where to scroll to after calling loadPage().
         jumpToPostIDAfterLoading = nil
         scrollToFractionAfterLoading = nil
         jumpToLastPost = false
-        
+
         // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
         var newPage = newPage
         if let author = author, case .last? = page {
             newPage = .specific(Int(thread.filteredNumberOfPagesForAuthor(author)))
         }
-        
+
         let reloadingSamePage = page == newPage
         page = newPage
-        
+
         if posts.isEmpty || !reloadingSamePage {
             postsView.endRefreshing()
-            
+
             updateUserInterface()
-            
+
             if !restoringState {
                 hiddenPosts = 0
             }
-            
+
             refetchPosts()
-            
+
             if !posts.isEmpty {
                 renderPosts()
             }
         }
-        
+
         let renderedCachedPosts = !posts.isEmpty
-        
+
         updateUserInterface()
-        
+
         configureUserActivityIfPossible()
-        
+
         if !updatingCache {
             clearLoadingMessage()
             return
@@ -313,7 +333,7 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    
+
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
     func scrollPostToVisible(_ post: Post) {
         let i = posts.firstIndex(of: post)
@@ -323,54 +343,54 @@ final class PostsPageViewController: ViewController {
             if let i = i , i < hiddenPosts {
                 showHiddenSeenPosts()
             }
-            
+
             postsView.renderView.jumpToPost(identifiedBy: post.postID)
         }
     }
-    
+
     func goToLastPost() {
         loadPage(.last, updatingCache: true, updatingLastReadPost: true)
         jumpToLastPost = true
     }
-    
+
     override var canBecomeFirstResponder: Bool {
         return true
     }
-    
+
     private func renderPosts() {
         webViewDidLoadOnce = false
-        
+
         var context: [String: Any] = [:]
-        
+
         context["stylesheet"] = theme[string: "postsViewCSS"] as Any
-        
+
         if posts.count > hiddenPosts {
             let subset = posts[hiddenPosts...]
             context["posts"] = subset.map { PostRenderModel($0).context }
         }
-        
+
         if let ad = advertisementHTML, !ad.isEmpty {
             context["advertisementHTML"] = ad
         }
-        
+
         if context["posts"] != nil, case .specific(let pageNumber)? = page, pageNumber >= numberOfPages {
             context["endMessage"] = true
         }
-        
-        context["enableFrogAndGhost"] = UserDefaults.standard.enableFrogAndGhost
-        
+
+        context["enableFrogAndGhost"] = frogAndGhostEnabled
+
         context["ghostJsonData"] = try? String(contentsOf: URL(string: "ghost60.json", relativeTo: Bundle.main.resourceURL)!, encoding: .utf8)
-      
-        if let username = UserDefaults.standard.loggedInUsername, !username.isEmpty {
-            context["loggedInUsername"] = username
+
+        if let loggedInUsername, !loggedInUsername.isEmpty {
+            context["loggedInUsername"] = loggedInUsername
         }
-        
+
         context["externalStylesheet"] = PostsViewExternalStylesheetLoader.shared.stylesheet
-        
+
         if !thread.threadID.isEmpty {
             context["threadID"] = thread.threadID
         }
-        
+
         if let forum = thread.forum, !forum.forumID.isEmpty {
             context["forumID"] = forum.forumID
         }
@@ -384,24 +404,24 @@ final class PostsPageViewController: ViewController {
             Log.e("could not render posts view HTML: \(error)")
             html = ""
         }
-        
+
         Task {
             await postsView.renderView.eraseDocument()
             self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
-    
+
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
         return item
     }()
-    
+
     @IBAction private func compose(
         _ sender: UIBarButtonItem,
         forEvent event: UIEvent
     ) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         var isLongPress: Bool {
@@ -443,7 +463,7 @@ final class PostsPageViewController: ViewController {
             presentReply()
         }
     }
-    
+
     @objc private func newReply(_ sender: UIKeyCommand) {
         if replyWorkspace == nil {
             replyWorkspace = ReplyWorkspace(thread: thread)
@@ -451,7 +471,7 @@ final class PostsPageViewController: ViewController {
         }
         present(replyWorkspace!.viewController, animated: true, completion: nil)
     }
-    
+
     private var replyCompletionBlock: (_ result: ReplyWorkspace.CompletionResult) -> Void {
         return { [weak self] result in
             guard let self = self else { return }
@@ -467,90 +487,85 @@ final class PostsPageViewController: ViewController {
             case .saveDraft:
                 break
             }
-            
+
             self.dismiss(animated: true)
         }
     }
-    
-    private lazy var settingsItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "page-settings"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Settings"
-        item.actionBlock = { [unowned self] (sender) in
-            let settings = PostsPageSettingsViewController()
-            self.present(settings, animated: true)
-            
-            if let popover = settings.popoverPresentationController {
-                popover.barButtonItem = sender
-            }
-        }
-        return item
-    }()
-    
-    private lazy var backItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "arrowleft"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Previous page"
-        item.actionBlock = { [unowned self] (sender) in
-            guard case .specific(let pageNumber)? = self.page, pageNumber > 1 else { return }
-            if UserDefaults.standard.enableHaptics {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            }
-            self.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
-        }
-        return item
-    }()
-    
-    private lazy var currentPageItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        item.possibleTitles = ["2345 / 2345"]
-        item.accessibilityHint = "Opens page picker"
 
-        item.actionBlock = { [unowned self] (sender) in
+    private lazy var settingsItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "page-settings"),
+            handler: { [unowned self] action in
+                let settings = PostsPageSettingsViewController()
+                self.present(settings, animated: true)
+
+                if let popover = settings.popoverPresentationController {
+                    popover.barButtonItem = action.sender as? UIBarButtonItem
+                }
+            }
+        ))
+        item.accessibilityLabel = "Settings"
+        return item
+    }()
+
+    private lazy var backItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "arrowleft"),
+            handler: { [unowned self] action in
+                guard case .specific(let pageNumber)? = self.page, pageNumber > 1 else { return }
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                self.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
+            }
+        ))
+        item.accessibilityLabel = "Previous page"
+        return item
+    }()
+
+    private lazy var currentPageItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
             guard self.postsView.loadingView == nil else { return }
             let selectotron = Selectotron(postsViewController: self)
-            self.present(selectotron, animated: true, completion: nil)
-            
+            self.present(selectotron, animated: true)
+
             if let popover = selectotron.popoverPresentationController {
-                popover.barButtonItem = sender
+                popover.barButtonItem = action.sender as? UIBarButtonItem
             }
-        }
-        
+        })
+        item.possibleTitles = ["2345 / 2345"]
+        item.accessibilityHint = "Opens page picker"
         return item
     }()
-    
+
     private lazy var forwardItem: UIBarButtonItem = {
-        let item = UIBarButtonItem(image: UIImage(named: "arrowright"), style: .plain, target: nil, action: nil)
-        item.accessibilityLabel = "Next page"
-        item.actionBlock = { [unowned self] (sender) in
-            guard case .specific(let pageNumber)? = self.page, pageNumber < self.numberOfPages, pageNumber > 0 else { return }
-            if UserDefaults.standard.enableHaptics {
-                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "arrowright"),
+            handler: { [unowned self] action in
+                guard case .specific(let pageNumber)? = self.page, pageNumber < self.numberOfPages, pageNumber > 0 else { return }
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                self.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
             }
-            self.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
-        }
+        ))
+        item.accessibilityLabel = "Next page"
         return item
     }()
-    
-    
+
+
     private func actionsItem() -> UIBarButtonItem {
         UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu())
     }
 
-    @objc private func externalStylesheetDidUpdate(_ rawNotification: Notification) {
-        guard let notification = PostsViewExternalStylesheetLoader.DidUpdateNotification(rawNotification) else {
-            return Log.e("got an unexpected or invalid notification: \(rawNotification)")
-        }
-        
-        postsView.renderView.setExternalStylesheet(notification.stylesheet)
-    }
-    
     private func refetchPosts() {
         guard case .specific(let pageNumber)? = page else {
             posts = []
             return
         }
-        
+
         let request = Post.makeFetchRequest()
-        
+
         let indexKey = author == nil ? "threadIndex" : "filteredThreadIndex"
         let predicate = NSPredicate(format: "thread = %@ AND %d <= %K AND %K <= %d", thread, (pageNumber - 1) * 40 + 1, indexKey, indexKey, pageNumber * 40)
         if let author = author {
@@ -559,9 +574,9 @@ final class PostsPageViewController: ViewController {
         } else {
             request.predicate = predicate
         }
-        
+
         request.sortDescriptors = [NSSortDescriptor(key: indexKey, ascending: true)]
-        
+
         guard let context = thread.managedObjectContext else { fatalError("where's the context") }
         do {
             posts = try context.fetch(request)
@@ -569,10 +584,10 @@ final class PostsPageViewController: ViewController {
             print("\(#function) error fetching posts: \(error)")
         }
     }
-    
+
     private func updateUserInterface() {
-        title = thread.title?.stringByCollapsingWhitespace
-        
+        title = thread.title?.collapsingWhitespace()
+
         if page == .last || page == .nextUnread || posts.isEmpty {
             showLoadingView()
         }
@@ -584,14 +599,14 @@ final class PostsPageViewController: ViewController {
             self.scrollToBottom(nil)
         }
 
-        if UserDefaults.standard.isPullForNextEnabled {
+        if pullForNext {
             if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
                 if !(postsView.refreshControl is PostsPageRefreshArrowView) {
                     postsView.refreshControl = PostsPageRefreshArrowView()
                 }
             } else {
                 if !(postsView.refreshControl is PostsPageRefreshSpinnerView) {
-                    if !UserDefaults.standard.enableFrogAndGhost {
+                    if !frogAndGhostEnabled {
                         postsView.refreshControl = PostsPageRefreshSpinnerView()
                     } else {
                         postsView.refreshControl = GetOutFrogRefreshSpinnerView(theme: theme)
@@ -610,7 +625,7 @@ final class PostsPageViewController: ViewController {
                 return false
             }
         }()
-        
+
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
             currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
             currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
@@ -619,7 +634,7 @@ final class PostsPageViewController: ViewController {
             currentPageItem.title = ""
             currentPageItem.accessibilityLabel = nil
         }
-        
+
         forwardItem.isEnabled = {
             switch page {
             case .specific(let pageNumber)?:
@@ -628,24 +643,24 @@ final class PostsPageViewController: ViewController {
                 return false
             }
         }()
-        
+
         composeItem.isEnabled = !thread.closed
     }
-    
+
     private func showLoadingView() {
         guard postsView.loadingView == nil else { return }
         postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
     }
-    
+
     private func clearLoadingMessage() {
         postsView.loadingView = nil
     }
-    
+
     private func loadNextPageOrRefresh() {
         guard let page = page else { return }
 
         let nextPage: ThreadPage
-        
+
         // There's surprising sublety in figuring out what "next page" means.
         if posts.count < 40 {
             // When we're showing a partial page, just fill in the rest by reloading the current page.
@@ -667,45 +682,45 @@ final class PostsPageViewController: ViewController {
         guard self.postsView.loadingView == nil else { return }
         let selectotron = Selectotron(postsViewController: self)
         self.present(selectotron, animated: true, completion: nil)
-        
+
         if let popover = selectotron.popoverPresentationController {
             popover.barButtonItem = sender
         }
     }
-    
+
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         guard case .specific(let pageNumber)? = page, pageNumber > 1 else { return }
         loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
     }
-    
+
     @objc private func loadNextPage(_ sender: UIKeyCommand) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         guard case .specific(let pageNumber)? = page else { return }
         loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
     }
-    
+
     private func showHiddenSeenPosts() {
         let end = hiddenPosts
         hiddenPosts = 0
-        
+
         let html = (0..<end).map(renderedPostAtIndex).joined(separator: "\n")
         postsView.renderView.prependPostHTML(html)
     }
-    
+
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
         let scrollView = postsView.renderView.scrollView
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
-    
+
     @objc private func scrollToTop(_ sender: UIKeyCommand?) {
         postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
-    
+
     @objc private func scrollUp(_ sender: UIKeyCommand) {
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = max(scrollView.contentOffset.y - 80, 0)
@@ -716,7 +731,7 @@ final class PostsPageViewController: ViewController {
             scrollToTop(nil)
         }
     }
-    
+
     @objc private func scrollDown(_ sender: UIKeyCommand) {
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y + 80
@@ -727,14 +742,14 @@ final class PostsPageViewController: ViewController {
             scrollView.setContentOffset(newOffset, animated: true)
         }
     }
-    
+
     @objc private func pageUp(_ sender: UIKeyCommand) {
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y - (scrollView.bounds.height - 80)
         let newOffset = CGPoint(x: scrollView.contentOffset.x, y: max(proposedOffset, 0))
         scrollView.setContentOffset(newOffset, animated: true)
     }
-    
+
     @objc private func pageDown(_ sender: UIKeyCommand) {
         let scrollView = postsView.renderView.scrollView
         let proposedOffset = scrollView.contentOffset.y + (scrollView.bounds.height - 80)
@@ -744,20 +759,20 @@ final class PostsPageViewController: ViewController {
             scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: proposedOffset), animated: true)
         }
     }
-    
+
     @objc private func didLongPressOnPostsView(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
-        
-        if UserDefaults.standard.enableHaptics {
+
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
+
         Task {
             let elements = await postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView))
             _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.postsView.renderView)
         }
     }
-    
+
     @objc private func didDoubleTapOnPostsView(_ sender: UITapGestureRecognizer) {
         Task {
             guard let postFrame = await postsView.renderView.findPostFrame(at: sender.location(in: postsView.renderView)) else {
@@ -774,7 +789,7 @@ final class PostsPageViewController: ViewController {
             scrollView.scrollRectToVisible(belowBottom, animated: true)
         }
     }
-    
+
     private func renderedPostAtIndex(_ i: Int) -> String {
         do {
             let model = PostRenderModel(posts[i])
@@ -784,7 +799,7 @@ final class PostsPageViewController: ViewController {
             return ""
         }
     }
-    
+
     private func readIgnoredPostAtIndex(_ i: Int) {
         let post = posts[i]
         Task {
@@ -801,18 +816,18 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    
+
     private func didTapUserHeaderWithRect(_ frame: CGRect, forPostAtIndex postIndex: Int) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         self.selectedPost = posts[postIndex + hiddenPosts]
         self.selectedFrame = frame
-        
+
         var userActions: [UIMenuElement] = []
         guard let user = self.selectedPost!.author else { return }
         self.selectedUser = user
-        
+
         let userActionMenu: UIMenu = {
             // Profile
             let profile = UIAction.Identifier("profile")
@@ -821,7 +836,7 @@ final class PostsPageViewController: ViewController {
                                          identifier: profile,
                                          handler: profile(action:))
             userActions.append(profileAction)
-            
+
             // Their posts
             if author == nil {
                 let theirPosts = UIAction.Identifier("theirPosts")
@@ -832,9 +847,9 @@ final class PostsPageViewController: ViewController {
                 userActions.append(theirPostsAction)
             }
             // Private Message
-            if UserDefaults.standard.loggedInUserCanSendPrivateMessages &&
+            if canSendPrivateMessages &&
                 user.canReceivePrivateMessages &&
-                user.userID != UserDefaults.standard.loggedInUserID
+                user.userID != loggedInUserID
             {
                 let privateMessage = UIAction.Identifier("privateMessage")
                 let privateMessageAction = UIAction(title: "Private message",
@@ -850,7 +865,7 @@ final class PostsPageViewController: ViewController {
                                           identifier: rapSheet,
                                           handler: rapSheet(action:))
             userActions.append(rapSheetAction)
-            
+
             // Ignore user
             if self.selectedPost!.ignored {
                 let ignoreUser = UIAction.Identifier("ignoreUser")
@@ -867,16 +882,16 @@ final class PostsPageViewController: ViewController {
                                             handler: ignoreUser(action:))
                 userActions.append(ignoreAction)
             }
-            
+
             let tempMenu = UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: userActions)
             return UIMenu(title: "", image: nil, identifier: nil, options: [.displayInline], children: [tempMenu])
         }()
 
         hiddenMenuButton.show(menu: userActionMenu, from: frame)
     }
-    
+
     private func shareURL(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         self.dismiss(animated: false) {
@@ -892,15 +907,15 @@ final class PostsPageViewController: ViewController {
             components.queryItems = queryItems
             components.fragment = "post\(self.selectedPost!.postID)"
             let url = components.url!
-            
+
             let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: [SafariActivity(), ChromeActivity(url: url)])
             activityVC.completionWithItemsHandler = { (activityType, completed, returnedItems, activityError) in
                 if completed && activityType == .copyToPasteboard {
-                    UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
+                    self.lastOfferedPasteboardURLString = url.absoluteString
                 }
             }
             self.present(activityVC, animated: false)
-            
+
             if let popover = activityVC.popoverPresentationController {
                 // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
                 popover.sourceRect = self.selectedFrame!
@@ -910,7 +925,7 @@ final class PostsPageViewController: ViewController {
     }
 
     private func markThreadAsSeenUpTo(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         Task {
@@ -929,9 +944,9 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    
+
     private func quote(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         func makeNewReplyWorkspace() {
@@ -963,37 +978,40 @@ final class PostsPageViewController: ViewController {
                             quotePost()
                         })
                 )
-                
+
             case .replying:
                 quotePost()
-                
+
             case nil:
                 makeNewReplyWorkspace()
                 quotePost()
             }
         }
     }
-    
+
     private func yourPosts(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.dismiss(animated: false) {
-            
-            let userKey = UserKey(userID: UserDefaults.standard.loggedInUserID!, username: UserDefaults.standard.loggedInUsername)
+        self.dismiss(animated: false) { [self] in
+
+            let userKey = UserKey(
+                userID: loggedInUserID!,
+                username: loggedInUsername
+            )
             let user = User.objectForKey(objectKey: userKey, in: self.thread.managedObjectContext!)
-            
+
             let postsVC = PostsPageViewController(thread: self.thread, author: user)
             postsVC.restorationIdentifier = "Just your posts"
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
-            
+
             self.navigationController?.pushViewController(postsVC, animated: true)
-            
+
         }
     }
-    
+
     private func bookmark(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         Task {
@@ -1018,32 +1036,32 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    
+
     private func copyLink(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        self.dismiss(animated: false) {
+        self.dismiss(animated: false) { [self] in
             let overlay = MRProgressOverlayView.showOverlayAdded(to: self.view, title: "Copied Link", mode: .checkmark, animated: true)
-            overlay?.tintColor = self.theme["tintColor"]
+            overlay?.tintColor = theme["tintColor"]
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 overlay?.dismiss(true)
             }
             let route: AwfulRoute
-            let page = self.page ?? .first
-            if let singleUserID = self.author?.userID {
-                route = .threadPageSingleUser(threadID: self.thread.threadID, userID: singleUserID, page: page, .noseen)
+            let page = page ?? .first
+            if let singleUserID = author?.userID {
+                route = .threadPageSingleUser(threadID: thread.threadID, userID: singleUserID, page: page, .noseen)
             } else {
-                route = .threadPage(threadID: self.thread.threadID, page: page, .noseen)
+                route = .threadPage(threadID: thread.threadID, page: page, .noseen)
             }
             let url = route.httpURL
-            UserDefaults.standard.lastOfferedPasteboardURLString = url.absoluteString
+            lastOfferedPasteboardURLString = url.absoluteString
             UIPasteboard.general.coercedURL = url
         }
     }
-    
+
     private func copy(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         Task {
@@ -1066,33 +1084,32 @@ final class PostsPageViewController: ViewController {
             overlay.dismiss(true)
         }
     }
-    
+
     private func report(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let reportVC = ReportPostViewController(post: self.selectedPost!)
-        
+
         self.dismiss(animated: false) {
             self.present(reportVC.enclosingNavigationController, animated: true, completion: nil)
         }
     }
-    
+
     private func findPost(action: UIAction) {
         // This will add the thread to the navigation stack, giving us thread->author->thread.
         AppDelegate.instance.open(route: .post(id: self.selectedPost!.postID, .noseen))
     }
-    
+
     private func vote(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         Task {
             await dismiss(animated: false)
-            
-            let actionSheet = UIAlertController.makeActionSheet()
-            for i in stride(from: 5, to: 0, by: -1) {
-                actionSheet.addActionWithTitle("\(i)", handler: { [self] in
+
+            var actions = stride(from: 5, to: 0, by: -1).map { i in
+                UIAlertAction.default(title: "\(i)", handler: { [self] in
                     let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: "Voting \(i)", mode: .indeterminate, animated: true)!
                     overlay.tintColor = theme["tintColor"]
 
@@ -1112,8 +1129,8 @@ final class PostsPageViewController: ViewController {
                     }
                 })
             }
-
-            actionSheet.addCancelActionWithHandler(nil)
+            actions.append(.cancel())
+            let actionSheet = UIAlertController(actionSheetActions: actions)
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
@@ -1121,23 +1138,23 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    
+
     private func profile(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let profileVC = ProfileViewController(user: self.selectedUser!)
-        
+
         self.dismiss(animated: false) {
             self.present(profileVC.enclosingNavigationController, animated: true, completion: nil)
         }
     }
-    
+
     private func theirPosts(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
+
         self.dismiss(animated: false) {
             let postsVC = PostsPageViewController(thread: self.thread, author: self.selectedUser!)
             postsVC.restorationIdentifier = "Just their posts"
@@ -1145,12 +1162,12 @@ final class PostsPageViewController: ViewController {
             self.navigationController?.pushViewController(postsVC, animated: true)
         }
     }
-    
+
     private func privateMessage(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
+
         self.dismiss(animated: false) {
             let messageVC = MessageComposeViewController(recipient: self.selectedUser!)
             self.messageViewController = messageVC
@@ -1159,12 +1176,12 @@ final class PostsPageViewController: ViewController {
             self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
         }
     }
-    
+
     private func rapSheet(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
+
         self.dismiss(animated: false) {
             let rapSheetVC = RapSheetViewController(user: self.selectedUser!)
             if UIDevice.current.userInterfaceIdiom == .pad {
@@ -1174,16 +1191,16 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    
+
     private func ignoreUser(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         Task {
             await dismiss(animated: false)
             // removing ignored users requires username. adding a new user requires userid
             guard let userKey = selectedPost!.ignored ? selectedUser!.username : selectedUser!.userID else { return }
-            
+
             let ignoreBlock: (_ username: String) async throws -> Void
 
             if selectedPost!.ignored {
@@ -1191,7 +1208,7 @@ final class PostsPageViewController: ViewController {
             } else {
                 ignoreBlock = ForumsClient.shared.addUserToIgnoreList
             }
-            
+
             let overlay = MRProgressOverlayView.showOverlayAdded(to: view, title: "Updating Ignore List", mode: .indeterminate, animated: true)!
             overlay.tintColor = self.theme["tintColor"]
 
@@ -1208,12 +1225,12 @@ final class PostsPageViewController: ViewController {
             }
         }
     }
-    
+
     private func edit(action: UIAction) {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
+
         func presentNewReplyWorkspace() {
             Task {
                 do {
@@ -1228,14 +1245,14 @@ final class PostsPageViewController: ViewController {
                 }
             }
         }
-        
+
         switch self.replyWorkspace?.status {
         case .editing, .replying:
             self.presentDraftMenu(
                 from: .view(self.postsView.renderView, sourceRect: self.selectedFrame!),
                 options: .init(deleteDraft: presentNewReplyWorkspace)
             )
-            
+
         case nil:
             presentNewReplyWorkspace()
         }
@@ -1246,13 +1263,13 @@ final class PostsPageViewController: ViewController {
         forPostAtIndex postIndex: Int
     ) {
         assert(postIndex + hiddenPosts < posts.count, "post \(postIndex) beyond range (hiding \(hiddenPosts) posts")
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
 
         self.selectedPost = posts[postIndex + hiddenPosts]
         self.selectedFrame = frame
-        
+
         let postActionMenu: UIMenu = {
             var postActions: [UIAction] = []
             // edit post
@@ -1264,7 +1281,7 @@ final class PostsPageViewController: ViewController {
                     handler: edit(action:)
                 ))
             }
-            
+
             // Quote
             if !thread.closed {
                 postActions.append(.init(
@@ -1273,7 +1290,7 @@ final class PostsPageViewController: ViewController {
                     identifier: .init("quote"),
                     handler: quote(action:)
                 ))
-            } 
+            }
 
             // Copy post
             if thread.closed {
@@ -1304,7 +1321,7 @@ final class PostsPageViewController: ViewController {
                     handler: findPost(action:)
                 ))
             }
-            
+
             // Share URL
             postActions.append(.init(
                 title: "Share",
@@ -1312,7 +1329,7 @@ final class PostsPageViewController: ViewController {
                 identifier: UIAction.Identifier("shareurl"),
                 handler: shareURL(action:)
             ))
- 
+
             // Report
             postActions.append(.init(
                 title: "Report",
@@ -1326,14 +1343,14 @@ final class PostsPageViewController: ViewController {
 
         hiddenMenuButton.show(menu: postActionMenu, from: frame)
     }
-    
+
     private func presentDraftMenu(
         from source: DraftMenuSource,
         options: DraftMenuOptions
     ) {
         let title: String
         switch replyWorkspace?.status {
-        case let .editing(post) where post.author?.userID == UserDefaults.standard.loggedInUserID:
+        case let .editing(post) where post.author?.userID == loggedInUserID:
             title = NSLocalizedString("compose.draft-menu.editing-own-post.title", comment: "")
         case let .editing(post):
             if let username = post.author?.username {
@@ -1389,12 +1406,12 @@ final class PostsPageViewController: ViewController {
         case barButtonItem(UIBarButtonItem)
         case view(UIView, sourceRect: CGRect)
     }
-    
+
     private func fetchNewFlag() {
         flagRequest?.cancel()
-        
+
         guard let forum = thread.forum else { return }
-        
+
         flagRequest = Task { [weak self] in
             let flagInfo: RenderView.FlagInfo?
             do {
@@ -1416,17 +1433,17 @@ final class PostsPageViewController: ViewController {
             self?.postsView.renderView.setFYADFlag(flagInfo)
         }
     }
-    
+
     private func configureUserActivityIfPossible() {
-        guard case .specific? = page, UserDefaults.standard.isHandoffEnabled else {
+        guard case .specific? = page, handoffEnabled else {
             userActivity = nil
             return
         }
-        
+
         userActivity = NSUserActivity(activityType: Handoff.ActivityType.browsingPosts)
         userActivity?.needsSave = true
     }
-    
+
     override func updateUserActivityState(_ activity: NSUserActivity) {
         guard let page = page, case .specific = page else { return }
 
@@ -1437,28 +1454,28 @@ final class PostsPageViewController: ViewController {
 
         Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
-    
+
     override func themeDidChange() {
         super.themeDidChange()
 
         postsView.themeDidChange(theme)
         navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
-  
+
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
             navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
         default:
             navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
             navigationItem.titleLabel.numberOfLines = 2
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[color: "navigationBarTextColor"]!
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
         }
-     
-        
+
+
         if postsView.loadingView != nil {
             postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
         }
-        
+
         let appearance = UIToolbarAppearance()
         if (postsView.toolbar.isTranslucent) {
             appearance.configureWithDefaultBackground()
@@ -1476,12 +1493,12 @@ final class PostsPageViewController: ViewController {
             postsView.toolbar.scrollEdgeAppearance = appearance
             postsView.toolbar.compactScrollEdgeAppearance = appearance
         }
-  
+
         postsView.toolbar.overrideUserInterfaceStyle = theme["mode"] == "light" ? .light : .dark
-        
+
         messageViewController?.themeDidChange()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -1512,45 +1529,65 @@ final class PostsPageViewController: ViewController {
         doubleTap.delegate = self
         doubleTap.numberOfTapsRequired = 2
         postsView.renderView.addGestureRecognizer(doubleTap)
-        observers.append(UserDefaults.standard.observeOnMain(\.jumpToPostEndOnDoubleTap, options: .initial) {
-            defaults, _ in
-            doubleTap.isEnabled = defaults.jumpToPostEndOnDoubleTap
-        })
- 
-        NotificationCenter.default.addObserver(self, selector: #selector(externalStylesheetDidUpdate), name: PostsViewExternalStylesheetLoader.DidUpdateNotification.name, object: PostsViewExternalStylesheetLoader.shared)
+        $jumpToPostEndOnDoubleTap
+            .receive(on: RunLoop.main)
+            .sink { doubleTap.isEnabled = $0 }
+            .store(in: &cancellables)
 
-        observers += UserDefaults.standard.observeSeveral {
-            $0.observe(\.embedTweets) { [weak self] defaults in
-                guard let self = self else { return }
-                if defaults.embedTweets {
+        NotificationCenter.default.publisher(
+            for: PostsViewExternalStylesheetLoader.DidUpdateNotification.name,
+            object: PostsViewExternalStylesheetLoader.shared
+        )
+        .map { PostsViewExternalStylesheetLoader.DidUpdateNotification($0)! }
+        .receive(on: RunLoop.main)
+        .sink { [weak self] in self?.postsView.renderView.setExternalStylesheet($0.stylesheet) }
+        .store(in: &cancellables)
+
+        $embedTweets
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self else { return }
+                if $0 {
                     self.postsView.renderView.embedTweets()
                 }
             }
-            $0.observe(\.fontScale) { [weak self] defaults in
-                guard let self = self else { return }
-                self.postsView.renderView.setFontScale(defaults.fontScale)
-            }
-            $0.observe(\.isHandoffEnabled) { [weak self] defaults in
-                guard let self = self else { return }
-                if defaults.isHandoffEnabled, self.view.window != nil {
+            .store(in: &cancellables)
+
+        $fontScale
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.postsView.renderView.setFontScale($0) }
+            .store(in: &cancellables)
+
+        $handoffEnabled
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                guard let self else { return }
+                if $0, self.view.window != nil {
                     self.configureUserActivityIfPossible()
                 }
             }
-            $0.observe(\.isPullForNextEnabled, options: .initial) { [weak self] defaults in
-                guard let self = self else { return }
-                self.updateUserInterface()
-            }
-            $0.observe(\.showAuthorAvatars) { [weak self] defaults in
-                guard let self = self else { return }
-                self.postsView.renderView.setShowAvatars(defaults.showAuthorAvatars)
-            }
-            $0.observe(\.showImages) { [weak self] defaults in
-                guard let self = self else { return }
-                if defaults.showImages {
-                    self.postsView.renderView.loadLinkifiedImages()
-                }
-            }
-        }
+            .store(in: &cancellables)
+
+        $pullForNext
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.updateUserInterface() }
+            .store(in: &cancellables)
+
+        $showAvatars
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.postsView.renderView.setShowAvatars($0) }
+            .store(in: &cancellables)
+
+        $showImages
+            .dropFirst()
+            .filter { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.postsView.renderView.loadLinkifiedImages() }
+            .store(in: &cancellables)
     }
 
     override func viewDidLayoutSubviews() {
@@ -1567,22 +1604,22 @@ final class PostsPageViewController: ViewController {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
         postsView.layoutMargins = view.safeAreaInsets
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         configureUserActivityIfPossible()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
+
         userActivity = nil
     }
-    
+
     override func encodeRestorableState(with coder: NSCoder) {
         super.encodeRestorableState(with: coder)
-        
+
         coder.encode(thread.objectKey, forKey: Keys.threadKey)
         if let page = page {
             coder.encode(page.nsCoderIntValue, forKey: Keys.page)
@@ -1594,15 +1631,15 @@ final class PostsPageViewController: ViewController {
         coder.encode(Float(postsView.renderView.scrollView.fractionalContentOffset.y), forKey: Keys.scrolledFractionOfContent)
         coder.encode(replyWorkspace, forKey: Keys.replyWorkspace)
     }
-    
+
     override func decodeRestorableState(with coder: NSCoder) {
         restoringState = true
-        
+
         super.decodeRestorableState(with: coder)
-        
+
         messageViewController = coder.decodeObject(forKey: Keys.messageViewController) as? MessageComposeViewController
         messageViewController?.delegate = self
-        
+
         hiddenPosts = coder.decodeInteger(forKey: Keys.hiddenPosts)
         let page: ThreadPage = {
             guard
@@ -1616,22 +1653,22 @@ final class PostsPageViewController: ViewController {
         if posts.isEmpty {
             loadPage(page, updatingCache: true, updatingLastReadPost: true)
         }
-        
+
         advertisementHTML = coder.decodeObject(forKey: Keys.advertisementHTML) as? String
         scrollToFractionAfterLoading = CGFloat(coder.decodeFloat(forKey: Keys.scrolledFractionOfContent))
-        
+
         replyWorkspace = coder.decodeObject(forKey: Keys.replyWorkspace) as? ReplyWorkspace
         replyWorkspace?.completion = replyCompletionBlock
     }
-    
+
     override func applicationFinishedRestoringState() {
         super.applicationFinishedRestoringState()
-        
+
         restoringState = false
     }
-    
+
     // MARK: Gunk
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -1671,16 +1708,16 @@ extension PostsPageViewController: ComposeTextViewControllerDelegate {
 
 extension PostsPageViewController: RenderViewDelegate {
     func didFinishRenderingHTML(in view: RenderView) {
-        if UserDefaults.standard.embedTweets {
+        if embedTweets {
             view.embedTweets()
         }
-        
-        if UserDefaults.standard.enableFrogAndGhost {
+
+        if frogAndGhostEnabled {
             view.loadLottiePlayer()
         }
-       
+
         webViewDidLoadOnce = true
-        
+
         if jumpToLastPost {
             if posts.count > 0 {
                 let lastPost = posts.max(by: { (a, b) -> Bool in
@@ -1692,7 +1729,7 @@ extension PostsPageViewController: RenderViewDelegate {
                 }
             }
         }
-        
+
         if let postID = jumpToPostIDAfterLoading {
             postsView.renderView.jumpToPost(identifiedBy: postID)
         } else if let newFractionalOffset = scrollToFractionAfterLoading {
@@ -1700,18 +1737,18 @@ extension PostsPageViewController: RenderViewDelegate {
             fractionalOffset.y = newFractionalOffset
             postsView.renderView.scrollToFractionalOffset(fractionalOffset)
         }
-        
+
         clearLoadingMessage()
     }
-    
+
     func didReceive(message: RenderViewMessage, in view: RenderView) {
         switch message {
         case let message as RenderView.BuiltInMessage.DidTapAuthorHeader:
             didTapUserHeaderWithRect(message.frame, forPostAtIndex: message.postIndex)
-            
+
         case let message as RenderView.BuiltInMessage.DidTapPostActionButton:
             didTapActionButtonWithRect(message.frame, forPostAtIndex: message.postIndex)
-            
+
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if let postID = jumpToPostIDAfterLoading {
                 postsView.renderView.jumpToPost(identifiedBy: postID)
@@ -1720,15 +1757,15 @@ extension PostsPageViewController: RenderViewDelegate {
                 offset.y = fraction
                 postsView.renderView.scrollToFractionalOffset(offset)
             }
-            
+
         case is FYADFlagRequest:
             fetchNewFlag()
-            
+
         default:
             Log.w("ignoring unexpected JavaScript message: \(type(of: message).messageName)")
         }
     }
-    
+
     func didTapLink(to url: URL, in view: RenderView) {
         if let route = try? AwfulRoute(url) {
             if url.fragment == "awful-ignored", case let .post(id: postID, _) = route {
@@ -1744,7 +1781,7 @@ extension PostsPageViewController: RenderViewDelegate {
             UIApplication.shared.open(url)
         }
     }
-    
+
     func renderProcessDidTerminate(in view: RenderView) {
         renderPosts()
     }
@@ -1768,7 +1805,7 @@ extension PostsPageViewController: UIViewControllerRestoration {
         } else {
             author = nil
         }
-        
+
         let postsVC = PostsPageViewController(thread: thread, author: author)
         postsVC.restorationIdentifier = identifierComponents.last
         return postsVC
@@ -1790,24 +1827,24 @@ private struct Keys {
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {
         var keyCommands: [UIKeyCommand] = [
-            UIKeyCommand.make(input: UIKeyCommand.inputUpArrow, action: #selector(scrollUp), discoverabilityTitle: "Up"),
-            UIKeyCommand.make(input: UIKeyCommand.inputDownArrow, action: #selector(scrollDown), discoverabilityTitle: "Down"),
-            UIKeyCommand.make(input: " ", modifierFlags: .shift, action: #selector(pageUp), discoverabilityTitle: "Page Up"),
-            UIKeyCommand.make(input: " ", action: #selector(pageDown), discoverabilityTitle: "Page Down"),
-            UIKeyCommand.make(input: UIKeyCommand.inputUpArrow, modifierFlags: .command, action: #selector(scrollToTop), discoverabilityTitle: "Scroll to Top"),
-            UIKeyCommand.make(input: UIKeyCommand.inputDownArrow, modifierFlags: .command, action: #selector(scrollToBottom(_:)), discoverabilityTitle: "Scroll to Bottom"),
+            UIKeyCommand(action: #selector(scrollUp), input: UIKeyCommand.inputUpArrow, discoverabilityTitle: "Up"),
+            UIKeyCommand(action: #selector(scrollDown), input: UIKeyCommand.inputDownArrow, discoverabilityTitle: "Down"),
+            UIKeyCommand(action: #selector(pageUp), input: " ", modifierFlags: .shift, discoverabilityTitle: "Page Up"),
+            UIKeyCommand(action: #selector(pageDown), input: " ", discoverabilityTitle: "Page Down"),
+            UIKeyCommand(action: #selector(scrollToTop), input: UIKeyCommand.inputUpArrow, modifierFlags: .command, discoverabilityTitle: "Scroll to Top"),
+            UIKeyCommand(action: #selector(scrollToBottom(_:)), input: UIKeyCommand.inputDownArrow, modifierFlags: .command, discoverabilityTitle: "Scroll to Bottom"),
         ]
-        
+
         if case .specific(let pageNumber)? = page, pageNumber > 1 {
-            keyCommands.append(UIKeyCommand.make(input: "[", modifierFlags: .command, action: #selector(loadPreviousPage), discoverabilityTitle: "Previous Page"))
+            keyCommands.append(UIKeyCommand(action: #selector(loadPreviousPage), input: "[", modifierFlags: .command, discoverabilityTitle: "Previous Page"))
         }
-        
+
         if case .specific(let pageNumber)? = page, pageNumber < numberOfPages {
-            keyCommands.append(UIKeyCommand.make(input: "]", modifierFlags: .command, action: #selector(loadNextPage), discoverabilityTitle: "Next Page"))
+            keyCommands.append(UIKeyCommand(action: #selector(loadNextPage), input: "]", modifierFlags: .command, discoverabilityTitle: "Next Page"))
         }
-        
-        keyCommands.append(UIKeyCommand.make(input: "N", modifierFlags: .command, action: #selector(newReply), discoverabilityTitle: "New Reply"))
-        
+
+        keyCommands.append(UIKeyCommand(action: #selector(newReply), input: "N", modifierFlags: .command, discoverabilityTitle: "New Reply"))
+
         return keyCommands
     }
 }

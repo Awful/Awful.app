@@ -3,8 +3,11 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
-import Foundation
+import AwfulModelTypes
+import AwfulSettings
+import AwfulTheming
 import HTMLReader
+import UIKit
 
 struct PostRenderModel: StencilContextConvertible {
     let context: [String: Any]
@@ -32,14 +35,12 @@ struct PostRenderModel: StencilContextConvertible {
             return post.thread?.forum?.forumID ?? ""
         }
         var showRegdate: Bool {
-            if let tweaks = ForumTweaks(forumID: forumID) {
+            if let tweaks = ForumTweaks(ForumID(forumID)) {
                 return tweaks.showRegdate
             }
             return true
         }
-        var showAvatars: Bool {
-            return UserDefaults.standard.showAuthorAvatars
-        }
+        @FoilDefaultStorage(Settings.showAvatars) var showAvatars
         var hiddenAvatarURL: URL? {
             return showAvatars ? nil : post.author?.avatarURL
         }
@@ -102,32 +103,32 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     document.removeEmptyEditedByParagraphs()
     document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
-    if let username = UserDefaults.standard.loggedInUsername {
+    if let username = FoilDefaultStorageOptional(Settings.username).wrappedValue {
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
         document.identifyMentionsOfUser(named: username, shouldHighlight: true)
     }
-    document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.showImages)
-    if !UserDefaults.standard.automaticallyPlayGIFs {
+    document.processImgTags(shouldLinkifyNonSmilies: !FoilDefaultStorage(Settings.loadImages).wrappedValue)
+    if !FoilDefaultStorage(Settings.autoplayGIFs).wrappedValue {
         document.stopGIFAutoplay()
     }
     if isIgnored {
         document.markRevealIgnoredPostLink()
     }
-    if (ForumTweaks(forumID: forumID)?.magicCake) == true {
+    if (ForumTweaks(ForumID(forumID))?.magicCake) == true {
         document.addMagicCakeCSS()
     }
     document.embedVideos()
     return document.bodyElement?.innerHTML ?? ""
 }
 
-private var showAvatars: Bool {
-    return UserDefaults.standard.showAuthorAvatars
+ private var showAvatars: Bool {
+     FoilDefaultStorage(Settings.showAvatars).wrappedValue
 }
 
 private var enableCustomTitlePostLayout: Bool {
     switch UIDevice.current.userInterfaceIdiom {
     case .mac, .pad:
-        return UserDefaults.standard.enableCustomTitlePostLayout
+        return FoilDefaultStorage(Settings.enableCustomTitlePostLayout).wrappedValue
     default:
         return false
     }

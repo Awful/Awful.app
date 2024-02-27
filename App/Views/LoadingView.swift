@@ -2,6 +2,7 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulTheming
 import FLAnimatedImage
 import UIKit
 import Lottie
@@ -89,8 +90,8 @@ private class DefaultLoadingView: LoadingView {
     override func retheme() {
         super.retheme()
         
-        backgroundColor = theme?[color: "postsLoadingViewTintColor"]
-        if let tintColor = theme?[color: "tintColor"] {
+        backgroundColor = theme?[uicolor: "postsLoadingViewTintColor"]
+        if let tintColor = theme?[uicolor: "tintColor"] {
             animationView.setValueProvider(
                 ColorValueProvider(tintColor.lottieColorValue),
                 keypath: "**.Fill 1.Color"
@@ -151,7 +152,7 @@ private class YOSPOSLoadingView: LoadingView {
     
     fileprivate func startAnimating() {
         stopAnimating()
-        timer = Timer.scheduledTimerWithInterval(0.12, repeats: true, handler: { [unowned self] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.12, repeats: true, block: { [unowned self] timer in
             self.advanceSpinner()
         })
     }

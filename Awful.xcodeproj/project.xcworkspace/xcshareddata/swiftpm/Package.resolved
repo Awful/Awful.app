@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "Foil",
+        "repositoryURL": "http://github.com/jessesquires/Foil",
+        "state": {
+          "branch": null,
+          "revision": "bc08a46268cb3bb22fee2c8465d97e6d7bf981e1",
+          "version": "5.0.1"
+        }
+      },
+      {
         "package": "HTMLReader",
         "repositoryURL": "https://github.com/nolanw/HTMLReader",
         "state": {

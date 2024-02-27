@@ -3,6 +3,7 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulTheming
 import CoreData
 import UIKit
 
@@ -424,7 +425,7 @@ extension ForumListDataSource: UITableViewDataSource {
                 favoriteStarTintColor: theme["favoriteStarTintColor"]!,
                 forumName: NSAttributedString(string: announcement.title, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
-                    .foregroundColor: theme[color: "listTextColor"]!]),
+                    .foregroundColor: theme[uicolor: "listTextColor"]!]),
                 indentationLevel: 0,
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
 
@@ -437,7 +438,7 @@ extension ForumListDataSource: UITableViewDataSource {
                 favoriteStarTintColor: theme["favoriteStarTintColor"]!,
                 forumName: NSAttributedString(string: forum.name ?? "", attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
-                    .foregroundColor: theme[color: "listTextColor"]!]),
+                    .foregroundColor: theme[uicolor: "listTextColor"]!]),
                 indentationLevel: 0,
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
 
@@ -460,7 +461,7 @@ extension ForumListDataSource: UITableViewDataSource {
                 favoriteStarTintColor: theme["favoriteStarTintColor"]!,
                 forumName: NSAttributedString(string: forum.name ?? "", attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
-                    .foregroundColor: theme[color: "listTextColor"]!]),
+                    .foregroundColor: theme[uicolor: "listTextColor"]!]),
                 indentationLevel: forum.ancestors.reduce(0) { i, _ in i + 1 },
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
 

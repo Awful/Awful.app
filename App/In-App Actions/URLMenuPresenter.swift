@@ -3,6 +3,7 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import Smilies
 import UIKit
 import Photos
@@ -27,12 +28,12 @@ private enum _URLMenuPresenter {
             }
         }
         
-        if canOpenInYouTube(url), UserDefaults.standard.openYouTubeLinksInYouTube {
+        if canOpenInYouTube(url), FoilDefaultStorage(Settings.openYouTubeLinksInYouTube).wrappedValue {
             UIApplication.shared.open(url)
             return
         }
         
-        if canOpenInTwitter(url), UserDefaults.standard.openTwitterLinksInTwitter {
+        if canOpenInTwitter(url), FoilDefaultStorage(Settings.openTwitterLinksInTwitter).wrappedValue {
             UIApplication.shared.open(url)
             return
         }
@@ -43,7 +44,7 @@ private enum _URLMenuPresenter {
             return
         }
         
-        switch UserDefaults.standard.defaultBrowser {
+        switch FoilDefaultStorage(Settings.defaultBrowser).wrappedValue {
         case .awful:
             AwfulBrowser.presentBrowserForURL(url, fromViewController: presenter)
         case .defaultiOSBrowser:
@@ -60,24 +61,25 @@ private enum _URLMenuPresenter {
     }
     
     func present(fromViewController presenter: UIViewController, fromRect sourceRect: CGRect, inView sourceView: UIView) {
-        let alert = UIAlertController.makeActionSheet()
-        
+        var actions: [UIAlertAction] = []
+        let title: String?
+        let message: String?
         switch self {
         case let .link(url: linkURL, imageURL: imageURL, smilie: smilie):
-            alert.title = linkURL.absoluteString
-            
+            title = linkURL.absoluteString
+
             let browsers = DefaultBrowser.installedBrowsers
             let isHTTP = ["http", "https"].contains((linkURL.scheme ?? "").lowercased())
             let route = try? AwfulRoute(linkURL)
             
             if browsers.contains(.awful) && (route != nil || isHTTP) {
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-awful"), style: .default, handler: { _ in
+                actions.append(.default(title: LocalizedString("link-action.open-in-awful")) {
                     if let route = try? AwfulRoute(linkURL) {
                         AppDelegate.instance.open(route: route)
                     } else {
                         AwfulBrowser.presentBrowserForURL(linkURL, fromViewController: presenter)
                     }
-                }))
+                })
             }
             
             if browsers.contains(.defaultiOSBrowser) {
@@ -89,97 +91,91 @@ private enum _URLMenuPresenter {
                 } else {
                     title = LocalizedString("link-action.open-in-default-browser")
                 }
-                alert.addAction(UIAlertAction(title: title, style: .default, handler: { _ in
-                    UIApplication.shared.open(linkURL)
-                    return
-                }))
+                actions.append(.default(title: title) { UIApplication.shared.open(linkURL) })
             }
                     
             if browsers.contains(.chrome) && isHTTP {
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-chrome"), style: .default, handler: { _ in
+                actions.append(.default(title: LocalizedString("link-action.open-in-chrome")) {
                     UIApplication.shared.open(chromifyURL(linkURL))
-                    return
-                }))
+                })
             }
                     
             if browsers.contains(.firefox) && isHTTP {
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-firefox"), style: .default, handler: { _ in
+                actions.append(.default(title: LocalizedString("link-action.open-in-firefox")) {
                     UIApplication.shared.open(firefoxifyURL(linkURL))
-                    return
-                }))
+                })
             }
 
             if browsers.contains(.brave) && isHTTP {
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-brave"), style: .default, handler: { _ in
+                actions.append(.default(title: LocalizedString("link-action.open-in-brave")) {
                     UIApplication.shared.open(bravifyURL(linkURL))
-                    return
-                }))
+                })
             }
 
             if browsers.contains(.edge) && isHTTP {
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-in-edge"), style: .default, handler: { _ in
+                actions.append(.default(title: LocalizedString("link-action.open-in-edge")) {
                     UIApplication.shared.open(edgifyURL(linkURL))
-                    return
-                }))
+                })
             }
             
-            alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
+            actions.append(.default(title: LocalizedString("link-action.copy-url")) {
                 UIPasteboard.general.coercedURL = linkURL
-            }))
+            })
             
-            alert.addAction(UIAlertAction(title: LocalizedString("link-action.share-url"), style: .default, handler: { _ in
+            actions.append(.default(title: LocalizedString("link-action.share-url")) {
                 let objectsToShare = [linkURL]
                 let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-                
-                presenter.present(activityVC, animated: true, completion: nil)
+                presenter.present(activityVC, animated: true)
+
                 if let popover = activityVC.popoverPresentationController {
                     popover.sourceRect = sourceRect
                     popover.sourceView = sourceView
                 }
-                
-            }))
+            })
 
-            if let imageURL = imageURL {
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open-image"), style: .default, handler: { _ in
+            if let imageURL {
+                actions.append(.default(title: LocalizedString("link-action.open-image")) {
                     let preview = ImageViewController(imageURL: imageURL)
                     preview.title = presenter.title
                     presenter.present(preview, animated: true, completion: nil)
-                }))
+                })
                 
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-image-url"), style: .default, handler: { _ in
+                actions.append(.default(title: LocalizedString("link-action.copy-image-url")) {
                     UIPasteboard.general.coercedURL = imageURL
-                }))
+                })
             }
 
-            if let smilie = smilie {
+            if let smilie {
                 if let storedSmilie = SmilieDataStore.shared.fetchSmilie(text: smilie.text) {
                     let format = storedSmilie.metadata.isFavorite ? LocalizedString("smilie-action.remove-from-favorites") : LocalizedString("smilie-action.add-to-favorites")
 
-                    alert.addAction(.init(title: String(format: format, storedSmilie.text), style: .default, handler: { _ in
+                    actions.append(.default(title: String(format: format, storedSmilie.text)) {
                         if storedSmilie.metadata.isFavorite {
                             storedSmilie.metadata.removeFromFavoritesUpdatingSubsequentIndices()
                         } else {
                             storedSmilie.metadata.addToFavorites()
                         }
                         try! storedSmilie.managedObjectContext?.save()
-                    }))
+                    })
+                    message = nil
                 } else {
-                    alert.message = smilie.text
+                    message = smilie.text
                 }
+            } else {
+                message = nil
             }
-            
+
         case let .video(rawURL):
             if let videoURL = VideoURL(rawURL) {
-                alert.title = videoURL.unembeddedURL.absoluteString
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.open"), style: .default, handler: { _ in
+                title = videoURL.unembeddedURL.absoluteString
+                message = nil
+                actions.append(.default(title: LocalizedString("link-action.open")) {
                     AwfulBrowser.presentBrowserForURL(videoURL.unembeddedURL, fromViewController: presenter)
-                    return
-                }))
-                alert.addAction(UIAlertAction(title: videoURL.actionTitle, style: .default, handler: { _ in
+                })
+                actions.append(.default(title: videoURL.actionTitle) {
                     UIApplication.shared.open(videoURL.actionURL)
-                    return
-                }))
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.share-url"), style: .default, handler: { _ in
+                })
+                actions.append(.default(title: LocalizedString("link-action.share-url")) {
                     let items = [videoURL.unembeddedURL]
                     let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
                     presenter.present(activityVC, animated: true)
@@ -188,17 +184,19 @@ private enum _URLMenuPresenter {
                         popover.sourceRect = sourceRect
                         popover.sourceView = sourceView
                     }
-                }))
+                })
             } else {
-                alert.addAction(UIAlertAction(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
+                (title, message) = (nil, nil)
+                actions.append(.default(title: LocalizedString("link-action.copy-url")) {
                     UIPasteboard.general.coercedURL = rawURL
-                }))
+                })
             }
         }
         
-        alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
-        
+        actions.append(.cancel())
+        let alert = UIAlertController(title: title, message: message, actionSheetActions: actions)
         presenter.present(alert, animated: true)
+
         if let popover = alert.popoverPresentationController {
             popover.sourceRect = sourceRect
             popover.sourceView = sourceView
@@ -472,34 +470,36 @@ final class URLMenuPresenter: NSObject {
 
         if let smilie = smilie {
             // Just a smilie, nothing else.
-            let actionSheet = UIAlertController.makeActionSheet()
-            actionSheet.message = smilie.text
+            var actions: [UIAlertAction] = []
             if let storedSmilie = SmilieDataStore.shared.fetchSmilie(text: smilie.text) {
                 let format = storedSmilie.metadata.isFavorite ? LocalizedString("smilie-action.remove-from-favorites") : LocalizedString("smilie-action.add-to-favorites")
 
-                actionSheet.addAction(.init(title: String(format: format, storedSmilie.text), style: .default, handler: { _ in
+                actions.append(.default(title: String(format: format, storedSmilie.text)) {
                     if storedSmilie.metadata.isFavorite {
                         storedSmilie.metadata.removeFromFavoritesUpdatingSubsequentIndices()
                     } else {
                         storedSmilie.metadata.addToFavorites()
                     }
                     try! storedSmilie.managedObjectContext?.save()
-                }))
+                })
             }
 
             if let imageURL = imageURL {
-                actionSheet.addAction(.init(title: LocalizedString("link-action.open-image"), style: .default, handler: { action in
+                actions.append(.default(title: LocalizedString("link-action.open-image")) {
                     let preview = ImageViewController(imageURL: imageURL)
                     preview.title = presentingViewController.title
                     presentingViewController.present(preview, animated: true)
-                }))
+                })
             }
 
-            actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
-
+            actions.append(.cancel())
+            let actionSheet = UIAlertController(message: smilie.text, actionSheetActions: actions)
             presentingViewController.present(actionSheet, animated: true)
-            if let popover = actionSheet.popoverPresentationController, let imageFrame = imageFrame {
-                popover.sourceRect = imageFrame.insetBy(dx: -6, dy: -6)
+
+            if let popover = actionSheet.popoverPresentationController {
+                if let imageFrame {
+                    popover.sourceRect = imageFrame.insetBy(dx: -6, dy: -6)
+                }
                 popover.sourceView = renderView
             }
         } else if let imageURL = imageURL {
@@ -513,14 +513,14 @@ final class URLMenuPresenter: NSObject {
             if let resolved = URL(string: unresolved.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
                 let path = resolved.path.lowercased()
                 if path.hasSuffix(".mp4") {
-                    let actionSheet = UIAlertController.makeActionSheet()
-                    actionSheet.addAction(.init(title: LocalizedString("link-action.copy-url"), style: .default, handler: { _ in
+                    var actions: [UIAlertAction] = []
+                    actions.append(.default(title: LocalizedString("link-action.copy-url")) {
                         UIPasteboard.general.coercedURL = resolved
-                    }))
+                    })
                     
                     switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
                     case .authorized, .limited, .notDetermined:
-                        actionSheet.addAction(.init(title: LocalizedString("save-action.save-video"), style: .default, handler: { _ in
+                        actions.append(.default(title: LocalizedString("save-action.save-video")) {
                             downloadVideoAndSaveToPhotos(resolved, renderView: renderView) { error in
                                 if let error = error {
                                     DispatchQueue.main.async {
@@ -544,13 +544,14 @@ final class URLMenuPresenter: NSObject {
                                     Log.d("Save video Success")
                                 }
                             }
-                        }))
+                        })
                     case .denied, .restricted:
                         break
                     @unknown default:
                         break
                     }
-                    actionSheet.addAction(.init(title: LocalizedString("cancel"), style: .cancel))
+                    actions.append(.cancel())
+                    let actionSheet = UIAlertController(actionSheetActions: actions)
                     presentingViewController.present(actionSheet, animated: true)
                     actionSheet.popoverPresentationController?.sourceRect = frame
                     actionSheet.popoverPresentationController?.sourceView = renderView

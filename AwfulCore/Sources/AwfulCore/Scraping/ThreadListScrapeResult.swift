@@ -2,6 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulModelTypes
 import Foundation
 import HTMLReader
 
@@ -75,7 +76,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
             ?? []
 
         forum = (body["data-forum"] as String?)
-            .flatMap { ForumID(rawValue: $0) }
+            .map { ForumID($0) }
 
         isBookmarkedThreadsPage = body.firstNode(matchingSelector: "form[name='bookmarks']") != nil
 

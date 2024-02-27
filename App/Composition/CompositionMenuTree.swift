@@ -4,13 +4,15 @@
 
 import MobileCoreServices
 import Photos
+import PSMenuItem
 import UIKit
 
 private let Log = Logger.get()
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
-// This classes exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
 final class CompositionMenuTree: NSObject {
+    // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
+    
     let textView: UITextView
     
     /// The textView's class will have some responder chain methods swizzled.
@@ -133,7 +135,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     ) {
         guard let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage else {
             Log.e("could not find image among image picker info")
-            let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found")
+            let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found", alertActions: [.ok()])
             textView.nearestViewController?.present(alert, animated: true)
             return
         }

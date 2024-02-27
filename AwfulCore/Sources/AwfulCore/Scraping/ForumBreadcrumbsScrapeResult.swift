@@ -2,6 +2,7 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulModelTypes
 import HTMLReader
 
 public struct ForumBreadcrumbsScrapeResult: ScrapeResult {
@@ -28,19 +29,15 @@ public struct ForumBreadcrumb: Hashable {
     public let name: String
 
     fileprivate init(_ node: HTMLNode, depth: Int) throws {
-        guard
-            let a = node as? HTMLElement,
-            let href = a["href"],
-            let components = URLComponents(string: href),
-            let queryItems = components.queryItems,
-            let forumIDItem = queryItems.first(where: { $0.name == "forumid" }),
-            let rawID = forumIDItem.value,
-            let id = ForumID(rawValue: rawID) else
-        {
-            throw ScrapingError.missingExpectedElement("a[href *= 'forumid']")
-        }
+        guard let a = node as? HTMLElement,
+              let href = a["href"],
+              let components = URLComponents(string: href),
+              let queryItems = components.queryItems,
+              let forumIDItem = queryItems.first(where: { $0.name == "forumid" }),
+              let rawID = forumIDItem.value
+        else { throw ScrapingError.missingExpectedElement("a[href *= 'forumid']") }
 
-        self.id = id
+        self.id = ForumID(rawValue: rawID)
         name = node.textContent
         self.depth = depth
     }

@@ -3,6 +3,8 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulTheming
+import ScrollViewDelegateMultiplexer
 import UIKit
 
 /// Displays a list of probations and bans.

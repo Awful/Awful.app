@@ -143,6 +143,13 @@ extension ImageURLProtocol: WKURLSchemeHandler {
     }
 }
 
+private extension PHAsset {
+    class func firstAsset(identifiedBy identifier: String) -> PHAsset? {
+        return fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject
+    }
+}
+
+
 private extension String {
     var canonicalPath: String {
         return lowercased()

@@ -2,7 +2,14 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import AwfulTheming
+import UIKit
+
 final class CompositionViewController: ViewController {
+
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nil, bundle: nil)
         restorationClass = type(of: self)
@@ -20,10 +27,10 @@ final class CompositionViewController: ViewController {
     }
     
     @objc fileprivate func didTapCancel() {
-        if UserDefaults.standard.enableHaptics {
+        if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true)
     }
     
     @objc func cancel(_ sender: UIKeyCommand) {
@@ -88,7 +95,7 @@ final class CompositionViewController: ViewController {
     
     override var keyCommands: [UIKeyCommand]? {
         return [
-            UIKeyCommand.make(input: UIKeyCommand.inputEscape, action: #selector(cancel(_:)), discoverabilityTitle: "Cancel"),
+            UIKeyCommand(action: #selector(cancel(_:)), input: UIKeyCommand.inputEscape, discoverabilityTitle: "Cancel"),
         ]
     }
 }

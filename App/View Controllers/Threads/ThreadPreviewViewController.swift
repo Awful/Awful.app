@@ -3,7 +3,11 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulModelTypes
+import AwfulSettings
+import AwfulTheming
 import CoreData
+import UIKit
 
 private let Log = Logger.get()
 
@@ -29,15 +33,14 @@ final class ThreadPreviewViewController: ViewController {
     
     private typealias HTMLAndForm = (previewHTML: String, formData: ForumsClient.PostNewThreadFormData)
     
-    private lazy var postButtonItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: LocalizedString("compose.thread-preview.submit-button"), style: .plain, target: nil, action: nil)
-        buttonItem.actionBlock = { [weak self] item in
-            item.isEnabled = false
-            self?.submitBlock?()
+    private lazy var postButtonItem = UIBarButtonItem(primaryAction: UIAction(
+        title: LocalizedString("compose.thread-preview.submit-button"),
+        handler: { [unowned self] action in
+            (action.sender as? UIBarButtonItem)?.isEnabled = false
+            self.submitBlock?()
         }
-        return buttonItem
-    }()
-    
+    ))
+
     private lazy var renderView: RenderView = {
         let renderView = RenderView(frame: CGRect(origin: .zero, size: view.bounds.size))
         renderView.delegate = self
@@ -63,7 +66,7 @@ final class ThreadPreviewViewController: ViewController {
     }
     
     override var theme: Theme {
-        return Theme.currentTheme(for: forum)
+        return Theme.currentTheme(for: ForumID(forum.forumID))
     }
     
     // MARK: Rendering preview
@@ -83,7 +86,7 @@ final class ThreadPreviewViewController: ViewController {
                 let (previewHTML, formData) = try await previewTask.value
 
                 guard let self,
-                      let userKey = UserDefaults.standard.loggedInUserID.map({ UserKey(userID: $0, username: UserDefaults.standard.loggedInUsername) }),
+                      let userKey = FoilDefaultStorageOptional(Settings.userID).wrappedValue.map({ UserKey(userID: $0, username: FoilDefaultStorageOptional(Settings.username).wrappedValue) }),
                       let context = self.managedObjectContext,
                       let author = User.objectForKey(objectKey: userKey, in: context) as User?
                 else { throw MissingAuthorError() }
@@ -139,13 +142,13 @@ final class ThreadPreviewViewController: ViewController {
             backgroundColor: theme["listBackgroundColor"]!,
             pageCount: NSAttributedString(string: "1", attributes: [
                 .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], weight: .regular),
-                .foregroundColor: theme[color: "listSecondaryTextColor"]!]),
+                .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!]),
             pageIconColor: theme["listSecondaryTextColor"]!,
             postInfo: {
                 let text = String(format: LocalizedString("compose.thread-preview.posting-in"), forum.name ?? "")
                 return NSAttributedString(string: text, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.footnote, fontName: theme["listFontName"], weight: .regular),
-                    .foregroundColor: theme[color: "listSecondaryTextColor"]!])
+                    .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!])
             }(),
             ratingImage: nil,
             secondaryTagImageName: secondaryThreadTag?.imageName,
@@ -157,7 +160,7 @@ final class ThreadPreviewViewController: ViewController {
                 subject.collapseWhitespace()
                 return NSAttributedString(string: subject, attributes: [
                     .font: UIFont.preferredFontForTextStyle(.body, fontName: theme["listFontName"], weight: .regular),
-                    .foregroundColor: theme[color: "listTextColor"]!])
+                    .foregroundColor: theme[uicolor: "listTextColor"]!])
             }(),
             unreadCount: NSAttributedString())
         

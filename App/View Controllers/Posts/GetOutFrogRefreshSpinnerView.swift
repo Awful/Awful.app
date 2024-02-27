@@ -2,6 +2,8 @@
 //
 //  Copyright 2022 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import AwfulTheming
 import Lottie
 import UIKit
 
@@ -9,7 +11,8 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
     private let animationView = LottieAnimationView(
         animation: LottieAnimation.named("frogrefresh60"),
         configuration: LottieConfiguration(renderingEngine: .mainThread))
- 
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+
 
     init(theme: Theme) {
     
@@ -84,7 +87,7 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
              break
          case (.armed, .triggered):
              animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce)
-             if UserDefaults.standard.enableHaptics {
+             if enableHaptics {
                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
              }
              break
@@ -92,7 +95,7 @@ final class GetOutFrogRefreshSpinnerView: UIView, PostsPageRefreshControlContent
              break
          case (_, .refreshing):
              animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .playOnce)
-             if UserDefaults.standard.enableHaptics {
+             if enableHaptics {
                  UIImpactFeedbackGenerator(style: .medium).impactOccurred()
              }
          case (_, .armed):

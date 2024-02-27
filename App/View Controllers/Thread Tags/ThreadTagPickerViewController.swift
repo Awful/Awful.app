@@ -2,6 +2,10 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
+import AwfulTheming
+import UIKit
+
 /**
  Shows a grid of thread tags (and, as needed, secondary thread tags) for the user to select.
  
@@ -11,6 +15,7 @@ final class ThreadTagPickerViewController: ViewController {
     
     weak var delegate: ThreadTagPickerViewControllerDelegate?
     
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let firstTag: ThreadTagLoader.Placeholder
     private let imageNames: [String]
     private let secondaryImageNames: [String]
@@ -31,9 +36,8 @@ final class ThreadTagPickerViewController: ViewController {
     }()
     
     @objc private func didTapCancel(_ sender: UIBarButtonItem) {
-        if UserDefaults.standard.enableHaptics {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         dismiss()
         delegate?.didDismissPicker(self)
@@ -44,9 +48,8 @@ final class ThreadTagPickerViewController: ViewController {
     }()
     
     @objc private func didTapDone(_ sender: UIBarButtonItem) {
-        if UserDefaults.standard.enableHaptics {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         dismiss()
         delegate?.didDismissPicker(self)
