@@ -244,7 +244,7 @@ public struct SettingsView: View {
             Section {
                 Toggle("Check Clipboard for URL", bundle: .module, isOn: $checkClipboardForURLOnBecomeActive)
             } footer: {
-                Text("Checking the clipboard for a forums URL when you open th eapp allows you to jump straight to a copied URL in Awful.", bundle: .module)
+                Text("Checking the clipboard for a forums URL when you open the app allows you to jump straight to a copied URL in Awful.", bundle: .module)
                     .footer()
             }
             .section()
