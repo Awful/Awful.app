@@ -22,7 +22,7 @@ final class BookmarksTableViewController: TableViewController {
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
     @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
-    @FoilDefaultStorage(Settings.forumThreadsSortedUnread) private var sortUnreadToTop
+    @FoilDefaultStorage(Settings.bookmarksSortedUnread) private var sortUnreadToTop
 
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
         return ScrollViewDelegateMultiplexer(scrollView: tableView)
