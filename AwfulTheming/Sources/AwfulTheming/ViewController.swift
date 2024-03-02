@@ -201,7 +201,13 @@ open class TableViewController: UITableViewController, Themeable {
     open func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
-        pullToRefreshView?.backgroundColor = view.backgroundColor
+        if let pullToRefreshView {
+            pullToRefreshView.backgroundColor = view.backgroundColor
+
+            if let niggly = pullToRefreshView as? NigglyRefreshLottieView {
+                niggly.theme = theme
+            }
+        }
         tableView.tableFooterView?.backgroundColor = view.backgroundColor
         
         tableView.indicatorStyle = theme.scrollIndicatorStyle

@@ -248,6 +248,13 @@
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
 		</dict>
+		<key>Lotties</key>
+		<dict>
+			<key>getOutFrogColor</key>
+			<string>#1e84af</string>
+			<key>nigglyColor</key>
+			<string>#dddddd</string>
+		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
 			<key>navigationBarTextColor</key>
@@ -449,6 +456,13 @@
 			<string>#262626</string>
 			<key>threadListPageIconColor</key>
 			<string>#808080e5</string>
+		</dict>
+		<key>Lotties</key>
+		<dict>
+			<key>getOutFrogColor</key>
+			<string>#1e84af</string>
+			<key>nigglyColor</key>
+			<string>#dddddd</string>
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
