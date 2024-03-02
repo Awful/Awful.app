@@ -12,6 +12,7 @@ let package = Package(
     dependencies: [
         .package(path: "../AwfulModelTypes"),
         .package(path: "../AwfulSettings"),
+        .package(path: "../LessStylesheet"),
         .package(path: "../Logger"),
         .package(path: "../Vendor/PullToRefresh"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.0.0"),
@@ -31,6 +32,9 @@ let package = Package(
             resources: [
                 .process("ForumTweaks.plist"),
                 .process("Themes.plist"),
+            ],
+            plugins: [
+                .plugin(name: "LessStylesheet", package: "LessStylesheet"),
             ]
         ),
     ]

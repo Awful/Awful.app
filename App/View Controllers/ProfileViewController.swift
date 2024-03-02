@@ -105,7 +105,7 @@ final class ProfileViewController: ViewController {
         let html: String = {
             guard let profile = user.profile else { return "" }
             do {
-                return try StencilEnvironment.shared.renderTemplate(.profile, context: RenderModel(profile))
+                return try StencilEnvironment.shared.renderTemplate(.profile, context: RenderModel(profile, theme: theme))
             }
             catch {
                 Log.e("could not render profile HTML: \(error)")
@@ -222,7 +222,7 @@ private struct RenderModel: StencilContextConvertible {
     let username: String?
     let yahooName: String?
     
-    init(_ profile: Profile) {
+    init(_ profile: Profile, theme: Theme) {
         let privateMessagesWork = profile.user.canReceivePrivateMessages && FoilDefaultStorage(Settings.canSendPrivateMessages).wrappedValue
 
         aboutMe = profile.aboutMe
@@ -239,10 +239,8 @@ private struct RenderModel: StencilContextConvertible {
             let html = profile.user.customTitleHTML
             return html == "<br/>" ? nil : html
         }()
-        css = {
-            let url = Bundle(for: ProfileViewController.self).url(forResource: "profile.css", withExtension: nil)!
-            return try! String(contentsOf: url, encoding: .utf8)
-        }()
+        // No good reason for profile.css to be loaded via theme: profile.less imports some of the posts view .less helpers, so it's easier to generate all the .css files in one place.
+        css = try! theme.stylesheet(named: "profile")!
         dark = FoilDefaultStorage(Settings.darkMode).wrappedValue
         gender = profile.gender?.rawValue ?? LocalizedString("profile.default-gender")
         homepageURL = profile.homepageURL

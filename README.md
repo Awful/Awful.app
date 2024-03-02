@@ -35,20 +35,6 @@ The only required dependencies for building Awful that are not included directly
 
 If you'd like to build to your device, set the `DEVELOPMENT_TEAM` build setting as mentioned in the Local build settings section below.
 
-### Optional dependencies
-
-There are optional dependencies for building Awful. You only need them if you're working on the relevant part of the app.
-
-* Swift Package Manager is the preferred way to add dependencies. If at all possible, please use it.
-* Manual installation is totally fine. Drag the files or xcodeproj on in.
-* **No matter how you add a dependency**, please update `AwfulSettingsUI/Sources/AwfulSettingsUI/AcknowledgementsView.swift` with the name, URL, and license of the dependency.
-* [LESS][] helps us write CSS. If you're modifying the themes for displaying posts (these are files like `posts-view*.less`), please [install LESS][LESS]:
-    1. [Install homebrew](http://mxcl.github.com/homebrew/).
-    2. Open Terminal and install node: `brew install node`.
-    3. In Terminal, switch to Awful's folder and install less: `npm install less`.
-    4. Now build the Xcode project and the CSS files will be regenerated.
-
-[LESS]: http://lesscss.org/#usage
 [thread-tags]: https://github.com/Awful/thread-tags
 
 ### Local build settings
@@ -113,14 +99,15 @@ Awful is broken down somewhat:
 
 ### Theming
 
-Awful's [posts view][] is fully customizable using CSS. There's a [default theme][], as well as themes for specific forums such as [YOSPOS][YOSPOS CSS theme] and [FYAD][FYAD CSS theme]. Internally, we use LESS to generate our CSS, so if you are editing built-in themes please edit the `.less` files. (LESS installation instructions are above.) Then commit both the modified `.less` files and any resulting changes to `.css` files, so others don't need LESS to build Awful.
+Awful's [posts view][] is fully customizable using CSS. There's a [default theme][], as well as themes for specific forums such as [YOSPOS][YOSPOS CSS theme] and [FYAD][FYAD CSS theme]. We use [Less][lesscss] to generate our stylesheets during Awful's build process, so you'll want to edit `.less` files but you'll see `.css` files in the build products and in the Web Inspector.
 
 The rest of Awful is themed in a a [big plist][theme plist]. If you can't find a theme key you'd like to use, ask and we'll add it!
 
 [posts view]: App/Posts/PostsView.swift
-[default theme]: App/Theming/posts-view.css
-[YOSPOS CSS theme]: App/Theming/posts-view-yospos.less
-[FYAD CSS theme]: App/Theming/posts-view-fyad.less
+[default theme]: AwfulTheming/Sources/AwfulTheming/Stylesheets/posts-view.less
+[YOSPOS CSS theme]: AwfulTheming/Sources/AwfulTheming/Stylesheets/posts-view-yospos.less
+[FYAD CSS theme]: AwfulTheming/Sources/AwfulTheming/Stylesheets/posts-view-fyad.less
+[lesscss]: https://lesscss.org/features/
 [theme plist]: App/Theming/Themes.plist
 
 ### Thread Tags

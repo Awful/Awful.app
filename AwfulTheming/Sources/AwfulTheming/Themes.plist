@@ -34,7 +34,7 @@
 		<key>Posts</key>
 		<dict>
 			<key>postsViewCSS</key>
-			<string>posts-view-byob.css</string>
+			<string>posts-view-byob</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -165,7 +165,7 @@
 			<key>postsTweetTheme</key>
 			<string>light</string>
 			<key>postsViewCSS</key>
-			<string>posts-view.css</string>
+			<string>posts-view</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -281,7 +281,7 @@
 			<key>postsTweetTheme</key>
 			<string>dark</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-dark.css</string>
+			<string>posts-view-dark</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -380,7 +380,7 @@
 			<key>postsTweetTheme</key>
 			<string>light</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-alternate.css</string>
+			<string>posts-view-alternate</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -490,7 +490,7 @@
 			<key>postsTweetTheme</key>
 			<string>dark</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-alternate-dark.css</string>
+			<string>posts-view-alternate-dark</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -602,7 +602,7 @@
 			<key>postsTweetTheme</key>
 			<string>dark</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-oled-dark.css</string>
+			<string>posts-view-oled-dark</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -695,7 +695,7 @@
 			<key>postsTweetTheme</key>
 			<string>light</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-bright-light.css</string>
+			<string>posts-view-bright-light</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -798,7 +798,7 @@
 			<key>postsLoadingViewTintColor</key>
 			<string>#FD9999</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-fyad.css</string>
+			<string>posts-view-fyad</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -840,7 +840,7 @@
 		<key>postsLoadingViewTintColor</key>
 		<string>#159933</string>
 		<key>postsViewCSS</key>
-		<string>posts-view-gas-chamber.css</string>
+		<string>posts-view-gas-chamber</string>
 	</dict>
 	<key>Macinyos</key>
 	<dict>
@@ -861,7 +861,7 @@
 		<key>postsLoadingViewType</key>
 		<string>Macinyos</string>
 		<key>postsViewCSS</key>
-		<string>posts-view-macinyos.css</string>
+		<string>posts-view-macinyos</string>
 	</dict>
 	<key>spankykongDark</key>
 	<dict>
@@ -1016,7 +1016,7 @@
 			<key>postsTweetTheme</key>
 			<string>dark</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-spankykong-oled-dark.css</string>
+			<string>posts-view-spankykong-oled-dark</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -1211,7 +1211,7 @@
 			<key>postsTweetTheme</key>
 			<string>light</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-spankykong-light.css</string>
+			<string>posts-view-spankykong-light</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -1274,7 +1274,7 @@
 		<key>postsLoadingViewType</key>
 		<string>Winpos95</string>
 		<key>postsViewCSS</key>
-		<string>posts-view-winpos95.css</string>
+		<string>posts-view-winpos95</string>
 		<key>Unread badges</key>
 		<dict>
 			<key>unreadBadgeBlueColor</key>
@@ -1383,7 +1383,7 @@
 			<key>postsTopBarTextColor</key>
 			<string>#000000</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-yospos.css</string>
+			<string>posts-view-yospos</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>
@@ -1482,7 +1482,7 @@
 			<key>postsTopBarTextColor</key>
 			<string>#000000</string>
 			<key>postsViewCSS</key>
-			<string>posts-view-amberpos.css</string>
+			<string>posts-view-amberpos</string>
 		</dict>
 		<key>Sheets</key>
 		<dict>

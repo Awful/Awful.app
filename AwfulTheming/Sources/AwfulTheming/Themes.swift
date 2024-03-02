@@ -159,20 +159,28 @@ extension Theme {
     public subscript(string key: String) -> String? {
         guard let value = dictionary[key] as? String ?? parent?[key] else { return nil }
         if key.hasSuffix("CSS") {
-            guard let url = Bundle.main.url(forResource: value, withExtension: nil) else {
-                fatalError("Missing CSS file for \(key): \(value)")
-            }
-
+            let css: String?
             do {
-                return try String(contentsOf: url, encoding: .utf8)
-            }
-            catch {
+                css = try stylesheet(named: value)
+            } catch {
                 fatalError("Could not find CSS file \(value) (in theme \(name), for key \(key)): \(error)")
             }
+            if css == nil {
+                fatalError("Missing CSS file for \(key): \(value)")
+            }
+            return css
         }
         else {
             return value
         }
+    }
+
+    /// Returns the contents of `name.css`.
+    public func stylesheet(named name: String) throws -> String? {
+        guard let url = Bundle.module.url(forResource: name, withExtension: ".css") else {
+            return nil
+        }
+        return try String(contentsOf: url, encoding: .utf8)
     }
 
     /**
