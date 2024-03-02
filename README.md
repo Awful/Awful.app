@@ -149,7 +149,18 @@ To add a new thread tag you just made:
 
 ### Alternate App Icons
 
-Alternate app icons go in `Assets.xcassets`, in the "App Icons" folder. To add a new alternate app icon, create a new iOS App Icon image set in that folder and drag your images in. There's no Info.plist changes required.
+To add a new alternative app icon:
+
+1. Open `App/App Icons.xcassets`.
+2. Add a new iOS App Icon.
+3. Name your icon set something appropriate, then add an `_appicon` suffix.
+4. Drag your image files over.
+5. Add a new Image Set with the same name as your icon set, adding a `_preview` suffix.
+6. Duplicate the new iPhone app icons (`60pt@2x` and `60pt@3x`) into the preview image set.
+7. Open `App/Settings/SettingsViewController.swift`.
+8. Add your new app icon info to the `appIcons` array.
+
+The bookkeeping and duplicate images are unfortunate, but there's no public API to list app icon sets or to load app icon images for display. Instead of hacking together something that could break later, we'll do it ourselves.
 
 ## URL schemes
 

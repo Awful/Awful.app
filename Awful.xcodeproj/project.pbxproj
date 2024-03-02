@@ -14,6 +14,7 @@
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
 		1C0060AA217171CD00E5329A /* profile.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0060A8217171CD00E5329A /* profile.css */; };
+		1C04DEBE2B92FB8A0067957F /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */; };
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0AFAE21ECA96E6002D4003 /* posts-view-alternate-dark.css in Resources */ = {isa = PBXBuildFile; fileRef = 1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */; };
@@ -331,6 +332,7 @@
 		1C0060A7217171CD00E5329A /* profile.less */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = profile.less; sourceTree = "<group>"; };
 		1C0060A8217171CD00E5329A /* profile.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = profile.css; sourceTree = "<group>"; };
 		1C0396372AE1059F00ABF9FA /* PullToRefresh */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PullToRefresh; sourceTree = "<group>"; };
+		1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0AFAE01ECA96E6002D4003 /* posts-view-alternate-dark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "posts-view-alternate-dark.css"; sourceTree = "<group>"; };
@@ -892,6 +894,7 @@
 		1C3857A115675AFE0078AF95 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */,
 				1CF2462016DD957300C75E05 /* Composition */,
 				1CD005D41BB8DA4700232FFD /* Data Sources */,
 				1C8A8CFD1A3C28E900E4F6A4 /* Extensions */,
@@ -1280,11 +1283,11 @@
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2D265F90292CC0C7001336ED /* Lotties */,
 				2D0BB35827F440AF00242D2A /* Assets.xcassets */,
 				8CCD503B15B783FC00E5893B /* Images */,
 				8CCD498215B497A700E5893B /* Info.plist */,
 				1CA45D951F2C19AA005BEEC5 /* Localizable.strings */,
+				2D265F90292CC0C7001336ED /* Lotties */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
 				1C273A9F21C1DC25002875A9 /* RenderView-AllFrames.js */,
@@ -1623,6 +1626,7 @@
 				2D19BA3B29C33303009DD94F /* toot60.json in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
 				1C8F67FA2221AFB1007E61ED /* Announcement.html.stencil in Resources */,
+				1C04DEBE2B92FB8A0067957F /* App Icons.xcassets in Resources */,
 				8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */,
 				8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */,
 				8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */,
@@ -2288,7 +2292,7 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = rated_five_appicon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -2306,7 +2310,7 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = rated_five_appicon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;

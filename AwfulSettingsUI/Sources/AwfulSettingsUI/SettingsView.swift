@@ -39,6 +39,7 @@ public struct SettingsView: View {
     let buildInfo = BuildInfo()
     let canOpenURL: (URL) -> Bool
     let currentUsername: String
+    @State private var didScrollToSelectedAppIcon = false
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
@@ -250,7 +251,15 @@ public struct SettingsView: View {
             .section()
 
             Section {
-                AppIconPicker(appIconDataSource: appIconDataSource)
+                ScrollViewReader { scrollView in
+                    AppIconPicker(appIconDataSource: appIconDataSource)
+                        .onAppear {
+                            if didScrollToSelectedAppIcon { return }
+                            defer { didScrollToSelectedAppIcon = true }
+                            
+                            scrollView.scrollTo(appIconDataSource.selected.id)
+                        }
+                }
             } header: {
                 Text("App Icon", bundle: .module)
                     .header()
@@ -281,7 +290,6 @@ public struct SettingsView: View {
         .tint(theme[color: "tint"]!)
         .backport.scrollContentBackground(.hidden)
         .background(theme[color: "background"]!)
-        .task { await appIconDataSource.loadAppIcons() }
     }
 }
 
@@ -316,12 +324,7 @@ private struct SectionModifier: ViewModifier {
 #Preview {
     NavigationView {
         SettingsView(
-            appIconDataSource: .init(
-                iconsLoader: { (1...).prefix(12).map { .init("test\($0)") } },
-                imageLoader: { _ in Image(systemName: "questionmark.app") },
-                selectedIconName: .init("test2"),
-                setCurrentIconName: { _ in }
-            ),
+            appIconDataSource: .preview,
             avatarURL: nil,
             canOpenURL: { _ in true },
             currentUsername: "Random Newbie",
