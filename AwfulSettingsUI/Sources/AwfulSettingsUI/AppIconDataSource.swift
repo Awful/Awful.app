@@ -38,12 +38,14 @@ private let Log = Logger.get()
     }
 
     func select(_ appIcon: AppIcon) {
+        let previous = selected
+        selected = appIcon
         Task {
             do {
                 try await setter(appIcon)
-                selected = appIcon
             } catch {
-                Log.e("Could not set app icon: \(error)")
+                selected = previous
+                Log.e("Could not set app icon to \(appIcon.imageName): \(error)")
             }
         }
     }

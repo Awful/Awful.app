@@ -72,6 +72,8 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
     .init(accessibilityLabel: String(localized: "Rated five", bundle: .module), imageName: "rated_five_appicon"),
     .init(accessibilityLabel: String(localized: "Rated five (on dark blue)", bundle: .module), imageName: "rated_five_on_darkblue_appicon"),
     .init(accessibilityLabel: String(localized: "Rated five (on dark grey)", bundle: .module), imageName: "rated_five_on_darkgrey_appicon"),
+    .init(accessibilityLabel: String(localized: "Rated five (pride flag)", bundle: .module), imageName: "rated_five_pride_appicon"),
+    .init(accessibilityLabel: String(localized: "Rated five (trans flag", bundle: .module), imageName: "rated_five_trans_appicon"),
     .init(accessibilityLabel: String(localized: "V", bundle: .module), imageName: "v_appicon"),
     .init(accessibilityLabel: String(localized: "V (on dark blue)", bundle: .module), imageName: "v_on_darkblue_appicon"),
     .init(accessibilityLabel: String(localized: "V (on dark grey)", bundle: .module), imageName: "v_on_darkgrey_appicon"),
@@ -85,6 +87,7 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
     .init(accessibilityLabel: String(localized: "Doggo (dead)", bundle: .module), imageName: "doggo_x_appicon"),
     .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: "five_appicon"),
     .init(accessibilityLabel: String(localized: "Green face", bundle: .module), imageName: "greenface_appicon"),
+    .init(accessibilityLabel: String(localized: "Riker", bundle: .module), imageName: "riker_appicon"),
 ]
 
 @MainActor private func makeAppIconDataSource() -> AppIconDataSource {

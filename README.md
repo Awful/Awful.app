@@ -153,10 +153,10 @@ To add a new alternative app icon:
 
 1. Open `App/App Icons.xcassets`.
 2. Add a new iOS App Icon.
-3. Name your icon set something appropriate, then add an `_appicon` suffix.
-4. Drag your image files over.
-5. Add a new Image Set with the same name as your icon set, adding a `_preview` suffix.
-6. Duplicate the new iPhone app icons (`60pt@2x` and `60pt@3x`) into the preview image set.
+3. Name your app icon something appropriate, including the `_appicon` suffix.
+4. Drag your 1024×1024 image file over.
+5. Add a new Image Set with the same name as your icon set plus `_preview`.
+6. Drag 60pt icons into your preview icon set.
 7. Open `App/Settings/SettingsViewController.swift`.
 8. Add your new app icon info to the `appIcons` array.
 
