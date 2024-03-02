@@ -9,7 +9,7 @@ import SwiftUI
 
 private let Log = Logger.get()
 
-final class SettingsViewController: UIHostingController<SettingsContainerView> {
+final class SettingsViewController: HostingController<SettingsContainerView> {
     let managedObjectContext: NSManagedObjectContext
 
     init(managedObjectContext: NSManagedObjectContext) {
