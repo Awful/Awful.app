@@ -9,18 +9,11 @@ import SwiftUI
 
 private let Log = Logger.get()
 
-final class SettingsViewController: UIHostingController<SettingsContainerView> {
+final class SettingsViewController: HostingController<SettingsContainerView> {
     let managedObjectContext: NSManagedObjectContext
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-
-        let appIconDataSource = AppIconDataSource(
-            iconsLoader: loadAppIcons,
-            imageLoader: { UIImage(named: $0.rawValue).flatMap(Image.init(uiImage:)) },
-            selectedIconName: UIApplication.shared.alternateIconName.map { AppIconDataSource.AppIconName($0) },
-            setCurrentIconName: { try await UIApplication.shared.setAlternateIconName($0?.rawValue) }
-        )
 
         let currentUser = managedObjectContext.performAndWait {
             User.objectForKey(objectKey: UserKey(
@@ -36,7 +29,7 @@ final class SettingsViewController: UIHostingController<SettingsContainerView> {
         let box = UnownedBox()
 
         super.init(rootView: SettingsContainerView(
-            appIconDataSource: appIconDataSource,
+            appIconDataSource: makeAppIconDataSource(),
             currentUser: currentUser,
             emptyCache: { box.contents.emptyCache() },
             goToAwfulThread: { box.contents.goToAwfulThread() },
@@ -74,26 +67,41 @@ final class SettingsViewController: UIHostingController<SettingsContainerView> {
     }
 }
 
-private func loadAppIcons() async -> [AppIconDataSource.AppIconName] {
-    guard let icons = Bundle.module.object(forInfoDictionaryKey: "CFBundleIcons") as? [String: Any] else {
-        Log.e("could not find CFBundleIcons in Info.plist")
-        return []
-    }
+/// Image names should correspond to the contents of `App Icons.xcassets`. See `README.md` for more info.
+private let appIcons: [AppIconDataSource.AppIcon] = [
+    .init(accessibilityLabel: String(localized: "Rated five", bundle: .module), imageName: "rated_five_appicon"),
+    .init(accessibilityLabel: String(localized: "Rated five (on dark blue)", bundle: .module), imageName: "rated_five_on_darkblue_appicon"),
+    .init(accessibilityLabel: String(localized: "Rated five (on dark grey)", bundle: .module), imageName: "rated_five_on_darkgrey_appicon"),
+    .init(accessibilityLabel: String(localized: "Rated five (pride flag)", bundle: .module), imageName: "rated_five_pride_appicon"),
+    .init(accessibilityLabel: String(localized: "Rated five (trans flag", bundle: .module), imageName: "rated_five_trans_appicon"),
+    .init(accessibilityLabel: String(localized: "V", bundle: .module), imageName: "v_appicon"),
+    .init(accessibilityLabel: String(localized: "V (on dark blue)", bundle: .module), imageName: "v_on_darkblue_appicon"),
+    .init(accessibilityLabel: String(localized: "V (on dark grey)", bundle: .module), imageName: "v_on_darkgrey_appicon"),
+    .init(accessibilityLabel: String(localized: "V (blue)", bundle: .module), imageName: "v_blue_appicon"),
+    .init(accessibilityLabel: String(localized: "Ghost (blue)", bundle: .module), imageName: "ghost_blue_appicon"),
+    .init(accessibilityLabel: String(localized: "Ghost (grey)", bundle: .module), imageName: "ghost_grey_appicon"),
+    .init(accessibilityLabel: String(localized: "Get out", bundle: .module), imageName: "getout_appicon"),
+    .init(accessibilityLabel: String(localized: "Froggo", bundle: .module), imageName: "froggo_appicon"),
+    .init(accessibilityLabel: String(localized: "Stare dog", bundle: .module), imageName: "staredog_appicon"),
+    .init(accessibilityLabel: String(localized: "Stare dog poking tongue", bundle: .module), imageName: "staredog_tongue_appicon"),
+    .init(accessibilityLabel: String(localized: "Doggo (dead)", bundle: .module), imageName: "doggo_x_appicon"),
+    .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: "five_appicon"),
+    .init(accessibilityLabel: String(localized: "Green face", bundle: .module), imageName: "greenface_appicon"),
+    .init(accessibilityLabel: String(localized: "Riker", bundle: .module), imageName: "riker_appicon"),
+]
 
-    guard let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
-          let primaryIconName = primary["CFBundleIconName"] as? String
-    else {
-        Log.e("could not find CFBundlePrimaryIcon in Info.plist")
-        return []
-    }
-
-    let alternates = icons["CFBundleAlternateIcons"] as? [String: Any] ?? [:]
-    let alternateIconNames = alternates.values
-        .compactMap { $0 as? [String: Any] }
-        .compactMap { $0["CFBundleIconName"] as? String }
-        .sorted()
-
-    return ([primaryIconName] + alternateIconNames).map { AppIconDataSource.AppIconName($0) }
+@MainActor private func makeAppIconDataSource() -> AppIconDataSource {
+    let selectedIconName = UIApplication.shared.alternateIconName
+    let selected = appIcons.first { $0.imageName == selectedIconName } ?? appIcons.first!
+    return AppIconDataSource(
+        appIcons: appIcons,
+        imageLoader: { Image("\($0.imageName)_preview", bundle: .main) },
+        selected: selected,
+        setter: {
+            let iconName = $0 == appIcons.first ? nil : $0.imageName
+            try await UIApplication.shared.setAlternateIconName(iconName)
+        }
+    )
 }
 
 /// Wrapper for observing the current `User`.

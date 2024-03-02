@@ -2,19 +2,26 @@
 //
 //  Copyright 2022 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Combine
 import PullToRefresh
 import Lottie
 import UIKit
 
-private let verticalMargin: CGFloat = 10
+final class NigglyRefreshLottieView: UIView, Themeable {
 
-final class NigglyRefreshLottieView: UIView {
-    fileprivate let theme: Theme
-    
-    private let animationView = LottieAnimationView(
-        animation: LottieAnimation.named("niggly60"),
-        configuration: LottieConfiguration(renderingEngine: .mainThread))
-    
+    var theme: Theme {
+        didSet {
+            if oldValue != theme {
+                themeDidChange()
+            }
+        }
+    }
+
+    private let animationView: LottieAnimationView = .init(
+        animation: .named("niggly60"),
+        configuration: .init(renderingEngine: .mainThread)
+    )
+
     init(theme: Theme) {
         self.theme = theme
         super.init(frame: .zero)
@@ -27,27 +34,33 @@ final class NigglyRefreshLottieView: UIView {
     }
     
     private func commonInit() {
-        animationView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        animationView.translatesAutoresizingMaskIntoConstraints = true
+        backgroundColor = theme["backgroundColor"]!
+
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = .loop
         animationView.animationSpeed = 1
-        
+        animationView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(animationView)
-        
-        backgroundColor = theme["backgroundColor"]!
-        
+
+        directionalLayoutMargins = .init(top: 6, leading: 0, bottom: 6, trailing: 0)
+        let marginGuide = layoutMarginsGuide
         NSLayoutConstraint.activate([
+            animationView.topAnchor.constraint(equalTo: marginGuide.topAnchor),
+            marginGuide.bottomAnchor.constraint(equalTo: animationView.bottomAnchor),
+
             animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            animationView.centerYAnchor.constraint(equalTo: centerYAnchor)])
+
+            animationView.widthAnchor.constraint(equalToConstant: 40),
+            animationView.heightAnchor.constraint(equalToConstant: 40),
+        ])
+
+        themeDidChange()
     }
     
-    override func layoutSubviews() {
-        let gray = ColorValueProvider(theme["nigglyColor"]!.lottieColorValue)
+    func themeDidChange() {
+        let color = ColorValueProvider(theme["nigglyColor"]!.lottieColorValue)
         let mainOutline = AnimationKeypath(keys: ["**", "**", "**", "Color"])
-    
-        animationView.setValueProvider(gray, keypath: mainOutline)
-        animationView.center = CGPoint(x: bounds.midX, y: bounds.midY)
+        animationView.setValueProvider(color, keypath: mainOutline)
     }
     
     override var intrinsicContentSize: CGSize {

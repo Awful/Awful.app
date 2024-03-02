@@ -10,7 +10,7 @@ import SystemCapabilities
 /**
  A namespace for user defaults keys and default values. Avoids typos and supports registering defaults.
 
- See `AppStorage` and `UserDefaults` extensions in the `AwfulSettingsUI` module for conveniences.
+ See `AppStorage` and `UserDefaults` extensions for conveniences.
  */
 public enum Settings {
 
@@ -32,7 +32,7 @@ public enum Settings {
     /// Whether the logged-in user can send private messages. This really shouldn't be a setting :/
     public static let canSendPrivateMessages = Setting(key: "can_send_private_messages", default: false)
 
-    /// Check the general pasteboard for a Forums URL whenever we enter the foreground. As of iOS 14 this shows an alert requesting permission from the user, so we default to off to be less annoying.
+    /// Check the general pasteboard for a Forums URL whenever we enter the foreground. iOS shows an alert requesting permission from the user whenever we attempt to check the pasteboard, so we default to off to be less annoying.
     public static let clipboardURLEnabled = Setting(key: "clipboard_url_enabled", default: false)
 
     /// Show a post preview before submitting a reply to a thread.
@@ -57,7 +57,7 @@ public enum Settings {
     )
 
     /// Turn each link to a tweet in a post into an embedded tweet.
-    public static let embedTweets = Setting(key: "embed_tweets", default: false)
+    public static let embedTweets = Setting(key: "embed_tweets", default: true)
 
     /// Show custom titles for authors in the posts view (when it's wide enough).
     public static let enableCustomTitlePostLayout = Setting(key: "enable_custom_title_post_layout", default: false)

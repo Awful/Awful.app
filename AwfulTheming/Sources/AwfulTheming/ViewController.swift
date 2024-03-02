@@ -4,6 +4,7 @@
 
 import Logger
 import PullToRefresh
+import SwiftUI
 import UIKit
 import WebKit
 
@@ -83,6 +84,31 @@ open class ViewController: UIViewController, Themeable {
         super.viewDidDisappear(animated)
         
         visible = false
+    }
+}
+
+open class HostingController<Content: View>: UIHostingController<Content>, Themeable {
+
+    /**
+     The theme to use for the view controller (not necessarily the hosted view; in SwiftUI, use `@Environment(\.theme)`). Defaults to `Theme.defaultTheme()`.
+     */
+    open var theme: Theme {
+        Theme.defaultTheme()
+    }
+
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        themeDidChange()
+    }
+
+    open func themeDidChange() {
+        if theme[bool: "showRootTabBarLabel"] == false {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        } else {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tabBarItem.title = title
+        }
     }
 }
 
@@ -201,7 +227,13 @@ open class TableViewController: UITableViewController, Themeable {
     open func themeDidChange() {
         view.backgroundColor = theme["backgroundColor"]
         
-        pullToRefreshView?.backgroundColor = view.backgroundColor
+        if let pullToRefreshView {
+            pullToRefreshView.backgroundColor = view.backgroundColor
+
+            if let niggly = pullToRefreshView as? NigglyRefreshLottieView {
+                niggly.theme = theme
+            }
+        }
         tableView.tableFooterView?.backgroundColor = view.backgroundColor
         
         tableView.indicatorStyle = theme.scrollIndicatorStyle

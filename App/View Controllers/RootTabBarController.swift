@@ -23,10 +23,16 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
     /// Use `makeWithTabBarFixedForiOS11iPadLayout()` instead.
     private override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
+        commonInit()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        commonInit()
+    }
+
+    private func commonInit() {
+        delegate = self
     }
 
     override var tabBar: RootTabBar {
@@ -39,7 +45,6 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
-            self.delegate = self
         themeDidChange()
     }
 
@@ -59,32 +64,26 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         tabBar.tintColor = theme["tintColor"]
         tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
         
-        // Fix tab bar having no background when scrolled to bottom on iOS 15.
-        let appearance = UITabBarAppearance()
-        if (tabBar.isTranslucent) {
-            appearance.configureWithDefaultBackground()
+        let barAppearance = UITabBarAppearance()
+        if tabBar.isTranslucent {
+            barAppearance.configureWithDefaultBackground()
         } else {
-            appearance.configureWithOpaqueBackground()
+            barAppearance.configureWithOpaqueBackground()
         }
-        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
-        appearance.shadowImage = nil
-        appearance.shadowColor = nil
+        barAppearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        barAppearance.shadowImage = nil
+        barAppearance.shadowColor = nil
         
         let itemAppearance = UITabBarItemAppearance()
         itemAppearance.selected.iconColor = Theme.defaultTheme()["tabBarIconSelectedColor"]!
         itemAppearance.normal.iconColor = Theme.defaultTheme()["tabBarIconNormalColor"]!
-        
-        
-        appearance.inlineLayoutAppearance = itemAppearance
-        appearance.stackedLayoutAppearance = itemAppearance
-        appearance.compactInlineLayoutAppearance = itemAppearance
-        // tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
-        
-        tabBar.standardAppearance = appearance;
-    
-        if #available(iOS 15.0, *) {
-            tabBar.scrollEdgeAppearance = appearance
-        }
+
+        barAppearance.inlineLayoutAppearance = itemAppearance
+        barAppearance.stackedLayoutAppearance = itemAppearance
+        barAppearance.compactInlineLayoutAppearance = itemAppearance
+
+        tabBar.standardAppearance = barAppearance
+        tabBar.scrollEdgeAppearance = barAppearance
     }
 }
 
