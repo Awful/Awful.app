@@ -1,1 +1,0 @@
-Ideally we'd move these .css files over to the AwfulTheming package. Our current CSS generation setup makes that annoying, so let's procrastinate. Don't forget to handle Less → CSS generation when moving the .css files!
