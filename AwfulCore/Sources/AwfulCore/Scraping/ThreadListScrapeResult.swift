@@ -53,7 +53,7 @@ public struct ThreadListScrapeResult: ScrapeResult {
 
         public enum Bookmark: Equatable {
             case none
-            case orange, red, yellow, teal, green, purple
+            case orange, red, yellow, cyan, green, purple
         }
     }
 
@@ -263,7 +263,7 @@ private extension ThreadListScrapeResult.Thread.Bookmark {
         case 0: self = .orange
         case 1: self = .red
         case 2: self = .yellow
-        case 3: self = .teal
+        case 3: self = .cyan
         case 4: self = .green
         case 5: self = .purple
         case .some: self = .orange

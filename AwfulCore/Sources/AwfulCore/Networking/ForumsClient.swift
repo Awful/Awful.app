@@ -354,6 +354,9 @@ public final class ForumsClient {
             if thread.bookmarkListPage <= 0 {
                 thread.bookmarkListPage = 1
             }
+            if thread.starCategory != category {
+                thread.starCategory = category
+            }
             try mainContext.save()
         }
     }

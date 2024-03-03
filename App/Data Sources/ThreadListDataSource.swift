@@ -218,7 +218,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                     case .orange: color = theme["unreadBadgeOrangeColor"]!
                     case .red: color = theme["unreadBadgeRedColor"]!
                     case .yellow: color = theme["unreadBadgeYellowColor"]!
-                    case .teal: color = theme["unreadBadgeTealColor"]!
+                    case .cyan: color = theme["unreadBadgeCyanColor"]!
                     case .green: color = theme["unreadBadgeGreenColor"]!
                     case .purple: color = theme["unreadBadgePurpleColor"]!
                     case .none: color = theme["unreadBadgeBlueColor"]!

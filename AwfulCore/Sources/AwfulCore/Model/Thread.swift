@@ -40,15 +40,14 @@ public class AwfulThread: AwfulManagedObject, Managed {
 }
 
 @objc public enum StarCategory: Int16, CaseIterable {
+    case none = -1 // probably should've been 0, oh well
+
     case orange = 0
     case red = 1
     case yellow = 2
-
-    case none = 3 // probably should've been 0, oh well
-
-    case teal = 4
-    case green = 5
-    case purple = 6
+    case cyan = 3
+    case green = 4
+    case purple = 5
 }
 
 extension AwfulThread {

@@ -10,23 +10,13 @@ import SwiftUI
 
 private let Log = Logger.get()
 
-private struct ThemeKey: EnvironmentKey {
-    static var defaultValue: Theme { Theme.defaultTheme() }
-}
-extension EnvironmentValues {
-    var theme: Theme {
-        get { self[ThemeKey.self] }
-        set { self[ThemeKey.self] = newValue }
-    }
-}
-
 private extension StarCategory {
     var themeKey: String {
         switch self {
         case .orange: return "unreadBadgeOrangeColor"
         case .red: return "unreadBadgeRedColor"
         case .yellow: return "unreadBadgeYellowColor"
-        case .teal: return "unreadBadgeTealColor"
+        case .cyan: return "unreadBadgeCyanColor"
         case .green: return "unreadBadgeGreenColor"
         case .purple: return "unreadBadgePurpleColor"
         case .none: return "unreadBadgeBlueColor"
@@ -57,52 +47,49 @@ private struct BookmarkColor: View {
 }
 
 struct BookmarkColorPicker: View {
-    @SwiftUI.Environment(\.presentationMode) var presentationMode
+    @SwiftUI.Environment(\.dismiss) var dismiss
     let setBookmarkColor: (AwfulThread, StarCategory) async throws -> Void
+    let starCategories = Array(StarCategory.allCases.filter { $0 != .none })
     @SwiftUI.Environment(\.theme) var theme
     @ObservedObject var thread: AwfulThread
 
     private func didTap(_ starCategory: StarCategory) {
-        let oldSelection = thread.starCategory
-        thread.starCategory = starCategory
-        try! thread.managedObjectContext?.save()
-
         Task {
             do {
                 try await setBookmarkColor(thread, starCategory)
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             } catch {
                 Log.e("Could not set thread \(thread.threadID) category to \(starCategory.rawValue)")
-                thread.starCategory = oldSelection
-                try! thread.managedObjectContext?.save()
             }
         }
     }
     
     var body: some View {
-        return VStack {
-            Text(thread.title ?? "")
-                .foregroundColor(theme[color: "sheetTitleColor"]!)
-                .font(.system(size: 16.0, weight: .regular, design: .rounded))
-                .padding()
+        ZStack {
+            theme[color: "sheetBackgroundColor"]!
+                .edgesIgnoringSafeArea(.all)
 
-            HStack {
-                ForEach(StarCategory.allCases, id: \.rawValue) { starCategory in
-                    Button(action: { didTap(starCategory) }) {
-                        BookmarkColor(
-                            selection: $thread.starCategory,
-                            starCategory: starCategory
-                        )
+            VStack {
+                Text(thread.title ?? "")
+                    .foregroundColor(theme[color: "sheetTitleColor"]!)
+                    .font(.system(size: 16.0, weight: .regular, design: .rounded))
+                    .padding()
+
+                HStack {
+                    ForEach(starCategories, id: \.rawValue) { starCategory in
+                        Button(action: { didTap(starCategory) }) {
+                            BookmarkColor(
+                                selection: $thread.starCategory,
+                                starCategory: starCategory
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer()
+                Spacer()
+            }
         }
-        .background(theme[color: "sheetBackgroundColor"]!)
-        .edgesIgnoringSafeArea(.all)
     }
-        
 }
 
 struct BookmarkColorPicker_Previews: PreviewProvider {
