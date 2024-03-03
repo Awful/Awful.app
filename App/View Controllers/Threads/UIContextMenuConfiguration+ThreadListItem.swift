@@ -61,6 +61,10 @@ extension UIContextMenuConfiguration {
                         setBookmarkColor: ForumsClient.shared.setBookmarkColor(_:as:),
                         thread: thread
                     ))
+                    profile.modalPresentationStyle = .pageSheet
+                    if let sheet = profile.sheetPresentationController {
+                        sheet.detents = [.medium()]
+                    }
                     presenter.present(profile, animated: true)
                 }
             )

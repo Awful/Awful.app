@@ -201,7 +201,7 @@
 			<string>#f3f135</string>
 			<key>unreadBadgeGreenColor</key>
 			<string>#7ec071</string>
-			<key>unreadBadgeTealColor</key>
+			<key>unreadBadgeCyanColor</key>
 			<string>#6cecf0</string>
 			<key>unreadBadgePurpleColor</key>
 			<string>#9437ff</string>
@@ -309,7 +309,7 @@
 			<string>#83dafd</string>
 			<key>unreadBadgeGrayColor</key>
 			<string>#bebebe</string>
-			<key>unreadBadgeTealColor</key>
+			<key>unreadBadgeCyanColor</key>
 			<string>#75f8fd</string>
 			<key>unreadBadgeGreenColor</key>
 			<string>#73fa79</string>
@@ -1054,7 +1054,7 @@
 			<string>#5AA000</string>
 			<key>unreadBadgePurpleColor</key>
 			<string>#9337FD</string>
-			<key>unreadBadgeTealColor</key>
+			<key>unreadBadgeCyanColor</key>
 			<string>#0066FF</string>
 		</dict>
 	</dict>
@@ -1249,7 +1249,7 @@
 			<string>#5AA000</string>
 			<key>unreadBadgePurpleColor</key>
 			<string>#9337FD</string>
-			<key>unreadBadgeTealColor</key>
+			<key>unreadBadgeCyanColor</key>
 			<string>#0066FF</string>
 		</dict>
 	</dict>
@@ -1287,7 +1287,7 @@
 			<string>#ff0000</string>
 			<key>unreadBadgeYellowColor</key>
 			<string>#ffff00</string>
-			<key>unreadBadgeTealColor</key>
+			<key>unreadBadgeCyanColor</key>
 			<string>#008080</string>
 			<key>unreadBadgeGreenColor</key>
 			<string>#00ff00</string>

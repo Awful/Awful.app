@@ -97,7 +97,7 @@ internal extension ThreadListScrapeResult.Thread {
     func update(_ thread: AwfulThread) {
         let isBookmarked: Bool = {
             switch bookmark {
-            case .orange, .red, .yellow, .teal, .green, .purple:
+            case .orange, .red, .yellow, .cyan, .green, .purple:
                 return true
             case .none:
                 return false
@@ -123,7 +123,7 @@ internal extension ThreadListScrapeResult.Thread {
             case .orange: return .orange
             case .red: return .red
             case .yellow: return .yellow
-            case .teal: return .teal
+            case .cyan: return .cyan
             case .green: return .green
             case .purple: return .purple
             case .none: return .none
