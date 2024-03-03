@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="22A380" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Announcement" representedClassName="Announcement" syncable="YES">
         <attribute name="authorCustomTitleHTML" attributeType="String"/>
         <attribute name="authorRegdate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -91,7 +91,7 @@
         <attribute name="aboutMe" optional="YES" attributeType="String"/>
         <attribute name="aimName" optional="YES" attributeType="String"/>
         <attribute name="gender" optional="YES" attributeType="String"/>
-        <attribute name="homepageURL" optional="YES" attributeType="Transformable"/>
+        <attribute name="homepageURL" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="icqName" optional="YES" attributeType="String"/>
         <attribute name="interests" optional="YES" attributeType="String"/>
         <attribute name="lastModifiedDate" attributeType="Date" usesScalarValueType="NO"/>
@@ -101,7 +101,7 @@
         <attribute name="occupation" optional="YES" attributeType="String"/>
         <attribute name="postCount" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO"/>
         <attribute name="postRate" optional="YES" attributeType="String"/>
-        <attribute name="profilePictureURL" optional="YES" attributeType="Transformable"/>
+        <attribute name="profilePictureURL" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="yahooName" optional="YES" attributeType="String"/>
         <relationship name="user" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="profile" inverseEntity="User"/>
     </entity>
