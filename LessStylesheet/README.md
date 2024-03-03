@@ -18,3 +18,13 @@ A wrapper around the browser rendition of `less.js`, executed via JavaScriptCore
 We use the browser rendition as it doesn't require (heh) any module system to run.
 
 Update `less.js` via e.g. https://github.com/less/less.js/raw/v4.2.0/dist/less.js (changing the version as desired, look at https://github.com/less/less.js/releases for suggestions). There's no expected upside to using a minified copy so grab the readable one.
+
+## Working around Xcode's inability to make an archive when a build tool plugin depends on an executable from the same package
+
+When doing an archive, Xcode (and xcodebuild) don't build `lessc` and so the build fails trying to run the generated build commands. To work around this, a prebuilt copy of `lessc` lives in the `Prebuilt` directory. To update:
+
+```sh
+cd LessStylesheet/
+swift build --product lessc --configuration release --arch arm64 --arch x86_64
+cp -R .build/apple/Products/Release/lessc .build/apple/Products/Release/*.bundle Prebuilt/
+```

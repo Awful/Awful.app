@@ -83,12 +83,9 @@ import JavaScriptCore
         // Here's our hook to load imports.
         let loadIncludeFile: @convention(block) (String) -> String? = { filename in
             let filename = "_\(filename)"
-            print("anyone seen", filename)
-            print("include paths:", includePaths)
             for includePath in includePaths {
                 do {
                     let includeURL = URL(fileURLWithPath: includePath, isDirectory: true)
-                    print("looking for", includeURL.path)
                     return try String(contentsOf: includeURL.appendingPathComponent(filename, isDirectory: true))
                 } catch {
                     // try the next one

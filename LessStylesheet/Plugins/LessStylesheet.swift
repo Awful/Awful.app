@@ -9,7 +9,7 @@ struct LessStylesheet {
     func createBuildCommands(
         sourceFiles: FileList,
         workDirectory: Path,
-        with tool: PluginContext.Tool
+        with toolPath: Path
     ) -> [Command] {
         let importables = findImportables(sourceFiles)
         let includePaths = findIncludePaths(importables)
@@ -17,7 +17,7 @@ struct LessStylesheet {
         return Array(sourceFiles
             .lazy.map(\.path)
             .filter { $0.isLessFile && !$0.isImportable }
-            .map { createBuildCommand(for: $0, in: outputDirectory, with: tool.path, include: includePaths, otherSources: importables) }
+            .map { createBuildCommand(for: $0, in: outputDirectory, with: toolPath, include: includePaths, otherSources: importables) }
         )
     }
 
@@ -74,7 +74,7 @@ extension LessStylesheet: BuildToolPlugin {
         target: Target
     ) async throws -> [Command] {
         guard let sourceFiles = target.sourceModule?.sourceFiles else { return [] }
-        let lessc = try context.tool(named: "lessc")
+        let lessc = context.package.directory.removingLastComponent().appending(subpath: prebuiltSubpath)
         return createBuildCommands(sourceFiles: sourceFiles, workDirectory: context.pluginWorkDirectory, with: lessc)
     }
 }
@@ -87,9 +87,12 @@ extension LessStylesheet: XcodeBuildToolPlugin {
         context: XcodePluginContext,
         target: XcodeTarget
     ) throws -> [Command] {
-        let lessc = try context.tool(named: "lessc")
+        let lessc = context.xcodeProject.directory.appending(subpath: prebuiltSubpath)
         return createBuildCommands(sourceFiles: target.inputFiles, workDirectory: context.pluginWorkDirectory, with: lessc)
     }
 }
 
 #endif
+
+/// See read me for an explanation.
+let prebuiltSubpath = "LessStylesheet/Prebuilt/lessc"
