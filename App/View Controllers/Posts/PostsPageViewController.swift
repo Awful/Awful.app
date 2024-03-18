@@ -110,6 +110,9 @@ final class PostsPageViewController: ViewController {
     private lazy var hiddenMenuButton: HiddenMenuButton = {
         let postActionButton = HiddenMenuButton()
         postActionButton.alpha = 0
+        if #available(iOS 16.0, *) {
+            postActionButton.preferredMenuElementOrder = .fixed
+        }
         postsView.addSubview(postActionButton)
         return postActionButton
     }()
@@ -555,7 +558,11 @@ final class PostsPageViewController: ViewController {
 
 
     private func actionsItem() -> UIBarButtonItem {
-        UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), primaryAction: nil, menu: threadActionsMenu())
+        let buttonItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), menu: threadActionsMenu())
+        if #available(iOS 16.0, *) {
+            buttonItem.preferredMenuElementOrder = .fixed
+        }
+        return buttonItem
     }
 
     private func refetchPosts() {

@@ -292,10 +292,14 @@ extension BookmarksTableViewController {
         contextMenuConfigurationForRowAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
-        return .makeFromThreadList(
+        let configuration = UIContextMenuConfiguration.makeFromThreadList(
             for: dataSource!.thread(at: indexPath),
                presenter: self
         )
+        if #available(iOS 16.0, *) {
+            configuration.preferredMenuElementOrder = .fixed
+        }
+        return configuration
     }
 }
 
