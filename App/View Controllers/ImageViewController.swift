@@ -343,8 +343,8 @@ final class ImageViewController: UIViewController {
         @IBAction @objc fileprivate func didPanToDismiss(_ sender: UIPanGestureRecognizer) {
             switch sender.state {
             case .began:
-                panStart = ProcessInfo.processInfo.systemUptime
-                
+                panStart = CACurrentMediaTime()
+
             case .changed:
                 let velocity = sender.velocity(in: self)
                 if velocity.y < 0 || abs(velocity.x) > abs(velocity.y) {
@@ -356,7 +356,7 @@ final class ImageViewController: UIViewController {
                 let translation = sender.translation(in: self)
                 if abs(translation.x) < 30 {
                     if translation.y > 60 {
-                        if ProcessInfo.processInfo.systemUptime - panStart < 0.5 {
+                        if CACurrentMediaTime() - panStart < 0.5 {
                             panToDismissAction?()
                         }
                     }

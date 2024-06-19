@@ -186,6 +186,8 @@
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */; };
 		1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF280972055EB9B00913149 /* AwfulRoute.swift */; };
+		1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521742C228E76009712A7 /* PrivacyInfo.xcprivacy */; };
+		1CF521772C228F88009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */; };
 		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
@@ -484,6 +486,8 @@
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
 		1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RootTabBarController.storyboard; sourceTree = "<group>"; };
 		1CF280972055EB9B00913149 /* AwfulRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulRoute.swift; sourceTree = "<group>"; };
+		1CF521742C228E76009712A7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1CF6786A201E751D009A9640 /* MessageListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListDataSource.swift; sourceTree = "<group>"; };
 		1CF6786D201E8F45009A9640 /* MessageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListCell.swift; sourceTree = "<group>"; };
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
@@ -591,6 +595,7 @@
 				1C6BDD21265CB307005475CE /* Imports.swift */,
 				1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */,
 				1C9AEBCD210C3BAF00C9A567 /* main.swift */,
+				1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */,
 				1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */,
 			);
 			path = Main;
@@ -887,6 +892,7 @@
 				1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */,
 				1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */,
 				1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */,
+				1CF521742C228E76009712A7 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Keyboard;
 			sourceTree = "<group>";
@@ -1351,6 +1357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */,
+				1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1401,6 +1408,7 @@
 				8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */,
 				8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */,
 				8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */,
+				1CF521772C228F88009712A7 /* PrivacyInfo.xcprivacy in Resources */,
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
 				2D921269292F588100B16011 /* platinum-member.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
