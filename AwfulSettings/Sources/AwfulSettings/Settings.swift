@@ -42,7 +42,7 @@ public enum Settings {
     public static let darkMode = Setting(key: "dark_theme", default: false)
 
     /// Which app to use for opening URLs.
-    public static let defaultBrowser = Setting(key: "default_browser", default: DefaultBrowser.awful)
+    public static let defaultBrowser = Setting(key: "default_browser", default: DefaultBrowser.default)
 
     /// The theme to use by default when dark mode is on.
     public static let defaultDarkThemeName = Setting(
@@ -147,7 +147,7 @@ public enum BuiltInTheme: String, UserDefaultsSerializable {
 }
 
 /// The default browser set by the user via `UserDefaults` and `Settings.defaultBrowser`.
-public enum DefaultBrowser: String, CaseIterable, UserDefaultsSerializable {
+public enum DefaultBrowser: String, CaseIterable {
     // These raw values are persisted in user defaults, so don't change them willy nilly.
     case awful = "Awful"
     case defaultiOSBrowser = "Default iOS Browser"
@@ -155,6 +155,8 @@ public enum DefaultBrowser: String, CaseIterable, UserDefaultsSerializable {
     case chrome = "Chrome"
     case edge = "Edge"
     case firefox = "Firefox"
+
+    static var `default`: Self { .awful }
 
     /// Passing the returned URL to `UIApplication.canOpenURL(_:)` indicates whether the browser is available. When the returned URL is `nil`, it's always available.
     public var checkCanOpenURL: URL? {
@@ -165,5 +167,12 @@ public enum DefaultBrowser: String, CaseIterable, UserDefaultsSerializable {
         case .edge: URL("microsoft-edge-http://")
         case .firefox: URL("firefox://")
         }
+    }
+}
+
+extension DefaultBrowser: UserDefaultsSerializable {
+    public init(storedValue: String) {
+        // Handle browsers that have disappeared from the list by falling back to the default default browser.
+        self = Self.init(rawValue: storedValue) ?? .default
     }
 }
