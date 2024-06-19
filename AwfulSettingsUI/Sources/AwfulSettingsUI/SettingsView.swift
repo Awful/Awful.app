@@ -286,6 +286,7 @@ public struct SettingsView: View {
             }
             .section()
         }
+        .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
         .foregroundStyle(theme[color: "listText"]!)
         .tint(theme[color: "tint"]!)
         .backport.scrollContentBackground(.hidden)

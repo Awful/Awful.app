@@ -5,6 +5,15 @@
 import SwiftUI
 
 public extension Backport where Content: View {
+
+    @ViewBuilder func fontDesign(_ design: Font.Design?) -> some View {
+        if #available(iOS 16.1, *) {
+            content.fontDesign(design)
+        } else {
+            content
+        }
+    }
+
     /// Sets the font weight of the text in this view.
     @ViewBuilder func fontWeight(_ weight: Font.Weight?) -> some View {
         if #available(iOS 16, *) {
