@@ -190,13 +190,29 @@ public final class ForumsClient {
         else { throw Error.missingManagedObjectContext }
 
         // Not that we'll parse any JSON from the login attempt, but tacking `json=1` on to `urlString` might avoid pointless server-side rendering.
-        let (data, _) = try await fetch(method: .post, urlString: "account.php?json=1", parameters: [
+        let (data, response) = try await fetch(method: .post, urlString: "account.php?json=1", parameters: [
             "action": "login",
             "username": username,
             "password" : password,
             "next": "/index.php?json=1",
         ])
-        let result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
+        let result: IndexScrapeResult
+        do {
+            result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
+        } catch {
+            // We can fail to decode JSON when the server responds with an error as HTML. We may actually be logged in despite the error (e.g. a banned user can "log in" but do basically nothing). However, subsequent launches will crash because we don't actually store the logged-in user's ID. We can avoid the crash by clearing cookies, so we seem logged out.
+            urlSession?.configuration.httpCookieStorage?.removeCookies(since: .distantPast)
+
+            if let error = error as? DecodingError,
+               case .dataCorrupted = error
+            {
+                // Response data was not JSON. Maybe it was a server error delivered as HTML?
+                _ = try parseHTML(data: data, response: response)
+            }
+            
+            // We couldn't figure out a more helpful error, so throw the decoding error.
+            throw error
+        }
         let backgroundUser = try await backgroundContext.perform {
             let managed = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
@@ -1282,15 +1298,27 @@ private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElemen
     }
 }
 
-enum ServerError: LocalizedError {
+public enum ServerError: LocalizedError {
+    case banned(reason: URL?, help: URL?)
     case databaseUnavailable(title: String, message: String)
     case standard(title: String, message: String)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
+        case .banned:
+            String(localized: "You've Been Banned", bundle: .module)
         case .databaseUnavailable(title: _, message: let message),
              .standard(title: _, message: let message):
-            return message
+            message
+        }
+    }
+
+    public var failureReason: String? {
+        switch self {
+        case .banned:
+            String(localized: "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account.")
+        case .databaseUnavailable, .standard:
+            nil
         }
     }
 }
@@ -1298,9 +1326,10 @@ enum ServerError: LocalizedError {
 private func checkServerErrors(_ document: HTMLDocument) throws {
     if let result = try? DatabaseUnavailableScrapeResult(document, url: nil) {
         throw ServerError.databaseUnavailable(title: result.title, message: result.message)
-    }
-    else if let result = try? StandardErrorScrapeResult(document, url: nil) {
+    } else if let result = try? StandardErrorScrapeResult(document, url: nil) {
         throw ServerError.standard(title: result.title, message: result.message)
+    } else if let result = try? BannedScrapeResult(document, url: nil) {
+        throw ServerError.banned(reason: result.reason, help: result.help)
     }
 }
 

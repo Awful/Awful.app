@@ -33,12 +33,12 @@ class LoginViewController: ViewController {
         case awaitingPassword
         case canAttemptLogin
         case attemptingLogin
-        case failedLogin
+        case failedLogin(Error)
     }
     
     fileprivate var state: State = .awaitingUsername {
         didSet {
-            switch(state) {
+            switch state {
             case .awaitingUsername, .awaitingPassword:
                 usernameTextField.isEnabled = true
                 passwordTextField.isEnabled = true
@@ -54,13 +54,23 @@ class LoginViewController: ViewController {
                 nextBarButtonItem.isEnabled = false
                 forgotPasswordButton.isHidden = true
                 activityIndicator.startAnimating()
-            case .failedLogin:
+            case .failedLogin(let error):
                 activityIndicator.stopAnimating()
-                let alert = UIAlertController(title: "Problem Logging In", message: "Double-check your username and password, then try again.", alertActions: [.ok {
+                let title: String
+                let message: String
+                if let error = error as? ServerError, case .banned = error {
+                    // ServerError.banned has actually helpful info to report here.
+                    title = error.localizedDescription
+                    message = error.failureReason ?? ""
+                } else {
+                    title = String(localized: "Problem Logging In")
+                    message = String(localized: "Double-check your username and password, then try again.")
+                }
+                let alert = UIAlertController(title: title, message: message, alertActions: [.ok {
                     self.state = .canAttemptLogin
                     self.passwordTextField.becomeFirstResponder()
                 }])
-                present(alert, animated: true, completion: nil)
+                present(alert, animated: true)
             }
         }
     }
@@ -123,7 +133,9 @@ class LoginViewController: ViewController {
     }
     
     fileprivate func attemptToLogIn() {
-        assert(state == .canAttemptLogin, "unexpected state")
+        if case .canAttemptLogin = state { /* yay */ } else {
+            assertionFailure("unexpected state: \(state)")
+        }
         state = .attemptingLogin
         Task {
             do {
@@ -137,7 +149,7 @@ class LoginViewController: ViewController {
                 completionBlock?(self)
             } catch {
                 Log.e("Could not log in: \(error)")
-                state = .failedLogin
+                state = .failedLogin(error)
             }
         }
     }
