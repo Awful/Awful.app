@@ -14,7 +14,7 @@ import Foundation
  * Can conveniently locate dependent operations with a particular result type.
  * Error reporting via convenient `throw`.
  */
-internal class AsynchronousOperation<T>: Foundation.Operation {
+internal class AsynchronousOperation<T>: Foundation.Operation, @unchecked Sendable {
     private let queue = DispatchQueue(label: "com.nolanw.ImgurAnonymousAPI.async-operation-state")
     private(set) var result: Result<T>?
     private var _state: AsynchronousOperationState = .ready

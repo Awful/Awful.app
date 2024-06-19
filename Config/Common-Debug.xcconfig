@@ -3,10 +3,14 @@
 // Anything shared by multiple build configurations should go in the common config.
 #include "Common.xcconfig"
 
+DEBUG_INFORMATION_FORMAT = dwarf
+
 ENABLE_TESTABILITY = YES
 
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1
 GCC_OPTIMIZATION_LEVEL = 0
+
+MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE
 
 ONLY_ACTIVE_ARCH = YES
 

@@ -44,8 +44,8 @@ internal enum ImageError: LocalizedError {
  
  The image is resized without being fully dragged into memory.
  */
-internal final class ResizeImage: AsynchronousOperation<ImageFile> {
-    
+internal final class ResizeImage: AsynchronousOperation<ImageFile>, @unchecked Sendable {
+
     private let maximumFileSizeBytes: Int
     
     init(maximumFileSizeBytes: Int) {
@@ -134,8 +134,8 @@ import Photos
 
 /// Retrieves image data for a `PHAsset` and saves it to a file in a temporary folder.
 @available(macOS 10.13, tvOS 10.0, *)
-internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
-    
+internal final class SavePHAsset: AsynchronousOperation<ImageFile>, @unchecked Sendable {
+
     /// Returns `true` when the app has a photo library usage description and the user has authorized said access.
     static var hasRequiredPhotoLibraryAuthorization: Bool {
 
@@ -199,7 +199,7 @@ import MobileCoreServices
 import UIKit
 
 /// Writes the image data to file in a temporary folder.
-internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
+internal final class SaveUIImage: AsynchronousOperation<ImageFile>, @unchecked Sendable {
     private let image: UIImage
 
     init(_ image: UIImage) {

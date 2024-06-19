@@ -28,7 +28,7 @@ internal enum WriteError: CustomNSError {
     }
 }
 
-internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile> {
+internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile>, @unchecked Sendable {
     override func execute() throws {
         let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
         let imageFile = try firstDependencyValue(ofType: ImageFile.self)

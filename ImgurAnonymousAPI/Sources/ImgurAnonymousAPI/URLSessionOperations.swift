@@ -67,7 +67,7 @@ extension ImgurUploader.Either: Decodable {
 }
 
 /// Runs a URLSessionTask and decodes the response data as JSON.
-internal final class FetchURL<T: Decodable>: AsynchronousOperation<T> {
+internal final class FetchURL<T: Decodable>: AsynchronousOperation<T>, @unchecked Sendable {
     private var task: URLSessionDataTask?
 
     init(urlSession: URLSession, request: URLRequest) {
@@ -111,7 +111,7 @@ internal final class FetchURL<T: Decodable>: AsynchronousOperation<T> {
 }
 
 /// Sends a multipart/form-data upload request, then parses the response's body and headers.
-internal final class UploadImageAsFormData: AsynchronousOperation<ImgurUploader.UploadResponse> {
+internal final class UploadImageAsFormData: AsynchronousOperation<ImgurUploader.UploadResponse>, @unchecked Sendable {
     private let request: URLRequest
     private var task: URLSessionUploadTask?
     private let urlSession: URLSession

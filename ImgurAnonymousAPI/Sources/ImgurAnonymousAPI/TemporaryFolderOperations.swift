@@ -7,7 +7,7 @@ internal struct TemporaryFolder {
 }
 
 /// Creates a randomly-named folder in a temporary directory.
-internal final class MakeTemporaryFolder: AsynchronousOperation<TemporaryFolder> {
+internal final class MakeTemporaryFolder: AsynchronousOperation<TemporaryFolder>, @unchecked Sendable {
     override func execute() throws {
         let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -20,7 +20,7 @@ internal final class MakeTemporaryFolder: AsynchronousOperation<TemporaryFolder>
 }
 
 /// Attempts to delete a temporary folder, but doesn't throw an error on failure (presumably the operating system will clean up after us).
-internal final class DeleteTemporaryFolder: AsynchronousOperation<Void> {
+internal final class DeleteTemporaryFolder: AsynchronousOperation<Void>, @unchecked Sendable {
     override func execute() throws {
         do {
             let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
