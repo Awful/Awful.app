@@ -1,4 +1,4 @@
-//  PostViewModel.swift
+//  PostRenderModel.swift
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -40,7 +40,7 @@ struct PostRenderModel: StencilContextConvertible {
             }
             return true
         }
-        @FoilDefaultStorage(Settings.showAvatars) var showAvatars
+        var showAvatars: Bool { Awful.showAvatars }
         var hiddenAvatarURL: URL? {
             return showAvatars ? nil : post.author?.avatarURL
         }
@@ -103,12 +103,12 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     document.removeEmptyEditedByParagraphs()
     document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
-    if let username = FoilDefaultStorageOptional(Settings.username).wrappedValue {
+    if let username = UserDefaults.standard.value(for: Settings.username) {
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
         document.identifyMentionsOfUser(named: username, shouldHighlight: true)
     }
-    document.processImgTags(shouldLinkifyNonSmilies: !FoilDefaultStorage(Settings.loadImages).wrappedValue)
-    if !FoilDefaultStorage(Settings.autoplayGIFs).wrappedValue {
+    document.processImgTags(shouldLinkifyNonSmilies: !UserDefaults.standard.defaultingValue(for: Settings.loadImages))
+    if !UserDefaults.standard.defaultingValue(for: Settings.autoplayGIFs) {
         document.stopGIFAutoplay()
     }
     if isIgnored {
@@ -121,14 +121,14 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     return document.bodyElement?.innerHTML ?? ""
 }
 
- private var showAvatars: Bool {
-     FoilDefaultStorage(Settings.showAvatars).wrappedValue
+private var showAvatars: Bool {
+    UserDefaults.standard.defaultingValue(for: Settings.showAvatars)
 }
 
 private var enableCustomTitlePostLayout: Bool {
     switch UIDevice.current.userInterfaceIdiom {
     case .mac, .pad:
-        return FoilDefaultStorage(Settings.enableCustomTitlePostLayout).wrappedValue
+        return UserDefaults.standard.defaultingValue(for: Settings.enableCustomTitlePostLayout)
     default:
         return false
     }
