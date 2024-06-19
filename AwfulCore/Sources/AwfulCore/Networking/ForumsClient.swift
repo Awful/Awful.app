@@ -100,19 +100,19 @@ public final class ForumsClient {
     }
 
     private var loginCookie: HTTPCookie? {
-        return baseURL
+        baseURL
             .flatMap { urlSession?.configuration.httpCookieStorage?.cookies(for: $0) }?
             .first { $0.name == "bbuserid" }
     }
 
     /// Whether or not a valid, logged-in session exists.
     public var isLoggedIn: Bool {
-        return loginCookie != nil
+        loginCookie != nil
     }
     
     /// When the valid, logged-in session expires.
     public var loginCookieExpiryDate: Date? {
-        return loginCookie?.expiresDate
+        loginCookie?.expiresDate
     }
 
     enum Error: Swift.Error {
@@ -1271,10 +1271,7 @@ extension URLSessionTask: Cancellable {}
 private typealias ParsedDocument = (document: HTMLDocument, url: URL?)
 
 private func parseHTML(data: Data, response: URLResponse) throws -> ParsedDocument {
-    let contentType: String? = {
-        guard let response = response as? HTTPURLResponse else { return nil }
-        return response.allHeaderFields["Content-Type"] as? String
-    }()
+    let contentType = (response as? HTTPURLResponse)?.allHeaderFields["Content-Type"] as? String
     let document = HTMLDocument(data: data, contentTypeHeader: contentType)
     try checkServerErrors(document)
     return (document: document, url: response.url)
