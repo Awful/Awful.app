@@ -7,7 +7,7 @@ import Foundation
 
 private let Log = Logger.get()
 
-final class CachePruner: Operation {
+final class CachePruner: Operation, @unchecked Sendable {
     let managedObjectContext: NSManagedObjectContext
     
     init(managedObjectContext context: NSManagedObjectContext) {
