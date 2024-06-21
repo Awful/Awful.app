@@ -55,6 +55,7 @@
 		1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */; };
 		1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */; };
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
+		1C1E57512C2521580075E3B6 /* platinum-member-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1E57502C2521580075E3B6 /* platinum-member-white.png */; };
 		1C1F0F162B8B0AD700F097D3 /* AwfulTheming in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F0F152B8B0AD700F097D3 /* AwfulTheming */; };
 		1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* Smilies */; };
 		1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C220E3A2B814D5A00DA92B0 /* SettingsViewController.swift */; };
@@ -337,6 +338,7 @@
 		1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextViewController.swift; sourceTree = "<group>"; };
 		1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPreviewViewController.swift; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
+		1C1E57502C2521580075E3B6 /* platinum-member-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white.png"; sourceTree = "<group>"; };
 		1C1F0F0E2B8A8C9700F097D3 /* AwfulModelTypes */ = {isa = PBXFileReference; lastKnownFileType = text; path = AwfulModelTypes; sourceTree = SOURCE_ROOT; };
 		1C1F0F132B8B091600F097D3 /* AwfulTheming */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulTheming; sourceTree = "<group>"; };
 		1C220E3A2B814D5A00DA92B0 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -1016,14 +1018,12 @@
 		1CD33EDB16F397FC0059587E /* Posts View Theming */ = {
 			isa = PBXGroup;
 			children = (
-				1AB84FD62ADC611B00E7334D /* bat.svg */,
-				1AB84FD72ADC611B00E7334D /* ghost.svg */,
-				1AB84FD82ADC611B00E7334D /* pumpkin.svg */,
-				2D921268292F588100B16011 /* platinum-member.png */,
 				8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */,
 				8C8FA47719AD7CA300B67AAA /* award.png */,
+				1AB84FD62ADC611B00E7334D /* bat.svg */,
 				8C8FA47819AD7CA300B67AAA /* diamond-icon.png */,
 				8C9834E1169091CE009F0CD6 /* fyad-bubble.png */,
+				1AB84FD72ADC611B00E7334D /* ghost.svg */,
 				8CEB405D1687865300BFA9A8 /* hourglass.gif */,
 				8C8FA47919AD7CA300B67AAA /* ik.png */,
 				8C8FA47A19AD7CA300B67AAA /* image-coder.png */,
@@ -1034,7 +1034,10 @@
 				8C483FC116852E5D00D02482 /* macinyos-loading@2x.png */,
 				8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */,
 				8CEBABEA168000B800680935 /* macinyos-wallpaper@2x.png */,
+				1C1E57502C2521580075E3B6 /* platinum-member-white.png */,
+				2D921268292F588100B16011 /* platinum-member.png */,
 				1C397CA81BCC473A00CA7FD5 /* post-dots.png */,
+				1AB84FD82ADC611B00E7334D /* pumpkin.svg */,
 				1C29BD522251208200E1217A /* quote-post.png */,
 				8C8FA47C19AD7CA300B67AAA /* redpill.png */,
 				8CEB405B16877E1600BFA9A8 /* winpos95-heading-left-seen.png */,
@@ -1419,6 +1422,7 @@
 				1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
+				1C1E57512C2521580075E3B6 /* platinum-member-white.png in Resources */,
 				F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */,
 				2D19BA3929C33303009DD94F /* niggly60.json in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,

@@ -120,19 +120,25 @@ extension UINavigationItem {
     // MARK: THREAD TITLE Posts View
     /// A replacement label for the title that shows two lines on iPhone.
     var titleLabel: UILabel {
-        let theme = Theme.defaultTheme()
-        if let label = titleView as? UILabel { return label }
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 375, height: 44))
-        label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        label.textAlignment = .center
-        label.textColor = theme["navigationBarTextColor"]!
-        label.accessibilityTraits.insert(UIAccessibilityTraits.header)
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-        default:
-            label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-            label.numberOfLines = 2
+        let label: UILabel = (titleView as? UILabel) ?? {
+            let theme = Theme.defaultTheme()
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 375, height: 44))
+            label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            label.textAlignment = .center
+            label.textColor = theme["navigationBarTextColor"]!
+            label.accessibilityTraits.insert(.header)
+            switch UIDevice.current.userInterfaceIdiom {
+            case .pad:
+                label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
+            default:
+                label.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
+                label.numberOfLines = 2
+            }
+            return label
+        }()
+        // Sometimes the titleView is removed from the navigation bar. Seems related to the app moving to/from the background? Its superview becomes `nil` even though it's still the navigation item's `titleView`. Simply setting `titleView` again isn't enough in that scenario, we need to `nil` it out first.
+        if label.superview == nil {
+            titleView = nil
         }
         titleView = label
         return label

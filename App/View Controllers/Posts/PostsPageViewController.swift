@@ -774,8 +774,9 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
 
+        let location = sender.location(in: postsView.renderView)
         Task {
-            let elements = await postsView.renderView.interestingElements(at: sender.location(in: postsView.renderView))
+            let elements = await postsView.renderView.interestingElements(at: location)
             _ = URLMenuPresenter.presentInterestingElements(elements, from: self, renderView: self.postsView.renderView)
         }
     }
