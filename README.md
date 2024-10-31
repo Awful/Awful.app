@@ -60,7 +60,10 @@ There are unit tests, that don't cover much, running continuously via [GitHub Ac
 Dependencies not managed via Swift Package Manager are placed in the [Vendor](Vendor) folder and manually kept up-to-date. They include:
 
 * ARChromeActivity and TUSafariActivity assets. We've implemented our own `UIActivity` subclasses but continue to use the libraries' images.
+* JavaScript bits used in the web view for rendering: lottie-player.js.
 * MRProgress, PSMenuItem, and PullToRefresh, which do not have their own `Package.swift`. (If you know otherwise, let's move it over!)
+
+See [Vendor/README.md]() for more detailed info about updating these dependencies.
 
 ### Version scheme
 

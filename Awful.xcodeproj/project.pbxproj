@@ -154,6 +154,7 @@
 		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
+		1CAD42B62CD3050400579B8E /* lottie-player.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CAD42B52CD3050400579B8E /* lottie-player.js */; };
 		1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB0B9AA2AEF668500678615 /* NukeExtensions */; };
 		1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */; };
 		1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */; };
@@ -446,6 +447,7 @@
 		1CA45D951F2C19AA005BEEC5 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
 		1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Presentation.swift"; sourceTree = "<group>"; };
+		1CAD42B52CD3050400579B8E /* lottie-player.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "lottie-player.js"; sourceTree = "<group>"; };
 		1CB15BED1A9D33F600176E73 /* URLMenuPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLMenuPresenter.swift; sourceTree = "<group>"; };
 		1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportPostViewController.swift; sourceTree = "<group>"; };
 		1CB5F7F4201527550046D080 /* ThreadListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadListCell.swift; sourceTree = "<group>"; };
@@ -607,6 +609,7 @@
 			isa = PBXGroup;
 			children = (
 				1C5C2C5422D2584100EA5A80 /* ARChromeActivity */,
+				1CAD42B52CD3050400579B8E /* lottie-player.js */,
 				1C3A8D3E2AE10AF9003E9A07 /* MRProgress */,
 				1C53451C2B8BF365001DA96A /* PSMenuItem */,
 				1C0396372AE1059F00ABF9FA /* PullToRefresh */,
@@ -1413,6 +1416,7 @@
 				8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */,
 				1CF521772C228F88009712A7 /* PrivacyInfo.xcprivacy in Resources */,
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
+				1CAD42B62CD3050400579B8E /* lottie-player.js in Resources */,
 				2D921269292F588100B16011 /* platinum-member.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,

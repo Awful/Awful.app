@@ -199,7 +199,7 @@ Awful.loadLotties = function() {
 
   var script = document.createElement('script');
   script.id = 'lottie-js';
-  script.src = "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js";
+  script.src = "awful-resource://lottie-player.js";
   document.body.appendChild(script);
 };
 
