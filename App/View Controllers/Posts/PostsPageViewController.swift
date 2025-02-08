@@ -26,6 +26,7 @@ final class PostsPageViewController: ViewController {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var flagRequest: Task<Void, Error>?
@@ -42,6 +43,7 @@ final class PostsPageViewController: ViewController {
     private var messageViewController: MessageComposeViewController?
     private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>?
     private var observers: [NSKeyValueObservation] = []
+    private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
@@ -100,6 +102,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
@@ -1352,6 +1355,13 @@ final class PostsPageViewController: ViewController {
 
         hiddenMenuButton.show(menu: postActionMenu, from: frame)
     }
+    
+    private func fetchOEmbed(url: URL, id: String) {
+        Task {
+            let callbackData = await oEmbedFetcher.fetch(url: url, id: id)
+            postsView.renderView.didFetchOEmbed(id: id, response: callbackData)
+        }
+    }
 
     private func presentDraftMenu(
         from source: DraftMenuSource,
@@ -1552,6 +1562,13 @@ final class PostsPageViewController: ViewController {
         .sink { [weak self] in self?.postsView.renderView.setExternalStylesheet($0.stylesheet) }
         .store(in: &cancellables)
 
+        $embedBlueskyPosts
+            .dropFirst()
+            .filter { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.postsView.renderView.embedBlueskyPosts() }
+            .store(in: &cancellables)
+
         $embedTweets
             .dropFirst()
             .receive(on: RunLoop.main)
@@ -1717,6 +1734,9 @@ extension PostsPageViewController: ComposeTextViewControllerDelegate {
 
 extension PostsPageViewController: RenderViewDelegate {
     func didFinishRenderingHTML(in view: RenderView) {
+        if embedBlueskyPosts {
+            view.embedBlueskyPosts()
+        }
         if embedTweets {
             view.embedTweets()
         }
@@ -1766,6 +1786,9 @@ extension PostsPageViewController: RenderViewDelegate {
                 offset.y = fraction
                 postsView.renderView.scrollToFractionalOffset(offset)
             }
+            
+        case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
+            fetchOEmbed(url: message.url, id: message.id)
 
         case is FYADFlagRequest:
             fetchNewFlag()

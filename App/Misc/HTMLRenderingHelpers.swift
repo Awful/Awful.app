@@ -5,7 +5,20 @@
 import HTMLReader
 
 extension HTMLDocument {
-    
+
+    /// Finds links that appear to be to Bluesky posts and adds a `data-bluesky-post` attribute to those links.
+    func addAttributeToBlueskyLinks() {
+        for a in nodes(matchingSelector: "a[href *= 'bsky.app']") {
+            guard let href = a["href"],
+                  let url = URL(string: href),
+                  url.host?.caseInsensitiveCompare("bsky.app") == .orderedSame,
+                  url.pathComponents.contains(where: { $0.caseInsensitiveCompare("post") == .orderedSame }),
+                  a.textContent.hasPrefix("https:") // approximate raw-link check
+            else { continue }
+            a["data-bluesky-post"] = ""
+        }
+    }
+
     /// Finds links that appear to be to tweets and adds a `data-tweet-id` attribute to those links.
     func addAttributeToTweetLinks() {
         for a in nodes(matchingSelector: "a[href *= 'twitter.com'], a[href *= 'x.com']") {

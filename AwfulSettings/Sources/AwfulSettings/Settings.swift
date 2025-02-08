@@ -56,6 +56,9 @@ public enum Settings {
         default: SystemCapabilities.oled ? .brightLight : .default
     )
 
+    /// Turn each Bluesky post link in a Forms post into an embedded Bluesky post.
+    public static let embedBlueskyPosts = Setting(key: "embed_bluesky_posts", default: true)
+
     /// Turn each link to a tweet in a post into an embedded tweet.
     public static let embedTweets = Setting(key: "embed_tweets", default: true)
 

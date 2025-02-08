@@ -101,6 +101,7 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     let document = HTMLDocument(string: html)
     document.removeSpoilerStylingAndEvents()
     document.removeEmptyEditedByParagraphs()
+    document.addAttributeToBlueskyLinks()
     document.addAttributeToTweetLinks()
     document.useHTML5VimeoPlayer()
     if let username = UserDefaults.standard.value(for: Settings.username) {

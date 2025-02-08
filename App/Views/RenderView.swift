@@ -257,6 +257,28 @@ extension RenderView: WKScriptMessageHandler {
                 self.postIndex = postIndex
             }
         }
+        
+        struct FetchOEmbedFragment: RenderViewMessage {
+            static let messageName = "fetchOEmbedFragment"
+            
+            /// An opaque `id` to use when calling back with the response.
+            let id: String
+            
+            /// The OEmbed URL to fetch.
+            let url: URL
+            
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let id = body["id"] as? String,
+                      let rawURL = body["url"] as? String,
+                      let url = URL(string: rawURL)
+                else { return nil }
+                
+                self.id = id
+                self.url = url
+            }
+        }
     }
 }
 
@@ -276,7 +298,22 @@ extension CGRect {
 // MARK: - Bossing around and retrieving information from the render view
 
 extension RenderView {
-    
+
+    /// Turns any links that look like Bluesky posts into an actual Bluesky post embed.
+    func embedBlueskyPosts() {
+        Task {
+            do {
+                try await webView.eval("""
+                    if (window.Awful) {
+                        Awful.embedBlueskyPosts();
+                    }
+                    """)
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate embedBlueskyPosts")
+            }
+        }
+    }
+
     /// Turns any links that look like tweets into an actual tweet embed.
     func embedTweets() {
         let renderGhostTweets = FoilDefaultStorage(Settings.frogAndGhostEnabled).wrappedValue
@@ -454,6 +491,18 @@ extension RenderView {
         var rect = webDocumentRect
         rect.origin = convertToRenderView(webDocumentPoint: rect.origin)
         return rect
+    }
+    
+    func didFetchOEmbed(id: String, response: String) {
+        Task {
+            do {
+                try await webView.eval("""
+                    window.Awful?.didFetchOEmbed(\(escapeForEval(id)), \(response));
+                """)
+            } catch {
+                logger.error("error calling back after fetching oembed: \(error)")
+            }
+        }
     }
 
     /**
