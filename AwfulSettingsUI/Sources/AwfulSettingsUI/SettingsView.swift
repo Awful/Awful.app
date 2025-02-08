@@ -188,10 +188,10 @@ public struct SettingsView: View {
                         Text(browser.rawValue).tag(browser)
                     }
                 }
-                if canOpenURL(URL("youtube://")) {
+                if canOpenURL(URL(string: "youtube://")!) {
                     Toggle("Open YouTube in YouTube", bundle: .module, isOn: $openLinksInYouTube)
                 }
-                if canOpenURL(URL("twitter://")) {
+                if canOpenURL(URL(string: "twitter://")!) {
                     Toggle("Open Twitter in Twitter", bundle: .module, isOn: $openLinksInTwitter)
                 }
             } header: {

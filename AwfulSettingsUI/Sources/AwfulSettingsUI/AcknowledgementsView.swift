@@ -59,7 +59,7 @@ private struct Acknowledgement {
 private let acknowledgements: [Acknowledgement] = [
     .init(
         title: "ARChromeActivity",
-        url: URL("https://github.com/alextrob/ARChromeActivity"),
+        url: URL(string: "https://github.com/alextrob/ARChromeActivity")!,
         license: """
         ARChromeActivity
         Copyright (c) 2012 Alex Robinson
@@ -73,7 +73,7 @@ private let acknowledgements: [Acknowledgement] = [
     ),
     .init(
         title: "FLAnimatedImage",
-        url: URL("https://github.com/Flipboard/FLAnimatedImage"),
+        url: URL(string: "https://github.com/Flipboard/FLAnimatedImage")!,
         license: """
         The MIT License (MIT)
 
@@ -100,14 +100,14 @@ private let acknowledgements: [Acknowledgement] = [
     ),
     .init(
         title: "HTMLReader",
-        url: URL("https://github.com/nolanw/HTMLReader"),
+        url: URL(string: "https://github.com/nolanw/HTMLReader")!,
         license: """
         HTMLReader is in the public domain.
         """
     ),
     .init(
         title: "less.js",
-        url: URL("https://github.com/less/less.js"),
+        url: URL(string: "https://github.com/less/less.js")!,
         license: """
                               Apache License
                         Version 2.0, January 2004
@@ -289,7 +289,7 @@ END OF TERMS AND CONDITIONS
     ),
     .init(
         title: "MRProgress",
-        url: URL("https://github.com/mrackwitz/MRProgress"),
+        url: URL(string: "https://github.com/mrackwitz/MRProgress")!,
         license: """
         The MIT License (MIT)
 
@@ -315,7 +315,7 @@ END OF TERMS AND CONDITIONS
     ),
     .init(
         title: "Nuke",
-        url: URL("https://github.com/kean/Nuke"),
+        url: URL(string: "https://github.com/kean/Nuke")!,
         license: """
         The MIT License (MIT)
 
@@ -342,7 +342,7 @@ END OF TERMS AND CONDITIONS
     ),
     .init(
         title: "PSMenuItem",
-        url: URL("https://github.com/steipete/PSMenuItem"),
+        url: URL(string: "https://github.com/steipete/PSMenuItem")!,
         license: """
         Copyright (c) 2012 Peter Steinberger &lt;steipete@gmail.com&gt;
         This code is a part of http://pspdfkit.com and has been put under MIT license.
@@ -368,7 +368,7 @@ END OF TERMS AND CONDITIONS
     ),
     .init(
         title: "PullToRefresh",
-        url: URL("https://github.com/Yalantis/PullToRefresh"),
+        url: URL(string: "https://github.com/Yalantis/PullToRefresh")!,
         license: """
         The MIT License (MIT)
 
@@ -395,7 +395,7 @@ END OF TERMS AND CONDITIONS
     ),
     .init(
         title: "Stencil",
-        url: URL("https://github.com/stencilproject/Stencil"),
+        url: URL(string: "https://github.com/stencilproject/Stencil")!,
         license: """
         Copyright (c) 2018, Kyle Fuller
         All rights reserved.
@@ -424,7 +424,7 @@ END OF TERMS AND CONDITIONS
     ),
     .init(
         title: "TUSafariActivity",
-        url: URL("https://github.com/davbeck/TUSafariActivity"),
+        url: URL(string: "https://github.com/davbeck/TUSafariActivity")!,
         license: """
         Copyright (c) 2012 ThinkUltimate (http://thinkultimate.com).
 

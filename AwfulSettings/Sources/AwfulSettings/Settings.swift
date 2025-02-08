@@ -162,10 +162,10 @@ public enum DefaultBrowser: String, CaseIterable {
     public var checkCanOpenURL: URL? {
         switch self {
         case .awful, .defaultiOSBrowser: nil
-        case .brave: URL("brave://")
-        case .chrome: URL("googlechrome://")
-        case .edge: URL("microsoft-edge-http://")
-        case .firefox: URL("firefox://")
+        case .brave: URL(string: "brave://")!
+        case .chrome: URL(string: "googlechrome://")!
+        case .edge: URL(string: "microsoft-edge-http://")!
+        case .firefox: URL(string: "firefox://")!
         }
     }
 }
