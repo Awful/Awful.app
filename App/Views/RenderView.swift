@@ -5,7 +5,7 @@
 import AwfulCore
 import AwfulSettings
 import UIKit
-import WebKit
+@preconcurrency import WebKit
 
 private let Log = Logger.get()
 
