@@ -44,7 +44,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         DispatchQueue.global(qos: .background).async(execute: removeOldDataStores)
         
         ForumsClient.shared.managedObjectContext = managedObjectContext
-        ForumsClient.shared.baseURL = URL("https://forums.somethingawful.com/")
+        ForumsClient.shared.baseURL = URL(string: "https://forums.somethingawful.com/")!
         ForumsClient.shared.didRemotelyLogOut = { [weak self] in
             self?.logOut()
         }
