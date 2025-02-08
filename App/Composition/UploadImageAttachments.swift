@@ -20,8 +20,8 @@ private let Log = Logger.get()
 func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping (_ plainText: String?, _ error: Error?) -> Void) -> Progress {
     let progress = Progress(totalUnitCount: 1)
     
-    let localCopy = richText.mutableCopy() as! NSMutableAttributedString
-    DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async { 
+    let localCopy = richText.copy() as! NSAttributedString
+    DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
         let tags = localCopy.imageTags
         guard !tags.isEmpty else {
             progress.completedUnitCount += 1
@@ -29,7 +29,8 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
                 completion(localCopy.string, nil)
             }
         }
-        
+
+        let localerCopy = localCopy.mutableCopy() as! NSMutableAttributedString
         let uploadProgress = uploadImages(fromSources: tags.map { $0.source }, completion: { (urls, error) in
             if let error = error {
                 return DispatchQueue.main.async {
@@ -39,10 +40,10 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
             
             guard let urls = urls else { fatalError("no error should mean some URLs!") }
             for (url, tag) in zip(urls, tags).reversed() {
-                localCopy.replaceCharacters(in: tag.range, with: tag.BBcode(url as URL))
+                localerCopy.replaceCharacters(in: tag.range, with: tag.BBcode(url as URL))
             }
             DispatchQueue.main.async {
-                completion(localCopy.string, nil)
+                completion(localerCopy.string, nil)
             }
         })
         progress.addChild(uploadProgress, withPendingUnitCount: 1)
