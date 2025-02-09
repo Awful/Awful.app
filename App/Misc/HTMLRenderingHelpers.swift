@@ -344,6 +344,23 @@ extension HTMLDocument {
                         a.parent?.replace(child: a, with: embedElement)
                     }
                 }
+                
+                // magic for the routine webm posts in
+                // https://forums.somethingawful.com/showthread.php?threadid=3901275
+                else if lowerHost.hasSuffix("steamstatic.com"),
+                            let ext = href.range(of: "_vp9.webm") {
+                    let videoElement = HTMLElement(tagName: "video", attributes: [
+                        "preload": "metadata",
+                        "controls": "",
+                        "loop": "",
+                        "muted": "true",
+                        "src": href.replacingCharacters(in: ext, with: ".mp4"),
+                        "type": "video/mp4"
+                    ])
+                    
+                    a.parent?.replace(child: a, with: videoElement)
+                }
+                            
             }
         }
     }
