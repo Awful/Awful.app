@@ -294,9 +294,11 @@ extension HTMLDocument {
                 if containingPostIsNWS(node: a) {
                     continue
                 }
-
+                let lowerHost = host.lowercased()
+                
                 if let ext = href.range(of: #"(\.gifv|\.webm|\.mp4)$"#, options: .regularExpression) {
-                    if host.lowercased().hasSuffix("imgur.com") {
+                    if lowerHost.hasSuffix("imgur.com") ||
+                        lowerHost.hasSuffix("imgur.io") {
                         let videoElement = HTMLElement(tagName: "video", attributes: [
                             "width": "300",
                             "preload":"metadata",
@@ -309,8 +311,9 @@ extension HTMLDocument {
 
                         a.parent?.replace(child: a, with: videoElement)
                     }
-                    if host.lowercased().hasSuffix(".discordapp.com") &&
-                        href.hasSuffix(".mp4")
+
+                    // any raw .mp4 URLs can embed, what the hell
+                    if href == a.textContent && href.hasSuffix(".mp4")
                     {
                         let videoElement = HTMLElement(tagName: "video", attributes: [
                             "width": "300",
@@ -323,7 +326,6 @@ extension HTMLDocument {
 
                         a.parent?.replace(child: a, with: videoElement)
                     }
-                    //todo gifcat mp4 files
                 }
 
                 // only replace youtube links that are raw URLs
