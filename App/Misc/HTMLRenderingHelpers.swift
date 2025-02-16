@@ -438,6 +438,28 @@ private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
     return components.url
 }
 
+private func parseTimestampParam(t: String?) -> Int? {
+    if t == nil {
+        return nil
+    }
+    let tt = t ?? ""
+    let regex = try! NSRegularExpression(
+        pattern: "^(([0-9]*)m)?([0-9]*)s?",
+        options: .caseInsensitive)
+    if let results = regex.firstMatch(in: tt, range: NSRange(tt.startIndex..., in: tt)) {
+        let minsRange = Range(results.range(at: 2), in: tt)
+        let secsRange = Range(results.range(at: 3), in: tt)
+        let mins: Int? = if minsRange != nil { Int(tt[minsRange!]) } else { nil }
+        let secs: Int? = if secsRange != nil { Int(tt[secsRange!]) } else { nil }
+        if secs != nil {
+            let result = (mins ?? 0) * 60 + secs!
+            return result
+        }
+        return nil
+    }
+    return nil
+}
+
 private func getYoutubeEmbeddedUri(href: String) -> URL? {
     guard let source = URLComponents(string: href) else { return nil }
     let seconds: Int?
@@ -448,7 +470,7 @@ private func getYoutubeEmbeddedUri(href: String) -> URL? {
         seconds = source.queryItems?
             .first { $0.name == "t" }?
             .value
-            .flatMap { Int($0) }
+            .flatMap { parseTimestampParam(t: $0) }
     } else {
         id = source.queryItems?.first(where: { $0.name == "v" })?.value ?? ""
 
@@ -457,7 +479,7 @@ private func getYoutubeEmbeddedUri(href: String) -> URL? {
            pair.count == 2,
            pair[0] == "t"
         {
-            seconds = Int(pair[1])
+            seconds = parseTimestampParam(t: String(pair[1]))
         } else {
             seconds = nil
         }
