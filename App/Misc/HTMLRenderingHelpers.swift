@@ -438,6 +438,33 @@ private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
     return components.url
 }
 
+/**
+ Parse a "?t=" timestamp query param for a youtube video.  Returns the number of seconds, or nil.
+
+ Can optionally contain an "m" (minutes) and "s" (seconds)
+
+ Example inputs:
+    "5m3s" -> 303 (seconds)
+    "5m" -> 300 (seconds)
+    "99s" -> 99 (seconds)
+    "127" -> 127 (seconds)
+ */
+private func parseYoutubeTimestamp(t: String?) -> Int? {
+    if let tt = t?.replacingOccurrences(of: "s", with: "") {
+        if let mIndex = tt.firstIndex(of: "m") {
+            let beforeM = tt[tt.startIndex..<mIndex]
+            let mins = Int(beforeM)
+            let afterM = tt[tt.index(after: mIndex)...]
+            let secs = Int(afterM)
+            return (mins ?? 0) * 60 + (secs ?? 0)
+        } else {
+            return Int(tt)
+        }
+    } else {
+        return nil
+    }
+}
+
 private func getYoutubeEmbeddedUri(href: String) -> URL? {
     guard let source = URLComponents(string: href) else { return nil }
     let seconds: Int?
@@ -448,7 +475,7 @@ private func getYoutubeEmbeddedUri(href: String) -> URL? {
         seconds = source.queryItems?
             .first { $0.name == "t" }?
             .value
-            .flatMap { Int($0) }
+            .flatMap { parseYoutubeTimestamp(t: $0) }
     } else {
         id = source.queryItems?.first(where: { $0.name == "v" })?.value ?? ""
 
@@ -457,7 +484,7 @@ private func getYoutubeEmbeddedUri(href: String) -> URL? {
            pair.count == 2,
            pair[0] == "t"
         {
-            seconds = Int(pair[1])
+            seconds = parseYoutubeTimestamp(t: String(pair[1]))
         } else {
             seconds = nil
         }
