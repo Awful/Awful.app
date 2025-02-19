@@ -35,12 +35,12 @@ final class RapSheetViewController: TableViewController {
         super.init(style: .plain)
         
         if user == nil {
-            title = LocalizedString("lepers-colony.navbar-title")
-            tabBarItem.title = LocalizedString("lepers-colony.tabbar-title")
+            title = String(localized: "Leper’s Colony", bundle: .module)
+            // Tab bar item title is set in `themeDidChange()` as some themes do not show titles.
             tabBarItem.image = UIImage(named: "lepers")
             tabBarItem.selectedImage = UIImage(named: "lepers-filled")
         } else {
-            title = LocalizedString("rap-sheet.title")
+            title = String(localized: "Rap Sheet", bundle: .module)
             hidesBottomBarWhenPushed = true
             modalPresentationStyle = .formSheet
         }
@@ -251,8 +251,11 @@ final class RapSheetViewController: TableViewController {
             tabBarItem.title = nil
         } else {
             tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tabBarItem.title = LocalizedString("rap-sheet.title")
-            title = LocalizedString("rap-sheet.title")
+            tabBarItem.title = if user == nil {
+                String(localized: "Lepers", bundle: .module)
+            } else {
+                String(localized: "Rap Sheet", bundle: .module)
+            }
         }
     }
     
