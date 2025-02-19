@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "AwfulCore",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v15),
     ],
@@ -26,9 +27,6 @@ let package = Package(
                 "AwfulScraping",
                 "HTMLReader",
                 "Logger",
-            ],
-            resources: [
-                .process("Localizable.strings"),
             ]
         ),
         .testTarget(

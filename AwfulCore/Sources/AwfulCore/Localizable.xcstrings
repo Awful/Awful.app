@@ -1,0 +1,15 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Congratulations! Please visit the Something Awful Forums website to learn why you were banned, to contact a mod or admin, to read the rules, or to reactivate your account." : {
+
+    },
+    "Scraping failed" : {
+
+    },
+    "You've Been Banned" : {
+
+    }
+  },
+  "version" : "1.0"
+}
