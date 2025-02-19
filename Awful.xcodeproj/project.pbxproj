@@ -91,6 +91,7 @@
 		1C3A143E19DFC5D10022C44C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3A143D19DFC5D10022C44C /* ViewController.m */; };
 		1C3A144119DFC5D10022C44C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A143F19DFC5D10022C44C /* Main.storyboard */; };
 		1C3A144619DFC5D10022C44C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C3A144419DFC5D10022C44C /* LaunchScreen.xib */; };
+		1C3C45142D65A5DB0035CABF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1C3C45132D65A5DB0035CABF /* Localizable.xcstrings */; };
 		1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */; };
 		1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */; };
 		1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */; };
@@ -151,7 +152,6 @@
 		1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */; };
 		1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* main.swift */; };
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
-		1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D951F2C19AA005BEEC5 /* Localizable.strings */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
 		1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */; };
 		1CAD42B62CD3050400579B8E /* lottie-player.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CAD42B52CD3050400579B8E /* lottie-player.js */; };
@@ -388,6 +388,7 @@
 		1C3A8D442AE10D3B003E9A07 /* submit */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = submit; sourceTree = "<group>"; };
 		1C3A8D452AE10D3B003E9A07 /* bump.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = bump.py; sourceTree = "<group>"; };
 		1C3A8D462AE10D3B003E9A07 /* bump */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = bump; sourceTree = "<group>"; };
+		1C3C45132D65A5DB0035CABF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FLAnimatedImageView+Nuke.swift"; sourceTree = "<group>"; };
 		1C3E1818224EF97D00BD88E5 /* PostedSmilie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostedSmilie.swift; sourceTree = "<group>"; };
 		1C3E181A224FAE1200BD88E5 /* SmilieDataStore+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SmilieDataStore+Shared.swift"; sourceTree = "<group>"; };
@@ -444,7 +445,6 @@
 		1C9AEBC7210C3B2300C9A567 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C9AEBCD210C3BAF00C9A567 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		1CA45D931F2C0AD1005BEEC5 /* RenderView.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = RenderView.js; sourceTree = "<group>"; };
-		1CA45D951F2C19AA005BEEC5 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
 		1CA887AF1F40AE1A0059FEEC /* User+Presentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Presentation.swift"; sourceTree = "<group>"; };
 		1CAD42B52CD3050400579B8E /* lottie-player.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "lottie-player.js"; sourceTree = "<group>"; };
@@ -1143,7 +1143,7 @@
 				2D0BB35827F440AF00242D2A /* Assets.xcassets */,
 				8CCD503B15B783FC00E5893B /* Images */,
 				8CCD498215B497A700E5893B /* Info.plist */,
-				1CA45D951F2C19AA005BEEC5 /* Localizable.strings */,
+				1C3C45132D65A5DB0035CABF /* Localizable.xcstrings */,
 				2D265F90292CC0C7001336ED /* Lotties */,
 				1CD33EDB16F397FC0059587E /* Posts View Theming */,
 				1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */,
@@ -1384,6 +1384,7 @@
 				1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */,
 				1C397CA91BCC473A00CA7FD5 /* post-dots.png in Resources */,
 				8CE8F2E21BBB754C00E81544 /* play-button.png in Resources */,
+				1C3C45142D65A5DB0035CABF /* Localizable.xcstrings in Resources */,
 				1AB84FDB2ADC611B00E7334D /* pumpkin.svg in Resources */,
 				2D19BA3A29C33303009DD94F /* frogrefresh60.json in Resources */,
 				8C8FA48319AD7CA300B67AAA /* redpill.png in Resources */,
@@ -1434,7 +1435,6 @@
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
-				1CA45D961F2C19AA005BEEC5 /* Localizable.strings in Resources */,
 				1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,

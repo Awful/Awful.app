@@ -1,0 +1,1207 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "action.share-url" : {
+      "comment" : "Title of the share URL action for an announcement, post, or thread.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share URL"
+          }
+        }
+      }
+    },
+    "Add Bookmark" : {
+
+    },
+    "Added Bookmark" : {
+
+    },
+    "announcement.title" : {
+      "comment" : "Fallback title of an announcement screen (the announcement's title is used when available).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Announcement"
+          }
+        }
+      }
+    },
+    "Author Profile" : {
+
+    },
+    "bookmarks.title" : {
+      "comment" : "Title of the bookmarks screen, shown in the navbar and the tab bar.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bookmarks"
+          }
+        }
+      }
+    },
+    "cancel" : {
+      "comment" : "Title of button that dismisses without taking any action.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "compose.accessibility-label" : {
+      "comment" : "Accessibility label of compose button in posts screen.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reply"
+          }
+        }
+      }
+    },
+    "compose.cancel-menu.delete-draft" : {
+      "comment" : "Destructive button in action sheet that deletes the draft.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Draft"
+          }
+        }
+      }
+    },
+    "compose.cancel-menu.save-draft" : {
+      "comment" : "Button in action sheet that keeps the draft when cancelling out of a reply or edit.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Draft"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.continue-editing" : {
+      "comment" : "Button in action sheet that resumes the draft edit.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue Editing"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.continue-replying" : {
+      "comment" : "Button in action sheet that resumes the draft reply.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue Replying"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.delete-draft" : {
+      "comment" : "Destructive button in action sheet that deletes the draft reply.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Draft"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.editing-other-post.title" : {
+      "comment" : "Title of compose draft menu when editing another user's post. Parameters: 1. post author's username.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently editing %1$@'s post"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.editing-own-post.title" : {
+      "comment" : "Title of compose draft menu when editing your own post.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently editing your own post"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.editing-unknown-other-post.title" : {
+      "comment" : "Title of compose draft menu when editing an unnamed other user's post.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently editing someone else's post"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.replying.title" : {
+      "comment" : "Title of compose draft menu when replying to the thread.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently replying to the thread"
+          }
+        }
+      }
+    },
+    "compose.post-preview.missing-author-error" : {
+      "comment" : "Message of alert shown when there's a problem finding the author of a post that's being written.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The post author could not be determined."
+          }
+        }
+      }
+    },
+    "compose.post-preview.title-editing" : {
+      "comment" : "Title of preview screen when editing an existing post.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "compose.post-preview.title-new" : {
+      "comment" : "Title of preview screen when writing a new post.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Post Preview"
+          }
+        }
+      }
+    },
+    "compose.thread-preview.posting-in" : {
+      "comment" : "Text shown below the title of the thread-to-be. Parameter is the name of the forum where this will be posted.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posting in %@"
+          }
+        }
+      }
+    },
+    "compose.thread-preview.submit-button" : {
+      "comment" : "Title of button that submits a new thread.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Post"
+          }
+        }
+      }
+    },
+    "compose.thread-preview.title" : {
+      "comment" : "Title of screen showing a preview of a new thread's original post.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thread Preview"
+          }
+        }
+      }
+    },
+    "compose.thread.tag-picker.title" : {
+      "comment" : "Title of the thread tag picker when choosing a new thread's tag.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose Thread Tag"
+          }
+        }
+      }
+    },
+    "Copy Title" : {
+
+    },
+    "Copy URL" : {
+
+    },
+    "copy-url.title" : {
+      "comment" : "The default title of the \"copy URL\" share action.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy URL"
+          }
+        }
+      }
+    },
+    "Doggo (dead)" : {
+
+    },
+    "Double-check your username and password, then try again." : {
+
+    },
+    "Five" : {
+
+    },
+    "forums-list.announcements-section-title" : {
+      "comment" : "Title of the announcements section in the forums list.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Announcements"
+          }
+        }
+      }
+    },
+    "forums-list.favorite-forums.section-title" : {
+      "comment" : "Title of the favorite forums section in the forums list.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite Forums"
+          }
+        }
+      }
+    },
+    "forums-list.undo-action.add-favorite" : {
+      "comment" : "Name of undo action where user adds a just-deleted favorite back (more of a redo action).",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Favorite Forum"
+          }
+        }
+      }
+    },
+    "forums-list.undo-action.remove-favorite" : {
+      "comment" : "Name of undo action where user deletes a favorite.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Favorite Forum"
+          }
+        }
+      }
+    },
+    "Froggo" : {
+
+    },
+    "Get out" : {
+
+    },
+    "Ghost (blue)" : {
+
+    },
+    "Ghost (grey)" : {
+
+    },
+    "Green face" : {
+
+    },
+    "handoff.bookmarks-title" : {
+      "comment" : "Title of Handoff activity when reading bookmarks.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bookmarked Threads"
+          }
+        }
+      }
+    },
+    "handoff.message-title" : {
+      "comment" : "Title of Handoff activity when reading a private message.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Message"
+          }
+        }
+      }
+    },
+    "image-upload.generic-error-title" : {
+      "comment" : "Title of a generic error uploading an image.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Upload Failed"
+          }
+        }
+      }
+    },
+    "Jump to First Page" : {
+
+    },
+    "Last Page" : {
+
+    },
+    "launch-open-copied-url-alert.open-button" : {
+      "comment" : "Button that opens the copied URL.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        }
+      }
+    },
+    "launch-open-copied-url-alert.title" : {
+      "comment" : "Title of alert asking about opening a copied URL when Awful comes to the foreground. Alert message is the URL in question. Parameter is the name of this app.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Would you like to open this URL in %@?"
+          }
+        }
+      }
+    },
+    "Leper’s Colony" : {
+
+    },
+    "Lepers" : {
+
+    },
+    "link-action.copy-image" : {
+      "comment" : "Title of button that copies an image to the pasteboard.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy Image"
+          }
+        }
+      }
+    },
+    "link-action.copy-image-url" : {
+      "comment" : "Title of button that copies an image's URL to the pasteboard.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy Image URL"
+          }
+        }
+      }
+    },
+    "link-action.copy-url" : {
+      "comment" : "Title of button that copies a URL to the pasteboard.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy URL"
+          }
+        }
+      }
+    },
+    "link-action.open" : {
+      "comment" : "Title of button that opens a link using the system's default handler for the URL.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        }
+      }
+    },
+    "link-action.open-image" : {
+      "comment" : "Title of button that shows an image in Awful's image viewer.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Image"
+          }
+        }
+      }
+    },
+    "link-action.open-in-awful" : {
+      "comment" : "Title of button that opens a link within Awful.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Awful"
+          }
+        }
+      }
+    },
+    "link-action.open-in-brave" : {
+      "comment" : "Title of button that opens a link in Brave.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Brave"
+          }
+        }
+      }
+    },
+    "link-action.open-in-chrome" : {
+      "comment" : "Title of button that opens a link in Google Chrome.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Chrome"
+          }
+        }
+      }
+    },
+    "link-action.open-in-default-browser" : {
+      "comment" : "Title of button that opens a link in the default iOS browser (Safari unless modified by user)",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Default iOS Browser"
+          }
+        }
+      }
+    },
+    "link-action.open-in-edge" : {
+      "comment" : "Title of button that opens a link in Microsoft Edge.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Edge"
+          }
+        }
+      }
+    },
+    "link-action.open-in-firefox" : {
+      "comment" : "Title of button that opens a link in Firefox.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Firefox"
+          }
+        }
+      }
+    },
+    "link-action.open-in-twitter" : {
+      "comment" : "Title of button that opens a link in the Twitter app.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Twitter"
+          }
+        }
+      }
+    },
+    "link-action.open-in-vimeo" : {
+      "comment" : "Title of button that opens a link in the Vimeo app.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in Vimeo"
+          }
+        }
+      }
+    },
+    "link-action.open-in-youtube" : {
+      "comment" : "Title of button that opens a link in the YouTube app.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in YouTube"
+          }
+        }
+      }
+    },
+    "link-action.share-url" : {
+      "comment" : "Title of button that shows the system share sheet for a URL.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share URL"
+          }
+        }
+      }
+    },
+    "login.consent-to-terms.full-text" : {
+      "comment" : "Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately).",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By logging in, you agree to the %1$@ and %2$@."
+          }
+        }
+      }
+    },
+    "login.consent-to-terms.privacy-policy" : {
+      "comment" : "Link on the login screen that opens the Privacy Policy when tapped.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
+    "login.consent-to-terms.terms-of-service" : {
+      "comment" : "Link on the login screen that opens the Terms of Service when tapped.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Service"
+          }
+        }
+      }
+    },
+    "Mark Thread As Read" : {
+
+    },
+    "Mark Unread" : {
+
+    },
+    "ok" : {
+      "comment" : "Title of a button that acknowledges information without offering any choice.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "posts-page.copied-post" : {
+      "comment" : "Title of alert shown when post successfully copied to pasteboard.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied post!"
+          }
+        }
+      }
+    },
+    "posts-page.error.could-not-copy-post" : {
+      "comment" : "Title of alert shown when failing to copy post to pasteboard.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not copy post"
+          }
+        }
+      }
+    },
+    "posts-page.error.could-not-edit-post" : {
+      "comment" : "Title of alert shown when failing to edit post.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could Not Edit Post"
+          }
+        }
+      }
+    },
+    "posts-page.error.could-not-mark-read" : {
+      "comment" : "Title of alert shown when failing to update the last-read post.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could Not Mark Read"
+          }
+        }
+      }
+    },
+    "posts-page.fyad-flag-title" : {
+      "comment" : "Alternate text for an FYAD flag. Variables are: 1. username of flag creator; 2. date of flag creation.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this flag proudly brought to you by %1$@ on %2$@"
+          }
+        }
+      }
+    },
+    "posts-page.marked-read" : {
+      "comment" : "Title shown in HUD after the last-read post is updated.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marked Read"
+          }
+        }
+      }
+    },
+    "posts-page.parent-forum-button.accessibility-hint" : {
+      "comment" : "Button that opens the thread's forum.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens this thread's forum"
+          }
+        }
+      }
+    },
+    "posts-page.parent-forum-button.accessibility-label" : {
+      "comment" : "Button that opens the thread's forum.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parent forum"
+          }
+        }
+      }
+    },
+    "posts-page.parent-forum-button.title" : {
+      "comment" : "Button that opens the thread's forum.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parent Forum"
+          }
+        }
+      }
+    },
+    "posts-page.previous-posts-button.accessibility-label" : {
+      "comment" : "Button that loads the previously-read posts on the page.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous posts"
+          }
+        }
+      }
+    },
+    "posts-page.previous-posts-button.title" : {
+      "comment" : "Button that loads the previously-read posts on the page.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous Posts"
+          }
+        }
+      }
+    },
+    "posts-page.scroll-to-end-button.accessibility-label" : {
+      "comment" : "Button that jumps to the bottom of the page.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scroll to end"
+          }
+        }
+      }
+    },
+    "posts-page.scroll-to-end-button.title" : {
+      "comment" : "Button that jumps to the bottom of the page.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scroll To End"
+          }
+        }
+      }
+    },
+    "private-message-list.compose-button.accessibility-label" : {
+      "comment" : "Text read by VoiceOver for compose button in private messages list.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compose"
+          }
+        }
+      }
+    },
+    "private-message-list.title" : {
+      "comment" : "Title of private message list, shown in navigation bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Messages"
+          }
+        }
+      }
+    },
+    "private-message-tab.accessibility-label" : {
+      "comment" : "Text read by VoiceOver for private messages tab bar item.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private messages"
+          }
+        }
+      }
+    },
+    "private-message-tab.title" : {
+      "comment" : "Title of the private messages tab bar item.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages"
+          }
+        }
+      }
+    },
+    "private-message.action-forward" : {
+      "comment" : "Title of action sheet button that starts a new private message forwarding the currently-visible message.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forward"
+          }
+        }
+      }
+    },
+    "private-message.action-reply" : {
+      "comment" : "Title of action sheet button that starts a new private message replying to the currently-visible message.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reply"
+          }
+        }
+      }
+    },
+    "private-message.quote-error.title" : {
+      "comment" : "Title of alert shown when the user taps Reply or Forward but the quoted contents of the original message cannot be loaded.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could Not Quote Message"
+          }
+        }
+      }
+    },
+    "private-messages-list.deletion-error.title" : {
+      "comment" : "Title of alert shown when there's a problem deleting a private message from the list.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could Not Delete Message"
+          }
+        }
+      }
+    },
+    "private-messages-list.message.accessibility-label" : {
+      "comment" : "Text read by VoiceOver for a cell in the private messages list. Parameters are: 1. username of sender; 2. subject of message; 3. date message was sent.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@. %2$@. %3$@"
+          }
+        }
+      }
+    },
+    "Problem Logging In" : {
+
+    },
+    "profile.default-gender" : {
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "porpoise"
+          }
+        }
+      }
+    },
+    "profile.default-title" : {
+      "comment" : "Title of the profile screen, used when the user's username is unavailable for some reason.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        }
+      }
+    },
+    "Rap Sheet" : {
+
+    },
+    "rap-sheet.empty" : {
+      "comment" : "Text shown when a user's rap sheet has no entries in it.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing to see here…"
+          }
+        }
+      }
+    },
+    "Rated five" : {
+
+    },
+    "Rated five (on dark blue)" : {
+
+    },
+    "Rated five (on dark grey)" : {
+
+    },
+    "Rated five (pride flag)" : {
+
+    },
+    "Rated five (trans flag" : {
+
+    },
+    "Remove Bookmark" : {
+
+    },
+    "Removed Bookmark" : {
+
+    },
+    "Riker" : {
+
+    },
+    "save-action.error" : {
+      "comment" : "Title of error message presented when saving video fails.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
+    },
+    "save-action.error_description" : {
+      "comment" : "Description of error message presented when saving video fails.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to save"
+          }
+        }
+      }
+    },
+    "save-action.save-video" : {
+      "comment" : "Title of button that saves a video to the gallery.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Video"
+          }
+        }
+      }
+    },
+    "save-action.saving-video" : {
+      "comment" : "Title of progress view presented while downloading a video.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving video…"
+          }
+        }
+      }
+    },
+    "save-action.success" : {
+      "comment" : "Title of success message presented when saving video succeeds.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success!"
+          }
+        }
+      }
+    },
+    "session-expiry-imminent.message" : {
+      "comment" : "Message of an alert shown on launch if the user's session expires within a week. Parameter is the expiry date.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You'll be automatically logged out on %@. Or you can log out and back in before then."
+          }
+        }
+      }
+    },
+    "session-expiry-imminent.title" : {
+      "comment" : "Title of an alert shown on launch if the user's session expires within a week.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Session Expires Soon"
+          }
+        }
+      }
+    },
+    "Settings" : {
+
+    },
+    "settings.default-browser.title" : {
+      "comment" : "Title of the \"Default Browser\" settings screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default Browser"
+          }
+        }
+      }
+    },
+    "settings.font-scale.title" : {
+      "comment" : "Placeholder is the locale-formatted text scale %.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scale Text %@"
+          }
+        }
+      }
+    },
+    "smilie-action.add-to-favorites" : {
+      "comment" : "Title of button that adds a smilie to the user's favorites. Parameter is the text used to insert the smilie into a post.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add %@ to Favorites"
+          }
+        }
+      }
+    },
+    "smilie-action.remove-from-favorites" : {
+      "comment" : "Title of a button that removes a smilie from the user's favorites. Parameter is the text used to insert the smilie into a post.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove %@ from Favorites"
+          }
+        }
+      }
+    },
+    "Stare dog" : {
+
+    },
+    "Stare dog poking tongue" : {
+
+    },
+    "table-view.action.delete" : {
+      "comment" : "Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.)",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "thread-list.filter-button.change-filter" : {
+      "comment" : "Button title atop the thread list when some filter is set.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Filter"
+          }
+        }
+      }
+    },
+    "thread-list.filter-button.no-filter" : {
+      "comment" : "Button title atop the thread list when no filter is set.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter By Tag"
+          }
+        }
+      }
+    },
+    "thread-list.filter.picker-title" : {
+      "comment" : "Title of the thread tag picker screen shown when filtering a thread list.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter Threads"
+          }
+        }
+      }
+    },
+    "thread-list.killed-by" : {
+      "comment" : "Text shown below title of thread when at least some of the thread has been read. Parameter is the username of the last poster.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Killed by %@"
+          }
+        }
+      }
+    },
+    "thread-list.posted-by" : {
+      "comment" : "Text shown below title of thread when none of the thread has been read. Parameter is the username of the original poster.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posted by %@"
+          }
+        }
+      }
+    },
+    "V" : {
+
+    },
+    "V (blue)" : {
+
+    },
+    "V (on dark blue)" : {
+
+    },
+    "V (on dark grey)" : {
+
+    }
+  },
+  "version" : "1.0"
+}
