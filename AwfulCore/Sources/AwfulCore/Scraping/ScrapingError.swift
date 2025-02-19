@@ -9,6 +9,6 @@ public enum ScrapingError: LocalizedError {
     case missingRequiredValue(String)
 
     public var errorDescription: String? {
-        return LocalizedString("error.scraping")
+        String(localized: "Scraping failed", bundle: .module)
     }
 }
