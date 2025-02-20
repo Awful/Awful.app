@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon-09froggo-1024x1024.png",
+      "filename" : "froggo.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "froggo dark.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "froggo gs.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

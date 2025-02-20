@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "Trans-1024x1024.png",
+      "filename" : "trans.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "trans dark.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "trans gs.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

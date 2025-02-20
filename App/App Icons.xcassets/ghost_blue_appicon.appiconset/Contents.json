@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon-06ghost_blue-1024x1024.png",
+      "filename" : "ghost.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ghost dark.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "ghost gs.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

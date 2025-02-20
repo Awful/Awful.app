@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "Riker-1024x1024.png",
+      "filename" : "riker.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "riker dark.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "riker gs.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

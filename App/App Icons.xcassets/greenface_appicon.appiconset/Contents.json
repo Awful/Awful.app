@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon-greenface-1024x1024.png",
+      "filename" : "creep.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "creep dark.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "creep gs.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
