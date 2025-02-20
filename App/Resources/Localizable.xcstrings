@@ -273,6 +273,9 @@
     "Creep" : {
 
     },
+    "Doggo" : {
+
+    },
     "Double-check your username and password, then try again." : {
 
     },
@@ -1098,9 +1101,6 @@
       }
     },
     "Smith" : {
-
-    },
-    "Stare dog" : {
 
     },
     "table-view.action.delete" : {
