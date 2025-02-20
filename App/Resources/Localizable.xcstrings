@@ -270,7 +270,7 @@
         }
       }
     },
-    "Doggo (dead)" : {
+    "Creep" : {
 
     },
     "Double-check your username and password, then try again." : {
@@ -330,16 +330,7 @@
     "Froggo" : {
 
     },
-    "Get out" : {
-
-    },
-    "Ghost (blue)" : {
-
-    },
-    "Ghost (grey)" : {
-
-    },
-    "Green face" : {
+    "Ghost" : {
 
     },
     "handoff.bookmarks-title" : {
@@ -956,16 +947,10 @@
     "Rated five" : {
 
     },
-    "Rated five (on dark blue)" : {
-
-    },
-    "Rated five (on dark grey)" : {
-
-    },
     "Rated five (pride flag)" : {
 
     },
-    "Rated five (trans flag" : {
+    "Rated five (trans flag)" : {
 
     },
     "Remove Bookmark" : {
@@ -1112,10 +1097,10 @@
         }
       }
     },
-    "Stare dog" : {
+    "Smith" : {
 
     },
-    "Stare dog poking tongue" : {
+    "Stare dog" : {
 
     },
     "table-view.action.delete" : {
@@ -1191,15 +1176,6 @@
       }
     },
     "V" : {
-
-    },
-    "V (blue)" : {
-
-    },
-    "V (on dark blue)" : {
-
-    },
-    "V (on dark grey)" : {
 
     }
   },

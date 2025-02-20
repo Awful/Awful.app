@@ -139,7 +139,7 @@ To add a new thread tag you just made:
 
 ### Alternate App Icons
 
-To add a new alternative app icon:
+To add a new alternate app icon:
 
 1. Open `App/App Icons.xcassets`.
 2. Add a new iOS App Icon.
@@ -149,6 +149,7 @@ To add a new alternative app icon:
 6. Drag 60pt icons into your preview icon set.
 7. Open `App/Settings/SettingsViewController.swift`.
 8. Add your new app icon info to the `appIcons` array.
+9. Run `Scripts/app-icons` to update the `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES` build setting so the new icon makes it into the app bundle.
 
 The bookkeeping and duplicate images are unfortunate, but there's no public API to list app icon sets or to load app icon images for display. Instead of hacking together something that could break later, we'll do it ourselves.
 
