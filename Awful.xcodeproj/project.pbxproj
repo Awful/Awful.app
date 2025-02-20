@@ -163,6 +163,7 @@
 		1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5F7F820156C990046D080 /* PageIconView.swift */; };
 		1CBE1B0A19CA050300510187 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B0819CA050300510187 /* ImageViewController.swift */; };
 		1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */; };
+		1CC065F72D67028F002BB6A0 /* AppIconImageNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC065F62D67028F002BB6A0 /* AppIconImageNames.swift */; };
 		1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */; };
 		1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */; };
 		1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */; };
@@ -460,6 +461,8 @@
 		1CC065F02D66EC14002BB6A0 /* App Icons.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App Icons.xcconfig"; sourceTree = "<group>"; };
 		1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Awful-Debug.xcconfig"; sourceTree = "<group>"; };
 		1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Awful-Release.xcconfig"; sourceTree = "<group>"; };
+		1CC065F62D67028F002BB6A0 /* AppIconImageNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconImageNames.swift; sourceTree = "<group>"; };
+		1CC065F82D67087A002BB6A0 /* app-icons */ = {isa = PBXFileReference; explicitFileType = text.script.python; path = "app-icons"; sourceTree = "<group>"; };
 		1CC10E3A1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableThreadTags.plist; sourceTree = "<group>"; };
 		1CC22AB419F972C200D5BABD /* HairlineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HairlineView.swift; sourceTree = "<group>"; };
 		1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageListViewController.swift; sourceTree = "<group>"; };
@@ -810,7 +813,7 @@
 		1C3857A115675AFE0078AF95 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */,
+				1CC065F52D6700BA002BB6A0 /* App Icons */,
 				1CF2462016DD957300C75E05 /* Composition */,
 				1CC065F12D66EC14002BB6A0 /* Config */,
 				1CD005D41BB8DA4700232FFD /* Data Sources */,
@@ -854,6 +857,7 @@
 		1C3A8D3F2AE10D3B003E9A07 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				1CC065F82D67087A002BB6A0 /* app-icons */,
 				1C3A8D402AE10D3B003E9A07 /* beta */,
 				1C3A8D462AE10D3B003E9A07 /* bump */,
 				1C3A8D452AE10D3B003E9A07 /* bump.py */,
@@ -987,9 +991,18 @@
 			children = (
 				1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */,
 				1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */,
-				1CC065F02D66EC14002BB6A0 /* App Icons.xcconfig */,
 			);
 			path = Config;
+			sourceTree = "<group>";
+		};
+		1CC065F52D6700BA002BB6A0 /* App Icons */ = {
+			isa = PBXGroup;
+			children = (
+				1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */,
+				1CC065F02D66EC14002BB6A0 /* App Icons.xcconfig */,
+				1CC065F62D67028F002BB6A0 /* AppIconImageNames.swift */,
+			);
+			path = "App Icons";
 			sourceTree = "<group>";
 		};
 		1CC780241612D9DD002AF958 /* Posts */ = {
@@ -1552,6 +1565,7 @@
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
+				1CC065F72D67028F002BB6A0 /* AppIconImageNames.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,

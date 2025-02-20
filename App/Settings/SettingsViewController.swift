@@ -67,19 +67,19 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
     }
 }
 
-/// Image names should correspond to the contents of `App Icons.xcassets`. See `README.md` for more info.
+/// See the `README.md` section "Alternate App Icons" for more info.
 private let appIcons: [AppIconDataSource.AppIcon] = [
-    .init(accessibilityLabel: String(localized: "Rated five", bundle: .module), imageName: "rated_five_appicon"),
-    .init(accessibilityLabel: String(localized: "Rated five (pride flag)", bundle: .module), imageName: "rated_five_pride_appicon"),
-    .init(accessibilityLabel: String(localized: "Rated five (trans flag)", bundle: .module), imageName: "rated_five_trans_appicon"),
-    .init(accessibilityLabel: String(localized: "V", bundle: .module), imageName: "v_appicon"),
-    .init(accessibilityLabel: String(localized: "Ghost", bundle: .module), imageName: "ghost_blue_appicon"),
-    .init(accessibilityLabel: String(localized: "Froggo", bundle: .module), imageName: "froggo_appicon"),
-    .init(accessibilityLabel: String(localized: "Doggo", bundle: .module), imageName: "staredog_appicon"),
-    .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: "five_appicon"),
-    .init(accessibilityLabel: String(localized: "Creep", bundle: .module), imageName: "greenface_appicon"),
-    .init(accessibilityLabel: String(localized: "Riker", bundle: .module), imageName: "riker_appicon"),
-    .init(accessibilityLabel: String(localized: "Smith", bundle: .module), imageName: "smith_appicon"),
+    .init(accessibilityLabel: String(localized: "Rated five", bundle: .module), imageName: AppIconImageNames.rated_five),
+    .init(accessibilityLabel: String(localized: "Rated five (pride flag)", bundle: .module), imageName: AppIconImageNames.rated_five_pride),
+    .init(accessibilityLabel: String(localized: "Rated five (trans flag)", bundle: .module), imageName: AppIconImageNames.rated_five_trans),
+    .init(accessibilityLabel: String(localized: "V", bundle: .module), imageName: AppIconImageNames.v),
+    .init(accessibilityLabel: String(localized: "Ghost", bundle: .module), imageName: AppIconImageNames.ghost_blue),
+    .init(accessibilityLabel: String(localized: "Froggo", bundle: .module), imageName: AppIconImageNames.froggo),
+    .init(accessibilityLabel: String(localized: "Doggo", bundle: .module), imageName: AppIconImageNames.staredog),
+    .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: AppIconImageNames.five),
+    .init(accessibilityLabel: String(localized: "Creep", bundle: .module), imageName: AppIconImageNames.greenface),
+    .init(accessibilityLabel: String(localized: "Riker", bundle: .module), imageName: AppIconImageNames.riker),
+    .init(accessibilityLabel: String(localized: "Smith", bundle: .module), imageName: AppIconImageNames.smith),
 ]
 
 @MainActor private func makeAppIconDataSource() -> AppIconDataSource {
