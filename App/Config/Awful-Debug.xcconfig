@@ -1,0 +1,6 @@
+//  Awful-Debug.xcconfig
+//
+//  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+
+#include "Config/Common-Debug.xcconfig"
+#include "App Icons.xcconfig"
