@@ -23,7 +23,7 @@ struct AppIconPicker: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: 60, maxHeight: 60)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .clipShape(RoundedRectangle(cornerRadius: 13))
                         .overlay(alignment: .bottomTrailing) {
                             if isSelected {
                                 Image(systemName: "checkmark.circle.fill")
