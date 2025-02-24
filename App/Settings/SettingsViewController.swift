@@ -35,6 +35,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             goToAwfulThread: { box.contents.goToAwfulThread() },
             // Not sure how to tell for real, seems like a decent proxy?
             hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
+            isMac: ProcessInfo.processInfo.isMacCatalystApp,
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
             managedObjectContext: managedObjectContext
@@ -104,6 +105,7 @@ struct SettingsContainerView: View {
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
+    let isMac: Bool
     let isPad: Bool
     let logOut: () -> Void
     let managedObjectContext: NSManagedObjectContext
@@ -117,6 +119,7 @@ struct SettingsContainerView: View {
             emptyCache: emptyCache,
             goToAwfulThread: goToAwfulThread,
             hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
+            isMac: isMac,
             isPad: isPad,
             logOut: logOut
         )

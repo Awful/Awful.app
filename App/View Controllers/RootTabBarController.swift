@@ -33,6 +33,11 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
     private func commonInit() {
         delegate = self
+#if targetEnvironment(macCatalyst)
+        if #available(macCatalyst 18.0, *) {
+            mode = .tabSidebar
+        }
+#endif
     }
 
     override var tabBar: RootTabBar {
