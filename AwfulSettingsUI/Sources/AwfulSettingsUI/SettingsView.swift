@@ -43,6 +43,7 @@ public struct SettingsView: View {
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
+    let isMac: Bool
     let isPad: Bool
     let logOut: () -> Void
     @Environment(\.managedObjectContext) var managedObjectContext
@@ -81,6 +82,7 @@ public struct SettingsView: View {
         emptyCache: @escaping () -> Void,
         goToAwfulThread: @escaping () -> Void,
         hasRegularSizeClassInLandscape: Bool,
+        isMac: Bool,
         isPad: Bool,
         logOut: @escaping () -> Void
     ) {
@@ -91,6 +93,7 @@ public struct SettingsView: View {
         self.emptyCache = emptyCache
         self.goToAwfulThread = goToAwfulThread
         self.hasRegularSizeClassInLandscape = hasRegularSizeClassInLandscape
+        self.isMac = isMac
         self.isPad = isPad
         self.logOut = logOut
     }
@@ -250,21 +253,23 @@ public struct SettingsView: View {
             }
             .section()
 
-            Section {
-                ScrollViewReader { scrollView in
-                    AppIconPicker(appIconDataSource: appIconDataSource)
-                        .onAppear {
-                            if didScrollToSelectedAppIcon { return }
-                            defer { didScrollToSelectedAppIcon = true }
-                            
-                            scrollView.scrollTo(appIconDataSource.selected.id)
-                        }
+            if !isMac {
+                Section {
+                    ScrollViewReader { scrollView in
+                        AppIconPicker(appIconDataSource: appIconDataSource)
+                            .onAppear {
+                                if didScrollToSelectedAppIcon { return }
+                                defer { didScrollToSelectedAppIcon = true }
+                                
+                                scrollView.scrollTo(appIconDataSource.selected.id)
+                            }
+                    }
+                } header: {
+                    Text("App Icon", bundle: .module)
+                        .header()
                 }
-            } header: {
-                Text("App Icon", bundle: .module)
-                    .header()
+                .section()
             }
-            .section()
 
             Section {
                 Toggle("Unread Announcements Badge", bundle: .module, isOn: $showUnreadAnnouncementsBadge)
@@ -332,6 +337,7 @@ private struct SectionModifier: ViewModifier {
             emptyCache: { print("emptying cache") },
             goToAwfulThread: { print("navigating to Awful's thread") },
             hasRegularSizeClassInLandscape: true,
+            isMac: false,
             isPad: true,
             logOut: { print("logging out") }
         )

@@ -35,6 +35,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             goToAwfulThread: { box.contents.goToAwfulThread() },
             // Not sure how to tell for real, seems like a decent proxy?
             hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
+            isMac: ProcessInfo.processInfo.isMacCatalystApp,
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
             managedObjectContext: managedObjectContext
@@ -76,6 +77,7 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
     .init(accessibilityLabel: String(localized: "Ghost", bundle: .module), imageName: AppIconImageNames.ghost_blue),
     .init(accessibilityLabel: String(localized: "Froggo", bundle: .module), imageName: AppIconImageNames.froggo),
     .init(accessibilityLabel: String(localized: "Doggo", bundle: .module), imageName: AppIconImageNames.staredog),
+    .init(accessibilityLabel: String(localized: "Doggo poking tongue", bundle: .module), imageName: AppIconImageNames.staredog_tongue),
     .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: AppIconImageNames.five),
     .init(accessibilityLabel: String(localized: "Creep", bundle: .module), imageName: AppIconImageNames.greenface),
     .init(accessibilityLabel: String(localized: "Riker", bundle: .module), imageName: AppIconImageNames.riker),
@@ -103,6 +105,7 @@ struct SettingsContainerView: View {
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
+    let isMac: Bool
     let isPad: Bool
     let logOut: () -> Void
     let managedObjectContext: NSManagedObjectContext
@@ -116,6 +119,7 @@ struct SettingsContainerView: View {
             emptyCache: emptyCache,
             goToAwfulThread: goToAwfulThread,
             hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
+            isMac: isMac,
             isPad: isPad,
             logOut: logOut
         )
