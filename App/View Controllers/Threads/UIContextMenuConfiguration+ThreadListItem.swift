@@ -93,8 +93,10 @@ extension UIContextMenuConfiguration {
                         } catch {
                             Log.e("could not mark thread \(thread.threadID) as read from table view context menu: \(error)")
                             if let presenter {
-                                let alert = UIAlertController(networkError: error)
-                                presenter.present(alert, animated: true)
+                                await MainActor.run {
+                                    let alert = UIAlertController(networkError: error)
+                                    presenter.present(alert, animated: true)
+                                }
                             }
                         }
                     }
@@ -113,12 +115,14 @@ extension UIContextMenuConfiguration {
                         do {
                             try await ForumsClient.shared.markUnread(thread)
                         } catch {
-                            Log.e("could not mark thread \(thread.threadID) unread from table view context menu: \(error)")
-                            if thread.seenPosts == 0 {
-                                thread.seenPosts = oldSeen
+                            await MainActor.run {
+                                Log.e("could not mark thread \(thread.threadID) unread from table view context menu: \(error)")
+                                if thread.seenPosts == 0 {
+                                    thread.seenPosts = oldSeen
+                                }
+                                let alert = UIAlertController(networkError: error)
+                                presenter.present(alert, animated: true)
                             }
-                            let alert = UIAlertController(networkError: error)
-                            presenter.present(alert, animated: true)
                         }
                     }
                 }
@@ -153,16 +157,21 @@ extension UIContextMenuConfiguration {
                         do {
                             try await ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
 
-                            let overlay = MRProgressOverlayView.showOverlayAdded(
-                                to: presenter.view,
-                                title: (thread.bookmarked
-                                        ? NSLocalizedString("Added Bookmark", comment: "")
-                                        : NSLocalizedString("Removed Bookmark", comment: "")),
-                                mode: .checkmark,
-                                animated: true
-                            )!
+                            // Something is weird here, as without this `MainActor.run` we end up on a background thread, but it seems redundant (and, indeed, explicitly annotating the nearest `Task` with `@MainActor` still leaves us on a background thread).
+                            let overlay = await MainActor.run {
+                                MRProgressOverlayView.showOverlayAdded(
+                                    to: presenter.view,
+                                    title: (thread.bookmarked
+                                            ? NSLocalizedString("Added Bookmark", comment: "")
+                                            : NSLocalizedString("Removed Bookmark", comment: "")),
+                                    mode: .checkmark,
+                                    animated: true
+                                )!
+                            }
                             try? await Task.sleep(timeInterval: 0.7)
-                            overlay.dismiss(true)
+                            await MainActor.run {
+                                overlay.dismiss(true)
+                            }
                         } catch {
                             Log.e("could not toggle bookmarked on thread \(thread.threadID) from table view context menu: \(error)")
                             let alert = UIAlertController(networkError: error)
