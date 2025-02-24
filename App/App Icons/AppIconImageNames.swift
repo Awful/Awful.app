@@ -18,5 +18,6 @@ enum AppIconImageNames {
     static let riker: String = "riker_appicon"
     static let smith: String = "smith_appicon"
     static let staredog: String = "staredog_appicon"
+    static let staredog_tongue: String = "staredog_tongue_appicon"
     static let v: String = "v_appicon"
 }
