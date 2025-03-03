@@ -2,9 +2,11 @@
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Foundation
 import ImgurAnonymousAPI
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ImgurAnonymousAPI")
 
 extension ImgurUploader {
     static var shared: ImgurUploader {
@@ -14,7 +16,7 @@ extension ImgurUploader {
 
 private let sharedUploader: ImgurUploader = {
     ImgurUploader.logger = { level, message in
-        let otherLevel: Logger.Level
+        let otherLevel: OSLogType
         switch level {
         case .debug:
             otherLevel = .debug
@@ -23,7 +25,8 @@ private let sharedUploader: ImgurUploader = {
         case .error:
             otherLevel = .error
         }
-        Log.log(level: otherLevel, message: message, file: #file, line: #line)
+        let message = message()
+        logger.log(level: otherLevel, "\(message)")
     }
     
     return ImgurUploader(clientID: "4db466addcb5cfc")

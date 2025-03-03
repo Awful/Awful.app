@@ -3,9 +3,9 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
-import Logger
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "OLED")
 
 /// Device information that's not particularly convenient to retrieve.
 public enum SystemCapabilities {
@@ -85,7 +85,7 @@ private struct ModelIdentifier {
     static func makeFromSysctl() -> ModelIdentifier? {
         var size: Int = 0
         guard sysctlbyname("hw.machine", nil, &size, nil, 0) == 0 else {
-            Log.e("could not find model identifier: could not get buffer size")
+            logger.error("could not find model identifier: could not get buffer size")
             return nil
         }
 
@@ -93,7 +93,7 @@ private struct ModelIdentifier {
         defer { buffer.deallocate() }
 
         guard sysctlbyname("hw.machine", buffer, &size, nil, 0) == 0 else {
-            Log.e("could not find model identifier")
+            logger.error("could not find model identifier")
             return nil
         }
 

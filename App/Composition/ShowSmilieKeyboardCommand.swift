@@ -2,10 +2,11 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import os
 import Smilies
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ShowSmilieKeyboardCommand")
 
 final class ShowSmilieKeyboardCommand: NSObject {
     fileprivate let textView: UITextView
@@ -74,7 +75,7 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
                 try smilie.managedObjectContext!.save()
             }
             catch {
-                Log.e("error saving: \(error)")
+                logger.error("error saving: \(error)")
             }
         }
     }

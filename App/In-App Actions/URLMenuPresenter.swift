@@ -4,12 +4,13 @@
 
 import AwfulCore
 import AwfulSettings
+import MRProgress
+import os
+import Photos
 import Smilies
 import UIKit
-import Photos
-import MRProgress
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "URLMenuPresenter")
 
 private enum _URLMenuPresenter {
     case link(url: URL, imageURL: URL?, smilie: PostedSmilie?)
@@ -279,7 +280,7 @@ private func bravifyURL(_ url: URL) -> URL {
         components.queryItems = [.init(name: "url", value: url.absoluteString)]
         return components.url!
     default:
-        Log.w("can't make a Brave URL for url \(url)")
+        logger.warning("can't make a Brave URL for url \(url)")
         return url
     }
 }
@@ -309,7 +310,7 @@ func downloadVideo(with url: URL, completion: @escaping (URL?) -> ()) {
         }
         do {
             try fileManager.moveItem(at: tempUrl, to: videoFileUrl)
-            Log.d("url: \(videoFileUrl)")
+            logger.debug("url: \(videoFileUrl)")
             completion(videoFileUrl)
         } catch {
             completion(nil)
@@ -375,7 +376,7 @@ private func firefoxifyURL(_ url: URL) -> URL {
     case "http"?, "https"?:
         break
     default:
-        Log.w("can't make a Firefox URL for url \(url)")
+        logger.warning("can't make a Firefox URL for url \(url)")
         return url
     }
     
@@ -531,7 +532,8 @@ final class URLMenuPresenter: NSObject {
                                         
                                         presentingViewController.present(alert, animated: true)
                                     }
-                                    Log.d("Save video error: \(error)")
+                                    let description = "\(error)"
+                                    logger.debug("Save video error: \(description)")
                                 } else {
                                     DispatchQueue.main.async {
                                         let alert = UIAlertController(title: LocalizedString("save-action.success"),
@@ -541,7 +543,7 @@ final class URLMenuPresenter: NSObject {
                     
                                         presentingViewController.present(alert, animated: true)
                                     }
-                                    Log.d("Save video Success")
+                                    logger.debug("Save video Success")
                                 }
                             }
                         })

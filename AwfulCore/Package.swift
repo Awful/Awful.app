@@ -15,7 +15,6 @@ let package = Package(
         .package(path: "../AwfulExtensions"),
         .package(path: "../AwfulModelTypes"),
         .package(path: "../AwfulScraping"),
-        .package(path: "../Logger"),
         .package(url: "https://github.com/nolanw/HTMLReader", .upToNextMajor(from: "2.1.7")),
     ],
     targets: [
@@ -26,7 +25,6 @@ let package = Package(
                 "AwfulModelTypes",
                 "AwfulScraping",
                 "HTMLReader",
-                "Logger",
             ]
         ),
         .testTarget(

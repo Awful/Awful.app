@@ -4,8 +4,9 @@
 
 import AwfulCore
 import Foundation
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Handoff")
 
 extension NSUserActivity {
 
@@ -17,7 +18,7 @@ extension NSUserActivity {
 
             case Handoff.ActivityType.browsingPosts:
                 guard let threadID = userInfo[Keys.threadID] as? String else {
-                    Log.e("cannot continue 'browsing posts' Handoff activity without a thread ID")
+                    logger.error("cannot continue 'browsing posts' Handoff activity without a thread ID")
                     return nil
                 }
 
@@ -36,13 +37,13 @@ extension NSUserActivity {
                 } else if let forumID = userInfo[Keys.forumID] as? String {
                     return .forum(id: forumID)
                 } else {
-                    Log.e("cannot continue 'listing threads' Handoff activity without either bookmarks or a forum ID")
+                    logger.error("cannot continue 'listing threads' Handoff activity without either bookmarks or a forum ID")
                     return nil
                 }
 
             case Handoff.ActivityType.readingMessage:
                 guard let messageID = userInfo[Keys.messageID] as? String else {
-                    Log.e("cannot continue 'reading message' Handoff activity without a message ID")
+                    logger.error("cannot continue 'reading message' Handoff activity without a message ID")
                     return nil
                 }
                 return .message(id: messageID)
@@ -75,7 +76,7 @@ extension NSUserActivity {
                     Keys.page: page])
 
             case .forumList, .lepersColony, .messagesList, .post, .profile, .rapSheet, .settings, .threadPage, .threadPageSingleUser:
-                Log.e("setting a Handoff route \(route) has no effect!")
+                logger.error("setting a Handoff route \(route) has no effect!")
                 return
             }
 

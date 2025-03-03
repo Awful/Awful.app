@@ -5,9 +5,10 @@
 import Foundation
 import MobileCoreServices
 import Nuke
+import os
 import UniformTypeIdentifiers
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadTagDataLoader")
 
 /// Teaches a Nuke `ImagePipeline` to look for thread tag images in the app bundle before fetching them from the internet.
 final class ThreadTagDataLoader: DataLoading {
@@ -28,7 +29,7 @@ final class ThreadTagDataLoader: DataLoading {
         completion: @escaping (Swift.Error?) -> Void)
         -> Nuke.Cancellable
     {
-        Log.d("loading \(request)")
+        logger.debug("loading \(request)")
         
         let targetURL = request.url!
         
@@ -42,7 +43,7 @@ final class ThreadTagDataLoader: DataLoading {
         guard
             let bundleURL = bundle.url(forResource: targetURL.lastPathComponent, withExtension: nil, subdirectory: "Thread Tags") else
         {
-            Log.d("\(request) is not bundled, will look elsewhere")
+            logger.debug("\(request) is not bundled, will look elsewhere")
             return fallbackLoader.loadData(with: request, didReceiveData: didReceiveData, completion: completion)
         }
         
@@ -50,11 +51,11 @@ final class ThreadTagDataLoader: DataLoading {
         do {
             try data = Data(contentsOf: bundleURL)
         } catch {
-            Log.w("could not load bundled thread tag data from \(bundleURL), will look elsewhere: \(error)")
+            logger.warning("could not load bundled thread tag data from \(bundleURL), will look elsewhere: \(error)")
             return fallbackLoader.loadData(with: request, didReceiveData: didReceiveData, completion: completion)
         }
         
-        Log.d("\(targetURL) is bundled, returning image data directly")
+        logger.debug("\(targetURL) is bundled, returning image data directly")
         
         let mimeType = UTType.png.preferredMIMEType!
         let response = HTTPURLResponse(url: targetURL, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: [

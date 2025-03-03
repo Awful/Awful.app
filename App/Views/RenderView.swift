@@ -3,11 +3,13 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulExtensions
 import AwfulSettings
+import os
 import UIKit
 @preconcurrency import WebKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "RenderView")
 
 /**
  Renders announcements, posts, profiles, and private messages.
@@ -80,7 +82,7 @@ final class RenderView: UIView {
      Load HTML into the render view.
      */
     func render(html: String, baseURL: URL?) {
-        Log.d("rendering \(html.count) characters of HTML with baseURL = \(baseURL as Any)")
+        logger.debug("rendering \(html.count) characters of HTML with baseURL = \(baseURL?.absoluteString ?? "(null)")")
         webView.loadHTMLString(html, baseURL: baseURL)
     }
 
@@ -100,7 +102,7 @@ final class RenderView: UIView {
                         document.body.scrollHeight * \(fractionalOffset.y));
                     """)
             } catch {
-                Log.e("error attempting to scroll: \(error)")
+                logger.error("error attempting to scroll: \(error)")
             }
         }
     }
@@ -130,7 +132,7 @@ extension RenderView: WKNavigationDelegate {
         decisionHandler(.cancel)
         
         guard nearestViewController?.presentedViewController == nil else {
-            Log.i("ignoring link tap as we're currently presenting something")
+            logger.info("ignoring link tap as we're currently presenting something")
             return
         }
 
@@ -174,15 +176,15 @@ extension RenderView: WKScriptMessageHandler {
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive rawMessage: WKScriptMessage) {
-        Log.d("received message from JavaScript: \(rawMessage.name)")
+        logger.debug("received message from JavaScript: \(rawMessage.name)")
 
         guard let messageType = registeredMessages[rawMessage.name] else {
-            Log.w("ignoring unexpected message from JavaScript: \(rawMessage.name). Did you forget to register a message type with the RenderView?")
+            logger.warning("ignoring unexpected message from JavaScript: \(rawMessage.name). Did you forget to register a message type with the RenderView?")
             return
         }
         
         guard let message = messageType.init(rawMessage: rawMessage, in: self) else {
-            Log.w("could not deserialize \(messageType) (registered as \(rawMessage.name)) from JavaScript. Does the initializer look right?")
+            logger.warning("could not deserialize \(messageType) (registered as \(rawMessage.name)) from JavaScript. Does the initializer look right?")
             return
         }
         
@@ -320,12 +322,12 @@ extension RenderView {
          rv.eraseDocument().done { rv.render(html: "<h1>Hi!</h1>", baseURL: nil) }
      */
     func eraseDocument() async {
-        Log.d("erasing document")
+        logger.debug("erasing document")
 
         do {
             // There's a bit of subtlety here: `document.open()` returns a Document, which can't be serialized back to the native-side of the app; and if we don't include a `<body>`, we get console logs attempting to e.g. retrieve `document.body.scrollWidth`.
             try await webView.eval("document.open(), document.write('<body>')")
-            Log.d("did erase document")
+            logger.debug("did erase document")
         } catch {
             mentionError(error, explanation: "could not remove content")
         }
@@ -385,7 +387,8 @@ extension RenderView {
         }
 
         guard let result = rawResult as? [String: Any] else {
-            Log.w("expected interestingElementsAtPoint to return a dictionary but got \(rawResult as Any)")
+            let description = "\(rawResult as Any)"
+            logger.warning("expected interestingElementsAtPoint to return a dictionary but got \(description)")
             return []
         }
 
@@ -474,7 +477,7 @@ extension RenderView {
         do {
             escapedPostID = try escapeForEval(postID)
         } catch {
-            Log.w("could not JSON-escape the post ID: \(error)")
+            logger.warning("could not JSON-escape the post ID: \(error)")
             return
         }
         Task {
@@ -518,7 +521,7 @@ extension RenderView {
         do {
             escaped = try escapeForEval(postID)
         } catch {
-            Log.w("could not JSON-escape the post ID: \(error)")
+            logger.warning("could not JSON-escape the post ID: \(error)")
             return
         }
         
@@ -537,7 +540,7 @@ extension RenderView {
         do {
             escaped = try escapeForEval(postHTML)
         } catch {
-            Log.w("could not JSON-escape the post HTML: \(error)")
+            logger.warning("could not JSON-escape the post HTML: \(error)")
             return
         }
         
@@ -556,7 +559,7 @@ extension RenderView {
         do {
             escaped = try escapeForEval(postHTML)
         } catch {
-            Log.w("could not JSON-escape the post HTML: \(error)")
+            logger.warning("could not JSON-escape the post HTML: \(error)")
             return
         }
         
@@ -575,7 +578,7 @@ extension RenderView {
         do {
             escaped = try escapeForEval(css)
         } catch {
-            Log.w("could not JSON-escape the CSS: \(error)")
+            logger.warning("could not JSON-escape the CSS: \(error)")
             return
         }
         
@@ -609,7 +612,7 @@ extension RenderView {
                 escaped = "{}"
             }
         } catch {
-            Log.w("could not JSON-escape the flag: \(error)")
+            logger.warning("could not JSON-escape the flag: \(error)")
             return
         }
         
@@ -655,7 +658,7 @@ extension RenderView {
         do {
             escaped = try escapeForEval(css)
         } catch {
-            Log.w("could not JSON-escape the CSS: \(error)")
+            logger.warning("could not JSON-escape the CSS: \(error)")
             return
         }
         
@@ -673,7 +676,7 @@ extension RenderView {
         do {
             escaped = try escapeForEval(theme)
         } catch {
-            Log.w("could not JSON-escape the tweet theme: \(error)")
+            logger.warning("could not JSON-escape the tweet theme: \(error)")
             return
         }
 
@@ -696,7 +699,7 @@ extension RenderView {
         do {
             escapedSelector = try escapeForEval(selector)
         } catch {
-            Log.w("could not JSON-encode selector \(selector): \(error)")
+            logger.warning("could not JSON-encode selector \(selector): \(error)")
             return .null
         }
 
@@ -713,7 +716,8 @@ extension RenderView {
         }
 
         guard let rect = CGRect(renderViewMessage: rawResult as? [String: Double]) else {
-            Log.w("expected unionFrameOfElements to return a rect via dictionary but got \(rawResult as Any)")
+            let description = "\(rawResult as Any)"
+            logger.warning("expected unionFrameOfElements to return a rect via dictionary but got \(description)")
             return .null
         }
 
@@ -723,7 +727,7 @@ extension RenderView {
     private func mentionError(_ error: Error, explanation: String, file: String = #file, function: StaticString = #function, line: Int = #line) {
         
         // Getting many reports of features handled by user script (e.g. tapping spoilers, author headers in posts) not working correctly. Grasping at straws, I'm wondering if the web view is somehow getting invalidated or is otherwise throwing errors that we're not picking up. See e.g. https://github.com/Awful/Awful.app/issues/813
-        Log.w("\(function): \(explanation): \(error)", file: file, line: line)
+        logger.warning("\(file):\(line) \(function): \(explanation): \(error)")
         
         do {
             // This feels stupid but I'm not sure how else to check "is this type-erased `Error` the error I'm curious about?" as I'm a bit hazy on Error/NSError conversions and the Swift-generated error types from C/Objective-C headers.

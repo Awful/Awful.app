@@ -4,8 +4,9 @@
 
 import CoreData
 import Foundation
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "CachePruner")
 
 final class CachePruner: Operation, @unchecked Sendable {
     let managedObjectContext: NSManagedObjectContext
@@ -38,7 +39,7 @@ final class CachePruner: Operation, @unchecked Sendable {
                     candidateObjectIDs.append(contentsOf: result)
                 }
                 catch {
-                    Log.e("error fetching: \(error)")
+                    logger.error("error fetching: \(error)")
                 }
             }
             
@@ -54,7 +55,7 @@ final class CachePruner: Operation, @unchecked Sendable {
                 try context.save()
             }
             catch {
-                Log.e("error saving: \(error)")
+                logger.error("error saving: \(error)")
             }
         }
     }

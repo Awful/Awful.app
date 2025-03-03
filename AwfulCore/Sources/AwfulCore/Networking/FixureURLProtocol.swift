@@ -5,9 +5,10 @@
 #if DEBUG
 
 import Foundation
+import os
 import UniformTypeIdentifiers
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "FixtureURLProtocol")
 
 /**
  A custom URL protocol that intercepts certain Forums requests and loads fixture data in their place.
@@ -73,24 +74,24 @@ public final class FixtureURLProtocol: URLProtocol {
     }
     
     override public class func canInit(with request: URLRequest) -> Bool {
-        Log.d("being asked about \(request)")
+        logger.debug("being asked about \(request)")
         
         let scheme = request.url?.scheme?.lowercased()
         guard scheme == "http" || scheme == "https" else {
-            Log.d("skipping \(request) because scheme isn't right")
+            logger.debug("skipping \(request) because scheme isn't right")
             return false
         }
         
         guard request.url?.host?.lowercased() == "forums.somethingawful.com" else {
-            Log.d("skipping \(request) because the host isn't right")
+            logger.debug("skipping \(request) because the host isn't right")
             return false
         }
         
         if enabledFixtures.contains(where: { $0.matches(request) }) {
-            Log.d("we have a winner for \(request)!")
+            logger.debug("we have a winner for \(request)!")
             return true
         } else {
-            Log.d("passing on \(request) as we have no enabled fixtures; adjust FixtureURLProtocol.enabledFixtures if this surprises you")
+            logger.debug("passing on \(request) as we have no enabled fixtures; adjust FixtureURLProtocol.enabledFixtures if this surprises you")
             return false
         }
     }
@@ -100,23 +101,23 @@ public final class FixtureURLProtocol: URLProtocol {
     }
     
     public override func startLoading() {
-        Log.d("starting load for \(request)")
+        logger.debug("starting load for \(self.request)")
         
         guard
             let url = request.url,
             let fixture = FixtureURLProtocol.enabledFixtures.first(where: { $0.matches(request) }) else
         {
-            Log.d("no matching fixture for \(request), yet it should've been in enabledFixtures if we made it this far; did enabledFixtures change recently?")
+            logger.debug("no matching fixture for \(self.request), yet it should've been in enabledFixtures if we made it this far; did enabledFixtures change recently?")
             client?.urlProtocol(self, didFailWithError: LoadingError.noMatchingFixture)
             return
         }
         
-        Log.d("matching fixture for \(request) is \(fixture.basename)")
+        logger.debug("matching fixture for \(self.request) is \(fixture.basename)")
         
         let bundle = Bundle(for: FixtureURLProtocol.self)
         guard let fixtureURL = bundle.url(forResource: fixture.basename, withExtension: "html", subdirectory: "Fixtures") else {
             
-            Log.e("missing expected fixture \(fixture.basename) in bundle \(bundle); did you forget to add Core/Tests/Fixtures to the Core target?")
+            logger.error("missing expected fixture \(fixture.basename) in bundle \(bundle); did you forget to add Core/Tests/Fixtures to the Core target?")
             
             client?.urlProtocol(self, didFailWithError: LoadingError.missingFixture(fixture.basename))
             return
@@ -143,7 +144,7 @@ public final class FixtureURLProtocol: URLProtocol {
         
         client?.urlProtocolDidFinishLoading(self)
         
-        Log.d("done loading for \(request)")
+        logger.debug("done loading for \(self.request)")
     }
     
     public override func stopLoading() {

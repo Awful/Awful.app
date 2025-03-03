@@ -8,8 +8,9 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import MRProgress
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ReplyWorkspace")
 
 /**
 A place for someone to compose a reply to a thread.
@@ -328,7 +329,7 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
             }
         }
         
-        Log.e("failing intentionally as no saved draft was found")
+        logger.error("failing intentionally as no saved draft was found")
         return nil
     }
     

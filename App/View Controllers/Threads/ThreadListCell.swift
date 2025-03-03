@@ -2,9 +2,10 @@
 //
 //  Copyright 2018 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import os
 import UIKit
 
-private let Log = Logger.get(level: .debug)
+private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadListCell")
 
 final class ThreadListCell: UITableViewCell {
 

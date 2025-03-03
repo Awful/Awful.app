@@ -5,10 +5,11 @@
 import AwfulCore
 import AwfulSettings
 import AwfulTheming
+import os
 import UIKit
 import WebKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ProfileViewController")
 
 /// Shows detailed information about a particular user.
 final class ProfileViewController: ViewController {
@@ -89,7 +90,7 @@ final class ProfileViewController: ViewController {
                     user = profile.user
                     renderProfile()
                 } catch {
-                    Log.e("error fetching user profile for \(username ?? "") (ID \(userID)): \(error)")
+                    logger.error("error fetching user profile for \(username ?? "") (ID \(userID)): \(error)")
                 }
             }
         }
@@ -108,7 +109,7 @@ final class ProfileViewController: ViewController {
                 return try StencilEnvironment.shared.renderTemplate(.profile, context: RenderModel(profile, theme: theme))
             }
             catch {
-                Log.e("could not render profile HTML: \(error)")
+                logger.error("could not render profile HTML: \(error)")
                 return ""
             }
         }()
@@ -169,14 +170,14 @@ extension ProfileViewController: RenderViewDelegate {
             
         case let message as ShowHomepageActions:
             guard let url = URL(string: message.urlString, relativeTo: baseURL) else {
-                Log.i("ignoring unparseable supposed homepage URL: \(message.urlString)")
+                logger.info("ignoring unparseable supposed homepage URL: \(message.urlString)")
                 return
             }
             
             showActionsForHomepage(url, from: message.frame)
             
         default:
-            Log.w("ignoring unexpected JavaScript message: \(type(of: message).messageName)")
+            logger.warning("ignoring unexpected JavaScript message: \(type(of: message).messageName)")
         }
     }
     

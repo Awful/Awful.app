@@ -3,11 +3,12 @@
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import MobileCoreServices
+import os
 import Photos
 import PSMenuItem
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "CompositionMenuTree")
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 final class CompositionMenuTree: NSObject {
@@ -134,7 +135,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
     ) {
         guard let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage else {
-            Log.e("could not find image among image picker info")
+            logger.error("could not find image among image picker info")
             let alert = UIAlertController(title: "Could Not Find Image", message: "The chosen image could not be found", alertActions: [.ok()])
             textView.nearestViewController?.present(alert, animated: true)
             return
@@ -316,7 +317,7 @@ fileprivate func linkifySelection(_ tree: CompositionMenuTree) {
         detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
     }
     catch {
-        return Log.e("error creating link data detector: \(error)")
+        return logger.error("error creating link data detector: \(error)")
     }
     
     let textView = tree.textView

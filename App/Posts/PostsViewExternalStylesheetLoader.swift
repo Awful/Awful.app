@@ -3,9 +3,10 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Combine
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsViewExternalStylesheetLoader")
 
 @MainActor final class PostsViewExternalStylesheetLoader {
 
@@ -81,12 +82,12 @@ private let Log = Logger.get()
         guard !checkingForUpdate else { return }
 
         guard RefreshMinder.sharedMinder.shouldRefresh(.externalStylesheet) else {
-            Log.d("not going to check for updated stylesheet yet")
+            logger.debug("not going to check for updated stylesheet yet")
             return
         }
         
         checkingForUpdate = true
-        Log.d("checking for updated stylesheet")
+        logger.debug("checking for updated stylesheet")
         
         var request = URLRequest(url: stylesheetURL)
 
@@ -115,10 +116,10 @@ private let Log = Logger.get()
                     } catch CocoaError.fileWriteFileExists {
                         _ = try fileManager.replaceItemAt(cachedStylesheetURL, withItemAt: tempURL, options: .usingNewMetadataOnly)
                     }
-                    Log.d("downloaded new stylesheet")
+                    logger.debug("downloaded new stylesheet")
 
                 case 304:
-                    Log.d("stylesheet has not changed")
+                    logger.debug("stylesheet has not changed")
                     RefreshMinder.sharedMinder.didRefresh(.externalStylesheet)
                     return
 
@@ -130,7 +131,7 @@ private let Log = Logger.get()
                     let data = try NSKeyedArchiver.archivedData(withRootObject: response, requiringSecureCoding: false)
                     try data.write(to: cachedResponseURL)
                 } catch {
-                    Log.e("could not write cached stylesheet to \(cachedResponseURL): \(error)")
+                    logger.error("could not write cached stylesheet to \(self.cachedResponseURL): \(error)")
                 }
 
                 reloadCachedStylesheet()
@@ -143,7 +144,7 @@ private let Log = Logger.get()
                     userInfo: [DidUpdateNotification.stylesheetKey: stylesheet ?? ""]
                 )
             } catch {
-                Log.e("could not update external stylesheet: \(error)")
+                logger.error("could not update external stylesheet: \(error)")
             }
         }
     }
@@ -160,7 +161,7 @@ private let Log = Logger.get()
         do {
             try FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true, attributes: nil)
         } catch {
-            Log.e("error creating external stylesheet cache folder \(cacheFolder): \(error)")
+            logger.error("error creating external stylesheet cache folder \(self.cacheFolder): \(error)")
         }
     }
     
@@ -168,7 +169,7 @@ private let Log = Logger.get()
         do {
             stylesheet = try String(contentsOf: cachedStylesheetURL)
         } catch {
-            Log.e("error loading cached stylesheet from \(cachedStylesheetURL): \(error)")
+            logger.error("error loading cached stylesheet from \(self.cachedStylesheetURL): \(error)")
         }
     }
     

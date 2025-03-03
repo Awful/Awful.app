@@ -5,9 +5,10 @@
 import AwfulCore
 import AwfulSettings
 import AwfulTheming
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "LoginViewController")
 
 private let lostPasswordURL = URL(string: "https://forums.somethingawful.com/account.php?action=lostpw")!
 private let privacyPolicyURL = URL(string: "https://awfulapp.com/privacy-policy/")!
@@ -148,7 +149,7 @@ class LoginViewController: ViewController {
                 username = user.username
                 completionBlock?(self)
             } catch {
-                Log.e("Could not log in: \(error)")
+                logger.error("Could not log in: \(error)")
                 state = .failedLogin(error)
             }
         }

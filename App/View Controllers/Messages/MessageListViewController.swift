@@ -6,9 +6,10 @@ import AwfulCore
 import AwfulSettings
 import AwfulTheming
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageListViewController")
 
 @objc(MessageListViewController)
 final class MessageListViewController: TableViewController {
@@ -121,7 +122,7 @@ final class MessageListViewController: TableViewController {
     private func deleteMessage(_ message: PrivateMessage) {
         guard let context = message.managedObjectContext else { return }
 
-        Log.d("deleting")
+        logger.debug("deleting")
         context.delete(message)
 
         Task {

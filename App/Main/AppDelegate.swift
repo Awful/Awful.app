@@ -8,11 +8,12 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import Nuke
+import os
 import Smilies
 import UIKit
 import WebKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AppDelegate")
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     private(set) static var instance: AppDelegate!
@@ -242,7 +243,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             favourites = try managedObjectContext.fetch(fetchRequest)
         } catch {
-            Log.w("favorites fetch failed: \(error)")
+            logger.warning("favorites fetch failed: \(error)")
             return
         }
         let favouritesIcon = UIApplicationShortcutIcon(templateImageName: "star-off")
@@ -381,7 +382,7 @@ private func removeOldDataStores() {
     let caches = try! fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     for directory in [documents, caches] {
         guard let enumerator = fm.enumerator(at: directory, includingPropertiesForKeys: nil, options: .skipsSubdirectoryDescendants, errorHandler: { (url, error) -> Bool in
-            Log.i("error enumerating \(url.absoluteString)")
+            logger.info("error enumerating \(url.absoluteString)")
             return true
         }) else { continue }
         for url in enumerator {
@@ -406,7 +407,7 @@ private func removeOldDataStores() {
         } catch let error as CocoaError where error.code == .fileNoSuchFile {
             // nop
         } catch {
-            Log.i("error deleting file at \(url.absoluteString): \(error)")
+            logger.info("error deleting file at \(url.absoluteString): \(error)")
         }
     }
 }
@@ -437,7 +438,7 @@ private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
     do {
         try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default)
     } catch {
-        Log.d("error setting audio session category: \(error)")
+        logger.debug("error setting audio session category: \(error)")
     }
 }
 

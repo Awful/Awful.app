@@ -6,9 +6,10 @@ import AwfulCore
 import AwfulModelTypes
 import AwfulTheming
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadListDataSource")
 
 final class ThreadListDataSource: NSObject {
     weak var delegate: ThreadListDataSourceDelegate?

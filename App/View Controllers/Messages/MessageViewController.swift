@@ -7,9 +7,10 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import HTMLReader
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageViewController")
 
 /// Displays a single private message.
 final class MessageViewController: ViewController {
@@ -61,7 +62,7 @@ final class MessageViewController: ViewController {
             let rendering = try StencilEnvironment.shared.renderTemplate(.privateMessage, context: model)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
         } catch {
-            Log.e("failed to render private message: \(error)")
+            logger.error("failed to render private message: \(error)")
             
             // TODO: show error nicer
             renderView.render(html: "<h1>Rendering Error</h1><pre>\(error)</pre>", baseURL: nil)
@@ -177,7 +178,7 @@ final class MessageViewController: ViewController {
             }
         }()
 
-        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
+        logger.debug("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
     // MARK: View lifecycle
@@ -345,7 +346,8 @@ extension MessageViewController: RenderViewDelegate {
             showUserActions(from: didTapHeader.frame)
             
         default:
-            Log.w("ignoring unexpected message \(message)")
+            let description = "\(message)"
+            logger.warning("ignoring unexpected message \(description)")
         }
     }
     

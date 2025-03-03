@@ -2,10 +2,10 @@
 //
 //  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import Logger
+import os
 import SwiftUI
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AppIconDataSource")
 
 @MainActor public class AppIconDataSource: ObservableObject {
     let appIcons: [AppIcon]
@@ -45,7 +45,7 @@ private let Log = Logger.get()
                 try await setter(appIcon)
             } catch {
                 selected = previous
-                Log.e("Could not set app icon to \(appIcon.imageName): \(error)")
+                logger.error("Could not set app icon to \(appIcon.imageName): \(error)")
             }
         }
     }

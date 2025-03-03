@@ -7,9 +7,10 @@ import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostPreviewViewController")
 
 /**
  Previews a post (a.k.a. a reply to a thread). May be a new post, may be edited.
@@ -102,7 +103,7 @@ final class PostPreviewViewController: ViewController {
         } else if let thread {
             fetchPreview = { try await ForumsClient.shared.previewReply(to: thread, bbcode: interpolatedBBcode) }
         } else {
-            return Log.e("nothing to do??")
+            return logger.error("nothing to do??")
         }
         networkOperation = Task { @MainActor [weak self] in
             do {
@@ -136,7 +137,7 @@ final class PostPreviewViewController: ViewController {
 
                 renderPreview()
             } catch {
-                Log.e("could not preview post: \(error)")
+                logger.error("could not preview post: \(error)")
 
                 self?.present(UIAlertController(networkError: error), animated: true)
             }
@@ -161,7 +162,7 @@ final class PostPreviewViewController: ViewController {
             let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
         } catch {
-            Log.e("failed to render post preview: \(error)")
+            logger.error("failed to render post preview: \(error)")
             
             // TODO: show error nicer
             renderView.render(html: "<h1>Rendering Error</h1><pre>\(error)</pre>", baseURL: nil)
@@ -210,7 +211,8 @@ extension PostPreviewViewController: RenderViewDelegate {
     }
     
     func didReceive(message: RenderViewMessage, in view: RenderView) {
-        Log.w("received unexpected message: \(message)")
+        let description = "\(message)"
+        logger.warning("received unexpected message: \(description)")
     }
     
     func didTapLink(to url: URL, in view: RenderView) {

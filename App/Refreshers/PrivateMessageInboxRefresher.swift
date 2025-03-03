@@ -4,9 +4,10 @@
 
 import AwfulCore
 import AwfulSettings
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PrivateMessageInboxRefresher")
 
 /// Periodically checks for new private messages in the logged-in user's inbox.
 final class PrivateMessageInboxRefresher {
@@ -45,20 +46,20 @@ final class PrivateMessageInboxRefresher {
               canSendPrivateMessages,
               minder.shouldRefresh(.privateMessagesInbox) else
         {
-            Log.d("can't refresh private message inbox yet, will try again later")
+            logger.debug("can't refresh private message inbox yet, will try again later")
             return startTimer(reason: .failure)
         }
         
         Task {
             do {
                 _ = try await client.listPrivateMessagesInInbox()
-                Log.d("successfully refreshed private message inbox")
+                logger.debug("successfully refreshed private message inbox")
                 
                 minder.didRefresh(.privateMessagesInbox)
                 
                 startTimer(reason: .success)
             } catch {
-                Log.w("error refreshing private message inbox, will try again later: \(error)")
+                logger.warning("error refreshing private message inbox, will try again later: \(error)")
                 
                 startTimer(reason: .failure)
             }
@@ -88,7 +89,7 @@ final class PrivateMessageInboxRefresher {
             }
         }()
         
-        Log.d("next automatic private message inbox refresh is in \(interval) seconds")
+        logger.debug("next automatic private message inbox refresh is in \(interval) seconds")
         
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] timer in
             self?.refreshIfNecessary()

@@ -2,12 +2,14 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import AwfulScraping
 import CoreData
 import Foundation
 import HTMLReader
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsClient")
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
@@ -252,8 +254,11 @@ public final class ForumsClient {
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
+        let forumID = await forum.managedObjectContext!.perform {
+            forum.forumID
+        }
         var parameters: Dictionary<String, Any> = [
-            "forumid": forum.forumID,
+            "forumid": forumID,
             "perpage": "40",
             "pagenumber": "\(page)"]
         if let threadTagID = threadTag?.threadTagID, !threadTagID.isEmpty {
@@ -267,6 +272,7 @@ public final class ForumsClient {
             let threads = try result.upsert(into: backgroundContext)
             _ = try result.upsertAnnouncements(into: backgroundContext)
 
+            let forum = backgroundContext.object(with: forum.objectID) as! Forum
             forum.canPost = result.canPostNewThread
 
             if
@@ -323,21 +329,20 @@ public final class ForumsClient {
         _ thread: AwfulThread,
         isBookmarked: Bool
     ) async throws {
-        guard let mainContext = managedObjectContext else {
-            throw Error.missingManagedObjectContext
+        let threadID: String = await thread.managedObjectContext!.perform {
+            thread.threadID
         }
-
         _ = try await fetch(method: .post, urlString: "bookmarkthreads.php", parameters: [
             "json": "1",
             "action": isBookmarked ? "add" : "remove",
-            "threadid": thread.threadID,
+            "threadid": threadID,
         ])
-        try await mainContext.perform {
+        try await thread.managedObjectContext!.perform {
             thread.bookmarked = isBookmarked
             if isBookmarked, thread.bookmarkListPage <= 0 {
                 thread.bookmarkListPage = 1
             }
-            try mainContext.save()
+            try thread.managedObjectContext!.save()
         }
     }
 
@@ -345,9 +350,12 @@ public final class ForumsClient {
         _ thread: AwfulThread,
         as rating: Int
     ) async throws {
+        let threadID: String = await thread.managedObjectContext!.perform {
+            thread.threadID
+        }
         _ = try await fetch(method: .post, urlString: "threadrate.php", parameters: [
             "vote": "\(rating.clamped(to: 1...5))",
-            "threadid": thread.threadID,
+            "threadid": threadID,
         ])
     }
 
@@ -355,32 +363,33 @@ public final class ForumsClient {
         _ thread: AwfulThread,
         as category: StarCategory
     ) async throws {
-        guard let mainContext = managedObjectContext else {
-            throw Error.missingManagedObjectContext
+        let threadID: String = await thread.managedObjectContext!.perform {
+            thread.threadID
         }
-
         // we can set the bookmark color by sending a "category_id" parameter with an "add" action
         _ = try await fetch(method: .post, urlString: "bookmarkthreads.php", parameters: [
-            "threadid": thread.threadID,
+            "threadid": threadID,
             "action": "add",
             "category_id": "\(category.rawValue)",
             "json": "1",
         ])
-        try await mainContext.perform {
+        try await thread.managedObjectContext!.perform {
             if thread.bookmarkListPage <= 0 {
                 thread.bookmarkListPage = 1
             }
             if thread.starCategory != category {
                 thread.starCategory = category
             }
-            try mainContext.save()
+            try thread.managedObjectContext!.save()
         }
     }
 
     public func markThreadAsSeenUpTo(
         _ post: Post
     ) async throws {
-        guard let threadID = post.thread?.threadID else {
+        guard case let (threadID?, threadIndex) = await post.managedObjectContext!.perform({
+            (post.thread?.threadID, post.threadIndex)
+        }) else {
             assertionFailure("post needs a thread ID")
             let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
             throw error
@@ -388,15 +397,18 @@ public final class ForumsClient {
         _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
             "action": "setseen",
             "threadid": threadID,
-            "index": "\(post.threadIndex)",
+            "index": "\(threadIndex)",
         ])
     }
 
     public func markUnread(
         _ thread: AwfulThread
     ) async throws {
+        let threadID: String = await thread.managedObjectContext!.perform {
+            thread.threadID
+        }
         _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
-            "threadid": thread.threadID,
+            "threadid": threadID,
             "action": "resetseen",
             "json": "1",
         ])
@@ -498,9 +510,12 @@ public final class ForumsClient {
     ) async throws -> (previewHTML: String, formData: PostNewThreadFormData) {
         let previewParameters: [KeyValuePairs<String, Any>.Element]
         do {
+            let forumID: String = await forum.managedObjectContext!.perform {
+                forum.forumID
+            }
             let (data, response) = try await fetch(method: .get, urlString: "newthread.php", parameters: [
                 "action": "newthread",
-                "forumid": forum.forumID,
+                "forumid": forumID,
             ])
             let (document, url) = try parseHTML(data: data, response: response)
             guard let htmlForm = document.firstNode(matchingSelector: "form[name = 'vbform']") else {
@@ -550,8 +565,11 @@ public final class ForumsClient {
     public func flagForThread(
         in forum: Forum
     ) async throws -> Flag {
+        let forumID: String = await forum.managedObjectContext!.perform {
+            forum.forumID
+        }
         let (data, _) = try await fetch(method: .get, urlString: "flag.php", parameters: [
-            "forumid": forum.forumID,
+            "forumid": forumID,
         ])
         return try JSONDecoder().decode(Flag.self, from: data)
     }
@@ -609,8 +627,11 @@ public final class ForumsClient {
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
+        let threadID: String = await thread.managedObjectContext!.perform {
+            thread.threadID
+        }
         var parameters: Dictionary<String, Any> = [
-            "threadid": thread.threadID,
+            "threadid": threadID,
             "perpage": "40",
         ]
 
@@ -627,7 +648,7 @@ public final class ForumsClient {
             parameters["noseen"] = "1"
         }
 
-        if let userID = author?.userID {
+        if let userID: String = await author?.managedObjectContext?.perform({ author?.userID }) {
             parameters["userid"] = userID
         }
 
@@ -679,9 +700,10 @@ public final class ForumsClient {
               let postContext = post.managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
+        let postID: String = await postContext.perform { post.postID }
         let (data, response) = try await fetch(method: .get, urlString: "showthread.php", parameters: [
             "action": "showpost",
-            "postid": post.postID,
+            "postid": postID,
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try ShowPostScrapeResult(document, url: url)
@@ -707,12 +729,14 @@ public final class ForumsClient {
             throw Error.missingManagedObjectContext
         }
 
-        let wasThreadClosed = thread.closed
+        let (wasThreadClosed, threadID) = await thread.managedObjectContext!.perform {
+            (thread.closed, thread.threadID)
+        }
         let formParams: [KeyValuePairs<String, Any>.Element]
         do {
             let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
                 "action": "newreply",
-                "threadid": thread.threadID,
+                "threadid": threadID,
             ])
             let (document, url) = try parseHTML(data: data, response: response)
             guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
@@ -761,9 +785,12 @@ public final class ForumsClient {
     ) async throws -> String {
         let params: [KeyValuePairs<String, Any>.Element]
         do {
+            let threadID: String = await thread.managedObjectContext!.perform {
+                thread.threadID
+            }
             let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
                 "action": "newreply",
-                "threadid": thread.threadID,
+                "threadid": threadID,
             ])
             let (document, url) = try parseHTML(data: data, response: response)
             let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
@@ -790,18 +817,24 @@ public final class ForumsClient {
     public func findBBcodeContents(
         of post: Post
     ) async throws -> String {
+        let postID: String = await post.managedObjectContext!.perform {
+            post.postID
+        }
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
             "action": "editpost",
-            "postid": post.postID,
+            "postid": postID,
         ])
         let document = try parseHTML(data: data, response: response)
         return try findMessageText(in: document)
     }
 
     public func quoteBBcodeContents(of post: Post) async throws -> String {
+        let postID: String = await post.managedObjectContext!.perform {
+            post.postID
+        }
         let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
             "action": "newreply",
-            "postid": post.postID,
+            "postid": postID,
         ])
         let parsed = try parseHTML(data: data, response: response)
         return try findMessageText(in: parsed)
@@ -825,9 +858,12 @@ public final class ForumsClient {
     private func editForm(
         for post: Post
     ) async throws -> Form {
+        let postID: String = await post.managedObjectContext!.perform {
+            post.postID
+        }
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
             "action": "editpost",
-            "postid": post.postID,
+            "postid": postID,
         ])
         let (document, url) = try parseHTML(data: data, response: response)
         guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
@@ -924,9 +960,12 @@ public final class ForumsClient {
         nws: Bool,
         reason: String
     ) async throws {
+        let postID: String = await post.managedObjectContext!.perform {
+            post.postID
+        }
         var parameters: [String: Any] = [
             "action": "submit",
-            "postid": post.postID,
+            "postid": postID,
             "comments": String(reason.prefix(960)),
         ]
         if nws {
@@ -1018,15 +1057,21 @@ public final class ForumsClient {
             return try await lepersColony(parameters: ["pagenumber": "\(page)"])
         }
 
+        let maybe: (userID: String, username: String?) = await user.managedObjectContext!.perform {
+            (userID: user.userID, username: user.username)
+        }
         let userID: String
-        if !user.userID.isEmpty {
-            userID = user.userID
+        if !maybe.userID.isEmpty {
+            userID = maybe.userID
         } else {
-            guard let username = user.username else {
+            guard let username = maybe.username else {
                 assertionFailure("need user ID or username")
                 return try await lepersColony(parameters: ["pagenumber": "\(page)"])
             }
-            userID = try await profileUser(.username(username)).user.userID
+            let profile = try await profileUser(.username(username))
+            userID = await profile.managedObjectContext!.perform {
+                profile.user.userID
+            }
         }
 
         return try await lepersColony(parameters: [
@@ -1058,9 +1103,12 @@ public final class ForumsClient {
     public func deletePrivateMessage(
         _ message: PrivateMessage
     ) async throws {
+        let messageID: String = await message.managedObjectContext!.perform {
+            message.messageID
+        }
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: [
             "action": "dodelete",
-            "privatemessageid": message.messageID,
+            "privatemessageid": messageID,
             "delete": "yes",
         ])
         let (document, _) = try parseHTML(data: data, response: response)
@@ -1096,9 +1144,12 @@ public final class ForumsClient {
     public func quoteBBcodeContents(
         of message: PrivateMessage
     ) async throws -> String {
+        let messageID: String = await message.managedObjectContext!.perform {
+            message.messageID
+        }
         let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [
             "action": "newmessage",
-            "privatemessageid": message.messageID,
+            "privatemessageid": messageID,
         ])
         let parsed = try parseHTML(data: data, response: response)
         return try findMessageText(in: parsed)
@@ -1135,10 +1186,13 @@ public final class ForumsClient {
         bbcode: String,
         about relevantMessage: RelevantMessage
     ) async throws {
+        let threadTagID: String = await threadTag?.managedObjectContext?.perform {
+            threadTag?.threadTagID
+        } ?? "0"
         var parameters: Dictionary<String, Any> = [
             "touser": username,
             "title": subject,
-            "iconid": threadTag?.threadTagID ?? "0",
+            "iconid": threadTagID,
             "message": bbcode,
             "action": "dosend",
             "savecopy": "yes",
@@ -1149,10 +1203,16 @@ public final class ForumsClient {
             break
         case .forwarding(let relevant):
             parameters["forward"] = "true"
-            parameters["prevmessageid"] = relevant.messageID
+            let messageID: String = await relevant.managedObjectContext!.perform {
+                relevant.messageID
+            }
+            parameters["prevmessageid"] = messageID
         case .replyingTo(let relevant):
             parameters["forward"] = ""
-            parameters["prevmessageid"] = relevant.messageID
+            let messageID: String = await relevant.managedObjectContext!.perform {
+                relevant.messageID
+            }
+            parameters["prevmessageid"] = messageID
         }
 
         _ = try await fetch(method: .post, urlString: "private.php", parameters: parameters)

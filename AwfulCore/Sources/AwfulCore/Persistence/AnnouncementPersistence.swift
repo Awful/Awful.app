@@ -3,8 +3,9 @@
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreData
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AnnouncementPersistence")
 
 extension AnnouncementListScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [AwfulCore.Announcement] {
@@ -51,7 +52,7 @@ extension AnnouncementListScrapeResult {
         // No IDs means we don't really know what's been seen except by content. So if there's any new content, assume it hasn't been seen.
         for announcement in announcements {
             if announcement.hasBeenSeen, announcement.contentDidChange {
-                Log.d("marking announcement as new because of changed attributes: \(announcement.changedValues().keys.joined(separator: ", "))")
+                logger.debug("marking announcement as new because of changed attributes: \(announcement.changedValues().keys.joined(separator: ", "))")
 
                 announcement.hasBeenSeen = false
             }
@@ -172,7 +173,7 @@ private extension ThreadListScrapeResult.Announcement {
         if !title.isEmpty, title != announcement.title {
             announcement.title = title
 
-            Log.d("announcement title mismatch, assuming it's a different announcement and clearing the body HTML")
+            logger.debug("announcement title mismatch, assuming it's a different announcement and clearing the body HTML")
             announcement.bodyHTML = ""
         }
     }

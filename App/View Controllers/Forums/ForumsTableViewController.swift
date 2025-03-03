@@ -7,9 +7,10 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
 
 final class ForumsTableViewController: TableViewController {
     
@@ -77,7 +78,7 @@ final class ForumsTableViewController: TableViewController {
                 RefreshMinder.sharedMinder.didRefresh(.forumList)
                 migrateFavoriteForumsFromSettings()
             } catch {
-                Log.e("Could not taxonomize forums: \(error)")
+                logger.error("Could not taxonomize forums: \(error)")
             }
 
             stopAnimatingPullToRefresh()
