@@ -156,7 +156,10 @@ extension UIContextMenuConfiguration {
                 handler: { action in
                     Task {
                         do {
-                            try await ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
+                            let wasBookmarked: Bool = thread.managedObjectContext!.performAndWait {
+                                thread.bookmarked
+                            }
+                            try await ForumsClient.shared.setThread(thread, isBookmarked: !wasBookmarked)
 
                             // Something is weird here, as without this `MainActor.run` we end up on a background thread, but it seems redundant (and, indeed, explicitly annotating the nearest `Task` with `@MainActor` still leaves us on a background thread).
                             let overlay = await MainActor.run {
@@ -174,9 +177,11 @@ extension UIContextMenuConfiguration {
                                 overlay.dismiss(true)
                             }
                         } catch {
-                            logger.error("could not toggle bookmarked on thread \(thread.threadID) from table view context menu: \(error)")
-                            let alert = UIAlertController(networkError: error)
-                            presenter.present(alert, animated: true)
+                            await MainActor.run {
+                                logger.error("could not toggle bookmarked on thread \(thread.threadID) from table view context menu: \(error)")
+                                let alert = UIAlertController(networkError: error)
+                                presenter.present(alert, animated: true)
+                            }
                         }
                     }
                 }
