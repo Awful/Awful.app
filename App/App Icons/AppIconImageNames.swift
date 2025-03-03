@@ -10,6 +10,7 @@
 enum AppIconImageNames {
     static let five: String = "five_appicon"
     static let froggo: String = "froggo_appicon"
+    static let froggo_purple: String = "froggo_purple_appicon"
     static let ghost_blue: String = "ghost_blue_appicon"
     static let greenface: String = "greenface_appicon"
     static let rated_five: String = "rated_five_appicon"

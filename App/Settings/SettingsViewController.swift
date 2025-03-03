@@ -77,6 +77,7 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
     .init(accessibilityLabel: String(localized: "V", bundle: .module), imageName: AppIconImageNames.v),
     .init(accessibilityLabel: String(localized: "Ghost", bundle: .module), imageName: AppIconImageNames.ghost_blue),
     .init(accessibilityLabel: String(localized: "Froggo", bundle: .module), imageName: AppIconImageNames.froggo),
+    .init(accessibilityLabel: String(localized: "Froggo (purple)", bundle: .module), imageName: AppIconImageNames.froggo_purple),
     .init(accessibilityLabel: String(localized: "Doggo", bundle: .module), imageName: AppIconImageNames.staredog),
     .init(accessibilityLabel: String(localized: "Doggo poking tongue", bundle: .module), imageName: AppIconImageNames.staredog_tongue),
     .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: AppIconImageNames.five),
