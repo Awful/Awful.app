@@ -3,12 +3,13 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import CoreData
+import os
 
 #if canImport(UIKit)
 import UIKit
 #endif
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "DataStore")
 
 public final class DataStore: NSObject {
     /// A directory in which the store is saved. Since stores can span multiple files, a directory is required.
@@ -93,7 +94,7 @@ public final class DataStore: NSObject {
             try mutableStoreDirectoryURL.setResourceValues(resourceValues)
         }
         catch {
-            Log.e("failed to exclude \(storeDirectoryURL) from backup. Error: \(error)")
+            logger.error("failed to exclude \(self.storeDirectoryURL) from backup. Error: \(error)")
         }
         
         let storeURL = storeDirectoryURL.appendingPathComponent("AwfulCache.sqlite")
@@ -172,7 +173,7 @@ public final class DataStore: NSObject {
                 try storeCoordinator.remove(persistentStore)
             }
             catch {
-                Log.e("error removing store at \(persistentStore.url as Any): \(error)")
+                logger.error("error removing store at \(self.persistentStore?.url?.absoluteString ?? "(null)"): \(error)")
             }
             self.persistentStore = nil
         }
@@ -182,7 +183,7 @@ public final class DataStore: NSObject {
             try FileManager.default.removeItem(at: storeDirectoryURL as URL)
         }
         catch {
-            Log.e("error deleting store directory \(storeDirectoryURL): \(error)")
+            logger.error("error deleting store directory \(self.storeDirectoryURL): \(error)")
         }
         
         loadPersistentStore()

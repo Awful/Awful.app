@@ -4,9 +4,10 @@
 
 import AwfulCore
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AnnouncementListRefresher")
 
 /// Periodically scrapes an updated list of announcements.
 final class AnnouncementListRefresher {
@@ -44,7 +45,7 @@ final class AnnouncementListRefresher {
             client.isLoggedIn,
             minder.shouldRefresh(.announcements)
         else {
-            Log.d("can't refresh announcements yet, will try again later")
+            logger.debug("can't refresh announcements yet, will try again later")
             return startTimer(reason: .failure)
         }
 
@@ -59,18 +60,18 @@ final class AnnouncementListRefresher {
                 let arbitraryForumID = forumIDs.randomElement()
                 return arbitraryForumID.map { context.object(with: $0) as! Forum }
             }) else {
-                Log.d("we don't know of any forums, so we can't refresh announcements; will try again later")
+                logger.debug("we don't know of any forums, so we can't refresh announcements; will try again later")
                 return startTimer(reason: .failure)
             }
 
             // SA: Requesting page -1 of a forum still fetches the announcements, but doesn't fetch any threads. Seems like it's maybe less work for the server? Definitely less work for us.
             do {
                 _ = try await client.listThreads(in: arbitraryForum, tagged: nil, page: -1)
-                Log.d("successfully refreshed announcements")
+                logger.debug("successfully refreshed announcements")
                 minder.didRefresh(.announcements)
                 startTimer(reason: .success)
             } catch {
-                Log.w("error refreshing announcements, will try again later: \(error)")
+                logger.warning("error refreshing announcements, will try again later: \(error)")
                 startTimer(reason: .failure)
             }
         }
@@ -99,7 +100,7 @@ final class AnnouncementListRefresher {
             }
         }()
 
-        Log.d("next automatic announcement list refresh is in \(interval) seconds")
+        logger.debug("next automatic announcement list refresh is in \(interval) seconds")
 
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] timer in
             self?.refreshIfNecessary()

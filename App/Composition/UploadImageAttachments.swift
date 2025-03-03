@@ -5,10 +5,11 @@
 import AwfulSettings
 import Foundation
 import ImgurAnonymousAPI
+import os
 import Photos
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "UploadImageAttachments")
 
 /**
     Replaces image attachments in richText with [img] tags by uploading the images anonymously to Imgur.
@@ -84,14 +85,14 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 case .success(let response):
                     uploadComplete(response.link, error: nil)
                 case .failure(let error):
-                    Log.e("Could not upload UIImage: \(error)")
+                    logger.error("Could not upload UIImage: \(error)")
                     uploadComplete(nil, error: error)
                 }
             })
             
         case .photoAsset(let assetIdentifier):
             guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetIdentifier], options: nil).firstObject else {
-                Log.e("Could not find asset corresponding to local identifier \(assetIdentifier)")
+                logger.error("Could not find asset corresponding to local identifier \(assetIdentifier)")
                 uploadComplete(nil, error: ImageUploadError.missingIdentifiedAsset)
                 break
             }
@@ -101,7 +102,7 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 case .success(let response):
                     uploadComplete(response.link, error: nil)
                 case .failure(let error):
-                    Log.e("Could not upload PHAsset: \(error)")
+                    logger.error("Could not upload PHAsset: \(error)")
                     uploadComplete(nil, error: error)
                 }
             })

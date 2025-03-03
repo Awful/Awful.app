@@ -8,10 +8,11 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import CoreData
+import os
 import ScrollViewDelegateMultiplexer
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadsTableViewController")
 
 final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration {
     
@@ -326,7 +327,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         activity.route = .forum(id: forum.forumID)
         activity.title = forum.name
 
-        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
+        logger.debug("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
     // MARK: UIViewControllerRestoration

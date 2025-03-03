@@ -10,10 +10,11 @@ import Combine
 import CoreData
 import MobileCoreServices
 import MRProgress
+import os
 import UIKit
 import WebKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageViewController")
 
 /// Shows a list of posts in a thread.
 final class PostsPageViewController: ViewController {
@@ -404,7 +405,7 @@ final class PostsPageViewController: ViewController {
         do {
             html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
         } catch {
-            Log.e("could not render posts view HTML: \(error)")
+            logger.error("could not render posts view HTML: \(error)")
             html = ""
         }
 
@@ -803,7 +804,7 @@ final class PostsPageViewController: ViewController {
             let model = PostRenderModel(posts[i])
             return try StencilEnvironment.shared.renderTemplate(.post, context: model)
         } catch {
-            Log.e("could not render post at index \(i): \(error)")
+            logger.error("could not render post at index \(i): \(error)")
             return ""
         }
     }
@@ -1040,7 +1041,7 @@ final class PostsPageViewController: ViewController {
                     postsView.toolbarItems = newItems
                 }
             } catch {
-                Log.e("error marking thread: \(error)")
+                logger.error("error marking thread: \(error)")
             }
         }
     }
@@ -1435,7 +1436,7 @@ final class PostsPageViewController: ViewController {
                     return RenderView.FlagInfo(src: src, title: title)
                 }
             } catch {
-                Log.w("could not fetch FYAD flag: \(error)")
+                logger.warning("could not fetch FYAD flag: \(error)")
                 flagInfo = nil
             }
             self?.postsView.renderView.setFYADFlag(flagInfo)
@@ -1460,7 +1461,7 @@ final class PostsPageViewController: ViewController {
         } ?? .threadPage(threadID: thread.threadID, page: page, .seen)
         activity.title = thread.title
 
-        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
+        logger.debug("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
 
     override func themeDidChange() {
@@ -1770,7 +1771,7 @@ extension PostsPageViewController: RenderViewDelegate {
             fetchNewFlag()
 
         default:
-            Log.w("ignoring unexpected JavaScript message: \(type(of: message).messageName)")
+            logger.warning("ignoring unexpected JavaScript message: \(type(of: message).messageName)")
         }
     }
 

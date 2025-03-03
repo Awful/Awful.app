@@ -2,12 +2,14 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulExtensions
 import AwfulScraping
 import CoreData
 import Foundation
 import HTMLReader
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsClient")
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {

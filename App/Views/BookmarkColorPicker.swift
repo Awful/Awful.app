@@ -6,9 +6,10 @@ import AwfulCore
 import AwfulSettings
 import AwfulTheming
 import CoreData
+import os
 import SwiftUI
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SetBookmarkColor")
 
 private extension StarCategory {
     var themeKey: String {
@@ -59,7 +60,7 @@ struct BookmarkColorPicker: View {
                 try await setBookmarkColor(thread, starCategory)
                 dismiss()
             } catch {
-                Log.e("Could not set thread \(thread.threadID) category to \(starCategory.rawValue)")
+                logger.error("Could not set thread \(thread.threadID) category to \(starCategory.rawValue)")
             }
         }
     }

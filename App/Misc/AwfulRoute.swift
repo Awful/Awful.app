@@ -56,15 +56,44 @@ enum AwfulRoute {
 
     /// A particula rpage of just one user's posts in a particular thread.
     case threadPageSingleUser(threadID: String, userID: String, page: ThreadPage, UpdateSeen)
-}
 
-extension AwfulRoute {
     /// Whether following the route should update the user's "last seen" marker in the thread.
     enum UpdateSeen {
         /// Following the route sets the user's "last seen" marker for the thread to the end of the page.
         case seen
         /// Following the route will not set or update the user's "last seen" marker for the thread.
         case noseen
+    }
+}
+
+extension AwfulRoute: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .bookmarks:
+            "bookmarks"
+        case .forum(let id):
+            "forum/\(id)"
+        case .forumList:
+            "forums"
+        case .lepersColony:
+            "lepers"
+        case .message(let id):
+            "message/\(id)"
+        case .messagesList:
+            "messages"
+        case .post(let id, let updateSeen):
+            "post/\(id)?update_seen=\(updateSeen)"
+        case .profile(let userID):
+            "profile/\(userID)"
+        case .rapSheet(let userID):
+            "rapsheet/\(userID)"
+        case .settings:
+            "settings"
+        case .threadPage(let threadID, let page, let updateSeen):
+            "thread/\(threadID)/page/\(page)?update_seen=\(updateSeen)"
+        case .threadPageSingleUser(let threadID, let userID, let page, let updateSeen):
+            "thread/\(threadID)/author/\(userID)/page/\(page)?update_seen=\(updateSeen)"
+        }
     }
 }
 

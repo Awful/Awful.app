@@ -5,9 +5,10 @@
 import AwfulCore
 import AwfulTheming
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageListDataSource")
 
 final class MessageListDataSource: NSObject {
     weak var deletionDelegate: MessageListDataSourceDeletionDelegate?

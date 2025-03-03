@@ -2,13 +2,13 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import Logger
+import os
 import PullToRefresh
 import SwiftUI
 import UIKit
 import WebKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Theming")
 
 public protocol Themeable {
 
@@ -203,7 +203,7 @@ open class TableViewController: UITableViewController, Themeable {
     open override var refreshControl: UIRefreshControl? {
         get { return super.refreshControl }
         set {
-            Log.w("we usually use the custom refresh controller")
+            logger.warning("we usually use the custom refresh controller")
             super.refreshControl = newValue
         }
     }

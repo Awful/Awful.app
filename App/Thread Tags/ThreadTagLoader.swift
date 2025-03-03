@@ -7,11 +7,12 @@ import AwfulModelTypes
 import AwfulTheming
 import Nuke
 import NukeExtensions
+import os
 import UIKit
 
 import enum Swift.Result
 
-private let Log = Logger.get(level: .debug)
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadTagLoader")
 
 /**
  Loads and caches thread tag images.
@@ -83,7 +84,7 @@ final class ThreadTagLoader {
             case .statusCodeUnacceptable(let statusCode)? = underlyingError as? DataLoader.Error,
             statusCode == 404
         {
-            Log.i("missing thread tag image: \(imageName)")
+            logger.info("missing thread tag image: \(imageName)")
         }
     }
     

@@ -5,10 +5,11 @@
 import AwfulCore
 import AwfulSettings
 import MRProgress
+import os
 import SwiftUI
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadPeekPopController")
 
 extension UIContextMenuConfiguration {
     static func makeFromThreadList(
@@ -91,7 +92,7 @@ extension UIContextMenuConfiguration {
                                 updateLastReadPost: true
                             )
                         } catch {
-                            Log.e("could not mark thread \(thread.threadID) as read from table view context menu: \(error)")
+                            logger.error("could not mark thread \(thread.threadID) as read from table view context menu: \(error)")
                             if let presenter {
                                 await MainActor.run {
                                     let alert = UIAlertController(networkError: error)
@@ -116,7 +117,7 @@ extension UIContextMenuConfiguration {
                             try await ForumsClient.shared.markUnread(thread)
                         } catch {
                             await MainActor.run {
-                                Log.e("could not mark thread \(thread.threadID) unread from table view context menu: \(error)")
+                                logger.error("could not mark thread \(thread.threadID) unread from table view context menu: \(error)")
                                 if thread.seenPosts == 0 {
                                     thread.seenPosts = oldSeen
                                 }
@@ -173,7 +174,7 @@ extension UIContextMenuConfiguration {
                                 overlay.dismiss(true)
                             }
                         } catch {
-                            Log.e("could not toggle bookmarked on thread \(thread.threadID) from table view context menu: \(error)")
+                            logger.error("could not toggle bookmarked on thread \(thread.threadID) from table view context menu: \(error)")
                             let alert = UIAlertController(networkError: error)
                             presenter.present(alert, animated: true)
                         }

@@ -7,10 +7,11 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import CoreData
+import os
 import ScrollViewDelegateMultiplexer
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BookmarksTableViewController")
 
 final class BookmarksTableViewController: TableViewController {
     
@@ -204,7 +205,7 @@ final class BookmarksTableViewController: TableViewController {
         activity.route = .bookmarks
         activity.title = LocalizedString("handoff.bookmarks-title")
 
-        Log.d("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
+        logger.debug("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
     // MARK: Undo

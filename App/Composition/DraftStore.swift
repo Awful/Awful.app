@@ -3,8 +3,9 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
+import os
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "DraftStore")
 
 /// Saves drafts to and loads drafts from disk.
 final class DraftStore {
@@ -37,7 +38,7 @@ final class DraftStore {
             unarchiver.requiresSecureCoding = false
             return unarchiver.decodeObject(forKey: NSKeyedArchiveRootObjectKey) as AnyObject?
         } catch {
-            Log.e("could not load draft at \(path): \(error)")
+            logger.error("could not load draft at \(path): \(error)")
             return nil
         }
     }

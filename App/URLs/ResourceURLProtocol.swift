@@ -3,11 +3,12 @@
 //  Copyright 2015 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import MobileCoreServices
+import os
 import UIKit
 import UniformTypeIdentifiers
 import WebKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ResourceURLProtocol")
 
 /**
  Provides a URL scheme of the form `awful-resource://<bundle-resource-path>`, which gives convenient access to bundled images etc. from theme CSS.
@@ -38,7 +39,7 @@ final class ResourceURLProtocol: URLProtocol {
             
             client.didReceive(resourceData, in: self)
         } catch {
-            Log.e("Could not load \(initialURL): \(error)")
+            logger.error("Could not load \(initialURL): \(error)")
             client.didFailWithError(error, in: self)
             return
         }
@@ -129,7 +130,7 @@ private struct Resource {
         case 3:
             basenameSuffixes = ["@3x", "@2x", ""]
         default:
-            Log.w("unexpected screen scale \(screenScale)")
+            logger.warning("unexpected screen scale \(screenScale)")
             basenameSuffixes = [""]
         }
         

@@ -5,9 +5,10 @@
 import AwfulCore
 import AwfulTheming
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumListDataSource")
 
 final class ForumListDataSource: NSObject {
     private let announcementsController: NSFetchedResultsController<Announcement>
@@ -177,7 +178,7 @@ extension ForumListDataSource {
 
 extension ForumListDataSource {
     private func updateMetadata(_ metadata: ForumMetadata, setIsFavorite isFavorite: Bool) {
-        Log.d("\(isFavorite ? "adding" : "removing") favorite forum \(metadata.forum.name ?? "")")
+        logger.debug("\(isFavorite ? "adding" : "removing") favorite forum \(metadata.forum.name ?? "")")
 
         metadata.favorite = isFavorite
         metadata.forum.tickleForFetchedResultsController()
@@ -196,29 +197,29 @@ extension ForumListDataSource {
 extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard !ignoreControllerUpdates else {
-            Log.d("ignoring updates in \(controller)")
+            logger.debug("ignoring updates in \(controller)")
             return
         }
 
-        Log.d("beginning to defer updates in \(controller)")
+        logger.debug("beginning to defer updates in \(controller)")
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 
         guard !ignoreControllerUpdates else { return }
         
-        Log.d("local section \(sectionIndex) is changing…")
+        logger.debug("local section \(sectionIndex) is changing…")
         
         let sectionIndex = globalSectionForLocalSection(sectionIndex, in: controller)
         
         switch type {
         case .delete:
-            Log.d("…it's global section \(sectionIndex) and it's getting deleted")
+            logger.debug("…it's global section \(sectionIndex) and it's getting deleted")
             
             deferredSectionDeletes.insert(sectionIndex)
             
         case .insert:
-            Log.d("…it's global section \(sectionIndex) and it's getting inserted")
+            logger.debug("…it's global section \(sectionIndex) and it's getting inserted")
             
             deferredSectionInserts.insert(sectionIndex)
             
@@ -234,30 +235,30 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
 
         guard !ignoreControllerUpdates else { return }
         
-        Log.d("did change object at local old = \(oldIndexPath?.description ?? ""), local new = \(newIndexPath?.description ?? "")…")
+        logger.debug("did change object at local old = \(oldIndexPath?.description ?? ""), local new = \(newIndexPath?.description ?? "")…")
         
         let oldIndexPath = oldIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
         let newIndexPath = newIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
         
         switch type {
         case .delete:
-            Log.d("…global path = \(oldIndexPath!) and it's getting deleted")
+            logger.debug("…global path = \(oldIndexPath!) and it's getting deleted")
             
             deferredDeletes.append(oldIndexPath!)
             
         case .insert:
-            Log.d("…global path = \(newIndexPath!) and it's getting inserted")
+            logger.debug("…global path = \(newIndexPath!) and it's getting inserted")
             
             deferredInserts.append(newIndexPath!)
             
         case .move:
-            Log.d("…global old = \(oldIndexPath!), global new = \(newIndexPath!) and it's moving")
+            logger.debug("…global old = \(oldIndexPath!), global new = \(newIndexPath!) and it's moving")
             
             deferredDeletes.append(oldIndexPath!)
             deferredInserts.append(newIndexPath!)
             
         case .update:
-            Log.d("…global path = \(oldIndexPath!) and it's getting updated")
+            logger.debug("…global path = \(oldIndexPath!) and it's getting updated")
             
             deferredUpdates.append(oldIndexPath!)
 
@@ -268,11 +269,11 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         guard !ignoreControllerUpdates else {
-            Log.d("done ignoring updates in \(controller)")
+            logger.debug("done ignoring updates in \(controller)")
             return
         }
 
-        Log.d("done with deferring updates in \(controller)")
+        logger.debug("done with deferring updates in \(controller)")
 
         /*
          Yuck. Sorry. I hate delayed performs (or whatever this is called in the era of dispatch queues) but I'm not sure what else to do.
@@ -296,11 +297,11 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
             guard !self.deferredDeletes.isEmpty || !self.deferredInserts.isEmpty || !self.deferredUpdates.isEmpty
                 || !self.deferredSectionDeletes.isEmpty || !self.deferredSectionInserts.isEmpty
                 else {
-                    Log.d("no deferred updates to handle")
+                logger.debug("no deferred updates to handle")
                     return
             }
 
-            Log.d("running deferred updates")
+            logger.debug("running deferred updates")
 
             self.tableView.beginUpdates()
 
@@ -371,16 +372,16 @@ extension ForumListDataSource: UITableViewDataSource {
             }
         }()
 
-        Log.d("trying to move \(sourceIndexPath), aiming at \(proposedDestinationIndexPath), ended up at \(destinationIndexPath)")
+        logger.debug("trying to move \(sourceIndexPath), aiming at \(proposedDestinationIndexPath), ended up at \(destinationIndexPath)")
 
         return destinationIndexPath
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        Log.d("saving move from \(sourceIndexPath) to \(destinationIndexPath)")
+        logger.debug("saving move from \(sourceIndexPath) to \(destinationIndexPath)")
 
         guard sourceIndexPath != destinationIndexPath else {
-            Log.d("…which isn't really a move, so we're done")
+            logger.debug("…which isn't really a move, so we're done")
             return
         }
 

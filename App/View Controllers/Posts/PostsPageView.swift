@@ -4,10 +4,11 @@
 
 import AwfulSettings
 import AwfulTheming
+import os
 import ScrollViewDelegateMultiplexer
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageView")
 
 /**
  Manages a posts page's render view, top bar, refresh control, and toolbar.
@@ -141,7 +142,9 @@ final class PostsPageView: UIView {
             }
         }
         didSet {
-            Log.d("refresh control transitioned from \(oldValue) to \(refreshControlState)")
+            let oldDescription = "\(oldValue)"
+            let newDescription = "\(refreshControlState)"
+            logger.debug("refresh control transitioned from \(oldDescription) to \(newDescription)")
 
             refreshControl?.state = refreshControlState
 
@@ -179,7 +182,9 @@ final class PostsPageView: UIView {
 
     private var topBarState: TopBarState {
         didSet {
-            Log.d("top bar transitioned from \(oldValue) to \(topBarState)")
+            let oldDescription = "\(oldValue)"
+            let newDescription = "\(topBarState)"
+            logger.debug("top bar transitioned from \(oldDescription) to \(newDescription)")
 
             switch (oldValue, topBarState) {
             case (.hidden, .appearing),

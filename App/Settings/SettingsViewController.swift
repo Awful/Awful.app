@@ -5,9 +5,10 @@ import AwfulSettings
 import AwfulSettingsUI
 import AwfulTheming
 import CoreData
+import os
 import SwiftUI
 
-private let Log = Logger.get()
+private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SettingsViewController")
 
 final class SettingsViewController: HostingController<SettingsContainerView> {
     let managedObjectContext: NSManagedObjectContext

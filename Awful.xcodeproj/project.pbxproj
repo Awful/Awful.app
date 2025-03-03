@@ -128,8 +128,6 @@
 		1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C6B2A9A272F992E00671F0C /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6B2A99272F992E00671F0C /* Nuke */; };
-		1C6BDD22265CB307005475CE /* Imports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BDD21265CB307005475CE /* Imports.swift */; };
-		1C6BDD24265CB31E005475CE /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD23265CB31E005475CE /* Logger */; };
 		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
 		1C725A8926E71C6D009713DC /* MRProgress in Frameworks */ = {isa = PBXBuildFile; productRef = 1C725A8826E71C6D009713DC /* MRProgress */; };
 		1C796A292218C41F0035E154 /* DefaultBrowser+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A282218C41F0035E154 /* DefaultBrowser+.swift */; };
@@ -425,7 +423,6 @@
 		1C66AA1619DDF8DD001B9A41 /* NeedsFullAccessView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NeedsFullAccessView.h; sourceTree = "<group>"; };
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C6821A81F113A760083F204 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
-		1C6BDD21265CB307005475CE /* Imports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Imports.swift; sourceTree = "<group>"; };
 		1C796A282218C41F0035E154 /* DefaultBrowser+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultBrowser+.swift"; sourceTree = "<group>"; };
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
@@ -482,7 +479,6 @@
 		1CDAC85E2AE10966006CEE88 /* AwfulExtensions */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulExtensions; sourceTree = "<group>"; };
 		1CDAC85F2AE10966006CEE88 /* AwfulScraping */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulScraping; sourceTree = "<group>"; };
 		1CDAC8602AE10966006CEE88 /* Smilies */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Smilies; sourceTree = "<group>"; };
-		1CDAC8612AE10966006CEE88 /* Logger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Logger; sourceTree = "<group>"; };
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImgurAnonymousAPI+Shared.swift"; sourceTree = "<group>"; };
 		1CDC9F652AE5FB19005DA08D /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = test.yml; path = .github/workflows/test.yml; sourceTree = SOURCE_ROOT; };
@@ -585,7 +581,6 @@
 				1C725A8926E71C6D009713DC /* MRProgress in Frameworks */,
 				1C53451E2B8BF3A7001DA96A /* PSMenuItem in Frameworks */,
 				1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */,
-				1C6BDD24265CB31E005475CE /* Logger in Frameworks */,
 				1C5345212B8BF48F001DA96A /* ScrollViewDelegateMultiplexer in Frameworks */,
 				1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
@@ -602,7 +597,6 @@
 				1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */,
 				1C220E3C2B815AFC00DA92B0 /* Bundle+.swift */,
 				1C4506C31A2BAB3800767306 /* Handoff.swift */,
-				1C6BDD21265CB307005475CE /* Imports.swift */,
 				1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */,
 				1C9AEBCD210C3BAF00C9A567 /* main.swift */,
 				1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */,
@@ -1130,7 +1124,6 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				1CDAC85B2AE10966006CEE88 /* ImgurAnonymousAPI */,
 				1C04DEBF2B9396DA0067957F /* LessStylesheet */,
-				1CDAC8612AE10966006CEE88 /* Logger */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				1CF0A6C520A50FC5004C26EA /* README.md */,
 				1C3A8D3F2AE10D3B003E9A07 /* Scripts */,
@@ -1281,7 +1274,6 @@
 				1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */,
 				1C453F272338457A007AC6CD /* Stencil */,
 				1CD72E78265CA0D500FF3BF4 /* AwfulCore */,
-				1C6BDD23265CB31E005475CE /* Logger */,
 				1C4712292664CB8000E5AA74 /* Smilies */,
 				1C725A8826E71C6D009713DC /* MRProgress */,
 				1C6B2A99272F992E00671F0C /* Nuke */,
@@ -1309,7 +1301,7 @@
 				CLASSPREFIX = "";
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = "Awful Contributors";
 				TargetAttributes = {
 					1C3A143219DFC5D10022C44C = {
@@ -1561,7 +1553,6 @@
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
 				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostRenderModel.swift in Sources */,
-				1C6BDD22265CB307005475CE /* Imports.swift in Sources */,
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
@@ -1774,7 +1765,6 @@
 				PRODUCT_NAME = AwfulDebug;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1966,10 +1956,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1C6B2A98272F992E00671F0C /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = Nuke;
-		};
-		1C6BDD23265CB31E005475CE /* Logger */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Logger;
 		};
 		1C6BDD25265CB337005475CE /* HTMLReader */ = {
 			isa = XCSwiftPackageProductDependency;

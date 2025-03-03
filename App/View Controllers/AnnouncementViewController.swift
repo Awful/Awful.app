@@ -7,10 +7,11 @@ import AwfulSettings
 import AwfulTheming
 import CoreData
 import HTMLReader
+import os
 import UIKit
 import WebKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AnnouncementViewController")
 
 /// Renders a Forums-wide announcement.
 final class AnnouncementViewController: ViewController {
@@ -42,7 +43,9 @@ final class AnnouncementViewController: ViewController {
             assert(state.canTransition(to: newValue))
         }
         didSet {
-            Log.d("did transition from \(oldValue) to \(state)")
+            let oldDescription = "\(oldValue)"
+            let newDescription = "\(state)"
+            logger.debug("did transition from \(oldDescription) to \(newDescription)")
 
             didTransition(from: oldValue)
         }
@@ -99,7 +102,7 @@ final class AnnouncementViewController: ViewController {
             scrollToFractionalOffset(fractionalContentOffset)
 
         case .failed:
-            Log.w("ignoring attempt set fractional content offset; announcement failed to load")
+            logger.warning("ignoring attempt set fractional content offset; announcement failed to load")
         }
     }
 
@@ -152,9 +155,9 @@ final class AnnouncementViewController: ViewController {
         clientCancellable = Task { [weak self] in
             do {
                 let announcements = try await ForumsClient.shared.listAnnouncements()
-                Log.d("list announcements: \(announcements)")
+                logger.debug("list announcements: \(announcements)")
             } catch {
-                Log.e("couldn't list announcements: \(error)")
+                logger.error("couldn't list announcements: \(error)")
 
                 if let self, case .loading = self.state {
                     self.state = .failed(error)
@@ -216,7 +219,7 @@ final class AnnouncementViewController: ViewController {
                 renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
             }
             catch {
-                Log.e("Failure rendering announcement: \(error)")
+                logger.error("Failure rendering announcement: \(error)")
 
                 // TODO: show error nicer
                 renderView.render(html: "<h1>Rendering Error</h1><pre>\(error)</pre>", baseURL: nil)
@@ -260,7 +263,7 @@ final class AnnouncementViewController: ViewController {
         }
         assert(postIndex == 0, "why was there more than one announcement?")
         guard let user = announcement.author else {
-            Log.e("tapped author header but announcement has no author?")
+            logger.error("tapped author header but announcement has no author?")
             return
         }
 
@@ -338,12 +341,12 @@ extension AnnouncementViewController: UIViewControllerRestoration {
             maybeAnnouncement = try AppDelegate.instance.managedObjectContext.fetch(fetchRequest).first
         }
         catch {
-            Log.e("error attempting to fetch announcement: \(error)")
+            logger.error("error attempting to fetch announcement: \(error)")
             return nil
         }
 
         guard let announcement = maybeAnnouncement else {
-            Log.w("couldn't find announcement at list index \(listIndex); skipping announcement view state restoration")
+            logger.warning("couldn't find announcement at list index \(listIndex); skipping announcement view state restoration")
             return nil
         }
 
@@ -496,7 +499,8 @@ extension AnnouncementViewController: RenderViewDelegate {
             state = .rendered(model)
             
         default:
-            Log.w("ignoring didFinishRenderingHTML in unexpected state \(state)")
+            let description = "\(state)"
+            logger.warning("ignoring didFinishRenderingHTML in unexpected state \(description)")
         }
     }
     
@@ -506,7 +510,7 @@ extension AnnouncementViewController: RenderViewDelegate {
             didTapAuthorHeaderInPost(at: message.postIndex, frame: message.frame)
 
         default:
-            Log.w("ignoring unexpected JavaScript message: \(type(of: message).messageName)")
+            logger.warning("ignoring unexpected JavaScript message: \(type(of: message).messageName)")
         }
     }
 

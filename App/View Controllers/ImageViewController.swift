@@ -3,10 +3,11 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import FLAnimatedImage
+import os
 import ScrollViewDelegateMultiplexer
 import UIKit
 
-private let Log = Logger.get()
+private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ImageViewController")
 
 /// Downloads an image and shows it in a zoomable scroll view.
 final class ImageViewController: UIViewController {

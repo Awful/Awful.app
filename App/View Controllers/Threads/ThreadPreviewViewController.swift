@@ -7,9 +7,10 @@ import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
 import CoreData
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadPreviewViewController")
 
 /// Renders the original post-to-be of a new thread.
 final class ThreadPreviewViewController: ViewController {
@@ -126,7 +127,7 @@ final class ThreadPreviewViewController: ViewController {
             let rendering = try StencilEnvironment.shared.renderTemplate(.postPreview, context: context)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
         } catch {
-            Log.e("failed to render thread preview: \(error)")
+            logger.error("failed to render thread preview: \(error)")
             
             // TODO: show error nicer
             renderView.render(html: "<h1>Rendering Error</h1><pre>\(error)</pre>", baseURL: nil)
@@ -224,7 +225,8 @@ extension ThreadPreviewViewController: RenderViewDelegate {
     }
     
     func didReceive(message: RenderViewMessage, in view: RenderView) {
-        Log.w("received unexpected message: \(message)")
+        let description = "\(message)"
+        logger.warning("received unexpected message: \(description)")
     }
     
     func didTapLink(to url: URL, in view: RenderView) {

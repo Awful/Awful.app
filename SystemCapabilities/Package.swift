@@ -4,12 +4,11 @@ import PackageDescription
 
 let package = Package(
     name: "SystemCapabilities",
-    platforms: [.iOS(.v13)],
+    platforms: [.iOS(.v14)],
     products: [
         .library(name: "SystemCapabilities", targets: ["SystemCapabilities"]),
     ],
-    dependencies: [.package(path: "../Logger")],
     targets: [
-        .target(name: "SystemCapabilities", dependencies: ["Logger"]),
+        .target(name: "SystemCapabilities"),
     ]
 )

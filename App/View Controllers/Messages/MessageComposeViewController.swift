@@ -4,9 +4,10 @@
 
 import AwfulCore
 import Nuke
+import os
 import UIKit
 
-private let Log = Logger.get()
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageComposeViewController")
 
 /// For writing private messages.
 final class MessageComposeViewController: ComposeTextViewController {
@@ -109,7 +110,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                 picker.navigationItem.leftBarButtonItem = picker.cancelButtonItem
                 threadTagPicker = picker
             } catch {
-                Log.e("Could not list available private message thread tags: \(error)")
+                logger.error("Could not list available private message thread tags: \(error)")
             }
 
             updatingThreadTags = false
