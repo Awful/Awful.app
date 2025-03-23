@@ -9,9 +9,9 @@ import UIKit
 #endif
 
 /**
- An Imgur API client for anonymous image uploads.
+ An Imgur API client for image uploads, supporting both anonymous and authenticated modes.
  
- This client has a very narrow focus: efficiently and anonymously uploading images to Imgur. No other aspects of the Imgur API are available.
+ This client has a very narrow focus: efficiently uploading images to Imgur. No other aspects of the Imgur API are available.
  
  Efficiency is meant in two ways: developer efficiency (that's you!) and efficient use of device resources (namely memory). It is not usually terribly difficult to take a `UIImage` you have in memory, obtain a PNG data representation, create a `multipart/form-data` request, and pass that along to a `URLSession`. Life gets annoying when you're writing that pipeline for the fifteenth time, or when you start crashing because you run out of memory trying to resize a gigantic source image by drawing it to a bitmap context. Sometimes you have a `UIImagePickerController` giving you an info dictionary and you just wanna turn that into an Imgur URL, and you don't want to think about it too hard.
  
@@ -19,16 +19,49 @@ import UIKit
  
  Each instance method calls its completion handler with, among other data, the most up-to-date rate limiting information. You might use this information to throttle your calls to the Imgur API or to present more detailed error information to your user.
  
- Since we're talking to the Imgur anonymous image upload API, we use an ephemeral `URLSession`.
+ When using anonymous uploads, we use an ephemeral `URLSession` for privacy. When using authenticated uploads, the bearer token is securely passed with each request.
  
  Finally, the Imgur API is free for non-commercial use only. "Your application is commercial if you're making any money with it (which includes in-app advertising), if you plan on making any money with it, or if it belongs to a commercial organization." Please see https://apidocs.imgur.com for more details; search for "Commercial Usage" on that page.
  */
 public final class ImgurUploader {
 
     /**
+     Create an Imgur image API client with authentication.
+     
+     - Parameter authProvider: An object conforming to ImgurAuthProvider that provides authentication details
+     - Parameter userAgent: If you wish to customize the `User-Agent` header sent to Imgur, you can provide it here.
+     
+     This initializer uses the auth provider to get the client ID and bearer token as needed.
+     */
+    public init(authProvider: ImgurAuthProvider, userAgent: String = "") {
+        self.authProvider = authProvider
+        queue = OperationQueue()
+        queue.name = "com.nolanw.ImgurAnonymousAPI"
+
+        urlSession = URLSession(configuration: {
+            let config = URLSessionConfiguration.ephemeral
+            var additionalHeaders: [String: String] = [:]
+            
+            // Use bearer token if authenticated, otherwise use client ID
+            if let token = authProvider.bearerToken {
+                additionalHeaders["Authorization"] = "Bearer \(token)"
+            } else {
+                additionalHeaders["Authorization"] = "Client-ID \(authProvider.clientID)"
+            }
+            
+            if !userAgent.isEmpty {
+                additionalHeaders["User-Agent"] = userAgent
+            }
+            config.httpAdditionalHeaders = additionalHeaders
+            return config
+        }())
+    }
+
+    /**
      Create an Imgur anonymous image API client.
      
      - Parameter clientID: A client ID obtained by registering your application with Imgur.
+     - Parameter bearerToken: Optional. A bearer token for authenticated API access. When provided, this takes precedence over clientID.
      - Parameter userAgent: If you wish to customize the `User-Agent` header sent to Imgur, you can provide it here.
      
      All interaction with the Imgur API requires a client ID. You can obtain a new one:
@@ -42,19 +75,10 @@ public final class ImgurUploader {
      
      Remember that the Imgur API is free for non-commercial use only. "Your application is commercial if you're making any money with it (which includes in-app advertising), if you plan on making any money with it, or if it belongs to a commercial organization." See https://apidocs.imgur.com for more details (search for "Commercial Usage" on that page).
      */
-    public init(clientID: String, userAgent: String = "") {
-        queue = OperationQueue()
-        queue.name = "com.nolanw.ImgurAnonymousAPI"
-
-        urlSession = URLSession(configuration: {
-            let config = URLSessionConfiguration.ephemeral
-            var additionalHeaders = ["Authorization": "Client-ID \(clientID)"]
-            if !userAgent.isEmpty {
-                additionalHeaders["User-Agent"] = userAgent
-            }
-            config.httpAdditionalHeaders = additionalHeaders
-            return config
-        }())
+    public convenience init(clientID: String, bearerToken: String? = nil, userAgent: String = "") {
+        // Create a simple auth provider from the parameters
+        let authProvider = SimpleImgurAuthProvider(clientID: clientID, bearerToken: bearerToken)
+        self.init(authProvider: authProvider, userAgent: userAgent)
     }
 
     /**
@@ -101,17 +125,18 @@ public final class ImgurUploader {
     
     private let queue: OperationQueue
     private let urlSession: URLSession
+    private let authProvider: ImgurAuthProvider
 
     // MARK: - Photos.framework support
     
     #if canImport(Photos)
 
     /**
-     Anonymously uploads a Photos asset to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
+     Upload a Photos asset to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
      
      Animated images are somewhat supported: they are uploaded as-is, and if their file size is too large, they are not resized.
      
-     This upload uses Imgur API rate limit credits.
+     This upload uses Imgur API rate limit credits. Authenticated uploads have higher rate limits than anonymous ones.
      
      - Parameter asset: A Photos asset with at least one photo representation.
      - Parameter completion: A closure to call when the upload completes. The closure is always called on the main queue.
@@ -132,13 +157,13 @@ public final class ImgurUploader {
     #if canImport(UIKit)
     
     /**
-     Anonymously uploads a `UIImage` to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
+     Upload a `UIImage` to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
      
      Only `UIImage`s backed by `CGImage` are supported. `CIImage`-backed images will fail immediately.
      
      Animated images are somewhat supported: they are saved as a GIF and uploaded as-is, and if their file size is too large, they are not resized. The underlying image framework, ImageIO, is not known for its particularly optimized GIF output.
      
-     This upload uses Imgur API rate limit credits.
+     This upload uses Imgur API rate limit credits. Authenticated uploads have higher rate limits than anonymous ones.
      
      - Parameter image: An image instance (animated or not).
      - Parameter completion: A closure to call when the upload completes. The closure is always called on the main queue.
@@ -154,7 +179,7 @@ public final class ImgurUploader {
     #if canImport(UIKit) && !os(tvOS) && !os(watchOS)
 
     /**
-     Anonymously uploads a user-chosen image to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
+     Upload a user-chosen image to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
      
      This is a helper method that conveniently calls one of the other overloads of `upload(_completion:)` that take a `PHAsset` or a `UIImage`.
      
@@ -163,6 +188,8 @@ public final class ImgurUploader {
      Animated images are somewhat supported: if photo library access has been granted, the image data is uploaded as-is. If an animated image's file size is too large, it are not resized and the upload fails. Note that `UIImagePickerController` does not seem to provide animated instances of `UIImage`, so if the user has not authorized photo library access then only the first frame of an animated image is uploaded. Also note that, as mentioned, this method will never result in the user being asked to authorize photo library access; if your user is likely to pick an animated image for upload, consider requesting photo library authorization beforehand.
      
      Note that as of iOS 11 (?) you can use a `UIImagePickerController`, and pass the resulting info dictionary to this method, without bothering with `NSPhotoLibraryUsageDescription` or photo library authorization.
+     
+     This upload uses Imgur API rate limit credits. Authenticated uploads have higher rate limits than anonymous ones.
      
      - Parameter info: An info dictionary as passed to `UIImagePickerControllerDelegate.imagePickerController(_:didFinishPickingMediaWithInfo:)`.
      - Parameter completion: A closure to call when the upload completes. The closure is always called on the main queue.
@@ -317,7 +344,7 @@ public final class ImgurUploader {
     public struct RateLimit: Decodable {
         public let clientAllocation: Int
         public let clientRemaining: Int
-        // there’s no client reset date but it’s a "per day" thing (not sure what time zone)
+        // there's no client reset date but it's a "per day" thing (not sure what time zone)
         public let userAllocation: Int
         public let userRemaining: Int
         public let userResetDate: Date
@@ -451,3 +478,26 @@ internal func log(_ level: ImgurUploader.LogLevel, _ message: @autoclosure () ->
 }
 
 internal typealias Result = ImgurUploader.Result
+
+/// A simple implementation of ImgurAuthProvider that stores static values
+private class SimpleImgurAuthProvider: ImgurAuthProvider {
+    let clientID: String
+    private let _bearerToken: String?
+    
+    init(clientID: String, bearerToken: String? = nil) {
+        self.clientID = clientID
+        self._bearerToken = bearerToken
+    }
+    
+    var bearerToken: String? {
+        return _bearerToken
+    }
+    
+    var isAuthenticated: Bool {
+        return _bearerToken != nil
+    }
+    
+    func logout() {
+        // Nothing to do in this simple implementation
+    }
+}

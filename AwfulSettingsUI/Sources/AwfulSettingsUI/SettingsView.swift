@@ -33,6 +33,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.bookmarksSortedUnread) private var sortFirstUnreadBookmarks
     @AppStorage(Settings.forumThreadsSortedUnread) private var sortFirstUnreadThreads
     @AppStorage(Settings.automaticTimg) private var timgLargeImages
+    @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
 
     let appIconDataSource: AppIconDataSource
     let avatarURL: URL?
@@ -158,9 +159,22 @@ public struct SettingsView: View {
 
             Section {
                 Toggle("[timg] Large Images", bundle: .module, isOn: $timgLargeImages)
+                Picker("Imgur Uploads", bundle: .module, selection: $imgurUploadMode) {
+                    Text("Off").tag("Off")
+                    Text("Imgur Account").tag("Imgur Account")
+                    Text("Anonymous").tag("Anonymous")
+                }
+                .onChange(of: imgurUploadMode) { newValue in
+                    if newValue != "Imgur Account" {
+                        clearImgurCredentials()
+                    }
+                }
             } header: {
                 Text("Posting", bundle: .module)
                     .header()
+            } footer: {
+                Text("\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended.", bundle: .module)
+                    .footer()
             }
             .section()
 
@@ -296,6 +310,10 @@ public struct SettingsView: View {
         .tint(theme[color: "tint"]!)
         .backport.scrollContentBackground(.hidden)
         .background(theme[color: "background"]!)
+    }
+
+    private func clearImgurCredentials() {
+        NotificationCenter.default.post(name: Notification.Name("ClearImgurCredentials"), object: nil)
     }
 }
 

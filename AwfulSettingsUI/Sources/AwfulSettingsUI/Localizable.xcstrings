@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended." : {
+
+    },
     "[timg] Large Images" : {
 
     },
@@ -11,6 +14,9 @@
 
     },
     "Always Preview New Posts" : {
+
+    },
+    "Anonymous" : {
 
     },
     "App Icon" : {
@@ -103,6 +109,12 @@
     "Hide Sidebar in Landscape" : {
 
     },
+    "Imgur Account" : {
+
+    },
+    "Imgur Uploads" : {
+
+    },
     "Links" : {
 
     },
@@ -113,6 +125,9 @@
 
     },
     "Logging out erases all cached forums, threads, and posts." : {
+
+    },
+    "Off" : {
 
     },
     "Open Twitter in Twitter" : {

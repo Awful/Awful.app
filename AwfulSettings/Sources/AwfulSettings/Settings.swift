@@ -65,6 +65,9 @@ public enum Settings {
     /// Make the device vibrate when certain things happen.
     public static let enableHaptics = Setting(key: "enable_haptics", default: false)
 
+    /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
+    public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
+
     /// What percentage to multiply the default post font size by. Stored as percentage points, i.e. default is `100` aka "100% size" aka the default.
     public static let fontScale = Setting(key: "font_scale", default: 100.0)
 
@@ -144,6 +147,16 @@ public enum BuiltInTheme: String, UserDefaultsSerializable {
     case winpos95 = "Winpos 95"
     case yosposAmber = "YOSPOS (amber)"
     case yosposGreen = "YOSPOS"
+}
+
+/// The upload mode for Imgur images.
+public enum ImgurUploadMode: String, CaseIterable, UserDefaultsSerializable {
+    // These raw values are persisted in user defaults, so don't change them willy nilly.
+    case off = "Off"
+    case anonymous = "Anonymous"
+    case account = "Imgur Account"
+    
+    static var `default`: Self { .off }
 }
 
 /// The default browser set by the user via `UserDefaults` and `Settings.defaultBrowser`.

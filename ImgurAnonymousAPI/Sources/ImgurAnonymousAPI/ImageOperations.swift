@@ -100,6 +100,8 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile>, @unchecked S
                     kCGImageSourceCreateThumbnailWithTransform: true,
                     kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
                     kCGImageSourceShouldCache: false] as NSDictionary),
+
+                // This was originally kUTTypeTIFF in an attempt to preserve rotation data, but modern Imgur was rejecting tiff files. :-/
                 let destination = CGImageDestinationCreateWithURL(resizedImageURL as CFURL, CGImageSourceGetType(imageSource) ?? kUTTypePNG, 1, nil) else
             {
                 log(.error, "thumbnail creation failed")
@@ -246,14 +248,13 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile>, @unchecked S
     
     private func saveStatic() throws -> URL {
         let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
-        let imageURL = tempFolder.url.appendingPathComponent("original.tiff", isDirectory: false)
+        let imageURL = tempFolder.url.appendingPathComponent("original.png", isDirectory: false)
 
         guard let cgImage = image.cgImage else {
             throw ImageError.missingCGImage
         }
 
-        // Save as TIFF here to preserve orientation data (unlike PNG) with lossless image data (unlike JPEG).
-        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypeTIFF, 1, nil) else {
+        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypePNG, 1, nil) else {
             throw ImageError.destinationCreationFailed
         }
 
