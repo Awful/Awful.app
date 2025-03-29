@@ -20,12 +20,14 @@ final class MessageViewController: ViewController {
     private var composeVC: MessageComposeViewController?
     private var didLoadOnce = false
     private var didRender = false
+    @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     private var fractionalContentOffsetOnLoad: CGFloat = 0
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var loadingView: LoadingView?
+    private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private let privateMessage: PrivateMessage
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
@@ -124,6 +126,13 @@ final class MessageViewController: ViewController {
         }
     }
     
+    private func fetchOEmbed(url: URL, id: String) {
+        Task {
+            let callbackData = await oEmbedFetcher.fetch(url: url, id: id)
+            renderView.didFetchOEmbed(id: id, response: callbackData)
+        }
+    }
+    
     private func showUserActions(from rect: CGRect) {
         guard let user = privateMessage.from else { return }
         
@@ -192,11 +201,19 @@ final class MessageViewController: ViewController {
         
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
+        renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressWebView))
         longPress.delegate = self
         renderView.addGestureRecognizer(longPress)
-        
+
+        $embedBlueskyPosts
+            .dropFirst()
+            .filter { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.renderView.embedBlueskyPosts() }
+            .store(in: &cancellables)
+
         $embedTweets
             .dropFirst()
             .filter { $0 }
@@ -329,7 +346,10 @@ extension MessageViewController: RenderViewDelegate {
         
         loadingView?.removeFromSuperview()
         loadingView = nil
-        
+
+        if embedBlueskyPosts {
+            renderView.embedBlueskyPosts()
+        }
         if embedTweets {
             renderView.embedTweets()
         }
@@ -344,6 +364,9 @@ extension MessageViewController: RenderViewDelegate {
             
         case let didTapHeader as RenderView.BuiltInMessage.DidTapAuthorHeader:
             showUserActions(from: didTapHeader.frame)
+            
+        case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
+            fetchOEmbed(url: message.url, id: message.id)
             
         default:
             let description = "\(message)"
@@ -398,6 +421,7 @@ private struct RenderModel: StencilContextConvertible {
         var htmlContents: String? {
             guard let originalHTML = message.innerHTML else { return nil }
             let document = HTMLDocument(string: originalHTML)
+            document.addAttributeToBlueskyLinks()
             document.addAttributeToTweetLinks()
             if let username = FoilDefaultStorageOptional(Settings.username).wrappedValue {
                 document.identifyQuotesCitingUser(named: username, shouldHighlight: true)

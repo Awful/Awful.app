@@ -17,6 +17,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.darkMode) private var darkModeManuallyEnabled
     @AppStorage(Settings.defaultBrowser) private var defaultBrowser
     @AppStorage(Settings.jumpToPostEndOnDoubleTap) private var doubleTapPostToJump
+    @AppStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @AppStorage(Settings.embedTweets) private var embedTweets
     @AppStorage(Settings.enableHaptics) private var enableHaptics
     @AppStorage(Settings.fontScale) private var fontScale
@@ -144,6 +145,7 @@ public struct SettingsView: View {
                 Stepper("Scale Text \(fontScale.formatted())%", bundle: .module, value: $fontScale, in: 50...200, step: 10)
                 Toggle("Always Preview New Posts", bundle: .module, isOn: $alwaysPreviewNewPosts)
                 Toggle("Always Animate GIFs", bundle: .module, isOn: $alwaysAnimateGIFs)
+                Toggle("Embed Bluesky Posts", bundle: .module, isOn: $embedBlueskyPosts)
                 Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
                 Toggle("Double-Tap Post to Jump", bundle: .module, isOn: $doubleTapPostToJump)
                 Toggle("Enable Haptics", bundle: .module, isOn: $enableHaptics)

@@ -12,6 +12,76 @@ if (!window.Awful) {
 
 
 /**
+ Retrieves an OEmbed HTML fragment.
+ 
+ @param url The OEmbed URL.
+ @returns The OEmbed response, probably JSON of some kind.
+ @throws When the OEmbed response is unavailable.
+ */
+Awful.fetchOEmbed = async function(url) {
+  return new Promise((resolve, reject) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const id = [...new Array(8)].map(_ => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    waitingOEmbedResponses[id] = function(response) {
+      delete waitingOEmbedResponses[id];
+      if (response.error) {
+        reject(response.error);
+      } else {
+        resolve(response.body);
+      }
+    };
+    window.webkit.messageHandlers.fetchOEmbedFragment.postMessage({ id, url });
+  });
+};
+
+/**
+ Callback for fetchOEmbed.
+ 
+ @param id The value for the `id` key in the message body.
+ @param response An object with either a `body` key with the JSON response, or an `error` key explaining a failure.
+ */
+Awful.didFetchOEmbed = function(id, response) {
+  waitingOEmbedResponses[id]?.(response);
+};
+var waitingOEmbedResponses = {};
+
+
+/**
+ Turns apparent links to Bluesky posts into actual embedded Bluesky posts.
+ */
+Awful.embedBlueskyPosts = function() {
+  for (const a of document.querySelectorAll('a[data-bluesky-post]')) {
+    (async function() {
+      const search = new URLSearchParams();
+      search.set('url', a.href);
+      const url = `https://embed.bsky.app/oembed?${search}`;
+      try {
+        const oembed = await Awful.fetchOEmbed(url);
+        if (!oembed.html) {
+          return;
+        }
+        const div = document.createElement('div');
+        div.classList.add('bluesky-post');
+        div.innerHTML = oembed.html;
+        a.parentNode.replaceChild(div, a);
+        // <script> inserted via innerHTML won't execute, but we want whatever Bluesky script to run so it fetches the post content, so clone all <script>s.
+        for (const scriptNode of div.querySelectorAll('script')) {
+          const newScript = document.createElement('script');
+          newScript.text = scriptNode.innerHTML;
+          const attributes = scriptNode.attributes;
+          for (let i = 0, len = attributes.length; i < len; i++) {
+            newScript.setAttribute(attributes[i].name, attributes[i].value);
+          }
+          scriptNode.parentNode.replaceChild(newScript, scriptNode);
+        }
+      } catch (error) {
+        console.error(`Could not fetch OEmbed from ${url}: ${error}`);
+      }
+    })();
+  }
+};
+
+/**
  Turns apparent links to tweets into actual embedded tweets.
  */
 Awful.embedTweets = function() {
