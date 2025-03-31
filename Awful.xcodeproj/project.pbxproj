@@ -340,6 +340,7 @@
 		1C16FC171CD1848400C88BD1 /* ComposeTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeTextViewController.swift; sourceTree = "<group>"; };
 		1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPreviewViewController.swift; sourceTree = "<group>"; };
 		1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InAppActionSheet.xib; sourceTree = "<group>"; };
+		1C1CB8DB2D9A5D7800900BAA /* Local.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Local.entitlements; sourceTree = SOURCE_ROOT; };
 		1C1E57502C2521580075E3B6 /* platinum-member-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member-white.png"; sourceTree = "<group>"; };
 		1C1F0F0E2B8A8C9700F097D3 /* AwfulModelTypes */ = {isa = PBXFileReference; lastKnownFileType = text; path = AwfulModelTypes; sourceTree = SOURCE_ROOT; };
 		1C1F0F132B8B091600F097D3 /* AwfulTheming */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulTheming; sourceTree = "<group>"; };
@@ -652,6 +653,7 @@
 				1C15334E20708F140021A2BD /* Common-Debug.xcconfig */,
 				1C15334F20708F250021A2BD /* Common-Release.xcconfig */,
 				1C15334B20707EB10021A2BD /* Common.xcconfig */,
+				1C1CB8DB2D9A5D7800900BAA /* Local.entitlements */,
 				1C15335220709E950021A2BD /* Local.xcconfig */,
 			);
 			path = Config;

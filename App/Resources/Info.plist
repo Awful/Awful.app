@@ -97,5 +97,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>ImgurClientId</key>
+	<string>${IMGUR_CLIENT_ID}</string>
 </dict>
 </plist>

@@ -24,7 +24,7 @@ This app is not endorsed by Something Awful.
 
 Please drop by [the thread][current thread] if you could use a hand with any of these steps!
 
-You need Xcode 15 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
+You need Xcode 16 to build and run Awful. You can [download Xcode for free from Apple](https://developer.apple.com/download/). Then:
 
 1. Clone the repository: `git clone --recursive https://github.com/Awful/Awful.app Awful-app`
 2. Open the Xcode project and build away: `xed Awful-app`
