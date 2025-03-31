@@ -10,11 +10,6 @@ import AwfulSettings
 import KeychainAccess
 import AuthenticationServices
 
-// App-specific Imgur constants
-private enum AppImgurConstants {
-    static let clientID = "99240c4154dd0b4"
-}
-
 // MARK: - Imgur Auth Manager
 
 private let authLogger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ImgurAuthManager")
@@ -60,7 +55,10 @@ public final class ImgurAuthManager: NSObject, ImgurAuthProvider {
     // MARK: - ImgurAuthProvider Protocol
     
     public var clientID: String {
-        return AppImgurConstants.clientID
+        guard let clientID = Bundle.main.object(forInfoDictionaryKey: "ImgurClientId") as? String else {
+            fatalError("Missing Imgur client ID (is the IMGUR_CLIENT_ID build setting set, e.g. in Local.xcconfig?")
+        }
+        return clientID
     }
     
     public var isAuthenticated: Bool {

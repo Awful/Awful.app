@@ -5,3 +5,6 @@
 
 // To get builds running on your device, uncomment this next line and paste in your Team ID from the Developer Portal.
 // DEVELOPMENT_TEAM = YOUR_TEAM_ID_HERE
+
+// For Imgur functionality, obtain an Imgur API client ID by making a new one at http://api.imgur.com/oauth2/addclientor or using an existing one from https://imgur.com/account/settings/apps then specify the ID here.
+// IMGUR_CLIENT_ID = YOUR_CLIENT_ID_HERE
