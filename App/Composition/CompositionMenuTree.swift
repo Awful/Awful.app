@@ -7,12 +7,21 @@ import os
 import Photos
 import PSMenuItem
 import UIKit
+import AwfulSettings
+import Foil
+import ImgurAnonymousAPI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "CompositionMenuTree")
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 final class CompositionMenuTree: NSObject {
     // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
+    
+    @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
+    
+    fileprivate var imgurUploadsEnabled: Bool {
+        return imgurUploadMode != .off
+    }
     
     let textView: UITextView
     
@@ -75,6 +84,12 @@ final class CompositionMenuTree: NSObject {
     }
     
     func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
+        // Check if we need to authenticate with Imgur first
+        if ImgurAuthManager.shared.needsAuthentication {
+            authenticateWithImgur()
+            return
+        }
+        
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
         let mediaType = UTType.image
@@ -90,6 +105,108 @@ final class CompositionMenuTree: NSObject {
             }
         }
         textView.nearestViewController?.present(picker, animated: true, completion: nil)
+    }
+    
+    private func authenticateWithImgur() {
+        guard let viewController = textView.nearestViewController else { return }
+        
+        // Show an alert to explain why authentication is needed
+        let alert = UIAlertController(
+            title: "Imgur Authentication Required",
+            message: "You've enabled Imgur Account uploads in settings. To upload images with your account, you'll need to log in to Imgur.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Log In", style: .default) { _ in
+            // Show loading indicator
+            let loadingAlert = UIAlertController(
+                title: "Connecting to Imgur",
+                message: "Please wait...",
+                preferredStyle: .alert
+            )
+            viewController.present(loadingAlert, animated: true)
+            
+            ImgurAuthManager.shared.authenticate(from: viewController) { success in
+                // Dismiss loading indicator
+                DispatchQueue.main.async {
+                    loadingAlert.dismiss(animated: true) {
+                        if success {
+                            // If authentication was successful, continue with the upload
+                            // Show a success message
+                            let successAlert = UIAlertController(
+                                title: "Successfully Logged In",
+                                message: "You're now logged in to Imgur and can upload images with your account.",
+                                preferredStyle: .alert
+                            )
+                            
+                            successAlert.addAction(UIAlertAction(title: "Continue", style: .default) { _ in
+                                // Continue with image picker after successful authentication
+                                self.showImagePicker(.photoLibrary)
+                            })
+                            
+                            viewController.present(successAlert, animated: true)
+                        } else {
+                            // Check if it's a rate limiting issue (check logs from ImgurAuthManager)
+                            let isRateLimited = UserDefaults.standard.bool(forKey: ImgurAuthManager.DefaultsKeys.rateLimited)
+                            
+                            if isRateLimited {
+                                // Show specific rate limiting error
+                                let rateLimitAlert = UIAlertController(
+                                    title: "Imgur Rate Limit Exceeded",
+                                    message: "Imgur's API is currently rate limited. You can try again later or use anonymous uploads for now.",
+                                    preferredStyle: .alert
+                                )
+                                
+                                rateLimitAlert.addAction(UIAlertAction(title: "Use Anonymous Uploads", style: .default) { _ in
+                                    // Switch to anonymous uploads for this session
+                                    self.imgurUploadMode = .anonymous
+                                    // Continue with image picker
+                                    self.showImagePicker(.photoLibrary)
+                                })
+                                
+                                rateLimitAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                                
+                                viewController.present(rateLimitAlert, animated: true)
+                            } else {
+                                // General authentication failure
+                                let failureAlert = UIAlertController(
+                                    title: "Authentication Failed",
+                                    message: "Could not log in to Imgur. You can try again or choose anonymous uploads in settings.",
+                                    preferredStyle: .alert
+                                )
+                                
+                                failureAlert.addAction(UIAlertAction(title: "Try Again", style: .default) { _ in
+                                    // Try authentication again
+                                    self.authenticateWithImgur()
+                                })
+                                
+                                failureAlert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { _ in
+                                    // Use anonymous uploads for this session
+                                    self.imgurUploadMode = .anonymous
+                                    // Continue with image picker
+                                    self.showImagePicker(.photoLibrary)
+                                })
+                                
+                                failureAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                                
+                                viewController.present(failureAlert, animated: true)
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        
+        alert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { _ in
+            // Use anonymous uploads just for this session
+            self.imgurUploadMode = .anonymous
+            // Show image picker with anonymous uploads
+            self.showImagePicker(.photoLibrary)
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        viewController.present(alert, animated: true)
     }
     
     func insertImage(_ image: UIImage, withAssetIdentifier assetID: String? = nil) {
@@ -202,11 +319,17 @@ fileprivate let rootItems = [
         original line: MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
      */
     MenuItem(title: "[img]", action: { tree in
-        if UIPasteboard.general.coercedURL == nil {
-            linkifySelection(tree)
+        // If Imgur uploads are enabled in settings, show the full image submenu
+        // Otherwise, only allow pasting URLs
+        if tree.imgurUploadsEnabled {
+            tree.showSubmenu(imageItems)
         } else {
-            if let textRange = tree.textView.selectedTextRange {
-                tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
+            if UIPasteboard.general.coercedURL == nil {
+                linkifySelection(tree)
+            } else {
+                if let textRange = tree.textView.selectedTextRange {
+                    tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
+                }
             }
         }
     }),

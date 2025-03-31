@@ -6,6 +6,7 @@ import AwfulSettings
 import AwfulTheming
 import MRProgress
 import UIKit
+import ImgurAnonymousAPI
 
 class ComposeTextViewController: ViewController {
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
@@ -196,6 +197,49 @@ class ComposeTextViewController: ViewController {
                 if let error = error as? CocoaError, error.code == .userCancelled {
                     self?.focusInitialFirstResponder()
                     return
+                }
+                
+                // Handle Imgur authentication errors
+                if let imgurError = error as? ImageUploadError {
+                    switch imgurError {
+                    case .authenticationRequired:
+                        // Present authentication flow
+                        let presenter = self?.navigationController ?? self
+                        let alert = UIAlertController(
+                            title: imgurError.errorDescription ?? "Authentication Required",
+                            message: imgurError.failureReason ?? "You need to log in to Imgur to upload images with your account.",
+                            preferredStyle: .alert
+                        )
+                        
+                        alert.addAction(UIAlertAction(title: "Log In", style: .default) { _ in
+                            guard let viewController = self?.navigationController ?? self else { return }
+                            ImgurAuthManager.shared.authenticate(from: viewController) { success in
+                                if success {
+                                    // If authentication was successful, try submitting again
+                                    DispatchQueue.main.async {
+                                        self?.submit()
+                                    }
+                                } else {
+                                    // Show failure message
+                                    let failureAlert = UIAlertController(
+                                        title: "Authentication Failed",
+                                        message: "Could not log in to Imgur. You can try again or switch to anonymous uploads in settings.",
+                                        alertActions: [.ok()]
+                                    )
+                                    viewController.present(failureAlert, animated: true)
+                                }
+                            }
+                        })
+                        
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                            self?.focusInitialFirstResponder()
+                        })
+                        
+                        presenter?.present(alert, animated: true)
+                        return
+                    default:
+                        break
+                    }
                 }
 
                 // In case we're covered up by subsequent view controllers (console message about "detached view controllers"), aim for our navigation controller.

@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "foil",
+      "kind" : "remoteSourceControl",
+      "location" : "http://github.com/jessesquires/Foil",
+      "state" : {
+        "revision" : "ff4b49d2e7852f876ded552fb596e510a66670b9",
+        "version" : "5.1.2"
+      }
+    },
+    {
+      "identity" : "htmlreader",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nolanw/HTMLReader",
+      "state" : {
+        "revision" : "d4003bf59feead2361f684a372123eae0afe104f",
+        "version" : "2.2.1"
+      }
+    },
+    {
+      "identity" : "lottie-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-ios.git",
+      "state" : {
+        "revision" : "047aa81b77adcbf583a966dfef620d17650cc656",
+        "version" : "4.5.1"
+      }
+    },
+    {
+      "identity" : "nuke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Nuke",
+      "state" : {
+        "revision" : "0ead44350d2737db384908569c012fe67c421e4d",
+        "version" : "12.8.0"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -11,6 +11,34 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "UploadImageAttachments")
 
+enum ImageUploadError: Error, LocalizedError {
+    case missingIdentifiedAsset
+    case authenticationRequired
+    case authenticationFailed
+    
+    var errorDescription: String? {
+        switch self {
+        case .missingIdentifiedAsset:
+            return "Missing photo asset"
+        case .authenticationRequired:
+            return "Imgur Authentication Required"
+        case .authenticationFailed:
+            return "Imgur Authentication Failed"
+        }
+    }
+    
+    var failureReason: String? {
+        switch self {
+        case .missingIdentifiedAsset:
+            return "Could not find the photo in your library."
+        case .authenticationRequired:
+            return "You need to log in to Imgur to upload images with your account."
+        case .authenticationFailed:
+            return "Could not log in to Imgur. Please try again or switch to anonymous uploads in settings."
+        }
+    }
+}
+
 /**
     Replaces image attachments in richText with [img] tags by uploading the images anonymously to Imgur.
  
@@ -20,6 +48,22 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
  */
 func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping (_ plainText: String?, _ error: Error?) -> Void) -> Progress {
     let progress = Progress(totalUnitCount: 1)
+    
+    // Check if we need authentication before proceeding
+    if ImgurAuthManager.shared.needsAuthentication {
+        DispatchQueue.main.async {
+            completion(nil, ImageUploadError.authenticationRequired)
+        }
+        return progress
+    }
+    
+    // Check if token needs refresh
+    if ImgurAuthManager.shared.currentUploadMode == "Imgur Account" && ImgurAuthManager.shared.checkTokenExpiry() {
+        DispatchQueue.main.async {
+            completion(nil, ImageUploadError.authenticationRequired)
+        }
+        return progress
+    }
     
     let localCopy = richText.copy() as! NSAttributedString
     DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
@@ -34,6 +78,14 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
         let localerCopy = localCopy.mutableCopy() as! NSMutableAttributedString
         let uploadProgress = uploadImages(fromSources: tags.map { $0.source }, completion: { (urls, error) in
             if let error = error {
+                // If we get an authentication-related error from Imgur, clear the token and report it as auth error
+                if let imgurError = error as? ImgurUploader.Error, imgurError == .invalidClientID {
+                    ImgurAuthManager.shared.logout() // Clear the token as it may be invalid
+                    return DispatchQueue.main.async {
+                        completion(nil, ImageUploadError.authenticationFailed)
+                    }
+                }
+                
                 return DispatchQueue.main.async {
                     completion(nil, error)
                 }
@@ -120,10 +172,6 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
     }
     
     return progress
-}
-
-enum ImageUploadError: Error {
-    case missingIdentifiedAsset
 }
 
 private struct ImageTag {
