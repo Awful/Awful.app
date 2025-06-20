@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
+    "%@" : {
+
+    },
     "action.share-url" : {
       "comment" : "Title of the share URL action for an announcement, post, or thread.",
       "extractionState" : "manual",
@@ -32,6 +38,9 @@
       }
     },
     "Author Profile" : {
+
+    },
+    "Back" : {
 
     },
     "bookmarks.title" : {
@@ -280,6 +289,12 @@
 
     },
     "Double-check your username and password, then try again." : {
+
+    },
+    "Example searches:" : {
+
+    },
+    "Exit" : {
 
     },
     "Five" : {
@@ -644,6 +659,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Page %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Page %1$lld of %2$lld"
           }
         }
       }
@@ -1031,6 +1056,21 @@
         }
       }
     },
+    "Search" : {
+
+    },
+    "Search Forums" : {
+
+    },
+    "Search forums..." : {
+
+    },
+    "Search Results" : {
+
+    },
+    "Select Forums" : {
+
+    },
     "session-expiry-imminent.message" : {
       "comment" : "Message of an alert shown on launch if the user's session expires within a week. Parameter is the expiry date.",
       "extractionState" : "migrated",
@@ -1180,6 +1220,9 @@
           }
         }
       }
+    },
+    "Toggle All" : {
+
     },
     "V" : {
 
