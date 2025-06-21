@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -542,6 +542,10 @@
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2D2C221E2E063387000C275D /* Documentation */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Documentation; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1C3A143019DFC5D10022C44C /* Frameworks */ = {
@@ -1138,6 +1142,7 @@
 				1CDAC8602AE10966006CEE88 /* Smilies */,
 				1C66A9BA19DD3017001B9A41 /* Smilies Extra */,
 				1C4D63842B6704CA005EB25C /* SystemCapabilities */,
+				2D2C221E2E063387000C275D /* Documentation */,
 				1190F76913BE4ECB00B9D271 /* Vendor */,
 			);
 			name = Awful;
