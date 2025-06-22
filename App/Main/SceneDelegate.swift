@@ -1,4 +1,7 @@
 import AwfulCore
+import AwfulSettings
+import AwfulTheming
+import Combine
 import SwiftUI
 import UIKit
 
@@ -10,12 +13,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
 
+        let awfulApp = MainView().themed()
+
         if ForumsClient.shared.isLoggedIn {
-            window.rootViewController = UIHostingController(rootView: MainView())
+            let hostingController = UIHostingController(rootView: awfulApp)
+            hostingController.view.backgroundColor = .clear
+            
+            let navigationController = NavigationController(rootViewController: hostingController)
+            navigationController.isNavigationBarHidden = true
+            
+            window.rootViewController = navigationController
         } else {
             let login = LoginViewController.newFromStoryboard()
-            login.completionBlock = { [weak self] _ in
-                self?.window?.rootViewController = UIHostingController(rootView: MainView())
+        login.completionBlock = { [weak self] _ in
+                let hostingController = UIHostingController(rootView: awfulApp)
+                hostingController.view.backgroundColor = .clear
+                
+                let navigationController = NavigationController(rootViewController: hostingController)
+                navigationController.isNavigationBarHidden = true
+                
+                self?.window?.rootViewController = navigationController
             }
             window.rootViewController = login
         }

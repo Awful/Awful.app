@@ -7,6 +7,8 @@ import PullToRefresh
 import SwiftUI
 import UIKit
 import WebKit
+import Combine
+import AwfulSettings
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Theming")
 
@@ -88,6 +90,8 @@ open class ViewController: UIViewController, Themeable {
 }
 
 open class HostingController<Content: View>: UIHostingController<Content>, Themeable {
+    private var cancellables: Set<AnyCancellable> = []
+    @FoilDefaultStorage(Settings.darkMode) private var darkMode
 
     /**
      The theme to use for the view controller (not necessarily the hosted view; in SwiftUI, use `@Environment(\.theme)`). Defaults to `Theme.defaultTheme()`.
@@ -98,10 +102,24 @@ open class HostingController<Content: View>: UIHostingController<Content>, Theme
 
     open override func viewDidLoad() {
         super.viewDidLoad()
+        
+        $darkMode
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                // Awful a little too fast for its own good; let the system finish its transition first.
+                DispatchQueue.main.async {
+                    self?.themeDidChange()
+                }
+            }
+            .store(in: &cancellables)
+
         themeDidChange()
     }
 
     open func themeDidChange() {
+        view.backgroundColor = .clear
+
         if theme[bool: "showRootTabBarLabel"] == false {
             tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
             tabBarItem.title = nil
@@ -109,6 +127,33 @@ open class HostingController<Content: View>: UIHostingController<Content>, Theme
             tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             tabBarItem.title = title
         }
+        
+        let theme = self.theme
+        let itemAppearance = UITabBarItemAppearance()
+        itemAppearance.normal.iconColor = theme["tabBarIconColor"]
+        itemAppearance.selected.iconColor = theme["tabBarSelectedIconColor"]
+
+        if theme[bool: "showRootTabBarLabel"] == false {
+            itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
+            itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        } else {
+            if let textColor = theme[uicolor: "tabBarTextColor"] {
+                itemAppearance.normal.titleTextAttributes = [.foregroundColor: textColor]
+            }
+            if let selectedTextColor = theme[uicolor: "tabBarSelectedTextColor"] {
+                itemAppearance.selected.titleTextAttributes = [.foregroundColor: selectedTextColor]
+            }
+        }
+
+        let tabAppearance = UITabBarAppearance()
+        tabAppearance.configureWithOpaqueBackground()
+        tabAppearance.backgroundColor = theme["tabBarBackgroundColor"]
+        tabAppearance.stackedLayoutAppearance = itemAppearance
+        tabAppearance.inlineLayoutAppearance = itemAppearance
+        tabAppearance.compactInlineLayoutAppearance = itemAppearance
+        
+        tabBarController?.tabBar.standardAppearance = tabAppearance
+        tabBarController?.tabBar.scrollEdgeAppearance = tabAppearance
     }
 }
 

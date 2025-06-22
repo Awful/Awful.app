@@ -15,6 +15,8 @@ import WebKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AppDelegate")
 
+private var themeObserver: AnyCancellable?
+
 extension Notification.Name {
     static let didRemotelyLogOut = Notification.Name("AwfulDidRemotelyLogOut")
 }
@@ -71,6 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             diskPath: "AwfulCache")
 
         configureAudioSession()
+        configureTheme()
         configureRefreshers()
         
         return true
@@ -92,6 +95,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return nil
     }
 
+    func configureTheme() {
+        // Theme configuration is now handled by ThemedHostingController in SceneDelegate
+        // This method is kept for compatibility but no longer configures appearance
+    }
+
     @objc private func forumSpecificThemeDidChange(_ notification: Notification) {
         // NOP
     }
@@ -105,7 +113,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func showSnapshotDuringThemeDidChange() {
-        // NOP
+        guard
+            let scene = UIApplication.shared.connectedScenes.first(where: {
+                $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive
+            }) as? UIWindowScene,
+            let window = scene.windows.first,
+            let snapshot = window.snapshotView(afterScreenUpdates: false)
+        else { return }
+        
+        window.addSubview(snapshot)
+        
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.2, animations: {
+                snapshot.alpha = 0
+            }, completion: { _ in
+                snapshot.removeFromSuperview()
+            })
+        }
     }
     
     private func setShowAvatarsSetting() {
@@ -159,11 +183,17 @@ private extension AppDelegate {
                 .sink { [weak self] _ in self?.automaticallyUpdateDarkModeEnabledIfNecessary() }
                 .store(in: &cancellables)
 
-            $darkMode
+            themeObserver = $darkMode
                 .dropFirst()
                 .receive(on: RunLoop.main)
-                .sink { [weak self] _ in self?.showSnapshotDuringThemeDidChange() }
-                .store(in: &cancellables)
+                .sink { [weak self] _ in
+                    self?.showSnapshotDuringThemeDidChange()
+                    
+                    // Awful a little too fast for its own good; let the system finish its transition first.
+                    DispatchQueue.main.async {
+                        self?.configureTheme()
+                    }
+                }
 
             let darkDefaultChange = $defaultDarkTheme
                 .dropFirst()

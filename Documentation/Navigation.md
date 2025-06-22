@@ -45,7 +45,24 @@ The navigation hierarchy is established in `RootViewControllerStack`.
 
 The entire system relies on a significant amount of custom code for state restoration, theming, and managing the visibility of the primary pane in the split view, with many comments in the code pointing out the "ugly" but necessary nature of these fixes.
 
-## 5. Legacy Code & Modernization Plan
+## 5. SwiftUI-Based Navigation (June 2025)
+
+As of June 2025, the application's root navigation has been migrated from the legacy `RootViewControllerStack` and `UISplitViewController` to a modern, SwiftUI-based approach. This resolves many of the pain points outlined in the "Legacy Code & Modernization Plan" section.
+
+### Key Changes
+
+-   **`MainView.swift`**: This new SwiftUI `View` is the root of the logged-in user interface. It replaces the `RootViewControllerStack`.
+-   **`TabView`**: `MainView` uses a SwiftUI `TabView` to manage the primary navigation between Forums, Bookmarks, Messages, Lepers, and Settings. This replaces the old `RootTabBarController` and its associated Storyboard.
+-   **`AwfulUIViewControllerRepresentable`**: To bridge the new SwiftUI container with the existing UIKit-based view controllers, a generic `AwfulUIViewControllerRepresentable` wrapper is used. Each tab's content is a UIKit `UIViewController` (e.g., `ForumsTableViewController`) wrapped in this representable struct.
+-   **Theming**:
+    -   Global tab bar appearance is now configured in `AppDelegate`'s `configureTheme()` method, which sets `UITabBar.appearance()` based on the selected Awful theme. This is triggered at app launch and when the user toggles dark mode.
+    -   Navigation bar theming is handled within `NavigationController`, which now subscribes to dark mode changes and calls `themeDidChange()` to update its appearance.
+
+### Current Status
+
+While the main navigation container is now SwiftUI, the individual screens (Forums, Bookmarks, etc.) remain UIKit-based `UITableViewController` subclasses. The `AwfulUIViewControllerRepresentable` acts as the bridge between the two paradigms. This migration has successfully eliminated the most fragile parts of the old navigation system, including the custom split view controller and the numerous iOS version-specific workarounds.
+
+## 6. Legacy Code & Modernization Plan
 
 The current navigation system is a product of its time, built to support older iOS versions and work around their specific bugs. This makes it fragile and difficult to maintain, especially as new OS versions are released. The user has noted that it is already failing with the toolbar/tabbar changes.
 

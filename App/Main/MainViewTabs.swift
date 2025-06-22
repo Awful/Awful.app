@@ -27,11 +27,21 @@ enum Tab: CaseIterable, Identifiable {
     
     var image: String {
         switch self {
-        case .forums: return "list.bullet"
-        case .bookmarks: return "book"
-        case .messages: return "envelope"
-        case .lepers: return "person.crop.circle.badge.xmark"
-        case .settings: return "gear"
+        case .forums: return "forum-list"
+        case .bookmarks: return "bookmarks"
+        case .messages: return "pm-icon"
+        case .lepers: return "lepers"
+        case .settings: return "cog"
+        }
+    }
+    
+    var selectedImage: String {
+        switch self {
+        case .forums: return "forum-list-filled"
+        case .bookmarks: return "bookmarks-filled"
+        case .messages: return "pm-icon-filled"
+        case .lepers: return "lepers-filled"
+        case .settings: return "cog-filled"
         }
     }
     
@@ -40,7 +50,7 @@ enum Tab: CaseIterable, Identifiable {
         case .forums: return "Forums"
         case .bookmarks: return "Bookmarks"
         case .messages: return "Messages"
-        case .lepers: return "Leper's Colony"
+        case .lepers: return "Lepers"
         case .settings: return "Settings"
         }
     }

@@ -1,3 +1,4 @@
+import AwfulTheming
 import SwiftUI
 
 @main
@@ -7,6 +8,7 @@ struct AwfulApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()
+                .themed()
         }
     }
 } 

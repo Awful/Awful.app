@@ -17,10 +17,18 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         self.managedObjectContext = managedObjectContext
 
         let currentUser = managedObjectContext.performAndWait {
-            User.objectForKey(objectKey: UserKey(
-                userID: UserDefaults.standard.value(for: Settings.userID)!,
-                username: UserDefaults.standard.value(for: Settings.username)
-            ), in: managedObjectContext)
+            if let userID = UserDefaults.standard.value(for: Settings.userID) as? String, !userID.isEmpty {
+                return User.objectForKey(objectKey: UserKey(
+                    userID: userID,
+                    username: UserDefaults.standard.value(for: Settings.username) as? String
+                ), in: managedObjectContext)
+            } else {
+                // Provide a placeholder user for situations like SwiftUI previews where no user defaults are set.
+                let placeholder = User.insert(into: managedObjectContext)
+                placeholder.userID = "0"
+                placeholder.username = "Preview User"
+                return placeholder
+            }
         }
 
         // Allows indirect passing of `self` into root view actions before super.init().

@@ -2,7 +2,9 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulSettings
 import AwfulTheming
+import Combine
 import UIKit
 
 /**
@@ -14,12 +16,17 @@ import UIKit
  - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
  */
 final class NavigationController: UINavigationController, Themeable {
+    private var cancellables: Set<AnyCancellable> = []
     fileprivate weak var realDelegate: UINavigationControllerDelegate?
     fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return nil }
         return UnpoppingViewHandler(navigationController: self)
     }()
     fileprivate var pushAnimationInProgress = false
+    @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    
+    // View that sits behind the status bar to apply theme color
+    private let statusBarBackgroundView = UIView()
     
     // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
     
@@ -29,8 +36,18 @@ final class NavigationController: UINavigationController, Themeable {
     
     required init() {
         super.init(navigationBarClass: NavigationBar.self, toolbarClass: Toolbar.self)
-        restorationClass = type(of: self)
         delegate = self
+
+        $darkMode
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                // Awful a little too fast for its own good; let the system finish its transition first.
+                DispatchQueue.main.async {
+                    self?.themeDidChange()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     override convenience init(rootViewController: UIViewController) {
@@ -110,12 +127,24 @@ final class NavigationController: UINavigationController, Themeable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        themeDidChange()
+        view.backgroundColor = theme["navigationBarTintColor"]
         
+        // Add status bar background view
+        statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(statusBarBackgroundView)
+        NSLayoutConstraint.activate([
+            statusBarBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            statusBarBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            statusBarBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            statusBarBackgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4)
+        ])
+        
+        themeDidChange()
         interactivePopGestureRecognizer?.delegate = self
     }
     
     func themeDidChange() {
+        statusBarBackgroundView.backgroundColor = theme["navigationBarTintColor"]
         awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
         awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
@@ -123,17 +152,17 @@ final class NavigationController: UINavigationController, Themeable {
 
         if theme["statusBarBackground"] == "light" {
             statusBarEnterLightBackground()
+            awfulNavigationBar.barStyle = .default
         } else {
             statusBarEnterDarkBackground()
+            awfulNavigationBar.barStyle = .black
         }
 
         if #available(iOS 15.0, *) {
             // Fix odd grey navigation bar background when scrolled to top on iOS 15.
             let appearance = UINavigationBarAppearance()
-            appearance.configureWithOpaqueBackground()
+            appearance.configureWithTransparentBackground()
             appearance.backgroundColor = theme["navigationBarTintColor"]
-            appearance.shadowColor = nil
-            appearance.shadowImage = nil
             
             let textColor: UIColor? = theme["navigationBarTextColor"]
             appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
@@ -248,26 +277,10 @@ extension NavigationController: UINavigationControllerDelegate {
     }
     
     func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        if let unpopHandler = unpopHandler, animationController === unpopHandler {
-            return unpopHandler
-        }
-        
-        return realDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
+        return (realDelegate as? UINavigationControllerDelegate)?.navigationController?(navigationController, interactionControllerFor: animationController)
     }
     
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let unpopHandler = unpopHandler , unpopHandler.shouldHandleAnimatingTransitionForOperation(operation) {
-            return unpopHandler
-        }
-        
-        return realDelegate?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
-    }
-}
-
-extension NavigationController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let nav = self.init()
-        nav.restorationIdentifier = identifierComponents.last
-        return nav
+        return (realDelegate as? UINavigationControllerDelegate)?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
     }
 }
