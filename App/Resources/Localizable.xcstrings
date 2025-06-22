@@ -408,7 +408,7 @@
         }
       }
     },
-    "Leper’s Colony" : {
+    "Leper's Colony" : {
 
     },
     "Lepers" : {
@@ -638,7 +638,7 @@
     },
     "ok" : {
       "comment" : "Title of a button that acknowledges information without offering any choice.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1031,9 +1031,12 @@
         }
       }
     },
+    "Select an item" : {
+
+    },
     "session-expiry-imminent.message" : {
       "comment" : "Message of an alert shown on launch if the user's session expires within a week. Parameter is the expiry date.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1045,7 +1048,7 @@
     },
     "session-expiry-imminent.title" : {
       "comment" : "Title of an alert shown on launch if the user's session expires within a week.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {

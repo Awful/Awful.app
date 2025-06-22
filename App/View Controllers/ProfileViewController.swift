@@ -183,12 +183,8 @@ extension ProfileViewController: RenderViewDelegate {
     
     func didTapLink(to url: URL, in view: RenderView) {
         if let route = try? AwfulRoute(url) {
-            AppDelegate.instance.open(route: route)
-        }
-        else if url.opensInBrowser {
-            URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)
-        }
-        else {
+            NotificationCenter.default.post(name: .route, object: route)
+        } else {
             UIApplication.shared.open(url)
         }
     }

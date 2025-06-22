@@ -7,6 +7,10 @@ import AwfulTheming
 import ScrollViewDelegateMultiplexer
 import UIKit
 
+extension Notification.Name {
+    static let route = Notification.Name("AwfulRoute")
+}
+
 /// Displays a list of probations and bans.
 final class RapSheetViewController: TableViewController {
     
@@ -35,7 +39,7 @@ final class RapSheetViewController: TableViewController {
         super.init(style: .plain)
         
         if user == nil {
-            title = String(localized: "Leper’s Colony", bundle: .module)
+            title = String(localized: "Leper's Colony", bundle: .module)
             // Tab bar item title is set in `themeDidChange()` as some themes do not show titles.
             tabBarItem.image = UIImage(named: "lepers")
             tabBarItem.selectedImage = UIImage(named: "lepers-filled")
@@ -234,7 +238,7 @@ final class RapSheetViewController: TableViewController {
         let punishment = punishments[indexPath.row] as! LepersColonyScrapeResult.Punishment
         guard let postID = punishment.post?.rawValue else { return }
 
-        AppDelegate.instance.open(route: .post(id: postID, .noseen))
+        NotificationCenter.default.post(name: .route, object: AwfulRoute.post(id: postID, .noseen))
 
         if presentingViewController != nil {
             dismiss(animated: true)

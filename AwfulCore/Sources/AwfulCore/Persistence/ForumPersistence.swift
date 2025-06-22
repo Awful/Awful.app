@@ -39,7 +39,7 @@ extension ForumBreadcrumbsScrapeResult {
         var unorderedForums: [ForumID: Forum] = [:]
         let knownForums = Forum.fetch(in: context) {
             let rawForumIDs = rawForums.map { $0.id.rawValue }
-            $0.predicate = .init("\(\Forum.forumID) in \(rawForumIDs)")
+            $0.predicate = .init(format: "forumID IN %@", rawForumIDs)
             $0.returnsObjectsAsFaults = false
         }
         for forum in knownForums {

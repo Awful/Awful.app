@@ -76,7 +76,7 @@ private enum _URLMenuPresenter {
             if browsers.contains(.awful) && (route != nil || isHTTP) {
                 actions.append(.default(title: LocalizedString("link-action.open-in-awful")) {
                     if let route = try? AwfulRoute(linkURL) {
-                        AppDelegate.instance.open(route: route)
+                        NotificationCenter.default.post(name: .route, object: route)
                     } else {
                         AwfulBrowser.presentBrowserForURL(linkURL, fromViewController: presenter)
                     }

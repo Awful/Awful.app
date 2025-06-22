@@ -82,8 +82,6 @@ final class AnnouncementViewController: ViewController {
 
         hidesBottomBarWhenPushed = true
 
-        restorationClass = type(of: self)
-
         title = !announcement.title.isEmpty
             ? announcement.title
             : LocalizedString("announcements.title")
@@ -314,6 +312,23 @@ final class AnnouncementViewController: ViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: - Awful vanilla functions
+    
+    // Removed unused helper functions that referenced undefined types.
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let url = navigationAction.request.url, navigationAction.navigationType == .linkActivated, let route = try? AwfulRoute(url) {
+            NotificationCenter.default.post(name: .route, object: route)
+            decisionHandler(.cancel)
+        } else {
+            decisionHandler(.allow)
+        }
+    }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        // ... existing code ...
+    }
 }
 
 extension AnnouncementViewController: UIViewControllerRestoration {
@@ -519,7 +534,7 @@ extension AnnouncementViewController: RenderViewDelegate {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         if let route = try? AwfulRoute(url) {
-            AppDelegate.instance.open(route: route)
+            NotificationCenter.default.post(name: .route, object: route)
         }
         else if url.opensInBrowser {
             URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: self)

@@ -30,7 +30,14 @@
     If you use PSMenuItem with the classic initWithTitle:selector initializer,
     this will work and be handled just like a UIMenuItem.
  */
+
+// Suppress deprecation warnings for UIMenuItem on iOS 16+.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 @interface PSMenuItem : UIMenuItem
+
+#pragma clang diagnostic pop
 
 // Initialize PSMenuItem with a block.
 - (id)initWithTitle:(NSString *)title block:(void(^)(void))block;

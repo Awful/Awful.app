@@ -14,15 +14,14 @@ struct AwfulURLRouter {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let managedObjectContext: NSManagedObjectContext
-    private let rootViewController: UIViewController
+    private let window: UIWindow
     
     /**
-        - parameter rootViewController: The application's root view controller.
-        - parameter managedObjectContext: The managed object context we use to find forums, threads, and posts.
+        - parameter window: The application's key window.
      */
-    init(rootViewController: UIViewController, managedObjectContext: NSManagedObjectContext) {
-        self.rootViewController = rootViewController
-        self.managedObjectContext = managedObjectContext
+    init(window: UIWindow) {
+        self.window = window
+        self.managedObjectContext = AppDelegate.instance.managedObjectContext
     }
     
     /// Show the screen appropriate for an "awful" URL.
@@ -47,7 +46,7 @@ struct AwfulURLRouter {
 
         case .lepersColony:
             let rapSheetVC = RapSheetViewController(user: nil)
-            rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
+            window.rootViewController?.present(rapSheetVC.enclosingNavigationController, animated: true)
             return true
 
         case let .message(id: messageID):
@@ -60,7 +59,7 @@ struct AwfulURLRouter {
                 return true
             }
 
-            guard let rootView = rootViewController.view else { return false }
+            guard let rootView = window.rootViewController?.view else { return false }
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)!
             overlay.tintColor = Theme.defaultTheme()["tintColor"]
 
@@ -100,7 +99,7 @@ struct AwfulURLRouter {
                 return showPostsViewController(postsVC)
             }
 
-            guard let rootView = rootViewController.view else { return false }
+            guard let rootView = window.rootViewController?.view else { return false }
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)!
             overlay.tintColor = Theme.defaultTheme()["tintColor"]
 
@@ -135,10 +134,10 @@ struct AwfulURLRouter {
                 do {
                     let user = try await fetchUser(withUserID: userID)
                     let profileVC = ProfileViewController(user: user)
-                    rootViewController.present(profileVC.enclosingNavigationController, animated: true)
+                    window.rootViewController?.present(profileVC.enclosingNavigationController, animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    rootViewController.present(alert, animated: true)
+                    window.rootViewController?.present(alert, animated: true)
                 }
             }
             return true
@@ -148,10 +147,10 @@ struct AwfulURLRouter {
                 do {
                     let user = try await fetchUser(withUserID: userID)
                     let rapSheetVC = RapSheetViewController(user: user)
-                    rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
+                    window.rootViewController?.present(rapSheetVC.enclosingNavigationController, animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
-                    rootViewController.present(alert, animated: true)
+                    window.rootViewController?.present(alert, animated: true)
                 }
             }
             return true
@@ -171,14 +170,14 @@ struct AwfulURLRouter {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        if let threadsVC = rootViewController.firstDescendant(ofType: ThreadsTableViewController.self),
+        if let threadsVC = window.rootViewController?.firstDescendant(ofType: ThreadsTableViewController.self),
            threadsVC.forum === forum
         {
             _ = threadsVC.navigationController?.popToViewController(threadsVC, animated: true)
             return selectTopmostViewController(containingViewControllerOfClass: ThreadsTableViewController.self) != nil
         }
         
-        if let forumsVC = rootViewController.firstDescendant(ofType: ForumsTableViewController.self) {
+        if let forumsVC = window.rootViewController?.firstDescendant(ofType: ForumsTableViewController.self) {
             _ = forumsVC.navigationController?.popToViewController(forumsVC, animated: false)
             forumsVC.openForum(forum, animated: false)
             return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
@@ -193,14 +192,14 @@ struct AwfulURLRouter {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        guard let
-            splitVC = rootViewController.children.first as? UISplitViewController,
+        guard
+            let splitVC = window.rootViewController as? UISplitViewController,
             let tabBarVC = splitVC.viewControllers.first as? UITabBarController
-            else { return nil }
+        else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
             guard let match = topmost.firstDescendant(ofType: VC.self) else { continue }
             tabBarVC.selectedViewController = topmost
-            splitVC.showPrimaryViewController()
+            splitVC.show(.primary)
             return match
         }
         return nil
@@ -241,7 +240,7 @@ struct AwfulURLRouter {
         
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
         let targetNav: UINavigationController
-        guard let splitVC = rootViewController.children.first as? UISplitViewController else { return false }
+        guard let splitVC = window.rootViewController as? UISplitViewController else { return false }
         if splitVC.viewControllers.count == 2 {
             targetNav = splitVC.viewControllers[1] as! UINavigationController
         } else {
