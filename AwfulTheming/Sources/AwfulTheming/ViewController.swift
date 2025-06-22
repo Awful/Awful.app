@@ -31,6 +31,9 @@ private func commonInit(_ vc: UIViewController) {
     Instances call `themeDidChange()` after loading their view. `ViewController`'s implementation of `themeDidChange()` sets the view background color and updates the scroll view's indicator (if appropriate).
  */
 open class ViewController: UIViewController, Themeable {
+    private var viewIsLoading = false
+    public var isPresentedInSidebar: Bool = false
+    
     public override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         commonInit(self)
@@ -92,6 +95,7 @@ open class ViewController: UIViewController, Themeable {
 open class HostingController<Content: View>: UIHostingController<Content>, Themeable {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    public var isPresentedInSidebar: Bool = false
 
     /**
      The theme to use for the view controller (not necessarily the hosted view; in SwiftUI, use `@Environment(\.theme)`). Defaults to `Theme.defaultTheme()`.
@@ -164,6 +168,7 @@ open class HostingController<Content: View>: UIHostingController<Content>, Theme
  */
 open class TableViewController: UITableViewController, Themeable {
     private var viewIsLoading = false
+    public var isPresentedInSidebar: Bool = false
     
     public override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)

@@ -24,9 +24,7 @@ final class NavigationController: UINavigationController, Themeable {
     }()
     fileprivate var pushAnimationInProgress = false
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
-    
-    // View that sits behind the status bar to apply theme color
-    private let statusBarBackgroundView = UIView()
+    var hidesNavigationBar: Bool = false
     
     // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
     
@@ -129,22 +127,16 @@ final class NavigationController: UINavigationController, Themeable {
         
         view.backgroundColor = theme["navigationBarTintColor"]
         
-        // Add status bar background view
-        statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(statusBarBackgroundView)
-        NSLayoutConstraint.activate([
-            statusBarBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-            statusBarBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            statusBarBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            statusBarBackgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4)
-        ])
-        
         themeDidChange()
         interactivePopGestureRecognizer?.delegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNavigationBarHidden(hidesNavigationBar, animated: animated)
+    }
+    
     func themeDidChange() {
-        statusBarBackgroundView.backgroundColor = theme["navigationBarTintColor"]
         awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
         awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
@@ -158,19 +150,22 @@ final class NavigationController: UINavigationController, Themeable {
             awfulNavigationBar.barStyle = .black
         }
 
-        if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithTransparentBackground()
-            appearance.backgroundColor = theme["navigationBarTintColor"]
-            
-            let textColor: UIColor? = theme["navigationBarTextColor"]
-            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
-                                              NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
-            
-            navigationBar.standardAppearance = appearance;
-            navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance
-        }
+        // Fix odd grey navigation bar background when scrolled to top on iOS 15.
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = theme["navigationBarTintColor"]
+        
+        let textColor: UIColor? = theme["navigationBarTextColor"]
+        
+        let useRoundedFonts = theme[bool: "roundedFonts"] ?? false
+        let sizeAdjustment = theme[double: "navigationBarTitleFontSizeAdjustment"] ?? 0
+        let font = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: sizeAdjustment, weight: .semibold, useRoundedFonts: useRoundedFonts)
+
+        appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
+                                          NSAttributedString.Key.font: font]
+
+        navigationBar.standardAppearance = appearance;
+        navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance
     }
     
     override func encodeRestorableState(with coder: NSCoder) {

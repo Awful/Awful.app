@@ -50,7 +50,7 @@ final class ForumListDataSource: NSObject {
             cacheName: nil)
         
         let forumsRequest = Forum.makeFetchRequest()
-        forumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(Forum.metadata.visibleInForumList))
+        forumsRequest.predicate = NSPredicate(format: "%K == YES AND %K == NO", #keyPath(Forum.metadata.visibleInForumList), #keyPath(Forum.metadata.favorite))
         forumsRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(Forum.group.index), ascending: true), // section
             NSSortDescriptor(key: #keyPath(Forum.index), ascending: true)]

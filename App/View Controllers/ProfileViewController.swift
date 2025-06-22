@@ -45,7 +45,7 @@ final class ProfileViewController: ViewController {
     
     private func sendPrivateMessage() {
         let compose = MessageComposeViewController(recipient: user)
-        present(compose.enclosingNavigationController, animated: true)
+        present(compose.enclosingNavigationController(), animated: true)
     }
     
     private func showActionsForHomepage(_ url: URL, from frame: CGRect) {

@@ -66,7 +66,7 @@ extension UIContextMenuConfiguration {
                     if let sheet = profile.sheetPresentationController {
                         sheet.detents = [.medium()]
                     }
-                    presenter.present(profile, animated: true)
+                    presenter.present(profile.enclosingNavigationController(), animated: true)
                 }
             )
         }
@@ -137,7 +137,7 @@ extension UIContextMenuConfiguration {
                 handler: { action in
                     let profile = ProfileViewController(user: author)
                     if presenter.traitCollection.userInterfaceIdiom == .pad {
-                        presenter.present(profile.enclosingNavigationController, animated: true)
+                        presenter.present(profile.enclosingNavigationController(), animated: true)
                     } else {
                         presenter.navigationController?.pushViewController(profile, animated: true)
                     }

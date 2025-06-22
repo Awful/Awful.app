@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "action.share-url" : {
       "comment" : "Title of the share URL action for an announcement, post, or thread.",
       "extractionState" : "manual",
@@ -36,7 +39,7 @@
     },
     "bookmarks.title" : {
       "comment" : "Title of the bookmarks screen, shown in the navbar and the tab bar.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -279,7 +282,13 @@
     "Doggo poking tongue" : {
 
     },
+    "Done" : {
+
+    },
     "Double-check your username and password, then try again." : {
+
+    },
+    "Edit" : {
 
     },
     "Five" : {
@@ -308,6 +317,9 @@
           }
         }
       }
+    },
+    "forums-list.title" : {
+
     },
     "forums-list.undo-action.add-favorite" : {
       "comment" : "Name of undo action where user adds a just-deleted favorite back (more of a redo action).",
@@ -804,6 +816,9 @@
         }
       }
     },
+    "Private Messages" : {
+
+    },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
       "extractionState" : "migrated",
@@ -842,7 +857,6 @@
     },
     "private-message-tab.title" : {
       "comment" : "Title of the private messages tab bar item.",
-      "extractionState" : "migrated",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1031,9 +1045,6 @@
         }
       }
     },
-    "Select an item" : {
-
-    },
     "session-expiry-imminent.message" : {
       "comment" : "Message of an alert shown on launch if the user's session expires within a week. Parameter is the expiry date.",
       "extractionState" : "manual",
@@ -1084,6 +1095,9 @@
           }
         }
       }
+    },
+    "settings.title" : {
+
     },
     "smilie-action.add-to-favorites" : {
       "comment" : "Title of button that adds a smilie to the user's favorites. Parameter is the text used to insert the smilie into a post.",

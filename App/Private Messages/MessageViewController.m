@@ -6,6 +6,8 @@
 @import GRMustache;
 @import WebViewJavascriptBridge;
 #import "Awful-Swift.h"
+#import <AwfulCore/AwfulCore-Swift.h>
+#import <AwfulTheming/AwfulTheming-Swift.h>
 
 @interface MessageViewController () <UIWebViewDelegate, ComposeTextViewControllerDelegate, UIGestureRecognizerDelegate, UIViewControllerRestoration>
 
@@ -108,7 +110,7 @@
                                                                                         initialContents:BBcode];
                 _composeViewController.delegate = self;
                 _composeViewController.restorationIdentifier = @"New private message replying to private message";
-                [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
+                [self presentViewController:[_composeViewController enclosingNavigationControllerWithHidingNavigationBar:NO] animated:YES completion:nil];
             }
         }];
     }];
@@ -123,7 +125,7 @@
                                                                                          initialContents:BBcode];
                 _composeViewController.delegate = self;
                 _composeViewController.restorationIdentifier = @"New private message forwarding private message";
-                [self presentViewController:[_composeViewController enclosingNavigationController] animated:YES completion:nil];
+                [self presentViewController:[_composeViewController enclosingNavigationControllerWithHidingNavigationBar:NO] animated:YES completion:nil];
             }
         }];
     }];
@@ -142,7 +144,7 @@
 	[items addObject:[IconActionItem itemWithAction:IconActionUserProfile block:^{
         ProfileViewController *profile = [[ProfileViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [self presentViewController:[profile enclosingNavigationController] animated:YES completion:nil];
+            [self presentViewController:[profile enclosingNavigationControllerWithHidingNavigationBar:NO] animated:YES completion:nil];
         } else {
             [self.navigationController pushViewController:profile animated:YES];
         }
@@ -151,7 +153,7 @@
 	[items addObject:[IconActionItem itemWithAction:IconActionRapSheet block:^{
         RapSheetViewController *rapSheet = [[RapSheetViewController alloc] initWithUser:user];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            [self presentViewController:[rapSheet enclosingNavigationController] animated:YES completion:nil];
+            [self presentViewController:[rapSheet enclosingNavigationControllerWithHidingNavigationBar:NO] animated:YES completion:nil];
         } else {
             [self.navigationController pushViewController:rapSheet animated:YES];
         }

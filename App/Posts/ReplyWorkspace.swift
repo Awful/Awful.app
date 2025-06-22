@@ -264,8 +264,7 @@ final class ReplyWorkspace: NSObject {
     
     /// Present this view controller to let someone compose a reply.
     var viewController: UIViewController {
-        createCompositionViewController()
-        return compositionViewController.enclosingNavigationController
+        return compositionViewController.enclosingNavigationController()
     }
     
     fileprivate func createCompositionViewController() {

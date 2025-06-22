@@ -7,15 +7,22 @@ import AwfulTheming
 import CoreData
 import os
 import SwiftUI
+import Combine
 
 private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SettingsViewController")
 
 final class SettingsViewController: HostingController<SettingsContainerView> {
-    let managedObjectContext: NSManagedObjectContext
-
+    
+    private var appIconDataSource: AppIconDataSource?
+    private var cancellables: Set<AnyCancellable> = []
+    private var didLoad = false
+    // @FoilDefaultStorage(Settings.hidesIgnoredUsers) private var hidesIgnoredUsers
+    private let managedObjectContext: NSManagedObjectContext
+    @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
+    
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-
+        
         let currentUser = managedObjectContext.performAndWait {
             if let userID = UserDefaults.standard.value(for: Settings.userID) as? String, !userID.isEmpty {
                 return User.objectForKey(objectKey: UserKey(
@@ -37,7 +44,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         }
         let box = UnownedBox()
 
-        super.init(rootView: SettingsContainerView(
+        let rootView = SettingsContainerView(
             appIconDataSource: makeAppIconDataSource(),
             currentUser: currentUser,
             emptyCache: { box.contents.emptyCache() },
@@ -48,13 +55,18 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
             managedObjectContext: managedObjectContext
-        ))
+        )
+        
+        super.init(rootView: rootView)
         box.contents = self
-
-        title = String(localized: "Settings", bundle: .module)
+        
+        title = NSLocalizedString("settings.title", comment: "")
+        
+        tabBarItem.image = UIImage(named: "cog")
+        tabBarItem.selectedImage = UIImage(named: "cog-filled")
     }
     
-    required init?(coder: NSCoder) {
+    @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

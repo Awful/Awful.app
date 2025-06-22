@@ -87,7 +87,7 @@ final class MessageViewController: ViewController {
                     composeVC.delegate = self
                     composeVC.restorationIdentifier = "New private message replying to private message"
                     self.composeVC = composeVC
-                    present(composeVC.enclosingNavigationController, animated: true, completion: nil)
+                    present(composeVC.enclosingNavigationController(), animated: true, completion: nil)
                 } catch {
                     present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
@@ -101,7 +101,7 @@ final class MessageViewController: ViewController {
                     composeVC.delegate = self
                     composeVC.restorationIdentifier = "New private message forwarding private message"
                     self.composeVC = composeVC
-                    present(composeVC.enclosingNavigationController, animated: true)
+                    present(composeVC.enclosingNavigationController(), animated: true)
                 } catch {
                     present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
@@ -133,12 +133,26 @@ final class MessageViewController: ViewController {
         }
     }
     
+    private func compose(forwarding: Bool) {
+        let composeVC = forwarding
+            ? MessageComposeViewController(forwardingMessage: privateMessage, initialContents: privateMessage.innerHTML)
+            : MessageComposeViewController(regardingMessage: privateMessage, initialContents: nil)
+        composeVC.delegate = self
+        present(composeVC.enclosingNavigationController(), animated: true, completion: nil)
+    }
+
+    private func showAuthorProfile() {
+        guard let author = privateMessage.from else { return }
+        let composeVC = ProfileViewController(user: author)
+        present(composeVC.enclosingNavigationController(), animated: true)
+    }
+
     private func showUserActions(from rect: CGRect) {
         guard let user = privateMessage.from else { return }
         
         func present(_ viewController: UIViewController) {
             if UIDevice.current.userInterfaceIdiom == .pad {
-                self.present(viewController.enclosingNavigationController, animated: true, completion: nil)
+                self.present(viewController.enclosingNavigationController(), animated: true, completion: nil)
             } else {
                 self.navigationController?.pushViewController(viewController, animated: true)
             }

@@ -1102,10 +1102,7 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let reportVC = ReportPostViewController(post: self.selectedPost!)
-
-        self.dismiss(animated: false) {
-            self.present(reportVC.enclosingNavigationController, animated: true, completion: nil)
-        }
+        self.present(reportVC.enclosingNavigationController(), animated: true, completion: nil)
     }
 
     private func findPost(action: UIAction) {
@@ -1156,10 +1153,7 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let profileVC = ProfileViewController(user: self.selectedUser!)
-
-        self.dismiss(animated: false) {
-            self.present(profileVC.enclosingNavigationController, animated: true, completion: nil)
-        }
+        self.present(profileVC.enclosingNavigationController(), animated: true, completion: nil)
     }
 
     private func theirPosts(action: UIAction) {
@@ -1182,10 +1176,8 @@ final class PostsPageViewController: ViewController {
 
         self.dismiss(animated: false) {
             let messageVC = MessageComposeViewController(recipient: self.selectedUser!)
-            self.messageViewController = messageVC
             messageVC.delegate = self
-            messageVC.restorationIdentifier = "New PM from posts view"
-            self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
+            self.present(messageVC.enclosingNavigationController(), animated: true, completion: nil)
         }
     }
 
@@ -1196,11 +1188,7 @@ final class PostsPageViewController: ViewController {
 
         self.dismiss(animated: false) {
             let rapSheetVC = RapSheetViewController(user: self.selectedUser!)
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                self.present(rapSheetVC.enclosingNavigationController, animated: true, completion: nil)
-            } else {
-                self.navigationController?.pushViewController(rapSheetVC, animated: true)
-            }
+            self.present(rapSheetVC.enclosingNavigationController(), animated: true, completion: nil)
         }
     }
 

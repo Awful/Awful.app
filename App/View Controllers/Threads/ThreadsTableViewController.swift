@@ -222,7 +222,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        present(threadComposeViewController.enclosingNavigationController, animated: true, completion: nil)
+        threadComposeViewController.delegate = self
+        threadComposeViewController.restorationIdentifier = "Compose new thread"
+        present(threadComposeViewController.enclosingNavigationController(), animated: true, completion: nil)
     }
     
     // MARK: ComposeTextViewControllerDelegate

@@ -269,7 +269,7 @@ final class AnnouncementViewController: ViewController {
 
         items.append(IconActionItem(.userProfile, block: {
             let profileVC = ProfileViewController(user: user)
-            self.present(profileVC.enclosingNavigationController, animated: true)
+            self.present(profileVC.enclosingNavigationController(), animated: true)
         }))
 
         if canSendPrivateMessages
@@ -281,14 +281,14 @@ final class AnnouncementViewController: ViewController {
                 self.messageViewController = messageVC
                 messageVC.delegate = self
                 messageVC.restorationIdentifier = "New PM from announcement view"
-                self.present(messageVC.enclosingNavigationController, animated: true)
+                self.present(messageVC.enclosingNavigationController(), animated: true)
             }))
         }
 
         items.append(IconActionItem(.rapSheet, block: {
             let rapSheetVC = RapSheetViewController(user: user)
             if self.traitCollection.userInterfaceIdiom == .pad || self.navigationController == nil {
-                self.present(rapSheetVC.enclosingNavigationController, animated: true)
+                self.present(rapSheetVC.enclosingNavigationController(), animated: true)
             }
             else {
                 self.navigationController?.pushViewController(rapSheetVC, animated: true)

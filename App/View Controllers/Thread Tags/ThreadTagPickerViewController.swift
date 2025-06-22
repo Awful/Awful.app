@@ -65,7 +65,7 @@ final class ThreadTagPickerViewController: ViewController {
         if UIDevice.current.userInterfaceIdiom == .pad {
             presentedViewController = self
         } else {
-            presentedViewController = enclosingNavigationController
+            presentedViewController = enclosingNavigationController()
         }
         presentedViewController.modalPresentationStyle = .popover
         presentingViewController.present(presentedViewController, animated: true)

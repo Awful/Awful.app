@@ -34,7 +34,9 @@ final class BookmarksTableViewController: TableViewController {
         
         super.init(style: .plain)
         
-        title = LocalizedString("bookmarks.title")
+        if !isPresentedInSidebar {
+            title = NSLocalizedString("bookmarks.title", comment: "")
+        }
         
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
@@ -145,14 +147,15 @@ final class BookmarksTableViewController: TableViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
-
+        
         loadMoreFooter?.themeDidChange()
-
+        
         tableView.separatorColor = theme["listSeparatorColor"]
         tableView.separatorInset.left = ThreadListCell.separatorLeftInset(
             showsTagAndRating: showThreadTags,
             inTableWithWidth: tableView.bounds.width
         )
+        tableView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {

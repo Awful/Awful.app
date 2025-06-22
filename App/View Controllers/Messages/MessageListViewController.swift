@@ -9,6 +9,8 @@ import CoreData
 import os
 import UIKit
 
+private let cellID = "MessageCell"
+private let headerID = "Header"
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageListViewController")
 
 @objc(MessageListViewController)
@@ -23,13 +25,15 @@ final class MessageListViewController: TableViewController {
     
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .plain)
         
-        title = LocalizedString("private-message-tab.title")
+        if !isPresentedInSidebar {
+            title = NSLocalizedString("private-message-tab.title", comment: "")
+        }
         
         tabBarItem.accessibilityLabel = LocalizedString("private-message-tab.accessibility-label")
-        tabBarItem.image = UIImage(named: "pm-icon")
-        tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
+        tabBarItem.image = UIImage(named: "private-message")
+        tabBarItem.selectedImage = UIImage(named: "private-message-filled")
         
         let updateBadgeValue = { [weak self] (unreadCount: Int) -> Void in
             self?.tabBarItem?.badgeValue = unreadCount > 0
@@ -77,7 +81,7 @@ final class MessageListViewController: TableViewController {
         }
 
         if let compose = composeViewController {
-            present(compose.enclosingNavigationController, animated: true, completion: nil)
+            present(compose.enclosingNavigationController(), animated: true, completion: nil)
         }
     }
     
@@ -149,9 +153,11 @@ final class MessageListViewController: TableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Private Messages"
+
         tableView.estimatedRowHeight = 65
         recalculateSeparatorInset()
-
+        
         dataSource = makeDataSource()
         tableView.reloadData()
 
@@ -176,12 +182,18 @@ final class MessageListViewController: TableViewController {
         super.themeDidChange()
         
         composeViewController?.themeDidChange()
-
         tableView.separatorColor = theme["listSeparatorColor"]
+        tableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        refreshIfNecessary()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         refreshIfNecessary()
     }

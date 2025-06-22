@@ -46,7 +46,7 @@ struct AwfulURLRouter {
 
         case .lepersColony:
             let rapSheetVC = RapSheetViewController(user: nil)
-            window.rootViewController?.present(rapSheetVC.enclosingNavigationController, animated: true)
+            window.rootViewController?.present(rapSheetVC.enclosingNavigationController(), animated: true)
             return true
 
         case let .message(id: messageID):
@@ -134,7 +134,10 @@ struct AwfulURLRouter {
                 do {
                     let user = try await fetchUser(withUserID: userID)
                     let profileVC = ProfileViewController(user: user)
-                    window.rootViewController?.present(profileVC.enclosingNavigationController, animated: true)
+                    profileVC.restorationIdentifier = "User profile"
+
+                    // On iPad, this should be a form sheet.
+                    window.rootViewController?.present(profileVC.enclosingNavigationController(), animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
                     window.rootViewController?.present(alert, animated: true)
@@ -147,7 +150,8 @@ struct AwfulURLRouter {
                 do {
                     let user = try await fetchUser(withUserID: userID)
                     let rapSheetVC = RapSheetViewController(user: user)
-                    window.rootViewController?.present(rapSheetVC.enclosingNavigationController, animated: true)
+                    rapSheetVC.restorationIdentifier = "Rap sheet"
+                    window.rootViewController?.present(rapSheetVC.enclosingNavigationController(), animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
                     window.rootViewController?.present(alert, animated: true)

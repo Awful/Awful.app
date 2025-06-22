@@ -11,6 +11,8 @@ import os
 import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
+private let cellID = "ForumCell"
+private let headerID = "Header"
 
 final class ForumsTableViewController: TableViewController {
     
@@ -26,7 +28,9 @@ final class ForumsTableViewController: TableViewController {
         self.managedObjectContext = managedObjectContext
         super.init(style: .grouped)
         
-        title = "Forums"
+        if !isPresentedInSidebar {
+            title = NSLocalizedString("forums-list.title", comment: "")
+        }
         tabBarItem.image = UIImage(named: "forum-list")
         tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
 
@@ -153,6 +157,10 @@ final class ForumsTableViewController: TableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if !isPresentedInSidebar {
+            title = NSLocalizedString("forums-list.title", comment: "")
+        }
 
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
         tableView.restorationIdentifier = "Forums table"

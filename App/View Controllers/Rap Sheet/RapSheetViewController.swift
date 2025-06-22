@@ -7,6 +7,8 @@ import AwfulTheming
 import ScrollViewDelegateMultiplexer
 import UIKit
 
+private let cellID = "Cell"
+
 extension Notification.Name {
     static let route = Notification.Name("AwfulRoute")
 }
@@ -38,13 +40,19 @@ final class RapSheetViewController: TableViewController {
         self.user = user
         super.init(style: .plain)
         
+        if !isPresentedInSidebar {
+            if user == nil {
+                title = String(localized: "Leper's Colony", bundle: .module)
+            } else {
+                title = String(localized: "Rap Sheet", bundle: .module)
+            }
+        }
+        
         if user == nil {
-            title = String(localized: "Leper's Colony", bundle: .module)
             // Tab bar item title is set in `themeDidChange()` as some themes do not show titles.
             tabBarItem.image = UIImage(named: "lepers")
             tabBarItem.selectedImage = UIImage(named: "lepers-filled")
         } else {
-            title = String(localized: "Rap Sheet", bundle: .module)
             hidesBottomBarWhenPushed = true
             modalPresentationStyle = .formSheet
         }
@@ -143,7 +151,27 @@ final class RapSheetViewController: TableViewController {
         
         refreshIfNecessary()
     }
-    
+
+    override func themeDidChange() {
+        super.themeDidChange()
+
+        loadMoreFooter?.themeDidChange()
+        tableView.separatorColor = theme["listSeparatorColor"]
+        tableView.reloadData()
+        
+        if theme[bool: "showRootTabBarLabel"] == false {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        } else {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tabBarItem.title = if user == nil {
+                String(localized: "Lepers", bundle: .module)
+            } else {
+                String(localized: "Rap Sheet", bundle: .module)
+            }
+        }
+    }
+
     // MARK: - UITableViewDataSource and UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -245,24 +273,6 @@ final class RapSheetViewController: TableViewController {
         }
     }
     
-    override func themeDidChange() {
-        super.themeDidChange()
-
-        tableView.separatorColor = theme["listSeparatorColor"]
-        
-        if theme[bool: "showRootTabBarLabel"] == false {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
-            tabBarItem.title = nil
-        } else {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tabBarItem.title = if user == nil {
-                String(localized: "Lepers", bundle: .module)
-            } else {
-                String(localized: "Rap Sheet", bundle: .module)
-            }
-        }
-    }
-    
     // MARK: Gunk
     
     required init?(coder: NSCoder) {
@@ -304,5 +314,3 @@ final class RapSheetViewController: TableViewController {
         return NSAttributedString(attributedString: mutableReason)
     }
 }
-
-private let cellID = "Cell"
