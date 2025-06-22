@@ -218,6 +218,29 @@ extension UITableView {
 }
 
 extension UIViewController {
+    /// Shared transitioning delegate for horizontal modal presentations
+    private static let horizontalTransitioningDelegate = HorizontalModalTransitioningDelegate()
+    
+    static func findSplitViewController(in viewController: UIViewController?) -> UISplitViewController? {
+        guard let viewController = viewController else { return nil }
+        
+        if let splitVC = viewController as? UISplitViewController {
+            return splitVC
+        }
+        
+        for child in viewController.children {
+            if let splitVC = findSplitViewController(in: child) {
+                return splitVC
+            }
+        }
+        
+        if let presented = viewController.presentedViewController {
+            return findSplitViewController(in: presented)
+        }
+        
+        return nil
+    }
+    
     /// Returns the view controller's navigation controller, lazily creating a NavigationController if needed. Created navigation controllers adopt the modalPresentationStyle of the view controller.
     func enclosingNavigationController(hidingNavigationBar: Bool = false) -> UINavigationController {
         if let vc = self as? ViewController {
@@ -237,7 +260,62 @@ extension UIViewController {
         if let identifier = self.restorationIdentifier, nav.restorationIdentifier == nil {
             nav.restorationIdentifier = "\(identifier) navigation"
         }
+        
         return nav
+    }
+    
+    /// Configures a navigation controller for presentation in the detail pane on iPad or fullscreen modal with horizontal slide animation on iPhone
+    func configureForDetailPresentation(_ navigationController: UINavigationController) {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            navigationController.modalPresentationStyle = .fullScreen
+            navigationController.transitioningDelegate = Self.horizontalTransitioningDelegate
+        } else {
+            // On iPad, try to show in split view detail pane
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let splitVC = Self.findSplitViewController(in: window.rootViewController) {
+                splitVC.showDetailViewController(navigationController, sender: nil)
+                return
+            } else {
+                // Fallback to form sheet if no split view found
+                navigationController.modalPresentationStyle = .formSheet
+            }
+        }
+            
+        // Configure navigation bar appearance
+        navigationController.navigationBar.prefersLargeTitles = false
+        if #available(iOS 15.0, *) {
+            navigationController.navigationBar.scrollEdgeAppearance = navigationController.navigationBar.standardAppearance
+        }
+        
+        // Ensure proper layout
+        if let topViewController = navigationController.topViewController {
+            topViewController.edgesForExtendedLayout = []
+            topViewController.extendedLayoutIncludesOpaqueBars = false
+        }
+    }
+    
+    /// Configures a navigation controller for fullscreen modal presentation with horizontal slide animation on iPhone
+    func configureForHorizontalModalPresentation(_ navigationController: UINavigationController) {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            navigationController.modalPresentationStyle = .fullScreen
+            navigationController.transitioningDelegate = Self.horizontalTransitioningDelegate
+        } else {
+            // On iPad, this should typically not be called, but if it is, use form sheet
+            navigationController.modalPresentationStyle = .formSheet
+        }
+            
+        // Ensure the navigation bar respects safe area when presented fullscreen
+        navigationController.navigationBar.prefersLargeTitles = false
+        if #available(iOS 15.0, *) {
+            navigationController.navigationBar.scrollEdgeAppearance = navigationController.navigationBar.standardAppearance
+        }
+        
+        // Ensure proper layout for fullscreen modal presentation
+        if let topViewController = navigationController.topViewController {
+            topViewController.edgesForExtendedLayout = []
+            topViewController.extendedLayoutIncludesOpaqueBars = false
+        }
     }
 }
 

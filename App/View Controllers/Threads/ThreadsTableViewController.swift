@@ -224,7 +224,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         }
         threadComposeViewController.delegate = self
         threadComposeViewController.restorationIdentifier = "Compose new thread"
-        present(threadComposeViewController.enclosingNavigationController(), animated: true, completion: nil)
+        let navController = threadComposeViewController.enclosingNavigationController()
+        threadComposeViewController.configureForHorizontalModalPresentation(navController)
+        present(navController, animated: true, completion: nil)
     }
     
     // MARK: ComposeTextViewControllerDelegate
@@ -235,7 +237,15 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
                 let postsPage = PostsPageViewController(thread: thread)
                 postsPage.restorationIdentifier = "Posts"
                 postsPage.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
-                self.showDetailViewController(postsPage, sender: self)
+                
+                // Use device idiom instead of size class for iPad split view compatibility
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    let navController = postsPage.enclosingNavigationController()
+                    postsPage.configureForHorizontalModalPresentation(navController)
+                    self.present(navController, animated: true)
+                } else {
+                    self.showDetailViewController(postsPage, sender: self)
+                }
             }
             
             if !shouldKeepDraft {
@@ -417,7 +427,24 @@ extension ThreadsTableViewController {
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
-        showDetailViewController(postsViewController, sender: self)
+        
+        // Debug logging
+        print("🔍 Thread selection debug:")
+        print("  Device idiom: \(UIDevice.current.userInterfaceIdiom.rawValue)")
+        print("  Horizontal size class: \(traitCollection.horizontalSizeClass.rawValue)")
+        print("  View size: \(view.bounds.size)")
+        
+        // Use device idiom instead of size class for iPad split view compatibility
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            print("  📱 Using modal presentation (iPhone)")
+            let navController = postsViewController.enclosingNavigationController()
+            postsViewController.configureForHorizontalModalPresentation(navController)
+            present(navController, animated: true)
+        } else {
+            print("  📺 Using detail view presentation (iPad)")
+            showDetailViewController(postsViewController, sender: self)
+        }
+        
         tableView.deselectRow(at: indexPath, animated: true)
     }
 

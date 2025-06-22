@@ -11,7 +11,6 @@ import UIKit
  Navigation controller with special powers:
 
  - Theming support.
- - Custom navbar class `NavigationBar`, including after state restoration.
  - Shows and hides the toolbar depending on whether the view controller has toolbar items.
  - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
  */
@@ -26,14 +25,14 @@ final class NavigationController: UINavigationController, Themeable {
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     var hidesNavigationBar: Bool = false
     
-    // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
+    // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our toolbar class is used.
     
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
     }
     
     required init() {
-        super.init(navigationBarClass: NavigationBar.self, toolbarClass: Toolbar.self)
+        super.init(navigationBarClass: nil, toolbarClass: Toolbar.self)
         delegate = self
 
         $darkMode
@@ -57,8 +56,8 @@ final class NavigationController: UINavigationController, Themeable {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private var awfulNavigationBar: NavigationBar {
-        return navigationBar as! NavigationBar
+    private var awfulNavigationBar: UINavigationBar {
+        return navigationBar
     }
 
     var theme: Theme {
@@ -138,7 +137,6 @@ final class NavigationController: UINavigationController, Themeable {
     
     func themeDidChange() {
         awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
-        awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
         awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
 
@@ -152,7 +150,7 @@ final class NavigationController: UINavigationController, Themeable {
 
         // Fix odd grey navigation bar background when scrolled to top on iOS 15.
         let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
+        appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = theme["navigationBarTintColor"]
         
         let textColor: UIColor? = theme["navigationBarTextColor"]
@@ -231,31 +229,17 @@ extension NavigationController: UIGestureRecognizerDelegate {
 
 extension NavigationController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        if let unpopHandler = unpopHandler , animated {
+        if let unpopHandler = unpopHandler, animated {
             unpopHandler.navigationControllerDidBeginAnimating()
             
-            // We need to hook into the transitionCoordinator's notifications as well as -...didShowViewController: because the latter isn't called when the default interactive pop action is cancelled.
-            // See http://stackoverflow.com/questions/23484310
-            let interactionChanges = { (context: UIViewControllerTransitionCoordinatorContext) in
+            transitionCoordinator?.notifyWhenInteractionChanges { context in
                 guard context.isCancelled else { return }
-                let unpopping = unpopHandler.interactiveUnpopIsTakingPlace
-                let completion = context.transitionDuration * Double(context.percentComplete)
-                var viewControllerCount = navigationController.viewControllers.count
-                if !unpopping {
-                    viewControllerCount += 1
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + completion) {
-                    if unpopping {
-                        unpopHandler.navigationControllerDidCancelInteractiveUnpop()
-                    } else {
-                        unpopHandler.navigationControllerDidCancelInteractivePop()
-                    }
-
-                    self.pushAnimationInProgress = false
+                if unpopHandler.interactiveUnpopIsTakingPlace {
+                    unpopHandler.navigationControllerDidCancelInteractiveUnpop()
+                } else {
+                    unpopHandler.navigationControllerDidCancelInteractivePop()
                 }
             }
-
-            navigationController.transitionCoordinator?.notifyWhenInteractionChanges(interactionChanges)
         }
         
         realDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
@@ -265,17 +249,22 @@ extension NavigationController: UINavigationControllerDelegate {
         if animated {
             unpopHandler?.navigationControllerDidFinishAnimating()
         }
-        
         pushAnimationInProgress = false
         
         realDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
     }
     
-    func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return (realDelegate as? UINavigationControllerDelegate)?.navigationController?(navigationController, interactionControllerFor: animationController)
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if let unpopHandler = unpopHandler, unpopHandler.shouldHandleAnimatingTransitionForOperation(operation) {
+            return unpopHandler
+        }
+        return realDelegate?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
     }
     
-    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return (realDelegate as? UINavigationControllerDelegate)?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
+    func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        if let unpopHandler = unpopHandler, unpopHandler.interactiveUnpopIsTakingPlace {
+            return unpopHandler
+        }
+        return realDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
     }
 }

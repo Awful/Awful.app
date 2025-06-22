@@ -81,7 +81,9 @@ final class MessageListViewController: TableViewController {
         }
 
         if let compose = composeViewController {
-            present(compose.enclosingNavigationController(), animated: true, completion: nil)
+            let navController = compose.enclosingNavigationController()
+            compose.configureForHorizontalModalPresentation(navController)
+            present(navController, animated: true, completion: nil)
         }
     }
     
@@ -120,7 +122,25 @@ final class MessageListViewController: TableViewController {
         }
         let viewController = MessageViewController(privateMessage: message)
         viewController.restorationIdentifier = "Message"
-        showDetailViewController(viewController, sender: self)
+        
+        let navController = viewController.enclosingNavigationController()
+        viewController.configureForDetailPresentation(navController)
+        
+        // Present if not already shown in detail pane
+        if navController.parent == nil {
+            present(navController, animated: true)
+        }
+    }
+    
+    private func findSplitViewController() -> UISplitViewController? {
+        var current: UIViewController? = self
+        while let viewController = current {
+            if let splitVC = viewController as? UISplitViewController {
+                return splitVC
+            }
+            current = viewController.parent
+        }
+        return nil
     }
 
     private func deleteMessage(_ message: PrivateMessage) {

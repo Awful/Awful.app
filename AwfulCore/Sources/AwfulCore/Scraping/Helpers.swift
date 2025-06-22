@@ -99,12 +99,18 @@ func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
         return element.tagName == "br" && element.hasClass("pb")
     }
 
-    return html
-        .firstNode(matchingSelector: "dl.userinfo dd.title")
-        .flatMap { $0.children.array as? [HTMLNode] }?
-        .filter { !isSuperfluousLineBreak($0) }
-        .map { $0.serializedFragment }
-        .joined()
+    let titleElement = html.firstNode(matchingSelector: "dl.userinfo dd.title")
+    
+    if let titleElement = titleElement {
+        let result = (titleElement.children.array as? [HTMLNode])?
+            .filter { !isSuperfluousLineBreak($0) }
+            .map { $0.serializedFragment }
+            .joined()
+        
+        return result
+    } else {
+        return nil
+    }
 }
 
 

@@ -42,12 +42,24 @@ extension User {
 // TODO: this is very stupid, just handle it during scraping
 public func extractAvatarURL(fromCustomTitleHTML customTitleHTML: String) -> URL? {
     let document = HTMLDocument(string: customTitleHTML)
-    let img = document.firstNode(matchingSelector: "div > img:first-child") ??
-        document.firstNode(matchingSelector: "body > img:first-child") ??
-        document.firstNode(matchingSelector: "a > img:first-child")
-
-    let src = img?["data-cfsrc"] ?? img?["src"]
-    return src.flatMap { URL(string: $0) }
+    
+    let divImg = document.firstNode(matchingSelector: "div > img:first-child")
+    let bodyImg = document.firstNode(matchingSelector: "body > img:first-child")
+    let aImg = document.firstNode(matchingSelector: "a > img:first-child")
+    
+    let img = divImg ?? bodyImg ?? aImg
+    
+    if let img = img {
+        let dataCfsrc = img["data-cfsrc"]
+        let src = img["src"]
+        
+        let finalSrc = dataCfsrc ?? src
+        
+        let url = finalSrc.flatMap { URL(string: $0) }
+        return url
+    } else {
+        return nil
+    }
 }
 
 @objc(UserKey)

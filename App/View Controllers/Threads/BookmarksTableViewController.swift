@@ -263,7 +263,16 @@ extension BookmarksTableViewController {
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
-        showDetailViewController(postsViewController, sender: self)
+        
+        // Use device idiom instead of size class for iPad split view compatibility
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            let navController = postsViewController.enclosingNavigationController()
+            postsViewController.configureForHorizontalModalPresentation(navController)
+            present(navController, animated: true)
+        } else {
+            showDetailViewController(postsViewController, sender: self)
+        }
+        
         tableView.deselectRow(at: indexPath as IndexPath, animated: true)
     }
 

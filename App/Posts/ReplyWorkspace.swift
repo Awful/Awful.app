@@ -153,7 +153,7 @@ final class ReplyWorkspace: NSObject {
     }
     
     @IBAction private func didTapCancel(_ sender: UIBarButtonItem) {
-        if compositionViewController.textView.attributedText.length == 0 {
+        if compositionViewController?.textView.attributedText.length == 0 {
             return completion(.forgetAboutIt)
         }
 
@@ -183,7 +183,7 @@ final class ReplyWorkspace: NSObject {
                 .cancel(),
             ]
         )
-        compositionViewController.present(actionSheet, animated: true)
+        compositionViewController?.present(actionSheet, animated: true)
 
         if let popover = actionSheet.popoverPresentationController {
             popover.barButtonItem = sender
@@ -259,11 +259,13 @@ final class ReplyWorkspace: NSObject {
     fileprivate var submitProgress: Progress?
     
     fileprivate func saveTextToDraft() {
+        guard compositionViewController != nil else { return }
         draft.text = compositionViewController.textView.attributedText
     }
     
     /// Present this view controller to let someone compose a reply.
     var viewController: UIViewController {
+        createCompositionViewController()
         return compositionViewController.enclosingNavigationController()
     }
     
@@ -318,7 +320,9 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
         saveTextToDraft()
         DraftStore.sharedStore().saveDraft(draft)
         coder.encode(draft.storePath, forKey: Keys.draftPath)
-        coder.encode(compositionViewController, forKey: Keys.compositionViewController)
+        if compositionViewController != nil {
+            coder.encode(compositionViewController, forKey: Keys.compositionViewController)
+        }
     }
     
     class func object(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIStateRestoring? {
@@ -334,7 +338,9 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     
     func decodeRestorableState(with coder: NSCoder) {
         // Our encoded CompositionViewController is not available any earlier (i.e. in objectWithRestorationIdentifierPath(_:coder:)).
-        compositionViewController = (coder.decodeObject(forKey: Keys.compositionViewController) as! CompositionViewController)
+        if let decodedViewController = coder.decodeObject(forKey: Keys.compositionViewController) as? CompositionViewController {
+            compositionViewController = decodedViewController
+        }
     }
 
     fileprivate struct Keys {

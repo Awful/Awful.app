@@ -29,7 +29,7 @@ final class RapSheetViewController: TableViewController {
     }()
 
     private lazy var doneItem: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
+        return UIBarButtonItem(image: UIImage(named: "arrowleft"), style: .plain, target: self, action: #selector(didTapDone))
     }()
     
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {

@@ -140,8 +140,17 @@ final class ForumsTableViewController: TableViewController {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
+        
+        // Debug logging
+        print("🔍 Opening announcement: \(announcement.title)")
+        print("  Device idiom: \(UIDevice.current.userInterfaceIdiom.rawValue)")
+        print("  Horizontal size class: \(traitCollection.horizontalSizeClass.rawValue)")
+        print("  View size: \(view.bounds.size)")
+        
         let vc = AnnouncementViewController(announcement: announcement)
         vc.restorationIdentifier = "Announcement"
+        
+        print("  📺 Using showDetailViewController")
         showDetailViewController(vc, sender: self)
     }
 

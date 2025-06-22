@@ -120,7 +120,7 @@ struct ForumsViewRepresentable: UIViewControllerRepresentable {
     }
 }
 
-enum Tab: CaseIterable, Identifiable {
+enum Tab: String, CaseIterable, Identifiable {
     case forums
     case bookmarks
     case messages

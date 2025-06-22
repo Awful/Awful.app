@@ -45,7 +45,9 @@ final class ProfileViewController: ViewController {
     
     private func sendPrivateMessage() {
         let compose = MessageComposeViewController(recipient: user)
-        present(compose.enclosingNavigationController(), animated: true)
+        let navController = compose.enclosingNavigationController()
+        compose.configureForHorizontalModalPresentation(navController)
+        present(navController, animated: true)
     }
     
     private func showActionsForHomepage(_ url: URL, from frame: CGRect) {
@@ -75,7 +77,7 @@ final class ProfileViewController: ViewController {
         super.viewWillAppear(animated)
         
         if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
-            navigationItem.leftBarButtonItem = .init(systemItem: .done, primaryAction: UIAction { _ in
+            navigationItem.leftBarButtonItem = .init(image: UIImage(named: "arrowleft"), primaryAction: UIAction { _ in
                 self.dismiss(animated: true, completion: nil)
             })
         }

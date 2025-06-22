@@ -17,20 +17,23 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
     public let wasRepliedTo: Bool
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        guard
-            let replyLink = html.firstNode(matchingSelector: "div.buttons a[href]"),
-            let href: String = replyLink["href"],
-            let components = URLComponents(string: href),
-            let messageIDPair: URLQueryItem = components.queryItems?
-                .first(where: { (queryItem: URLQueryItem) -> Bool in queryItem.name == "privatemessageid" }),
-            let rawID = messageIDPair.value,
-            let privateMessageID = PrivateMessageID(rawValue: rawID) else
-        {
-            throw ScrapingError.missingRequiredValue("privatemessageid")
+        guard let messageID = html.firstNode(matchingSelector: "input[name='privatemessageid']")?["value"].flatMap(PrivateMessageID.init) else {
+            throw ScrapingError.missingExpectedElement("input[name='privatemessageid']")
         }
-        self.privateMessageID = privateMessageID
+        self.privateMessageID = messageID
 
-        author = try? AuthorSidebarScrapeResult(html, url: url)
+        let senderProfileLink = html.firstNode(matchingSelector: "dl.userinfo dt.author a")
+        if let senderProfileLink = senderProfileLink, let _ = senderProfileLink["href"] {
+            // Try to create AuthorSidebarScrapeResult
+            do {
+                let authorScrapeResult = try AuthorSidebarScrapeResult(html, url: url)
+                self.author = authorScrapeResult
+            } catch {
+                self.author = nil
+            }
+        } else {
+            self.author = nil
+        }
 
         subject = html.firstNode(matchingSelector: "div.breadcrumbs b")
             .flatMap { (el: HTMLElement) -> HTMLTextNode? in el.children.lastObject as? HTMLTextNode }

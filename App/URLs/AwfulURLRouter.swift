@@ -46,7 +46,9 @@ struct AwfulURLRouter {
 
         case .lepersColony:
             let rapSheetVC = RapSheetViewController(user: nil)
-            window.rootViewController?.present(rapSheetVC.enclosingNavigationController(), animated: true)
+            let navController = rapSheetVC.enclosingNavigationController()
+            rapSheetVC.configureForHorizontalModalPresentation(navController)
+            window.rootViewController?.present(navController, animated: true)
             return true
 
         case let .message(id: messageID):
@@ -136,8 +138,10 @@ struct AwfulURLRouter {
                     let profileVC = ProfileViewController(user: user)
                     profileVC.restorationIdentifier = "User profile"
 
+                    let navController = profileVC.enclosingNavigationController()
                     // On iPad, this should be a form sheet.
-                    window.rootViewController?.present(profileVC.enclosingNavigationController(), animated: true)
+                    profileVC.configureForHorizontalModalPresentation(navController)
+                    window.rootViewController?.present(navController, animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
                     window.rootViewController?.present(alert, animated: true)
@@ -151,7 +155,9 @@ struct AwfulURLRouter {
                     let user = try await fetchUser(withUserID: userID)
                     let rapSheetVC = RapSheetViewController(user: user)
                     rapSheetVC.restorationIdentifier = "Rap sheet"
-                    window.rootViewController?.present(rapSheetVC.enclosingNavigationController(), animated: true)
+                    let navController = rapSheetVC.enclosingNavigationController()
+                    rapSheetVC.configureForHorizontalModalPresentation(navController)
+                    window.rootViewController?.present(navController, animated: true)
                 } catch {
                     let alert = UIAlertController(title: "Could Not Find User", error: error)
                     window.rootViewController?.present(alert, animated: true)

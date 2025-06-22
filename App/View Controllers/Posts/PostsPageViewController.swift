@@ -1102,7 +1102,9 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let reportVC = ReportPostViewController(post: self.selectedPost!)
-        self.present(reportVC.enclosingNavigationController(), animated: true, completion: nil)
+        let navController = reportVC.enclosingNavigationController()
+        reportVC.configureForHorizontalModalPresentation(navController)
+        self.present(navController, animated: true, completion: nil)
     }
 
     private func findPost(action: UIAction) {
@@ -1153,7 +1155,9 @@ final class PostsPageViewController: ViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let profileVC = ProfileViewController(user: self.selectedUser!)
-        self.present(profileVC.enclosingNavigationController(), animated: true, completion: nil)
+        let navController = profileVC.enclosingNavigationController()
+        profileVC.configureForHorizontalModalPresentation(navController)
+        self.present(navController, animated: true, completion: nil)
     }
 
     private func theirPosts(action: UIAction) {
@@ -1177,7 +1181,9 @@ final class PostsPageViewController: ViewController {
         self.dismiss(animated: false) {
             let messageVC = MessageComposeViewController(recipient: self.selectedUser!)
             messageVC.delegate = self
-            self.present(messageVC.enclosingNavigationController(), animated: true, completion: nil)
+            let navController = messageVC.enclosingNavigationController()
+            messageVC.configureForHorizontalModalPresentation(navController)
+            self.present(navController, animated: true, completion: nil)
         }
     }
 
@@ -1188,7 +1194,9 @@ final class PostsPageViewController: ViewController {
 
         self.dismiss(animated: false) {
             let rapSheetVC = RapSheetViewController(user: self.selectedUser!)
-            self.present(rapSheetVC.enclosingNavigationController(), animated: true, completion: nil)
+            let navController = rapSheetVC.enclosingNavigationController()
+            rapSheetVC.configureForHorizontalModalPresentation(navController)
+            self.present(navController, animated: true, completion: nil)
         }
     }
 
@@ -1467,6 +1475,16 @@ final class PostsPageViewController: ViewController {
 
         postsView.themeDidChange(theme)
         navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+        
+        // Ensure navigation bar is opaque
+        if let navigationBar = navigationController?.navigationBar {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = Theme.defaultTheme()[uicolor: "navigationBarTintColor"]
+            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!]
+            navigationBar.standardAppearance = appearance
+            navigationBar.scrollEdgeAppearance = appearance
+        }
 
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
@@ -1617,6 +1635,17 @@ final class PostsPageViewController: ViewController {
     private func updatePostsViewLayoutMargins() {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
         postsView.layoutMargins = view.safeAreaInsets
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Add back button if presented modally
+        if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "arrowleft"), primaryAction: UIAction { _ in
+                self.dismiss(animated: true, completion: nil)
+            })
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {

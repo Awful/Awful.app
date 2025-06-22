@@ -87,7 +87,9 @@ final class MessageViewController: ViewController {
                     composeVC.delegate = self
                     composeVC.restorationIdentifier = "New private message replying to private message"
                     self.composeVC = composeVC
-                    present(composeVC.enclosingNavigationController(), animated: true, completion: nil)
+                    let navController = composeVC.enclosingNavigationController()
+                    composeVC.configureForHorizontalModalPresentation(navController)
+                    present(navController, animated: true, completion: nil)
                 } catch {
                     present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
@@ -101,7 +103,9 @@ final class MessageViewController: ViewController {
                     composeVC.delegate = self
                     composeVC.restorationIdentifier = "New private message forwarding private message"
                     self.composeVC = composeVC
-                    present(composeVC.enclosingNavigationController(), animated: true)
+                    let navController = composeVC.enclosingNavigationController()
+                    composeVC.configureForHorizontalModalPresentation(navController)
+                    present(navController, animated: true)
                 } catch {
                     present(UIAlertController(title: LocalizedString("private-message.quote-error.title"), error: error), animated: true)
                 }
@@ -138,13 +142,17 @@ final class MessageViewController: ViewController {
             ? MessageComposeViewController(forwardingMessage: privateMessage, initialContents: privateMessage.innerHTML)
             : MessageComposeViewController(regardingMessage: privateMessage, initialContents: nil)
         composeVC.delegate = self
-        present(composeVC.enclosingNavigationController(), animated: true, completion: nil)
+        let navController = composeVC.enclosingNavigationController()
+        composeVC.configureForHorizontalModalPresentation(navController)
+        present(navController, animated: true, completion: nil)
     }
 
     private func showAuthorProfile() {
         guard let author = privateMessage.from else { return }
         let composeVC = ProfileViewController(user: author)
-        present(composeVC.enclosingNavigationController(), animated: true)
+        let navController = composeVC.enclosingNavigationController()
+        composeVC.configureForHorizontalModalPresentation(navController)
+        present(navController, animated: true)
     }
 
     private func showUserActions(from rect: CGRect) {
@@ -152,7 +160,8 @@ final class MessageViewController: ViewController {
         
         func present(_ viewController: UIViewController) {
             if UIDevice.current.userInterfaceIdiom == .pad {
-                self.present(viewController.enclosingNavigationController(), animated: true, completion: nil)
+                let navController = viewController.enclosingNavigationController()
+                self.present(navController, animated: true, completion: nil)
             } else {
                 self.navigationController?.pushViewController(viewController, animated: true)
             }
@@ -209,6 +218,10 @@ final class MessageViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Fix layout to prevent content from appearing under navigation bar
+        edgesForExtendedLayout = []
+        extendedLayoutIncludesOpaqueBars = false
+        
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
@@ -264,7 +277,7 @@ final class MessageViewController: ViewController {
             .sink { [weak self] _ in self?.renderView.loadLinkifiedImages() }
             .store(in: &cancellables)
 
-        if privateMessage.innerHTML == nil || privateMessage.innerHTML?.isEmpty == true || privateMessage.from == nil {
+        if privateMessage.innerHTML == nil || privateMessage.innerHTML?.isEmpty == true || privateMessage.from == nil || privateMessage.from?.customTitleHTML?.isEmpty != false {
             let loadingView = LoadingView.loadingViewWithTheme(theme)
             self.loadingView = loadingView
             view.addSubview(loadingView)
@@ -302,6 +315,17 @@ final class MessageViewController: ViewController {
         loadingView?.tintColor = theme["backgroundColor"]
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Add back button if presented modally
+        if presentingViewController != nil && navigationController?.viewControllers.count == 1 {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "arrowleft"), primaryAction: UIAction { _ in
+                self.dismiss(animated: true, completion: nil)
+            })
+        }
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
