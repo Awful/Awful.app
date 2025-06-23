@@ -177,29 +177,37 @@ enum Tab: String, CaseIterable, Identifiable {
                     hasFavorites: forumsHasFavorites,
                     managedObjectContext: managedObjectContext
                 )
+                .ignoresSafeArea()
             } else {
                 let vc = ForumsTableViewController(managedObjectContext: managedObjectContext)
                 AwfulUIViewControllerRepresentable { vc.enclosingNavigationController(hidingNavigationBar: true) }
+                    .ignoresSafeArea()
             }
         case .bookmarks:
             if let bookmarksIsEditing = bookmarksIsEditing {
                 BookmarksViewRepresentable(isEditing: bookmarksIsEditing, managedObjectContext: managedObjectContext)
+                    .ignoresSafeArea()
             } else {
                 let vc = BookmarksTableViewController(managedObjectContext: managedObjectContext)
                 AwfulUIViewControllerRepresentable { vc.enclosingNavigationController(hidingNavigationBar: true) }
+                    .ignoresSafeArea()
             }
         case .messages:
             if let messagesIsEditing = messagesIsEditing {
                 MessagesViewRepresentable(isEditing: messagesIsEditing, managedObjectContext: managedObjectContext)
+                    .ignoresSafeArea()
             } else {
                 let vc = MessageListViewController(managedObjectContext: managedObjectContext)
                 AwfulUIViewControllerRepresentable { vc.enclosingNavigationController(hidingNavigationBar: true) }
+                    .ignoresSafeArea()
             }
         case .lepers:
             let vc = RapSheetViewController()
             AwfulUIViewControllerRepresentable { vc.enclosingNavigationController(hidingNavigationBar: true) }
+                .ignoresSafeArea()
         case .settings:
             AwfulUIViewControllerRepresentable { SettingsViewController(managedObjectContext: managedObjectContext) }
+                .ignoresSafeArea()
         }
     }
 } 

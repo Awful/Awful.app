@@ -9,46 +9,71 @@ struct MainView: View {
     @State private var selectedTab: Tab = .forums
     @SwiftUI.Environment(\.theme) private var theme
     @SwiftUI.Environment(\.colorScheme) private var colorScheme
+    @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @EnvironmentObject private var sessionManager: SessionManager
+    @State private var routeObserver: NSObjectProtocol?
     
     private var fontDesign: Font.Design {
         theme[bool: "roundedFonts"] == true ? .rounded : .default
     }
     
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
+    
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            // Fill the status-bar area with the navigation bar tint color
-            (theme[color: "navigationBarTintColor"] ?? Color.blue)
-                .ignoresSafeArea(edges: .top)
-            
-            GeometryReader { proxy in
-                let isCompact = proxy.size.width < 768 // rough heuristic for iPhone vs iPad/Mac
-                if isCompact {
+        if sessionManager.isLoggedIn {
+            loggedInView
+        } else {
+            LoginView()
+        }
+    }
+    
+    @ViewBuilder
+    private var loggedInView: some View {
+        Group {
+            if isCompact {
+                NavigationStack {
                     MainViewContent(selectedTab: $selectedTab)
-                        .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
-                } else {
-                    NavigationSplitView {
-                        MainViewContent(selectedTab: $selectedTab)
-                            .background(theme[color: "backgroundColor"] ?? Color(.systemGroupedBackground))
-                    } detail: {
-                        Text("")
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(theme[color: "backgroundColor"] ?? Color(.systemBackground))
-                    }
-                    .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
                 }
+                .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
+                .fontDesign(fontDesign)
+            } else {
+                NavigationSplitView {
+                    MainViewContent(selectedTab: $selectedTab)
+                        .background(theme[color: "backgroundColor"] ?? Color(.systemGroupedBackground))
+                } detail: {
+                    Text("")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(theme[color: "backgroundColor"] ?? Color(.systemBackground))
+                }
+                .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
+                .fontDesign(fontDesign)
             }
-            .fontDesign(fontDesign)
         }
         .onAppear {
-            // Set up route notification observer
-            NotificationCenter.default.addObserver(
-                forName: Notification.Name("AwfulRoute"),
-                object: nil,
-                queue: .main
-            ) { notification in
-                guard let route = notification.object as? AwfulRoute else { return }
-                handleRoute(route)
-            }
+            setupRouteNotificationObserver()
+        }
+        .onDisappear {
+            removeRouteNotificationObserver()
+        }
+    }
+    
+    private func setupRouteNotificationObserver() {
+        routeObserver = NotificationCenter.default.addObserver(
+            forName: Notification.Name("AwfulRoute"),
+            object: nil,
+            queue: .main
+        ) { notification in
+            guard let route = notification.object as? AwfulRoute else { return }
+            handleRoute(route)
+        }
+    }
+    
+    private func removeRouteNotificationObserver() {
+        if let observer = routeObserver {
+            NotificationCenter.default.removeObserver(observer)
+            routeObserver = nil
         }
     }
     
@@ -81,7 +106,9 @@ struct MainView: View {
         
         // Need to locate the post
         guard let rootView = window.rootViewController?.view else { return }
-        let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: MRProgressOverlayViewMode.indeterminate, animated: true)!
+        guard let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: MRProgressOverlayViewMode.indeterminate, animated: true) else {
+            return
+        }
         overlay.tintColor = Theme.defaultTheme()["tintColor"]
         
         let updateLastRead = updateSeen == .seen
@@ -96,7 +123,7 @@ struct MainView: View {
             } catch {
                 overlay.titleLabelText = "Post Not Found"
                 overlay.mode = MRProgressOverlayViewMode.cross
-                try? await Task.sleep(timeInterval: 3)
+                try? await Task.sleep(for: .seconds(3))
                 overlay.dismiss(true)
             }
         }
@@ -184,8 +211,6 @@ private struct MainViewContent: View {
         theme[color: "tabBarBackgroundColor"] ?? Color(.systemBackground)
     }
 
-
-
     var body: some View {
         VStack(spacing: 0) {
             Group {
@@ -215,15 +240,12 @@ private struct MainViewContent: View {
 
             VStack(spacing: 0) {
                 Divider()
-                    .background(Color.gray.opacity(0.3))
+                    .background(Color.gray.opacity(0))
 
                 HStack(spacing: 0) {
                     ForEach(Tab.allCases) { tab in
                         Button(action: { 
-                            print("Tab button tapped: \(tab.rawValue)")
-                            print("Current selectedTab: \(selectedTab.rawValue)")
                             selectedTab = tab 
-                            print("New selectedTab: \(selectedTab.rawValue)")
                         }) {
                             VStack(spacing: showLabels ? 4 : 0) {
                                 Image(tab.image)

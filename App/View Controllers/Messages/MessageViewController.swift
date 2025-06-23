@@ -218,10 +218,6 @@ final class MessageViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Fix layout to prevent content from appearing under navigation bar
-        edgesForExtendedLayout = []
-        extendedLayoutIncludesOpaqueBars = false
-        
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
@@ -365,6 +361,15 @@ final class MessageViewController: ViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func updateScrollViewContentInsets() {
+        let safeInsets = view.safeAreaInsets
+        renderView.scrollView.contentInset = UIEdgeInsets(top: safeInsets.top,
+                                                          left: 0,
+                                                          bottom: safeInsets.bottom,
+                                                          right: 0)
+        renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
     }
 }
 

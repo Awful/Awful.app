@@ -174,10 +174,8 @@
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
 		1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */; };
 		1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */; };
-		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
 		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
-		1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B76A19C2374C00FDC33E /* Login.storyboard */; };
 		1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */; };
 		1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
@@ -198,7 +196,8 @@
 		2D4502B92E07AC1A00C76A7D /* MainViewTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4502B72E07AC1A00C76A7D /* MainViewTabs.swift */; };
 		2D4502BA2E07AC1A00C76A7D /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4502B62E07AC1A00C76A7D /* MainView.swift */; };
 		2D4502BB2E07AC1A00C76A7D /* AwfulApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4502B52E07AC1A00C76A7D /* AwfulApp.swift */; };
-		2D4502BC2E07AC1A00C76A7D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4502B82E07AC1A00C76A7D /* SceneDelegate.swift */; };
+		2D5BBBF42E0936FC00A2F36A /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5BBBF32E0936FC00A2F36A /* SessionManager.swift */; };
+		2D5BBBF52E0936FC00A2F36A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5BBBF22E0936FC00A2F36A /* LoginView.swift */; };
 		2D8C14362E082A8900A35BB9 /* HorizontalModalTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8C14352E082A8900A35BB9 /* HorizontalModalTransition.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
@@ -480,10 +479,8 @@
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImgurAnonymousAPI+Shared.swift"; sourceTree = "<group>"; };
 		1CDC9F652AE5FB19005DA08D /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = test.yml; path = .github/workflows/test.yml; sourceTree = SOURCE_ROOT; };
-		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CE2B76619C2372200FDC33E /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
 		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
 		1CF0A6C520A50FC5004C26EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -506,7 +503,8 @@
 		2D4502B52E07AC1A00C76A7D /* AwfulApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulApp.swift; sourceTree = "<group>"; };
 		2D4502B62E07AC1A00C76A7D /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		2D4502B72E07AC1A00C76A7D /* MainViewTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewTabs.swift; sourceTree = "<group>"; };
-		2D4502B82E07AC1A00C76A7D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		2D5BBBF22E0936FC00A2F36A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		2D5BBBF32E0936FC00A2F36A /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
 		2D8C14352E082A8900A35BB9 /* HorizontalModalTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalModalTransition.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
@@ -600,14 +598,14 @@
 		1190F71C13BE4EA900B9D271 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				2D5BBBF22E0936FC00A2F36A /* LoginView.swift */,
+				2D5BBBF32E0936FC00A2F36A /* SessionManager.swift */,
 				2D4502B52E07AC1A00C76A7D /* AwfulApp.swift */,
 				2D4502B62E07AC1A00C76A7D /* MainView.swift */,
 				2D4502B72E07AC1A00C76A7D /* MainViewTabs.swift */,
-				2D4502B82E07AC1A00C76A7D /* SceneDelegate.swift */,
 				1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */,
 				1C220E3C2B815AFC00DA92B0 /* Bundle+.swift */,
 				1C4506C31A2BAB3800767306 /* Handoff.swift */,
-				1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */,
 				1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Main;
@@ -1025,7 +1023,6 @@
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1C29C3812258538A00E1217A /* Forums */,
 				1CBE1B0819CA050300510187 /* ImageViewController.swift */,
-				1CE2B76A19C2374C00FDC33E /* Login.storyboard */,
 				1CE2B76619C2372200FDC33E /* LoginViewController.swift */,
 				1C29C3852258547C00E1217A /* Messages */,
 				1C29C382225853A300E1217A /* Posts */,
@@ -1430,7 +1427,6 @@
 				1AB84FD92ADC611B00E7334D /* bat.svg in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */,
-				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
@@ -1461,7 +1457,6 @@
 				2D19BA3929C33303009DD94F /* niggly60.json in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
-				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
 				1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */,
@@ -1547,7 +1542,6 @@
 				2D4502B92E07AC1A00C76A7D /* MainViewTabs.swift in Sources */,
 				2D4502BA2E07AC1A00C76A7D /* MainView.swift in Sources */,
 				2D4502BB2E07AC1A00C76A7D /* AwfulApp.swift in Sources */,
-				2D4502BC2E07AC1A00C76A7D /* SceneDelegate.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
@@ -1585,6 +1579,8 @@
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */,
+				2D5BBBF42E0936FC00A2F36A /* SessionManager.swift in Sources */,
+				2D5BBBF52E0936FC00A2F36A /* LoginView.swift in Sources */,
 				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,
 				1C25AC471F53788900977D6F /* RenderView.swift in Sources */,
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,

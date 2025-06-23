@@ -123,24 +123,14 @@ final class MessageListViewController: TableViewController {
         let viewController = MessageViewController(privateMessage: message)
         viewController.restorationIdentifier = "Message"
         
-        let navController = viewController.enclosingNavigationController()
-        viewController.configureForDetailPresentation(navController)
-        
-        // Present if not already shown in detail pane
-        if navController.parent == nil {
+        // Check if we're on iPhone (compact width) to use horizontal modal presentation
+        if traitCollection.horizontalSizeClass == .compact {
+            let navController = viewController.enclosingNavigationController()
+            viewController.configureForHorizontalModalPresentation(navController)
             present(navController, animated: true)
+        } else {
+            showDetailViewController(viewController.enclosingNavigationController(), sender: self)
         }
-    }
-    
-    private func findSplitViewController() -> UISplitViewController? {
-        var current: UIViewController? = self
-        while let viewController = current {
-            if let splitVC = viewController as? UISplitViewController {
-                return splitVC
-            }
-            current = viewController.parent
-        }
-        return nil
     }
 
     private func deleteMessage(_ message: PrivateMessage) {

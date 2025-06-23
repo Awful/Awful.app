@@ -4,6 +4,12 @@
     "" : {
 
     },
+    " and " : {
+
+    },
+    "." : {
+
+    },
     "action.share-url" : {
       "comment" : "Title of the share URL action for an announcement, post, or thread.",
       "extractionState" : "manual",
@@ -37,6 +43,9 @@
     "Author Profile" : {
 
     },
+    "Awful" : {
+
+    },
     "bookmarks.title" : {
       "comment" : "Title of the bookmarks screen, shown in the navbar and the tab bar.",
       "extractionState" : "manual",
@@ -48,6 +57,9 @@
           }
         }
       }
+    },
+    "By logging in, you agree to the " : {
+
     },
     "cancel" : {
       "comment" : "Title of button that dismisses without taking any action.",
@@ -276,6 +288,9 @@
     "Creep" : {
 
     },
+    "Delete" : {
+
+    },
     "Doggo" : {
 
     },
@@ -291,7 +306,16 @@
     "Edit" : {
 
     },
+    "Enter your password" : {
+
+    },
+    "Enter your username" : {
+
+    },
     "Five" : {
+
+    },
+    "Forgot Password?" : {
 
     },
     "forums-list.announcements-section-title" : {
@@ -606,6 +630,12 @@
         }
       }
     },
+    "Log In" : {
+
+    },
+    "Logging In..." : {
+
+    },
     "login.consent-to-terms.full-text" : {
       "comment" : "Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately).",
       "extractionState" : "migrated",
@@ -659,6 +689,12 @@
           }
         }
       }
+    },
+    "OK" : {
+
+    },
+    "Password" : {
+
     },
     "posts-page.copied-post" : {
       "comment" : "Title of alert shown when post successfully copied to pasteboard.",
@@ -815,6 +851,9 @@
           }
         }
       }
+    },
+    "Privacy Policy" : {
+
     },
     "Private Messages" : {
 
@@ -1126,6 +1165,9 @@
     "Smith" : {
 
     },
+    "Something Awful Forums" : {
+
+    },
     "table-view.action.delete" : {
       "comment" : "Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.)",
       "extractionState" : "migrated",
@@ -1137,6 +1179,9 @@
           }
         }
       }
+    },
+    "Terms of Service" : {
+
     },
     "thread-list.filter-button.change-filter" : {
       "comment" : "Button title atop the thread list when some filter is set.",
@@ -1197,6 +1242,9 @@
           }
         }
       }
+    },
+    "Username" : {
+
     },
     "V" : {
 

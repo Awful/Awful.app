@@ -114,6 +114,10 @@ final class NavigationController: UINavigationController, Themeable {
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
         pushAnimationInProgress = true
         
+        // Remove "Back" text by setting empty title on the back button
+        let backButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        topViewController?.navigationItem.backBarButtonItem = backButtonItem
+        
         super.pushViewController(viewController, animated: animated)
         
         unpopHandler?.navigationController(self, didPushViewController: viewController)
@@ -133,6 +137,11 @@ final class NavigationController: UINavigationController, Themeable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNavigationBarHidden(hidesNavigationBar, animated: animated)
+        
+        // Ensure theming is applied when navigation bar becomes visible
+        if !hidesNavigationBar {
+            themeDidChange()
+        }
     }
     
     func themeDidChange() {
@@ -152,6 +161,17 @@ final class NavigationController: UINavigationController, Themeable {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = theme["navigationBarTintColor"]
+        
+        // Set custom back indicator image to use arrowleft icon
+        if let backButtonImage = UIImage(named: "arrowleft") {
+            appearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
+        }
+        
+        // Also set the back indicator on the navigation bar directly for immediate effect
+        if let backButtonImage = UIImage(named: "arrowleft") {
+            navigationBar.backIndicatorImage = backButtonImage
+            navigationBar.backIndicatorTransitionMaskImage = backButtonImage
+        }
         
         let textColor: UIColor? = theme["navigationBarTextColor"]
         
@@ -203,6 +223,25 @@ final class NavigationController: UINavigationController, Themeable {
         }
         return nil
     }
+    
+    // MARK: Fallback back button
+    
+    @objc private func didTapFallbackBackButton() {
+        // Try to pop if we have multiple view controllers in the stack
+        if viewControllers.count > 1 {
+            popViewController(animated: true)
+        } else if presentingViewController != nil {
+            // If we're in a modal presentation and can't pop, dismiss
+            dismiss(animated: true, completion: nil)
+        } else {
+            // As a last resort, try to find a split view controller and navigate to the primary pane
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let splitVC = UIViewController.findSplitViewController(in: window.rootViewController) {
+                splitVC.showPrimaryViewController()
+            }
+        }
+    }
 }
 
 private enum Key: String {
@@ -240,6 +279,25 @@ extension NavigationController: UINavigationControllerDelegate {
                     unpopHandler.navigationControllerDidCancelInteractivePop()
                 }
             }
+        }
+        
+        // Ensure navigation bar appearance is current when showing a view controller
+        if !hidesNavigationBar {
+            themeDidChange()
+        }
+        
+        // Add fallback back button if none exists and it's not the root view controller
+        if viewController.navigationItem.leftBarButtonItem == nil &&
+           viewController.navigationItem.hidesBackButton == false &&
+           navigationController.viewControllers.count > 1 {
+            let backButton = UIBarButtonItem(
+                image: UIImage(named: "arrowleft"),
+                style: .plain,
+                target: self,
+                action: #selector(didTapFallbackBackButton)
+            )
+            backButton.tintColor = theme["navigationBarTextColor"]
+            viewController.navigationItem.leftBarButtonItem = backButton
         }
         
         realDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
