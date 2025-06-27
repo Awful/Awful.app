@@ -242,6 +242,75 @@ public final class ForumsClient {
         }
     }
 
+    // MARK: Search
+
+    /// Fetches the initial search page form with forum list and search options.
+    /// - Returns: HTMLDocument containing the search form
+    public func fetchSearchPage() async throws -> HTMLDocument {
+        let (data, response) = try await fetch(method: .get, urlString: "query.php", parameters: [:])
+        let (document, _) = try parseHTML(data: data, response: response)
+        return document
+    }
+
+
+
+    /// Performs a forum search with the given query and selected forum IDs.
+    /// - Parameters:
+    ///   - query: The search query string
+    ///   - forumIDs: Array of forum ID strings to search within
+    /// - Returns: HTMLDocument containing the search results
+    public func searchForums(
+        query: String,
+        forumIDs: [String]
+    ) async throws -> HTMLDocument {
+        guard let urlSession else { throw Error.missingURLSession }
+        guard let baseURL else { throw Error.invalidBaseURL }
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
+            throw Error.invalidBaseURL
+        }
+
+        components.path = "/query.php"
+        var queryItems = [
+            URLQueryItem(name: "q", value: query),
+            URLQueryItem(name: "action", value: "query")
+        ]
+        queryItems.append(contentsOf: forumIDs.map { URLQueryItem(name: "forums[]", value: $0) })
+        components.queryItems = queryItems
+
+        guard let url = components.url,
+              let queryString = components.percentEncodedQuery?.data(using: .utf8)
+        else {
+            throw Error.requestSerializationError("Could not create search query string")
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.httpBody = queryString
+
+        let (data, response) = try await urlSession.data(for: request)
+        let (document, _) = try parseHTML(data: data, response: response)
+        return document
+    }
+
+    /// Navigates to a specific page of forum search results.
+    /// - Parameters:
+    ///   - queryID: The search query ID from the initial search
+    ///   - page: The page number to navigate to
+    /// - Returns: HTMLDocument containing the search results for the specified page
+    public func searchForumsPage(
+        queryID: String,
+        page: Int
+    ) async throws -> HTMLDocument {
+        let (data, response) = try await fetch(method: .get, urlString: "query.php", parameters: [
+            "action": "results",
+            "qid": queryID,
+            "page": String(page)
+        ])
+        let (document, _) = try parseHTML(data: data, response: response)
+        return document
+    }
+
     // MARK: Threads
 
     /// - Parameter tagged: A thread tag to use for filtering forums, or `nil` for no filtering.

@@ -194,7 +194,7 @@ final class ForumsTableViewController: TableViewController {
     }
             
     @objc private func searchForums() {
-        let searchView = UIHostingController(rootView: SearchView())
+        let searchView = SearchHostingController()
         searchView.restorationIdentifier = "Search view"
         if traitCollection.userInterfaceIdiom == .pad {
             searchView.modalPresentationStyle = .pageSheet

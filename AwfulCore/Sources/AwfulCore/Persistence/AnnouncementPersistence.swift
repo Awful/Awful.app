@@ -7,10 +7,12 @@ import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AnnouncementPersistence")
 
+private typealias PersistedAnnouncement = AwfulCore.Announcement
+
 extension AnnouncementListScrapeResult {
     func upsert(into context: NSManagedObjectContext) throws -> [AwfulCore.Announcement] {
         let existingAnnouncements = AwfulCore.Announcement.fetch(in: context) {
-            $0.sortDescriptors = [.init(key: "listIndex", ascending: true)]
+            $0.sortDescriptors = [.init(key: #keyPath(PersistedAnnouncement.listIndex), ascending: true)]
             $0.returnsObjectsAsFaults = false
         }
 
