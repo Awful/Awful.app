@@ -16,3 +16,21 @@ xcuserdata
 
 # Optional CSS compiler possible location
 /node_modules/
+
+/build-spankykong.sh
+
+*.env
+/build/
+*.p8
+AuthKey_*.p8
+/DerivedData/
+*.xcarchive
+*.ipa
+*.dSYM.zip
+
+# Keychain exports (just in case)
+*.p12
+*.mobileprovision
+
+# Temporary export options
+ExportOptions.plist
