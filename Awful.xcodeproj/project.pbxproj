@@ -280,7 +280,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1280,7 +1279,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 			);
 			name = Awful;
 			packageProductDependencies = (
@@ -1374,7 +1372,6 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1C9AEBC2210C3B2200C9A567 /* AwfulTests */,
-				1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
 			);
 		};
@@ -1649,12 +1646,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1C66A9F719DD393A001B9A41 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			platformFilter = ios;
-			target = 1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */;
-			targetProxy = 1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */;
-		};
+
 		1C9AEBC9210C3B2300C9A567 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1D6058900D05DD3D006BFB54 /* Awful */;
@@ -1692,7 +1684,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spankykong.awful.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1707,7 +1699,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spankykong.awful.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1716,7 +1708,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug.SmilieKeyboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.debug.SmilieKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -1726,7 +1718,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.SmilieKeyboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.SmilieKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
 			};
@@ -1745,7 +1737,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = App/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
@@ -1765,7 +1757,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = App/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
@@ -1776,9 +1768,10 @@
 			baseConfigurationReference = 1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_SHORT_VERSION = 5.5;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.debug;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = AwfulDebug;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1792,9 +1785,10 @@
 			baseConfigurationReference = 1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_SHORT_VERSION = 5.5;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = Awful;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

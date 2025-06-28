@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>${DYLIB_CURRENT_VERSION}</string>
+	<string>17510770</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>

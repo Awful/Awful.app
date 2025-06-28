@@ -15,8 +15,8 @@
         "repositoryURL": "http://github.com/jessesquires/Foil",
         "state": {
           "branch": null,
-          "revision": "bc08a46268cb3bb22fee2c8465d97e6d7bf981e1",
-          "version": "5.0.1"
+          "revision": "ff4b49d2e7852f876ded552fb596e510a66670b9",
+          "version": "5.1.2"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
         "state": {
           "branch": null,
-          "revision": "769b88d83a42ca8d5572b020c96f47e3690b3796",
-          "version": "4.4.3"
+          "revision": "047aa81b77adcbf583a966dfef620d17650cc656",
+          "version": "4.5.1"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/kean/Nuke",
         "state": {
           "branch": null,
-          "revision": "3f666f120b63ea7de57d42e9a7c9b47f8e7a290b",
-          "version": "12.1.6"
+          "revision": "0ead44350d2737db384908569c012fe67c421e4d",
+          "version": "12.8.0"
         }
       },
       {
