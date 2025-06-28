@@ -9,6 +9,7 @@ import Combine
 import CoreData
 import os
 import UIKit
+import SwiftUI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
 
@@ -16,6 +17,7 @@ final class ForumsTableViewController: TableViewController {
     
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var listDataSource: ForumListDataSource!
     let managedObjectContext: NSManagedObjectContext
@@ -166,6 +168,40 @@ final class ForumsTableViewController: TableViewController {
         pullToRefreshBlock = { [weak self] in
             self?.refresh()
         }
+        
+        lazy var searchButton: UIBarButtonItem = {
+            let button = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchForums))
+            button.isEnabled = canSendPrivateMessages
+            return button
+        }()
+
+        if canSendPrivateMessages {
+            navigationItem.setLeftBarButton(searchButton, animated: true)
+        }
+        
+        // Add observer for changes to canSendPrivateMessages
+        $canSendPrivateMessages
+            .receive(on: RunLoop.main)
+            .sink { [weak self] canSend in
+                guard let self else { return }
+                if canSend {
+                    navigationItem.setLeftBarButton(searchButton, animated: true)
+                } else {
+                    navigationItem.setLeftBarButton(nil, animated: true)
+                }
+            }
+            .store(in: &cancellables)
+    }
+            
+    @objc private func searchForums() {
+        let searchView = SearchHostingController()
+        searchView.restorationIdentifier = "Search view"
+        if traitCollection.userInterfaceIdiom == .pad {
+            searchView.modalPresentationStyle = .pageSheet
+        } else {
+            searchView.modalPresentationStyle = .fullScreen
+        }
+        present(searchView, animated: true)
     }
 
     override func themeDidChange() {
