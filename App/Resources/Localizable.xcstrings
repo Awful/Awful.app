@@ -40,6 +40,9 @@
     "Author Profile" : {
 
     },
+    "Awful" : {
+
+    },
     "Back" : {
 
     },
@@ -298,6 +301,9 @@
 
     },
     "Five" : {
+
+    },
+    "Forgot Password?" : {
 
     },
     "forums-list.announcements-section-title" : {
@@ -609,6 +615,9 @@
         }
       }
     },
+    "Log In" : {
+
+    },
     "login.consent-to-terms.full-text" : {
       "comment" : "Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately).",
       "extractionState" : "migrated",
@@ -651,6 +660,9 @@
     "Mark Unread" : {
 
     },
+    "Not Logged In" : {
+
+    },
     "ok" : {
       "comment" : "Title of a button that acknowledges information without offering any choice.",
       "extractionState" : "migrated",
@@ -663,6 +675,9 @@
         }
       }
     },
+    "OK" : {
+
+    },
     "Page %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -672,6 +687,9 @@
           }
         }
       }
+    },
+    "Password" : {
+
     },
     "posts-page.copied-post" : {
       "comment" : "Title of alert shown when post successfully copied to pasteboard.",
@@ -1222,6 +1240,9 @@
       }
     },
     "Toggle All" : {
+
+    },
+    "Username" : {
 
     },
     "V" : {

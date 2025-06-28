@@ -12,13 +12,17 @@ private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Se
 
 final class SettingsViewController: HostingController<SettingsContainerView> {
     let managedObjectContext: NSManagedObjectContext
+    private var containerView: SettingsContainerView
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
 
-        let currentUser = managedObjectContext.performAndWait {
-            User.objectForKey(objectKey: UserKey(
-                userID: UserDefaults.standard.value(for: Settings.userID)!,
+        let currentUser: User? = managedObjectContext.performAndWait {
+            guard let userID = UserDefaults.standard.value(for: Settings.userID) else {
+                return nil
+            }
+            return User.objectForKey(objectKey: UserKey(
+                userID: userID,
                 username: UserDefaults.standard.value(for: Settings.username)
             ), in: managedObjectContext)
         }
@@ -29,7 +33,7 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         }
         let box = UnownedBox()
 
-        super.init(rootView: SettingsContainerView(
+        containerView = SettingsContainerView(
             appIconDataSource: makeAppIconDataSource(),
             currentUser: currentUser,
             emptyCache: { box.contents.emptyCache() },
@@ -40,10 +44,55 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
             managedObjectContext: managedObjectContext
-        ))
+        )
+        
+        super.init(rootView: containerView)
         box.contents = self
 
         title = String(localized: "Settings", bundle: .module)
+        
+        // Listen for login state changes
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(loginStateChanged),
+            name: .DidLogIn,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(loginStateChanged),
+            name: .DidLogOut,
+            object: nil
+        )
+    }
+    
+    @objc private func loginStateChanged() {
+        // Refresh the user data when login state changes
+        let currentUser: User? = managedObjectContext.performAndWait {
+            guard let userID = UserDefaults.standard.value(for: Settings.userID) else {
+                return nil
+            }
+            return User.objectForKey(objectKey: UserKey(
+                userID: userID,
+                username: UserDefaults.standard.value(for: Settings.username)
+            ), in: managedObjectContext)
+        }
+        
+        // Update the container view with the new user
+        containerView = SettingsContainerView(
+            appIconDataSource: makeAppIconDataSource(),
+            currentUser: currentUser,
+            emptyCache: { [weak self] in self?.emptyCache() },
+            goToAwfulThread: { [weak self] in self?.goToAwfulThread() },
+            hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
+            isMac: ProcessInfo.processInfo.isMacCatalystApp,
+            isPad: UIDevice.current.userInterfaceIdiom == .pad,
+            logOut: { AppDelegate.instance.logOut() },
+            managedObjectContext: managedObjectContext
+        )
+        
+        rootView = containerView
     }
     
     required init?(coder: NSCoder) {
@@ -103,7 +152,7 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
 /// Wrapper for observing the current `User`.
 struct SettingsContainerView: View {
     let appIconDataSource: AppIconDataSource
-    @ObservedObject var currentUser: User
+    var currentUser: User?
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
@@ -111,6 +160,37 @@ struct SettingsContainerView: View {
     let isPad: Bool
     let logOut: () -> Void
     let managedObjectContext: NSManagedObjectContext
+
+    var body: some View {
+        Group {
+            if let currentUser {
+                LoggedInSettings(
+                    appIconDataSource: appIconDataSource,
+                    currentUser: currentUser,
+                    emptyCache: emptyCache,
+                    goToAwfulThread: goToAwfulThread,
+                    hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
+                    isMac: isMac,
+                    isPad: isPad,
+                    logOut: logOut)
+            } else {
+                Text("Not Logged In")
+            }
+        }
+        .environment(\.managedObjectContext, managedObjectContext)
+        .themed()
+    }
+}
+
+private struct LoggedInSettings: View {
+    let appIconDataSource: AppIconDataSource
+    @ObservedObject var currentUser: User
+    let emptyCache: () -> Void
+    let goToAwfulThread: () -> Void
+    let hasRegularSizeClassInLandscape: Bool
+    let isMac: Bool
+    let isPad: Bool
+    let logOut: () -> Void
 
     var body: some View {
         SettingsView(
@@ -125,7 +205,5 @@ struct SettingsContainerView: View {
             isPad: isPad,
             logOut: logOut
         )
-        .environment(\.managedObjectContext, managedObjectContext)
-        .themed()
     }
 }

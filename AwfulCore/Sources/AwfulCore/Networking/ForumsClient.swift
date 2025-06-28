@@ -172,9 +172,10 @@ public final class ForumsClient {
             result = .failure(error)
         }
 
-        if wasLoggedIn, !isLoggedIn, let didRemotelyLogOut {
+        if wasLoggedIn, !isLoggedIn {
             Task { @MainActor in
-                didRemotelyLogOut()
+                NotificationCenter.default.post(name: .DidLogOut, object: self)
+                didRemotelyLogOut?()
             }
         }
 
@@ -191,41 +192,33 @@ public final class ForumsClient {
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
-        // Not that we'll parse any JSON from the login attempt, but tacking `json=1` on to `urlString` might avoid pointless server-side rendering.
         let (data, response) = try await fetch(method: .post, urlString: "account.php?json=1", parameters: [
             "action": "login",
             "username": username,
             "password" : password,
             "next": "/index.php?json=1",
         ])
-        let result: IndexScrapeResult
-        do {
-            result = try JSONDecoder().decode(IndexScrapeResult.self, from: data)
-        } catch {
-            // We can fail to decode JSON when the server responds with an error as HTML. We may actually be logged in despite the error (e.g. a banned user can "log in" but do basically nothing). However, subsequent launches will crash because we don't actually store the logged-in user's ID. We can avoid the crash by clearing cookies, so we seem logged out.
-            urlSession?.configuration.httpCookieStorage?.removeCookies(since: .distantPast)
-
-            if let error = error as? DecodingError,
-               case .dataCorrupted = error
-            {
-                // Response data was not JSON. Maybe it was a server error delivered as HTML?
-                _ = try parseHTML(data: data, response: response)
-            }
+        
+        guard isLoggedIn else {
+            // If we're not logged in after the login attempt, it means the credentials were invalid
+            throw ServerError.standard(title: "Login Failed", message: "Invalid username or password")
+        }
+        
+        let user = try mainContext.performAndWait {
+            let user = User.objectForKey(objectKey: UserKey(userID: loginCookie!.value, username: username), in: mainContext)
+            user.username = username
+            try mainContext.save()
             
-            // We couldn't figure out a more helpful error, so throw the decoding error.
-            throw error
-        }
-        let backgroundUser = try await backgroundContext.perform {
-            let managed = try result.upsert(into: backgroundContext)
-            try backgroundContext.save()
-            return managed.currentUser
-        }
-        return try await mainContext.perform {
-            guard let user = mainContext.object(with: backgroundUser.objectID) as? User else {
+            // This really shouldn't fail.
+            guard let backgroundUser = try? backgroundContext.existingObject(with: user.objectID) as? User else {
                 throw Error.failedTransferToMainContext
             }
-            return user
+            return backgroundUser
         }
+
+        NotificationCenter.default.post(name: .DidLogIn, object: self)
+
+        return user
     }
 
     // MARK: Forums
@@ -1479,3 +1472,4 @@ private func findIgnoreFormkey(in parsed: ParsedDocument) throws -> String {
         .map { $0["value"] }
     ?? ""
 }
+

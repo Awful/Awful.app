@@ -58,21 +58,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             #endif
         }()
         
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.tintColor = Theme.defaultTheme()["tintColor"]
-        
-        if ForumsClient.shared.isLoggedIn {
-            setRootViewController(rootViewControllerStack.rootViewController, animated: false, completion: nil)
-        } else {
-            setRootViewController(loginViewController.enclosingNavigationController, animated: false, completion: nil)
-        }
-        
-        openCopiedURLController = OpenCopiedURLController(window: window!, router: {
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        self.window = window
+        openCopiedURLController = OpenCopiedURLController(window: window, router: {
             [unowned self] in
             self.open(route: $0)
         })
-        
-        window?.makeKeyAndVisible()
         
         return true
     }
@@ -193,7 +184,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         UserDefaults.standard.removeAllObjectsInMainBundleDomain()
         emptyCache()
+
+        NotificationCenter.default.post(name: .DidLogOut, object: self)
         
+        /*
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
             guard let self = self else { return }
@@ -210,6 +204,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             
             self?.dataStore.deleteStoreAndReset()
         }
+        */
     }
     
     func emptyCache() {

@@ -57,7 +57,6 @@
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C1E57512C2521580075E3B6 /* platinum-member-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1E57502C2521580075E3B6 /* platinum-member-white.png */; };
 		1C1F0F162B8B0AD700F097D3 /* AwfulTheming in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F0F152B8B0AD700F097D3 /* AwfulTheming */; };
-		1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* Smilies */; };
 		1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C220E3A2B814D5A00DA92B0 /* SettingsViewController.swift */; };
 		1C220E3D2B815AFC00DA92B0 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C220E3C2B815AFC00DA92B0 /* Bundle+.swift */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -121,10 +120,6 @@
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
 		1C5E98292B4B5FAE00D891CD /* AwfulExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5E98282B4B5FAE00D891CD /* AwfulExtensions */; };
-		1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */; };
-		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
-		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C6B2A9A272F992E00671F0C /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6B2A99272F992E00671F0C /* Nuke */; };
@@ -148,7 +143,7 @@
 		1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */; };
-		1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* main.swift */; };
+		1C9AEBCE210C3BAF00C9A567 /* AwfulApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* AwfulApp.swift */; };
 		1CA3D6FC2D98A7E400D70964 /* OEmbedFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA3D6FB2D98A7E100D70964 /* OEmbedFetcher.swift */; };
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
@@ -188,7 +183,6 @@
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */; };
 		1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF280972055EB9B00913149 /* AwfulRoute.swift */; };
-		1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521742C228E76009712A7 /* PrivacyInfo.xcprivacy */; };
 		1CF521772C228F88009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */; };
 		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
@@ -205,6 +199,11 @@
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
+		2DE976A92E0FF1D000233423 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A82E0FF1D000233423 /* RootView.swift */; };
+		2DE976AA2E0FF1D000233423 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A72E0FF1D000233423 /* MainView.swift */; };
+		2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AB2E0FF1DF00233423 /* LoginView.swift */; };
+		2DE976AE2E0FF32600233423 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AD2E0FF32600233423 /* LoginViewModel.swift */; };
+		2DE976B02E0FF4FB00233423 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AF2E0FF4FB00233423 /* AppViewModel.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
@@ -237,13 +236,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C66A9EE19DD3939001B9A41;
-			remoteInfo = "Smilie Keyboard";
-		};
 		1C9AEBC8210C3B2300C9A567 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -445,7 +437,7 @@
 		1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagTests.swift; sourceTree = "<group>"; };
 		1C9AEBC7210C3B2300C9A567 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1C9AEBCD210C3BAF00C9A567 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		1C9AEBCD210C3BAF00C9A567 /* AwfulApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulApp.swift; sourceTree = "<group>"; };
 		1CA3D6FB2D98A7E100D70964 /* OEmbedFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OEmbedFetcher.swift; sourceTree = "<group>"; };
 		1CA45D931F2C0AD1005BEEC5 /* RenderView.js */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.javascript; path = RenderView.js; sourceTree = "<group>"; tabWidth = 2; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
@@ -515,6 +507,11 @@
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		2DE976A72E0FF1D000233423 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		2DE976A82E0FF1D000233423 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		2DE976AB2E0FF1DF00233423 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		2DE976AD2E0FF32600233423 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		2DE976AF2E0FF4FB00233423 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
@@ -556,14 +553,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1C66A9EC19DD3939001B9A41 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1C9AEBC0210C3B2200C9A567 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -601,12 +590,17 @@
 		1190F71C13BE4EA900B9D271 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				2DE976AF2E0FF4FB00233423 /* AppViewModel.swift */,
+				2DE976AD2E0FF32600233423 /* LoginViewModel.swift */,
+				2DE976AB2E0FF1DF00233423 /* LoginView.swift */,
+				2DE976A72E0FF1D000233423 /* MainView.swift */,
+				2DE976A82E0FF1D000233423 /* RootView.swift */,
 				1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */,
 				1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */,
 				1C220E3C2B815AFC00DA92B0 /* Bundle+.swift */,
 				1C4506C31A2BAB3800767306 /* Handoff.swift */,
 				1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */,
-				1C9AEBCD210C3BAF00C9A567 /* main.swift */,
+				1C9AEBCD210C3BAF00C9A567 /* AwfulApp.swift */,
 				1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */,
 				1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */,
 			);
@@ -1225,26 +1219,6 @@
 			productReference = 1C3A143319DFC5D10022C44C /* SmilieExtractor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */;
-			buildPhases = (
-				1C66A9EB19DD3939001B9A41 /* Sources */,
-				1C66A9EC19DD3939001B9A41 /* Frameworks */,
-				1C66A9ED19DD3939001B9A41 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SmilieKeyboard;
-			packageProductDependencies = (
-				1C1F8A2C2664BDF4003EA62C /* Smilies */,
-			);
-			productName = "Smilie Keyboard";
-			productReference = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		1C9AEBC2210C3B2200C9A567 /* AwfulTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C9AEBCA210C3B2300C9A567 /* Build configuration list for PBXNativeTarget "AwfulTests" */;
@@ -1319,17 +1293,6 @@
 					1C3A143219DFC5D10022C44C = {
 						CreatedOnToolsVersion = 6.0.1;
 					};
-					1C66A9EE19DD3939001B9A41 = {
-						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
-					};
 					1C9AEBC2210C3B2200C9A567 = {
 						CreatedOnToolsVersion = 10.0;
 						DevelopmentTeam = 9RR6L9X39A;
@@ -1386,15 +1349,6 @@
 				1C3A144119DFC5D10022C44C /* Main.storyboard in Resources */,
 				1C3A144619DFC5D10022C44C /* LaunchScreen.xib in Resources */,
 				1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9ED19DD3939001B9A41 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */,
-				1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1489,15 +1443,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1C66A9EB19DD3939001B9A41 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */,
-				1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1C9AEBBF210C3B2200C9A567 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1517,6 +1462,7 @@
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
+				2DE976B02E0FF4FB00233423 /* AppViewModel.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
@@ -1541,6 +1487,7 @@
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
 				1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */,
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
+				2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */,
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
@@ -1564,7 +1511,8 @@
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1CA3D6FC2D98A7E400D70964 /* OEmbedFetcher.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
-				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
+				1C9AEBCE210C3BAF00C9A567 /* AwfulApp.swift in Sources */,
+				2DE976AE2E0FF32600233423 /* LoginViewModel.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostRenderModel.swift in Sources */,
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
@@ -1576,6 +1524,8 @@
 				1C397C8E1BC9B12F00CA7FD5 /* UIContextMenuConfiguration+ThreadListItem.swift in Sources */,
 				1C25AC211F532EE600977D6F /* LocalizedString.swift in Sources */,
 				1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */,
+				2DE976A92E0FF1D000233423 /* RootView.swift in Sources */,
+				2DE976AA2E0FF1D000233423 /* MainView.swift in Sources */,
 				2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
@@ -1646,7 +1596,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-
 		1C9AEBC9210C3B2300C9A567 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1D6058900D05DD3D006BFB54 /* Awful */;
@@ -1701,26 +1650,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.spankykong.awful.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		1C66A9FD19DD393A001B9A41 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.debug.SmilieKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
-			};
-			name = Debug;
-		};
-		1C66A9FE19DD393A001B9A41 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.SmilieKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Release;
 		};
@@ -1833,15 +1762,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1C66A9FD19DD393A001B9A41 /* Debug */,
-				1C66A9FE19DD393A001B9A41 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		1C9AEBCA210C3B2300C9A567 /* Build configuration list for PBXNativeTarget "AwfulTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1930,10 +1850,6 @@
 		1C1F0F152B8B0AD700F097D3 /* AwfulTheming */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulTheming;
-		};
-		1C1F8A2C2664BDF4003EA62C /* Smilies */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Smilies;
 		};
 		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
