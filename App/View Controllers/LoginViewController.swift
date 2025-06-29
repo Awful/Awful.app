@@ -144,9 +144,22 @@ class LoginViewController: ViewController {
                     username: usernameTextField.text ?? "",
                     password: passwordTextField.text ?? ""
                 )
-                canSendPrivateMessages = user.canReceivePrivateMessages
                 userID = user.userID
                 username = user.username
+                
+                // Fetch user profile to get correct canReceivePrivateMessages value
+                do {
+                    let profile = try await ForumsClient.shared.profileUser(.userID(user.userID))
+                    canSendPrivateMessages = profile.user.canReceivePrivateMessages
+                    print("🔍 Login: Updated canSendPrivateMessages to: \(profile.user.canReceivePrivateMessages)")
+                } catch {
+                    print("⚠️ Login: Failed to fetch user profile: \(error)")
+                    // Fallback to the user object's value (which is likely false)
+                    canSendPrivateMessages = user.canReceivePrivateMessages
+                }
+                
+                // Notify SwiftUI views that canSendPrivateMessages has changed
+                NotificationCenter.default.post(name: Notification.Name("CanSendPrivateMessagesDidChange"), object: nil)
                 completionBlock?(self)
             } catch {
                 logger.error("Could not log in: \(error)")

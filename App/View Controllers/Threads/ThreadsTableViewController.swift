@@ -17,6 +17,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration {
     
     private var cancellables: Set<AnyCancellable> = []
+    var coordinator: (any MainCoordinator)?
     private var dataSource: ThreadListDataSource?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var filterThreadTag: ThreadTag?
@@ -171,6 +172,16 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        navigationController?.delegate = self
+        
+        // If we're showing the ThreadsTableViewController, we're already one level deep
+        if let navController = navigationController, navController.viewControllers.count > 1 {
+            // Use Task to avoid "Publishing changes from within view updates" warning
+            Task { @MainActor in
+                coordinator?.isDetailViewShowing = false // Reset to show tab bar at thread list level
+            }
+        }
+        
         if tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 {
             enableLoadMore()
             
@@ -230,10 +241,21 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     func composeTextViewController(_ composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
         dismiss(animated: true) {
             if let thread = self.threadComposeViewController.thread , success {
-                let postsPage = PostsPageViewController(thread: thread)
-                postsPage.restorationIdentifier = "Posts"
-                postsPage.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
-                self.showDetailViewController(postsPage, sender: self)
+                // Check if we're in a split view (iPad) and use coordinator navigation
+                if let coordinator = self.coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+                    coordinator.navigateToThread(thread)
+                } else {
+                    // iPhone: use traditional navigation
+                    // Use Task to avoid "Publishing changes from within view updates" warning
+                    Task { @MainActor in
+                        self.coordinator?.isDetailViewShowing = true
+                    }
+                    let postsPage = PostsPageViewController(thread: thread)
+                    postsPage.hidesBottomBarWhenPushed = true
+                    postsPage.restorationIdentifier = "Posts"
+                    postsPage.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
+                    self.navigationController?.pushViewController(postsPage, animated: true)
+                }
             }
             
             if !shouldKeepDraft {
@@ -393,9 +415,25 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
 }
 
-extension ThreadsTableViewController: ThreadListDataSourceDelegate {
+extension ThreadsTableViewController: ThreadListDataSourceDelegate, UINavigationControllerDelegate {
     func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme {
         return theme
+    }
+    
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        // Use Task to avoid "Publishing changes from within view updates" warning
+        Task { @MainActor in
+            if viewController == self {
+                // We're back at the thread list - show the tab bar
+                coordinator?.isDetailViewShowing = false
+            } else if viewController is PostsPageViewController {
+                // We're showing a posts view - hide the tab bar
+                coordinator?.isDetailViewShowing = true
+            } else {
+                // Default: if there are multiple view controllers, we're in a detail view
+                coordinator?.isDetailViewShowing = navigationController.viewControllers.count > 1
+            }
+        }
     }
 }
 
@@ -409,13 +447,26 @@ extension ThreadsTableViewController {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
+        
         let thread = dataSource!.thread(at: indexPath)
-        let postsViewController = PostsPageViewController(thread: thread)
-        postsViewController.restorationIdentifier = "Posts"
-        // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-        let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
-        postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
-        showDetailViewController(postsViewController, sender: self)
+        
+        // Check if we're in a split view (iPad) and use coordinator navigation
+        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+            coordinator.navigateToThread(thread)
+        } else {
+            // iPhone: use traditional navigation
+            // Use Task to avoid "Publishing changes from within view updates" warning
+            Task { @MainActor in
+                coordinator?.isDetailViewShowing = true
+            }
+            let postsViewController = PostsPageViewController(thread: thread)
+            postsViewController.hidesBottomBarWhenPushed = true
+            let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
+            postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
+            postsViewController.restorationIdentifier = "Posts"
+            navigationController?.pushViewController(postsViewController, animated: true)
+        }
+        
         tableView.deselectRow(at: indexPath, animated: true)
     }
 

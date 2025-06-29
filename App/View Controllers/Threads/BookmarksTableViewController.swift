@@ -16,6 +16,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 final class BookmarksTableViewController: TableViewController {
     
     private var cancellables: Set<AnyCancellable> = []
+    var coordinator: (any MainCoordinator)?
     private var dataSource: ThreadListDataSource?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
@@ -56,6 +57,7 @@ final class BookmarksTableViewController: TableViewController {
             managedObjectContext: managedObjectContext,
             tableView: tableView
         )
+        dataSource.delegate = self
         dataSource.deletionDelegate = self
         return dataSource
     }
@@ -158,6 +160,8 @@ final class BookmarksTableViewController: TableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        navigationController?.delegate = self
+        
         prepareUserActivity()
         
         if tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 {
@@ -248,44 +252,77 @@ final class BookmarksTableViewController: TableViewController {
 }
 
 // MARK: UITableViewDelegate
-extension BookmarksTableViewController {
+extension BookmarksTableViewController: UINavigationControllerDelegate {
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return dataSource!.tableView(tableView, heightForRowAt: indexPath)
     }
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let thread = dataSource!.thread(at: indexPath)
-        let postsViewController = PostsPageViewController(thread: thread)
-        postsViewController.restorationIdentifier = "Posts"
-        // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
-        let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
-        postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
-        showDetailViewController(postsViewController, sender: self)
-        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+        guard let thread = dataSource?.thread(at: indexPath) else { return }
+        
+        // Check if we're in a split view (iPad) and use coordinator navigation
+        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+            coordinator.navigateToThread(thread)
+        } else {
+            // iPhone: use traditional navigation
+            // Use Task to avoid "Publishing changes from within view updates" warning
+            Task { @MainActor in
+                coordinator?.isDetailViewShowing = true
+            }
+            let postsViewController = PostsPageViewController(thread: thread)
+            postsViewController.hidesBottomBarWhenPushed = true
+            let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
+            postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
+            postsViewController.restorationIdentifier = "Posts"
+            navigationController?.pushViewController(postsViewController, animated: true)
+        }
     }
 
     override func tableView(
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        if tableView.isEditing {
-            let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
-                guard let thread = self.dataSource?.thread(at: indexPath) else { return }
-                self.setThread(thread, isBookmarked: false)
-                completion(true)
-            })
-            let config = UISwipeActionsConfiguration(actions: [delete])
-            config.performsFirstActionWithFullSwipe = false
-            return config
+        guard let thread = dataSource?.thread(at: indexPath) else { return nil }
+        
+        let unbookmarkAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] _, _, completion in
+            self?.setThread(thread, isBookmarked: false)
+            completion(true)
         }
-        return nil
+        
+        let lastPostAction = UIContextualAction(style: .normal, title: "Last Post") { [weak self] _, _, completion in
+            // Check if we're in a split view (iPad) and use coordinator navigation
+            if let coordinator = self?.coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+                coordinator.navigateToThread(thread)
+                // TODO: We need to handle the specific page (.last) in the coordinator or PostsViewRepresentable
+            } else {
+                let postsViewController = PostsPageViewController(thread: thread)
+                postsViewController.loadPage(.last, updatingCache: true, updatingLastReadPost: true)
+                self?.showDetailViewController(postsViewController, sender: self)
+            }
+            completion(true)
+        }
+        lastPostAction.backgroundColor = self.theme["themeColor"]
+        
+        let firstPostAction = UIContextualAction(style: .normal, title: "Unread") { [weak self] _, _, completion in
+            // Check if we're in a split view (iPad) and use coordinator navigation
+            if let coordinator = self?.coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+                coordinator.navigateToThread(thread)
+                // TODO: We need to handle the specific page (.nextUnread) in the coordinator or PostsViewRepresentable
+            } else {
+                let postsViewController = PostsPageViewController(thread: thread)
+                postsViewController.loadPage(.nextUnread, updatingCache: false, updatingLastReadPost: true)
+                self?.showDetailViewController(postsViewController, sender: self)
+            }
+            completion(true)
+        }
+        firstPostAction.backgroundColor = UIColor.lightGray
+        
+        return .init(actions: [unbookmarkAction, lastPostAction, firstPostAction])
     }
 
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        if tableView.isEditing {
-            return .delete
-        }
-        return .none
+        return .delete
     }
         
     override func tableView(
@@ -302,7 +339,28 @@ extension BookmarksTableViewController {
         }
         return configuration
     }
+    
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        // Use Task to avoid "Publishing changes from within view updates" warning
+        Task { @MainActor in
+            if viewController == self {
+                coordinator?.isDetailViewShowing = false
+            } else if navigationController.viewControllers.count > 1 {
+                coordinator?.isDetailViewShowing = true
+            } else {
+                coordinator?.isDetailViewShowing = false
+            }
+        }
+    }
 }
+
+extension BookmarksTableViewController: ThreadListDataSourceDelegate {
+    func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme {
+        return theme
+    }
+}
+
+// MARK: ThreadListDataSourceDeletionDelegate
 
 extension BookmarksTableViewController: ThreadListDataSourceDeletionDelegate {
     func didDeleteThread(_ thread: AwfulThread, in dataSource: ThreadListDataSource) {

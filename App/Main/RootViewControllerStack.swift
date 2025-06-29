@@ -400,12 +400,15 @@ private final class PassthroughViewController: UIViewController {
         return children.first?.preferredInterfaceOrientationForPresentation ?? super.preferredInterfaceOrientationForPresentation
     }
 
-    override var shouldAutorotate: Bool {
-        return children.first?.shouldAutorotate ?? super.shouldAutorotate
-    }
+
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return children.first?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
+    }
+    
+    /// Call this method when the supported interface orientations change
+    func updateSupportedInterfaceOrientations() {
+        setNeedsUpdateOfSupportedInterfaceOrientations()
     }
     
     private enum StateKeys {

@@ -303,7 +303,7 @@ class ComposeTextViewController: ViewController {
         customView?.enabled = false
     }
     
-    @objc fileprivate func didTapSubmit() {
+    @objc func didTapSubmit() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
@@ -322,7 +322,7 @@ class ComposeTextViewController: ViewController {
         })
     }
     
-    @objc fileprivate func didTapCancel() {
+    @objc func didTapCancel() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }

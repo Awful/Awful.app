@@ -15,6 +15,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 final class MessageListViewController: TableViewController {
 
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    var coordinator: (any MainCoordinator)?
     private var dataSource: MessageListDataSource?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let managedObjectContext: NSManagedObjectContext
@@ -114,9 +115,16 @@ final class MessageListViewController: TableViewController {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        let viewController = MessageViewController(privateMessage: message)
-        viewController.restorationIdentifier = "Message"
-        showDetailViewController(viewController, sender: self)
+        
+        // Check if we're in a split view (iPad) and use coordinator navigation
+        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+            coordinator.navigateToPrivateMessage(message)
+        } else {
+            // iPhone: use traditional navigation
+            let viewController = MessageViewController(privateMessage: message)
+            viewController.restorationIdentifier = "Message"
+            showDetailViewController(viewController, sender: self)
+        }
     }
 
     private func deleteMessage(_ message: PrivateMessage) {

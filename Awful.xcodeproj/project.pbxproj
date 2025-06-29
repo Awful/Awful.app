@@ -113,7 +113,6 @@
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */; };
 		1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */; };
 		1C4EE1CE28470C2400A7507E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D0BB35827F440AF00242D2A /* Assets.xcassets */; };
-		1C53451E2B8BF3A7001DA96A /* PSMenuItem in Frameworks */ = {isa = PBXBuildFile; productRef = 1C53451D2B8BF3A7001DA96A /* PSMenuItem */; };
 		1C5345212B8BF48F001DA96A /* ScrollViewDelegateMultiplexer in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */; };
 		1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5C2B8C22D195BF00EA5A80 /* ImgurAnonymousAPI */; };
 		1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */; };
@@ -204,6 +203,7 @@
 		2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AB2E0FF1DF00233423 /* LoginView.swift */; };
 		2DE976AE2E0FF32600233423 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AD2E0FF32600233423 /* LoginViewModel.swift */; };
 		2DE976B02E0FF4FB00233423 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AF2E0FF4FB00233423 /* AppViewModel.swift */; };
+		2DE976B22E0FFB0300233423 /* ModernMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976B12E0FFB0300233423 /* ModernMainView.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
@@ -512,6 +512,7 @@
 		2DE976AB2E0FF1DF00233423 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		2DE976AD2E0FF32600233423 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		2DE976AF2E0FF4FB00233423 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		2DE976B12E0FFB0300233423 /* ModernMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernMainView.swift; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
@@ -575,7 +576,6 @@
 				1C5C2B8D22D195BF00EA5A80 /* ImgurAnonymousAPI in Frameworks */,
 				1C88EC9B2AE1062300FA766F /* PullToRefresh in Frameworks */,
 				1C725A8926E71C6D009713DC /* MRProgress in Frameworks */,
-				1C53451E2B8BF3A7001DA96A /* PSMenuItem in Frameworks */,
 				1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */,
 				306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */,
 				1C5345212B8BF48F001DA96A /* ScrollViewDelegateMultiplexer in Frameworks */,
@@ -590,6 +590,7 @@
 		1190F71C13BE4EA900B9D271 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				2DE976B12E0FFB0300233423 /* ModernMainView.swift */,
 				2DE976AF2E0FF4FB00233423 /* AppViewModel.swift */,
 				2DE976AD2E0FF32600233423 /* LoginViewModel.swift */,
 				2DE976AB2E0FF1DF00233423 /* LoginView.swift */,
@@ -1269,7 +1270,6 @@
 				1C13FF0D2B549FBE00B39A0D /* AwfulSettings */,
 				1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */,
 				1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
-				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
 				306F740A2D90AA01000717BC /* KeychainAccess */,
 			);
@@ -1544,6 +1544,7 @@
 				1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */,
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */,
+				2DE976B22E0FFB0300233423 /* ModernMainView.swift in Sources */,
 				1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */,
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
@@ -1629,6 +1630,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1644,6 +1646,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1666,6 +1669,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = App/Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
@@ -1686,6 +1690,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = App/Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
@@ -1700,6 +1705,7 @@
 				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.debug;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = AwfulDebug;
@@ -1717,6 +1723,7 @@
 				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = Awful;
@@ -1867,10 +1874,6 @@
 		1C47122E2664CE4E00E5AA74 /* WebArchive */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = WebArchive;
-		};
-		1C53451D2B8BF3A7001DA96A /* PSMenuItem */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = PSMenuItem;
 		};
 		1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */ = {
 			isa = XCSwiftPackageProductDependency;

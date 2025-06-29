@@ -16,6 +16,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 final class ForumsTableViewController: TableViewController {
     
     private var cancellables: Set<AnyCancellable> = []
+    var coordinator: (any MainCoordinator)?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
@@ -128,10 +129,18 @@ final class ForumsTableViewController: TableViewController {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        let threadList = ThreadsTableViewController(forum: forum)
-        threadList.restorationClass = ThreadsTableViewController.self
-        threadList.restorationIdentifier = "Thread"
-        navigationController?.pushViewController(threadList, animated: animated)
+        
+        // Check if we're in a split view (iPad) and use coordinator navigation
+        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+            coordinator.navigateToForum(forum)
+        } else {
+            // iPhone: use traditional navigation
+            let threadList = ThreadsTableViewController(forum: forum)
+            threadList.coordinator = coordinator
+            threadList.restorationClass = ThreadsTableViewController.self
+            threadList.restorationIdentifier = "Thread"
+            navigationController?.pushViewController(threadList, animated: animated)
+        }
     }
 
     func openAnnouncement(_ announcement: Announcement) {
@@ -216,6 +225,16 @@ final class ForumsTableViewController: TableViewController {
         refreshIfNecessary()
 
         becomeFirstResponder()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Ensure tab bar is visible when we're at the forums level
+        // Use Task to avoid "Publishing changes from within view updates" warning
+        Task { @MainActor in
+            coordinator?.isDetailViewShowing = false
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

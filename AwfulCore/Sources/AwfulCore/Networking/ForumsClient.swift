@@ -192,7 +192,7 @@ public final class ForumsClient {
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
 
-        let (data, response) = try await fetch(method: .post, urlString: "account.php?json=1", parameters: [
+        let (_, _) = try await fetch(method: .post, urlString: "account.php?json=1", parameters: [
             "action": "login",
             "username": username,
             "password" : password,

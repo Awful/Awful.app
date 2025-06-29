@@ -5,7 +5,6 @@
 import MobileCoreServices
 import os
 import Photos
-import PSMenuItem
 import UIKit
 import AwfulSettings
 import Foil
@@ -13,7 +12,7 @@ import ImgurAnonymousAPI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "CompositionMenuTree")
 
-/// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
+/// Can show a tree of composition-related items on behalf of a text view using modern UIEditMenuInteraction.
 final class CompositionMenuTree: NSObject {
     // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
     
@@ -24,21 +23,28 @@ final class CompositionMenuTree: NSObject {
     }
     
     let textView: UITextView
+    private var editMenuInteraction: UIEditMenuInteraction?
+    private var currentMenuItems: [MenuItem] = []
     
     /// The textView's class will have some responder chain methods swizzled.
     init(textView: UITextView) {
         self.textView = textView
         super.init()
         
-        PSMenuItem.installMenuHandler(for: textView)
+        setupEditMenuInteraction()
         
         NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: UITextView.textDidBeginEditingNotification, object: textView)
         NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidEndEditing(_:)), name: UITextView.textDidEndEditingNotification, object: textView)
-        NotificationCenter.default.addObserver(self, selector: #selector(CompositionMenuTree.menuDidHide(_:)), name: UIMenuController.didHideMenuNotification, object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupEditMenuInteraction() {
+        let interaction = UIEditMenuInteraction(delegate: self)
+        textView.addInteraction(interaction)
+        self.editMenuInteraction = interaction
     }
     
     @objc private func textViewDidBeginEditing(_ note: NSNotification) {
@@ -46,42 +52,28 @@ final class CompositionMenuTree: NSObject {
     }
     
     @objc private func textViewDidEndEditing(_ note: NSNotification) {
-        UIMenuController.shared.menuItems = nil
+        // Modern implementation doesn't need to clear menu items
     }
-    
-    @objc private func menuDidHide(_ note: NSNotification) {
-        if shouldPopWhenMenuHides && textView.window != nil {
-            popToRootItems()
-        }
-    }
-    
-    private var shouldPopWhenMenuHides = true
     
     private var targetRect: CGRect {
         return textView.selectedRect ?? textView.bounds
     }
     
     fileprivate func popToRootItems() {
-        UIMenuController.shared.menuItems = psItemsForMenuItems(items: rootItems)
+        currentMenuItems = rootItems
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = false
     }
     
     fileprivate func showSubmenu(_ submenu: [MenuItem]) {
-        shouldPopWhenMenuHides = false
-        
-        UIMenuController.shared.menuItems = psItemsForMenuItems(items: submenu)
-        // Simply calling UIMenuController.update() here doesn't suffice; the menu simply hides. Instead we need to hide the menu then show it again.
+        currentMenuItems = submenu
         (textView as? CompositionHidesMenuItems)?.hidesBuiltInMenuItems = true
-
-        UIMenuController.shared.hideMenu()
-        if textView.selectedTextRange != nil {
-            UIMenuController.shared.showMenu(from: textView, rect: targetRect)
-        } else {
-            UIMenuController.shared.showMenu(from: textView, rect: textView.bounds)
-        }
         
-        shouldPopWhenMenuHides = true
+        // Present the menu at the current selection
+        let centerPoint = CGPoint(x: targetRect.midX, y: targetRect.midY)
+        let configuration = UIEditMenuConfiguration(identifier: nil, sourcePoint: centerPoint)
+        editMenuInteraction?.presentEditMenu(with: configuration)
     }
+    
     
     func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         // Check if we need to authenticate with Imgur first
@@ -233,12 +225,37 @@ final class CompositionMenuTree: NSObject {
         
         NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: textView)
     }
+}
+
+// MARK: - UIEditMenuInteractionDelegate
+
+extension CompositionMenuTree: UIEditMenuInteractionDelegate {
+    func editMenuInteraction(_ interaction: UIEditMenuInteraction, menuFor configuration: UIEditMenuConfiguration, suggestedActions: [UIMenuElement]) -> UIMenu? {
+        let enabledItems = currentMenuItems.filter { $0.enabled() }
+        
+        guard !enabledItems.isEmpty else {
+            // Return default menu if no custom items are available
+            return UIMenu(children: suggestedActions)
+        }
+        
+        let customActions = enabledItems.map { item in
+            UIAction(title: item.title) { [weak self] _ in
+                item.action(self!)
+            }
+        }
+        
+        // Combine custom actions with system actions
+        let allActions = customActions + suggestedActions
+        
+        return UIMenu(children: allActions)
+    }
     
-    private func psItemsForMenuItems(items: [MenuItem]) -> [PSMenuItem] {
-        return items.filter { $0.enabled() }
-            .map { item in PSMenuItem(title: item.title) { item.action(self) } }
+    func editMenuInteraction(_ interaction: UIEditMenuInteraction, targetRectFor configuration: UIEditMenuConfiguration) -> CGRect {
+        return targetRect
     }
 }
+
+// MARK: - Image Picker Delegates
 
 extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverPresentationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
@@ -297,10 +314,6 @@ fileprivate struct MenuItem {
     
     init(title: String, action: @escaping (CompositionMenuTree) -> Void) {
         self.init(title: title, action: action, enabled: { true })
-    }
-    
-    func psItem(_ tree: CompositionMenuTree) {
-        return
     }
 }
 
