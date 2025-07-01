@@ -60,7 +60,7 @@ final class MessageViewController: ViewController {
     
     private func renderMessage() {
         do {
-            let model = RenderModel(message: privateMessage, stylesheet: theme["postsViewCSS"])
+            let model = RenderModel(message: privateMessage, stylesheet: theme[string: "postsViewCSS"])
             let rendering = try StencilEnvironment.shared.renderTemplate(.privateMessage, context: model)
             renderView.render(html: rendering, baseURL: ForumsClient.shared.baseURL)
         } catch {

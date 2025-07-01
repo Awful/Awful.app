@@ -40,10 +40,11 @@ extension UIContextMenuConfiguration {
             )
         }
         func jump(to page: ThreadPage) {
-            let postsPage = PostsPageViewController(thread: thread)
-            postsPage.restorationIdentifier = "Posts"
-            postsPage.loadPage(page, updatingCache: true, updatingLastReadPost: true)
-            presenter.showDetailViewController(postsPage, sender: self)
+            if let threadsVC = presenter as? ThreadsTableViewController {
+                threadsVC.coordinator?.navigateToThread(thread, page: page)
+            } else if let bookmarksVC = presenter as? BookmarksTableViewController {
+                bookmarksVC.coordinator?.navigateToThread(thread, page: page)
+            }
         }
         var jumpToFirstPage: UIMenuElement {
             UIAction(

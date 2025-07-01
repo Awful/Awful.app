@@ -10,6 +10,8 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageView")
 
+private let TopBarAppearanceAnimationDuration: TimeInterval = 0.2
+
 /**
  Manages a posts page's render view, top bar, refresh control, and toolbar.
 
@@ -42,6 +44,7 @@ final class PostsPageView: UIView {
     // MARK: Refresh control
 
     var didStartRefreshing: (() -> Void)?
+    var didScroll: ((UIScrollView) -> Void)?
 
     var refreshControl: (UIView & PostsPageRefreshControlContent)? {
         didSet {
@@ -123,6 +126,15 @@ final class PostsPageView: UIView {
 
             case (.awaitingScrollEnd, .ready):
                 break
+            
+            case (.awaitingScrollEnd, .armed):
+                break
+            
+            case (.awaitingScrollEnd, .awaitingScrollEnd):
+                break
+            
+            case (.awaitingScrollEnd, .triggered):
+                break
 
             case (.triggered, .armed),
                  (.triggered, .awaitingScrollEnd),
@@ -130,6 +142,9 @@ final class PostsPageView: UIView {
                 break
 
             case (.refreshing, .ready):
+                break
+            
+            case (.refreshing, .refreshing):
                 break
 
             case (.disabled, _),
@@ -175,10 +190,14 @@ final class PostsPageView: UIView {
     // MARK: Top bar
 
     var topBar: PostsPageTopBar {
-        return topBarContainer.topBar
+        return _topBarContainer.topBar
+    }
+    
+    var topBarContainer: TopBarContainer {
+        return _topBarContainer
     }
 
-    private let topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
+    private let _topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
     private var topBarState: TopBarState {
         didSet {
@@ -198,12 +217,19 @@ final class PostsPageView: UIView {
                  (.alwaysVisible, .hidden):
                 updateTopBarContainerFrameAndScrollViewInsets()
 
-            case (.hidden, _),
-                 (.visible, _),
-                 (.alwaysVisible, _):
+            case (.hidden, .hidden),
+                 (.visible, .visible),
+                 (.alwaysVisible, .alwaysVisible):
+                break
+            default:
                 break
             }
         }
+    }
+
+    private var topBarIsAnimatingAppearance: Bool {
+        return _topBarContainer.layer.presentation()?.opacity ?? 0 > 0.001
+            && _topBarContainer.layer.presentation()?.opacity ?? 0 < 0.999
     }
 
     // MARK: Remaining subviews
@@ -214,13 +240,6 @@ final class PostsPageView: UIView {
 
     private var scrollViewDelegateMux: ScrollViewDelegateMultiplexer?
 
-    let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
-
-    var toolbarItems: [UIBarButtonItem] {
-        get { return toolbar.items ?? [] }
-        set { toolbar.items = newValue }
-    }
-
     // MARK: Layout
     
     override init(frame: CGRect) {
@@ -230,12 +249,9 @@ final class PostsPageView: UIView {
 
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
 
-        toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
-        
         addSubview(renderView)
-        addSubview(topBarContainer)
+        addSubview(_topBarContainer)
         addSubview(loadingViewContainer)
-        addSubview(toolbar)
         renderView.scrollView.addSubview(refreshControlContainer)
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
@@ -243,53 +259,74 @@ final class PostsPageView: UIView {
     }
 
     override func layoutSubviews() {
-        /*
-         See commentary in `PostsPageViewController.viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to represent the safe area.
-         */
+        super.layoutSubviews()
 
         renderView.frame = bounds
         loadingViewContainer.frame = bounds
-
-        let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
-        toolbar.frame = CGRect(
-            x: bounds.minX,
-            y: bounds.maxY - layoutMargins.bottom - toolbarHeight,
-            width: bounds.width,
-            height: toolbarHeight)
-
-        let scrollView = renderView.scrollView
-
-        let refreshControlHeight = refreshControlContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
-        refreshControlContainer.frame = CGRect(
-            x: bounds.minX,
-            y: max(scrollView.contentSize.height, scrollView.bounds.height - layoutMargins.bottom),
-            width: bounds.width,
-            height: refreshControlHeight)
-
-        let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
-        topBarContainer.frame = CGRect(
-            x: bounds.minX,
-            y: bounds.minY + layoutMargins.top,
-            width: bounds.width,
-            height: topBarHeight)
+        
         updateTopBarContainerFrameAndScrollViewInsets()
+        
+        let targetSize = CGSize(width: bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        refreshControlContainer.frame.size = refreshControlContainer.systemLayoutSizeFitting(targetSize)
+        refreshControlContainer.frame.origin.y = -refreshControlContainer.frame.height
+
+        // On older iOS, the scroll view's contentInset seems to get reset to zero after a rotation. This seems to be the earliest opportunity to fix it.
+        updateScrollViewInsets()
     }
 
-    /// Assumes that various views (top bar container, refresh control container, toolbar) have been laid out.
-    private func updateScrollViewInsets() {
-        let scrollView = renderView.scrollView
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    /// Hides the toolbar (called from SwiftUI integration)
+    func hideToolbar() {
+        // The toolbar is managed by the view controller, so this is a no-op for now
+        // In the future, this could be used to hide any internal toolbar elements
+    }
 
-        var contentInset = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bounds.maxY - toolbar.frame.minY, right: 0)
-        if case .refreshing = refreshControlState {
-            contentInset.bottom += refreshControlContainer.bounds.height
+    private func updateTopBarContainerFrameAndScrollViewInsets() {
+        // We're doing all this instead of using Auto Layout because we're going to be calling this from `layoutSubviews()`, and we can't be adding constraints from there.
+        // See commentary in `PostsPageViewController.viewDidLoad()` about our layout strategy here. tl;dr layout margins are the highest-level approach available on all versions of iOS that Awful supports, so we'll use them exclusively to determine where things should go.
+        
+        var topBarFrame = CGRect.zero
+        switch topBarState {
+        case .hidden:
+            topBarFrame.origin.y = -_topBarContainer.bounds.height
+            
+        case .appearing:
+            let presentation = _topBarContainer.layer.presentation()
+            if let presentation = presentation, topBarIsAnimatingAppearance {
+                topBarFrame = presentation.frame
+            } else {
+                topBarFrame = _topBarContainer.frame
+                topBarFrame.origin.y = -topBarFrame.height
+            }
+            
+        case .disappearing:
+            let presentation = _topBarContainer.layer.presentation()
+            if let presentation = presentation, topBarIsAnimatingAppearance {
+                topBarFrame = presentation.frame
+            } else {
+                topBarFrame = _topBarContainer.frame
+            }
+            
+        case .visible, .alwaysVisible:
+            topBarFrame.origin.y = 0
         }
-        scrollView.contentInset = contentInset
+        topBarFrame.size.width = bounds.width
+        _topBarContainer.frame = topBarFrame
+        
+        updateScrollViewInsets()
+    }
 
-        var indicatorInsets = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bounds.maxY - toolbar.frame.minY, right: 0)
-        // I'm not sure if this is a bug or if I'm misunderstanding something, but as of iOS 12 it seems that the indicator insets have already taken the layout margins into consideration? That's my guess based on observing their positioning when the indicator insets are set to zero.
-        indicatorInsets.top -= layoutMargins.top
-        indicatorInsets.bottom -= layoutMargins.bottom
-        scrollView.scrollIndicatorInsets = indicatorInsets
+    private func updateScrollViewInsets() {
+        var insets = UIEdgeInsets.zero
+        insets.bottom = safeAreaInsets.bottom
+        if topBarState == .visible || topBarState == .alwaysVisible {
+            insets.top = _topBarContainer.frame.height
+        }
+        renderView.scrollView.contentInset = insets
+        renderView.scrollView.scrollIndicatorInsets = insets
     }
 
     @objc private func voiceOverStatusDidChange(_ notification: Notification) {
@@ -320,11 +357,7 @@ final class PostsPageView: UIView {
          */
         refreshControlContainer.tintColor = theme["postsPullForNextColor"]
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
-        renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
-
-        toolbar.tintColor =  Theme.defaultTheme()["toolbarTextColor"]!
-        toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        renderView.setThemeStylesheet(theme[string: "postsViewCSS"] ?? "")
 
         topBar.themeDidChange(Theme.defaultTheme())
     }
@@ -345,17 +378,22 @@ extension PostsPageView {
 
         fileprivate lazy var topBar: PostsPageTopBar = {
             let topBar = PostsPageTopBar()
-            topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
             return topBar
         }()
 
-
         override init(frame: CGRect) {
             super.init(frame: frame)
-
-            clipsToBounds = true
-
-            addSubview(topBar, constrainEdges: [.bottom, .left, .right])
+            
+            addSubview(topBar)
+            
+            topBar.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                topBar.leadingAnchor.constraint(equalTo: leadingAnchor),
+                topBar.trailingAnchor.constraint(equalTo: trailingAnchor),
+                topBar.topAnchor.constraint(equalTo: topAnchor),
+                topBar.bottomAnchor.constraint(equalTo: bottomAnchor),
+                topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+            ])
         }
 
         required init?(coder: NSCoder) {
@@ -363,7 +401,7 @@ extension PostsPageView {
         }
     }
 
-    enum TopBarState {
+    enum TopBarState: Equatable {
 
         /// The top bar is not visible, but will appear when the user scrolls up.
         case hidden
@@ -372,50 +410,13 @@ extension PostsPageView {
         case visible
 
         /// The top bar was hidden but is now "scrolling" into view. `fromContentOffset` is the content offset from when this started, used to calculate its current progress.
-        case appearing(fromContentOffset: CGPoint)
+        case appearing(since: Date)
 
         /// The top bar was visible but is now "scrolling" out of view. `fromContentOffset` is the content offset from when this started, used to calculate its current progress.
-        case disappearing(fromContentOffset: CGPoint)
+        case disappearing(since: Date)
 
         /// The top bar is visible and will not disappear when the user scrolls.
         case alwaysVisible
-    }
-
-    /// Assumes the top bar container has already been laid out as if it was fully visible.
-    @discardableResult
-    private func updateTopBarContainerFrameAndScrollViewInsets() -> TopBarUpdateResult {
-        let result: TopBarUpdateResult
-        switch topBarState {
-        case .hidden:
-            topBarContainer.frame.size.height = 0
-            result = .init(progress: 1)
-
-        case .appearing(fromContentOffset: let initialContentOffset):
-            let distance = initialContentOffset.y - renderView.scrollView.contentOffset.y
-            let upperBound = topBar.bounds.height
-            let clamped = distance.clamp(0...upperBound)
-            topBarContainer.frame.size.height = clamped
-            result = .init(progress: clamped / upperBound)
-
-        case .disappearing(fromContentOffset: let initialContentOffset):
-            let distance = renderView.scrollView.contentOffset.y - initialContentOffset.y
-            let upperBound = topBar.bounds.height
-            let clamped = distance.clamp(0...upperBound)
-            topBarContainer.frame.size.height = upperBound - clamped
-            result = .init(progress: clamped / upperBound)
-
-        case .visible, .alwaysVisible:
-            topBarContainer.layoutIfNeeded()
-            topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
-            result = .init(progress: 1)
-        }
-
-        updateScrollViewInsets()
-        return result
-    }
-
-    private struct TopBarUpdateResult {
-        let progress: CGFloat
     }
 }
 
@@ -460,30 +461,6 @@ extension PostsPageView {
         case refreshing
     }
 
-    private struct ScrollViewInfo {
-        let effectiveContentHeight: CGFloat
-        let refreshControlHeight: CGFloat
-        let targetScrollViewBoundsMaxY: CGFloat
-
-        init(refreshControlHeight: CGFloat, scrollView: UIScrollView, targetContentOffset: CGPoint? = nil) {
-            let contentInsetBottom = scrollView.adjustedContentInset.bottom
-            effectiveContentHeight = max(scrollView.contentSize.height + contentInsetBottom, scrollView.bounds.height)
-            self.refreshControlHeight = refreshControlHeight
-            targetScrollViewBoundsMaxY = (targetContentOffset?.y ?? scrollView.contentOffset.y) + scrollView.bounds.height
-        }
-
-        static let closeEnoughToBottom: CGFloat = -10
-
-        var visibleBottom: CGFloat {
-            return targetScrollViewBoundsMaxY - effectiveContentHeight
-        }
-
-        var triggeredFraction: CGFloat {
-            let effectiveControlHeight = refreshControlHeight + 45
-            return (visibleBottom / effectiveControlHeight).clamp(0 ... .greatestFiniteMagnitude)
-        }
-    }
-
     func endRefreshing() {
         switch refreshControlState {
         case .armed, .awaitingScrollEnd, .triggered, .refreshing:
@@ -521,10 +498,10 @@ extension PostsPageView: ScrollViewDelegateExtras {
         case .ready, .awaitingScrollEnd, .refreshing, .disabled:
             switch topBarState {
             case .hidden where velocity.y < 0:
-                topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
+                topBarState = .appearing(since: Date())
 
             case .visible where velocity.y > 0:
-                topBarState = .disappearing(fromContentOffset: scrollView.contentOffset)
+                topBarState = .disappearing(since: Date())
 
             case .hidden, .visible, .appearing, .disappearing, .alwaysVisible:
                 break
@@ -567,13 +544,12 @@ extension PostsPageView: ScrollViewDelegateExtras {
     }
 
     private func updateTopBarDidEndDecelerating() {
-        let result = updateTopBarContainerFrameAndScrollViewInsets()
         switch topBarState {
         case .appearing:
-            topBarState = result.progress >= 0.75 ? .visible : .hidden
+            topBarState = .visible
 
         case .disappearing:
-            topBarState = result.progress >= 0.75 ? .hidden : .visible
+            topBarState = .hidden
 
         case .hidden, .visible, .alwaysVisible:
             break
@@ -582,6 +558,9 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let info = ScrollViewInfo(refreshControlHeight: refreshControlContainer.bounds.height, scrollView: scrollView)
+        
+        // Notify delegate of scroll events
+        didScroll?(scrollView)
 
         // Update refreshControlState first, then decide if we care about topBarState.
         switch (refreshControlState, willBeginDraggingContentOffset) {
@@ -628,19 +607,62 @@ extension PostsPageView: ScrollViewDelegateExtras {
         case .disabled, .ready, .awaitingScrollEnd, .refreshing:
             switch (topBarState, willBeginDraggingContentOffset)  {
             case (.hidden, let willBeginDraggingContentOffset?):
-                topBarState = .appearing(fromContentOffset: willBeginDraggingContentOffset)
+                if scrollView.contentOffset.y < willBeginDraggingContentOffset.y {
+                    topBarState = .appearing(since: Date())
+                }
 
             case (.visible, let willBeginDraggingContentOffset?):
                 // Without this check, when the refresh control is disabled, it's impossible to scroll content up when at the bottom of the page and the top bar is visible (i.e. after tapping "Scroll to Bottom"). There's surely a better approach, but this gets us working again.
                 let contentOffsetYAtBottom = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
                 let isVeryCloseToBottom = abs(willBeginDraggingContentOffset.y - contentOffsetYAtBottom) < 5
                 if !isVeryCloseToBottom {
-                    topBarState = .disappearing(fromContentOffset: willBeginDraggingContentOffset)
+                    if scrollView.contentOffset.y > willBeginDraggingContentOffset.y {
+                        topBarState = .disappearing(since: Date())
+                    }
                 }
 
             case (.hidden, _), (.visible, _), (.appearing, _), (.disappearing, _), (.alwaysVisible, _):
                 break
             }
         }
+    }
+}
+
+private struct ScrollViewInfo {
+    let contentHeight: CGFloat
+    let contentInset: UIEdgeInsets
+    let contentOffsetY: CGFloat
+    let refreshControlHeight: CGFloat
+    let scrollViewHeight: CGFloat
+    
+    init(refreshControlHeight: CGFloat, scrollView: UIScrollView) {
+        self.contentHeight = scrollView.contentSize.height
+        self.contentInset = scrollView.contentInset
+        self.contentOffsetY = scrollView.contentOffset.y
+        self.refreshControlHeight = refreshControlHeight
+        self.scrollViewHeight = scrollView.bounds.height
+    }
+    
+    /// How far "into" the refresh control the scroll view has been pulled.
+    /// - 0 means the refresh control isn't visible at all.
+    /// - 1 means the refresh control is fully visible and the "trigger" point has been reached.
+    /// - 2 means the user has pulled twice as far as necessary to trigger.
+    /// - etc.
+    var triggeredFraction: CGFloat {
+        guard contentHeight > 0 else { return 0 }
+        
+        let visibleBottom = contentOffsetY + scrollViewHeight
+        let unimportantHeight = scrollViewHeight - contentInset.bottom - contentHeight
+        let distance = visibleBottom - unimportantHeight - contentHeight
+        
+        guard distance > 0 else { return 0 }
+        
+        return distance / refreshControlHeight
+    }
+    
+    static let closeEnoughToBottom: CGFloat = 5
+    
+    var visibleBottom: CGFloat {
+        return contentOffsetY + scrollViewHeight
     }
 }

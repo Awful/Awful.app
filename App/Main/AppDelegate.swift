@@ -32,6 +32,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     @FoilDefaultStorage(Settings.enableCustomTitlePostLayout) private var showCustomTitles
     var window: UIWindow?
     
+    weak var mainCoordinator: (any MainCoordinator)? {
+        didSet {
+            urlRouter?.coordinator = mainCoordinator
+        }
+    }
+    
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.instance = self
 
@@ -266,7 +272,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     private var rootViewControllerStack: RootViewControllerStack {
         if let stack = _rootViewControllerStack { return stack }
         let stack = RootViewControllerStack(managedObjectContext: managedObjectContext)
-        urlRouter = AwfulURLRouter(rootViewController: stack.rootViewController, managedObjectContext: managedObjectContext)
+        var router = AwfulURLRouter(rootViewController: stack.rootViewController, managedObjectContext: managedObjectContext)
+        router.coordinator = mainCoordinator
+        urlRouter = router
         stack.userInterfaceStyleDidChange = { [weak self] in self?.automaticallyUpdateDarkModeEnabledIfNecessary() }
         _rootViewControllerStack = stack
         return stack

@@ -88,9 +88,10 @@ final class ThreadPreviewViewController: ViewController {
 
                 guard let self,
                       let userKey = FoilDefaultStorageOptional(Settings.userID).wrappedValue.map({ UserKey(userID: $0, username: FoilDefaultStorageOptional(Settings.username).wrappedValue) }),
-                      let context = self.managedObjectContext,
-                      let author = User.objectForKey(objectKey: userKey, in: context) as User?
+                      let context = self.managedObjectContext
                 else { throw MissingAuthorError() }
+                
+                let author = User.objectForKey(objectKey: userKey, in: context)
 
                 postHTML = .success((previewHTML, formData))
 

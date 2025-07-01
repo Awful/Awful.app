@@ -107,8 +107,6 @@
 		1C47122A2664CB8000E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C4712292664CB8000E5AA74 /* Smilies */; };
 		1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122B2664CB8C00E5AA74 /* Smilies */; };
 		1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 1C47122E2664CE4E00E5AA74 /* WebArchive */; };
-		1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */; };
-		1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C47AF4B19A790910098B828 /* PostsPageSettings.xib */; };
 		1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */; };
 		1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */; };
 		1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */; };
@@ -125,8 +123,6 @@
 		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
 		1C725A8926E71C6D009713DC /* MRProgress in Frameworks */ = {isa = PBXBuildFile; productRef = 1C725A8826E71C6D009713DC /* MRProgress */; };
 		1C796A292218C41F0035E154 /* DefaultBrowser+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C796A282218C41F0035E154 /* DefaultBrowser+.swift */; };
-		1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C82AC4A199F585000CB15FE /* Selectotron.swift */; };
-		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C88EC9B2AE1062300FA766F /* PullToRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = 1C88EC9A2AE1062300FA766F /* PullToRefresh */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
@@ -187,6 +183,9 @@
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
 		2D10A3852E05C35700544F91 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D10A3842E05C35700544F91 /* SearchView.swift */; };
+		2D10BEEA2E11543F00F4B8C3 /* PostsPagePlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D10BEE92E11543F00F4B8C3 /* PostsPagePlaceholderView.swift */; };
+		2D10BEEC2E11690A00F4B8C3 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D10BEEB2E11690A00F4B8C3 /* Toast.swift */; };
+		2D10BEEE2E11692500F4B8C3 /* PagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D10BEED2E11692500F4B8C3 /* PagePickerViewController.swift */; };
 		2D19BA3329C330A2009DD94F /* mainthrobber60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3229C330A2009DD94F /* mainthrobber60.json */; };
 		2D19BA3529C33273009DD94F /* ghost60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3429C33273009DD94F /* ghost60.json */; };
 		2D19BA3929C33303009DD94F /* niggly60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3629C33302009DD94F /* niggly60.json */; };
@@ -195,6 +194,14 @@
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
+		2D8978642E1102D90022DF0E /* PostsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8978632E1102D90022DF0E /* PostsToolbar.swift */; };
+		2D8978652E1102D90022DF0E /* PostsPagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8978622E1102D90022DF0E /* PostsPagePicker.swift */; };
+		2D8978682E1103370022DF0E /* PostsToolbarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8978672E1103370022DF0E /* PostsToolbarContainer.swift */; };
+		2D8978692E1103370022DF0E /* PostsActionsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8978662E1103370022DF0E /* PostsActionsMenu.swift */; };
+		2D89786B2E111B900022DF0E /* PostsPageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786A2E111B900022DF0E /* PostsPageSettingsView.swift */; };
+		2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */; };
+		2D8978712E1127F30022DF0E /* PostsTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8978702E1127F30022DF0E /* PostsTopBar.swift */; };
+		2D91DB8A2E13D3EE00771E25 /* PostsPageTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91DB892E13D3EE00771E25 /* PostsPageTitleView.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
@@ -398,8 +405,6 @@
 		1C453F4423384923007AC6CD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1C453F45233849C2007AC6CD /* SafariActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariActivity.swift; sourceTree = "<group>"; };
 		1C47122D2664CCE700E5AA74 /* Awful.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Awful.xctestplan; sourceTree = SOURCE_ROOT; };
-		1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsViewController.swift; sourceTree = "<group>"; };
-		1C47AF4B19A790910098B828 /* PostsPageSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PostsPageSettings.xib; sourceTree = "<group>"; };
 		1C48538D1F93BADF0042531A /* HTMLRenderingHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelpers.swift; sourceTree = "<group>"; };
 		1C4D63842B6704CA005EB25C /* SystemCapabilities */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SystemCapabilities; sourceTree = "<group>"; };
 		1C4E68301B32558A00FC2A02 /* ForumListSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumListSectionHeaderView.swift; sourceTree = "<group>"; };
@@ -420,8 +425,6 @@
 		1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NeedsFullAccessView.m; sourceTree = "<group>"; };
 		1C6821A81F113A760083F204 /* AnnouncementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementViewController.swift; sourceTree = "<group>"; };
 		1C796A282218C41F0035E154 /* DefaultBrowser+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultBrowser+.swift"; sourceTree = "<group>"; };
-		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
-		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilEnvironment.swift; sourceTree = "<group>"; };
@@ -497,6 +500,9 @@
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D0BB35827F440AF00242D2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D10A3842E05C35700544F91 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		2D10BEE92E11543F00F4B8C3 /* PostsPagePlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPagePlaceholderView.swift; sourceTree = "<group>"; };
+		2D10BEEB2E11690A00F4B8C3 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		2D10BEED2E11692500F4B8C3 /* PagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagePickerViewController.swift; sourceTree = "<group>"; };
 		2D19BA3229C330A2009DD94F /* mainthrobber60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mainthrobber60.json; sourceTree = "<group>"; };
 		2D19BA3429C33273009DD94F /* ghost60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ghost60.json; sourceTree = "<group>"; };
 		2D19BA3629C33302009DD94F /* niggly60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = niggly60.json; sourceTree = "<group>"; };
@@ -504,6 +510,14 @@
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
+		2D8978622E1102D90022DF0E /* PostsPagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPagePicker.swift; sourceTree = "<group>"; };
+		2D8978632E1102D90022DF0E /* PostsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsToolbar.swift; sourceTree = "<group>"; };
+		2D8978662E1103370022DF0E /* PostsActionsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsActionsMenu.swift; sourceTree = "<group>"; };
+		2D8978672E1103370022DF0E /* PostsToolbarContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsToolbarContainer.swift; sourceTree = "<group>"; };
+		2D89786A2E111B900022DF0E /* PostsPageSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsView.swift; sourceTree = "<group>"; };
+		2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsSwiftUIViewController.swift; sourceTree = "<group>"; };
+		2D8978702E1127F30022DF0E /* PostsTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsTopBar.swift; sourceTree = "<group>"; };
+		2D91DB892E13D3EE00771E25 /* PostsPageTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTitleView.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
@@ -733,19 +747,17 @@
 		1C29C382225853A300E1217A /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2D10BEED2E11692500F4B8C3 /* PagePickerViewController.swift */,
+				2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */,
 				2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */,
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1C16FBE61CBC671A00C88BD1 /* PostRenderModel.swift */,
 				1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */,
 				1CD0C54E1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift */,
-				1C47AF4B19A790910098B828 /* PostsPageSettings.xib */,
-				1C47AF4919A7905F0098B828 /* PostsPageSettingsViewController.swift */,
 				1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */,
 				1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */,
 				1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */,
 				1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */,
-				1C82AC4A199F585000CB15FE /* Selectotron.swift */,
-				1C82AC4C199F5C1500CB15FE /* Selectotron.xib */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -1103,6 +1115,15 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2D91DB892E13D3EE00771E25 /* PostsPageTitleView.swift */,
+				2D10BEEB2E11690A00F4B8C3 /* Toast.swift */,
+				2D10BEE92E11543F00F4B8C3 /* PostsPagePlaceholderView.swift */,
+				2D8978702E1127F30022DF0E /* PostsTopBar.swift */,
+				2D89786A2E111B900022DF0E /* PostsPageSettingsView.swift */,
+				2D8978662E1103370022DF0E /* PostsActionsMenu.swift */,
+				2D8978672E1103370022DF0E /* PostsToolbarContainer.swift */,
+				2D8978622E1102D90022DF0E /* PostsPagePicker.swift */,
+				2D8978632E1102D90022DF0E /* PostsToolbar.swift */,
 				2D10A3842E05C35700544F91 /* SearchView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
@@ -1389,7 +1410,6 @@
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
-				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */,
 				1C29BD532251208200E1217A /* quote-post.png in Resources */,
 				2D19BA3B29C33303009DD94F /* toot60.json in Resources */,
@@ -1419,7 +1439,6 @@
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
 				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
-				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
 				1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
@@ -1463,6 +1482,7 @@
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
 				2DE976B02E0FF4FB00233423 /* AppViewModel.swift in Sources */,
+				2D10BEEC2E11690A00F4B8C3 /* Toast.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
@@ -1493,6 +1513,7 @@
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
+				2D10BEEA2E11543F00F4B8C3 /* PostsPagePlaceholderView.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
@@ -1512,6 +1533,7 @@
 				1CA3D6FC2D98A7E400D70964 /* OEmbedFetcher.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
 				1C9AEBCE210C3BAF00C9A567 /* AwfulApp.swift in Sources */,
+				2D89786B2E111B900022DF0E /* PostsPageSettingsView.swift in Sources */,
 				2DE976AE2E0FF32600233423 /* LoginViewModel.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostRenderModel.swift in Sources */,
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
@@ -1520,8 +1542,10 @@
 				1CC065F72D67028F002BB6A0 /* AppIconImageNames.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
+				2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
 				1C397C8E1BC9B12F00CA7FD5 /* UIContextMenuConfiguration+ThreadListItem.swift in Sources */,
+				2D91DB8A2E13D3EE00771E25 /* PostsPageTitleView.swift in Sources */,
 				1C25AC211F532EE600977D6F /* LocalizedString.swift in Sources */,
 				1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */,
 				2DE976A92E0FF1D000233423 /* RootView.swift in Sources */,
@@ -1531,6 +1555,7 @@
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
 				1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
+				2D8978712E1127F30022DF0E /* PostsTopBar.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
@@ -1548,7 +1573,8 @@
 				1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */,
 				1CC58F5D1B5AC4330016EE83 /* UIKit.swift in Sources */,
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
-				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
+				2D8978682E1103370022DF0E /* PostsToolbarContainer.swift in Sources */,
+				2D8978692E1103370022DF0E /* PostsActionsMenu.swift in Sources */,
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
 				1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */,
@@ -1581,6 +1607,9 @@
 				1C16FBA81CB5C62C00C88BD1 /* TextAttachment.swift in Sources */,
 				1C453EDE2336B694007AC6CD /* UITextView+Selections.swift in Sources */,
 				1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */,
+				2D8978642E1102D90022DF0E /* PostsToolbar.swift in Sources */,
+				2D8978652E1102D90022DF0E /* PostsPagePicker.swift in Sources */,
+				2D10BEEE2E11692500F4B8C3 /* PagePickerViewController.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
@@ -1590,7 +1619,6 @@
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
-				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,20 +1,24 @@
 import AwfulCore
+import AwfulExtensions
 import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
 import SwiftUI
 import Combine
+import CoreData
 
 // MARK: - Coordinator Protocol
 
 protocol MainCoordinator: ObservableObject {
     var isDetailViewShowing: Bool { get set }
-    var detailPath: NavigationPath { get set }
+    var path: NavigationPath { get set }
     var sidebarPath: NavigationPath { get set }
     func presentSearch()
     func handleEditAction(for tab: MainTab)
     func presentCompose(for tab: MainTab)
     func navigateToThread(_ thread: AwfulThread)
+    func navigateToThread(_ thread: AwfulThread, page: ThreadPage)
+    func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?)
     func navigateToForum(_ forum: Forum)
     func navigateToPrivateMessage(_ message: PrivateMessage)
     func shouldHideTabBar(isInSidebar: Bool) -> Bool
@@ -25,7 +29,15 @@ protocol MainCoordinator: ObservableObject {
 class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     @Published var presentedSheet: PresentedSheet?
     @Published var isDetailViewShowing = false
-    @Published var detailPath = NavigationPath()
+    @Published var path = NavigationPath() {
+        didSet {
+            // On iPhone, automatically sync isDetailViewShowing with phonePath state
+            // This ensures tab bar visibility is correctly managed when navigating back
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                isDetailViewShowing = !path.isEmpty
+            }
+        }
+    }
     @Published var sidebarPath = NavigationPath()
     
     // Keep a reference to the current compose view controller for triggering actions
@@ -57,11 +69,21 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func navigateToThread(_ thread: AwfulThread) {
-        // Always navigate to thread in detail pane
-        detailPath.append(thread)
-        isDetailViewShowing = true
+        // Default to first unread page if available
+        let page: ThreadPage = thread.beenSeen ? .nextUnread : .first
+        navigateToThread(thread, page: page, author: nil)
     }
     
+    func navigateToThread(_ thread: AwfulThread, page: ThreadPage) {
+        navigateToThread(thread, page: page, author: nil)
+    }
+    
+    func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?) {
+        let destination = ThreadDestination(thread: thread, page: page, author: author)
+        path.append(destination)
+        isDetailViewShowing = true
+    }
+
     func navigateToForum(_ forum: Forum) {
         // Navigate to forum in sidebar (threads list)
         sidebarPath.append(forum)
@@ -69,12 +91,12 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func navigateToPrivateMessage(_ message: PrivateMessage) {
-        detailPath.append(message)
+        path.append(message)
         isDetailViewShowing = true
     }
     
     func navigateToComposeMessage() {
-        detailPath.append(ComposePrivateMessage())
+        path.append(ComposePrivateMessage())
         isDetailViewShowing = true
     }
     
@@ -84,7 +106,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             return false
         } else {
             // On iPhone, hide the tab bar when showing detail view
-            return isDetailViewShowing
+            return !path.isEmpty
         }
     }
     
@@ -106,8 +128,8 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         if presentedSheet != nil {
             presentedSheet = nil // dismiss sheet on iPhone
         } else {
-            if detailPath.count > 0 {
-                detailPath.removeLast() // pop from detail stack on iPad
+            if path.count > 0 {
+                path.removeLast() // pop from detail stack on iPad
             }
         }
     }
@@ -115,10 +137,10 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
 
 struct ModernMainView: View {
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @SwiftUI.Environment(\.theme) private var theme
     @State private var selectedTab: MainTab = .forums
     @State private var themeObserver: AnyCancellable?
     @StateObject private var coordinator = MainCoordinatorImpl()
-    @State private var navigationTintColor = Color.blue // Initialize with default, update in onAppear
     @State private var isEditingBookmarks = false
     @State private var isEditingMessages = false
     @State private var isEditingForums = false
@@ -126,85 +148,67 @@ struct ModernMainView: View {
     
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     
+    // Add observer for favorite forums count changes
+    @State private var favoriteForumCountObserver: ManagedObjectCountObserver?
+    
     var body: some View {
-        if horizontalSizeClass == .regular {
-            // iPad: Use NavigationSplitView with CustomTabBarContainer in sidebar
-            NavigationSplitView {
-                NavigationStack(path: $coordinator.sidebarPath) {
-                    CustomTabBarContainer(
-                        coordinator: coordinator, 
-                        isInSidebar: true, 
-                        selectedTab: $selectedTab, 
-                        isEditingBookmarks: isEditingBookmarks,
-                        isEditingMessages: isEditingMessages,
-                        isEditingForums: isEditingForums,
-                        hasFavoriteForums: hasFavoriteForums
-                    )
-                        .navigationTitle(selectedTab.title)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItemGroup(placement: .navigationBarLeading) {
-                                leadingToolbarItems(for: selectedTab, coordinator: coordinator)
-                            }
-                            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                                trailingToolbarItems(for: selectedTab, coordinator: coordinator)
-                            }
-                        }
-                        .navigationDestination(for: Forum.self) { forum in
-                            ThreadsViewRepresentable(forum: forum, coordinator: coordinator)
-                        }
-                }
-            } detail: {
-                NavigationStack(path: $coordinator.detailPath) {
-                    DetailView(selectedTab: selectedTab, coordinator: coordinator)
-                }
+        Group {
+            if horizontalSizeClass == .regular {
+                iPadLayout
+            } else {
+                iPhoneLayout
             }
-            .tint(navigationTintColor)
-            .onAppear {
-                configureGlobalAppearance()
-                observeThemeChanges()
-                checkPrivateMessagePrivileges()
-                checkFavoriteForums()
-                updateNavigationTintColor()
+        }
+        .onAppear {
+            AppDelegate.instance.mainCoordinator = coordinator
+            configureGlobalAppearance(theme: theme)
+            observeThemeChanges()
+            checkPrivateMessagePrivileges()
+            checkFavoriteForums()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ThemeDidChange"))) { _ in
+            configureGlobalAppearance(theme: theme)
+        }
+        .background(StatusBarStyleController())
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("CanSendPrivateMessagesDidChange"))) { _ in
+            checkPrivateMessagePrivileges()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("FavoriteForumsCountDidChange"))) { notification in
+            if let count = notification.userInfo?["count"] as? Int {
+                hasFavoriteForums = count > 0
             }
+        }
+    }
+    
+    // MARK: - iPad Layout
+    private var iPadLayout: some View {
+        iPadMainView(
+            coordinator: coordinator,
+            selectedTab: $selectedTab,
+            isEditingBookmarks: isEditingBookmarks,
+            isEditingMessages: isEditingMessages,
+            isEditingForums: isEditingForums,
+            hasFavoriteForums: hasFavoriteForums,
+            canSendPrivateMessages: canSendPrivateMessages
+        )
+        .sheet(item: $coordinator.presentedSheet) { sheet in
+            sheetContent(for: sheet)
+        }
+    }
+
+    // MARK: - iPhone Layout  
+    private var iPhoneLayout: some View {
+        Group {
+            iPhoneMainView(
+                coordinator: coordinator,
+                hasFavoriteForums: hasFavoriteForums
+            )
             .sheet(item: $coordinator.presentedSheet) { sheet in
                 sheetContent(for: sheet)
             }
-            .background(StatusBarStyleController())
-            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("CanSendPrivateMessagesDidChange"))) { _ in
-                // Use Task to avoid publishing changes during view updates
-                Task { @MainActor in
-                    // Force view refresh by updating a computed property dependency
-                    checkPrivateMessagePrivileges()
-                }
-            }
-        } else {
-            // iPhone: Use custom tab bar implementation
-            CustomTabBarContainer(
-                coordinator: coordinator, 
-                isInSidebar: false,
-                isEditingBookmarks: false,
-                isEditingMessages: false,
-                isEditingForums: false,
-                hasFavoriteForums: hasFavoriteForums
-            )
-                .tint(navigationTintColor)
-                .onAppear {
-                    configureGlobalAppearance()
-                    observeThemeChanges()
-                    checkPrivateMessagePrivileges()
-                    checkFavoriteForums()
-                    updateNavigationTintColor()
-                }
-                .background(StatusBarStyleController())
-                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("CanSendPrivateMessagesDidChange"))) { _ in
-                    // Use Task to avoid publishing changes during view updates
-                    Task { @MainActor in
-                        // Force view refresh by updating a computed property dependency
-                        checkPrivateMessagePrivileges()
-                    }
-                }
         }
+        .toolbarBackground(theme[color: "tabBarBackgroundColor"]!, for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
     }
     
     @ViewBuilder
@@ -217,80 +221,27 @@ struct ModernMainView: View {
         }
     }
     
-    @ViewBuilder
-    private func leadingToolbarItems(for tab: MainTab, coordinator: any MainCoordinator) -> some View {
-        switch tab {
-        case .forums:
-            if canSendPrivateMessages {
-                Button("Search") {
-                    coordinator.presentSearch()
-                }
-                .foregroundColor(navigationTintColor)
-            }
-        case .messages:
-            Button(isEditingMessages ? "Done" : "Edit") {
-                isEditingMessages.toggle()
-            }
-            .foregroundColor(navigationTintColor)
-        default:
-            EmptyView()
-        }
-    }
-    
-    @ViewBuilder
-    private func trailingToolbarItems(for tab: MainTab, coordinator: any MainCoordinator) -> some View {
-        switch tab {
-        case .forums:
-            if hasFavoriteForums {
-                Button(isEditingForums ? "Done" : "Edit") {
-                    isEditingForums.toggle()
-                }
-                .foregroundColor(navigationTintColor)
-            }
-        case .bookmarks:
-            Button(isEditingBookmarks ? "Done" : "Edit") {
-                isEditingBookmarks.toggle()
-            }
-            .foregroundColor(navigationTintColor)
-        case .messages:
-            Button(action: { coordinator.presentCompose(for: tab) }) {
-                Image("compose")
-                    .renderingMode(.template)
-            }
-            .foregroundColor(navigationTintColor)
-        default:
-            EmptyView()
-        }
-    }
-    
     private func observeThemeChanges() {
         // Observe theme changes via NotificationCenter
         themeObserver = NotificationCenter.default
             .publisher(for: Notification.Name("ThemeDidChange"))
             .sink { _ in
-                // Use Task to avoid publishing changes during view updates
-                Task { @MainActor in
-                    configureGlobalAppearance()
-                    updateNavigationTintColor()
-                }
+                // The onReceive on the main view body will handle the update.
             }
     }
+
     
-    private func updateNavigationTintColor() {
-        let theme = Theme.defaultTheme()
-        navigationTintColor = Color(theme[uicolor: "navigationBarTextColor"]!)
-    }
-    
-    private func configureGlobalAppearance() {
-        let theme = Theme.defaultTheme()
+    private func configureGlobalAppearance(theme: Theme) {
+        // Use the provided theme
+        let currentTheme = theme
         
         // Configure navigation bar appearance
         let navAppearance = UINavigationBarAppearance()
         navAppearance.configureWithOpaqueBackground()
-        navAppearance.backgroundColor = theme[uicolor: "navigationBarTintColor"]
-        navAppearance.shadowColor = theme[uicolor: "navigationBarSeparatorColor"]
+        navAppearance.backgroundColor = currentTheme[uicolor: "navigationBarTintColor"]
+        navAppearance.shadowColor = currentTheme[uicolor: "navigationBarSeparatorColor"]
         
-        let textColor = theme[uicolor: "navigationBarTextColor"]!
+        let textColor = currentTheme[uicolor: "navigationBarTextColor"]!
         navAppearance.titleTextAttributes = [
             .foregroundColor: textColor,
             .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
@@ -310,34 +261,35 @@ struct ModernMainView: View {
         UINavigationBar.appearance().compactAppearance = navAppearance
         UINavigationBar.appearance().tintColor = textColor
         UINavigationBar.appearance().isTranslucent = false
+        UINavigationBar.appearance().compactScrollEdgeAppearance = navAppearance
         
         // Configure tab bar appearance
         let tabBarAppearance = UITabBarAppearance()
-        if theme[bool: "tabBarIsTranslucent"] == true {
-            tabBarAppearance.configureWithDefaultBackground()
-        } else {
-            tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = currentTheme[uicolor: "tabBarBackgroundColor"]
+        tabBarAppearance.shadowColor = currentTheme[uicolor: "tabBarTopBorderColor"]
+        
+        let toolbarAppearance = UIToolbarAppearance()
+        toolbarAppearance.configureWithOpaqueBackground()
+        toolbarAppearance.backgroundColor = currentTheme[uicolor: "tabBarBackgroundColor"]
+        
+        UIToolbar.appearance().standardAppearance = toolbarAppearance
+        if #available(iOS 15.0, *) {
+            UIToolbar.appearance().scrollEdgeAppearance = toolbarAppearance
         }
-        tabBarAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]
-        tabBarAppearance.shadowImage = nil
-        tabBarAppearance.shadowColor = nil
         
-        // Remove any top insets/padding from tab bar
-        tabBarAppearance.stackedLayoutAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
-        tabBarAppearance.stackedLayoutAppearance.selected.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10)
-        
+        // For selected and unselected items
         let itemAppearance = UITabBarItemAppearance()
-        itemAppearance.selected.iconColor = theme[uicolor: "tabBarIconSelectedColor"]!
-        itemAppearance.normal.iconColor = theme[uicolor: "tabBarIconNormalColor"]!
+        itemAppearance.normal.iconColor = currentTheme[uicolor: "tabBarIconColor"]
         
         // Handle tab bar labels based on theme setting
-        if theme[bool: "showRootTabBarLabel"] == false {
+        if currentTheme[bool: "showRootTabBarLabel"] == false {
             // Hide labels by making them transparent and adjusting icon position
             itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.clear]
             itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
         } else {
-            itemAppearance.selected.titleTextAttributes = [.foregroundColor: theme[uicolor: "tabBarIconSelectedColor"]!]
-            itemAppearance.normal.titleTextAttributes = [.foregroundColor: theme[uicolor: "tabBarIconNormalColor"]!]
+            itemAppearance.selected.titleTextAttributes = [.foregroundColor: currentTheme[uicolor: "tabBarIconSelectedColor"]!]
+            itemAppearance.normal.titleTextAttributes = [.foregroundColor: currentTheme[uicolor: "tabBarIconNormalColor"]!]
         }
         
         tabBarAppearance.inlineLayoutAppearance = itemAppearance
@@ -346,16 +298,36 @@ struct ModernMainView: View {
         
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        UITabBar.appearance().tintColor = theme[uicolor: "tabBarIconSelectedColor"]
-        UITabBar.appearance().isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
+        UITabBar.appearance().tintColor = currentTheme[uicolor: "tabBarIconSelectedColor"]
+        UITabBar.appearance().isTranslucent = currentTheme[bool: "tabBarIsTranslucent"] ?? true
         
-        // Force update of existing tab bars and navigation bars using modern API
+        // Force immediate update of all visible navigation bars
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
             for window in windowScene.windows {
-                for view in window.subviews {
-                    view.removeFromSuperview()
-                    window.addSubview(view)
+                // Force update of all navigation bars in the window hierarchy
+                window.subviews.forEach { view in
+                    if let navigationBar = view as? UINavigationBar {
+                        navigationBar.standardAppearance = navAppearance
+                        navigationBar.scrollEdgeAppearance = navAppearance
+                        navigationBar.compactAppearance = navAppearance
+                        navigationBar.tintColor = textColor
+                        navigationBar.setNeedsLayout()
+                    }
                 }
+                
+                // Also search deeper in the view hierarchy
+                func updateNavigationBars(in view: UIView) {
+                    if let navigationBar = view as? UINavigationBar {
+                        navigationBar.standardAppearance = navAppearance
+                        navigationBar.scrollEdgeAppearance = navAppearance
+                        navigationBar.compactAppearance = navAppearance
+                        navigationBar.tintColor = textColor
+                        navigationBar.setNeedsLayout()
+                    }
+                    view.subviews.forEach(updateNavigationBars)
+                }
+                
+                updateNavigationBars(in: window)
             }
         }
     }
@@ -364,7 +336,7 @@ struct ModernMainView: View {
         // Only check if we're logged in and don't already have PM privileges
         guard ForumsClient.shared.isLoggedIn && !canSendPrivateMessages else { return }
         
-        Task {
+        Task<Void, Never>.detached(priority: .utility) {
             do {
                 // Try to fetch the current user's profile to check PM privileges
                 if let userID = FoilDefaultStorageOptional(Settings.userID).wrappedValue {
@@ -401,18 +373,25 @@ struct ModernMainView: View {
     }
     
     private func checkFavoriteForums() {
-        // Check if there are any favorite forums
+        // Set up observer for favorite forums count changes
         let context = AppDelegate.instance.managedObjectContext
-        let fetchRequest = ForumMetadata.makeFetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite))
         
-        do {
-            let count = try context.count(for: fetchRequest)
-            hasFavoriteForums = count > 0
-        } catch {
-            print("⚠️ Failed to check favorite forums: \(error)")
-            hasFavoriteForums = false
-        }
+        favoriteForumCountObserver = ManagedObjectCountObserver(
+            context: context,
+            entityName: ForumMetadata.entityName,
+            predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
+            didChange: { favoriteCount in
+                // Update hasFavoriteForums state when favorite forums count changes
+                NotificationCenter.default.post(
+                    name: Notification.Name("FavoriteForumsCountDidChange"), 
+                    object: nil, 
+                    userInfo: ["count": favoriteCount]
+                )
+            }
+        )
+        
+        // Set initial state
+        hasFavoriteForums = favoriteForumCountObserver?.count ?? 0 > 0
     }
 }
 
@@ -470,14 +449,6 @@ private struct CustomTabBarContainer: View {
                             TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingStateLocal(for: tab))
                                 .navigationTitle(tab.title)
                                 .navigationBarTitleDisplayMode(.inline)
-                                .toolbar {
-                                    ToolbarItemGroup(placement: .navigationBarLeading) {
-                                        leadingToolbarItemsLocal(for: tab, coordinator: coordinator)
-                                    }
-                                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                                        trailingToolbarItemsLocal(for: tab, coordinator: coordinator)
-                                    }
-                                }
                         }
                         .opacity(selectedTabValue == tab ? 1 : 0)
                     }
@@ -540,7 +511,9 @@ private struct CustomTabBarContainer: View {
                 isEditingBookmarksLocal.toggle()
             }
         case .messages:
-            Button(action: { coordinator.presentCompose(for: tab) }) {
+            Button(action: {
+                coordinator.presentCompose(for: tab)
+            }) {
                 Image("compose")
                     .renderingMode(.template)
             }
@@ -585,7 +558,7 @@ private struct CustomTabBar: View {
         VStack(spacing: 0) {
             Rectangle()
                 .frame(height: 0.5)
-                .foregroundColor(theme[color: "bottomBarTopBorderColor"] ?? .clear)
+                .foregroundColor(theme[color: "bottomBarTopBorderColor"] ?? Color.clear)
             
             HStack {
                 ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
@@ -663,11 +636,11 @@ enum MainTab: String, CaseIterable, Identifiable {
     }
 }
 
-struct DetailView: View {
-    let selectedTab: MainTab
-    let coordinator: any MainCoordinator
-    @SwiftUI.Environment(\.theme) private var theme
-    
+// MARK: - Detail View
+
+private struct DetailView: View {
+    @EnvironmentObject var coordinator: MainCoordinatorImpl
+
     var body: some View {
         // Show a placeholder view until something is selected to be shown in detail
         VStack {
@@ -678,21 +651,26 @@ struct DetailView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(theme[color: "backgroundColor"]!)
+        .background(Theme.defaultTheme()[color: "backgroundColor"]!)
         .navigationTitle("Detail")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(for: AwfulThread.self) { thread in
-            PostsViewRepresentable(thread: thread, coordinator: coordinator)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .navigationDestination(for: ThreadDestination.self) { destination in
+            PostsViewWrapper(
+                thread: destination.thread,
+                author: destination.author,
+                page: destination.page,
+                coordinator: coordinator
+            )
+        }
+        .navigationDestination(for: Forum.self) { forum in
+            ThreadsViewWrapper(forum: forum, coordinator: coordinator)
         }
         .navigationDestination(for: PrivateMessage.self) { message in
-            MessageViewRepresentable(message: message, coordinator: coordinator)
+            PrivateMessageViewWrapper(message: message, coordinator: coordinator)
         }
         .navigationDestination(for: ComposePrivateMessage.self) { _ in
-            if let coordinator = coordinator as? MainCoordinatorImpl {
-                MessageComposeDetailView(coordinator: coordinator)
-            } else {
-                EmptyView()
-            }
+            MessageComposeDetailView(coordinator: coordinator)
         }
     }
 }
@@ -765,6 +743,24 @@ struct BookmarksViewRepresentable: UIViewControllerRepresentable {
     }
 }
 
+struct ThreadDestination: Hashable {
+    let thread: AwfulThread
+    let page: ThreadPage
+    let author: User?
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(thread)
+        hasher.combine(page)
+        hasher.combine(author)
+    }
+    
+    static func == (lhs: ThreadDestination, rhs: ThreadDestination) -> Bool {
+        return lhs.thread == rhs.thread &&
+               lhs.page == rhs.page &&
+               lhs.author == rhs.author
+    }
+}
+
 struct MessagesViewRepresentable: UIViewControllerRepresentable {
     var isEditing: Bool
     let coordinator: any MainCoordinator
@@ -816,6 +812,7 @@ struct SettingsViewRepresentable: UIViewControllerRepresentable {
 struct ThreadsViewRepresentable: UIViewControllerRepresentable {
     let forum: Forum
     let coordinator: any MainCoordinator
+    @SwiftUI.Environment(\.theme) private var theme
 
     func makeUIViewController(context: Context) -> UIViewController {
         let threadsVC = ThreadsTableViewController(forum: forum)
@@ -830,22 +827,194 @@ struct ThreadsViewRepresentable: UIViewControllerRepresentable {
     }
 }
 
-struct PostsViewRepresentable: UIViewControllerRepresentable {
-    let thread: AwfulThread
+struct ThreadsViewWrapper: View {
+    let forum: Forum
     let coordinator: any MainCoordinator
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    var body: some View {
+        ThreadsViewRepresentable(forum: forum, coordinator: coordinator)
+            .navigationTitle(forum.name ?? "Threads")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // TODO: Implement compose new thread action
+                    }) {
+                        Image("compose")
+                            .renderingMode(.template)
+                            .font(.body.weight(.semibold))
+                    }
+                }
+            }
+    }
+}
 
-    func makeUIViewController(context: Context) -> UIViewController {
-        let postsVC = PostsPageViewController(thread: thread)
-        // Load the appropriate page when the view controller is created
-        let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
-        postsVC.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
-        let wrapper = SwiftUICompatibleViewController(wrapping: postsVC)
-        wrapper.restorationIdentifier = "Posts"
-        return wrapper
+struct PostsViewWrapper: View {
+    let thread: AwfulThread
+    let author: User?
+    let page: ThreadPage
+    var coordinator: (any MainCoordinator)?
+    @SwiftUI.Environment(\.theme) private var theme
+    @State private var postsViewController: PostsPageViewController?
+    @State private var currentPage: ThreadPage?
+    @State private var numberOfPages: Int = 1
+    @State private var isLoadingViewVisible: Bool = true
+    @State private var title: String
+    @State private var updateTimer: Timer?
+    @State private var isTopBarVisible: Bool = true
+
+    private var navigationTintColor: Color {
+        Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label)
+    }
+    
+    init(thread: AwfulThread, author: User?, page: ThreadPage, coordinator: (any MainCoordinator)?) {
+        self.thread = thread
+        self.author = author
+        self.page = page
+        self.coordinator = coordinator
+        _title = State(initialValue: thread.title ?? "")
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        // Theme changes are handled automatically by the wrapper's observer
+    var body: some View {
+        VStack(spacing: 0) {
+            // Secondary, hideable top bar
+            PostsTopBar(
+                onParentForumTapped: { postsViewController?.goToParentForum() },
+                onPreviousPostsTapped: { /* TODO */ },
+                onScrollToEndTapped: { postsViewController?.scrollToBottom() },
+                isVisible: isTopBarVisible
+            )
+            .zIndex(1) // Ensure it draws over the content
+            
+            // Posts view controller
+            PostsViewControllerRepresentable(
+                thread: thread,
+                page: page,
+                author: author,
+                coordinator: coordinator,
+                onViewControllerCreated: { vc in
+                    postsViewController = vc
+                    startPeriodicUpdates()
+                    
+                    // Set up scroll callback to control top bar visibility
+                    vc.publicPostsView.didScroll = { [weak vc] scrollView in
+                        updateTopBarVisibility(for: scrollView, vc: vc)
+                    }
+                }
+            )
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .onDisappear(perform: stopPeriodicUpdates)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(title)
+                    .font(.headline)
+                    .lineLimit(2)
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { postsViewController?.newReply() }) {
+                    Image(systemName: "square.and.pencil")
+                }
+            }
+            ToolbarItem(placement: .bottomBar) {
+                PostsToolbar(
+                    thread: thread,
+                    author: postsViewController?.authorUser,
+                    page: currentPage,
+                    numberOfPages: numberOfPages,
+                    isLoadingViewVisible: isLoadingViewVisible,
+                    onSettingsTapped: { postsViewController?.triggerSettings() },
+                    onBackTapped: { postsViewController?.goToPreviousPage() },
+                    onForwardTapped: { postsViewController?.goToNextPage() },
+                    onActionsTapped: { postsViewController?.showThreadActionsMenu() },
+                    onPageSelected: { page in
+                        postsViewController?.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+                    },
+                    onGoToLastPost: {
+                        postsViewController?.loadPage(.last, updatingCache: true, updatingLastReadPost: true)
+                    }
+                )
+            }
+        }
+        .toolbarBackground(theme[color: "tabBarBackgroundColor"] ?? Color.clear, for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
+    }
+
+    private func startPeriodicUpdates() {
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            guard let vc = postsViewController else { return }
+            self.currentPage = vc.page
+            self.numberOfPages = vc.numberOfPages
+            self.isLoadingViewVisible = vc.publicPostsView.loadingView != nil
+            
+            // Ensure title is up-to-date
+            if let newTitle = vc.thread.title, newTitle != self.title {
+                self.title = newTitle
+            }
+        }
+    }
+
+    private func stopPeriodicUpdates() {
+        updateTimer?.invalidate()
+        updateTimer = nil
+    }
+    
+    private func updateTopBarVisibility(for scrollView: UIScrollView, vc: PostsPageViewController?) {
+        guard let vc = vc, vc.hasFinishedInitialLoad else { return }
+        
+        let currentOffset = scrollView.contentOffset.y
+        let scrollDiff = currentOffset - vc.previousScrollOffset
+        
+        // Always show at the top
+        if currentOffset <= 0 {
+            if !isTopBarVisible {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isTopBarVisible = true
+                }
+            }
+            vc.previousScrollOffset = currentOffset
+            return
+        }
+
+        // Don't do anything if we're at the bottom
+        guard currentOffset < (scrollView.contentSize.height - scrollView.frame.size.height) else {
+            vc.previousScrollOffset = currentOffset
+            return
+        }
+        
+        // Hide on scroll down, show on scroll up
+        let shouldBeVisible = scrollDiff < 0
+        if isTopBarVisible != shouldBeVisible {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isTopBarVisible = shouldBeVisible
+            }
+        }
+        
+        vc.previousScrollOffset = currentOffset
+    }
+}
+
+struct PostsViewControllerRepresentable: UIViewControllerRepresentable {
+    let thread: AwfulThread
+    let page: ThreadPage
+    let author: User?
+    var coordinator: (any MainCoordinator)?
+    let onViewControllerCreated: (PostsPageViewController) -> Void
+
+    func makeUIViewController(context: Context) -> PostsPageViewController {
+        let vc = PostsPageViewController(thread: thread, author: author)
+        vc.coordinator = coordinator
+        let pageToLoad = page
+        vc.loadPage(pageToLoad, updatingCache: true, updatingLastReadPost: true)
+        vc.useSwiftUIToolbar = true
+        onViewControllerCreated(vc)
+        return vc
+    }
+    
+    func updateUIViewController(_ uiViewController: PostsPageViewController, context: Context) {
+        // Keep the view controller updated with the latest state from SwiftUI
+        uiViewController.coordinator = coordinator
     }
 }
 
@@ -996,7 +1165,7 @@ private class SwiftUICompatibleViewController: UIViewController {
         }
         
         // Then override with clear backgrounds to maintain SwiftUI compatibility
-        Task { @MainActor [weak self] in
+        Task<Void, Never>.detached(priority: .userInitiated) { @MainActor [weak self] in
             self?.wrappedViewController.maintainSwiftUICompatibleBackground()
         }
     }
@@ -1131,7 +1300,226 @@ struct MessageComposeDetailView: View {
     }
     
     private func updateNavigationTintColor() {
-        let theme = Theme.defaultTheme()
-        navigationTintColor = Color(theme[uicolor: "navigationBarTextColor"]!)
+        navigationTintColor = Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label)
+    }
+}
+
+// MARK: - iPad Main View
+struct iPadMainView: View {
+    @ObservedObject var coordinator: MainCoordinatorImpl
+    @Binding var selectedTab: MainTab
+    let isEditingBookmarks: Bool
+    let isEditingMessages: Bool
+    let isEditingForums: Bool
+    let hasFavoriteForums: Bool
+    let canSendPrivateMessages: Bool
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    // Computed property for navigation tint color based on theme
+    private var navigationTintColor: Color {
+        Color(theme[uicolor: "navigationBarTextColor"] ?? .label)
+    }
+
+    var body: some View {
+        NavigationSplitView {
+            Sidebar(coordinator: coordinator)
+        } detail: {
+            NavigationStack(path: $coordinator.path) {
+                DetailView()
+                    .environmentObject(coordinator)
+            }
+        }
+        .tint(navigationTintColor)
+    }
+}
+
+// MARK: - iPhone Main View
+struct iPhoneMainView: View {
+    @ObservedObject var coordinator: MainCoordinatorImpl
+    let hasFavoriteForums: Bool
+    @SwiftUI.Environment(\.theme) private var theme
+
+    // Computed property for navigation tint color based on theme
+    private var navigationTintColor: Color {
+        Color(theme[uicolor: "navigationBarTextColor"] ?? .label)
+    }
+
+    var body: some View {
+        NavigationStack(path: $coordinator.path) {
+            CustomTabBarContainer(
+                coordinator: coordinator,
+                isInSidebar: false,
+                isEditingBookmarks: false,
+                isEditingMessages: false,
+                isEditingForums: false,
+                hasFavoriteForums: hasFavoriteForums
+            )
+            .navigationDestination(for: ThreadDestination.self) { destination in
+                PostsViewWrapper(
+                    thread: destination.thread,
+                    author: destination.author,
+                    page: destination.page,
+                    coordinator: coordinator
+                )
+            }
+        }
+        .tint(navigationTintColor)
+    }
+}
+
+struct PostsPageViewControllerRepresentable: UIViewControllerRepresentable {
+    let thread: AwfulThread
+    let author: User?
+    let page: ThreadPage
+    let coordinator: any MainCoordinator
+    let onViewControllerCreated: ((PostsPageViewController) -> Void)?
+    
+    func makeUIViewController(context: Context) -> PostsPageViewController {
+        let vc = PostsPageViewController(thread: thread, author: author)
+        vc.coordinator = coordinator
+        vc.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+        vc.useSwiftUIToolbar = true
+        onViewControllerCreated?(vc)
+        return vc
+    }
+    
+    func updateUIViewController(_ uiViewController: PostsPageViewController, context: Context) {
+        uiViewController.coordinator = coordinator
+    }
+}
+
+// MARK: - Missing View Implementations
+
+struct PrivateMessageViewWrapper: View {
+    let message: PrivateMessage
+    let coordinator: any MainCoordinator
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    var body: some View {
+        MessageViewRepresentable(message: message, coordinator: coordinator)
+            .navigationTitle(message.subject ?? "Private Message")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // TODO: Implement reply action
+                    }) {
+                        Image("compose")
+                            .renderingMode(.template)
+                            .font(.body.weight(.semibold))
+                    }
+                }
+            }
+    }
+}
+
+struct Sidebar: View {
+    @ObservedObject var coordinator: MainCoordinatorImpl
+    @State private var selectedTab: MainTab = .forums
+    @State private var isEditingBookmarks = false
+    @State private var isEditingMessages = false
+    @State private var isEditingForums = false
+    @State private var hasFavoriteForums = false
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    var body: some View {
+        NavigationStack(path: $coordinator.sidebarPath) {
+            CustomTabBarContainer(
+                coordinator: coordinator,
+                isInSidebar: true,
+                selectedTab: $selectedTab,
+                isEditingBookmarks: isEditingBookmarks,
+                isEditingMessages: isEditingMessages,
+                isEditingForums: isEditingForums,
+                hasFavoriteForums: hasFavoriteForums
+            )
+            .navigationDestination(for: Forum.self) { forum in
+                ThreadsViewWrapper(forum: forum, coordinator: coordinator)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    leadingToolbarItems
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    trailingToolbarItems
+                }
+            }
+        }
+        .navigationTitle(selectedTab.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            checkFavoriteForums()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("FavoriteForumsCountDidChange"))) { notification in
+            if let count = notification.userInfo?["count"] as? Int {
+                hasFavoriteForums = count > 0
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var leadingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if canSendPrivateMessages {
+                Button("Search") {
+                    coordinator.presentSearch()
+                }
+            }
+        case .messages:
+            Button(isEditingMessages ? "Done" : "Edit") {
+                isEditingMessages.toggle()
+            }
+        default:
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder
+    private var trailingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if hasFavoriteForums {
+                Button(isEditingForums ? "Done" : "Edit") {
+                    isEditingForums.toggle()
+                }
+            }
+        case .bookmarks:
+            Button(isEditingBookmarks ? "Done" : "Edit") {
+                isEditingBookmarks.toggle()
+            }
+        case .messages:
+            Button(action: {
+                coordinator.presentCompose(for: selectedTab)
+            }) {
+                Image("compose")
+                    .renderingMode(.template)
+            }
+        default:
+            EmptyView()
+        }
+    }
+    
+    private func checkFavoriteForums() {
+        // Set up observer for favorite forums count changes
+        let context = AppDelegate.instance.managedObjectContext
+        
+        let favoriteForumCountObserver = ManagedObjectCountObserver(
+            context: context,
+            entityName: ForumMetadata.entityName,
+            predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
+            didChange: { favoriteCount in
+                // Update hasFavoriteForums state when favorite forums count changes
+                NotificationCenter.default.post(
+                    name: Notification.Name("FavoriteForumsCountDidChange"), 
+                    object: nil, 
+                    userInfo: ["count": favoriteCount]
+                )
+            }
+        )
+        
+        // Set initial state
+        hasFavoriteForums = favoriteForumCountObserver.count > 0
     }
 }

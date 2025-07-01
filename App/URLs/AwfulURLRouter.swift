@@ -15,6 +15,7 @@ struct AwfulURLRouter {
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let managedObjectContext: NSManagedObjectContext
     private let rootViewController: UIViewController
+    weak var coordinator: (any MainCoordinator)?
     
     /**
         - parameter rootViewController: The application's root view controller.
@@ -84,25 +85,6 @@ struct AwfulURLRouter {
 
         case let .post(id: postID, updateSeen):
             let key = PostKey(postID: postID)
-            if let post = Post.existingObjectForKey(objectKey: key, in: managedObjectContext),
-               let thread = post.thread,
-               post.page > 0
-            {
-                let postsVC = PostsPageViewController(thread: thread)
-                var updateLastRead: Bool {
-                    switch updateSeen {
-                    case .noseen: return false
-                    case .seen: return true
-                    }
-                }
-                postsVC.loadPage(.specific(post.page), updatingCache: true, updatingLastReadPost: updateLastRead)
-                postsVC.scrollPostToVisible(post)
-                return showPostsViewController(postsVC)
-            }
-
-            guard let rootView = rootViewController.view else { return false }
-            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)!
-            overlay.tintColor = Theme.defaultTheme()["tintColor"]
 
             var updateLastRead: Bool {
                 switch updateSeen {
@@ -111,15 +93,46 @@ struct AwfulURLRouter {
                 }
             }
 
+            if let coordinator = coordinator {
+                // TODO: This doesn't scroll to the post.
+                if let post = Post.existingObjectForKey(objectKey: key, in: managedObjectContext),
+                   let thread = post.thread,
+                   post.page > 0
+                {
+                    coordinator.navigateToThread(thread, page: .specific(post.page))
+                    return true
+                }
+            }
+            
+            if let post = Post.existingObjectForKey(objectKey: key, in: managedObjectContext),
+               let thread = post.thread,
+               post.page > 0
+            {
+                let postsVC = PostsPageViewController(thread: thread)
+                postsVC.jumpToPostIDAfterLoading = post.postID
+                postsVC.loadPage(.specific(post.page), updatingCache: true, updatingLastReadPost: updateLastRead)
+                return showPostsViewController(postsVC)
+            }
+
+            guard let rootView = rootViewController.view else { return false }
+            let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)!
+            overlay.tintColor = Theme.defaultTheme()["tintColor"]
+
             Task { @MainActor in
                 do {
                     let (post, page) = try await ForumsClient.shared.locatePost(id: key.postID, updateLastReadPost: updateLastRead)
                     overlay.dismiss(true) {
                         guard let thread = post.thread else { return }
-                        let postsVC = PostsPageViewController(thread: thread)
-                        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
-                        postsVC.scrollPostToVisible(post)
-                        _ = self.showPostsViewController(postsVC)
+
+                        if let coordinator = self.coordinator {
+                            // TODO: This doesn't scroll to the post.
+                            coordinator.navigateToThread(thread, page: page)
+                        } else {
+                            let postsVC = PostsPageViewController(thread: thread)
+                            postsVC.jumpToPostIDAfterLoading = post.postID
+                            postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+                            _ = self.showPostsViewController(postsVC)
+                        }
                     }
                 } catch {
                     overlay.titleLabelText = "Post Not Found"
@@ -212,6 +225,22 @@ struct AwfulURLRouter {
         justPostsByUser userID: String? = nil,
         updateSeen: AwfulRoute.UpdateSeen
     ) -> Bool {
+        if let coordinator = coordinator {
+            let threadKey = ThreadKey(threadID: threadID)
+            let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext)
+            
+            var author: User?
+            if let userID = userID, !userID.isEmpty {
+                let userKey = UserKey(userID: userID, username: nil)
+                author = User.objectForKey(objectKey: userKey, in: managedObjectContext)
+            }
+            
+            // This doesn't handle updateSeen yet.
+            coordinator.navigateToThread(thread, page: page, author: author)
+            
+            return true
+        }
+        
         let threadKey = ThreadKey(threadID: threadID)
         let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext) 
         let postsVC: PostsPageViewController

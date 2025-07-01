@@ -27,7 +27,7 @@ final class RenderView: UIView {
 
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
-    private lazy var webView: WKWebView = {
+    lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         
         let bundle = Bundle(for: RenderView.self)
@@ -394,7 +394,7 @@ extension RenderView {
         /// The contents of the post.
         case postbody
 
-        /// Includes the post date and the post action button.
+        /// Includes the post date and the post action button.
         case footer
     }
     

@@ -37,7 +37,18 @@ static inline CGFloat MRRotationForStatusBarOrientation() {
     for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
         if ([scene isKindOfClass:[UIWindowScene class]]) {
             if (scene.activationState == UISceneActivationStateForegroundActive) {
-                orientation = ((UIWindowScene *)scene).interfaceOrientation;
+                UIWindowScene *windowScene = (UIWindowScene *)scene;
+#if defined(__IPHONE_16_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_16_0
+                if (@available(iOS 16.0, *)) {
+                    orientation = windowScene.effectiveGeometry.interfaceOrientation;
+                } else
+#endif
+                {
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                    orientation = windowScene.interfaceOrientation;
+                    #pragma clang diagnostic pop
+                }
                 break;
             }
         }

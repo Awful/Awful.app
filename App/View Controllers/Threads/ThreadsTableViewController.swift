@@ -240,22 +240,8 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     func composeTextViewController(_ composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
         dismiss(animated: true) {
-            if let thread = self.threadComposeViewController.thread , success {
-                // Check if we're in a split view (iPad) and use coordinator navigation
-                if let coordinator = self.coordinator, UIDevice.current.userInterfaceIdiom == .pad {
-                    coordinator.navigateToThread(thread)
-                } else {
-                    // iPhone: use traditional navigation
-                    // Use Task to avoid "Publishing changes from within view updates" warning
-                    Task { @MainActor in
-                        self.coordinator?.isDetailViewShowing = true
-                    }
-                    let postsPage = PostsPageViewController(thread: thread)
-                    postsPage.hidesBottomBarWhenPushed = true
-                    postsPage.restorationIdentifier = "Posts"
-                    postsPage.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
-                    self.navigationController?.pushViewController(postsPage, animated: true)
-                }
+            if let thread = self.threadComposeViewController.thread, success {
+                self.coordinator?.navigateToThread(thread)
             }
             
             if !shouldKeepDraft {
@@ -284,19 +270,23 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         return picker
     }()
     
-    @objc private func didTapFilterButton(_ sender: UIButton) {
+    private func updateFilterButton() {
+        if let tag = filterThreadTag {
+            filterButton.setImage(tag.imageName.flatMap { UIImage(named: $0) }, for: .normal)
+            filterButton.setTitle("Filtering by \"\(tag.threadTagID ?? "")\" — tap to clear", for: .normal)
+        }
+        else {
+            filterButton.setImage(nil, for: .normal)
+            filterButton.setTitle("Filter by Tag", for: .normal)
+        }
+    }
+    
+    @objc private func didTapFilterButton() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         threadTagPicker.selectImageName(filterThreadTag?.imageName)
-        threadTagPicker.present(from: self, sourceView: sender)
-    }
-    
-    private func updateFilterButton() {
-        let title = LocalizedString(filterThreadTag == nil ? "thread-list.filter-button.no-filter" : "thread-list.filter-button.change-filter")
-        filterButton.setTitle(title, for: .normal)
-        filterButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .medium)
-        filterButton.tintColor = theme["tintColor"]
+        threadTagPicker.present(from: self, sourceView: filterButton)
     }
     
     // MARK: ThreadTagPickerViewControllerDelegate
@@ -331,6 +321,16 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     func didDismissPicker(_ picker: ThreadTagPickerViewController) {
         // nop
+    }
+    
+    func didClearThreadTagFilter(from picker: ThreadTagPickerViewController) {
+        dismiss(animated: true) {
+            self.filterThreadTag = nil
+            self.updateFilterButton()
+            self.dataSource = self.makeDataSource()
+            self.tableView.reloadData()
+            self.refresh()
+        }
     }
     
     // MARK: Handoff
@@ -415,24 +415,56 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     }
 }
 
-extension ThreadsTableViewController: ThreadListDataSourceDelegate, UINavigationControllerDelegate {
+// MARK: - ThreadListDataSourceDelegate
+
+extension ThreadsTableViewController: ThreadListDataSourceDelegate {
     func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme {
-        return theme
+        theme
+    }
+
+    func threadListDataSource(
+        _ dataSource: ThreadListDataSource,
+        didSelectThread thread: AwfulThread
+    ) {
+        coordinator?.navigateToThread(thread)
+    }
+
+    func threadListDataSource(
+        _ dataSource: ThreadListDataSource,
+        didToggleBookmarkForThread thread: AwfulThread
+    ) {
+        Task {
+            do {
+                try await ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
+            } catch {
+                present(UIAlertController(networkError: error), animated: true)
+            }
+        }
+    }
+}
+
+// MARK: - UINavigationControllerDelegate
+
+extension ThreadsTableViewController: UINavigationControllerDelegate {
+    func navigationController(
+        _ navigationController: UINavigationController,
+        willShow viewController: UIViewController,
+        animated: Bool
+    ) {
+        if viewController === self {
+            if let selectedIndexPath = tableView.indexPathForSelectedRow {
+                tableView.deselectRow(at: selectedIndexPath, animated: animated)
+            }
+        }
     }
     
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        // Use Task to avoid "Publishing changes from within view updates" warning
-        Task { @MainActor in
-            if viewController == self {
-                // We're back at the thread list - show the tab bar
-                coordinator?.isDetailViewShowing = false
-            } else if viewController is PostsPageViewController {
-                // We're showing a posts view - hide the tab bar
-                coordinator?.isDetailViewShowing = true
-            } else {
-                // Default: if there are multiple view controllers, we're in a detail view
-                coordinator?.isDetailViewShowing = navigationController.viewControllers.count > 1
-            }
+    func navigationController(
+        _ navigationController: UINavigationController,
+        didShow viewController: UIViewController,
+        animated: Bool
+    ) {
+        if viewController === self {
+            prepareUserActivity()
         }
     }
 }
@@ -449,23 +481,7 @@ extension ThreadsTableViewController {
         }
         
         let thread = dataSource!.thread(at: indexPath)
-        
-        // Check if we're in a split view (iPad) and use coordinator navigation
-        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
-            coordinator.navigateToThread(thread)
-        } else {
-            // iPhone: use traditional navigation
-            // Use Task to avoid "Publishing changes from within view updates" warning
-            Task { @MainActor in
-                coordinator?.isDetailViewShowing = true
-            }
-            let postsViewController = PostsPageViewController(thread: thread)
-            postsViewController.hidesBottomBarWhenPushed = true
-            let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
-            postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
-            postsViewController.restorationIdentifier = "Posts"
-            navigationController?.pushViewController(postsViewController, animated: true)
-        }
+        coordinator?.navigateToThread(thread)
         
         tableView.deselectRow(at: indexPath, animated: true)
     }

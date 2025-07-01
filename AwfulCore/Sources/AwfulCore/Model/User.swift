@@ -86,3 +86,11 @@ public final class UserKey: AwfulObjectKey {
 }
 private let userIDKey = "userID"
 private let usernameKey = "username"
+
+// MARK: - Tombstones Stub
+extension User {
+    /// Stub for retrieving unknown authors. TODO: implement proper tombstones logic.
+    public static func tombstones(for knownAuthorIDs: Set<String>, in context: NSManagedObjectContext) -> [User] {
+        return []
+    }
+}

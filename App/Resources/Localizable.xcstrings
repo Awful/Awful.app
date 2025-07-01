@@ -4,7 +4,26 @@
     "" : {
 
     },
+    "-" : {
+
+    },
     "%@" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld / %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld / %2$lld"
+          }
+        }
+      }
+    },
+    "+" : {
 
     },
     "action.share-url" : {
@@ -46,6 +65,9 @@
     "Back" : {
 
     },
+    "Bookmark Thread" : {
+
+    },
     "bookmarks.title" : {
       "comment" : "Title of the bookmarks screen, shown in the navbar and the tab bar.",
       "extractionState" : "migrated",
@@ -60,6 +82,7 @@
     },
     "cancel" : {
       "comment" : "Title of button that dismisses without taking any action.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -74,6 +97,7 @@
     },
     "compose.accessibility-label" : {
       "comment" : "Accessibility label of compose button in posts screen.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -107,6 +131,7 @@
     },
     "compose.draft-menu.continue-editing" : {
       "comment" : "Button in action sheet that resumes the draft edit.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -130,6 +155,7 @@
     },
     "compose.draft-menu.delete-draft" : {
       "comment" : "Destructive button in action sheet that deletes the draft reply.",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -267,6 +293,9 @@
         }
       }
     },
+    "Copy link" : {
+
+    },
     "Copy Title" : {
 
     },
@@ -286,6 +315,9 @@
       }
     },
     "Creep" : {
+
+    },
+    "Delete" : {
 
     },
     "Detail" : {
@@ -310,6 +342,9 @@
 
     },
     "Exit" : {
+
+    },
+    "First" : {
 
     },
     "Five" : {
@@ -412,6 +447,9 @@
       }
     },
     "Jump to First Page" : {
+
+    },
+    "Last" : {
 
     },
     "Last Page" : {
@@ -672,6 +710,12 @@
     "Mark Unread" : {
 
     },
+    "Menu" : {
+
+    },
+    "Next page" : {
+
+    },
     "Not Logged In" : {
 
     },
@@ -690,6 +734,12 @@
     "OK" : {
 
     },
+    "Opens page picker" : {
+
+    },
+    "Page" : {
+
+    },
     "Page %lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -705,7 +755,7 @@
     },
     "posts-page.copied-post" : {
       "comment" : "Title of alert shown when post successfully copied to pasteboard.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -717,7 +767,7 @@
     },
     "posts-page.error.could-not-copy-post" : {
       "comment" : "Title of alert shown when failing to copy post to pasteboard.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -729,7 +779,7 @@
     },
     "posts-page.error.could-not-edit-post" : {
       "comment" : "Title of alert shown when failing to edit post.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -753,7 +803,7 @@
     },
     "posts-page.fyad-flag-title" : {
       "comment" : "Alternate text for an FYAD flag. Variables are: 1. username of flag creator; 2. date of flag creation.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -765,7 +815,7 @@
     },
     "posts-page.marked-read" : {
       "comment" : "Title shown in HUD after the last-read post is updated.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -858,6 +908,12 @@
           }
         }
       }
+    },
+    "Present Picker" : {
+
+    },
+    "Previous page" : {
+
     },
     "Private Message" : {
 
@@ -1089,6 +1145,9 @@
         }
       }
     },
+    "Scale Text %@" : {
+
+    },
     "Search" : {
 
     },
@@ -1151,7 +1210,7 @@
     },
     "settings.font-scale.title" : {
       "comment" : "Placeholder is the locale-formatted text scale %.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1202,7 +1261,7 @@
     },
     "thread-list.filter-button.change-filter" : {
       "comment" : "Button title atop the thread list when some filter is set.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1214,7 +1273,7 @@
     },
     "thread-list.filter-button.no-filter" : {
       "comment" : "Button title atop the thread list when no filter is set.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1226,7 +1285,7 @@
     },
     "thread-list.filter.picker-title" : {
       "comment" : "Title of the thread tag picker screen shown when filtering a thread list.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1267,6 +1326,12 @@
 
     },
     "V" : {
+
+    },
+    "Vote" : {
+
+    },
+    "Your posts" : {
 
     }
   },

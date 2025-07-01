@@ -73,6 +73,7 @@ final class ThreadListDataSource: NSObject {
         try resultsController.performFetch()
 
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(ThreadListCell.self, forCellReuseIdentifier: threadCellIdentifier)
 
         resultsController.delegate = self
@@ -244,8 +245,18 @@ private let threadCellIdentifier = "ThreadListCell"
 
 protocol ThreadListDataSourceDelegate: AnyObject {
     func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme
+    func threadListDataSource(_ dataSource: ThreadListDataSource, didSelectThread thread: AwfulThread)
+    func threadListDataSource(_ dataSource: ThreadListDataSource, didToggleBookmarkForThread thread: AwfulThread)
 }
 
 protocol ThreadListDataSourceDeletionDelegate: AnyObject {
     func didDeleteThread(_ thread: AwfulThread, in dataSource: ThreadListDataSource)
+}
+
+extension ThreadListDataSource: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let thread = resultsController.object(at: indexPath)
+        delegate?.threadListDataSource(self, didSelectThread: thread)
+    }
 }

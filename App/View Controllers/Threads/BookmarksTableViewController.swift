@@ -258,26 +258,7 @@ extension BookmarksTableViewController: UINavigationControllerDelegate {
         return dataSource!.tableView(tableView, heightForRowAt: indexPath)
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let thread = dataSource?.thread(at: indexPath) else { return }
-        
-        // Check if we're in a split view (iPad) and use coordinator navigation
-        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
-            coordinator.navigateToThread(thread)
-        } else {
-            // iPhone: use traditional navigation
-            // Use Task to avoid "Publishing changes from within view updates" warning
-            Task { @MainActor in
-                coordinator?.isDetailViewShowing = true
-            }
-            let postsViewController = PostsPageViewController(thread: thread)
-            postsViewController.hidesBottomBarWhenPushed = true
-            let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
-            postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
-            postsViewController.restorationIdentifier = "Posts"
-            navigationController?.pushViewController(postsViewController, animated: true)
-        }
-    }
+
 
     override func tableView(
         _ tableView: UITableView,
@@ -291,29 +272,13 @@ extension BookmarksTableViewController: UINavigationControllerDelegate {
         }
         
         let lastPostAction = UIContextualAction(style: .normal, title: "Last Post") { [weak self] _, _, completion in
-            // Check if we're in a split view (iPad) and use coordinator navigation
-            if let coordinator = self?.coordinator, UIDevice.current.userInterfaceIdiom == .pad {
-                coordinator.navigateToThread(thread)
-                // TODO: We need to handle the specific page (.last) in the coordinator or PostsViewRepresentable
-            } else {
-                let postsViewController = PostsPageViewController(thread: thread)
-                postsViewController.loadPage(.last, updatingCache: true, updatingLastReadPost: true)
-                self?.showDetailViewController(postsViewController, sender: self)
-            }
+            self?.coordinator?.navigateToThread(thread, page: .last)
             completion(true)
         }
         lastPostAction.backgroundColor = self.theme["themeColor"]
         
         let firstPostAction = UIContextualAction(style: .normal, title: "Unread") { [weak self] _, _, completion in
-            // Check if we're in a split view (iPad) and use coordinator navigation
-            if let coordinator = self?.coordinator, UIDevice.current.userInterfaceIdiom == .pad {
-                coordinator.navigateToThread(thread)
-                // TODO: We need to handle the specific page (.nextUnread) in the coordinator or PostsViewRepresentable
-            } else {
-                let postsViewController = PostsPageViewController(thread: thread)
-                postsViewController.loadPage(.nextUnread, updatingCache: false, updatingLastReadPost: true)
-                self?.showDetailViewController(postsViewController, sender: self)
-            }
+            self?.coordinator?.navigateToThread(thread, page: .nextUnread)
             completion(true)
         }
         firstPostAction.backgroundColor = UIColor.lightGray
@@ -357,6 +322,29 @@ extension BookmarksTableViewController: UINavigationControllerDelegate {
 extension BookmarksTableViewController: ThreadListDataSourceDelegate {
     func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme {
         return theme
+    }
+    
+    func threadListDataSource(_ dataSource: ThreadListDataSource, didSelectThread thread: AwfulThread) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        let page: ThreadPage = thread.beenSeen ? .nextUnread : .first
+        coordinator?.navigateToThread(thread, page: page)
+    }
+    
+    func threadListDataSource(_ dataSource: ThreadListDataSource, didToggleBookmarkForThread thread: AwfulThread) {
+        Task {
+            do {
+                try await ForumsClient.shared.setThread(thread, isBookmarked: !thread.bookmarked)
+                
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+            } catch {
+                let alert = UIAlertController(title: "Error", error: error)
+                present(alert, animated: true)
+            }
+        }
     }
 }
 

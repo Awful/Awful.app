@@ -172,6 +172,7 @@ final class ForumsTableViewController: TableViewController {
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
 
         listDataSource = try! ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
+        tableView.delegate = self
         tableView.reloadData()
         
         pullToRefreshBlock = { [weak self] in
@@ -230,10 +231,13 @@ final class ForumsTableViewController: TableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Ensure tab bar is visible when we're at the forums level
-        // Use Task to avoid "Publishing changes from within view updates" warning
-        Task { @MainActor in
-            coordinator?.isDetailViewShowing = false
+        // On iPhone, ensure tab bar is visible when we're at the forums level
+        // On iPad, tab bar state is managed by the split view coordinator
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            // Use Task to avoid "Publishing changes from within view updates" warning
+            Task { @MainActor in
+                coordinator?.isDetailViewShowing = false
+            }
         }
     }
 
