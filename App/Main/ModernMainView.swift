@@ -232,7 +232,7 @@ struct ModernMainView: View {
         let navAppearance = UINavigationBarAppearance()
         navAppearance.configureWithOpaqueBackground()
         navAppearance.backgroundColor = currentTheme[uicolor: "navigationBarTintColor"]
-        navAppearance.shadowColor = currentTheme[uicolor: "navigationBarSeparatorColor"]
+        navAppearance.shadowColor = currentTheme[uicolor: "bottomBarTopBorderColor"]
         
         let textColor = currentTheme[uicolor: "navigationBarTextColor"]!
         navAppearance.titleTextAttributes = [
@@ -889,31 +889,29 @@ struct PostsViewWrapper: View {
                     Image(systemName: "square.and.pencil")
                 }
             }
-            ToolbarItem(placement: .bottomBar) {
-                PostsToolbarContainer(
-                    thread: thread,
-                    author: author,
-                    page: viewModel.currentPage,
-                    numberOfPages: viewModel.numberOfPages,
-                    isLoadingViewVisible: false, // This needs to be updated if we re-add the loading view
-                    onSettingsTapped: { viewModel.triggerSettings() },
-                    onBackTapped: { viewModel.goToPreviousPage() },
-                    onForwardTapped: { viewModel.goToNextPage() },
-                    onPageSelected: { page in
-                        viewModel.loadPage(page)
-                    },
-                    onGoToLastPost: {
-                        viewModel.goToLastPost()
-                    },
-                    onBookmarkTapped: { viewModel.triggerBookmark() },
-                    onCopyLinkTapped: { viewModel.triggerCopyLink() },
-                    onVoteTapped: { viewModel.triggerVote() },
-                    onYourPostsTapped: { viewModel.triggerYourPosts() }
-                )
-            }
         }
-        .toolbarBackground(theme[color: "tabBarBackgroundColor"] ?? Color.clear, for: .bottomBar)
-        .toolbarBackground(.visible, for: .bottomBar)
+        .safeAreaInset(edge: .bottom) {
+            PostsToolbarContainer(
+                thread: thread,
+                author: author,
+                page: viewModel.currentPage,
+                numberOfPages: viewModel.numberOfPages,
+                isLoadingViewVisible: false, // This needs to be updated if we re-add the loading view
+                onSettingsTapped: { viewModel.triggerSettings() },
+                onBackTapped: { viewModel.goToPreviousPage() },
+                onForwardTapped: { viewModel.goToNextPage() },
+                onPageSelected: { page in
+                    viewModel.loadPage(page)
+                },
+                onGoToLastPost: {
+                    viewModel.goToLastPost()
+                },
+                onBookmarkTapped: { viewModel.triggerBookmark() },
+                onCopyLinkTapped: { viewModel.triggerCopyLink() },
+                onVoteTapped: { viewModel.triggerVote() },
+                onYourPostsTapped: { viewModel.triggerYourPosts() }
+            )
+        }
     }
 }
 

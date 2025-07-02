@@ -65,7 +65,7 @@ struct PostsToolbarContainer: View {
     
     // MARK: - Body
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 12) {
             // Settings button
             Button(action: {
                 if enableHaptics {
@@ -81,74 +81,71 @@ struct PostsToolbarContainer: View {
             
             Spacer()
             
-            // Navigation controls
-            HStack(spacing: 12) {
-                // Back button
-                Button(action: {
-                    if enableHaptics {
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    }
-                    onBackTapped()
-                }) {
-                    Image("arrowleft")
-                        .renderingMode(.template)
-                        .foregroundColor(isBackEnabled ? toolbarTextColor : disabledToolbarTextColor)
+            // Back button
+            Button(action: {
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 }
-                .disabled(!isBackEnabled)
-                .accessibilityLabel("Previous page")
-                
-                // Current page picker
-                Button(action: {
-                    // Only block if we have no page information yet
-                    guard numberOfPages > 0 else { return }
-                    if enableHaptics {
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    }
-                    showingPagePicker = true
-                }) {
-                    Text(currentPageText.isEmpty ? "..." : currentPageText)
-                        .font(.body.weight(.medium))
-                        .foregroundColor(toolbarTextColor)
-                        .frame(minWidth: 60)
-                }
-                .disabled(numberOfPages <= 0)
-                .accessibilityLabel(currentPageAccessibilityLabel)
-                .accessibilityHint("Opens page picker")
-                .popover(isPresented: $showingPagePicker) {
-                    if #available(iOS 16.4, *) {
-                        PostsPagePicker(
-                            thread: thread,
-                            numberOfPages: numberOfPages,
-                            currentPage: currentPageNumber,
-                            onPageSelected: onPageSelected,
-                            onGoToLastPost: onGoToLastPost
-                        )
-                        .presentationCompactAdaptation(.popover)
-                    } else {
-                        PostsPagePicker(
-                            thread: thread,
-                            numberOfPages: numberOfPages,
-                            currentPage: currentPageNumber,
-                            onPageSelected: onPageSelected,
-                            onGoToLastPost: onGoToLastPost
-                        )
-                    }
-                }
-                
-                // Forward button
-                Button(action: {
-                    if enableHaptics {
-                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    }
-                    onForwardTapped()
-                }) {
-                    Image("arrowright")
-                        .renderingMode(.template)
-                        .foregroundColor(isForwardEnabled ? toolbarTextColor : disabledToolbarTextColor)
-                }
-                .disabled(!isForwardEnabled)
-                .accessibilityLabel("Next page")
+                onBackTapped()
+            }) {
+                Image("arrowleft")
+                    .renderingMode(.template)
+                    .foregroundColor(isBackEnabled ? toolbarTextColor : disabledToolbarTextColor)
             }
+            .disabled(!isBackEnabled)
+            .accessibilityLabel("Previous page")
+            
+            // Current page picker
+            Button(action: {
+                // Only block if we have no page information yet
+                guard numberOfPages > 0 else { return }
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                showingPagePicker = true
+            }) {
+                Text(currentPageText.isEmpty ? "..." : currentPageText)
+                    .font(.body.weight(.medium))
+                    .foregroundColor(toolbarTextColor)
+                    .frame(minWidth: 60)
+            }
+            .disabled(numberOfPages <= 0)
+            .accessibilityLabel(currentPageAccessibilityLabel)
+            .accessibilityHint("Opens page picker")
+            .popover(isPresented: $showingPagePicker) {
+                if #available(iOS 16.4, *) {
+                    PostsPagePicker(
+                        thread: thread,
+                        numberOfPages: numberOfPages,
+                        currentPage: currentPageNumber,
+                        onPageSelected: onPageSelected,
+                        onGoToLastPost: onGoToLastPost
+                    )
+                    .presentationCompactAdaptation(.popover)
+                } else {
+                    PostsPagePicker(
+                        thread: thread,
+                        numberOfPages: numberOfPages,
+                        currentPage: currentPageNumber,
+                        onPageSelected: onPageSelected,
+                        onGoToLastPost: onGoToLastPost
+                    )
+                }
+            }
+            
+            // Forward button
+            Button(action: {
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                onForwardTapped()
+            }) {
+                Image("arrowright")
+                    .renderingMode(.template)
+                    .foregroundColor(isForwardEnabled ? toolbarTextColor : disabledToolbarTextColor)
+            }
+            .disabled(!isForwardEnabled)
+            .accessibilityLabel("Next page")
             
             Spacer()
             
@@ -207,16 +204,13 @@ struct PostsToolbarContainer: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .frame(minHeight: 44) // Ensure minimum toolbar height
-        .background(toolbarBackgroundColor, ignoresSafeAreaEdges: .bottom)
+        .background(toolbarBackgroundColor)
         .overlay(
-            // Top border
             Rectangle()
                 .fill(topBorderColor)
-                .frame(height: 1.0 / UIScreen.main.scale)
-                .frame(maxHeight: .infinity, alignment: .top)
+                .frame(height: 1.0 / UIScreen.main.scale),
+            alignment: .top
         )
-        .toolbarBackground(toolbarBackgroundColor, for: .bottomBar)
-        .toolbarBackground(.visible, for: .bottomBar)
         .onReceive(NotificationCenter.default.publisher(for: .threadBookmarkDidChange)) { notification in
             // Force view refresh when bookmark state changes
             if let notificationThread = notification.object as? AwfulThread,
@@ -244,11 +238,11 @@ struct PostsToolbarContainer: View {
     }
     
     private var toolbarBackgroundColor: Color {
-        theme[color: "tabBarBackgroundColor"] ?? Color(.systemBackground)
+        Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground)
     }
     
     private var topBorderColor: Color {
-        theme[color: "bottomBarTopBorderColor"] ?? Color(.separator)
+        Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator)
     }
 }
 

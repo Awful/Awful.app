@@ -642,8 +642,11 @@ final class PostsPageViewController: ViewController {
             showAvatars: showAvatars,
             showImages: showImages,
             stylesheet: theme[string: "postsViewCSS"] ?? "",
+            theme: self.theme,
             username: loggedInUsername,
-            enableCustomTitlePostLayout: enableCustomTitlePostLayout)
+            enableCustomTitlePostLayout: enableCustomTitlePostLayout,
+            enableFrogAndGhost: self.frogAndGhostEnabled
+        )
         
         var contextDict = context.makeDictionary()
         contextDict["threadID"] = self.thread.threadID
@@ -662,6 +665,7 @@ final class PostsPageViewController: ViewController {
 
         logger.info("🔵 Rendering HTML in web view with base URL: \(ForumsClient.shared.baseURL?.absoluteString ?? "nil")")
         postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        postsView.renderView.loadLottiePlayer()
         
         // Hide postsView top bar if we're using the SwiftUI version
         postsView.topBarContainer.isHidden = true
@@ -1335,8 +1339,10 @@ extension PostsPageViewController {
                 showAvatars: showAvatars,
                 showImages: showImages,
                 stylesheet: theme[string: "postsViewCSS"] ?? "",
+                theme: self.theme,
                 username: loggedInUsername,
-                enableCustomTitlePostLayout: enableCustomTitlePostLayout
+                enableCustomTitlePostLayout: enableCustomTitlePostLayout,
+                enableFrogAndGhost: self.frogAndGhostEnabled
             )
             
             // Update thread page count if needed
@@ -1482,8 +1488,10 @@ private struct RenderContext {
     let showAvatars: Bool
     let showImages: Bool
     let stylesheet: String
+    let theme: Theme
     let username: String?
     let enableCustomTitlePostLayout: Bool
+    let enableFrogAndGhost: Bool
 
     func makeDictionary() -> [String: Any] {
         var context: [String: Any] = [
@@ -1501,12 +1509,18 @@ private struct RenderContext {
             "stylesheet": stylesheet,
             "threadID": "", // Will be filled in by the caller
             "forumID": "", // Will be filled in by the caller
-            "tweetTheme": "light", // Default theme for tweets
-            "enableFrogAndGhost": false, // Disable for now
+            "tweetTheme": theme[string: "mode"] ?? "light",
+            "enableFrogAndGhost": enableFrogAndGhost,
             "endMessage": posts.count > 0, // Show end message if we have posts
             "username": username as Any,
             "enableCustomTitlePostLayout": enableCustomTitlePostLayout
         ]
+        if enableFrogAndGhost {
+            let url = Bundle.main.url(forResource: "ghost60", withExtension: "json")!
+            let data = try! Data(contentsOf: url)
+            context["ghostJsonData"] = String(data: data, encoding: .utf8) as Any
+        }
+
         if let author = author {
             context["author"] = UserRenderModel(author, enableCustomTitlePostLayout: enableCustomTitlePostLayout).asDictionary(showAvatars: showAvatars)
         }

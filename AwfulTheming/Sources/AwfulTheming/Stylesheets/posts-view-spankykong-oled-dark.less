@@ -269,7 +269,9 @@ header {
       top: 8px;
       left: 8px;
       background-color: #0066ff;
-      -webkit-mask-box-image-source: url("awful-resource:./quote-post.png");
+      -webkit-mask-box-image: url("awful-resource://quote-post.png");
+      -webkit-mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
     }
 }
 
@@ -480,7 +482,9 @@ post,
     top: 8px;
     left: 8px;
     background-color: var(--quotelink-color);
-    -webkit-mask-box-image-source: url("awful-resource:///quote-post.png");
+    -webkit-mask-box-image: url("awful-resource://quote-post.png");
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
 }
 .bbc-block a {
     -webkit-tap-highlight-color: transparent;

@@ -46,9 +46,20 @@ public struct PostScrapeResult {
 
         authorIsOriginalPoster = table.firstNode(matchingSelector: "dt.author.op") != nil
 
-        body = table.firstNode(matchingSelector: "div.complete_shit")?.innerHTML
-            ?? table.firstNode(matchingSelector: "td.postbody")?.innerHTML
-            ?? ""
+        if let postBody = table.firstNode(matchingSelector: "div.complete_shit") ?? table.firstNode(matchingSelector: "td.postbody") {
+            let links = postBody.nodes(matchingSelector: "a[href*='twitter.com']")
+            for link in links {
+                guard let href = link["href"],
+                      let components = URLComponents(string: href),
+                      let tweetID = components.path.split(separator: "/").last
+                else { continue }
+                
+                link["data-tweet-id"] = String(tweetID)
+            }
+            body = postBody.innerHTML
+        } else {
+            body = ""
+        }
         
         hasBeenSeen = table.firstNode(matchingSelector: "tr.seen1")
             ?? table.firstNode(matchingSelector: "tr.seen2")

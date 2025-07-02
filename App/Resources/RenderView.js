@@ -951,6 +951,7 @@ Awful.embedGfycat = function() {
 }
 
 Awful.embedGfycat();
+Awful.loadLotties();
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.
 window.webkit.messageHandlers.didRender.postMessage({});
