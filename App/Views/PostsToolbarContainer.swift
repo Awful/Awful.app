@@ -248,7 +248,7 @@ struct PostsToolbarContainer: View {
     }
     
     private var topBorderColor: Color {
-        theme[color: "tabBarBackgroundColor"] ?? Color(.separator)
+        theme[color: "bottomBarTopBorderColor"] ?? Color(.separator)
     }
 }
 
