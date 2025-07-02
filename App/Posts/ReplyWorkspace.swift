@@ -94,7 +94,7 @@ final class ReplyWorkspace: NSObject {
     Unfortunately, any compositionViewController that we preserve in encodeRestorableStateWithCoder() is not yet available in objectWithRestorationIdentifierPath(_:coder:); it only becomes available in decodeRestorableStateWithCoder().
     This didSet encompasses the junk we want to set up on the compositionViewController no matter how it's created and really belongs in init(), except we're stuck.
     */
-    fileprivate var compositionViewController: CompositionViewController! {
+    var compositionViewController: CompositionViewController! {
         didSet {
             assert(oldValue == nil, "please set compositionViewController only once")
             
@@ -258,7 +258,7 @@ final class ReplyWorkspace: NSObject {
     }
     fileprivate var submitProgress: Progress?
     
-    fileprivate func saveTextToDraft() {
+    public func saveTextToDraft() {
         draft.text = compositionViewController.textView.attributedText
     }
     

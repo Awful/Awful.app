@@ -160,8 +160,6 @@ final class BookmarksTableViewController: TableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        navigationController?.delegate = self
-        
         prepareUserActivity()
         
         if tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 {
@@ -252,14 +250,12 @@ final class BookmarksTableViewController: TableViewController {
 }
 
 // MARK: UITableViewDelegate
-extension BookmarksTableViewController: UINavigationControllerDelegate {
+extension BookmarksTableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return dataSource!.tableView(tableView, heightForRowAt: indexPath)
     }
     
-
-
     override func tableView(
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
@@ -303,19 +299,6 @@ extension BookmarksTableViewController: UINavigationControllerDelegate {
             configuration.preferredMenuElementOrder = .fixed
         }
         return configuration
-    }
-    
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        // Use Task to avoid "Publishing changes from within view updates" warning
-        Task { @MainActor in
-            if viewController == self {
-                coordinator?.isDetailViewShowing = false
-            } else if navigationController.viewControllers.count > 1 {
-                coordinator?.isDetailViewShowing = true
-            } else {
-                coordinator?.isDetailViewShowing = false
-            }
-        }
     }
 }
 

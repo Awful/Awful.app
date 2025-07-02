@@ -28,8 +28,20 @@ final class RenderView: UIView {
     private var registeredMessages: [String: RenderViewMessage.Type] = [:]
 
     lazy var webView: WKWebView = {
-        let configuration = WKWebViewConfiguration()
+        let pool = WKProcessPool()
+        // `WKWebView` considers all custom schemes insecure by default.
+        // We can use this private API to tell it to treat our schemes as secure.
+        // This is necessary to prevent mixed-content blocking when loading
+        // local resources on a page loaded from an https:// origin.
+        let selector = NSSelectorFromString("_registerURLSchemeAsSecure:")
+        if pool.responds(to: selector) {
+            pool.perform(selector, with: "awful-image")
+            pool.perform(selector, with: "awful-resource")
+        }
         
+        let configuration = WKWebViewConfiguration()
+        configuration.processPool = pool
+
         let bundle = Bundle(for: RenderView.self)
         configuration.userContentController.addUserScript({
             let url = bundle.url(forResource: "RenderView.js", withExtension: nil)!

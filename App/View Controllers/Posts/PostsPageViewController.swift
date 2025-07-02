@@ -33,6 +33,7 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private let author: User?
     private var cancellables: Set<AnyCancellable> = []
+    let pageInfoPublisher = PassthroughSubject<(page: ThreadPage?, numberOfPages: Int), Never>()
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
@@ -50,11 +51,11 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>?
+    private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String, pageCount: Int), Error>?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     public private(set) var page: ThreadPage?
-    private var pageModel: (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String)?
+    private var pageModel: (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String, pageCount: Int)?
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
     private var restoringState = false
@@ -79,7 +80,7 @@ final class PostsPageViewController: ViewController {
     /// Tracks the previous scroll offset for determining scroll direction (public for SwiftUI integration)
     public var previousScrollOffset: CGFloat = 0
     
-    /// Tracks whether content has finished loading to enable scroll detection
+    /// Signifies that the view controller has loaded its content at least once
     public var hasFinishedInitialLoad: Bool = false
 
     private var firstUnreadPost: Int?
@@ -127,7 +128,7 @@ final class PostsPageViewController: ViewController {
         didSet { updateUserInterface() }
     }
 
-    private lazy var postsView: PostsPageView = {
+    public lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
         postsView.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
@@ -310,25 +311,25 @@ final class PostsPageViewController: ViewController {
 
         logger.info("🔵 Starting network operation to fetch posts")
         networkOperation = Task {
-            let (posts, firstUnreadPost, advertisementHTML) = try await ForumsClient.shared.listPosts(
+            let (posts, firstUnreadPost, advertisementHTML, pageCount) = try await ForumsClient.shared.listPosts(
                 in: self.thread,
                 writtenBy: self.author,
                 page: newPage,
                 updateLastReadPost: updateLastReadPost)
             
-            self.pageModel = (posts: posts, firstUnreadPost: firstUnreadPost, advertisementHTML: advertisementHTML)
+            self.pageModel = (posts: posts, firstUnreadPost: firstUnreadPost, advertisementHTML: advertisementHTML, pageCount: pageCount)
 
             // Back out if we've been cancelled.
             try Task.checkCancellation()
             
-            return (posts, firstUnreadPost, advertisementHTML)
+            return (posts, firstUnreadPost, advertisementHTML, pageCount)
         }
 
         
         Task {
             do {
                 logger.info("🔵 Waiting for network operation to complete")
-                let (newPosts, firstUnread, adHTML) = try await networkOperation!.value
+                let (newPosts, firstUnread, adHTML, pageCount) = try await networkOperation!.value
                 logger.info("🟢 Network operation completed with \(newPosts.count) posts")
                 
                 // All UI updates must occur on the main actor.
@@ -357,6 +358,11 @@ final class PostsPageViewController: ViewController {
                     // Update local state.
                     self.posts = newPosts
                     self.firstUnreadPost = firstUnread
+                    
+                    // Update thread page count if needed
+                    if pageCount != Int(self.thread.numberOfPages) {
+                        self.thread.numberOfPages = Int32(pageCount)
+                    }
 
                     do {
                         try context.save()
@@ -439,10 +445,26 @@ final class PostsPageViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if !restoringState {
-            // HACK: On the iPad, when a view controller in the primary navigation controller is fullscreen, then we show another view controller, the primary navigation controller's navigation bar is not visible but its space is taken up. This appears to be an iOS bug. Forcing the navigation bar to be visible seems to fix it.
-            if let nav = navigationController, nav.isNavigationBarHidden {
-                nav.setNavigationBarHidden(false, animated: animated)
+        // HACK: On the iPad, when a view controller in the primary navigation controller is fullscreen, then we show another view controller, the primary navigation controller's navigation bar is not visible but its space is taken up. This appears to be an iOS bug. Forcing the navigation bar to be visible seems to fix it.
+        if let nav = navigationController, nav.isNavigationBarHidden {
+            nav.setNavigationBarHidden(false, animated: animated)
+        }
+
+        // When using SwiftUI toolbar, ensure it's up to date
+        if useSwiftUIToolbar {
+            updateSwiftUIToolbar()
+        }
+
+        if let offered = lastOfferedPasteboardURLString, let url = URL(string: offered) {
+            if let route = try? AwfulRoute(url) {
+                switch route {
+                case .threadPage, .threadPageSingleUser:
+                    break
+                default:
+                    lastOfferedPasteboardURLString = nil
+                }
+            } else {
+                lastOfferedPasteboardURLString = nil
             }
         }
     }
@@ -455,10 +477,21 @@ final class PostsPageViewController: ViewController {
         if handoffEnabled {
             beginHandoff()
         }
+
+        // This seems to fix an issue where the scrollbar indicators are dark on a dark background when a webview is transparent.
+        postsView.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        // If the view controller is being popped from the navigation stack,
+        // we need to manually update the coordinator's path to reflect the change.
+        if isMovingFromParent {
+            if let coordinator = coordinator as? MainCoordinatorImpl {
+                coordinator.isTabBarHidden = false
+            }
+        }
         
         if handoffEnabled {
             userActivity?.invalidate()
@@ -632,6 +665,7 @@ final class PostsPageViewController: ViewController {
         
         // Hide postsView top bar if we're using the SwiftUI version
         postsView.topBarContainer.isHidden = true
+        hasFinishedInitialLoad = true
         logger.info("🟢 Posts rendering completed")
     }
 
@@ -1067,7 +1101,10 @@ extension PostsPageViewController: ComposeTextViewControllerDelegate {
 extension PostsPageViewController: RenderViewDelegate {
     
     func didFinishRenderingHTML(in view: RenderView) {
-        // Implement as needed, e.g., call didFinishLoading
+        if embedTweets {
+            view.embedTweets()
+        }
+        
         didFinishLoading(in: view)
     }
 
@@ -1265,6 +1302,7 @@ extension PostsPageViewController {
     func updateUserInterface() {
         updateSwiftUIToolbar()
         updateSwiftUITopBar()
+        pageInfoPublisher.send((page: page, numberOfPages: numberOfPages))
       
         postsView.refreshControl?.isHidden = self.author != nil
 
@@ -1284,7 +1322,7 @@ extension PostsPageViewController {
             beginHandoff()
         }
 
-        if let (posts, firstUnreadPost, advertisementHTML) = pageModel {
+        if let (posts, firstUnreadPost, advertisementHTML, pageCount) = pageModel {
             let context = RenderContext(
                 advertisementHTML: advertisementHTML,
                 author: author,
@@ -1300,6 +1338,11 @@ extension PostsPageViewController {
                 username: loggedInUsername,
                 enableCustomTitlePostLayout: enableCustomTitlePostLayout
             )
+            
+            // Update thread page count if needed
+            if pageCount != Int(self.thread.numberOfPages) {
+                self.thread.numberOfPages = Int32(pageCount)
+            }
             
             do {
                 let html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context.makeDictionary())
@@ -1565,14 +1608,14 @@ private struct RenderContext {
                 dict["postDate"] = postDate
             }
             
-            let visibleURL = visibleAvatarURL(showAvatars: showAvatars)
-            if let visibleURL = visibleURL {
-                dict["visibleAvatarURL"] = visibleURL.absoluteString
+            let visibleAvatarURL = visibleAvatarURL(showAvatars: showAvatars)
+            if let visibleAvatarURL = visibleAvatarURL {
+                dict["visibleAvatarURL"] = visibleAvatarURL.absoluteString
             }
             
-            let hiddenURL = hiddenAvatarURL(showAvatars: showAvatars)
-            if let hiddenURL = hiddenURL {
-                dict["hiddenAvatarURL"] = hiddenURL.absoluteString
+            let hiddenAvatarURL = hiddenAvatarURL(showAvatars: showAvatars)
+            if let hiddenAvatarURL = hiddenAvatarURL {
+                dict["hiddenAvatarURL"] = hiddenAvatarURL.absoluteString
             }
             
             if let customTitleHTML = customTitleHTML {

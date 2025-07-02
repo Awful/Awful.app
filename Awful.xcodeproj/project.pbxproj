@@ -202,6 +202,7 @@
 		2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */; };
 		2D8978712E1127F30022DF0E /* PostsTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8978702E1127F30022DF0E /* PostsTopBar.swift */; };
 		2D91DB8A2E13D3EE00771E25 /* PostsPageTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91DB892E13D3EE00771E25 /* PostsPageTitleView.swift */; };
+		2D91DB902E13EBE000771E25 /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
@@ -518,6 +519,7 @@
 		2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsSwiftUIViewController.swift; sourceTree = "<group>"; };
 		2D8978702E1127F30022DF0E /* PostsTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsTopBar.swift; sourceTree = "<group>"; };
 		2D91DB892E13D3EE00771E25 /* PostsPageTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTitleView.swift; sourceTree = "<group>"; };
+		2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
@@ -604,6 +606,7 @@
 		1190F71C13BE4EA900B9D271 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */,
 				2DE976B12E0FFB0300233423 /* ModernMainView.swift */,
 				2DE976AF2E0FF4FB00233423 /* AppViewModel.swift */,
 				2DE976AD2E0FF32600233423 /* LoginViewModel.swift */,
@@ -1581,6 +1584,7 @@
 				1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */,
 				1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */,
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,
+				2D91DB902E13EBE000771E25 /* PostsViewModel.swift in Sources */,
 				2D10A3852E05C35700544F91 /* SearchView.swift in Sources */,
 				1C29BD4922505AD500E1217A /* ThemeNameTransformer.swift in Sources */,
 				1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */,

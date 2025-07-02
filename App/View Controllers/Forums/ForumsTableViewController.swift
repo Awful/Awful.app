@@ -130,17 +130,12 @@ final class ForumsTableViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         
-        // Check if we're in a split view (iPad) and use coordinator navigation
-        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
-            coordinator.navigateToForum(forum)
-        } else {
-            // iPhone: use traditional navigation
-            let threadList = ThreadsTableViewController(forum: forum)
-            threadList.coordinator = coordinator
-            threadList.restorationClass = ThreadsTableViewController.self
-            threadList.restorationIdentifier = "Thread"
-            navigationController?.pushViewController(threadList, animated: animated)
-        }
+        // iPhone: use traditional navigation
+        let threadList = ThreadsTableViewController(forum: forum)
+        threadList.coordinator = coordinator
+        threadList.restorationClass = ThreadsTableViewController.self
+        threadList.restorationIdentifier = "Thread"
+        navigationController?.pushViewController(threadList, animated: animated)
     }
 
     func openAnnouncement(_ announcement: Announcement) {
@@ -236,7 +231,7 @@ final class ForumsTableViewController: TableViewController {
         if UIDevice.current.userInterfaceIdiom == .phone {
             // Use Task to avoid "Publishing changes from within view updates" warning
             Task { @MainActor in
-                coordinator?.isDetailViewShowing = false
+                coordinator?.isTabBarHidden = false
             }
         }
     }

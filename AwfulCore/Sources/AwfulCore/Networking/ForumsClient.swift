@@ -678,13 +678,14 @@ public final class ForumsClient {
          - posts: The posts that appeared on the page of the thread.
          - firstUnreadPost: The index of the first unread post on the page (this index starts at 1), or `nil` if no unread post is found.
          - advertisementHTML: Raw HTML of an SA-hosted banner ad.
+         - pageCount: The total number of pages in the thread.
      */
     public func listPosts(
         in thread: AwfulThread,
         writtenBy author: User?,
         page: ThreadPage,
         updateLastReadPost: Bool
-    ) async throws -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String) {
+    ) async throws -> (posts: [Post], firstUnreadPost: Int?, advertisementHTML: String, pageCount: Int) {
         guard let backgroundContext = backgroundManagedObjectContext,
               let mainContext = managedObjectContext
         else { throw Error.missingManagedObjectContext }
@@ -748,7 +749,8 @@ public final class ForumsClient {
             posts: posts,
             // post index is 1-based
             firstUnreadPost: result.jumpToPostIndex.map { $0 + 1 },
-            advertisementHTML: result.advertisement
+            advertisementHTML: result.advertisement,
+            pageCount: result.pageCount ?? 1
         )
     }
 

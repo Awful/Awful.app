@@ -465,8 +465,6 @@ Awful.toggleGIF = function(gifWrapper) {
   } else if (gifWrapper.classList.contains('loading')) {
     // Just wait for the load to happen.
   } else {
-    gifWrapper.classList.add('loading');
-
     var posterURL = img.getAttribute('src');
     var gifURL = img.getAttribute('data-original-url');
 
@@ -727,10 +725,10 @@ Awful.deadTweetBadgeHTML = function(url, tweetID){
     // get twitter username from url
     var tweeter = url.match(/(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)/)[1];
     
-    var html =
+    var html = 
     `<div class="ghost-lottie">
             <lottie-player id="left-ghost-${tweetID}" class="left-ghost-${tweetID}" background="transparent" speed="1" loop autoplay>
-            </lottie-player>
+                                        </lottie-player>
      </div>
     <span class="dead-tweet-title">DEAD TWEET</span>
     <a class="dead-tweet-link" href="${url}">@${tweeter}</a>

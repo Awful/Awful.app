@@ -106,7 +106,8 @@ struct PostsToolbarContainer: View {
                     }
                     showingPagePicker = true
                 }) {
-                    PageNumberView(page: page, numberOfPages: numberOfPages)
+                    Text(currentPageText.isEmpty ? "..." : currentPageText)
+                        .font(.body.weight(.medium))
                         .foregroundColor(toolbarTextColor)
                         .frame(minWidth: 60)
                 }

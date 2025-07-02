@@ -172,13 +172,11 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        navigationController?.delegate = self
-        
         // If we're showing the ThreadsTableViewController, we're already one level deep
         if let navController = navigationController, navController.viewControllers.count > 1 {
             // Use Task to avoid "Publishing changes from within view updates" warning
             Task { @MainActor in
-                coordinator?.isDetailViewShowing = false // Reset to show tab bar at thread list level
+                coordinator?.isTabBarHidden = false // Reset to show tab bar at thread list level
             }
         }
         
@@ -439,32 +437,6 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
             } catch {
                 present(UIAlertController(networkError: error), animated: true)
             }
-        }
-    }
-}
-
-// MARK: - UINavigationControllerDelegate
-
-extension ThreadsTableViewController: UINavigationControllerDelegate {
-    func navigationController(
-        _ navigationController: UINavigationController,
-        willShow viewController: UIViewController,
-        animated: Bool
-    ) {
-        if viewController === self {
-            if let selectedIndexPath = tableView.indexPathForSelectedRow {
-                tableView.deselectRow(at: selectedIndexPath, animated: animated)
-            }
-        }
-    }
-    
-    func navigationController(
-        _ navigationController: UINavigationController,
-        didShow viewController: UIViewController,
-        animated: Bool
-    ) {
-        if viewController === self {
-            prepareUserActivity()
         }
     }
 }
