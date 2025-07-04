@@ -15,9 +15,15 @@ class PostsViewModel: ObservableObject {
     func setViewController(_ vc: PostsPageViewController) {
         self.postsViewController = vc
         
+        // Immediately sync the current state from the view controller
+        print("🔵 PostsViewModel.setViewController - initial sync: page=\(String(describing: vc.page)), numberOfPages=\(vc.numberOfPages)")
+        self.currentPage = vc.page
+        self.numberOfPages = vc.numberOfPages
+        
         vc.pageInfoPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] pageInfo in
+                print("🔵 PostsViewModel received page update - page: \(String(describing: pageInfo.page)), numberOfPages: \(pageInfo.numberOfPages)")
                 self?.currentPage = pageInfo.page
                 self?.numberOfPages = pageInfo.numberOfPages
             }

@@ -73,7 +73,7 @@ struct PostsPagePicker: View {
             
             // Picker
             Picker("Page", selection: $selectedPageIndex) {
-                ForEach(0..<numberOfPages, id: \.self) { index in
+                ForEach(0..<max(1, numberOfPages), id: \.self) { index in
                     Text("\(index + 1)")
                         .foregroundColor(textColor)
                         .tag(index)

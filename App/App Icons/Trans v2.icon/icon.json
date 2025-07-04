@@ -1,0 +1,84 @@
+{
+  "color-space-for-untagged-svg-colors" : "display-p3",
+  "fill" : {
+    "solid" : "srgb:0.60065,0.34655,0.93234,1.00000"
+  },
+  "groups" : [
+    {
+      "blend-mode" : "overlay",
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "trans.svg",
+          "name" : "trans"
+        }
+      ],
+      "position" : {
+        "scale" : 1.04,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 1
+      }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "trans.svg",
+          "name" : "trans"
+        }
+      ],
+      "position" : {
+        "scale" : 1.04,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.25
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.15
+      }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "trans back.svg",
+          "name" : "trans back"
+        }
+      ],
+      "position" : {
+        "scale" : 1.04,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.93
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.8
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

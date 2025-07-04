@@ -3,4 +3,3 @@
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 #include "Config/Common-Release.xcconfig"
-#include "App/App Icons/App Icons.xcconfig"

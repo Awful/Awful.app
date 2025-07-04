@@ -21,6 +21,7 @@ protocol MainCoordinator: ObservableObject {
     func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?)
     func navigateToForum(_ forum: Forum)
     func navigateToPrivateMessage(_ message: PrivateMessage)
+    func presentComposeThread(for forum: Forum)
     func shouldHideTabBar(isInSidebar: Bool) -> Bool
 }
 
@@ -61,8 +62,14 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func navigateToThread(_ thread: AwfulThread) {
-        // Default to first unread page if available
-        let page: ThreadPage = thread.beenSeen ? .nextUnread : .first
+        // Use .nextUnread only if the thread has been seen AND has unread posts
+        // Otherwise always start at the first page for a better user experience
+        let page: ThreadPage
+        if thread.beenSeen && thread.anyUnreadPosts {
+            page = .nextUnread
+        } else {
+            page = .first
+        }
         navigateToThread(thread, page: page, author: nil)
     }
     
@@ -72,7 +79,10 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     
     func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?) {
         let destination = ThreadDestination(thread: thread, page: page, author: author)
+        print("🔵 MainCoordinator: navigateToThread called - thread: \(thread.title ?? "Unknown"), page: \(page)")
+        print("🔵 MainCoordinator: Current path count: \(path.count)")
         path.append(destination)
+        print("🔵 MainCoordinator: Path count after append: \(path.count)")
         isTabBarHidden = true
     }
 
@@ -90,6 +100,20 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     func navigateToComposeMessage() {
         path.append(ComposePrivateMessage())
         isTabBarHidden = true
+    }
+    
+    func presentComposeThread(for forum: Forum) {
+        // Present the thread compose controller modally
+        let composeVC = ThreadComposeViewController(forum: forum)
+        composeVC.delegate = self
+        composeVC.restorationIdentifier = "New thread composition"
+        
+        // Present modally like the UIKit version does
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first,
+           let rootVC = window.rootViewController {
+            rootVC.present(composeVC.enclosingNavigationController, animated: true)
+        }
     }
     
     func shouldHideTabBar(isInSidebar: Bool) -> Bool {
@@ -123,6 +147,14 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             if path.count > 0 {
                 path.removeLast() // pop from detail stack on iPad
             }
+        }
+        
+        // Handle thread composition completion
+        if let threadComposeVC = composeTextViewController as? ThreadComposeViewController,
+           let thread = threadComposeVC.thread,
+           success {
+            // Navigate to the newly created thread
+            navigateToThread(thread)
         }
     }
 }
@@ -392,15 +424,12 @@ struct ModernMainView: View {
 
 private struct CustomTabBarContainer: View {
     @Binding private var selectedTab: MainTab
-    @State private var isEditingBookmarksLocal = false // For iPhone editing state
-    @State private var isEditingMessagesLocal = false // For iPhone editing state
-    @State private var isEditingForumsLocal = false // For iPhone editing state
     @ObservedObject var coordinator: MainCoordinatorImpl
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     let isInSidebar: Bool
-    let isEditingBookmarks: Bool
-    let isEditingMessages: Bool
-    let isEditingForums: Bool
+    @Binding var isEditingBookmarks: Bool
+    @Binding var isEditingMessages: Bool
+    @Binding var isEditingForums: Bool
     let hasFavoriteForums: Bool
     
     // Get the current selected tab value
@@ -413,13 +442,13 @@ private struct CustomTabBarContainer: View {
         $selectedTab
     }
     
-    init(coordinator: MainCoordinatorImpl, isInSidebar: Bool, selectedTab: Binding<MainTab>, isEditingBookmarks: Bool, isEditingMessages: Bool, isEditingForums: Bool, hasFavoriteForums: Bool) {
+    init(coordinator: MainCoordinatorImpl, isInSidebar: Bool, selectedTab: Binding<MainTab>, isEditingBookmarks: Binding<Bool>, isEditingMessages: Binding<Bool>, isEditingForums: Binding<Bool>, hasFavoriteForums: Bool) {
         self.coordinator = coordinator
         self.isInSidebar = isInSidebar
         self._selectedTab = selectedTab
-        self.isEditingBookmarks = isEditingBookmarks
-        self.isEditingMessages = isEditingMessages
-        self.isEditingForums = isEditingForums
+        self._isEditingBookmarks = isEditingBookmarks
+        self._isEditingMessages = isEditingMessages
+        self._isEditingForums = isEditingForums
         self.hasFavoriteForums = hasFavoriteForums
     }
 
@@ -427,15 +456,8 @@ private struct CustomTabBarContainer: View {
         VStack(spacing: 0) {
             ZStack {
                 ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
-                    if isInSidebar {
-                        // iPad: Use shared navigation, no individual NavigationStack
-                        TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
-                            .opacity(selectedTabValue == tab ? 1 : 0)
-                    } else {
-                        // iPhone: Each tab has its own NavigationStack and toolbar
-                        TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingStateLocal(for: tab))
+                    TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
                         .opacity(selectedTabValue == tab ? 1 : 0)
-                    }
                 }
             }
 
@@ -463,49 +485,6 @@ private struct CustomTabBarContainer: View {
         }
     }
     
-    @ViewBuilder
-    private func leadingToolbarItemsLocal(for tab: MainTab, coordinator: any MainCoordinator) -> some View {
-        switch tab {
-        case .forums:
-            if canSendPrivateMessages {
-                Button("Search") {
-                    coordinator.presentSearch()
-                }
-            }
-        case .messages:
-            Button(isEditingMessagesLocal ? "Done" : "Edit") {
-                isEditingMessagesLocal.toggle()
-            }
-        default:
-            EmptyView()
-        }
-    }
-    
-    @ViewBuilder
-    private func trailingToolbarItemsLocal(for tab: MainTab, coordinator: any MainCoordinator) -> some View {
-        switch tab {
-        case .forums:
-            if hasFavoriteForums {
-                Button(isEditingForumsLocal ? "Done" : "Edit") {
-                    isEditingForumsLocal.toggle()
-                }
-            }
-        case .bookmarks:
-            Button(isEditingBookmarksLocal ? "Done" : "Edit") {
-                isEditingBookmarksLocal.toggle()
-            }
-        case .messages:
-            Button(action: {
-                coordinator.presentCompose(for: tab)
-            }) {
-                Image("compose")
-                    .renderingMode(.template)
-            }
-        default:
-            EmptyView()
-        }
-    }
-    
     private func getEditingState(for tab: MainTab) -> Bool {
         switch tab {
         case .forums:
@@ -514,19 +493,6 @@ private struct CustomTabBarContainer: View {
             return isEditingBookmarks
         case .messages:
             return isEditingMessages
-        default:
-            return false
-        }
-    }
-    
-    private func getEditingStateLocal(for tab: MainTab) -> Bool {
-        switch tab {
-        case .forums:
-            return isEditingForumsLocal
-        case .bookmarks:
-            return isEditingBookmarksLocal
-        case .messages:
-            return isEditingMessagesLocal
         default:
             return false
         }
@@ -640,12 +606,15 @@ private struct DetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationDestination(for: ThreadDestination.self) { destination in
-            PostsViewWrapper(
-                thread: destination.thread,
-                author: destination.author,
-                page: destination.page,
-                coordinator: coordinator
-            )
+            Group {
+                let _ = print("🔵 DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown")")
+                PostsViewWrapper(
+                    thread: destination.thread,
+                    author: destination.author,
+                    page: destination.page,
+                    coordinator: coordinator
+                )
+            }
         }
         .navigationDestination(for: Forum.self) { forum in
             ThreadsViewWrapper(forum: forum, coordinator: coordinator)
@@ -670,6 +639,12 @@ struct TabContentView: View {
     var body: some View {
         contentView
             .background(theme[color: "backgroundColor"]!)
+            .onAppear {
+                print("🔵 TabContentView: \(tab.rawValue) appeared with isEditing = \(isEditing)")
+            }
+            .onChange(of: isEditing) { newValue in
+                print("🔵 TabContentView: \(tab.rawValue) editing state changed to \(newValue)")
+            }
     }
     
     @ViewBuilder
@@ -705,6 +680,7 @@ struct ForumsViewRepresentable: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         guard let wrapper = uiViewController as? SwiftUICompatibleViewController else { return }
+        print("🔵 ForumsViewRepresentable: Setting editing state to \(isEditing)")
         wrapper.setEditing(isEditing, animated: true)
     }
 }
@@ -723,6 +699,7 @@ struct BookmarksViewRepresentable: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         guard let wrapper = uiViewController as? SwiftUICompatibleViewController else { return }
+        print("🔵 BookmarksViewRepresentable: Setting editing state to \(isEditing)")
         wrapper.setEditing(isEditing, animated: true)
     }
 }
@@ -731,6 +708,13 @@ struct ThreadDestination: Hashable {
     let thread: AwfulThread
     let page: ThreadPage
     let author: User?
+    
+    init(thread: AwfulThread, page: ThreadPage, author: User?) {
+        self.thread = thread
+        self.page = page
+        self.author = author
+        print("🔵 ThreadDestination: Created for thread: \(thread.title ?? "Unknown"), page: \(page)")
+    }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(thread)
@@ -759,6 +743,7 @@ struct MessagesViewRepresentable: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         guard let wrapper = uiViewController as? SwiftUICompatibleViewController else { return }
+        print("🔵 MessagesViewRepresentable: Setting editing state to \(isEditing)")
         wrapper.setEditing(isEditing, animated: true)
     }
 }
@@ -823,7 +808,7 @@ struct ThreadsViewWrapper: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // TODO: Implement compose new thread action
+                        coordinator.presentComposeThread(for: forum)
                     }) {
                         Image("compose")
                             .renderingMode(.template)
@@ -890,11 +875,11 @@ struct PostsViewWrapper: View {
                 }
             }
         }
-        .safeAreaInset(edge: .bottom) {
+        .overlay(alignment: .bottom) {
             PostsToolbarContainer(
                 thread: thread,
                 author: author,
-                page: viewModel.currentPage,
+                page: viewModel.currentPage ?? page, // Fall back to initial page if viewModel page is nil
                 numberOfPages: viewModel.numberOfPages,
                 isLoadingViewVisible: false, // This needs to be updated if we re-add the loading view
                 onSettingsTapped: { viewModel.triggerSettings() },
@@ -911,6 +896,7 @@ struct PostsViewWrapper: View {
                 onVoteTapped: { viewModel.triggerVote() },
                 onYourPostsTapped: { viewModel.triggerYourPosts() }
             )
+            .ignoresSafeArea(.container, edges: .bottom)
         }
     }
 }
@@ -925,10 +911,17 @@ struct PostsViewControllerRepresentable: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> PostsPageViewController {
         let vc = PostsPageViewController(thread: thread, author: author)
         vc.coordinator = coordinator
-        let pageToLoad = page
-        vc.loadPage(pageToLoad, updatingCache: true, updatingLastReadPost: true)
         vc.useSwiftUIToolbar = true
+        
+        print("🔵 PostsViewControllerRepresentable: Creating with page: \(page)")
+        
+        // Set up the view model connection before loading the page
+        // This ensures the initial page state is properly captured
         viewModel.setViewController(vc)
+        
+        // Load the page after the view model is connected
+        vc.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+        
         return vc
     }
     
@@ -1110,8 +1103,10 @@ private class SwiftUICompatibleViewController: UIViewController {
     
     // Forward editing methods for table view controllers
     override func setEditing(_ editing: Bool, animated: Bool) {
+        print("🔵 SwiftUICompatibleViewController: setEditing(\(editing)) called, forwarding to \(type(of: wrappedViewController))")
         super.setEditing(editing, animated: animated)
         wrappedViewController.setEditing(editing, animated: animated)
+        print("🔵 SwiftUICompatibleViewController: Wrapped controller isEditing = \(wrappedViewController.isEditing)")
     }
     
     deinit {
@@ -1271,6 +1266,10 @@ struct iPhoneMainView: View {
     @Binding var selectedTab: MainTab
     let hasFavoriteForums: Bool
     @SwiftUI.Environment(\.theme) private var theme
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @State private var isEditingBookmarks = false
+    @State private var isEditingMessages = false
+    @State private var isEditingForums = false
 
     // Computed property for navigation tint color based on theme
     private var navigationTintColor: Color {
@@ -1283,13 +1282,21 @@ struct iPhoneMainView: View {
                 coordinator: coordinator,
                 isInSidebar: false,
                 selectedTab: $selectedTab,
-                isEditingBookmarks: false,
-                isEditingMessages: false,
-                isEditingForums: false,
+                isEditingBookmarks: $isEditingBookmarks,
+                isEditingMessages: $isEditingMessages,
+                isEditingForums: $isEditingForums,
                 hasFavoriteForums: hasFavoriteForums
             )
             .navigationTitle(selectedTab.title)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    leadingToolbarItems
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    trailingToolbarItems
+                }
+            }
             .navigationDestination(for: ThreadDestination.self) { destination in
                 PostsViewWrapper(
                     thread: destination.thread,
@@ -1301,51 +1308,51 @@ struct iPhoneMainView: View {
         }
         .tint(navigationTintColor)
     }
-}
-
-struct PostsPageViewControllerRepresentable: UIViewControllerRepresentable {
-    let thread: AwfulThread
-    let author: User?
-    let page: ThreadPage
-    let coordinator: any MainCoordinator
-    let onViewControllerCreated: ((PostsPageViewController) -> Void)?
     
-    func makeUIViewController(context: Context) -> PostsPageViewController {
-        let vc = PostsPageViewController(thread: thread, author: author)
-        vc.coordinator = coordinator
-        vc.loadPage(page, updatingCache: true, updatingLastReadPost: true)
-        vc.useSwiftUIToolbar = true
-        onViewControllerCreated?(vc)
-        return vc
-    }
-    
-    func updateUIViewController(_ uiViewController: PostsPageViewController, context: Context) {
-        uiViewController.coordinator = coordinator
-    }
-}
-
-// MARK: - Missing View Implementations
-
-struct PrivateMessageViewWrapper: View {
-    let message: PrivateMessage
-    let coordinator: any MainCoordinator
-    @SwiftUI.Environment(\.theme) private var theme
-    
-    var body: some View {
-        MessageViewRepresentable(message: message, coordinator: coordinator)
-            .navigationTitle(message.subject ?? "Private Message")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        // TODO: Implement reply action
-                    }) {
-                        Image("compose")
-                            .renderingMode(.template)
-                            .font(.body.weight(.semibold))
-                    }
+    @ViewBuilder
+    private var leadingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if canSendPrivateMessages {
+                Button("Search") {
+                    coordinator.presentSearch()
                 }
             }
+        case .messages:
+            Button(isEditingMessages ? "Done" : "Edit") {
+                print("🔵 iPhone: Messages edit button pressed, toggling from \(isEditingMessages) to \(!isEditingMessages)")
+                isEditingMessages.toggle()
+            }
+        default:
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder
+    private var trailingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if hasFavoriteForums {
+                Button(isEditingForums ? "Done" : "Edit") {
+                    print("🔵 iPhone: Forums edit button pressed, toggling from \(isEditingForums) to \(!isEditingForums)")
+                    isEditingForums.toggle()
+                }
+            }
+        case .bookmarks:
+            Button(isEditingBookmarks ? "Done" : "Edit") {
+                print("🔵 iPhone: Bookmarks edit button pressed, toggling from \(isEditingBookmarks) to \(!isEditingBookmarks)")
+                isEditingBookmarks.toggle()
+            }
+        case .messages:
+            Button(action: {
+                coordinator.presentCompose(for: selectedTab)
+            }) {
+                Image("compose")
+                    .renderingMode(.template)
+            }
+        default:
+            EmptyView()
+        }
     }
 }
 
@@ -1365,9 +1372,9 @@ struct Sidebar: View {
                 coordinator: coordinator,
                 isInSidebar: true,
                 selectedTab: $selectedTab,
-                isEditingBookmarks: isEditingBookmarks,
-                isEditingMessages: isEditingMessages,
-                isEditingForums: isEditingForums,
+                isEditingBookmarks: $isEditingBookmarks,
+                isEditingMessages: $isEditingMessages,
+                isEditingForums: $isEditingForums,
                 hasFavoriteForums: hasFavoriteForums
             )
             .navigationDestination(for: Forum.self) { forum in
@@ -1405,6 +1412,7 @@ struct Sidebar: View {
             }
         case .messages:
             Button(isEditingMessages ? "Done" : "Edit") {
+                print("🔵 iPad: Messages edit button pressed, toggling from \(isEditingMessages) to \(!isEditingMessages)")
                 isEditingMessages.toggle()
             }
         default:
@@ -1418,11 +1426,13 @@ struct Sidebar: View {
         case .forums:
             if hasFavoriteForums {
                 Button(isEditingForums ? "Done" : "Edit") {
+                    print("🔵 iPad: Forums edit button pressed, toggling from \(isEditingForums) to \(!isEditingForums)")
                     isEditingForums.toggle()
                 }
             }
         case .bookmarks:
             Button(isEditingBookmarks ? "Done" : "Edit") {
+                print("🔵 iPad: Bookmarks edit button pressed, toggling from \(isEditingBookmarks) to \(!isEditingBookmarks)")
                 isEditingBookmarks.toggle()
             }
         case .messages:
@@ -1457,5 +1467,30 @@ struct Sidebar: View {
         
         // Set initial state
         hasFavoriteForums = favoriteForumCountObserver.count > 0
+    }
+}
+
+// MARK: - Missing View Implementations
+
+struct PrivateMessageViewWrapper: View {
+    let message: PrivateMessage
+    let coordinator: any MainCoordinator
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    var body: some View {
+        MessageViewRepresentable(message: message, coordinator: coordinator)
+            .navigationTitle(message.subject ?? "Private Message")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // TODO: Implement reply action
+                    }) {
+                        Image("compose")
+                            .renderingMode(.template)
+                            .font(.body.weight(.semibold))
+                    }
+                }
+            }
     }
 }

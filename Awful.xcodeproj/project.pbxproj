@@ -12,7 +12,6 @@
 		1AB84FDB2ADC611B00E7334D /* pumpkin.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1AB84FD82ADC611B00E7334D /* pumpkin.svg */; };
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
-		1C04DEBE2B92FB8A0067957F /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */; };
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */; };
@@ -205,6 +204,19 @@
 		2D91DB902E13EBE000771E25 /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
+		2DB2C6A32E17C2ED00DF7B03 /* Frog v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69C2E17C2ED00DF7B03 /* Frog v2.icon */; };
+		2DB2C6A42E17C2ED00DF7B03 /* Ghost v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69D2E17C2ED00DF7B03 /* Ghost v2.icon */; };
+		2DB2C6A52E17C2ED00DF7B03 /* Doggo Tongue.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69A2E17C2ED00DF7B03 /* Doggo Tongue.icon */; };
+		2DB2C6A62E17C2ED00DF7B03 /* 5.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6962E17C2ED00DF7B03 /* 5.icon */; };
+		2DB2C6A72E17C2ED00DF7B03 /* Smith.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A02E17C2ED00DF7B03 /* Smith.icon */; };
+		2DB2C6A82E17C2ED00DF7B03 /* Trans v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A12E17C2ED00DF7B03 /* Trans v2.icon */; };
+		2DB2C6A92E17C2ED00DF7B03 /* Doggo.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6992E17C2ED00DF7B03 /* Doggo.icon */; };
+		2DB2C6AA2E17C2ED00DF7B03 /* V v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A22E17C2ED00DF7B03 /* V v2.icon */; };
+		2DB2C6AB2E17C2ED00DF7B03 /* Frog Purple v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69B2E17C2ED00DF7B03 /* Frog Purple v2.icon */; };
+		2DB2C6AC2E17C2ED00DF7B03 /* Riker.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69F2E17C2ED00DF7B03 /* Riker.icon */; };
+		2DB2C6AD2E17C2ED00DF7B03 /* Creep.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6982E17C2ED00DF7B03 /* Creep.icon */; };
+		2DB2C6AE2E17C2ED00DF7B03 /* Pride v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69E2E17C2ED00DF7B03 /* Pride v2.icon */; };
+		2DB2C6AF2E17C2ED00DF7B03 /* Bars v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6972E17C2ED00DF7B03 /* Bars v2.icon */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DE976A92E0FF1D000233423 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A82E0FF1D000233423 /* RootView.swift */; };
 		2DE976AA2E0FF1D000233423 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A72E0FF1D000233423 /* MainView.swift */; };
@@ -293,7 +305,6 @@
 		1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelperTests.swift; sourceTree = "<group>"; };
 		1C0060A42170347300E5329A /* HTMLReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLReader.swift; sourceTree = "<group>"; };
 		1C0396372AE1059F00ABF9FA /* PullToRefresh */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PullToRefresh; sourceTree = "<group>"; };
-		1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
 		1C04DEBF2B9396DA0067957F /* LessStylesheet */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LessStylesheet; sourceTree = "<group>"; };
 		1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionViewLayout.swift; sourceTree = "<group>"; };
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
@@ -456,7 +467,6 @@
 		1CBBAAB91D949EE200A847EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CBE1B0819CA050300510187 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulSplitViewController.swift; sourceTree = "<group>"; };
-		1CC065F02D66EC14002BB6A0 /* App Icons.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "App Icons.xcconfig"; sourceTree = "<group>"; };
 		1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Awful-Debug.xcconfig"; sourceTree = "<group>"; };
 		1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Awful-Release.xcconfig"; sourceTree = "<group>"; };
 		1CC065F62D67028F002BB6A0 /* AppIconImageNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconImageNames.swift; sourceTree = "<group>"; };
@@ -522,6 +532,19 @@
 		2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
+		2DB2C6962E17C2ED00DF7B03 /* 5.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = 5.icon; sourceTree = "<group>"; };
+		2DB2C6972E17C2ED00DF7B03 /* Bars v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Bars v2.icon"; sourceTree = "<group>"; };
+		2DB2C6982E17C2ED00DF7B03 /* Creep.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Creep.icon; sourceTree = "<group>"; };
+		2DB2C6992E17C2ED00DF7B03 /* Doggo.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Doggo.icon; sourceTree = "<group>"; };
+		2DB2C69A2E17C2ED00DF7B03 /* Doggo Tongue.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Doggo Tongue.icon"; sourceTree = "<group>"; };
+		2DB2C69B2E17C2ED00DF7B03 /* Frog Purple v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Frog Purple v2.icon"; sourceTree = "<group>"; };
+		2DB2C69C2E17C2ED00DF7B03 /* Frog v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Frog v2.icon"; sourceTree = "<group>"; };
+		2DB2C69D2E17C2ED00DF7B03 /* Ghost v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Ghost v2.icon"; sourceTree = "<group>"; };
+		2DB2C69E2E17C2ED00DF7B03 /* Pride v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Pride v2.icon"; sourceTree = "<group>"; };
+		2DB2C69F2E17C2ED00DF7B03 /* Riker.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Riker.icon; sourceTree = "<group>"; };
+		2DB2C6A02E17C2ED00DF7B03 /* Smith.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Smith.icon; sourceTree = "<group>"; };
+		2DB2C6A12E17C2ED00DF7B03 /* Trans v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Trans v2.icon"; sourceTree = "<group>"; };
+		2DB2C6A22E17C2ED00DF7B03 /* V v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "V v2.icon"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		2DE976A72E0FF1D000233423 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		2DE976A82E0FF1D000233423 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -1012,8 +1035,19 @@
 		1CC065F52D6700BA002BB6A0 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
-				1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */,
-				1CC065F02D66EC14002BB6A0 /* App Icons.xcconfig */,
+				2DB2C6962E17C2ED00DF7B03 /* 5.icon */,
+				2DB2C6972E17C2ED00DF7B03 /* Bars v2.icon */,
+				2DB2C6982E17C2ED00DF7B03 /* Creep.icon */,
+				2DB2C6992E17C2ED00DF7B03 /* Doggo.icon */,
+				2DB2C69A2E17C2ED00DF7B03 /* Doggo Tongue.icon */,
+				2DB2C69B2E17C2ED00DF7B03 /* Frog Purple v2.icon */,
+				2DB2C69C2E17C2ED00DF7B03 /* Frog v2.icon */,
+				2DB2C69D2E17C2ED00DF7B03 /* Ghost v2.icon */,
+				2DB2C69E2E17C2ED00DF7B03 /* Pride v2.icon */,
+				2DB2C69F2E17C2ED00DF7B03 /* Riker.icon */,
+				2DB2C6A02E17C2ED00DF7B03 /* Smith.icon */,
+				2DB2C6A12E17C2ED00DF7B03 /* Trans v2.icon */,
+				2DB2C6A22E17C2ED00DF7B03 /* V v2.icon */,
 				1CC065F62D67028F002BB6A0 /* AppIconImageNames.swift */,
 			);
 			path = "App Icons";
@@ -1413,12 +1447,24 @@
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
+				2DB2C6A32E17C2ED00DF7B03 /* Frog v2.icon in Resources */,
+				2DB2C6A42E17C2ED00DF7B03 /* Ghost v2.icon in Resources */,
+				2DB2C6A52E17C2ED00DF7B03 /* Doggo Tongue.icon in Resources */,
+				2DB2C6A62E17C2ED00DF7B03 /* 5.icon in Resources */,
+				2DB2C6A72E17C2ED00DF7B03 /* Smith.icon in Resources */,
+				2DB2C6A82E17C2ED00DF7B03 /* Trans v2.icon in Resources */,
+				2DB2C6A92E17C2ED00DF7B03 /* Doggo.icon in Resources */,
+				2DB2C6AA2E17C2ED00DF7B03 /* V v2.icon in Resources */,
+				2DB2C6AB2E17C2ED00DF7B03 /* Frog Purple v2.icon in Resources */,
+				2DB2C6AC2E17C2ED00DF7B03 /* Riker.icon in Resources */,
+				2DB2C6AD2E17C2ED00DF7B03 /* Creep.icon in Resources */,
+				2DB2C6AE2E17C2ED00DF7B03 /* Pride v2.icon in Resources */,
+				2DB2C6AF2E17C2ED00DF7B03 /* Bars v2.icon in Resources */,
 				1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */,
 				1C29BD532251208200E1217A /* quote-post.png in Resources */,
 				2D19BA3B29C33303009DD94F /* toot60.json in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
 				1C8F67FA2221AFB1007E61ED /* Announcement.html.stencil in Resources */,
-				1C04DEBE2B92FB8A0067957F /* App Icons.xcassets in Resources */,
 				8C299D7216877AE9001B9D96 /* winpos95-heading-left.png in Resources */,
 				8C299D7316877AE9001B9D96 /* winpos95-heading-right.png in Resources */,
 				8C299D7416877AE9001B9D96 /* winpos95-heading.png in Resources */,
@@ -1733,6 +1779,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = 5;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
 				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -1751,6 +1799,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = 5;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
 				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;

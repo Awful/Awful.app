@@ -424,6 +424,8 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
         _ dataSource: ThreadListDataSource,
         didSelectThread thread: AwfulThread
     ) {
+        print("🔵 ThreadListDataSource: didSelectThread called - thread: \(thread.title ?? "Unknown")")
+        print("🔵 ThreadListDataSource: coordinator is \(coordinator != nil ? "available" : "nil")")
         coordinator?.navigateToThread(thread)
     }
 
@@ -453,6 +455,8 @@ extension ThreadsTableViewController {
         }
         
         let thread = dataSource!.thread(at: indexPath)
+        print("🔵 TableView: didSelectRowAt called - thread: \(thread.title ?? "Unknown")")
+        print("🔵 TableView: coordinator is \(coordinator != nil ? "available" : "nil")")
         coordinator?.navigateToThread(thread)
         
         tableView.deselectRow(at: indexPath, animated: true)

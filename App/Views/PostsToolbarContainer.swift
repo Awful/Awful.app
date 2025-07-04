@@ -38,8 +38,13 @@ struct PostsToolbarContainer: View {
     }
     
     private var currentPageText: String {
-        if case .specific(let pageNumber) = page, numberOfPages > 0 {
-            return "\(pageNumber) / \(numberOfPages)"
+        if case .specific(let pageNumber) = page {
+            if numberOfPages > 0 {
+                return "\(pageNumber) / \(numberOfPages)"
+            } else {
+                // Show just the page number while loading page count
+                return "\(pageNumber)"
+            }
         } else {
             return ""
         }
@@ -97,8 +102,11 @@ struct PostsToolbarContainer: View {
             
             // Current page picker
             Button(action: {
-                // Only block if we have no page information yet
-                guard numberOfPages > 0 else { return }
+                // Only allow page picker for specific pages where we know the page number
+                guard case .specific = page else { 
+                    print("🔴 Page picker blocked: not on a specific page - page=\(String(describing: page))")
+                    return 
+                }
                 if enableHaptics {
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 }
@@ -108,8 +116,17 @@ struct PostsToolbarContainer: View {
                     .font(.body.weight(.medium))
                     .foregroundColor(toolbarTextColor)
                     .frame(minWidth: 60)
+                    .onAppear {
+                        print("🔵 Toolbar page button - page: \(String(describing: page)), numberOfPages: \(numberOfPages), currentPageText: '\(currentPageText)'")
+                    }
+                    .onChange(of: page) { newPage in
+                        print("🔵 Toolbar page changed to: \(String(describing: newPage)), currentPageText: '\(currentPageText)'")
+                    }
+                    .onChange(of: numberOfPages) { newCount in
+                        print("🔵 Toolbar numberOfPages changed to: \(newCount), currentPageText: '\(currentPageText)'")
+                    }
             }
-            .disabled(numberOfPages <= 0)
+            .disabled(page == nil) // Only disable if we have no page state at all
             .accessibilityLabel(currentPageAccessibilityLabel)
             .accessibilityHint("Opens page picker")
             .popover(isPresented: $showingPagePicker) {
@@ -205,12 +222,7 @@ struct PostsToolbarContainer: View {
         .padding(.vertical, 8)
         .frame(minHeight: 44) // Ensure minimum toolbar height
         .background(toolbarBackgroundColor)
-        .overlay(
-            Rectangle()
-                .fill(topBorderColor)
-                .frame(height: 1.0 / UIScreen.main.scale),
-            alignment: .top
-        )
+
         .onReceive(NotificationCenter.default.publisher(for: .threadBookmarkDidChange)) { notification in
             // Force view refresh when bookmark state changes
             if let notificationThread = notification.object as? AwfulThread,
@@ -264,16 +276,16 @@ extension PostsToolbarContainer {
             },
             onBackTapped: {
                 guard case .specific(let pageNumber) = viewController.page, pageNumber > 1 else { return }
-                viewController.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
+                viewController.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: false)
             },
             onForwardTapped: {
                 guard case .specific(let pageNumber) = viewController.page, 
                       pageNumber < viewController.numberOfPages, 
                       pageNumber > 0 else { return }
-                viewController.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
+                viewController.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: false)
             },
             onPageSelected: { page in
-                viewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+                viewController.loadPage(page, updatingCache: true, updatingLastReadPost: false)
             },
             onGoToLastPost: {
                 viewController.goToLastPost()

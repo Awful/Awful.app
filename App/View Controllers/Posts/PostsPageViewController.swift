@@ -130,6 +130,7 @@ final class PostsPageViewController: ViewController {
 
     public lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
+        // Set up pull-to-refresh only for the last page
         postsView.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
         }
@@ -164,6 +165,8 @@ final class PostsPageViewController: ViewController {
         postsView.didScroll = { [weak self] scrollView in
             // This is now handled by PostsViewWrapper
         }
+        
+        // Refresh control will be set up based on current page in updateUserInterface
         
         return postsView
     }()
@@ -272,6 +275,8 @@ final class PostsPageViewController: ViewController {
         jumpToPostIDAfterLoading = nil
         scrollToFractionAfterLoading = nil
 
+        // Immediately notify about page change
+        pageInfoPublisher.send((page: page, numberOfPages: numberOfPages))
         updateUserInterface()
 
         if !updatingCache {
@@ -303,11 +308,8 @@ final class PostsPageViewController: ViewController {
             NotificationCenter.default.post(name: .threadBookmarkDidChange, object: self.thread)
         }
         
-        if case .specific(let pageNumber) = newPage, pageNumber > 1, pageNumber == numberOfPages {
-            firstUnreadPost = nil // So we jump to whatever the server tells us.
-        } else {
-            firstUnreadPost = 0 // Don't jump anywhere.
-        }
+        // Reset firstUnreadPost to let the server response determine it
+        firstUnreadPost = nil
 
         logger.info("🔵 Starting network operation to fetch posts")
         networkOperation = Task {
@@ -336,12 +338,6 @@ final class PostsPageViewController: ViewController {
                 await MainActor.run {
                     self.advertisementHTML = adHTML
 
-                    // Update the page to reflect the actual page loaded
-                    if let firstPost = newPosts.first {
-                        let actualPage = firstPost.page
-                        self.page = .specific(actualPage)
-                    }
-
                     let context = self.thread.managedObjectContext!
 
                     // The new posts might have updated info for the logged-in user.
@@ -362,6 +358,18 @@ final class PostsPageViewController: ViewController {
                     // Update thread page count if needed
                     if pageCount != Int(self.thread.numberOfPages) {
                         self.thread.numberOfPages = Int32(pageCount)
+                    }
+                    
+                    // Update page state if we loaded nextUnread or last page
+                    // Determine the actual page from the first post's page number
+                    if let firstPost = newPosts.first, self.page == .nextUnread || self.page == .last {
+                        let actualPage = firstPost.page
+                        if actualPage > 0 {
+                            logger.info("🔵 Updating page from \(String(describing: self.page)) to .specific(\(actualPage))")
+                            self.page = .specific(actualPage)
+                            // Send updated page info to the publisher
+                            self.pageInfoPublisher.send((page: self.page, numberOfPages: pageCount))
+                        }
                     }
 
                     do {
@@ -399,11 +407,13 @@ final class PostsPageViewController: ViewController {
     }
 
     private func loadNextPageOrRefresh() {
-        if let page = page, case .specific(let pageNumber) = page, pageNumber < numberOfPages {
-            loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: false)
-        } else {
-            loadPage(.specific(1), updatingCache: true, updatingLastReadPost: false)
+        // Only allow refresh on the last page
+        guard let page = page, page.isLastPage(totalPages: numberOfPages) else {
+            return
         }
+        
+        // On the last page, just reload the current page to get new posts
+        loadPage(page, updatingCache: true, updatingLastReadPost: false)
     }
     
     // MARK: - View lifecycle
@@ -437,8 +447,12 @@ final class PostsPageViewController: ViewController {
         
         updateHandoffUserActivity()
         
-        Task {
-            loadPage(page ?? .first, updatingCache: true, updatingLastReadPost: false)
+        // Only load the page if we're not using SwiftUI toolbar
+        // When using SwiftUI toolbar, the page is already loaded by PostsViewControllerRepresentable
+        if !useSwiftUIToolbar {
+            Task {
+                loadPage(page ?? .first, updatingCache: true, updatingLastReadPost: true)
+            }
         }
     }
     
@@ -651,6 +665,11 @@ final class PostsPageViewController: ViewController {
         var contextDict = context.makeDictionary()
         contextDict["threadID"] = self.thread.threadID
         contextDict["forumID"] = self.thread.forum?.forumID ?? ""
+        
+        // Only show end message on the last page and when not filtering by author
+        let isLastPage = page?.isLastPage(totalPages: numberOfPages) ?? false
+        contextDict["endMessage"] = isLastPage && author == nil
+        
         logger.info("🔵 Template context prepared with \(contextDict.keys.count) keys")
         let html: String
         do {
@@ -683,7 +702,7 @@ final class PostsPageViewController: ViewController {
         logger.info("🔵 goToPreviousPage called")
         if let page = page, case .specific(let pageNumber) = page, pageNumber > 1 {
             logger.info("🔵 Going to page \(pageNumber - 1)")
-            loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: false)
+            loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
         } else {
             logger.info("🔴 Cannot go to previous page - already on first page or invalid page state")
         }
@@ -693,7 +712,7 @@ final class PostsPageViewController: ViewController {
         logger.info("🔵 goToNextPage called")
         if let page = page, case .specific(let pageNumber) = page, pageNumber < numberOfPages {
             logger.info("🔵 Going to page \(pageNumber + 1)")
-            loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: false)
+            loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
         } else {
             logger.info("🔴 Cannot go to next page - already on last page or invalid page state")
         }
@@ -996,7 +1015,7 @@ final class PostsPageViewController: ViewController {
 
     /// Go to a specific page (missing method)
     func goToPage(_ newPage: ThreadPage) {
-        loadPage(newPage, updatingCache: true, updatingLastReadPost: false)
+        loadPage(newPage, updatingCache: true, updatingLastReadPost: true)
     }
     
     /// Show settings (missing method)
@@ -1308,7 +1327,17 @@ extension PostsPageViewController {
         updateSwiftUITopBar()
         pageInfoPublisher.send((page: page, numberOfPages: numberOfPages))
       
-        postsView.refreshControl?.isHidden = self.author != nil
+        // Only show refresh control on the last page and when not filtering by author
+        let isLastPage = page?.isLastPage(totalPages: numberOfPages) ?? false
+        let shouldShowRefresh = isLastPage && author == nil
+        
+        if shouldShowRefresh && postsView.refreshControl == nil {
+            // Create and configure refresh control with frog animation
+            let refreshControl = GetOutFrogRefreshSpinnerView(theme: theme)
+            postsView.refreshControl = refreshControl
+        } else if !shouldShowRefresh {
+            postsView.refreshControl = nil
+        }
 
         // Determine if we should show the loading view
         let shouldShowLoading = posts.isEmpty && networkOperation != nil
@@ -1351,7 +1380,15 @@ extension PostsPageViewController {
             }
             
             do {
-                let html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context.makeDictionary())
+                var contextDict = context.makeDictionary()
+                contextDict["threadID"] = self.thread.threadID
+                contextDict["forumID"] = self.thread.forum?.forumID ?? ""
+                
+                // Only show end message on the last page and when not filtering by author
+                let isLastPage = page?.isLastPage(totalPages: numberOfPages) ?? false
+                contextDict["endMessage"] = isLastPage && author == nil
+                
+                let html = try StencilEnvironment.shared.renderTemplate(.postsView, context: contextDict)
                 postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
             } catch {
                 logger.error("Failed to render posts: \(error)")
@@ -1495,7 +1532,7 @@ private struct RenderContext {
 
     func makeDictionary() -> [String: Any] {
         var context: [String: Any] = [
-            "advertisementHTML": advertisementHTML as Any,
+            "advertisementHTML": "", // Don't show ads in posts view
             "externalStylesheet": "", // No external stylesheet needed
             "firstUnreadPost": firstUnreadPost as Any,
             "fontScale": fontScale,
@@ -1511,7 +1548,7 @@ private struct RenderContext {
             "forumID": "", // Will be filled in by the caller
             "tweetTheme": theme[string: "mode"] ?? "light",
             "enableFrogAndGhost": enableFrogAndGhost,
-            "endMessage": posts.count > 0, // Show end message if we have posts
+            "endMessage": false, // Only show end message on last page - will be set by caller
             "username": username as Any,
             "enableCustomTitlePostLayout": enableCustomTitlePostLayout
         ]
@@ -1758,7 +1795,21 @@ private extension ThreadPage {
     var pageNumber: Int? {
         switch self {
         case .specific(let n): return n
-        default: return nil
+        case .last: return nil // Will be handled separately
+        case .nextUnread: return nil // Will be handled separately
+       
+        }
+    }
+    
+    func isLastPage(totalPages: Int) -> Bool {
+        switch self {
+        case .last:
+            return true
+        case .specific(let n):
+            return n == totalPages
+        case .nextUnread:
+            return false
+  
         }
     }
 
