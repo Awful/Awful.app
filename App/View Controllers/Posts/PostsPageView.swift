@@ -44,6 +44,7 @@ final class PostsPageView: UIView {
     // MARK: Refresh control
 
     var didStartRefreshing: (() -> Void)?
+    var didStartBottomPull: (() -> Void)?
     var didScroll: ((UIScrollView) -> Void)?
 
     var refreshControl: (UIView & PostsPageRefreshControlContent)? {
@@ -60,7 +61,14 @@ final class PostsPageView: UIView {
                 
                 let containerMargins = refreshControlContainer.layoutMarginsGuide
                 
-                if frogAndGhostEnabled == false {
+                // Center the niggly refresh view
+                if refreshControl is NigglyRefreshLottieView {
+                    NSLayoutConstraint.activate([
+                        refreshControl.centerXAnchor.constraint(equalTo: refreshControlContainer.centerXAnchor),
+                        refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
+                        containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
+                    ])
+                } else if frogAndGhostEnabled == false {
                     NSLayoutConstraint.activate([
                         refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
                         containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
@@ -76,16 +84,10 @@ final class PostsPageView: UIView {
                             containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
                         ])
                     }
-                    // spinner view is visible above the toolbar, before any scroll triggers occur
-                    if refreshControl is GetOutFrogRefreshSpinnerView {
-                        NSLayoutConstraint.activate([
-                            refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
-                            containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
-                            containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
-                        ])
-                    }
+                    // Note: Frog refresh control is now handled by SwiftUI
                 }
    
+                // Initialize refresh control state
                 refreshControl.state = refreshControlState
             }
 
@@ -105,6 +107,62 @@ final class PostsPageView: UIView {
         refreshControlContainer.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         return refreshControlContainer
     }()
+    
+    // Bottom pull control for "pull for next page"
+    private let bottomPullContainer: RefreshControlContainer = {
+        let container = RefreshControlContainer()
+        container.insetsLayoutMarginsFromSafeArea = false
+        container.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        return container
+    }()
+    
+    var bottomPullControl: (UIView & PostsPageRefreshControlContent)? {
+        didSet {
+            oldValue?.removeFromSuperview()
+            
+            if let bottomPullControl = bottomPullControl {
+                if bottomPullContainer.frame.height == 0 {
+                    bottomPullContainer.frame.size.height = 44
+                }
+                
+                bottomPullControl.translatesAutoresizingMaskIntoConstraints = false
+                bottomPullContainer.addSubview(bottomPullControl)
+                
+                let containerMargins = bottomPullContainer.layoutMarginsGuide
+                NSLayoutConstraint.activate([
+                    bottomPullControl.centerXAnchor.constraint(equalTo: bottomPullContainer.centerXAnchor),
+                    bottomPullControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
+                    containerMargins.bottomAnchor.constraint(equalTo: bottomPullControl.bottomAnchor)
+                ])
+                
+                bottomPullControl.state = bottomPullState
+            }
+            
+            if bottomPullControl == nil {
+                bottomPullState = .disabled
+            } else {
+                if bottomPullState == .disabled {
+                    bottomPullState = .ready
+                }
+            }
+        }
+    }
+    
+    private var bottomPullState: RefreshControlState = .ready {
+        didSet {
+            bottomPullControl?.state = bottomPullState
+            
+            switch bottomPullState {
+            case .refreshing:
+                setNeedsLayout()
+                layoutIfNeeded()
+                didStartBottomPull?()
+                
+            default:
+                break
+            }
+        }
+    }
 
     private var refreshControlState: RefreshControlState = .ready {
         willSet {
@@ -199,7 +257,7 @@ final class PostsPageView: UIView {
 
     private let _topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
-    private var topBarState: TopBarState {
+    var topBarState: TopBarState {
         didSet {
             let oldDescription = "\(oldValue)"
             let newDescription = "\(topBarState)"
@@ -253,6 +311,7 @@ final class PostsPageView: UIView {
         addSubview(_topBarContainer)
         addSubview(loadingViewContainer)
         renderView.scrollView.addSubview(refreshControlContainer)
+        renderView.scrollView.addSubview(bottomPullContainer)
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
         scrollViewDelegateMux?.addDelegate(self)
@@ -268,7 +327,15 @@ final class PostsPageView: UIView {
         
         let targetSize = CGSize(width: bounds.width, height: UIView.layoutFittingCompressedSize.height)
         refreshControlContainer.frame.size = refreshControlContainer.systemLayoutSizeFitting(targetSize)
+        refreshControlContainer.frame.size.width = bounds.width
         refreshControlContainer.frame.origin.y = -refreshControlContainer.frame.height
+        refreshControlContainer.frame.origin.x = 0
+        
+        // Layout bottom pull container
+        bottomPullContainer.frame.size = bottomPullContainer.systemLayoutSizeFitting(targetSize)
+        bottomPullContainer.frame.size.width = bounds.width
+        bottomPullContainer.frame.origin.x = 0
+        bottomPullContainer.frame.origin.y = max(renderView.scrollView.contentSize.height, renderView.scrollView.bounds.height)
 
         // On older iOS, the scroll view's contentInset seems to get reset to zero after a rotation. This seems to be the earliest opportunity to fix it.
         updateScrollViewInsets()
@@ -322,9 +389,18 @@ final class PostsPageView: UIView {
     private func updateScrollViewInsets() {
         var insets = UIEdgeInsets.zero
         insets.bottom = safeAreaInsets.bottom
+        
+        // The top bar is managed by SwiftUI overlay
+        // Add top inset when the SwiftUI top bar is visible
+        // The top bar height is consistent at 44 points
         if topBarState == .visible || topBarState == .alwaysVisible {
-            insets.top = _topBarContainer.frame.height
+            insets.top = 44
         }
+        
+        // Add bottom padding for the SwiftUI toolbar overlay to prevent content from being hidden
+        // The SwiftUI toolbar has a minimum height of 44 points plus padding
+        insets.bottom += 60 // 44 (toolbar height) + 16 (padding)
+        
         renderView.scrollView.contentInset = insets
         renderView.scrollView.scrollIndicatorInsets = insets
     }
@@ -356,6 +432,8 @@ final class PostsPageView: UIView {
          Now Theme.defaultTheme() is used in most places to avoid this issue. The scroll thumb and actual posts view stylesheet remains dynamic based on the theme passed in.
          */
         refreshControlContainer.tintColor = theme["postsPullForNextColor"]
+        refreshControlContainer.backgroundColor = theme["backgroundColor"]
+        bottomPullContainer.backgroundColor = theme["backgroundColor"]
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme[string: "postsViewCSS"] ?? "")
 
@@ -470,6 +548,16 @@ extension PostsPageView {
             break
         }
     }
+    
+    func endBottomPull() {
+        switch bottomPullState {
+        case .armed, .awaitingScrollEnd, .triggered, .refreshing:
+            bottomPullState = .ready
+
+        case .ready, .disabled:
+            break
+        }
+    }
 }
 
 // MARK: - UIScrollViewDelegate and ScrollViewDelegateContentSize
@@ -523,6 +611,21 @@ extension PostsPageView: ScrollViewDelegateExtras {
         case .ready, .armed, .awaitingScrollEnd, .refreshing, .disabled:
             break
         }
+        
+        // Handle bottom pull state
+        switch bottomPullState {
+        case .awaitingScrollEnd where !willDecelerate:
+            bottomPullState = .ready
+
+        case .armed where !willDecelerate:
+            bottomPullState = .awaitingScrollEnd
+
+        case .triggered:
+            bottomPullState = .refreshing
+
+        case .ready, .armed, .awaitingScrollEnd, .refreshing, .disabled:
+            break
+        }
 
         if !willDecelerate {
             updateTopBarDidEndDecelerating()
@@ -535,6 +638,15 @@ extension PostsPageView: ScrollViewDelegateExtras {
         switch refreshControlState {
         case .awaitingScrollEnd:
             refreshControlState = .ready
+
+        case .ready, .armed, .triggered, .refreshing, .disabled:
+            break
+        }
+        
+        // Handle bottom pull state
+        switch bottomPullState {
+        case .awaitingScrollEnd:
+            bottomPullState = .ready
 
         case .ready, .armed, .triggered, .refreshing, .disabled:
             break
@@ -565,29 +677,86 @@ extension PostsPageView: ScrollViewDelegateExtras {
         // Update refreshControlState first, then decide if we care about topBarState.
         switch (refreshControlState, willBeginDraggingContentOffset) {
         case (.ready, let initialContentOffset?)
-            where initialContentOffset.y < scrollView.contentOffset.y
-                && !scrollView.isDecelerating:
+            where initialContentOffset.y > scrollView.contentOffset.y
+                && !scrollView.isDecelerating
+                && scrollView.contentOffset.y < -scrollView.contentInset.top:
 
-            if info.visibleBottom >= ScrollViewInfo.closeEnoughToBottom - scrollView.contentInset.bottom {
-                refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
+            // Traditional pull-to-refresh from top
+            let pullDistance = abs(scrollView.contentOffset.y + scrollView.contentInset.top)
+            let triggeredFraction = pullDistance / refreshControlContainer.bounds.height
+            
+            if triggeredFraction > 0 {
+                refreshControlState = .armed(triggeredFraction: triggeredFraction)
             } else {
                 refreshControlState = .awaitingScrollEnd
             }
 
 
         case (.armed(let triggeredFraction), _):
-            if info.triggeredFraction >= 1 {
+            // Calculate triggered fraction for top pull
+            let pullDistance = abs(scrollView.contentOffset.y + scrollView.contentInset.top)
+            let currentTriggeredFraction = pullDistance / refreshControlContainer.bounds.height
+            
+            if currentTriggeredFraction >= 1 {
                 refreshControlState = .triggered
-            } else if info.triggeredFraction != triggeredFraction {
-                refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
+            } else if currentTriggeredFraction != triggeredFraction {
+                refreshControlState = .armed(triggeredFraction: currentTriggeredFraction)
             }
 
         case (.triggered, _):
-            if info.triggeredFraction < 1 {
-                refreshControlState = .armed(triggeredFraction: info.triggeredFraction)
+            // Calculate triggered fraction for top pull
+            let pullDistance = abs(scrollView.contentOffset.y + scrollView.contentInset.top)
+            let currentTriggeredFraction = pullDistance / refreshControlContainer.bounds.height
+            
+            if currentTriggeredFraction < 1 {
+                refreshControlState = .armed(triggeredFraction: currentTriggeredFraction)
             }
 
         case (.disabled, _), (.ready, _), (.awaitingScrollEnd, _), (.refreshing, _):
+            break
+        }
+        
+        // Handle bottom pull for next page
+        switch (bottomPullState, willBeginDraggingContentOffset) {
+        case (.ready, let initialContentOffset?)
+            where initialContentOffset.y < scrollView.contentOffset.y
+                && !scrollView.isDecelerating:
+
+            let contentBottom = scrollView.contentSize.height + scrollView.contentInset.bottom
+            let distanceFromBottom = contentBottom - info.visibleBottom
+            
+            if distanceFromBottom <= ScrollViewInfo.closeEnoughToBottom {
+                let pullDistance = max(0, info.visibleBottom - contentBottom)
+                let triggeredFraction = pullDistance / bottomPullContainer.bounds.height
+                bottomPullState = .armed(triggeredFraction: triggeredFraction)
+            } else {
+                bottomPullState = .awaitingScrollEnd
+            }
+
+        case (.armed(let triggeredFraction), _):
+            let contentBottom = scrollView.contentSize.height + scrollView.contentInset.bottom
+            let pullDistance = max(0, info.visibleBottom - contentBottom)
+            let currentTriggeredFraction = pullDistance / bottomPullContainer.bounds.height
+            
+            if currentTriggeredFraction >= 1 {
+                bottomPullState = .triggered
+            } else if currentTriggeredFraction != triggeredFraction {
+                bottomPullState = .armed(triggeredFraction: currentTriggeredFraction)
+            }
+
+        case (.triggered, _):
+            let contentBottom = scrollView.contentSize.height + scrollView.contentInset.bottom
+            let pullDistance = max(0, info.visibleBottom - contentBottom)
+            let currentTriggeredFraction = pullDistance / bottomPullContainer.bounds.height
+            
+            if currentTriggeredFraction < 1 {
+                bottomPullState = .armed(triggeredFraction: currentTriggeredFraction)
+            }
+
+        case (.disabled, _), (.awaitingScrollEnd, _), (.refreshing, _):
+            break
+            
+        default:
             break
         }
 
@@ -660,7 +829,7 @@ private struct ScrollViewInfo {
         return distance / refreshControlHeight
     }
     
-    static let closeEnoughToBottom: CGFloat = 5
+    static let closeEnoughToBottom: CGFloat = 80
     
     var visibleBottom: CGFloat {
         return contentOffsetY + scrollViewHeight

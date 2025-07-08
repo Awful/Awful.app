@@ -32,6 +32,14 @@ class PostsViewModel: ObservableObject {
         vc.postsView.didScroll = { [weak self] scrollView in
             self?.scrollViewDidScroll(scrollView)
         }
+        
+        // Sync the top bar visibility with PostsPageView
+        $isTopBarVisible
+            .receive(on: DispatchQueue.main)
+            .sink { [weak vc] isVisible in
+                vc?.postsView.topBarState = isVisible ? .visible : .hidden
+            }
+            .store(in: &cancellables)
     }
 
     private func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -40,22 +48,27 @@ class PostsViewModel: ObservableObject {
         let currentOffset = scrollView.contentOffset.y
         let scrollDiff = currentOffset - vc.previousScrollOffset
 
+        // At the very top - hide the top bar to give clean initial experience
         if currentOffset <= 0 {
-            if !isTopBarVisible {
-                isTopBarVisible = true
+            if isTopBarVisible {
+                isTopBarVisible = false
             }
             vc.previousScrollOffset = currentOffset
             return
         }
 
+        // Don't change visibility when at the bottom
         guard currentOffset < (scrollView.contentSize.height - scrollView.frame.size.height) else {
             vc.previousScrollOffset = currentOffset
             return
         }
 
-        let shouldBeVisible = scrollDiff < -0.5
-        if isTopBarVisible != shouldBeVisible {
-            isTopBarVisible = shouldBeVisible
+        // Increase threshold to 10 pixels to make it less sensitive
+        // Show when scrolling up significantly, hide when scrolling down significantly
+        if scrollDiff < -10 && !isTopBarVisible {
+            isTopBarVisible = true
+        } else if scrollDiff > 10 && isTopBarVisible {
+            isTopBarVisible = false
         }
 
         vc.previousScrollOffset = currentOffset
@@ -109,5 +122,12 @@ class PostsViewModel: ObservableObject {
     
     func scrollToBottom() {
         postsViewController?.scrollToBottom()
+    }
+    
+    @MainActor
+    func refresh() async {
+        postsViewController?.refreshCurrentPage()
+        // Small delay to let the refresh start
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
     }
 } 

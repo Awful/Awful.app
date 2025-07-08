@@ -256,31 +256,6 @@ extension BookmarksTableViewController {
         return dataSource!.tableView(tableView, heightForRowAt: indexPath)
     }
     
-    override func tableView(
-        _ tableView: UITableView,
-        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
-    ) -> UISwipeActionsConfiguration? {
-        guard let thread = dataSource?.thread(at: indexPath) else { return nil }
-        
-        let unbookmarkAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] _, _, completion in
-            self?.setThread(thread, isBookmarked: false)
-            completion(true)
-        }
-        
-        let lastPostAction = UIContextualAction(style: .normal, title: "Last Post") { [weak self] _, _, completion in
-            self?.coordinator?.navigateToThread(thread, page: .last)
-            completion(true)
-        }
-        lastPostAction.backgroundColor = self.theme["themeColor"]
-        
-        let firstPostAction = UIContextualAction(style: .normal, title: "Unread") { [weak self] _, _, completion in
-            self?.coordinator?.navigateToThread(thread, page: .nextUnread)
-            completion(true)
-        }
-        firstPostAction.backgroundColor = UIColor.lightGray
-        
-        return .init(actions: [unbookmarkAction, lastPostAction, firstPostAction])
-    }
 
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete

@@ -7,9 +7,9 @@ import PullToRefresh
 import Lottie
 import UIKit
 
-final class NigglyRefreshLottieView: UIView, Themeable {
+public final class NigglyRefreshLottieView: UIView, Themeable {
 
-    var theme: Theme {
+    public var theme: Theme {
         didSet {
             if oldValue != theme {
                 themeDidChange()
@@ -22,7 +22,7 @@ final class NigglyRefreshLottieView: UIView, Themeable {
         configuration: .init(renderingEngine: .mainThread)
     )
 
-    init(theme: Theme) {
+    public init(theme: Theme) {
         self.theme = theme
         super.init(frame: .zero)
         
@@ -57,36 +57,36 @@ final class NigglyRefreshLottieView: UIView, Themeable {
         themeDidChange()
     }
     
-    func themeDidChange() {
+    public func themeDidChange() {
         let color = ColorValueProvider(theme["nigglyColor"]!.lottieColorValue)
         let mainOutline = AnimationKeypath(keys: ["**", "**", "**", "Color"])
         animationView.setValueProvider(color, keypath: mainOutline)
     }
     
-    override var intrinsicContentSize: CGSize {
+    public override var intrinsicContentSize: CGSize {
         let spriteSheetSize = animationView.intrinsicContentSize
         let margin: CGFloat = 6
         return CGSize(width: UIView.noIntrinsicMetric, height: spriteSheetSize.height + (margin * 2))
     }
     
-    func startAnimating() {
+    public func startAnimating() {
         animationView.play()
     }
     
-    func stopAnimating() {
+    public func stopAnimating() {
         animationView.stop()
     }
 }
 
 extension NigglyRefreshLottieView {
-    final class RefreshAnimator: RefreshViewAnimator {
+    public final class RefreshAnimator: RefreshViewAnimator {
         private let view: NigglyRefreshLottieView
         
-        init(view: NigglyRefreshLottieView) {
+        public init(view: NigglyRefreshLottieView) {
             self.view = view
         }
         
-        func animate(_ state: State) {
+        public func animate(_ state: State) {
             switch state {
             case .initial:
                 view.animationView.play()

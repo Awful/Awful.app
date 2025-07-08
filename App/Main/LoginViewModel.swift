@@ -30,6 +30,10 @@ class LoginViewModel: ObservableObject {
             canSendPrivateMessages = user.canReceivePrivateMessages
             userID = user.userID
             storedUsername = user.username
+            
+            // Force a small delay to ensure UserDefaults are written before any UI updates
+            await Task.yield()
+            
             isLoggingIn = false
             return true
         } catch {

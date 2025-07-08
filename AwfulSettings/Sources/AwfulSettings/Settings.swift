@@ -103,6 +103,9 @@ public enum Settings {
 
     /// Pull up from the bottom of a page of posts to go to the next page.
     public static let pullForNext = Setting(key: "pull_for_next", default: true)
+    
+    /// Use the new SwiftUI posts page view instead of the legacy UIKit version.
+    public static let useSwiftUIPostsView = Setting(key: "use_swiftui_posts_view", default: false)
 
     /// Show avatars for authors in the posts view.
     public static let showAvatars = Setting(key: "show_avatars", default: true)

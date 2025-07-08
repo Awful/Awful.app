@@ -65,6 +65,9 @@
     "Back" : {
 
     },
+    "Bars" : {
+
+    },
     "Bookmark Thread" : {
 
     },
@@ -296,6 +299,9 @@
     "Copy link" : {
 
     },
+    "Copy Post URL" : {
+
+    },
     "Copy Title" : {
 
     },
@@ -338,6 +344,9 @@
     "Edit" : {
 
     },
+    "Error" : {
+
+    },
     "Example searches:" : {
 
     },
@@ -348,6 +357,9 @@
 
     },
     "Five" : {
+
+    },
+    "Fixes Lottie animation issues but may have other bugs" : {
 
     },
     "Forgot Password?" : {
@@ -447,6 +459,9 @@
       }
     },
     "Jump to First Page" : {
+
+    },
+    "Jump to Post" : {
 
     },
     "Last" : {
@@ -704,6 +719,9 @@
         }
       }
     },
+    "Mark as Read Up To Here" : {
+
+    },
     "Mark Thread As Read" : {
 
     },
@@ -915,6 +933,12 @@
     "Previous page" : {
 
     },
+    "Previous Posts" : {
+
+    },
+    "Pride" : {
+
+    },
     "Private Message" : {
 
     },
@@ -1052,6 +1076,9 @@
         }
       }
     },
+    "Quote" : {
+
+    },
     "Rap Sheet" : {
 
     },
@@ -1067,19 +1094,16 @@
         }
       }
     },
-    "Rated five" : {
-
-    },
-    "Rated five (pride flag)" : {
-
-    },
-    "Rated five (trans flag)" : {
-
-    },
     "Remove Bookmark" : {
 
     },
     "Removed Bookmark" : {
+
+    },
+    "Reply" : {
+
+    },
+    "Reply Workspace" : {
 
     },
     "Riker" : {
@@ -1146,6 +1170,9 @@
       }
     },
     "Scale Text %@" : {
+
+    },
+    "Scroll To End" : {
 
     },
     "Search" : {
@@ -1320,6 +1347,9 @@
       }
     },
     "Toggle All" : {
+
+    },
+    "Trans" : {
 
     },
     "Username" : {

@@ -603,13 +603,65 @@ Awful.isSpoiled = function(element) {
 
 
 /**
- Scrolls the identified post into view.
+ Scrolls the identified post into view, positioning it at the top of the viewport.
+ Uses multiple fallback strategies to ensure reliable positioning.
  */
 Awful.jumpToPostWithID = function(postID) {
-  // If we previously jumped to this post, we need to clear the hash in order to jump again.
-  window.location.hash = "";
+  const post = document.getElementById(postID);
+  if (!post) {
+    console.warn(`Could not find post with ID: ${postID}`);
+    return;
+  }
 
-  window.location.hash = `#${postID}`;
+  console.log(`Scrolling to post ${postID}`);
+
+  // Strategy 1: Use scrollIntoView with precise positioning
+  try {
+    post.scrollIntoView({
+      behavior: 'instant',  // No animation for immediate positioning
+      block: 'start',       // Align the top of the element with the top of the viewport
+      inline: 'nearest'     // Don't change horizontal scroll position
+    });
+    
+    // Verify the scroll worked by checking if post is near the top
+    setTimeout(() => {
+      const rect = post.getBoundingClientRect();
+      const tolerance = 50; // Allow 50px tolerance for accurate positioning
+      
+      if (rect.top > tolerance) {
+        console.warn(`Post ${postID} not properly positioned (top: ${rect.top}px), trying fallback`);
+        
+        // Strategy 2: Direct scrollTo fallback
+        const postTop = post.offsetTop;
+        window.scrollTo({
+          top: postTop,
+          left: 0,
+          behavior: 'instant'
+        });
+        
+        // Strategy 3: Final verification and correction
+        setTimeout(() => {
+          const newRect = post.getBoundingClientRect();
+          if (newRect.top > tolerance) {
+            console.warn(`Post ${postID} still not properly positioned after fallback (top: ${newRect.top}px)`);
+            // Last resort: use manual scroll calculation
+            const finalTop = window.pageYOffset + newRect.top;
+            window.scrollTo(0, finalTop);
+          } else {
+            console.log(`Post ${postID} successfully positioned at top: ${newRect.top}px`);
+          }
+        }, 100);
+      } else {
+        console.log(`Post ${postID} successfully positioned at top: ${rect.top}px`);
+      }
+    }, 50);
+    
+  } catch (error) {
+    console.error(`Error scrolling to post ${postID}:`, error);
+    
+    // Fallback to basic scrollIntoView
+    post.scrollIntoView();
+  }
 };
 
 
@@ -949,6 +1001,8 @@ Awful.embedGfycat = function() {
       return `<video width="320" playsinline webkit-playsinline preload="metadata" controls loop muted="true" poster="${posterUrl}"><source src="${mp4Url}" type="video/mp4"></video>`;
   }
 }
+
+// HTML/JavaScript frog functionality removed - using SwiftUI frog instead
 
 Awful.embedGfycat();
 Awful.loadLotties();

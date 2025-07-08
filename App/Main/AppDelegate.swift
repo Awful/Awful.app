@@ -71,6 +71,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             self.open(route: $0)
         })
         
+        
         return true
     }
     
@@ -353,6 +354,7 @@ private extension AppDelegate {
     @objc func preferredContentSizeDidChange(_ notification: Notification) {
         themeDidChange()
     }
+    
 
     func showPromptIfLoginCookieExpiresSoon() {
         guard

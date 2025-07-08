@@ -16,8 +16,63 @@ import UIKit
 import WebKit
 import AwfulExtensions
 import Stencil
+import PullToRefresh
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageViewController")
+
+// MARK: - NigglyRefreshLottieView conformance to PostsPageRefreshControlContent
+
+extension NigglyRefreshLottieView: PostsPageRefreshControlContent {
+    var state: PostsPageView.RefreshControlState {
+        get { _internalState }
+        set { 
+            _internalState = newValue
+            updateForState()
+        }
+    }
+    
+    private var _internalState: PostsPageView.RefreshControlState {
+        get { 
+            return objc_getAssociatedObject(self, &stateKey) as? PostsPageView.RefreshControlState ?? .ready
+        }
+        set {
+            objc_setAssociatedObject(self, &stateKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    private var refreshAnimator: RefreshAnimator? {
+        get {
+            return objc_getAssociatedObject(self, &animatorKey) as? RefreshAnimator
+        }
+        set {
+            objc_setAssociatedObject(self, &animatorKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    private func updateForState() {
+        // Ensure we have a refresh animator
+        if refreshAnimator == nil {
+            refreshAnimator = RefreshAnimator(view: self)
+        }
+        
+        // Convert PostsPageView.RefreshControlState to RefreshAnimator State and animate
+        switch state {
+        case .disabled, .ready:
+            refreshAnimator?.animate(.initial)
+        case .armed(let triggeredFraction):
+            refreshAnimator?.animate(.releasing(progress: triggeredFraction))
+        case .triggered:
+            refreshAnimator?.animate(.releasing(progress: 1.0))
+        case .refreshing:
+            refreshAnimator?.animate(.loading)
+        case .awaitingScrollEnd:
+            refreshAnimator?.animate(.initial)
+        }
+    }
+}
+
+private var stateKey: UInt8 = 0
+private var animatorKey: UInt8 = 0
 
 extension Notification.Name {
     static let threadBookmarkDidChange = Notification.Name("threadBookmarkDidChange")
@@ -50,6 +105,8 @@ final class PostsPageViewController: ViewController {
     var postIndex: Int = 0
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     var jumpToPostIDAfterLoading: String?
+    private var hasAttemptedInitialScroll = false
+    private var isReRenderingAfterMarkAsRead = false
     private var messageViewController: MessageComposeViewController?
     private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String, pageCount: Int), Error>?
     private var observers: [NSKeyValueObservation] = []
@@ -65,14 +122,6 @@ final class PostsPageViewController: ViewController {
     private var webViewDidLoadOnce = false
     @FoilDefaultStorage(Settings.enableCustomTitlePostLayout) private var enableCustomTitlePostLayout
 
-    /// Whether to use the SwiftUI toolbar. This should be true for SwiftUI-driven navigation and false for UIKit-driven navigation.
-    var useSwiftUIToolbar: Bool = false
-    
-    /// Hosting controller for the SwiftUI toolbar when useSwiftUIToolbar is true
-    private var swiftUIToolbarController: UIHostingController<AnyView>?
-    
-    /// Hosting controller for the SwiftUI top bar when useSwiftUIToolbar is true
-    private var swiftUITopBarController: UIHostingController<AnyView>?
     
     /// Tracks whether the SwiftUI top bar should be visible
     private var isTopBarVisible: Bool = true
@@ -130,8 +179,13 @@ final class PostsPageViewController: ViewController {
 
     public lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
-        // Set up pull-to-refresh only for the last page
+        // Set up refresh callbacks
         postsView.didStartRefreshing = { [weak self] in
+            // Top pull-to-refresh: always refresh current page
+            self?.refreshCurrentPage()
+        }
+        postsView.didStartBottomPull = { [weak self] in
+            // Bottom pull: load next page
             self?.loadNextPageOrRefresh()
         }
         postsView.renderView.delegate = self
@@ -274,6 +328,8 @@ final class PostsPageViewController: ViewController {
         hiddenPosts = 0
         jumpToPostIDAfterLoading = nil
         scrollToFractionAfterLoading = nil
+        hasAttemptedInitialScroll = false
+        isReRenderingAfterMarkAsRead = false
 
         // Immediately notify about page change
         pageInfoPublisher.send((page: page, numberOfPages: numberOfPages))
@@ -285,34 +341,28 @@ final class PostsPageViewController: ViewController {
             return
         }
 
-        if
-            updateLastReadPost,
-            case .specific(let pageNumber) = newPage
-        {
-            // Assume we've read the whole page. The actual number of posts is only used when loading the last page. A nice big number is fine otherwise.
-            let lastReadPostIndex = (pageNumber == thread.numberOfPages) ? Int32.max : Int32(pageNumber * 40)
-            if thread.seenPosts < lastReadPostIndex {
-                thread.seenPosts = lastReadPostIndex
-            }
-            if thread.bookmarked {
-                thread.anyUnreadPosts = false
-            }
-
-            let context = self.thread.managedObjectContext!
-            do {
-                try context.save()
-            } catch {
-                logger.error("Failed to save thread context: \(error)")
-            }
-
-            NotificationCenter.default.post(name: .threadBookmarkDidChange, object: self.thread)
-        }
+        // Let the server determine seen/unseen status via HTML response
+        // Don't update thread.seenPosts immediately to preserve unseen styling
+        // SA will track page visits via the updateLastReadPost parameter
         
-        // Reset firstUnreadPost to let the server response determine it
-        firstUnreadPost = nil
+        if case .specific(let pageNumber) = newPage, pageNumber > 1, pageNumber == numberOfPages {
+            firstUnreadPost = nil // So we jump to whatever the server tells us.
+        } else if case .nextUnread = newPage {
+            firstUnreadPost = nil // Let the server determine where to scroll for next unread
+        } else {
+            // For first page (.specific(1)), preserve any existing firstUnreadPost for seen threads
+            // This allows proper scrolling to unread posts when opening seen threads
+            if thread.beenSeen && thread.anyUnreadPosts {
+                // Keep existing firstUnreadPost or let server determine it
+                // Don't reset to 0 as this prevents scrolling to first unread post
+            } else {
+                firstUnreadPost = 0 // Don't jump anywhere for truly new threads
+            }
+        }
 
         logger.info("🔵 Starting network operation to fetch posts")
-        networkOperation = Task {
+        networkOperation = Task { [weak self] in
+            guard let self = self else { throw CancellationError() }
             let (posts, firstUnreadPost, advertisementHTML, pageCount) = try await ForumsClient.shared.listPosts(
                 in: self.thread,
                 writtenBy: self.author,
@@ -328,7 +378,8 @@ final class PostsPageViewController: ViewController {
         }
 
         
-        Task {
+        Task { [weak self] in
+            guard let self = self else { return }
             do {
                 logger.info("🔵 Waiting for network operation to complete")
                 let (newPosts, firstUnread, adHTML, pageCount) = try await networkOperation!.value
@@ -382,6 +433,10 @@ final class PostsPageViewController: ViewController {
                     self.updateUserInterface()
 
                     self.renderPosts()
+                    
+                    // End refresh control animation
+                    self.postsView.endRefreshing()
+                    self.postsView.endBottomPull()
                 }
             } catch {
                 if error is CancellationError || (error as? URLError)?.code == .cancelled {
@@ -390,6 +445,10 @@ final class PostsPageViewController: ViewController {
                 }
                 
                 logger.error("🔴 Failed to load posts: \(error)")
+                // End refresh control animation on error
+                self.postsView.endRefreshing()
+                self.postsView.endBottomPull()
+                
                 let alert = UIAlertController(title: "Could Not Load Page", error: error)
                 if
                     let page = self.page,
@@ -406,14 +465,27 @@ final class PostsPageViewController: ViewController {
         }
     }
 
-    private func loadNextPageOrRefresh() {
-        // Only allow refresh on the last page
-        guard let page = page, page.isLastPage(totalPages: numberOfPages) else {
+    func refreshCurrentPage() {
+        guard let page = page else {
             return
         }
         
-        // On the last page, just reload the current page to get new posts
+        // Always refresh the current page to get new posts
         loadPage(page, updatingCache: true, updatingLastReadPost: false)
+    }
+
+    private func loadNextPageOrRefresh() {
+        guard let page = page, pullForNext else {
+            return
+        }
+        
+        if page.isLastPage(totalPages: numberOfPages) {
+            // On the last page, just reload the current page to get new posts
+            loadPage(page, updatingCache: true, updatingLastReadPost: false)
+        } else if case .specific(let pageNumber) = page, pageNumber < numberOfPages {
+            // Load the next page
+            loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
+        }
     }
     
     // MARK: - View lifecycle
@@ -421,10 +493,8 @@ final class PostsPageViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Only set up title view for legacy UIKit navigation
-        if !useSwiftUIToolbar {
-            setupSwiftUITitleView()
-        }
+        // Set up title view for UIKit navigation fallback
+        setupSwiftUITitleView()
 
         view.addSubview(postsView)
         postsView.translatesAutoresizingMaskIntoConstraints = false
@@ -447,13 +517,7 @@ final class PostsPageViewController: ViewController {
         
         updateHandoffUserActivity()
         
-        // Only load the page if we're not using SwiftUI toolbar
-        // When using SwiftUI toolbar, the page is already loaded by PostsViewControllerRepresentable
-        if !useSwiftUIToolbar {
-            Task {
-                loadPage(page ?? .first, updatingCache: true, updatingLastReadPost: true)
-            }
-        }
+        // Page loading is handled by the SwiftUI wrapper when in SwiftUI navigation context
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -464,10 +528,8 @@ final class PostsPageViewController: ViewController {
             nav.setNavigationBarHidden(false, animated: animated)
         }
 
-        // When using SwiftUI toolbar, ensure it's up to date
-        if useSwiftUIToolbar {
-            updateSwiftUIToolbar()
-        }
+        // Ensure SwiftUI toolbar is up to date
+        updateSwiftUIToolbar()
 
         if let offered = lastOfferedPasteboardURLString, let url = URL(string: offered) {
             if let route = try? AwfulRoute(url) {
@@ -519,13 +581,9 @@ final class PostsPageViewController: ViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
-        if useSwiftUIToolbar {
-            // Adjust the bottom inset of the posts view to make room for the SwiftUI toolbar
-            if let toolbarView = swiftUIToolbarController?.view {
-                postsView.renderView.scrollView.contentInset.bottom = view.bounds.height - toolbarView.frame.minY
-            }
-        }
+        
+        // Note: When using SwiftUI toolbar, we let the overlay handle its own positioning
+        // without manually adjusting scroll view content insets to avoid pushing content down
     }
     
     // MARK: - Legacy Toolbar Setup (for UIKit-driven navigation)
@@ -726,33 +784,26 @@ final class PostsPageViewController: ViewController {
         }
         
         logger.info("🔵 Showing page picker for page \(currentPage) of \(self.numberOfPages)")
-        if useSwiftUIToolbar {
-            let picker = PostsPagePicker(
-                thread: self.thread,
-                numberOfPages: numberOfPages,
-                currentPage: currentPage,
-                onPageSelected: { [weak self] newPage in
-                    self?.loadPage(newPage, updatingCache: true, updatingLastReadPost: false)
-                    self?.dismiss(animated: true)
-                },
-                onGoToLastPost: { [weak self] in
-                    self?.loadPage(.last, updatingCache: true, updatingLastReadPost: true)
-                    self?.dismiss(animated: true)
-                }
-            )
-            let hostingController = UIHostingController(rootView: picker)
-            hostingController.modalPresentationStyle = UIModalPresentationStyle.popover
-            if let popover = hostingController.popoverPresentationController {
-                popover.barButtonItem = currentPageItem
-                popover.permittedArrowDirections = UIPopoverArrowDirection.any
+        let picker = PostsPagePicker(
+            thread: self.thread,
+            numberOfPages: numberOfPages,
+            currentPage: currentPage,
+            onPageSelected: { [weak self] newPage in
+                self?.loadPage(newPage, updatingCache: true, updatingLastReadPost: false)
+                self?.dismiss(animated: true)
+            },
+            onGoToLastPost: { [weak self] in
+                self?.loadPage(.last, updatingCache: true, updatingLastReadPost: true)
+                self?.dismiss(animated: true)
             }
-            present(hostingController, animated: true)
-        } else {
-            let picker = PagePickerViewController.make(page: page, numberOfPages: numberOfPages) { [weak self] page in
-                self?.loadPage(page, updatingCache: true, updatingLastReadPost: false)
-            }
-            present(picker, animated: true)
+        )
+        let hostingController = UIHostingController(rootView: picker)
+        hostingController.modalPresentationStyle = UIModalPresentationStyle.popover
+        if let popover = hostingController.popoverPresentationController {
+            popover.barButtonItem = currentPageItem
+            popover.permittedArrowDirections = UIPopoverArrowDirection.any
         }
+        present(hostingController, animated: true)
     }
     
     @objc func showPostSettings() {
@@ -760,17 +811,10 @@ final class PostsPageViewController: ViewController {
         let hostingController = UIHostingController(rootView: settingsView.environment(\.theme, theme))
         hostingController.modalPresentationStyle = UIModalPresentationStyle.popover
         if let popover = hostingController.popoverPresentationController {
-            if useSwiftUIToolbar {
-                // This is a bit of a guess. In the old code, it seemed to be anchored to a nav bar button,
-                // but the new SwiftUI toolbar is at the bottom. We'll present it without an anchor for now.
-                // A better solution might involve passing the anchor view from the toolbar.
-                popover.sourceView = view
-                popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
-                popover.permittedArrowDirections = UIPopoverArrowDirection()
-            } else {
-                popover.barButtonItem = toolbarItems?.first
-                popover.permittedArrowDirections = UIPopoverArrowDirection.any
-            }
+            // Present from center since the SwiftUI toolbar is at the bottom
+            popover.sourceView = view
+            popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = UIPopoverArrowDirection()
         }
         present(hostingController, animated: true)
     }
@@ -811,15 +855,15 @@ final class PostsPageViewController: ViewController {
     private func showPostActions(for post: Post, from rect: CGRect) {
         var actions: [UIAction] = []
 
-        actions.append(UIAction(title: "Reply", handler: { _ in self.replyToPost(post) }))
-        actions.append(UIAction(title: "Quote", handler: { _ in self.quotePost(post) }))
+        actions.append(UIAction(title: "Reply", handler: { [weak self] _ in self?.replyToPost(post) }))
+        actions.append(UIAction(title: "Quote", handler: { [weak self] _ in self?.quotePost(post) }))
 
         if post.editable {
-            actions.append(UIAction(title: "Edit", handler: { _ in self.editPost(post) }))
+            actions.append(UIAction(title: "Edit", handler: { [weak self] _ in self?.editPost(post) }))
         }
 
-        actions.append(UIAction(title: "Mark as Read Up To Here", handler: { _ in self.markAsReadUpTo(post) }))
-        actions.append(UIAction(title: "Copy Post URL", handler: { _ in self.copyPostURL(post) }))
+        actions.append(UIAction(title: "Mark as Read Up To Here", handler: { [weak self] _ in self?.markAsReadUpTo(post) }))
+        actions.append(UIAction(title: "Copy Post URL", handler: { [weak self] _ in self?.copyPostURL(post) }))
 
         let menu = UIMenu(title: "", children: actions)
         hiddenMenuButton.show(menu: menu, from: rect)
@@ -831,15 +875,15 @@ final class PostsPageViewController: ViewController {
         var actions: [UIAction] = []
 
         if let user = post.author {
-            actions.append(UIAction(title: "Rap Sheet", handler: { _ in self.showRapSheet(for: user) }))
-            actions.append(UIAction(title: "Profile", handler: { _ in self.showProfile(for: user) }))
+            actions.append(UIAction(title: "Rap Sheet", handler: { [weak self] _ in self?.showRapSheet(for: user) }))
+            actions.append(UIAction(title: "Profile", handler: { [weak self] _ in self?.showProfile(for: user) }))
         }
 
         if canSendPrivateMessages, post.author?.canReceivePrivateMessages == true, post.author?.userID != loggedInUserID {
-            actions.append(UIAction(title: "Send Private Message", handler: { _ in self.sendPrivateMessageToAuthor(of: post) }))
+            actions.append(UIAction(title: "Send Private Message", handler: { [weak self] _ in self?.sendPrivateMessageToAuthor(of: post) }))
         }
 
-        actions.append(UIAction(title: "User's Posts in This Thread", handler: { _ in self.singleUsersPosts(for: post) }))
+        actions.append(UIAction(title: "User's Posts in This Thread", handler: { [weak self] _ in self?.singleUsersPosts(for: post) }))
 
         let menu = UIMenu(title: author.username ?? "", children: actions)
         hiddenMenuButton.show(menu: menu, from: rect)
@@ -879,26 +923,102 @@ final class PostsPageViewController: ViewController {
     }
 
     private func markAsReadUpTo(_ post: Post) {
-        guard
-            let firstUnreadPost = firstUnreadPost,
-            let currentPostIndex = posts.firstIndex(of: post),
-            currentPostIndex >= firstUnreadPost
-        else { return }
+        logger.info("markAsReadUpTo called for post \(post.postID), threadIndex: \(post.threadIndex)")
+        logger.info("Current firstUnreadPost: \(String(describing: self.firstUnreadPost))")
+        logger.info("Posts array count: \(self.posts.count)")
+        
+        guard let currentPostIndex = posts.firstIndex(of: post) else { 
+            logger.error("Could not find post \(post.postID) in posts array")
+            Task { @MainActor in
+                Toast.show(title: "Error: Could not find post", icon: Toast.Icon.error)
+            }
+            return 
+        }
+        
+        logger.info("Current post index: \(currentPostIndex)")
+        
+        // If firstUnreadPost is nil or the post is already read, allow marking as read
+        // This handles cases where state might be inconsistent in SwiftUI navigation
+        let shouldProceed: Bool
+        if let firstUnreadPost = firstUnreadPost {
+            shouldProceed = currentPostIndex >= firstUnreadPost
+            logger.info("firstUnreadPost is \(firstUnreadPost), shouldProceed: \(shouldProceed)")
+        } else {
+            // If firstUnreadPost is nil, allow the action but try to restore state first
+            // This can happen if the page was already loaded or in SwiftUI navigation context
+            logger.warning("firstUnreadPost is nil, attempting to restore from page model")
+            
+            // Try to restore firstUnreadPost from cached page model
+            if let cachedFirstUnreadPost = pageModel?.firstUnreadPost {
+                firstUnreadPost = cachedFirstUnreadPost
+                shouldProceed = currentPostIndex >= cachedFirstUnreadPost
+                logger.info("Restored firstUnreadPost from page model: \(cachedFirstUnreadPost), shouldProceed: \(shouldProceed)")
+            } else {
+                // If no cached state, allow the action anyway - let the server determine validity
+                shouldProceed = true
+                logger.warning("No cached firstUnreadPost available, allowing mark as read action")
+            }
+        }
+        
+        guard shouldProceed else { 
+            logger.info("Post \(post.postID) is already marked as read (index \(currentPostIndex) < firstUnreadPost \(self.firstUnreadPost!))")
+            Task { @MainActor in
+                Toast.show(title: "Post already marked as read", icon: Toast.Icon.info)
+            }
+            return 
+        }
 
-        Task {
+        Task { [weak self] in
+            guard let self = self else { return }
             do {
+                logger.info("Calling ForumsClient.markThreadAsSeenUpTo for post \(post.postID)")
                 try await ForumsClient.shared.markThreadAsSeenUpTo(post)
+                logger.info("Successfully marked thread as read up to post \(post.postID)")
 
-                if post.threadIndex >= thread.totalReplies {
-                    loadPage(self.page!, updatingCache: true, updatingLastReadPost: true)
+                if post.threadIndex >= self.thread.totalReplies {
+                    logger.info("Post is at end of thread, reloading page")
+                    self.loadPage(self.page!, updatingCache: true, updatingLastReadPost: true)
                 } else {
+                    logger.info("Updating firstUnreadPost to \(currentPostIndex + 1)")
+                    
                     self.firstUnreadPost = currentPostIndex + 1
-                    renderPosts()
+                    
+                    // CRITICAL: Update thread.seenPosts to mark posts as seen up to the selected post
+                    // This updates the underlying data that the beenSeen property uses for calculation
+                    if self.thread.seenPosts < Int32(post.threadIndex) {
+                        self.thread.seenPosts = Int32(post.threadIndex)
+                        logger.info("Updated thread.seenPosts to \(post.threadIndex)")
+                        
+                        let context = self.thread.managedObjectContext!
+                        do {
+                            try context.save()
+                            logger.info("Successfully saved thread context after marking as read")
+                        } catch {
+                            logger.error("Failed to save thread context after marking as read: \(error)")
+                        }
+                    } else {
+                        logger.info("thread.seenPosts (\(self.thread.seenPosts)) already >= post.threadIndex (\(post.threadIndex))")
+                    }
+                    
+                    // Debug: Verify that posts are now correctly marked as seen
+                    let postsNowSeen = self.posts.enumerated().filter { $0.element.beenSeen }.count
+                    logger.info("Posts now marked as seen: \(postsNowSeen)/\(self.posts.count)")
+                    
+                    // Flag that we're re-rendering after mark as read to prevent unwanted scrolling
+                    self.isReRenderingAfterMarkAsRead = true
+                    self.renderPosts()
                 }
 
-                NotificationCenter.default.post(name: .threadBookmarkDidChange, object: thread)
+                NotificationCenter.default.post(name: .threadBookmarkDidChange, object: self.thread)
+                
+                Task { @MainActor in
+                    Toast.show(title: "Marked as read", icon: Toast.Icon.checkmark)
+                }
             } catch {
                 logger.error("Could not mark thread \(self.thread.threadID) as read up to post index \(post.threadIndex): \(error, privacy: .public)")
+                Task { @MainActor in
+                    Toast.show(title: "Failed to mark as read", icon: Toast.Icon.error)
+                }
             }
         }
     }
@@ -1145,45 +1265,101 @@ extension PostsPageViewController: RenderViewDelegate {
 
     func didFinishLoading(in renderView: RenderView) {
         webViewDidLoadOnce = true
-
-        if let postID = jumpToPostIDAfterLoading {
-            jumpToPostIDAfterLoading = nil
-            Task {
-                do {
-                    try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-                    scrollToPost(id: postID)
-                } catch {
-                    logger.error("Failed to scroll to post: \(error)")
-                }
-            }
-        } else if let y = scrollToFractionAfterLoading {
-            scrollToFractionAfterLoading = nil
-            Task {
-                do {
-                    try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-                    let contentHeight = renderView.scrollView.contentSize.height
-                    let viewHeight = renderView.bounds.height
-                    renderView.scrollView.contentOffset.y = max(-renderView.scrollView.contentInset.top, (y * contentHeight) - (viewHeight / 2))
-                } catch {
-                    logger.error("Failed to scroll to fraction: \(error)")
-                }
-            }
-        } else if self.jumpToLastPost, case .specific(let pageNumber) = self.page, pageNumber == self.numberOfPages, self.author == nil {
-            self.jumpToLastPost = false
-            self.postsView.renderView.scrollView.setContentOffset(CGPoint(x: 0, y: self.postsView.renderView.scrollView.contentSize.height), animated: false)
-        } else if let postIndex = self.firstUnreadPost {
-            self.firstUnreadPost = nil
-            Task {
-                do {
-                    try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-                    scrollToPost(at: postIndex)
-                } catch {
-                    logger.error("Failed to scroll to post index: \(error)")
-                }
-            }
+        
+        // Centralized scroll handling with proper priority and robust retry logic
+        Task { [weak self] in
+            guard let self = self else { return }
+            await self.handleInitialScrolling()
         }
         
         hasFinishedInitialLoad = true
+    }
+    
+    /// Centralized method to handle all initial scrolling scenarios with proper priority
+    @MainActor
+    private func handleInitialScrolling() async {
+        // Skip scrolling if we're re-rendering after marking posts as read
+        if isReRenderingAfterMarkAsRead {
+            logger.info("🔄 Skipping initial scrolling - re-rendering after mark as read")
+            isReRenderingAfterMarkAsRead = false
+            return
+        }
+        // Priority 1: Specific post ID (highest priority)
+        if let postID = jumpToPostIDAfterLoading {
+            jumpToPostIDAfterLoading = nil
+            logger.info("🎯 Scrolling to specific post ID: \(postID)")
+            
+            // Find the post index for the given ID to use consistent retry logic
+            if let postIndex = self.posts.firstIndex(where: { $0.postID == postID }) {
+                await scrollToPostWithRetry(at: postIndex)
+            } else {
+                // Fallback to direct scroll if post not found in current page
+                try? await Task.sleep(nanoseconds: 200_000_000)
+                scrollToPost(id: postID)
+            }
+            return
+        }
+        
+        // Priority 2: Fractional position (e.g., restoring scroll position)
+        if let y = scrollToFractionAfterLoading {
+            scrollToFractionAfterLoading = nil
+            logger.info("🎯 Scrolling to fractional position: \(y)")
+            
+            try? await Task.sleep(nanoseconds: 200_000_000) // Allow content to stabilize
+            let renderView = postsView.renderView
+            let contentHeight = renderView.scrollView.contentSize.height
+            let viewHeight = renderView.bounds.height
+            let targetOffset = max(-renderView.scrollView.contentInset.top, (y * contentHeight) - (viewHeight / 2))
+            renderView.scrollView.setContentOffset(CGPoint(x: 0, y: targetOffset), animated: false)
+            return
+        }
+        
+        // Priority 3: Jump to last post (for last page of thread)
+        if jumpToLastPost, case .specific(let pageNumber) = page, pageNumber == numberOfPages, author == nil {
+            jumpToLastPost = false
+            logger.info("🎯 Jumping to last post on page \(pageNumber)")
+            
+            try? await Task.sleep(nanoseconds: 200_000_000)
+            let scrollView = postsView.renderView.scrollView
+            let bottomOffset = CGPoint(x: 0, y: max(0, scrollView.contentSize.height - scrollView.bounds.size.height + scrollView.contentInset.bottom))
+            scrollView.setContentOffset(bottomOffset, animated: false)
+            return
+        }
+        
+        // Priority 4: First unread post (most common case)
+        if let serverFirstUnreadIndex = firstUnreadPost, !hasAttemptedInitialScroll {
+            hasAttemptedInitialScroll = true
+            
+            // Validate server's firstUnreadPost against client data
+            let clientFirstUnreadIndex = posts.firstIndex(where: { !$0.beenSeen })
+            
+            let actualIndex: Int
+            if let clientIndex = clientFirstUnreadIndex {
+                if clientIndex != serverFirstUnreadIndex {
+                    logger.warning("🔍 Server firstUnreadPost (\(serverFirstUnreadIndex)) differs from client calculation (\(clientIndex))")
+                    
+                    // Always prefer client calculation when we have reliable unseen post data
+                    // The client has the most up-to-date view of what the user has actually seen
+                    logger.info("🔧 Using client-calculated index (\(clientIndex)) for more accurate positioning")
+                    actualIndex = clientIndex
+                } else {
+                    logger.info("✅ Server and client agree on first unread post index: \(clientIndex)")
+                    actualIndex = clientIndex
+                }
+            } else {
+                logger.info("ℹ️ No unseen posts found in client data, using server index: \(serverFirstUnreadIndex)")
+                actualIndex = serverFirstUnreadIndex
+            }
+            
+            logger.info("🎯 Scrolling to first unread post at index: \(actualIndex)")
+            
+            // Allow extra time for dynamic content (tweets, images) to load
+            try? await Task.sleep(nanoseconds: 600_000_000) // 0.6 seconds
+            await scrollToPostWithRetry(at: actualIndex)
+            return
+        }
+        
+        logger.info("ℹ️ No special scrolling required - staying at top")
     }
 
     func didTapPostActionButton(_ button: UIButton, in renderView: RenderView) {
@@ -1210,8 +1386,23 @@ extension PostsPageViewController: RenderViewDelegate {
     func handle(message: RenderViewMessage, in renderView: RenderView) {
         switch message {
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
-            // After all tweets are loaded, we might need to re-adjust the scroll position.
-            didFinishLoading(in: renderView)
+            // After all tweets are loaded, we might need to trigger or re-adjust scroll position
+            logger.info("🐦 Tweets finished loading, checking if scroll adjustment needed")
+            
+            // Use centralized scrolling logic instead of duplicating the logic here
+            Task { [weak self] in
+                guard let self = self else { return }
+                
+                // If we haven't attempted initial scroll yet, trigger it now with tweet content loaded
+                if !hasAttemptedInitialScroll {
+                    await self.handleInitialScrolling()
+                } else if let postIndex = self.firstUnreadPost {
+                    // If we already scrolled but tweets loaded after, do a gentle re-adjustment
+                    logger.info("🔄 Re-adjusting scroll position after tweet loading")
+                    try? await Task.sleep(nanoseconds: 300_000_000) // Brief delay for tweets to render
+                    await self.scrollToPostWithRetry(at: postIndex, attempt: 1)
+                }
+            }
 
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             Task {
@@ -1327,16 +1518,28 @@ extension PostsPageViewController {
         updateSwiftUITopBar()
         pageInfoPublisher.send((page: page, numberOfPages: numberOfPages))
       
-        // Only show refresh control on the last page and when not filtering by author
+        // Show refresh control when pullForNext is enabled and not filtering by author
+        // On last page: refresh to get new posts
+        // On other pages: pull to go to next page
         let isLastPage = page?.isLastPage(totalPages: numberOfPages) ?? false
-        let shouldShowRefresh = isLastPage && author == nil
+        let canShowNextPage: Bool
+        if case .specific(let pageNumber) = page {
+            canShowNextPage = !isLastPage && pageNumber < numberOfPages
+        } else {
+            canShowNextPage = false
+        }
+        let shouldShowRefresh = pullForNext && author == nil && canShowNextPage
         
-        if shouldShowRefresh && postsView.refreshControl == nil {
-            // Create and configure refresh control with frog animation
-            let refreshControl = GetOutFrogRefreshSpinnerView(theme: theme)
-            postsView.refreshControl = refreshControl
+        // Refresh control is now handled by SwiftUI FrogPullToRefresh
+        
+        // Show bottom pull control for next page when pullForNext is enabled and not filtering by author
+        // Note: On last page, the frog/end message is handled by the HTML template, not a pull control
+        if shouldShowRefresh && postsView.bottomPullControl == nil {
+            let bottomRefreshControl = PostsPageRefreshArrowView()
+            bottomRefreshControl.tintColor = theme["tintColor"]
+            postsView.bottomPullControl = bottomRefreshControl
         } else if !shouldShowRefresh {
-            postsView.refreshControl = nil
+            postsView.bottomPullControl = nil
         }
 
         // Determine if we should show the loading view
@@ -1413,6 +1616,94 @@ extension PostsPageViewController {
         guard index >= 0 && index < posts.count else { return }
         let postID = posts[index].postID
         postsView.renderView.jumpToPost(identifiedBy: postID)
+    }
+    
+    /// Scrolls to a post with robust retry logic to handle dynamic content loading
+    @MainActor
+    private func scrollToPostWithRetry(at index: Int, attempt: Int = 1) async {
+        guard index >= 0 && index < posts.count else { 
+            logger.warning("Invalid post index \(index) for \(self.posts.count) posts")
+            return 
+        }
+        
+        let postID = posts[index].postID
+        let scrollView = postsView.renderView.scrollView
+        
+        logger.info("🔄 Attempting scroll to post \(index) (ID: \(postID)), attempt \(attempt)")
+        
+        // Store initial state
+        let initialContentHeight = scrollView.contentSize.height
+        let initialContentOffset = scrollView.contentOffset
+        
+        // Perform the scroll
+        postsView.renderView.jumpToPost(identifiedBy: postID)
+        
+        // Wait for initial scroll to complete
+        try? await Task.sleep(nanoseconds: 300_000_000) // 0.3 seconds
+        
+        // Check for significant content changes
+        let newContentHeight = scrollView.contentSize.height
+        let newContentOffset = scrollView.contentOffset
+        let heightDifference = abs(newContentHeight - initialContentHeight)
+        let offsetDifference = abs(newContentOffset.y - initialContentOffset.y)
+        
+        logger.info("📊 Scroll result: height change: \(heightDifference)px, offset change: \(offsetDifference)px")
+        
+        // Retry conditions:
+        // 1. Content height changed significantly (dynamic content loaded)
+        // 2. Scroll offset didn't change much (scroll may have failed)
+        // 3. Haven't exceeded max attempts
+        let shouldRetry = (heightDifference > 50 || (offsetDifference < 50 && attempt == 1)) && attempt < 4
+        
+        if shouldRetry {
+            let delay = UInt64(500_000_000 * attempt) // Exponential backoff: 0.5s, 1s, 1.5s
+            logger.info("🔄 Retrying scroll in \(Double(delay) / 1_000_000_000)s due to content changes...")
+            try? await Task.sleep(nanoseconds: delay)
+            await scrollToPostWithRetry(at: index, attempt: attempt + 1)
+        } else {
+            if attempt > 1 {
+                logger.info("✅ Scroll positioning completed after \(attempt) attempts")
+            } else {
+                logger.info("✅ Scroll positioning completed on first attempt")
+            }
+            
+            // Final verification - check if we're actually positioned at the target post
+            try? await Task.sleep(nanoseconds: 200_000_000) // Brief delay for final positioning
+            await verifyScrollPosition(targetPostID: postID)
+        }
+    }
+    
+    /// Verifies that the scroll position is correct and logs the result
+    @MainActor
+    private func verifyScrollPosition(targetPostID: String) async {
+        logger.info("🎯 Scroll verification for post ID: \(targetPostID)")
+        
+        // Debug: Log post seen status around the target
+        if let targetIndex = posts.firstIndex(where: { $0.postID == targetPostID }) {
+            logger.info("📊 Post seen status analysis around target index \(targetIndex):")
+            
+            let startIndex = max(0, targetIndex - 2)
+            let endIndex = min(posts.count - 1, targetIndex + 2)
+            
+            for i in startIndex...endIndex {
+                let post = posts[i]
+                let indicator = i == targetIndex ? "👉" : "  "
+                let seenStatus = post.beenSeen ? "SEEN" : "UNSEEN"
+                logger.info("\(indicator) Post \(i): \(seenStatus) - ID: \(post.postID)")
+            }
+            
+            // Find the actual first unseen post based on our data
+            if let actualFirstUnseenIndex = posts.firstIndex(where: { !$0.beenSeen }) {
+                if actualFirstUnseenIndex != targetIndex {
+                    logger.warning("⚠️ Server firstUnreadPost (\(targetIndex)) differs from client calculation (\(actualFirstUnseenIndex))")
+                    logger.info("🔧 Consider using client-side calculation for more accurate positioning")
+                } else {
+                    logger.info("✅ Server and client agree on first unseen post index: \(targetIndex)")
+                }
+            } else {
+                logger.info("ℹ️ No unseen posts found in current page data")
+            }
+        }
     }
     
     func scrollToPost(id: String) {
@@ -1553,9 +1844,13 @@ private struct RenderContext {
             "enableCustomTitlePostLayout": enableCustomTitlePostLayout
         ]
         if enableFrogAndGhost {
-            let url = Bundle.main.url(forResource: "ghost60", withExtension: "json")!
-            let data = try! Data(contentsOf: url)
-            context["ghostJsonData"] = String(data: data, encoding: .utf8) as Any
+            let ghostUrl = Bundle.main.url(forResource: "ghost60", withExtension: "json")!
+            let ghostData = try! Data(contentsOf: ghostUrl)
+            context["ghostJsonData"] = String(data: ghostData, encoding: .utf8) as Any
+            
+            let frogUrl = Bundle.main.url(forResource: "frogrefresh60", withExtension: "json")!
+            let frogData = try! Data(contentsOf: frogUrl)
+            context["frogJsonData"] = String(data: frogData, encoding: .utf8) as Any
         }
 
         if let author = author {

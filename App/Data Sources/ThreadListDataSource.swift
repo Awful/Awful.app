@@ -232,7 +232,8 @@ extension ThreadListDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return deletionDelegate != nil
+        // Only allow editing when table view is in editing mode AND we have a deletion delegate
+        return tableView.isEditing && deletionDelegate != nil
     }
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

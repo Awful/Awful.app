@@ -9,7 +9,7 @@ import AwfulTheming
 import HTMLReader
 import UIKit
 
-struct PostRenderModel: StencilContextConvertible {
+struct LegacyPostRenderModel: StencilContextConvertible {
     let context: [String: Any]
 
     init(_ post: Post) {

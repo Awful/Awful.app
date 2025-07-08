@@ -24,7 +24,7 @@ final class PostPreviewViewController: ViewController {
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private var loadingView: LoadingView?
     private var networkOperation: Task<Void, Never>?
-    private var post: PostRenderModel?
+    private var post: LegacyPostRenderModel?
     private var postHTML: Swift.Result<String, Error>?
     var submitBlock: (() -> Void)?
     private let thread: AwfulThread?
@@ -133,7 +133,7 @@ final class PostPreviewViewController: ViewController {
                 
                 let isOP = editingPost?.author == author
                 
-                post = PostRenderModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
+                post = LegacyPostRenderModel(author: author, isOP: isOP, postDate: postDate, postHTML: html)
 
                 renderPreview()
             } catch {

@@ -15,11 +15,9 @@ final class PostsPageSettingsSwiftUIViewController: UIHostingController<AnyView>
         } else {
             // For iPhone, use a sheet presentation
             modalPresentationStyle = .pageSheet
-            if #available(iOS 15.0, *) {
-                if let sheet = sheetPresentationController {
-                    sheet.detents = [.medium()]
-                    sheet.prefersGrabberVisible = true
-                }
+            if let sheet = sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
             }
         }
     }

@@ -35,6 +35,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.forumThreadsSortedUnread) private var sortFirstUnreadThreads
     @AppStorage(Settings.automaticTimg) private var timgLargeImages
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
+    @AppStorage(Settings.useSwiftUIPostsView) private var useSwiftUIPostsView
 
     let appIconDataSource: AppIconDataSource
     let avatarURL: URL?
@@ -150,6 +151,7 @@ public struct SettingsView: View {
                 Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
                 Toggle("Double-Tap Post to Jump", bundle: .module, isOn: $doubleTapPostToJump)
                 Toggle("Enable Haptics", bundle: .module, isOn: $enableHaptics)
+                Toggle("Use SwiftUI Posts View", bundle: .module, isOn: $useSwiftUIPostsView)
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)
                 }

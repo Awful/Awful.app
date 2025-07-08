@@ -453,14 +453,34 @@ public final class ForumsClient {
             (post.thread?.threadID, post.threadIndex)
         }) else {
             assertionFailure("post needs a thread ID")
-            let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: nil)
+            let error = NSError(domain: NSCocoaErrorDomain, code: NSUserCancelledError, userInfo: [
+                NSLocalizedDescriptionKey: "Post is missing thread ID - cannot mark as read"
+            ])
             throw error
         }
-        _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
-            "action": "setseen",
-            "threadid": threadID,
-            "index": "\(threadIndex)",
-        ])
+        
+        // Validate threadIndex is reasonable
+        guard threadIndex > 0 else {
+            let error = NSError(domain: NSCocoaErrorDomain, code: NSValidationErrorMinimum, userInfo: [
+                NSLocalizedDescriptionKey: "Invalid post index (\(threadIndex)) - cannot mark as read"
+            ])
+            throw error
+        }
+        
+        do {
+            _ = try await fetch(method: .post, urlString: "showthread.php", parameters: [
+                "action": "setseen",
+                "threadid": threadID,
+                "index": "\(threadIndex)",
+            ])
+        } catch {
+            // Re-throw with more context for debugging
+            let enhancedError = NSError(domain: error._domain, code: error._code, userInfo: [
+                NSLocalizedDescriptionKey: "Failed to mark thread \(threadID) as read up to post index \(threadIndex)",
+                NSUnderlyingErrorKey: error
+            ])
+            throw enhancedError
+        }
     }
 
     public func markUnread(

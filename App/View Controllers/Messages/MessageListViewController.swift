@@ -120,10 +120,10 @@ final class MessageListViewController: TableViewController {
         if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
             coordinator.navigateToPrivateMessage(message)
         } else {
-            // iPhone: use traditional navigation
+            // iPhone: push fullscreen instead of presenting as sheet
             let viewController = MessageViewController(privateMessage: message)
             viewController.restorationIdentifier = "Message"
-            showDetailViewController(viewController, sender: self)
+            navigationController?.pushViewController(viewController, animated: true)
         }
     }
 

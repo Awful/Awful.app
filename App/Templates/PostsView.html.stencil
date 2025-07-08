@@ -43,10 +43,6 @@
     </div>
     {% endif %}
     
-    {% if endMessage and enableFrogAndGhost %}
-        <div id="endf" class=".end" style="height: 100px;"></div>
-    {% endif %}
-    
     {% if endMessage and not enableFrogAndGhost %}
     <div id="end" class=".end">
         End of the thread

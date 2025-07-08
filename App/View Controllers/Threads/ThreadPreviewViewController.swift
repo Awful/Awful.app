@@ -22,7 +22,7 @@ final class ThreadPreviewViewController: ViewController {
     private var imageInterpolator: SelfHostingAttachmentInterpolator?
     private var loadingView: LoadingView?
     private var networkOperation: Task<Void, Error>?
-    private var post: PostRenderModel?
+    private var post: LegacyPostRenderModel?
     private var postHTML: Swift.Result<HTMLAndForm, Error>?
     private let secondaryThreadTag: ThreadTag?
     private let subject: String
@@ -95,7 +95,7 @@ final class ThreadPreviewViewController: ViewController {
 
                 postHTML = .success((previewHTML, formData))
 
-                self.post = PostRenderModel(author: author, isOP: true, postDate: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short), postHTML: previewHTML)
+                self.post = LegacyPostRenderModel(author: author, isOP: true, postDate: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short), postHTML: previewHTML)
                 self.formData = formData
                 self.renderPreview()
             } catch {

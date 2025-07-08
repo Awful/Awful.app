@@ -34,3 +34,6 @@ AuthKey_*.p8
 
 # Temporary export options
 ExportOptions.plist
+
+/.claude/
+CLAUDE.md

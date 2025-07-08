@@ -2,6 +2,13 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+// TODO: This file should be deleted once the SwiftUI navigation migration is complete.
+// It's a legacy UIKit-based component that's currently kept for compatibility during the transition.
+// Dependencies to remove before deletion:
+// - AppDelegate references (rootViewControllerStack, urlRouter)
+// - URL routing migration to SwiftUI
+// - Any remaining UIKit-specific functionality
+
 import AwfulSettings
 import Combine
 import CoreData
@@ -92,7 +99,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {
-        let emptyNavigationController = NavigationController()
+        let emptyNavigationController = UINavigationController()
         emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
         emptyNavigationController.restorationClass = nil
         return emptyNavigationController

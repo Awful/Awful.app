@@ -194,10 +194,10 @@ extension UITableView {
 }
 
 extension UIViewController {
-    /// Returns the view controller's navigation controller, lazily creating a NavigationController if needed. Created navigation controllers adopt the modalPresentationStyle of the view controller.
+    /// Returns the view controller's navigation controller, lazily creating a UINavigationController if needed. Created navigation controllers adopt the modalPresentationStyle of the view controller.
     var enclosingNavigationController: UINavigationController {
         if let nav = navigationController { return nav }
-        let nav = NavigationController(rootViewController: self)
+        let nav = UINavigationController(rootViewController: self)
         nav.modalPresentationStyle = modalPresentationStyle
         if let identifier = restorationIdentifier {
             nav.restorationIdentifier = "\(identifier) navigation"

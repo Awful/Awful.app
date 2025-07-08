@@ -30,7 +30,15 @@ class AppViewModel: ObservableObject {
         NotificationCenter.default.publisher(for: .DidLogIn)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in 
-                self?.isLoggedIn = true 
+                // Check login state with a brief delay to ensure UserDefaults are set
+                Task { @MainActor in
+                    // Small delay to allow UserDefaults to be written
+                    try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+                    
+                    let hasValidCookies = ForumsClient.shared.isLoggedIn
+                    let hasUserDefaults = UserDefaults.standard.value(for: Settings.userID) != nil
+                    self?.isLoggedIn = hasValidCookies && hasUserDefaults
+                }
             }
             .store(in: &cancellables)
             

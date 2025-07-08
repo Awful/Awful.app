@@ -167,6 +167,10 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
             showsTagAndRating: showThreadTags,
             inTableWithWidth: tableView.bounds.width
         )
+        
+        // Ensure navigation bar buttons use the correct tint color
+        navigationController?.navigationBar.tintColor = theme["navigationBarTextColor"]
+        composeBarButtonItem.tintColor = theme["navigationBarTextColor"]
     }
     
     override func viewDidAppear(_ animated: Bool) {

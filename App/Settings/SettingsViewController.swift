@@ -120,19 +120,19 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
 
 /// See the `README.md` section "Alternate App Icons" for more info.
 private let appIcons: [AppIconDataSource.AppIcon] = [
-    .init(accessibilityLabel: String(localized: "Rated five", bundle: .module), imageName: AppIconImageNames.rated_five),
-    .init(accessibilityLabel: String(localized: "Rated five (pride flag)", bundle: .module), imageName: AppIconImageNames.rated_five_pride),
-    .init(accessibilityLabel: String(localized: "Rated five (trans flag)", bundle: .module), imageName: AppIconImageNames.rated_five_trans),
-    .init(accessibilityLabel: String(localized: "V", bundle: .module), imageName: AppIconImageNames.v),
-    .init(accessibilityLabel: String(localized: "Ghost", bundle: .module), imageName: AppIconImageNames.ghost_blue),
-    .init(accessibilityLabel: String(localized: "Froggo", bundle: .module), imageName: AppIconImageNames.froggo),
-    .init(accessibilityLabel: String(localized: "Froggo (purple)", bundle: .module), imageName: AppIconImageNames.froggo_purple),
-    .init(accessibilityLabel: String(localized: "Doggo", bundle: .module), imageName: AppIconImageNames.staredog),
-    .init(accessibilityLabel: String(localized: "Doggo poking tongue", bundle: .module), imageName: AppIconImageNames.staredog_tongue),
-    .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: AppIconImageNames.five),
-    .init(accessibilityLabel: String(localized: "Creep", bundle: .module), imageName: AppIconImageNames.greenface),
-    .init(accessibilityLabel: String(localized: "Riker", bundle: .module), imageName: AppIconImageNames.riker),
-    .init(accessibilityLabel: String(localized: "Smith", bundle: .module), imageName: AppIconImageNames.smith),
+    .init(accessibilityLabel: String(localized: "Bars", bundle: .module), imageName: "Bars v2"),
+    .init(accessibilityLabel: String(localized: "Pride", bundle: .module), imageName: "Pride v2"),
+    .init(accessibilityLabel: String(localized: "Trans", bundle: .module), imageName: "Trans v2"),
+    .init(accessibilityLabel: String(localized: "V", bundle: .module), imageName: "V v2"),
+    .init(accessibilityLabel: String(localized: "Ghost", bundle: .module), imageName: "Ghost v2"),
+    .init(accessibilityLabel: String(localized: "Froggo", bundle: .module), imageName: "Frog v2"),
+    .init(accessibilityLabel: String(localized: "Froggo (purple)", bundle: .module), imageName: "Frog Purple v2"),
+    .init(accessibilityLabel: String(localized: "Doggo", bundle: .module), imageName: "Doggo"),
+    .init(accessibilityLabel: String(localized: "Doggo poking tongue", bundle: .module), imageName: "Doggo Tongue"),
+    .init(accessibilityLabel: String(localized: "Five", bundle: .module), imageName: "5"),
+    .init(accessibilityLabel: String(localized: "Creep", bundle: .module), imageName: "Creep"),
+    .init(accessibilityLabel: String(localized: "Riker", bundle: .module), imageName: "Riker"),
+    .init(accessibilityLabel: String(localized: "Smith", bundle: .module), imageName: "Smith"),
 ]
 
 @MainActor private func makeAppIconDataSource() -> AppIconDataSource {
@@ -140,7 +140,7 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
     let selected = appIcons.first { $0.imageName == selectedIconName } ?? appIcons.first!
     return AppIconDataSource(
         appIcons: appIcons,
-        imageLoader: { Image("\($0.imageName)_preview", bundle: .main) },
+        imageLoader: { _ in Image(systemName: "app.fill") },
         selected: selected,
         setter: {
             let iconName = $0 == appIcons.first ? nil : $0.imageName
