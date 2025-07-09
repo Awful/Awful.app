@@ -56,6 +56,9 @@ struct SwiftUIRenderView: UIViewRepresentable {
         // Update theme stylesheet in case it changed
         container.setup(theme: theme)
         
+        // Update frog setting on container
+        container.updateFrogAndGhostEnabled(frogAndGhostEnabled)
+        
         // Update content insets based on toolbar visibility
         container.updateContentInsets(top: topInset, bottom: bottomInset)
         
@@ -128,8 +131,10 @@ struct SwiftUIRenderView: UIViewRepresentable {
             }
             
             // Reset rendering flag when HTML finishes loading
-            if let container = view.superview as? RenderViewContainer {
-                container.isCurrentlyRendering = false
+            DispatchQueue.main.async {
+                if let container = view.superview as? RenderViewContainer {
+                    container.isCurrentlyRendering = false
+                }
             }
         }
         
@@ -229,7 +234,7 @@ class RenderViewContainer: UIView, UIScrollViewDelegate {
     private var lastScrollOffset: CGFloat = 0
     private var lastRenderedPostsHash: Int = 0
     fileprivate var isCurrentlyRendering: Bool = false
-    @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
+    private var frogAndGhostEnabled: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -375,17 +380,49 @@ class RenderViewContainer: UIView, UIScrollViewDelegate {
         }
     }
     
+    func updateFrogAndGhostEnabled(_ enabled: Bool) {
+        frogAndGhostEnabled = enabled
+        logger.info("Updated frogAndGhostEnabled: \(enabled)")
+    }
+    
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
         let scrollDiff = currentOffset - lastScrollOffset
+        let contentHeight = scrollView.contentSize.height
+        let viewHeight = scrollView.bounds.height
         
         // Pass scroll position to SwiftUI
         scrollDelegate?.didUpdateScrollPosition(
             offset: currentOffset,
-            contentHeight: scrollView.contentSize.height,
-            viewHeight: scrollView.bounds.height
+            contentHeight: contentHeight,
+            viewHeight: viewHeight
         )
+        
+        // Calculate pull-to-refresh progress when overscrolling at bottom
+        if frogAndGhostEnabled {
+            let bottomOffset = currentOffset + viewHeight
+            let overscroll = bottomOffset - contentHeight
+            
+            if overscroll > 0 {
+                // User is overscrolling at the bottom - calculate pull fraction
+                let maxPullDistance: CGFloat = 80 // Distance needed for full pull
+                let pullFraction = min(overscroll / maxPullDistance, 1.0)
+                scrollDelegate?.didPull(fraction: pullFraction)
+                
+                // Debug logging
+                logger.info("Pull detected: overscroll=\(overscroll), fraction=\(pullFraction)")
+                
+                // Trigger refresh if pull is complete and user has dragged far enough
+                if pullFraction >= 1.0 && overscroll > maxPullDistance {
+                    logger.info("Pull refresh triggered")
+                    scrollDelegate?.didTriggerRefresh()
+                }
+            } else if currentOffset + viewHeight >= contentHeight - 10 {
+                // Reset pull progress when very close to or at bottom
+                scrollDelegate?.didPull(fraction: 0.0)
+            }
+        }
         
         // Use a smaller threshold for more responsive toolbar show/hide
         // but include velocity to prevent jittery behavior

@@ -211,6 +211,7 @@
 		2DB5FC3E2E1D1034003F050F /* SwiftUIUnpopModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */; };
 		2DB77D692E1E784C0021B8DE /* NavigationStateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */; };
 		2DB77D6B2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */; };
+		2DB77D6D2E1E9E710021B8DE /* ScrollStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DE976A92E0FF1D000233423 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A82E0FF1D000233423 /* RootView.swift */; };
 		2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AB2E0FF1DF00233423 /* LoginView.swift */; };
@@ -531,6 +532,7 @@
 		2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUnpopModifier.swift; sourceTree = "<group>"; };
 		2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateRestoration.swift; sourceTree = "<group>"; };
 		2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUILoadingViewFactory.swift; sourceTree = "<group>"; };
+		2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStateManager.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		2DE976A82E0FF1D000233423 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		2DE976AB2E0FF1DF00233423 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -1200,6 +1202,7 @@
 		2DB5FC282E1A8042003F050F /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */,
 				2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */,
 				2DB5FC372E1BCE5E003F050F /* PostsPageViewModel.swift */,
 				2DB5FC332E1BCE43003F050F /* SwiftUIPostsPageView.swift */,
@@ -1535,6 +1538,7 @@
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
 				1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */,
+				2DB77D6D2E1E9E710021B8DE /* ScrollStateManager.swift in Sources */,
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
 				1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */,
