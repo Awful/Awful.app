@@ -338,9 +338,6 @@
     "Done" : {
 
     },
-    "Double-check your username and password, then try again." : {
-
-    },
     "Edit" : {
 
     },
@@ -685,7 +682,7 @@
     },
     "login.consent-to-terms.full-text" : {
       "comment" : "Text shown at the bottom of the login screen that tells the user about the Privacy Policy and Terms & Conditions. Parameters are: 1. a link to the Privacy Policy (translated separately); 2. a link to the Terms of Service (translated separately).",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -697,7 +694,7 @@
     },
     "login.consent-to-terms.privacy-policy" : {
       "comment" : "Link on the login screen that opens the Privacy Policy when tapped.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -709,7 +706,7 @@
     },
     "login.consent-to-terms.terms-of-service" : {
       "comment" : "Link on the login screen that opens the Terms of Service when tapped.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1049,9 +1046,6 @@
           }
         }
       }
-    },
-    "Problem Logging In" : {
-
     },
     "profile.default-gender" : {
       "extractionState" : "migrated",

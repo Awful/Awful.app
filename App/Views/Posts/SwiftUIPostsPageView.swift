@@ -81,40 +81,8 @@ struct SwiftUIPostsPageView: View {
                 // Loading state
                 loadingView
             } else {
-                // Main content
-                VStack(spacing: 0) {
-                    // Top subtoolbar (conditionally visible)
-                    if isSubToolbarVisible {
-                        VStack(spacing: 0) {
-                            HStack {
-                                Button("Previous Posts") {
-                                    // TODO: Implement previous posts functionality
-                                }
-                                .font(.caption)
-                                
-                                Spacer()
-                                
-                                Button(thread.forum?.name ?? "Parent Forum") {
-                                    handleGoToParentForum()
-                                }
-                                .font(.caption.weight(.medium))
-                                
-                                Spacer()
-                                
-                                Button("Scroll To End") {
-                                    // TODO: Implement scroll to end functionality
-                                }
-                                .font(.caption)
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
-                            .foregroundColor(Color(theme[uicolor: "toolbarTextColor"] ?? UIColor.systemBlue))
-                        }
-                        .transition(.opacity.combined(with: .move(edge: .top)))
-                    }
-                    
-                    // Main posts content
+                // Main content - webview gets full height with overlaid frog
+                ZStack {
                     SwiftUIRenderView(
                         viewModel: viewModel,
                         theme: theme,
@@ -179,72 +147,36 @@ struct SwiftUIPostsPageView: View {
                             } else {
                                 frogPullProgress = 0
                             }
-                        }
+                        },
+                        topInset: isSubToolbarVisible ? 40 : 0, // Estimated subtoolbar height
+                        bottomInset: isBottomBarVisible ? 100 : 20 // Larger bottom inset when toolbar visible, small padding when hidden
                     )
                     
-                    // Collapsible thread title in bottom safe area (shows when toolbar is hidden)
-                    if !isBottomBarVisible {
-                        HStack {
+                    // SwiftUI frog positioned at bottom of content
+                    if frogAndGhostEnabled && viewModel.isLastPage {
+                        VStack {
                             Spacer()
-                            Text(thread.title ?? "Thread")
-                                .font(.caption.weight(.medium))
-                                .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .multilineTextAlignment(.center)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 16)
-                        .frame(height: 12) // Very compact height
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .background(Color.clear)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                    }
-                    
-                    // Bottom toolbar - positioned at bottom with proper safe area handling
-                    if isBottomBarVisible {
-                        PostsToolbarContainer(
-                            thread: thread,
-                            author: author,
-                            page: viewModel.currentPage,
-                            numberOfPages: viewModel.numberOfPages,
-                            isLoadingViewVisible: isLoadingSpinnerVisible,
-                            onSettingsTapped: {
-                                showingSettings = true
-                            },
-                            onBackTapped: {
-                                viewModel.goToPreviousPage()
-                            },
-                            onForwardTapped: {
-                                viewModel.goToNextPage()
-                            },
-                            onPageSelected: { page in
-                                viewModel.loadPage(page)
-                            },
-                            onGoToLastPost: {
-                                viewModel.goToLastPost()
-                            },
-                            onBookmarkTapped: {
-                                viewModel.toggleBookmark()
-                            },
-                            onCopyLinkTapped: {
-                                viewModel.copyLink()
-                            },
-                            onVoteTapped: {
-                                // TODO: Implement vote functionality
-                            },
-                            onYourPostsTapped: {
-                                // TODO: Implement your posts functionality  
+                            HStack {
+                                Spacer()
+                                SwiftUIFrogAnimation(
+                                    theme: theme,
+                                    pullProgress: frogPullProgress,
+                                    isVisible: isNearBottom,
+                                    onRefreshTriggered: {
+                                        if pullForNext {
+                                            viewModel.goToNextPage()
+                                        } else {
+                                            viewModel.refresh()
+                                        }
+                                    }
+                                )
+                                .frame(width: 40, height: 40)
+                                .offset(y: calculateFrogOffset())
+                                Spacer()
                             }
-                        )
-                        .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
-                        .overlay(
-                            Rectangle()
-                                .fill(Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator))
-                                .frame(height: 0.5),
-                            alignment: .top
-                        )
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .padding(.bottom, isBottomBarVisible ? 120 : 40)
+                        }
+                        .allowsHitTesting(false)
                     }
                 }
             }
@@ -253,6 +185,86 @@ struct SwiftUIPostsPageView: View {
         .toolbar(isTopBarVisible ? .visible : .hidden, for: .navigationBar)
         .navigationTitle(thread.title ?? "Thread")
         .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
+        .overlay(alignment: .top) {
+            // Top subtoolbar overlay
+            if isSubToolbarVisible {
+                VStack(spacing: 0) {
+                    HStack {
+                        Button("Previous Posts") {
+                            // TODO: Implement previous posts functionality
+                        }
+                        .font(.caption)
+                        
+                        Spacer()
+                        
+                        Button(thread.forum?.name ?? "Parent Forum") {
+                            handleGoToParentForum()
+                        }
+                        .font(.caption.weight(.medium))
+                        
+                        Spacer()
+                        
+                        Button("Scroll To End") {
+                            // TODO: Implement scroll to end functionality
+                        }
+                        .font(.caption)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
+                    .foregroundColor(Color(theme[uicolor: "toolbarTextColor"] ?? UIColor.systemBlue))
+                }
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+        .overlay(alignment: .bottom) {
+            // Bottom toolbar overlay
+            if isBottomBarVisible {
+                PostsToolbarContainer(
+                    thread: thread,
+                    author: author,
+                    page: viewModel.currentPage,
+                    numberOfPages: viewModel.numberOfPages,
+                    isLoadingViewVisible: isLoadingSpinnerVisible,
+                    onSettingsTapped: {
+                        showingSettings = true
+                    },
+                    onBackTapped: {
+                        viewModel.goToPreviousPage()
+                    },
+                    onForwardTapped: {
+                        viewModel.goToNextPage()
+                    },
+                    onPageSelected: { page in
+                        viewModel.loadPage(page)
+                    },
+                    onGoToLastPost: {
+                        viewModel.goToLastPost()
+                    },
+                    onBookmarkTapped: {
+                        viewModel.toggleBookmark()
+                    },
+                    onCopyLinkTapped: {
+                        viewModel.copyLink()
+                    },
+                    onVoteTapped: {
+                        // TODO: Implement vote functionality
+                    },
+                    onYourPostsTapped: {
+                        // TODO: Implement your posts functionality  
+                    }
+                )
+                .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
+                .overlay(
+                    Rectangle()
+                        .fill(Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator))
+                        .frame(height: 0.5),
+                    alignment: .top
+                )
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
+            }
+            // No title in immersion mode
+        }
         .overlay(alignment: .center) {
             // Main throbber for page loading transitions with full screen overlay
             if isLoadingSpinnerVisible {
@@ -358,7 +370,6 @@ struct SwiftUIPostsPageView: View {
         }
     }
     
-    
     // MARK: - Helper Methods
     private func findRenderViewContainer(in view: UIView) -> RenderViewContainer? {
         if let container = view as? RenderViewContainer {
@@ -372,6 +383,23 @@ struct SwiftUIPostsPageView: View {
         }
         
         return nil
+    }
+    
+    private func calculateFrogOffset() -> CGFloat {
+        // Calculate frog position based on scroll position to make it appear embedded in content
+        let totalContentHeight = scrollContentHeight
+        let viewHeight = scrollViewHeight
+        let currentOffset = scrollPosition
+        
+        // Position frog near the bottom of the content
+        let bottomContentY = totalContentHeight - viewHeight
+        let frogBaseOffset = max(0, bottomContentY - currentOffset)
+        
+        // Add some bounce effect when overscrolling
+        let overscroll = max(0, currentOffset + viewHeight - totalContentHeight)
+        let bounceOffset = min(overscroll * 0.5, 30)
+        
+        return -(frogBaseOffset + bounceOffset)
     }
     
     // MARK: - Action Handlers

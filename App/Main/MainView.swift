@@ -6,6 +6,7 @@ import AwfulTheming
 import SwiftUI
 import Combine
 import CoreData
+import Foundation
 
 // MARK: - Coordinator Protocol
 
@@ -23,6 +24,19 @@ protocol MainCoordinator: ObservableObject {
     func navigateToPrivateMessage(_ message: PrivateMessage)
     func presentComposeThread(for forum: Forum)
     func shouldHideTabBar(isInSidebar: Bool) -> Bool
+    
+    // URL Routing methods
+    func navigateToTab(_ tab: MainTab)
+    func navigateToForumWithID(_ forumID: String) -> Bool
+    func navigateToThreadWithID(_ threadID: String, page: ThreadPage, author: User?) -> Bool
+    func navigateToPostWithID(_ postID: String) -> Bool
+    func navigateToMessageWithID(_ messageID: String) -> Bool
+    func presentUserProfile(userID: String)
+    func presentRapSheet(userID: String)
+    
+    // State Restoration methods
+    func saveNavigationState()
+    func restoreNavigationState()
 }
 
 // MARK: - Main Coordinator Implementation
@@ -35,6 +49,19 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     
     // Keep a reference to the current compose view controller for triggering actions
     private weak var currentComposeViewController: ComposeTextViewController?
+    
+    // Track navigation destinations for unpop functionality
+    @Published var navigationHistory: [AnyHashable] = []
+    @Published var unpopStack: [AnyHashable] = []
+    
+    // State restoration support
+    private let stateManager: NavigationStateManager
+    private let managedObjectContext: NSManagedObjectContext
+    
+    init(managedObjectContext: NSManagedObjectContext) {
+        self.managedObjectContext = managedObjectContext
+        self.stateManager = NavigationStateManager(managedObjectContext: managedObjectContext)
+    }
     
     enum PresentedSheet: Identifiable {
         case search
@@ -85,6 +112,12 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         let destination = ThreadDestination(thread: thread, page: page, author: author)
         print("🔵 MainCoordinator: navigateToThread called - thread: \(thread.title ?? "Unknown"), page: \(page)")
         print("🔵 MainCoordinator: Current path count: \(path.count)")
+        
+        // Clear unpop stack when navigating to new destination
+        unpopStack.removeAll()
+        
+        // Add to navigation history and path
+        navigationHistory.append(destination)
         path.append(destination)
         print("🔵 MainCoordinator: Path count after append: \(path.count)")
         isTabBarHidden = true
@@ -102,12 +135,24 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func navigateToPrivateMessage(_ message: PrivateMessage) {
+        // Clear unpop stack when navigating to new destination
+        unpopStack.removeAll()
+        
+        // Add to navigation history and path
+        navigationHistory.append(message)
         path.append(message)
         isTabBarHidden = true
     }
     
     func navigateToComposeMessage() {
-        path.append(ComposePrivateMessage())
+        let destination = ComposePrivateMessage()
+        
+        // Clear unpop stack when navigating to new destination
+        unpopStack.removeAll()
+        
+        // Add to navigation history and path
+        navigationHistory.append(destination)
+        path.append(destination)
         isTabBarHidden = true
     }
     
@@ -154,6 +199,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             presentedSheet = nil // dismiss sheet on iPhone
         } else {
             if path.count > 0 {
+                // Move the last item from history to unpop stack when popping
+                if let lastItem = navigationHistory.last {
+                    unpopStack.append(lastItem)
+                    navigationHistory.removeLast()
+                }
                 path.removeLast() // pop from detail stack on iPad
             }
         }
@@ -166,17 +216,315 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             navigateToThread(thread)
         }
     }
+    
+    // MARK: - Unpop Support
+    
+    func performUnpop() {
+        guard !unpopStack.isEmpty else { return }
+        
+        let itemToRestore = unpopStack.removeLast()
+        navigationHistory.append(itemToRestore)
+        path.append(itemToRestore)
+        isTabBarHidden = true
+        
+        print("🔄 Unpop performed, restored item to path. Path count: \(path.count)")
+    }
+    
+    func handleNavigationPop() {
+        // Called when a navigation pop occurs (e.g., back button pressed)
+        // Only move items if we have them in history and the history is longer than current path
+        let itemsToMoveCount = navigationHistory.count - path.count
+        if itemsToMoveCount > 0 {
+            let itemsToMove = Array(navigationHistory.suffix(itemsToMoveCount))
+            unpopStack.append(contentsOf: itemsToMove)
+            navigationHistory.removeLast(itemsToMoveCount)
+            print("🔄 Navigation pop detected, moved \(itemsToMove.count) item(s) to unpop stack. Unpop stack count: \(unpopStack.count)")
+        }
+    }
+    
+    // MARK: - URL Routing Implementation
+    
+    func navigateToTab(_ tab: MainTab) {
+        // This would be handled by the MainView by updating selectedTab
+        // For now, we'll just print debug info
+        print("🔗 MainCoordinator: navigateToTab called - tab: \(tab)")
+    }
+    
+    func navigateToForumWithID(_ forumID: String) -> Bool {
+        print("🔗 MainCoordinator: navigateToForumWithID called - forumID: \(forumID)")
+        
+        // Find the forum in Core Data
+        let context = AppDelegate.instance.managedObjectContext
+        let request = NSFetchRequest<Forum>(entityName: "Forum")
+        request.predicate = NSPredicate(format: "forumID == %@", forumID)
+        request.fetchLimit = 1
+        
+        do {
+            let forums = try context.fetch(request)
+            guard let forum = forums.first else {
+                print("⚠️ Forum with ID \(forumID) not found")
+                return false
+            }
+            
+            navigateToForum(forum)
+            return true
+        } catch {
+            print("❌ Error fetching forum: \(error)")
+            return false
+        }
+    }
+    
+    func navigateToThreadWithID(_ threadID: String, page: ThreadPage, author: User?) -> Bool {
+        print("🔗 MainCoordinator: navigateToThreadWithID called - threadID: \(threadID), page: \(page)")
+        
+        // Find the thread in Core Data
+        let context = AppDelegate.instance.managedObjectContext
+        let request = NSFetchRequest<AwfulThread>(entityName: "AwfulThread")
+        request.predicate = NSPredicate(format: "threadID == %@", threadID)
+        request.fetchLimit = 1
+        
+        do {
+            let threads = try context.fetch(request)
+            guard let thread = threads.first else {
+                print("⚠️ Thread with ID \(threadID) not found")
+                return false
+            }
+            
+            navigateToThread(thread, page: page, author: author)
+            return true
+        } catch {
+            print("❌ Error fetching thread: \(error)")
+            return false
+        }
+    }
+    
+    func navigateToPostWithID(_ postID: String) -> Bool {
+        print("🔗 MainCoordinator: navigateToPostWithID called - postID: \(postID)")
+        
+        // Find the post in Core Data to get its thread
+        let context = AppDelegate.instance.managedObjectContext
+        let request = NSFetchRequest<Post>(entityName: "Post")
+        request.predicate = NSPredicate(format: "postID == %@", postID)
+        request.fetchLimit = 1
+        
+        do {
+            let posts = try context.fetch(request)
+            guard let post = posts.first,
+                  let thread = post.thread else {
+                print("⚠️ Post with ID \(postID) not found or has no thread")
+                return false
+            }
+            
+            // Navigate to the thread with the specific post
+            // For now, we'll navigate to the first page where the post might be
+            // In a more complete implementation, we'd calculate the exact page
+            navigateToThread(thread, page: .specific(1), author: nil)
+            return true
+        } catch {
+            print("❌ Error fetching post: \(error)")
+            return false
+        }
+    }
+    
+    func navigateToMessageWithID(_ messageID: String) -> Bool {
+        print("🔗 MainCoordinator: navigateToMessageWithID called - messageID: \(messageID)")
+        
+        // Find the message in Core Data
+        let context = AppDelegate.instance.managedObjectContext
+        let request = NSFetchRequest<PrivateMessage>(entityName: "PrivateMessage")
+        request.predicate = NSPredicate(format: "messageID == %@", messageID)
+        request.fetchLimit = 1
+        
+        do {
+            let messages = try context.fetch(request)
+            guard let message = messages.first else {
+                print("⚠️ Message with ID \(messageID) not found")
+                return false
+            }
+            
+            navigateToPrivateMessage(message)
+            return true
+        } catch {
+            print("❌ Error fetching message: \(error)")
+            return false
+        }
+    }
+    
+    func presentUserProfile(userID: String) {
+        print("🔗 MainCoordinator: presentUserProfile called - userID: \(userID)")
+        
+        // Find the user in Core Data
+        let context = AppDelegate.instance.managedObjectContext
+        let request = NSFetchRequest<User>(entityName: "User")
+        request.predicate = NSPredicate(format: "userID == %@", userID)
+        request.fetchLimit = 1
+        
+        do {
+            let users = try context.fetch(request)
+            guard let user = users.first else {
+                print("⚠️ User with ID \(userID) not found")
+                return
+            }
+            
+            // Present user profile modally
+            let profileVC = ProfileViewController(user: user)
+            profileVC.restorationIdentifier = "Profile"
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootVC = window.rootViewController {
+                rootVC.present(profileVC.enclosingNavigationController, animated: true)
+            }
+        } catch {
+            print("❌ Error fetching user: \(error)")
+        }
+    }
+    
+    func presentRapSheet(userID: String) {
+        print("🔗 MainCoordinator: presentRapSheet called - userID: \(userID)")
+        
+        // Find the user in Core Data
+        let context = AppDelegate.instance.managedObjectContext
+        let request = NSFetchRequest<User>(entityName: "User")
+        request.predicate = NSPredicate(format: "userID == %@", userID)
+        request.fetchLimit = 1
+        
+        do {
+            let users = try context.fetch(request)
+            guard let user = users.first else {
+                print("⚠️ User with ID \(userID) not found")
+                return
+            }
+            
+            // Present rap sheet modally
+            let rapSheetVC = RapSheetViewController(user: user)
+            rapSheetVC.restorationIdentifier = "Rap sheet"
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootVC = window.rootViewController {
+                rootVC.present(rapSheetVC.enclosingNavigationController, animated: true)
+            }
+        } catch {
+            print("❌ Error fetching user: \(error)")
+        }
+    }
+    
+    // MARK: - State Restoration Implementation
+    
+    func saveNavigationState() {
+        print("💾 MainCoordinator: Saving navigation state")
+        
+        // Convert navigation history to saveable format
+        let navigationDestinations = navigationHistory.compactMap { NavigationDestination.from($0) }
+        let unpopDestinations = unpopStack.compactMap { NavigationDestination.from($0) }
+        
+        // Convert main navigation path (we can't directly access NavigationPath contents)
+        // For now, we'll use the navigationHistory as a proxy
+        let mainNavDestinations = navigationDestinations
+        
+        // Convert sidebar path (similar approach)
+        let sidebarDestinations: [NavigationDestination] = [] // TODO: Track sidebar navigation
+        
+        // Convert presented sheet
+        let sheetState: PresentedSheetState?
+        switch presentedSheet {
+        case .search:
+            sheetState = .search
+        case .compose(let tab):
+            sheetState = .compose(tab.rawValue)
+        case .none:
+            sheetState = nil
+        }
+        
+        // Create navigation state (tab selection handled by @SceneStorage)
+        let navigationState = NavigationState(
+            selectedTab: "forums", // This is now handled by @SceneStorage
+            isTabBarHidden: isTabBarHidden,
+            mainNavigationPath: mainNavDestinations,
+            sidebarNavigationPath: sidebarDestinations,
+            presentedSheet: sheetState,
+            navigationHistory: navigationDestinations,
+            unpopStack: unpopDestinations,
+            editStates: EditStates(
+                isEditingBookmarks: false, // These are now handled by @SceneStorage
+                isEditingMessages: false,
+                isEditingForums: false
+            ),
+            interfaceVersion: NavigationState.currentInterfaceVersion
+        )
+        
+        stateManager.saveNavigationState(navigationState)
+    }
+    
+    func restoreNavigationState() {
+        print("🔄 MainCoordinator: Restoring navigation state")
+        
+        guard let savedState = stateManager.restoreNavigationState() else {
+            print("🔄 No saved navigation state to restore")
+            return
+        }
+        
+        // Restore basic properties
+        isTabBarHidden = savedState.isTabBarHidden
+        
+        // Restore navigation history
+        navigationHistory = savedState.navigationHistory.compactMap { destination in
+            destination.toNavigationObject(context: managedObjectContext)
+        }
+        
+        // Restore unpop stack
+        unpopStack = savedState.unpopStack.compactMap { destination in
+            destination.toNavigationObject(context: managedObjectContext)
+        }
+        
+        // Restore main navigation path
+        path = NavigationPath()
+        for destination in savedState.mainNavigationPath {
+            if let navObject = destination.toNavigationObject(context: managedObjectContext) {
+                path.append(navObject)
+            }
+        }
+        
+        // Restore sidebar navigation path
+        sidebarPath = NavigationPath()
+        for destination in savedState.sidebarNavigationPath {
+            if let navObject = destination.toNavigationObject(context: managedObjectContext) {
+                sidebarPath.append(navObject)
+            }
+        }
+        
+        // Restore presented sheet
+        if let sheetState = savedState.presentedSheet {
+            switch sheetState {
+            case .search:
+                presentedSheet = .search
+            case .compose(let tabRawValue):
+                if let tab = MainTab(rawValue: tabRawValue) {
+                    presentedSheet = .compose(tab)
+                }
+            }
+        }
+        
+        // Tab selection is now handled by @SceneStorage in MainView
+        // No need to manually restore tab selection
+        
+        print("✅ Navigation state restored successfully")
+    }
 }
 
 struct MainView: View {
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @SwiftUI.Environment(\.theme) private var theme
-    @State private var selectedTab: MainTab = .forums
+    
+    // Use @SceneStorage for simple state restoration
+    @SceneStorage("selectedTab") private var selectedTab: MainTab = .forums
+    @SceneStorage("isEditingBookmarks") private var isEditingBookmarks = false
+    @SceneStorage("isEditingMessages") private var isEditingMessages = false
+    @SceneStorage("isEditingForums") private var isEditingForums = false
+    
     @State private var themeObserver: AnyCancellable?
-    @StateObject private var coordinator = MainCoordinatorImpl()
-    @State private var isEditingBookmarks = false
-    @State private var isEditingMessages = false
-    @State private var isEditingForums = false
+    @StateObject private var coordinator = MainCoordinatorImpl(managedObjectContext: AppDelegate.instance.managedObjectContext)
     @State private var hasFavoriteForums = false
     
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
@@ -199,6 +547,13 @@ struct MainView: View {
             observeThemeChanges()
             checkPrivateMessagePrivileges()
             checkFavoriteForums()
+            
+            // Restore navigation state on app launch
+            coordinator.restoreNavigationState()
+        }
+        .onDisappear {
+            // Save navigation state when view disappears
+            coordinator.saveNavigationState()
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ThemeDidChange"))) { _ in
             configureGlobalAppearance(theme: theme)
@@ -211,6 +566,24 @@ struct MainView: View {
             if let count = notification.userInfo?["count"] as? Int {
                 hasFavoriteForums = count > 0
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NavigateToTab"))) { notification in
+            if let tab = notification.object as? MainTab {
+                selectedTab = tab
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("RestoreTabSelection"))) { notification in
+            if let tab = notification.object as? MainTab {
+                selectedTab = tab
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            // Save state when app enters background
+            coordinator.saveNavigationState()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            // Restore state when app enters foreground
+            coordinator.restoreNavigationState()
         }
     }
     
@@ -1372,6 +1745,7 @@ struct iPadMainView: View {
                 DetailView()
                     .environmentObject(coordinator)
             }
+            .unpopEnabled(coordinator: coordinator)
         }
         .tint(navigationTintColor)
     }
@@ -1426,6 +1800,7 @@ struct iPhoneMainView: View {
                 )
             }
         }
+        .unpopEnabled(coordinator: coordinator)
         .tint(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
         .accentColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
         .toolbarBackground(.visible, for: .navigationBar)

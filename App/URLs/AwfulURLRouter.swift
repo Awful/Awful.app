@@ -14,14 +14,14 @@ struct AwfulURLRouter {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private let managedObjectContext: NSManagedObjectContext
-    private let rootViewController: UIViewController
+    private let rootViewController: UIViewController?
     weak var coordinator: (any MainCoordinator)?
     
     /**
-        - parameter rootViewController: The application's root view controller.
+        - parameter rootViewController: The application's root view controller (optional for SwiftUI-only mode).
         - parameter managedObjectContext: The managed object context we use to find forums, threads, and posts.
      */
-    init(rootViewController: UIViewController, managedObjectContext: NSManagedObjectContext) {
+    init(rootViewController: UIViewController?, managedObjectContext: NSManagedObjectContext) {
         self.rootViewController = rootViewController
         self.managedObjectContext = managedObjectContext
     }
@@ -36,22 +36,41 @@ struct AwfulURLRouter {
         
         switch route {
         case .bookmarks:
+            if let coordinator = coordinator {
+                coordinator.navigateToTab(.bookmarks)
+                return true
+            }
             return selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self) != nil
 
         case let .forum(id: forumID):
+            if let coordinator = coordinator {
+                return coordinator.navigateToForumWithID(forumID)
+            }
             let key = ForumKey(forumID: forumID)
             guard let forum = Forum.existingObjectForKey(objectKey: key, in: managedObjectContext) else { return false }
             return jumpToForum(forum)
 
         case .forumList:
+            if let coordinator = coordinator {
+                coordinator.navigateToTab(.forums)
+                return true
+            }
             return selectTopmostViewController(containingViewControllerOfClass: ForumsTableViewController.self) != nil
 
         case .lepersColony:
+            if let coordinator = coordinator {
+                coordinator.navigateToTab(.lepers)
+                return true
+            }
+            guard let rootViewController = rootViewController else { return false }
             let rapSheetVC = RapSheetViewController(user: nil)
             rootViewController.present(rapSheetVC.enclosingNavigationController, animated: true)
             return true
 
         case let .message(id: messageID):
+            if let coordinator = coordinator {
+                return coordinator.navigateToMessageWithID(messageID)
+            }
             guard let inbox = selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) else { return false }
             _ = inbox.navigationController?.popToViewController(inbox, animated: false)
 
@@ -61,7 +80,8 @@ struct AwfulURLRouter {
                 return true
             }
 
-            guard let rootView = rootViewController.view else { return false }
+            guard let rootViewController = rootViewController,
+                  let rootView = rootViewController.view else { return false }
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Message", mode: .indeterminate, animated: true)!
             overlay.tintColor = Theme.defaultTheme()["tintColor"]
 
@@ -81,26 +101,22 @@ struct AwfulURLRouter {
             return true
 
         case .messagesList:
+            if let coordinator = coordinator {
+                coordinator.navigateToTab(.messages)
+                return true
+            }
             return selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) != nil
 
         case let .post(id: postID, updateSeen):
+            if let coordinator = coordinator {
+                return coordinator.navigateToPostWithID(postID)
+            }
             let key = PostKey(postID: postID)
 
             var updateLastRead: Bool {
                 switch updateSeen {
                 case .noseen: return false
                 case .seen: return true
-                }
-            }
-
-            if let coordinator = coordinator {
-                // TODO: This doesn't scroll to the post.
-                if let post = Post.existingObjectForKey(objectKey: key, in: managedObjectContext),
-                   let thread = post.thread,
-                   post.page > 0
-                {
-                    coordinator.navigateToThread(thread, page: .specific(post.page))
-                    return true
                 }
             }
             
@@ -114,7 +130,8 @@ struct AwfulURLRouter {
                 return showPostsViewController(postsVC)
             }
 
-            guard let rootView = rootViewController.view else { return false }
+            guard let rootViewController = rootViewController,
+                  let rootView = rootViewController.view else { return false }
             let overlay = MRProgressOverlayView.showOverlayAdded(to: rootView, title: "Locating Post", mode: .indeterminate, animated: true)!
             overlay.tintColor = Theme.defaultTheme()["tintColor"]
 
@@ -144,6 +161,11 @@ struct AwfulURLRouter {
             return true
 
         case let .profile(userID: userID):
+            if let coordinator = coordinator {
+                coordinator.presentUserProfile(userID: userID)
+                return true
+            }
+            guard let rootViewController = rootViewController else { return false }
             Task { @MainActor in
                 do {
                     let user = try await fetchUser(withUserID: userID)
@@ -157,6 +179,11 @@ struct AwfulURLRouter {
             return true
 
         case let .rapSheet(userID: userID):
+            if let coordinator = coordinator {
+                coordinator.presentRapSheet(userID: userID)
+                return true
+            }
+            guard let rootViewController = rootViewController else { return false }
             Task { @MainActor in
                 do {
                     let user = try await fetchUser(withUserID: userID)
@@ -170,12 +197,25 @@ struct AwfulURLRouter {
             return true
 
         case .settings:
+            if let coordinator = coordinator {
+                coordinator.navigateToTab(.settings)
+                return true
+            }
             return selectTopmostViewController(containingViewControllerOfClass: SettingsViewController.self) != nil
 
         case let .threadPage(threadID: threadID, page: page, updateSeen):
+            if let coordinator = coordinator {
+                return coordinator.navigateToThreadWithID(threadID, page: page, author: nil)
+            }
             return showThread(threadID, page: page, updateSeen: updateSeen)
 
         case let .threadPageSingleUser(threadID: threadID, userID: userID, page: page, updateSeen):
+            if let coordinator = coordinator {
+                // Find the author user
+                let userKey = UserKey(userID: userID, username: nil)
+                let author = User.existingObjectForKey(objectKey: userKey, in: managedObjectContext)
+                return coordinator.navigateToThreadWithID(threadID, page: page, author: author)
+            }
             return showThread(threadID, page: page, justPostsByUser: userID, updateSeen: updateSeen)
         }
     }
@@ -184,6 +224,8 @@ struct AwfulURLRouter {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
+        guard let rootViewController = rootViewController else { return false }
+        
         if let threadsVC = rootViewController.firstDescendant(ofType: ThreadsTableViewController.self),
            threadsVC.forum === forum
         {
@@ -206,10 +248,10 @@ struct AwfulURLRouter {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        guard let
-            splitVC = rootViewController.children.first as? UISplitViewController,
-            let tabBarVC = splitVC.viewControllers.first as? UITabBarController
-            else { return nil }
+        guard let rootViewController = rootViewController,
+              let splitVC = rootViewController.children.first as? UISplitViewController,
+              let tabBarVC = splitVC.viewControllers.first as? UITabBarController
+              else { return nil }
         for topmost in tabBarVC.viewControllers ?? [] {
             guard let match = topmost.firstDescendant(ofType: VC.self) else { continue }
             tabBarVC.selectedViewController = topmost
@@ -270,7 +312,8 @@ struct AwfulURLRouter {
         
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
         let targetNav: UINavigationController
-        guard let splitVC = rootViewController.children.first as? UISplitViewController else { return false }
+        guard let rootViewController = rootViewController,
+              let splitVC = rootViewController.children.first as? UISplitViewController else { return false }
         if splitVC.viewControllers.count == 2 {
             targetNav = splitVC.viewControllers[1] as! UINavigationController
         } else {

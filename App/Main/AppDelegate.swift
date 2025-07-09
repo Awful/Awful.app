@@ -71,6 +71,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             self.open(route: $0)
         })
         
+        // Initialize URL router for SwiftUI app
+        initializeURLRouter()
         
         return true
     }
@@ -79,9 +81,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        // Don't want to lazily create it now.
-        _rootViewControllerStack?.didAppear()
-        
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
         
         showPromptIfLoginCookieExpiresSoon()
@@ -148,7 +147,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
-        return ForumsClient.shared.isLoggedIn
+        // Disable UIKit state restoration - we now use SwiftUI-based restoration
+        return false
     }
     
     func application(_ application: UIApplication, willEncodeRestorableStateWith coder: NSCoder) {
@@ -156,16 +156,18 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-        guard ForumsClient.shared.isLoggedIn else { return false }
-        return coder.decodeInteger(forKey: interfaceVersionKey) == currentInterfaceVersion.rawValue
+        // Disable UIKit state restoration - we now use SwiftUI-based restoration
+        return false
     }
 
     func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        return rootViewControllerStack.viewControllerWithRestorationIdentifierPath(identifierComponents)
+        // Disable UIKit state restoration - we now use SwiftUI-based restoration
+        return nil
     }
     
     func application(_ application: UIApplication, didDecodeRestorableStateWith coder: NSCoder) {
-        try! managedObjectContext.save()
+        // Disable UIKit state restoration - we now use SwiftUI-based restoration
+        // SwiftUI restoration handles Core Data saving automatically
     }
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
@@ -194,24 +196,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         NotificationCenter.default.post(name: .DidLogOut, object: self)
         
-        /*
-        let loginVC = LoginViewController.newFromStoryboard()
-        loginVC.completionBlock = { [weak self] (login) in
-            guard let self = self else { return }
-            self.setRootViewController(self.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
-                guard let self = self else { return }
-                self.rootViewControllerStack.didAppear()
-                self.loginViewController = nil
-            })
-        }
-        
-        setRootViewController(loginVC.enclosingNavigationController, animated: true) { [weak self] in
-            self?._rootViewControllerStack = nil
-            self?.urlRouter = nil
-            
-            self?.dataStore.deleteStoreAndReset()
-        }
-        */
+        // SwiftUI RootView automatically handles the transition to LoginView
+        // based on the DidLogOut notification through AppViewModel
     }
     
     func emptyCache() {
@@ -220,14 +206,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func open(route: AwfulRoute) {
+        initializeURLRouter()
         urlRouter?.route(route)
     }
     
     private func updateShortcutItems() {
-        guard urlRouter != nil else {
-            UIApplication.shared.shortcutItems = []
-            return
-        }
+        // URL router is always available in SwiftUI app
+        // No need to check for nil anymore
         
         var shortcutItems: [UIApplicationShortcutItem] = []
         
@@ -268,42 +253,20 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(true)
     }
     
-    private var _rootViewControllerStack: RootViewControllerStack?
     private var urlRouter: AwfulURLRouter?
-    private var rootViewControllerStack: RootViewControllerStack {
-        if let stack = _rootViewControllerStack { return stack }
-        let stack = RootViewControllerStack(managedObjectContext: managedObjectContext)
-        var router = AwfulURLRouter(rootViewController: stack.rootViewController, managedObjectContext: managedObjectContext)
+    
+    private func initializeURLRouter() {
+        guard urlRouter == nil else { return }
+        var router = AwfulURLRouter(rootViewController: nil, managedObjectContext: managedObjectContext)
         router.coordinator = mainCoordinator
         urlRouter = router
-        stack.userInterfaceStyleDidChange = { [weak self] in self?.automaticallyUpdateDarkModeEnabledIfNecessary() }
-        _rootViewControllerStack = stack
-        return stack
     }
     
-    private lazy var loginViewController: LoginViewController! = {
-        let loginVC = LoginViewController.newFromStoryboard()
-        loginVC.completionBlock = { [weak self] (login) in
-            guard let self = self else { return }
-            self.setRootViewController(self.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
-                guard let self = self else { return }
-                self.rootViewControllerStack.didAppear()
-                self.loginViewController = nil
-            })
-        }
-        return loginVC
-    }()
+    // LoginViewController is no longer needed - SwiftUI LoginView handles this
 }
 
 private extension AppDelegate {
-    func setRootViewController(_ rootViewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
-        guard let window = window else { return }
-        UIView.transition(with: window, duration: animated ? 0.3 : 0, options: .transitionCrossDissolve, animations: { 
-            window.rootViewController = rootViewController
-            }) { (completed) in
-                completion?()
-        }
-    }
+    // setRootViewController is no longer needed - SwiftUI handles window management
     
     func themeDidChange() {
         guard let window = window else { return }

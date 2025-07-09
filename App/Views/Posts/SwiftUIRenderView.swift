@@ -29,6 +29,10 @@ struct SwiftUIRenderView: UIViewRepresentable {
     let onRefreshTriggered: (() -> Void)?
     let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? // offset, contentHeight, viewHeight
     
+    // MARK: - Content Insets
+    var topInset: CGFloat = 0
+    var bottomInset: CGFloat = 0
+    
     // MARK: - Settings
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
@@ -51,6 +55,9 @@ struct SwiftUIRenderView: UIViewRepresentable {
     func updateUIView(_ container: RenderViewContainer, context: UIViewRepresentableContext<SwiftUIRenderView>) {
         // Update theme stylesheet in case it changed
         container.setup(theme: theme)
+        
+        // Update content insets based on toolbar visibility
+        container.updateContentInsets(top: topInset, bottom: bottomInset)
         
         // Only render posts if we actually have posts to display
         if !viewModel.posts.isEmpty {
@@ -351,6 +358,22 @@ class RenderViewContainer: UIView, UIScrollViewDelegate {
         lastRenderedPostsHash = 0
     }
     
+    func updateContentInsets(top: CGFloat, bottom: CGFloat) {
+        let scrollView = _renderView.scrollView
+        var currentInsets = scrollView.contentInset
+        
+        // Only update if insets have changed to avoid unnecessary layout
+        if currentInsets.top != top || currentInsets.bottom != bottom {
+            currentInsets.top = top
+            currentInsets.bottom = bottom
+            scrollView.contentInset = currentInsets
+            
+            // Update scroll indicator insets to match
+            scrollView.scrollIndicatorInsets = currentInsets
+            
+            logger.info("Updated content insets: top=\(top), bottom=\(bottom)")
+        }
+    }
     
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -364,12 +387,35 @@ class RenderViewContainer: UIView, UIScrollViewDelegate {
             viewHeight: scrollView.bounds.height
         )
         
-        // Only notify scroll direction if there's significant scroll movement
-        if abs(scrollDiff) > 10 {
+        // Use a smaller threshold for more responsive toolbar show/hide
+        // but include velocity to prevent jittery behavior
+        let threshold: CGFloat = 5
+        let velocity = scrollView.panGestureRecognizer.velocity(in: scrollView)
+        let isSignificantScroll = abs(scrollDiff) > threshold || abs(velocity.y) > 100
+        
+        if isSignificantScroll {
             let isScrollingUp = scrollDiff < 0
             scrollDelegate?.didScroll(isScrollingUp: isScrollingUp)
             lastScrollOffset = currentOffset
         }
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // Reset the last scroll offset when user begins dragging
+        // This helps with more accurate direction detection
+        lastScrollOffset = scrollView.contentOffset.y
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            // If scroll view won't decelerate, reset tracking for next gesture
+            lastScrollOffset = scrollView.contentOffset.y
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        // Reset tracking when scroll animation ends
+        lastScrollOffset = scrollView.contentOffset.y
     }
 }
 
