@@ -523,7 +523,6 @@ struct MainView: View {
     @SceneStorage("isEditingMessages") private var isEditingMessages = false
     @SceneStorage("isEditingForums") private var isEditingForums = false
     
-    @State private var themeObserver: AnyCancellable?
     @StateObject private var coordinator = MainCoordinatorImpl(managedObjectContext: AppDelegate.instance.managedObjectContext)
     @State private var hasFavoriteForums = false
     
@@ -544,7 +543,6 @@ struct MainView: View {
             AppDelegate.instance.mainCoordinator = coordinator
             configureGlobalAppearance(theme: theme)
             updateStatusBarStyle(theme: theme)
-            observeThemeChanges()
             checkPrivateMessagePrivileges()
             checkFavoriteForums()
             
@@ -555,10 +553,11 @@ struct MainView: View {
             // Save navigation state when view disappears
             coordinator.saveNavigationState()
         }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ThemeDidChange"))) { _ in
-            configureGlobalAppearance(theme: theme)
-            updateStatusBarStyle(theme: theme)
+        .onChange(of: theme) { newTheme in
+            configureGlobalAppearance(theme: newTheme)
+            updateStatusBarStyle(theme: newTheme)
         }
+        .preferredColorScheme(theme[string: "statusBarBackground"] == "dark" ? .dark : .light)
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("CanSendPrivateMessagesDidChange"))) { _ in
             checkPrivateMessagePrivileges()
         }
@@ -629,14 +628,6 @@ struct MainView: View {
         }
     }
     
-    private func observeThemeChanges() {
-        // Observe theme changes via NotificationCenter
-        themeObserver = NotificationCenter.default
-            .publisher(for: Notification.Name("ThemeDidChange"))
-            .sink { _ in
-                // The onReceive on the main view body will handle the update.
-            }
-    }
     
     private func updateStatusBarStyle(theme: Theme) {
         // Update status bar style based on theme
@@ -1468,64 +1459,11 @@ class StatusBarStyleManager: ObservableObject {
     
     func updateStyle(lightContent: Bool) {
         shouldUseLightContent = lightContent
-        
-        // Update the status bar style by creating a custom view controller wrapper
-        DispatchQueue.main.async {
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                for window in windowScene.windows {
-                    // Check if we already have our custom wrapper
-                    if let statusBarController = window.rootViewController as? StatusBarStyleViewController {
-                        statusBarController.updateStatusBarStyle(lightContent: lightContent)
-                    } else if let rootViewController = window.rootViewController {
-                        // Replace the root view controller with our wrapper
-                        let statusBarController = StatusBarStyleViewController(wrapping: rootViewController)
-                        statusBarController.updateStatusBarStyle(lightContent: lightContent)
-                        window.rootViewController = statusBarController
-                    }
-                }
-            }
-        }
+        // Status bar style is now handled by SwiftUI's preferredColorScheme
+        // No need for custom view controller wrapping
     }
 }
 
-class StatusBarStyleViewController: UIViewController {
-    private var shouldUseLightContent = false
-    private let wrappedViewController: UIViewController
-    
-    init(wrapping viewController: UIViewController) {
-        self.wrappedViewController = viewController
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return shouldUseLightContent ? .lightContent : .darkContent
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Add the wrapped view controller as a child
-        addChild(wrappedViewController)
-        view.addSubview(wrappedViewController.view)
-        wrappedViewController.view.frame = view.bounds
-        wrappedViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        wrappedViewController.didMove(toParent: self)
-        
-        // Set initial status bar style based on current theme
-        let theme = Theme.defaultTheme()
-        let statusBarBackground = theme[string: "statusBarBackground"] ?? "dark"
-        updateStatusBarStyle(lightContent: statusBarBackground == "dark")
-    }
-    
-    func updateStatusBarStyle(lightContent: Bool) {
-        shouldUseLightContent = lightContent
-        setNeedsStatusBarAppearanceUpdate()
-    }
-}
 
 // MARK: - SwiftUI Compatible View Controllers
 
@@ -1561,29 +1499,11 @@ private class SwiftUICompatibleViewController: UIViewController {
         wrappedViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         wrappedViewController.didMove(toParent: self)
         
-        // Set up observer for theme changes
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(themeDidChange),
-            name: Notification.Name("ThemeDidChange"),
-            object: nil
-        )
         
         // Initial background setup
         wrappedViewController.maintainSwiftUICompatibleBackground()
     }
     
-    @objc private func themeDidChange() {
-        // Call the wrapped view controller's theme change method
-        if let themeable = wrappedViewController as? Themeable {
-            themeable.themeDidChange()
-        }
-        
-        // Then override with clear backgrounds to maintain SwiftUI compatibility
-        Task<Void, Never>.detached(priority: .userInitiated) { @MainActor [weak self] in
-            self?.wrappedViewController.maintainSwiftUICompatibleBackground()
-        }
-    }
     
     // Forward restoration identifier
     override var restorationIdentifier: String? {

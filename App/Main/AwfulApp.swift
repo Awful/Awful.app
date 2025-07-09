@@ -21,25 +21,7 @@ struct AwfulApp: App {
     }
     
     private func setInitialStatusBarStyle() {
-        // Get the current theme and set status bar style immediately
-        let theme = Theme.defaultTheme()
-        let statusBarBackground = theme[string: "statusBarBackground"] ?? "dark"
-        let shouldUseLightContent = statusBarBackground == "dark"
-        
-        // Apply status bar style immediately
-        DispatchQueue.main.async {
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                for window in windowScene.windows {
-                    if let rootViewController = window.rootViewController {
-                        // Wrap the existing root view controller if it's not already wrapped
-                        if !(rootViewController is StatusBarStyleViewController) {
-                            let statusBarController = StatusBarStyleViewController(wrapping: rootViewController)
-                            statusBarController.updateStatusBarStyle(lightContent: shouldUseLightContent)
-                            window.rootViewController = statusBarController
-                        }
-                    }
-                }
-            }
-        }
+        // Status bar style is now handled by SwiftUI's preferredColorScheme
+        // No need for initial UIKit setup
     }
 }

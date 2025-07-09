@@ -34,22 +34,6 @@ public struct ThemeViewModifier: ViewModifier {
         content
             .environment(\.colorScheme, darkMode ? .dark : .light)
             .environment(\.theme, theme)
-            .onChange(of: darkMode) { _ in
-                // Post notification to update UIKit components
-                NotificationCenter.default.post(name: Notification.Name("ThemeDidChange"), object: nil)
-            }
-            .onChange(of: darkThemeName) { _ in
-                // Post notification when dark theme changes (if currently in dark mode)
-                if darkMode {
-                    NotificationCenter.default.post(name: Notification.Name("ThemeDidChange"), object: nil)
-                }
-            }
-            .onChange(of: lightThemeName) { _ in
-                // Post notification when light theme changes (if currently in light mode)
-                if !darkMode {
-                    NotificationCenter.default.post(name: Notification.Name("ThemeDidChange"), object: nil)
-                }
-            }
     }
 }
 

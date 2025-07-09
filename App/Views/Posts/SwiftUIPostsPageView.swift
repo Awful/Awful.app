@@ -27,8 +27,16 @@ struct SwiftUIPostsPageView: View {
     let coordinator: AnyObject?
     
     @StateObject private var viewModel: PostsPageViewModel
-    @SwiftUI.Environment(\.theme) private var theme
+    @SwiftUI.Environment(\.theme) private var globalTheme
     @SwiftUI.Environment(\.dismiss) private var dismiss
+    
+    // MARK: - Forum-Specific Theme
+    private var theme: Theme {
+        guard let forum = thread.forum, !forum.forumID.isEmpty else {
+            return Theme.defaultTheme()
+        }
+        return Theme.currentTheme(for: ForumID(forum.forumID))
+    }
     
     // MARK: - Settings
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
@@ -269,13 +277,13 @@ struct SwiftUIPostsPageView: View {
             // Main throbber for page loading transitions with full screen overlay
             if isLoadingSpinnerVisible {
                 ZStack {
-                    // Semi-transparent overlay to dim content
-                    Color(theme[uicolor: "postsLoadingViewTintColor"] ?? .systemBackground)
+                    // Semi-transparent overlay to dim content - use black for YOSPOS, theme color for others
+                    Color(theme[string: "postsLoadingViewType"] == "YOSPOS" ? .black : (theme[uicolor: "postsLoadingViewTintColor"] ?? .systemBackground))
                         .opacity(1)
                         .ignoresSafeArea()
                     
-                    // Main throbber animation
-                    MainThrobberView(theme: theme)
+                    // Theme-specific loading animation
+                    SwiftUILoadingViewFactory.loadingView(for: theme)
                     
                 }
                 .allowsHitTesting(false)
@@ -302,9 +310,7 @@ struct SwiftUIPostsPageView: View {
             setupHandoff()
         }
         .onChange(of: viewModel.isLoading) { isLoading in
-            withAnimation(.easeInOut(duration: 0.3)) {
-                isLoadingSpinnerVisible = isLoading
-            }
+            isLoadingSpinnerVisible = isLoading
         }
         .onDisappear {
             invalidateHandoff()
@@ -364,10 +370,7 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Loading View
     var loadingView: some View {
-        VStack {
-            ProgressView()
-                .scaleEffect(1.5)
-        }
+        SwiftUILoadingViewFactory.loadingView(for: theme)
     }
     
     // MARK: - Helper Methods
@@ -747,51 +750,6 @@ private struct FrogLottieView: UIViewRepresentable {
     }
 }
 
-// MARK: - Main Throbber for Page Loading
-private struct MainThrobberView: UIViewRepresentable {
-    let theme: Theme
-    
-    func makeUIView(context: Context) -> UIView {
-        let containerView = UIView()
-        
-        let animationView = LottieAnimationView(
-            animation: LottieAnimation.named("mainthrobber60"),
-            configuration: LottieConfiguration(renderingEngine: .mainThread)
-        )
-        
-        animationView.contentMode = .scaleAspectFit
-        animationView.loopMode = .loop
-        animationView.animationSpeed = 1
-        animationView.backgroundBehavior = .pauseAndRestore
-        
-        // Apply theme colors
-        let color = ColorValueProvider(theme["activityIndicatorColor"]?.lottieColorValue ?? UIColor.systemBlue.lottieColorValue)
-        let keypath = AnimationKeypath(keys: ["**", "**", "**", "Color"])
-        animationView.setValueProvider(color, keypath: keypath)
-        
-        // Add the animation view to container and constrain it
-        animationView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(animationView)
-        NSLayoutConstraint.activate([
-            animationView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            animationView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            animationView.widthAnchor.constraint(equalToConstant: 80),
-            animationView.heightAnchor.constraint(equalToConstant: 80)
-        ])
-        
-        animationView.play()
-        return containerView
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // Find the LottieAnimationView in the container and update theme colors if needed
-        if let animationView = uiView.subviews.first as? LottieAnimationView {
-            let color = ColorValueProvider(theme["activityIndicatorColor"]?.lottieColorValue ?? UIColor.systemBlue.lottieColorValue)
-            let keypath = AnimationKeypath(keys: ["**", "**", "**", "Color"])
-            animationView.setValueProvider(color, keypath: keypath)
-        }
-    }
-}
 
 
 

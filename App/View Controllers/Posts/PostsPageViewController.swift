@@ -1591,11 +1591,13 @@ extension PostsPageViewController {
                 let isLastPage = page?.isLastPage(totalPages: numberOfPages) ?? false
                 contextDict["endMessage"] = isLastPage && author == nil
                 
-                let html = try StencilEnvironment.shared.renderTemplate(.postsView, context: contextDict)
-                postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
-            } catch {
-                logger.error("Failed to render posts: \(error)")
-                postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
+                do {
+                    let html = try StencilEnvironment.shared.renderTemplate(.postsView, context: contextDict)
+                    postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+                } catch {
+                    logger.error("Failed to render posts: \(error)")
+                    postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
+                }
             }
         }
     }

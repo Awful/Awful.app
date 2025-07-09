@@ -210,6 +210,7 @@
 		2DB5FC3C2E1BF6E0003F050F /* FrogRefreshAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC3A2E1BF6E0003F050F /* FrogRefreshAnimation.swift */; };
 		2DB5FC3E2E1D1034003F050F /* SwiftUIUnpopModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */; };
 		2DB77D692E1E784C0021B8DE /* NavigationStateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */; };
+		2DB77D6B2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DE976A92E0FF1D000233423 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A82E0FF1D000233423 /* RootView.swift */; };
 		2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AB2E0FF1DF00233423 /* LoginView.swift */; };
@@ -529,6 +530,7 @@
 		2DB5FC3A2E1BF6E0003F050F /* FrogRefreshAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrogRefreshAnimation.swift; sourceTree = "<group>"; };
 		2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUnpopModifier.swift; sourceTree = "<group>"; };
 		2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateRestoration.swift; sourceTree = "<group>"; };
+		2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUILoadingViewFactory.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		2DE976A82E0FF1D000233423 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		2DE976AB2E0FF1DF00233423 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -1198,6 +1200,7 @@
 		2DB5FC282E1A8042003F050F /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */,
 				2DB5FC372E1BCE5E003F050F /* PostsPageViewModel.swift */,
 				2DB5FC332E1BCE43003F050F /* SwiftUIPostsPageView.swift */,
 				2DB5FC342E1BCE43003F050F /* SwiftUIRenderView.swift */,
@@ -1647,6 +1650,7 @@
 				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
 				1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
+				2DB77D6B2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,

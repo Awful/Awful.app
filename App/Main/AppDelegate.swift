@@ -104,7 +104,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             $darkMode
                 .dropFirst()
                 .receive(on: RunLoop.main)
-                .sink { [weak self] _ in self?.showSnapshotDuringThemeDidChange() }
+                .sink { _ in 
+                    // Theme changes are now handled by SwiftUI environment
+                    // No need for snapshot-based transitions
+                }
                 .store(in: &cancellables)
 
             // if darkMode changes,
@@ -120,7 +123,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
                 .filter { [weak self] _ in self?.darkMode == false }
             Publishers.Merge(darkDefaultChange, lightDefaultChange)
                 .receive(on: RunLoop.main)
-                .sink { [weak self] _ in self?.showSnapshotDuringThemeDidChange() }
+                .sink { _ in 
+                    // Theme changes are now handled by SwiftUI environment
+                    // No need for snapshot-based transitions
+                }
                 .store(in: &cancellables)
 
             $showCustomTitles
@@ -271,32 +277,19 @@ private extension AppDelegate {
     func themeDidChange() {
         guard let window = window else { return }
 
+        // Only update window tint color, UIKit components will get theme updates
+        // through their own mechanisms when they're actually visible
         window.tintColor = Theme.defaultTheme()["tintColor"]
-
-        if let root = window.rootViewController {
-            for vc in root.subtree {
-                if vc.isViewLoaded, let themeable = vc as? Themeable {
-                    themeable.themeDidChange()
-                }
-            }
-        }
     }
     
     @objc private func forumSpecificThemeDidChange(_ notification: Notification) {
-        showSnapshotDuringThemeDidChange()
+        // Forum-specific theme changes are now handled by SwiftUI environment
+        // No need for snapshot-based transitions
     }
     
     private func showSnapshotDuringThemeDidChange() {
-        if let window = window, let snapshot = window.snapshotView(afterScreenUpdates: false) {
-            window.addSubview(snapshot)
-            themeDidChange()
-            
-            UIView.transition(from: snapshot, to: window, duration: 0.2, options: [.transitionCrossDissolve, .showHideTransitionViews], completion: { completed in
-                snapshot.removeFromSuperview()
-            })
-        } else {
-            themeDidChange()
-        }
+        // Snapshot-based theme transitions are disabled
+        // Theme changes are now handled by SwiftUI environment system
     }
     
     private func setShowAvatarsSetting() {
@@ -315,7 +308,8 @@ private extension AppDelegate {
     }
     
     @objc func preferredContentSizeDidChange(_ notification: Notification) {
-        themeDidChange()
+        // Content size changes are handled by SwiftUI automatically
+        // No need for manual theme updates
     }
     
 
