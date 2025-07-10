@@ -268,6 +268,9 @@ class RenderViewContainer: UIView, UIScrollViewDelegate {
     
     func setup(theme: Theme) {
         _renderView.setThemeStylesheet(theme[string: "postsViewCSS"] ?? "")
+        
+        // Apply scroll indicator style from theme
+        _renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
     }
     
     func renderPosts(

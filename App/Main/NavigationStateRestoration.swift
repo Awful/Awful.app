@@ -26,7 +26,7 @@ struct NavigationState: Codable {
 
 /// Represents different types of navigation destinations that can be restored
 enum NavigationDestination: Codable, Hashable {
-    case thread(threadID: String, page: ThreadPage, authorID: String?)
+    case thread(threadID: String, page: ThreadPage, authorID: String?, scrollFraction: CGFloat?)
     case forum(forumID: String)
     case privateMessage(messageID: String)
     case composePrivateMessage
@@ -114,26 +114,51 @@ class NavigationStateManager: ObservableObject {
 extension NavigationDestination {
     /// Converts a NavigationDestination to its actual navigation object
     func toNavigationObject(context: NSManagedObjectContext) -> AnyHashable? {
+        // Validate Core Data context is ready
+        guard context.persistentStoreCoordinator != nil else {
+            print("❌ Core Data context not ready for navigation object conversion")
+            return nil
+        }
+        
         switch self {
-        case .thread(let threadID, let page, let authorID):
-            guard let thread = fetchThread(threadID: threadID, context: context) else { return nil }
+        case .thread(let threadID, let page, let authorID, let scrollFraction):
+            guard let thread = fetchThread(threadID: threadID, context: context) else { 
+                print("⚠️ Thread \(threadID) not found during restoration, skipping")
+                return nil 
+            }
             let author = authorID.flatMap { fetchUser(userID: $0, context: context) }
-            return ThreadDestination(thread: thread, page: page, author: author)
+            return ThreadDestination(thread: thread, page: page, author: author, scrollFraction: scrollFraction)
             
         case .forum(let forumID):
-            return fetchForum(forumID: forumID, context: context)
+            guard let forum = fetchForum(forumID: forumID, context: context) else {
+                print("⚠️ Forum \(forumID) not found during restoration, skipping")
+                return nil
+            }
+            return forum
             
         case .privateMessage(let messageID):
-            return fetchPrivateMessage(messageID: messageID, context: context)
+            guard let message = fetchPrivateMessage(messageID: messageID, context: context) else {
+                print("⚠️ Message \(messageID) not found during restoration, skipping")
+                return nil
+            }
+            return message
             
         case .composePrivateMessage:
             return ComposePrivateMessage()
             
         case .profile(let userID):
-            return fetchUser(userID: userID, context: context)
+            guard let user = fetchUser(userID: userID, context: context) else {
+                print("⚠️ User \(userID) not found during restoration, skipping")
+                return nil
+            }
+            return user
             
         case .rapSheet(let userID):
-            return fetchUser(userID: userID, context: context)
+            guard let user = fetchUser(userID: userID, context: context) else {
+                print("⚠️ User \(userID) not found during restoration, skipping")
+                return nil
+            }
+            return user
         }
     }
     
@@ -144,7 +169,8 @@ extension NavigationDestination {
             return .thread(
                 threadID: destination.thread.threadID,
                 page: destination.page,
-                authorID: destination.author?.userID
+                authorID: destination.author?.userID,
+                scrollFraction: destination.scrollFraction
             )
             
         case let forum as Forum:
@@ -165,7 +191,7 @@ extension NavigationDestination {
 // MARK: - Core Data Helper Functions
 
 private func fetchThread(threadID: String, context: NSManagedObjectContext) -> AwfulThread? {
-    let request = NSFetchRequest<AwfulThread>(entityName: "AwfulThread")
+    let request = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName)
     request.predicate = NSPredicate(format: "threadID == %@", threadID)
     request.fetchLimit = 1
     
@@ -178,7 +204,7 @@ private func fetchThread(threadID: String, context: NSManagedObjectContext) -> A
 }
 
 private func fetchForum(forumID: String, context: NSManagedObjectContext) -> Forum? {
-    let request = NSFetchRequest<Forum>(entityName: "Forum")
+    let request = NSFetchRequest<Forum>(entityName: Forum.entityName)
     request.predicate = NSPredicate(format: "forumID == %@", forumID)
     request.fetchLimit = 1
     
@@ -191,7 +217,7 @@ private func fetchForum(forumID: String, context: NSManagedObjectContext) -> For
 }
 
 private func fetchPrivateMessage(messageID: String, context: NSManagedObjectContext) -> PrivateMessage? {
-    let request = NSFetchRequest<PrivateMessage>(entityName: "PrivateMessage")
+    let request = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName)
     request.predicate = NSPredicate(format: "messageID == %@", messageID)
     request.fetchLimit = 1
     
@@ -204,7 +230,7 @@ private func fetchPrivateMessage(messageID: String, context: NSManagedObjectCont
 }
 
 private func fetchUser(userID: String, context: NSManagedObjectContext) -> User? {
-    let request = NSFetchRequest<User>(entityName: "User")
+    let request = NSFetchRequest<User>(entityName: User.entityName)
     request.predicate = NSPredicate(format: "userID == %@", userID)
     request.fetchLimit = 1
     

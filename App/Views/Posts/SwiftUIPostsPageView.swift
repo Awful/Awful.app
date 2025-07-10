@@ -54,13 +54,23 @@ struct SwiftUIPostsPageView: View {
     @State private var selectedPost: Post?
     @State private var selectedUser: User?
     @State private var actionSheetRect: CGRect = .zero
+    @State private var currentScrollFraction: CGFloat = 0.0
     
     // MARK: - Initialization
-    init(thread: AwfulThread, author: User? = nil, coordinator: AnyObject? = nil) {
+    init(thread: AwfulThread, author: User? = nil, coordinator: AnyObject? = nil, scrollFraction: CGFloat? = nil) {
         self.thread = thread
         self.author = author
         self.coordinator = coordinator
         self._viewModel = StateObject(wrappedValue: PostsPageViewModel(thread: thread, author: author))
+        
+        // Set up scroll restoration if provided
+        if let scrollFraction = scrollFraction {
+            // We need to set this after initialization
+            let viewModel = self._viewModel.wrappedValue
+            DispatchQueue.main.async {
+                viewModel.scrollToFraction = scrollFraction
+            }
+        }
     }
     
     init(thread: AwfulThread, author: User? = nil, page: ThreadPage = .specific(1), coordinator: AnyObject? = nil) {
@@ -109,6 +119,11 @@ struct SwiftUIPostsPageView: View {
                         onScrollPositionChanged: { offset, contentHeight, viewHeight in
                             // Update scroll position state with throttling
                             scrollState.handleScrollPositionChanged(offset: offset, contentHeight: contentHeight, viewHeight: viewHeight)
+                            
+                            // Track current scroll fraction for state restoration
+                            if contentHeight > 0 {
+                                currentScrollFraction = (offset + viewHeight/2) / contentHeight
+                            }
                         },
                         topInset: scrollState.topInset,
                         bottomInset: scrollState.bottomInset
@@ -244,6 +259,9 @@ struct SwiftUIPostsPageView: View {
         .onDisappear {
             scrollState.reset()
             invalidateHandoff()
+            
+            // Save current scroll position for potential restoration
+            saveScrollPosition()
         }
         .sheet(item: $replyWorkspace) { workspace in
             NavigationView {
@@ -374,6 +392,20 @@ struct SwiftUIPostsPageView: View {
     
     func invalidateHandoff() {
         // Note: In SwiftUI, handoff invalidation would need to be handled by the hosting controller
+    }
+    
+    // MARK: - Scroll Position Restoration
+    private func saveScrollPosition() {
+        // Update the navigation coordinator with current scroll position
+        // This will allow restoration when navigating back to this thread
+        if let coordinator = coordinator as? MainCoordinatorImpl {
+            coordinator.updateScrollPosition(
+                for: thread.threadID,
+                page: viewModel.currentPage ?? .specific(1),
+                author: author,
+                scrollFraction: currentScrollFraction
+            )
+        }
     }
     
     
@@ -684,12 +716,6 @@ private struct FrogLottieView: UIViewRepresentable {
 
 // MARK: - Preview
 #Preview {
-    let thread = AwfulThread()
-    thread.title = "Sample Thread"
-    thread.bookmarked = false
-    
-    return NavigationView {
-        SwiftUIPostsPageView(thread: thread)
-            .environment(\.theme, Theme.defaultTheme())
-    }
+    Text("SwiftUIPostsPageView Preview")
+        .environment(\.theme, Theme.defaultTheme())
 }

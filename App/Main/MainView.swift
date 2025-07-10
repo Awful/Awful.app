@@ -37,6 +37,10 @@ protocol MainCoordinator: ObservableObject {
     // State Restoration methods
     func saveNavigationState()
     func restoreNavigationState()
+    
+    // Scroll Position Management
+    func updateScrollPosition(scrollFraction: CGFloat)
+    func updateScrollPosition(for threadID: String, page: ThreadPage, author: User?, scrollFraction: CGFloat)
 }
 
 // MARK: - Main Coordinator Implementation
@@ -200,7 +204,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         } else {
             if path.count > 0 {
                 // Move the last item from history to unpop stack when popping
-                if let lastItem = navigationHistory.last {
+                if let lastItem = navigationHistory.last, !navigationHistory.isEmpty {
                     unpopStack.append(lastItem)
                     navigationHistory.removeLast()
                 }
@@ -254,8 +258,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         print("🔗 MainCoordinator: navigateToForumWithID called - forumID: \(forumID)")
         
         // Find the forum in Core Data
-        let context = AppDelegate.instance.managedObjectContext
-        let request = NSFetchRequest<Forum>(entityName: "Forum")
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available")
+            return false
+        }
+        let request = NSFetchRequest<Forum>(entityName: Forum.entityName)
         request.predicate = NSPredicate(format: "forumID == %@", forumID)
         request.fetchLimit = 1
         
@@ -278,8 +285,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         print("🔗 MainCoordinator: navigateToThreadWithID called - threadID: \(threadID), page: \(page)")
         
         // Find the thread in Core Data
-        let context = AppDelegate.instance.managedObjectContext
-        let request = NSFetchRequest<AwfulThread>(entityName: "AwfulThread")
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available")
+            return false
+        }
+        let request = NSFetchRequest<AwfulThread>(entityName: AwfulThread.entityName)
         request.predicate = NSPredicate(format: "threadID == %@", threadID)
         request.fetchLimit = 1
         
@@ -302,8 +312,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         print("🔗 MainCoordinator: navigateToPostWithID called - postID: \(postID)")
         
         // Find the post in Core Data to get its thread
-        let context = AppDelegate.instance.managedObjectContext
-        let request = NSFetchRequest<Post>(entityName: "Post")
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available")
+            return false
+        }
+        let request = NSFetchRequest<Post>(entityName: Post.entityName)
         request.predicate = NSPredicate(format: "postID == %@", postID)
         request.fetchLimit = 1
         
@@ -330,8 +343,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         print("🔗 MainCoordinator: navigateToMessageWithID called - messageID: \(messageID)")
         
         // Find the message in Core Data
-        let context = AppDelegate.instance.managedObjectContext
-        let request = NSFetchRequest<PrivateMessage>(entityName: "PrivateMessage")
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available")
+            return false
+        }
+        let request = NSFetchRequest<PrivateMessage>(entityName: PrivateMessage.entityName)
         request.predicate = NSPredicate(format: "messageID == %@", messageID)
         request.fetchLimit = 1
         
@@ -354,8 +370,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         print("🔗 MainCoordinator: presentUserProfile called - userID: \(userID)")
         
         // Find the user in Core Data
-        let context = AppDelegate.instance.managedObjectContext
-        let request = NSFetchRequest<User>(entityName: "User")
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available")
+            return
+        }
+        let request = NSFetchRequest<User>(entityName: User.entityName)
         request.predicate = NSPredicate(format: "userID == %@", userID)
         request.fetchLimit = 1
         
@@ -384,8 +403,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         print("🔗 MainCoordinator: presentRapSheet called - userID: \(userID)")
         
         // Find the user in Core Data
-        let context = AppDelegate.instance.managedObjectContext
-        let request = NSFetchRequest<User>(entityName: "User")
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available")
+            return
+        }
+        let request = NSFetchRequest<User>(entityName: User.entityName)
         request.predicate = NSPredicate(format: "userID == %@", userID)
         request.fetchLimit = 1
         
@@ -407,6 +429,87 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             }
         } catch {
             print("❌ Error fetching user: \(error)")
+        }
+    }
+    
+    // MARK: - Scroll Position Management
+    
+    func updateScrollPosition(scrollFraction: CGFloat) {
+        // Update the navigation history with the new scroll position
+        if let lastIndex = navigationHistory.lastIndex(where: { $0 is ThreadDestination }),
+           let threadDestination = navigationHistory[lastIndex] as? ThreadDestination {
+            
+            // Create a new ThreadDestination with the updated scroll position
+            let updatedDestination = ThreadDestination(
+                thread: threadDestination.thread,
+                page: threadDestination.page,
+                author: threadDestination.author,
+                scrollFraction: scrollFraction
+            )
+            
+            // Replace the item in navigation history
+            navigationHistory[lastIndex] = updatedDestination
+            
+            // Update the NavigationPath by rebuilding it
+            // NavigationPath doesn't allow direct modification, so we need to rebuild it
+            let existingItems = Array(navigationHistory.prefix(upTo: lastIndex))
+            let remainingItems = Array(navigationHistory.suffix(from: lastIndex + 1))
+            
+            // Rebuild the path
+            path = NavigationPath()
+            for item in existingItems {
+                path.append(item)
+            }
+            path.append(updatedDestination)
+            for item in remainingItems {
+                path.append(item)
+            }
+            
+            print("🔄 MainCoordinator: Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown")")
+        } else {
+            print("⚠️ MainCoordinator: No ThreadDestination found in navigation history to update scroll position")
+        }
+    }
+    
+    func updateScrollPosition(for threadID: String, page: ThreadPage, author: User?, scrollFraction: CGFloat) {
+        // Find the ThreadDestination in navigation history matching the criteria
+        if let index = navigationHistory.firstIndex(where: { item in
+            guard let threadDestination = item as? ThreadDestination else { return false }
+            return threadDestination.thread.threadID == threadID &&
+                   threadDestination.page == page &&
+                   threadDestination.author == author
+        }),
+           let threadDestination = navigationHistory[index] as? ThreadDestination {
+            
+            // Create a new ThreadDestination with the updated scroll position
+            let updatedDestination = ThreadDestination(
+                thread: threadDestination.thread,
+                page: threadDestination.page,
+                author: threadDestination.author,
+                scrollFraction: scrollFraction
+            )
+            
+            // Replace the item in navigation history
+            navigationHistory[index] = updatedDestination
+            
+            // Update the NavigationPath by rebuilding it
+            // NavigationPath doesn't allow direct modification, so we need to rebuild it
+            let existingItems = Array(navigationHistory.prefix(upTo: index))
+            let remainingItems = Array(navigationHistory.suffix(from: index + 1))
+            
+            // Rebuild the path
+            path = NavigationPath()
+            for item in existingItems {
+                path.append(item)
+            }
+            path.append(updatedDestination)
+            for item in remainingItems {
+                path.append(item)
+            }
+            
+            print("🔄 MainCoordinator: Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown") (threadID: \(threadID))")
+        } else {
+            print("⚠️ MainCoordinator: No ThreadDestination found in navigation history for threadID: \(threadID), page: \(page)")
         }
     }
     
@@ -459,6 +562,12 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     
     func restoreNavigationState() {
         print("🔄 MainCoordinator: Restoring navigation state")
+        
+        // Validate Core Data context is ready
+        guard managedObjectContext.persistentStoreCoordinator != nil else {
+            print("🔄 Core Data not ready for state restoration")
+            return
+        }
         
         guard let savedState = stateManager.restoreNavigationState() else {
             print("🔄 No saved navigation state to restore")
@@ -523,7 +632,12 @@ struct MainView: View {
     @SceneStorage("isEditingMessages") private var isEditingMessages = false
     @SceneStorage("isEditingForums") private var isEditingForums = false
     
-    @StateObject private var coordinator = MainCoordinatorImpl(managedObjectContext: AppDelegate.instance.managedObjectContext)
+    @StateObject private var coordinator: MainCoordinatorImpl = {
+        guard let appDelegate = AppDelegate.instance else {
+            fatalError("AppDelegate.instance not available during coordinator initialization")
+        }
+        return MainCoordinatorImpl(managedObjectContext: appDelegate.managedObjectContext)
+    }()
     @State private var hasFavoriteForums = false
     
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
@@ -540,14 +654,21 @@ struct MainView: View {
             }
         }
         .onAppear {
-            AppDelegate.instance.mainCoordinator = coordinator
+            guard let appDelegate = AppDelegate.instance else {
+                print("❌ AppDelegate.instance not available in onAppear")
+                return
+            }
+            
+            appDelegate.mainCoordinator = coordinator
             configureGlobalAppearance(theme: theme)
             updateStatusBarStyle(theme: theme)
             checkPrivateMessagePrivileges()
             checkFavoriteForums()
             
-            // Restore navigation state on app launch
-            coordinator.restoreNavigationState()
+            // Delay state restoration to ensure Core Data is ready
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                coordinator.restoreNavigationState()
+            }
         }
         .onDisappear {
             // Save navigation state when view disappears
@@ -581,8 +702,10 @@ struct MainView: View {
             coordinator.saveNavigationState()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            // Restore state when app enters foreground
-            coordinator.restoreNavigationState()
+            // Restore state when app enters foreground with delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                coordinator.restoreNavigationState()
+            }
         }
     }
     
@@ -821,7 +944,10 @@ struct MainView: View {
     
     private func checkFavoriteForums() {
         // Set up observer for favorite forums count changes
-        let context = AppDelegate.instance.managedObjectContext
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available for checkFavoriteForums")
+            return
+        }
         
         favoriteForumCountObserver = ManagedObjectCountObserver(
             context: context,
@@ -1029,12 +1155,13 @@ private struct DetailView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationDestination(for: ThreadDestination.self) { destination in
             Group {
-                let _ = print("🔵 DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown")")
+                let _ = print("🔵 DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown"), scrollFraction: \(destination.scrollFraction?.description ?? "none")")
                 PostsViewWrapper(
                     thread: destination.thread,
                     author: destination.author,
                     page: destination.page,
-                    coordinator: coordinator
+                    coordinator: coordinator,
+                    scrollFraction: destination.scrollFraction
                 )
             }
         }
@@ -1093,7 +1220,10 @@ struct ForumsViewRepresentable: UIViewControllerRepresentable {
     let coordinator: any MainCoordinator
 
     func makeUIViewController(context: Context) -> UIViewController {
-        let forumsVC = ForumsTableViewController(managedObjectContext: AppDelegate.instance.managedObjectContext)
+        guard let managedObjectContext = AppDelegate.instance?.managedObjectContext else {
+            fatalError("AppDelegate.instance or managedObjectContext not available")
+        }
+        let forumsVC = ForumsTableViewController(managedObjectContext: managedObjectContext)
         forumsVC.coordinator = coordinator
         let wrapper = SwiftUICompatibleViewController(wrapping: forumsVC)
         wrapper.restorationIdentifier = "Forum list"
@@ -1112,7 +1242,10 @@ struct BookmarksViewRepresentable: UIViewControllerRepresentable {
     let coordinator: any MainCoordinator
 
     func makeUIViewController(context: Context) -> UIViewController {
-        let bookmarksVC = BookmarksTableViewController(managedObjectContext: AppDelegate.instance.managedObjectContext)
+        guard let managedObjectContext = AppDelegate.instance?.managedObjectContext else {
+            fatalError("AppDelegate.instance or managedObjectContext not available")
+        }
+        let bookmarksVC = BookmarksTableViewController(managedObjectContext: managedObjectContext)
         bookmarksVC.coordinator = coordinator
         let wrapper = SwiftUICompatibleViewController(wrapping: bookmarksVC)
         wrapper.restorationIdentifier = "Bookmarks"
@@ -1130,24 +1263,28 @@ struct ThreadDestination: Hashable {
     let thread: AwfulThread
     let page: ThreadPage
     let author: User?
+    let scrollFraction: CGFloat?
     
-    init(thread: AwfulThread, page: ThreadPage, author: User?) {
+    init(thread: AwfulThread, page: ThreadPage, author: User?, scrollFraction: CGFloat? = nil) {
         self.thread = thread
         self.page = page
         self.author = author
-        print("🔵 ThreadDestination: Created for thread: \(thread.title ?? "Unknown"), page: \(page)")
+        self.scrollFraction = scrollFraction
+        print("🔵 ThreadDestination: Created for thread: \(thread.title ?? "Unknown"), page: \(page), scrollFraction: \(scrollFraction?.description ?? "none")")
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(thread)
         hasher.combine(page)
         hasher.combine(author)
+        hasher.combine(scrollFraction)
     }
     
     static func == (lhs: ThreadDestination, rhs: ThreadDestination) -> Bool {
         return lhs.thread == rhs.thread &&
                lhs.page == rhs.page &&
-               lhs.author == rhs.author
+               lhs.author == rhs.author &&
+               lhs.scrollFraction == rhs.scrollFraction
     }
 }
 
@@ -1156,7 +1293,10 @@ struct MessagesViewRepresentable: UIViewControllerRepresentable {
     let coordinator: any MainCoordinator
 
     func makeUIViewController(context: Context) -> UIViewController {
-        let messagesVC = MessageListViewController(managedObjectContext: AppDelegate.instance.managedObjectContext)
+        guard let managedObjectContext = AppDelegate.instance?.managedObjectContext else {
+            fatalError("AppDelegate.instance or managedObjectContext not available")
+        }
+        let messagesVC = MessageListViewController(managedObjectContext: managedObjectContext)
         messagesVC.coordinator = coordinator
         let wrapper = SwiftUICompatibleViewController(wrapping: messagesVC)
         wrapper.restorationIdentifier = "Messages"
@@ -1187,7 +1327,10 @@ struct LepersViewRepresentable: UIViewControllerRepresentable {
 
 struct SettingsViewRepresentable: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
-        let settingsVC = SettingsViewController(managedObjectContext: AppDelegate.instance.managedObjectContext)
+        guard let managedObjectContext = AppDelegate.instance?.managedObjectContext else {
+            fatalError("AppDelegate.instance or managedObjectContext not available")
+        }
+        let settingsVC = SettingsViewController(managedObjectContext: managedObjectContext)
         let wrapper = SwiftUICompatibleViewController(wrapping: settingsVC)
         wrapper.restorationIdentifier = "Settings"
         return wrapper
@@ -1263,6 +1406,7 @@ struct PostsViewWrapper: View {
     let thread: AwfulThread
     let author: User?
     let page: ThreadPage
+    let scrollFraction: CGFloat?
     var coordinator: (any MainCoordinator)?
     @StateObject private var viewModel = PostsViewModel()
     @SwiftUI.Environment(\.theme) private var theme
@@ -1273,10 +1417,11 @@ struct PostsViewWrapper: View {
         Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label)
     }
     
-    init(thread: AwfulThread, author: User?, page: ThreadPage, coordinator: (any MainCoordinator)?) {
+    init(thread: AwfulThread, author: User?, page: ThreadPage, coordinator: (any MainCoordinator)?, scrollFraction: CGFloat? = nil) {
         self.thread = thread
         self.author = author
         self.page = page
+        self.scrollFraction = scrollFraction
         self.coordinator = coordinator
         _title = State(initialValue: thread.title ?? "")
     }
@@ -1288,7 +1433,8 @@ struct PostsViewWrapper: View {
                 SwiftUIPostsPageView(
                     thread: thread,
                     author: author,
-                    coordinator: coordinator
+                    coordinator: coordinator,
+                    scrollFraction: scrollFraction
                 )
             } else {
                 // Legacy UIKit posts view wrapped in SwiftUI
@@ -1716,7 +1862,8 @@ struct iPhoneMainView: View {
                     thread: destination.thread,
                     author: destination.author,
                     page: destination.page,
-                    coordinator: coordinator
+                    coordinator: coordinator,
+                    scrollFraction: destination.scrollFraction
                 )
             }
         }
@@ -1874,7 +2021,10 @@ struct Sidebar: View {
     
     private func checkFavoriteForums() {
         // Set up observer for favorite forums count changes
-        let context = AppDelegate.instance.managedObjectContext
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available for checkFavoriteForums")
+            return
+        }
         
         let favoriteForumCountObserver = ManagedObjectCountObserver(
             context: context,
