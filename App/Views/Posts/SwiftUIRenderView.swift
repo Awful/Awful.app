@@ -149,8 +149,28 @@ struct SwiftUIRenderView: UIViewRepresentable {
         }
         
         func didTapLink(to url: URL, in view: RenderView) {
-            // Handle link taps
+            // Handle link taps using the same logic as UIKit version
             logger.info("Link tapped: \(url)")
+            
+            // Try to handle as internal route first
+            if let route = try? AwfulRoute(url) {
+                AppDelegate.instance.open(route: route)
+                return
+            }
+            
+            // Handle external URLs based on user preferences
+            if url.opensInBrowser {
+                // Find the hosting view controller to present from
+                if let hostingVC = findHostingViewController(from: view) {
+                    URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: hostingVC)
+                } else {
+                    // Fallback to system default
+                    UIApplication.shared.open(url)
+                }
+            } else {
+                // Non-browser URL - open directly
+                UIApplication.shared.open(url)
+            }
         }
         
         func renderProcessDidTerminate(in view: RenderView) {
@@ -210,6 +230,18 @@ struct SwiftUIRenderView: UIViewRepresentable {
         func didUpdateScrollPosition(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
             onScrollPositionChanged?(offset, contentHeight, viewHeight)
         }
+        
+        // MARK: - Helper Methods
+        private func findHostingViewController(from view: UIView) -> UIViewController? {
+            var responder: UIResponder? = view
+            while responder != nil {
+                if let viewController = responder as? UIViewController {
+                    return viewController
+                }
+                responder = responder?.next
+            }
+            return nil
+        }
     }
 }
 
@@ -222,7 +254,7 @@ protocol RenderViewScrollDelegate: AnyObject {
 }
 
 // MARK: - RenderView Container
-class RenderViewContainer: UIView, UIScrollViewDelegate {
+class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     private let _renderView = RenderView()
     var renderView: RenderView { _renderView }
     weak var delegate: RenderViewDelegate? {
@@ -264,6 +296,11 @@ class RenderViewContainer: UIView, UIScrollViewDelegate {
         
         // Set up scroll delegate
         _renderView.scrollView.delegate = self
+        
+        // Set up long press gesture recognizer for images and links
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressRenderView(_:)))
+        longPressGesture.delegate = self
+        _renderView.addGestureRecognizer(longPressGesture)
     }
     
     func setup(theme: Theme) {
@@ -456,6 +493,49 @@ class RenderViewContainer: UIView, UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         // Reset tracking when scroll animation ends
         lastScrollOffset = scrollView.contentOffset.y
+    }
+    
+    // MARK: - Long Press Gesture Handling
+    @objc private func didLongPressRenderView(_ sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began else { return }
+        
+        // Find the hosting view controller to present from
+        guard let hostingVC = findHostingViewController() else {
+            logger.warning("Could not find hosting view controller for long press")
+            return
+        }
+        
+        Task {
+            let location = sender.location(in: _renderView)
+            let elements = await _renderView.interestingElements(at: location)
+            
+            // Use URLMenuPresenter to handle the interesting elements
+            let didPresentMenu = URLMenuPresenter.presentInterestingElements(
+                elements, 
+                from: hostingVC, 
+                renderView: _renderView
+            )
+            
+            if !didPresentMenu {
+                logger.info("No interesting elements found at long press location")
+            }
+        }
+    }
+    
+    private func findHostingViewController() -> UIViewController? {
+        var responder: UIResponder? = self
+        while responder != nil {
+            if let viewController = responder as? UIViewController {
+                return viewController
+            }
+            responder = responder?.next
+        }
+        return nil
+    }
+    
+    // MARK: - UIGestureRecognizerDelegate
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
 

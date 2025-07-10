@@ -138,6 +138,7 @@ private enum _URLMenuPresenter {
                 actions.append(.default(title: LocalizedString("link-action.open-image")) {
                     let preview = ImageViewController(imageURL: imageURL)
                     preview.title = presenter.title
+                    preview.configurePresentationStyle(for: presenter, sourceRect: sourceRect, sourceView: sourceView)
                     presenter.present(preview, animated: true, completion: nil)
                 })
                 
@@ -489,6 +490,8 @@ final class URLMenuPresenter: NSObject {
                 actions.append(.default(title: LocalizedString("link-action.open-image")) {
                     let preview = ImageViewController(imageURL: imageURL)
                     preview.title = presentingViewController.title
+                    // For smilie context, use frame info if available
+                    preview.configurePresentationStyle(for: presentingViewController, sourceRect: imageFrame, sourceView: renderView)
                     presentingViewController.present(preview, animated: true)
                 })
             }
@@ -506,6 +509,8 @@ final class URLMenuPresenter: NSObject {
         } else if let imageURL = imageURL {
             let preview = ImageViewController(imageURL: imageURL)
             preview.title = presentingViewController.title
+            // For direct image viewing, use frame info if available
+            preview.configurePresentationStyle(for: presentingViewController, sourceRect: imageFrame, sourceView: renderView)
             presentingViewController.present(preview, animated: true)
             return true
         }

@@ -38,5 +38,6 @@ final class CopyURLActivity: UIActivity {
     
     override func perform() {
         UIPasteboard.general.coercedURL = url
+        activityDidFinish(true)
     }
 }

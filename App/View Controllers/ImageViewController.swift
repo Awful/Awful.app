@@ -21,7 +21,27 @@ final class ImageViewController: UIViewController {
         self.imageURL = imageURL
         super.init(nibName: nil, bundle: nil)
         
+        // Configure iPad-specific presentation
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            modalPresentationStyle = .pageSheet
+            preferredContentSize = CGSize(width: 800, height: 600)
+            modalTransitionStyle = .coverVertical
+        } else {
+            modalPresentationStyle = .fullScreen
+        }
+        
         downloadProgress = downloadImage(imageURL, completion: didDownloadImage)
+    }
+    
+    /// Configure presentation style for different device types and contexts
+    func configurePresentationStyle(for presentingViewController: UIViewController, sourceRect: CGRect? = nil, sourceView: UIView? = nil) {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // On iPad, use page sheet for consistent larger viewing
+            modalPresentationStyle = .pageSheet
+            preferredContentSize = CGSize(width: 900, height: 700)
+        } else {
+            modalPresentationStyle = .fullScreen
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -79,11 +99,47 @@ final class ImageViewController: UIViewController {
         // Only use our copy buttons
         activityViewController.excludedActivityTypes = [.copyToPasteboard]
         
+        // Add completion handler to show toast notifications
+        activityViewController.completionWithItemsHandler = { [weak self] (activityType, completed, _, error) in
+            guard let self = self, completed, error == nil else { return }
+            
+            DispatchQueue.main.async {
+                self.showToastForActivity(activityType)
+            }
+        }
+        
         present(activityViewController, animated: true)
         if let popover = activityViewController.popoverPresentationController {
             popover.sourceView = sender
             popover.sourceRect = sender.bounds
         }
+    }
+    
+    private func showToastForActivity(_ activityType: UIActivity.ActivityType?) {
+        let (message, icon): (String, Toast.Icon)
+        
+        switch activityType?.rawValue {
+        case "com.awfulapp.Awful.CopyImage":
+            message = "Image copied"
+            icon = .checkmark
+        case "com.awfulapp.Awful.CopyURL":
+            message = "URL copied"
+            icon = .link
+        case UIActivity.ActivityType.saveToCameraRoll.rawValue:
+            message = "Image saved to Photos"
+            icon = .checkmark
+        case UIActivity.ActivityType.postToFacebook.rawValue,
+             UIActivity.ActivityType.postToTwitter.rawValue,
+             UIActivity.ActivityType.message.rawValue,
+             UIActivity.ActivityType.mail.rawValue:
+            message = "Shared successfully"
+            icon = .checkmark
+        default:
+            message = "Action completed"
+            icon = .checkmark
+        }
+        
+        Toast.show(title: message, icon: icon)
     }
     
     // MARK: View lifecycle
