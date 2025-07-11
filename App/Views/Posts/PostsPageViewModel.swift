@@ -290,9 +290,8 @@ final class PostsPageViewModel: ObservableObject {
     func quotePost(_ post: Post, completion: @escaping (ReplyWorkspace) -> Void) {
         Task {
             do {
-                let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: post)
                 let workspace = ReplyWorkspace(thread: thread)
-                workspace.draft.text = NSAttributedString(string: bbcode)
+                try await workspace.quotePost(post)
                 completion(workspace)
             } catch {
                 logger.error("Failed to quote post: \(error)")

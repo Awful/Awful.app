@@ -8,6 +8,18 @@ import Combine
 import CoreData
 import Foundation
 
+// MARK: - Identifiable Wrappers
+
+struct IdentifiableUser: Identifiable {
+    let id: String
+    let user: User
+    
+    init(user: User) {
+        self.id = user.userID
+        self.user = user
+    }
+}
+
 // MARK: - Coordinator Protocol
 
 protocol MainCoordinator: ObservableObject {
@@ -33,6 +45,7 @@ protocol MainCoordinator: ObservableObject {
     func navigateToMessageWithID(_ messageID: String) -> Bool
     func presentUserProfile(userID: String)
     func presentRapSheet(userID: String)
+    func presentPrivateMessageComposer(for user: User)
     
     // State Restoration methods
     func saveNavigationState()
@@ -47,6 +60,7 @@ protocol MainCoordinator: ObservableObject {
 
 class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     @Published var presentedSheet: PresentedSheet?
+    @Published var presentedPrivateMessageUser: IdentifiableUser?
     @Published var isTabBarHidden = false
     @Published var path = NavigationPath()
     @Published var sidebarPath = NavigationPath()
@@ -432,6 +446,13 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         }
     }
     
+    func presentPrivateMessageComposer(for user: User) {
+        print("🔗 MainCoordinator: presentPrivateMessageComposer called - user: \(user.username ?? "Unknown")")
+        
+        // Present message composer using SwiftUI sheet system (same as ReplyWorkspaceView)
+        presentedPrivateMessageUser = IdentifiableUser(user: user)
+    }
+    
     // MARK: - Scroll Position Management
     
     func updateScrollPosition(scrollFraction: CGFloat) {
@@ -723,6 +744,9 @@ struct MainView: View {
         .sheet(item: $coordinator.presentedSheet) { sheet in
             sheetContent(for: sheet)
         }
+        .sheet(item: $coordinator.presentedPrivateMessageUser) { user in
+            privateMessageSheetContent(for: user)
+        }
     }
 
     // MARK: - iPhone Layout  
@@ -735,6 +759,9 @@ struct MainView: View {
             )
             .sheet(item: $coordinator.presentedSheet) { sheet in
                 sheetContent(for: sheet)
+            }
+            .sheet(item: $coordinator.presentedPrivateMessageUser) { user in
+                privateMessageSheetContent(for: user)
             }
         }
         .toolbarBackground(theme[color: "tabBarBackgroundColor"]!, for: .bottomBar)
@@ -749,6 +776,24 @@ struct MainView: View {
         case .compose(_):
             MessageComposeViewRepresentable(coordinator: coordinator, isPresentedInSheet: true)
         }
+    }
+    
+    @ViewBuilder
+    private func privateMessageSheetContent(for identifiableUser: IdentifiableUser) -> some View {
+        let composeVC: MessageComposeViewController = {
+            let vc = MessageComposeViewController(recipient: identifiableUser.user)
+            // Don't set delegate - let it handle its own dismissal
+            print("🔗 MainView: Created MessageComposeViewController without delegate")
+            return vc
+        }()
+        
+        MessageComposeView(
+            messageComposeViewController: composeVC,
+            onDismiss: {
+                coordinator.presentedPrivateMessageUser = nil
+            }
+        )
+        .environment(\.theme, theme)
     }
     
     
@@ -1572,6 +1617,65 @@ struct MessageComposeViewRepresentable: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+}
+
+// MARK: - Sheet Safe Navigation Controller
+class SheetSafeNavigationController: UINavigationController {
+    var onDismissAttempt: (() -> Void)?
+    
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        // Prevent UIKit dismissal, call SwiftUI dismissal instead
+        print("🔗 SheetSafeNavigationController: Preventing UIKit dismissal, calling SwiftUI onDismiss")
+        onDismissAttempt?()
+        completion?()
+    }
+}
+
+// MARK: - MessageComposeView
+struct MessageComposeView: UIViewControllerRepresentable {
+    let messageComposeViewController: MessageComposeViewController
+    let onDismiss: () -> Void
+    
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        // Create a custom navigation controller that prevents dismiss
+        let navController = SheetSafeNavigationController(rootViewController: messageComposeViewController)
+        navController.modalPresentationStyle = messageComposeViewController.enclosingNavigationController.modalPresentationStyle
+        navController.onDismissAttempt = onDismiss
+        
+        // Apply theme to the navigation controller and its content (exactly like ReplyWorkspaceView)
+        applyTheme(to: navController)
+        
+        return navController
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        // Update theme if needed
+        applyTheme(to: uiViewController)
+    }
+    
+    private func applyTheme(to viewController: UIViewController) {
+        // Apply theme to navigation controller (exactly like ReplyWorkspaceView)
+        if let navController = viewController as? UINavigationController {
+            navController.view.backgroundColor = theme[uicolor: "backgroundColor"]
+            navController.navigationBar.barTintColor = theme[uicolor: "navigationBarTintColor"]
+            navController.navigationBar.tintColor = theme[uicolor: "navigationBarTextColor"]
+            navController.navigationBar.titleTextAttributes = [
+                .foregroundColor: theme[uicolor: "navigationBarTextColor"] ?? UIColor.label
+            ]
+            
+            // Apply theme to the message compose view controller
+            if let composeVC = navController.topViewController as? MessageComposeViewController {
+                composeVC.themeDidChange()
+            }
+        }
+        
+        // Apply theme if it's a themed view controller
+        if let themedViewController = viewController as? ViewController {
+            themedViewController.themeDidChange()
+        }
+    }
 }
 
 // MARK: - Search Hosting Controller

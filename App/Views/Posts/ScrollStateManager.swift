@@ -23,12 +23,15 @@ class ScrollStateManager: ObservableObject {
     private var scrollViewHeight: CGFloat = 0
     private var hasScrolledDown: Bool = false
     private var lastScrollDirection: ScrollDirection = .none
+    private var scrollDirectionChangeThreshold: CGFloat = 10.0 // Minimum scroll distance before direction change
+    private var lastScrollPosition: CGFloat = 0
+    private var accumulatedScrollDistance: CGFloat = 0
     
     // MARK: - Throttling
     private var scrollThrottleWorkItem: DispatchWorkItem?
     private var uiUpdateWorkItem: DispatchWorkItem?
-    private let scrollThrottleDelay: TimeInterval = 0.016 // ~60fps
-    private let uiUpdateDelay: TimeInterval = 0.1 // Toolbar animations
+    private let scrollThrottleDelay: TimeInterval = 0.008 // ~120fps
+    private let uiUpdateDelay: TimeInterval = 0.05 // Faster toolbar animations
     
     // MARK: - Computed Properties
     var topInset: CGFloat {
@@ -59,12 +62,20 @@ class ScrollStateManager: ObservableObject {
         guard newDirection != lastScrollDirection else { 
             return 
         }
+        
+        // Simple hysteresis: require minimum accumulated distance for direction changes
+        // but allow initial direction changes and significant scrolling
+        if lastScrollDirection != .none && accumulatedScrollDistance < scrollDirectionChangeThreshold {
+            return
+        }
+        
         lastScrollDirection = newDirection
+        accumulatedScrollDistance = 0 // Reset after processing
         
         // Cancel previous UI update
         uiUpdateWorkItem?.cancel()
         
-        // Schedule new UI update with debouncing
+        // Schedule new UI update with reduced debouncing for smoother response
         let workItem = DispatchWorkItem { [weak self] in
             self?.updateToolbarVisibility(isScrollingUp: isScrollingUp)
         }
@@ -100,35 +111,56 @@ class ScrollStateManager: ObservableObject {
     
     // MARK: - Private Methods
     private func updateToolbarVisibility(isScrollingUp: Bool) {
+        // Batch all state updates together to reduce SwiftUI update cycles
         if isScrollingUp {
             // Scrolling up - show all bars
-            if !isTopBarVisible {
-                isTopBarVisible = true
-            }
-            // Show subtoolbar only if user has scrolled down first
-            if hasScrolledDown && !isSubToolbarVisible {
-                isSubToolbarVisible = true
-            }
-            if !isBottomBarVisible {
-                isBottomBarVisible = true
+            let shouldShowSubToolbar = hasScrolledDown && !isSubToolbarVisible
+            let shouldShowTopBar = !isTopBarVisible
+            let shouldShowBottomBar = !isBottomBarVisible
+            
+            // Batch update all visibility states
+            if shouldShowTopBar || shouldShowSubToolbar || shouldShowBottomBar {
+                if shouldShowTopBar {
+                    isTopBarVisible = true
+                }
+                if shouldShowSubToolbar {
+                    isSubToolbarVisible = true
+                }
+                if shouldShowBottomBar {
+                    isBottomBarVisible = true
+                }
             }
         } else {
             // Scrolling down - hide all bars
             hasScrolledDown = true
             
-            if isTopBarVisible {
-                isTopBarVisible = false
-            }
-            if isSubToolbarVisible {
-                isSubToolbarVisible = false
-            }
-            if isBottomBarVisible {
-                isBottomBarVisible = false
+            let shouldHideTopBar = isTopBarVisible
+            let shouldHideSubToolbar = isSubToolbarVisible
+            let shouldHideBottomBar = isBottomBarVisible
+            
+            // Batch update all visibility states
+            if shouldHideTopBar || shouldHideSubToolbar || shouldHideBottomBar {
+                if shouldHideTopBar {
+                    isTopBarVisible = false
+                }
+                if shouldHideSubToolbar {
+                    isSubToolbarVisible = false
+                }
+                if shouldHideBottomBar {
+                    isBottomBarVisible = false
+                }
             }
         }
     }
     
     private func updateScrollPosition(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
+        // Calculate scroll distance for hysteresis
+        let scrollDelta = abs(offset - lastScrollPosition)
+        if scrollDelta > 0 {
+            accumulatedScrollDistance += scrollDelta
+        }
+        lastScrollPosition = offset
+        
         scrollPosition = offset
         scrollContentHeight = contentHeight
         scrollViewHeight = viewHeight
@@ -180,5 +212,7 @@ class ScrollStateManager: ObservableObject {
         scrollPosition = 0
         scrollContentHeight = 0
         scrollViewHeight = 0
+        lastScrollPosition = 0
+        accumulatedScrollDistance = 0
     }
 }

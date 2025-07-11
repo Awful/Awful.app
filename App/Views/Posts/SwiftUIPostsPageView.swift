@@ -53,9 +53,6 @@ struct SwiftUIPostsPageView: View {
     @State private var showingPagePicker = false
     @State private var messageViewController: MessageComposeViewController?
     @State private var replyWorkspace: IdentifiableReplyWorkspace?
-    @State private var selectedPost: Post?
-    @State private var selectedUser: User?
-    @State private var actionSheetRect: CGRect = .zero
     @State private var currentScrollFraction: CGFloat = 0.0
     
     // MARK: - Initialization
@@ -101,8 +98,8 @@ struct SwiftUIPostsPageView: View {
                         onPostAction: handlePostAction,
                         onUserAction: handleUserAction,
                         onScrollChanged: { isScrollingUp in
-                            // Handle scroll for bar visibility with animation
-                            withAnimation(.easeInOut(duration: 0.3)) {
+                            // Handle scroll for bar visibility with spring animation for natural feel
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8, blendDuration: 0)) {
                                 scrollState.handleScrollChange(isScrollingUp: isScrollingUp)
                             }
                         },
@@ -127,6 +124,7 @@ struct SwiftUIPostsPageView: View {
                                 currentScrollFraction = (offset + viewHeight/2) / contentHeight
                             }
                         },
+                        replyWorkspace: $replyWorkspace,
                         topInset: scrollState.topInset,
                         bottomInset: scrollState.bottomInset,
                         isImmersiveMode: postsImmersiveMode
@@ -174,7 +172,8 @@ struct SwiftUIPostsPageView: View {
                     .foregroundColor(Color(theme[uicolor: "toolbarTextColor"] ?? UIColor.systemBlue))
                 }
                 .padding(.top, postsImmersiveMode ? 0 : 0) // No padding needed - subtoolbar should be right under navigation bar
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                .transition(.opacity)
+                .animation(.spring(response: 0.3, dampingFraction: 0.8, blendDuration: 0), value: scrollState.isSubToolbarVisible)
             }
         }
         .overlay(alignment: .bottom) {
@@ -221,7 +220,8 @@ struct SwiftUIPostsPageView: View {
                         .frame(height: 0.5),
                     alignment: .top
                 )
-                .transition(.opacity.combined(with: .move(edge: .bottom)))
+                .transition(.opacity)
+                .animation(.spring(response: 0.3, dampingFraction: 0.8, blendDuration: 0), value: scrollState.isBottomBarVisible)
                 .padding(.bottom, postsImmersiveMode ? 0 : 0) // No padding needed - toolbar should be at bottom edge
             }
             // No title in immersion mode
@@ -272,30 +272,27 @@ struct SwiftUIPostsPageView: View {
             // Save current scroll position for potential restoration
             saveScrollPosition()
         }
-        .sheet(item: $replyWorkspace) { workspace in
-            NavigationView {
-                Text("Reply Workspace")
-                    .navigationTitle("Reply")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button("Cancel") {
-                                replyWorkspace = nil
-                            }
-                        }
+        .sheet(item: $replyWorkspace) { identifiableWorkspace in
+            ReplyWorkspaceView(
+                workspace: identifiableWorkspace.workspace,
+                onDismiss: { result in
+                    replyWorkspace = nil
+                    
+                    // Handle different completion results
+                    switch result {
+                    case .posted:
+                        // Refresh the posts to show the new reply
+                        viewModel.refresh()
+                    case .saveDraft:
+                        // Draft was saved, no action needed
+                        break
+                    case .forgetAboutIt:
+                        // User cancelled, no action needed
+                        break
                     }
-            }
-        }
-        .overlay {
-            if let post = selectedPost {
-                PostActionsMenu(
-                    post: post,
-                    sourceRect: actionSheetRect,
-                    viewModel: viewModel,
-                    onDismiss: { selectedPost = nil },
-                    replyWorkspace: $replyWorkspace
-                )
-            }
+                }
+            )
+            .environment(\.theme, theme)
         }
         .sheet(isPresented: $showingSettings) {
             PostsPageSettingsView()
@@ -358,13 +355,11 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Action Handlers
     func handlePostAction(_ post: Post, rect: CGRect) {
-        selectedPost = post
-        actionSheetRect = rect
+        // No longer needed - context menu is handled in SwiftUIRenderView
     }
     
     func handleUserAction(_ post: Post, rect: CGRect) {
-        selectedUser = post.author
-        actionSheetRect = rect
+        // User action handling - could be implemented later if needed
     }
     
     func handleGoToParentForum() {
@@ -418,187 +413,8 @@ struct SwiftUIPostsPageView: View {
     }
     
     
-    // MARK: - Action Buttons
-    @ViewBuilder
-    var postActionButtons: some View {
-        if let post = selectedPost {
-            Button("Reply") {
-                viewModel.replyToPost(post) { workspace in
-                    replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
-                }
-                selectedPost = nil
-            }
-            
-            Button("Quote") {
-                viewModel.quotePost(post) { workspace in
-                    replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
-                }
-                selectedPost = nil
-            }
-            
-            if post.editable {
-                Button("Edit") {
-                    viewModel.editPost(post) { workspace in
-                        replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
-                    }
-                    selectedPost = nil
-                }
-            }
-            
-            Button("Mark as Read Up To Here") {
-                viewModel.markAsReadUpTo(post)
-                selectedPost = nil
-            }
-            
-            Button("Copy Post URL") {
-                viewModel.copyPostURL(post)
-                selectedPost = nil
-            }
-        }
-    }
 }
 
-// MARK: - PostActionsMenu
-struct PostActionsMenu: View {
-    let post: Post
-    let sourceRect: CGRect
-    let viewModel: PostsPageViewModel
-    let onDismiss: () -> Void
-    @Binding var replyWorkspace: IdentifiableReplyWorkspace?
-    
-    @State private var isVisible = false
-    
-    var body: some View {
-        ZStack {
-            // Background to capture taps - use a very light overlay
-            Rectangle()
-                .fill(Color.black.opacity(0.001))
-                .ignoresSafeArea()
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        isVisible = false
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onDismiss()
-                    }
-                }
-                .allowsHitTesting(true)
-            
-            // Context menu
-            VStack(spacing: 0) {
-                ForEach(Array(menuItems.enumerated()), id: \.offset) { index, item in
-                    Button(action: item.action) {
-                        HStack(spacing: 12) {
-                            Image(systemName: item.systemImage)
-                                .foregroundColor(.primary)
-                                .frame(width: 20)
-                            
-                            Text(item.title)
-                                .font(.body)
-                                .foregroundColor(.primary)
-                            
-                            Spacer()
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 14)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    if index != menuItems.count - 1 {
-                        Divider()
-                    }
-                }
-            }
-            .background(
-                RoundedRectangle(cornerRadius: 13)
-                    .fill(Color(UIColor.systemBackground).opacity(0.95))
-            )
-            .shadow(color: .black.opacity(0.3), radius: 12, x: 0, y: 4)
-            .frame(width: 250)
-            .scaleEffect(isVisible ? 1.0 : 0.8)
-            .opacity(isVisible ? 1.0 : 0.0)
-            .position(x: min(max(sourceRect.midX, 125), UIScreen.main.bounds.width - 125), 
-                     y: sourceRect.maxY + 60)
-        }
-        .onAppear {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                isVisible = true
-            }
-            
-            // Auto-dismiss after 10 seconds if no interaction
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
-                if isVisible {
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        isVisible = false
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onDismiss()
-                    }
-                }
-            }
-        }
-        .gesture(
-            DragGesture(minimumDistance: 20)
-                .onChanged { _ in
-                    // Dismiss on scroll/drag
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        isVisible = false
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        onDismiss()
-                    }
-                }
-        )
-    }
-    
-    private var menuItems: [PostMenuItem] {
-        var items: [PostMenuItem] = [
-            PostMenuItem(title: "Reply", systemImage: "arrowshape.turn.up.left") {
-                viewModel.replyToPost(post) { workspace in
-                    replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
-                }
-                onDismiss()
-            },
-            PostMenuItem(title: "Quote", systemImage: "quote.bubble") {
-                viewModel.quotePost(post) { workspace in
-                    replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
-                }
-                onDismiss()
-            }
-        ]
-        
-        if post.editable {
-            items.append(PostMenuItem(title: "Edit", systemImage: "pencil") {
-                viewModel.editPost(post) { workspace in
-                    replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
-                }
-                onDismiss()
-            })
-        }
-        
-        items.append(contentsOf: [
-            PostMenuItem(title: "Mark as Read Up To Here", systemImage: "checkmark.circle") {
-                viewModel.markAsReadUpTo(post)
-                onDismiss()
-            },
-            PostMenuItem(title: "Copy Post URL", systemImage: "doc.on.doc") {
-                viewModel.copyPostURL(post)
-                onDismiss()
-            }
-        ])
-        
-        return items
-    }
-}
-
-// MARK: - PostMenuItem
-struct PostMenuItem {
-    let title: String
-    let systemImage: String
-    let action: () -> Void
-}
 
 // MARK: - SwiftUI Frog Animation
 private struct SwiftUIFrogAnimation: View {
@@ -722,6 +538,55 @@ private struct FrogLottieView: UIViewRepresentable {
 
 
 
+
+// MARK: - ReplyWorkspaceView
+struct ReplyWorkspaceView: UIViewControllerRepresentable {
+    let workspace: ReplyWorkspace
+    let onDismiss: (ReplyWorkspace.CompletionResult) -> Void
+    
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let viewController = workspace.viewController
+        
+        // Set up the completion handler
+        workspace.completion = { result in
+            onDismiss(result)
+        }
+        
+        // Apply theme to the navigation controller and its content
+        applyTheme(to: viewController)
+        
+        return viewController
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        // Update theme if needed
+        applyTheme(to: uiViewController)
+    }
+    
+    private func applyTheme(to viewController: UIViewController) {
+        // Apply theme to navigation controller
+        if let navController = viewController as? UINavigationController {
+            navController.view.backgroundColor = theme[uicolor: "backgroundColor"]
+            navController.navigationBar.barTintColor = theme[uicolor: "navigationBarTintColor"]
+            navController.navigationBar.tintColor = theme[uicolor: "navigationBarTextColor"]
+            navController.navigationBar.titleTextAttributes = [
+                .foregroundColor: theme[uicolor: "navigationBarTextColor"] ?? UIColor.label
+            ]
+            
+            // Apply theme to the root view controller (CompositionViewController)
+            if let compositionVC = navController.topViewController as? ViewController {
+                compositionVC.themeDidChange()
+            }
+        }
+        
+        // Apply theme if it's a themed view controller
+        if let themedViewController = viewController as? ViewController {
+            themedViewController.themeDidChange()
+        }
+    }
+}
 
 // MARK: - Preview
 #Preview {

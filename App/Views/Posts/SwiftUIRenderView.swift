@@ -28,6 +28,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
     let onPullChanged: ((CGFloat) -> Void)?
     let onRefreshTriggered: (() -> Void)?
     let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? // offset, contentHeight, viewHeight
+    @Binding var replyWorkspace: IdentifiableReplyWorkspace?
     
     // MARK: - Content Insets
     var topInset: CGFloat = 0
@@ -52,6 +53,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
         container.delegate = context.coordinator
         container.scrollDelegate = context.coordinator
         container.setup(theme: theme)
+        container.setupContextMenu(coordinator: context.coordinator)
         return container
     }
     
@@ -96,6 +98,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
             onPostAction: onPostAction,
             onUserAction: onUserAction,
             viewModel: viewModel,
+            replyWorkspace: $replyWorkspace,
             onScrollChanged: onScrollChanged,
             onPullChanged: onPullChanged,
             onRefreshTriggered: onRefreshTriggered,
@@ -113,10 +116,12 @@ struct SwiftUIRenderView: UIViewRepresentable {
         let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)?
         weak var viewModel: PostsPageViewModel?
         private lazy var oEmbedFetcher = OEmbedFetcher()
+        var replyWorkspace: Binding<IdentifiableReplyWorkspace?>?
         
         init(onPostAction: @escaping (Post, CGRect) -> Void, 
              onUserAction: @escaping (Post, CGRect) -> Void,
              viewModel: PostsPageViewModel,
+             replyWorkspace: Binding<IdentifiableReplyWorkspace?>,
              onScrollChanged: ((Bool) -> Void)? = nil,
              onPullChanged: ((CGFloat) -> Void)? = nil,
              onRefreshTriggered: (() -> Void)? = nil,
@@ -124,6 +129,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
             self.onPostAction = onPostAction
             self.onUserAction = onUserAction
             self.viewModel = viewModel
+            self.replyWorkspace = replyWorkspace
             self.onScrollChanged = onScrollChanged
             self.onPullChanged = onPullChanged
             self.onRefreshTriggered = onRefreshTriggered
@@ -208,12 +214,20 @@ struct SwiftUIRenderView: UIViewRepresentable {
             case let message as RenderView.BuiltInMessage.DidTapPostActionButton:
                 guard message.postIndex < viewModel.posts.count else { return }
                 let post = viewModel.posts[message.postIndex]
-                onPostAction(post, message.frame)
+                // Show native context menu instead of custom overlay
+                if let container = renderView.superview as? RenderViewContainer {
+                    let point = CGPoint(x: message.frame.midX, y: message.frame.maxY)
+                    container.showContextMenu(for: post, at: point)
+                }
                 
             case let message as RenderView.BuiltInMessage.DidTapAuthorHeader:
                 guard message.postIndex < viewModel.posts.count else { return }
                 let post = viewModel.posts[message.postIndex]
-                onUserAction(post, message.frame)
+                // Show user actions context menu
+                if let container = renderView.superview as? RenderViewContainer {
+                    let point = CGPoint(x: message.frame.midX, y: message.frame.maxY)
+                    container.showUserActionsMenu(for: post, at: point)
+                }
                 
             default:
                 logger.error("Unhandled message: \(type(of: message))")
@@ -260,7 +274,7 @@ protocol RenderViewScrollDelegate: AnyObject {
 }
 
 // MARK: - RenderView Container
-class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDelegate {
+class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDelegate, WKUIDelegate {
     private let _renderView = RenderView()
     var renderView: RenderView { _renderView }
     weak var delegate: RenderViewDelegate? {
@@ -273,6 +287,7 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     private var lastRenderedPostsHash: Int = 0
     fileprivate var isCurrentlyRendering: Bool = false
     private var frogAndGhostEnabled: Bool = false
+    private weak var coordinator: SwiftUIRenderView.Coordinator?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -314,6 +329,11 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         
         // Apply scroll indicator style from theme
         _renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
+    }
+    
+    func setupContextMenu(coordinator: SwiftUIRenderView.Coordinator) {
+        self.coordinator = coordinator
+        _renderView.webView.uiDelegate = self
     }
     
     func renderPosts(
@@ -552,6 +572,134 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
+    
+    // MARK: - WKUIDelegate
+    func webView(_ webView: WKWebView, contextMenuConfigurationForElement elementInfo: WKContextMenuElementInfo, completionHandler: @escaping (UIContextMenuConfiguration?) -> Void) {
+        // For now, return nil to use default behavior
+        // We'll handle context menus through the post action button messages
+        completionHandler(nil)
+    }
+    
+    // Method to show context menu for post actions (called by coordinator)
+    func showContextMenu(for post: Post, at point: CGPoint) {
+        guard let coordinator = coordinator,
+              let viewModel = coordinator.viewModel else { return }
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        // Reply action
+        let replyAction = UIAlertAction(title: "Reply", style: .default) { _ in
+            viewModel.replyToPost(post) { workspace in
+                coordinator.replyWorkspace?.wrappedValue = IdentifiableReplyWorkspace(workspace: workspace)
+            }
+        }
+        replyAction.setValue(UIImage(systemName: "arrowshape.turn.up.left"), forKey: "image")
+        alertController.addAction(replyAction)
+        
+        // Quote action
+        let quoteAction = UIAlertAction(title: "Quote", style: .default) { _ in
+            viewModel.quotePost(post) { workspace in
+                coordinator.replyWorkspace?.wrappedValue = IdentifiableReplyWorkspace(workspace: workspace)
+            }
+        }
+        quoteAction.setValue(UIImage(systemName: "quote.bubble"), forKey: "image")
+        alertController.addAction(quoteAction)
+        
+        // Edit action (if editable)
+        if post.editable {
+            let editAction = UIAlertAction(title: "Edit", style: .default) { _ in
+                viewModel.editPost(post) { workspace in
+                    coordinator.replyWorkspace?.wrappedValue = IdentifiableReplyWorkspace(workspace: workspace)
+                }
+            }
+            editAction.setValue(UIImage(systemName: "pencil"), forKey: "image")
+            alertController.addAction(editAction)
+        }
+        
+        // Mark as read action
+        let markReadAction = UIAlertAction(title: "Mark as Read Up To Here", style: .default) { _ in
+            viewModel.markAsReadUpTo(post)
+        }
+        markReadAction.setValue(UIImage(systemName: "checkmark.circle"), forKey: "image")
+        alertController.addAction(markReadAction)
+        
+        // Copy URL action
+        let copyURLAction = UIAlertAction(title: "Copy Post URL", style: .default) { _ in
+            viewModel.copyPostURL(post)
+        }
+        copyURLAction.setValue(UIImage(systemName: "doc.on.doc"), forKey: "image")
+        alertController.addAction(copyURLAction)
+        
+        // Cancel action
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        // Set up popover for iPad
+        if let popover = alertController.popoverPresentationController {
+            popover.sourceView = self
+            popover.sourceRect = CGRect(origin: point, size: CGSize(width: 1, height: 1))
+        }
+        
+        // Present the alert
+        if let hostingVC = findHostingViewController() {
+            hostingVC.present(alertController, animated: true)
+        }
+    }
+    
+    // Method to show user actions context menu (called by coordinator)
+    func showUserActionsMenu(for post: Post, at point: CGPoint) {
+        guard let coordinator = coordinator,
+              let author = post.author else { return }
+        
+        let alertController = UIAlertController(title: author.username, message: nil, preferredStyle: .actionSheet)
+        
+        // Profile action
+        let profileAction = UIAlertAction(title: "Profile", style: .default) { _ in
+            AppDelegate.instance.mainCoordinator?.presentUserProfile(userID: author.userID)
+        }
+        profileAction.setValue(UIImage(systemName: "person.circle"), forKey: "image")
+        alertController.addAction(profileAction)
+        
+        // Send Private Message action (if user can receive messages)
+        if author.canReceivePrivateMessages == true {
+            let messageAction = UIAlertAction(title: "Send Private Message", style: .default) { _ in
+                AppDelegate.instance.mainCoordinator?.presentPrivateMessageComposer(for: author)
+            }
+            messageAction.setValue(UIImage(systemName: "envelope"), forKey: "image")
+            alertController.addAction(messageAction)
+        }
+        
+        // User's Posts in This Thread action
+        let userPostsAction = UIAlertAction(title: "User's Posts in This Thread", style: .default) { _ in
+            if let viewModel = coordinator.viewModel {
+                // Navigate to same thread but filtered by this user
+                AppDelegate.instance.mainCoordinator?.navigateToThread(viewModel.thread, page: .specific(1), author: author)
+            }
+        }
+        userPostsAction.setValue(UIImage(systemName: "text.bubble"), forKey: "image")
+        alertController.addAction(userPostsAction)
+        
+        // Rap Sheet action
+        let rapSheetAction = UIAlertAction(title: "Rap Sheet", style: .default) { _ in
+            AppDelegate.instance.mainCoordinator?.presentRapSheet(userID: author.userID)
+        }
+        rapSheetAction.setValue(UIImage(systemName: "doc.text"), forKey: "image")
+        alertController.addAction(rapSheetAction)
+        
+        // Cancel action
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        // Set up popover for iPad
+        if let popover = alertController.popoverPresentationController {
+            popover.sourceView = self
+            popover.sourceRect = CGRect(origin: point, size: CGSize(width: 1, height: 1))
+        }
+        
+        // Present the alert
+        if let hostingVC = findHostingViewController() {
+            hostingVC.present(alertController, animated: true)
+        }
+    }
+    
 }
 
 // MARK: - Render Context
