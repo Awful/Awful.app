@@ -1694,7 +1694,7 @@
 		1C3A145319DFC5D10022C44C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Riker;
 				CODE_SIGN_ENTITLEMENTS = "";
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -1710,7 +1710,7 @@
 		1C3A145419DFC5D10022C44C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Riker;
 				CODE_SIGN_ENTITLEMENTS = "";
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;

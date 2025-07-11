@@ -7,6 +7,9 @@ import SwiftUI
 import Combine
 import CoreData
 import Foundation
+import os
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MainCoordinator")
 
 // MARK: - Identifiable Wrappers
 
@@ -128,8 +131,8 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     
     func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?) {
         let destination = ThreadDestination(thread: thread, page: page, author: author)
-        print("🔵 MainCoordinator: navigateToThread called - thread: \(thread.title ?? "Unknown"), page: \(page)")
-        print("🔵 MainCoordinator: Current path count: \(path.count)")
+        logger.info("navigateToThread called - thread: \(thread.title ?? "Unknown"), page: \(String(describing: page))")
+        logger.debug("Current path count: \(self.path.count)")
         
         // Clear unpop stack when navigating to new destination
         unpopStack.removeAll()
@@ -137,7 +140,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         // Add to navigation history and path
         navigationHistory.append(destination)
         path.append(destination)
-        print("🔵 MainCoordinator: Path count after append: \(path.count)")
+        logger.debug("Path count after append: \(self.path.count)")
         isTabBarHidden = true
     }
     
@@ -486,7 +489,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
                 path.append(item)
             }
             
-            print("🔄 MainCoordinator: Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown")")
+            logger.info("Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown")")
         } else {
             print("⚠️ MainCoordinator: No ThreadDestination found in navigation history to update scroll position")
         }
@@ -494,20 +497,54 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     
     func updateScrollPosition(for threadID: String, page: ThreadPage, author: User?, scrollFraction: CGFloat) {
         // Find the ThreadDestination in navigation history matching the criteria
-        if let index = navigationHistory.firstIndex(where: { item in
+        // First try exact match (threadID, page, author)
+        var matchIndex = navigationHistory.firstIndex(where: { item in
             guard let threadDestination = item as? ThreadDestination else { return false }
             return threadDestination.thread.threadID == threadID &&
                    threadDestination.page == page &&
                    threadDestination.author == author
-        }),
+        })
+        
+        // If no exact match, try to find by threadID and author only (page might have changed)
+        if matchIndex == nil {
+            matchIndex = navigationHistory.firstIndex(where: { item in
+                guard let threadDestination = item as? ThreadDestination else { return false }
+                return threadDestination.thread.threadID == threadID &&
+                       threadDestination.author == author
+            })
+        }
+        
+        // If still no match, try threadID only
+        if matchIndex == nil {
+            matchIndex = navigationHistory.firstIndex(where: { item in
+                guard let threadDestination = item as? ThreadDestination else { return false }
+                return threadDestination.thread.threadID == threadID
+            })
+        }
+        
+        if let index = matchIndex,
            let threadDestination = navigationHistory[index] as? ThreadDestination {
             
-            // Create a new ThreadDestination with the updated scroll position
+            // Preserve the saved scroll fraction if we're updating due to page change
+            // Only use the new scroll fraction if it's different from the saved one
+            let savedScrollFraction = threadDestination.scrollFraction
+            let finalScrollFraction: CGFloat?
+            
+            if let saved = savedScrollFraction, scrollFraction == 0.0 {
+                // If we have a saved scroll fraction and new one is 0, preserve the saved one
+                finalScrollFraction = saved
+                print("🔄 MainCoordinator: Preserving saved scroll fraction \(saved) for thread \(threadDestination.thread.title ?? "Unknown")")
+            } else {
+                // Use the new scroll fraction
+                finalScrollFraction = scrollFraction > 0 ? scrollFraction : savedScrollFraction
+            }
+            
+            // Create a new ThreadDestination with the updated scroll position and current page
             let updatedDestination = ThreadDestination(
                 thread: threadDestination.thread,
-                page: threadDestination.page,
-                author: threadDestination.author,
-                scrollFraction: scrollFraction
+                page: page, // Use the current page, not the saved one
+                author: author, // Use the current author, not the saved one
+                scrollFraction: finalScrollFraction
             )
             
             // Replace the item in navigation history
@@ -537,7 +574,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     // MARK: - State Restoration Implementation
     
     func saveNavigationState() {
-        print("💾 MainCoordinator: Saving navigation state")
+        logger.info("Saving navigation state")
         
         // Convert navigation history to saveable format
         let navigationDestinations = navigationHistory.compactMap { NavigationDestination.from($0) }
@@ -582,7 +619,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func restoreNavigationState() {
-        print("🔄 MainCoordinator: Restoring navigation state")
+        logger.info("Restoring navigation state")
         
         // Validate Core Data context is ready
         guard managedObjectContext.persistentStoreCoordinator != nil else {
@@ -1913,6 +1950,27 @@ struct iPadMainView: View {
             NavigationStack(path: $coordinator.path) {
                 DetailView()
                     .environmentObject(coordinator)
+                    .navigationDestination(for: ThreadDestination.self) { destination in
+                        Group {
+                            let _ = logger.info("iPad DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown")")
+                            PostsViewWrapper(
+                                thread: destination.thread,
+                                author: destination.author,
+                                page: destination.page,
+                                coordinator: coordinator,
+                                scrollFraction: destination.scrollFraction
+                            )
+                        }
+                    }
+                    .navigationDestination(for: Forum.self) { forum in
+                        ThreadsViewWrapper(forum: forum, coordinator: coordinator)
+                    }
+                    .navigationDestination(for: PrivateMessage.self) { message in
+                        PrivateMessageViewWrapper(message: message, coordinator: coordinator)
+                    }
+                    .navigationDestination(for: ComposePrivateMessage.self) { _ in
+                        MessageComposeDetailView(coordinator: coordinator)
+                    }
             }
             .unpopEnabled(coordinator: coordinator)
         }

@@ -115,7 +115,8 @@ final class NavigationStateRestorationTests: XCTestCase {
         let threadDestination = NavigationDestination.thread(
             threadID: "12345",
             page: .specific(3),
-            authorID: "67890"
+            authorID: "67890",
+            scrollFraction: 0.5
         )
         
         let forumDestination = NavigationDestination.forum(forumID: "forum123")
@@ -148,10 +149,11 @@ final class NavigationStateRestorationTests: XCTestCase {
         XCTAssertEqual(restoredState?.unpopStack.count, 1)
         
         // Check specific destination types
-        if case .thread(let threadID, let page, let authorID) = restoredState?.mainNavigationPath[0] {
+        if case .thread(let threadID, let page, let authorID, let scrollFraction) = restoredState?.mainNavigationPath[0] {
             XCTAssertEqual(threadID, "12345")
             XCTAssertEqual(page, .specific(3))
             XCTAssertEqual(authorID, "67890")
+            XCTAssertEqual(scrollFraction, 0.5)
         } else {
             XCTFail("Expected thread destination")
         }
@@ -279,7 +281,7 @@ final class NavigationStateRestorationTests: XCTestCase {
 extension ThreadPage: Equatable {
     public static func == (lhs: ThreadPage, rhs: ThreadPage) -> Bool {
         switch (lhs, rhs) {
-        case (.first, .first), (.last, .last), (.nextUnread, .nextUnread):
+        case (.last, .last), (.nextUnread, .nextUnread):
             return true
         case (.specific(let lhsPage), .specific(let rhsPage)):
             return lhsPage == rhsPage
@@ -305,8 +307,8 @@ extension PresentedSheetState: Equatable {
 extension NavigationDestination: Equatable {
     public static func == (lhs: NavigationDestination, rhs: NavigationDestination) -> Bool {
         switch (lhs, rhs) {
-        case (.thread(let lhsThreadID, let lhsPage, let lhsAuthorID), .thread(let rhsThreadID, let rhsPage, let rhsAuthorID)):
-            return lhsThreadID == rhsThreadID && lhsPage == rhsPage && lhsAuthorID == rhsAuthorID
+        case (.thread(let lhsThreadID, let lhsPage, let lhsAuthorID, let lhsScrollFraction), .thread(let rhsThreadID, let rhsPage, let rhsAuthorID, let rhsScrollFraction)):
+            return lhsThreadID == rhsThreadID && lhsPage == rhsPage && lhsAuthorID == rhsAuthorID && lhsScrollFraction == rhsScrollFraction
         case (.forum(let lhsForumID), .forum(let rhsForumID)):
             return lhsForumID == rhsForumID
         case (.privateMessage(let lhsMessageID), .privateMessage(let rhsMessageID)):

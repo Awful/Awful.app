@@ -54,6 +54,7 @@ struct SwiftUIPostsPageView: View {
     @State private var messageViewController: MessageComposeViewController?
     @State private var replyWorkspace: IdentifiableReplyWorkspace?
     @State private var currentScrollFraction: CGFloat = 0.0
+    @State private var pendingScrollFraction: CGFloat?
     
     // MARK: - Initialization
     init(thread: AwfulThread, author: User? = nil, coordinator: AnyObject? = nil, scrollFraction: CGFloat? = nil) {
@@ -62,14 +63,8 @@ struct SwiftUIPostsPageView: View {
         self.coordinator = coordinator
         self._viewModel = StateObject(wrappedValue: PostsPageViewModel(thread: thread, author: author))
         
-        // Set up scroll restoration if provided
-        if let scrollFraction = scrollFraction {
-            // We need to set this after initialization
-            let viewModel = self._viewModel.wrappedValue
-            DispatchQueue.main.async {
-                viewModel.scrollToFraction = scrollFraction
-            }
-        }
+        // Store scroll fraction for restoration after posts are loaded
+        self.pendingScrollFraction = scrollFraction
     }
     
     init(thread: AwfulThread, author: User? = nil, page: ThreadPage = .specific(1), coordinator: AnyObject? = nil) {
@@ -129,6 +124,7 @@ struct SwiftUIPostsPageView: View {
                         bottomInset: scrollState.bottomInset,
                         isImmersiveMode: postsImmersiveMode
                     )
+                    .id("render-view-\(viewModel.thread.threadID)")
                     .ignoresSafeArea(postsImmersiveMode ? .all : .container)
                     
                     // TODO: SwiftUI frog implementation - temporarily removed for build
@@ -318,6 +314,16 @@ struct SwiftUIPostsPageView: View {
                     container.renderView.scrollToFractionalOffset(fractionalPoint)
                 }
                 viewModel.scrollToFraction = nil
+            }
+        }
+        .onChange(of: viewModel.posts) { posts in
+            // Apply pending scroll fraction when posts are loaded
+            if !posts.isEmpty, let scrollFraction = pendingScrollFraction {
+                // Delay slightly to ensure the content is rendered
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    viewModel.scrollToFraction = scrollFraction
+                    pendingScrollFraction = nil
+                }
             }
         }
     }

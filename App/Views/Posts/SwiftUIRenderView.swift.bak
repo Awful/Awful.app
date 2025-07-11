@@ -17,84 +17,6 @@ import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SwiftUIRenderView")
 
-// MARK: - WebView Container Cache
-private class WebViewContainerCache {
-    static let shared = WebViewContainerCache()
-    
-    private var cache: [String: CacheEntry] = [:]
-    private let queue = DispatchQueue(label: "WebViewContainerCache")
-    private let maxCacheSize = 5 // Limit cache size to prevent memory issues
-    
-    private struct CacheEntry {
-        let container: RenderViewContainer
-        let timestamp: Date
-        
-        init(container: RenderViewContainer) {
-            self.container = container
-            self.timestamp = Date()
-        }
-    }
-    
-    init() {
-        // Clean up cache when app receives memory warnings
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleMemoryWarning),
-            name: UIApplication.didReceiveMemoryWarningNotification,
-            object: nil
-        )
-    }
-    
-    func get(for key: String) -> RenderViewContainer? {
-        queue.sync {
-            return cache[key]?.container
-        }
-    }
-    
-    func set(_ container: RenderViewContainer, for key: String) {
-        queue.async {
-            self.cache[key] = CacheEntry(container: container)
-            self.performCleanup()
-        }
-    }
-    
-    func remove(for key: String) {
-        queue.async {
-            self.cache.removeValue(forKey: key)
-        }
-    }
-    
-    func clear() {
-        queue.async {
-            self.cache.removeAll()
-        }
-    }
-    
-    private func performCleanup() {
-        guard cache.count > maxCacheSize else { return }
-        
-        // Remove oldest entries when cache exceeds max size
-        let sortedEntries = cache.sorted { $0.value.timestamp < $1.value.timestamp }
-        let entriesToRemove = sortedEntries.prefix(cache.count - maxCacheSize)
-        
-        for (key, _) in entriesToRemove {
-            cache.removeValue(forKey: key)
-        }
-    }
-    
-    @objc private func handleMemoryWarning() {
-        queue.async {
-            // Clear half the cache on memory warning
-            let sortedEntries = self.cache.sorted { $0.value.timestamp < $1.value.timestamp }
-            let entriesToRemove = sortedEntries.prefix(self.cache.count / 2)
-            
-            for (key, _) in entriesToRemove {
-                self.cache.removeValue(forKey: key)
-            }
-        }
-    }
-}
-
 /// SwiftUI wrapper for RenderView that provides proper state management
 struct SwiftUIRenderView: UIViewRepresentable {
     // MARK: - Dependencies
@@ -125,125 +47,14 @@ struct SwiftUIRenderView: UIViewRepresentable {
     @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
     @FoilDefaultStorageOptional(Settings.username) private var loggedInUsername
     
-    
     // MARK: - UIViewRepresentable
     func makeUIView(context: UIViewRepresentableContext<SwiftUIRenderView>) -> RenderViewContainer {
-        let cacheKey = "\(viewModel.thread.threadID)-\(viewModel.author?.userID ?? "no-author")"
-        
-        // Try to get cached container first
-        if let cachedContainer = WebViewContainerCache.shared.get(for: cacheKey) {
-            logger.info("🔄 Reusing cached RenderViewContainer for thread \(viewModel.thread.threadID)")
-            
-            // Update delegates
-            cachedContainer.delegate = context.coordinator
-            cachedContainer.scrollDelegate = context.coordinator
-            cachedContainer.setup(theme: theme)
-            cachedContainer.setupContextMenu(coordinator: context.coordinator)
-            
-            // If the cached container has content, stop loading state
-            if cachedContainer.hasContent {
-                logger.info("🔄 Cached container has content, stopping loading state")
-                DispatchQueue.main.async {
-                    self.viewModel.isLoading = false
-                }
-            }
-            
-            // No need to re-render if we're reusing a cached container with content
-            return cachedContainer
-        }
-        
-        logger.info("🔄 Creating new RenderViewContainer for thread \(viewModel.thread.threadID)")
-        
         let container = RenderViewContainer()
         container.delegate = context.coordinator
         container.scrollDelegate = context.coordinator
         container.setup(theme: theme)
         container.setupContextMenu(coordinator: context.coordinator)
-        
-        // Cache the container
-        WebViewContainerCache.shared.set(container, for: cacheKey)
-        
-        // IMMEDIATE RENDER: Always render posts from Core Data when container is created
-        logger.info("🔄 makeUIView - viewModel has \(viewModel.posts.count) posts, currentPage: \(String(describing: viewModel.currentPage)), isLoading: \(viewModel.isLoading)")
-        
-        let postsToRender: [Post]
-        if !viewModel.posts.isEmpty {
-            logger.info("🔄 makeUIView - using \(viewModel.posts.count) posts from viewModel")
-            postsToRender = viewModel.posts
-        } else {
-            logger.warning("🔄 makeUIView - no posts in viewModel, trying to fetch from Core Data")
-            let cachedPosts = fetchCachedPosts(for: viewModel.thread, page: viewModel.currentPage)
-            if !cachedPosts.isEmpty {
-                logger.info("🔄 makeUIView - found \(cachedPosts.count) cached posts")
-                postsToRender = cachedPosts
-            } else {
-                logger.warning("🔄 makeUIView - no cached posts found, container will be empty until posts are loaded")
-                postsToRender = []
-            }
-        }
-        
-        if !postsToRender.isEmpty {
-            container.renderPosts(
-                posts: postsToRender,
-                thread: viewModel.thread,
-                author: viewModel.author,
-                page: viewModel.currentPage,
-                numberOfPages: viewModel.numberOfPages,
-                firstUnreadPost: viewModel.firstUnreadPost,
-                advertisementHTML: viewModel.advertisementHTML,
-                theme: theme,
-                fontScale: CGFloat(fontScale),
-                showAvatars: showAvatars,
-                showImages: showImages,
-                enableCustomTitlePostLayout: enableCustomTitlePostLayout,
-                frogAndGhostEnabled: frogAndGhostEnabled,
-                loggedInUserID: loggedInUserID,
-                loggedInUsername: loggedInUsername,
-                forceRender: true
-            )
-        }
-        
         return container
-    }
-    
-    private func fetchCachedPosts(for thread: AwfulThread, page: ThreadPage?) -> [Post] {
-        guard let context = thread.managedObjectContext else {
-            logger.warning("🔄 Thread has no managed object context")
-            return []
-        }
-        
-        // Calculate the page number for fetching
-        let pageNumber: Int
-        switch page {
-        case .specific(let number):
-            pageNumber = number
-        case .first:
-            pageNumber = 1
-        case .last:
-            pageNumber = Int(thread.numberOfPages)
-        case .nextUnread:
-            // For next unread, we'll try to fetch the last seen page
-            pageNumber = max(1, Int(thread.seenPosts / 40) + 1) // Assuming 40 posts per page
-        case .none:
-            pageNumber = 1
-        }
-        
-        // Fetch posts for this thread and page
-        let postsPerPage = 40 // Standard posts per page
-        let startIndex = (pageNumber - 1) * postsPerPage + 1
-        let endIndex = pageNumber * postsPerPage
-        
-        let posts = Post.fetch(in: context) { request in
-            request.predicate = NSPredicate(format: "%K == %@ AND %K >= %d AND %K <= %d", 
-                                          #keyPath(Post.thread), thread,
-                                          #keyPath(Post.threadIndex), startIndex,
-                                          #keyPath(Post.threadIndex), endIndex)
-            request.sortDescriptors = [NSSortDescriptor(key: #keyPath(Post.threadIndex), ascending: true)]
-            request.returnsObjectsAsFaults = false
-        }
-        
-        logger.info("🔄 Fetched \(posts.count) cached posts for thread \(thread.threadID) page \(pageNumber)")
-        return posts
     }
     
     func updateUIView(_ container: RenderViewContainer, context: UIViewRepresentableContext<SwiftUIRenderView>) {
@@ -259,10 +70,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
         // Update content insets based on toolbar visibility
         container.updateContentInsets(top: topInset, bottom: bottomInset)
         
-        // Only render if the container doesn't have content or if posts have actually changed
-        if !viewModel.posts.isEmpty && !container.hasContent {
-            logger.info("🔄 SwiftUI updateUIView - rendering content for container without content")
-            
+        // Only render posts if we actually have posts to display
+        if !viewModel.posts.isEmpty {
             container.renderPosts(
                 posts: viewModel.posts,
                 thread: viewModel.thread,
@@ -278,10 +87,10 @@ struct SwiftUIRenderView: UIViewRepresentable {
                 enableCustomTitlePostLayout: enableCustomTitlePostLayout,
                 frogAndGhostEnabled: frogAndGhostEnabled,
                 loggedInUserID: loggedInUserID,
-                loggedInUsername: loggedInUsername,
-                forceRender: false
+                loggedInUsername: loggedInUsername
             )
         }
+        
     }
     
     func makeCoordinator() -> Coordinator {
@@ -378,17 +187,9 @@ struct SwiftUIRenderView: UIViewRepresentable {
         
         func renderProcessDidTerminate(in view: RenderView) {
             // Reset render state on process termination
-            logger.warning("🚨 Render process terminated, triggering re-render from Core Data")
+            logger.warning("Render process terminated, resetting render state")
             if let container = view.superview as? RenderViewContainer {
                 container.resetRenderState()
-                
-                if container.isInBackground {
-                    container.needsContentRestoration = true
-                    logger.info("🔄 Marked WebView for content restoration after background")
-                } else {
-                    logger.info("🔄 Triggering immediate re-render from Core Data")
-                    container.triggerContentRerender()
-                }
             }
         }
         
@@ -483,19 +284,16 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     }
     weak var scrollDelegate: RenderViewScrollDelegate?
     private var lastScrollOffset: CGFloat = 0
-    internal var lastRenderedPostsHash: Int = 0
+    private var lastRenderedPostsHash: Int = 0
     fileprivate var isCurrentlyRendering: Bool = false
     private var frogAndGhostEnabled: Bool = false
     private weak var coordinator: SwiftUIRenderView.Coordinator?
     
     // MARK: - Background/Foreground State Management
-    internal var isInBackground: Bool = false
+    private var isInBackground: Bool = false
     private var savedScrollPosition: CGFloat = 0
     private var savedContentSize: CGSize = .zero
-    internal var needsContentRestoration: Bool = false
-    
-    // MARK: - Content State
-    internal var hasContent: Bool = false
+    private var needsContentRestoration: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -510,7 +308,6 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     }
     
     deinit {
-        logger.info("🔄 RenderViewContainer deinit - removing lifecycle observers")
         removeApplicationLifecycleObservers()
     }
     
@@ -539,192 +336,6 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         _renderView.addGestureRecognizer(longPressGesture)
     }
     
-    // MARK: - Application Lifecycle Management
-    private func setupApplicationLifecycleObservers() {
-        logger.info("🔄 Setting up application lifecycle observers")
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationWillResignActive),
-            name: UIApplication.willResignActiveNotification,
-            object: nil
-        )
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationDidBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
-            object: nil
-        )
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationDidReceiveMemoryWarning),
-            name: UIApplication.didReceiveMemoryWarningNotification,
-            object: nil
-        )
-        
-        // Listen for additional background/foreground notifications
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationWillEnterForeground),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationDidEnterBackground),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
-        
-        logger.info("🔄 Application lifecycle observers setup complete")
-    }
-    
-    private func removeApplicationLifecycleObservers() {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-    }
-    
-    @objc private func applicationWillResignActive() {
-        logger.info("🔄 Application will resign active - preparing WebView for background")
-        prepareWebViewForBackground()
-    }
-    
-    @objc private func applicationDidBecomeActive() {
-        logger.info("🔄 Application did become active - restoring WebView from background")
-        restoreWebViewFromBackground()
-    }
-    
-    @objc private func applicationDidReceiveMemoryWarning() {
-        logger.warning("Application received memory warning - preparing WebView for potential termination")
-        prepareWebViewForBackground()
-    }
-    
-    @objc private func applicationWillEnterForeground() {
-        logger.info("🔄 Application will enter foreground - restoring WebView")
-        restoreWebViewFromBackground()
-    }
-    
-    @objc private func applicationDidEnterBackground() {
-        logger.info("🔄 Application did enter background - preparing WebView for background")
-        prepareWebViewForBackground()
-    }
-    
-    // MARK: - WebView State Management
-    private func prepareWebViewForBackground() {
-        guard !isInBackground else { return }
-        
-        isInBackground = true
-        
-        // Save current scroll position and content state
-        let scrollView = _renderView.scrollView
-        savedScrollPosition = scrollView.contentOffset.y
-        savedContentSize = scrollView.contentSize
-        
-        // Set WebView to opaque to prevent process termination
-        _renderView.webView.isOpaque = true
-        
-        logger.info("🔄 WebView prepared for background - saved scroll position and content size, now opaque: \(self._renderView.webView.isOpaque)")
-    }
-    
-    private func restoreWebViewFromBackground() {
-        guard isInBackground else { return }
-        
-        isInBackground = false
-        
-        // Restore WebView to transparent for proper rendering
-        _renderView.webView.isOpaque = false
-        
-        // Always check if content needs restoration by testing WebView content
-        checkAndRestoreContentIfNeeded()
-        
-        logger.info("🔄 WebView restored from background - opaque: \(self._renderView.webView.isOpaque)")
-    }
-    
-    private func checkAndRestoreContentIfNeeded() {
-        // Always force a content check and restoration after a short delay
-        // This ensures we catch any race conditions where content appears present but then disappears
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-            
-            Task {
-                do {
-                    let result = try await self._renderView.webView.eval("document.body ? document.body.children.length : 0")
-                    let childCount = (result as? NSNumber)?.intValue ?? 0
-                    
-                    if childCount == 0 {
-                        // WebView content is empty, trigger restoration
-                        logger.info("🔄 WebView content is empty after delay, triggering restoration")
-                        self.delegate?.renderProcessDidTerminate(in: self._renderView)
-                    } else {
-                        // Content is present, just restore scroll position
-                        logger.info("🔄 WebView content is present (\(childCount) elements), restoring scroll position")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                            self?.restoreScrollPosition()
-                        }
-                    }
-                } catch {
-                    // If we can't evaluate JavaScript, assume content needs restoration
-                    logger.warning("🔄 Cannot evaluate JavaScript after delay, assuming content needs restoration: \(error)")
-                    self.delegate?.renderProcessDidTerminate(in: self._renderView)
-                }
-            }
-        }
-    }
-    
-    private func restoreScrollPosition() {
-        guard savedScrollPosition > 0 else { return }
-        
-        let scrollView = _renderView.scrollView
-        let targetOffset = CGPoint(x: 0, y: savedScrollPosition)
-        
-        // Only restore if content size is similar to what we saved
-        if abs(scrollView.contentSize.height - savedContentSize.height) < 100 {
-            scrollView.setContentOffset(targetOffset, animated: false)
-            logger.info("Restored scroll position")
-        } else {
-            logger.info("Content size changed significantly, skipping scroll restoration")
-        }
-    }
-    
-    // MARK: - Content Restoration Support  
-    func triggerContentRerender() {
-        // This method can be used to trigger re-rendering of posts
-        // It would typically be called by the view model
-        logger.info("🔄 Triggering content re-render after process termination")
-        
-        // Mark for content restoration if needed
-        needsContentRestoration = true
-        
-        // Notify delegate about the need for re-rendering
-        delegate?.renderProcessDidTerminate(in: _renderView)
-    }
-    
-    func verifyContentPresence() {
-        // Verify that the WebView actually has content, and restore if needed
-        Task {
-            do {
-                let result = try await _renderView.webView.eval("document.body ? document.body.children.length : 0")
-                let childCount = (result as? NSNumber)?.intValue ?? 0
-                
-                if childCount == 0 {
-                    logger.warning("🔄 Content verification failed - WebView is empty, triggering re-render")
-                    hasContent = false
-                    delegate?.renderProcessDidTerminate(in: _renderView)
-                } else {
-                    logger.info("🔄 Content verification passed - WebView has \(childCount) elements")
-                }
-            } catch {
-                logger.warning("🔄 Content verification failed - JavaScript error: \(error)")
-                delegate?.renderProcessDidTerminate(in: _renderView)
-            }
-        }
-    }
     func setup(theme: Theme) {
         _renderView.setThemeStylesheet(theme[string: "postsViewCSS"] ?? "")
         
@@ -752,22 +363,20 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         enableCustomTitlePostLayout: Bool,
         frogAndGhostEnabled: Bool,
         loggedInUserID: String?,
-        loggedInUsername: String?,
-        forceRender: Bool = false
+        loggedInUsername: String?
     ) {
         // Create a hash of the current rendering state to prevent unnecessary re-renders
         let currentPostsHash = posts.map { $0.postID }.joined().hashValue
         
         // Skip rendering if we're already rendering the same posts or if we're currently in a render operation
-        // unless forceRender is true
-        guard (forceRender || currentPostsHash != lastRenderedPostsHash) && !isCurrentlyRendering else {
+        guard currentPostsHash != lastRenderedPostsHash && !isCurrentlyRendering else {
             logger.info("Skipping render - already rendered these \(posts.count) posts or render in progress")
             return
         }
         
         isCurrentlyRendering = true
         lastRenderedPostsHash = currentPostsHash
-        logger.info("🔄 Rendering \(posts.count) posts (forceRender: \(forceRender))")
+        logger.info("Rendering \(posts.count) posts")
         
         let context = RenderContext(
             advertisementHTML: advertisementHTML,
@@ -813,7 +422,6 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
             _renderView.loadLottiePlayer()
             
             logger.info("Posts rendering completed")
-            hasContent = true
         } catch {
             logger.error("Template rendering failed: \(error)")
             // Reset rendering flag on error
@@ -831,9 +439,7 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     func resetRenderState() {
         isCurrentlyRendering = false
         lastRenderedPostsHash = 0
-        hasContent = false
     }
-    
     
     func updateContentInsets(top: CGFloat, bottom: CGFloat) {
         let scrollView = _renderView.scrollView
