@@ -33,6 +33,9 @@ struct SwiftUIRenderView: UIViewRepresentable {
     var topInset: CGFloat = 0
     var bottomInset: CGFloat = 0
     
+    // MARK: - Immersive Mode
+    var isImmersiveMode: Bool = false
+    
     // MARK: - Settings
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
@@ -58,6 +61,9 @@ struct SwiftUIRenderView: UIViewRepresentable {
         
         // Update frog setting on container
         container.updateFrogAndGhostEnabled(frogAndGhostEnabled)
+        
+        // Update immersive mode setting
+        container.updateImmersiveMode(isImmersiveMode)
         
         // Update content insets based on toolbar visibility
         container.updateContentInsets(top: topInset, bottom: bottomInset)
@@ -425,6 +431,19 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         logger.info("Updated frogAndGhostEnabled: \(enabled)")
     }
     
+    func updateImmersiveMode(_ enabled: Bool) {
+        // Update the background color to match the posts view background when in immersive mode
+        if enabled {
+            // Use clear background so the SwiftUI background shows through
+            _renderView.backgroundColor = UIColor.clear
+        } else {
+            // Use clear background for normal mode
+            _renderView.backgroundColor = UIColor.clear
+        }
+        
+        logger.info("Updated immersive mode: \(enabled)")
+    }
+    
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
@@ -450,12 +469,8 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
                 let pullFraction = min(overscroll / maxPullDistance, 1.0)
                 scrollDelegate?.didPull(fraction: pullFraction)
                 
-                // Debug logging
-                logger.info("Pull detected: overscroll=\(overscroll), fraction=\(pullFraction)")
-                
                 // Trigger refresh if pull is complete and user has dragged far enough
                 if pullFraction >= 1.0 && overscroll > maxPullDistance {
-                    logger.info("Pull refresh triggered")
                     scrollDelegate?.didTriggerRefresh()
                 }
             } else if currentOffset + viewHeight >= contentHeight - 10 {

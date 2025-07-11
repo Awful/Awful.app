@@ -443,6 +443,9 @@
         }
       }
     },
+    "Hides navigation and toolbar bars for distraction-free reading" : {
+
+    },
     "image-upload.generic-error-title" : {
       "comment" : "Title of a generic error uploading an image.",
       "extractionState" : "migrated",

@@ -104,7 +104,6 @@ struct PostsToolbarContainer: View {
             Button(action: {
                 // Only allow page picker for specific pages where we know the page number
                 guard case .specific = page else { 
-                    print("🔴 Page picker blocked: not on a specific page - page=\(String(describing: page))")
                     return 
                 }
                 if enableHaptics {
@@ -116,15 +115,6 @@ struct PostsToolbarContainer: View {
                     .font(.body.weight(.medium))
                     .foregroundColor(toolbarTextColor)
                     .frame(minWidth: 60)
-                    .onAppear {
-                        print("🔵 Toolbar page button - page: \(String(describing: page)), numberOfPages: \(numberOfPages), currentPageText: '\(currentPageText)'")
-                    }
-                    .onChange(of: page) { newPage in
-                        print("🔵 Toolbar page changed to: \(String(describing: newPage)), currentPageText: '\(currentPageText)'")
-                    }
-                    .onChange(of: numberOfPages) { newCount in
-                        print("🔵 Toolbar numberOfPages changed to: \(newCount), currentPageText: '\(currentPageText)'")
-                    }
             }
             .disabled(page == nil) // Only disable if we have no page state at all
             .accessibilityLabel(currentPageAccessibilityLabel)

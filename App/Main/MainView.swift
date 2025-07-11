@@ -1152,7 +1152,6 @@ private struct DetailView: View {
         .background(Theme.defaultTheme()[color: "backgroundColor"]!)
         .navigationTitle("Detail")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(.visible, for: .navigationBar)
         .navigationDestination(for: ThreadDestination.self) { destination in
             Group {
                 let _ = print("🔵 DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown"), scrollFraction: \(destination.scrollFraction?.description ?? "none")")

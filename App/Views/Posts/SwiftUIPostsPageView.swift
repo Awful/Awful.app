@@ -29,6 +29,7 @@ struct SwiftUIPostsPageView: View {
     @StateObject private var viewModel: PostsPageViewModel
     @SwiftUI.Environment(\.theme) private var globalTheme
     @SwiftUI.Environment(\.dismiss) private var dismiss
+    @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     // MARK: - Forum-Specific Theme
     private var theme: Theme {
@@ -43,6 +44,7 @@ struct SwiftUIPostsPageView: View {
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
+    @FoilDefaultStorage(Settings.postsImmersiveMode) private var postsImmersiveMode
     
     // MARK: - State Management
     @StateObject private var scrollState = ScrollStateManager()
@@ -85,7 +87,7 @@ struct SwiftUIPostsPageView: View {
         ZStack {
             // Full-screen background that extends into all safe areas
             Color(theme[uicolor: "postsViewBackgroundColor"] ?? .systemBackground)
-                .ignoresSafeArea(.all)
+                .ignoresSafeArea(postsImmersiveMode ? .all : .container)
             
             if viewModel.isLoading && viewModel.posts.isEmpty {
                 // Loading state
@@ -126,19 +128,24 @@ struct SwiftUIPostsPageView: View {
                             }
                         },
                         topInset: scrollState.topInset,
-                        bottomInset: scrollState.bottomInset
+                        bottomInset: scrollState.bottomInset,
+                        isImmersiveMode: postsImmersiveMode
                     )
+                    .ignoresSafeArea(postsImmersiveMode ? .all : .container)
                     
                     // TODO: SwiftUI frog implementation - temporarily removed for build
                 }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar(scrollState.isTopBarVisible ? .visible : .hidden, for: .navigationBar)
+        .navigationBarHidden(postsImmersiveMode ? !scrollState.isTopBarVisible : false)
+        .onChange(of: scrollState.isTopBarVisible) { newValue in
+            // Top bar visibility changed
+        }
         .navigationTitle(thread.title ?? "Thread")
         .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
         .overlay(alignment: .top) {
-            // Top subtoolbar overlay
+            // Top subtoolbar overlay - appears when scrolling up after scrolling down
             if scrollState.isSubToolbarVisible {
                 VStack(spacing: 0) {
                     HStack {
@@ -166,12 +173,13 @@ struct SwiftUIPostsPageView: View {
                     .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
                     .foregroundColor(Color(theme[uicolor: "toolbarTextColor"] ?? UIColor.systemBlue))
                 }
+                .padding(.top, postsImmersiveMode ? 0 : 0) // No padding needed - subtoolbar should be right under navigation bar
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
         .overlay(alignment: .bottom) {
-            // Bottom toolbar overlay
-            if scrollState.isBottomBarVisible {
+            // Bottom toolbar overlay - shows/hides based on scroll in immersive mode, always visible when not immersive
+            if !postsImmersiveMode || scrollState.isBottomBarVisible {
                 PostsToolbarContainer(
                     thread: thread,
                     author: author,
@@ -214,6 +222,7 @@ struct SwiftUIPostsPageView: View {
                     alignment: .top
                 )
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
+                .padding(.bottom, postsImmersiveMode ? 0 : 0) // No padding needed - toolbar should be at bottom edge
             }
             // No title in immersion mode
         }

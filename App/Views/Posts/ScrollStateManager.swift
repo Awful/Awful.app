@@ -15,6 +15,7 @@ class ScrollStateManager: ObservableObject {
     @Published private(set) var isBottomBarVisible: Bool = true
     @Published private(set) var frogPullProgress: CGFloat = 0
     @Published private(set) var isNearBottom: Bool = false
+    @Published private(set) var hasUserScrolled: Bool = false
     
     // MARK: - Internal State
     private var scrollPosition: CGFloat = 0
@@ -31,11 +32,13 @@ class ScrollStateManager: ObservableObject {
     
     // MARK: - Computed Properties
     var topInset: CGFloat {
-        isSubToolbarVisible ? 40 : 0
+        // No insets - toolbars are pure overlays
+        0
     }
     
     var bottomInset: CGFloat {
-        isBottomBarVisible ? 100 : 20
+        // No insets - toolbars are pure overlays
+        0
     }
     
     // MARK: - Enums
@@ -47,8 +50,15 @@ class ScrollStateManager: ObservableObject {
     func handleScrollChange(isScrollingUp: Bool) {
         let newDirection: ScrollDirection = isScrollingUp ? .up : .down
         
+        // Mark that user has scrolled
+        if !hasUserScrolled {
+            hasUserScrolled = true
+        }
+        
         // Only process if direction actually changed
-        guard newDirection != lastScrollDirection else { return }
+        guard newDirection != lastScrollDirection else { 
+            return 
+        }
         lastScrollDirection = newDirection
         
         // Cancel previous UI update
@@ -90,40 +100,29 @@ class ScrollStateManager: ObservableObject {
     
     // MARK: - Private Methods
     private func updateToolbarVisibility(isScrollingUp: Bool) {
-        let isNearTop = scrollPosition < 100 // Within 100 points of top
-        let isVeryNearBottom = scrollContentHeight > 0 && 
-                              (scrollPosition + scrollViewHeight) >= (scrollContentHeight - 50) // Within 50 points of bottom
-        
         if isScrollingUp {
-            // Scrolling up - show bars if user has scrolled down first
-            // Always show bars near the top for better UX
-            if (hasScrolledDown || isNearTop) && !isTopBarVisible {
+            // Scrolling up - show all bars
+            if !isTopBarVisible {
                 isTopBarVisible = true
             }
-            if (hasScrolledDown || isNearTop) && !isSubToolbarVisible {
+            // Show subtoolbar only if user has scrolled down first
+            if hasScrolledDown && !isSubToolbarVisible {
                 isSubToolbarVisible = true
             }
-            
-            // Show bottom bar when scrolling up, but be gentler near bottom to avoid frog conflicts
-            if !isBottomBarVisible && !isVeryNearBottom {
+            if !isBottomBarVisible {
                 isBottomBarVisible = true
             }
         } else {
-            // Scrolling down - hide bars for immersive reading
+            // Scrolling down - hide all bars
             hasScrolledDown = true
             
-            // Don't hide top bars immediately if we're near the top
-            if !isNearTop {
-                if isTopBarVisible {
-                    isTopBarVisible = false
-                }
-                if isSubToolbarVisible {
-                    isSubToolbarVisible = false
-                }
+            if isTopBarVisible {
+                isTopBarVisible = false
             }
-            
-            // Be more careful about hiding bottom bar near the bottom to prevent frog conflicts
-            if isBottomBarVisible && !isVeryNearBottom {
+            if isSubToolbarVisible {
+                isSubToolbarVisible = false
+            }
+            if isBottomBarVisible {
                 isBottomBarVisible = false
             }
         }
@@ -175,6 +174,7 @@ class ScrollStateManager: ObservableObject {
         frogPullProgress = 0
         isNearBottom = false
         hasScrolledDown = false
+        hasUserScrolled = false
         lastScrollDirection = .none
         
         scrollPosition = 0

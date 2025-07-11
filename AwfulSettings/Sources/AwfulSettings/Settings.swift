@@ -107,6 +107,9 @@ public enum Settings {
     /// Use the new SwiftUI posts page view instead of the legacy UIKit version.
     public static let useSwiftUIPostsView = Setting(key: "use_swiftui_posts_view", default: false)
 
+    /// Enable immersive mode for the posts page view (hides navigation and tab bars).
+    public static let postsImmersiveMode = Setting(key: "posts_immersive_mode", default: false)
+
     /// Show avatars for authors in the posts view.
     public static let showAvatars = Setting(key: "show_avatars", default: true)
 

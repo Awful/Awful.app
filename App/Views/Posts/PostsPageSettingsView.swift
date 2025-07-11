@@ -10,6 +10,7 @@ struct PostsPageSettingsView: View {
     @AppStorage(Settings.darkMode.key) private var darkMode: Bool = Settings.darkMode.default
     @AppStorage(Settings.enableHaptics.key) private var enableHaptics: Bool = Settings.enableHaptics.default
     @AppStorage(Settings.useSwiftUIPostsView.key) private var useSwiftUIPostsView: Bool = Settings.useSwiftUIPostsView.default
+    @AppStorage(Settings.postsImmersiveMode.key) private var postsImmersiveMode: Bool = Settings.postsImmersiveMode.default
     
     @SwiftUI.Environment(\.theme) private var theme
     @SwiftUI.Environment(\.dismiss) private var dismiss
@@ -118,6 +119,18 @@ struct PostsPageSettingsView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
+                                
+                            SettingToggle(
+                                title: "Immersive Mode",
+                                isOn: $postsImmersiveMode
+                            )
+                            
+                            if postsImmersiveMode {
+                                Text("Hides navigation and toolbar bars for distraction-free reading")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                            }
                         }
                     }
                     
@@ -145,6 +158,11 @@ struct PostsPageSettingsView: View {
             }
         }
         .onChange(of: darkMode) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
+        }
+        .onChange(of: postsImmersiveMode) { _ in
             if enableHaptics {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             }
