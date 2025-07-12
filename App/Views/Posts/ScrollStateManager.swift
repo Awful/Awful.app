@@ -23,15 +23,16 @@ class ScrollStateManager: ObservableObject {
     private var scrollViewHeight: CGFloat = 0
     private var hasScrolledDown: Bool = false
     private var lastScrollDirection: ScrollDirection = .none
-    private var scrollDirectionChangeThreshold: CGFloat = 10.0 // Minimum scroll distance before direction change
+    private var scrollDirectionChangeThreshold: CGFloat = 25.0 // Minimum scroll distance before direction change
     private var lastScrollPosition: CGFloat = 0
     private var accumulatedScrollDistance: CGFloat = 0
+    private var bounceSuppressionThreshold: CGFloat = 50.0 // Higher threshold near edges to prevent bounce artifacts
     
     // MARK: - Throttling
     private var scrollThrottleWorkItem: DispatchWorkItem?
     private var uiUpdateWorkItem: DispatchWorkItem?
     private let scrollThrottleDelay: TimeInterval = 0.008 // ~120fps
-    private let uiUpdateDelay: TimeInterval = 0.05 // Faster toolbar animations
+    private let uiUpdateDelay: TimeInterval = 0.1 // Toolbar animation delay - increased to reduce bounce artifacts
     
     // MARK: - Computed Properties
     var topInset: CGFloat {
@@ -63,9 +64,17 @@ class ScrollStateManager: ObservableObject {
             return 
         }
         
+        // Apply bounce-aware hysteresis: use higher thresholds near content edges to prevent
+        // toolbar changes during bounce behavior
+        let isNearTopEdge = scrollPosition < bounceSuppressionThreshold
+        let isNearBottomEdge = scrollContentHeight > 0 && 
+                              (scrollPosition + scrollViewHeight) > (scrollContentHeight - bounceSuppressionThreshold)
+        
+        let effectiveThreshold = (isNearTopEdge || isNearBottomEdge) ? bounceSuppressionThreshold : scrollDirectionChangeThreshold
+        
         // Simple hysteresis: require minimum accumulated distance for direction changes
         // but allow initial direction changes and significant scrolling
-        if lastScrollDirection != .none && accumulatedScrollDistance < scrollDirectionChangeThreshold {
+        if lastScrollDirection != .none && accumulatedScrollDistance < effectiveThreshold {
             return
         }
         

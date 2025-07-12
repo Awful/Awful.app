@@ -22,7 +22,11 @@ final class PostsPageViewModel: ObservableObject {
     @Published var numberOfPages: Int = 0
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
-    @Published var jumpToPostID: String?
+    @Published var jumpToPostID: String? {
+        didSet {
+            print("🎯 PostsPageViewModel: jumpToPostID changed from '\(oldValue ?? "nil")' to '\(jumpToPostID ?? "nil")'")
+        }
+    }
     @Published var scrollToFraction: CGFloat?
     @Published var firstUnreadPost: Int?
     
@@ -97,8 +101,12 @@ final class PostsPageViewModel: ObservableObject {
         currentPage = newPage
         hasAttemptedInitialScroll = false
         isReRenderingAfterMarkAsRead = false
-        jumpToPostID = nil
-        scrollToFraction = nil
+        // Don't clear jumpToPostID if we have one set - it's needed for post navigation
+        print("🎯 loadPage: jumpToPostID before potential clear: \(jumpToPostID ?? "nil")")
+        if jumpToPostID == nil {
+            scrollToFraction = nil
+        }
+        print("🎯 loadPage: jumpToPostID after state update: \(jumpToPostID ?? "nil")")
         
         if !updatingCache {
             logger.info("Rendering posts without updating cache")
@@ -212,7 +220,15 @@ final class PostsPageViewModel: ObservableObject {
     }
     
     func goToNextPage() {
-        guard case .specific(let pageNumber) = currentPage, pageNumber < numberOfPages else { return }
+        print("🔄 PostsPageViewModel: goToNextPage() called")
+        guard case .specific(let pageNumber) = currentPage, pageNumber < numberOfPages else { 
+            print("🔄 PostsPageViewModel: goToNextPage guard failed - currentPage=\(String(describing: currentPage)), numberOfPages=\(numberOfPages)")
+            return 
+        }
+        // Clear any existing scroll position and jump to post ID to ensure we start at the top
+        jumpToPostID = nil
+        // Note: Don't set scrollToFraction here - let the SwiftUIPostsPageView handle scroll to top
+        print("🔄 goToNextPage: Cleared jumpToPostID, loading page \(pageNumber + 1)")
         loadPage(.specific(pageNumber + 1))
     }
     

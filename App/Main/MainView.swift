@@ -35,6 +35,7 @@ protocol MainCoordinator: ObservableObject {
     func navigateToThread(_ thread: AwfulThread)
     func navigateToThread(_ thread: AwfulThread, page: ThreadPage)
     func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?)
+    func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?, jumpToPostID: String?)
     func navigateToForum(_ forum: Forum)
     func navigateToPrivateMessage(_ message: PrivateMessage)
     func presentComposeThread(for forum: Forum)
@@ -74,6 +75,12 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     // Track navigation destinations for unpop functionality
     @Published var navigationHistory: [AnyHashable] = []
     @Published var unpopStack: [AnyHashable] = []
+    
+    // Flag to prevent unpop during state restoration
+    @Published var isRestoringState = false
+    
+    // Flag to prevent scroll position updates during post navigation
+    private var isNavigatingToPost = false
     
     // State restoration support
     private let stateManager: NavigationStateManager
@@ -130,8 +137,12 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?) {
-        let destination = ThreadDestination(thread: thread, page: page, author: author)
-        logger.info("navigateToThread called - thread: \(thread.title ?? "Unknown"), page: \(String(describing: page))")
+        navigateToThread(thread, page: page, author: author, jumpToPostID: nil)
+    }
+    
+    func navigateToThread(_ thread: AwfulThread, page: ThreadPage, author: User?, jumpToPostID: String?) {
+        let destination = ThreadDestination(thread: thread, page: page, author: author, jumpToPostID: jumpToPostID)
+        logger.info("navigateToThread called - thread: \(thread.title ?? "Unknown"), page: \(String(describing: page)), jumpToPostID: \(jumpToPostID ?? "none")")
         logger.debug("Current path count: \(self.path.count)")
         
         // Clear unpop stack when navigating to new destination
@@ -140,7 +151,8 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         // Add to navigation history and path
         navigationHistory.append(destination)
         path.append(destination)
-        logger.debug("Path count after append: \(self.path.count)")
+        
+        logger.debug("Path count after navigation: \(self.path.count)")
         isTabBarHidden = true
     }
     
@@ -248,7 +260,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         path.append(itemToRestore)
         isTabBarHidden = true
         
-        print("🔄 Unpop performed, restored item to path. Path count: \(path.count)")
+        logger.info("🔄 Unpop performed, restored item to path. Path count: \(self.path.count)")
     }
     
     func handleNavigationPop() {
@@ -339,16 +351,78 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         
         do {
             let posts = try context.fetch(request)
-            guard let post = posts.first,
-                  let thread = post.thread else {
-                print("⚠️ Post with ID \(postID) not found or has no thread")
-                return false
+            print("🔍 Core Data query found \(posts.count) posts for postID: \(postID)")
+            
+            if let post = posts.first,
+               let thread = post.thread,
+               post.page > 0 {
+                print("📋 Found post in cache: page=\(post.page), thread=\(thread.title ?? "Unknown")")
+                // Post exists in cache - check if we're already on the same thread and page
+                let targetPage = ThreadPage.specific(post.page)
+                
+                // Check if we're already on the same thread and page
+                if let currentDestination = navigationHistory.last as? ThreadDestination,
+                   currentDestination.thread.threadID == thread.threadID,
+                   currentDestination.page == targetPage {
+                    // Same thread and page - just scroll to the post without reloading
+                    print("📍 Already on correct page (\(post.page)), scrolling to post \(postID)")
+                    
+                    // Find the current SwiftUIPostsPageView and trigger scroll to post
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let window = windowScene.windows.first {
+                        let container = findRenderViewContainer(in: window)
+                        print("🔍 Found render view container: \(container != nil)")
+                        if let container = container {
+                            print("🎯 Calling jumpToPost on container")
+                            container.jumpToPost(identifiedBy: postID)
+                        } else {
+                            print("❌ No render view container found in window hierarchy")
+                        }
+                    } else {
+                        print("❌ No window scene or window found")
+                    }
+                    return true
+                } else {
+                    // Different thread or page - navigate to it
+                    print("📍 Found cached post on page \(post.page), navigating to thread")
+                    isNavigatingToPost = true
+                    navigateToThread(thread, page: .specific(post.page), author: nil, jumpToPostID: postID)
+                    
+                    // Reset the flag after a delay to allow post jumping to complete
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                        self?.isNavigatingToPost = false
+                    }
+                    return true
+                }
             }
             
-            // Navigate to the thread with the specific post
-            // For now, we'll navigate to the first page where the post might be
-            // In a more complete implementation, we'd calculate the exact page
-            navigateToThread(thread, page: .specific(1), author: nil)
+            // Post not found in cache - fetch from server
+            print("🔍 Post not in cache, fetching from server...")
+            isNavigatingToPost = true // Set flag immediately to prevent scroll interference
+            
+            Task { @MainActor in
+                do {
+                    print("🌐 Calling ForumsClient.shared.locatePost for postID: \(postID)")
+                    let (post, page) = try await ForumsClient.shared.locatePost(id: postID, updateLastReadPost: false)
+                    guard let thread = post.thread else {
+                        print("❌ Located post has no thread")
+                        self.isNavigatingToPost = false
+                        return
+                    }
+                    
+                    print("📍 Located post on page \(page), navigating to thread: \(thread.title ?? "Unknown")")
+                    self.navigateToThread(thread, page: page, author: nil, jumpToPostID: postID)
+                    
+                    // Reset the flag after a delay to allow post jumping to complete
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                        self?.isNavigatingToPost = false
+                    }
+                } catch {
+                    print("❌ Error locating post: \(error)")
+                    self.isNavigatingToPost = false
+                }
+            }
+            
             return true
         } catch {
             print("❌ Error fetching post: \(error)")
@@ -459,44 +533,47 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     // MARK: - Scroll Position Management
     
     func updateScrollPosition(scrollFraction: CGFloat) {
-        // Update the navigation history with the new scroll position
+        // Skip scroll position updates during post navigation to prevent interference
+        guard !isNavigatingToPost else {
+            print("🚫 Skipping scroll position update during post navigation")
+            return
+        }
+        
+        // Update the navigation history WITHOUT rebuilding the NavigationPath
+        // This prevents automatic navigation while preserving scroll positions
         if let lastIndex = navigationHistory.lastIndex(where: { $0 is ThreadDestination }),
            let threadDestination = navigationHistory[lastIndex] as? ThreadDestination {
             
             // Create a new ThreadDestination with the updated scroll position
+            print("🔧 updateScrollPosition (first method): Original jumpToPostID: \(threadDestination.jumpToPostID ?? "none"), preserving in updated destination")
             let updatedDestination = ThreadDestination(
                 thread: threadDestination.thread,
                 page: threadDestination.page,
                 author: threadDestination.author,
-                scrollFraction: scrollFraction
+                scrollFraction: scrollFraction,
+                jumpToPostID: threadDestination.jumpToPostID // Preserve the jumpToPostID from original destination
             )
             
-            // Replace the item in navigation history
+            // Replace the item in navigation history directly
+            // DO NOT rebuild NavigationPath - this was causing automatic navigation
             navigationHistory[lastIndex] = updatedDestination
-            
-            // Update the NavigationPath by rebuilding it
-            // NavigationPath doesn't allow direct modification, so we need to rebuild it
-            let existingItems = Array(navigationHistory.prefix(upTo: lastIndex))
-            let remainingItems = Array(navigationHistory.suffix(from: lastIndex + 1))
-            
-            // Rebuild the path
-            path = NavigationPath()
-            for item in existingItems {
-                path.append(item)
-            }
-            path.append(updatedDestination)
-            for item in remainingItems {
-                path.append(item)
-            }
             
             logger.info("Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown")")
         } else {
-            print("⚠️ MainCoordinator: No ThreadDestination found in navigation history to update scroll position")
+            logger.info("⚠️ MainCoordinator: No ThreadDestination found in navigation history to update scroll position")
         }
     }
     
     func updateScrollPosition(for threadID: String, page: ThreadPage, author: User?, scrollFraction: CGFloat) {
-        // Find the ThreadDestination in navigation history matching the criteria
+        // Skip scroll position updates during post navigation to prevent interference
+        guard !isNavigatingToPost else {
+            print("🚫 Skipping scroll position update during post navigation")
+            return
+        }
+        
+        // Find the ThreadDestination in navigation history WITHOUT rebuilding NavigationPath
+        // This prevents automatic navigation while preserving scroll positions
+        
         // First try exact match (threadID, page, author)
         var matchIndex = navigationHistory.firstIndex(where: { item in
             guard let threadDestination = item as? ThreadDestination else { return false }
@@ -533,42 +610,45 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             if let saved = savedScrollFraction, scrollFraction == 0.0 {
                 // If we have a saved scroll fraction and new one is 0, preserve the saved one
                 finalScrollFraction = saved
-                print("🔄 MainCoordinator: Preserving saved scroll fraction \(saved) for thread \(threadDestination.thread.title ?? "Unknown")")
+                logger.info("Preserving saved scroll fraction \(saved) for thread \(threadDestination.thread.title ?? "Unknown")")
             } else {
                 // Use the new scroll fraction
                 finalScrollFraction = scrollFraction > 0 ? scrollFraction : savedScrollFraction
             }
             
             // Create a new ThreadDestination with the updated scroll position and current page
+            print("🔧 updateScrollPosition: Original jumpToPostID: \(threadDestination.jumpToPostID ?? "none"), preserving in updated destination")
             let updatedDestination = ThreadDestination(
                 thread: threadDestination.thread,
                 page: page, // Use the current page, not the saved one
                 author: author, // Use the current author, not the saved one
-                scrollFraction: finalScrollFraction
+                scrollFraction: finalScrollFraction,
+                jumpToPostID: threadDestination.jumpToPostID // Preserve the jumpToPostID from original destination
             )
             
-            // Replace the item in navigation history
+            // Replace the item in navigation history directly
+            // DO NOT rebuild NavigationPath - this was causing automatic navigation
             navigationHistory[index] = updatedDestination
             
-            // Update the NavigationPath by rebuilding it
-            // NavigationPath doesn't allow direct modification, so we need to rebuild it
-            let existingItems = Array(navigationHistory.prefix(upTo: index))
-            let remainingItems = Array(navigationHistory.suffix(from: index + 1))
-            
-            // Rebuild the path
-            path = NavigationPath()
-            for item in existingItems {
-                path.append(item)
-            }
-            path.append(updatedDestination)
-            for item in remainingItems {
-                path.append(item)
-            }
-            
-            print("🔄 MainCoordinator: Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown") (threadID: \(threadID))")
+            logger.info("Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown") (threadID: \(threadID))")
         } else {
-            print("⚠️ MainCoordinator: No ThreadDestination found in navigation history for threadID: \(threadID), page: \(page)")
+            logger.info("⚠️ MainCoordinator: No ThreadDestination found in navigation history for threadID: \(threadID), page: \(String(describing: page))")
         }
+    }
+    
+    // MARK: - Helper Methods
+    private func findRenderViewContainer(in view: UIView) -> RenderViewContainer? {
+        if let container = view as? RenderViewContainer {
+            return container
+        }
+        
+        for subview in view.subviews {
+            if let found = findRenderViewContainer(in: subview) {
+                return found
+            }
+        }
+        
+        return nil
     }
     
     // MARK: - State Restoration Implementation
@@ -632,6 +712,9 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             return
         }
         
+        // Set flag to prevent unpop system from reacting to path changes
+        isRestoringState = true
+        
         // Restore basic properties
         isTabBarHidden = savedState.isTabBarHidden
         
@@ -675,6 +758,11 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         
         // Tab selection is now handled by @SceneStorage in MainView
         // No need to manually restore tab selection
+        
+        // Clear the restoration flag after a brief delay to ensure all path changes are processed
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.isRestoringState = false
+        }
         
         print("✅ Navigation state restored successfully")
     }
@@ -1236,13 +1324,14 @@ private struct DetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: ThreadDestination.self) { destination in
             Group {
-                let _ = print("🔵 DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown"), scrollFraction: \(destination.scrollFraction?.description ?? "none")")
+                let _ = print("🔵 DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown"), scrollFraction: \(destination.scrollFraction?.description ?? "none"), jumpToPostID: \(destination.jumpToPostID ?? "none")")
                 PostsViewWrapper(
                     thread: destination.thread,
                     author: destination.author,
                     page: destination.page,
-                    coordinator: coordinator,
-                    scrollFraction: destination.scrollFraction
+                    scrollFraction: destination.scrollFraction,
+                    jumpToPostID: destination.jumpToPostID,
+                    coordinator: coordinator
                 )
             }
         }
@@ -1345,13 +1434,15 @@ struct ThreadDestination: Hashable {
     let page: ThreadPage
     let author: User?
     let scrollFraction: CGFloat?
+    let jumpToPostID: String?
     
-    init(thread: AwfulThread, page: ThreadPage, author: User?, scrollFraction: CGFloat? = nil) {
+    init(thread: AwfulThread, page: ThreadPage, author: User?, scrollFraction: CGFloat? = nil, jumpToPostID: String? = nil) {
         self.thread = thread
         self.page = page
         self.author = author
         self.scrollFraction = scrollFraction
-        print("🔵 ThreadDestination: Created for thread: \(thread.title ?? "Unknown"), page: \(page), scrollFraction: \(scrollFraction?.description ?? "none")")
+        self.jumpToPostID = jumpToPostID
+        print("🔵 ThreadDestination: Created for thread: \(thread.title ?? "Unknown"), page: \(page), scrollFraction: \(scrollFraction?.description ?? "none"), jumpToPostID: \(jumpToPostID ?? "none")")
     }
     
     func hash(into hasher: inout Hasher) {
@@ -1359,13 +1450,15 @@ struct ThreadDestination: Hashable {
         hasher.combine(page)
         hasher.combine(author)
         hasher.combine(scrollFraction)
+        hasher.combine(jumpToPostID)
     }
     
     static func == (lhs: ThreadDestination, rhs: ThreadDestination) -> Bool {
         return lhs.thread == rhs.thread &&
                lhs.page == rhs.page &&
                lhs.author == rhs.author &&
-               lhs.scrollFraction == rhs.scrollFraction
+               lhs.scrollFraction == rhs.scrollFraction &&
+               lhs.jumpToPostID == rhs.jumpToPostID
     }
 }
 
@@ -1488,6 +1581,7 @@ struct PostsViewWrapper: View {
     let author: User?
     let page: ThreadPage
     let scrollFraction: CGFloat?
+    let jumpToPostID: String?
     var coordinator: (any MainCoordinator)?
     @StateObject private var viewModel = PostsViewModel()
     @SwiftUI.Environment(\.theme) private var theme
@@ -1498,11 +1592,12 @@ struct PostsViewWrapper: View {
         Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label)
     }
     
-    init(thread: AwfulThread, author: User?, page: ThreadPage, coordinator: (any MainCoordinator)?, scrollFraction: CGFloat? = nil) {
+    init(thread: AwfulThread, author: User?, page: ThreadPage, scrollFraction: CGFloat? = nil, jumpToPostID: String? = nil, coordinator: (any MainCoordinator)?) {
         self.thread = thread
         self.author = author
         self.page = page
         self.scrollFraction = scrollFraction
+        self.jumpToPostID = jumpToPostID
         self.coordinator = coordinator
         _title = State(initialValue: thread.title ?? "")
     }
@@ -1514,8 +1609,10 @@ struct PostsViewWrapper: View {
                 SwiftUIPostsPageView(
                     thread: thread,
                     author: author,
+                    page: page,
                     coordinator: coordinator,
-                    scrollFraction: scrollFraction
+                    scrollFraction: scrollFraction,
+                    jumpToPostID: jumpToPostID
                 )
             } else {
                 // Legacy UIKit posts view wrapped in SwiftUI
@@ -1952,13 +2049,14 @@ struct iPadMainView: View {
                     .environmentObject(coordinator)
                     .navigationDestination(for: ThreadDestination.self) { destination in
                         Group {
-                            let _ = logger.info("iPad DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown")")
+                            let _ = logger.info("iPad DetailView: navigationDestination triggered for thread: \(destination.thread.title ?? "Unknown"), jumpToPostID: \(destination.jumpToPostID ?? "none")")
                             PostsViewWrapper(
                                 thread: destination.thread,
                                 author: destination.author,
                                 page: destination.page,
-                                coordinator: coordinator,
-                                scrollFraction: destination.scrollFraction
+                                scrollFraction: destination.scrollFraction,
+                                jumpToPostID: destination.jumpToPostID,
+                                coordinator: coordinator
                             )
                         }
                     }
@@ -2023,8 +2121,9 @@ struct iPhoneMainView: View {
                     thread: destination.thread,
                     author: destination.author,
                     page: destination.page,
-                    coordinator: coordinator,
-                    scrollFraction: destination.scrollFraction
+                    scrollFraction: destination.scrollFraction,
+                    jumpToPostID: destination.jumpToPostID,
+                    coordinator: coordinator
                 )
             }
         }

@@ -212,8 +212,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func open(route: AwfulRoute) {
+        print("🔗 AppDelegate: open(route:) called with route: \(route)")
         initializeURLRouter()
-        urlRouter?.route(route)
+        let result = urlRouter?.route(route)
+        print("🔗 AppDelegate: urlRouter.route returned: \(result ?? false)")
     }
     
     private func updateShortcutItems() {

@@ -106,6 +106,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
     let onPullChanged: ((CGFloat) -> Void)?
     let onRefreshTriggered: (() -> Void)?
     let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? // offset, contentHeight, viewHeight
+    let onDragEnded: ((Bool) -> Void)? // willDecelerate
     @Binding var replyWorkspace: IdentifiableReplyWorkspace?
     
     // MARK: - Content Insets
@@ -128,11 +129,24 @@ struct SwiftUIRenderView: UIViewRepresentable {
     
     // MARK: - UIViewRepresentable
     func makeUIView(context: UIViewRepresentableContext<SwiftUIRenderView>) -> RenderViewContainer {
-        let cacheKey = "\(viewModel.thread.threadID)-\(viewModel.author?.userID ?? "no-author")"
+        let pageKey: String
+        if let currentPage = viewModel.currentPage {
+            switch currentPage {
+            case .last:
+                pageKey = "last"
+            case .nextUnread:
+                pageKey = "nextUnread"
+            case .specific(let pageNum):
+                pageKey = "page\(pageNum)"
+            }
+        } else {
+            pageKey = "unknown"
+        }
+        let cacheKey = "\(viewModel.thread.threadID)-\(viewModel.author?.userID ?? "no-author")-\(pageKey)"
         
         // Try to get cached container first
         if let cachedContainer = WebViewContainerCache.shared.get(for: cacheKey) {
-            logger.info("🔄 Reusing cached RenderViewContainer for thread \(viewModel.thread.threadID)")
+            logger.info("🔄 Reusing cached RenderViewContainer for thread \(viewModel.thread.threadID) with key: \(cacheKey)")
             
             // Update delegates
             cachedContainer.delegate = context.coordinator
@@ -152,7 +166,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
             return cachedContainer
         }
         
-        logger.info("🔄 Creating new RenderViewContainer for thread \(viewModel.thread.threadID)")
+        logger.info("🔄 Creating new RenderViewContainer for thread \(viewModel.thread.threadID) with key: \(cacheKey)")
         
         let container = RenderViewContainer()
         container.delegate = context.coordinator
@@ -293,7 +307,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
             onScrollChanged: onScrollChanged,
             onPullChanged: onPullChanged,
             onRefreshTriggered: onRefreshTriggered,
-            onScrollPositionChanged: onScrollPositionChanged
+            onScrollPositionChanged: onScrollPositionChanged,
+            onDragEnded: onDragEnded
         )
     }
     
@@ -305,6 +320,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
         let onPullChanged: ((CGFloat) -> Void)?
         let onRefreshTriggered: (() -> Void)?
         let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)?
+        let onDragEnded: ((Bool) -> Void)?
         weak var viewModel: PostsPageViewModel?
         private lazy var oEmbedFetcher = OEmbedFetcher()
         var replyWorkspace: Binding<IdentifiableReplyWorkspace?>?
@@ -316,7 +332,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
              onScrollChanged: ((Bool) -> Void)? = nil,
              onPullChanged: ((CGFloat) -> Void)? = nil,
              onRefreshTriggered: (() -> Void)? = nil,
-             onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? = nil) {
+             onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? = nil,
+             onDragEnded: ((Bool) -> Void)? = nil) {
             self.onPostAction = onPostAction
             self.onUserAction = onUserAction
             self.viewModel = viewModel
@@ -325,6 +342,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
             self.onPullChanged = onPullChanged
             self.onRefreshTriggered = onRefreshTriggered
             self.onScrollPositionChanged = onScrollPositionChanged
+            self.onDragEnded = onDragEnded
         }
         
         // MARK: - RenderViewDelegate
@@ -354,11 +372,16 @@ struct SwiftUIRenderView: UIViewRepresentable {
         func didTapLink(to url: URL, in view: RenderView) {
             // Handle link taps using the same logic as UIKit version
             logger.info("Link tapped: \(url)")
+            print("🔗 SwiftUIRenderView: didTapLink called with URL: \(url)")
             
             // Try to handle as internal route first
-            if let route = try? AwfulRoute(url) {
+            do {
+                let route = try AwfulRoute(url)
+                print("🔗 SwiftUIRenderView: Created route: \(route)")
                 AppDelegate.instance.open(route: route)
                 return
+            } catch {
+                print("🔗 SwiftUIRenderView: Failed to create route: \(error)")
             }
             
             // Handle external URLs based on user preferences
@@ -450,6 +473,10 @@ struct SwiftUIRenderView: UIViewRepresentable {
             onScrollPositionChanged?(offset, contentHeight, viewHeight)
         }
         
+        func didEndDragging(willDecelerate: Bool) {
+            onDragEnded?(willDecelerate)
+        }
+        
         // MARK: - Helper Methods
         private func findHostingViewController(from view: UIView) -> UIViewController? {
             var responder: UIResponder? = view
@@ -470,6 +497,7 @@ protocol RenderViewScrollDelegate: AnyObject {
     func didPull(fraction: CGFloat)
     func didTriggerRefresh()
     func didUpdateScrollPosition(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat)
+    func didEndDragging(willDecelerate: Bool)
 }
 
 // MARK: - RenderView Container
@@ -885,23 +913,27 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         )
         
         // Calculate pull-to-refresh progress when overscrolling at bottom
-        if frogAndGhostEnabled {
+        // Improved implementation with bounds checking and pull-for-next setting
+        if frogAndGhostEnabled && UserDefaults.standard.bool(forKey: Settings.pullForNext.key) {
             let bottomOffset = currentOffset + viewHeight
             let overscroll = bottomOffset - contentHeight
             
-            if overscroll > 0 {
+            // Only calculate pull progress when actually overscrolling and content is substantial
+            if overscroll > 2 && contentHeight > viewHeight {
                 // User is overscrolling at the bottom - calculate pull fraction
                 let maxPullDistance: CGFloat = 80 // Distance needed for full pull
-                let pullFraction = min(overscroll / maxPullDistance, 1.0)
+                let pullFraction = min(max(overscroll / maxPullDistance, 0), 1.0)
+                
+                // Only send updates if fraction has changed meaningfully
                 scrollDelegate?.didPull(fraction: pullFraction)
                 
-                // Trigger refresh if pull is complete and user has dragged far enough
-                if pullFraction >= 1.0 && overscroll > maxPullDistance {
-                    scrollDelegate?.didTriggerRefresh()
-                }
-            } else if currentOffset + viewHeight >= contentHeight - 10 {
-                // Reset pull progress when very close to or at bottom
+                // DON'T trigger immediately - let the arrow control handle release detection
+                // The trigger will happen when user releases and pull fraction drops to 0
+                
+            } else if overscroll <= 0 && currentOffset + viewHeight >= contentHeight - 20 {
+                // Reset pull progress when at or near bottom without overscroll
                 scrollDelegate?.didPull(fraction: 0.0)
+                // Don't trigger here - let SwiftUIArrowPullControl handle the release logic
             }
         }
         
@@ -925,6 +957,9 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        // Notify delegate about drag end - this is important for pull-to-refresh release detection
+        scrollDelegate?.didEndDragging(willDecelerate: decelerate)
+        
         if !decelerate {
             // If scroll view won't decelerate, reset tracking for next gesture
             lastScrollOffset = scrollView.contentOffset.y
@@ -976,6 +1011,17 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     
     // MARK: - UIGestureRecognizerDelegate
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Don't interfere with unpop gestures - let them handle their own simultaneous recognition logic
+        if otherGestureRecognizer is UIScreenEdgePanGestureRecognizer {
+            // If it's a right-edge pan gesture (likely unpop), don't allow simultaneous recognition
+            if let screenEdgePan = otherGestureRecognizer as? UIScreenEdgePanGestureRecognizer,
+               screenEdgePan.edges.contains(.right) {
+                logger.info("🔄 Refusing simultaneous recognition with right-edge pan gesture to allow unpop")
+                return false
+            }
+        }
+        
+        // Allow simultaneous recognition for other gestures (like long press with scrolling)
         return true
     }
     

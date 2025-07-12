@@ -108,8 +108,12 @@ struct AwfulURLRouter {
             return selectTopmostViewController(containingViewControllerOfClass: MessageListViewController.self) != nil
 
         case let .post(id: postID, updateSeen):
+            print("🔗 AwfulURLRouter: Handling .post route with postID: \(postID)")
             if let coordinator = coordinator {
-                return coordinator.navigateToPostWithID(postID)
+                print("🔗 AwfulURLRouter: Calling coordinator.navigateToPostWithID(\(postID))")
+                let result = coordinator.navigateToPostWithID(postID)
+                print("🔗 AwfulURLRouter: coordinator.navigateToPostWithID returned: \(result)")
+                return result
             }
             let key = PostKey(postID: postID)
 
