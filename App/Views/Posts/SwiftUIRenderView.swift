@@ -103,7 +103,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
     let onPostAction: (Post, CGRect) -> Void
     let onUserAction: (Post, CGRect) -> Void
     let onScrollChanged: ((Bool) -> Void)?
-    let onPullChanged: ((CGFloat) -> Void)?
+    let onPullChanged: ((PullData) -> Void)?
     let onRefreshTriggered: (() -> Void)?
     let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? // offset, contentHeight, viewHeight
     let onDragEnded: ((Bool) -> Void)? // willDecelerate
@@ -317,7 +317,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
         let onPostAction: (Post, CGRect) -> Void
         let onUserAction: (Post, CGRect) -> Void
         let onScrollChanged: ((Bool) -> Void)?
-        let onPullChanged: ((CGFloat) -> Void)?
+        let onPullChanged: ((PullData) -> Void)?
         let onRefreshTriggered: (() -> Void)?
         let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)?
         let onDragEnded: ((Bool) -> Void)?
@@ -330,7 +330,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
              viewModel: PostsPageViewModel,
              replyWorkspace: Binding<IdentifiableReplyWorkspace?>,
              onScrollChanged: ((Bool) -> Void)? = nil,
-             onPullChanged: ((CGFloat) -> Void)? = nil,
+             onPullChanged: ((PullData) -> Void)? = nil,
              onRefreshTriggered: (() -> Void)? = nil,
              onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? = nil,
              onDragEnded: ((Bool) -> Void)? = nil) {
@@ -461,8 +461,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
             onScrollChanged?(isScrollingUp)
         }
         
-        func didPull(fraction: CGFloat) {
-            onPullChanged?(fraction)
+        func didPull(data: PullData) {
+            onPullChanged?(data)
         }
         
         func didTriggerRefresh() {
@@ -491,10 +491,16 @@ struct SwiftUIRenderView: UIViewRepresentable {
     }
 }
 
+// MARK: - Pull Data Structure
+struct PullData {
+    let topFraction: CGFloat      // Top overscroll fraction (0.0 to 1.0)
+    let bottomFraction: CGFloat   // Bottom overscroll fraction (0.0 to 1.0)
+}
+
 // MARK: - Scroll Delegate Protocol
 protocol RenderViewScrollDelegate: AnyObject {
     func didScroll(isScrollingUp: Bool)
-    func didPull(fraction: CGFloat)
+    func didPull(data: PullData)
     func didTriggerRefresh()
     func didUpdateScrollPosition(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat)
     func didEndDragging(willDecelerate: Bool)
@@ -883,6 +889,12 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     func updateFrogAndGhostEnabled(_ enabled: Bool) {
         frogAndGhostEnabled = enabled
         logger.info("Updated frogAndGhostEnabled: \(enabled)")
+        
+        // Reset pull state when frog and ghost is disabled
+        if !enabled {
+            let resetPullData = PullData(topFraction: 0.0, bottomFraction: 0.0)
+            scrollDelegate?.didPull(data: resetPullData)
+        }
     }
     
     func updateImmersiveMode(_ enabled: Bool) {
@@ -912,28 +924,36 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
             viewHeight: viewHeight
         )
         
-        // Calculate pull-to-refresh progress when overscrolling at bottom
-        // Improved implementation with bounds checking and pull-for-next setting
-        if frogAndGhostEnabled && UserDefaults.standard.bool(forKey: Settings.pullForNext.key) {
-            let bottomOffset = currentOffset + viewHeight
-            let overscroll = bottomOffset - contentHeight
+        // Calculate pull-to-refresh progress for both top and bottom overscroll
+        if frogAndGhostEnabled {
+            let bottomMaxPullDistance: CGFloat = 80 // Distance needed for full pull (bottom)
+            let topMaxPullDistance: CGFloat = 120 // Longer distance for top pull to avoid accidental triggers
+            var topFraction: CGFloat = 0.0
+            var bottomFraction: CGFloat = 0.0
             
-            // Only calculate pull progress when actually overscrolling and content is substantial
-            if overscroll > 2 && contentHeight > viewHeight {
-                // User is overscrolling at the bottom - calculate pull fraction
-                let maxPullDistance: CGFloat = 80 // Distance needed for full pull
-                let pullFraction = min(max(overscroll / maxPullDistance, 0), 1.0)
+            // Check for top overscroll (negative offset for refresh)
+            if currentOffset < 0 {
+                let topOverscroll = abs(currentOffset)
+                if topOverscroll > 2 {
+                    topFraction = min(max(topOverscroll / topMaxPullDistance, 0), 1.0)
+                }
+            }
+            
+            // Check for bottom overscroll (for pull-for-next when enabled)
+            if UserDefaults.standard.bool(forKey: Settings.pullForNext.key) {
+                let bottomOffset = currentOffset + viewHeight
+                let bottomOverscroll = bottomOffset - contentHeight
                 
-                // Only send updates if fraction has changed meaningfully
-                scrollDelegate?.didPull(fraction: pullFraction)
-                
-                // DON'T trigger immediately - let the arrow control handle release detection
-                // The trigger will happen when user releases and pull fraction drops to 0
-                
-            } else if overscroll <= 0 && currentOffset + viewHeight >= contentHeight - 20 {
-                // Reset pull progress when at or near bottom without overscroll
-                scrollDelegate?.didPull(fraction: 0.0)
-                // Don't trigger here - let SwiftUIArrowPullControl handle the release logic
+                // Only calculate pull progress when actually overscrolling and content is substantial
+                if bottomOverscroll > 2 && contentHeight > viewHeight {
+                    bottomFraction = min(max(bottomOverscroll / bottomMaxPullDistance, 0), 1.0)
+                }
+            }
+            
+            // Send pull data if either fraction is significant or we need to reset
+            if topFraction > 0 || bottomFraction > 0 || (topFraction == 0 && bottomFraction == 0) {
+                let pullData = PullData(topFraction: topFraction, bottomFraction: bottomFraction)
+                scrollDelegate?.didPull(data: pullData)
             }
         }
         

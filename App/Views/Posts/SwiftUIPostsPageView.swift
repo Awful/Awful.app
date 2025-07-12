@@ -51,6 +51,9 @@ struct SwiftUIPostsPageView: View {
     @State private var isLoadingSpinnerVisible: Bool = false
     @State private var arrowPullProgress: CGFloat = 0.0
     @State private var wasArrowTriggered: Bool = false
+    @State private var nigglyPullProgress: CGFloat = 0.0
+    @State private var wasNigglyTriggered: Bool = false
+    @State private var isNigglyRefreshing: Bool = false
     @State private var showingSettings = false
     @State private var showingPagePicker = false
     @State private var messageViewController: MessageComposeViewController?
@@ -123,6 +126,13 @@ struct SwiftUIPostsPageView: View {
             }
             .onChange(of: viewModel.isLoading) { isLoading in
                 isLoadingSpinnerVisible = isLoading
+                
+                // Reset niggly refresh state when loading completes
+                if !isLoading && isNigglyRefreshing {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        isNigglyRefreshing = false
+                    }
+                }
             }
             .onDisappear {
                 handleViewDisappear()
@@ -161,7 +171,7 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Render View
     private var mainRenderView: some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
             SwiftUIRenderView(
                 viewModel: viewModel,
                 theme: theme,
@@ -173,23 +183,42 @@ struct SwiftUIPostsPageView: View {
                         scrollState.handleScrollChange(isScrollingUp: isScrollingUp)
                     }
                 },
-                onPullChanged: { fraction in
-                    // Update both frog and arrow pull progress
-                    scrollState.handlePullChanged(fraction: fraction, isLastPage: viewModel.isLastPage)
-                    // Only log significant progress changes
-                    if abs(fraction - arrowPullProgress) > 0.1 {
-                        print("🔄 SwiftUIPostsPageView: Pull progress: \(String(format: "%.2f", fraction))")
+                onPullChanged: { pullData in
+                    // Handle both top pull (niggly) and bottom pull (arrow)
+                    scrollState.handlePullChanged(fraction: pullData.bottomFraction, isLastPage: viewModel.isLastPage)
+                    
+                    // Handle bottom pull for arrow control
+                    if abs(pullData.bottomFraction - arrowPullProgress) > 0.1 {
+                        print("🔄 SwiftUIPostsPageView: Bottom pull progress: \(String(format: "%.2f", pullData.bottomFraction))")
                     }
                     
                     // Track when arrow becomes triggered
-                    if fraction >= 0.8 && !wasArrowTriggered {
+                    if pullData.bottomFraction >= 0.8 && !wasArrowTriggered {
                         wasArrowTriggered = true
                         print("🔄 SwiftUIPostsPageView: Arrow became triggered!")
-                    } else if fraction < 0.3 {
+                    } else if pullData.bottomFraction < 0.3 {
                         wasArrowTriggered = false
                     }
                     
-                    arrowPullProgress = fraction
+                    arrowPullProgress = pullData.bottomFraction
+                    
+                    // Handle top pull for niggly control
+                    if abs(pullData.topFraction - nigglyPullProgress) > 0.1 {
+                        print("🔄 SwiftUIPostsPageView: Top pull progress: \(String(format: "%.2f", pullData.topFraction))")
+                    }
+                    
+                    // Track when niggly becomes armed - lower threshold for better responsiveness
+                    if pullData.topFraction >= 0.7 && !wasNigglyTriggered {
+                        wasNigglyTriggered = true
+                        print("🔄 SwiftUIPostsPageView: Niggly became armed! (topFraction: \(pullData.topFraction))")
+                    } else if pullData.topFraction < 0.3 && wasNigglyTriggered && !isNigglyRefreshing {
+                        // Reset if user pulls back up significantly without releasing (but not during refresh)
+                        print("🔄 SwiftUIPostsPageView: User pulled back up, resetting armed state")
+                        wasNigglyTriggered = false
+                    }
+                    // Main reset happens in onDragEnded
+                    
+                    nigglyPullProgress = pullData.topFraction
                 },
                 onRefreshTriggered: {
                     // This will NOT be called anymore for pull-for-next
@@ -206,15 +235,35 @@ struct SwiftUIPostsPageView: View {
                     }
                 },
                 onDragEnded: { willDecelerate in
-                    // Notify arrow control about drag end for release detection
+                    print("🔄 SwiftUIPostsPageView: onDragEnded called - wasNigglyTriggered: \(wasNigglyTriggered), wasArrowTriggered: \(wasArrowTriggered)")
+                    
+                    // Handle arrow control drag end for next page navigation
                     if pullForNext && frogAndGhostEnabled && wasArrowTriggered {
                         print("🔄 SwiftUIPostsPageView: Drag ended while arrow was triggered! Firing navigation.")
-                        // Reset state and navigate
-                        wasArrowTriggered = false
-                        arrowPullProgress = 0.0
-                        // Set pending scroll fraction to scroll to top of new page
-                        pendingScrollFraction = 0.0
-                        viewModel.goToNextPage()
+                        // Defer state changes to avoid modifying state during view update
+                        DispatchQueue.main.async {
+                            // Reset state and navigate
+                            wasArrowTriggered = false
+                            arrowPullProgress = 0.0
+                            // Set pending scroll fraction to scroll to top of new page
+                            // Use extra small value on iPad to ensure it goes to top
+                            pendingScrollFraction = horizontalSizeClass == .regular ? -0.01 : 0.0
+                            print("🔄 SwiftUIPostsPageView: Set pendingScrollFraction to \(pendingScrollFraction!) for next page")
+                            viewModel.goToNextPage()
+                        }
+                    }
+                    
+                    // Handle niggly control drag end for refresh
+                    if frogAndGhostEnabled && wasNigglyTriggered {
+                        print("🔄 SwiftUIPostsPageView: Drag ended while niggly was armed! Starting refresh with continuous animation.")
+                        // Defer state changes to avoid modifying state during view update
+                        DispatchQueue.main.async {
+                            // Start refresh - this will trigger the niggly to loop continuously
+                            wasNigglyTriggered = false
+                            isNigglyRefreshing = true
+                            nigglyPullProgress = 0.0 // Reset pull progress but keep refreshing state
+                            viewModel.refresh()
+                        }
                     }
                 },
                 replyWorkspace: $replyWorkspace,
@@ -224,22 +273,54 @@ struct SwiftUIPostsPageView: View {
             )
             .id("render-view-\(viewModel.thread.threadID)")
             .ignoresSafeArea(postsImmersiveMode ? .all : .container)
+            .overlay(alignment: .center) {
+                // Custom niggly animation positioned above content during pull or refresh
+                if frogAndGhostEnabled && (nigglyPullProgress > 0.1 || isNigglyRefreshing) {
+                    VStack {
+                        // Add spacer to push niggly away from nav header
+                        Spacer()
+                            .frame(height: postsImmersiveMode ? 85 : 125)
+                        
+                        SwiftUINigglyPullControl(
+                            theme: theme,
+                            pullProgress: isNigglyRefreshing ? 1.0 : nigglyPullProgress,
+                            isVisible: true,
+                            isRefreshing: isNigglyRefreshing,
+                            onRefreshTriggered: {
+                                // Don't trigger immediately - let drag end handle it
+                                print("🔄 SwiftUIPostsPageView: Niggly control onRefreshTriggered called (but ignored)")
+                            }
+                        )
+                        
+                        Spacer()
+                    }
+                    // Position it to slide down from well above as user pulls
+                    .offset(y: -162 + (nigglyPullProgress * 125))
+                    .allowsHitTesting(false)
+                }
+            }
             
             // Arrow pull control - positioned in overscroll area below content
-            if pullForNext && frogAndGhostEnabled && arrowPullProgress > 0 {
-                SwiftUIArrowPullControl(
-                    theme: theme,
-                    pullProgress: arrowPullProgress,
-                    isVisible: true,
-                    onRefreshTriggered: {
-                        print("🔄 SwiftUIPostsPageView: Arrow control onRefreshTriggered called")
-                        // Reset scroll state before navigating
-                        arrowPullProgress = 0.0
-                        pendingScrollFraction = nil // Clear any pending scroll restoration
-                        viewModel.goToNextPage()
-                    }
-                )
-                .offset(y: 40) // Position further below the content for better spacing
+            VStack {
+                Spacer()
+                if pullForNext && frogAndGhostEnabled && arrowPullProgress > 0 {
+                    SwiftUIArrowPullControl(
+                        theme: theme,
+                        pullProgress: arrowPullProgress,
+                        isVisible: true,
+                        onRefreshTriggered: {
+                            print("🔄 SwiftUIPostsPageView: Arrow control onRefreshTriggered called")
+                            // Defer state changes to avoid modifying state during view update
+                            DispatchQueue.main.async {
+                                // Reset scroll state before navigating
+                                arrowPullProgress = 0.0
+                                pendingScrollFraction = nil // Clear any pending scroll restoration
+                                viewModel.goToNextPage()
+                            }
+                        }
+                    )
+                    .offset(y: horizontalSizeClass == .regular ? 10 : 40) // Closer to content on iPad, further on iPhone
+                }
             }
         }
     }
@@ -380,6 +461,10 @@ struct SwiftUIPostsPageView: View {
     private func handleViewDisappear() {
         scrollState.reset()
         arrowPullProgress = 0.0
+        wasArrowTriggered = false
+        nigglyPullProgress = 0.0
+        wasNigglyTriggered = false
+        isNigglyRefreshing = false
         invalidateHandoff()
         
         // Save current scroll position for potential restoration
@@ -427,8 +512,10 @@ struct SwiftUIPostsPageView: View {
         
         // Apply pending scroll fraction when posts are loaded
         if !posts.isEmpty, let scrollFraction = pendingScrollFraction {
-            // Delay slightly to ensure the content is rendered
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Delay slightly to ensure the content is rendered - longer delay on iPad
+            let delay = horizontalSizeClass == .regular ? 0.3 : 0.1
+            print("📋 Applying scroll fraction \(scrollFraction) after \(delay)s delay")
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 viewModel.scrollToFraction = scrollFraction
                 pendingScrollFraction = nil
             }
