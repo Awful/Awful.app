@@ -116,6 +116,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
     // MARK: - Immersive Mode
     var isImmersiveMode: Bool = false
     
+    // Removed frog content parameters
+    
     // MARK: - Settings
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
@@ -267,8 +269,16 @@ struct SwiftUIRenderView: UIViewRepresentable {
         // Update frog setting on container
         container.updateFrogAndGhostEnabled(frogAndGhostEnabled)
         
+        // Removed frog content update - reverting to standard approach
+        
         // Update immersive mode setting
         container.updateImmersiveMode(isImmersiveMode)
+        
+        // Force clear background for overscroll consistency
+        let renderView = container.renderView
+        renderView.backgroundColor = UIColor.clear
+        renderView.scrollView.backgroundColor = theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground
+        container.backgroundColor = theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground
         
         // Update content insets based on toolbar visibility
         container.updateContentInsets(top: topInset, bottom: bottomInset)
@@ -517,10 +527,13 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     }
     weak var scrollDelegate: RenderViewScrollDelegate?
     private var lastScrollOffset: CGFloat = 0
+    private var lastPullData: PullData = PullData(topFraction: 0, bottomFraction: 0)
     internal var lastRenderedPostsHash: Int = 0
     fileprivate var isCurrentlyRendering: Bool = false
     private var frogAndGhostEnabled: Bool = false
     private weak var coordinator: SwiftUIRenderView.Coordinator?
+    
+    // Removed frog content properties
     
     // MARK: - Background/Foreground State Management
     internal var isInBackground: Bool = false
@@ -764,6 +777,17 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         
         // Apply scroll indicator style from theme
         _renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
+        
+        // Set comprehensive background colors for overscroll consistency
+        let backgroundColor = theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground
+        _renderView.scrollView.backgroundColor = backgroundColor
+        _renderView.backgroundColor = backgroundColor
+        self.backgroundColor = backgroundColor
+        
+        // Also set the WebView container background
+        if let webViewBackground = _renderView.webView.superview {
+            webViewBackground.backgroundColor = backgroundColor
+        }
     }
     
     func setupContextMenu(coordinator: SwiftUIRenderView.Coordinator) {
@@ -897,6 +921,13 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         }
     }
     
+    // Removed all custom frog implementation
+    
+    // This method is no longer needed as we're using HTML injection
+    // private func createFrogAnimationView(theme: Theme) -> UIView { ... }
+    
+    // Removed frog animation update
+    
     func updateImmersiveMode(_ enabled: Bool) {
         // Update the background color to match the posts view background when in immersive mode
         if enabled {
@@ -917,51 +948,62 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         let contentHeight = scrollView.contentSize.height
         let viewHeight = scrollView.bounds.height
         
-        // Pass scroll position to SwiftUI
-        scrollDelegate?.didUpdateScrollPosition(
-            offset: currentOffset,
-            contentHeight: contentHeight,
-            viewHeight: viewHeight
-        )
+        // Throttle scroll position updates to reduce overhead
+        let shouldUpdatePosition = abs(scrollDiff) > 3 || abs(currentOffset - lastScrollOffset) > 10
+        if shouldUpdatePosition {
+            scrollDelegate?.didUpdateScrollPosition(
+                offset: currentOffset,
+                contentHeight: contentHeight,
+                viewHeight: viewHeight
+            )
+        }
         
-        // Calculate pull-to-refresh progress for both top and bottom overscroll
+        // Calculate pull progress with reduced overhead
         if frogAndGhostEnabled {
-            let bottomMaxPullDistance: CGFloat = 80 // Distance needed for full pull (bottom)
-            let topMaxPullDistance: CGFloat = 120 // Longer distance for top pull to avoid accidental triggers
-            var topFraction: CGFloat = 0.0
-            var bottomFraction: CGFloat = 0.0
+            let isOverscrolling = currentOffset < -5 || (currentOffset + viewHeight > contentHeight + 5)
             
-            // Check for top overscroll (negative offset for refresh)
-            if currentOffset < 0 {
-                let topOverscroll = abs(currentOffset)
-                if topOverscroll > 2 {
-                    topFraction = min(max(topOverscroll / topMaxPullDistance, 0), 1.0)
-                }
-            }
-            
-            // Check for bottom overscroll (for pull-for-next when enabled)
-            if UserDefaults.standard.bool(forKey: Settings.pullForNext.key) {
-                let bottomOffset = currentOffset + viewHeight
-                let bottomOverscroll = bottomOffset - contentHeight
+            if isOverscrolling {
+                let bottomMaxPullDistance: CGFloat = 80 // Distance needed for full pull (bottom)
+                let topMaxPullDistance: CGFloat = 120 // Longer distance for top pull to avoid accidental triggers
+                var topFraction: CGFloat = 0.0
+                var bottomFraction: CGFloat = 0.0
                 
-                // Only calculate pull progress when actually overscrolling and content is substantial
-                if bottomOverscroll > 2 && contentHeight > viewHeight {
-                    bottomFraction = min(max(bottomOverscroll / bottomMaxPullDistance, 0), 1.0)
+                // Check for top overscroll (negative offset for refresh)
+                if currentOffset < 0 {
+                    let topOverscroll = abs(currentOffset)
+                    if topOverscroll > 2 {
+                        topFraction = min(max(topOverscroll / topMaxPullDistance, 0), 1.0)
+                    }
                 }
-            }
-            
-            // Send pull data if either fraction is significant or we need to reset
-            if topFraction > 0 || bottomFraction > 0 || (topFraction == 0 && bottomFraction == 0) {
+                
+                // Check for bottom overscroll (for pull-for-next when enabled)
+                if UserDefaults.standard.bool(forKey: Settings.pullForNext.key) {
+                    let bottomOffset = currentOffset + viewHeight
+                    let bottomOverscroll = bottomOffset - contentHeight
+                    
+                    // Only calculate pull progress when actually overscrolling and content is substantial
+                    if bottomOverscroll > 2 && contentHeight > viewHeight {
+                        bottomFraction = min(max(bottomOverscroll / bottomMaxPullDistance, 0), 1.0)
+                    }
+                }
+                
+                // Send pull data only when there's a meaningful change
                 let pullData = PullData(topFraction: topFraction, bottomFraction: bottomFraction)
-                scrollDelegate?.didPull(data: pullData)
+                if abs(pullData.topFraction - lastPullData.topFraction) > 0.05 || 
+                   abs(pullData.bottomFraction - lastPullData.bottomFraction) > 0.05 {
+                    lastPullData = pullData
+                    scrollDelegate?.didPull(data: pullData)
+                }
+            } else if lastPullData.topFraction > 0 || lastPullData.bottomFraction > 0 {
+                // Reset pull data when not overscrolling
+                lastPullData = PullData(topFraction: 0, bottomFraction: 0)
+                scrollDelegate?.didPull(data: lastPullData)
             }
         }
         
-        // Use a smaller threshold for more responsive toolbar show/hide
-        // but include velocity to prevent jittery behavior
-        let threshold: CGFloat = 5
-        let velocity = scrollView.panGestureRecognizer.velocity(in: scrollView)
-        let isSignificantScroll = abs(scrollDiff) > threshold || abs(velocity.y) > 100
+        // Use a larger threshold and simpler logic for smoother scrolling
+        let threshold: CGFloat = 8
+        let isSignificantScroll = abs(scrollDiff) > threshold
         
         if isSignificantScroll {
             let isScrollingUp = scrollDiff < 0
@@ -1219,7 +1261,6 @@ private struct RenderContext {
             let ghostUrl = Bundle.main.url(forResource: "ghost60", withExtension: "json")!
             let ghostData = try! Data(contentsOf: ghostUrl)
             context["ghostJsonData"] = String(data: ghostData, encoding: .utf8) as Any
-            // Note: Frog JSON removed - using SwiftUI frog instead
         }
         
         if let author = author {

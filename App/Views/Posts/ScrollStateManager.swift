@@ -18,6 +18,8 @@ class ScrollStateManager: ObservableObject {
     @Published private(set) var hasUserScrolled: Bool = false
     
     // MARK: - Internal State
+    private var isLastPage: Bool = false
+    private var isImmersiveMode: Bool = false
     private var scrollPosition: CGFloat = 0
     private var scrollContentHeight: CGFloat = 0
     private var scrollViewHeight: CGFloat = 0
@@ -26,13 +28,13 @@ class ScrollStateManager: ObservableObject {
     private var scrollDirectionChangeThreshold: CGFloat = 25.0 // Minimum scroll distance before direction change
     private var lastScrollPosition: CGFloat = 0
     private var accumulatedScrollDistance: CGFloat = 0
-    private var bounceSuppressionThreshold: CGFloat = 50.0 // Higher threshold near edges to prevent bounce artifacts
+    private var bounceSuppressionThreshold: CGFloat = 50.0 // Reduced threshold for smoother scrolling
     
     // MARK: - Throttling
     private var scrollThrottleWorkItem: DispatchWorkItem?
     private var uiUpdateWorkItem: DispatchWorkItem?
-    private let scrollThrottleDelay: TimeInterval = 0.008 // ~120fps
-    private let uiUpdateDelay: TimeInterval = 0.1 // Toolbar animation delay - increased to reduce bounce artifacts
+    private let scrollThrottleDelay: TimeInterval = 0.016 // ~60fps for smoother performance
+    private let uiUpdateDelay: TimeInterval = 0.05 // Reduced delay for more responsive UI
     
     // MARK: - Computed Properties
     var topInset: CGFloat {
@@ -64,16 +66,15 @@ class ScrollStateManager: ObservableObject {
             return 
         }
         
-        // Apply bounce-aware hysteresis: use higher thresholds near content edges to prevent
-        // toolbar changes during bounce behavior
+        // Simplified hysteresis to reduce bounce interference
         let isNearTopEdge = scrollPosition < bounceSuppressionThreshold
         let isNearBottomEdge = scrollContentHeight > 0 && 
                               (scrollPosition + scrollViewHeight) > (scrollContentHeight - bounceSuppressionThreshold)
         
-        let effectiveThreshold = (isNearTopEdge || isNearBottomEdge) ? bounceSuppressionThreshold : scrollDirectionChangeThreshold
+        // Use consistent threshold but only suppress at extreme edges
+        let effectiveThreshold = (isNearTopEdge || isNearBottomEdge) ? scrollDirectionChangeThreshold * 1.5 : scrollDirectionChangeThreshold
         
-        // Simple hysteresis: require minimum accumulated distance for direction changes
-        // but allow initial direction changes and significant scrolling
+        // Require minimum accumulated distance for direction changes
         if lastScrollDirection != .none && accumulatedScrollDistance < effectiveThreshold {
             return
         }
@@ -107,6 +108,9 @@ class ScrollStateManager: ObservableObject {
     }
     
     func handlePullChanged(fraction: CGFloat, isLastPage: Bool) {
+        // Update last page state
+        self.isLastPage = isLastPage
+        
         // Only update frog progress if we're on the last page and near bottom
         if isLastPage && isNearBottom {
             let newProgress = min(fraction, 1.0)
@@ -116,6 +120,14 @@ class ScrollStateManager: ObservableObject {
         } else if frogPullProgress > 0 {
             frogPullProgress = 0
         }
+    }
+    
+    func setIsLastPage(_ isLastPage: Bool) {
+        self.isLastPage = isLastPage
+    }
+    
+    func setIsImmersiveMode(_ isImmersiveMode: Bool) {
+        self.isImmersiveMode = isImmersiveMode
     }
     
     // MARK: - Private Methods
@@ -135,7 +147,7 @@ class ScrollStateManager: ObservableObject {
                 if shouldShowSubToolbar {
                     isSubToolbarVisible = true
                 }
-                if shouldShowBottomBar {
+                if shouldShowBottomBar && !(isImmersiveMode && isLastPage && isNearBottom) {
                     isBottomBarVisible = true
                 }
             }

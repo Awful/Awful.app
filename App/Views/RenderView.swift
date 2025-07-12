@@ -50,8 +50,10 @@ final class RenderView: UIView {
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.isOpaque = false
+        webView.backgroundColor = UIColor.clear
         webView.navigationDelegate = self
-        webView.scrollView.backgroundColor = nil
+        webView.scrollView.backgroundColor = UIColor.clear
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.scrollView.decelerationRate = .normal
         
         // newer iOS requires this for allowing Safari page inspector

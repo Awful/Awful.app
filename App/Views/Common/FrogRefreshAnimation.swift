@@ -113,6 +113,8 @@ class FrogAnimationView: UIView {
         let oldState = currentState
         currentState = newState
         
+        print("🐸 FrogRefreshAnimation updateState from \(oldState) to \(newState)")
+        
         switch (oldState, newState) {
         case (_, .disabled), (_, .ready):
             animationView.pause()
@@ -142,8 +144,9 @@ class FrogAnimationView: UIView {
             break
             
         case (_, .refreshing):
-            // Start spinning animation from frame 25 onwards
-            animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .playOnce)
+            // Start looping spinning animation from frame 25 onwards
+            print("🐸 Starting looping animation from frame 25")
+            animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .loop)
             if enableHaptics {
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             }

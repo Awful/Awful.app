@@ -1002,8 +1002,6 @@ Awful.embedGfycat = function() {
   }
 }
 
-// HTML/JavaScript frog functionality removed - using SwiftUI frog instead
-
 Awful.embedGfycat();
 Awful.loadLotties();
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
