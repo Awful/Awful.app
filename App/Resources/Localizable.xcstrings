@@ -65,9 +65,6 @@
     "Back" : {
 
     },
-    "Bars" : {
-
-    },
     "Bookmark Thread" : {
 
     },
@@ -320,19 +317,10 @@
         }
       }
     },
-    "Creep" : {
-
-    },
     "Delete" : {
 
     },
     "Detail" : {
-
-    },
-    "Doggo" : {
-
-    },
-    "Doggo poking tongue" : {
 
     },
     "Done" : {
@@ -353,7 +341,7 @@
     "First" : {
 
     },
-    "Five" : {
+    "five" : {
 
     },
     "Fixes Lottie animation issues but may have other bugs" : {
@@ -410,13 +398,16 @@
         }
       }
     },
-    "Froggo" : {
+    "froggo" : {
 
     },
-    "Froggo (purple)" : {
+    "froggo_purple" : {
 
     },
-    "Ghost" : {
+    "ghost_blue" : {
+
+    },
+    "greenface" : {
 
     },
     "handoff.bookmarks-title" : {
@@ -936,9 +927,6 @@
     "Previous Posts" : {
 
     },
-    "Pride" : {
-
-    },
     "Private Message" : {
 
     },
@@ -1091,6 +1079,15 @@
         }
       }
     },
+    "rated_five" : {
+
+    },
+    "rated_five_pride" : {
+
+    },
+    "rated_five_trans" : {
+
+    },
     "Remove Bookmark" : {
 
     },
@@ -1100,7 +1097,7 @@
     "Reply" : {
 
     },
-    "Riker" : {
+    "riker" : {
 
     },
     "save-action.error" : {
@@ -1265,7 +1262,13 @@
         }
       }
     },
-    "Smith" : {
+    "smith" : {
+
+    },
+    "staredog" : {
+
+    },
+    "staredog_tongue" : {
 
     },
     "table-view.action.delete" : {
@@ -1343,13 +1346,10 @@
     "Toggle All" : {
 
     },
-    "Trans" : {
-
-    },
     "Username" : {
 
     },
-    "V" : {
+    "v" : {
 
     },
     "Vote" : {

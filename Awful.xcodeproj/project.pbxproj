@@ -176,25 +176,26 @@
 		2D19BA3A29C33303009DD94F /* frogrefresh60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3729C33302009DD94F /* frogrefresh60.json */; };
 		2D19BA3B29C33303009DD94F /* toot60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3829C33302009DD94F /* toot60.json */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
+		2D3F1CD02E22767D0081E56B /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */; };
 		2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */; };
 		2D91DB902E13EBE000771E25 /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAD15402E21FA890057C340 /* SwiftUIArrowPullControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAD153F2E21FA890057C340 /* SwiftUIArrowPullControl.swift */; };
 		2DAD15422E21FA9A0057C340 /* SwiftUINigglyPullControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAD15412E21FA9A0057C340 /* SwiftUINigglyPullControl.swift */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
-		2DB2C6A32E17C2ED00DF7B03 /* Frog v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69C2E17C2ED00DF7B03 /* Frog v2.icon */; };
-		2DB2C6A42E17C2ED00DF7B03 /* Ghost v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69D2E17C2ED00DF7B03 /* Ghost v2.icon */; };
-		2DB2C6A52E17C2ED00DF7B03 /* Doggo Tongue.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69A2E17C2ED00DF7B03 /* Doggo Tongue.icon */; };
-		2DB2C6A62E17C2ED00DF7B03 /* 5.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6962E17C2ED00DF7B03 /* 5.icon */; };
-		2DB2C6A72E17C2ED00DF7B03 /* Smith.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A02E17C2ED00DF7B03 /* Smith.icon */; };
-		2DB2C6A82E17C2ED00DF7B03 /* Trans v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A12E17C2ED00DF7B03 /* Trans v2.icon */; };
-		2DB2C6A92E17C2ED00DF7B03 /* Doggo.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6992E17C2ED00DF7B03 /* Doggo.icon */; };
-		2DB2C6AA2E17C2ED00DF7B03 /* V v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A22E17C2ED00DF7B03 /* V v2.icon */; };
-		2DB2C6AB2E17C2ED00DF7B03 /* Frog Purple v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69B2E17C2ED00DF7B03 /* Frog Purple v2.icon */; };
-		2DB2C6AC2E17C2ED00DF7B03 /* Riker.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69F2E17C2ED00DF7B03 /* Riker.icon */; };
-		2DB2C6AD2E17C2ED00DF7B03 /* Creep.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6982E17C2ED00DF7B03 /* Creep.icon */; };
-		2DB2C6AE2E17C2ED00DF7B03 /* Pride v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69E2E17C2ED00DF7B03 /* Pride v2.icon */; };
-		2DB2C6AF2E17C2ED00DF7B03 /* Bars v2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6972E17C2ED00DF7B03 /* Bars v2.icon */; };
+		2DB2C6A32E17C2ED00DF7B03 /* froggo.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69C2E17C2ED00DF7B03 /* froggo.icon */; };
+		2DB2C6A42E17C2ED00DF7B03 /* ghost_blue.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69D2E17C2ED00DF7B03 /* ghost_blue.icon */; };
+		2DB2C6A52E17C2ED00DF7B03 /* staredog_tongue.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69A2E17C2ED00DF7B03 /* staredog_tongue.icon */; };
+		2DB2C6A62E17C2ED00DF7B03 /* five.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6962E17C2ED00DF7B03 /* five.icon */; };
+		2DB2C6A72E17C2ED00DF7B03 /* smith.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A02E17C2ED00DF7B03 /* smith.icon */; };
+		2DB2C6A82E17C2ED00DF7B03 /* rated_five_trans.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A12E17C2ED00DF7B03 /* rated_five_trans.icon */; };
+		2DB2C6A92E17C2ED00DF7B03 /* staredog.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6992E17C2ED00DF7B03 /* staredog.icon */; };
+		2DB2C6AA2E17C2ED00DF7B03 /* v.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A22E17C2ED00DF7B03 /* v.icon */; };
+		2DB2C6AB2E17C2ED00DF7B03 /* froggo_purple.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69B2E17C2ED00DF7B03 /* froggo_purple.icon */; };
+		2DB2C6AC2E17C2ED00DF7B03 /* riker.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69F2E17C2ED00DF7B03 /* riker.icon */; };
+		2DB2C6AD2E17C2ED00DF7B03 /* greenface.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6982E17C2ED00DF7B03 /* greenface.icon */; };
+		2DB2C6AE2E17C2ED00DF7B03 /* rated_five_pride.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C69E2E17C2ED00DF7B03 /* rated_five_pride.icon */; };
+		2DB2C6AF2E17C2ED00DF7B03 /* rated_five.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2DB2C6972E17C2ED00DF7B03 /* rated_five.icon */; };
 		2DB5FC292E1A8042003F050F /* PostsPagePlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC232E1A8042003F050F /* PostsPagePlaceholderView.swift */; };
 		2DB5FC2A2E1A8042003F050F /* PostsActionsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC212E1A8042003F050F /* PostsActionsMenu.swift */; };
 		2DB5FC2B2E1A8042003F050F /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC1C2E1A8042003F050F /* BookmarkColorPicker.swift */; };
@@ -499,25 +500,26 @@
 		2D19BA3629C33302009DD94F /* niggly60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = niggly60.json; sourceTree = "<group>"; };
 		2D19BA3729C33302009DD94F /* frogrefresh60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = frogrefresh60.json; sourceTree = "<group>"; };
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
+		2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
 		2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsSwiftUIViewController.swift; sourceTree = "<group>"; };
 		2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAD153F2E21FA890057C340 /* SwiftUIArrowPullControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIArrowPullControl.swift; sourceTree = "<group>"; };
 		2DAD15412E21FA9A0057C340 /* SwiftUINigglyPullControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUINigglyPullControl.swift; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
-		2DB2C6962E17C2ED00DF7B03 /* 5.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = 5.icon; sourceTree = "<group>"; };
-		2DB2C6972E17C2ED00DF7B03 /* Bars v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Bars v2.icon"; sourceTree = "<group>"; };
-		2DB2C6982E17C2ED00DF7B03 /* Creep.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Creep.icon; sourceTree = "<group>"; };
-		2DB2C6992E17C2ED00DF7B03 /* Doggo.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Doggo.icon; sourceTree = "<group>"; };
-		2DB2C69A2E17C2ED00DF7B03 /* Doggo Tongue.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Doggo Tongue.icon"; sourceTree = "<group>"; };
-		2DB2C69B2E17C2ED00DF7B03 /* Frog Purple v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Frog Purple v2.icon"; sourceTree = "<group>"; };
-		2DB2C69C2E17C2ED00DF7B03 /* Frog v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Frog v2.icon"; sourceTree = "<group>"; };
-		2DB2C69D2E17C2ED00DF7B03 /* Ghost v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Ghost v2.icon"; sourceTree = "<group>"; };
-		2DB2C69E2E17C2ED00DF7B03 /* Pride v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Pride v2.icon"; sourceTree = "<group>"; };
-		2DB2C69F2E17C2ED00DF7B03 /* Riker.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Riker.icon; sourceTree = "<group>"; };
-		2DB2C6A02E17C2ED00DF7B03 /* Smith.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Smith.icon; sourceTree = "<group>"; };
-		2DB2C6A12E17C2ED00DF7B03 /* Trans v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "Trans v2.icon"; sourceTree = "<group>"; };
-		2DB2C6A22E17C2ED00DF7B03 /* V v2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "V v2.icon"; sourceTree = "<group>"; };
+		2DB2C6962E17C2ED00DF7B03 /* five.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = five.icon; sourceTree = "<group>"; };
+		2DB2C6972E17C2ED00DF7B03 /* rated_five.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five.icon; sourceTree = "<group>"; };
+		2DB2C6982E17C2ED00DF7B03 /* greenface.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = greenface.icon; sourceTree = "<group>"; };
+		2DB2C6992E17C2ED00DF7B03 /* staredog.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog.icon; sourceTree = "<group>"; };
+		2DB2C69A2E17C2ED00DF7B03 /* staredog_tongue.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_tongue.icon; sourceTree = "<group>"; };
+		2DB2C69B2E17C2ED00DF7B03 /* froggo_purple.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = froggo_purple.icon; sourceTree = "<group>"; };
+		2DB2C69C2E17C2ED00DF7B03 /* froggo.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = froggo.icon; sourceTree = "<group>"; };
+		2DB2C69D2E17C2ED00DF7B03 /* ghost_blue.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ghost_blue.icon; sourceTree = "<group>"; };
+		2DB2C69E2E17C2ED00DF7B03 /* rated_five_pride.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_pride.icon; sourceTree = "<group>"; };
+		2DB2C69F2E17C2ED00DF7B03 /* riker.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = riker.icon; sourceTree = "<group>"; };
+		2DB2C6A02E17C2ED00DF7B03 /* smith.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = smith.icon; sourceTree = "<group>"; };
+		2DB2C6A12E17C2ED00DF7B03 /* rated_five_trans.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_trans.icon; sourceTree = "<group>"; };
+		2DB2C6A22E17C2ED00DF7B03 /* v.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v.icon; sourceTree = "<group>"; };
 		2DB5FC1C2E1A8042003F050F /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
 		2DB5FC1D2E1A8042003F050F /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		2DB5FC1E2E1A8042003F050F /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -1009,19 +1011,20 @@
 		1CC065F52D6700BA002BB6A0 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
-				2DB2C6962E17C2ED00DF7B03 /* 5.icon */,
-				2DB2C6972E17C2ED00DF7B03 /* Bars v2.icon */,
-				2DB2C6982E17C2ED00DF7B03 /* Creep.icon */,
-				2DB2C6992E17C2ED00DF7B03 /* Doggo.icon */,
-				2DB2C69A2E17C2ED00DF7B03 /* Doggo Tongue.icon */,
-				2DB2C69B2E17C2ED00DF7B03 /* Frog Purple v2.icon */,
-				2DB2C69C2E17C2ED00DF7B03 /* Frog v2.icon */,
-				2DB2C69D2E17C2ED00DF7B03 /* Ghost v2.icon */,
-				2DB2C69E2E17C2ED00DF7B03 /* Pride v2.icon */,
-				2DB2C69F2E17C2ED00DF7B03 /* Riker.icon */,
-				2DB2C6A02E17C2ED00DF7B03 /* Smith.icon */,
-				2DB2C6A12E17C2ED00DF7B03 /* Trans v2.icon */,
-				2DB2C6A22E17C2ED00DF7B03 /* V v2.icon */,
+				2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */,
+				2DB2C6962E17C2ED00DF7B03 /* five.icon */,
+				2DB2C6972E17C2ED00DF7B03 /* rated_five.icon */,
+				2DB2C6982E17C2ED00DF7B03 /* greenface.icon */,
+				2DB2C6992E17C2ED00DF7B03 /* staredog.icon */,
+				2DB2C69A2E17C2ED00DF7B03 /* staredog_tongue.icon */,
+				2DB2C69B2E17C2ED00DF7B03 /* froggo_purple.icon */,
+				2DB2C69C2E17C2ED00DF7B03 /* froggo.icon */,
+				2DB2C69D2E17C2ED00DF7B03 /* ghost_blue.icon */,
+				2DB2C69E2E17C2ED00DF7B03 /* rated_five_pride.icon */,
+				2DB2C69F2E17C2ED00DF7B03 /* riker.icon */,
+				2DB2C6A02E17C2ED00DF7B03 /* smith.icon */,
+				2DB2C6A12E17C2ED00DF7B03 /* rated_five_trans.icon */,
+				2DB2C6A22E17C2ED00DF7B03 /* v.icon */,
 			);
 			path = "App Icons";
 			sourceTree = "<group>";
@@ -1360,7 +1363,6 @@
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1447,19 +1449,19 @@
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
-				2DB2C6A32E17C2ED00DF7B03 /* Frog v2.icon in Resources */,
-				2DB2C6A42E17C2ED00DF7B03 /* Ghost v2.icon in Resources */,
-				2DB2C6A52E17C2ED00DF7B03 /* Doggo Tongue.icon in Resources */,
-				2DB2C6A62E17C2ED00DF7B03 /* 5.icon in Resources */,
-				2DB2C6A72E17C2ED00DF7B03 /* Smith.icon in Resources */,
-				2DB2C6A82E17C2ED00DF7B03 /* Trans v2.icon in Resources */,
-				2DB2C6A92E17C2ED00DF7B03 /* Doggo.icon in Resources */,
-				2DB2C6AA2E17C2ED00DF7B03 /* V v2.icon in Resources */,
-				2DB2C6AB2E17C2ED00DF7B03 /* Frog Purple v2.icon in Resources */,
-				2DB2C6AC2E17C2ED00DF7B03 /* Riker.icon in Resources */,
-				2DB2C6AD2E17C2ED00DF7B03 /* Creep.icon in Resources */,
-				2DB2C6AE2E17C2ED00DF7B03 /* Pride v2.icon in Resources */,
-				2DB2C6AF2E17C2ED00DF7B03 /* Bars v2.icon in Resources */,
+				2DB2C6A32E17C2ED00DF7B03 /* froggo.icon in Resources */,
+				2DB2C6A42E17C2ED00DF7B03 /* ghost_blue.icon in Resources */,
+				2DB2C6A52E17C2ED00DF7B03 /* staredog_tongue.icon in Resources */,
+				2DB2C6A62E17C2ED00DF7B03 /* five.icon in Resources */,
+				2DB2C6A72E17C2ED00DF7B03 /* smith.icon in Resources */,
+				2DB2C6A82E17C2ED00DF7B03 /* rated_five_trans.icon in Resources */,
+				2DB2C6A92E17C2ED00DF7B03 /* staredog.icon in Resources */,
+				2DB2C6AA2E17C2ED00DF7B03 /* v.icon in Resources */,
+				2DB2C6AB2E17C2ED00DF7B03 /* froggo_purple.icon in Resources */,
+				2DB2C6AC2E17C2ED00DF7B03 /* riker.icon in Resources */,
+				2DB2C6AD2E17C2ED00DF7B03 /* greenface.icon in Resources */,
+				2DB2C6AE2E17C2ED00DF7B03 /* rated_five_pride.icon in Resources */,
+				2DB2C6AF2E17C2ED00DF7B03 /* rated_five.icon in Resources */,
 				1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */,
 				1C29BD532251208200E1217A /* quote-post.png in Resources */,
 				2D19BA3B29C33303009DD94F /* toot60.json in Resources */,
@@ -1473,6 +1475,7 @@
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
 				1CAD42B62CD3050400579B8E /* lottie-player.js in Resources */,
 				2D921269292F588100B16011 /* platinum-member.png in Resources */,
+				2D3F1CD02E22767D0081E56B /* App Icons.xcassets in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
@@ -1743,7 +1746,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = App/Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
@@ -1765,7 +1768,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = App/Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
@@ -1778,10 +1781,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = Creep;
+				ASSETCATALOG_COMPILER_APPICON_NAME = greenface_appicon;
+				ASSETCATALOG_COMPILER_GENERATE_ALTERNATE_ICONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -1798,10 +1802,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = Creep;
+				ASSETCATALOG_COMPILER_APPICON_NAME = greenface_appicon;
+				ASSETCATALOG_COMPILER_GENERATE_ALTERNATE_ICONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;

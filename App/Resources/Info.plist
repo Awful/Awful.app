@@ -13,7 +13,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconName</key>
-	<string>Creep</string>
+	<string>greenface_appicon</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -42,7 +42,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>17522724</string>
+	<string>17524906</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -78,16 +78,16 @@
 		<string>com.awfulapp.Awful.activity.listing-threads</string>
 		<string>com.awfulapp.Awful.activity.reading-message</string>
 	</array>
-    <key>UILaunchScreen</key>
-    <dict>
-        <key>UIColorName</key>
-        <string>LaunchBackground</string>
-        <key>UINavigationBar</key>
-        <dict>
-            <key>UIColorName</key>
-            <string>LaunchNavigationBar</string>
-        </dict>
-    </dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+		<key>UINavigationBar</key>
+		<dict>
+			<key>UIColorName</key>
+			<string>LaunchNavigationBar</string>
+		</dict>
+	</dict>
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIStatusBarStyle</key>

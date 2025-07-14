@@ -153,7 +153,9 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         path.append(destination)
         
         logger.debug("Path count after navigation: \(self.path.count)")
-        isTabBarHidden = true
+        // Only hide tab bar when using SwiftUI posts view (immersive mode)
+        let useSwiftUIPostsView = FoilDefaultStorage(Settings.useSwiftUIPostsView).wrappedValue
+        isTabBarHidden = useSwiftUIPostsView
     }
     
     func navigateToThread(_ thread: AwfulThread, author: User?) {
@@ -174,7 +176,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         // Add to navigation history and path
         navigationHistory.append(message)
         path.append(message)
-        isTabBarHidden = true
+        // Private messages don't need to hide the tab bar
     }
     
     func navigateToComposeMessage() {
@@ -186,7 +188,7 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         // Add to navigation history and path
         navigationHistory.append(destination)
         path.append(destination)
-        isTabBarHidden = true
+        // Compose messages don't need to hide the tab bar
     }
     
     func presentComposeThread(for forum: Forum) {
@@ -208,8 +210,12 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             // On iPad sidebar, always show the tab bar
             return false
         } else {
-            // On iPhone, hide the tab bar when showing detail view
-            return isTabBarHidden
+            // On iPhone, only hide the tab bar when:
+            // 1. We're currently viewing a thread (posts view) 
+            // 2. We're using SwiftUI posts view (immersive mode)
+            let currentlyViewingThread = navigationHistory.last is ThreadDestination && !path.isEmpty
+            let useSwiftUIPostsView = FoilDefaultStorage(Settings.useSwiftUIPostsView).wrappedValue
+            return currentlyViewingThread && useSwiftUIPostsView
         }
     }
     
@@ -258,7 +264,12 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         let itemToRestore = unpopStack.removeLast()
         navigationHistory.append(itemToRestore)
         path.append(itemToRestore)
-        isTabBarHidden = true
+        
+        // Only hide tab bar if unpop restores a thread destination and we're using SwiftUI posts view
+        if itemToRestore is ThreadDestination {
+            let useSwiftUIPostsView = FoilDefaultStorage(Settings.useSwiftUIPostsView).wrappedValue
+            isTabBarHidden = useSwiftUIPostsView
+        }
         
         logger.info("🔄 Unpop performed, restored item to path. Path count: \(self.path.count)")
     }
