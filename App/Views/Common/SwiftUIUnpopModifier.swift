@@ -69,17 +69,26 @@ private struct UnpopGestureView: UIViewRepresentable {
             navigationPath: $navigationPath,
             unpopStack: $unpopStack
         )
-        unpopHandler = handler
+        
+        // Use DispatchQueue to avoid modifying state during view update
+        DispatchQueue.main.async {
+            unpopHandler = handler
+        }
+        
         view.addGestureRecognizer(handler.panRecognizer)
         return view
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {
-        // Update bindings if needed
-        unpopHandler?.updateBindings(
-            navigationPath: $navigationPath,
-            unpopStack: $unpopStack
-        )
+        // Update bindings if needed, but avoid doing it during view update
+        if let handler = unpopHandler {
+            DispatchQueue.main.async {
+                handler.updateBindings(
+                    navigationPath: $navigationPath,
+                    unpopStack: $unpopStack
+                )
+            }
+        }
     }
 }
 
@@ -168,16 +177,16 @@ extension SwiftUIUnpopHandler: UIGestureRecognizerDelegate {
                 return false
             }
             
-            // Check if we're truly at the right edge (within 10 points) - more strict
+            // Check if we're at the right edge (within 20 points) - more lenient
             guard let view = panGesture.view, 
-                  location.x >= view.bounds.width - 10 else { 
+                  location.x >= view.bounds.width - 20 else { 
                 logger.info("🔄 Unpop gesture denied - not at right edge (x: \(location.x), width: \(panGesture.view?.bounds.width ?? 0))")
                 return false 
             }
             
-            // Only begin if horizontal velocity is much greater than vertical AND strong enough
-            let minHorizontalVelocity: CGFloat = 300 // Increased minimum horizontal velocity
-            let shouldBegin = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 4
+            // Only begin if horizontal velocity is greater than vertical AND strong enough
+            let minHorizontalVelocity: CGFloat = 150 // Reduced minimum horizontal velocity
+            let shouldBegin = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 2
             logger.info("🔄 Unpop gesture \(shouldBegin ? "approved" : "denied") - velocity: (\(velocity.x), \(velocity.y)), location: (\(location.x), \(location.y))")
             return shouldBegin
         }
@@ -187,8 +196,14 @@ extension SwiftUIUnpopHandler: UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
-        // Don't allow simultaneous recognition with scroll views to avoid conflicts
+        // Allow simultaneous recognition with scroll views when using screen edge gestures
+        // This is needed for WebKit views in SwiftUI posts page
         if other.view is UIScrollView || other.view?.superview is UIScrollView {
+            // Allow simultaneous recognition if it's a screen edge gesture
+            if gestureRecognizer is UIScreenEdgePanGestureRecognizer {
+                logger.info("🔄 Unpop gesture allowing simultaneous recognition with scroll view (screen edge gesture)")
+                return true
+            }
             logger.info("🔄 Unpop gesture refusing simultaneous recognition with scroll view")
             return false
         }
@@ -262,14 +277,23 @@ private struct CoordinatorUnpopGestureView: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
         let handler = CoordinatorUnpopHandler(coordinator: coordinator)
-        unpopHandler = handler
+        
+        // Use DispatchQueue to avoid modifying state during view update
+        DispatchQueue.main.async {
+            unpopHandler = handler
+        }
+        
         view.addGestureRecognizer(handler.panRecognizer)
         return view
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {
-        // Update coordinator reference if needed
-        unpopHandler?.coordinator = coordinator
+        // Update coordinator reference if needed, but avoid doing it during view update
+        if let handler = unpopHandler, handler.coordinator !== coordinator {
+            DispatchQueue.main.async {
+                handler.coordinator = coordinator
+            }
+        }
     }
 }
 
@@ -357,16 +381,16 @@ extension CoordinatorUnpopHandler: UIGestureRecognizerDelegate {
                 return false
             }
             
-            // Check if we're truly at the right edge (within 10 points) - more strict
+            // Check if we're at the right edge (within 20 points) - more lenient
             guard let view = panGesture.view, 
-                  location.x >= view.bounds.width - 10 else { 
+                  location.x >= view.bounds.width - 20 else { 
                 logger.info("🔄 Coordinator unpop gesture denied - not at right edge (x: \(location.x), width: \(panGesture.view?.bounds.width ?? 0))")
                 return false 
             }
             
-            // Only begin if horizontal velocity is much greater than vertical AND strong enough
-            let minHorizontalVelocity: CGFloat = 300 // Increased minimum horizontal velocity
-            let shouldBegin = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 4
+            // Only begin if horizontal velocity is greater than vertical AND strong enough
+            let minHorizontalVelocity: CGFloat = 150 // Reduced minimum horizontal velocity
+            let shouldBegin = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 2
             logger.info("🔄 Coordinator unpop gesture \(shouldBegin ? "approved" : "denied") - velocity: (\(velocity.x), \(velocity.y)), location: (\(location.x), \(location.y))")
             return shouldBegin
         }
@@ -376,8 +400,14 @@ extension CoordinatorUnpopHandler: UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
-        // Don't allow simultaneous recognition with scroll views to avoid conflicts
+        // Allow simultaneous recognition with scroll views when using screen edge gestures
+        // This is needed for WebKit views in SwiftUI posts page
         if other.view is UIScrollView || other.view?.superview is UIScrollView {
+            // Allow simultaneous recognition if it's a screen edge gesture
+            if gestureRecognizer is UIScreenEdgePanGestureRecognizer {
+                logger.info("🔄 Coordinator unpop gesture allowing simultaneous recognition with scroll view (screen edge gesture)")
+                return true
+            }
             logger.info("🔄 Coordinator unpop gesture refusing simultaneous recognition with scroll view")
             return false
         }

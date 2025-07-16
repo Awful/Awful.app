@@ -108,6 +108,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
     let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? // offset, contentHeight, viewHeight
     let onDragEnded: ((Bool) -> Void)? // willDecelerate
     @Binding var replyWorkspace: IdentifiableReplyWorkspace?
+    @Binding var presentedImageURL: URL?
+    @Binding var showingImageViewer: Bool
     
     // MARK: - Content Insets
     var topInset: CGFloat = 0
@@ -176,8 +178,17 @@ struct SwiftUIRenderView: UIViewRepresentable {
         container.setup(theme: theme)
         container.setupContextMenu(coordinator: context.coordinator)
         
+        // Set up JavaScript message handler for image clicks (alternative to coordinate system)
+        container.renderView.webView.configuration.userContentController.add(
+            ScriptMessageHandlerWeakTrampoline(context.coordinator), 
+            name: "imageClicked"
+        )
+        
         // Cache the container
         WebViewContainerCache.shared.set(container, for: cacheKey)
+        
+        // Set up JavaScript image click handlers as alternative to coordinate system
+        context.coordinator.setupImageClickHandlers(renderView: container.renderView)
         
         // IMMEDIATE RENDER: Always render posts from Core Data when container is created
         logger.info("🔄 makeUIView - viewModel has \(viewModel.posts.count) posts, currentPage: \(String(describing: viewModel.currentPage)), isLoading: \(viewModel.isLoading)")
@@ -310,6 +321,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
     
     func makeCoordinator() -> Coordinator {
         return Coordinator(
+            parent: self,
             onPostAction: onPostAction,
             onUserAction: onUserAction,
             viewModel: viewModel,
@@ -324,6 +336,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
     
     // MARK: - Coordinator
     class Coordinator: NSObject, RenderViewDelegate, RenderViewScrollDelegate {
+        let parent: SwiftUIRenderView
         let onPostAction: (Post, CGRect) -> Void
         let onUserAction: (Post, CGRect) -> Void
         let onScrollChanged: ((Bool) -> Void)?
@@ -335,7 +348,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
         private lazy var oEmbedFetcher = OEmbedFetcher()
         var replyWorkspace: Binding<IdentifiableReplyWorkspace?>?
         
-        init(onPostAction: @escaping (Post, CGRect) -> Void, 
+        init(parent: SwiftUIRenderView,
+             onPostAction: @escaping (Post, CGRect) -> Void, 
              onUserAction: @escaping (Post, CGRect) -> Void,
              viewModel: PostsPageViewModel,
              replyWorkspace: Binding<IdentifiableReplyWorkspace?>,
@@ -344,6 +358,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
              onRefreshTriggered: (() -> Void)? = nil,
              onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? = nil,
              onDragEnded: ((Bool) -> Void)? = nil) {
+            self.parent = parent
             self.onPostAction = onPostAction
             self.onUserAction = onUserAction
             self.viewModel = viewModel
@@ -497,6 +512,149 @@ struct SwiftUIRenderView: UIViewRepresentable {
                 responder = responder?.next
             }
             return nil
+        }
+        
+        // MARK: - Alternative JavaScript-based Image Detection
+        func setupImageClickHandlers(renderView: RenderView) {
+            Task {
+                // Add click handlers to all images via JavaScript
+                // This bypasses the coordinate system entirely
+                let setupJS = """
+                    // Remove any existing handlers
+                    document.removeEventListener('click', window.awfulImageClickHandler);
+                    
+                    // Create a new handler
+                    window.awfulImageClickHandler = function(event) {
+                        const target = event.target;
+                        if (target.tagName === 'IMG' && 
+                            (target.classList.contains('timg') || target.classList.contains('img'))) {
+                            // Found an image we want to handle (timg or img classes)
+                            event.preventDefault();
+                            event.stopPropagation();
+                            
+                            // Send message to native side
+                            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.imageClicked) {
+                                window.webkit.messageHandlers.imageClicked.postMessage({
+                                    src: target.src,
+                                    className: target.className,
+                                    title: target.title || target.alt || ''
+                                });
+                            }
+                        }
+                    };
+                    
+                    // Add the event listener
+                    document.addEventListener('click', window.awfulImageClickHandler, true);
+                """
+                
+                do {
+                    try await renderView.webView.eval(setupJS)
+                    logger.info("🖼️ Set up JavaScript image click handlers")
+                } catch {
+                    logger.error("🖼️ Failed to set up JavaScript image handlers: \(error)")
+                }
+            }
+        }
+        
+        // MARK: - SwiftUI Image Handling
+        func handleInterestingElements(_ elements: [RenderView.InterestingElement], from presentingViewController: UIViewController, renderView: RenderView) -> Bool {
+            logger.info("🖼️ SwiftUI handling \(elements.count) elements")
+            
+            // Debug: log all elements
+            for element in elements {
+                switch element {
+                case .spoiledImage(let title, let url, let frame, _):
+                    logger.info("🖼️ Found spoiled image: \(title) at \(url), frame: \(String(describing: frame))")
+                case .spoiledLink(_, let url):
+                    logger.info("🔗 Found spoiled link: \(url)")
+                case .spoiledVideo(_, let url):
+                    logger.info("🎥 Found spoiled video: \(url)")
+                case .unspoiledLink:
+                    logger.info("🔗 Found unspoiled link")
+                }
+            }
+            
+            // Collect all spoiled images and choose the best one
+            var candidateImages: [(title: String, url: URL, frame: CGRect?, location: RenderView.LocationWithinPost?)] = []
+            
+            for case let .spoiledImage(title: title, url: url, frame: frame, location: location) in elements {
+                candidateImages.append((title: title, url: url, frame: frame, location: location))
+            }
+            
+            // If we have multiple images, prefer smaller ones (likely foreground elements)
+            // This helps when larger images are layered behind smaller ones
+            if candidateImages.count > 1 {
+                logger.info("🖼️ Multiple images found (\(candidateImages.count)), choosing best candidate")
+                
+                // Sort by frame area (smaller first) - smaller images are likely foreground elements
+                candidateImages.sort { (image1, image2) in
+                    guard let frame1 = image1.frame, let frame2 = image2.frame else {
+                        return image1.frame != nil // Prefer images with frames
+                    }
+                    let area1 = frame1.width * frame1.height
+                    let area2 = frame2.width * frame2.height
+                    return area1 < area2
+                }
+                
+                for (index, candidate) in candidateImages.enumerated() {
+                    let frameArea = (candidate.frame?.width ?? 0) * (candidate.frame?.height ?? 0)
+                    logger.info("🖼️ Candidate \(index): \(candidate.title) at \(candidate.url), frame area: \(frameArea)")
+                }
+            }
+            
+            // Take the best candidate (first after sorting, or just first if single image)
+            if let bestImage = candidateImages.first {
+                logger.info("🖼️ Selected best image: \(bestImage.title) at \(bestImage.url)")
+                
+                if let imageURL = URL(string: bestImage.url.absoluteString, relativeTo: ForumsClient.shared.baseURL) {
+                    logger.info("🖼️ Presenting image in SwiftUI sheet: \(imageURL)")
+                    
+                    // Check current state before presenting
+                    logger.info("🖼️ Current state - presentedImageURL: \(String(describing: self.parent.presentedImageURL)), showingImageViewer: \(self.parent.showingImageViewer)")
+                    
+                    // Present image in SwiftUI sheet on main thread
+                    // Clear any previous state first to avoid interference
+                    DispatchQueue.main.async {
+                        // Ensure we're not already showing an image viewer
+                        if !self.parent.showingImageViewer {
+                            // Clear any previous URL first
+                            self.parent.presentedImageURL = nil
+                            // Set new URL and show viewer in the next run loop to ensure clean state
+                            DispatchQueue.main.async {
+                                self.parent.presentedImageURL = imageURL
+                                self.parent.showingImageViewer = true
+                                logger.info("🖼️ Set presentedImageURL to: \(imageURL), showingImageViewer: true")
+                            }
+                        } else {
+                            logger.info("🖼️ Image viewer already showing, skipping presentation")
+                        }
+                    }
+                    return true
+                }
+            }
+            return false
+        }
+    }
+}
+
+// MARK: - JavaScript Message Handling
+extension SwiftUIRenderView.Coordinator: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        logger.info("🔄 Received JavaScript message: \(message.name)")
+        
+        // Handle image clicks from JavaScript (bypasses coordinate system)
+        if message.name == "imageClicked", let messageBody = message.body as? [String: Any] {
+            logger.info("🖼️ JavaScript image click detected: \(messageBody)")
+            
+            if let src = messageBody["src"] as? String, let imageURL = URL(string: src) {
+                logger.info("🖼️ Presenting image from JavaScript click: \(imageURL)")
+                
+                // Present image directly without coordinate system
+                DispatchQueue.main.async {
+                    self.parent.presentedImageURL = imageURL
+                    self.parent.showingImageViewer = true
+                }
+            }
         }
     }
 }
@@ -1045,17 +1203,18 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         
         Task {
             let location = sender.location(in: _renderView)
+            print("🖼️ Long press detected at location: \(location)")
+            
+            // Use the original proven UIKit method: interestingElements
             let elements = await _renderView.interestingElements(at: location)
+            print("🖼️ Found \(elements.count) interesting elements")
             
-            // Use URLMenuPresenter to handle the interesting elements
-            let didPresentMenu = URLMenuPresenter.presentInterestingElements(
-                elements, 
-                from: hostingVC, 
-                renderView: _renderView
-            )
-            
-            if !didPresentMenu {
-                logger.info("No interesting elements found at long press location")
+            // Use the original UIKit logic for handling elements
+            if let coordinator = coordinator {
+                let handled = coordinator.handleInterestingElements(elements, from: hostingVC, renderView: _renderView)
+                if !handled {
+                    print("🖼️ No interesting elements found to handle")
+                }
             }
         }
     }
@@ -1081,10 +1240,28 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
                 logger.info("🔄 Refusing simultaneous recognition with right-edge pan gesture to allow unpop")
                 return false
             }
+            // Allow left-edge gestures (for navigation back)
+            if let screenEdgePan = otherGestureRecognizer as? UIScreenEdgePanGestureRecognizer,
+               screenEdgePan.edges.contains(.left) {
+                logger.info("🔄 Allowing simultaneous recognition with left-edge pan gesture for navigation")
+                return true
+            }
         }
         
         // Allow simultaneous recognition for other gestures (like long press with scrolling)
         return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Make sure our gestures don't interfere with system navigation gestures
+        if otherGestureRecognizer is UIScreenEdgePanGestureRecognizer {
+            if let screenEdgePan = otherGestureRecognizer as? UIScreenEdgePanGestureRecognizer,
+               screenEdgePan.edges.contains(.left) {
+                logger.info("🔄 Allowing left-edge pan gesture to take precedence over our gesture")
+                return true
+            }
+        }
+        return false
     }
     
     // MARK: - WKUIDelegate

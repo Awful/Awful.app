@@ -88,7 +88,8 @@ final class PostsPageViewModel: ObservableObject {
             initialPage = .specific(1)
         }
         
-        loadPage(initialPage, updatingCache: true, updatingLastReadPost: false)
+        // Always update read position - server should track page views
+        loadPage(initialPage, updatingCache: true, updatingLastReadPost: true)
     }
     
     func loadPage(_ newPage: ThreadPage, updatingCache: Bool = true, updatingLastReadPost: Bool = true) {
@@ -239,14 +240,14 @@ final class PostsPageViewModel: ObservableObject {
     // MARK: - Refresh
     func refresh() {
         guard let page = currentPage else { return }
-        loadPage(page, updatingCache: true, updatingLastReadPost: false)
+        loadPage(page, updatingCache: true, updatingLastReadPost: true)
     }
     
     func refreshCurrentPage() async {
         guard let page = currentPage else { return }
         
         await withCheckedContinuation { continuation in
-            loadPage(page, updatingCache: true, updatingLastReadPost: false)
+            loadPage(page, updatingCache: true, updatingLastReadPost: true)
             
             // Wait for loading to complete
             let cancellable = $isLoading

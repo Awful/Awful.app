@@ -293,6 +293,9 @@
         }
       }
     },
+    "Copy Image" : {
+
+    },
     "Copy link" : {
 
     },
@@ -336,6 +339,9 @@
 
     },
     "Exit" : {
+
+    },
+    "Failed to load image" : {
 
     },
     "First" : {
@@ -435,6 +441,9 @@
       }
     },
     "Hides navigation and toolbar bars for distraction-free reading" : {
+
+    },
+    "Image Actions" : {
 
     },
     "image-upload.generic-error-title" : {
@@ -670,6 +679,9 @@
           }
         }
       }
+    },
+    "Loading..." : {
+
     },
     "Log In" : {
 
@@ -1100,6 +1112,9 @@
     "riker" : {
 
     },
+    "Save to Photos" : {
+
+    },
     "save-action.error" : {
       "comment" : "Title of error message presented when saving video fails.",
       "extractionState" : "migrated",
@@ -1237,6 +1252,9 @@
           }
         }
       }
+    },
+    "Share" : {
+
     },
     "smilie-action.add-to-favorites" : {
       "comment" : "Title of button that adds a smilie to the user's favorites. Parameter is the text used to insert the smilie into a post.",

@@ -8,12 +8,87 @@ import AwfulSettings
 import AwfulTheming
 import Combine
 import Nuke
+import ObjectiveC
 import os
 import Smilies
 import UIKit
 import WebKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AppDelegate")
+
+// MARK: - Trait Collection Observer
+class TraitCollectionObserver {
+    let callback: (UITraitCollection) -> Void
+    
+    init(callback: @escaping (UITraitCollection) -> Void) {
+        self.callback = callback
+    }
+}
+
+// MARK: - Legacy Trait Collection Observer (iOS 16 and earlier)
+class LegacyTraitCollectionObserver {
+    let callback: () -> Void
+    private var previousUserInterfaceStyle: UIUserInterfaceStyle?
+    private var timer: Timer?
+    private weak var window: UIWindow?
+    
+    init(callback: @escaping () -> Void) {
+        self.callback = callback
+    }
+    
+    func startMonitoring(window: UIWindow) {
+        self.window = window
+        // Store the current style
+        previousUserInterfaceStyle = window.traitCollection.userInterfaceStyle
+        
+        // Check for trait changes every 0.5 seconds
+        // This is a reasonable balance between responsiveness and efficiency
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            self?.checkForTraitChanges()
+        }
+    }
+    
+    private func checkForTraitChanges() {
+        guard let window = window else { return }
+        
+        let currentStyle = window.traitCollection.userInterfaceStyle
+        
+        // Only trigger callback if the user interface style actually changed
+        if currentStyle != previousUserInterfaceStyle {
+            previousUserInterfaceStyle = currentStyle
+            callback()
+        }
+    }
+    
+    deinit {
+        timer?.invalidate()
+        timer = nil
+    }
+}
+
+// Extension to store trait observers on UIWindow
+private extension UIWindow {
+    private static var traitObserverKey: UInt8 = 0
+    private static var legacyTraitObserverKey: UInt8 = 1
+    
+    var traitObserver: TraitCollectionObserver? {
+        get {
+            return objc_getAssociatedObject(self, &Self.traitObserverKey) as? TraitCollectionObserver
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.traitObserverKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    var legacyTraitObserver: LegacyTraitCollectionObserver? {
+        get {
+            return objc_getAssociatedObject(self, &Self.legacyTraitObserverKey) as? LegacyTraitCollectionObserver
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.legacyTraitObserverKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}
 
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     private(set) static var instance: AppDelegate!
@@ -93,6 +168,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
             NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
         }
+        
+        // Set up trait collection observation for automatic dark mode
+        setupTraitCollectionObservation()
 
         do {
             $automaticDarkTheme
@@ -153,16 +231,17 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
-        // Disable UIKit state restoration - we now use SwiftUI-based restoration
+        // Disable UIKit state restoration - we now use SwiftUI-based restoration only
         return false
     }
     
     func application(_ application: UIApplication, willEncodeRestorableStateWith coder: NSCoder) {
-        coder.encode(currentInterfaceVersion.rawValue, forKey: interfaceVersionKey)
+        // UIKit state restoration is disabled - only SwiftUI state restoration is used
+        // SwiftUI navigation state is automatically saved by @SceneStorage
     }
     
     func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-        // Disable UIKit state restoration - we now use SwiftUI-based restoration
+        // Disable UIKit state restoration - we now use SwiftUI-based restoration only
         return false
     }
 
@@ -172,8 +251,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didDecodeRestorableStateWith coder: NSCoder) {
-        // Disable UIKit state restoration - we now use SwiftUI-based restoration
-        // SwiftUI restoration handles Core Data saving automatically
+        // UIKit state restoration is disabled - SwiftUI handles state restoration automatically
+        // via @SceneStorage and navigation state restoration
     }
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
@@ -305,8 +384,48 @@ private extension AppDelegate {
 
         let shouldDarkModeBeEnabled = window?.traitCollection.userInterfaceStyle == .dark
         if shouldDarkModeBeEnabled != darkMode {
-            darkMode.toggle()
+            darkMode = shouldDarkModeBeEnabled
         }
+    }
+    
+    private func setupTraitCollectionObservation() {
+        // Listen for trait collection changes to detect system appearance changes
+        guard let window = window else { return }
+        
+        if #available(iOS 17.0, *) {
+            // Use modern trait collection observation for iOS 17+
+            let traitObserver = TraitCollectionObserver { [weak self] traitCollection in
+                self?.automaticallyUpdateDarkModeEnabledIfNecessary()
+            }
+            
+            // Store the observer to keep it alive
+            window.traitObserver = traitObserver
+            
+            // Register for trait collection changes
+            window.registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (window: UIWindow, previousTraitCollection: UITraitCollection) in
+                traitObserver.callback(window.traitCollection)
+            }
+        } else {
+            // For iOS 16 and earlier, use traitCollectionDidChange override
+            // We'll need to subclass UIWindow or use a different approach
+            setupLegacyTraitCollectionObservation()
+        }
+    }
+    
+    private func setupLegacyTraitCollectionObservation() {
+        // For iOS 16 and earlier, we'll periodically check for trait collection changes
+        // This is less efficient but works reliably on older iOS versions
+        guard let window = window else { return }
+        
+        let traitObserver = LegacyTraitCollectionObserver { [weak self] in
+            self?.automaticallyUpdateDarkModeEnabledIfNecessary()
+        }
+        
+        // Store the observer
+        window.legacyTraitObserver = traitObserver
+        
+        // Start monitoring trait changes
+        traitObserver.startMonitoring(window: window)
     }
     
     @objc func preferredContentSizeDidChange(_ notification: Notification) {
