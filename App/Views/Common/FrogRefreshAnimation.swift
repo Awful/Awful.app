@@ -111,8 +111,13 @@ class FrogAnimationView: UIView {
     
     func updateState(_ newState: FrogRefreshAnimation.RefreshState) {
         let oldState = currentState
-        currentState = newState
         
+        // Only update and log if state actually changes
+        guard oldState != newState else {
+            return
+        }
+        
+        currentState = newState
         print("🐸 FrogRefreshAnimation updateState from \(oldState) to \(newState)")
         
         switch (oldState, newState) {

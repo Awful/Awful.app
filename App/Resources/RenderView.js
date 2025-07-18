@@ -575,6 +575,10 @@ Awful.interestingElementsAtPoint = function(x, y) {
       };
     } else {
       interesting.hasUnspoiledLink = true;
+      interesting.unspoiledLink = {
+        frame: Awful.frameOfElement(a),
+        url: a.getAttribute('href')
+      };
     }
   }
 

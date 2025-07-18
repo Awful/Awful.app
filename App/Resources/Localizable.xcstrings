@@ -774,6 +774,9 @@
     "Password" : {
 
     },
+    "Post Actions" : {
+
+    },
     "posts-page.copied-post" : {
       "comment" : "Title of alert shown when post successfully copied to pasteboard.",
       "extractionState" : "manual",

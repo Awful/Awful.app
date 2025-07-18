@@ -31,8 +31,7 @@ struct SwiftUIDefaultLoadingView: View {
     
     var body: some View {
         DefaultLottieLoadingView(theme: theme)
-            .frame(width: 60, height: 60)
-            .scaleEffect(0.5) // Scale down to make it smaller
+            .scaleEffect(0.25) // Scale down even more to make it smaller
             .background(Color(theme[uicolor: "postsLoadingViewTintColor"] ?? .systemBackground))
     }
 }
@@ -52,7 +51,8 @@ private struct DefaultLottieLoadingView: UIViewRepresentable {
         animationView.backgroundBehavior = .pauseAndRestore
         
         // Force the view frame size to match SwiftUI frame (required for Lottie)
-        animationView.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
+        animationView.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+        animationView.bounds = CGRect(x: 0, y: 0, width: 10, height: 10)
         
         // Apply theme colors
         let color = ColorValueProvider(theme["activityIndicatorColor"]?.lottieColorValue ?? UIColor.systemBlue.lottieColorValue)

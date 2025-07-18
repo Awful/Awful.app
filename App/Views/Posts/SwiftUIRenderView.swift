@@ -107,6 +107,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
     let onRefreshTriggered: (() -> Void)?
     let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? // offset, contentHeight, viewHeight
     let onDragEnded: ((Bool) -> Void)? // willDecelerate
+    let onDecelerationEnded: (() -> Void)? // scroll deceleration ended
     @Binding var replyWorkspace: IdentifiableReplyWorkspace?
     @Binding var presentedImageURL: URL?
     @Binding var showingImageViewer: Bool
@@ -330,7 +331,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
             onPullChanged: onPullChanged,
             onRefreshTriggered: onRefreshTriggered,
             onScrollPositionChanged: onScrollPositionChanged,
-            onDragEnded: onDragEnded
+            onDragEnded: onDragEnded,
+            onDecelerationEnded: onDecelerationEnded
         )
     }
     
@@ -344,6 +346,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
         let onRefreshTriggered: (() -> Void)?
         let onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)?
         let onDragEnded: ((Bool) -> Void)?
+        let onDecelerationEnded: (() -> Void)?
         weak var viewModel: PostsPageViewModel?
         private lazy var oEmbedFetcher = OEmbedFetcher()
         var replyWorkspace: Binding<IdentifiableReplyWorkspace?>?
@@ -357,7 +360,8 @@ struct SwiftUIRenderView: UIViewRepresentable {
              onPullChanged: ((PullData) -> Void)? = nil,
              onRefreshTriggered: (() -> Void)? = nil,
              onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? = nil,
-             onDragEnded: ((Bool) -> Void)? = nil) {
+             onDragEnded: ((Bool) -> Void)? = nil,
+             onDecelerationEnded: (() -> Void)? = nil) {
             self.parent = parent
             self.onPostAction = onPostAction
             self.onUserAction = onUserAction
@@ -368,6 +372,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
             self.onRefreshTriggered = onRefreshTriggered
             self.onScrollPositionChanged = onScrollPositionChanged
             self.onDragEnded = onDragEnded
+            self.onDecelerationEnded = onDecelerationEnded
         }
         
         // MARK: - RenderViewDelegate
@@ -391,7 +396,56 @@ struct SwiftUIRenderView: UIViewRepresentable {
         }
         
         func didTapPostActionButton(_ button: UIButton, in renderView: RenderView) {
-            // Handle legacy button taps if needed
+            print("🔘 didTapPostActionButton called")
+            Task {
+                await MainActor.run {
+                    // Get the post from the button position using JavaScript
+                    let javascript = "Awful.posts.fromPoint(\(button.center.x), \(button.center.y))"
+                    print("🔘 Executing JavaScript: \(javascript)")
+                    Task {
+                        do {
+                            let result = try await renderView.webView.eval(javascript) as? [String: Any]
+                            print("🔘 JavaScript result: \(String(describing: result))")
+                            guard
+                                let result = result,
+                                let postID = result["postID"] as? String
+                                else { 
+                                    print("🔘 Failed to get postID from result")
+                                    return 
+                                }
+                            
+                            print("🔘 Found postID: \(postID)")
+                            
+                            // Find the post on the main actor
+                            await MainActor.run {
+                                guard let post = viewModel?.posts.first(where: { $0.postID == postID }) else { 
+                                    print("🔘 Failed to find post with ID: \(postID)")
+                                    print("🔘 Available posts: \(viewModel?.posts.map { $0.postID } ?? [])")
+                                    return 
+                                }
+                                
+                                print("🔘 Found post: \(post.postID)")
+                                
+                                // Convert button position to RenderViewContainer coordinates
+                                let buttonPoint = button.center
+                                print("🔘 Button point: \(buttonPoint)")
+                                
+                                // Show the context menu for this post
+                                if let container = renderView.superview as? RenderViewContainer {
+                                    print("🔘 Calling showContextMenu")
+                                    container.showContextMenu(for: post, at: buttonPoint)
+                                } else {
+                                    print("🔘 Failed to find RenderViewContainer")
+                                    print("🔘 renderView.superview: \(String(describing: renderView.superview))")
+                                }
+                            }
+                        } catch {
+                            print("🔘 Error: \(error)")
+                            logger.error("Could not handle post action button tap: \(error, privacy: .public)")
+                        }
+                    }
+                }
+            }
         }
         
         func didTapLink(to url: URL, in view: RenderView) {
@@ -436,6 +490,14 @@ struct SwiftUIRenderView: UIViewRepresentable {
                 } else {
                     logger.info("🔄 Triggering immediate re-render from Core Data")
                     container.triggerContentRerender()
+                }
+                
+                // Also force the view model to refresh if we have posts cached
+                if let viewModel = self.viewModel {
+                    logger.info("🔄 Forcing view model refresh with cached posts")
+                    DispatchQueue.main.async {
+                        viewModel.forceContentRerender()
+                    }
                 }
             }
         }
@@ -500,6 +562,13 @@ struct SwiftUIRenderView: UIViewRepresentable {
         
         func didEndDragging(willDecelerate: Bool) {
             onDragEnded?(willDecelerate)
+        }
+        
+        func didEndDecelerating() {
+            // Handle any cleanup needed after deceleration
+            // For now, just ensure pull states are reset
+            let resetPullData = PullData(topFraction: 0, bottomFraction: 0)
+            onPullChanged?(resetPullData)
         }
         
         // MARK: - Helper Methods
@@ -569,8 +638,24 @@ struct SwiftUIRenderView: UIViewRepresentable {
                     logger.info("🔗 Found spoiled link: \(url)")
                 case .spoiledVideo(_, let url):
                     logger.info("🎥 Found spoiled video: \(url)")
-                case .unspoiledLink:
-                    logger.info("🔗 Found unspoiled link")
+                case .unspoiledLink(let frame, let url):
+                    logger.info("🔗 Found unspoiled link: \(url) at frame: \(String(describing: frame))")
+                }
+            }
+            
+            // Handle unspoiled links by showing URL context menu
+            for case let .unspoiledLink(frame: frame, url: url) in elements {
+                if !frame.isEmpty && url.absoluteString != "about:blank" {
+                    logger.info("🔗 Presenting context menu for unspoiled link: \(url)")
+                    
+                    // Use URLMenuPresenter to show context menu for the unspoiled link
+                    let urlMenuPresenter = URLMenuPresenter(linkURL: url)
+                    let sourceRect = CGRect(origin: CGPoint(x: frame.midX, y: frame.midY), size: CGSize(width: 1, height: 1))
+                    
+                    DispatchQueue.main.async {
+                        urlMenuPresenter.present(fromViewController: presentingViewController, fromRect: sourceRect, inView: renderView)
+                    }
+                    return true
                 }
             }
             
@@ -672,6 +757,7 @@ protocol RenderViewScrollDelegate: AnyObject {
     func didTriggerRefresh()
     func didUpdateScrollPosition(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat)
     func didEndDragging(willDecelerate: Bool)
+    func didEndDecelerating()
 }
 
 // MARK: - RenderView Container
@@ -689,7 +775,20 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     internal var lastRenderedPostsHash: Int = 0
     fileprivate var isCurrentlyRendering: Bool = false
     private var frogAndGhostEnabled: Bool = false
+    private var isImmersiveMode: Bool = false
     private weak var coordinator: SwiftUIRenderView.Coordinator?
+    
+    /// A hidden button that we misuse to show a proper iOS context menu on tap (as opposed to long-tap).
+    private lazy var hiddenMenuButton: HiddenMenuButton = {
+        let postActionButton = HiddenMenuButton()
+        postActionButton.alpha = 0
+        if #available(iOS 16.0, *) {
+            postActionButton.preferredMenuElementOrder = .fixed
+        }
+        addSubview(postActionButton)
+        return postActionButton
+    }()
+    
     
     // Removed frog content properties
     
@@ -852,31 +951,67 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     }
     
     private func checkAndRestoreContentIfNeeded() {
-        // Always force a content check and restoration after a short delay
-        // This ensures we catch any race conditions where content appears present but then disappears
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+        // Check content with progressive delays to handle various restoration scenarios
+        performContentCheck(attempt: 1, maxAttempts: 3)
+    }
+    
+    private func performContentCheck(attempt: Int, maxAttempts: Int) {
+        // Progressive delay: 0.5s, 1.0s, 1.5s
+        let delay = TimeInterval(attempt) * 0.5
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
             guard let self = self else { return }
             
             Task {
                 do {
-                    let result = try await self._renderView.webView.eval("document.body ? document.body.children.length : 0")
-                    let childCount = (result as? NSNumber)?.intValue ?? 0
+                    // Check for both empty content and error states
+                    let contentCheck = try await self._renderView.webView.eval("""
+                        (function() {
+                            if (!document.body) return { empty: true, error: false };
+                            var childCount = document.body.children.length;
+                            // Check for common error indicators
+                            var hasErrorPage = document.body.innerHTML.includes('about:blank') || 
+                                               document.body.innerHTML.includes('error') ||
+                                               document.body.innerHTML.includes('Problem loading page');
+                            var hasMinimalContent = childCount < 2; // Expect at least header and main content
+                            return { 
+                                empty: childCount === 0, 
+                                error: hasErrorPage,
+                                minimal: hasMinimalContent,
+                                count: childCount 
+                            };
+                        })()
+                    """)
                     
-                    if childCount == 0 {
-                        // WebView content is empty, trigger restoration
-                        logger.info("🔄 WebView content is empty after delay, triggering restoration")
-                        self.delegate?.renderProcessDidTerminate(in: self._renderView)
-                    } else {
-                        // Content is present, just restore scroll position
-                        logger.info("🔄 WebView content is present (\(childCount) elements), restoring scroll position")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                            self?.restoreScrollPosition()
+                    if let checkResult = contentCheck as? [String: Any] {
+                        let isEmpty = checkResult["empty"] as? Bool ?? true
+                        let hasError = checkResult["error"] as? Bool ?? false
+                        let hasMinimalContent = checkResult["minimal"] as? Bool ?? false
+                        let childCount = checkResult["count"] as? Int ?? 0
+                        
+                        if isEmpty || hasError || hasMinimalContent {
+                            logger.info("🔄 WebView needs restoration (attempt \(attempt)): empty=\(isEmpty), error=\(hasError), minimal=\(hasMinimalContent), count=\(childCount)")
+                            self.delegate?.renderProcessDidTerminate(in: self._renderView)
+                        } else {
+                            logger.info("🔄 WebView content is healthy (\(childCount) elements), restoring scroll position")
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                                self?.restoreScrollPosition()
+                            }
                         }
+                    } else {
+                        throw NSError(domain: "ContentCheck", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid content check result"])
                     }
                 } catch {
-                    // If we can't evaluate JavaScript, assume content needs restoration
-                    logger.warning("🔄 Cannot evaluate JavaScript after delay, assuming content needs restoration: \(error)")
-                    self.delegate?.renderProcessDidTerminate(in: self._renderView)
+                    logger.warning("🔄 Content check failed (attempt \(attempt)): \(error)")
+                    
+                    if attempt < maxAttempts {
+                        // Retry with longer delay
+                        self.performContentCheck(attempt: attempt + 1, maxAttempts: maxAttempts)
+                    } else {
+                        // Final attempt failed, assume content needs restoration
+                        logger.warning("🔄 All content check attempts failed, forcing restoration")
+                        self.delegate?.renderProcessDidTerminate(in: self._renderView)
+                    }
                 }
             }
         }
@@ -914,18 +1049,41 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         // Verify that the WebView actually has content, and restore if needed
         Task {
             do {
-                let result = try await _renderView.webView.eval("document.body ? document.body.children.length : 0")
-                let childCount = (result as? NSNumber)?.intValue ?? 0
+                let result = try await _renderView.webView.eval("""
+                    (function() {
+                        if (!document.body) return { hasContent: false, reason: 'no body' };
+                        var childCount = document.body.children.length;
+                        var hasErrorPage = document.body.innerHTML.includes('about:blank') || 
+                                          document.body.innerHTML.includes('error') ||
+                                          document.body.innerHTML.includes('Problem loading page');
+                        var hasMinimalContent = childCount < 2;
+                        return { 
+                            hasContent: childCount > 0 && !hasErrorPage && !hasMinimalContent,
+                            reason: hasErrorPage ? 'error page' : hasMinimalContent ? 'minimal content' : 'empty',
+                            count: childCount 
+                        };
+                    })()
+                """)
                 
-                if childCount == 0 {
-                    logger.warning("🔄 Content verification failed - WebView is empty, triggering re-render")
-                    hasContent = false
-                    delegate?.renderProcessDidTerminate(in: _renderView)
+                if let checkResult = result as? [String: Any] {
+                    let hasContent = checkResult["hasContent"] as? Bool ?? false
+                    let reason = checkResult["reason"] as? String ?? "unknown"
+                    let childCount = checkResult["count"] as? Int ?? 0
+                    
+                    if hasContent {
+                        logger.info("🔄 Content verification passed - WebView has \(childCount) elements")
+                        self.hasContent = true
+                    } else {
+                        logger.warning("🔄 Content verification failed - \(reason), count: \(childCount), triggering re-render")
+                        self.hasContent = false
+                        delegate?.renderProcessDidTerminate(in: _renderView)
+                    }
                 } else {
-                    logger.info("🔄 Content verification passed - WebView has \(childCount) elements")
+                    throw NSError(domain: "ContentVerification", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid verification result"])
                 }
             } catch {
                 logger.warning("🔄 Content verification failed - JavaScript error: \(error)")
+                hasContent = false
                 delegate?.renderProcessDidTerminate(in: _renderView)
             }
         }
@@ -1061,14 +1219,20 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
             currentInsets.bottom = bottom
             scrollView.contentInset = currentInsets
             
-            // Update scroll indicator insets to match
-            scrollView.scrollIndicatorInsets = currentInsets
+            // Update scroll indicator insets to match content insets
+            scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: top, left: 0, bottom: bottom, right: 0)
+            scrollView.horizontalScrollIndicatorInsets = UIEdgeInsets(top: top, left: 0, bottom: bottom, right: 0)
             
             logger.info("Updated content insets: top=\(top), bottom=\(bottom)")
         }
     }
     
     func updateFrogAndGhostEnabled(_ enabled: Bool) {
+        // Only update and log if the value actually changes
+        guard frogAndGhostEnabled != enabled else {
+            return
+        }
+        
         frogAndGhostEnabled = enabled
         logger.info("Updated frogAndGhostEnabled: \(enabled)")
         
@@ -1087,6 +1251,13 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     // Removed frog animation update
     
     func updateImmersiveMode(_ enabled: Bool) {
+        // Only update and log if the value actually changes
+        guard isImmersiveMode != enabled else {
+            return
+        }
+        
+        isImmersiveMode = enabled
+        
         // Update the background color to match the posts view background when in immersive mode
         if enabled {
             // Use clear background so the SwiftUI background shows through
@@ -1118,11 +1289,11 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         
         // Calculate pull progress with reduced overhead
         if frogAndGhostEnabled {
-            let isOverscrolling = currentOffset < -5 || (currentOffset + viewHeight > contentHeight + 5)
+            let isOverscrolling = currentOffset < -5 || (currentOffset + viewHeight > contentHeight + 20)
             
             if isOverscrolling {
-                let bottomMaxPullDistance: CGFloat = 80 // Distance needed for full pull (bottom)
-                let topMaxPullDistance: CGFloat = 120 // Longer distance for top pull to avoid accidental triggers
+                let bottomMaxPullDistance: CGFloat = 120 // Reasonable distance for bottom pull
+                let topMaxPullDistance: CGFloat = 100 // Reasonable distance for top pull to avoid accidental triggers
                 var topFraction: CGFloat = 0.0
                 var bottomFraction: CGFloat = 0.0
                 
@@ -1140,8 +1311,9 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
                     let bottomOverscroll = bottomOffset - contentHeight
                     
                     // Only calculate pull progress when actually overscrolling and content is substantial
-                    if bottomOverscroll > 2 && contentHeight > viewHeight {
-                        bottomFraction = min(max(bottomOverscroll / bottomMaxPullDistance, 0), 1.0)
+                    // Require some buffer space to prevent accidental triggers
+                    if bottomOverscroll > 15 && contentHeight > viewHeight {
+                        bottomFraction = min(max((bottomOverscroll - 10) / bottomMaxPullDistance, 0), 1.0)
                     }
                 }
                 
@@ -1159,8 +1331,8 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
             }
         }
         
-        // Use a larger threshold and simpler logic for smoother scrolling
-        let threshold: CGFloat = 8
+        // Use a smaller threshold for more responsive toolbar updates
+        let threshold: CGFloat = 3
         let isSignificantScroll = abs(scrollDiff) > threshold
         
         if isSignificantScroll {
@@ -1183,12 +1355,26 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         if !decelerate {
             // If scroll view won't decelerate, reset tracking for next gesture
             lastScrollOffset = scrollView.contentOffset.y
+            // Also reset pull data if we're not decelerating
+            if lastPullData.topFraction > 0 || lastPullData.bottomFraction > 0 {
+                lastPullData = PullData(topFraction: 0, bottomFraction: 0)
+                scrollDelegate?.didPull(data: lastPullData)
+            }
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         // Reset tracking when scroll animation ends
         lastScrollOffset = scrollView.contentOffset.y
+        
+        // Reset pull data when deceleration ends to prevent stuck states
+        if lastPullData.topFraction > 0 || lastPullData.bottomFraction > 0 {
+            lastPullData = PullData(topFraction: 0, bottomFraction: 0)
+            scrollDelegate?.didPull(data: lastPullData)
+        }
+        
+        // Notify delegate that deceleration ended
+        scrollDelegate?.didEndDecelerating()
     }
     
     // MARK: - Long Press Gesture Handling
@@ -1271,69 +1457,55 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         completionHandler(nil)
     }
     
+    
     // Method to show context menu for post actions (called by coordinator)
     func showContextMenu(for post: Post, at point: CGPoint) {
         guard let coordinator = coordinator,
-              let viewModel = coordinator.viewModel else { return }
-        
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        // Reply action
-        let replyAction = UIAlertAction(title: "Reply", style: .default) { _ in
-            viewModel.replyToPost(post) { workspace in
-                coordinator.replyWorkspace?.wrappedValue = IdentifiableReplyWorkspace(workspace: workspace)
-            }
+              let viewModel = coordinator.viewModel else { 
+            return 
         }
-        replyAction.setValue(UIImage(systemName: "arrowshape.turn.up.left"), forKey: "image")
-        alertController.addAction(replyAction)
+        
+        // Create UIMenu with the same structure as SwiftUI Menu
+        let enableHaptics = UserDefaults.standard.defaultingValue(for: Settings.enableHaptics)
+        
+        var actions: [UIAction] = []
         
         // Quote action
-        let quoteAction = UIAlertAction(title: "Quote", style: .default) { _ in
+        actions.append(UIAction(title: "Quote", image: UIImage(named: "quote-post")?.withRenderingMode(.alwaysTemplate)) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
             viewModel.quotePost(post) { workspace in
                 coordinator.replyWorkspace?.wrappedValue = IdentifiableReplyWorkspace(workspace: workspace)
             }
-        }
-        quoteAction.setValue(UIImage(systemName: "quote.bubble"), forKey: "image")
-        alertController.addAction(quoteAction)
-        
-        // Edit action (if editable)
-        if post.editable {
-            let editAction = UIAlertAction(title: "Edit", style: .default) { _ in
-                viewModel.editPost(post) { workspace in
-                    coordinator.replyWorkspace?.wrappedValue = IdentifiableReplyWorkspace(workspace: workspace)
-                }
-            }
-            editAction.setValue(UIImage(systemName: "pencil"), forKey: "image")
-            alertController.addAction(editAction)
-        }
+        })
         
         // Mark as read action
-        let markReadAction = UIAlertAction(title: "Mark as Read Up To Here", style: .default) { _ in
+        actions.append(UIAction(title: "Mark as Read Up To Here", image: UIImage(named: "mark-read-up-to-here")?.withRenderingMode(.alwaysTemplate)) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
             viewModel.markAsReadUpTo(post)
-        }
-        markReadAction.setValue(UIImage(systemName: "checkmark.circle"), forKey: "image")
-        alertController.addAction(markReadAction)
+        })
         
-        // Copy URL action
-        let copyURLAction = UIAlertAction(title: "Copy Post URL", style: .default) { _ in
-            viewModel.copyPostURL(post)
-        }
-        copyURLAction.setValue(UIImage(systemName: "doc.on.doc"), forKey: "image")
-        alertController.addAction(copyURLAction)
+        // Share action
+        actions.append(UIAction(title: "Share", image: UIImage(named: "share")?.withRenderingMode(.alwaysTemplate)) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
+            AppDelegate.instance.mainCoordinator?.presentSharePost(post)
+        })
         
-        // Cancel action
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        // Report action
+        actions.append(UIAction(title: "Report", image: UIImage(named: "rap-sheet")?.withRenderingMode(.alwaysTemplate)) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
+            AppDelegate.instance.mainCoordinator?.presentReportPost(post)
+        })
         
-        // Set up popover for iPad
-        if let popover = alertController.popoverPresentationController {
-            popover.sourceView = self
-            popover.sourceRect = CGRect(origin: point, size: CGSize(width: 1, height: 1))
-        }
-        
-        // Present the alert
-        if let hostingVC = findHostingViewController() {
-            hostingVC.present(alertController, animated: true)
-        }
+        let menu = UIMenu(title: "", children: actions)
+        hiddenMenuButton.show(menu: menu, from: CGRect(origin: point, size: CGSize(width: 1, height: 1)))
     }
     
     // Method to show user actions context menu (called by coordinator)
@@ -1341,54 +1513,49 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         guard let coordinator = coordinator,
               let author = post.author else { return }
         
-        let alertController = UIAlertController(title: author.username, message: nil, preferredStyle: .actionSheet)
+        let enableHaptics = UserDefaults.standard.defaultingValue(for: Settings.enableHaptics)
+        
+        var actions: [UIAction] = []
         
         // Profile action
-        let profileAction = UIAlertAction(title: "Profile", style: .default) { _ in
+        actions.append(UIAction(title: "Profile", image: UIImage(named: "user-profile")?.withRenderingMode(.alwaysTemplate)) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
             AppDelegate.instance.mainCoordinator?.presentUserProfile(userID: author.userID)
-        }
-        profileAction.setValue(UIImage(systemName: "person.circle"), forKey: "image")
-        alertController.addAction(profileAction)
+        })
         
         // Send Private Message action (if user can receive messages)
         if author.canReceivePrivateMessages == true {
-            let messageAction = UIAlertAction(title: "Send Private Message", style: .default) { _ in
+            actions.append(UIAction(title: "Send Private Message", image: UIImage(named: "send-private-message")?.withRenderingMode(.alwaysTemplate)) { _ in
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
                 AppDelegate.instance.mainCoordinator?.presentPrivateMessageComposer(for: author)
-            }
-            messageAction.setValue(UIImage(systemName: "envelope"), forKey: "image")
-            alertController.addAction(messageAction)
+            })
         }
         
         // User's Posts in This Thread action
-        let userPostsAction = UIAlertAction(title: "User's Posts in This Thread", style: .default) { _ in
+        actions.append(UIAction(title: "User's Posts in This Thread", image: UIImage(named: "single-users-posts")?.withRenderingMode(.alwaysTemplate)) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
             if let viewModel = coordinator.viewModel {
                 // Navigate to same thread but filtered by this user
                 AppDelegate.instance.mainCoordinator?.navigateToThread(viewModel.thread, page: .specific(1), author: author)
             }
-        }
-        userPostsAction.setValue(UIImage(systemName: "text.bubble"), forKey: "image")
-        alertController.addAction(userPostsAction)
+        })
         
         // Rap Sheet action
-        let rapSheetAction = UIAlertAction(title: "Rap Sheet", style: .default) { _ in
+        actions.append(UIAction(title: "Rap Sheet", image: UIImage(named: "rap-sheet")?.withRenderingMode(.alwaysTemplate)) { _ in
+            if enableHaptics {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            }
             AppDelegate.instance.mainCoordinator?.presentRapSheet(userID: author.userID)
-        }
-        rapSheetAction.setValue(UIImage(systemName: "doc.text"), forKey: "image")
-        alertController.addAction(rapSheetAction)
+        })
         
-        // Cancel action
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        // Set up popover for iPad
-        if let popover = alertController.popoverPresentationController {
-            popover.sourceView = self
-            popover.sourceRect = CGRect(origin: point, size: CGSize(width: 1, height: 1))
-        }
-        
-        // Present the alert
-        if let hostingVC = findHostingViewController() {
-            hostingVC.present(alertController, animated: true)
-        }
+        let menu = UIMenu(title: author.username ?? "", children: actions)
+        hiddenMenuButton.show(menu: menu, from: CGRect(origin: point, size: CGSize(width: 1, height: 1)))
     }
     
 }
@@ -1651,4 +1818,105 @@ private extension DateFormatter {
         return formatter
     }()
 }
+
+// MARK: - Post Actions Menu
+
+/// SwiftUI Menu for post actions, styled exactly like the hamburger menu
+struct PostActionsMenu: View {
+    let post: Post
+    let onReplyTapped: () -> Void
+    let onQuoteTapped: () -> Void
+    let onEditTapped: (() -> Void)?
+    let onMarkReadTapped: () -> Void
+    let onCopyURLTapped: () -> Void
+    
+    @SwiftUI.Environment(\.theme) private var theme
+    @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    
+    var body: some View {
+        Menu {
+            // Reply action
+            Button(action: {
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                onReplyTapped()
+            }) {
+                Label("Reply", systemImage: "arrowshape.turn.up.left")
+            }
+            
+            // Quote action
+            Button(action: {
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                onQuoteTapped()
+            }) {
+                Label("Quote", systemImage: "quote.bubble")
+            }
+            
+            // Edit action (if editable)
+            if let onEditTapped = onEditTapped {
+                Button(action: {
+                    if enableHaptics {
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    }
+                    onEditTapped()
+                }) {
+                    Label("Edit", systemImage: "pencil")
+                }
+            }
+            
+            // Mark as read action
+            Button(action: {
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                onMarkReadTapped()
+            }) {
+                Label("Mark as Read Up To Here", systemImage: "checkmark.circle")
+            }
+            
+            // Copy URL action
+            Button(action: {
+                if enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                onCopyURLTapped()
+            }) {
+                Label("Copy Post URL", systemImage: "doc.on.doc")
+            }
+        } label: {
+            // Use a transparent view since the actual post-dots image is in the webview
+            Rectangle()
+                .fill(Color.clear)
+                .frame(width: 44, height: 44)
+        }
+        .accessibilityLabel("Post Actions")
+    }
+    
+    private var toolbarTextColor: Color {
+        Color(theme[uicolor: "toolbarTextColor"] ?? UIColor.systemBlue)
+    }
+}
+
+// MARK: - HiddenMenuButton
+
+private class HiddenMenuButton: UIButton {
+    init() {
+        super.init(frame: .zero)
+        showsMenuAsPrimaryAction = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func show(menu: UIMenu, from rect: CGRect) {
+        frame = rect
+        self.menu = menu
+        gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
+    }
+}
+
 

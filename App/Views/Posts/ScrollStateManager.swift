@@ -5,6 +5,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import QuartzCore
 
 /// Centralized state manager for scroll-related UI updates
 /// Reduces the number of @State variables and provides throttling for smooth performance
@@ -17,6 +18,10 @@ class ScrollStateManager: ObservableObject {
     @Published private(set) var isNearBottom: Bool = false
     @Published private(set) var hasUserScrolled: Bool = false
     
+    // MARK: - Smooth Animation Properties
+    @Published private(set) var topBarOffset: CGFloat = 0
+    @Published private(set) var bottomBarOffset: CGFloat = 0
+    
     // MARK: - Internal State
     private var isLastPage: Bool = false
     private var isImmersiveMode: Bool = false
@@ -25,16 +30,23 @@ class ScrollStateManager: ObservableObject {
     private var scrollViewHeight: CGFloat = 0
     private var hasScrolledDown: Bool = false
     private var lastScrollDirection: ScrollDirection = .none
-    private var scrollDirectionChangeThreshold: CGFloat = 25.0 // Minimum scroll distance before direction change
+    private var scrollDirectionChangeThreshold: CGFloat = 5.0 // Much lower threshold for smoother following
     private var lastScrollPosition: CGFloat = 0
     private var accumulatedScrollDistance: CGFloat = 0
-    private var bounceSuppressionThreshold: CGFloat = 50.0 // Reduced threshold for smoother scrolling
+    private var bounceSuppressionThreshold: CGFloat = 20.0 // Reduced for better responsiveness
+    
+    // MARK: - Smooth Animation State
+    private var scrollVelocity: CGFloat = 0
+    private var lastScrollUpdateTime: TimeInterval = 0
+    private var smoothScrollDistance: CGFloat = 0
+    private let maxToolbarOffset: CGFloat = 120 // Maximum distance toolbars can be offset
+    private var isAnimatingToVisible: Bool = false
     
     // MARK: - Throttling
     private var scrollThrottleWorkItem: DispatchWorkItem?
     private var uiUpdateWorkItem: DispatchWorkItem?
-    private let scrollThrottleDelay: TimeInterval = 0.016 // ~60fps for smoother performance
-    private let uiUpdateDelay: TimeInterval = 0.05 // Reduced delay for more responsive UI
+    private let scrollThrottleDelay: TimeInterval = 0.008 // ~120fps for smoother performance
+    private let uiUpdateDelay: TimeInterval = 0.016 // 60fps for responsive UI updates
     
     // MARK: - Computed Properties
     var topInset: CGFloat {
@@ -61,21 +73,14 @@ class ScrollStateManager: ObservableObject {
             hasUserScrolled = true
         }
         
-        // Only process if direction actually changed
-        guard newDirection != lastScrollDirection else { 
+        // Only process if direction actually changed and we're in immersive mode
+        guard newDirection != lastScrollDirection, isImmersiveMode else { 
             return 
         }
         
-        // Simplified hysteresis to reduce bounce interference
-        let isNearTopEdge = scrollPosition < bounceSuppressionThreshold
-        let isNearBottomEdge = scrollContentHeight > 0 && 
-                              (scrollPosition + scrollViewHeight) > (scrollContentHeight - bounceSuppressionThreshold)
-        
-        // Use consistent threshold but only suppress at extreme edges
-        let effectiveThreshold = (isNearTopEdge || isNearBottomEdge) ? scrollDirectionChangeThreshold * 1.5 : scrollDirectionChangeThreshold
-        
-        // Require minimum accumulated distance for direction changes
-        if lastScrollDirection != .none && accumulatedScrollDistance < effectiveThreshold {
+        // Require minimum accumulated distance for direction changes to prevent oscillation
+        let minThreshold: CGFloat = 25.0 // Increased threshold to prevent rapid changes
+        if lastScrollDirection != .none && accumulatedScrollDistance < minThreshold {
             return
         }
         
@@ -85,13 +90,13 @@ class ScrollStateManager: ObservableObject {
         // Cancel previous UI update
         uiUpdateWorkItem?.cancel()
         
-        // Schedule new UI update with reduced debouncing for smoother response
+        // Schedule new UI update with longer debouncing to prevent rapid state changes
         let workItem = DispatchWorkItem { [weak self] in
             self?.updateToolbarVisibility(isScrollingUp: isScrollingUp)
         }
         uiUpdateWorkItem = workItem
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + uiUpdateDelay, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem) // Increased delay
     }
     
     func handleScrollPositionChanged(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
@@ -128,49 +133,35 @@ class ScrollStateManager: ObservableObject {
     
     func setIsImmersiveMode(_ isImmersiveMode: Bool) {
         self.isImmersiveMode = isImmersiveMode
+        
+        // Initialize offsets when immersive mode is set
+        if isImmersiveMode {
+            // Start with toolbars visible
+            topBarOffset = 0
+            bottomBarOffset = 0
+        }
     }
     
     // MARK: - Private Methods
     private func updateToolbarVisibility(isScrollingUp: Bool) {
-        // Batch all state updates together to reduce SwiftUI update cycles
+        // Only update in immersive mode - in normal mode bars are always visible
+        guard isImmersiveMode else { return }
+        
         if isScrollingUp {
             // Scrolling up - show all bars
-            let shouldShowSubToolbar = hasScrolledDown && !isSubToolbarVisible
-            let shouldShowTopBar = !isTopBarVisible
-            let shouldShowBottomBar = !isBottomBarVisible
-            
-            // Batch update all visibility states
-            if shouldShowTopBar || shouldShowSubToolbar || shouldShowBottomBar {
-                if shouldShowTopBar {
-                    isTopBarVisible = true
-                }
-                if shouldShowSubToolbar {
-                    isSubToolbarVisible = true
-                }
-                if shouldShowBottomBar && !(isImmersiveMode && isLastPage && isNearBottom) {
-                    isBottomBarVisible = true
-                }
-            }
+            isTopBarVisible = true
+            isBottomBarVisible = true
+            isSubToolbarVisible = hasScrolledDown // Only show subtoolbar if user has scrolled down before
+            topBarOffset = 0
+            bottomBarOffset = 0
         } else {
             // Scrolling down - hide all bars
             hasScrolledDown = true
-            
-            let shouldHideTopBar = isTopBarVisible
-            let shouldHideSubToolbar = isSubToolbarVisible
-            let shouldHideBottomBar = isBottomBarVisible
-            
-            // Batch update all visibility states
-            if shouldHideTopBar || shouldHideSubToolbar || shouldHideBottomBar {
-                if shouldHideTopBar {
-                    isTopBarVisible = false
-                }
-                if shouldHideSubToolbar {
-                    isSubToolbarVisible = false
-                }
-                if shouldHideBottomBar {
-                    isBottomBarVisible = false
-                }
-            }
+            isTopBarVisible = false
+            isBottomBarVisible = false
+            isSubToolbarVisible = false
+            topBarOffset = -maxToolbarOffset
+            bottomBarOffset = maxToolbarOffset
         }
     }
     
@@ -180,20 +171,26 @@ class ScrollStateManager: ObservableObject {
         if scrollDelta > 0 {
             accumulatedScrollDistance += scrollDelta
         }
-        lastScrollPosition = offset
         
+        lastScrollPosition = offset
         scrollPosition = offset
         scrollContentHeight = contentHeight
         scrollViewHeight = viewHeight
         
-        // Check if we're near the bottom
+        // Check if we're near the bottom with more generous threshold
         let bottomOffset = offset + viewHeight
-        let newIsNearBottom = contentHeight > 0 && bottomOffset >= contentHeight - 100
+        let newIsNearBottom = contentHeight > 0 && bottomOffset >= contentHeight - 150
         
         // Only update if changed to reduce published events
         if newIsNearBottom != isNearBottom {
             isNearBottom = newIsNearBottom
         }
+    }
+    
+    // MARK: - Smooth Toolbar Animation
+    private func updateToolbarOffsets() {
+        // Removed complex smooth animation logic - using simple visibility states instead
+        // The UI will handle animations through SwiftUI's animation system
     }
     
     // MARK: - Frog Animation Helpers
@@ -229,6 +226,14 @@ class ScrollStateManager: ObservableObject {
         hasScrolledDown = false
         hasUserScrolled = false
         lastScrollDirection = .none
+        
+        // Reset smooth animation properties
+        topBarOffset = 0
+        bottomBarOffset = 0
+        scrollVelocity = 0
+        lastScrollUpdateTime = 0
+        smoothScrollDistance = 0
+        isAnimatingToVisible = false
         
         scrollPosition = 0
         scrollContentHeight = 0

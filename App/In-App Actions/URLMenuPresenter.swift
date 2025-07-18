@@ -8,6 +8,7 @@ import MRProgress
 import os
 import Photos
 import Smilies
+import SwiftUI
 import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "URLMenuPresenter")
@@ -136,10 +137,19 @@ private enum _URLMenuPresenter {
 
             if let imageURL {
                 actions.append(.default(title: LocalizedString("link-action.open-image")) {
-                    let preview = ImageViewController(imageURL: imageURL)
-                    preview.title = presenter.title
-                    preview.configurePresentationStyle(for: presenter, sourceRect: sourceRect, sourceView: sourceView)
-                    presenter.present(preview, animated: true, completion: nil)
+                    let swiftUIView = SwiftUIImageViewer(imageURL: imageURL)
+                    let hostingController = UIHostingController(rootView: swiftUIView)
+                    
+                    // Configure presentation style
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        hostingController.modalPresentationStyle = .pageSheet
+                        hostingController.preferredContentSize = CGSize(width: 900, height: 700)
+                    } else {
+                        hostingController.modalPresentationStyle = .fullScreen
+                    }
+                    
+                    hostingController.title = presenter.title
+                    presenter.present(hostingController, animated: true, completion: nil)
                 })
                 
                 actions.append(.default(title: LocalizedString("link-action.copy-image-url")) {
@@ -419,7 +429,7 @@ private func canOpenInVLC(_ url: URL) -> Bool {
 private func canOpenInTwitter(_ url: URL) -> Bool {
     let installed = UIApplication.shared.canOpenURL(URL(string: "twitter://")!)
     let host = url.host?.lowercased()
-    if installed == true && host?.hasSuffix("twitter.com") == true {
+    if installed == true && (host?.hasSuffix("twitter.com") == true || host?.hasSuffix("x.com") == true || host == "x.com") {
         return true
     }
     return false
@@ -488,11 +498,19 @@ final class URLMenuPresenter: NSObject {
 
             if let imageURL = imageURL {
                 actions.append(.default(title: LocalizedString("link-action.open-image")) {
-                    let preview = ImageViewController(imageURL: imageURL)
-                    preview.title = presentingViewController.title
-                    // For smilie context, use frame info if available
-                    preview.configurePresentationStyle(for: presentingViewController, sourceRect: imageFrame, sourceView: renderView)
-                    presentingViewController.present(preview, animated: true)
+                    let swiftUIView = SwiftUIImageViewer(imageURL: imageURL)
+                    let hostingController = UIHostingController(rootView: swiftUIView)
+                    
+                    // Configure presentation style
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        hostingController.modalPresentationStyle = .pageSheet
+                        hostingController.preferredContentSize = CGSize(width: 900, height: 700)
+                    } else {
+                        hostingController.modalPresentationStyle = .fullScreen
+                    }
+                    
+                    hostingController.title = presentingViewController.title
+                    presentingViewController.present(hostingController, animated: true)
                 })
             }
 
@@ -507,11 +525,19 @@ final class URLMenuPresenter: NSObject {
                 popover.sourceView = renderView
             }
         } else if let imageURL = imageURL {
-            let preview = ImageViewController(imageURL: imageURL)
-            preview.title = presentingViewController.title
-            // For direct image viewing, use frame info if available
-            preview.configurePresentationStyle(for: presentingViewController, sourceRect: imageFrame, sourceView: renderView)
-            presentingViewController.present(preview, animated: true)
+            let swiftUIView = SwiftUIImageViewer(imageURL: imageURL)
+            let hostingController = UIHostingController(rootView: swiftUIView)
+            
+            // Configure presentation style
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                hostingController.modalPresentationStyle = .pageSheet
+                hostingController.preferredContentSize = CGSize(width: 900, height: 700)
+            } else {
+                hostingController.modalPresentationStyle = .fullScreen
+            }
+            
+            hostingController.title = presentingViewController.title
+            presentingViewController.present(hostingController, animated: true)
             return true
         }
         

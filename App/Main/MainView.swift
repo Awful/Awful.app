@@ -8,6 +8,7 @@ import Combine
 import CoreData
 import Foundation
 import os
+import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MainCoordinator")
 
@@ -50,6 +51,8 @@ protocol MainCoordinator: ObservableObject {
     func presentUserProfile(userID: String)
     func presentRapSheet(userID: String)
     func presentPrivateMessageComposer(for user: User)
+    func presentReportPost(_ post: Post)
+    func presentSharePost(_ post: Post)
     
     // State Restoration methods
     func saveNavigationState()
@@ -539,6 +542,76 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         
         // Present message composer using SwiftUI sheet system (same as ReplyWorkspaceView)
         presentedPrivateMessageUser = IdentifiableUser(user: user)
+    }
+    
+    func presentReportPost(_ post: Post) {
+        print("🔗 MainCoordinator: presentReportPost called - post: \(post.postID)")
+        
+        // Present the report post controller modally
+        let reportVC = ReportPostViewController(post: post)
+        let navController = UINavigationController(rootViewController: reportVC)
+        
+        // Get the currently presented view controller
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first,
+              let rootViewController = window.rootViewController else {
+            print("❌ Could not find root view controller")
+            return
+        }
+        
+        // Find the topmost view controller
+        var topViewController = rootViewController
+        while let presentedViewController = topViewController.presentedViewController {
+            topViewController = presentedViewController
+        }
+        
+        topViewController.present(navController, animated: true)
+    }
+    
+    func presentSharePost(_ post: Post) {
+        print("🔗 MainCoordinator: presentSharePost called - post: \(post.postID)")
+        
+        // Create the post URL
+        guard var components = URLComponents(url: ForumsClient.shared.baseURL!, resolvingAgainstBaseURL: true) else {
+            print("❌ Could not create URL components")
+            return
+        }
+        
+        components.path = "/showthread.php"
+        components.queryItems = [
+            URLQueryItem(name: "threadid", value: post.thread?.threadID),
+            URLQueryItem(name: "postid", value: post.postID)
+        ]
+        
+        guard let url = components.url else {
+            print("❌ Could not create post URL")
+            return
+        }
+        
+        // Create activity view controller
+        let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        
+        // Get the currently presented view controller
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first,
+              let rootViewController = window.rootViewController else {
+            print("❌ Could not find root view controller")
+            return
+        }
+        
+        // Find the topmost view controller
+        var topViewController = rootViewController
+        while let presentedViewController = topViewController.presentedViewController {
+            topViewController = presentedViewController
+        }
+        
+        // Set up popover for iPad
+        if let popover = activityController.popoverPresentationController {
+            popover.sourceView = topViewController.view
+            popover.sourceRect = CGRect(origin: topViewController.view.center, size: CGSize(width: 1, height: 1))
+        }
+        
+        topViewController.present(activityController, animated: true)
     }
     
     // MARK: - Scroll Position Management

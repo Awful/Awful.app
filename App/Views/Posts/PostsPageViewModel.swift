@@ -262,6 +262,32 @@ final class PostsPageViewModel: ObservableObject {
         }
     }
     
+    func forceContentRerender() {
+        // Force re-render with existing posts when webview content is lost
+        logger.info("🔄 Forcing content re-render with existing posts")
+        
+        // If we have cached posts, trigger a state update to force re-render
+        if !self.posts.isEmpty {
+            logger.info("🔄 Re-rendering with \(self.posts.count) existing posts")
+            let currentPosts = self.posts
+            self.posts = [] // Clear temporarily
+            DispatchQueue.main.async {
+                self.posts = currentPosts // Restore to trigger re-render
+            }
+        } else if let cachedModel = cachedPageModel {
+            // Use cached data if available
+            logger.info("🔄 Re-rendering with cached page model")
+            self.posts = cachedModel.posts
+            self.numberOfPages = cachedModel.pageCount
+            self.firstUnreadPost = cachedModel.firstUnreadPost
+            self.advertisementHTML = cachedModel.advertisementHTML
+        } else {
+            // Last resort - refresh from network
+            logger.info("🔄 No cached content available, refreshing from network")
+            refresh()
+        }
+    }
+    
     // MARK: - Scrolling
     private func handleInitialScrolling() {
         guard !hasAttemptedInitialScroll else { return }

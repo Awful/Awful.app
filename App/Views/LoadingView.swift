@@ -68,13 +68,13 @@ private class DefaultLoadingView: LoadingView {
         
         addSubview(animationView)
         
-        animationView.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        animationView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        animationView.widthAnchor.constraint(equalToConstant: 10).isActive = true
+        animationView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
         // Force the view frame size as well (required for Lottie)
-        animationView.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
+        animationView.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
         
         // Scale down to make it smaller
         animationView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)

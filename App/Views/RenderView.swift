@@ -389,7 +389,7 @@ extension RenderView {
         /// - Parameter frame: The link element's frame expressed in the render view's coordinate system.
         case spoiledVideo(frame: CGRect, url: URL)
         
-        case unspoiledLink
+        case unspoiledLink(frame: CGRect, url: URL)
     }
 
     /// Where an interesting element was found within a post.
@@ -438,8 +438,18 @@ extension RenderView {
 
         var interesting: [InterestingElement] = []
 
-        if let hasUnspoiledLink = result["hasUnspoiledLink"] as? Bool, hasUnspoiledLink {
-            interesting.append(.unspoiledLink)
+        if
+            let linkInfo = result["unspoiledLink"] as? [String: Any],
+            let rawFrame = linkInfo["frame"] as? [String: Double],
+            let documentFrame = CGRect(renderViewMessage: rawFrame),
+            let rawURL = linkInfo["url"] as? String,
+            let url = URL(string: rawURL)
+        {
+            let frame = self.convertToRenderView(webDocumentRect: documentFrame)
+            interesting.append(.unspoiledLink(frame: frame, url: url))
+        } else if let hasUnspoiledLink = result["hasUnspoiledLink"] as? Bool, hasUnspoiledLink {
+            // Fallback for older JavaScript version that only provided a boolean
+            interesting.append(.unspoiledLink(frame: CGRect.zero, url: URL(string: "about:blank")!))
         }
 
         if

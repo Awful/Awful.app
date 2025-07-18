@@ -175,6 +175,8 @@
 		2D19BA3929C33303009DD94F /* niggly60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3629C33302009DD94F /* niggly60.json */; };
 		2D19BA3A29C33303009DD94F /* frogrefresh60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3729C33302009DD94F /* frogrefresh60.json */; };
 		2D19BA3B29C33303009DD94F /* toot60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3829C33302009DD94F /* toot60.json */; };
+		2D23BF892E28FF790076BEBC /* PostsPageViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23BF872E28FF790076BEBC /* PostsPageViewState.swift */; };
+		2D23BF8A2E28FF790076BEBC /* ReplyWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D3F1CD02E22767D0081E56B /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */; };
 		2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */; };
@@ -487,6 +489,8 @@
 		2D19BA3629C33302009DD94F /* niggly60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = niggly60.json; sourceTree = "<group>"; };
 		2D19BA3729C33302009DD94F /* frogrefresh60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = frogrefresh60.json; sourceTree = "<group>"; };
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
+		2D23BF872E28FF790076BEBC /* PostsPageViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageViewState.swift; sourceTree = "<group>"; };
+		2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyWorkspaceView.swift; sourceTree = "<group>"; };
 		2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
 		2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsSwiftUIViewController.swift; sourceTree = "<group>"; };
 		2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
@@ -1170,6 +1174,8 @@
 		2DB5FC282E1A8042003F050F /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2D23BF872E28FF790076BEBC /* PostsPageViewState.swift */,
+				2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */,
 				2DAD153F2E21FA890057C340 /* SwiftUIArrowPullControl.swift */,
 				2DAD15412E21FA9A0057C340 /* SwiftUINigglyPullControl.swift */,
 				2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */,
@@ -1582,6 +1588,8 @@
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,
 				1C16FC121CC6FD8600C88BD1 /* ThreadComposeViewController.swift in Sources */,
 				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
+				2D23BF892E28FF790076BEBC /* PostsPageViewState.swift in Sources */,
+				2D23BF8A2E28FF790076BEBC /* ReplyWorkspaceView.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
