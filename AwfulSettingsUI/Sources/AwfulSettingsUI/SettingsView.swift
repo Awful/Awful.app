@@ -20,6 +20,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @AppStorage(Settings.embedTweets) private var embedTweets
     @AppStorage(Settings.enableHaptics) private var enableHaptics
+    @AppStorage(Settings.enableLiquidGlass) private var enableLiquidGlass
     @AppStorage(Settings.fontScale) private var fontScale
     @AppStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @AppStorage(Settings.handoffEnabled) private var handoffEnabled
@@ -151,6 +152,9 @@ public struct SettingsView: View {
                 Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
                 Toggle("Double-Tap Post to Jump", bundle: .module, isOn: $doubleTapPostToJump)
                 Toggle("Enable Haptics", bundle: .module, isOn: $enableHaptics)
+                if #available(iOS 26.0, *) {
+                    Toggle("Enable Liquid Glass Effect", bundle: .module, isOn: $enableLiquidGlass)
+                }
                 Toggle("Use SwiftUI Posts View", bundle: .module, isOn: $useSwiftUIPostsView)
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)

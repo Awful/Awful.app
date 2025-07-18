@@ -1747,6 +1747,7 @@ struct PostsViewWrapper: View {
                 page: viewModel.currentPage ?? page, // Fall back to initial page if viewModel page is nil
                 numberOfPages: viewModel.numberOfPages,
                 isLoadingViewVisible: false, // This needs to be updated if we re-add the loading view
+                useTransparentBackground: false,
                 onSettingsTapped: { viewModel.triggerSettings() },
                 onBackTapped: { viewModel.goToPreviousPage() },
                 onForwardTapped: { viewModel.goToNextPage() },

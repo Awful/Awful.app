@@ -177,6 +177,7 @@
 		2D19BA3B29C33303009DD94F /* toot60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3829C33302009DD94F /* toot60.json */; };
 		2D23BF892E28FF790076BEBC /* PostsPageViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23BF872E28FF790076BEBC /* PostsPageViewState.swift */; };
 		2D23BF8A2E28FF790076BEBC /* ReplyWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */; };
+		2D23BF8C2E2A54900076BEBC /* LiquidGlassBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23BF8B2E2A54900076BEBC /* LiquidGlassBottomBar.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D3F1CD02E22767D0081E56B /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */; };
 		2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */; };
@@ -491,6 +492,7 @@
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D23BF872E28FF790076BEBC /* PostsPageViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageViewState.swift; sourceTree = "<group>"; };
 		2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyWorkspaceView.swift; sourceTree = "<group>"; };
+		2D23BF8B2E2A54900076BEBC /* LiquidGlassBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassBottomBar.swift; sourceTree = "<group>"; };
 		2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
 		2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsSwiftUIViewController.swift; sourceTree = "<group>"; };
 		2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
@@ -1174,6 +1176,7 @@
 		2DB5FC282E1A8042003F050F /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2D23BF8B2E2A54900076BEBC /* LiquidGlassBottomBar.swift */,
 				2D23BF872E28FF790076BEBC /* PostsPageViewState.swift */,
 				2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */,
 				2DAD153F2E21FA890057C340 /* SwiftUIArrowPullControl.swift */,
@@ -1559,6 +1562,7 @@
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
+				2D23BF8C2E2A54900076BEBC /* LiquidGlassBottomBar.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */,
 				1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */,

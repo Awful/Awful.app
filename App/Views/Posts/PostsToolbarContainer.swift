@@ -12,6 +12,7 @@ struct PostsToolbarContainer: View {
     let page: ThreadPage?
     let numberOfPages: Int
     let isLoadingViewVisible: Bool
+    let useTransparentBackground: Bool
     
     // MARK: - Action Callbacks
     let onSettingsTapped: () -> Void
@@ -70,7 +71,7 @@ struct PostsToolbarContainer: View {
     
     // MARK: - Body
     var body: some View {
-        HStack(spacing: 12) {
+        HStack {
             // Settings button
             Button(action: {
                 if enableHaptics {
@@ -100,9 +101,8 @@ struct PostsToolbarContainer: View {
             .disabled(!isBackEnabled)
             .accessibilityLabel("Previous page")
             
-            // Current page picker
+            // Page button
             Button(action: {
-                // Only allow page picker for specific pages where we know the page number
                 guard case .specific = page else { 
                     return 
                 }
@@ -111,12 +111,33 @@ struct PostsToolbarContainer: View {
                 }
                 showingPagePicker = true
             }) {
-                Text(currentPageText.isEmpty ? "..." : currentPageText)
-                    .font(.body.weight(.medium))
-                    .foregroundColor(toolbarTextColor)
+                if case .specific(let pageNumber) = page, numberOfPages > 0 {
+                    VStack(spacing: 0) {
+                        HStack(spacing: 0) {
+                            Text("\(pageNumber)")
+                                .font(.body.weight(.medium))
+                                .foregroundColor(toolbarTextColor)
+                            Text(" /")
+                                .font(.body.weight(.medium))
+                                .foregroundColor(toolbarTextColor)
+                            Spacer()
+                        }
+                        HStack(spacing: 0) {
+                            Text("\(numberOfPages)")
+                                .font(.body.weight(.medium))
+                                .foregroundColor(toolbarTextColor)
+                            Spacer()
+                        }
+                    }
                     .frame(minWidth: 60)
+                } else {
+                    Text(currentPageText.isEmpty ? "..." : currentPageText)
+                        .font(.body.weight(.medium))
+                        .foregroundColor(toolbarTextColor)
+                        .frame(minWidth: 60)
+                }
             }
-            .disabled(page == nil) // Only disable if we have no page state at all
+            .disabled(page == nil)
             .accessibilityLabel(currentPageAccessibilityLabel)
             .accessibilityHint("Opens page picker")
             .popover(isPresented: $showingPagePicker) {
@@ -156,7 +177,7 @@ struct PostsToolbarContainer: View {
             
             Spacer()
             
-            // Actions/hamburger menu
+            // Menu button
             Menu {
                 // Bookmark
                 Button(action: {
@@ -210,8 +231,14 @@ struct PostsToolbarContainer: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
-        .frame(minHeight: 44) // Standard toolbar height
-        .background(toolbarBackgroundColor)
+        .frame(maxWidth: .infinity, minHeight: 44)
+        .background(useTransparentBackground ? .clear : toolbarBackgroundColor)
+        .overlay(
+            useTransparentBackground ? nil : Rectangle()
+                .fill(topBorderColor)
+                .frame(height: 0.5),
+            alignment: .top
+        )
 
         .onReceive(NotificationCenter.default.publisher(for: .threadBookmarkDidChange)) { notification in
             // Force view refresh when bookmark state changes
@@ -253,7 +280,8 @@ extension PostsToolbarContainer {
     /// Convenience initializer that takes a PostsPageViewController and extracts the necessary callbacks
     static func fromViewController(
         _ viewController: PostsPageViewController,
-        isLoadingViewVisible: Bool = false
+        isLoadingViewVisible: Bool = false,
+        useTransparentBackground: Bool = false
     ) -> PostsToolbarContainer {
         return PostsToolbarContainer(
             thread: viewController.thread,
@@ -261,6 +289,7 @@ extension PostsToolbarContainer {
             page: viewController.page,
             numberOfPages: viewController.numberOfPages,
             isLoadingViewVisible: isLoadingViewVisible,
+            useTransparentBackground: useTransparentBackground,
             onSettingsTapped: {
                 viewController.triggerSettings()
             },
@@ -308,6 +337,7 @@ extension PostsToolbarContainer {
         page: .specific(5),
         numberOfPages: 10,
         isLoadingViewVisible: false,
+        useTransparentBackground: false,
         onSettingsTapped: { print("Settings tapped") },
         onBackTapped: { print("Back tapped") },
         onForwardTapped: { print("Forward tapped") },

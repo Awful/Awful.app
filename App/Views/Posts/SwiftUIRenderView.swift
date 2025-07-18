@@ -1270,15 +1270,52 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         logger.info("Updated immersive mode: \(enabled)")
     }
     
+    // MARK: - Performance Optimization Properties
+    private var lastScrollEventTime: CFTimeInterval = 0
+    private let minScrollEventInterval: CFTimeInterval = 1.0/20.0 // 20fps max for better performance
+    
+    // MARK: - Cached Settings (Pre-loaded at startup)
+    private struct CachedScrollSettings {
+        let pullForNextEnabled: Bool
+        let frogAndGhostEnabled: Bool
+        let enableHaptics: Bool
+        
+        static func load() -> CachedScrollSettings {
+            return CachedScrollSettings(
+                pullForNextEnabled: UserDefaults.standard.bool(forKey: Settings.pullForNext.key),
+                frogAndGhostEnabled: UserDefaults.standard.bool(forKey: Settings.frogAndGhostEnabled.key),
+                enableHaptics: UserDefaults.standard.bool(forKey: Settings.enableHaptics.key)
+            )
+        }
+    }
+    
+    private var cachedSettings: CachedScrollSettings = CachedScrollSettings.load()
+    private var lastSettingsRefresh: TimeInterval = 0
+    private let settingsRefreshInterval: TimeInterval = 10.0 // Only refresh every 10 seconds
+    
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let currentTime = CACurrentMediaTime()
+        
+        // Throttle scroll events to 30fps maximum
+        guard currentTime - lastScrollEventTime >= minScrollEventInterval else {
+            return
+        }
+        lastScrollEventTime = currentTime
+        
         let currentOffset = scrollView.contentOffset.y
         let scrollDiff = currentOffset - lastScrollOffset
         let contentHeight = scrollView.contentSize.height
         let viewHeight = scrollView.bounds.height
         
-        // Throttle scroll position updates to reduce overhead
-        let shouldUpdatePosition = abs(scrollDiff) > 3 || abs(currentOffset - lastScrollOffset) > 10
+        // Refresh cached settings very infrequently (every 10 seconds)
+        if currentTime - lastSettingsRefresh > settingsRefreshInterval {
+            cachedSettings = CachedScrollSettings.load()
+            lastSettingsRefresh = currentTime
+        }
+        
+        // Only update position if significant change (increased threshold)
+        let shouldUpdatePosition = abs(scrollDiff) > 8 // Increased from 3
         if shouldUpdatePosition {
             scrollDelegate?.didUpdateScrollPosition(
                 offset: currentOffset,
@@ -1287,43 +1324,13 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
             )
         }
         
-        // Calculate pull progress with reduced overhead
-        if frogAndGhostEnabled {
-            let isOverscrolling = currentOffset < -5 || (currentOffset + viewHeight > contentHeight + 20)
+        // Optimize pull calculations using cached settings
+        if cachedSettings.frogAndGhostEnabled {
+            let isOverscrolling = currentOffset < -10 || (currentOffset + viewHeight > contentHeight + 30)
             
             if isOverscrolling {
-                let bottomMaxPullDistance: CGFloat = 120 // Reasonable distance for bottom pull
-                let topMaxPullDistance: CGFloat = 100 // Reasonable distance for top pull to avoid accidental triggers
-                var topFraction: CGFloat = 0.0
-                var bottomFraction: CGFloat = 0.0
-                
-                // Check for top overscroll (negative offset for refresh)
-                if currentOffset < 0 {
-                    let topOverscroll = abs(currentOffset)
-                    if topOverscroll > 2 {
-                        topFraction = min(max(topOverscroll / topMaxPullDistance, 0), 1.0)
-                    }
-                }
-                
-                // Check for bottom overscroll (for pull-for-next when enabled)
-                if UserDefaults.standard.bool(forKey: Settings.pullForNext.key) {
-                    let bottomOffset = currentOffset + viewHeight
-                    let bottomOverscroll = bottomOffset - contentHeight
-                    
-                    // Only calculate pull progress when actually overscrolling and content is substantial
-                    // Require some buffer space to prevent accidental triggers
-                    if bottomOverscroll > 15 && contentHeight > viewHeight {
-                        bottomFraction = min(max((bottomOverscroll - 10) / bottomMaxPullDistance, 0), 1.0)
-                    }
-                }
-                
-                // Send pull data only when there's a meaningful change
-                let pullData = PullData(topFraction: topFraction, bottomFraction: bottomFraction)
-                if abs(pullData.topFraction - lastPullData.topFraction) > 0.05 || 
-                   abs(pullData.bottomFraction - lastPullData.bottomFraction) > 0.05 {
-                    lastPullData = pullData
-                    scrollDelegate?.didPull(data: pullData)
-                }
+                // Only calculate pull progress when actually overscrolling
+                calculatePullProgress(currentOffset: currentOffset, contentHeight: contentHeight, viewHeight: viewHeight)
             } else if lastPullData.topFraction > 0 || lastPullData.bottomFraction > 0 {
                 // Reset pull data when not overscrolling
                 lastPullData = PullData(topFraction: 0, bottomFraction: 0)
@@ -1331,14 +1338,48 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
             }
         }
         
-        // Use a smaller threshold for more responsive toolbar updates
-        let threshold: CGFloat = 3
+        // Use larger threshold for toolbar updates (reduced frequency)
+        let threshold: CGFloat = 8 // Increased from 3
         let isSignificantScroll = abs(scrollDiff) > threshold
         
         if isSignificantScroll {
             let isScrollingUp = scrollDiff < 0
             scrollDelegate?.didScroll(isScrollingUp: isScrollingUp)
             lastScrollOffset = currentOffset
+        }
+    }
+    
+    private func calculatePullProgress(currentOffset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
+        // Use integer math for better performance
+        let bottomMaxPullDistance: Int = 120
+        let topMaxPullDistance: Int = 100
+        var topFraction: CGFloat = 0.0
+        var bottomFraction: CGFloat = 0.0
+        
+        // Check for top overscroll with integer math
+        if currentOffset < 0 {
+            let topOverscroll = Int(abs(currentOffset))
+            if topOverscroll > 8 { // Increased threshold for less noise
+                topFraction = min(max(CGFloat(topOverscroll) / CGFloat(topMaxPullDistance), 0), 1.0)
+            }
+        }
+        
+        // Check for bottom overscroll using cached value
+        if cachedSettings.pullForNextEnabled {
+            let bottomOffset = Int(currentOffset + viewHeight)
+            let bottomOverscroll = bottomOffset - Int(contentHeight)
+            
+            if bottomOverscroll > 25 && Int(contentHeight) > Int(viewHeight) { // Further increased threshold
+                bottomFraction = min(max(CGFloat(bottomOverscroll - 20) / CGFloat(bottomMaxPullDistance), 0), 1.0)
+            }
+        }
+        
+        // Only send updates if significant change (increased threshold for less noise)
+        let pullData = PullData(topFraction: topFraction, bottomFraction: bottomFraction)
+        if abs(pullData.topFraction - lastPullData.topFraction) > 0.15 || 
+           abs(pullData.bottomFraction - lastPullData.bottomFraction) > 0.15 {
+            lastPullData = pullData
+            scrollDelegate?.didPull(data: pullData)
         }
     }
     

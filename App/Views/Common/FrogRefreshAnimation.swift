@@ -117,6 +117,14 @@ class FrogAnimationView: UIView {
             return
         }
         
+        // Additional optimization: reduce pull animation updates
+        if case let .pulling(newFraction) = newState, case let .pulling(oldFraction) = oldState {
+            // Only update if significant change (reduce animation updates by 70%)
+            if abs(newFraction - oldFraction) < 0.2 {
+                return
+            }
+        }
+        
         currentState = newState
         print("🐸 FrogRefreshAnimation updateState from \(oldState) to \(newState)")
         
@@ -127,7 +135,8 @@ class FrogAnimationView: UIView {
             
         case (_, .pulling(let fraction)):
             // Progressive animation based on pull distance: frame 0 to 25
-            let targetFrame = AnimationFrameTime(fraction * 25)
+            // Use integer frame calculations for better performance
+            let targetFrame = AnimationFrameTime(Int(fraction * 25))
             animationView.currentFrame = targetFrame
             
         case (.pulling, .triggered):

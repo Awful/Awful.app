@@ -10,17 +10,19 @@ import QuartzCore
 /// Centralized state manager for scroll-related UI updates
 /// Reduces the number of @State variables and provides throttling for smooth performance
 class ScrollStateManager: ObservableObject {
-    // MARK: - Published Properties
-    @Published private(set) var isTopBarVisible: Bool = true
-    @Published private(set) var isSubToolbarVisible: Bool = false
-    @Published private(set) var isBottomBarVisible: Bool = true
-    @Published private(set) var frogPullProgress: CGFloat = 0
-    @Published private(set) var isNearBottom: Bool = false
-    @Published private(set) var hasUserScrolled: Bool = false
+    // MARK: - Batched UI State (Reduced @Published properties)
+    @Published private(set) var uiState: UIState = UIState()
     
-    // MARK: - Smooth Animation Properties
-    @Published private(set) var topBarOffset: CGFloat = 0
-    @Published private(set) var bottomBarOffset: CGFloat = 0
+    struct UIState {
+        var isTopBarVisible: Bool = true
+        var isSubToolbarVisible: Bool = false
+        var isBottomBarVisible: Bool = true
+        var frogPullProgress: CGFloat = 0
+        var isNearBottom: Bool = false
+        var hasUserScrolled: Bool = false
+        var topBarOffset: CGFloat = 0
+        var bottomBarOffset: CGFloat = 0
+    }
     
     // MARK: - Internal State
     private var isLastPage: Bool = false
@@ -43,10 +45,8 @@ class ScrollStateManager: ObservableObject {
     private var isAnimatingToVisible: Bool = false
     
     // MARK: - Throttling
-    private var scrollThrottleWorkItem: DispatchWorkItem?
     private var uiUpdateWorkItem: DispatchWorkItem?
-    private let scrollThrottleDelay: TimeInterval = 0.008 // ~120fps for smoother performance
-    private let uiUpdateDelay: TimeInterval = 0.016 // 60fps for responsive UI updates
+    private let uiUpdateDelay: TimeInterval = 0.033 // 30fps for UI updates
     
     // MARK: - Computed Properties
     var topInset: CGFloat {
@@ -59,6 +59,16 @@ class ScrollStateManager: ObservableObject {
         0
     }
     
+    // MARK: - Convenience Properties for Backward Compatibility
+    var isTopBarVisible: Bool { uiState.isTopBarVisible }
+    var isSubToolbarVisible: Bool { uiState.isSubToolbarVisible }
+    var isBottomBarVisible: Bool { uiState.isBottomBarVisible }
+    var frogPullProgress: CGFloat { uiState.frogPullProgress }
+    var isNearBottom: Bool { uiState.isNearBottom }
+    var hasUserScrolled: Bool { uiState.hasUserScrolled }
+    var topBarOffset: CGFloat { uiState.topBarOffset }
+    var bottomBarOffset: CGFloat { uiState.bottomBarOffset }
+    
     // MARK: - Enums
     private enum ScrollDirection {
         case up, down, none
@@ -68,9 +78,11 @@ class ScrollStateManager: ObservableObject {
     func handleScrollChange(isScrollingUp: Bool) {
         let newDirection: ScrollDirection = isScrollingUp ? .up : .down
         
-        // Mark that user has scrolled
-        if !hasUserScrolled {
-            hasUserScrolled = true
+        // Mark that user has scrolled (batched update)
+        if !uiState.hasUserScrolled {
+            var newState = uiState
+            newState.hasUserScrolled = true
+            uiState = newState
         }
         
         // Only process if direction actually changed and we're in immersive mode
@@ -78,8 +90,8 @@ class ScrollStateManager: ObservableObject {
             return 
         }
         
-        // Require minimum accumulated distance for direction changes to prevent oscillation
-        let minThreshold: CGFloat = 25.0 // Increased threshold to prevent rapid changes
+        // Increased threshold to reduce noise
+        let minThreshold: CGFloat = 50.0 // Further increased from 40.0
         if lastScrollDirection != .none && accumulatedScrollDistance < minThreshold {
             return
         }
@@ -96,20 +108,31 @@ class ScrollStateManager: ObservableObject {
         }
         uiUpdateWorkItem = workItem
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem) // Increased delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: workItem) // Even longer debounce
     }
     
     func handleScrollPositionChanged(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
-        // Cancel previous throttled update
-        scrollThrottleWorkItem?.cancel()
-        
-        // Schedule new throttled update
-        let workItem = DispatchWorkItem { [weak self] in
-            self?.updateScrollPosition(offset: offset, contentHeight: contentHeight, viewHeight: viewHeight)
+        // Use immediate updates for critical calculations
+        let scrollDelta = abs(offset - lastScrollPosition)
+        if scrollDelta > 0 {
+            accumulatedScrollDistance += scrollDelta
         }
-        scrollThrottleWorkItem = workItem
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + scrollThrottleDelay, execute: workItem)
+        lastScrollPosition = offset
+        scrollPosition = offset
+        scrollContentHeight = contentHeight
+        scrollViewHeight = viewHeight
+        
+        // Direct update for near bottom detection (no async dispatch)
+        let bottomOffset = offset + viewHeight
+        let newIsNearBottom = contentHeight > 0 && bottomOffset >= contentHeight - 200 // Increased threshold
+        
+        // Only update if changed to reduce UI rebuilds
+        if newIsNearBottom != uiState.isNearBottom {
+            var newState = uiState
+            newState.isNearBottom = newIsNearBottom
+            uiState = newState
+        }
     }
     
     func handlePullChanged(fraction: CGFloat, isLastPage: Bool) {
@@ -117,13 +140,17 @@ class ScrollStateManager: ObservableObject {
         self.isLastPage = isLastPage
         
         // Only update frog progress if we're on the last page and near bottom
-        if isLastPage && isNearBottom {
+        if isLastPage && uiState.isNearBottom {
             let newProgress = min(fraction, 1.0)
-            if abs(newProgress - frogPullProgress) > 0.05 { // Threshold to reduce updates
-                frogPullProgress = newProgress
+            if abs(newProgress - uiState.frogPullProgress) > 0.1 { // Increased threshold to reduce updates
+                var newState = uiState
+                newState.frogPullProgress = newProgress
+                uiState = newState
             }
-        } else if frogPullProgress > 0 {
-            frogPullProgress = 0
+        } else if uiState.frogPullProgress > 0 {
+            var newState = uiState
+            newState.frogPullProgress = 0
+            uiState = newState
         }
     }
     
@@ -137,8 +164,10 @@ class ScrollStateManager: ObservableObject {
         // Initialize offsets when immersive mode is set
         if isImmersiveMode {
             // Start with toolbars visible
-            topBarOffset = 0
-            bottomBarOffset = 0
+            var newState = uiState
+            newState.topBarOffset = 0
+            newState.bottomBarOffset = 0
+            uiState = newState
         }
     }
     
@@ -147,45 +176,30 @@ class ScrollStateManager: ObservableObject {
         // Only update in immersive mode - in normal mode bars are always visible
         guard isImmersiveMode else { return }
         
+        // Batch all UI updates into a single state change
+        var newState = uiState
+        
         if isScrollingUp {
             // Scrolling up - show all bars
-            isTopBarVisible = true
-            isBottomBarVisible = true
-            isSubToolbarVisible = hasScrolledDown // Only show subtoolbar if user has scrolled down before
-            topBarOffset = 0
-            bottomBarOffset = 0
+            newState.isTopBarVisible = true
+            newState.isBottomBarVisible = true
+            newState.isSubToolbarVisible = hasScrolledDown // Only show subtoolbar if user has scrolled down before
+            newState.topBarOffset = 0
+            newState.bottomBarOffset = 0
         } else {
             // Scrolling down - hide all bars
             hasScrolledDown = true
-            isTopBarVisible = false
-            isBottomBarVisible = false
-            isSubToolbarVisible = false
-            topBarOffset = -maxToolbarOffset
-            bottomBarOffset = maxToolbarOffset
+            newState.isTopBarVisible = false
+            newState.isBottomBarVisible = false
+            newState.isSubToolbarVisible = false
+            newState.topBarOffset = -maxToolbarOffset
+            newState.bottomBarOffset = maxToolbarOffset
         }
+        
+        // Single state update instead of multiple @Published changes
+        uiState = newState
     }
     
-    private func updateScrollPosition(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
-        // Calculate scroll distance for hysteresis
-        let scrollDelta = abs(offset - lastScrollPosition)
-        if scrollDelta > 0 {
-            accumulatedScrollDistance += scrollDelta
-        }
-        
-        lastScrollPosition = offset
-        scrollPosition = offset
-        scrollContentHeight = contentHeight
-        scrollViewHeight = viewHeight
-        
-        // Check if we're near the bottom with more generous threshold
-        let bottomOffset = offset + viewHeight
-        let newIsNearBottom = contentHeight > 0 && bottomOffset >= contentHeight - 150
-        
-        // Only update if changed to reduce published events
-        if newIsNearBottom != isNearBottom {
-            isNearBottom = newIsNearBottom
-        }
-    }
     
     // MARK: - Smooth Toolbar Animation
     private func updateToolbarOffsets() {
@@ -215,21 +229,14 @@ class ScrollStateManager: ObservableObject {
     
     // MARK: - Reset
     func reset() {
-        scrollThrottleWorkItem?.cancel()
         uiUpdateWorkItem?.cancel()
         
-        isTopBarVisible = true
-        isSubToolbarVisible = false
-        isBottomBarVisible = true
-        frogPullProgress = 0
-        isNearBottom = false
-        hasScrolledDown = false
-        hasUserScrolled = false
-        lastScrollDirection = .none
+        // Reset all UI state in a single batch update
+        uiState = UIState()
         
-        // Reset smooth animation properties
-        topBarOffset = 0
-        bottomBarOffset = 0
+        // Reset internal state
+        hasScrolledDown = false
+        lastScrollDirection = .none
         scrollVelocity = 0
         lastScrollUpdateTime = 0
         smoothScrollDistance = 0

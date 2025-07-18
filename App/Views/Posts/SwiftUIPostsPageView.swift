@@ -41,10 +41,78 @@ struct SwiftUIPostsPageView: View {
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     @FoilDefaultStorage(Settings.postsImmersiveMode) private var postsImmersiveMode
+    @FoilDefaultStorage(Settings.enableLiquidGlass) private var enableLiquidGlass
     
     // MARK: - State Management
     @StateObject private var scrollState = ScrollStateManager()
     @StateObject private var viewState = PostsPageViewState()
+    @State private var showingPagePicker = false
+    
+    // MARK: - Liquid Glass Toolbar
+    @ToolbarContentBuilder
+    private var liquidGlassToolbar: some ToolbarContent {
+        if enableLiquidGlass {
+            if #available(iOS 26.0, *) {
+                LiquidGlassBottomBar.toolbarContent(
+                    thread: thread,
+                    page: viewModel.currentPage,
+                    numberOfPages: viewModel.numberOfPages,
+                    showingPagePicker: $showingPagePicker,
+                    toolbarTextColor: Color(theme[uicolor: "toolbarTextColor"] ?? .systemBlue),
+                    isBackEnabled: {
+                        switch viewModel.currentPage {
+                        case .specific(let pageNumber)?:
+                            return pageNumber > 1
+                        case .last?, .nextUnread?, nil:
+                            return false
+                        }
+                    }(),
+                    isForwardEnabled: {
+                        switch viewModel.currentPage {
+                        case .specific(let pageNumber)?:
+                            return pageNumber < viewModel.numberOfPages
+                        case .last?, .nextUnread?, nil:
+                            return false
+                        }
+                    }(),
+                    currentPageAccessibilityLabel: {
+                        if case .specific(let pageNumber) = viewModel.currentPage, viewModel.numberOfPages > 0 {
+                            return "Page \(pageNumber) of \(viewModel.numberOfPages)"
+                        } else {
+                            return ""
+                        }
+                    }(),
+                    onSettingsTapped: {
+                        viewState.showingSettings = true
+                    },
+                    onBackTapped: {
+                        viewModel.goToPreviousPage()
+                    },
+                    onForwardTapped: {
+                        viewModel.goToNextPage()
+                    },
+                    onPageSelected: { page in
+                        viewModel.loadPage(page)
+                    },
+                    onGoToLastPost: {
+                        // TODO: Implement go to last post functionality
+                    },
+                    onBookmarkTapped: {
+                        // TODO: Implement bookmark functionality
+                    },
+                    onCopyLinkTapped: {
+                        // TODO: Implement copy link functionality
+                    },
+                    onVoteTapped: {
+                        // TODO: Implement vote functionality
+                    },
+                    onYourPostsTapped: {
+                        // TODO: Implement your posts functionality
+                    }
+                )
+            }
+        }
+    }
     
     // MARK: - Initialization
     init(thread: AwfulThread, author: User? = nil, page: ThreadPage? = nil, coordinator: AnyObject? = nil, scrollFraction: CGFloat? = nil, jumpToPostID: String? = nil) {
@@ -109,11 +177,9 @@ struct SwiftUIPostsPageView: View {
                             viewState.frogRefreshState = .triggered
                             print("🐸 Frog triggered! fraction: \(fraction)")
                             
-                            // Transition to refreshing state and start refresh
-                            DispatchQueue.main.async {
-                                self.viewState.frogRefreshState = .refreshing
-                                print("🐸 Set frogRefreshState to .refreshing from immediate trigger")
-                            }
+                            // Transition to refreshing state and start refresh (direct update - already on main thread)
+                            self.viewState.frogRefreshState = .refreshing
+                            print("🐸 Set frogRefreshState to .refreshing from immediate trigger")
                             
                             viewModel.refresh()
                             print("🐸 Called viewModel.refresh() from immediate trigger")
@@ -170,11 +236,9 @@ struct SwiftUIPostsPageView: View {
         
         viewState.isFrogRefreshing = true
         
-        // Use DispatchQueue to ensure state update happens on main thread
-        DispatchQueue.main.async {
-            self.viewState.frogRefreshState = .refreshing
-            print("🐸 Set frogRefreshState to .refreshing on main thread")
-        }
+        // Direct state update (already on main thread in SwiftUI)
+        self.viewState.frogRefreshState = .refreshing
+        print("🐸 Set frogRefreshState to .refreshing on main thread")
         
         viewModel.refresh()
         print("🐸 Called viewModel.refresh()")
@@ -290,6 +354,9 @@ struct SwiftUIPostsPageView: View {
                     }
                     .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
                 }
+                
+                // Add liquid glass toolbar when setting is enabled
+                liquidGlassToolbar
             }
             .onAppear {
                 handleViewAppear()
@@ -539,94 +606,161 @@ struct SwiftUIPostsPageView: View {
     private var bottomOverlays: some View {
         VStack(spacing: 0) {
             // Bottom toolbar overlay - show in normal mode or when visible in immersive mode
-            if !postsImmersiveMode {
-                // Always show in normal mode
-                PostsToolbarContainer(
-                    thread: thread,
-                    author: author,
-                    page: viewModel.currentPage,
-                    numberOfPages: viewModel.numberOfPages,
-                    isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                    onSettingsTapped: {
-                        viewState.showingSettings = true
-                    },
-                    onBackTapped: {
-                        viewModel.goToPreviousPage()
-                    },
-                    onForwardTapped: {
-                        viewModel.goToNextPage()
-                    },
-                    onPageSelected: { page in
-                        viewModel.loadPage(page)
-                    },
-                    onGoToLastPost: {
-                        viewModel.goToLastPost()
-                    },
-                    onBookmarkTapped: {
-                        viewModel.toggleBookmark()
-                    },
-                    onCopyLinkTapped: {
-                        viewModel.copyLink()
-                    },
-                    onVoteTapped: {
-                        // TODO: Implement vote functionality
-                    },
-                    onYourPostsTapped: {
-                        // TODO: Implement your posts functionality  
+            // Only show overlay toolbars when liquid glass is disabled OR when iOS < 26.0
+            if !enableLiquidGlass || !ProcessInfo.processInfo.isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)) {
+                if !postsImmersiveMode {
+                    // Always show in normal mode
+                    if #available(iOS 26.0, *) {
+                        LiquidGlassBottomBar(
+                            thread: thread,
+                            author: author,
+                            page: viewModel.currentPage,
+                            numberOfPages: viewModel.numberOfPages,
+                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
+                            onSettingsTapped: {
+                                viewState.showingSettings = true
+                            },
+                            onBackTapped: {
+                                viewModel.goToPreviousPage()
+                            },
+                            onForwardTapped: {
+                                viewModel.goToNextPage()
+                            },
+                            onPageSelected: { page in
+                                viewModel.loadPage(page)
+                            },
+                            onGoToLastPost: {
+                                viewModel.goToLastPost()
+                            },
+                            onBookmarkTapped: {
+                                viewModel.toggleBookmark()
+                            },
+                            onCopyLinkTapped: {
+                                viewModel.copyLink()
+                            },
+                            onVoteTapped: {
+                                // TODO: Implement vote functionality
+                            },
+                            onYourPostsTapped: {
+                                // TODO: Implement your posts functionality  
+                            }
+                        )
+                    } else {
+                        PostsToolbarContainer(
+                            thread: thread,
+                            author: author,
+                            page: viewModel.currentPage,
+                            numberOfPages: viewModel.numberOfPages,
+                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
+                            useTransparentBackground: false,
+                            onSettingsTapped: {
+                                viewState.showingSettings = true
+                            },
+                            onBackTapped: {
+                                viewModel.goToPreviousPage()
+                            },
+                            onForwardTapped: {
+                                viewModel.goToNextPage()
+                            },
+                            onPageSelected: { page in
+                                viewModel.loadPage(page)
+                            },
+                            onGoToLastPost: {
+                                viewModel.goToLastPost()
+                            },
+                            onBookmarkTapped: {
+                                viewModel.toggleBookmark()
+                            },
+                            onCopyLinkTapped: {
+                                viewModel.copyLink()
+                            },
+                            onVoteTapped: {
+                                // TODO: Implement vote functionality
+                            },
+                            onYourPostsTapped: {
+                                // TODO: Implement your posts functionality  
+                            }
+                        )
                     }
-                )
-                .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
-                .overlay(
-                    Rectangle()
-                        .fill(Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator))
-                        .frame(height: 0.5),
-                    alignment: .top
-                )
-            } else if scrollState.isBottomBarVisible {
-                // Only show in immersive mode when scroll state indicates it should be visible
-                PostsToolbarContainer(
-                    thread: thread,
-                    author: author,
-                    page: viewModel.currentPage,
-                    numberOfPages: viewModel.numberOfPages,
-                    isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                    onSettingsTapped: {
-                        viewState.showingSettings = true
-                    },
-                    onBackTapped: {
-                        viewModel.goToPreviousPage()
-                    },
-                    onForwardTapped: {
-                        viewModel.goToNextPage()
-                    },
-                    onPageSelected: { page in
-                        viewModel.loadPage(page)
-                    },
-                    onGoToLastPost: {
-                        viewModel.goToLastPost()
-                    },
-                    onBookmarkTapped: {
-                        viewModel.toggleBookmark()
-                    },
-                    onCopyLinkTapped: {
-                        viewModel.copyLink()
-                    },
-                    onVoteTapped: {
-                        // TODO: Implement vote functionality
-                    },
-                    onYourPostsTapped: {
-                        // TODO: Implement your posts functionality  
+                } else if scrollState.isBottomBarVisible {
+                    // Only show in immersive mode when scroll state indicates it should be visible
+                    if #available(iOS 26.0, *) {
+                        LiquidGlassBottomBar(
+                            thread: thread,
+                            author: author,
+                            page: viewModel.currentPage,
+                            numberOfPages: viewModel.numberOfPages,
+                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
+                            onSettingsTapped: {
+                                viewState.showingSettings = true
+                            },
+                            onBackTapped: {
+                                viewModel.goToPreviousPage()
+                            },
+                            onForwardTapped: {
+                                viewModel.goToNextPage()
+                            },
+                            onPageSelected: { page in
+                                viewModel.loadPage(page)
+                            },
+                            onGoToLastPost: {
+                                viewModel.goToLastPost()
+                            },
+                            onBookmarkTapped: {
+                                viewModel.toggleBookmark()
+                            },
+                            onCopyLinkTapped: {
+                                viewModel.copyLink()
+                            },
+                            onVoteTapped: {
+                                // TODO: Implement vote functionality
+                            },
+                            onYourPostsTapped: {
+                                // TODO: Implement your posts functionality  
+                            }
+                        )
+                        .offset(y: scrollState.isBottomBarVisible ? 0 : 120)
+                        .animation(.easeInOut(duration: 0.25), value: scrollState.isBottomBarVisible)
+                    } else {
+                        PostsToolbarContainer(
+                            thread: thread,
+                            author: author,
+                            page: viewModel.currentPage,
+                            numberOfPages: viewModel.numberOfPages,
+                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
+                            useTransparentBackground: true,
+                            onSettingsTapped: {
+                                viewState.showingSettings = true
+                            },
+                            onBackTapped: {
+                                viewModel.goToPreviousPage()
+                            },
+                            onForwardTapped: {
+                                viewModel.goToNextPage()
+                            },
+                            onPageSelected: { page in
+                                viewModel.loadPage(page)
+                            },
+                            onGoToLastPost: {
+                                viewModel.goToLastPost()
+                            },
+                            onBookmarkTapped: {
+                                viewModel.toggleBookmark()
+                            },
+                            onCopyLinkTapped: {
+                                viewModel.copyLink()
+                            },
+                            onVoteTapped: {
+                                // TODO: Implement vote functionality
+                            },
+                            onYourPostsTapped: {
+                                // TODO: Implement your posts functionality  
+                            }
+                        )
+                        .offset(y: scrollState.isBottomBarVisible ? 0 : 120)
+                        .animation(.easeInOut(duration: 0.25), value: scrollState.isBottomBarVisible)
                     }
-                )
-                .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
-                .overlay(
-                    Rectangle()
-                        .fill(Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator))
-                        .frame(height: 0.5),
-                    alignment: .top
-                )
-                .offset(y: scrollState.isBottomBarVisible ? 0 : 120)
-                .animation(.easeInOut(duration: 0.25), value: scrollState.isBottomBarVisible)
+                }
             }
         }
     }
@@ -1002,9 +1136,8 @@ private struct ArrowPullOverlay: View {
                     pullProgress: pullProgress,
                     isVisible: true,
                     onRefreshTriggered: {
-                        DispatchQueue.main.async {
-                            onNavigateToNextPage()
-                        }
+                        // Direct call - already on main thread in SwiftUI
+                        onNavigateToNextPage()
                     }
                 )
                 .offset(y: horizontalSizeClass == .regular ? 10 : 40)

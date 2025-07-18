@@ -68,6 +68,15 @@ public enum Settings {
     /// Make the device vibrate when certain things happen.
     public static let enableHaptics = Setting(key: "enable_haptics", default: false)
 
+    /// Enable liquid glass visual effect for UI elements.
+    public static let enableLiquidGlass = Setting(key: "enable_liquid_glass", default: {
+        if #available(iOS 26.0, *) {
+            return true
+        } else {
+            return false
+        }
+    }())
+
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
     public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
 
