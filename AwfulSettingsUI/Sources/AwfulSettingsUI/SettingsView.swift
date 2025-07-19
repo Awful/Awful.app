@@ -24,7 +24,6 @@ public struct SettingsView: View {
     @AppStorage(Settings.fontScale) private var fontScale
     @AppStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @AppStorage(Settings.handoffEnabled) private var handoffEnabled
-    @AppStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
     @AppStorage(Settings.loadImages) private var loadImages
     @AppStorage(Settings.openTwitterLinksInTwitter) private var openLinksInTwitter
     @AppStorage(Settings.openYouTubeLinksInYouTube) private var openLinksInYouTube
@@ -36,7 +35,6 @@ public struct SettingsView: View {
     @AppStorage(Settings.forumThreadsSortedUnread) private var sortFirstUnreadThreads
     @AppStorage(Settings.automaticTimg) private var timgLargeImages
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
-    @AppStorage(Settings.useSwiftUIPostsView) private var useSwiftUIPostsView
 
     let appIconDataSource: AppIconDataSource
     let avatarURL: URL?
@@ -155,7 +153,6 @@ public struct SettingsView: View {
                 if #available(iOS 26.0, *) {
                     Toggle("Enable Liquid Glass Effect", bundle: .module, isOn: $enableLiquidGlass)
                 }
-                Toggle("Use SwiftUI Posts View", bundle: .module, isOn: $useSwiftUIPostsView)
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)
                 }
@@ -196,16 +193,6 @@ public struct SettingsView: View {
                     .header()
             }
             .section()
-
-            if hasRegularSizeClassInLandscape {
-                Section {
-                    Toggle("Hide Sidebar in Landscape", bundle: .module, isOn: $hideSidebarInLandscape)
-                } header: {
-                    Text("Sidebar", bundle: .module)
-                        .header()
-                }
-                .section()
-            }
 
             Section {
                 Picker("Default Browser", bundle: .module, selection: $defaultBrowser) {

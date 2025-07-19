@@ -45,6 +45,16 @@
         }
       }
     },
+    "%lld Star%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld Star%2$@"
+          }
+        }
+      }
+    },
     "+" : {
 
     },
@@ -372,9 +382,6 @@
     "five" : {
 
     },
-    "Fixes Lottie animation issues but may have other bugs" : {
-
-    },
     "Forgot Password?" : {
 
     },
@@ -463,6 +470,9 @@
       }
     },
     "Hides navigation and toolbar bars for distraction-free reading" : {
+
+    },
+    "How would you rate this thread?" : {
 
     },
     "Image Actions" : {
@@ -1115,6 +1125,9 @@
           }
         }
       }
+    },
+    "Rate this thread" : {
+
     },
     "rated_five" : {
 

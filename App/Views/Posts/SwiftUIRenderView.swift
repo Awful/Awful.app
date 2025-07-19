@@ -17,6 +17,15 @@ import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SwiftUIRenderView")
 
+// MARK: - Custom Messages
+private struct FYADFlagRequest: RenderViewMessage {
+    static let messageName = "fyadFlagRequest"
+
+    init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+        assert(rawMessage.name == FYADFlagRequest.messageName)
+    }
+}
+
 // MARK: - WebView Container Cache
 private class WebViewContainerCache {
     static let shared = WebViewContainerCache()
@@ -111,6 +120,7 @@ struct SwiftUIRenderView: UIViewRepresentable {
     @Binding var replyWorkspace: IdentifiableReplyWorkspace?
     @Binding var presentedImageURL: URL?
     @Binding var showingImageViewer: Bool
+    let viewState: PostsPageViewState // Add viewState for FYAD flag error handling
     
     // MARK: - Content Insets
     var topInset: CGFloat = 0
@@ -538,6 +548,16 @@ struct SwiftUIRenderView: UIViewRepresentable {
                     container.showUserActionsMenu(for: post, at: point)
                 }
                 
+            case is FYADFlagRequest:
+                logger.info("FYAD flag request received")
+                viewModel.handleFYADFlagRequest { title, message in
+                    // Pass error to view state
+                    Task { @MainActor in
+                        self.parent.viewState.alertTitle = title
+                        self.parent.viewState.alertMessage = message
+                    }
+                }
+                
             default:
                 logger.error("Unhandled message: \(type(of: message))")
             }
@@ -833,6 +853,7 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         _renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         _renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         _renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        _renderView.registerMessage(FYADFlagRequest.self)
         
         // Set up scroll delegate
         _renderView.scrollView.delegate = self
@@ -1317,6 +1338,13 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
         // Only update position if significant change (increased threshold)
         let shouldUpdatePosition = abs(scrollDiff) > 8 // Increased from 3
         if shouldUpdatePosition {
+            // Enhanced logging for scroll position verification
+            if abs(scrollDiff) > 20 { // Log significant scroll movements
+                let direction = scrollDiff > 0 ? "↓" : "↑"
+                let position = currentOffset / max(contentHeight - viewHeight, 1)
+                logger.debug("📜 Scroll: offset=\(Int(currentOffset)), delta=\(Int(scrollDiff)) \(direction), position=\(String(format: "%.1f%%", position * 100)), contentH=\(Int(contentHeight))")
+            }
+            
             scrollDelegate?.didUpdateScrollPosition(
                 offset: currentOffset,
                 contentHeight: contentHeight,
@@ -1459,6 +1487,8 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
     
     // MARK: - UIGestureRecognizerDelegate
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        logger.debug("🤏 Gesture coordination: \(type(of: gestureRecognizer)) with \(type(of: otherGestureRecognizer))")
+        
         // Don't interfere with unpop gestures - let them handle their own simultaneous recognition logic
         if otherGestureRecognizer is UIScreenEdgePanGestureRecognizer {
             // If it's a right-edge pan gesture (likely unpop), don't allow simultaneous recognition
@@ -1473,6 +1503,18 @@ class RenderViewContainer: UIView, UIScrollViewDelegate, UIGestureRecognizerDele
                 logger.info("🔄 Allowing simultaneous recognition with left-edge pan gesture for navigation")
                 return true
             }
+        }
+        
+        // Handle scroll view gesture coordination
+        if gestureRecognizer is UILongPressGestureRecognizer && otherGestureRecognizer is UIPanGestureRecognizer {
+            logger.debug("🤏 Allowing long press with pan (scrolling)")
+            return true
+        }
+        
+        // Handle WebView gesture coordination
+        if "\(type(of: otherGestureRecognizer))".contains("TouchDown") {
+            logger.debug("🤏 Allowing touch down gesture coordination")
+            return true
         }
         
         // Allow simultaneous recognition for other gestures (like long press with scrolling)

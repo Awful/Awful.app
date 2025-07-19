@@ -9,7 +9,6 @@ struct PostsPageSettingsView: View {
     @AppStorage(Settings.autoDarkTheme.key) private var automaticDarkTheme: Bool = Settings.autoDarkTheme.default
     @AppStorage(Settings.darkMode.key) private var darkMode: Bool = Settings.darkMode.default
     @AppStorage(Settings.enableHaptics.key) private var enableHaptics: Bool = Settings.enableHaptics.default
-    @AppStorage(Settings.useSwiftUIPostsView.key) private var useSwiftUIPostsView: Bool = Settings.useSwiftUIPostsView.default
     @AppStorage(Settings.postsImmersiveMode.key) private var postsImmersiveMode: Bool = Settings.postsImmersiveMode.default
     
     @SwiftUI.Environment(\.theme) private var theme
@@ -110,27 +109,15 @@ struct PostsPageSettingsView: View {
                     // Experimental settings
                     VStack(spacing: 16) {
                         SettingToggle(
-                            title: "SwiftUI Posts View (Beta)",
-                            isOn: $useSwiftUIPostsView
+                            title: "Immersive Mode",
+                            isOn: $postsImmersiveMode
                         )
-                        
-                        if useSwiftUIPostsView {
-                            Text("Fixes Lottie animation issues but may have other bugs")
+                            
+                        if postsImmersiveMode {
+                            Text("Hides navigation and toolbar bars for distraction-free reading")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
-                                
-                            SettingToggle(
-                                title: "Immersive Mode",
-                                isOn: $postsImmersiveMode
-                            )
-                            
-                            if postsImmersiveMode {
-                                Text("Hides navigation and toolbar bars for distraction-free reading")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .multilineTextAlignment(.center)
-                            }
                         }
                     }
                     

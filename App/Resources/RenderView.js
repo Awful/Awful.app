@@ -618,45 +618,58 @@ Awful.jumpToPostWithID = function(postID) {
   }
 
   console.log(`Scrolling to post ${postID}`);
+  console.log(`User Agent: ${window.navigator.userAgent}`);
 
-  // Strategy 1: Use scrollIntoView with precise positioning
+  // Navigation bar offset - account for header so post isn't hidden behind it
+  // Both iPhone and iPad need space to show the author name and timestamp clearly
+  const isIPad = window.navigator.userAgent.includes('iPad') || 
+                 (window.navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+  const navBarOffset = isIPad ? 130 : 140; // iPhone needs more space for navigation bar + safe area
+  
+  console.log(`Device detected as: ${isIPad ? 'iPad' : 'iPhone'}, using ${navBarOffset}px offset`);
+
+  // Strategy 1: Use direct scrollTo with navigation bar offset
   try {
-    post.scrollIntoView({
-      behavior: 'instant',  // No animation for immediate positioning
-      block: 'start',       // Align the top of the element with the top of the viewport
-      inline: 'nearest'     // Don't change horizontal scroll position
+    const postTop = post.offsetTop - navBarOffset;
+    const adjustedTop = Math.max(0, postTop); // Don't scroll above the top of the document
+    
+    window.scrollTo({
+      top: adjustedTop,
+      left: 0,
+      behavior: 'instant'
     });
     
-    // Verify the scroll worked by checking if post is near the top
+    console.log(`Scrolled to post ${postID} with ${navBarOffset}px offset for ${isIPad ? 'iPad' : 'iPhone'} (target: ${adjustedTop}px)`);
+    
+    // Verify the scroll worked by checking if post is positioned below the nav bar
     setTimeout(() => {
       const rect = post.getBoundingClientRect();
-      const tolerance = 50; // Allow 50px tolerance for accurate positioning
+      const expectedTop = navBarOffset;
+      const tolerance = 20; // Allow 20px tolerance for accurate positioning
       
-      if (rect.top > tolerance) {
-        console.warn(`Post ${postID} not properly positioned (top: ${rect.top}px), trying fallback`);
+      if (Math.abs(rect.top - expectedTop) > tolerance) {
+        console.warn(`Post ${postID} not optimally positioned (top: ${rect.top}px, expected: ~${expectedTop}px), trying fallback`);
         
-        // Strategy 2: Direct scrollTo fallback
-        const postTop = post.offsetTop;
-        window.scrollTo({
-          top: postTop,
-          left: 0,
-          behavior: 'instant'
+        // Strategy 2: scrollIntoView fallback, then adjust for nav bar
+        post.scrollIntoView({
+          behavior: 'instant',
+          block: 'start',
+          inline: 'nearest'
         });
         
-        // Strategy 3: Final verification and correction
+        // Then adjust for navigation bar
         setTimeout(() => {
-          const newRect = post.getBoundingClientRect();
-          if (newRect.top > tolerance) {
-            console.warn(`Post ${postID} still not properly positioned after fallback (top: ${newRect.top}px)`);
-            // Last resort: use manual scroll calculation
-            const finalTop = window.pageYOffset + newRect.top;
-            window.scrollTo(0, finalTop);
-          } else {
-            console.log(`Post ${postID} successfully positioned at top: ${newRect.top}px`);
-          }
-        }, 100);
+          const currentScroll = window.pageYOffset;
+          window.scrollTo(0, Math.max(0, currentScroll - navBarOffset));
+          
+          // Final verification
+          setTimeout(() => {
+            const finalRect = post.getBoundingClientRect();
+            console.log(`Post ${postID} final position: ${finalRect.top}px (target: ~${expectedTop}px)`);
+          }, 50);
+        }, 50);
       } else {
-        console.log(`Post ${postID} successfully positioned at top: ${rect.top}px`);
+        console.log(`Post ${postID} successfully positioned below nav bar: ${rect.top}px`);
       }
     }, 50);
     

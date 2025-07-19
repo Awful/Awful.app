@@ -55,6 +55,7 @@ struct LiquidGlassBottomBar: View {
         numberOfPages: Int,
         showingPagePicker: Binding<Bool>,
         toolbarTextColor: Color,
+        roundedFonts: Bool,
         isBackEnabled: Bool,
         isForwardEnabled: Bool,
         currentPageAccessibilityLabel: String,
@@ -87,6 +88,7 @@ struct LiquidGlassBottomBar: View {
             }
             .disabled(!isBackEnabled)
             .accessibilityLabel("Previous page")
+            .padding(.leading, 4)
             
             // Page selector button
             Button(action: {
@@ -94,23 +96,25 @@ struct LiquidGlassBottomBar: View {
                 showingPagePicker.wrappedValue = true
             }) {
                 if case .specific(let pageNumber) = page, numberOfPages > 0 {
-                    HStack(spacing: 0) {
+                    HStack(alignment: .top, spacing: 0) {
                         VStack(spacing: 0) {
                             Text("\(pageNumber)")
-                                .font(.body.weight(.medium))
+                                .font(.footnote.weight(.medium))
                                 .foregroundColor(toolbarTextColor)
-                                .multilineTextAlignment(.trailing)
+                                .applyFontDesign(if: roundedFonts)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                             Text("\(numberOfPages)")
-                                .font(.body.weight(.medium))
+                                .font(.footnote.weight(.medium))
                                 .foregroundColor(toolbarTextColor)
-                                .multilineTextAlignment(.trailing)
+                                .applyFontDesign(if: roundedFonts)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                         Text(" /")
-                            .font(.body.weight(.medium))
+                            .font(.footnote.weight(.medium))
                             .foregroundColor(toolbarTextColor)
-                            .offset(y: -6) // Adjust vertical position to align with top number
+                            .applyFontDesign(if: roundedFonts)
                     }
-                    .frame(minWidth: 60)
+                    .frame(minWidth: 30)
                 } else {
                     Text("...")
                         .font(.body.weight(.medium))
@@ -136,7 +140,7 @@ struct LiquidGlassBottomBar: View {
                 )
                 .presentationCompactAdaptation(.popover)
             }
-            .padding(.trailing, 8) // Add spacing between page numbers and forward button
+            .padding(.trailing, 4) // Add spacing between page numbers and forward button
             
             // Forward button
             Button(action: onForwardTapped) {
@@ -191,7 +195,6 @@ struct LiquidGlassBottomBar: View {
             page: page,
             numberOfPages: numberOfPages,
             isLoadingViewVisible: isLoadingViewVisible,
-            useTransparentBackground: false,
             onSettingsTapped: onSettingsTapped,
             onBackTapped: onBackTapped,
             onForwardTapped: onForwardTapped,

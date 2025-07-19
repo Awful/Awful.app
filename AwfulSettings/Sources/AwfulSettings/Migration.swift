@@ -19,7 +19,6 @@ extension SettingsMigration {
      */
     public static func migrate(_ defaults: UserDefaults) {
         yosposStyle(defaults)
-        keepSidebarOpen(defaults)
         alternateAppTheme(defaults)
         forumSpecificThemes(defaults)
     }
@@ -45,23 +44,6 @@ extension SettingsMigration {
         }
     }
 
-    static func keepSidebarOpen(_ defaults: UserDefaults) {
-        // Possible values: "never", "landscape", "portrait", "always".
-        let oldKey = "keep_sidebar_open"
-        switch defaults.string(forKey: oldKey) {
-        case "never", "portrait":
-            defaults.set(true, forKey: Settings.hideSidebarInLandscape.key)
-            fallthrough
-        case "landscape", "always":
-            defaults.removeObject(forKey: oldKey)
-        case nil:
-            // Nothing to do.
-            break
-        default:
-            // Unrecognized value. Keep it around, maybe we'll notice someday.
-            break
-        }
-    }
 
     /// "Alternate App Theme" used to be a separate setting. Now we have default theme settings for each mode (light/dark).
     static func alternateAppTheme(_ defaults: UserDefaults) {

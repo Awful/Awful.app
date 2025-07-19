@@ -37,6 +37,10 @@ class ScrollStateManager: ObservableObject {
     private var accumulatedScrollDistance: CGFloat = 0
     private var bounceSuppressionThreshold: CGFloat = 20.0 // Reduced for better responsiveness
     
+    // MARK: - Programmatic Scrolling State
+    private var isProgrammaticScrolling: Bool = false
+    private var programmaticScrollWorkItem: DispatchWorkItem?
+    
     // MARK: - Smooth Animation State
     private var scrollVelocity: CGFloat = 0
     private var lastScrollUpdateTime: TimeInterval = 0
@@ -77,6 +81,11 @@ class ScrollStateManager: ObservableObject {
     // MARK: - Scroll Handling
     func handleScrollChange(isScrollingUp: Bool) {
         let newDirection: ScrollDirection = isScrollingUp ? .up : .down
+        
+        // Ignore scroll events during programmatic scrolling
+        guard !isProgrammaticScrolling else {
+            return
+        }
         
         // Mark that user has scrolled (batched update)
         if !uiState.hasUserScrolled {
@@ -171,6 +180,24 @@ class ScrollStateManager: ObservableObject {
         }
     }
     
+    // MARK: - Programmatic Scrolling Control
+    func beginProgrammaticScrolling() {
+        isProgrammaticScrolling = true
+        programmaticScrollWorkItem?.cancel()
+        
+        // Auto-reset after a reasonable delay to prevent getting stuck
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.isProgrammaticScrolling = false
+        }
+        programmaticScrollWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: workItem) // 5 second timeout to handle longer scroll operations
+    }
+    
+    func endProgrammaticScrolling() {
+        programmaticScrollWorkItem?.cancel()
+        isProgrammaticScrolling = false
+    }
+    
     // MARK: - Private Methods
     private func updateToolbarVisibility(isScrollingUp: Bool) {
         // Only update in immersive mode - in normal mode bars are always visible
@@ -230,6 +257,7 @@ class ScrollStateManager: ObservableObject {
     // MARK: - Reset
     func reset() {
         uiUpdateWorkItem?.cancel()
+        programmaticScrollWorkItem?.cancel()
         
         // Reset all UI state in a single batch update
         uiState = UIState()
@@ -241,6 +269,7 @@ class ScrollStateManager: ObservableObject {
         lastScrollUpdateTime = 0
         smoothScrollDistance = 0
         isAnimatingToVisible = false
+        isProgrammaticScrolling = false
         
         scrollPosition = 0
         scrollContentHeight = 0

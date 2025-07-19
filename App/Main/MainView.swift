@@ -61,6 +61,12 @@ protocol MainCoordinator: ObservableObject {
     // Scroll Position Management
     func updateScrollPosition(scrollFraction: CGFloat)
     func updateScrollPosition(for threadID: String, page: ThreadPage, author: User?, scrollFraction: CGFloat)
+    
+    // View State Management
+    func saveViewState(for threadID: String, state: [String: Any])
+    func getViewState(for threadID: String) -> [String: Any]?
+    func clearViewState(for threadID: String)
+    func clearAllViewStates()
 }
 
 // MARK: - Main Coordinator Implementation
@@ -84,6 +90,9 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     
     // Flag to prevent scroll position updates during post navigation
     private var isNavigatingToPost = false
+    
+    // View state storage for comprehensive state restoration
+    private var viewStateStorage: [String: [String: Any]] = [:]
     
     // State restoration support
     private let stateManager: NavigationStateManager
@@ -156,9 +165,8 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         path.append(destination)
         
         logger.debug("Path count after navigation: \(self.path.count)")
-        // Only hide tab bar when using SwiftUI posts view (immersive mode)
-        let useSwiftUIPostsView = FoilDefaultStorage(Settings.useSwiftUIPostsView).wrappedValue
-        isTabBarHidden = useSwiftUIPostsView
+        // Always hide tab bar when navigating to posts (immersive mode)
+        isTabBarHidden = true
     }
     
     func navigateToThread(_ thread: AwfulThread, author: User?) {
@@ -213,12 +221,9 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             // On iPad sidebar, always show the tab bar
             return false
         } else {
-            // On iPhone, only hide the tab bar when:
-            // 1. We're currently viewing a thread (posts view) 
-            // 2. We're using SwiftUI posts view (immersive mode)
+            // On iPhone, hide the tab bar when viewing a thread (posts view)
             let currentlyViewingThread = navigationHistory.last is ThreadDestination && !path.isEmpty
-            let useSwiftUIPostsView = FoilDefaultStorage(Settings.useSwiftUIPostsView).wrappedValue
-            return currentlyViewingThread && useSwiftUIPostsView
+            return currentlyViewingThread
         }
     }
     
@@ -268,10 +273,9 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         navigationHistory.append(itemToRestore)
         path.append(itemToRestore)
         
-        // Only hide tab bar if unpop restores a thread destination and we're using SwiftUI posts view
+        // Hide tab bar if unpop restores a thread destination (immersive mode)
         if itemToRestore is ThreadDestination {
-            let useSwiftUIPostsView = FoilDefaultStorage(Settings.useSwiftUIPostsView).wrappedValue
-            isTabBarHidden = useSwiftUIPostsView
+            isTabBarHidden = true
         }
         
         logger.info("🔄 Unpop performed, restored item to path. Path count: \(self.path.count)")
@@ -849,6 +853,62 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         }
         
         print("✅ Navigation state restored successfully")
+    }
+    
+    // MARK: - View State Management
+    
+    /// Saves comprehensive view state for a thread
+    func saveViewState(for threadID: String, state: [String: Any]) {
+        viewStateStorage[threadID] = state
+        
+        // Also persist to UserDefaults for app lifecycle restoration
+        let key = "viewState_\(threadID)"
+        UserDefaults.standard.set(state, forKey: key)
+        
+        print("💾 saveViewState: Saved state for thread \(threadID)")
+    }
+    
+    /// Retrieves saved view state for a thread
+    func getViewState(for threadID: String) -> [String: Any]? {
+        // First try in-memory storage
+        if let state = viewStateStorage[threadID] {
+            print("📱 getViewState: Retrieved in-memory state for thread \(threadID)")
+            return state
+        }
+        
+        // Fall back to UserDefaults for app lifecycle restoration
+        let key = "viewState_\(threadID)"
+        if let state = UserDefaults.standard.object(forKey: key) as? [String: Any] {
+            print("📱 getViewState: Retrieved persisted state for thread \(threadID)")
+            // Cache in memory for future access
+            viewStateStorage[threadID] = state
+            return state
+        }
+        
+        print("📱 getViewState: No saved state found for thread \(threadID)")
+        return nil
+    }
+    
+    /// Clears view state for a thread (useful for cleanup)
+    func clearViewState(for threadID: String) {
+        viewStateStorage.removeValue(forKey: threadID)
+        let key = "viewState_\(threadID)"
+        UserDefaults.standard.removeObject(forKey: key)
+        print("🗑️ clearViewState: Cleared state for thread \(threadID)")
+    }
+    
+    /// Clears all view states (useful for app reset or memory cleanup)
+    func clearAllViewStates() {
+        let threadIDs = Array(viewStateStorage.keys)
+        viewStateStorage.removeAll()
+        
+        // Clear from UserDefaults
+        for threadID in threadIDs {
+            let key = "viewState_\(threadID)"
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        
+        print("🗑️ clearAllViewStates: Cleared all view states")
     }
 }
 
@@ -1670,7 +1730,6 @@ struct PostsViewWrapper: View {
     @StateObject private var viewModel = PostsViewModel()
     @SwiftUI.Environment(\.theme) private var theme
     @State private var title: String
-    @FoilDefaultStorage(Settings.useSwiftUIPostsView) private var useSwiftUIPostsView
     
     private var navigationTintColor: Color {
         Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label)
@@ -1687,83 +1746,15 @@ struct PostsViewWrapper: View {
     }
     
     var body: some View {
-        Group {
-            if useSwiftUIPostsView {
-                // New SwiftUI posts view with fixed animation issues
-                SwiftUIPostsPageView(
-                    thread: thread,
-                    author: author,
-                    page: page,
-                    coordinator: coordinator,
-                    scrollFraction: scrollFraction,
-                    jumpToPostID: jumpToPostID
-                )
-            } else {
-                // Legacy UIKit posts view wrapped in SwiftUI
-                legacyPostsView
-            }
-        }
-    }
-    
-    private var legacyPostsView: some View {
-        PostsViewControllerRepresentable(
+        // Always use SwiftUI posts view
+        SwiftUIPostsPageView(
             thread: thread,
-            page: page,
             author: author,
+            page: page,
             coordinator: coordinator,
-            viewModel: viewModel
+            scrollFraction: scrollFraction,
+            jumpToPostID: jumpToPostID
         )
-        .refreshable {
-            await viewModel.refresh()
-        }
-        .overlay(alignment: .top) {
-            // Secondary, hideable top bar as overlay
-            PostsTopBar(
-                onParentForumTapped: { viewModel.goToParentForum() },
-                onPreviousPostsTapped: { /* TODO */ },
-                onScrollToEndTapped: { viewModel.scrollToBottom() },
-                isVisible: viewModel.isTopBarVisible
-            )
-            .animation(.easeInOut(duration: 0.2), value: viewModel.isTopBarVisible)
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text(title)
-                    .font(.headline)
-                    .lineLimit(2)
-                    .foregroundColor(navigationTintColor)
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { viewModel.newReply() }) {
-                    Image(systemName: "square.and.pencil")
-                }
-            }
-        }
-        .overlay(alignment: .bottom) {
-            PostsToolbarContainer(
-                thread: thread,
-                author: author,
-                page: viewModel.currentPage ?? page, // Fall back to initial page if viewModel page is nil
-                numberOfPages: viewModel.numberOfPages,
-                isLoadingViewVisible: false, // This needs to be updated if we re-add the loading view
-                useTransparentBackground: false,
-                onSettingsTapped: { viewModel.triggerSettings() },
-                onBackTapped: { viewModel.goToPreviousPage() },
-                onForwardTapped: { viewModel.goToNextPage() },
-                onPageSelected: { page in
-                    viewModel.loadPage(page)
-                },
-                onGoToLastPost: {
-                    viewModel.goToLastPost()
-                },
-                onBookmarkTapped: { viewModel.triggerBookmark() },
-                onCopyLinkTapped: { viewModel.triggerCopyLink() },
-                onVoteTapped: { viewModel.triggerVote() },
-                onYourPostsTapped: { viewModel.triggerYourPosts() }
-            )
-            .ignoresSafeArea(.container, edges: .bottom)
-        }
     }
 }
 

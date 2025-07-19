@@ -61,6 +61,7 @@ final class PostsPageViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private var hasAttemptedInitialScroll = false
     private var isReRenderingAfterMarkAsRead = false
+    private var flagRequest: Task<Void, Error>?
     
     // MARK: - Initialization
     init(thread: AwfulThread, author: User? = nil) {
@@ -71,43 +72,53 @@ final class PostsPageViewModel: ObservableObject {
     
     deinit {
         networkOperation?.cancel()
+        flagRequest?.cancel()
     }
     
     // MARK: - Page Loading
     func loadInitialPage() {
+        logger.info("🚀 loadInitialPage: thread='\(self.thread.title ?? "Unknown")', beenSeen=\(self.thread.beenSeen), anyUnreadPosts=\(self.thread.anyUnreadPosts)")
+        
         // Determine initial page based on thread state
         let initialPage: ThreadPage
         
         if thread.beenSeen && thread.anyUnreadPosts {
             initialPage = .nextUnread
+            logger.info("📖 Decision: Loading nextUnread page (thread seen with unread posts)")
         } else if thread.beenSeen {
             // Thread has been seen but no unread posts - go to last page
             initialPage = .last
+            logger.info("📖 Decision: Loading LAST page (thread seen, no unread posts) ⭐️")
         } else {
             // Thread hasn't been seen - go to first page
             initialPage = .specific(1)
+            logger.info("📖 Decision: Loading first page (thread not seen)")
         }
         
+        logger.info("🎯 About to call loadPage with: \(String(describing: initialPage))")
         // Always update read position - server should track page views
         loadPage(initialPage, updatingCache: true, updatingLastReadPost: true)
     }
     
     func loadPage(_ newPage: ThreadPage, updatingCache: Bool = true, updatingLastReadPost: Bool = true) {
-        logger.info("Loading page: \(String(describing: newPage)) for thread: \(self.thread.title ?? "Unknown")")
+        logger.info("📄 loadPage: \(String(describing: newPage)) for thread '\(self.thread.title ?? "Unknown")', updatingCache=\(updatingCache), updatingLastReadPost=\(updatingLastReadPost)")
         
         // Cancel any existing operation
-        networkOperation?.cancel()
+        if let existingOperation = networkOperation {
+            logger.info("🚫 Cancelling existing network operation")
+            existingOperation.cancel()
+        }
         
         // Update state
         currentPage = newPage
         hasAttemptedInitialScroll = false
         isReRenderingAfterMarkAsRead = false
         // Don't clear jumpToPostID if we have one set - it's needed for post navigation
-        print("🎯 loadPage: jumpToPostID before potential clear: \(jumpToPostID ?? "nil")")
+        logger.debug("🎯 loadPage: jumpToPostID before potential clear: \(self.jumpToPostID ?? "nil")")
         if jumpToPostID == nil {
             scrollToFraction = nil
         }
-        print("🎯 loadPage: jumpToPostID after state update: \(jumpToPostID ?? "nil")")
+        logger.debug("🎯 loadPage: jumpToPostID after state update: \(self.jumpToPostID ?? "nil")")
         
         if !updatingCache {
             logger.info("Rendering posts without updating cache")
@@ -133,13 +144,18 @@ final class PostsPageViewModel: ObservableObject {
         
         // Start network operation
         networkOperation = Task {
-            logger.info("Starting network operation to fetch posts")
+            logger.info("🌐 Starting network operation to fetch posts for page \(String(describing: newPage))")
+            let startTime = Date()
+            
             let result = try await ForumsClient.shared.listPosts(
                 in: thread,
                 writtenBy: author,
                 page: newPage,
                 updateLastReadPost: updatingLastReadPost
             )
+            
+            let duration = Date().timeIntervalSince(startTime)
+            logger.info("✅ Network operation completed in \(String(format: "%.2f", duration))s, fetched \(result.posts.count) posts")
             
             // Cache the result
             self.cachedPageModel = result
@@ -198,19 +214,29 @@ final class PostsPageViewModel: ObservableObject {
                     self.handleInitialScrolling()
                 }
             } catch {
-                if error is CancellationError || (error as? URLError)?.code == .cancelled {
-                    logger.info("Network operation was cancelled")
+                if error is CancellationError {
+                    logger.info("🚫 Network operation was cancelled (CancellationError)")
                     return
+                } else if let urlError = error as? URLError, urlError.code == .cancelled {
+                    logger.info("🚫 Network operation was cancelled (URLError.cancelled)")
+                    return
+                } else if let urlError = error as? URLError, urlError.code == .timedOut {
+                    logger.error("⏰ Network operation timed out")
+                } else if let urlError = error as? URLError, urlError.code == .notConnectedToInternet {
+                    logger.error("📶 No internet connection")
+                } else {
+                    logger.error("❌ Failed to load posts: \(error)")
                 }
                 
-                logger.error("Failed to load posts: \(error)")
                 await MainActor.run {
                     self.isLoading = false
                     self.errorMessage = error.localizedDescription
+                    logger.info("💾 Error state set: \(error.localizedDescription)")
                 }
             }
             
             networkOperation = nil
+            logger.debug("🔚 Network operation task completed and cleaned up")
         }
     }
     
@@ -237,10 +263,59 @@ final class PostsPageViewModel: ObservableObject {
         loadPage(.last)
     }
     
+    func scrollToEnd() {
+        scrollToFraction = 1.0
+    }
+    
     // MARK: - Refresh
     func refresh() {
-        guard let page = currentPage else { return }
+        guard let page = currentPage else { 
+            logger.warning("⚠️ Cannot refresh: no current page set")
+            return 
+        }
+        logger.info("🔄 Refreshing current page: \(String(describing: page))")
         loadPage(page, updatingCache: true, updatingLastReadPost: true)
+    }
+    
+    func refreshWithRetry(maxAttempts: Int = 3) {
+        guard let page = currentPage else {
+            logger.warning("⚠️ Cannot refresh with retry: no current page set")
+            return
+        }
+        
+        Task {
+            var attempt = 1
+            while attempt <= maxAttempts {
+                logger.info("🔄 Refresh attempt \(attempt)/\(maxAttempts) for page: \(String(describing: page))")
+                
+                do {
+                    loadPage(page, updatingCache: true, updatingLastReadPost: true)
+                    
+                    // Wait for loading to complete
+                    while isLoading {
+                        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 second
+                    }
+                    
+                    if self.errorMessage == nil {
+                        logger.info("✅ Refresh succeeded on attempt \(attempt)")
+                        return
+                    } else {
+                        logger.warning("⚠️ Refresh failed on attempt \(attempt): \(self.errorMessage ?? "Unknown error")")
+                    }
+                } catch {
+                    logger.error("❌ Refresh attempt \(attempt) failed: \(error)")
+                }
+                
+                attempt += 1
+                if attempt <= maxAttempts {
+                    let delay = TimeInterval(attempt * attempt) // Exponential backoff: 4s, 9s
+                    logger.info("⏳ Waiting \(delay)s before retry...")
+                    try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                }
+            }
+            
+            logger.error("❌ All refresh attempts failed")
+        }
     }
     
     func refreshCurrentPage() async {
@@ -289,38 +364,113 @@ final class PostsPageViewModel: ObservableObject {
     }
     
     // MARK: - Scrolling
+    private func isOnLastPage() -> Bool {
+        guard let currentPage = currentPage else { return false }
+        switch currentPage {
+        case .last:
+            return true
+        case .specific(let pageNumber):
+            return pageNumber == numberOfPages
+        case .nextUnread:
+            return false
+        }
+    }
+    
     private func handleInitialScrolling() {
+        logger.info("🚀 handleInitialScrolling called - hasAttemptedInitialScroll: \(self.hasAttemptedInitialScroll)")
         guard !hasAttemptedInitialScroll else { return }
         hasAttemptedInitialScroll = true
         
+        logger.info("🔍 Initial scroll conditions - currentPage: \(String(describing: self.currentPage)), posts.count: \(self.posts.count), firstUnreadPost: \(String(describing: self.firstUnreadPost))")
+        
         // Skip scrolling if re-rendering after mark as read
         if isReRenderingAfterMarkAsRead {
-            logger.info("Skipping initial scrolling - re-rendering after mark as read")
+            logger.info("🔄 Skipping initial scrolling - re-rendering after mark as read")
             isReRenderingAfterMarkAsRead = false
             return
         }
         
         // Priority 1: First unread post
         if let serverFirstUnreadIndex = firstUnreadPost {
+            logger.info("📖 Priority 1: Found firstUnreadPost at index \(serverFirstUnreadIndex)")
             let clientFirstUnreadIndex = posts.firstIndex(where: { !$0.beenSeen })
             
             let actualIndex: Int
             if let clientIndex = clientFirstUnreadIndex {
                 if clientIndex != serverFirstUnreadIndex {
-                    logger.warning("Server firstUnreadPost (\(serverFirstUnreadIndex)) differs from client calculation (\(clientIndex))")
+                    logger.warning("⚠️ Server firstUnreadPost (\(serverFirstUnreadIndex)) differs from client calculation (\(clientIndex))")
+                    logger.info("🔧 Using client-side calculation for more accurate positioning")
                     actualIndex = clientIndex
                 } else {
+                    logger.info("✅ Server and client agree on first unseen post index: \(serverFirstUnreadIndex)")
                     actualIndex = clientIndex
                 }
             } else {
+                logger.info("📍 No client unseen posts found, using server index: \(serverFirstUnreadIndex)")
                 actualIndex = serverFirstUnreadIndex
             }
             
             if actualIndex < posts.count {
                 let postID = posts[actualIndex].postID
-                logger.info("Scrolling to first unread post: \(postID)")
+                logger.info("🎯 Scrolling to first unread post at index \(actualIndex): \(postID)")
                 jumpToPostID = postID
+                
+                // Verify scroll position with detailed logging
+                Task {
+                    try? await Task.sleep(nanoseconds: 500_000_000) // Allow time for scroll to complete
+                    await verifyScrollPosition(targetPostID: postID)
+                }
             }
+        } else if !posts.isEmpty && isOnLastPage() {
+            // Priority 2: When on last page with no unread posts, scroll to the last post (not bottom)
+            // This handles both .last pages and .specific pages that are the actual last page
+            let lastPostIndex = posts.count - 1
+            let lastPostID = posts[lastPostIndex].postID
+            logger.info("🎯 Priority 2: On last page (\(String(describing: self.currentPage))) with no unread posts, scrolling to last post at index \(lastPostIndex): \(lastPostID)")
+            jumpToPostID = lastPostID
+            
+            // Verify scroll position with detailed logging
+            Task {
+                try? await Task.sleep(nanoseconds: 500_000_000) // Allow time for scroll to complete
+                await verifyScrollPosition(targetPostID: lastPostID)
+            }
+        } else {
+            logger.info("ℹ️ Priority 3: No special scrolling required - staying at top. Reasons: currentPage=\(String(describing: self.currentPage)), posts.isEmpty=\(self.posts.isEmpty), firstUnreadPost=\(String(describing: self.firstUnreadPost))")
+        }
+    }
+    
+    /// Verifies that the scroll position is correct and logs the result
+    @MainActor
+    private func verifyScrollPosition(targetPostID: String) async {
+        logger.info("🎯 Scroll verification for post ID: \(targetPostID)")
+        
+        // Debug: Log post seen status around the target
+        if let targetIndex = posts.firstIndex(where: { $0.postID == targetPostID }) {
+            logger.info("📊 Post seen status analysis around target index \(targetIndex):")
+            
+            let startIndex = max(0, targetIndex - 2)
+            let endIndex = min(posts.count - 1, targetIndex + 2)
+            
+            for i in startIndex...endIndex {
+                let post = posts[i]
+                let indicator = i == targetIndex ? "👉" : "  "
+                let seenStatus = post.beenSeen ? "SEEN" : "UNSEEN"
+                logger.info("\(indicator) Post \(i): \(seenStatus) - ID: \(post.postID)")
+            }
+            
+            // Find the actual first unseen post based on our data
+            if let actualFirstUnseenIndex = posts.firstIndex(where: { !$0.beenSeen }) {
+                if actualFirstUnseenIndex != targetIndex {
+                    logger.warning("⚠️ Server firstUnreadPost (\(targetIndex)) differs from client calculation (\(actualFirstUnseenIndex))")
+                    logger.info("🔧 Consider using client-side calculation for more accurate positioning")
+                } else {
+                    logger.info("✅ Server and client agree on first unseen post index: \(targetIndex)")
+                }
+            } else {
+                logger.info("📋 All posts appear to be seen")
+            }
+        } else {
+            logger.error("❌ Could not find target post ID \(targetPostID) in posts array")
         }
     }
     
@@ -489,6 +639,41 @@ final class PostsPageViewModel: ObservableObject {
         
         // Navigate to filtered posts view
         coordinator?.navigateToThread(thread, page: .specific(1), author: author)
+    }
+    
+    func vote(rating: Int) {
+        Task {
+            do {
+                try await ForumsClient.shared.rate(thread, as: rating)
+                Toast.show(title: "Voted \(rating) stars", icon: Toast.Icon.checkmark)
+            } catch {
+                logger.error("Failed to vote on thread: \(error)")
+                Toast.show(title: "Failed to vote", icon: Toast.Icon.error)
+            }
+        }
+    }
+    
+    // MARK: - FYAD Flag Support
+    func handleFYADFlagRequest(onError: @escaping (String, String) -> Void = { _, _ in }) {
+        flagRequest?.cancel()
+        flagRequest = Task {
+            let client = ForumsClient.shared
+            if let forum = thread.forum {
+                _ = try await client.flagForThread(in: forum)
+            }
+        }
+        Task {
+            do {
+                try await flagRequest!.value
+                // Note: Toast intentionally commented out like in original
+                // Toast.show(title: "Thanks, I guess")
+            } catch {
+                logger.error("Could not flag thread: \(error)")
+                await MainActor.run {
+                    onError("Could not flag thread", error.localizedDescription)
+                }
+            }
+        }
     }
 }
 

@@ -21,6 +21,7 @@ struct SwiftUIPostsPageView: View {
     let thread: AwfulThread
     let author: User?
     let coordinator: AnyObject?
+    let isPresentedModally: Bool
     
     @StateObject private var viewModel: PostsPageViewModel
     @SwiftUI.Environment(\.theme) private var globalTheme
@@ -47,18 +48,22 @@ struct SwiftUIPostsPageView: View {
     @StateObject private var scrollState = ScrollStateManager()
     @StateObject private var viewState = PostsPageViewState()
     @State private var showingPagePicker = false
+    @State private var currentUserActivity: NSUserActivity?
     
     // MARK: - Liquid Glass Toolbar
     @ToolbarContentBuilder
     private var liquidGlassToolbar: some ToolbarContent {
         if enableLiquidGlass {
             if #available(iOS 26.0, *) {
-                LiquidGlassBottomBar.toolbarContent(
+                // In immersive mode, respect the scroll state for auto-hide behavior
+                if !postsImmersiveMode || scrollState.isBottomBarVisible {
+                    LiquidGlassBottomBar.toolbarContent(
                     thread: thread,
                     page: viewModel.currentPage,
                     numberOfPages: viewModel.numberOfPages,
                     showingPagePicker: $showingPagePicker,
                     toolbarTextColor: Color(theme[uicolor: "toolbarTextColor"] ?? .systemBlue),
+                    roundedFonts: theme.roundedFonts,
                     isBackEnabled: {
                         switch viewModel.currentPage {
                         case .specific(let pageNumber)?:
@@ -95,30 +100,32 @@ struct SwiftUIPostsPageView: View {
                         viewModel.loadPage(page)
                     },
                     onGoToLastPost: {
-                        // TODO: Implement go to last post functionality
+                        viewModel.goToLastPost()
                     },
                     onBookmarkTapped: {
-                        // TODO: Implement bookmark functionality
+                        viewModel.toggleBookmark()
                     },
                     onCopyLinkTapped: {
-                        // TODO: Implement copy link functionality
+                        viewModel.copyLink()
                     },
                     onVoteTapped: {
-                        // TODO: Implement vote functionality
+                        viewState.showingVoteSheet = true
                     },
                     onYourPostsTapped: {
-                        // TODO: Implement your posts functionality
+                        viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
                     }
                 )
+                }
             }
         }
     }
     
     // MARK: - Initialization
-    init(thread: AwfulThread, author: User? = nil, page: ThreadPage? = nil, coordinator: AnyObject? = nil, scrollFraction: CGFloat? = nil, jumpToPostID: String? = nil) {
+    init(thread: AwfulThread, author: User? = nil, page: ThreadPage? = nil, coordinator: AnyObject? = nil, scrollFraction: CGFloat? = nil, jumpToPostID: String? = nil, isPresentedModally: Bool = false) {
         self.thread = thread
         self.author = author
         self.coordinator = coordinator
+        self.isPresentedModally = isPresentedModally
         self._viewModel = StateObject(wrappedValue: PostsPageViewModel(thread: thread, author: author))
         
         // Initialize state using the new PostsPageViewState
@@ -129,10 +136,11 @@ struct SwiftUIPostsPageView: View {
         self._viewState = StateObject(wrappedValue: initialState)
     }
     
-    init(thread: AwfulThread, author: User? = nil, page: ThreadPage = .specific(1), coordinator: AnyObject? = nil) {
+    init(thread: AwfulThread, author: User? = nil, page: ThreadPage = .specific(1), coordinator: AnyObject? = nil, isPresentedModally: Bool = false) {
         self.thread = thread
         self.author = author
         self.coordinator = coordinator
+        self.isPresentedModally = isPresentedModally
         self._viewModel = StateObject(wrappedValue: PostsPageViewModel(thread: thread, author: author))
     }
     
@@ -343,6 +351,16 @@ struct SwiftUIPostsPageView: View {
                 loadingOverlay
             }
             .toolbar {
+                // Done button for modal presentation
+                if isPresentedModally {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Done") {
+                            dismiss()
+                        }
+                        .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         viewModel.replyToPost { workspace in
@@ -407,6 +425,26 @@ struct SwiftUIPostsPageView: View {
                         .environment(\.theme, theme)
                 }
             }
+            .confirmationDialog("Rate this thread", isPresented: $viewState.showingVoteSheet) {
+                ForEach(1...5, id: \.self) { rating in
+                    Button("\(rating) Star\(rating > 1 ? "s" : "")") {
+                        viewModel.vote(rating: rating)
+                    }
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("How would you rate this thread?")
+            }
+            .alert(viewState.alertTitle ?? "Error", isPresented: .constant(viewState.alertTitle != nil)) {
+                Button("OK") {
+                    viewState.alertTitle = nil
+                    viewState.alertMessage = nil
+                }
+            } message: {
+                if let alertMessage = viewState.alertMessage {
+                    Text(alertMessage)
+                }
+            }
             .onChange(of: viewState.showingImageViewer) { isShowing in
                 print("🖼️ showingImageViewer changed to: \(isShowing)")
                 if !isShowing {
@@ -426,6 +464,12 @@ struct SwiftUIPostsPageView: View {
             }
             .onChange(of: viewModel.posts) { posts in
                 handlePostsChanged(posts)
+            }
+            .onChange(of: viewModel.currentPage) { page in
+                // Update handoff when page changes
+                if handoffEnabled && page != nil {
+                    setupHandoff()
+                }
             }
     }
     
@@ -467,6 +511,15 @@ struct SwiftUIPostsPageView: View {
             },
             onScrollPositionChanged: { offset, contentHeight, viewHeight in
                 scrollState.handleScrollPositionChanged(offset: offset, contentHeight: contentHeight, viewHeight: viewHeight)
+                
+                // Update current scroll fraction for state restoration
+                if contentHeight > 0 {
+                    let scrollFraction = offset / max(contentHeight - viewHeight, 1)
+                    viewState.currentScrollFraction = max(0, min(1, scrollFraction))
+                    
+                    // Trigger periodic state saving if needed
+                    saveStateIfNeeded()
+                }
             },
             onDragEnded: { willDecelerate in
                 handleDragEnded(willDecelerate: willDecelerate)
@@ -477,6 +530,7 @@ struct SwiftUIPostsPageView: View {
             replyWorkspace: $viewState.replyWorkspace,
             presentedImageURL: $viewState.presentedImageURL,
             showingImageViewer: $viewState.showingImageViewer,
+            viewState: viewState,
             topInset: scrollState.topInset,
             bottomInset: calculateBottomInset(),
             isImmersiveMode: postsImmersiveMode,
@@ -533,14 +587,23 @@ struct SwiftUIPostsPageView: View {
             
             // Navigation bar content positioned below safe area
             HStack(alignment: .center) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.title2)
-                        .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                if isPresentedModally {
+                    Button("Done") {
+                        dismiss()
+                    }
+                    .font(.body.weight(.medium))
+                    .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                    .padding(.leading, 16)
+                } else {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                            .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                    }
+                    .padding(.leading, 16)
                 }
-                .padding(.leading, 16)
                 
                 Spacer()
                 
@@ -591,7 +654,7 @@ struct SwiftUIPostsPageView: View {
                 Spacer()
                 
                 Button("Scroll To End") {
-                    // TODO: Implement scroll to end functionality
+                    viewModel.scrollToEnd()
                 }
                 .font(.caption)
             }
@@ -639,10 +702,10 @@ struct SwiftUIPostsPageView: View {
                                 viewModel.copyLink()
                             },
                             onVoteTapped: {
-                                // TODO: Implement vote functionality
+                                viewState.showingVoteSheet = true
                             },
                             onYourPostsTapped: {
-                                // TODO: Implement your posts functionality  
+                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
                             }
                         )
                     } else {
@@ -652,7 +715,6 @@ struct SwiftUIPostsPageView: View {
                             page: viewModel.currentPage,
                             numberOfPages: viewModel.numberOfPages,
                             isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                            useTransparentBackground: false,
                             onSettingsTapped: {
                                 viewState.showingSettings = true
                             },
@@ -675,10 +737,10 @@ struct SwiftUIPostsPageView: View {
                                 viewModel.copyLink()
                             },
                             onVoteTapped: {
-                                // TODO: Implement vote functionality
+                                viewState.showingVoteSheet = true
                             },
                             onYourPostsTapped: {
-                                // TODO: Implement your posts functionality  
+                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
                             }
                         )
                     }
@@ -713,10 +775,10 @@ struct SwiftUIPostsPageView: View {
                                 viewModel.copyLink()
                             },
                             onVoteTapped: {
-                                // TODO: Implement vote functionality
+                                viewState.showingVoteSheet = true
                             },
                             onYourPostsTapped: {
-                                // TODO: Implement your posts functionality  
+                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
                             }
                         )
                         .offset(y: scrollState.isBottomBarVisible ? 0 : 120)
@@ -728,7 +790,6 @@ struct SwiftUIPostsPageView: View {
                             page: viewModel.currentPage,
                             numberOfPages: viewModel.numberOfPages,
                             isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                            useTransparentBackground: true,
                             onSettingsTapped: {
                                 viewState.showingSettings = true
                             },
@@ -751,10 +812,10 @@ struct SwiftUIPostsPageView: View {
                                 viewModel.copyLink()
                             },
                             onVoteTapped: {
-                                // TODO: Implement vote functionality
+                                viewState.showingVoteSheet = true
                             },
                             onYourPostsTapped: {
-                                // TODO: Implement your posts functionality  
+                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
                             }
                         )
                         .offset(y: scrollState.isBottomBarVisible ? 0 : 120)
@@ -789,6 +850,9 @@ struct SwiftUIPostsPageView: View {
     // MARK: - Helper Methods
     private func handleViewAppear() {
         print("🔵 SwiftUIPostsPageView: handleViewAppear - posts.count: \(viewModel.posts.count), isLoading: \(viewModel.isLoading)")
+        
+        // Restore complete state first (includes scroll position and jump targets)
+        restoreCompleteState()
         
         // Set jumpToPostID from pending state after view is properly installed
         if let jumpToPostID = viewState.pendingJumpToPostID {
@@ -833,7 +897,10 @@ struct SwiftUIPostsPageView: View {
         viewState.resetPullStates()
         invalidateHandoff()
         
-        // Save current scroll position for potential restoration
+        // Save complete state for comprehensive restoration
+        saveCompleteState()
+        
+        // Also save current scroll position for backward compatibility
         saveScrollPosition()
     }
     
@@ -862,6 +929,9 @@ struct SwiftUIPostsPageView: View {
     
     private func handleScrollToFraction(_ fraction: CGFloat?) {
         if let fraction = fraction {
+            // Begin programmatic scrolling to prevent toolbar auto-hide
+            scrollState.beginProgrammaticScrolling()
+            
             // Find the render view container and scroll to fractional position
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.first,
@@ -870,6 +940,11 @@ struct SwiftUIPostsPageView: View {
                 container.renderView.scrollToFractionalOffset(fractionalPoint)
             }
             viewModel.scrollToFraction = nil
+            
+            // End programmatic scrolling after a longer delay to allow the scroll to complete
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self.scrollState.endProgrammaticScrolling()
+            }
         }
     }
     
@@ -878,8 +953,11 @@ struct SwiftUIPostsPageView: View {
         
         // Apply pending scroll fraction when posts are loaded
         if !posts.isEmpty, let scrollFraction = viewState.pendingScrollFraction {
-            // Delay slightly to ensure the content is rendered - longer delay on iPad
-            let delay = horizontalSizeClass == .regular ? 0.3 : 0.1
+            // Begin programmatic scrolling protection before the delayed scroll
+            scrollState.beginProgrammaticScrolling()
+            
+            // Delay to ensure the content is rendered - use consistent timing for reliable scrolling
+            let delay = 0.3
             print("📋 Applying scroll fraction \(scrollFraction) after \(delay)s delay")
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 viewModel.scrollToFraction = scrollFraction
@@ -962,6 +1040,11 @@ struct SwiftUIPostsPageView: View {
     private func attemptPostJump(postID: String, attempt: Int, maxAttempts: Int) {
         print("🎯 Attempting post jump to \(postID) (attempt \(attempt)/\(maxAttempts))")
         
+        // Begin programmatic scrolling on the first attempt
+        if attempt == 1 {
+            scrollState.beginProgrammaticScrolling()
+        }
+        
         // Progressive delay: longer waits for later attempts to ensure HTML is fully rendered
         let delay = TimeInterval(attempt) * 0.5 // 0.5s, 1.0s, 1.5s
         
@@ -970,6 +1053,7 @@ struct SwiftUIPostsPageView: View {
             // Verify we still have the same jumpToPostID (user hasn't navigated away)
             guard viewModel.jumpToPostID == postID else {
                 print("🔍 Post jump cancelled - jumpToPostID changed")
+                self.scrollState.endProgrammaticScrolling()
                 return
             }
             
@@ -999,6 +1083,9 @@ struct SwiftUIPostsPageView: View {
                         // Note: We clear it even if we can't verify success to prevent infinite retries
                         viewModel.jumpToPostID = nil
                         print("✅ Post jump completed, jumpToPostID cleared")
+                        
+                        // End programmatic scrolling
+                        self.scrollState.endProgrammaticScrolling()
                     }
                 } else {
                     print("❌ Posts jump attempt \(attempt): No render view container found")
@@ -1007,6 +1094,7 @@ struct SwiftUIPostsPageView: View {
                     } else {
                         print("❌ Max attempts reached, clearing jumpToPostID")
                         viewModel.jumpToPostID = nil
+                        self.scrollState.endProgrammaticScrolling()
                     }
                 }
             } else {
@@ -1016,6 +1104,7 @@ struct SwiftUIPostsPageView: View {
                 } else {
                     print("❌ Max attempts reached, clearing jumpToPostID")
                     viewModel.jumpToPostID = nil
+                    self.scrollState.endProgrammaticScrolling()
                 }
             }
         }
@@ -1044,30 +1133,86 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Handoff
     func setupHandoff() {
-        guard handoffEnabled else { return }
+        guard handoffEnabled else { 
+            print("🤝 Handoff disabled, skipping setup")
+            return 
+        }
+        
+        print("🤝 Setting up handoff for thread: \(thread.title ?? "Unknown")")
         
         let activity = NSUserActivity(activityType: Handoff.ActivityType.browsingPosts)
         activity.title = thread.title
+        activity.isEligibleForHandoff = true
+        activity.isEligibleForSearch = false
+        activity.isEligibleForPrediction = false
         
         if let currentPage = viewModel.currentPage {
             let route: AwfulRoute
             if let author = author {
                 route = .threadPageSingleUser(threadID: thread.threadID, userID: author.userID, page: currentPage, .noseen)
+                print("🤝 Handoff route: thread page for user \(author.username ?? "Unknown") on page \(currentPage)")
             } else {
                 route = .threadPage(threadID: thread.threadID, page: currentPage, .noseen)
+                print("🤝 Handoff route: thread page \(currentPage)")
             }
             activity.route = route
         }
         
-        // Note: In SwiftUI, we don't have direct access to the view controller's userActivity
-        // This would need to be handled by the hosting controller or coordinator
+        // Store the activity for later invalidation
+        currentUserActivity = activity
+        
+        // In SwiftUI, we need to find a way to set this on the hosting view controller
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first,
+           let rootViewController = window.rootViewController {
+            setUserActivity(activity, on: rootViewController)
+        }
+    }
+    
+    private func setUserActivity(_ activity: NSUserActivity, on viewController: UIViewController) {
+        // Find the appropriate view controller to set the user activity on
+        if let navigationController = viewController as? UINavigationController {
+            navigationController.topViewController?.userActivity = activity
+            print("🤝 Set handoff activity on navigation controller's top view controller")
+        } else if let hostingController = viewController.children.first(where: { $0 is UIHostingController<AnyView> }) {
+            hostingController.userActivity = activity
+            print("🤝 Set handoff activity on hosting controller")
+        } else {
+            viewController.userActivity = activity
+            print("🤝 Set handoff activity on root view controller")
+        }
     }
     
     func invalidateHandoff() {
-        // Note: In SwiftUI, handoff invalidation would need to be handled by the hosting controller
+        guard let activity = currentUserActivity else { 
+            print("🤝 No handoff activity to invalidate")
+            return 
+        }
+        
+        print("🤝 Invalidating handoff activity")
+        activity.invalidate()
+        currentUserActivity = nil
+        
+        // Also clear it from the view controller
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first,
+           let rootViewController = window.rootViewController {
+            clearUserActivity(from: rootViewController)
+        }
     }
     
-    // MARK: - Scroll Position Restoration
+    private func clearUserActivity(from viewController: UIViewController) {
+        if let navigationController = viewController as? UINavigationController {
+            navigationController.topViewController?.userActivity = nil
+        } else if let hostingController = viewController.children.first(where: { $0 is UIHostingController<AnyView> }) {
+            hostingController.userActivity = nil
+        } else {
+            viewController.userActivity = nil
+        }
+        print("🤝 Cleared handoff activity from view controller")
+    }
+    
+    // MARK: - State Restoration
     private func saveScrollPosition() {
         // Update the navigation coordinator with current scroll position
         // This will allow restoration when navigating back to this thread
@@ -1079,6 +1224,107 @@ struct SwiftUIPostsPageView: View {
                 author: author,
                 scrollFraction: viewState.currentScrollFraction
             )
+        }
+    }
+    
+    @State private var lastSavedScrollFraction: CGFloat = 0
+    @State private var lastScrollSaveTime: Date = Date()
+    
+    /// Saves state periodically during scrolling to prevent loss of progress
+    private func saveStateIfNeeded() {
+        let now = Date()
+        let timeSinceLastSave = now.timeIntervalSince(lastScrollSaveTime)
+        let scrollDifference = abs(viewState.currentScrollFraction - lastSavedScrollFraction)
+        
+        // Save if significant scroll change (> 5%) or time elapsed (> 10 seconds)
+        if scrollDifference > 0.05 || timeSinceLastSave > 10 {
+            saveCompleteState()
+            self.lastSavedScrollFraction = viewState.currentScrollFraction
+            self.lastScrollSaveTime = now
+            print("💾 Periodic state save triggered - scroll diff: \(scrollDifference), time: \(timeSinceLastSave)s")
+        }
+    }
+    
+    /// Enhanced state restoration for SwiftUI that matches UIKit's approach
+    private func saveCompleteState() {
+        guard let coordinator = coordinator as? MainCoordinatorImpl else { return }
+        
+        // Create a comprehensive state dictionary
+        var stateData: [String: Any] = [:]
+        
+        // Core thread and author information
+        stateData["threadID"] = thread.threadID
+        if let author = author {
+            stateData["authorID"] = author.userID
+            stateData["authorUsername"] = author.username
+        }
+        
+        // Current page information
+        if let currentPage = viewModel.currentPage {
+            switch currentPage {
+            case .specific(let pageNumber):
+                stateData["pageNumber"] = pageNumber
+            case .last:
+                stateData["pageType"] = "last"
+            case .nextUnread:
+                stateData["pageType"] = "nextUnread"
+            }
+            // Note: rawValue is not accessible, using string representation instead
+            stateData["pageDescription"] = String(describing: currentPage)
+        }
+        
+        // Scroll position
+        stateData["scrollFraction"] = viewState.currentScrollFraction
+        
+        // View state
+        stateData["isImmersiveMode"] = postsImmersiveMode
+        stateData["showingSettings"] = viewState.showingSettings
+        stateData["timestamp"] = Date().timeIntervalSince1970
+        
+        // Jump to post ID if pending
+        if let jumpToPostID = viewModel.jumpToPostID {
+            stateData["pendingJumpToPostID"] = jumpToPostID
+        }
+        
+        print("💾 saveCompleteState: Saved comprehensive state for thread '\(thread.title ?? "Unknown")'")
+        coordinator.saveViewState(for: thread.threadID, state: stateData)
+    }
+    
+    private func restoreCompleteState() {
+        guard let coordinator = coordinator as? MainCoordinatorImpl else { return }
+        
+        guard let stateData = coordinator.getViewState(for: thread.threadID) else {
+            print("📱 restoreCompleteState: No saved state found for thread '\(thread.title ?? "Unknown")'")
+            return
+        }
+        
+        print("📱 restoreCompleteState: Restoring state for thread '\(thread.title ?? "Unknown")'")
+        
+        // Restore scroll position
+        if let scrollFraction = stateData["scrollFraction"] as? CGFloat {
+            viewState.pendingScrollFraction = scrollFraction
+            print("📱 Restored scroll fraction: \(scrollFraction)")
+        }
+        
+        // Restore pending jump to post
+        if let jumpToPostID = stateData["pendingJumpToPostID"] as? String {
+            viewState.pendingJumpToPostID = jumpToPostID
+            print("📱 Restored pending jump to post: \(jumpToPostID)")
+        }
+        
+        // Restore page information (if needed for validation)
+        if let pageNumber = stateData["pageNumber"] as? Int {
+            print("📱 Restored page number: \(pageNumber)")
+        } else if let pageType = stateData["pageType"] as? String {
+            print("📱 Restored page type: \(pageType)")
+        }
+        
+        // Check timestamp to see if state is stale
+        if let timestamp = stateData["timestamp"] as? TimeInterval {
+            let age = Date().timeIntervalSince1970 - timestamp
+            if age > 300 { // 5 minutes
+                print("⏰ Saved state is \(Int(age))s old, may be stale")
+            }
         }
     }
     

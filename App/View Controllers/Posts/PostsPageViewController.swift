@@ -1080,7 +1080,6 @@ final class PostsPageViewController: ViewController {
             page: page,
             numberOfPages: numberOfPages,
             isLoadingViewVisible: postsView.loadingView != nil,
-            useTransparentBackground: false,
             onSettingsTapped: { [weak self] in
                 self?.didTapSettings()
             },
