@@ -94,6 +94,7 @@ struct LiquidGlassBottomBar: View {
                         .frame(minWidth: 60)
                 }
             }
+            .padding(.trailing, 8) // Add right padding to page picker
             .disabled(page == nil)
             .accessibilityLabel(currentPageAccessibilityLabel)
             .accessibilityHint("Opens page picker")
@@ -431,6 +432,7 @@ private struct NavigationControlsContainer: View {
                         .frame(minWidth: 60)
                 }
             }
+            .padding(.trailing, 8) // Add right padding to page picker
             .disabled(page == nil)
             .accessibilityLabel(currentPageAccessibilityLabel)
             .accessibilityHint("Opens page picker")

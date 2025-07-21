@@ -53,8 +53,12 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Simplified Immersive Mode State
     @State private var isToolbarVisible = true
+    @State private var isNavigationBarVisible = true
     @State private var lastScrollOffset: CGFloat = 0
     @State private var scrollDirection: ScrollDirection = .none
+    
+    // MARK: - Cached Performance State
+    @State private var useLiquidGlass = false
     
     enum ScrollDirection {
         case up
@@ -139,8 +143,7 @@ struct SwiftUIPostsPageView: View {
     var body: some View {
         mainContentView
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarHidden(postsImmersiveMode)
-            .navigationTitle(thread.title ?? "Thread")
+            .toolbar(postsImmersiveMode ? (isNavigationBarVisible ? .visible : .hidden) : .visible, for: .navigationBar)
             .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
             .statusBarHidden(false)
             .allowsHitTesting(true)
@@ -152,6 +155,18 @@ struct SwiftUIPostsPageView: View {
                 loadingOverlay
             }
             .toolbar {
+                // Custom multiline title
+                ToolbarItem(placement: .principal) {
+                    Text(thread.title ?? "Thread")
+                        .postTitleFont(theme: theme)
+                        .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                        .lineLimit(UIDevice.current.userInterfaceIdiom == .pad ? 1 : 2)
+                        .truncationMode(.tail)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .fixedSize(horizontal: false, vertical: true) // Allow vertical expansion for multiple lines
+                }
+                
                 // Done button for modal presentation
                 if isPresentedModally {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -179,10 +194,8 @@ struct SwiftUIPostsPageView: View {
             }
             .toolbar(postsImmersiveMode ? (isToolbarVisible ? .visible : .hidden) : .visible, for: .bottomBar)
             .onAppear {
+                updateLiquidGlassState()
                 handleViewAppear()
-                // Debug toolbar logic
-                print("🔧 Toolbar Logic - shouldUseLiquidGlass: \(shouldUseLiquidGlass), shouldShowToolbar: \(shouldShowToolbar), postsImmersiveMode: \(postsImmersiveMode)")
-                print("🔧 Toolbar Logic - Will show native liquid glass: \(shouldUseLiquidGlass && shouldShowToolbar && !postsImmersiveMode)")
             }
             .onChange(of: viewModel.isLoading) { isLoading in
                 viewState.isLoadingSpinnerVisible = isLoading
@@ -274,6 +287,9 @@ struct SwiftUIPostsPageView: View {
                 hasAttemptedInitialScroll = false
                 print("🔄 Page changed to \(String(describing: page)) - reset scroll attempt flag")
             }
+            .onChange(of: enableLiquidGlass) { _ in
+                updateLiquidGlassState()
+            }
     }
     
     // MARK: - Main Content
@@ -325,6 +341,13 @@ struct SwiftUIPostsPageView: View {
         .id("render-view-\(viewModel.thread.threadID)-\(viewModel.currentPage.map { "\($0)" } ?? "unknown")")
         .background(Color(theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground))
         .ignoresSafeArea(postsImmersiveMode ? .all : .container)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            // Add inset when in immersive mode and navbar is visible to prevent content overlap
+            if postsImmersiveMode && isNavigationBarVisible {
+                Color.clear
+                    .frame(height: 44) // Standard navigation bar height
+            }
+        }
         // All pull overlays temporarily removed for performance testing
         /*
         .overlay(alignment: .center) {
@@ -339,61 +362,65 @@ struct SwiftUIPostsPageView: View {
         */
     }
     
+    // MARK: - Top Overlays
+    private var topOverlays: some View {
+        VStack(spacing: 0) {
+            // Show custom navigation bar only in immersive mode when visible
+            if postsImmersiveMode && isNavigationBarVisible {
+                customNavigationBar
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+    }
+    
     // MARK: - Custom Navigation Bar
     private var customNavigationBar: some View {
-        VStack(spacing: 0) {
-            // Safe area spacer
-            Color.clear
-                .frame(height: 44) // Standard safe area height
-            
-            // Navigation bar content positioned below safe area
-            HStack(alignment: .center) {
-                if isPresentedModally {
-                    Button("Done") {
-                        dismiss()
-                    }
-                    .font(.body.weight(.medium))
-                    .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                    .padding(.leading, 16)
-                } else {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .font(.title2)
-                            .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                    }
-                    .padding(.leading, 16)
+        HStack(alignment: .center) {
+            if isPresentedModally {
+                Button("Done") {
+                    dismiss()
                 }
-                
-                Spacer()
-                
-                Text(thread.title ?? "Thread")
-                    .postTitleFont(theme: theme)
-                    .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                    .lineLimit(UIDevice.current.userInterfaceIdiom == .pad ? 1 : 2)
-                    .truncationMode(.tail)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                
-                Spacer()
-                
+                .font(.body.weight(.medium))
+                .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                .padding(.leading, 16)
+            } else {
                 Button(action: {
-                    viewModel.replyToPost { workspace in
-                        viewState.replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
-                    }
+                    dismiss()
                 }) {
-                    Image("compose")
-                        .renderingMode(.template)
+                    Image(systemName: "chevron.left")
+                        .font(.title2)
                         .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
                 }
-                .padding(.trailing, 16)
+                .padding(.leading, 16)
             }
-            .frame(minHeight: 44)
-            .padding(.vertical, 8)
-            .background(Color(theme[uicolor: "navigationBarTintColor"] ?? UIColor.systemBackground))
+            
+            Spacer()
+            
+            Text(thread.title ?? "Thread")
+                .postTitleFont(theme: theme)
+                .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                .lineLimit(UIDevice.current.userInterfaceIdiom == .pad ? 1 : 2)
+                .truncationMode(.tail)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+            
+            Spacer()
+            
+            Button(action: {
+                viewModel.replyToPost { workspace in
+                    viewState.replyWorkspace = IdentifiableReplyWorkspace(workspace: workspace)
+                }
+            }) {
+                Image("compose")
+                    .renderingMode(.template)
+                    .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+            }
+            .padding(.trailing, 16)
         }
+        .frame(minHeight: 44)
+        .padding(.vertical, 8)
         .background(Color(theme[uicolor: "navigationBarTintColor"] ?? UIColor.systemBackground))
+        .padding(.top, 44) // Add top padding for safe area when used as overlay
     }
     
     // MARK: - Top Subtoolbar
@@ -431,17 +458,13 @@ struct SwiftUIPostsPageView: View {
         VStack(spacing: 0) {
             // Show overlay toolbar only when not using liquid glass
             // When using liquid glass, always prefer native toolbar system for proper effects
-            let showOverlay = shouldShowToolbar && !shouldUseLiquidGlass
+            let showOverlay = shouldShowToolbar && !useLiquidGlass
             
             if showOverlay {
                 standardToolbar
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .onAppear { print("🔧 Showing standard overlay") }
             }
-        }
-        .onAppear {
-            let showOverlay = shouldShowToolbar && !shouldUseLiquidGlass
-            print("🔧 bottomOverlays - shouldShowToolbar: \(shouldShowToolbar), shouldUseLiquidGlass: \(shouldUseLiquidGlass), showOverlay: \(showOverlay)")
         }
     }
     
@@ -456,14 +479,11 @@ struct SwiftUIPostsPageView: View {
         }
     }
     
-    private var shouldUseLiquidGlass: Bool {
+    private func updateLiquidGlassState() {
         if #available(iOS 26.0, *) {
-            let result = enableLiquidGlass
-            print("🔧 shouldUseLiquidGlass: \(result), enableLiquidGlass: \(enableLiquidGlass)")
-            return result
+            useLiquidGlass = enableLiquidGlass
         } else {
-            print("🔧 shouldUseLiquidGlass: false (iOS < 26)")
-            return false
+            useLiquidGlass = false
         }
     }
     
@@ -472,7 +492,7 @@ struct SwiftUIPostsPageView: View {
     private var liquidGlassToolbarContent: some ToolbarContent {
         // Show when liquid glass is enabled and toolbar should be visible
         // In immersive mode, we still use native toolbar but control visibility with .toolbar(.visible/.hidden)
-        if #available(iOS 26.0, *), shouldUseLiquidGlass && shouldShowToolbar {
+        if #available(iOS 26.0, *), useLiquidGlass && shouldShowToolbar {
             LiquidGlassBottomBar.toolbarContent(
                 thread: thread,
                 page: viewModel.currentPage,
@@ -662,11 +682,14 @@ struct SwiftUIPostsPageView: View {
         
         withAnimation(.easeInOut(duration: 0.25)) {
             if isAtTop || isAtBottom {
-                // Always show toolbar at top or bottom
+                // Always show both bars at top or bottom
                 isToolbarVisible = true
+                isNavigationBarVisible = true
             } else if abs(delta) > threshold {
-                // Show toolbar when scrolling up, hide when scrolling down
-                isToolbarVisible = scrollDirection == .up
+                // Show/hide both bars together when scrolling up/down
+                let shouldShowBars = scrollDirection == .up
+                isToolbarVisible = shouldShowBars
+                isNavigationBarVisible = shouldShowBars
             }
         }
         
@@ -674,9 +697,10 @@ struct SwiftUIPostsPageView: View {
     }
     
     private func resetToolbarVisibility() {
-        // Reset toolbar visibility when page changes
+        // Reset both navbar and toolbar visibility when page changes
         withAnimation(.easeInOut(duration: 0.25)) {
             isToolbarVisible = true
+            isNavigationBarVisible = true
         }
         lastScrollOffset = 0
         scrollDirection = .none
