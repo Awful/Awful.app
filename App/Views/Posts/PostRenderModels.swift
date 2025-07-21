@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulModelTypes
+import CoreData
 import Foundation
 
 struct PostRenderModel {
@@ -52,8 +53,9 @@ struct PostRenderModel {
 
     var roles: String {
         guard let rolesSet = post.author?.roles as? NSSet else { return "" }
-        let cssClasses = (rolesSet.allObjects as? [NSManagedObject] ?? []).compactMap { role -> String? in
-            guard let name = role.value(forKey: "name") as? String else { return nil }
+        let cssClasses = rolesSet.allObjects.compactMap { roleObject -> String? in
+            guard let role = roleObject as? NSManagedObject,
+                  let name = role.value(forKey: "name") as? String else { return nil }
             switch name {
             case "Administrator": return "role-admin"
             case "Moderator": return "role-mod"

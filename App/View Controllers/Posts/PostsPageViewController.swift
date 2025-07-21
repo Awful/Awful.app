@@ -1409,7 +1409,7 @@ extension PostsPageViewController: RenderViewDelegate {
                 do {
                     let fragment = await oEmbedFetcher.fetch(url: message.url, id: message.id)
                     let javascript = "Awful.invoke(\'oembed.process\', \(fragment))"
-                    try await renderView.webView.eval(javascript)
+                    _ = try await renderView.webView.eval(javascript)
                 } catch {
                     logger.error("oembed fetch for \(message.url, privacy: .public) failed: \(error, privacy: .public)")
                 }
@@ -2066,20 +2066,6 @@ private extension User {
         }
         return regdate.map { DateFormatter.regDateFormatter.string(from: $0) } ?? ""
     }
-}
-
-private extension DateFormatter {
-    static let postDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
-        return formatter
-    }()
-    
-    static let regDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d, yyyy"
-        return formatter
-    }()
 }
 
 private extension PostsPageView {

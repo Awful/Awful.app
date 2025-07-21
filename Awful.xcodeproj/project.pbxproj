@@ -180,6 +180,8 @@
 		2D23BF8C2E2A54900076BEBC /* LiquidGlassBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D23BF8B2E2A54900076BEBC /* LiquidGlassBottomBar.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D3F1CD02E22767D0081E56B /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */; };
+		2D4504BF2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */; };
+		2D4504C12E2E54CD00C01E36 /* PostRenderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */; };
 		2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */; };
 		2D91DB902E13EBE000771E25 /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
@@ -196,7 +198,6 @@
 		2DB5FC302E1A8042003F050F /* PostsPageTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC252E1A8042003F050F /* PostsPageTitleView.swift */; };
 		2DB5FC312E1A8042003F050F /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC1D2E1A8042003F050F /* SearchView.swift */; };
 		2DB5FC322E1A8042003F050F /* PostsPageSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC242E1A8042003F050F /* PostsPageSettingsView.swift */; };
-		2DB5FC352E1BCE43003F050F /* SwiftUIRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC342E1BCE43003F050F /* SwiftUIRenderView.swift */; };
 		2DB5FC362E1BCE43003F050F /* SwiftUIPostsPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC332E1BCE43003F050F /* SwiftUIPostsPageView.swift */; };
 		2DB5FC382E1BCE5E003F050F /* PostsPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC372E1BCE5E003F050F /* PostsPageViewModel.swift */; };
 		2DB5FC3B2E1BF6E0003F050F /* FrogPullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC392E1BF6E0003F050F /* FrogPullToRefresh.swift */; };
@@ -494,6 +495,8 @@
 		2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyWorkspaceView.swift; sourceTree = "<group>"; };
 		2D23BF8B2E2A54900076BEBC /* LiquidGlassBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassBottomBar.swift; sourceTree = "<group>"; };
 		2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
+		2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRenderViewNative.swift; sourceTree = "<group>"; };
+		2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRenderModels.swift; sourceTree = "<group>"; };
 		2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsSwiftUIViewController.swift; sourceTree = "<group>"; };
 		2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
@@ -511,7 +514,6 @@
 		2DB5FC262E1A8042003F050F /* PostsToolbarContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsToolbarContainer.swift; sourceTree = "<group>"; };
 		2DB5FC272E1A8042003F050F /* PostsTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsTopBar.swift; sourceTree = "<group>"; };
 		2DB5FC332E1BCE43003F050F /* SwiftUIPostsPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIPostsPageView.swift; sourceTree = "<group>"; };
-		2DB5FC342E1BCE43003F050F /* SwiftUIRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRenderView.swift; sourceTree = "<group>"; };
 		2DB5FC372E1BCE5E003F050F /* PostsPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageViewModel.swift; sourceTree = "<group>"; };
 		2DB5FC392E1BF6E0003F050F /* FrogPullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrogPullToRefresh.swift; sourceTree = "<group>"; };
 		2DB5FC3A2E1BF6E0003F050F /* FrogRefreshAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrogRefreshAnimation.swift; sourceTree = "<group>"; };
@@ -1176,6 +1178,8 @@
 		2DB5FC282E1A8042003F050F /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */,
+				2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */,
 				2D23BF8B2E2A54900076BEBC /* LiquidGlassBottomBar.swift */,
 				2D23BF872E28FF790076BEBC /* PostsPageViewState.swift */,
 				2D23BF882E28FF790076BEBC /* ReplyWorkspaceView.swift */,
@@ -1185,7 +1189,6 @@
 				2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */,
 				2DB5FC372E1BCE5E003F050F /* PostsPageViewModel.swift */,
 				2DB5FC332E1BCE43003F050F /* SwiftUIPostsPageView.swift */,
-				2DB5FC342E1BCE43003F050F /* SwiftUIRenderView.swift */,
 				2DB5FC212E1A8042003F050F /* PostsActionsMenu.swift */,
 				2DB5FC222E1A8042003F050F /* PostsPagePicker.swift */,
 				2DB5FC232E1A8042003F050F /* PostsPagePlaceholderView.swift */,
@@ -1513,7 +1516,6 @@
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
 				1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */,
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
-				2DB5FC352E1BCE43003F050F /* SwiftUIRenderView.swift in Sources */,
 				2DB5FC362E1BCE43003F050F /* SwiftUIPostsPageView.swift in Sources */,
 				2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */,
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
@@ -1555,6 +1557,7 @@
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
 				1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */,
+				2D4504BF2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
 				2DB77D692E1E784C0021B8DE /* NavigationStateRestoration.swift in Sources */,
@@ -1601,6 +1604,7 @@
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
 				1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */,
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
+				2D4504C12E2E54CD00C01E36 /* PostRenderModels.swift in Sources */,
 				2DB5FC382E1BCE5E003F050F /* PostsPageViewModel.swift in Sources */,
 				1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */,
 				1C16FBAC1CB8578C00C88BD1 /* RefreshMinder.swift in Sources */,
@@ -1667,6 +1671,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Creep;
 				CODE_SIGN_ENTITLEMENTS = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1683,6 +1688,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Creep;
 				CODE_SIGN_ENTITLEMENTS = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1706,7 +1712,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = App/Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
@@ -1728,7 +1734,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = App/Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
@@ -1745,7 +1751,7 @@
 				ASSETCATALOG_COMPILER_GENERATE_ALTERNATE_ICONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -1766,7 +1772,7 @@
 				ASSETCATALOG_COMPILER_GENERATE_ALTERNATE_ICONS = YES;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;

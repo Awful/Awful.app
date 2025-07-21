@@ -140,25 +140,23 @@ struct SwiftUIArrowPullControl: View {
         }
     }
     
-    // This method triggers the refresh when user releases in triggered state
+    // This method triggers the navigation when user releases in triggered state
     private func triggerRefresh() {
         print("🔄 ArrowPullControl: triggerRefresh() called")
         hasTriggeredRefresh = true
         currentState = .refreshing
         onRefreshTriggered()
         
-        // Reset after refresh completes
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        // Reset immediately since this triggers navigation, not refresh
+        DispatchQueue.main.async {
             resetState()
         }
     }
     
     private func resetState() {
-        if currentState != .refreshing {
-            currentState = .ready
-            hasTriggeredRefresh = false
-            triggeredStateStartTime = nil
-        }
+        currentState = .ready
+        hasTriggeredRefresh = false
+        triggeredStateStartTime = nil
     }
 }
 

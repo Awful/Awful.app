@@ -32,10 +32,7 @@ class ScrollStateManager: ObservableObject {
     private var scrollViewHeight: CGFloat = 0
     private var hasScrolledDown: Bool = false
     private var lastScrollDirection: ScrollDirection = .none
-    private var scrollDirectionChangeThreshold: CGFloat = 5.0 // Much lower threshold for smoother following
     private var lastScrollPosition: CGFloat = 0
-    private var accumulatedScrollDistance: CGFloat = 0
-    private var bounceSuppressionThreshold: CGFloat = 20.0 // Reduced for better responsiveness
     
     // MARK: - Programmatic Scrolling State
     private var isProgrammaticScrolling: Bool = false
@@ -48,14 +45,17 @@ class ScrollStateManager: ObservableObject {
     private let maxToolbarOffset: CGFloat = 120 // Maximum distance toolbars can be offset
     private var isAnimatingToVisible: Bool = false
     
-    // MARK: - Throttling
-    private var uiUpdateWorkItem: DispatchWorkItem?
-    private let uiUpdateDelay: TimeInterval = 0.033 // 30fps for UI updates
+    // MARK: - Throttling - removed for direct scroll mapping
     
     // MARK: - Computed Properties
     var topInset: CGFloat {
-        // No insets - toolbars are pure overlays
-        0
+        // In immersive mode, provide inset for top navigation bar + safe area
+        // This ensures first post is visible below the navigation bar
+        if isImmersiveMode {
+            // Navigation bar height (44) + safe area (varies by device) + padding
+            return 44 // Minimal inset to just clear navigation bar
+        }
+        return 0
     }
     
     var bottomInset: CGFloat {
@@ -80,68 +80,51 @@ class ScrollStateManager: ObservableObject {
     
     // MARK: - Scroll Handling
     func handleScrollChange(isScrollingUp: Bool) {
-        let newDirection: ScrollDirection = isScrollingUp ? .up : .down
-        
         // Ignore scroll events during programmatic scrolling
-        guard !isProgrammaticScrolling else {
+        guard !isProgrammaticScrolling, isImmersiveMode else {
             return
         }
         
-        // Mark that user has scrolled (batched update)
+        // Mark that user has scrolled
         if !uiState.hasUserScrolled {
             var newState = uiState
             newState.hasUserScrolled = true
             uiState = newState
         }
-        
-        // Only process if direction actually changed and we're in immersive mode
-        guard newDirection != lastScrollDirection, isImmersiveMode else { 
-            return 
-        }
-        
-        // Increased threshold to reduce noise
-        let minThreshold: CGFloat = 50.0 // Further increased from 40.0
-        if lastScrollDirection != .none && accumulatedScrollDistance < minThreshold {
-            return
-        }
-        
-        lastScrollDirection = newDirection
-        accumulatedScrollDistance = 0 // Reset after processing
-        
-        // Cancel previous UI update
-        uiUpdateWorkItem?.cancel()
-        
-        // Schedule new UI update with longer debouncing to prevent rapid state changes
-        let workItem = DispatchWorkItem { [weak self] in
-            self?.updateToolbarVisibility(isScrollingUp: isScrollingUp)
-        }
-        uiUpdateWorkItem = workItem
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: workItem) // Even longer debounce
     }
     
     func handleScrollPositionChanged(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
-        // Use immediate updates for critical calculations
-        let scrollDelta = abs(offset - lastScrollPosition)
-        if scrollDelta > 0 {
-            accumulatedScrollDistance += scrollDelta
-        }
-        
+        let scrollDelta = offset - lastScrollPosition
         lastScrollPosition = offset
         scrollPosition = offset
         scrollContentHeight = contentHeight
         scrollViewHeight = viewHeight
         
-        // Direct update for near bottom detection (no async dispatch)
+        // Update near bottom detection
         let bottomOffset = offset + viewHeight
-        let newIsNearBottom = contentHeight > 0 && bottomOffset >= contentHeight - 200 // Increased threshold
+        let newIsNearBottom = contentHeight > 0 && bottomOffset >= contentHeight - 200
         
-        // Only update if changed to reduce UI rebuilds
+        var newState = uiState
         if newIsNearBottom != uiState.isNearBottom {
-            var newState = uiState
             newState.isNearBottom = newIsNearBottom
-            uiState = newState
         }
+        
+        // In immersive mode, directly map scroll movement to toolbar offsets
+        if isImmersiveMode && !isProgrammaticScrolling && abs(scrollDelta) > 2 {
+            // Simple 1:1 mapping: scroll down = hide toolbars, scroll up = show toolbars
+            let newTopOffset = max(-maxToolbarOffset, min(0, uiState.topBarOffset - scrollDelta))
+            let newBottomOffset = max(0, min(maxToolbarOffset, uiState.bottomBarOffset + scrollDelta))
+            
+            newState.topBarOffset = newTopOffset
+            newState.bottomBarOffset = newBottomOffset
+            
+            // Update visibility flags based on offsets
+            newState.isTopBarVisible = newTopOffset > -maxToolbarOffset * 0.9
+            newState.isBottomBarVisible = newBottomOffset < maxToolbarOffset * 0.9
+            newState.isSubToolbarVisible = newState.isTopBarVisible && uiState.hasUserScrolled
+        }
+        
+        uiState = newState
     }
     
     func handlePullChanged(fraction: CGFloat, isLastPage: Bool) {
@@ -199,33 +182,7 @@ class ScrollStateManager: ObservableObject {
     }
     
     // MARK: - Private Methods
-    private func updateToolbarVisibility(isScrollingUp: Bool) {
-        // Only update in immersive mode - in normal mode bars are always visible
-        guard isImmersiveMode else { return }
-        
-        // Batch all UI updates into a single state change
-        var newState = uiState
-        
-        if isScrollingUp {
-            // Scrolling up - show all bars
-            newState.isTopBarVisible = true
-            newState.isBottomBarVisible = true
-            newState.isSubToolbarVisible = hasScrolledDown // Only show subtoolbar if user has scrolled down before
-            newState.topBarOffset = 0
-            newState.bottomBarOffset = 0
-        } else {
-            // Scrolling down - hide all bars
-            hasScrolledDown = true
-            newState.isTopBarVisible = false
-            newState.isBottomBarVisible = false
-            newState.isSubToolbarVisible = false
-            newState.topBarOffset = -maxToolbarOffset
-            newState.bottomBarOffset = maxToolbarOffset
-        }
-        
-        // Single state update instead of multiple @Published changes
-        uiState = newState
-    }
+    // Toolbar visibility is now handled directly in handleScrollPositionChanged
     
     
     // MARK: - Smooth Toolbar Animation
@@ -254,9 +211,21 @@ class ScrollStateManager: ObservableObject {
         return -20 + bounceOffset // Start 20pt below view, bounce up during overscroll
     }
     
+    // MARK: - Toolbar Management
+    func showToolbarsOnPageLoad() {
+        // Show all toolbars when a new page loads
+        // Hide subtoolbar to prevent it from showing after navigation
+        var newState = uiState
+        newState.isTopBarVisible = true
+        newState.isBottomBarVisible = true
+        newState.isSubToolbarVisible = false // Hide subtoolbar on navigation
+        newState.topBarOffset = 0
+        newState.bottomBarOffset = 0
+        uiState = newState
+    }
+    
     // MARK: - Reset
     func reset() {
-        uiUpdateWorkItem?.cancel()
         programmaticScrollWorkItem?.cancel()
         
         // Reset all UI state in a single batch update
@@ -275,6 +244,5 @@ class ScrollStateManager: ObservableObject {
         scrollContentHeight = 0
         scrollViewHeight = 0
         lastScrollPosition = 0
-        accumulatedScrollDistance = 0
     }
 }

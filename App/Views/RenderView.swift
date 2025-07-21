@@ -103,7 +103,7 @@ final class RenderView: UIView {
     func scrollToFractionalOffset(_ fractionalOffset: CGPoint) {
         Task {
             do {
-                try await webView.eval("""
+                _ = try await webView.eval("""
                     window.scrollTo(
                         document.body.scrollWidth * \(fractionalOffset.x),
                         document.body.scrollHeight * \(fractionalOffset.y));
@@ -310,7 +310,7 @@ extension RenderView {
     func embedBlueskyPosts() {
         Task {
             do {
-                try await webView.eval("""
+                _ = try await webView.eval("""
                     if (window.Awful) {
                         Awful.embedBlueskyPosts();
                     }
@@ -326,7 +326,7 @@ extension RenderView {
         let renderGhostTweets = FoilDefaultStorage(Settings.frogAndGhostEnabled).wrappedValue
         Task {
             do {
-                try await webView.eval("if (window.Awful) { Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets(); }")
+                _ = try await webView.eval("if (window.Awful) { Awful.renderGhostTweets = \(renderGhostTweets); Awful.embedTweets(); }")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate embedTweets")
             }
@@ -336,7 +336,7 @@ extension RenderView {
     func loadLottiePlayer() {
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.loadLotties()")
+                _ = try await webView.eval("if (window.Awful) Awful.loadLotties()")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate loadLotties")
             }
@@ -370,7 +370,7 @@ extension RenderView {
 
         do {
             // There's a bit of subtlety here: `document.open()` returns a Document, which can't be serialized back to the native-side of the app; and if we don't include a `<body>`, we get console logs attempting to e.g. retrieve `document.body.scrollWidth`.
-            try await webView.eval("document.open(), document.write('<body>')")
+            _ = try await webView.eval("document.open(), document.write('<body>')")
             logger.debug("did erase document")
         } catch {
             mentionError(error, explanation: "could not remove content")
@@ -513,7 +513,7 @@ extension RenderView {
     func didFetchOEmbed(id: String, response: String) {
         Task {
             do {
-                try await webView.eval("""
+                _ = try await webView.eval("""
                     window.Awful?.didFetchOEmbed(\(escapeForEval(id)), \(response));
                 """)
             } catch {
@@ -548,7 +548,7 @@ extension RenderView {
         }
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))")
+                _ = try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate jumpToPostWithID")
             }
@@ -559,7 +559,7 @@ extension RenderView {
     func loadLinkifiedImages() {
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.loadLinkifiedImages()")
+                _ = try await webView.eval("if (window.Awful) Awful.loadLinkifiedImages()")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate loadLinkifiedImages")
             }
@@ -593,7 +593,7 @@ extension RenderView {
         
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.markReadUpToPostWithID(\(escaped))")
+                _ = try await webView.eval("if (window.Awful) Awful.markReadUpToPostWithID(\(escaped))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate markReadUpToPostWithID")
             }
@@ -612,7 +612,7 @@ extension RenderView {
         
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.prependPosts(\(escaped))")
+                _ = try await webView.eval("if (window.Awful) Awful.prependPosts(\(escaped))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate prependPosts")
             }
@@ -631,7 +631,7 @@ extension RenderView {
         
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.setPostHTMLAtIndex(\(escaped), \(i))")
+                _ = try await webView.eval("if (window.Awful) Awful.setPostHTMLAtIndex(\(escaped), \(i))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setPostHTMLAtIndex")
             }
@@ -650,7 +650,7 @@ extension RenderView {
         
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.setExternalStylesheet(\(escaped))")
+                _ = try await webView.eval("if (window.Awful) Awful.setExternalStylesheet(\(escaped))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setExternalStylesheet")
             }
@@ -661,7 +661,7 @@ extension RenderView {
     func setFontScale(_ scale: Double) {
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.setFontScale(\(scale))")
+                _ = try await webView.eval("if (window.Awful) Awful.setFontScale(\(scale))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setFontScale")
             }
@@ -684,7 +684,7 @@ extension RenderView {
         
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.fyadFlag.setFlag(\(escaped))")
+                _ = try await webView.eval("if (window.Awful) Awful.fyadFlag.setFlag(\(escaped))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setFYADFlag")
             }
@@ -700,7 +700,7 @@ extension RenderView {
     func setHighlightMentions(_ highlightMentions: Bool) {
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))")
+                _ = try await webView.eval("if (window.Awful) Awful.setHighlightMentions(\(highlightMentions ? "true" : "false"))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setHighlightMentions")
             }
@@ -711,7 +711,7 @@ extension RenderView {
     func setShowAvatars(_ showAvatars: Bool) {
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.setShowAvatars(\(showAvatars ? "true" : "false"))")
+                _ = try await webView.eval("if (window.Awful) Awful.setShowAvatars(\(showAvatars ? "true" : "false"))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate setShowAvatars")
             }
@@ -748,7 +748,7 @@ extension RenderView {
 
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.setTweetTheme(\(escaped))")
+                _ = try await webView.eval("if (window.Awful) Awful.setTweetTheme(\(escaped))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate Awful.setTweetTheme")
             }

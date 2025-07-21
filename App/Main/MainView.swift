@@ -382,23 +382,16 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
                 if let currentDestination = navigationHistory.last as? ThreadDestination,
                    currentDestination.thread.threadID == thread.threadID,
                    currentDestination.page == targetPage {
-                    // Same thread and page - just scroll to the post without reloading
-                    print("📍 Already on correct page (\(post.page)), scrolling to post \(postID)")
+                    // Same thread and page - trigger navigation with jumpToPostID
+                    print("📍 Already on correct page (\(post.page)), navigating with jumpToPostID")
                     
-                    // Find the current SwiftUIPostsPageView and trigger scroll to post
-                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                       let window = windowScene.windows.first {
-                        let container = findRenderViewContainer(in: window)
-                        print("🔍 Found render view container: \(container != nil)")
-                        if let container = container {
-                            print("🎯 Calling jumpToPost on container")
-                            container.jumpToPost(identifiedBy: postID)
-                        } else {
-                            print("❌ No render view container found in window hierarchy")
-                        }
-                    } else {
-                        print("❌ No window scene or window found")
-                    }
+                    // The SwiftUI system will handle scrolling to the post via jumpToPostID
+                    navigationHistory.append(ThreadDestination(
+                        thread: thread, 
+                        page: targetPage, 
+                        author: nil, 
+                        jumpToPostID: postID
+                    ))
                     return true
                 } else {
                     // Different thread or page - navigate to it
@@ -725,19 +718,6 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     // MARK: - Helper Methods
-    private func findRenderViewContainer(in view: UIView) -> RenderViewContainer? {
-        if let container = view as? RenderViewContainer {
-            return container
-        }
-        
-        for subview in view.subviews {
-            if let found = findRenderViewContainer(in: subview) {
-                return found
-            }
-        }
-        
-        return nil
-    }
     
     // MARK: - State Restoration Implementation
     

@@ -10,7 +10,7 @@ import Combine
 import SwiftUI
 import UIKit
 import WebKit
-import Lottie
+// import Lottie  // Temporarily removed for performance testing
 import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SwiftUIPostsPageView")
@@ -45,80 +45,34 @@ struct SwiftUIPostsPageView: View {
     @FoilDefaultStorage(Settings.enableLiquidGlass) private var enableLiquidGlass
     
     // MARK: - State Management
-    @StateObject private var scrollState = ScrollStateManager()
+    // @StateObject private var scrollState = ScrollStateManager()  // Temporarily removed for performance testing
     @StateObject private var viewState = PostsPageViewState()
     @State private var showingPagePicker = false
     @State private var currentUserActivity: NSUserActivity?
+    @StateObject private var scrollCoordinator = RenderViewScrollCoordinator()
     
-    // MARK: - Liquid Glass Toolbar
-    @ToolbarContentBuilder
-    private var liquidGlassToolbar: some ToolbarContent {
-        if enableLiquidGlass {
-            if #available(iOS 26.0, *) {
-                // In immersive mode, respect the scroll state for auto-hide behavior
-                if !postsImmersiveMode || scrollState.isBottomBarVisible {
-                    LiquidGlassBottomBar.toolbarContent(
-                    thread: thread,
-                    page: viewModel.currentPage,
-                    numberOfPages: viewModel.numberOfPages,
-                    showingPagePicker: $showingPagePicker,
-                    toolbarTextColor: Color(theme[uicolor: "toolbarTextColor"] ?? .systemBlue),
-                    roundedFonts: theme.roundedFonts,
-                    isBackEnabled: {
-                        switch viewModel.currentPage {
-                        case .specific(let pageNumber)?:
-                            return pageNumber > 1
-                        case .last?, .nextUnread?, nil:
-                            return false
-                        }
-                    }(),
-                    isForwardEnabled: {
-                        switch viewModel.currentPage {
-                        case .specific(let pageNumber)?:
-                            return pageNumber < viewModel.numberOfPages
-                        case .last?, .nextUnread?, nil:
-                            return false
-                        }
-                    }(),
-                    currentPageAccessibilityLabel: {
-                        if case .specific(let pageNumber) = viewModel.currentPage, viewModel.numberOfPages > 0 {
-                            return "Page \(pageNumber) of \(viewModel.numberOfPages)"
-                        } else {
-                            return ""
-                        }
-                    }(),
-                    onSettingsTapped: {
-                        viewState.showingSettings = true
-                    },
-                    onBackTapped: {
-                        viewModel.goToPreviousPage()
-                    },
-                    onForwardTapped: {
-                        viewModel.goToNextPage()
-                    },
-                    onPageSelected: { page in
-                        viewModel.loadPage(page)
-                    },
-                    onGoToLastPost: {
-                        viewModel.goToLastPost()
-                    },
-                    onBookmarkTapped: {
-                        viewModel.toggleBookmark()
-                    },
-                    onCopyLinkTapped: {
-                        viewModel.copyLink()
-                    },
-                    onVoteTapped: {
-                        viewState.showingVoteSheet = true
-                    },
-                    onYourPostsTapped: {
-                        viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
-                    }
-                )
-                }
-            }
-        }
+    // MARK: - Simplified Immersive Mode State
+    @State private var isToolbarVisible = true
+    @State private var lastScrollOffset: CGFloat = 0
+    @State private var scrollDirection: ScrollDirection = .none
+    
+    enum ScrollDirection {
+        case up
+        case down  
+        case none
     }
+    
+    // MARK: - Simplified Scroll Management (mirroring UIKit approach)
+    @State private var hasAttemptedInitialScroll = false
+    @State private var scrollTarget: ScrollTarget?
+    
+    enum ScrollTarget {
+        case specificPost(String)      // Priority 1: Highest (jumpToPostID)
+        case fraction(CGFloat)         // Priority 2: State restoration
+        case lastPost                  // Priority 3: Jump to end  
+        case firstUnread              // Priority 4: Default for .nextUnread
+    }
+    
     
     // MARK: - Initialization
     init(thread: AwfulThread, author: User? = nil, page: ThreadPage? = nil, coordinator: AnyObject? = nil, scrollFraction: CGFloat? = nil, jumpToPostID: String? = nil, isPresentedModally: Bool = false) {
@@ -144,175 +98,42 @@ struct SwiftUIPostsPageView: View {
         self._viewModel = StateObject(wrappedValue: PostsPageViewModel(thread: thread, author: author))
     }
     
-    // MARK: - Handler Functions
+    // MARK: - Handler Functions (temporarily removed for performance testing)
+    /*
     private func handlePullChanged(_ pullData: PullData) {
-        // Handle niggly pull (top)
-        if pullData.topFraction > 0 {
-            viewState.nigglyPullProgress = pullData.topFraction
-            if pullData.topFraction >= 1.0 && !viewState.wasNigglyTriggered {
-                viewState.wasNigglyTriggered = true
-            }
-        }
-        
-        // Handle bottom pulls
-        if pullData.bottomFraction > 0 {
-            // Handle arrow pull for next page (if setting is enabled and not last page)
-            if pullForNext && !viewModel.isLastPage {
-                viewState.arrowPullProgress = pullData.bottomFraction
-                // Mark as triggered when threshold is reached, but don't navigate yet
-                if pullData.bottomFraction >= 1.5 && !viewState.wasArrowTriggered {
-                    viewState.wasArrowTriggered = true
-                    print("🏹 Arrow pull triggered at threshold, waiting for release")
-                }
-            } else if !pullForNext {
-                // If setting is disabled, reset arrow pull state
-                viewState.arrowPullProgress = 0.0
-                viewState.wasArrowTriggered = false
-            }
-            // Handle frog pull on last page
-            else if viewModel.isLastPage {
-                scrollState.handlePullChanged(fraction: pullData.bottomFraction, isLastPage: true)
-                
-                // Update frog refresh state based on pull progress (but not when refreshing)
-                if !viewState.isFrogRefreshing {
-                    let fraction = pullData.bottomFraction
-                    if fraction > 0.1 { // Only show animation after meaningful pull
-                        viewState.frogRefreshState = .pulling(fraction: fraction)
-                        // Only trigger if fraction is significantly above 1.0 to prevent accidental triggers
-                        if fraction >= 1.2 && !viewState.wasFrogTriggered && !viewState.isFrogRefreshing {
-                            viewState.wasFrogTriggered = true
-                            viewState.isFrogRefreshing = true
-                            viewState.frogRefreshState = .triggered
-                            print("🐸 Frog triggered! fraction: \(fraction)")
-                            
-                            // Transition to refreshing state and start refresh (direct update - already on main thread)
-                            self.viewState.frogRefreshState = .refreshing
-                            print("🐸 Set frogRefreshState to .refreshing from immediate trigger")
-                            
-                            viewModel.refresh()
-                            print("🐸 Called viewModel.refresh() from immediate trigger")
-                        }
-                    } else {
-                        // Only set to ready if not already ready
-                        if viewState.frogRefreshState != .ready {
-                            viewState.frogRefreshState = .ready
-                        }
-                    }
-                }
-            }
-        } else {
-            // Reset states when not pulling (but not when refreshing)
-            if case .pulling(_) = viewState.frogRefreshState, !viewState.isFrogRefreshing {
-                // Only set to ready if not already ready
-                if viewState.frogRefreshState != .ready {
-                    viewState.frogRefreshState = .ready
-                }
-            }
-        }
+        // All pull handling code temporarily removed for performance testing
     }
+    */
     
+    /*
     private func handleRefreshTriggered() {
-        if viewState.wasNigglyTriggered {
-            viewState.isNigglyRefreshing = true
-            viewModel.refresh()
-            viewState.wasNigglyTriggered = false
-        }
-        
-        if viewState.wasFrogTriggered {
-            handleFrogRefreshTriggered()
-            viewState.wasFrogTriggered = false
-        }
+        // Temporarily removed for performance testing
     }
+    */
     
+    /*
     private func handleArrowPullTriggered() {
-        print("🏹 handleArrowPullTriggered called - navigating to next page")
-        
-        // Reset states and navigate to next page
-        viewState.arrowPullProgress = 0.0
-        viewState.pendingScrollFraction = nil
-        viewModel.goToNextPage()
+        // Temporarily removed for performance testing
     }
+    */
     
+    /*
     private func handleFrogRefreshTriggered() {
-        print("🐸 handleFrogRefreshTriggered called - isFrogRefreshing: \(viewState.isFrogRefreshing)")
-        
-        // Don't start another refresh if one is already in progress
-        guard !viewState.isFrogRefreshing else {
-            print("🐸 Ignoring refresh trigger - already refreshing")
-            return
-        }
-        
-        viewState.isFrogRefreshing = true
-        
-        // Direct state update (already on main thread in SwiftUI)
-        self.viewState.frogRefreshState = .refreshing
-        print("🐸 Set frogRefreshState to .refreshing on main thread")
-        
-        viewModel.refresh()
-        print("🐸 Called viewModel.refresh()")
+        // Temporarily removed for performance testing
     }
+    */
     
+    /*
     private func handleDragEnded(willDecelerate: Bool) {
-        // Handle arrow pull trigger - only if setting is enabled and user actually released at the right time
-        if pullForNext && viewState.wasArrowTriggered && !willDecelerate {
-            print("🏹 Drag ended - navigating to next page")
-            handleArrowPullTriggered()
-            viewState.wasArrowTriggered = false
-        } else if pullForNext && viewState.wasArrowTriggered && willDecelerate {
-            // If still decelerating, don't trigger yet - wait for final position
-            print("🏹 Drag ended but still decelerating - waiting")
-        }
-        
-        // Handle frog refresh trigger - only if user actually released at the right time
-        if viewState.wasFrogTriggered && !willDecelerate {
-            print("🐸 Drag ended - starting frog refresh")
-            handleFrogRefreshTriggered()
-            viewState.wasFrogTriggered = false
-        } else if viewState.wasFrogTriggered && willDecelerate {
-            // If still decelerating, don't trigger yet - wait for final position
-            print("🐸 Drag ended but still decelerating - waiting")
-        }
-        
-        // Reset pull states if not triggered and not decelerating
-        if !viewState.wasNigglyTriggered && !willDecelerate {
-            viewState.nigglyPullProgress = 0.0
-        }
-        if (!viewState.wasArrowTriggered || !pullForNext) && !willDecelerate {
-            viewState.arrowPullProgress = 0.0
-        }
+        // Temporarily removed for performance testing
     }
+    */
     
+    /*
     private func handleDecelerationEnded() {
-        // Handle any pending arrow pull triggers after deceleration
-        if pullForNext && viewState.wasArrowTriggered {
-            print("🏹 Deceleration ended - checking if arrow pull should trigger")
-            // Only trigger if we're still close to the pull threshold
-            if viewState.arrowPullProgress >= 1.2 {
-                print("🏹 Triggering arrow pull after deceleration")
-                handleArrowPullTriggered()
-            }
-            viewState.wasArrowTriggered = false
-        }
-        
-        // Handle any pending frog refresh triggers after deceleration
-        if viewState.wasFrogTriggered && !viewState.isFrogRefreshing {
-            print("🐸 Deceleration ended - checking if frog refresh should trigger")
-            // Only trigger if we're still close to the pull threshold
-            if frogPullProgress >= 1.0 {
-                print("🐸 Triggering frog refresh after deceleration")
-                handleFrogRefreshTriggered()
-            }
-            viewState.wasFrogTriggered = false
-        }
-        
-        // Reset remaining pull states
-        if !viewState.wasNigglyTriggered {
-            viewState.nigglyPullProgress = 0.0
-        }
-        if !viewState.wasArrowTriggered || !pullForNext {
-            viewState.arrowPullProgress = 0.0
-        }
+        // Temporarily removed for performance testing
     }
+    */
     
     // MARK: - Body
     var body: some View {
@@ -324,26 +145,6 @@ struct SwiftUIPostsPageView: View {
             .statusBarHidden(false)
             .allowsHitTesting(true)
             .interactiveDismissDisabled(false)
-            .overlay(alignment: .top) {
-                if postsImmersiveMode && scrollState.isTopBarVisible {
-                    VStack(spacing: 0) {
-                        customNavigationBar
-                        
-                        if scrollState.isSubToolbarVisible {
-                            topSubToolbar
-                        }
-                    }
-                    .background(Color(theme[uicolor: "navigationBarTintColor"] ?? UIColor.systemBackground))
-                    .overlay(
-                        Rectangle()
-                            .fill(Color(theme[uicolor: "topBarBottomBorderColor"] ?? UIColor.separator))
-                            .frame(height: 0.5),
-                        alignment: .bottom
-                    )
-                    .ignoresSafeArea(.container, edges: .top)
-                    .animation(.easeInOut(duration: 0.25), value: scrollState.isTopBarVisible)
-                }
-            }
             .overlay(alignment: .bottom) {
                 bottomOverlays
             }
@@ -373,20 +174,15 @@ struct SwiftUIPostsPageView: View {
                     .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
                 }
                 
-                // Add liquid glass toolbar when setting is enabled
-                liquidGlassToolbar
+                // Always add liquid glass toolbar content, but make it conditional internally
+                liquidGlassToolbarContent
             }
+            .toolbar(postsImmersiveMode ? (isToolbarVisible ? .visible : .hidden) : .visible, for: .bottomBar)
             .onAppear {
                 handleViewAppear()
-                // Ensure scroll state is properly initialized for immersive mode
-                scrollState.setIsImmersiveMode(postsImmersiveMode)
-                
-                // In immersive mode, ensure the top bar is visible on initial load
-                if postsImmersiveMode {
-                    // Force the top bar to be visible initially
-                    scrollState.reset()
-                    scrollState.setIsImmersiveMode(postsImmersiveMode)
-                }
+                // Debug toolbar logic
+                print("🔧 Toolbar Logic - shouldUseLiquidGlass: \(shouldUseLiquidGlass), shouldShowToolbar: \(shouldShowToolbar), postsImmersiveMode: \(postsImmersiveMode)")
+                print("🔧 Toolbar Logic - Will show native liquid glass: \(shouldUseLiquidGlass && shouldShowToolbar && !postsImmersiveMode)")
             }
             .onChange(of: viewModel.isLoading) { isLoading in
                 viewState.isLoadingSpinnerVisible = isLoading
@@ -470,6 +266,13 @@ struct SwiftUIPostsPageView: View {
                 if handoffEnabled && page != nil {
                     setupHandoff()
                 }
+                
+                // Reset toolbar visibility on page change
+                resetToolbarVisibility()
+                
+                // Reset scroll attempt flag for new page
+                hasAttemptedInitialScroll = false
+                print("🔄 Page changed to \(String(describing: page)) - reset scroll attempt flag")
             }
     }
     
@@ -493,89 +296,47 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Render View  
     private var mainRenderView: some View {
-        SwiftUIRenderView(
+        SwiftUIRenderViewNative(
             viewModel: viewModel,
             theme: theme,
+            thread: thread,
+            author: author,
+            scrollCoordinator: scrollCoordinator,
             onPostAction: handlePostAction,
             onUserAction: handleUserAction,
             onScrollChanged: { isScrollingUp in
-                scrollState.setIsLastPage(viewModel.isLastPage)
-                scrollState.setIsImmersiveMode(postsImmersiveMode)
-                scrollState.handleScrollChange(isScrollingUp: isScrollingUp)
-            },
-            onPullChanged: { pullData in
-                handlePullChanged(pullData)
-            },
-            onRefreshTriggered: {
-                handleRefreshTriggered()
+                // Clean SwiftUI-native scroll handling
+                // Can add back scroll monitoring here if needed, but much simpler
             },
             onScrollPositionChanged: { offset, contentHeight, viewHeight in
-                scrollState.handleScrollPositionChanged(offset: offset, contentHeight: contentHeight, viewHeight: viewHeight)
-                
-                // Update current scroll fraction for state restoration
+                // Clean SwiftUI-native position tracking
+                // Minimal processing without all the complex coordination
                 if contentHeight > 0 {
                     let scrollFraction = offset / max(contentHeight - viewHeight, 1)
                     viewState.currentScrollFraction = max(0, min(1, scrollFraction))
                     
-                    // Trigger periodic state saving if needed
-                    saveStateIfNeeded()
+                    // Simplified scroll direction tracking for immersive mode
+                    if postsImmersiveMode {
+                        handleScrollForImmersiveMode(offset: offset, contentHeight: contentHeight, viewHeight: viewHeight)
+                    }
                 }
-            },
-            onDragEnded: { willDecelerate in
-                handleDragEnded(willDecelerate: willDecelerate)
-            },
-            onDecelerationEnded: {
-                handleDecelerationEnded()
-            },
-            replyWorkspace: $viewState.replyWorkspace,
-            presentedImageURL: $viewState.presentedImageURL,
-            showingImageViewer: $viewState.showingImageViewer,
-            viewState: viewState,
-            topInset: scrollState.topInset,
-            bottomInset: calculateBottomInset(),
-            isImmersiveMode: postsImmersiveMode,
-            // Removed frog content parameters
+            }
         )
         .id("render-view-\(viewModel.thread.threadID)-\(viewModel.currentPage.map { "\($0)" } ?? "unknown")")
         .background(Color(theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground))
         .ignoresSafeArea(postsImmersiveMode ? .all : .container)
+        // All pull overlays temporarily removed for performance testing
+        /*
         .overlay(alignment: .center) {
-            NigglyPullOverlay(
-                theme: theme,
-                pullProgress: viewState.nigglyPullProgress,
-                isRefreshing: viewState.isNigglyRefreshing,
-                isVisible: frogAndGhostEnabled && (viewState.nigglyPullProgress > 0.1 || viewState.isNigglyRefreshing),
-                isImmersiveMode: postsImmersiveMode
-            )
+            NigglyPullOverlay(...)
         }
         .overlay(alignment: .bottom) {
-            ArrowPullOverlay(
-                theme: theme,
-                pullProgress: viewState.arrowPullProgress,
-                isVisible: pullForNext && frogAndGhostEnabled && !viewModel.isLastPage && viewState.arrowPullProgress > 0.2,
-                horizontalSizeClass: horizontalSizeClass,
-                onNavigateToNextPage: {
-                    // Navigation is now handled in drag end logic
-                    // This callback is only for visual feedback
-                }
-            )
+            ArrowPullOverlay(...)
         }
         .overlay(alignment: .bottom) {
-            // Frog refresh overlay for bottom pull on last page
-            if frogAndGhostEnabled && viewModel.isLastPage {
-                VStack {
-                    Spacer()
-                    FrogRefreshAnimation(
-                        theme: theme,
-                        refreshState: $viewState.frogRefreshState
-                    )
-                    .frame(width: 60, height: 60)
-                    .offset(y: postsImmersiveMode ? -40 : -100) // Position above bottom toolbar
-                    .opacity(scrollState.isNearBottom ? 1.0 : 0.0)
-                    .animation(.easeInOut(duration: 0.2), value: scrollState.isNearBottom)
-                }
-            }
+            // Frog refresh overlay
         }
+        */
     }
     
     // MARK: - Custom Navigation Bar
@@ -608,9 +369,9 @@ struct SwiftUIPostsPageView: View {
                 Spacer()
                 
                 Text(thread.title ?? "Thread")
-                    .font(.headline)
+                    .postTitleFont(theme: theme)
                     .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                    .lineLimit(2)
+                    .lineLimit(UIDevice.current.userInterfaceIdiom == .pad ? 1 : 2)
                     .truncationMode(.tail)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
@@ -668,162 +429,196 @@ struct SwiftUIPostsPageView: View {
     // MARK: - Bottom Overlays
     private var bottomOverlays: some View {
         VStack(spacing: 0) {
-            // Bottom toolbar overlay - show in normal mode or when visible in immersive mode
-            // Only show overlay toolbars when liquid glass is disabled OR when iOS < 26.0
-            if !enableLiquidGlass || !ProcessInfo.processInfo.isOperatingSystemAtLeast(OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)) {
-                if !postsImmersiveMode {
-                    // Always show in normal mode
-                    if #available(iOS 26.0, *) {
-                        LiquidGlassBottomBar(
-                            thread: thread,
-                            author: author,
-                            page: viewModel.currentPage,
-                            numberOfPages: viewModel.numberOfPages,
-                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                            onSettingsTapped: {
-                                viewState.showingSettings = true
-                            },
-                            onBackTapped: {
-                                viewModel.goToPreviousPage()
-                            },
-                            onForwardTapped: {
-                                viewModel.goToNextPage()
-                            },
-                            onPageSelected: { page in
-                                viewModel.loadPage(page)
-                            },
-                            onGoToLastPost: {
-                                viewModel.goToLastPost()
-                            },
-                            onBookmarkTapped: {
-                                viewModel.toggleBookmark()
-                            },
-                            onCopyLinkTapped: {
-                                viewModel.copyLink()
-                            },
-                            onVoteTapped: {
-                                viewState.showingVoteSheet = true
-                            },
-                            onYourPostsTapped: {
-                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
-                            }
-                        )
-                    } else {
-                        PostsToolbarContainer(
-                            thread: thread,
-                            author: author,
-                            page: viewModel.currentPage,
-                            numberOfPages: viewModel.numberOfPages,
-                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                            onSettingsTapped: {
-                                viewState.showingSettings = true
-                            },
-                            onBackTapped: {
-                                viewModel.goToPreviousPage()
-                            },
-                            onForwardTapped: {
-                                viewModel.goToNextPage()
-                            },
-                            onPageSelected: { page in
-                                viewModel.loadPage(page)
-                            },
-                            onGoToLastPost: {
-                                viewModel.goToLastPost()
-                            },
-                            onBookmarkTapped: {
-                                viewModel.toggleBookmark()
-                            },
-                            onCopyLinkTapped: {
-                                viewModel.copyLink()
-                            },
-                            onVoteTapped: {
-                                viewState.showingVoteSheet = true
-                            },
-                            onYourPostsTapped: {
-                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
-                            }
-                        )
-                    }
-                } else if scrollState.isBottomBarVisible {
-                    // Only show in immersive mode when scroll state indicates it should be visible
-                    if #available(iOS 26.0, *) {
-                        LiquidGlassBottomBar(
-                            thread: thread,
-                            author: author,
-                            page: viewModel.currentPage,
-                            numberOfPages: viewModel.numberOfPages,
-                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                            onSettingsTapped: {
-                                viewState.showingSettings = true
-                            },
-                            onBackTapped: {
-                                viewModel.goToPreviousPage()
-                            },
-                            onForwardTapped: {
-                                viewModel.goToNextPage()
-                            },
-                            onPageSelected: { page in
-                                viewModel.loadPage(page)
-                            },
-                            onGoToLastPost: {
-                                viewModel.goToLastPost()
-                            },
-                            onBookmarkTapped: {
-                                viewModel.toggleBookmark()
-                            },
-                            onCopyLinkTapped: {
-                                viewModel.copyLink()
-                            },
-                            onVoteTapped: {
-                                viewState.showingVoteSheet = true
-                            },
-                            onYourPostsTapped: {
-                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
-                            }
-                        )
-                        .offset(y: scrollState.isBottomBarVisible ? 0 : 120)
-                        .animation(.easeInOut(duration: 0.25), value: scrollState.isBottomBarVisible)
-                    } else {
-                        PostsToolbarContainer(
-                            thread: thread,
-                            author: author,
-                            page: viewModel.currentPage,
-                            numberOfPages: viewModel.numberOfPages,
-                            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
-                            onSettingsTapped: {
-                                viewState.showingSettings = true
-                            },
-                            onBackTapped: {
-                                viewModel.goToPreviousPage()
-                            },
-                            onForwardTapped: {
-                                viewModel.goToNextPage()
-                            },
-                            onPageSelected: { page in
-                                viewModel.loadPage(page)
-                            },
-                            onGoToLastPost: {
-                                viewModel.goToLastPost()
-                            },
-                            onBookmarkTapped: {
-                                viewModel.toggleBookmark()
-                            },
-                            onCopyLinkTapped: {
-                                viewModel.copyLink()
-                            },
-                            onVoteTapped: {
-                                viewState.showingVoteSheet = true
-                            },
-                            onYourPostsTapped: {
-                                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
-                            }
-                        )
-                        .offset(y: scrollState.isBottomBarVisible ? 0 : 120)
-                        .animation(.easeInOut(duration: 0.25), value: scrollState.isBottomBarVisible)
-                    }
-                }
+            // Show overlay toolbar only when not using liquid glass
+            // When using liquid glass, always prefer native toolbar system for proper effects
+            let showOverlay = shouldShowToolbar && !shouldUseLiquidGlass
+            
+            if showOverlay {
+                standardToolbar
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .onAppear { print("🔧 Showing standard overlay") }
             }
         }
+        .onAppear {
+            let showOverlay = shouldShowToolbar && !shouldUseLiquidGlass
+            print("🔧 bottomOverlays - shouldShowToolbar: \(shouldShowToolbar), shouldUseLiquidGlass: \(shouldUseLiquidGlass), showOverlay: \(showOverlay)")
+        }
+    }
+    
+    // MARK: - Toolbar Decision Logic
+    private var shouldShowToolbar: Bool {
+        if postsImmersiveMode {
+            // In immersive mode, use scroll-based visibility
+            return isToolbarVisible
+        } else {
+            // In normal mode, always show toolbar
+            return true
+        }
+    }
+    
+    private var shouldUseLiquidGlass: Bool {
+        if #available(iOS 26.0, *) {
+            let result = enableLiquidGlass
+            print("🔧 shouldUseLiquidGlass: \(result), enableLiquidGlass: \(enableLiquidGlass)")
+            return result
+        } else {
+            print("🔧 shouldUseLiquidGlass: false (iOS < 26)")
+            return false
+        }
+    }
+    
+    // MARK: - Toolbar Content (Native iOS Toolbar)
+    @ToolbarContentBuilder
+    private var liquidGlassToolbarContent: some ToolbarContent {
+        // Show when liquid glass is enabled and toolbar should be visible
+        // In immersive mode, we still use native toolbar but control visibility with .toolbar(.visible/.hidden)
+        if #available(iOS 26.0, *), shouldUseLiquidGlass && shouldShowToolbar {
+            LiquidGlassBottomBar.toolbarContent(
+                thread: thread,
+                page: viewModel.currentPage,
+                numberOfPages: viewModel.numberOfPages,
+                showingPagePicker: $showingPagePicker,
+                toolbarTextColor: Color(theme[uicolor: "toolbarTextColor"] ?? .systemBlue),
+                roundedFonts: theme.roundedFonts,
+                isBackEnabled: {
+                    switch viewModel.currentPage {
+                    case .specific(let pageNumber)?:
+                        return pageNumber > 1
+                    case .last?, .nextUnread?, nil:
+                        return false
+                    }
+                }(),
+                isForwardEnabled: {
+                    switch viewModel.currentPage {
+                    case .specific(let pageNumber)?:
+                        return pageNumber < viewModel.numberOfPages
+                    case .last?, .nextUnread?, nil:
+                        return false
+                    }
+                }(),
+                currentPageAccessibilityLabel: {
+                    if case .specific(let pageNumber) = viewModel.currentPage, viewModel.numberOfPages > 0 {
+                        return "Page \(pageNumber) of \(viewModel.numberOfPages)"
+                    } else {
+                        return ""
+                    }
+                }(),
+                onSettingsTapped: {
+                    viewState.showingSettings = true
+                },
+                onBackTapped: {
+                    withAnimation(.smooth(duration: 0.8)) {
+                        viewModel.goToPreviousPage()
+                    }
+                },
+                onForwardTapped: {
+                    withAnimation(.smooth(duration: 0.8)) {
+                        viewModel.goToNextPage()
+                    }
+                },
+                onPageSelected: { page in
+                    viewModel.loadPage(page)
+                },
+                onGoToLastPost: {
+                    viewModel.goToLastPost()
+                },
+                onBookmarkTapped: {
+                    viewModel.toggleBookmark()
+                },
+                onCopyLinkTapped: {
+                    viewModel.copyLink()
+                },
+                onVoteTapped: {
+                    viewState.showingVoteSheet = true
+                },
+                onYourPostsTapped: {
+                    viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
+                }
+            )
+        }
+    }
+    
+    // MARK: - Toolbar Components (Overlay Views)  
+    @ViewBuilder
+    private var liquidGlassToolbar: some View {
+        if #available(iOS 26.0, *) {
+            LiquidGlassBottomBar(
+                thread: thread,
+                author: author,
+                page: viewModel.currentPage,
+                numberOfPages: viewModel.numberOfPages,
+                isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
+                onSettingsTapped: {
+                    viewState.showingSettings = true
+                },
+                onBackTapped: {
+                    withAnimation(.smooth(duration: 0.8)) {
+                        viewModel.goToPreviousPage()
+                    }
+                },
+                onForwardTapped: {
+                    withAnimation(.smooth(duration: 0.8)) {
+                        viewModel.goToNextPage()
+                    }
+                },
+                onPageSelected: { page in
+                    viewModel.loadPage(page)
+                },
+                onGoToLastPost: {
+                    viewModel.goToLastPost()
+                },
+                onBookmarkTapped: {
+                    viewModel.toggleBookmark()
+                },
+                onCopyLinkTapped: {
+                    viewModel.copyLink()
+                },
+                onVoteTapped: {
+                    viewState.showingVoteSheet = true
+                },
+                onYourPostsTapped: {
+                    viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
+                }
+            )
+        }
+    }
+    
+    @ViewBuilder
+    private var standardToolbar: some View {
+        PostsToolbarContainer(
+            thread: thread,
+            author: author,
+            page: viewModel.currentPage,
+            numberOfPages: viewModel.numberOfPages,
+            isLoadingViewVisible: viewState.isLoadingSpinnerVisible,
+            onSettingsTapped: {
+                viewState.showingSettings = true
+            },
+            onBackTapped: {
+                viewModel.goToPreviousPage()
+            },
+            onForwardTapped: {
+                viewModel.goToNextPage()
+            },
+            onPageSelected: { page in
+                viewModel.loadPage(page)
+            },
+            onGoToLastPost: {
+                viewModel.goToLastPost()
+            },
+            onBookmarkTapped: {
+                viewModel.toggleBookmark()
+            },
+            onCopyLinkTapped: {
+                viewModel.copyLink()
+            },
+            onVoteTapped: {
+                viewState.showingVoteSheet = true
+            },
+            onYourPostsTapped: {
+                viewModel.showYourPosts(coordinator: coordinator as? (any MainCoordinator))
+            }
+        )
     }
     
     // MARK: - Loading Overlay
@@ -847,39 +642,79 @@ struct SwiftUIPostsPageView: View {
         }
     }
     
+    // MARK: - Immersive Mode Scroll Handling
+    private func handleScrollForImmersiveMode(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
+        let threshold: CGFloat = 20 // Minimum scroll distance to trigger visibility change
+        let delta = offset - lastScrollOffset
+        
+        // Update scroll direction
+        if abs(delta) > 5 { // Minimum delta to avoid jitter
+            if delta > 0 {
+                scrollDirection = .down
+            } else {
+                scrollDirection = .up
+            }
+        }
+        
+        // Update toolbar visibility based on scroll direction and position
+        let isAtTop = offset <= 0
+        let isAtBottom = offset >= (contentHeight - viewHeight - 50) // 50pt buffer for bottom detection
+        
+        withAnimation(.easeInOut(duration: 0.25)) {
+            if isAtTop || isAtBottom {
+                // Always show toolbar at top or bottom
+                isToolbarVisible = true
+            } else if abs(delta) > threshold {
+                // Show toolbar when scrolling up, hide when scrolling down
+                isToolbarVisible = scrollDirection == .up
+            }
+        }
+        
+        lastScrollOffset = offset
+    }
+    
+    private func resetToolbarVisibility() {
+        // Reset toolbar visibility when page changes
+        withAnimation(.easeInOut(duration: 0.25)) {
+            isToolbarVisible = true
+        }
+        lastScrollOffset = 0
+        scrollDirection = .none
+    }
+    
     // MARK: - Helper Methods
     private func handleViewAppear() {
         print("🔵 SwiftUIPostsPageView: handleViewAppear - posts.count: \(viewModel.posts.count), isLoading: \(viewModel.isLoading)")
         
+        // Reset scroll attempt flag for new page load
+        hasAttemptedInitialScroll = false
+        
+        // Initialize toolbar visibility for immersive mode
+        if postsImmersiveMode {
+            resetToolbarVisibility()
+        }
+        
         // Restore complete state first (includes scroll position and jump targets)
         restoreCompleteState()
         
-        // Set jumpToPostID from pending state after view is properly installed
-        if let jumpToPostID = viewState.pendingJumpToPostID {
-            print("🎯 SwiftUIPostsPageView: Setting jumpToPostID in view model after onAppear: \(jumpToPostID)")
-            viewModel.jumpToPostID = jumpToPostID
-            viewState.pendingJumpToPostID = nil
+        // Set scroll target from initialization state if provided
+        if let jumpToPostID = viewState.pendingJumpToPostID, scrollTarget == nil {
+            scrollTarget = .specificPost(jumpToPostID)
+            print("🎯 Set initial scroll target from pendingJumpToPostID: \(jumpToPostID)")
         }
         
-        // Force reload if we have posts but webview might not be properly restored
+        // SwiftUI-native approach - no need to check container content
         if !viewModel.posts.isEmpty && !viewModel.isLoading {
-            print("🔵 SwiftUIPostsPageView: Posts available, checking if webview needs refresh")
-            // Check if webview container has content - if not, force a re-render
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first,
-               let container = findRenderViewContainer(in: window) {
-                if !container.hasContent {
-                    print("🔵 SwiftUIPostsPageView: Webview container has no content, forcing re-render")
-                    // Force re-render with existing posts
-                    viewModel.refresh()
-                }
-            }
+            print("🔵 SwiftUIPostsPageView: Posts available, attempting initial scrolling")
+            // If posts are already loaded, attempt initial scrolling
+            handleInitialScrolling(posts: viewModel.posts)
         } else if viewModel.posts.isEmpty && !viewModel.isLoading {
             if let specificPage = viewState.specificPageToLoad {
                 // Load the specific page that was requested
                 print("🔵 SwiftUIPostsPageView: Loading specific page: \(specificPage)")
-                // Always update read position - server should track page views
-                viewModel.loadPage(specificPage, updatingCache: true, updatingLastReadPost: true)
+                // For .nextUnread pages, don't mark as read immediately - let user scroll naturally
+                let shouldUpdateReadPost = specificPage != .nextUnread
+                viewModel.loadPage(specificPage, updatingCache: true, updatingLastReadPost: shouldUpdateReadPost)
                 viewState.specificPageToLoad = nil // Clear it so we don't load again
             } else {
                 // Use default page detection logic
@@ -893,7 +728,6 @@ struct SwiftUIPostsPageView: View {
     }
     
     private func handleViewDisappear() {
-        scrollState.reset()
         viewState.resetPullStates()
         invalidateHandoff()
         
@@ -929,50 +763,18 @@ struct SwiftUIPostsPageView: View {
     
     private func handleScrollToFraction(_ fraction: CGFloat?) {
         if let fraction = fraction {
-            // Begin programmatic scrolling to prevent toolbar auto-hide
-            scrollState.beginProgrammaticScrolling()
-            
-            // Find the render view container and scroll to fractional position
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first,
-               let container = findRenderViewContainer(in: window) {
-                let fractionalPoint = CGPoint(x: 0, y: fraction)
-                container.renderView.scrollToFractionalOffset(fractionalPoint)
-            }
+            // Use the new SwiftUI-native scroll coordinator
+            let fractionalPoint = CGPoint(x: 0, y: fraction)
+            scrollCoordinator.scrollToFractionalOffset(fractionalPoint)
             viewModel.scrollToFraction = nil
-            
-            // End programmatic scrolling after a longer delay to allow the scroll to complete
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.scrollState.endProgrammaticScrolling()
-            }
         }
     }
     
     private func handlePostsChanged(_ posts: [Post]) {
         print("📋 Posts changed: count=\(posts.count), jumpToPostID=\(viewModel.jumpToPostID ?? "nil")")
         
-        // Apply pending scroll fraction when posts are loaded
-        if !posts.isEmpty, let scrollFraction = viewState.pendingScrollFraction {
-            // Begin programmatic scrolling protection before the delayed scroll
-            scrollState.beginProgrammaticScrolling()
-            
-            // Delay to ensure the content is rendered - use consistent timing for reliable scrolling
-            let delay = 0.3
-            print("📋 Applying scroll fraction \(scrollFraction) after \(delay)s delay")
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                viewModel.scrollToFraction = scrollFraction
-                viewState.pendingScrollFraction = nil
-            }
-        }
-        
-        // Jump to specific post if we have a jumpToPostID and posts are loaded
-        if !posts.isEmpty, let jumpToPostID = viewModel.jumpToPostID {
-            print("📍 Posts loaded, jumping to post: \(jumpToPostID)")
-            // Wait longer for HTML rendering to complete and add retry logic
-            attemptPostJump(postID: jumpToPostID, attempt: 1, maxAttempts: 3)
-        } else if !posts.isEmpty {
-            print("📋 Posts loaded but no jumpToPostID to process")
-        }
+        // Use simplified scroll management approach (mirroring UIKit)
+        handleInitialScrolling(posts: posts)
     }
     
     // MARK: - Loading View
@@ -982,12 +784,11 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Frog Animation Properties
     var frogOpacity: CGFloat {
-        // Simple binary visibility for now - can be enhanced later
-        return scrollState.isNearBottom ? 1.0 : 0.0
+        return viewModel.isLastPage ? 1.0 : 0.0
     }
     
     var frogScale: CGFloat {
-        return scrollState.isNearBottom ? 1.0 : 0.8
+        return viewModel.isLastPage ? 1.0 : 0.8
     }
     
     var frogPullProgress: CGFloat {
@@ -1022,93 +823,10 @@ struct SwiftUIPostsPageView: View {
     }
     
     // MARK: - Helper Methods
-    private func findRenderViewContainer(in view: UIView) -> RenderViewContainer? {
-        if let container = view as? RenderViewContainer {
-            return container
-        }
-        
-        for subview in view.subviews {
-            if let found = findRenderViewContainer(in: subview) {
-                return found
-            }
-        }
-        
-        return nil
-    }
+    // findRenderViewContainer method removed - using SwiftUI-native scroll coordinator instead
     
     // MARK: - Post Navigation
-    private func attemptPostJump(postID: String, attempt: Int, maxAttempts: Int) {
-        print("🎯 Attempting post jump to \(postID) (attempt \(attempt)/\(maxAttempts))")
-        
-        // Begin programmatic scrolling on the first attempt
-        if attempt == 1 {
-            scrollState.beginProgrammaticScrolling()
-        }
-        
-        // Progressive delay: longer waits for later attempts to ensure HTML is fully rendered
-        let delay = TimeInterval(attempt) * 0.5 // 0.5s, 1.0s, 1.5s
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            
-            // Verify we still have the same jumpToPostID (user hasn't navigated away)
-            guard viewModel.jumpToPostID == postID else {
-                print("🔍 Post jump cancelled - jumpToPostID changed")
-                self.scrollState.endProgrammaticScrolling()
-                return
-            }
-            
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first {
-                let container = findRenderViewContainer(in: window)
-                print("🔍 Posts jump attempt \(attempt): Found render view container: \(container != nil)")
-                
-                if let container = container {
-                    // Check if the container is ready (has content and webview is loaded)
-                    guard container.hasContent else {
-                        print("⏳ Container not ready yet, will retry...")
-                        if attempt < maxAttempts {
-                            attemptPostJump(postID: postID, attempt: attempt + 1, maxAttempts: maxAttempts)
-                        } else {
-                            print("❌ Max attempts reached, post jump failed")
-                        }
-                        return
-                    }
-                    
-                    print("🎯 Posts jump attempt \(attempt): Calling jumpToPost on ready container")
-                    container.jumpToPost(identifiedBy: postID)
-                    
-                    // Wait a brief moment to see if the jump succeeded
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        // Clear jumpToPostID after attempting the jump
-                        // Note: We clear it even if we can't verify success to prevent infinite retries
-                        viewModel.jumpToPostID = nil
-                        print("✅ Post jump completed, jumpToPostID cleared")
-                        
-                        // End programmatic scrolling
-                        self.scrollState.endProgrammaticScrolling()
-                    }
-                } else {
-                    print("❌ Posts jump attempt \(attempt): No render view container found")
-                    if attempt < maxAttempts {
-                        attemptPostJump(postID: postID, attempt: attempt + 1, maxAttempts: maxAttempts)
-                    } else {
-                        print("❌ Max attempts reached, clearing jumpToPostID")
-                        viewModel.jumpToPostID = nil
-                        self.scrollState.endProgrammaticScrolling()
-                    }
-                }
-            } else {
-                print("❌ Posts jump attempt \(attempt): No window scene or window found")
-                if attempt < maxAttempts {
-                    attemptPostJump(postID: postID, attempt: attempt + 1, maxAttempts: maxAttempts)
-                } else {
-                    print("❌ Max attempts reached, clearing jumpToPostID")
-                    viewModel.jumpToPostID = nil
-                    self.scrollState.endProgrammaticScrolling()
-                }
-            }
-        }
-    }
+    // attemptPostJump method removed - using SwiftUI-native scroll coordinator instead
     
     
     // MARK: - Action Handlers
@@ -1300,17 +1018,47 @@ struct SwiftUIPostsPageView: View {
         
         print("📱 restoreCompleteState: Restoring state for thread '\(thread.title ?? "Unknown")'")
         
-        // Restore scroll position
-        if let scrollFraction = stateData["scrollFraction"] as? CGFloat {
-            viewState.pendingScrollFraction = scrollFraction
-            print("📱 Restored scroll fraction: \(scrollFraction)")
+        // Check if we're loading unread posts (.nextUnread page)
+        let isLoadingUnreadPosts = viewState.specificPageToLoad == .nextUnread
+        
+        // Check timestamp to see if state is stale
+        var isStateStale = false
+        if let timestamp = stateData["timestamp"] as? TimeInterval {
+            let age = Date().timeIntervalSince1970 - timestamp
+            isStateStale = age > 300 // 5 minutes
+            if isStateStale {
+                print("⏰ Saved state is \(Int(age))s old, considered stale")
+            }
         }
         
-        // Restore pending jump to post
+        // Priority-based scroll target restoration (mirroring UIKit approach)
+        // Priority 1: Pending jump to post (highest priority)
         if let jumpToPostID = stateData["pendingJumpToPostID"] as? String {
+            scrollTarget = .specificPost(jumpToPostID)
             viewState.pendingJumpToPostID = jumpToPostID
-            print("📱 Restored pending jump to post: \(jumpToPostID)")
+            print("📱 Set scroll target: specificPost(\(jumpToPostID))")
+            return
         }
+        
+        // Priority 2: Fresh state restoration (only if not unread and not stale)
+        if !isLoadingUnreadPosts && !isStateStale {
+            if let scrollFraction = stateData["scrollFraction"] as? CGFloat {
+                scrollTarget = .fraction(scrollFraction)
+                viewState.pendingScrollFraction = scrollFraction
+                print("📱 Set scroll target: fraction(\(scrollFraction))")
+                return
+            }
+        }
+        
+        // Priority 3: Default for unread posts
+        if isLoadingUnreadPosts {
+            scrollTarget = .firstUnread
+            print("📱 Set scroll target: firstUnread")
+            return
+        }
+        
+        // No scroll target needed
+        print("📱 No scroll target set - will use default behavior")
         
         // Restore page information (if needed for validation)
         if let pageNumber = stateData["pageNumber"] as? Int {
@@ -1318,79 +1066,76 @@ struct SwiftUIPostsPageView: View {
         } else if let pageType = stateData["pageType"] as? String {
             print("📱 Restored page type: \(pageType)")
         }
-        
-        // Check timestamp to see if state is stale
-        if let timestamp = stateData["timestamp"] as? TimeInterval {
-            let age = Date().timeIntervalSince1970 - timestamp
-            if age > 300 { // 5 minutes
-                print("⏰ Saved state is \(Int(age))s old, may be stale")
-            }
+    }
+    
+    // MARK: - Simplified Initial Scrolling (UIKit-inspired)
+    /// Handles initial scrolling with clear priorities and one-time execution, mirroring UIKit approach
+    private func handleInitialScrolling(posts: [Post]) {
+        // Only attempt once per page load
+        guard !hasAttemptedInitialScroll else {
+            print("🎯 handleInitialScrolling: Already attempted for this page load")
+            return
         }
+        
+        guard !posts.isEmpty else {
+            print("🎯 handleInitialScrolling: No posts available yet")
+            return
+        }
+        
+        print("🎯 handleInitialScrolling: Starting with scrollTarget: \(String(describing: scrollTarget))")
+        hasAttemptedInitialScroll = true
+        
+        // Execute scroll target based on priority
+        switch scrollTarget {
+        case .specificPost(let postID):
+            print("🎯 Priority 1: Jumping to specific post: \(postID)")
+            // Use the new SwiftUI-native scroll coordinator
+            scrollCoordinator.jumpToPost(postID)
+            viewModel.jumpToPostID = nil  // Clear it immediately since we handled it
+            
+        case .fraction(let scrollFraction):
+            print("🎯 Priority 2: Restoring scroll position: \(scrollFraction)")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.viewModel.scrollToFraction = scrollFraction
+                self.viewState.pendingScrollFraction = nil
+            }
+            
+        case .lastPost:
+            print("🎯 Priority 3: Jumping to last post")
+            // Scroll to the end of the content
+            scrollCoordinator.scrollToFractionalOffset(CGPoint(x: 0, y: 1.0))
+            
+        case .firstUnread:
+            print("🎯 Priority 4: Allowing natural jump to first unread")
+            // Let the system handle unread post positioning naturally
+            // Clear any competing scroll targets
+            viewState.pendingScrollFraction = nil
+            
+        case .none:
+            print("🎯 No scroll target - using default behavior")
+        }
+        
+        // Clear the scroll target after execution
+        scrollTarget = nil
     }
     
     
 }
 
 
-// MARK: - Pull Control Overlays
+// MARK: - Pull Control Overlays (temporarily removed for performance testing)
+/*
 /// Niggly pull control overlay that appears when pulling from top
 private struct NigglyPullOverlay: View {
-    let theme: Theme
-    let pullProgress: CGFloat
-    let isRefreshing: Bool
-    let isVisible: Bool
-    let isImmersiveMode: Bool
-    
-    var body: some View {
-        if isVisible {
-            VStack {
-                Spacer()
-                    .frame(height: isImmersiveMode ? 85 : 125)
-                
-                SwiftUINigglyPullControl(
-                    theme: theme,
-                    pullProgress: isRefreshing ? 1.0 : pullProgress,
-                    isVisible: true,
-                    isRefreshing: isRefreshing,
-                    onRefreshTriggered: {
-                        // Handled by parent scroll coordinator
-                    }
-                )
-                
-                Spacer()
-            }
-            .offset(y: -162 + (pullProgress * 125))
-            .allowsHitTesting(false)
-        }
-    }
+    // Temporarily removed for performance testing
 }
 
 /// Arrow pull control overlay for navigating to next page
 private struct ArrowPullOverlay: View {
-    let theme: Theme
-    let pullProgress: CGFloat
-    let isVisible: Bool
-    let horizontalSizeClass: UserInterfaceSizeClass?
-    let onNavigateToNextPage: () -> Void
-    
-    var body: some View {
-        if isVisible {
-            VStack {
-                Spacer()
-                SwiftUIArrowPullControl(
-                    theme: theme,
-                    pullProgress: pullProgress,
-                    isVisible: true,
-                    onRefreshTriggered: {
-                        // Direct call - already on main thread in SwiftUI
-                        onNavigateToNextPage()
-                    }
-                )
-                .offset(y: horizontalSizeClass == .regular ? 10 : 40)
-            }
-        }
-    }
+    // Temporarily removed for performance testing
 }
+*/
 
 
 

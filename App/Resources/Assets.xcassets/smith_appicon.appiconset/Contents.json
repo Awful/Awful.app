@@ -1,6 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "smith.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
       "filename" : "smith-20@2x.png",
       "idiom" : "iphone",
       "scale" : "2x",
@@ -103,9 +109,8 @@
       "size" : "83.5x83.5"
     },
     {
-      "filename" : "smith.png",
-      "idiom" : "universal",
-      "platform" : "ios",
+      "idiom" : "ios-marketing",
+      "scale" : "1x",
       "size" : "1024x1024"
     }
   ],
