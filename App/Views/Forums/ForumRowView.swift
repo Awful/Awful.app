@@ -83,12 +83,15 @@ struct ForumRowView: View {
                 .opacity(isEditing ? 0 : 1)
                 .animation(.default, value: isEditing)
         }
+        .padding(.horizontal, 16)  // Add internal padding for better visual spacing
+        .padding(.vertical, 8)     // Add vertical padding
         .contentShape(Rectangle())
         .onTapGesture {
             onTap()
         }
         .listRowBackground(backgroundColor)
         .listRowSeparatorTint(theme[color: "listSeparatorColor"] ?? Color.gray)
+        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
     }
     
     @ViewBuilder
