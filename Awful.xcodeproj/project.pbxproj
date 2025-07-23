@@ -182,6 +182,13 @@
 		2D3F1CD02E22767D0081E56B /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */; };
 		2D4504BF2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */; };
 		2D4504C12E2E54CD00C01E36 /* PostRenderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */; };
+		2D6C55952E3123E2003BCC50 /* SwiftUIForumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55942E3123E1003BCC50 /* SwiftUIForumsView.swift */; };
+		2D6C55962E3123E2003BCC50 /* ForumRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55902E3123E1003BCC50 /* ForumRowView.swift */; };
+		2D6C55972E3123E2003BCC50 /* ForumsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55922E3123E1003BCC50 /* ForumsListViewModel.swift */; };
+		2D6C55982E3123E2003BCC50 /* ForumSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55912E3123E1003BCC50 /* ForumSectionHeaderView.swift */; };
+		2D6C55992E3123E2003BCC50 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2D6C55932E3123E1003BCC50 /* README.md */; };
+		2D872A322E311E31001467B4 /* NigglyPullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D872A312E311E31001467B4 /* NigglyPullToRefresh.swift */; };
+		2D872A362E31205E001467B4 /* NigglyRefreshableListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D872A352E31205E001467B4 /* NigglyRefreshableListView.swift */; };
 		2D89786F2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */; };
 		2D91DB902E13EBE000771E25 /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
@@ -211,6 +218,7 @@
 		2DD006592E30D87D00313ACD /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD006572E30D87D00313ACD /* PerformanceMonitor.swift */; };
 		2DD0065C2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD0065A2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift */; };
 		2DD0065D2E30DA6C00313ACD /* NetworkOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD0065B2E30DA6C00313ACD /* NetworkOptimizer.swift */; };
+		2DD0065F2E31027A00313ACD /* SwiftUI+GlassEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD0065E2E31027A00313ACD /* SwiftUI+GlassEffect.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DE976A92E0FF1D000233423 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A82E0FF1D000233423 /* RootView.swift */; };
 		2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AB2E0FF1DF00233423 /* LoginView.swift */; };
@@ -502,6 +510,13 @@
 		2D3F1CCF2E22767D0081E56B /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
 		2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRenderViewNative.swift; sourceTree = "<group>"; };
 		2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRenderModels.swift; sourceTree = "<group>"; };
+		2D6C55902E3123E1003BCC50 /* ForumRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumRowView.swift; sourceTree = "<group>"; };
+		2D6C55912E3123E1003BCC50 /* ForumSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumSectionHeaderView.swift; sourceTree = "<group>"; };
+		2D6C55922E3123E1003BCC50 /* ForumsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumsListViewModel.swift; sourceTree = "<group>"; };
+		2D6C55932E3123E1003BCC50 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		2D6C55942E3123E1003BCC50 /* SwiftUIForumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIForumsView.swift; sourceTree = "<group>"; };
+		2D872A312E311E31001467B4 /* NigglyPullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NigglyPullToRefresh.swift; sourceTree = "<group>"; };
+		2D872A352E31205E001467B4 /* NigglyRefreshableListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NigglyRefreshableListView.swift; sourceTree = "<group>"; };
 		2D89786E2E111C7F0022DF0E /* PostsPageSettingsSwiftUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageSettingsSwiftUIViewController.swift; sourceTree = "<group>"; };
 		2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
@@ -531,6 +546,7 @@
 		2DD006572E30D87D00313ACD /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
 		2DD0065A2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedScrollCoordinator.swift; sourceTree = "<group>"; };
 		2DD0065B2E30DA6C00313ACD /* NetworkOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOptimizer.swift; sourceTree = "<group>"; };
+		2DD0065E2E31027A00313ACD /* SwiftUI+GlassEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+GlassEffect.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		2DE976A82E0FF1D000233423 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		2DE976AB2E0FF1DF00233423 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -927,6 +943,7 @@
 		1C8A8CFD1A3C28E900E4F6A4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				2DD0065E2E31027A00313ACD /* SwiftUI+GlassEffect.swift */,
 				2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */,
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
 				1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */,
@@ -1104,6 +1121,7 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2D6C558F2E3123A4003BCC50 /* Forums */,
 				2DB5FC1F2E1A8042003F050F /* Common */,
 				2DB5FC202E1A8042003F050F /* Navigation */,
 				2DB5FC282E1A8042003F050F /* Posts */,
@@ -1166,9 +1184,23 @@
 			path = Lotties;
 			sourceTree = "<group>";
 		};
+		2D6C558F2E3123A4003BCC50 /* Forums */ = {
+			isa = PBXGroup;
+			children = (
+				2D6C55902E3123E1003BCC50 /* ForumRowView.swift */,
+				2D6C55912E3123E1003BCC50 /* ForumSectionHeaderView.swift */,
+				2D6C55922E3123E1003BCC50 /* ForumsListViewModel.swift */,
+				2D6C55932E3123E1003BCC50 /* README.md */,
+				2D6C55942E3123E1003BCC50 /* SwiftUIForumsView.swift */,
+			);
+			path = Forums;
+			sourceTree = "<group>";
+		};
 		2DB5FC1F2E1A8042003F050F /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				2D872A352E31205E001467B4 /* NigglyRefreshableListView.swift */,
+				2D872A312E311E31001467B4 /* NigglyPullToRefresh.swift */,
 				2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */,
 				2DB5FC392E1BF6E0003F050F /* FrogPullToRefresh.swift */,
 				2DB5FC3A2E1BF6E0003F050F /* FrogRefreshAnimation.swift */,
@@ -1462,6 +1494,7 @@
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
+				2D6C55992E3123E2003BCC50 /* README.md in Resources */,
 				1C4EE1CE28470C2400A7507E /* Assets.xcassets in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
@@ -1577,6 +1610,7 @@
 				1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */,
 				2DE976A92E0FF1D000233423 /* RootView.swift in Sources */,
 				2DB5FC3B2E1BF6E0003F050F /* FrogPullToRefresh.swift in Sources */,
+				2DD0065F2E31027A00313ACD /* SwiftUI+GlassEffect.swift in Sources */,
 				2DB5FC3C2E1BF6E0003F050F /* FrogRefreshAnimation.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
@@ -1585,6 +1619,10 @@
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
 				2DB77D692E1E784C0021B8DE /* NavigationStateRestoration.swift in Sources */,
+				2D6C55952E3123E2003BCC50 /* SwiftUIForumsView.swift in Sources */,
+				2D6C55962E3123E2003BCC50 /* ForumRowView.swift in Sources */,
+				2D6C55972E3123E2003BCC50 /* ForumsListViewModel.swift in Sources */,
+				2D6C55982E3123E2003BCC50 /* ForumSectionHeaderView.swift in Sources */,
 				2DB5FC3E2E1D1034003F050F /* SwiftUIUnpopModifier.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
@@ -1596,6 +1634,7 @@
 				1C3E1819224EF97D00BD88E5 /* PostedSmilie.swift in Sources */,
 				1C25AC471F53788900977D6F /* RenderView.swift in Sources */,
 				1C16FBC01CB950BE00C88BD1 /* ThreadTagButton.swift in Sources */,
+				2D872A322E311E31001467B4 /* NigglyPullToRefresh.swift in Sources */,
 				1C3E180F224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift in Sources */,
 				1C16FBAE1CB85F8400C88BD1 /* IconActionCell.swift in Sources */,
 				2DE976B22E0FFB0300233423 /* MainView.swift in Sources */,
@@ -1629,6 +1668,7 @@
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
 				1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */,
+				2D872A362E31205E001467B4 /* NigglyRefreshableListView.swift in Sources */,
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
 				2D4504C12E2E54CD00C01E36 /* PostRenderModels.swift in Sources */,
 				2DB5FC382E1BCE5E003F050F /* PostsPageViewModel.swift in Sources */,

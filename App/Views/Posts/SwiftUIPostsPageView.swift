@@ -203,6 +203,7 @@ struct SwiftUIPostsPageView: View {
                             dismiss()
                         }
                         .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                        .conditionalGlassEffect(UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key))
                     }
                 }
                 
@@ -216,6 +217,7 @@ struct SwiftUIPostsPageView: View {
                             .renderingMode(.template)
                     }
                     .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+                    .conditionalGlassEffect(UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key))
                 }
                 
                 // Always add liquid glass toolbar content, but make it conditional internally

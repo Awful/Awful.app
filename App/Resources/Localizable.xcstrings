@@ -373,6 +373,9 @@
     "Error" : {
 
     },
+    "Error: Could not access managed object context" : {
+
+    },
     "Example searches:" : {
 
     },
@@ -389,6 +392,9 @@
 
     },
     "Forgot Password?" : {
+
+    },
+    "Forums" : {
 
     },
     "forums-list.announcements-section-title" : {

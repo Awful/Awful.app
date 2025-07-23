@@ -175,9 +175,18 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
 
     func navigateToForum(_ forum: Forum) {
-        // Navigate to forum in sidebar (threads list)
-        sidebarPath.append(forum)
-        // Don't set isTabBarHidden = true here, as we want to stay in sidebar
+        print("🔍 MainCoordinator: navigateToForum called for: \(forum.name ?? "unnamed")")
+        
+        // Check if we're on iPhone or iPad to determine which path to use
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            // On iPhone, use the main navigation path
+            path.append(forum)
+            print("🔍 MainCoordinator: iPhone - appended to main path")
+        } else {
+            // On iPad, use the sidebar path (threads list)
+            sidebarPath.append(forum)
+            print("🔍 MainCoordinator: iPad - appended to sidebar path")
+        }
     }
     
     func navigateToPrivateMessage(_ message: PrivateMessage) {
@@ -1509,25 +1518,19 @@ struct TabContentView: View {
 
 // MARK: - UIViewControllerRepresentable wrappers for existing UIKit view controllers
 
-struct ForumsViewRepresentable: UIViewControllerRepresentable {
+struct ForumsViewRepresentable: View {
     var isEditing: Bool
     let coordinator: any MainCoordinator
 
-    func makeUIViewController(context: Context) -> UIViewController {
-        guard let managedObjectContext = AppDelegate.instance?.managedObjectContext else {
-            fatalError("AppDelegate.instance or managedObjectContext not available")
+    var body: some View {
+        Group {
+            if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
+                SwiftUIForumsView(managedObjectContext: managedObjectContext, coordinator: coordinator, isEditing: isEditing)
+            } else {
+                Text("Error: Could not access managed object context")
+                    .foregroundColor(.red)
+            }
         }
-        let forumsVC = ForumsTableViewController(managedObjectContext: managedObjectContext)
-        forumsVC.coordinator = coordinator
-        let wrapper = SwiftUICompatibleViewController(wrapping: forumsVC)
-        wrapper.restorationIdentifier = "Forum list"
-        return wrapper
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        guard let wrapper = uiViewController as? SwiftUICompatibleViewController else { return }
-        print("🔵 ForumsViewRepresentable: Setting editing state to \(isEditing)")
-        wrapper.setEditing(isEditing, animated: true)
     }
 }
 
@@ -1685,6 +1688,11 @@ struct ThreadsViewWrapper: View {
                             .font(.body.weight(.semibold))
                     }
                     .foregroundColor(navigationTintColor)
+                    .conditionalGlassEffect({
+                        let enabled = UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key)
+                        print("🟡 ThreadsViewWrapper back button: enableLiquidGlass = \(enabled)")
+                        return enabled
+                    }())
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -1694,6 +1702,7 @@ struct ThreadsViewWrapper: View {
                             .renderingMode(.template)
                             .font(.body.weight(.semibold))
                     }
+                    .foregroundColor(navigationTintColor)
                     .foregroundColor(navigationTintColor)
                 }
             }
@@ -2062,11 +2071,13 @@ struct MessageComposeDetailView: View {
                         coordinator.cancelCurrentComposition()
                     }
                     .foregroundColor(navigationTintColor)
+                    .foregroundColor(navigationTintColor)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Send") {
                         coordinator.submitCurrentComposition()
                     }
+                    .foregroundColor(navigationTintColor)
                     .foregroundColor(navigationTintColor)
                 }
             }
@@ -2199,12 +2210,14 @@ struct iPhoneMainView: View {
                 Button("Search") {
                     coordinator.presentSearch()
                 }
+                .foregroundColor(navigationTintColor)
             }
         case .messages:
             Button(isEditingMessages ? "Done" : "Edit") {
                 print("🔵 iPhone: Messages edit button pressed, toggling from \(isEditingMessages) to \(!isEditingMessages)")
                 isEditingMessages.toggle()
             }
+            .foregroundColor(navigationTintColor)
         default:
             EmptyView()
         }
@@ -2219,12 +2232,14 @@ struct iPhoneMainView: View {
                     print("🔵 iPhone: Forums edit button pressed, toggling from \(isEditingForums) to \(!isEditingForums)")
                     isEditingForums.toggle()
                 }
+                .foregroundColor(navigationTintColor)
             }
         case .bookmarks:
             Button(isEditingBookmarks ? "Done" : "Edit") {
                 print("🔵 iPhone: Bookmarks edit button pressed, toggling from \(isEditingBookmarks) to \(!isEditingBookmarks)")
                 isEditingBookmarks.toggle()
             }
+            .foregroundColor(navigationTintColor)
         case .messages:
             Button(action: {
                 coordinator.presentCompose(for: selectedTab)
@@ -2232,6 +2247,7 @@ struct iPhoneMainView: View {
                 Image("compose")
                     .renderingMode(.template)
             }
+            .foregroundColor(navigationTintColor)
         default:
             EmptyView()
         }
@@ -2297,12 +2313,14 @@ struct Sidebar: View {
                 Button("Search") {
                     coordinator.presentSearch()
                 }
+                .foregroundColor(navigationTintColor)
             }
         case .messages:
             Button(isEditingMessages ? "Done" : "Edit") {
                 print("🔵 iPad: Messages edit button pressed, toggling from \(isEditingMessages) to \(!isEditingMessages)")
                 isEditingMessages.toggle()
             }
+            .foregroundColor(navigationTintColor)
         default:
             EmptyView()
         }
@@ -2317,12 +2335,14 @@ struct Sidebar: View {
                     print("🔵 iPad: Forums edit button pressed, toggling from \(isEditingForums) to \(!isEditingForums)")
                     isEditingForums.toggle()
                 }
+                .foregroundColor(navigationTintColor)
             }
         case .bookmarks:
             Button(isEditingBookmarks ? "Done" : "Edit") {
                 print("🔵 iPad: Bookmarks edit button pressed, toggling from \(isEditingBookmarks) to \(!isEditingBookmarks)")
                 isEditingBookmarks.toggle()
             }
+            .foregroundColor(navigationTintColor)
         case .messages:
             Button(action: {
                 coordinator.presentCompose(for: selectedTab)
@@ -2330,6 +2350,7 @@ struct Sidebar: View {
                 Image("compose")
                     .renderingMode(.template)
             }
+            .foregroundColor(navigationTintColor)
         default:
             EmptyView()
         }
@@ -2385,6 +2406,7 @@ struct PrivateMessageViewWrapper: View {
                             .renderingMode(.template)
                             .font(.body.weight(.semibold))
                     }
+                    .foregroundColor(navigationTintColor)
                     .foregroundColor(navigationTintColor)
                 }
             }

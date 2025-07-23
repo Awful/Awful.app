@@ -37,6 +37,7 @@ struct PostsPageSettingsView: View {
                         dismiss()
                     }
                     .foregroundColor(tintColor)
+                    .conditionalGlassEffect(UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key))
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
@@ -76,6 +77,7 @@ struct PostsPageSettingsView: View {
                             }
                             .foregroundColor(tintColor)
                             .frame(width: 44, height: 44)
+                            .conditionalGlassEffect(UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key))
                             
                             Slider(value: $fontScale, in: 50...200, step: 10)
                                 .accentColor(tintColor)
@@ -88,6 +90,7 @@ struct PostsPageSettingsView: View {
                             }
                             .foregroundColor(tintColor)
                             .frame(width: 44, height: 44)
+                            .conditionalGlassEffect(UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key))
                         }
                     }
                     
