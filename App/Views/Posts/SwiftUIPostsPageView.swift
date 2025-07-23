@@ -51,20 +51,13 @@ struct SwiftUIPostsPageView: View {
     @State private var currentUserActivity: NSUserActivity?
     @StateObject private var scrollCoordinator = RenderViewScrollCoordinator()
     
-    // MARK: - Simplified Immersive Mode State
+    // MARK: - Immersive Mode State  
     @State private var isToolbarVisible = true
     @State private var isNavigationBarVisible = true
-    @State private var lastScrollOffset: CGFloat = 0
-    @State private var scrollDirection: ScrollDirection = .none
     
     // MARK: - Cached Performance State
-    @State private var useLiquidGlass = false
+    @State private var useLiquidGlass: Bool
     
-    enum ScrollDirection {
-        case up
-        case down  
-        case none
-    }
     
     // MARK: - Simplified Scroll Management (mirroring UIKit approach)
     @State private var hasAttemptedInitialScroll = false
@@ -86,6 +79,14 @@ struct SwiftUIPostsPageView: View {
         self.isPresentedModally = isPresentedModally
         self._viewModel = StateObject(wrappedValue: PostsPageViewModel(thread: thread, author: author))
         
+        // Initialize liquid glass state immediately based on iOS version
+        if #available(iOS 26.0, *) {
+            // We'll update this properly in onAppear, start with true for iOS 26+
+            self._useLiquidGlass = State(initialValue: true)
+        } else {
+            self._useLiquidGlass = State(initialValue: false)
+        }
+        
         // Initialize state using the new PostsPageViewState
         let initialState = PostsPageViewState()
         initialState.pendingScrollFraction = scrollFraction
@@ -100,6 +101,18 @@ struct SwiftUIPostsPageView: View {
         self.coordinator = coordinator
         self.isPresentedModally = isPresentedModally
         self._viewModel = StateObject(wrappedValue: PostsPageViewModel(thread: thread, author: author))
+        
+        // Initialize liquid glass state immediately based on iOS version
+        if #available(iOS 26.0, *) {
+            // We'll update this properly in onAppear, start with true for iOS 26+
+            self._useLiquidGlass = State(initialValue: true)
+        } else {
+            self._useLiquidGlass = State(initialValue: false)
+        }
+        
+        let initialState = PostsPageViewState()
+        initialState.specificPageToLoad = page
+        self._viewState = StateObject(wrappedValue: initialState)
     }
     
     // MARK: - Handler Functions (temporarily removed for performance testing)
@@ -141,10 +154,12 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Body
     var body: some View {
-        mainContentView
+        let colorScheme: ColorScheme = theme["mode"] == "dark" ? .dark : .light
+        
+        return mainContentView
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(postsImmersiveMode ? (isNavigationBarVisible ? .visible : .hidden) : .visible, for: .navigationBar)
-            .preferredColorScheme(theme["mode"] == "dark" ? .dark : .light)
+            .toolbar(navigationBarVisibility, for: .navigationBar)
+            .preferredColorScheme(colorScheme)
             .statusBarHidden(false)
             .allowsHitTesting(true)
             .interactiveDismissDisabled(false)
@@ -154,6 +169,20 @@ struct SwiftUIPostsPageView: View {
             .overlay(alignment: .center) {
                 loadingOverlay
             }
+            .simultaneousGesture(
+                // Only add gesture when immersion mode is active
+                postsImmersiveMode ? 
+                DragGesture(minimumDistance: 30, coordinateSpace: .global)
+                    .onChanged { value in
+                        print("🔥 Drag gesture detected at global coordinate: \(value.location)")
+                        handleDragChanged(value)
+                    }
+                    .onEnded { value in
+                        print("🔥 Drag gesture ended")
+                        handleDragEnded(value)
+                    }
+                : nil
+            )
             .toolbar {
                 // Custom multiline title
                 ToolbarItem(placement: .principal) {
@@ -192,13 +221,19 @@ struct SwiftUIPostsPageView: View {
                 // Always add liquid glass toolbar content, but make it conditional internally
                 liquidGlassToolbarContent
             }
-            .toolbar(postsImmersiveMode ? (isToolbarVisible ? .visible : .hidden) : .visible, for: .bottomBar)
+            .toolbar(toolbarVisibility, for: .bottomBar)
             .onAppear {
+                // theme set at init - no need to update
                 updateLiquidGlassState()
                 handleViewAppear()
             }
             .onChange(of: viewModel.isLoading) { isLoading in
                 viewState.isLoadingSpinnerVisible = isLoading
+                
+                // Critical: Handle initial scrolling when loading completes
+                if !isLoading {
+                    handleInitialScrolling(posts: viewModel.posts)
+                }
                 
                 // Reset niggly refresh state when loading completes
                 if !isLoading && viewState.isNigglyRefreshing {
@@ -226,12 +261,12 @@ struct SwiftUIPostsPageView: View {
             }
             .sheet(isPresented: $viewState.showingSettings) {
                 PostsPageSettingsView()
-                    .environment(\.theme, theme)
+                    
             }
             .sheet(isPresented: $viewState.showingImageViewer) {
                 if let imageURL = viewState.presentedImageURL {
                     SwiftUIImageViewer(imageURL: imageURL)
-                        .environment(\.theme, theme)
+                        
                 }
             }
             .confirmationDialog("Rate this thread", isPresented: $viewState.showingVoteSheet) {
@@ -290,6 +325,68 @@ struct SwiftUIPostsPageView: View {
             .onChange(of: enableLiquidGlass) { _ in
                 updateLiquidGlassState()
             }
+            .onChange(of: postsImmersiveMode) { newValue in
+                if newValue {
+                    resetToolbarVisibility()
+                    startImmersionModeIfNeeded()
+                } else {
+                    stopImmersionMode()
+                }
+            }
+    }
+    
+    // MARK: - Drag-Based Immersion Mode
+    @State private var dragState: DragState = .idle
+    @State private var lastDragTranslation: CGFloat = 0
+    
+    enum DragState {
+        case idle
+        case dragging
+    }
+    
+    private func handleDragChanged(_ value: DragGesture.Value) {
+        guard postsImmersiveMode else { 
+            print("🔥 Drag detected but immersion mode disabled")
+            return 
+        }
+        
+        switch dragState {
+        case .idle:
+            dragState = .dragging
+            lastDragTranslation = value.translation.height
+            print("🔥 Started dragging, initial Y: \(value.translation.height)")
+            
+        case .dragging:
+            let currentTranslation = value.translation.height
+            let deltaY = currentTranslation - lastDragTranslation
+            lastDragTranslation = currentTranslation
+            
+            print("🔥 Dragging: deltaY=\(deltaY), toolbarVisible=\(isToolbarVisible)")
+            
+            // Determine drag direction with threshold
+            if abs(deltaY) > 5 { // Minimum threshold to avoid jitter
+                if deltaY < 0 && isToolbarVisible {
+                    // Dragging up - hide toolbars
+                    print("🔥 Hiding toolbars (drag up)")
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        isToolbarVisible = false
+                        isNavigationBarVisible = false
+                    }
+                } else if deltaY > 0 && !isToolbarVisible {
+                    // Dragging down - show toolbars
+                    print("🔥 Showing toolbars (drag down)")
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        isToolbarVisible = true
+                        isNavigationBarVisible = true
+                    }
+                }
+            }
+        }
+    }
+    
+    private func handleDragEnded(_ value: DragGesture.Value) {
+        dragState = .idle
+        lastDragTranslation = 0
     }
     
     // MARK: - Main Content
@@ -319,35 +416,11 @@ struct SwiftUIPostsPageView: View {
             author: author,
             scrollCoordinator: scrollCoordinator,
             onPostAction: handlePostAction,
-            onUserAction: handleUserAction,
-            onScrollChanged: { isScrollingUp in
-                // Clean SwiftUI-native scroll handling
-                // Can add back scroll monitoring here if needed, but much simpler
-            },
-            onScrollPositionChanged: { offset, contentHeight, viewHeight in
-                // Clean SwiftUI-native position tracking
-                // Minimal processing without all the complex coordination
-                if contentHeight > 0 {
-                    let scrollFraction = offset / max(contentHeight - viewHeight, 1)
-                    viewState.currentScrollFraction = max(0, min(1, scrollFraction))
-                    
-                    // Simplified scroll direction tracking for immersive mode
-                    if postsImmersiveMode {
-                        handleScrollForImmersiveMode(offset: offset, contentHeight: contentHeight, viewHeight: viewHeight)
-                    }
-                }
-            }
+            onUserAction: handleUserAction
         )
-        .id("render-view-\(viewModel.thread.threadID)-\(viewModel.currentPage.map { "\($0)" } ?? "unknown")")
+        // .id() removed - was causing entire view recreation and performance issues
         .background(Color(theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground))
-        .ignoresSafeArea(postsImmersiveMode ? .all : .container)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            // Add inset when in immersive mode and navbar is visible to prevent content overlap
-            if postsImmersiveMode && isNavigationBarVisible {
-                Color.clear
-                    .frame(height: 44) // Standard navigation bar height
-            }
-        }
+        .ignoresSafeArea(.container) // Simplified - no conditional safe area changes
         // All pull overlays temporarily removed for performance testing
         /*
         .overlay(alignment: .center) {
@@ -455,16 +528,19 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Bottom Overlays
     private var bottomOverlays: some View {
-        VStack(spacing: 0) {
-            // Show overlay toolbar only when not using liquid glass
-            // When using liquid glass, always prefer native toolbar system for proper effects
-            let showOverlay = shouldShowToolbar && !useLiquidGlass
-            
+        let showOverlay = shouldShowToolbar && !useLiquidGlass
+        
+        return Group {
             if showOverlay {
                 standardToolbar
                     .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .onAppear { print("🔧 Showing standard overlay") }
+                    .onAppear { 
+                        print("🔧 Showing standard overlay - shouldShowToolbar=\(self.shouldShowToolbar), useLiquidGlass=\(self.useLiquidGlass)")
+                    }
             }
+        }
+        .onAppear {
+            print("🔧 bottomOverlays: shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), showOverlay=\(showOverlay)")
         }
     }
     
@@ -472,18 +548,46 @@ struct SwiftUIPostsPageView: View {
     private var shouldShowToolbar: Bool {
         if postsImmersiveMode {
             // In immersive mode, use scroll-based visibility
+            print("🔧 shouldShowToolbar: immersive mode ON, isToolbarVisible=\(isToolbarVisible)")
             return isToolbarVisible
         } else {
             // In normal mode, always show toolbar
+            print("🔧 shouldShowToolbar: immersive mode OFF, always showing")
             return true
+        }
+    }
+    
+    private var toolbarVisibility: Visibility {
+        if useLiquidGlass {
+            // For liquid glass, use native toolbar and control visibility
+            if postsImmersiveMode {
+                return isToolbarVisible ? .visible : .hidden
+            } else {
+                return .visible
+            }
+        } else {
+            // For non-liquid glass, hide native toolbar and use overlay instead
+            return .hidden
+        }
+    }
+    
+    private var navigationBarVisibility: Visibility {
+        if postsImmersiveMode {
+            // In immersive mode, control navigation bar visibility
+            return isNavigationBarVisible ? .visible : .hidden
+        } else {
+            // In normal mode, always show navigation bar
+            return .visible
         }
     }
     
     private func updateLiquidGlassState() {
         if #available(iOS 26.0, *) {
             useLiquidGlass = enableLiquidGlass
+            print("🌟 Liquid Glass: Available on iOS 26+, setting enabled=\(enableLiquidGlass), useLiquidGlass=\(useLiquidGlass)")
         } else {
             useLiquidGlass = false
+            print("🌟 Liquid Glass: Not available on iOS <26, useLiquidGlass=false")
         }
     }
     
@@ -523,6 +627,7 @@ struct SwiftUIPostsPageView: View {
                         return ""
                     }
                 }(),
+                isImmersiveModeActive: postsImmersiveMode && !isToolbarVisible,
                 onSettingsTapped: {
                     viewState.showingSettings = true
                 },
@@ -662,38 +767,26 @@ struct SwiftUIPostsPageView: View {
         }
     }
     
-    // MARK: - Immersive Mode Scroll Handling
-    private func handleScrollForImmersiveMode(offset: CGFloat, contentHeight: CGFloat, viewHeight: CGFloat) {
-        let threshold: CGFloat = 20 // Minimum scroll distance to trigger visibility change
-        let delta = offset - lastScrollOffset
-        
-        // Update scroll direction
-        if abs(delta) > 5 { // Minimum delta to avoid jitter
-            if delta > 0 {
-                scrollDirection = .down
-            } else {
-                scrollDirection = .up
-            }
-        }
-        
-        // Update toolbar visibility based on scroll direction and position
-        let isAtTop = offset <= 0
-        let isAtBottom = offset >= (contentHeight - viewHeight - 50) // 50pt buffer for bottom detection
-        
-        withAnimation(.easeInOut(duration: 0.25)) {
-            if isAtTop || isAtBottom {
-                // Always show both bars at top or bottom
-                isToolbarVisible = true
-                isNavigationBarVisible = true
-            } else if abs(delta) > threshold {
-                // Show/hide both bars together when scrolling up/down
-                let shouldShowBars = scrollDirection == .up
-                isToolbarVisible = shouldShowBars
-                isNavigationBarVisible = shouldShowBars
-            }
-        }
-        
-        lastScrollOffset = offset
+    // MARK: - Immersive Mode Scroll Handling (Disabled for Smooth Performance)
+    // Immersive mode disabled to prevent constant SwiftUI state updates during scroll
+    // Drag-based immersion mode - no timers needed
+    private func startImmersionModeIfNeeded() {
+        guard postsImmersiveMode else { return }
+        // Drag gesture handles immersion mode, no timer needed
+        resetToolbarVisibility()
+    }
+    
+    private func stopImmersionMode() {
+        // Reset toolbar visibility when disabling immersion mode
+        resetToolbarVisibility()
+        dragState = .idle
+        lastDragTranslation = 0
+    }
+    
+    private func checkScrollStateForImmersion() {
+        // Currently using manual toggle via double-tap for testing
+        // This will be replaced with proper WebView scroll delegate integration
+        // when the WebView scroll events are connected to the velocity tracker
     }
     
     private func resetToolbarVisibility() {
@@ -702,8 +795,6 @@ struct SwiftUIPostsPageView: View {
             isToolbarVisible = true
             isNavigationBarVisible = true
         }
-        lastScrollOffset = 0
-        scrollDirection = .none
     }
     
     // MARK: - Helper Methods
@@ -716,6 +807,7 @@ struct SwiftUIPostsPageView: View {
         // Initialize toolbar visibility for immersive mode
         if postsImmersiveMode {
             resetToolbarVisibility()
+            startImmersionModeIfNeeded()
         }
         
         // Restore complete state first (includes scroll position and jump targets)
@@ -755,6 +847,9 @@ struct SwiftUIPostsPageView: View {
         viewState.resetPullStates()
         invalidateHandoff()
         
+        // Stop immersion mode to prevent memory leaks
+        stopImmersionMode()
+        
         // Save complete state for comprehensive restoration
         saveCompleteState()
         
@@ -782,7 +877,7 @@ struct SwiftUIPostsPageView: View {
                 }
             }
         )
-        .environment(\.theme, theme)
+        // Environment removed - theme used directly
     }
     
     private func handleScrollToFraction(_ fraction: CGFloat?) {
@@ -1160,6 +1255,7 @@ private struct ArrowPullOverlay: View {
     // Temporarily removed for performance testing
 }
 */
+
 
 
 

@@ -292,6 +292,18 @@ extension ForumListDataSource: NSFetchedResultsControllerDelegate {
          For the moment, it seems that all FRCs get processed in the same go-round of the run loop. So if we wait a tick, allowing however many FRCs to stack up their updates, then we can process them all at once.
          */
         DispatchQueue.main.async {
+            // Ensure table view is in view hierarchy before attempting updates
+            guard self.tableView.superview != nil,
+                  self.tableView.window != nil else {
+                logger.debug("Skipping deferred updates - table view not in view hierarchy")
+                // Clear deferred arrays to prevent memory buildup
+                self.deferredDeletes.removeAll()
+                self.deferredInserts.removeAll()
+                self.deferredSectionDeletes.removeAll()
+                self.deferredSectionInserts.removeAll()
+                self.deferredUpdates.removeAll()
+                return
+            }
 
             // This does avoid pointless table view calls, but it's also the other half of our workaround for multiple FRCs updating at once: this ensures that only one of multiple scheduled "next tick" calls actually calls tableView.beginUpdates()/endUpdates().
             guard !self.deferredDeletes.isEmpty || !self.deferredInserts.isEmpty || !self.deferredUpdates.isEmpty

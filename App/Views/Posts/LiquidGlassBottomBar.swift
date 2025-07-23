@@ -28,7 +28,9 @@ struct LiquidGlassBottomBar: View {
     // MARK: - Environment
     @SwiftUI.Environment(\.theme) private var theme
     @FoilDefaultStorage(Settings.enableLiquidGlass) private var enableLiquidGlass
+    @FoilDefaultStorage(Settings.postsImmersiveMode) private var postsImmersiveMode
     @State private var showingPagePicker = false
+    @State private var isImmersiveModeActive = false
     
     // MARK: - Body
     var body: some View {
@@ -179,6 +181,7 @@ struct LiquidGlassBottomBar: View {
         isBackEnabled: Bool,
         isForwardEnabled: Bool,
         currentPageAccessibilityLabel: String,
+        isImmersiveModeActive: Bool = false,
         onSettingsTapped: @escaping () -> Void,
         onBackTapped: @escaping () -> Void,
         onForwardTapped: @escaping () -> Void,
@@ -190,37 +193,39 @@ struct LiquidGlassBottomBar: View {
         onYourPostsTapped: @escaping () -> Void
     ) -> some ToolbarContent {
         ToolbarItemGroup(placement: .bottomBar) {
-            // Settings button
-            Button(action: onSettingsTapped) {
-                Image("page-settings")
-                    .renderingMode(.template)
-                    .foregroundColor(toolbarTextColor)
-            }
-            .accessibilityLabel("Settings")
-            
-            Spacer()
-            
-            // Navigation controls with iOS 26 morphing
-            NavigationControlsContainer(
-                page: page,
-                numberOfPages: numberOfPages,
-                showingPagePicker: showingPagePicker,
-                toolbarTextColor: toolbarTextColor,
-                roundedFonts: roundedFonts,
-                isBackEnabled: isBackEnabled,
-                isForwardEnabled: isForwardEnabled,
-                currentPageAccessibilityLabel: currentPageAccessibilityLabel,
-                thread: thread,
-                onBackTapped: onBackTapped,
-                onForwardTapped: onForwardTapped,
-                onPageSelected: onPageSelected,
-                onGoToLastPost: onGoToLastPost
-            )
-            
-            Spacer()
-            
-            // Menu button
-            Menu {
+            // Only show buttons when not in immersive mode for liquid glass morphing
+            if !isImmersiveModeActive {
+                // Settings button
+                Button(action: onSettingsTapped) {
+                    Image("page-settings")
+                        .renderingMode(.template)
+                        .foregroundColor(toolbarTextColor)
+                }
+                .accessibilityLabel("Settings")
+                
+                Spacer()
+                
+                // Navigation controls with iOS 26 morphing
+                NavigationControlsContainer(
+                    page: page,
+                    numberOfPages: numberOfPages,
+                    showingPagePicker: showingPagePicker,
+                    toolbarTextColor: toolbarTextColor,
+                    roundedFonts: roundedFonts,
+                    isBackEnabled: isBackEnabled,
+                    isForwardEnabled: isForwardEnabled,
+                    currentPageAccessibilityLabel: currentPageAccessibilityLabel,
+                    thread: thread,
+                    onBackTapped: onBackTapped,
+                    onForwardTapped: onForwardTapped,
+                    onPageSelected: onPageSelected,
+                    onGoToLastPost: onGoToLastPost
+                )
+                
+                Spacer()
+                
+                // Menu button
+                Menu {
                 // Bookmark
                 Button(action: onBookmarkTapped) {
                     Label(
@@ -250,6 +255,7 @@ struct LiquidGlassBottomBar: View {
                     .foregroundColor(toolbarTextColor)
             }
             .accessibilityLabel("Menu")
+            }
         }
     }
     
@@ -364,6 +370,13 @@ struct LiquidGlassBottomBar: View {
     
     private var disabledToolbarTextColor: Color {
         toolbarTextColor.opacity(0.5)
+    }
+    
+    // MARK: - Immersion Mode Control
+    func setImmersionMode(active: Bool) {
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isImmersiveModeActive = active
+        }
     }
 }
 

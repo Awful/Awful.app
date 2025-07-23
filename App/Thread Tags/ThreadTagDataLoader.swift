@@ -47,26 +47,39 @@ final class ThreadTagDataLoader: DataLoading {
             return fallbackLoader.loadData(with: request, didReceiveData: didReceiveData, completion: completion)
         }
         
-        let data: Data
-        do {
-            try data = Data(contentsOf: bundleURL)
-        } catch {
-            logger.warning("could not load bundled thread tag data from \(bundleURL), will look elsewhere: \(error)")
-            return fallbackLoader.loadData(with: request, didReceiveData: didReceiveData, completion: completion)
+        // Load image data asynchronously to prevent main thread blocking
+        let progress = Progress()
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            let data: Data
+            do {
+                data = try Data(contentsOf: bundleURL)
+            } catch {
+                logger.warning("could not load bundled thread tag data from \(bundleURL), will look elsewhere: \(error)")
+                DispatchQueue.main.async {
+                    _ = self.fallbackLoader.loadData(with: request, didReceiveData: didReceiveData, completion: completion)
+                }
+                return
+            }
+            
+            logger.debug("\(targetURL) is bundled, returning image data directly")
+            
+            let mimeType = UTType.png.preferredMIMEType!
+            let response = HTTPURLResponse(url: targetURL, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: [
+                "Content-Length": "\(data.count)",
+                "Content-Type": mimeType,
+                "Cache-Control": "no-cache, no-store, must-revalidate", // skip Nuke's disk cache
+                ])!
+            
+            // Call completion on main thread to ensure thread safety
+            DispatchQueue.main.async {
+                guard !progress.isCancelled else { return }
+                didReceiveData(data, response)
+                completion(nil)
+            }
         }
         
-        logger.debug("\(targetURL) is bundled, returning image data directly")
-        
-        let mimeType = UTType.png.preferredMIMEType!
-        let response = HTTPURLResponse(url: targetURL, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: [
-            "Content-Length": "\(data.count)",
-            "Content-Type": mimeType,
-            "Cache-Control": "no-cache, no-store, must-revalidate", // skip Nuke's disk cache
-            ])!
-        didReceiveData(data, response)
-        completion(nil)
-        
-        return Progress()
+        return progress
     }
     
     enum Error: Swift.Error {

@@ -58,13 +58,14 @@ struct SwiftUIRenderViewNative: View {
     @State private var currentHTML = ""
     @State private var lastRenderedPostsHash: Int = 0
     
+    // Performance monitoring removed - trust WebKit's native performance
+    
     // Context menu handling is now done directly in WebViewCoordinator
     
     // MARK: - Callbacks (SwiftUI Style)
     let onPostAction: (Post, CGRect) -> Void
     let onUserAction: (Post, CGRect) -> Void
-    var onScrollChanged: ((Bool) -> Void)? = nil
-    var onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)? = nil
+    // Scroll callbacks removed for optimal performance - WebKit handles scrolling natively
     
     // MARK: - Settings
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
@@ -78,38 +79,40 @@ struct SwiftUIRenderViewNative: View {
     
     // MARK: - Body
     var body: some View {
-        WebViewRepresentable(
-            coordinator: Binding(
-                get: { webViewCoordinator },
-                set: { webViewCoordinator = $0 }
-            ),
-            theme: theme,
-            scrollCoordinator: scrollCoordinator,
-            viewModel: viewModel,
-            onScrollChanged: onScrollChanged,
-            onScrollPositionChanged: onScrollPositionChanged,
-            onPostAction: onPostAction,
-            onUserAction: onUserAction
-        )
+        ZStack {
+            WebViewRepresentable(
+                coordinator: Binding(
+                    get: { webViewCoordinator },
+                    set: { webViewCoordinator = $0 }
+                ),
+                theme: theme,
+                scrollCoordinator: scrollCoordinator,
+                viewModel: viewModel,
+                // Scroll callbacks removed for optimal performance
+                onPostAction: onPostAction,
+                onUserAction: onUserAction
+            )
+            
+            // Performance overlay removed - WebKit handles performance internally
+        }
         .onAppear {
             setupWebView()
         }
         .onChange(of: viewModel.posts) { posts in
-            Task {
-                await renderPosts(posts)
-            }
-        }
-        .onChange(of: theme) { newTheme in
-            Task {
-                await updateTheme()
+            // Critical: Only render posts when they actually change
+            if !posts.isEmpty {
+                Task {
+                    await renderPosts(posts)
+                }
             }
         }
         .task {
-            // Initial render if we have posts
+            // Critical: Initial render when view appears
             if !viewModel.posts.isEmpty {
                 await renderPosts(viewModel.posts)
             }
         }
+        // Triple tap gesture removed - trust WebKit's performance
     }
     
     // MARK: - Setup & Rendering
@@ -133,19 +136,23 @@ struct SwiftUIRenderViewNative: View {
         logger.debug("🔄 Rendering \(posts.count) posts")
         lastRenderedPostsHash = currentPostsHash
         
+        // Generate HTML - trust Swift's task scheduling
         do {
             let html = try generateHTML(for: posts)
             currentHTML = html
-            
-            await coordinator.loadHTML(html, baseURL: baseURL)
-            // Update posts in coordinator for message handling
-            coordinator.updatePosts(posts)
-            isLoaded = true
-            
-            logger.debug("Posts rendering completed")
         } catch {
             logger.error("HTML generation failed: \(error)")
+            return
         }
+        
+        // Load HTML - WebKit handles this efficiently
+        await coordinator.loadHTML(currentHTML, baseURL: baseURL)
+        
+        // Update posts in coordinator for message handling
+        coordinator.updatePosts(posts)
+        isLoaded = true
+        
+        logger.debug("Posts rendering completed")
     }
     
     @MainActor
@@ -222,6 +229,10 @@ struct SwiftUIRenderViewNative: View {
     }
     
     // Context menus are now handled directly by WebViewCoordinator
+    
+    // MARK: - Performance API
+    
+    // Performance metrics removed - WebKit provides optimal performance natively
 }
 
 // MARK: - Minimal WebView Wrapper
@@ -234,8 +245,7 @@ struct WebViewRepresentable: UIViewRepresentable {
     let theme: Theme
     let scrollCoordinator: RenderViewScrollCoordinator?
     let viewModel: PostsPageViewModel
-    var onScrollChanged: ((Bool) -> Void)?
-    var onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)?
+    // Scroll callbacks removed for optimal performance
     var onPostAction: ((Post, CGRect) -> Void)?
     var onUserAction: ((Post, CGRect) -> Void)?
     
@@ -243,7 +253,7 @@ struct WebViewRepresentable: UIViewRepresentable {
         let config = createWebViewConfiguration()
         let webView = WKWebView(frame: .zero, configuration: config)
         
-        // Configure webview appearance
+        // Configure webview appearance with performance optimizations
         webView.isOpaque = false
         webView.backgroundColor = UIColor.clear
         webView.scrollView.backgroundColor = theme[uicolor: "postsViewBackgroundColor"] ?? .systemBackground
@@ -251,18 +261,27 @@ struct WebViewRepresentable: UIViewRepresentable {
         webView.scrollView.decelerationRate = .normal
         webView.allowsBackForwardNavigationGestures = false
         
+        // Basic scroll view settings - trust WebKit's defaults
+        webView.scrollView.showsVerticalScrollIndicator = true
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        
+        // Use WebKit's default rendering settings
+        
+        // Keep basic image loading optimization (doesn't interfere with scroll)
+        NetworkOptimizer.shared.optimizeImageLoading(for: webView)
+        
         // Create coordinator
         let webViewCoordinator = WebViewCoordinator(
             webView: webView,
             theme: theme,
-            onScrollChanged: onScrollChanged,
-            onScrollPositionChanged: onScrollPositionChanged,
+            // Scroll callbacks removed for optimal performance
             onPostAction: onPostAction,
             onUserAction: onUserAction,
             viewModel: viewModel
         )
         
         webView.navigationDelegate = webViewCoordinator
+        // Set scroll delegate for basic position tracking
         webView.scrollView.delegate = webViewCoordinator
         
         // Set coordinator
@@ -284,22 +303,36 @@ struct WebViewRepresentable: UIViewRepresentable {
         let configuration = WKWebViewConfiguration()
         let bundle = Bundle.main
         
-        // Add JavaScript files (same as original)
-        configuration.userContentController.addUserScript({
-            let url = bundle.url(forResource: "RenderView.js", withExtension: nil)!
-            let script = try! String(contentsOf: url)
-            return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-        }())
+        // Use WebKit's default settings for best performance
+        configuration.allowsInlineMediaPlayback = false
+        configuration.mediaTypesRequiringUserActionForPlayback = .all
         
-        configuration.userContentController.addUserScript({
-            let url = bundle.url(forResource: "RenderView-AllFrames.js", withExtension: nil)!
-            let script = try! String(contentsOf: url)
-            return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
-        }())
+        // Trust WebKit's automatic process management
         
-        // Set URL scheme handlers (same as original)
+        // Add JavaScript files with error handling
+        do {
+            if let url = bundle.url(forResource: "RenderView.js", withExtension: nil) {
+                let script = try String(contentsOf: url)
+                configuration.userContentController.addUserScript(
+                    WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+                )
+            }
+            
+            if let url = bundle.url(forResource: "RenderView-AllFrames.js", withExtension: nil) {
+                let script = try String(contentsOf: url)
+                configuration.userContentController.addUserScript(
+                    WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+                )
+            }
+        } catch {
+            logger.error("Failed to load JavaScript files: \(error)")
+        }
+        
+        // Set URL scheme handlers with error handling
         configuration.setURLSchemeHandler(ImageURLProtocol(), forURLScheme: ImageURLProtocol.scheme)
         configuration.setURLSchemeHandler(ResourceURLProtocol(), forURLScheme: ResourceURLProtocol.scheme)
+        
+        // WebKit handles network optimizations internally
         
         return configuration
     }
@@ -331,8 +364,7 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
     
     private let webView: WKWebView
     private let theme: Theme
-    private var onScrollChanged: ((Bool) -> Void)?
-    private var onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)?
+    // Scroll callbacks removed for optimal performance
     
     // Context menu callbacks
     private var onPostAction: ((Post, CGRect) -> Void)?
@@ -347,22 +379,20 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         return button
     }()
     
-    // Scroll tracking (minimal)
+    // Simplified scroll tracking - trust WebKit's native performance
     private var lastScrollOffset: CGFloat = 0
     
     init(
         webView: WKWebView,
         theme: Theme,
-        onScrollChanged: ((Bool) -> Void)?,
-        onScrollPositionChanged: ((CGFloat, CGFloat, CGFloat) -> Void)?,
+        // Scroll callbacks removed for optimal performance
         onPostAction: ((Post, CGRect) -> Void)?,
         onUserAction: ((Post, CGRect) -> Void)?,
         viewModel: PostsPageViewModel?
     ) {
         self.webView = webView
         self.theme = theme
-        self.onScrollChanged = onScrollChanged
-        self.onScrollPositionChanged = onScrollPositionChanged
+        // Scroll callbacks removed for optimal performance
         self.onPostAction = onPostAction
         self.onUserAction = onUserAction
         self.viewModel = viewModel
@@ -371,12 +401,15 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         Task {
             await setupMessageHandlers()
         }
+        
+        // Performance monitoring removed - WebKit handles this natively
     }
     
     // MARK: - HTML Loading
     
     @MainActor
     func loadHTML(_ html: String, baseURL: URL?) async {
+        // Trust WebKit to handle HTML loading efficiently
         webView.loadHTMLString(html, baseURL: baseURL)
     }
     
@@ -414,7 +447,7 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         logger.debug("🌐 WebView finished loading - JavaScript should be ready")
         
-        // Test if JavaScript is working by evaluating a simple script
+        // Test JavaScript availability asynchronously
         Task { @MainActor in
             do {
                 let result = try await webView.eval("typeof window.webkit !== 'undefined' && typeof window.webkit.messageHandlers !== 'undefined'")
@@ -433,25 +466,16 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         webView.reload()
     }
     
-    // MARK: - UIScrollViewDelegate (Minimal)
+    // MARK: - UIScrollViewDelegate (Simplified - Trust WebKit)
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let currentOffset = scrollView.contentOffset.y
-        let scrollDiff = currentOffset - lastScrollOffset
         
-        // Only process significant scroll changes (no complex throttling)
-        guard abs(scrollDiff) > 5 else { return }
-        
-        let isScrollingUp = scrollDiff < 0
-        onScrollChanged?(isScrollingUp)
-        
-        // Basic position tracking
-        let contentHeight = scrollView.contentSize.height
-        let viewHeight = scrollView.bounds.height
-        onScrollPositionChanged?(currentOffset, contentHeight, viewHeight)
-        
+        // All scroll callbacks removed for optimal performance - trust WebKit
         lastScrollOffset = currentOffset
     }
+    
+    // MARK: - Performance Tracking Removed - WebKit Handles This Natively
     
     // MARK: - Message Handling Setup
     
@@ -588,8 +612,9 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         logger.debug("OEmbed request for \(url) with id \(id)")
     }
     
-    // Remove deinit cleanup to avoid main actor isolation issues
-    // WKWebView will handle cleanup when deallocated
+    deinit {
+        // Cleanup simplified - WebKit handles performance internally
+    }
     
     // MARK: - Context Menu Presentation
     

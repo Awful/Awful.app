@@ -27,7 +27,13 @@ struct PostsToolbarContainer: View {
     // MARK: - State
     @SwiftUI.Environment(\.theme) private var theme
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    @FoilDefaultStorage(Settings.postsImmersiveMode) private var postsImmersiveMode
     @State private var showingPagePicker = false
+    
+    // Performance-optimized toolbar animations with immersion mode support
+    @State private var toolbarOffset: CGFloat = 0
+    @State private var currentVelocity: CGFloat = 0
+    @State private var isHiddenForImmersion: Bool = false
     
     // MARK: - Computed Properties
     private var currentPageNumber: Int {
@@ -68,8 +74,27 @@ struct PostsToolbarContainer: View {
         }
     }
     
+    // MARK: - Computed Properties for Layout
+    private var shouldShowToolbar: Bool {
+        !postsImmersiveMode || !isHiddenForImmersion
+    }
+    
     // MARK: - Body
     var body: some View {
+        toolbarContent(safeAreaInsets: EdgeInsets())
+            .opacity(shouldShowToolbar ? 1 : 0)
+            .offset(y: toolbarOffset + (shouldShowToolbar ? 0 : 60))
+            .animation(.easeInOut(duration: 0.3), value: shouldShowToolbar)
+            .onReceive(NotificationCenter.default.publisher(for: .threadBookmarkDidChange)) { notification in
+                // Force view refresh when bookmark state changes
+                if let notificationThread = notification.object as? AwfulThread,
+                   notificationThread.objectID == thread.objectID {
+                    // The toolbar will automatically update since thread.bookmarked is observed
+                }
+            }
+    }
+    
+    private func toolbarContent(safeAreaInsets: EdgeInsets) -> some View {
         HStack(spacing: 12) {
             // Settings button
             Button(action: {
@@ -210,16 +235,10 @@ struct PostsToolbarContainer: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+        .padding(.bottom, max(safeAreaInsets.bottom, 0)) // Add safe area padding for iOS 18 compatibility
         .frame(minHeight: 44) // Standard toolbar height
         .background(toolbarBackgroundColor)
-
-        .onReceive(NotificationCenter.default.publisher(for: .threadBookmarkDidChange)) { notification in
-            // Force view refresh when bookmark state changes
-            if let notificationThread = notification.object as? AwfulThread,
-               notificationThread.objectID == thread.objectID {
-                // The toolbar will automatically update since thread.bookmarked is observed
-            }
-        }
+        .animatedToolbarOffset(toolbarOffset, velocity: currentVelocity)
     }
     
     // MARK: - Helper Properties
@@ -245,6 +264,13 @@ struct PostsToolbarContainer: View {
     
     private var topBorderColor: Color {
         Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator)
+    }
+    
+    // MARK: - Immersion Mode Control
+    func setImmersionHidden(_ hidden: Bool) {
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isHiddenForImmersion = hidden
+        }
     }
 }
 

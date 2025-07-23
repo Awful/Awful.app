@@ -90,40 +90,79 @@ final class ThreadListDataSource: NSObject {
 
 extension ThreadListDataSource: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
+        // Ensure we're on main thread and table view is in view hierarchy
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.tableView.superview != nil,
+                  self.tableView.window != nil else {
+                Log.debug("Skipping table view update - not in view hierarchy")
+                return
+            }
+            self.tableView.beginUpdates()
+        }
     }
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        switch type {
-        case .delete:
-            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .insert:
-            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .move, .update:
-            assertionFailure("why")
-        @unknown default:
-            assertionFailure("handle unknown change type")
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.tableView.superview != nil,
+                  self.tableView.window != nil else {
+                Log.debug("Skipping section update - not in view hierarchy")
+                return
+            }
+            
+            switch type {
+            case .delete:
+                self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+            case .insert:
+                self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+            case .move, .update:
+                assertionFailure("why")
+            @unknown default:
+                assertionFailure("handle unknown change type")
+            }
         }
     }
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at oldIndexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch type {
-        case .delete:
-            tableView.deleteRows(at: [oldIndexPath!], with: .fade)
-        case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .move:
-            tableView.deleteRows(at: [oldIndexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .update:
-            tableView.reloadRows(at: [oldIndexPath!], with: .none)
-        @unknown default:
-            assertionFailure("handle unknown change type")
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.tableView.superview != nil,
+                  self.tableView.window != nil else {
+                Log.debug("Skipping row update - not in view hierarchy")
+                return
+            }
+            
+            switch type {
+            case .delete:
+                guard let oldIndexPath = oldIndexPath else { return }
+                self.tableView.deleteRows(at: [oldIndexPath], with: .fade)
+            case .insert:
+                guard let newIndexPath = newIndexPath else { return }
+                self.tableView.insertRows(at: [newIndexPath], with: .fade)
+            case .move:
+                guard let oldIndexPath = oldIndexPath, let newIndexPath = newIndexPath else { return }
+                self.tableView.deleteRows(at: [oldIndexPath], with: .fade)
+                self.tableView.insertRows(at: [newIndexPath], with: .fade)
+            case .update:
+                guard let oldIndexPath = oldIndexPath else { return }
+                self.tableView.reloadRows(at: [oldIndexPath], with: .none)
+            @unknown default:
+                assertionFailure("handle unknown change type")
+            }
         }
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.tableView.superview != nil,
+                  self.tableView.window != nil else {
+                Log.debug("Skipping end updates - not in view hierarchy")
+                return
+            }
+            self.tableView.endUpdates()
+        }
     }
 }
 

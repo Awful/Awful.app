@@ -206,6 +206,11 @@
 		2DB77D692E1E784C0021B8DE /* NavigationStateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */; };
 		2DB77D6B2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */; };
 		2DB77D6D2E1E9E710021B8DE /* ScrollStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */; };
+		2DD006552E30D82600313ACD /* VelocityTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD006532E30D82600313ACD /* VelocityTracker.swift */; };
+		2DD006582E30D87D00313ACD /* DisplayLinkAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD006562E30D87D00313ACD /* DisplayLinkAnimator.swift */; };
+		2DD006592E30D87D00313ACD /* PerformanceMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD006572E30D87D00313ACD /* PerformanceMonitor.swift */; };
+		2DD0065C2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD0065A2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift */; };
+		2DD0065D2E30DA6C00313ACD /* NetworkOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD0065B2E30DA6C00313ACD /* NetworkOptimizer.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DE976A92E0FF1D000233423 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976A82E0FF1D000233423 /* RootView.swift */; };
 		2DE976AC2E0FF1DF00233423 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE976AB2E0FF1DF00233423 /* LoginView.swift */; };
@@ -521,6 +526,11 @@
 		2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateRestoration.swift; sourceTree = "<group>"; };
 		2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUILoadingViewFactory.swift; sourceTree = "<group>"; };
 		2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStateManager.swift; sourceTree = "<group>"; };
+		2DD006532E30D82600313ACD /* VelocityTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VelocityTracker.swift; sourceTree = "<group>"; };
+		2DD006562E30D87D00313ACD /* DisplayLinkAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkAnimator.swift; sourceTree = "<group>"; };
+		2DD006572E30D87D00313ACD /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
+		2DD0065A2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedScrollCoordinator.swift; sourceTree = "<group>"; };
+		2DD0065B2E30DA6C00313ACD /* NetworkOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkOptimizer.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		2DE976A82E0FF1D000233423 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		2DE976AB2E0FF1DF00233423 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -818,6 +828,7 @@
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1C25AC1F1F532EC400977D6F /* Misc */,
 				1CA887AE1F40ADFE0059FEEC /* Model Presentation */,
+				2DD006542E30D82600313ACD /* Performance */,
 				1CC780241612D9DD002AF958 /* Posts */,
 				1C25AC501F5777EC00977D6F /* Refreshers */,
 				8CCD498115B497A700E5893B /* Resources */,
@@ -1200,6 +1211,18 @@
 			path = Posts;
 			sourceTree = "<group>";
 		};
+		2DD006542E30D82600313ACD /* Performance */ = {
+			isa = PBXGroup;
+			children = (
+				2DD0065A2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift */,
+				2DD0065B2E30DA6C00313ACD /* NetworkOptimizer.swift */,
+				2DD006562E30D87D00313ACD /* DisplayLinkAnimator.swift */,
+				2DD006572E30D87D00313ACD /* PerformanceMonitor.swift */,
+				2DD006532E30D82600313ACD /* VelocityTracker.swift */,
+			);
+			path = Performance;
+			sourceTree = "<group>";
+		};
 		8CCD498115B497A700E5893B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1521,6 +1544,7 @@
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
+				2DD006552E30D82600313ACD /* VelocityTracker.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
@@ -1597,6 +1621,8 @@
 				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
 				2D23BF892E28FF790076BEBC /* PostsPageViewState.swift in Sources */,
 				2D23BF8A2E28FF790076BEBC /* ReplyWorkspaceView.swift in Sources */,
+				2DD0065C2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift in Sources */,
+				2DD0065D2E30DA6C00313ACD /* NetworkOptimizer.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
@@ -1628,6 +1654,8 @@
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
 				1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */,
+				2DD006582E30D87D00313ACD /* DisplayLinkAnimator.swift in Sources */,
+				2DD006592E30D87D00313ACD /* PerformanceMonitor.swift in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				2DB77D6B2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,

@@ -46,8 +46,8 @@ private struct DefaultLottieLoadingView: UIViewRepresentable {
         )
         
         animationView.contentMode = .scaleAspectFit
-        animationView.loopMode = .playOnce
-        animationView.animationSpeed = 1
+        animationView.loopMode = .loop // FIXED: Use loop mode for continuous animation
+        animationView.animationSpeed = 1.5 // Slightly faster for better responsiveness
         animationView.backgroundBehavior = .pauseAndRestore
         
         // Force the view frame size to match SwiftUI frame (required for Lottie)
@@ -59,13 +59,8 @@ private struct DefaultLottieLoadingView: UIViewRepresentable {
         let keypath = AnimationKeypath(keys: ["**", "**", "**", "Color"])
         animationView.setValueProvider(color, keypath: keypath)
         
-        // Two-phase animation: play frames 0-25 once, then loop 25-infinity
-        animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce) { completed in
-            if completed {
-                animationView.loopMode = .loop
-                animationView.play()
-            }
-        }
+        // FIXED: Start continuous loop animation immediately
+        animationView.play()
         
         return animationView
     }
@@ -75,6 +70,11 @@ private struct DefaultLottieLoadingView: UIViewRepresentable {
         let color = ColorValueProvider(theme["activityIndicatorColor"]?.lottieColorValue ?? UIColor.systemBlue.lottieColorValue)
         let keypath = AnimationKeypath(keys: ["**", "**", "**", "Color"])
         uiView.setValueProvider(color, keypath: keypath)
+        
+        // FIXED: Ensure animation is playing (fallback for stuck animations)
+        if !uiView.isAnimationPlaying {
+            uiView.play()
+        }
     }
 }
 

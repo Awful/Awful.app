@@ -158,6 +158,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
         
+        // Preload WebView process to avoid launch delays during scrolling (main thread safe)
+        NetworkOptimizer.preloadWebViewProcess()
+        
         showPromptIfLoginCookieExpiresSoon()
 
         announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)

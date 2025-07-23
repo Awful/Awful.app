@@ -109,5 +109,7 @@
 	<true/>
 	<key>ImgurClientId</key>
 	<string>${IMGUR_CLIENT_ID}</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>
