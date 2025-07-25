@@ -113,7 +113,7 @@ class NavigationStateManager: ObservableObject {
 
 extension NavigationDestination {
     /// Converts a NavigationDestination to its actual navigation object
-    func toNavigationObject(context: NSManagedObjectContext) -> AnyHashable? {
+    func toNavigationObject(context: NSManagedObjectContext, viewStateStorage: [String: [String: Any]]? = nil) -> AnyHashable? {
         // Validate Core Data context is ready
         guard context.persistentStoreCoordinator != nil else {
             print("❌ Core Data context not ready for navigation object conversion")
@@ -127,7 +127,26 @@ extension NavigationDestination {
                 return nil 
             }
             let author = authorID.flatMap { fetchUser(userID: $0, context: context) }
-            return ThreadDestination(thread: thread, page: page, author: author, scrollFraction: scrollFraction)
+            print("🔍 RESTORATION DEBUG: Creating ThreadDestination with saved page: \(page)")
+            
+            // Check if there's more recent view state that indicates a different page
+            // This prevents restoring stale 'nextUnread' when user was actually on a specific page
+            let finalPage: ThreadPage
+            if let viewStateStorage = viewStateStorage,
+               let viewState = viewStateStorage[threadID], 
+               let savedPageNumber = viewState["currentPage"] as? Int, 
+               savedPageNumber > 0,
+               case .nextUnread = page {
+                // Override nextUnread with the specific page from view state
+                finalPage = .specific(savedPageNumber)
+                print("🔍 RESTORATION OVERRIDE: Using specific(\(savedPageNumber)) from view state instead of nextUnread")
+            } else {
+                finalPage = page
+            }
+            
+            let destination = ThreadDestination(thread: thread, page: finalPage, author: author, scrollFraction: scrollFraction)
+            print("🔍 RESTORATION DEBUG: Created ThreadDestination has page: \(destination.page)")
+            return destination
             
         case .forum(let forumID):
             guard let forum = fetchForum(forumID: forumID, context: context) else {

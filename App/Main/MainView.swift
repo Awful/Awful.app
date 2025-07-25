@@ -58,6 +58,10 @@ protocol MainCoordinator: ObservableObject {
     func saveNavigationState()
     func restoreNavigationState()
     
+    // SceneStorage Override methods for bypassing SwiftUI's broken NavigationPath restoration
+    func saveNavigationPathsToSceneStorage() -> (navigationPathData: Data, sidebarPathData: Data)
+    func restoreNavigationPathsFromSceneStorage(navigationPathData: Data, sidebarPathData: Data, timestamp: Double)
+    
     // Scroll Position Management
     func updateScrollPosition(scrollFraction: CGFloat)
     func updateScrollPosition(for threadID: String, page: ThreadPage, author: User?, scrollFraction: CGFloat)
@@ -98,9 +102,21 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     private let stateManager: NavigationStateManager
     private let managedObjectContext: NSManagedObjectContext
     
+    // SceneStorage save callback for immediate updates
+    var triggerSceneStorageSave: (() -> Void)?
+    
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         self.stateManager = NavigationStateManager(managedObjectContext: managedObjectContext)
+        
+        // Listen for page changes from ViewModels to keep navigation state in sync
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name("ThreadPageDidChange"),
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            self?.handleThreadPageDidChange(notification)
+        }
     }
     
     enum PresentedSheet: Identifiable {
@@ -645,8 +661,19 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             )
             
             // Replace the item in navigation history directly
-            // DO NOT rebuild NavigationPath - this was causing automatic navigation
             navigationHistory[lastIndex] = updatedDestination
+            
+            // IMPORTANT: Also update the NavigationPath so navigation state saves the correct page
+            // Since NavigationPath doesn't support direct element access, we need to rebuild it
+            // by removing the old item and appending the new one
+            
+            // Check if we need to update the last item in the path (most common case)
+            if path.count > 0 {
+                // Remove the last item and append the updated one
+                // This assumes the thread being updated is the last item in the path
+                path.removeLast()
+                path.append(updatedDestination)
+            }
             
             logger.info("Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown")")
         } else {
@@ -717,10 +744,26 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             )
             
             // Replace the item in navigation history directly
-            // DO NOT rebuild NavigationPath - this was causing automatic navigation
             navigationHistory[index] = updatedDestination
             
+            // IMPORTANT: Also update the NavigationPath so navigation state saves the correct page
+            // Since NavigationPath doesn't support direct element access, we need to rebuild it
+            // by removing the old item and appending the new one
+            
+            // Check if we need to update the last item in the path (most common case)
+            if path.count > 0 {
+                // Remove the last item and append the updated one
+                // This assumes the thread being updated is the last item in the path
+                path.removeLast()
+                path.append(updatedDestination)
+            }
+            
             logger.info("Updated scroll position to \(scrollFraction) for thread: \(threadDestination.thread.title ?? "Unknown") (threadID: \(threadID))")
+            
+            // Immediately save updated navigation state to SceneStorage to prevent stale restoration
+            DispatchQueue.main.async {
+                self.triggerSceneStorageSave?()
+            }
         } else {
             logger.info("⚠️ MainCoordinator: No ThreadDestination found in navigation history for threadID: \(threadID), page: \(String(describing: page))")
         }
@@ -844,6 +887,149 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
         print("✅ Navigation state restored successfully")
     }
     
+    // MARK: - SceneStorage Override for Navigation Restoration
+    
+    /// Saves navigation paths to Data for SceneStorage, bypassing SwiftUI's broken NavigationPath restoration
+    func saveNavigationPathsToSceneStorage() -> (navigationPathData: Data, sidebarPathData: Data) {
+        logger.info("🏪 Saving navigation paths to SceneStorage to bypass SwiftUI restoration bugs")
+        
+        // Convert navigation history to our own NavigationDestination format
+        let mainNavDestinations = navigationHistory.compactMap { NavigationDestination.from($0) }
+        let sidebarDestinations: [NavigationDestination] = [] // TODO: Track sidebar if needed
+        
+        // Debug: Log what pages we're saving
+        for (index, destination) in mainNavDestinations.enumerated() {
+            if case .thread(let threadID, let page, _, _) = destination {
+                let pageDescription = String(describing: page)
+                logger.info("🏪 SceneStorage Save [Index \(index)]: ThreadID \(threadID) with page \(pageDescription)")
+            }
+        }
+        
+        // Encode to Data
+        var navigationData = Data()
+        var sidebarData = Data()
+        
+        do {
+            navigationData = try JSONEncoder().encode(mainNavDestinations)
+            sidebarData = try JSONEncoder().encode(sidebarDestinations)
+            logger.info("🏪 Successfully encoded \(mainNavDestinations.count) navigation destinations to SceneStorage")
+        } catch {
+            logger.error("❌ Failed to encode navigation paths for SceneStorage: \(error)")
+        }
+        
+        return (navigationData, sidebarData)
+    }
+    
+    /// Restores navigation paths from SceneStorage Data, bypassing SwiftUI's broken NavigationPath restoration
+    func restoreNavigationPathsFromSceneStorage(navigationPathData: Data, sidebarPathData: Data, timestamp: Double) {
+        logger.info("🏪 Restoring navigation paths from SceneStorage (timestamp: \(timestamp))")
+        
+        // Validate Core Data context is ready
+        guard managedObjectContext.persistentStoreCoordinator != nil else {
+            logger.warning("🔄 Core Data not ready for SceneStorage navigation restoration")
+            return
+        }
+        
+        // Check if the saved data is recent enough (within last 24 hours)
+        let currentTime = Date().timeIntervalSince1970
+        let maxAge: TimeInterval = 24 * 60 * 60 // 24 hours
+        guard timestamp > 0 && (currentTime - timestamp) < maxAge else {
+            logger.info("🏪 SceneStorage navigation data too old or invalid, skipping restoration")
+            return
+        }
+        
+        // Decode navigation destinations
+        guard !navigationPathData.isEmpty else {
+            logger.info("🏪 No navigation path data to restore from SceneStorage")
+            return
+        }
+        
+        do {
+            let savedDestinations = try JSONDecoder().decode([NavigationDestination].self, from: navigationPathData)
+            logger.info("🏪 Successfully decoded \(savedDestinations.count) navigation destinations from SceneStorage")
+            
+            // CRITICAL: Check if we're already displaying the correct content
+            // If navigation state matches what's currently shown, skip restoration to prevent unnecessary navigation
+            if navigationHistory.count == savedDestinations.count {
+                var isIdenticalState = true
+                
+                for (index, savedDest) in savedDestinations.enumerated() {
+                    if index < navigationHistory.count {
+                        let currentObject = navigationHistory[index]
+                        let savedObject = savedDest.toNavigationObject(context: managedObjectContext, viewStateStorage: viewStateStorage)
+                        
+                        // Compare ThreadDestinations specifically
+                        if let currentThread = currentObject as? ThreadDestination,
+                           let savedThread = savedObject as? ThreadDestination {
+                            if currentThread.thread.threadID != savedThread.thread.threadID ||
+                               currentThread.page != savedThread.page {
+                                isIdenticalState = false
+                                break
+                            }
+                        } else if currentObject != savedObject {
+                            isIdenticalState = false
+                            break
+                        }
+                    } else {
+                        isIdenticalState = false
+                        break
+                    }
+                }
+                
+                if isIdenticalState {
+                    logger.info("🏪 Navigation state is already correct - skipping restoration to prevent unnecessary navigation")
+                    return
+                }
+            }
+            
+            // Set flag to prevent unpop system from reacting to path changes
+            isRestoringState = true
+            
+            // Clear current navigation state
+            path = NavigationPath()
+            navigationHistory.removeAll()
+            
+            // Rebuild NavigationPath with saved destinations
+            for destination in savedDestinations {
+                if let navObject = destination.toNavigationObject(context: managedObjectContext, viewStateStorage: viewStateStorage) {
+                    path.append(navObject)
+                    navigationHistory.append(navObject)
+                    logger.info("🏪 Restored navigation destination successfully")
+                } else {
+                    logger.warning("⚠️ Failed to convert destination to navigation object")
+                }
+            }
+            
+            // Clear the restoration flag after processing
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.isRestoringState = false
+            }
+            
+            logger.info("✅ SceneStorage navigation restoration completed with \(self.navigationHistory.count) destinations")
+        } catch {
+            logger.error("❌ Failed to decode navigation paths from SceneStorage: \(error)")
+        }
+    }
+    
+    // MARK: - Page Change Handling
+    
+    /// Handles notification when a thread's page changes (e.g., nextUnread -> specific(15))
+    private func handleThreadPageDidChange(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let threadID = userInfo["threadID"] as? String,
+              let newPage = userInfo["newPage"] as? ThreadPage else {
+            logger.warning("⚠️ Invalid ThreadPageDidChange notification")
+            return
+        }
+        
+        let author = userInfo["author"] as? User
+        
+        logger.info("🔄 ThreadPageDidChange: threadID=\(threadID), newPage=\(String(describing: newPage))")
+        
+        // Update navigation state immediately to prevent stale nextUnread from being saved
+        updateScrollPosition(for: threadID, page: newPage, author: author, scrollFraction: 0.0)
+    }
+    
     // MARK: - View State Management
     
     /// Saves comprehensive view state for a thread
@@ -911,6 +1097,12 @@ struct MainView: View {
     @SceneStorage("isEditingMessages") private var isEditingMessages = false
     @SceneStorage("isEditingForums") private var isEditingForums = false
     
+    // MARK: - SceneStorage Override for Navigation Restoration
+    // These bypass SwiftUI's broken NavigationPath restoration system
+    @SceneStorage("navigationPathData") private var navigationPathData: Data = Data()
+    @SceneStorage("sidebarPathData") private var sidebarPathData: Data = Data()
+    @SceneStorage("navigationStateTimestamp") private var navigationStateTimestamp: Double = 0
+    
     @StateObject private var coordinator: MainCoordinatorImpl = {
         guard let appDelegate = AppDelegate.instance else {
             fatalError("AppDelegate.instance not available during coordinator initialization")
@@ -939,6 +1131,13 @@ struct MainView: View {
             }
             
             appDelegate.mainCoordinator = coordinator
+            
+            // Set up SceneStorage save callback for immediate updates
+            coordinator.triggerSceneStorageSave = {
+                // Trigger a save by posting a notification that MainView can observe
+                NotificationCenter.default.post(name: Notification.Name("TriggerSceneStorageSave"), object: nil)
+            }
+            
             configureGlobalAppearance(theme: theme)
             updateStatusBarStyle(theme: theme)
             checkPrivateMessagePrivileges()
@@ -946,12 +1145,17 @@ struct MainView: View {
             
             // Delay state restoration to ensure Core Data is ready
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                coordinator.restoreNavigationState()
+                // Use SceneStorage override instead of broken SwiftUI NavigationPath restoration
+                coordinator.restoreNavigationPathsFromSceneStorage(
+                    navigationPathData: navigationPathData,
+                    sidebarPathData: sidebarPathData,
+                    timestamp: navigationStateTimestamp
+                )
             }
         }
         .onDisappear {
-            // Save navigation state when view disappears
-            coordinator.saveNavigationState()
+            // Save navigation state to SceneStorage when view disappears
+            saveNavigationStateToSceneStorage()
         }
         .onChange(of: theme) { newTheme in
             configureGlobalAppearance(theme: newTheme)
@@ -977,14 +1181,22 @@ struct MainView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-            // Save state when app enters background
-            coordinator.saveNavigationState()
+            // Save state to SceneStorage when app enters background
+            saveNavigationStateToSceneStorage()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            // Restore state when app enters foreground with delay
+            // Restore state from SceneStorage when app enters foreground with delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                coordinator.restoreNavigationState()
+                coordinator.restoreNavigationPathsFromSceneStorage(
+                    navigationPathData: navigationPathData,
+                    sidebarPathData: sidebarPathData,
+                    timestamp: navigationStateTimestamp
+                )
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("TriggerSceneStorageSave"))) { _ in
+            // Save navigation state to SceneStorage when triggered by coordinator updates
+            saveNavigationStateToSceneStorage()
         }
     }
     
@@ -1268,6 +1480,16 @@ struct MainView: View {
         
         // Set initial state
         hasFavoriteForums = favoriteForumCountObserver?.count ?? 0 > 0
+    }
+    
+    // MARK: - SceneStorage Helper
+    
+    /// Saves navigation state to SceneStorage to bypass SwiftUI's broken NavigationPath restoration
+    private func saveNavigationStateToSceneStorage() {
+        let (navData, sidebarData) = coordinator.saveNavigationPathsToSceneStorage()
+        navigationPathData = navData
+        sidebarPathData = sidebarData
+        navigationStateTimestamp = Date().timeIntervalSince1970
     }
 }
 

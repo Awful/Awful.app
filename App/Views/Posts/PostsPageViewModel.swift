@@ -14,6 +14,41 @@ import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageViewModel")
 
+/// Global coordinator to manage WebView restoration state across view recreation
+@MainActor
+final class PostsWebViewRestorationCoordinator {
+    static let shared = PostsWebViewRestorationCoordinator()
+    
+    private var restoredThreads: Set<String> = []
+    
+    private init() {}
+    
+    /// Mark that WebView content has been restored for a specific thread
+    func markContentRestored(for threadID: String) {
+        logger.info("🔧 PostsWebViewRestorationCoordinator: Marking content as restored for thread \(threadID)")
+        restoredThreads.insert(threadID)
+    }
+    
+    /// Check if WebView content was restored for a specific thread
+    func wasContentRestored(for threadID: String) -> Bool {
+        let wasRestored = restoredThreads.contains(threadID)
+        logger.info("🔧 PostsWebViewRestorationCoordinator: Checking thread \(threadID) - wasRestored: \(wasRestored)")
+        return wasRestored
+    }
+    
+    /// Clear restoration state for a specific thread (call when navigation completes successfully)
+    func clearRestorationState(for threadID: String) {
+        logger.info("🔧 PostsWebViewRestorationCoordinator: Clearing restoration state for thread \(threadID)")
+        restoredThreads.remove(threadID)
+    }
+    
+    /// Clear all restoration state (call on app startup)
+    func clearAllRestorationState() {
+        logger.info("🔧 PostsWebViewRestorationCoordinator: Clearing all restoration state")
+        restoredThreads.removeAll()
+    }
+}
+
 @MainActor
 final class PostsPageViewModel: ObservableObject {
     // MARK: - Published Properties
@@ -63,6 +98,23 @@ final class PostsPageViewModel: ObservableObject {
     private var isReRenderingAfterMarkAsRead = false
     private var flagRequest: Task<Void, Error>?
     
+    // MARK: - WebView Coordination
+    private let viewModelInstanceID = UUID().uuidString.prefix(8)
+    
+    /// Check if WebView content was restored using global coordinator
+    var webViewContentWasRestored: Bool {
+        PostsWebViewRestorationCoordinator.shared.wasContentRestored(for: self.thread.threadID)
+    }
+    
+    /// Called by WebView restoration to indicate content has been restored and navigation should not trigger fresh page loads
+    func markWebViewContentAsRestored() {
+        logger.info("🔧 PostsPageViewModel[\(self.viewModelInstanceID)]: WebView content marked as restored for thread \(self.thread.threadID)")
+        PostsWebViewRestorationCoordinator.shared.markContentRestored(for: self.thread.threadID)
+    }
+    
+    /// Debug property to track ViewModel instances
+    var debugInstanceID: String { String(viewModelInstanceID) }
+    
     // MARK: - Initialization
     init(thread: AwfulThread, author: User? = nil) {
         self.thread = thread
@@ -101,7 +153,14 @@ final class PostsPageViewModel: ObservableObject {
     }
     
     func loadPage(_ newPage: ThreadPage, updatingCache: Bool = true, updatingLastReadPost: Bool = true) {
-        logger.info("📄 loadPage: \(String(describing: newPage)) for thread '\(self.thread.title ?? "Unknown")', updatingCache=\(updatingCache), updatingLastReadPost=\(updatingLastReadPost)")
+        logger.info("📄 loadPage[\(self.viewModelInstanceID)]: \(String(describing: newPage)) for thread '\(self.thread.title ?? "Unknown")', updatingCache=\(updatingCache), updatingLastReadPost=\(updatingLastReadPost)")
+        
+        // Check if WebView content was already restored
+        if webViewContentWasRestored {
+            logger.info("🔧 PostsPageViewModel[\(self.viewModelInstanceID)]: Skipping page load - WebView content was already restored")
+            PostsWebViewRestorationCoordinator.shared.clearRestorationState(for: self.thread.threadID) // Reset flag for next time
+            return
+        }
         
         // Cancel any existing operation
         if let existingOperation = networkOperation {
@@ -187,6 +246,17 @@ final class PostsPageViewModel: ObservableObject {
                         if actualPage > 0 {
                             logger.info("Updating page from \(String(describing: self.currentPage)) to .specific(\(actualPage))")
                             self.currentPage = .specific(actualPage)
+                            
+                            // Notify coordinator to update navigation state immediately
+                            NotificationCenter.default.post(
+                                name: Notification.Name("ThreadPageDidChange"),
+                                object: nil,
+                                userInfo: [
+                                    "threadID": self.thread.threadID,
+                                    "newPage": ThreadPage.specific(actualPage),
+                                    "author": self.author as Any
+                                ]
+                            )
                         }
                     }
                     

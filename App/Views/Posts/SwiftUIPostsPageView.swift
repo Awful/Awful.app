@@ -62,6 +62,7 @@ struct SwiftUIPostsPageView: View {
     // MARK: - Simplified Scroll Management (mirroring UIKit approach)
     @State private var hasAttemptedInitialScroll = false
     @State private var scrollTarget: ScrollTarget?
+    @State private var handleViewAppearCallCount = 0
     
     enum ScrollTarget {
         case specificPost(String)      // Priority 1: Highest (jumpToPostID)
@@ -172,13 +173,11 @@ struct SwiftUIPostsPageView: View {
             .simultaneousGesture(
                 // Only add gesture when immersion mode is active
                 postsImmersiveMode ? 
-                DragGesture(minimumDistance: 30, coordinateSpace: .global)
+                DragGesture(minimumDistance: 20, coordinateSpace: .global)
                     .onChanged { value in
-                        print("🔥 Drag gesture detected at global coordinate: \(value.location)")
                         handleDragChanged(value)
                     }
                     .onEnded { value in
-                        print("🔥 Drag gesture ended")
                         handleDragEnded(value)
                     }
                 : nil
@@ -311,6 +310,9 @@ struct SwiftUIPostsPageView: View {
             .onChange(of: viewModel.posts) { posts in
                 handlePostsChanged(posts)
             }
+            .onChange(of: viewModel.jumpToPostID) { postID in
+                handleJumpToPostIDChanged(postID)
+            }
             .onChange(of: viewModel.currentPage) { page in
                 // Update handoff when page changes
                 if handoffEnabled && page != nil {
@@ -340,6 +342,11 @@ struct SwiftUIPostsPageView: View {
     // MARK: - Drag-Based Immersion Mode
     @State private var dragState: DragState = .idle
     @State private var lastDragTranslation: CGFloat = 0
+    @State private var lastTransitionTime: Date = Date.distantPast
+    
+    // MARK: - Gesture Detection Constants
+    private let minimumDragThreshold: CGFloat = 15 // Larger threshold to not interfere with scrolling
+    private let transitionCooldownInterval: TimeInterval = 0.6 // Prevent rapid toggling
     
     enum DragState {
         case idle
@@ -347,42 +354,43 @@ struct SwiftUIPostsPageView: View {
     }
     
     private func handleDragChanged(_ value: DragGesture.Value) {
-        guard postsImmersiveMode else { 
-            print("🔥 Drag detected but immersion mode disabled")
-            return 
-        }
+        guard postsImmersiveMode else { return }
+        
+        let now = Date()
+        
+        // Check cooldown period to prevent rapid toggling
+        let timeSinceLastTransition = now.timeIntervalSince(lastTransitionTime)
+        guard timeSinceLastTransition > transitionCooldownInterval else { return }
         
         switch dragState {
         case .idle:
             dragState = .dragging
             lastDragTranslation = value.translation.height
-            print("🔥 Started dragging, initial Y: \(value.translation.height)")
             
         case .dragging:
             let currentTranslation = value.translation.height
             let deltaY = currentTranslation - lastDragTranslation
-            lastDragTranslation = currentTranslation
             
-            print("🔥 Dragging: deltaY=\(deltaY), toolbarVisible=\(isToolbarVisible)")
-            
-            // Determine drag direction with threshold
-            if abs(deltaY) > 5 { // Minimum threshold to avoid jitter
-                if deltaY < 0 && isToolbarVisible {
-                    // Dragging up - hide toolbars
-                    print("🔥 Hiding toolbars (drag up)")
-                    withAnimation(.easeInOut(duration: 0.25)) {
+            // Only trigger on significant movement to not interfere with scrolling
+            if abs(deltaY) > minimumDragThreshold {
+                if deltaY < -minimumDragThreshold && isToolbarVisible {
+                    // Dragging up significantly - hide toolbars
+                    lastTransitionTime = now
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 0)) {
                         isToolbarVisible = false
                         isNavigationBarVisible = false
                     }
-                } else if deltaY > 0 && !isToolbarVisible {
-                    // Dragging down - show toolbars
-                    print("🔥 Showing toolbars (drag down)")
-                    withAnimation(.easeInOut(duration: 0.25)) {
+                } else if deltaY > minimumDragThreshold && !isToolbarVisible {
+                    // Dragging down significantly - show toolbars
+                    lastTransitionTime = now
+                    withAnimation(.spring(response: 0.5, dampingFraction: 0.75, blendDuration: 0)) {
                         isToolbarVisible = true
                         isNavigationBarVisible = true
                     }
                 }
             }
+            
+            lastDragTranslation = currentTranslation
         }
     }
     
@@ -390,6 +398,7 @@ struct SwiftUIPostsPageView: View {
         dragState = .idle
         lastDragTranslation = 0
     }
+    
     
     // MARK: - Main Content
     private var mainContentView: some View {
@@ -418,7 +427,11 @@ struct SwiftUIPostsPageView: View {
             author: author,
             scrollCoordinator: scrollCoordinator,
             onPostAction: handlePostAction,
-            onUserAction: handleUserAction
+            onUserAction: handleUserAction,
+            onContentRestored: {
+                print("🔧 SwiftUIPostsPageView: Received WebView content restoration notification for ViewModel[\(viewModel.debugInstanceID)]")
+                viewModel.markWebViewContentAsRestored()
+            }
         )
         // .id() removed - was causing entire view recreation and performance issues
         .background(Color(theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground))
@@ -781,8 +794,11 @@ struct SwiftUIPostsPageView: View {
     private func stopImmersionMode() {
         // Reset toolbar visibility when disabling immersion mode
         resetToolbarVisibility()
+        
+        // Reset all drag-related state
         dragState = .idle
         lastDragTranslation = 0
+        lastTransitionTime = Date.distantPast
     }
     
     private func checkScrollStateForImmersion() {
@@ -792,8 +808,8 @@ struct SwiftUIPostsPageView: View {
     }
     
     private func resetToolbarVisibility() {
-        // Reset both navbar and toolbar visibility when page changes
-        withAnimation(.easeInOut(duration: 0.25)) {
+        // Reset both navbar and toolbar visibility when page changes with natural spring animation
+        withAnimation(.spring(response: 0.5, dampingFraction: 0.75, blendDuration: 0)) {
             isToolbarVisible = true
             isNavigationBarVisible = true
         }
@@ -801,7 +817,8 @@ struct SwiftUIPostsPageView: View {
     
     // MARK: - Helper Methods
     private func handleViewAppear() {
-        print("🔵 SwiftUIPostsPageView: handleViewAppear - posts.count: \(viewModel.posts.count), isLoading: \(viewModel.isLoading)")
+        handleViewAppearCallCount += 1
+        print("🚀 SwiftUIPostsPageView: handleViewAppear (call #\(handleViewAppearCallCount)) - ViewModel[\(viewModel.debugInstanceID)]: webViewContentWasRestored=\(viewModel.webViewContentWasRestored), posts.count: \(viewModel.posts.count), isLoading: \(viewModel.isLoading)")
         
         // Reset scroll attempt flag for new page load
         hasAttemptedInitialScroll = false
@@ -827,7 +844,15 @@ struct SwiftUIPostsPageView: View {
             // If posts are already loaded, attempt initial scrolling
             handleInitialScrolling(posts: viewModel.posts)
         } else if viewModel.posts.isEmpty && !viewModel.isLoading {
-            if let specificPage = viewState.specificPageToLoad {
+            print("🔍 COORDINATION DEBUG: ViewModel[\(viewModel.debugInstanceID)]: webViewContentWasRestored=\(viewModel.webViewContentWasRestored), specificPageToLoad=\(String(describing: viewState.specificPageToLoad))")
+            if viewModel.webViewContentWasRestored {
+                print("🔧 SwiftUIPostsPageView: WebView content was restored - triggering data-only reload")
+                // WebView has content, but we need the posts data in the ViewModel
+                // Since the WebView coordinator has already preserved the content,
+                // trigger forceContentRerender to populate posts data
+                viewModel.forceContentRerender()
+                viewState.specificPageToLoad = nil
+            } else if let specificPage = viewState.specificPageToLoad {
                 // Load the specific page that was requested
                 print("🔵 SwiftUIPostsPageView: Loading specific page: \(specificPage)")
                 // For .nextUnread pages, don't mark as read immediately - let user scroll naturally
@@ -894,8 +919,41 @@ struct SwiftUIPostsPageView: View {
     private func handlePostsChanged(_ posts: [Post]) {
         print("📋 Posts changed: count=\(posts.count), jumpToPostID=\(viewModel.jumpToPostID ?? "nil")")
         
+        // Check if we have a pending jumpToPostID that can now be executed
+        if let jumpToPostID = viewModel.jumpToPostID,
+           posts.contains(where: { $0.postID == jumpToPostID }) {
+            print("🎯 Posts loaded and jumpToPostID \(jumpToPostID) found on current page, will scroll after rendering")
+            
+            // Delay the scroll to ensure webview has finished rendering the posts
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                print("🎯 Executing delayed scroll to post \(jumpToPostID)")
+                scrollCoordinator.jumpToPost(jumpToPostID)
+            }
+            
+            viewModel.jumpToPostID = nil  // Clear it after scheduling the scroll
+            return  // Don't do normal initial scrolling since we're jumping to a specific post
+        }
+        
         // Use simplified scroll management approach (mirroring UIKit)
         handleInitialScrolling(posts: posts)
+    }
+    
+    private func handleJumpToPostIDChanged(_ postID: String?) {
+        print("🎯 jumpToPostID changed to: \(postID ?? "nil")")
+        
+        guard let postID = postID, !viewModel.posts.isEmpty else {
+            print("🎯 No postID or no posts loaded yet, skipping scroll")
+            return
+        }
+        
+        // Check if the post is on the current page
+        if viewModel.posts.contains(where: { $0.postID == postID }) {
+            print("🎯 Post \(postID) found on current page, scrolling to it")
+            scrollCoordinator.jumpToPost(postID)
+            viewModel.jumpToPostID = nil  // Clear it after handling
+        } else {
+            print("🎯 Post \(postID) not found on current page, keeping jumpToPostID for when page loads")
+        }
     }
     
     // MARK: - Loading View

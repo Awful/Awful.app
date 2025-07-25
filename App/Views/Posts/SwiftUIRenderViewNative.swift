@@ -57,6 +57,9 @@ struct SwiftUIRenderViewNative: View {
     @State private var isLoaded = false
     @State private var currentHTML = ""
     @State private var lastRenderedPostsHash: Int = 0
+    @State private var savedInteractionState: Any?
+    @State private var processTerminationCount = 0
+    @State private var hasRestoredContentThisSession = false
     
     // Performance monitoring removed - trust WebKit's native performance
     
@@ -65,6 +68,7 @@ struct SwiftUIRenderViewNative: View {
     // MARK: - Callbacks (SwiftUI Style)
     let onPostAction: (Post, CGRect) -> Void
     let onUserAction: (Post, CGRect) -> Void
+    let onContentRestored: (() -> Void)?
     // Scroll callbacks removed for optimal performance - WebKit handles scrolling natively
     
     // MARK: - Settings
@@ -98,6 +102,33 @@ struct SwiftUIRenderViewNative: View {
         .onAppear {
             setupWebView()
         }
+        .onChange(of: webViewCoordinator) { coordinator in
+            // Set up the process termination handler when coordinator becomes available
+            if let coordinator = coordinator {
+                logger.debug("🔧 Setting process termination handler on coordinator")
+                coordinator.setProcessTerminationHandler {
+                    await handleWebViewProcessTermination()
+                }
+            }
+        }
+        .onDisappear {
+            Task {
+                await saveWebViewState()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            Task {
+                await saveWebViewState()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            logger.debug("📲 SwiftUIRenderViewNative received willEnterForegroundNotification")
+            Task {
+                // Short delay to let navigation restoration complete first
+                try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+                await checkIfWebViewNeedsReload()
+            }
+        }
         .onChange(of: viewModel.posts) { posts in
             // Critical: Only render posts when they actually change
             if !posts.isEmpty {
@@ -105,6 +136,10 @@ struct SwiftUIRenderViewNative: View {
                     await renderPosts(posts)
                 }
             }
+        }
+        .onChange(of: viewModel.currentPage) { newPage in
+            // Page changes are handled by navigation restoration system
+            logger.debug("📄 Page changed to \(String(describing: newPage))")
         }
         .task {
             // Critical: Initial render when view appears
@@ -120,7 +155,125 @@ struct SwiftUIRenderViewNative: View {
     private func setupWebView() {
         logger.debug("Setting up SwiftUI-native web view")
         // WebView setup is handled by the coordinator
+        
+        // Set the process termination handler in the coordinator once it's created
+        DispatchQueue.main.async {
+            self.webViewCoordinator?.setProcessTerminationHandler {
+                await self.handleWebViewProcessTermination()
+            }
+        }
     }
+    
+    // MARK: - State Preservation
+    
+    @MainActor
+    private func saveWebViewState() async {
+        guard let coordinator = webViewCoordinator else { return }
+        
+        logger.debug("💾 Saving WebView state before backgrounding")
+        
+        // Simple state saving - no complex verification needed since we use simple re-rendering approach
+        savedInteractionState = coordinator.webView.interactionState
+        logger.debug("✅ Saved interaction state")
+    }
+    
+    @MainActor
+    private func checkIfWebViewNeedsReload() async {
+        logger.debug("🔍 Checking if WebView needs reload for coordination with SceneStorage navigation")
+        
+        // Wait a brief moment for SceneStorage navigation restoration to complete first
+        try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
+        
+        // Only proceed if we can evaluate JavaScript (WebView is loaded)
+        guard let coordinator = webViewCoordinator, coordinator.webView.isLoading == false else {
+            logger.debug("🔍 WebView is still loading, skipping health check")
+            return
+        }
+        
+        // Quick content check to see if we need restoration
+        do {
+            let postCount = try await coordinator.webView.eval("document.querySelectorAll('.postbody').length")
+            let hasContent = (postCount as? Int ?? 0) > 0
+            
+            if !hasContent {
+                logger.info("🔄 WebView needs content restoration after SceneStorage navigation restoration")
+                if let state = savedInteractionState {
+                    await restoreFromSavedState(state)
+                } else {
+                    logger.debug("📄 No saved interaction state, re-rendering posts")
+                    // Re-render the current posts if we don't have saved state
+                    await renderPosts(viewModel.posts)
+                }
+            } else {
+                let postCountValue = postCount as? Int ?? 0
+                logger.debug("✅ WebView content is healthy (\(postCountValue) posts), no restoration needed")
+                
+                // CRITICAL: Even when content is already healthy, notify coordination system
+                // This prevents SwiftUIPostsPageView from triggering a fresh page load
+                onContentRestored?()
+            }
+        } catch {
+            logger.warning("⚠️ Failed to check WebView content, attempting restoration: \(error)")
+            if let state = savedInteractionState {
+                await restoreFromSavedState(state)
+            } else {
+                await renderPosts(viewModel.posts)
+            }
+        }
+    }
+    
+    @MainActor
+    private func handleWebViewProcessTermination() async {
+        processTerminationCount += 1
+        logger.error("🚨 WebView process terminated - immediately re-rendering (count: \(processTerminationCount))")
+        
+        guard processTerminationCount <= 3 else {
+            logger.error("❌ Too many restoration attempts, giving up")
+            return
+        }
+        
+        // Simple approach like UIKit: immediately re-render the current posts
+        // No delays, no complex state preservation - just re-render the current content
+        // Force a re-render by resetting the hash
+        lastRenderedPostsHash = 0
+        await renderPosts(viewModel.posts)
+    }
+    
+    @MainActor
+    private func restoreFromSavedState(_ state: Any) async {
+        guard let coordinator = webViewCoordinator else { return }
+        
+        logger.debug("🔄 Restoring WebView from saved interaction state")
+        
+        // First reload the HTML content
+        await coordinator.loadHTML(currentHTML, baseURL: baseURL)
+        
+        // Wait for the content to load before restoring interaction state
+        var attempts = 0
+        let maxAttempts = 10
+        
+        while attempts < maxAttempts {
+            do {
+                let readyState = try await coordinator.webView.eval("document.readyState")
+                if let readyStateString = readyState as? String, readyStateString == "complete" {
+                    // Content is ready, now restore interaction state
+                    coordinator.webView.interactionState = state
+                    logger.debug("✅ Successfully restored WebView from saved state after \(attempts + 1) attempts")
+                    return
+                }
+            } catch {
+                logger.warning("⚠️ Error checking ready state during restoration: \(error)")
+            }
+            
+            attempts += 1
+            try? await Task.sleep(nanoseconds: 100_000_000) // 100ms delay
+        }
+        
+        logger.warning("⚠️ Restoration timeout - proceeding with state restoration anyway")
+        coordinator.webView.interactionState = state
+    }
+    
+    // Re-rendering method removed - using direct renderPosts call for simplicity
     
     @MainActor
     private func renderPosts(_ posts: [Post]) async {
@@ -151,6 +304,9 @@ struct SwiftUIRenderViewNative: View {
         // Update posts in coordinator for message handling
         coordinator.updatePosts(posts)
         isLoaded = true
+        
+        // Save the current state after successful rendering
+        await saveWebViewState()
         
         logger.debug("Posts rendering completed")
     }
@@ -277,7 +433,8 @@ struct WebViewRepresentable: UIViewRepresentable {
             // Scroll callbacks removed for optimal performance
             onPostAction: onPostAction,
             onUserAction: onUserAction,
-            viewModel: viewModel
+            viewModel: viewModel,
+            onProcessTermination: nil // Will be set after coordinator is assigned
         )
         
         webView.navigationDelegate = webViewCoordinator
@@ -362,7 +519,7 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         }
     }
     
-    private let webView: WKWebView
+    let webView: WKWebView
     private let theme: Theme
     // Scroll callbacks removed for optimal performance
     
@@ -371,6 +528,7 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
     private var onUserAction: ((Post, CGRect) -> Void)?
     private var posts: [Post] = []
     private var viewModel: PostsPageViewModel?
+    private var onProcessTermination: (() async -> Void)?
     
     // Context menu implementation
     private lazy var hiddenMenuButton: HiddenMenuButton = {
@@ -388,7 +546,8 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         // Scroll callbacks removed for optimal performance
         onPostAction: ((Post, CGRect) -> Void)?,
         onUserAction: ((Post, CGRect) -> Void)?,
-        viewModel: PostsPageViewModel?
+        viewModel: PostsPageViewModel?,
+        onProcessTermination: (() async -> Void)?
     ) {
         self.webView = webView
         self.theme = theme
@@ -396,6 +555,7 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         self.onPostAction = onPostAction
         self.onUserAction = onUserAction
         self.viewModel = viewModel
+        self.onProcessTermination = onProcessTermination
         super.init()
         
         Task {
@@ -430,19 +590,199 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
     
     @MainActor
     func jumpToPost(_ postID: String) async {
+        let escapedPostID: String
         do {
-            _ = try await webView.eval("""
-                document.getElementById('post\(postID)')?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                """)
+            escapedPostID = try escapeForEval(postID)
         } catch {
-            logger.error("Error jumping to post: \(error)")
+            logger.error("Could not JSON-escape the post ID: \(error)")
+            return
+        }
+        
+        do {
+            _ = try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))")
+            logger.debug("📜 Successfully called Awful.jumpToPostWithID for post \(postID)")
+        } catch {
+            logger.error("Could not evaluate jumpToPostWithID: \(error)")
+        }
+    }
+    
+    // MARK: - Quote Link Handling
+    
+    @MainActor
+    private func handleQuoteLink(postID: String, updateSeen: AwfulRoute.UpdateSeen, url: URL) async {
+        logger.debug("🎯 Handling quote link for post \(postID)")
+        
+        // Check if the post is on the current page
+        if posts.contains(where: { $0.postID == postID }) {
+            logger.debug("✅ Post \(postID) found on current page - scrolling to it")
+            await jumpToPost(postID)
+            return
+        }
+        
+        // Post is not on current page - need to determine if it's in the same thread
+        // Check if this is a same-thread quote by looking at the URL structure
+        guard let viewModel = viewModel else {
+            logger.error("❌ No viewModel available for quote link handling")
+            AppDelegate.instance.open(route: .post(id: postID, updateSeen))
+            return
+        }
+        
+        // Extract thread ID from the URL to check if it's the same thread
+        let currentThreadID = viewModel.thread.threadID
+        
+        // Check if the URL contains a threadid parameter (different thread) or just postid (same thread)
+        if let threadID = url.valueForFirstQueryItem(named: "threadid"), !threadID.isEmpty {
+            if threadID == currentThreadID {
+                logger.debug("📄 Post \(postID) is in same thread but different page - loading in webview")
+                await loadPostInWebView(postID: postID, threadID: threadID, updateSeen: updateSeen)
+            } else {
+                logger.debug("🔀 Post \(postID) is in different thread \(threadID) - using SwiftUI navigation")
+                AppDelegate.instance.open(route: .post(id: postID, updateSeen))
+            }
+        } else {
+            // No threadid in URL means it's a goto=post&postid= link, which is same thread
+            logger.debug("📄 Quote link with no threadid - loading in webview for same thread")
+            await loadPostInWebView(postID: postID, threadID: currentThreadID, updateSeen: updateSeen)
+        }
+    }
+    
+    @MainActor
+    private func loadPostInWebView(postID: String, threadID: String, updateSeen: AwfulRoute.UpdateSeen) async {
+        logger.debug("🔄 Loading post \(postID) in current webview for thread \(threadID)")
+        
+        guard let viewModel = viewModel else {
+            logger.error("❌ No viewModel available")
+            return
+        }
+        
+        // First, check if the post exists in Core Data to get its page number
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            logger.error("❌ No Core Data context available")
+            return
+        }
+        
+        let request = NSFetchRequest<Post>(entityName: Post.entityName)
+        request.predicate = NSPredicate(format: "postID == %@", postID)
+        request.fetchLimit = 1
+        
+        do {
+            let posts = try context.fetch(request)
+            
+            if let post = posts.first, 
+               let thread = post.thread,
+               thread.threadID == threadID,
+               post.page > 0 {
+                // Post found in cache and is in the same thread
+                let targetPage = post.page
+                logger.debug("✅ Found post \(postID) in cache on page \(targetPage)")
+                
+                // Check if we're already on the correct page
+                if case .specific(let currentPageNum) = viewModel.currentPage, currentPageNum == targetPage {
+                    logger.debug("📄 Already on correct page \(targetPage), just scrolling to post")
+                    await jumpToPost(postID)
+                } else {
+                    logger.debug("📄 Loading page \(targetPage) and will scroll to post \(postID)")
+                    // Set the jump target before loading the page
+                    viewModel.jumpToPostID = postID
+                    // Load the correct page in the current webview
+                    viewModel.loadPage(.specific(targetPage))
+                }
+            } else {
+                // Post not found in cache or not in same thread, need to make network request
+                logger.debug("🌐 Post \(postID) not found in cache, making network request")
+                await loadPostViaNetworkRequest(postID: postID, updateSeen: updateSeen)
+            }
+        } catch {
+            logger.error("❌ Error fetching post from Core Data: \(error)")
+            await loadPostViaNetworkRequest(postID: postID, updateSeen: updateSeen)
+        }
+    }
+    
+    @MainActor
+    private func loadPostViaNetworkRequest(postID: String, updateSeen: AwfulRoute.UpdateSeen) async {
+        logger.debug("🌐 Making network request to locate post \(postID)")
+        
+        guard let viewModel = viewModel else {
+            logger.error("❌ No viewModel available for network request")
+            return
+        }
+        
+        let updateLastRead = (updateSeen == .seen)
+        
+        do {
+            // Use ForumsClient to locate the post (this will scrape and cache it)
+            let (foundPost, page) = try await ForumsClient.shared.locatePost(id: postID, updateLastReadPost: updateLastRead)
+            
+            if let thread = foundPost.thread,
+               thread.threadID == viewModel.thread.threadID {
+                // Post is in same thread, load the page and scroll to it
+                logger.debug("✅ Network request found post \(postID) on page \(String(describing: page))")
+                viewModel.jumpToPostID = postID
+                viewModel.loadPage(page)
+            } else {
+                // Post is in a different thread, use SwiftUI navigation
+                logger.debug("🔀 Post \(postID) is in different thread, using SwiftUI navigation")
+                AppDelegate.instance.open(route: .post(id: postID, updateSeen))
+            }
+        } catch {
+            logger.error("❌ Network request failed for post \(postID): \(error)")
+            // Fallback to SwiftUI navigation
+            AppDelegate.instance.open(route: .post(id: postID, updateSeen))
         }
     }
     
     // MARK: - WKNavigationDelegate
+    
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+        // Only intercept actual link taps, allow everything else (like initial page loads)
+        guard navigationAction.navigationType == .linkActivated else {
+            return decisionHandler(.allow)
+        }
+        
+        guard let url = navigationAction.request.url else {
+            return decisionHandler(.allow)
+        }
+        
+        // Cancel the navigation - we'll handle it ourselves
+        decisionHandler(.cancel)
+        
+        logger.debug("🔗 Link tapped: \(url)")
+        
+        // Try to handle as internal Awful route first
+        if let route = try? AwfulRoute(url) {
+            logger.debug("📱 Parsed as internal route: \(route)")
+            
+            // Special handling for quote links (post routes)
+            if case .post(let postID, let updateSeen) = route {
+                Task { @MainActor in
+                    await handleQuoteLink(postID: postID, updateSeen: updateSeen, url: url)
+                }
+                return
+            }
+            
+            // For non-quote routes, use normal SwiftUI navigation
+            logger.debug("📱 Opening non-quote route with SwiftUI navigation: \(route)")
+            AppDelegate.instance.open(route: route)
+            return
+        }
+        
+        // Handle external URLs
+        if url.opensInBrowser {
+            logger.debug("🌐 Opening external URL in browser: \(url)")
+            if let parentVC = findParentViewController() {
+                URLMenuPresenter(linkURL: url).presentInDefaultBrowser(fromViewController: parentVC)
+            } else {
+                UIApplication.shared.open(url)
+            }
+        } else {
+            logger.debug("📱 Opening URL with system: \(url)")
+            UIApplication.shared.open(url)
+        }
+    }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         logger.debug("🌐 WebView finished loading - JavaScript should be ready")
@@ -462,8 +802,12 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
     }
     
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        logger.error("WebView process terminated - reloading")
-        webView.reload()
+        logger.error("🚨 WebView process terminated - triggering restoration")
+        
+        // Call the termination handler
+        Task { @MainActor in
+            await onProcessTermination?()
+        }
     }
     
     // MARK: - UIScrollViewDelegate (Simplified - Trust WebKit)
@@ -494,6 +838,11 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
     @MainActor
     func updatePosts(_ posts: [Post]) {
         self.posts = posts
+    }
+    
+    func setProcessTerminationHandler(_ handler: @escaping () async -> Void) {
+        logger.debug("🔧 Process termination handler set on WebViewCoordinator")
+        self.onProcessTermination = handler
     }
     
     // MARK: - WKScriptMessageHandler
@@ -805,6 +1154,12 @@ extension WKWebView {
             }
         }
     }
+}
+
+// MARK: - Helper Functions
+
+private func escapeForEval(_ s: String) throws -> String {
+    return String(data: try JSONEncoder().encode([s]), encoding: .utf8)! + "[0]"
 }
 
 // MARK: - Array Extension
