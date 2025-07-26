@@ -1,6 +1,6 @@
 //  SwiftUIPostsPageView.swift
 //
-//  Copyright 2024 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
+//  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
 import AwfulModelTypes
@@ -27,13 +27,16 @@ struct SwiftUIPostsPageView: View {
     @SwiftUI.Environment(\.theme) private var globalTheme
     @SwiftUI.Environment(\.dismiss) private var dismiss
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @EnvironmentObject private var navigationController: AwfulNavigationController
     
     // MARK: - Forum-Specific Theme
     private var theme: Theme {
         guard let forum = thread.forum, !forum.forumID.isEmpty else {
             return Theme.defaultTheme()
         }
-        return Theme.currentTheme(for: ForumID(forum.forumID))
+        let forumTheme = Theme.currentTheme(for: ForumID(forum.forumID))
+        print("🎨 Forum \(forum.forumID): Using theme '\(forumTheme[string: "description"] ?? "unknown")' mode '\(forumTheme[string: "mode"] ?? "unknown")'")
+        return forumTheme
     }
     
     // MARK: - Settings
@@ -195,14 +198,25 @@ struct SwiftUIPostsPageView: View {
                         .fixedSize(horizontal: false, vertical: true) // Allow vertical expansion for multiple lines
                 }
                 
-                // Done button for modal presentation
+                // Done button for modal presentation or back button for navigation
                 if isPresentedModally {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button("Done") {
                             dismiss()
                         }
                         .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                        .conditionalGlassEffect(UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key))
+                    }
+                } else {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {
+                            // Handle both layers of navigation
+                            _ = navigationController.goBack()
+                            dismiss()
+                        }) {
+                            Image("back")
+                                .renderingMode(.template)
+                        }
+                        .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
                     }
                 }
                 
@@ -216,7 +230,6 @@ struct SwiftUIPostsPageView: View {
                             .renderingMode(.template)
                     }
                     .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                    .conditionalGlassEffect(UserDefaults.standard.bool(forKey: Settings.enableLiquidGlass.key))
                 }
                 
                 // Always add liquid glass toolbar content, but make it conditional internally
@@ -550,12 +563,18 @@ struct SwiftUIPostsPageView: View {
                 standardToolbar
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .onAppear { 
-                        print("🔧 Showing standard overlay - shouldShowToolbar=\(self.shouldShowToolbar), useLiquidGlass=\(self.useLiquidGlass)")
+                        print("🔧 TOOLBAR SHOWING: standardToolbar overlay appeared")
+                    }
+            } else {
+                // Add debug info when toolbar is hidden
+                Color.clear
+                    .onAppear {
+                        print("🚫 TOOLBAR HIDDEN: showOverlay=false, shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), postsImmersiveMode=\(postsImmersiveMode), isToolbarVisible=\(isToolbarVisible)")
                     }
             }
         }
         .onAppear {
-            print("🔧 bottomOverlays: shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), showOverlay=\(showOverlay)")
+            print("🔧 bottomOverlays evaluated: shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), showOverlay=\(showOverlay), postsImmersiveMode=\(postsImmersiveMode)")
         }
     }
     
@@ -563,11 +582,11 @@ struct SwiftUIPostsPageView: View {
     private var shouldShowToolbar: Bool {
         if postsImmersiveMode {
             // In immersive mode, use scroll-based visibility
-            print("🔧 shouldShowToolbar: immersive mode ON, isToolbarVisible=\(isToolbarVisible)")
+            print("🔧 shouldShowToolbar: immersive mode ON, isToolbarVisible=\(isToolbarVisible) -> returning \(isToolbarVisible)")
             return isToolbarVisible
         } else {
             // In normal mode, always show toolbar
-            print("🔧 shouldShowToolbar: immersive mode OFF, always showing")
+            print("🔧 shouldShowToolbar: immersive mode OFF, always showing -> returning true")
             return true
         }
     }
@@ -599,11 +618,12 @@ struct SwiftUIPostsPageView: View {
     private func updateLiquidGlassState() {
         if #available(iOS 26.0, *) {
             useLiquidGlass = enableLiquidGlass
-            print("🌟 Liquid Glass: Available on iOS 26+, setting enabled=\(enableLiquidGlass), useLiquidGlass=\(useLiquidGlass)")
+            print("🌟 Liquid Glass: Available on iOS 26+, enableLiquidGlass=\(enableLiquidGlass), useLiquidGlass=\(useLiquidGlass)")
         } else {
             useLiquidGlass = false
-            print("🌟 Liquid Glass: Not available on iOS <26, useLiquidGlass=false")
+            print("🌟 Liquid Glass: Not available on iOS <26, enableLiquidGlass=\(enableLiquidGlass), useLiquidGlass=false")
         }
+        print("🌟 Final state: useLiquidGlass=\(useLiquidGlass), postsImmersiveMode=\(postsImmersiveMode)")
     }
     
     // MARK: - Toolbar Content (Native iOS Toolbar)

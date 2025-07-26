@@ -348,6 +348,12 @@ public final class ForumsClient {
             try backgroundContext.save()
             return threads
         }
+        
+        // Ensure any observable notifications happen on main thread
+        await MainActor.run {
+            // Force any observers to update on main thread
+            mainContext.refresh(forum, mergeChanges: true)
+        }
         return await mainContext.perform {
             backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
         }
@@ -1178,6 +1184,12 @@ public final class ForumsClient {
             let messages = try result.upsert(into: backgroundContext)
             try backgroundContext.save()
             return messages
+        }
+        
+        // Ensure any observable notifications happen on main thread
+        await MainActor.run {
+            // Force refresh of main context to trigger proper notifications
+            try? mainContext.save()
         }
         return await mainContext.perform {
             backgroundMessages.compactMap { mainContext.object(with: $0.objectID) as? PrivateMessage }

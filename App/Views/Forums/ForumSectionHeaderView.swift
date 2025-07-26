@@ -14,13 +14,15 @@ struct ForumSectionHeaderView: View {
             Text(title)
                 .font(.preferredFont(forTextStyle: .body, fontName: theme["listFontName"], weight: .regular))
                 .foregroundColor(theme[color: "listHeaderTextColor"] ?? Color.primary)
+                .padding(.leading, 16)
             
             Spacer()
         }
-        .padding(.horizontal, 16)  // Match the row content padding
         .frame(height: 44)
+        .frame(maxWidth: .infinity)
         .background(theme[color: "listHeaderBackgroundColor"] ?? Color.gray)
         .listRowInsets(EdgeInsets())
+        .listSectionSeparator(.hidden)
     }
 }
 

@@ -4,6 +4,7 @@
 
 import SwiftUI
 import UIKit
+import WebKit
 import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SwiftUIUnpopModifier")
@@ -177,17 +178,22 @@ extension SwiftUIUnpopHandler: UIGestureRecognizerDelegate {
                 return false
             }
             
-            // Check if we're at the right edge (within 20 points) - more lenient
+            // Check if we're at the right edge (within 30 points) - expanded for better recognition
             guard let view = panGesture.view, 
-                  location.x >= view.bounds.width - 20 else { 
+                  location.x >= view.bounds.width - 30 else { 
                 logger.info("🔄 Unpop gesture denied - not at right edge (x: \(location.x), width: \(panGesture.view?.bounds.width ?? 0))")
                 return false 
             }
             
-            // Only begin if horizontal velocity is greater than vertical AND strong enough
-            let minHorizontalVelocity: CGFloat = 150 // Reduced minimum horizontal velocity
-            let shouldBegin = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 2
-            logger.info("🔄 Unpop gesture \(shouldBegin ? "approved" : "denied") - velocity: (\(velocity.x), \(velocity.y)), location: (\(location.x), \(location.y))")
+            // Enhanced velocity-based recognition with two tiers
+            let minHorizontalVelocity: CGFloat = 100 // Reduced for better responsiveness
+            let confidentVelocity: CGFloat = 500 // High confidence threshold from research
+            
+            // Allow gesture if either: strong velocity (500+) OR moderate velocity (100+) with horizontal dominance
+            let hasStrongVelocity = abs(velocity.x) > confidentVelocity
+            let hasModerateVelocity = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 2
+            let shouldBegin = hasStrongVelocity || hasModerateVelocity
+            logger.info("🔄 Unpop gesture \(shouldBegin ? "approved" : "denied") - velocity: (\(velocity.x), \(velocity.y)), location: (\(location.x), \(location.y)), hasStrongVelocity: \(hasStrongVelocity), hasModerateVelocity: \(hasModerateVelocity)")
             return shouldBegin
         }
         
@@ -214,10 +220,27 @@ extension SwiftUIUnpopHandler: UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf other: UIGestureRecognizer) -> Bool {
-        // Let scroll views take precedence for vertical gestures
-        if other.view is UIScrollView || other.view?.superview is UIScrollView {
-            logger.info("🔄 Unpop gesture not requiring failure of scroll view")
-            return false
+        // Enhanced WebView conflict resolution: Navigation gestures should wait for WebView gestures to fail
+        if gestureRecognizer is UIScreenEdgePanGestureRecognizer {
+            // Wait for WebView-related gestures to fail first
+            if other.view is WKWebView || other.view?.superview is WKWebView {
+                logger.info("🔄 Unpop gesture requiring failure of WebView gesture")
+                return true
+            }
+            // Wait for scroll views only if they're not in WebView containers
+            if other.view is UIScrollView || other.view?.superview is UIScrollView {
+                // Check if this scroll view is part of a WebView
+                var currentView: UIView? = other.view
+                while currentView != nil {
+                    if currentView is WKWebView {
+                        logger.info("🔄 Unpop gesture requiring failure of WebView-contained scroll view")
+                        return true
+                    }
+                    currentView = currentView?.superview
+                }
+                logger.info("🔄 Unpop gesture not requiring failure of standalone scroll view")
+                return false
+            }
         }
         return false
     }
@@ -381,17 +404,22 @@ extension CoordinatorUnpopHandler: UIGestureRecognizerDelegate {
                 return false
             }
             
-            // Check if we're at the right edge (within 20 points) - more lenient
+            // Check if we're at the right edge (within 30 points) - expanded for better recognition
             guard let view = panGesture.view, 
-                  location.x >= view.bounds.width - 20 else { 
+                  location.x >= view.bounds.width - 30 else { 
                 logger.info("🔄 Coordinator unpop gesture denied - not at right edge (x: \(location.x), width: \(panGesture.view?.bounds.width ?? 0))")
                 return false 
             }
             
-            // Only begin if horizontal velocity is greater than vertical AND strong enough
-            let minHorizontalVelocity: CGFloat = 150 // Reduced minimum horizontal velocity
-            let shouldBegin = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 2
-            logger.info("🔄 Coordinator unpop gesture \(shouldBegin ? "approved" : "denied") - velocity: (\(velocity.x), \(velocity.y)), location: (\(location.x), \(location.y))")
+            // Enhanced velocity-based recognition with two tiers
+            let minHorizontalVelocity: CGFloat = 100 // Reduced for better responsiveness
+            let confidentVelocity: CGFloat = 500 // High confidence threshold from research
+            
+            // Allow gesture if either: strong velocity (500+) OR moderate velocity (100+) with horizontal dominance
+            let hasStrongVelocity = abs(velocity.x) > confidentVelocity
+            let hasModerateVelocity = abs(velocity.x) > minHorizontalVelocity && abs(velocity.x) > abs(velocity.y) * 2
+            let shouldBegin = hasStrongVelocity || hasModerateVelocity
+            logger.info("🔄 Coordinator unpop gesture \(shouldBegin ? "approved" : "denied") - velocity: (\(velocity.x), \(velocity.y)), location: (\(location.x), \(location.y)), hasStrongVelocity: \(hasStrongVelocity), hasModerateVelocity: \(hasModerateVelocity)")
             return shouldBegin
         }
         
@@ -418,10 +446,27 @@ extension CoordinatorUnpopHandler: UIGestureRecognizerDelegate {
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf other: UIGestureRecognizer) -> Bool {
-        // Let scroll views take precedence for vertical gestures
-        if other.view is UIScrollView || other.view?.superview is UIScrollView {
-            logger.info("🔄 Coordinator unpop gesture not requiring failure of scroll view")
-            return false
+        // Enhanced WebView conflict resolution: Navigation gestures should wait for WebView gestures to fail
+        if gestureRecognizer is UIScreenEdgePanGestureRecognizer {
+            // Wait for WebView-related gestures to fail first
+            if other.view is WKWebView || other.view?.superview is WKWebView {
+                logger.info("🔄 Coordinator unpop gesture requiring failure of WebView gesture")
+                return true
+            }
+            // Wait for scroll views only if they're not in WebView containers
+            if other.view is UIScrollView || other.view?.superview is UIScrollView {
+                // Check if this scroll view is part of a WebView
+                var currentView: UIView? = other.view
+                while currentView != nil {
+                    if currentView is WKWebView {
+                        logger.info("🔄 Coordinator unpop gesture requiring failure of WebView-contained scroll view")
+                        return true
+                    }
+                    currentView = currentView?.superview
+                }
+                logger.info("🔄 Coordinator unpop gesture not requiring failure of standalone scroll view")
+                return false
+            }
         }
         return false
     }

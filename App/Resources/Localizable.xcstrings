@@ -16,6 +16,9 @@
     "..." : {
 
     },
+    "(%@)" : {
+
+    },
     "/" : {
 
     },
@@ -101,6 +104,9 @@
 
     },
     "Bookmark Thread" : {
+
+    },
+    "Bookmarks" : {
 
     },
     "bookmarks.title" : {
@@ -376,6 +382,12 @@
     "Error: Could not access managed object context" : {
 
     },
+    "Error: Invalid coordinator type" : {
+
+    },
+    "Error: Managed Object Context not available" : {
+
+    },
     "Example searches:" : {
 
     },
@@ -383,6 +395,9 @@
 
     },
     "Failed to load image" : {
+
+    },
+    "Filter by Tag" : {
 
     },
     "First" : {
@@ -444,6 +459,9 @@
           }
         }
       }
+    },
+    "Forward" : {
+
     },
     "FPS: %@" : {
 
@@ -727,6 +745,9 @@
         }
       }
     },
+    "Load More" : {
+
+    },
     "Loading..." : {
 
     },
@@ -779,6 +800,9 @@
 
     },
     "Menu" : {
+
+    },
+    "Messages" : {
 
     },
     "Next page" : {
@@ -1097,6 +1121,9 @@
         }
       }
     },
+    "Profile" : {
+
+    },
     "profile.default-gender" : {
       "extractionState" : "migrated",
       "localizations" : {
@@ -1241,6 +1268,9 @@
 
     },
     "Search Results" : {
+
+    },
+    "Select a forum" : {
 
     },
     "Select an item from the sidebar" : {
@@ -1411,7 +1441,13 @@
         }
       }
     },
+    "Threads" : {
+
+    },
     "Toggle All" : {
+
+    },
+    "Toggle Bookmark" : {
 
     },
     "Username" : {

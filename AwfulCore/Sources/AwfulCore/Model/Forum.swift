@@ -35,6 +35,7 @@ public class Forum: AwfulManagedObject, Managed {
     }
 }
 
+
 @objc(ForumKey)
 public final class ForumKey: AwfulObjectKey {
     @objc let forumID: String

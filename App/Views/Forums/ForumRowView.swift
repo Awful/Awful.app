@@ -62,6 +62,7 @@ struct ForumRowView: View {
                 .frame(width: isEditing ? 0 : 38)
                 .opacity(isEditing ? 0 : 1)
                 .animation(.default, value: isEditing)
+                .padding(.leading, isEditing ? 0 : 16)
             
             // Forum name with indentation
             HStack(spacing: 8) {
@@ -76,22 +77,24 @@ struct ForumRowView: View {
                 
                 Spacer()
             }
+            .padding(.leading, isEditing ? 16 : 0)
             
             // Expansion button
             expansionButtonView
                 .frame(width: isEditing ? 0 : 44)
                 .opacity(isEditing ? 0 : 1)
                 .animation(.default, value: isEditing)
+                .padding(.trailing, 16)
         }
-        .padding(.horizontal, 16)  // Add internal padding for better visual spacing
-        .padding(.vertical, 8)     // Add vertical padding
+        .padding(.vertical, 8)
         .contentShape(Rectangle())
         .onTapGesture {
             onTap()
         }
         .listRowBackground(backgroundColor)
         .listRowSeparatorTint(theme[color: "listSeparatorColor"] ?? Color.gray)
-        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        .listRowInsets(EdgeInsets())
+        .listRowSeparator(.visible)
     }
     
     @ViewBuilder

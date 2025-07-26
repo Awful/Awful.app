@@ -94,7 +94,7 @@ struct SwiftUIRenderViewNative: View {
                 viewModel: viewModel,
                 // Scroll callbacks removed for optimal performance
                 onPostAction: onPostAction,
-                onUserAction: onUserAction
+                onUserAction: onUserAction,
             )
             
             // Performance overlay removed - WebKit handles performance internally
@@ -409,11 +409,14 @@ struct WebViewRepresentable: UIViewRepresentable {
         let config = createWebViewConfiguration()
         let webView = WKWebView(frame: .zero, configuration: config)
         
+        // Disable WebKit's navigation gestures to prevent conflicts (research recommendation)
+        webView.allowsBackForwardNavigationGestures = false
+        
         // Configure webview appearance with performance optimizations
         webView.isOpaque = false
         webView.backgroundColor = UIColor.clear
         webView.scrollView.backgroundColor = theme[uicolor: "postsViewBackgroundColor"] ?? .systemBackground
-        webView.scrollView.contentInsetAdjustmentBehavior = .never
+        webView.scrollView.contentInsetAdjustmentBehavior = .automatic
         webView.scrollView.decelerationRate = .normal
         webView.allowsBackForwardNavigationGestures = false
         

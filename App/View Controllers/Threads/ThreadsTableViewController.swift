@@ -430,7 +430,14 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
     ) {
         print("🔵 ThreadListDataSource: didSelectThread called - thread: \(thread.title ?? "Unknown")")
         print("🔵 ThreadListDataSource: coordinator is \(coordinator != nil ? "available" : "nil")")
-        coordinator?.navigateToThread(thread)
+        
+        // Try custom navigation via notification first
+        let destination = ThreadDestination(thread: thread, page: thread.anyUnreadPosts ? .nextUnread : .first, author: nil, jumpToPostID: nil)
+        print("🔵 ThreadDestination: Created for thread: \(thread.title ?? "Unknown"), page: \(destination.page), scrollFraction: \(destination.scrollFraction?.description ?? "none"), jumpToPostID: \(destination.jumpToPostID ?? "none")")
+        NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: destination)
+        
+        // TODO: Remove coordinator fallback once custom navigation is fully working
+        // coordinator?.navigateToThread(thread)
     }
 
     func threadListDataSource(
@@ -461,7 +468,13 @@ extension ThreadsTableViewController {
         let thread = dataSource!.thread(at: indexPath)
         print("🔵 TableView: didSelectRowAt called - thread: \(thread.title ?? "Unknown")")
         print("🔵 TableView: coordinator is \(coordinator != nil ? "available" : "nil")")
-        coordinator?.navigateToThread(thread)
+        
+        // Use custom navigation via notification instead of coordinator
+        let destination = ThreadDestination(thread: thread, page: thread.anyUnreadPosts ? .nextUnread : .first, author: nil, jumpToPostID: nil)
+        NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: destination)
+        
+        // TODO: Remove coordinator fallback once custom navigation is fully working  
+        // coordinator?.navigateToThread(thread)
         
         tableView.deselectRow(at: indexPath, animated: true)
     }

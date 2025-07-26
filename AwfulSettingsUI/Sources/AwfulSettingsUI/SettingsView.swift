@@ -217,20 +217,18 @@ public struct SettingsView: View {
 
             Section {
                 NavigationLink("Default Light Theme", bundle: .module) {
-                    DefaultThemePickerView(mode: .light)
-                        .navigationTitle("Default Light Theme", bundle: .module)
+                    SwiftUIDefaultThemePickerView(mode: .light)
                 }
                 NavigationLink("Default Dark Theme", bundle: .module) {
-                    DefaultThemePickerView(mode: .dark)
-                        .navigationTitle("Default Dark Theme", bundle: .module)
+                    SwiftUIDefaultThemePickerView(mode: .dark)
                 }
                 NavigationLink("Forum-Specific Themes", bundle: .module) {
-                    ForumSpecificThemesView()
-                        .environment(\.managedObjectContext, managedObjectContext) // Not inherited from SettingsView's environment?
-                        .navigationTitle("Forum-Specific Themes", bundle: .module)
+                    SwiftUIForumSpecificThemesView()
+                        .environment(\.managedObjectContext, managedObjectContext)
                 }
                 Toggle("Dark Mode", bundle: .module, isOn: $darkModeManuallyEnabled)
                     .disabled(darkModeAutomatic)
+                    .help(darkModeAutomatic ? Text("Disabled when Automatic Dark Mode is enabled", bundle: .module) : Text(""))
                 Toggle("Automatic Dark Mode", bundle: .module, isOn: $darkModeAutomatic)
             } header: {
                 Text("Themes", bundle: .module)

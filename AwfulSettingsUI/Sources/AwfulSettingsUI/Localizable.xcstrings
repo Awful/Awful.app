@@ -1,11 +1,24 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended." : {
 
     },
     "[timg] Large Images" : {
 
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
     },
     "Acknowledgements" : {
 
@@ -67,6 +80,9 @@
     "Checking the clipboard for a forums URL when you open the app allows you to jump straight to a copied URL in Awful." : {
 
     },
+    "Dark" : {
+
+    },
     "Dark Mode" : {
 
     },
@@ -77,6 +93,9 @@
 
     },
     "Default Light Theme" : {
+
+    },
+    "Disabled when Automatic Dark Mode is enabled" : {
 
     },
     "Double-Tap Post to Jump" : {
@@ -116,6 +135,9 @@
 
     },
     "Imgur Uploads" : {
+
+    },
+    "Light" : {
 
     },
     "Links" : {

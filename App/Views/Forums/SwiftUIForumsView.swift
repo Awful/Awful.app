@@ -7,6 +7,7 @@ import AwfulSettings
 import AwfulTheming
 import CoreData
 import SwiftUI
+import UIKit
 
 struct SwiftUIForumsView: View {
     @StateObject private var viewModel: ForumsListViewModel
@@ -15,6 +16,7 @@ struct SwiftUIForumsView: View {
     let isEditingFromParent: Bool
     
     @State private var showingSearch = false
+    @State private var isEditing = false
     
     init(managedObjectContext: NSManagedObjectContext, coordinator: (any MainCoordinator)? = nil, isEditing: Bool = false) {
         self._viewModel = StateObject(wrappedValue: {
@@ -26,12 +28,24 @@ struct SwiftUIForumsView: View {
         }())
         self.coordinator = coordinator
         self.isEditingFromParent = isEditing
+        self._isEditing = State(initialValue: isEditing)
     }
     
     var body: some View {
-        // For now, keep the standard refreshable - niggly implementation needs more work
-        forumsList
-            .themed()
+        VStack(spacing: 0) {
+            NavigationHeaderView(
+                title: "Forums",
+                leftButton: HeaderButton(text: "Search") {
+                    showingSearch = true
+                },
+                rightButton: viewModel.hasFavorites ? HeaderButton(text: isEditing ? "Done" : "Edit") {
+                    isEditing.toggle()
+                } : nil
+            )
+            
+            forumsList
+        }
+        .themed()
     }
     
     private var forumsList: some View {
@@ -41,15 +55,13 @@ struct SwiftUIForumsView: View {
             }
         }
         .listStyle(.grouped)
-        .background(backgroundColor)
         .scrollContentBackground(.hidden)
         .background(backgroundColor)
+        .listRowSpacing(0)
         .refreshable {
             await viewModel.refresh()
         }
-        .environment(\.editMode, .constant(isEditingFromParent ? .active : .inactive))
-        .navigationTitle("Forums")
-        .navigationBarTitleDisplayMode(.inline)
+        .environment(\.editMode, .constant(isEditing ? .active : .inactive))
         .sheet(isPresented: $showingSearch) {
             SearchView(model: SearchPageViewModel())
         }
@@ -65,7 +77,7 @@ struct SwiftUIForumsView: View {
     }
     
     private var backgroundColor: Color {
-        theme[color: "backgroundColor"] ?? Color(UIColor.systemBackground)
+        Color(theme[uicolor: "listBackgroundColor"] ?? UIColor.systemBackground)
     }
     
     
@@ -74,7 +86,7 @@ struct SwiftUIForumsView: View {
             let forEachView = ForEach(section.items) { item in
                 ForumRowView(
                     item: item,
-                    isEditing: isEditingFromParent,
+                    isEditing: isEditing,
                     isInFavorites: section.type == .favorites,
                     onTap: { handleItemTap(item) },
                     onToggleFavorite: { handleToggleFavorite(item) },
@@ -95,6 +107,8 @@ struct SwiftUIForumsView: View {
             }
         } header: {
             ForumSectionHeaderView(title: section.title)
+        } footer: {
+            EmptyView()
         }
     }
     
@@ -126,18 +140,10 @@ struct SwiftUIForumsView: View {
     }
     
     private func openForum(_ forum: Forum) {
-        print("🔍 SwiftUIForumsView: Attempting to navigate to forum: \(forum.name ?? "unnamed")")
-        print("🔍 SwiftUIForumsView: Coordinator exists: \(coordinator != nil)")
+        print("🔍 SwiftUIForumsView: Navigating to forum: \(forum.name ?? "unnamed")")
         
-        // Try navigating via coordinator first
-        coordinator?.navigateToForum(forum)
-        
-        // If that doesn't work, try direct UIKit navigation as fallback
-        if let navController = findNavigationController() {
-            let threadsVC = ThreadsTableViewController(forum: forum)
-            threadsVC.restorationIdentifier = "Forum: \(forum.forumID)"
-            navController.pushViewController(threadsVC, animated: true)
-        }
+        // Use custom navigation system via NotificationCenter
+        NotificationCenter.default.post(name: Notification.Name("NavigateToForum"), object: forum)
     }
     
     private func openAnnouncement(_ announcement: Announcement) {

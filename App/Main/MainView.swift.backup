@@ -2,7 +2,6 @@ import AwfulCore
 import AwfulExtensions
 import AwfulModelTypes
 import AwfulSettings
-import AwfulSettingsUI
 import AwfulTheming
 import SwiftUI
 import Combine
@@ -13,50 +12,6 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MainCoordinator")
 private let navigationLog = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "navigation-gestures")
-
-// MARK: - TabView Flickering Fix
-// 
-// This implementation fixes the Forums tab flickering issue using a proven architecture:
-// 1. LazyView prevents premature TabContentView instantiation
-// 2. TabManager provides centralized state management with debounced switching
-// 3. Only displayedTab content is created, eliminating simultaneous instantiation
-
-// MARK: - LazyView Wrapper
-// Prevents TabContentView instantiation until actually needed
-struct LazyView<Content: View>: View {
-    let build: () -> Content
-    
-    init(@ViewBuilder _ content: @escaping () -> Content) {
-        self.build = content
-    }
-    
-    var body: Content {
-        build()
-    }
-}
-
-// MARK: - Tab Manager
-// Centralized tab state management with debounced switching to prevent flickering
-@MainActor
-class TabManager: ObservableObject {
-    @Published var selectedTab: MainTab = .forums
-    @Published var displayedTab: MainTab = .forums
-    
-    private var tabTransitionDebouncer: Task<Void, Never>?
-    
-    func selectTab(_ tab: MainTab) {
-        selectedTab = tab
-        
-        // Debounce the displayed tab update to prevent rapid changes
-        tabTransitionDebouncer?.cancel()
-        tabTransitionDebouncer = Task {
-            try? await Task.sleep(nanoseconds: 50_000_000) // 50ms delay
-            if !Task.isCancelled {
-                displayedTab = tab
-            }
-        }
-    }
-}
 
 // MARK: - Custom Navigation System
 
@@ -193,14 +148,12 @@ struct AwfulCustomNavigationWrapper: View {
     @Binding var selectedTab: MainTab
     let hasFavoriteForums: Bool
     @SwiftUI.Environment(\.theme) private var theme
-    @EnvironmentObject private var tabManager: TabManager
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @State private var isEditingBookmarks = false
     @State private var isEditingMessages = false
     @State private var isEditingForums = false
     
     @StateObject private var customNavigationController = AwfulNavigationController()
-    @State private var forumsNavigationPath = NavigationPath()
     
     var body: some View {
         // Handle navigation destinations with different layouts for forums vs threads
@@ -208,67 +161,47 @@ struct AwfulCustomNavigationWrapper: View {
             if let destination = customNavigationController.currentDestination {
                 switch destination {
                 case .forumsList:
-                    // Forums list - show normal TabView with stable identity  
-                    TabView(selection: Binding(
-                        get: { tabManager.selectedTab },
-                        set: { tabManager.selectTab($0) }
-                    )) {
-                        ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages), id: \.rawValue) { tab in
-                            Group {
-                                if tabManager.displayedTab == tab {
-                                    LazyView {
-                                        TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
+                    // Forums list - show normal TabView
+                    TabView(selection: $selectedTab) {
+                        ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
+                            TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
+                                .tabItem {
+                                    if let tabBarImage = tab.tabBarImage {
+                                        Image(tabBarImage)
+                                            .renderingMode(.template)
+                                    } else {
+                                        Image(systemName: tab.systemImage)
                                     }
-                                } else {
-                                    // Placeholder view to maintain tab structure
-                                    Color.clear
-                                        .onAppear {
-                                            }
+                                    Text(tab.title)
                                 }
-                            }
-                            .tabItem {
-                                if let tabBarImage = tab.tabBarImage {
-                                    Image(tabBarImage)
-                                        .renderingMode(.template)
-                                } else {
-                                    Image(systemName: tab.systemImage)
-                                }
-                                Text(tab.title)
-                            }
-                            .tag(tab)
+                                .tag(tab)
                         }
                     }
-                    .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+                    .accentColor(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+                    .onChange(of: selectedTab) { newTab in
+                        // Detect Forums tab tap while already selected
+                        if newTab == .forums && selectedTab == .forums {
+                            customNavigationController.resetToRoot()
+                        }
+                    }
                     
                 case .forum(_):
                     // Forum (thread list) - keep tab bar visible, show within tab context
-                    TabView(selection: Binding(
-                        get: { tabManager.selectedTab },
-                        set: { tabManager.selectTab($0) }
-                    )) {
+                    TabView(selection: $selectedTab) {
                         ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
                             Group {
-                                if tabManager.displayedTab == tab {
-                                    LazyView {
-                                        if tab == .forums {
-                                            // Show forum view in forums tab with custom navigation container
-                                            forumsTabNavigationContent(destination: destination)
-                                                .gesture(
-                                                    DragGesture()
-                                                        .onEnded { value in
-                                                            handleNavigationSwipe(value)
-                                                        }
-                                                )
-                                        } else {
-                                            // Other tabs show normal content
-                                            TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
-                                        }
-                                    }
+                                if tab == .forums {
+                                    // Show forum view in forums tab with custom navigation container
+                                    forumsTabNavigationContent(destination: destination)
+                                        .gesture(
+                                            DragGesture()
+                                                .onEnded { value in
+                                                    handleNavigationSwipe(value)
+                                                }
+                                        )
                                 } else {
-                                    // Placeholder view to maintain tab structure
-                                    Color.clear
-                                        .onAppear {
-                                            }
+                                    // Other tabs show normal content
+                                    TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
                                 }
                             }
                             .tabItem {
@@ -283,7 +216,13 @@ struct AwfulCustomNavigationWrapper: View {
                             .tag(tab)
                         }
                     }
-                    .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+                    .accentColor(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+                    .onChange(of: selectedTab) { newTab in
+                        // Detect Forums tab tap while already selected - reset to forums list
+                        if newTab == .forums && selectedTab == .forums {
+                            customNavigationController.resetToRoot()
+                        }
+                    }
                     
                 case .thread(_):
                     // Thread (posts page) - hide TabView entirely for immersive experience
@@ -298,24 +237,14 @@ struct AwfulCustomNavigationWrapper: View {
                 }
             } else {
                 // Normal TabView when no custom navigation active
-                TabView(selection: Binding(
-                    get: { tabManager.selectedTab },
-                    set: { tabManager.selectTab($0) }
-                )) {
-                    ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages), id: \.rawValue) { tab in
+                TabView(selection: $selectedTab) {
+                    ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
                         Group {
-                            if tabManager.displayedTab == tab {
-                                LazyView {
-                                    if tab == .forums {
-                                        // Show forums tab with normal content when no navigation active
-                                        forumsTabNavigationContent(destination: nil)
-                                    } else {
-                                        TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
-                                    }
-                                }
+                            if tab == .forums {
+                                // Show forums tab with normal content when no navigation active
+                                forumsTabNavigationContent(destination: nil)
                             } else {
-                                // Placeholder view to maintain tab structure
-                                Color.clear
+                                TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
                             }
                         }
                         .tabItem {
@@ -330,38 +259,55 @@ struct AwfulCustomNavigationWrapper: View {
                         .tag(tab)
                     }
                 }
-                .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+                .accentColor(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+                .onChange(of: selectedTab) { newTab in
+                    // Detect Forums tab tap while already selected - reset to forums list
+                    if newTab == .forums && selectedTab == .forums {
+                        customNavigationController.resetToRoot()
+                    }
+                }
             }
         }
         .environmentObject(customNavigationController)
-        .environmentObject(tabManager)
         .sheet(item: $coordinator.presentedSheet) { sheet in
             sheetContent(for: sheet)
         }
         .sheet(item: $coordinator.presentedPrivateMessageUser) { user in
             privateMessageSheetContent(for: user)
         }
+        .onAppear {
+            setupCoordinatorIntegration()
+        }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NavigateToForum"))) { notification in
             if let forum = notification.object as? Forum {
-                // Handle navigation when on the Forums tab
-                if tabManager.selectedTab == .forums {
-                    customNavigationController.navigateToForum(forum)
-                }
+                selectedTab = .forums // Ensure forums tab is selected when navigating to a forum
+                customNavigationController.navigateToForum(forum)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NavigateToThread"))) { notification in
             if let threadDest = notification.object as? ThreadDestination {
-                // Handle thread navigation for forums and bookmarks tabs
-                if tabManager.selectedTab == .forums || tabManager.selectedTab == .bookmarks {
-                    customNavigationController.navigateToThread(threadDest.thread, page: threadDest.page)
-                }
+                customNavigationController.navigateToThread(threadDest.thread, page: threadDest.page)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NavigateBack"))) { _ in
             _ = customNavigationController.goBack()
         }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ResetForumsNavigation"))) { _ in
+            print("🔄 Received ResetForumsNavigation notification")
+            if customNavigationController.currentDestination != .forumsList {
+                print("🔄 Resetting navigation to forums list via notification")
+                customNavigationController.resetToRoot()
+            }
+        }
+        .onChange(of: selectedTab) { newTab in
+            // When forums tab is selected, reset navigation to forums list
+            print("🔄 Tab changed to: \(newTab), current destination: \(String(describing: customNavigationController.currentDestination))")
+            if newTab == .forums && customNavigationController.currentDestination != .forumsList {
+                print("🔄 Resetting navigation to forums list")
+                customNavigationController.resetToRoot()
+            }
+        }
     }
-    
     
     @ViewBuilder
     private func forumsTabNavigationContent(destination: AwfulNavigationDestination?) -> some View {
@@ -1752,8 +1698,8 @@ struct MainView: View {
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @SwiftUI.Environment(\.theme) private var theme
     
-    // Use TabManager for proper tab state management
-    @StateObject private var tabManager = TabManager()
+    // Use @SceneStorage for simple state restoration
+    @SceneStorage("selectedTab") private var selectedTab: MainTab = .forums
     @SceneStorage("isEditingBookmarks") private var isEditingBookmarks = false
     @SceneStorage("isEditingMessages") private var isEditingMessages = false
     @SceneStorage("isEditingForums") private var isEditingForums = false
@@ -1781,19 +1727,18 @@ struct MainView: View {
     var body: some View {
         Group {
             if horizontalSizeClass == .regular {
+                let _ = logger.info("🏗️ MainView: Using iPad layout (horizontalSizeClass = .regular)")
+                let _ = print("🏗️ MainView: Using iPad layout (horizontalSizeClass = .regular)")
                 iPadLayout
             } else {
+                let _ = logger.info("🏗️ MainView: Using iPhone layout (horizontalSizeClass = .compact)")
+                let _ = print("🏗️ MainView: Using iPhone layout (horizontalSizeClass = .compact)")
                 iPhoneLayout
             }
         }
         .onAppear {
-            // Initialize tabManager with SceneStorage restored tab
-            if let sceneStorageTab = UserDefaults.standard.object(forKey: "selectedTab") as? String,
-               let restoredTab = MainTab(rawValue: sceneStorageTab) {
-                tabManager.selectTab(restoredTab)
-            }
-            
             guard let appDelegate = AppDelegate.instance else {
+                print("❌ AppDelegate.instance not available in onAppear")
                 return
             }
             
@@ -1815,14 +1760,16 @@ struct MainView: View {
             
             // Delay state restoration to ensure Core Data is ready
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                // Check if restoration should be suppressed due to recent user actions or Forums tab selection
-                if !navigationGestureStateManager.shouldSuppressRestoration && tabManager.selectedTab != .forums {
+                // Check if restoration should be suppressed due to recent user actions
+                if !navigationGestureStateManager.shouldSuppressRestoration {
                     // Use SceneStorage override instead of broken SwiftUI NavigationPath restoration
                     coordinator.restoreNavigationPathsFromSceneStorage(
                         navigationPathData: navigationPathData,
                         sidebarPathData: sidebarPathData,
                         timestamp: navigationStateTimestamp
                     )
+                } else {
+                    print("🧭 Skipping navigation restoration due to recent user action")
                 }
             }
         }
@@ -1845,12 +1792,12 @@ struct MainView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NavigateToTab"))) { notification in
             if let tab = notification.object as? MainTab {
-                tabManager.selectTab(tab)
+                selectedTab = tab
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("RestoreTabSelection"))) { notification in
             if let tab = notification.object as? MainTab {
-                tabManager.selectTab(tab)
+                selectedTab = tab
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
@@ -1860,8 +1807,8 @@ struct MainView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             // Restore state from SceneStorage when app enters foreground with delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                // Check if restoration should be suppressed due to recent user actions or Forums tab selection
-                if !navigationGestureStateManager.shouldSuppressRestoration && tabManager.selectedTab != .forums {
+                // Check if restoration should be suppressed due to recent user actions
+                if !navigationGestureStateManager.shouldSuppressRestoration {
                     coordinator.restoreNavigationPathsFromSceneStorage(
                         navigationPathData: navigationPathData,
                         sidebarPathData: sidebarPathData,
@@ -1912,17 +1859,13 @@ struct MainView: View {
     private var iPadLayout: some View {
         iPadMainView(
             coordinator: coordinator,
-            selectedTab: Binding(
-                get: { tabManager.selectedTab },
-                set: { tabManager.selectTab($0) }
-            ),
+            selectedTab: $selectedTab,
             isEditingBookmarks: isEditingBookmarks,
             isEditingMessages: isEditingMessages,
             isEditingForums: isEditingForums,
             hasFavoriteForums: hasFavoriteForums,
             canSendPrivateMessages: canSendPrivateMessages
         )
-        .environmentObject(tabManager)
         .sheet(item: $coordinator.presentedSheet) { sheet in
             sheetContent(for: sheet)
         }
@@ -1937,13 +1880,9 @@ struct MainView: View {
             // Use custom navigation system instead of problematic NavigationStack
             AwfulCustomNavigationWrapper(
                 coordinator: coordinator,
-                selectedTab: Binding(
-                    get: { tabManager.selectedTab },
-                    set: { tabManager.selectTab($0) }
-                ),
+                selectedTab: $selectedTab,
                 hasFavoriteForums: hasFavoriteForums
             )
-            .environmentObject(tabManager)
             .sheet(item: $coordinator.presentedSheet) { sheet in
                 sheetContent(for: sheet)
             }
@@ -2080,8 +2019,7 @@ struct MainView: View {
         
         // For selected and unselected items
         let itemAppearance = UITabBarItemAppearance()
-        itemAppearance.normal.iconColor = currentTheme[uicolor: "tabBarIconNormalColor"]
-        itemAppearance.selected.iconColor = currentTheme[uicolor: "tabBarIconSelectedColor"]
+        itemAppearance.normal.iconColor = currentTheme[uicolor: "tabBarIconColor"]
         
         // Handle tab bar labels based on theme setting
         if currentTheme[bool: "showRootTabBarLabel"] == false {
@@ -2102,22 +2040,9 @@ struct MainView: View {
         UITabBar.appearance().tintColor = currentTheme[uicolor: "tabBarIconSelectedColor"]
         UITabBar.appearance().isTranslucent = currentTheme[bool: "tabBarIsTranslucent"] ?? true
         
-        // Force immediate update of all visible tab bars and navigation bars
+        // Force immediate update of all visible navigation bars
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
             for window in windowScene.windows {
-                // Force update of all tab bars in the window hierarchy
-                func updateTabBars(in view: UIView) {
-                    if let tabBar = view as? UITabBar {
-                        tabBar.standardAppearance = tabBarAppearance
-                        tabBar.scrollEdgeAppearance = tabBarAppearance
-                        tabBar.tintColor = currentTheme[uicolor: "tabBarIconSelectedColor"]
-                        tabBar.setNeedsLayout()
-                        tabBar.setNeedsDisplay()
-                    }
-                    view.subviews.forEach(updateTabBars)
-                }
-                updateTabBars(in: window)
-                
                 // Force update of all navigation bars in the window hierarchy
                 window.subviews.forEach { view in
                     if let navigationBar = view as? UINavigationBar {
@@ -2340,11 +2265,17 @@ struct TabContentView: View {
     var body: some View {
         contentView
             .background(theme[color: "backgroundColor"]!)
+            .onAppear {
+                print("🔵 TabContentView: \(tab.rawValue) appeared with isEditing = \(isEditing)")
+            }
+            .onChange(of: isEditing) { newValue in
+                print("🔵 TabContentView: \(tab.rawValue) editing state changed to \(newValue)")
+            }
     }
     
     @ViewBuilder
     private var contentView: some View {
-        if coordinator is MainCoordinatorImpl {
+        if let mainCoordinator = coordinator as? MainCoordinatorImpl {
             // Use NavigationStack only for tabs that need standard SwiftUI navigation
             // Forums tab uses custom navigation, so no NavigationStack needed
             Group {
@@ -2352,8 +2283,24 @@ struct TabContentView: View {
                     // Forums tab uses custom navigation - no NavigationStack
                     tabContent
                 } else if tab == .messages {
-                    // Messages tab uses custom navigation like Forums - no NavigationStack to avoid empty toolbar
-                    tabContent
+                    // Messages tab needs NavigationStack for private message navigation
+                    NavigationStack(path: Binding(
+                        get: { mainCoordinator.path },
+                        set: { mainCoordinator.path = $0 }
+                    )) {
+                        tabContent
+                    }
+                    .navigationDestination(for: PrivateMessage.self) { message in
+                        PrivateMessageViewWrapper(message: message, coordinator: coordinator)
+                    }
+                    .navigationDestination(for: ComposePrivateMessage.self) { _ in
+                        if let mainCoordinator = coordinator as? MainCoordinatorImpl {
+                            MessageComposeDetailView(coordinator: mainCoordinator)
+                        } else {
+                            Text("Error: Invalid coordinator type")
+                                .foregroundColor(.red)
+                        }
+                    }
                 } else {
                     // Other tabs don't need NavigationStack - no empty toolbar space
                     tabContent
@@ -2469,15 +2416,40 @@ struct SwiftUIMessagesView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            NavigationHeaderView(
-                title: "Messages",
-                leftButton: HeaderButton(text: localIsEditing ? "Done" : "Edit") {
-                    localIsEditing.toggle()
-                },
-                rightButton: HeaderButton(image: "compose") {
-                    coordinator.presentCompose(for: .messages)
+            // Custom navigation header
+            HStack {
+                // Edit button (left)
+                HStack {
+                    Button(localIsEditing ? "Done" : "Edit") {
+                        localIsEditing.toggle()
+                    }
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
                 }
-            )
+                .frame(width: 60, alignment: .leading)
+                
+                Spacer()
+                
+                Text("Messages")
+                    .font(.headline)
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                
+                Spacer()
+                
+                // Compose button (right)
+                HStack {
+                    Button(action: {
+                        coordinator.presentCompose(for: .messages)
+                    }) {
+                        Image("compose")
+                            .renderingMode(.template)
+                            .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                    }
+                }
+                .frame(width: 60, alignment: .trailing)
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color(theme[uicolor: "navigationBarTintColor"] ?? UIColor.systemBackground))
             
             // UIKit Messages view
             MessagesViewRepresentable(isEditing: localIsEditing, coordinator: coordinator)
@@ -2501,14 +2473,6 @@ struct MessagesViewRepresentable: UIViewControllerRepresentable {
         messagesVC.coordinator = coordinator
         let wrapper = SwiftUICompatibleViewController(wrapping: messagesVC)
         wrapper.restorationIdentifier = "Messages"
-        
-        // Ensure we always show the messages list view, not any restored message content
-        DispatchQueue.main.async {
-            if let navController = messagesVC.navigationController {
-                navController.popToRootViewController(animated: false)
-            }
-        }
-        
         return wrapper
     }
 
@@ -2525,7 +2489,27 @@ struct SwiftUILepersView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            NavigationHeaderView(title: "Lepers")
+            // Custom navigation header
+            HStack {
+                // Empty left spacer for symmetry
+                HStack {}
+                    .frame(width: 60, alignment: .leading)
+                
+                Spacer()
+                
+                Text("Lepers")
+                    .font(.headline)
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                
+                Spacer()
+                
+                // Empty right spacer for symmetry
+                HStack {}
+                    .frame(width: 60, alignment: .trailing)
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color(theme[uicolor: "navigationBarTintColor"] ?? UIColor.systemBackground))
             
             // UIKit Lepers view
             LepersViewRepresentable(coordinator: coordinator)
@@ -2553,108 +2537,50 @@ struct SwiftUISettingsView: View {
     @SwiftUI.Environment(\.theme) private var theme
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                NavigationHeaderView(title: "Settings")
+        VStack(spacing: 0) {
+            // Custom navigation header
+            HStack {
+                // Empty left spacer for symmetry
+                HStack {}
+                    .frame(width: 60, alignment: .leading)
                 
-                // Pure SwiftUI Settings view
-                PureSwiftUISettingsView()
+                Spacer()
+                
+                Text("Settings")
+                    .font(.headline)
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                
+                Spacer()
+                
+                // Empty right spacer for symmetry
+                HStack {}
+                    .frame(width: 60, alignment: .trailing)
             }
-            .navigationBarBackButtonHidden(true)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .navigationBar)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color(theme[uicolor: "navigationBarTintColor"] ?? UIColor.systemBackground))
+            
+            // UIKit Settings view
+            SettingsViewRepresentable()
         }
         .themed()
     }
 }
 
-struct PureSwiftUISettingsView: View {
-    
-    var body: some View {
-        Group {
-            if let currentUser = getCurrentUser() {
-                LoggedInSettingsSwiftUI(currentUser: currentUser)
-            } else {
-                Text("Not Logged In")
-            }
-        }
-    }
-    
-    private func getCurrentUser() -> User? {
+struct SettingsViewRepresentable: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
         guard let managedObjectContext = AppDelegate.instance?.managedObjectContext else {
-            return nil
+            fatalError("AppDelegate.instance or managedObjectContext not available")
         }
-        
-        return managedObjectContext.performAndWait {
-            guard let userID = UserDefaults.standard.value(for: Settings.userID) else {
-                return nil
-            }
-            return User.objectForKey(objectKey: UserKey(
-                userID: userID,
-                username: UserDefaults.standard.value(for: Settings.username)
-            ), in: managedObjectContext)
-        }
+        let settingsVC = SettingsViewController(managedObjectContext: managedObjectContext)
+        let wrapper = SwiftUICompatibleViewController(wrapping: settingsVC)
+        wrapper.restorationIdentifier = "Settings"
+        return wrapper
     }
-}
 
-struct LoggedInSettingsSwiftUI: View {
-    @ObservedObject var currentUser: User
-    
-    var body: some View {
-        Group {
-            if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
-                SettingsView(
-                    appIconDataSource: makeMainViewAppIconDataSource(),
-                    avatarURL: currentUser.avatarURL,
-                    canOpenURL: UIApplication.shared.canOpenURL(_:),
-                    currentUsername: currentUser.username ?? "",
-                    emptyCache: { AppDelegate.instance.emptyCache() },
-                    goToAwfulThread: { AppDelegate.instance.open(route: .threadPage(threadID: "3837546", page: .nextUnread, .seen)) },
-                    hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
-                    isMac: ProcessInfo.processInfo.isMacCatalystApp,
-                    isPad: UIDevice.current.userInterfaceIdiom == .pad,
-                    logOut: { AppDelegate.instance.logOut() }
-                )
-                .environment(\.managedObjectContext, managedObjectContext)
-            } else {
-                Text("Error: Could not access managed object context")
-                    .foregroundColor(.red)
-            }
-        }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+         // Theme changes are handled automatically by the wrapper's observer
     }
-}
-
-// MARK: - App Icon Support
-
-/// See the `README.md` section "Alternate App Icons" for more info.
-private let mainViewAppIcons: [AppIconDataSource.AppIcon] = [
-    .init(accessibilityLabel: "rated_five", imageName: "rated_five"),
-    .init(accessibilityLabel: "rated_five_pride", imageName: "rated_five_pride"),
-    .init(accessibilityLabel: "rated_five_trans", imageName: "rated_five_trans"),
-    .init(accessibilityLabel: "v", imageName: "v"),
-    .init(accessibilityLabel: "ghost_blue", imageName: "ghost_blue"),
-    .init(accessibilityLabel: "froggo", imageName: "froggo"),
-    .init(accessibilityLabel: "froggo_purple", imageName: "froggo_purple"),
-    .init(accessibilityLabel: "staredog", imageName: "staredog"),
-    .init(accessibilityLabel: "staredog_tongue", imageName: "staredog_tongue"),
-    .init(accessibilityLabel: "five", imageName: "five"),
-    .init(accessibilityLabel: "greenface", imageName: "greenface"),
-    .init(accessibilityLabel: "riker", imageName: "riker"),
-    .init(accessibilityLabel: "smith", imageName: "smith"),
-]
-
-@MainActor private func makeMainViewAppIconDataSource() -> AppIconDataSource {
-    let selectedIconName = UIApplication.shared.alternateIconName
-    let selected = mainViewAppIcons.first { "\($0.imageName)_appicon" == selectedIconName } ?? mainViewAppIcons.first!
-    return AppIconDataSource(
-        appIcons: mainViewAppIcons,
-        imageLoader: { Image("\($0.imageName)_appicon_preview", bundle: .main) },
-        selected: selected,
-        setter: {
-            let iconName = $0 == mainViewAppIcons.first ? nil : "\($0.imageName)_appicon"
-            try await UIApplication.shared.setAlternateIconName(iconName)
-        }
-    )
 }
 
 // MARK: - Detail Navigation Destinations
@@ -3064,29 +2990,7 @@ struct iPadMainView: View {
 
     var body: some View {
         NavigationSplitView {
-            TabView(selection: $selectedTab) {
-                ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
-                    TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
-                        .tabItem {
-                            if let tabBarImage = tab.tabBarImage {
-                                Image(tabBarImage)
-                                    .renderingMode(.template)
-                            } else {
-                                Image(systemName: tab.systemImage)
-                            }
-                            Text(tab.title)
-                        }
-                        .tag(tab)
-                }
-            }
-            .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
-            .onChange(of: selectedTab) { newTab in
-                // Detect Forums tab tap while already selected - reset to forums list
-                if newTab == .forums && selectedTab == .forums {
-                    // For iPad, we might need different navigation reset logic
-                    // This depends on how iPad navigation should work
-                }
-            }
+            Sidebar(coordinator: coordinator)
         } detail: {
             NavigationStack(path: $coordinator.path) {
                 DetailView()
@@ -3130,6 +3034,137 @@ struct iPadMainView: View {
         }
         .tint(navigationTintColor)
     }
+}
+
+// MARK: - Missing View Implementations
+
+struct PrivateMessageViewWrapper: View {
+    @ObservedObject var coordinator: MainCoordinatorImpl
+    @Binding var selectedTab: MainTab
+    let hasFavoriteForums: Bool
+    @SwiftUI.Environment(\.theme) private var theme
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @State private var isEditingBookmarks = false
+    @State private var isEditingMessages = false
+    @State private var isEditingForums = false
+
+    // Computed property for navigation tint color based on theme
+    private var navigationTintColor: Color {
+        Color(theme[uicolor: "navigationBarTextColor"] ?? .label)
+    }
+
+    var body: some View {
+        let _ = logger.info("🚫 iPhoneMainView: Using OLD NavigationStack system - this should NOT be used!")
+        NavigationStack(path: $coordinator.path) {
+            TabView(selection: $selectedTab) {
+                ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
+                    TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
+                        .tabItem {
+                            if let tabBarImage = tab.tabBarImage {
+                                Image(tabBarImage)
+                                    .renderingMode(.template)
+                            } else {
+                                Image(systemName: tab.systemImage)
+                            }
+                            Text(tab.title)
+                        }
+                        .tag(tab)
+                }
+            }
+            .navigationTitle(selectedTab.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    leadingToolbarItems
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    trailingToolbarItems
+                }
+            }
+            .navigationDestination(for: Forum.self) { forum in
+                Group {
+                    let _ = print("🔵 iPhone Main NavigationDestination triggered for Forum: \(forum.name ?? "unnamed")")
+                    if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
+                        SwiftUIThreadsView(
+                            forum: forum,
+                            managedObjectContext: managedObjectContext,
+                            coordinator: coordinator
+                        )
+                    } else {
+                        Text("Error: Managed Object Context not available")
+                            .foregroundColor(.red)
+                    }
+                }
+            }
+            .navigationDestination(for: ThreadDestination.self) { destination in
+                PostsViewWrapper(
+                    thread: destination.thread,
+                    author: destination.author,
+                    page: destination.page,
+                    scrollFraction: destination.scrollFraction,
+                    jumpToPostID: destination.jumpToPostID,
+                    coordinator: coordinator
+                )
+            }
+        }
+        .unpopEnabled(coordinator: coordinator)
+        .tint(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+        .accentColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
+        .toolbarBackground(.visible, for: .navigationBar)
+        .navigationBarBackButtonHidden(false)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    @ViewBuilder
+    private var leadingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if canSendPrivateMessages {
+                Button("Search") {
+                    coordinator.presentSearch()
+                }
+                .foregroundColor(navigationTintColor)
+            }
+        case .messages:
+            Button(isEditingMessages ? "Done" : "Edit") {
+                print("🔵 iPhone: Messages edit button pressed, toggling from \(isEditingMessages) to \(!isEditingMessages)")
+                isEditingMessages.toggle()
+            }
+            .foregroundColor(navigationTintColor)
+        default:
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder
+    private var trailingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if hasFavoriteForums {
+                Button(isEditingForums ? "Done" : "Edit") {
+                    print("🔵 iPhone: Forums edit button pressed, toggling from \(isEditingForums) to \(!isEditingForums)")
+                    isEditingForums.toggle()
+                }
+                .foregroundColor(navigationTintColor)
+            }
+        case .bookmarks:
+            Button(isEditingBookmarks ? "Done" : "Edit") {
+                print("🔵 iPhone: Bookmarks edit button pressed, toggling from \(isEditingBookmarks) to \(!isEditingBookmarks)")
+                isEditingBookmarks.toggle()
+            }
+            .foregroundColor(navigationTintColor)
+        case .messages:
+            Button(action: {
+                coordinator.presentCompose(for: selectedTab)
+            }) {
+                Image("compose")
+                    .renderingMode(.template)
+            }
+            .foregroundColor(navigationTintColor)
+        default:
+            EmptyView()
+        }
+    }
     
     private func getEditingState(for tab: MainTab) -> Bool {
         switch tab {
@@ -3142,6 +3177,152 @@ struct iPadMainView: View {
         default:
             return false
         }
+    }
+}
+
+struct Sidebar: View {
+    @ObservedObject var coordinator: MainCoordinatorImpl
+    @State private var selectedTab: MainTab = .forums
+    @State private var isEditingBookmarks = false
+    @State private var isEditingMessages = false
+    @State private var isEditingForums = false
+    @State private var hasFavoriteForums = false
+    @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
+    @SwiftUI.Environment(\.theme) private var theme
+    
+    // Computed property for navigation tint color based on theme
+    private var navigationTintColor: Color {
+        Color(theme[uicolor: "navigationBarTextColor"] ?? .label)
+    }
+    
+    var body: some View {
+        NavigationStack(path: $coordinator.sidebarPath) {
+            TabView(selection: $selectedTab) {
+                ForEach(MainTab.allCases(canSendPrivateMessages: canSendPrivateMessages)) { tab in
+                    TabContentView(tab: tab, coordinator: coordinator, isEditing: getEditingState(for: tab))
+                        .tabItem {
+                            if let tabBarImage = tab.tabBarImage {
+                                Image(tabBarImage)
+                                    .renderingMode(.template)
+                            } else {
+                                Image(systemName: tab.systemImage)
+                            }
+                            Text(tab.title)
+                        }
+                        .tag(tab)
+                }
+            }
+            .navigationDestination(for: Forum.self) { forum in
+                Group {
+                    let _ = print("🔵 iPad Sidebar NavigationDestination triggered for Forum: \(forum.name ?? "unnamed")")
+                    if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
+                        SwiftUIThreadsView(
+                            forum: forum,
+                            managedObjectContext: managedObjectContext,
+                            coordinator: coordinator
+                        )
+                    } else {
+                        Text("Error: Managed Object Context not available")
+                            .foregroundColor(.red)
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    leadingToolbarItems
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    trailingToolbarItems
+                }
+            }
+        }
+        .navigationTitle(selectedTab.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .tint(navigationTintColor)
+        .onAppear {
+            checkFavoriteForums()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("FavoriteForumsCountDidChange"))) { notification in
+            if let count = notification.userInfo?["count"] as? Int {
+                hasFavoriteForums = count > 0
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var leadingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if canSendPrivateMessages {
+                Button("Search") {
+                    coordinator.presentSearch()
+                }
+                .foregroundColor(navigationTintColor)
+            }
+        case .messages:
+            Button(isEditingMessages ? "Done" : "Edit") {
+                print("🔵 iPad: Messages edit button pressed, toggling from \(isEditingMessages) to \(!isEditingMessages)")
+                isEditingMessages.toggle()
+            }
+            .foregroundColor(navigationTintColor)
+        default:
+            EmptyView()
+        }
+    }
+    
+    @ViewBuilder
+    private var trailingToolbarItems: some View {
+        switch selectedTab {
+        case .forums:
+            if hasFavoriteForums {
+                Button(isEditingForums ? "Done" : "Edit") {
+                    print("🔵 iPad: Forums edit button pressed, toggling from \(isEditingForums) to \(!isEditingForums)")
+                    isEditingForums.toggle()
+                }
+                .foregroundColor(navigationTintColor)
+            }
+        case .bookmarks:
+            Button(isEditingBookmarks ? "Done" : "Edit") {
+                print("🔵 iPad: Bookmarks edit button pressed, toggling from \(isEditingBookmarks) to \(!isEditingBookmarks)")
+                isEditingBookmarks.toggle()
+            }
+            .foregroundColor(navigationTintColor)
+        case .messages:
+            Button(action: {
+                coordinator.presentCompose(for: selectedTab)
+            }) {
+                Image("compose")
+                    .renderingMode(.template)
+            }
+            .foregroundColor(navigationTintColor)
+        default:
+            EmptyView()
+        }
+    }
+    
+    private func checkFavoriteForums() {
+        // Set up observer for favorite forums count changes
+        guard let context = AppDelegate.instance?.managedObjectContext else {
+            print("❌ AppDelegate.instance or managedObjectContext not available for checkFavoriteForums")
+            return
+        }
+        
+        let favoriteForumCountObserver = ManagedObjectCountObserver(
+            context: context,
+            entityName: ForumMetadata.entityName,
+            predicate: NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite)),
+            didChange: { favoriteCount in
+                // Update hasFavoriteForums state when favorite forums count changes
+                NotificationCenter.default.post(
+                    name: Notification.Name("FavoriteForumsCountDidChange"), 
+                    object: nil, 
+                    userInfo: ["count": favoriteCount]
+                )
+            }
+        )
+        
+        // Set initial state
+        hasFavoriteForums = favoriteForumCountObserver.count > 0
     }
 }
 
