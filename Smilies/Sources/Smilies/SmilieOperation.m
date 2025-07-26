@@ -407,23 +407,48 @@ void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie)
         }
     }}
     
-    if ((deletedTexts.count == 0 && newTexts.count == 0) || self.cancelled) return;
+    // Always continue to check for section updates, even if no new/deleted smilies
+    if (self.cancelled) return;
     
     [self.context performBlockAndWait:^{
+        // First, update section names for all existing smilies
         [headers enumerateObjectsUsingBlock:^(HTMLElement *header, NSUInteger i, BOOL *stop) {
             if (self.cancelled) return;
             
             HTMLElement *section = lists[i];
+            NSString *sectionName = header.textContent;
+            
             for (HTMLElement *item in [section nodesMatchingSelector:@"li"]) {
                 NSString *text = [item firstNodeMatchingSelector:@".text"].textContent;
-                if (![newTexts containsObject:text]) continue;
                 
-                Smilie *smilie = [Smilie newInManagedObjectContext:self.context];
-                smilie.text = text;
-                HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
-                smilie.imageURL = img[@"src"];
-                smilie.section = header.textContent;
-                smilie.summary = img[@"title"];
+                // Update existing smilie's section if it has changed
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[Smilie entityName]];
+                fetchRequest.predicate = [NSPredicate predicateWithFormat:@"text = %@", text];
+                fetchRequest.fetchLimit = 1;
+                NSError *error;
+                NSArray *existingSmilies = [self.context executeFetchRequest:fetchRequest error:&error];
+                
+                if (existingSmilies.count > 0) {
+                    Smilie *existingSmilie = existingSmilies.firstObject;
+                    if (![existingSmilie.section isEqualToString:sectionName]) {
+                        existingSmilie.section = sectionName;
+                    }
+                    
+                    // Also update other attributes in case they changed
+                    HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
+                    existingSmilie.imageURL = img[@"src"];
+                    existingSmilie.summary = img[@"title"];
+                }
+                
+                // Handle new smilies
+                if ([newTexts containsObject:text]) {
+                    Smilie *smilie = [Smilie newInManagedObjectContext:self.context];
+                    smilie.text = text;
+                    HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
+                    smilie.imageURL = img[@"src"];
+                    smilie.section = sectionName;
+                    smilie.summary = img[@"title"];
+                }
             }
         }];
 

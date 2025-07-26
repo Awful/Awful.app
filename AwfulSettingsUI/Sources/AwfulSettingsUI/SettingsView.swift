@@ -34,6 +34,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.bookmarksSortedUnread) private var sortFirstUnreadBookmarks
     @AppStorage(Settings.forumThreadsSortedUnread) private var sortFirstUnreadThreads
     @AppStorage(Settings.automaticTimg) private var timgLargeImages
+    @AppStorage(Settings.useNewSmiliePicker) private var useNewSmiliePicker
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
 
     let appIconDataSource: AppIconDataSource
@@ -161,6 +162,7 @@ public struct SettingsView: View {
 
             Section {
                 Toggle("[timg] Large Images", bundle: .module, isOn: $timgLargeImages)
+                Toggle("New Smilie Picker", bundle: .module, isOn: $useNewSmiliePicker)
                 Picker("Imgur Uploads", bundle: .module, selection: $imgurUploadMode) {
                     Text("Off").tag("Off")
                     Text("Imgur Account").tag("Imgur Account")
