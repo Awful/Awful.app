@@ -4,12 +4,16 @@
 
 import os
 import Smilies
+import SwiftUI
 import UIKit
+import AwfulSettings
+import AwfulTheming
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ShowSmilieKeyboardCommand")
 
 final class ShowSmilieKeyboardCommand: NSObject {
     fileprivate let textView: UITextView
+    private weak var presentingViewController: UIViewController?
     
     init(textView: UITextView) {
         self.textView = textView
@@ -26,6 +30,14 @@ final class ShowSmilieKeyboardCommand: NSObject {
     fileprivate var showingSmilieKeyboard: Bool = false
     
     func execute() {
+        if UserDefaults.standard.defaultingValue(for: Settings.useNewSmiliePicker) {
+            showNewSmiliePicker()
+        } else {
+            showLegacySmilieKeyboard()
+        }
+    }
+    
+    private func showLegacySmilieKeyboard() {
         showingSmilieKeyboard = !showingSmilieKeyboard
         
         if showingSmilieKeyboard && textView.inputView == nil {
@@ -39,6 +51,56 @@ final class ShowSmilieKeyboardCommand: NSObject {
         if !showingSmilieKeyboard {
             justInsertedSmilieText = nil
         }
+    }
+    
+    private func showNewSmiliePicker() {
+        guard var viewController = textView.window?.rootViewController else { return }
+        
+        // Find the topmost presented view controller
+        while let presented = viewController.presentedViewController {
+            viewController = presented
+        }
+        
+        // Check if smilie picker is already being presented
+        if viewController is UIHostingController<SmiliePickerView> {
+            return
+        }
+        
+        // Dismiss keyboard before showing smilie picker
+        textView.resignFirstResponder()
+        
+        weak var weakTextView = textView
+        let pickerView = SmiliePickerView(dataStore: smilieKeyboard.dataStore) { [weak self] smilieData in
+            self?.insertSmilieData(smilieData)
+            // Reactivate keyboard after inserting smilie
+            DispatchQueue.main.async {
+                weakTextView?.becomeFirstResponder()
+            }
+        }
+        .onDisappear {
+            // Reactivate keyboard when view disappears (handles Done button case)
+            DispatchQueue.main.async {
+                weakTextView?.becomeFirstResponder()
+            }
+        }
+        
+        let hostingController = UIHostingController(rootView: pickerView)
+        hostingController.modalPresentationStyle = .pageSheet
+        
+        if let sheet = hostingController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+            sheet.delegate = self
+        }
+        
+        presentingViewController = viewController
+        viewController.present(hostingController, animated: true)
+    }
+    
+    private func insertSmilieData(_ smilieData: SmilieData) {
+        textView.insertText(smilieData.text)
+        justInsertedSmilieText = smilieData.text
     }
     
     fileprivate var justInsertedSmilieText: String?
@@ -82,5 +144,12 @@ extension ShowSmilieKeyboardCommand: SmilieKeyboardDelegate {
     
     func smilieKeyboard(_ keyboard: SmilieKeyboard, insertNumberOrDecimal numberOrDecimal: String) {
         textView.insertText(numberOrDecimal)
+    }
+}
+
+extension ShowSmilieKeyboardCommand: UISheetPresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        // Reactivate keyboard after sheet dismissal (swipe down or Done button)
+        textView.becomeFirstResponder()
     }
 }

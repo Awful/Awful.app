@@ -13,6 +13,14 @@
 .DS_Store
 xcuserdata
 /Awful.xcworkspace/xcshareddata/Awful.xccheckout
+*.backup
+/DerivedData/
 
 # Optional CSS compiler possible location
 /node_modules/
+
+# Swift Package Manager
+/.build/
+/.swiftpm/
+/Package.resolved
+!/Smilies/Package.resolved

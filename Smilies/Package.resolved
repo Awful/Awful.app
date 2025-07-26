@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "FLAnimatedImage",
+        "repositoryURL": "https://github.com/Flipboard/FLAnimatedImage",
+        "state": {
+          "branch": null,
+          "revision": "d4f07b6f164d53c1212c3e54d6460738b1981e9f",
+          "version": "1.0.17"
+        }
+      },
+      {
+        "package": "HTMLReader",
+        "repositoryURL": "https://github.com/nolanw/HTMLReader",
+        "state": {
+          "branch": null,
+          "revision": "d4003bf59feead2361f684a372123eae0afe104f",
+          "version": "2.2.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

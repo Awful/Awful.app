@@ -130,6 +130,9 @@ public enum Settings {
 
     /// The logged-in user's username. This really shouldn't be a setting :/
     public static let username = Setting<String?>(key: "username")
+
+    /// Use the new SwiftUI smilie picker with search functionality.
+    public static let useNewSmiliePicker = Setting(key: "use_new_smilie_picker", default: true)
 }
 
 /// A theme included with Awful.
