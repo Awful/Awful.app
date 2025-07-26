@@ -94,6 +94,11 @@ struct SwiftUIThreadsView: View {
                 Text(error.localizedDescription)
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ShowAuthorProfile"))) { notification in
+            if let author = notification.object as? User {
+                showAuthorProfile(author)
+            }
+        }
         .sheet(isPresented: $showingCompose) {
             ComposeThreadSheet(
                 composeViewController: viewModel.createComposeViewController(),
@@ -129,7 +134,8 @@ struct SwiftUIThreadsView: View {
                     },
                     onBookmarkToggle: {
                         handleBookmarkToggle(threadViewModel)
-                    }
+                    },
+                    thread: viewModel.thread(for: threadViewModel)
                 )
                 .listRowInsets(EdgeInsets(top: 0, leading: -8, bottom: 0, trailing: -8))
                 .listRowSeparator(.visible, edges: .bottom)
@@ -247,6 +253,41 @@ struct SwiftUIThreadsView: View {
         }
         
         isLoadingMore = false
+    }
+    
+    private func showAuthorProfile(_ author: User) {
+        let profile = ProfileViewController(user: author)
+        let profileVC: UIViewController
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            profileVC = profile.enclosingNavigationController
+        } else {
+            profileVC = profile
+        }
+        
+        // Get the current window's root view controller
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first,
+           let rootVC = window.rootViewController {
+            
+            var presentingVC = rootVC
+            while let presented = presentingVC.presentedViewController {
+                presentingVC = presented
+            }
+            
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                presentingVC.present(profileVC, animated: true)
+            } else {
+                if let navController = presentingVC as? UINavigationController {
+                    navController.pushViewController(profile, animated: true)
+                } else if let navController = presentingVC.navigationController {
+                    navController.pushViewController(profile, animated: true)
+                } else {
+                    // Fallback to modal presentation
+                    presentingVC.present(UINavigationController(rootViewController: profile), animated: true)
+                }
+            }
+        }
     }
 }
 

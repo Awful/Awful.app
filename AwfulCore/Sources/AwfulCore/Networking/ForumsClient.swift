@@ -92,12 +92,14 @@ public final class ForumsClient {
             return updatedObjects.map { $0.objectID }
         }()
 
-        context.perform {
-            updatedObjectIDs
-                .compactMap { context.object(with: $0) }
-                .forEach { $0.willAccessValue(forKey: nil) }
-            
-            context.mergeChanges(fromContextDidSave: notification)
+        DispatchQueue.main.async {
+            context.perform {
+                updatedObjectIDs
+                    .compactMap { context.object(with: $0) }
+                    .forEach { $0.willAccessValue(forKey: nil) }
+                
+                context.mergeChanges(fromContextDidSave: notification)
+            }
         }
     }
 
@@ -387,6 +389,16 @@ public final class ForumsClient {
 
             try backgroundContext.save()
             return threads
+        }
+        
+        // Ensure any observable notifications happen on main thread
+        await MainActor.run {
+            // Force any observers to update on main thread
+            for thread in backgroundThreads {
+                if let mainThread = try? mainContext.existingObject(with: thread.objectID) {
+                    mainContext.refresh(mainThread, mergeChanges: true)
+                }
+            }
         }
         return await mainContext.perform {
             backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }

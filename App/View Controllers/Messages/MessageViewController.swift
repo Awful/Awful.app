@@ -288,6 +288,13 @@ final class MessageViewController: ViewController {
         loadingView?.tintColor = theme["backgroundColor"]
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Show navigation bar for message detail view
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

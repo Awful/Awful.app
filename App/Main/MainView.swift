@@ -760,13 +760,8 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func navigateToPrivateMessage(_ message: PrivateMessage) {
-        // Clear unpop stack when navigating to new destination
-        unpopStack.removeAll()
-        
-        // Add to navigation history and path
-        navigationHistory.append(message)
-        path.append(message)
-        // Private messages don't need to hide the tab bar
+        // Private messages now use pure UIKit navigation - no SwiftUI path manipulation needed
+        print("🔍 navigateToPrivateMessage called but using UIKit navigation instead")
     }
     
     func navigateToComposeMessage() {
@@ -2320,9 +2315,7 @@ private struct DetailView: View {
                 }
             }
         }
-        .navigationDestination(for: PrivateMessage.self) { message in
-            PrivateMessageViewWrapper(message: message, coordinator: coordinator)
-        }
+        // PrivateMessage navigation handled by UIKit now
         .navigationDestination(for: ComposePrivateMessage.self) { _ in
             MessageComposeDetailView(coordinator: coordinator)
         }
@@ -2455,6 +2448,22 @@ struct ThreadDestination: Hashable {
     }
 }
 
+struct PrivateMessageDestination: Hashable {
+    let message: PrivateMessage
+    
+    init(message: PrivateMessage) {
+        self.message = message
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(message.messageID)
+    }
+    
+    static func == (lhs: PrivateMessageDestination, rhs: PrivateMessageDestination) -> Bool {
+        return lhs.message.messageID == rhs.message.messageID
+    }
+}
+
 struct SwiftUIMessagesView: View {
     var isEditing: Bool
     let coordinator: any MainCoordinator
@@ -2469,20 +2478,14 @@ struct SwiftUIMessagesView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            NavigationHeaderView(
-                title: "Messages",
-                leftButton: HeaderButton(text: localIsEditing ? "Done" : "Edit") {
-                    localIsEditing.toggle()
-                },
-                rightButton: HeaderButton(image: "compose") {
-                    coordinator.presentCompose(for: .messages)
-                }
-            )
+            NavigationHeaderView(title: "Messages")
             
             // UIKit Messages view
             MessagesViewRepresentable(isEditing: localIsEditing, coordinator: coordinator)
         }
         .themed()
+        .navigationBarHidden(true)
+        .toolbar(.hidden)
         .onChange(of: isEditing) { newValue in
             localIsEditing = newValue
         }
@@ -2499,23 +2502,33 @@ struct MessagesViewRepresentable: UIViewControllerRepresentable {
         }
         let messagesVC = MessageListViewController(managedObjectContext: managedObjectContext)
         messagesVC.coordinator = coordinator
-        let wrapper = SwiftUICompatibleViewController(wrapping: messagesVC)
-        wrapper.restorationIdentifier = "Messages"
         
-        // Ensure we always show the messages list view, not any restored message content
-        DispatchQueue.main.async {
-            if let navController = messagesVC.navigationController {
-                navController.popToRootViewController(animated: false)
-            }
-        }
+        // Embed in a navigation controller to support push navigation
+        let navController = UINavigationController(rootViewController: messagesVC)
+        
+        // Hide navigation bar initially for the messages list (we use custom header)
+        // But it will be shown when MessageViewController is pushed
+        navController.setNavigationBarHidden(true, animated: false)
+        
+        let wrapper = SwiftUICompatibleViewController(wrapping: navController)
+        wrapper.restorationIdentifier = "Messages"
         
         return wrapper
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         guard let wrapper = uiViewController as? SwiftUICompatibleViewController else { return }
-        print("🔵 MessagesViewRepresentable: Setting editing state to \(isEditing)")
-        wrapper.setEditing(isEditing, animated: true)
+        
+        // Try to find the navigation controller through the child view controllers
+        if let navController = wrapper.children.first as? UINavigationController,
+           let messagesVC = navController.viewControllers.first as? MessageListViewController {
+            print("🔵 MessagesViewRepresentable: Setting editing state to \(isEditing)")
+            messagesVC.setEditing(isEditing, animated: true)
+        } else {
+            // Fallback: let the wrapper handle it (it forwards setEditing calls)
+            print("🔵 MessagesViewRepresentable: Using wrapper setEditing fallback")
+            wrapper.setEditing(isEditing, animated: true)
+        }
     }
 }
 
@@ -2553,16 +2566,11 @@ struct SwiftUISettingsView: View {
     @SwiftUI.Environment(\.theme) private var theme
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                NavigationHeaderView(title: "Settings")
-                
-                // Pure SwiftUI Settings view
-                PureSwiftUISettingsView()
-            }
-            .navigationBarBackButtonHidden(true)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .navigationBar)
+        VStack(spacing: 0) {
+            NavigationHeaderView(title: "Settings")
+            
+            // Pure SwiftUI Settings view
+            PureSwiftUISettingsView()
         }
         .themed()
     }
@@ -3119,9 +3127,7 @@ struct iPadMainView: View {
                             }
                         }
                     }
-                    .navigationDestination(for: PrivateMessage.self) { message in
-                        PrivateMessageViewWrapper(message: message, coordinator: coordinator)
-                    }
+                    // PrivateMessage navigation handled by UIKit now
                     .navigationDestination(for: ComposePrivateMessage.self) { _ in
                         MessageComposeDetailView(coordinator: coordinator)
                     }
@@ -3147,31 +3153,4 @@ struct iPadMainView: View {
 
 // MARK: - Missing View Implementations
 
-struct PrivateMessageViewWrapper: View {
-    let message: PrivateMessage
-    let coordinator: any MainCoordinator
-    @SwiftUI.Environment(\.theme) private var theme
-    
-    private var navigationTintColor: Color {
-        Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label)
-    }
-    
-    var body: some View {
-        MessageViewRepresentable(message: message, coordinator: coordinator)
-            .navigationTitle(message.subject ?? "Private Message")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        // TODO: Implement reply action
-                    }) {
-                        Image("compose")
-                            .renderingMode(.template)
-                            .font(.body.weight(.semibold))
-                    }
-                    .foregroundColor(navigationTintColor)
-                    .foregroundColor(navigationTintColor)
-                }
-            }
-    }
-}
+// PrivateMessageViewWrapper removed - using pure UIKit navigation now

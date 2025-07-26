@@ -70,6 +70,14 @@ private extension PrivateMessageFolderScrapeResult.Message {
     init(_ tr: HTMLElement) throws {
         let subjectLink = try tr.requiredNode(matchingSelector: "td.title a[href]")
         subject = subjectLink.textContent
+        
+        // Debug logging to track subject extraction
+        print("🔍 PrivateMessage subject extracted: '\(subject)'")
+        print("🔍 Raw HTML innerHTML: '\(subjectLink.innerHTML)'")
+        print("🔍 Raw HTML textContent: '\(subjectLink.textContent)'")
+        if subject.contains(">") {
+            print("⚠️ Subject contains '>' character: '\(subject)'")
+        }
 
         guard
             let href = subjectLink["href"],

@@ -1015,7 +1015,7 @@
     },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
-      "extractionState" : "migrated",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1305,6 +1305,9 @@
           }
         }
       }
+    },
+    "Set Color" : {
+
     },
     "Settings" : {
 

@@ -74,7 +74,13 @@ private extension PrivateMessageFolderScrapeResult.Message {
         if !senderUsername.isEmpty, senderUsername != message.rawFromUsername { message.rawFromUsername = senderUsername }
         if let sentDate = sentDate, sentDate != message.sentDate { message.sentDate = sentDate }
         if let sentDateRaw = sentDateRaw, sentDateRaw != message.sentDateRaw { message.sentDateRaw = sentDateRaw }
-        if !subject.isEmpty, subject != message.subject { message.subject = subject }
+        if !subject.isEmpty, subject != message.subject { 
+            print("🔍 Updating message subject from '\(message.subject ?? "nil")' to '\(subject)'")
+            if subject.contains(">") {
+                print("⚠️ New subject contains '>' character: '\(subject)'")
+            }
+            message.subject = subject 
+        }
         if wasForwarded != message.forwarded { message.forwarded = wasForwarded }
         if wasRepliedTo != message.replied { message.replied = wasRepliedTo }
     }

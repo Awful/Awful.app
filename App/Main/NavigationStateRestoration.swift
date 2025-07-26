@@ -160,7 +160,7 @@ extension NavigationDestination {
                 print("⚠️ Message \(messageID) not found during restoration, skipping")
                 return nil
             }
-            return message
+            return PrivateMessageDestination(message: message)
             
         case .composePrivateMessage:
             return ComposePrivateMessage()
@@ -195,8 +195,8 @@ extension NavigationDestination {
         case let forum as Forum:
             return .forum(forumID: forum.forumID)
             
-        case let message as PrivateMessage:
-            return .privateMessage(messageID: message.messageID)
+        case let destination as PrivateMessageDestination:
+            return .privateMessage(messageID: destination.message.messageID)
             
         case is ComposePrivateMessage:
             return .composePrivateMessage

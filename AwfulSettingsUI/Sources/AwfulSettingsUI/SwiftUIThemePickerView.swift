@@ -124,8 +124,8 @@ private struct ThemeRowView: View {
     
     private var themeSubtitle: String? {
         // Show a preview of the theme's key characteristics
-        if let backgroundColor = theme[color: "listBackgroundColor"],
-           let textColor = theme[color: "listTextColor"] {
+        if theme[color: "listBackgroundColor"] != nil,
+           theme[color: "listTextColor"] != nil {
             return "Theme preview"
         }
         return nil

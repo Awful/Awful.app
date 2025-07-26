@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "AwfulSettingsUI",
     defaultLocalization: "en",
-    platforms: [.iOS(.v15)],
+    platforms: [.iOS(.v16)],
     products: [
         .library(name: "AwfulSettingsUI", targets: ["AwfulSettingsUI"]),
     ],

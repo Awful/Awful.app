@@ -37,7 +37,7 @@ struct SwiftUIForumSpecificThemesView: View {
     private func loadForums() {
         print("🔍 loadForums called")
         print("🔍 managedObjectContext: \(managedObjectContext)")
-        print("🔍 persistentStoreCoordinator: \(managedObjectContext.persistentStoreCoordinator)")
+        print("🔍 persistentStoreCoordinator: \(String(describing: managedObjectContext.persistentStoreCoordinator))")
         
         // Validate that the context has a persistent store coordinator
         guard managedObjectContext.persistentStoreCoordinator != nil else {

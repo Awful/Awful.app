@@ -35,6 +35,10 @@ public struct SettingsView: View {
     @AppStorage(Settings.forumThreadsSortedUnread) private var sortFirstUnreadThreads
     @AppStorage(Settings.automaticTimg) private var timgLargeImages
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
+    
+    @State private var showingLightThemeSheet = false
+    @State private var showingDarkThemeSheet = false
+    @State private var showingForumThemesSheet = false
 
     let appIconDataSource: AppIconDataSource
     let avatarURL: URL?
@@ -216,15 +220,62 @@ public struct SettingsView: View {
             .section()
 
             Section {
-                NavigationLink("Default Light Theme", bundle: .module) {
-                    SwiftUIDefaultThemePickerView(mode: .light)
+                Button("Default Light Theme") {
+                    showingLightThemeSheet = true
                 }
-                NavigationLink("Default Dark Theme", bundle: .module) {
-                    SwiftUIDefaultThemePickerView(mode: .dark)
+                .foregroundColor(theme[color: "tintColor"])
+                .sheet(isPresented: $showingLightThemeSheet) {
+                    NavigationView {
+                        SwiftUIDefaultThemePickerView(mode: .light)
+                            .navigationTitle("Default Light Theme")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Button("Done") {
+                                        showingLightThemeSheet = false
+                                    }
+                                }
+                            }
+                    }
                 }
-                NavigationLink("Forum-Specific Themes", bundle: .module) {
-                    SwiftUIForumSpecificThemesView()
-                        .environment(\.managedObjectContext, managedObjectContext)
+                
+                Button("Default Dark Theme") {
+                    showingDarkThemeSheet = true
+                }
+                .foregroundColor(theme[color: "tintColor"])
+                .sheet(isPresented: $showingDarkThemeSheet) {
+                    NavigationView {
+                        SwiftUIDefaultThemePickerView(mode: .dark)
+                            .navigationTitle("Default Dark Theme")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Button("Done") {
+                                        showingDarkThemeSheet = false
+                                    }
+                                }
+                            }
+                    }
+                }
+                
+                Button("Forum-Specific Themes") {
+                    showingForumThemesSheet = true
+                }
+                .foregroundColor(theme[color: "tintColor"])
+                .sheet(isPresented: $showingForumThemesSheet) {
+                    NavigationView {
+                        SwiftUIForumSpecificThemesView()
+                            .environment(\.managedObjectContext, managedObjectContext)
+                            .navigationTitle("Forum-Specific Themes")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Button("Done") {
+                                        showingForumThemesSheet = false
+                                    }
+                                }
+                            }
+                    }
                 }
                 Toggle("Dark Mode", bundle: .module, isOn: $darkModeManuallyEnabled)
                     .disabled(darkModeAutomatic)

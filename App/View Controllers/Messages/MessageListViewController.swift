@@ -44,10 +44,6 @@ final class MessageListViewController: TableViewController {
             didChange: updateBadgeValue)
         updateBadgeValue(unreadMessageCountObserver.count)
         
-        navigationItem.leftBarButtonItem = editButtonItem
-        let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
-        composeItem.accessibilityLabel = LocalizedString("private-message-list.compose-button.accessibility-label")
-        navigationItem.rightBarButtonItem = composeItem
         
         themeDidChange()
     }
@@ -116,14 +112,28 @@ final class MessageListViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         
-        // Check if we're in a split view (iPad) and use coordinator navigation
-        if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
-            coordinator.navigateToPrivateMessage(message)
-        } else {
-            // iPhone: push fullscreen instead of presenting as sheet
+        // Debug: Check navigation setup
+        print("🔍 showMessage called for: \(message.subject ?? "no subject")")
+        print("🔍 navigationController available: \(navigationController != nil)")
+        print("🔍 coordinator available: \(coordinator != nil)")
+        
+        // Check if we have a navigation controller available (embedded in SwiftUI)
+        if let navigationController = navigationController {
+            print("🔍 Using UIKit navigation")
+            // Use UIKit navigation when available
             let viewController = MessageViewController(privateMessage: message)
             viewController.restorationIdentifier = "Message"
-            navigationController?.pushViewController(viewController, animated: true)
+            navigationController.pushViewController(viewController, animated: true)
+        } else if let coordinator = coordinator, UIDevice.current.userInterfaceIdiom == .pad {
+            print("🔍 Using coordinator navigation (iPad)")
+            // iPad fallback: use coordinator navigation
+            coordinator.navigateToPrivateMessage(message)
+        } else {
+            print("🔍 Using modal presentation")
+            // Last resort: present modally
+            let viewController = MessageViewController(privateMessage: message)
+            viewController.restorationIdentifier = "Message"
+            present(viewController.enclosingNavigationController, animated: true)
         }
     }
 
@@ -190,6 +200,9 @@ final class MessageListViewController: TableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Hide navigation bar for messages list (we use custom header)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
         
         refreshIfNecessary()
     }

@@ -4,6 +4,7 @@
 
 import CoreData
 import AwfulCore
+import AwfulSettings
 import AwfulTheming
 import Nuke
 import NukeExtensions
@@ -14,6 +15,7 @@ struct ThreadRowView: View {
     let viewModel: ThreadRowViewModel
     let onTap: () -> Void
     let onBookmarkToggle: () -> Void
+    let thread: AwfulThread?
     
     @SwiftUI.Environment(\.theme) private var theme
     @State private var tagImage: UIImage?
@@ -134,10 +136,32 @@ struct ThreadRowView: View {
             secondaryTagImageTask?.cancel()
         }
         .contextMenu {
-            ThreadContextMenu(
-                onBookmarkToggle: onBookmarkToggle
-            )
+            if let thread = thread {
+                BookmarkThreadContextMenu(
+                    thread: thread,
+                    onBookmarkToggle: onBookmarkToggle,
+                    onJumpToFirstPage: { jumpToPage(.first) },
+                    onJumpToLastPage: { jumpToPage(.last) }
+                )
+            } else {
+                ThreadContextMenu(
+                    onBookmarkToggle: onBookmarkToggle
+                )
+            }
         }
+    }
+    
+    private func jumpToPage(_ page: ThreadPage) {
+        guard let thread = thread else { return }
+        
+        let threadDestination = ThreadDestination(
+            thread: thread,
+            page: page,
+            author: nil,
+            scrollFraction: nil,
+            jumpToPostID: nil
+        )
+        NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: threadDestination)
     }
     
     private func loadTagImages() {
@@ -202,12 +226,168 @@ struct ThreadContextMenu: View {
     }
 }
 
+struct BookmarkThreadContextMenu: View {
+    let thread: AwfulThread
+    let onBookmarkToggle: () -> Void
+    let onJumpToFirstPage: () -> Void
+    let onJumpToLastPage: () -> Void
+    
+    @State private var showingBookmarkColorPicker = false
+    
+    var body: some View {
+        Group {
+            Button(action: onJumpToFirstPage) {
+                Label {
+                    Text("Jump to First Page")
+                } icon: {
+                    Image("jump-to-first-page")
+                        .renderingMode(.template)
+                }
+            }
+            
+            Button(action: onJumpToLastPage) {
+                Label {
+                    Text("Last Page")
+                } icon: {
+                    Image("jump-to-last-page")
+                        .renderingMode(.template)
+                }
+            }
+            
+            if thread.author != nil {
+                Button(action: { showAuthorProfile() }) {
+                    Label {
+                        Text("Author Profile")
+                    } icon: {
+                        Image("user-profile")
+                            .renderingMode(.template)
+                    }
+                }
+            }
+            
+            Button(action: { copyURL() }) {
+                Label {
+                    Text("Copy URL")
+                } icon: {
+                    Image("copy-url")
+                        .renderingMode(.template)
+                }
+            }
+            
+            Button(action: { copyTitle() }) {
+                Label {
+                    Text("Copy Title")
+                } icon: {
+                    Image("copy-title")
+                        .renderingMode(.template)
+                }
+            }
+            
+            if thread.beenSeen {
+                Button(action: { markThreadUnread() }) {
+                    Label {
+                        Text("Mark Unread")
+                    } icon: {
+                        Image("mark-as-unread")
+                            .renderingMode(.template)
+                    }
+                }
+            } else {
+                Button(action: { markThreadRead() }) {
+                    Label {
+                        Text("Mark Thread As Read")
+                    } icon: {
+                        Image("mark-read-up-to-here")
+                            .renderingMode(.template)
+                    }
+                }
+            }
+            
+            Button(action: { showingBookmarkColorPicker = true }) {
+                Label {
+                    Text("Set Color")
+                } icon: {
+                    Image("rainbow")
+                        .renderingMode(.template)
+                }
+            }
+            
+            Button(action: onBookmarkToggle) {
+                Label {
+                    Text(thread.bookmarked ? "Remove Bookmark" : "Add Bookmark")
+                } icon: {
+                    Image(thread.bookmarked ? "remove-bookmark" : "add-bookmark")
+                        .renderingMode(.template)
+                }
+            }
+            .foregroundColor(thread.bookmarked ? .red : .primary)
+        }
+        .sheet(isPresented: $showingBookmarkColorPicker) {
+            BookmarkColorPicker(
+                setBookmarkColor: ForumsClient.shared.setBookmarkColor(_:as:),
+                thread: thread
+            )
+            .presentationDetents([.medium])
+        }
+    }
+    
+    private func showAuthorProfile() {
+        guard let author = thread.author else { return }
+        NotificationCenter.default.post(name: Notification.Name("ShowAuthorProfile"), object: author)
+    }
+    
+    private func copyURL() {
+        let url = AwfulRoute.threadPage(
+            threadID: thread.threadID,
+            page: .first,
+            .noseen
+        ).httpURL
+        @FoilDefaultStorageOptional(Settings.lastOfferedPasteboardURLString) var lastOfferedPasteboardURLString
+        lastOfferedPasteboardURLString = url.absoluteString
+        UIPasteboard.general.coercedURL = url
+    }
+    
+    private func copyTitle() {
+        UIPasteboard.general.string = thread.title
+    }
+    
+    private func markThreadRead() {
+        Task {
+            do {
+                _ = try await ForumsClient.shared.listPosts(
+                    in: thread,
+                    writtenBy: nil,
+                    page: .last,
+                    updateLastReadPost: true
+                )
+            } catch {
+                print("Error marking thread as read: \(error)")
+            }
+        }
+    }
+    
+    private func markThreadUnread() {
+        let oldSeen = thread.seenPosts
+        thread.seenPosts = 0
+        Task {
+            do {
+                try await ForumsClient.shared.markUnread(thread)
+            } catch {
+                thread.seenPosts = oldSeen
+                print("Error marking thread as unread: \(error)")
+            }
+        }
+    }
+}
+
+
 struct ThreadRowView_Previews: PreviewProvider {
     static var previews: some View {
         ThreadRowView(
             viewModel: ThreadRowViewModel.empty,
             onTap: {},
-            onBookmarkToggle: {}
+            onBookmarkToggle: {},
+            thread: nil
         )
         .themed()
     }
