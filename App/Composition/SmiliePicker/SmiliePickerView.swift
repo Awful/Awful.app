@@ -89,7 +89,7 @@ struct SmiliePickerView: View {
             
             ZStack(alignment: .leading) {
                 if viewModel.searchText.isEmpty {
-                    Text("Search smilies...")
+                    Text("Search smilies…")
                         .foregroundColor(theme[color: "sheetTextColor"]!.opacity(0.5))
                         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 }
