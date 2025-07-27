@@ -430,14 +430,27 @@ void UpdateSmilieImageDataDerivedAttributes(Smilie *smilie)
                 
                 if (existingSmilies.count > 0) {
                     Smilie *existingSmilie = existingSmilies.firstObject;
+                    HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
+                    NSString *imageURL = img[@"src"];
+                    NSString *summary = img[@"title"];
+                    
+                    // Only update if values have changed to avoid unnecessary Core Data saves
+                    BOOL needsUpdate = NO;
+                    
                     if (![existingSmilie.section isEqualToString:sectionName]) {
                         existingSmilie.section = sectionName;
+                        needsUpdate = YES;
                     }
                     
-                    // Also update other attributes in case they changed
-                    HTMLElement *img = [item firstNodeMatchingSelector:@"img"];
-                    existingSmilie.imageURL = img[@"src"];
-                    existingSmilie.summary = img[@"title"];
+                    if (![existingSmilie.imageURL isEqualToString:imageURL]) {
+                        existingSmilie.imageURL = imageURL;
+                        needsUpdate = YES;
+                    }
+                    
+                    if (![existingSmilie.summary isEqualToString:summary]) {
+                        existingSmilie.summary = summary;
+                        needsUpdate = YES;
+                    }
                 }
                 
                 // Handle new smilies

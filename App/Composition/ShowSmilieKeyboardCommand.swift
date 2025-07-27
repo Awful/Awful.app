@@ -72,13 +72,15 @@ final class ShowSmilieKeyboardCommand: NSObject {
         weak var weakTextView = textView
         let pickerView = SmiliePickerView(dataStore: smilieKeyboard.dataStore) { [weak self] smilieData in
             self?.insertSmilieData(smilieData)
-            // Reactivate keyboard after inserting smilie
+            // Delay keyboard reactivation to ensure smooth animation after sheet dismissal
+            // Without this delay, the keyboard animation can conflict with sheet dismissal
             DispatchQueue.main.async {
                 weakTextView?.becomeFirstResponder()
             }
         }
         .onDisappear {
-            // Reactivate keyboard when view disappears (handles Done button case)
+            // Delay keyboard reactivation when view disappears (handles Done button case)
+            // This ensures the sheet dismissal animation completes before keyboard appears
             DispatchQueue.main.async {
                 weakTextView?.becomeFirstResponder()
             }

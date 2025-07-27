@@ -49,9 +49,7 @@ final class SmilieSearchViewModel: ObservableObject {
             await loadRecentlyUsed()
             await loadAllSmilies()
             
-            await MainActor.run {
-                self.isLoading = false
-            }
+            self.isLoading = false
         }
     }
     
@@ -80,6 +78,7 @@ final class SmilieSearchViewModel: ObservableObject {
                 if !smilieTexts.isEmpty {
                     let smilieRequest = NSFetchRequest<Smilie>(entityName: "Smilie")
                     smilieRequest.predicate = NSPredicate(format: "text IN %@", smilieTexts)
+                    smilieRequest.returnsObjectsAsFaults = false
                     
                     let smilies = try context.fetch(smilieRequest)
                     
@@ -92,11 +91,6 @@ final class SmilieSearchViewModel: ObservableObject {
                         }
                     }
                     let sortedSmilies = smilieTexts.compactMap { textToSmilie[$0] }
-                    
-                    // Ensure all faults are fired before creating SmilieData
-                    for smilie in sortedSmilies {
-                        _ = smilie.imageData // Fire the fault
-                    }
                     
                     let smilieData = sortedSmilies.map { SmilieData(from: $0) }
                     Task { @MainActor in
@@ -184,14 +178,10 @@ final class SmilieSearchViewModel: ObservableObject {
                 fetchRequest.sortDescriptors = [
                     NSSortDescriptor(keyPath: \Smilie.text, ascending: true)
                 ]
+                fetchRequest.returnsObjectsAsFaults = false
                 
                 do {
                     let results = try context.fetch(fetchRequest)
-                    
-                    // Ensure all faults are fired before creating SmilieData
-                    for smilie in results {
-                        _ = smilie.imageData // Fire the fault
-                    }
                     
                     let smilieData = results.map { SmilieData(from: $0) }
                     Task { @MainActor in
