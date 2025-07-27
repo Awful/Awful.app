@@ -69,6 +69,9 @@ final class ShowSmilieKeyboardCommand: NSObject {
         // Dismiss keyboard before showing smilie picker
         textView.resignFirstResponder()
         
+        // Get the current theme
+        let currentTheme = Theme.defaultTheme()
+        
         weak var weakTextView = textView
         let pickerView = SmiliePickerView(dataStore: smilieKeyboard.dataStore) { [weak self] smilieData in
             self?.insertSmilieData(smilieData)
@@ -85,6 +88,7 @@ final class ShowSmilieKeyboardCommand: NSObject {
                 weakTextView?.becomeFirstResponder()
             }
         }
+        .environment(\.theme, currentTheme)
         
         let hostingController = UIHostingController(rootView: pickerView)
         hostingController.modalPresentationStyle = .pageSheet
