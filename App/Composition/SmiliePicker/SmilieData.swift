@@ -18,13 +18,7 @@ struct SmilieData: Identifiable, Hashable {
     init(from smilie: Smilie) {
         self.id = smilie.objectID
         self.text = smilie.text
-        // Only copy data if it's reasonably small (under 500KB)
-        // Larger images should be loaded on-demand
-        if let originalData = smilie.imageData, originalData.count < 500_000 {
-            self.imageData = Data(originalData)
-        } else {
-            self.imageData = smilie.imageData
-        }
+        self.imageData = smilie.imageData
         self.imageUTI = smilie.imageUTI
         self.section = smilie.section
         self.summary = smilie.summary
