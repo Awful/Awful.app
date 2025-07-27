@@ -7,6 +7,9 @@
     "%@" : {
 
     },
+    "😕" : {
+
+    },
     "action.share-url" : {
       "comment" : "Title of the share URL action for an announcement, post, or thread.",
       "extractionState" : "manual",
@@ -286,6 +289,9 @@
 
     },
     "Doggo poking tongue" : {
+
+    },
+    "Done" : {
 
     },
     "Double-check your username and password, then try again." : {
@@ -651,6 +657,9 @@
     "Mark Unread" : {
 
     },
+    "No smilies found" : {
+
+    },
     "ok" : {
       "comment" : "Title of a button that acknowledges information without offering any choice.",
       "extractionState" : "migrated",
@@ -987,10 +996,16 @@
     "Rated five (trans flag)" : {
 
     },
+    "Recently Used" : {
+
+    },
     "Remove Bookmark" : {
 
     },
     "Removed Bookmark" : {
+
+    },
+    "Retry" : {
 
     },
     "Riker" : {
@@ -1066,6 +1081,9 @@
 
     },
     "Search Results" : {
+
+    },
+    "Search smilies…" : {
 
     },
     "Select Forums" : {
@@ -1146,6 +1164,9 @@
         }
       }
     },
+    "Smilies" : {
+
+    },
     "Smith" : {
 
     },
@@ -1222,6 +1243,9 @@
       }
     },
     "Toggle All" : {
+
+    },
+    "Try a different search term" : {
 
     },
     "V" : {

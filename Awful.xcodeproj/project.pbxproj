@@ -206,6 +206,10 @@
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
+		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
+		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
+		30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */; };
+		30E0C5202E35C89D0030DC0A /* SmilieGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
@@ -516,6 +520,11 @@
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
+		30E0C5172E35C89D0030DC0A /* SmilieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieData.swift; sourceTree = "<group>"; };
+		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
+		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
+		30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieSearchViewModel.swift; sourceTree = "<group>"; };
 		83410EF119A582B8002CD019 /* DateFormatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-center.png"; sourceTree = "<group>"; };
 		8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading-right.png"; sourceTree = "<group>"; };
@@ -1097,6 +1106,7 @@
 				1CC256BD1A3AB08D003FA7A8 /* CompositionMenuTree.swift */,
 				1CC256B21A3876F7003FA7A8 /* CompositionViewController.swift */,
 				1C2434D81A4190F300DC8EA4 /* DraftStore.swift */,
+				30E0C51B2E35C89D0030DC0A /* SmiliePicker */,
 				1CC256B41A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift */,
 				1C16FBA11CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift */,
 				1CC256BB1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift */,
@@ -1168,6 +1178,17 @@
 				2D19BA3229C330A2009DD94F /* mainthrobber60.json */,
 			);
 			path = Lotties;
+			sourceTree = "<group>";
+		};
+		30E0C51B2E35C89D0030DC0A /* SmiliePicker */ = {
+			isa = PBXGroup;
+			children = (
+				30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */,
+				30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */,
+				30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */,
+				30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */,
+			);
+			path = SmiliePicker;
 			sourceTree = "<group>";
 		};
 		8CCD498115B497A700E5893B /* Resources */ = {
@@ -1520,6 +1541,11 @@
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
+				30E0C51C2E35C89D0030DC0A /* SmilieData.swift in Sources */,
+				30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */,
+				30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */,
+				30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */,
+				30E0C5202E35C89D0030DC0A /* SmilieGridItem.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
