@@ -11,12 +11,10 @@ on:
 
 jobs:
   test:
-    runs-on: macos-15
+    runs-on: macos-13
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.0.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_15.0.1.app/Contents/Developer
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
+    - uses: actions/checkout@v2
     - name: xcodebuild test
-      run: xcodebuild -project Awful.xcodeproj -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 16,OS=18.0" test SWIFT_STRICT_CONCURRENCY=minimal
+      run: xcodebuild -project Awful.xcodeproj -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 14,OS=latest" test
