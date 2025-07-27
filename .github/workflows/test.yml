@@ -19,4 +19,4 @@ jobs:
       with:
         submodules: recursive
     - name: xcodebuild test
-      run: xcodebuild -project Awful.xcodeproj -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 16,OS=18.0" test
+      run: xcodebuild -project Awful.xcodeproj -scheme Awful -configuration Debug -destination "platform=iOS Simulator,name=iPhone 16,OS=18.0" test SWIFT_STRICT_CONCURRENCY=minimal
