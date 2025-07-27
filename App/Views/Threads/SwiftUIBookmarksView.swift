@@ -76,7 +76,7 @@ struct SwiftUIBookmarksView: View {
                     },
                     thread: viewModel.thread(for: threadViewModel)
                 )
-                .listRowInsets(EdgeInsets(top: 0, leading: -8, bottom: 0, trailing: -8))
+                .listRowInsets(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
                 .listRowSeparator(.visible, edges: .bottom)
                 .listRowSeparatorTint(Color(theme[uicolor: "listSeparatorColor"] ?? UIColor.separator))
                 .background(Color.clear)

@@ -802,6 +802,12 @@
     "Menu" : {
 
     },
+    "Message Actions" : {
+
+    },
+    "Message content is empty or not loaded" : {
+
+    },
     "Messages" : {
 
     },
@@ -1372,6 +1378,9 @@
     "staredog_tongue" : {
 
     },
+    "Subject" : {
+
+    },
     "table-view.action.delete" : {
       "comment" : "Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.)",
       "extractionState" : "migrated",
@@ -1445,6 +1454,9 @@
       }
     },
     "Threads" : {
+
+    },
+    "To" : {
 
     },
     "Toggle All" : {

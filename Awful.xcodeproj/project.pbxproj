@@ -222,6 +222,14 @@
 		2D94CCF92E34BDA1001C0027 /* doggo_tongue.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D94CCCF2E34BDA1001C0027 /* doggo_tongue.icon */; };
 		2D94CCFA2E34BDA1001C0027 /* doggo.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D94CCCE2E34BDA1001C0027 /* doggo.icon */; };
 		2D94CCFD2E34CB26001C0027 /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D94CCFC2E34CB26001C0027 /* App Icons.xcassets */; };
+		2D94CD002E359C51001C0027 /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CCFE2E359C51001C0027 /* MessageRowView.swift */; };
+		2D94CD022E359C82001C0027 /* MessageRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD012E359C82001C0027 /* MessageRowViewModel.swift */; };
+		2D94CD042E359C9B001C0027 /* MessageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD032E359C9B001C0027 /* MessageListViewModel.swift */; };
+		2D94CD062E359CE0001C0027 /* SwiftUIMessageListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD052E359CE0001C0027 /* SwiftUIMessageListView.swift */; };
+		2D94CD092E359D44001C0027 /* SwiftUIMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD082E359D44001C0027 /* SwiftUIMessageView.swift */; };
+		2D94CD0A2E359D44001C0027 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD072E359D44001C0027 /* MessageViewModel.swift */; };
+		2D94CD0C2E359D54001C0027 /* SwiftUIMessageComposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD0B2E359D54001C0027 /* SwiftUIMessageComposeView.swift */; };
+		2D94CD0E2E359D71001C0027 /* MessageComposeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD0D2E359D71001C0027 /* MessageComposeViewModel.swift */; };
 		2DAD15402E21FA890057C340 /* SwiftUIArrowPullControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAD153F2E21FA890057C340 /* SwiftUIArrowPullControl.swift */; };
 		2DAD15422E21FA9A0057C340 /* SwiftUINigglyPullControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAD15412E21FA9A0057C340 /* SwiftUINigglyPullControl.swift */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
@@ -579,6 +587,14 @@
 		2D94CCE02E34BDA1001C0027 /* rated_five_trans.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_trans.icon; sourceTree = "<group>"; };
 		2D94CCE22E34BDA1001C0027 /* v.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v.icon; sourceTree = "<group>"; };
 		2D94CCFC2E34CB26001C0027 /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
+		2D94CCFE2E359C51001C0027 /* MessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRowView.swift; sourceTree = "<group>"; };
+		2D94CD012E359C82001C0027 /* MessageRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRowViewModel.swift; sourceTree = "<group>"; };
+		2D94CD032E359C9B001C0027 /* MessageListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewModel.swift; sourceTree = "<group>"; };
+		2D94CD052E359CE0001C0027 /* SwiftUIMessageListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIMessageListView.swift; sourceTree = "<group>"; };
+		2D94CD072E359D44001C0027 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
+		2D94CD082E359D44001C0027 /* SwiftUIMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIMessageView.swift; sourceTree = "<group>"; };
+		2D94CD0B2E359D54001C0027 /* SwiftUIMessageComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIMessageComposeView.swift; sourceTree = "<group>"; };
+		2D94CD0D2E359D71001C0027 /* MessageComposeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposeViewModel.swift; sourceTree = "<group>"; };
 		2DAD153F2E21FA890057C340 /* SwiftUIArrowPullControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIArrowPullControl.swift; sourceTree = "<group>"; };
 		2DAD15412E21FA9A0057C340 /* SwiftUINigglyPullControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUINigglyPullControl.swift; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
@@ -1199,6 +1215,7 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2D94CCFF2E359C51001C0027 /* Messages */,
 				2D71C6C72E346C5A00C4BF57 /* Threads */,
 				2D6C558F2E3123A4003BCC50 /* Forums */,
 				2DB5FC1F2E1A8042003F050F /* Common */,
@@ -1286,6 +1303,21 @@
 				2D71C6C62E346C5A00C4BF57 /* ThreadsListViewModel.swift */,
 			);
 			path = Threads;
+			sourceTree = "<group>";
+		};
+		2D94CCFF2E359C51001C0027 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				2D94CD0D2E359D71001C0027 /* MessageComposeViewModel.swift */,
+				2D94CD0B2E359D54001C0027 /* SwiftUIMessageComposeView.swift */,
+				2D94CD072E359D44001C0027 /* MessageViewModel.swift */,
+				2D94CD082E359D44001C0027 /* SwiftUIMessageView.swift */,
+				2D94CD052E359CE0001C0027 /* SwiftUIMessageListView.swift */,
+				2D94CD032E359C9B001C0027 /* MessageListViewModel.swift */,
+				2D94CD012E359C82001C0027 /* MessageRowViewModel.swift */,
+				2D94CCFE2E359C51001C0027 /* MessageRowView.swift */,
+			);
+			path = Messages;
 			sourceTree = "<group>";
 		};
 		2DB5FC1F2E1A8042003F050F /* Common */ = {
@@ -1665,6 +1697,7 @@
 				2D3141582E3438400002E571 /* WebViewGestureCoordinator.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
+				2D94CD0C2E359D54001C0027 /* SwiftUIMessageComposeView.swift in Sources */,
 				2DE976B02E0FF4FB00233423 /* AppViewModel.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
@@ -1688,6 +1721,7 @@
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
 				1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */,
+				2D94CD042E359C9B001C0027 /* MessageListViewModel.swift in Sources */,
 				1C2434D91A4190F300DC8EA4 /* DraftStore.swift in Sources */,
 				1C2C1F101CE4131000CD27DD /* UploadImageAttachments.swift in Sources */,
 				1C16FBBE1CB94D5100C88BD1 /* ThreadTagPickerLayout.swift in Sources */,
@@ -1701,6 +1735,7 @@
 				2D71C6C92E346C5A00C4BF57 /* ThreadRowView.swift in Sources */,
 				2D71C6CA2E346C5A00C4BF57 /* ThreadsListViewModel.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
+				2D94CD062E359CE0001C0027 /* SwiftUIMessageListView.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				2D71C6C32E3465D700C4BF57 /* CustomAwfulNavigation.swift in Sources */,
@@ -1788,14 +1823,19 @@
 				2D23BF8A2E28FF790076BEBC /* ReplyWorkspaceView.swift in Sources */,
 				2DD0065C2E30DA6C00313ACD /* EnhancedScrollCoordinator.swift in Sources */,
 				2DD0065D2E30DA6C00313ACD /* NetworkOptimizer.swift in Sources */,
+				2D94CD022E359C82001C0027 /* MessageRowViewModel.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
+				2D94CD002E359C51001C0027 /* MessageRowView.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,
 				1C16FBA41CB4A41C00C88BD1 /* ComposeTextView.swift in Sources */,
+				2D94CD0E2E359D71001C0027 /* MessageComposeViewModel.swift in Sources */,
 				1C2C1F121CE547A600CD27DD /* MessageViewController.swift in Sources */,
 				2D872A362E31205E001467B4 /* NigglyRefreshableListView.swift in Sources */,
 				1C16FBB41CB88CFE00C88BD1 /* NewPrivateMessageFieldView.swift in Sources */,
+				2D94CD092E359D44001C0027 /* SwiftUIMessageView.swift in Sources */,
+				2D94CD0A2E359D44001C0027 /* MessageViewModel.swift in Sources */,
 				2D4504C12E2E54CD00C01E36 /* PostRenderModels.swift in Sources */,
 				2DB5FC382E1BCE5E003F050F /* PostsPageViewModel.swift in Sources */,
 				1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */,

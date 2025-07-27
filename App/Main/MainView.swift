@@ -760,8 +760,16 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     }
     
     func navigateToPrivateMessage(_ message: PrivateMessage) {
-        // Private messages now use pure UIKit navigation - no SwiftUI path manipulation needed
-        print("🔍 navigateToPrivateMessage called but using UIKit navigation instead")
+        let destination = PrivateMessageDestination(message: message)
+        
+        // Clear unpop stack when navigating to new destination
+        unpopStack.removeAll()
+        
+        // Add to navigation history and path
+        navigationHistory.append(destination)
+        path.append(destination)
+        
+        print("🔍 navigateToPrivateMessage: Added message \(message.messageID) to navigation path")
     }
     
     func navigateToComposeMessage() {
@@ -2315,7 +2323,6 @@ private struct DetailView: View {
                 }
             }
         }
-        // PrivateMessage navigation handled by UIKit now
         .navigationDestination(for: ComposePrivateMessage.self) { _ in
             MessageComposeDetailView(coordinator: coordinator)
         }
@@ -2345,7 +2352,7 @@ struct TabContentView: View {
                     // Forums tab uses custom navigation - no NavigationStack
                     tabContent
                 } else if tab == .messages {
-                    // Messages tab uses custom navigation like Forums - no NavigationStack to avoid empty toolbar
+                    // Messages tab uses modal presentation - no NavigationStack needed
                     tabContent
                 } else {
                     // Other tabs don't need NavigationStack - no empty toolbar space
@@ -2468,27 +2475,26 @@ struct SwiftUIMessagesView: View {
     var isEditing: Bool
     let coordinator: any MainCoordinator
     @SwiftUI.Environment(\.theme) private var theme
-    @State private var localIsEditing = false
     
     init(isEditing: Bool, coordinator: any MainCoordinator) {
         self.isEditing = isEditing
         self.coordinator = coordinator
-        self._localIsEditing = State(initialValue: isEditing)
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            NavigationHeaderView(title: "Messages")
-            
-            // UIKit Messages view
-            MessagesViewRepresentable(isEditing: localIsEditing, coordinator: coordinator)
+        Group {
+            if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
+                SwiftUIMessageListView(
+                    managedObjectContext: managedObjectContext,
+                    coordinator: coordinator
+                )
+            } else {
+                Text("Error: Managed Object Context not available")
+                    .foregroundColor(.red)
+                    .font(.headline)
+            }
         }
         .themed()
-        .navigationBarHidden(true)
-        .toolbar(.hidden)
-        .onChange(of: isEditing) { newValue in
-            localIsEditing = newValue
-        }
     }
 }
 
@@ -3127,7 +3133,21 @@ struct iPadMainView: View {
                             }
                         }
                     }
-                    // PrivateMessage navigation handled by UIKit now
+                    .navigationDestination(for: PrivateMessageDestination.self) { destination in
+                        Group {
+                            let _ = print("🔵 iPad NavigationDestination triggered for PrivateMessage: \(destination.message.messageID)")
+                            if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
+                                SwiftUIMessageView(
+                                    message: destination.message,
+                                    managedObjectContext: managedObjectContext,
+                                    coordinator: coordinator
+                                )
+                            } else {
+                                Text("Error: Managed Object Context not available")
+                                    .foregroundColor(.red)
+                            }
+                        }
+                    }
                     .navigationDestination(for: ComposePrivateMessage.self) { _ in
                         MessageComposeDetailView(coordinator: coordinator)
                     }
