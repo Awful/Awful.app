@@ -219,17 +219,29 @@ final class CompositionMenuTree: NSObject {
 
         // Directly modify the textStorage instead of setting a whole new attributedText on the UITextView, which can be slow and jumps the text view around. We'll need to post our own text changed notification too.
         let storage = textView.textStorage
+        let originalSelectedRange = textView.selectedRange
         storage.beginEditing()
         storage.replaceCharacters(in: textView.selectedRange, with: string)
         textView.font = font
         textView.textColor = textColor
-        if
-            let selection = textView.selectedTextRange,
-            let afterImagePosition = textView.position(from: selection.end, offset: 1)
-        {
-            textView.selectedTextRange = textView.textRange(from: afterImagePosition, to: afterImagePosition)
-        }
         storage.endEditing()
+        
+        // Calculate new cursor position after the inserted image
+        let newCursorLocation = originalSelectedRange.location + string.length
+        
+        // Defer the selection update to avoid conflicts with the text system
+        // This prevents the crash when the system tries to query text ranges during the update
+        DispatchQueue.main.async { [weak textView] in
+            guard let textView = textView else { return }
+            
+            // Ensure the new position is within valid bounds
+            if newCursorLocation <= textView.textStorage.length {
+                textView.selectedRange = NSRange(location: newCursorLocation, length: 0)
+            } else {
+                // If somehow we're beyond the text bounds, place cursor at the end
+                textView.selectedRange = NSRange(location: textView.textStorage.length, length: 0)
+            }
+        }
         
         NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: textView)
     }
