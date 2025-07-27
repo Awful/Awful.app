@@ -14,14 +14,14 @@ struct SmiliePickerView: View {
     @State private var visibleSections = 3 // Start by showing only first 3 sections
     @State private var hasLoadedAllSections = false
     
-    let onSmilieSelected: (SmilieData) -> Void
+    let onSmilieSelected: (Smilie) -> Void
     
     private var columnCount: Int {
         // Use 6 columns for regular size class (iPad), 4 for compact (iPhone)
         horizontalSizeClass == .regular ? 6 : 4
     }
     
-    init(dataStore: SmilieDataStore, onSmilieSelected: @escaping (SmilieData) -> Void) {
+    init(dataStore: SmilieDataStore, onSmilieSelected: @escaping (Smilie) -> Void) {
         self._viewModel = StateObject(wrappedValue: SmilieSearchViewModel(dataStore: dataStore))
         self.onSmilieSelected = onSmilieSelected
     }
@@ -232,22 +232,22 @@ struct SmiliePickerView: View {
         }
     }
     
-    private func smilieGrid(_ smilies: [SmilieData]) -> some View {
+    private func smilieGrid(_ smilies: [Smilie]) -> some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: columnCount), spacing: 12) {
-            ForEach(smilies) { smilieData in
-                SmilieGridItem(smilieData: smilieData) {
-                    handleSmilieTap(smilieData)
+            ForEach(smilies, id: \.objectID) { smilie in
+                SmilieGridItem(smilie: smilie) {
+                    handleSmilieTap(smilie)
                 }
             }
         }
     }
     
-    private func handleSmilieTap(_ smilieData: SmilieData) {
+    private func handleSmilieTap(_ smilie: Smilie) {
         let impactFeedback = UIImpactFeedbackGenerator(style: .light)
         impactFeedback.impactOccurred()
         
-        viewModel.updateLastUsedDate(for: smilieData)
-        onSmilieSelected(smilieData)
+        viewModel.updateLastUsedDate(for: smilie)
+        onSmilieSelected(smilie)
         presentationMode.wrappedValue.dismiss()
     }
     
@@ -296,14 +296,14 @@ struct SmiliePickerView_Previews: PreviewProvider {
         Group {
             // Light mode preview
             SmiliePickerView(dataStore: .shared) { smilie in
-                print("Selected: \(smilie.text)")
+                print("Selected: \(smilie.text ?? "")")
             }
             .environment(\.theme, Theme.defaultTheme())
             .previewDisplayName("Light Mode")
             
             // Dark mode preview
             SmiliePickerView(dataStore: .shared) { smilie in
-                print("Selected: \(smilie.text)")
+                print("Selected: \(smilie.text ?? "")")
             }
             .environment(\.theme, Theme.theme(named: "dark")!)
             .previewDisplayName("Dark Mode")

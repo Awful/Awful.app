@@ -206,7 +206,6 @@
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
-		30E0C51C2E35C89D0030DC0A /* SmilieData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5172E35C89D0030DC0A /* SmilieData.swift */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
 		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
 		30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */; };
@@ -1185,7 +1184,6 @@
 			isa = PBXGroup;
 			children = (
 				30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */,
-				30E0C5172E35C89D0030DC0A /* SmilieData.swift */,
 				30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */,
 				30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */,
 				30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */,

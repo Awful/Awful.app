@@ -70,8 +70,8 @@ final class ShowSmilieKeyboardCommand: NSObject {
         textView.resignFirstResponder()
         
         weak var weakTextView = textView
-        let pickerView = SmiliePickerView(dataStore: smilieKeyboard.dataStore) { [weak self] smilieData in
-            self?.insertSmilieData(smilieData)
+        let pickerView = SmiliePickerView(dataStore: smilieKeyboard.dataStore) { [weak self] smilie in
+            self?.insertSmilie(smilie)
             // Delay keyboard reactivation to ensure smooth animation after sheet dismissal
             // Without this delay, the keyboard animation can conflict with sheet dismissal
             DispatchQueue.main.async {
@@ -101,9 +101,19 @@ final class ShowSmilieKeyboardCommand: NSObject {
         viewController.present(hostingController, animated: true)
     }
     
-    private func insertSmilieData(_ smilieData: SmilieData) {
-        textView.insertText(smilieData.text)
-        justInsertedSmilieText = smilieData.text
+    private func insertSmilie(_ smilie: Smilie) {
+        textView.insertText(smilie.text)
+        justInsertedSmilieText = smilie.text
+        
+        smilie.managedObjectContext?.perform {
+            smilie.metadata.lastUsedDate = Date()
+            do {
+                try smilie.managedObjectContext!.save()
+            }
+            catch {
+                logger.error("error saving: \(error)")
+            }
+        }
     }
     
     fileprivate var justInsertedSmilieText: String?

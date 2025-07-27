@@ -11,8 +11,8 @@ import Smilies
 final class SmilieSearchViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var allSmilies: [SmilieSection] = []
-    @Published var searchResults: [SmilieData] = []
-    @Published var recentlyUsedSmilies: [SmilieData] = []
+    @Published var searchResults: [Smilie] = []
+    @Published var recentlyUsedSmilies: [Smilie] = []
     @Published var isLoading = true
     @Published var loadError: String?
     
@@ -21,7 +21,7 @@ final class SmilieSearchViewModel: ObservableObject {
     
     struct SmilieSection {
         let title: String
-        let smilies: [SmilieData]
+        let smilies: [Smilie]
     }
     
     init(dataStore: SmilieDataStore) {
@@ -92,9 +92,8 @@ final class SmilieSearchViewModel: ObservableObject {
                     }
                     let sortedSmilies = smilieTexts.compactMap { textToSmilie[$0] }
                     
-                    let smilieData = sortedSmilies.map { SmilieData(from: $0) }
                     Task { @MainActor in
-                        self.recentlyUsedSmilies = smilieData
+                        self.recentlyUsedSmilies = sortedSmilies
                     }
                 }
             } catch {
@@ -119,24 +118,24 @@ final class SmilieSearchViewModel: ObservableObject {
             do {
                 let smilies = try context.fetch(fetchRequest)
                 
-                // Create SmilieData and deduplicate by text while preserving order
+                // Deduplicate by text while preserving order
                 var seenTexts = Set<String>()
-                var smilieData: [SmilieData] = []
+                var deduplicatedSmilies: [Smilie] = []
                 for smilie in smilies {
                     if !seenTexts.contains(smilie.text) {
                         seenTexts.insert(smilie.text)
-                        smilieData.append(SmilieData(from: smilie))
+                        deduplicatedSmilies.append(smilie)
                     }
                 }
                 
-                let grouped = Dictionary(grouping: smilieData) { $0.section ?? "Other" }
+                let grouped = Dictionary(grouping: deduplicatedSmilies) { $0.section ?? "Other" }
                 
                 // Create sections preserving the order from the data
                 // Since we're already sorting by section in the fetch request,
                 // we can maintain that order by using the first appearance of each section
                 var sectionOrder: [String] = []
                 
-                for smilie in smilieData {
+                for smilie in deduplicatedSmilies {
                     let section = smilie.section ?? "Other"
                     if !sectionOrder.contains(section) {
                         sectionOrder.append(section)
@@ -183,9 +182,8 @@ final class SmilieSearchViewModel: ObservableObject {
                 do {
                     let results = try context.fetch(fetchRequest)
                     
-                    let smilieData = results.map { SmilieData(from: $0) }
                     Task { @MainActor in
-                        self.searchResults = smilieData
+                        self.searchResults = results
                     }
                 } catch {
                     print("Error searching smilies: \(error)")
@@ -197,11 +195,9 @@ final class SmilieSearchViewModel: ObservableObject {
         }
     }
     
-    func updateLastUsedDate(for smilieData: SmilieData) {
+    func updateLastUsedDate(for smilie: Smilie) {
         guard let context = dataStore.managedObjectContext else { return }
         context.perform {
-            guard let smilie = try? context.existingObject(with: smilieData.id) as? Smilie else { return }
-            
             smilie.metadata.lastUsedDate = Date()
             do {
                 try context.save()

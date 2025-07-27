@@ -8,7 +8,7 @@ import UniformTypeIdentifiers
 import AwfulTheming
 
 struct SmilieGridItem: View {
-    let smilieData: SmilieData
+    @ObservedObject var smilie: Smilie
     let onTap: () -> Void
     
     @SwiftUI.Environment(\.theme) private var theme: Theme
@@ -20,7 +20,7 @@ struct SmilieGridItem: View {
     private let maxRetries = 2
     
     private var shouldUseAnimatedView: Bool {
-        guard let imageUTI = smilieData.imageUTI else { 
+        guard let imageUTI = smilie.imageUTI else { 
             return false 
         }
         // Use AnimatedImageView for all GIFs
@@ -37,10 +37,10 @@ struct SmilieGridItem: View {
                         .frame(width: itemSize, height: itemSize)
                     
                     Group {
-                        if let imageData = smilieData.imageData {
+                        if let imageData = smilie.imageData {
                             if shouldUseAnimatedView {
                                 // For all GIFs (animated or single-frame), use AnimatedImageView
-                                AnimatedImageView(data: imageData, imageID: smilieData.text)
+                                AnimatedImageView(data: imageData, imageID: smilie.text)
                                     .frame(maxWidth: itemSize - 16, maxHeight: itemSize - 16)
                                     .aspectRatio(contentMode: .fit)
                                     .clipped()
@@ -69,7 +69,7 @@ struct SmilieGridItem: View {
                 }
                 .frame(width: itemSize, height: itemSize)
                 
-                Text(smilieData.text)
+                Text(smilie.text)
                     .font(.system(size: 11))
                     .fontWeight(.medium)
                     .foregroundColor(theme[color: "sheetTextColor"]!)
@@ -81,7 +81,7 @@ struct SmilieGridItem: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(SmilieButtonStyle())
-        .accessibilityLabel(smilieData.summary ?? smilieData.text)
+        .accessibilityLabel(smilie.summary ?? smilie.text)
         .onAppear {
             // Only load if it's not a GIF (GIFs are handled by AnimatedImageView)
             if !shouldUseAnimatedView {
@@ -99,7 +99,7 @@ struct SmilieGridItem: View {
                 }
             }
         }
-        .onChange(of: smilieData.id) { _ in
+        .onChange(of: smilie.objectID) { _ in
             // Reset state when smilie changes
             uiImage = nil
             imageLoadAttempted = false
@@ -124,7 +124,7 @@ struct SmilieGridItem: View {
             Image(systemName: "photo")
                 .font(.system(size: 24))
                 .foregroundColor(theme[color: "sheetTextColor"]!.opacity(0.3))
-            Text(smilieData.text)
+            Text(smilie.text)
                 .font(.system(size: 9))
                 .foregroundColor(theme[color: "sheetTextColor"]!.opacity(0.5))
                 .lineLimit(1)
@@ -139,7 +139,7 @@ struct SmilieGridItem: View {
             return
         }
         
-        guard !imageLoadAttempted, let imageData = smilieData.imageData else {
+        guard !imageLoadAttempted, let imageData = smilie.imageData else {
             return
         }
         
@@ -164,7 +164,7 @@ struct SmilieGridItem: View {
                     DispatchQueue.main.async {
                         self.imageLoadAttempted = true
                     }
-                    print("SmilieGridItem: Failed to load image for \(smilieData.text)")
+                    print("SmilieGridItem: Failed to load image for \(smilie.text ?? "")")
                 }
             }
         }
@@ -188,14 +188,14 @@ struct SmilieGridItem_Previews: PreviewProvider {
         Group {
             // Light mode preview
             SmiliePickerView(dataStore: .shared) { smilie in
-                print("Selected: \(smilie.text)")
+                print("Selected: \(smilie.text ?? "")")
             }
             .environment(\.theme, Theme.defaultTheme())
             .previewDisplayName("Light Mode")
             
             // Dark mode preview
             SmiliePickerView(dataStore: .shared) { smilie in
-                print("Selected: \(smilie.text)")
+                print("Selected: \(smilie.text ?? "")")
             }
             .environment(\.theme, Theme.theme(named: "dark")!)
             .previewDisplayName("Dark Mode")
