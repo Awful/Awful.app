@@ -62,10 +62,7 @@ struct NavigationHeaderView: View {
         .padding(.horizontal)
         .padding(.top, UIDevice.current.userInterfaceIdiom == .pad ? 12 : 22) // Reduced iPhone header height by half
         .padding(.bottom, 13) // Made 5px taller bottom padding
-        .background(
-            (theme[color: "navigationBarTintColor"] ?? Color(.systemBackground))
-                .ignoresSafeArea(.all, edges: .top)
-        )
+        .background(theme[color: "navigationBarTintColor"] ?? Color(.systemBackground))
     }
     
     @ViewBuilder

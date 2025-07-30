@@ -11,10 +11,9 @@ import SwiftUI
 struct SwiftUIMessageListView: View {
     @StateObject private var viewModel: MessageListViewModel
     @SwiftUI.Environment(\.theme) private var theme
+    @SwiftUI.Environment(\.tabManager) private var tabManager
     // Removed AwfulNavigationController - using coordinator only
     var coordinator: (any MainCoordinator)?
-    
-    @State private var isEditing = false
     @State private var error: Error?
     @State private var showingError = false
     
@@ -33,25 +32,7 @@ struct SwiftUIMessageListView: View {
     }
     
     var body: some View {
-        ZStack {
-            // Background that extends to safe area
-            (theme[color: "navigationBarTintColor"] ?? Color(.systemBackground))
-                .ignoresSafeArea(.all, edges: .top)
-            
-            VStack(spacing: 0) {
-                NavigationHeaderView(
-                    title: LocalizedString("private-message-tab.title"),
-                    leftButton: HeaderButton(text: isEditing ? "Done" : "Edit") {
-                        toggleEditing()
-                    },
-                    rightButton: HeaderButton(image: "compose") {
-                        showCompose()
-                    }
-                )
-                
-                messagesList
-            }
-        }
+        messagesList
         .onAppear {
             handleViewAppear()
         }
@@ -93,9 +74,9 @@ struct SwiftUIMessageListView: View {
                 .listRowSeparator(.visible, edges: .bottom)
                 .listRowSeparatorTint(Color(theme[uicolor: "listSeparatorColor"] ?? UIColor.separator))
                 .listRowBackground(backgroundColor)
-                .deleteDisabled(!isEditing)
+                .deleteDisabled(!tabManager.messagesIsEditing)
             }
-            .onDelete(perform: isEditing ? deleteMessages : nil)
+            .onDelete(perform: tabManager.messagesIsEditing ? deleteMessages : nil)
         }
         .listStyle(.plain)
         .background(backgroundColor)
@@ -103,7 +84,7 @@ struct SwiftUIMessageListView: View {
         .refreshable {
             await refresh()
         }
-        .environment(\.editMode, .constant(isEditing ? .active : .inactive))
+        .environment(\.editMode, .constant(tabManager.messagesIsEditing ? .active : .inactive))
         .onAppear {
             // Set the background color for edit mode controls
             UITableView.appearance().backgroundColor = UIColor(backgroundColor)
@@ -115,13 +96,6 @@ struct SwiftUIMessageListView: View {
     }
     
     // MARK: - Actions
-    
-    private func toggleEditing() {
-        if viewModel.enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
-        isEditing.toggle()
-    }
     
     private func showCompose() {
         if viewModel.enableHaptics {

@@ -30,18 +30,7 @@ struct SwiftUIBookmarksView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            NavigationHeaderView(
-                title: "Bookmarks",
-                rightButton: HeaderButton(text: viewModel.isEditing ? "Done" : "Edit") {
-                    viewModel.toggleEditing()
-                }
-            )
-            .background(backgroundColor)
-            
-            bookmarksList
-        }
-        .background(backgroundColor)
+        bookmarksList
         .onAppear {
             handleViewAppear()
         }

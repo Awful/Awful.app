@@ -32,20 +32,8 @@ struct SwiftUIForumsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            NavigationHeaderView(
-                title: "Forums",
-                leftButton: HeaderButton(image: "quick-look") {
-                    showingSearch = true
-                },
-                rightButton: viewModel.hasFavorites ? HeaderButton(text: isEditing ? "Done" : "Edit") {
-                    isEditing.toggle()
-                } : nil
-            )
-            
-            forumsList
-        }
-        .themed()
+        forumsList
+            .themed()
     }
     
     private var forumsList: some View {

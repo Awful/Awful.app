@@ -14,6 +14,7 @@ struct ForumSectionHeaderView: View {
             Text(title)
                 .font(.preferredFont(forTextStyle: .body, fontName: theme["listFontName"], weight: .regular))
                 .foregroundColor(theme[color: "listHeaderTextColor"] ?? Color.primary)
+                .textCase(nil)
                 .padding(.leading, 16)
             
             Spacer()

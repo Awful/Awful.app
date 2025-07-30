@@ -92,6 +92,17 @@ extension EnvironmentValues {
     }
 }
 
+struct TabManagerKey: EnvironmentKey {
+    static let defaultValue = TabManager()
+}
+
+extension EnvironmentValues {
+    var tabManager: TabManager {
+        get { self[TabManagerKey.self] }
+        set { self[TabManagerKey.self] = newValue }
+    }
+}
+
 // MARK: - Navigation Destination
 
 struct ThreadDestination: Hashable, Identifiable {
@@ -388,6 +399,7 @@ struct MainView: View {
             }
         }
         .environment(\.settingsManager, SettingsManager.shared)
+        .environment(\.tabManager, tabManager)
         .sheet(item: $coordinator.presentedSheet) { sheet in
             sheetContent(for: sheet)
         }
@@ -463,6 +475,21 @@ struct MainView: View {
                 .padding(2) // Fix for TabView clipping issue in NavigationSplitView sidebar
                 .padding(.bottom, (theme[bool: "showRootTabBarLabel"] ?? true) ? 0 : 0.1) // Force layout recalculation
                 .navigationBarHidden(true)
+                .toolbarBackground(.hidden, for: .navigationBar)
+                .safeAreaInset(edge: .top) {
+                    // Custom navigation header that properly fills safe area
+                    currentTabHeader
+                }
+                .safeAreaInset(edge: .bottom) {
+                    // Custom bottom area that fills safe area with tab bar color
+                    Rectangle()
+                        .fill(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
+                        .frame(height: 0)
+                        .background(
+                            Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground)
+                                .ignoresSafeArea(.all, edges: .bottom)
+                        )
+                }
                 .navigationDestination(for: Forum.self) { forum in
                     let _ = print("🎯 NavigationDestination for Forum triggered: \(forum.name ?? "unnamed")")
                     if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
@@ -484,13 +511,8 @@ struct MainView: View {
                     )
                 }
             }
-            .toolbarBackground(theme[color: "navigationBarTintColor"] ?? .clear, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
             .onAppear {
-                // Configure sidebar-specific navigation bar appearance for compact height
-                if UIDevice.current.userInterfaceIdiom == .pad {
-                    configureSidebarNavigationBar()
-                }
+                // Sidebar navigation bar configuration disabled to allow custom headers
             }
         } detail: {
             // Detail: Thread and message content
@@ -498,8 +520,6 @@ struct MainView: View {
                 Text("Select a thread to view posts")
                     .foregroundColor(.secondary)
             }
-            .toolbarBackground(theme[color: "navigationBarTintColor"] ?? .clear, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
             .navigationDestination(for: ThreadDestination.self) { destination in
                 PostsViewWrapper(
                     thread: destination.thread,
@@ -518,6 +538,117 @@ struct MainView: View {
         }
         .tint(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
         .environmentObject(coordinator)
+    }
+    
+    @ViewBuilder
+    private var currentTabHeader: some View {
+        HStack {
+            // Left button
+            HStack {
+                if let leftButton = currentTabLeftButton {
+                    Button(action: leftButton.action) {
+                        buttonContent(for: leftButton)
+                    }
+                    .font(.preferredFont(forTextStyle: .body, fontName: theme[string: "listFontName"], weight: .regular))
+                    .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                }
+            }
+            .frame(width: 60, alignment: .leading)
+            
+            Spacer()
+            
+            // Title
+            Text(currentTabTitle)
+                .font(.preferredFont(forTextStyle: .headline, fontName: theme[string: "listFontName"], weight: .medium))
+                .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
+                .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                .lineLimit(1)
+            
+            Spacer()
+            
+            // Right button
+            HStack {
+                if let rightButton = currentTabRightButton {
+                    Button(action: rightButton.action) {
+                        buttonContent(for: rightButton)
+                    }
+                    .font(.preferredFont(forTextStyle: .body, fontName: theme[string: "listFontName"], weight: .regular))
+                    .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                }
+            }
+            .frame(width: 60, alignment: .trailing)
+        }
+        .padding(.horizontal)
+        .padding(.top, UIDevice.current.userInterfaceIdiom == .pad ? 12 : 22) // Device-specific padding  
+        .padding(.bottom, 13)
+        .frame(maxWidth: .infinity, minHeight: 50)
+        .background(
+            (theme[color: "navigationBarTintColor"] ?? Color(.systemBackground))
+                .ignoresSafeArea(.all, edges: .top)
+        )
+    }
+    
+    private var currentTabTitle: String {
+        switch tabManager.selectedTab {
+        case .forums: return "Forums"
+        case .bookmarks: return "Bookmarks"
+        case .messages: return "Messages"
+        case .lepers: return "Leper's Colony"
+        case .settings: return "Settings"
+        }
+    }
+    
+    private var currentTabLeftButton: HeaderButton? {
+        switch tabManager.selectedTab {
+        case .forums:
+            return HeaderButton(image: "quick-look") {
+                coordinator.presentedSheet = .search
+            }
+        case .messages:
+            return HeaderButton(text: tabManager.messagesIsEditing ? "Done" : "Edit") {
+                tabManager.toggleEditingForCurrentTab()
+            }
+        default:
+            return nil
+        }
+    }
+    
+    private var currentTabRightButton: HeaderButton? {
+        switch tabManager.selectedTab {
+        case .forums:
+            return HeaderButton(text: tabManager.forumsIsEditing ? "Done" : "Edit") {
+                tabManager.toggleEditingForCurrentTab()
+            }
+        case .bookmarks:
+            return HeaderButton(text: tabManager.bookmarksIsEditing ? "Done" : "Edit") {
+                tabManager.toggleEditingForCurrentTab()
+            }
+        case .messages:
+            return HeaderButton(image: "compose") {
+                coordinator.presentedSheet = .compose(tabManager.selectedTab)
+            }
+        default:
+            return nil
+        }
+    }
+    
+    @ViewBuilder
+    private func buttonContent(for button: HeaderButton) -> some View {
+        switch button.type {
+        case .text(let text):
+            Text(text)
+        case .image(let imageName):
+            Image(imageName)
+                .renderingMode(.template)
+                .font(.title2)
+                .frame(width: 28, height: 28)
+        case .systemImage(let systemName):
+            Image(systemName: systemName)
+                .font(.title2)
+                .frame(width: 28, height: 28)
+        }
     }
     
     @ViewBuilder
@@ -560,6 +691,22 @@ struct MainView: View {
             .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
             .tabViewStyle(.automatic)
             .padding(.bottom, (theme[bool: "showRootTabBarLabel"] ?? true) ? 0 : 0.1) // Force layout recalculation
+            .navigationBarHidden(true)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .top) {
+                // Custom navigation header for iPhone
+                currentTabHeader
+            }
+            .safeAreaInset(edge: .bottom) {
+                // Custom bottom area that fills safe area with tab bar color for iPhone
+                Rectangle()
+                    .fill(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
+                    .frame(height: 0)
+                    .background(
+                        Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground)
+                            .ignoresSafeArea(.all, edges: .bottom)
+                    )
+            }
             .navigationDestination(for: Forum.self) { forum in
                 if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
                     SwiftUIThreadsView(
@@ -785,6 +932,7 @@ struct TabContentView: View, Equatable {
     var body: some View {
         contentView
             .background(theme[color: "backgroundColor"]!)
+            .navigationBarHidden(true)
     }
     
     @ViewBuilder
@@ -809,28 +957,20 @@ struct TabContentView: View, Equatable {
                 Text("Error: Context not available").foregroundColor(.red)
             }
         case .lepers:
-            VStack(spacing: 0) {
-                NavigationHeaderView(title: "Leper's Colony")
-                
-                RapSheetViewWrapper(user: nil)
-            }
+            RapSheetViewWrapper(user: nil)
         case .settings:
             if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
-                VStack(spacing: 0) {
-                    NavigationHeaderView(title: "Settings")
-                    
-                    SettingsContainerView(
-                        appIconDataSource: makeAppIconDataSource(),
-                        currentUser: getCurrentUser(managedObjectContext: managedObjectContext),
-                        emptyCache: { emptyCache() },
-                        goToAwfulThread: { goToAwfulThread() },
-                        hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
-                        isMac: ProcessInfo.processInfo.isMacCatalystApp,
-                        isPad: UIDevice.current.userInterfaceIdiom == .pad,
-                        logOut: { AppDelegate.instance.logOut() },
-                        managedObjectContext: managedObjectContext
-                    )
-                }
+                SettingsContainerView(
+                    appIconDataSource: makeAppIconDataSource(),
+                    currentUser: getCurrentUser(managedObjectContext: managedObjectContext),
+                    emptyCache: { emptyCache() },
+                    goToAwfulThread: { goToAwfulThread() },
+                    hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
+                    isMac: ProcessInfo.processInfo.isMacCatalystApp,
+                    isPad: UIDevice.current.userInterfaceIdiom == .pad,
+                    logOut: { AppDelegate.instance.logOut() },
+                    managedObjectContext: managedObjectContext
+                )
             } else {
                 Text("Error: Context not available").foregroundColor(.red)
             }
@@ -842,9 +982,25 @@ struct TabContentView: View, Equatable {
 
 class TabManager: ObservableObject {
     @Published var selectedTab: MainTab = .forums
+    @Published var messagesIsEditing = false
+    @Published var bookmarksIsEditing = false
+    @Published var forumsIsEditing = false
     
     func selectTab(_ tab: MainTab) {
         selectedTab = tab
+    }
+    
+    func toggleEditingForCurrentTab() {
+        switch selectedTab {
+        case .messages:
+            messagesIsEditing.toggle()
+        case .bookmarks:
+            bookmarksIsEditing.toggle()
+        case .forums:
+            forumsIsEditing.toggle()
+        default:
+            break
+        }
     }
 }
 

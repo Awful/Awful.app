@@ -21,7 +21,7 @@ final class ManagedObjectCountObserver {
 
         updateCount()
 
-        token = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: context, queue: nil) { [unowned self] notification in
+        token = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: context, queue: .main) { [unowned self] notification in
 
             let notification = ContextObjectsDidChangeNotification(notification)
 
