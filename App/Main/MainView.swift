@@ -401,10 +401,12 @@ struct MainView: View {
             configureGlobalAppearance(theme: theme)
             updateStatusBarStyle(theme: theme)
             checkPrivateMessagePrivileges()
+            
         }
         .onChange(of: theme) { newTheme in
             configureGlobalAppearance(theme: newTheme)
             updateStatusBarStyle(theme: newTheme)
+            
         }
         .preferredColorScheme(theme[string: "statusBarBackground"] == "dark" ? .dark : .light)
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("CanSendPrivateMessagesDidChange"))) { _ in
@@ -426,21 +428,40 @@ struct MainView: View {
                     get: { tabManager.selectedTab },
                     set: { tabManager.selectTab($0) }
                 )) {
+                    let showLabels = theme[bool: "showRootTabBarLabel"] ?? true
+                    
                     ForEach(MainTab.allCases(canSendPrivateMessages: settingsManager.canSendPrivateMessages)) { tab in
                         TabContentView(tab: tab, coordinator: coordinator, isEditing: false)
                             .tabItem {
-                                if let tabBarImage = tab.tabBarImage {
-                                    Image(tabBarImage).renderingMode(.template)
-                                } else {
-                                    Image(systemName: tab.systemImage)
+                                let isSelected = tabManager.selectedTab == tab
+                                
+                                VStack(spacing: 4) {
+                                    if !showLabels {
+                                        Spacer()
+                                    }
+                                    
+                                    if let tabBarImage = isSelected ? tab.selectedTabBarImage : tab.tabBarImage {
+                                        Image(tabBarImage).renderingMode(.template)
+                                    } else {
+                                        Image(systemName: tab.systemImage)
+                                    }
+                                    
+                                    if showLabels {
+                                        Text(tab.title)
+                                            .font(.caption2)
+                                    } else {
+                                        Spacer()
+                                    }
                                 }
-                                Text(tab.title).font(.caption2)
                             }
                             .tag(tab)
+                            .id("\(tab.id)-\(showLabels ? "labeled" : "unlabeled")")
                     }
                 }
                 .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+                .tabViewStyle(.automatic)
                 .padding(2) // Fix for TabView clipping issue in NavigationSplitView sidebar
+                .padding(.bottom, (theme[bool: "showRootTabBarLabel"] ?? true) ? 0 : 0.1) // Force layout recalculation
                 .navigationBarHidden(true)
                 .navigationDestination(for: Forum.self) { forum in
                     let _ = print("🎯 NavigationDestination for Forum triggered: \(forum.name ?? "unnamed")")
@@ -506,20 +527,39 @@ struct MainView: View {
                 get: { tabManager.selectedTab },
                 set: { tabManager.selectTab($0) }
             )) {
+                let showLabels = theme[bool: "showRootTabBarLabel"] ?? true
+                
                 ForEach(MainTab.allCases(canSendPrivateMessages: settingsManager.canSendPrivateMessages)) { tab in
                     TabContentView(tab: tab, coordinator: coordinator, isEditing: false)
                         .tabItem {
-                            if let tabBarImage = tab.tabBarImage {
-                                Image(tabBarImage).renderingMode(.template)
-                            } else {
-                                Image(systemName: tab.systemImage)
+                            let isSelected = tabManager.selectedTab == tab
+                            
+                            VStack(spacing: 4) {
+                                if !showLabels {
+                                    Spacer()
+                                }
+                                
+                                if let tabBarImage = isSelected ? tab.selectedTabBarImage : tab.tabBarImage {
+                                    Image(tabBarImage).renderingMode(.template)
+                                } else {
+                                    Image(systemName: tab.systemImage)
+                                }
+                                
+                                if showLabels {
+                                    Text(tab.title)
+                                        .font(.caption2)
+                                } else {
+                                    Spacer()
+                                }
                             }
-                            Text(tab.title).font(.caption2)
                         }
                         .tag(tab)
+                        .id("\(tab.id)-\(showLabels ? "labeled" : "unlabeled")")
                 }
             }
             .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
+            .tabViewStyle(.automatic)
+            .padding(.bottom, (theme[bool: "showRootTabBarLabel"] ?? true) ? 0 : 0.1) // Force layout recalculation
             .navigationDestination(for: Forum.self) { forum in
                 if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
                     SwiftUIThreadsView(
@@ -614,6 +654,8 @@ struct MainView: View {
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
     }
     
+    
+    
     private func checkPrivateMessagePrivileges() {
         // Check if user can send private messages and update settings
         SettingsManager.shared.canSendPrivateMessages = true // Simplified for now
@@ -703,6 +745,16 @@ enum MainTab: String, CaseIterable, Identifiable {
         case .messages: return "pm-icon"
         case .lepers: return "lepers"
         case .settings: return "cog"
+        }
+    }
+    
+    var selectedTabBarImage: String? {
+        switch self {
+        case .forums: return "forum-list-filled"
+        case .bookmarks: return "bookmarks-filled"
+        case .messages: return "pm-icon-filled"
+        case .lepers: return "lepers-filled"
+        case .settings: return "cog-filled"
         }
     }
     

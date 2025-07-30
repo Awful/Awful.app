@@ -35,7 +35,7 @@ struct SwiftUIForumsView: View {
         VStack(spacing: 0) {
             NavigationHeaderView(
                 title: "Forums",
-                leftButton: HeaderButton(text: "Search") {
+                leftButton: HeaderButton(image: "quick-look") {
                     showingSearch = true
                 },
                 rightButton: viewModel.hasFavorites ? HeaderButton(text: isEditing ? "Done" : "Edit") {
