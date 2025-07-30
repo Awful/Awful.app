@@ -691,22 +691,6 @@ struct MainView: View {
             .tint(Color(theme[uicolor: "tabBarIconSelectedColor"] ?? UIColor.systemBlue))
             .tabViewStyle(.automatic)
             .padding(.bottom, (theme[bool: "showRootTabBarLabel"] ?? true) ? 0 : 0.1) // Force layout recalculation
-            .navigationBarHidden(true)
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .safeAreaInset(edge: .top) {
-                // Custom navigation header for iPhone
-                currentTabHeader
-            }
-            .safeAreaInset(edge: .bottom) {
-                // Custom bottom area that fills safe area with tab bar color for iPhone
-                Rectangle()
-                    .fill(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
-                    .frame(height: 0)
-                    .background(
-                        Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground)
-                            .ignoresSafeArea(.all, edges: .bottom)
-                    )
-            }
             .navigationDestination(for: Forum.self) { forum in
                 if let managedObjectContext = AppDelegate.instance?.managedObjectContext {
                     SwiftUIThreadsView(
@@ -924,15 +908,81 @@ struct TabContentView: View, Equatable {
     let isEditing: Bool
     @SwiftUI.Environment(\.settingsManager) private var settingsManager
     @SwiftUI.Environment(\.theme) private var theme
+    @SwiftUI.Environment(\.tabManager) private var tabManager
     
     static func == (lhs: TabContentView, rhs: TabContentView) -> Bool {
         return lhs.tab == rhs.tab && lhs.isEditing == rhs.isEditing
     }
 
     var body: some View {
-        contentView
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // iPad: Use centralized header (no individual headers needed)
+            contentView
+                .background(theme[color: "backgroundColor"]!)
+                .navigationBarHidden(true)
+        } else {
+            // iPhone: Use individual headers for each tab
+            VStack(spacing: 0) {
+                if let header = currentTabHeader {
+                    header
+                }
+                contentView
+            }
             .background(theme[color: "backgroundColor"]!)
             .navigationBarHidden(true)
+        }
+    }
+    
+    private var currentTabHeader: NavigationHeaderView? {
+        switch tab {
+        case .forums:
+            return makeForumsHeader()
+        case .bookmarks:
+            return makeBookmarksHeader()
+        case .messages:
+            return makeMessagesHeader()
+        case .lepers:
+            return NavigationHeaderView(title: "Leper's Colony")
+        case .settings:
+            return NavigationHeaderView(title: "Settings")
+        }
+    }
+    
+    private func makeForumsHeader() -> NavigationHeaderView {
+        NavigationHeaderView(
+            title: "Forums",
+            leftButton: HeaderButton(image: "quick-look") {
+                if let mainCoordinator = coordinator as? MainCoordinatorImpl {
+                    mainCoordinator.presentedSheet = .search
+                }
+            },
+            rightButton: HeaderButton(text: tabManager.forumsIsEditing ? "Done" : "Edit") {
+                tabManager.toggleEditing(for: .forums)
+            }
+        )
+    }
+    
+    private func makeBookmarksHeader() -> NavigationHeaderView {
+        NavigationHeaderView(
+            title: "Bookmarks",
+            rightButton: HeaderButton(text: tabManager.bookmarksIsEditing ? "Done" : "Edit") {
+                tabManager.toggleEditing(for: .bookmarks)
+            }
+        )
+    }
+    
+    private func makeMessagesHeader() -> NavigationHeaderView {
+        NavigationHeaderView(
+            title: "Messages",
+            leftButton: HeaderButton(text: tabManager.messagesIsEditing ? "Done" : "Edit") {
+                tabManager.toggleEditing(for: .messages)
+            },
+            rightButton: HeaderButton(image: "compose") {
+                if let mainCoordinator = coordinator as? MainCoordinatorImpl {
+                    mainCoordinator.presentedSheet = .compose(tab)
+                }
+            }
+        )
     }
     
     @ViewBuilder
@@ -992,6 +1042,19 @@ class TabManager: ObservableObject {
     
     func toggleEditingForCurrentTab() {
         switch selectedTab {
+        case .messages:
+            messagesIsEditing.toggle()
+        case .bookmarks:
+            bookmarksIsEditing.toggle()
+        case .forums:
+            forumsIsEditing.toggle()
+        default:
+            break
+        }
+    }
+    
+    func toggleEditing(for tab: MainTab) {
+        switch tab {
         case .messages:
             messagesIsEditing.toggle()
         case .bookmarks:
