@@ -286,8 +286,8 @@ extension BookmarksTableViewController: ThreadListDataSourceDelegate {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        let page: ThreadPage = thread.beenSeen ? .nextUnread : .first
-        coordinator?.navigateToThread(thread, page: page)
+        //let page: ThreadPage = thread.beenSeen ? .nextUnread : .first
+        //coordinator?.navigateToThread(thread, page: page)
     }
     
     func threadListDataSource(_ dataSource: ThreadListDataSource, didToggleBookmarkForThread thread: AwfulThread) {

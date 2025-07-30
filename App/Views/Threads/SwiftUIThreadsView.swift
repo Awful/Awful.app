@@ -13,7 +13,8 @@ struct SwiftUIThreadsView: View {
     @StateObject private var viewModel: ThreadsListViewModel
     @SwiftUI.Environment(\.theme) private var theme
     @SwiftUI.Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var navigationController: AwfulNavigationController
+    @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    // Removed AwfulNavigationController - using coordinator only
     var coordinator: (any MainCoordinator)?
     
     @State private var showingCompose = false
@@ -37,43 +38,49 @@ struct SwiftUIThreadsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            NavigationHeaderView(
-                title: forum.name ?? "Forum",
-                leftButton: HeaderButton(image: "back") {
-                    _ = navigationController.goBack()
-                },
-                rightButton: HeaderButton(image: "compose") {
-                    showingCompose = true
-                }
-            )
+        ZStack {
+            // Background that extends to safe area
+            (theme[color: "navigationBarTintColor"] ?? Color(.systemBackground))
+                .ignoresSafeArea(.all, edges: .top)
             
-            // Filter toolbar
-            HStack {
-                Spacer()
-                
-                Button(action: {
-                    showingTagPicker = true
-                }) {
-                    HStack(spacing: 4) {
-                        Text("Filter by Tag")
-                            .font(.caption)
-                        if let filterTag = viewModel.filterThreadTag {
-                            Text("(\(filterTag.imageName ?? "Unknown"))")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+            VStack(spacing: 0) {
+                NavigationHeaderView(
+                    title: forum.name ?? "Forum",
+                    leftButton: HeaderButton(image: "back") {
+                        handleBackButtonTap()
+                    },
+                    rightButton: HeaderButton(image: "compose") {
+                        showingCompose = true
                     }
-                    .foregroundColor(theme[color: "expansionTintColor"] ?? .primary)
-                }
+                )
                 
-                Spacer()
+                // Filter toolbar
+                HStack {
+                    Spacer()
+                    
+                    Button(action: {
+                        showingTagPicker = true
+                    }) {
+                        HStack(spacing: 4) {
+                            Text("Filter by Tag")
+                                .font(.caption)
+                            if let filterTag = viewModel.filterThreadTag {
+                                Text("(\(filterTag.imageName ?? "Unknown"))")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .foregroundColor(theme[color: "expansionTintColor"] ?? .primary)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(Color(.systemBackground))
+                
+                threadsList
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-            .background(Color(.systemBackground))
-            
-            threadsList
         }
         .onAppear {
             handleViewAppear()
@@ -208,14 +215,21 @@ struct SwiftUIThreadsView: View {
         }
         
         let page: ThreadPage = thread.anyUnreadPosts ? .nextUnread : .first
-        let threadDestination = ThreadDestination(
-            thread: thread,
-            page: page,
-            author: nil,
-            scrollFraction: nil,
-            jumpToPostID: nil
-        )
-        NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: threadDestination)
+        
+        // Use coordinator navigation instead of notifications
+        if let coordinator = coordinator {
+            coordinator.navigateToThread(thread, page: page, author: nil)
+        } else {
+            // Fallback to notification system for cases where coordinator is not available
+            let threadDestination = ThreadDestination(
+                thread: thread,
+                author: nil,
+                page: page,
+                scrollFraction: nil,
+                jumpToPostID: nil
+            )
+            NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: threadDestination)
+        }
     }
     
     private func handleBookmarkToggle(_ threadViewModel: ThreadRowViewModel) {
@@ -289,6 +303,30 @@ struct SwiftUIThreadsView: View {
             }
         }
     }
+    
+    private func handleBackButtonTap() {
+        let isIPad = UIDevice.current.userInterfaceIdiom == .pad
+        print("🔙 handleBackButtonTap called, device idiom: \(isIPad ? "iPad" : "iPhone"), horizontalSizeClass: \(horizontalSizeClass == .regular ? "regular" : "compact")")
+        
+        if isIPad {
+            // iPad: Pop from sidebar path to go back to forums list
+            if let coordinator = coordinator as? MainCoordinatorImpl {
+                print("🔙 iPad: sidebarPath count before: \(coordinator.sidebarPath.count)")
+                if !coordinator.sidebarPath.isEmpty {
+                    coordinator.sidebarPath.removeLast()
+                    print("🔙 iPad: Popped from sidebarPath, remaining count: \(coordinator.sidebarPath.count)")
+                } else {
+                    print("⚠️ iPad: sidebarPath is empty, cannot go back")
+                }
+            } else {
+                print("⚠️ iPad: coordinator is not MainCoordinatorImpl")
+            }
+        } else {
+            // iPhone: Use coordinator
+            print("🔙 iPhone: Using coordinator")
+            coordinator?.goBack()
+        }
+    }
 }
 
 // MARK: - Supporting Views
@@ -354,8 +392,8 @@ struct ComposeThreadSheet: UIViewControllerRepresentable {
                 if let thread = (composeTextViewController as? ThreadComposeViewController)?.thread, success {
                     let threadDestination = ThreadDestination(
                         thread: thread,
-                        page: .first,
                         author: nil,
+                        page: .first,
                         scrollFraction: nil,
                         jumpToPostID: nil
                     )

@@ -137,14 +137,11 @@ final class PostsPageViewModel: ObservableObject {
         if thread.beenSeen && thread.anyUnreadPosts {
             initialPage = .nextUnread
             logger.info("📖 Decision: Loading nextUnread page (thread seen with unread posts)")
-        } else if thread.beenSeen {
-            // Thread has been seen but no unread posts - go to last page
-            initialPage = .last
-            logger.info("📖 Decision: Loading LAST page (thread seen, no unread posts) ⭐️")
         } else {
-            // Thread hasn't been seen - go to first page
+            // For better UX, always start at first page unless specifically going to unread posts
+            // This prevents jumping to the end when users open threads from lists
             initialPage = .specific(1)
-            logger.info("📖 Decision: Loading first page (thread not seen)")
+            logger.info("📖 Decision: Loading first page (default behavior for consistent UX)")
         }
         
         logger.info("🎯 About to call loadPage with: \(String(describing: initialPage))")

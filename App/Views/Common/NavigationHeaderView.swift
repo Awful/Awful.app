@@ -27,6 +27,8 @@ struct NavigationHeaderView: View {
                     Button(action: leftButton.action) {
                         buttonContent(for: leftButton)
                     }
+                    .font(.preferredFont(forTextStyle: .body, fontName: theme[string: "listFontName"], weight: .regular))
+                    .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
                     .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
                 }
             }
@@ -36,7 +38,8 @@ struct NavigationHeaderView: View {
             
             // Title
             Text(title)
-                .font(.headline)
+                .font(.preferredFont(forTextStyle: .headline, fontName: theme[string: "listFontName"], weight: .medium))
+                .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
                 .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
                 .lineLimit(1)
                 .frame(height: 22)
@@ -49,14 +52,20 @@ struct NavigationHeaderView: View {
                     Button(action: rightButton.action) {
                         buttonContent(for: rightButton)
                     }
+                    .font(.preferredFont(forTextStyle: .body, fontName: theme[string: "listFontName"], weight: .regular))
+                    .backport.fontDesign(theme.roundedFonts ? .rounded : nil)
                     .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
                 }
             }
             .frame(width: 60, alignment: .trailing)
         }
         .padding(.horizontal)
-        .padding(.vertical, 16)
-        .background(Color(theme[uicolor: "navigationBarTintColor"] ?? UIColor.systemBackground))
+        .padding(.top, UIDevice.current.userInterfaceIdiom == .pad ? 12 : 22) // Reduced iPhone header height by half
+        .padding(.bottom, 13) // Made 5px taller bottom padding
+        .background(
+            (theme[color: "navigationBarTintColor"] ?? Color(.systemBackground))
+                .ignoresSafeArea(.all, edges: .top)
+        )
     }
     
     @ViewBuilder

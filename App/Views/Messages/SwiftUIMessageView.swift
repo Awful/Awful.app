@@ -19,8 +19,7 @@ struct SwiftUIMessageView: View {
     var coordinator: (any MainCoordinator)?
     
     @SwiftUI.Environment(\.theme) private var theme
-    @SwiftUI.Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var navigationController: AwfulNavigationController
+    // Removed AwfulNavigationController - using coordinator only
     
     @StateObject private var viewModel: MessageViewModel
     @State private var showingReplyActions = false
@@ -38,19 +37,34 @@ struct SwiftUIMessageView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            NavigationHeaderView(
-                title: message.subject ?? LocalizedString("private-message.title"),
-                leftButton: HeaderButton(image: "back") {
-                    goBack()
-                },
-                rightButton: HeaderButton(image: "reply") {
-                    showReplyActions()
+        messageContent
+            .navigationTitle(message.subject ?? LocalizedString("private-message.title"))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        // Use coordinator for navigation
+                        if let coordinator = coordinator, !coordinator.path.isEmpty {
+                            coordinator.path.removeLast()
+                        }
+                    }) {
+                        Image("back")
+                            .renderingMode(.template)
+                    }
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
                 }
-            )
-            
-            messageContent
-        }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showReplyActions()
+                    } label: {
+                        Image("reply")
+                            .renderingMode(.template)
+                    }
+                    .foregroundColor(theme[color: "navigationBarTextColor"] ?? .primary)
+                }
+            }
         .onAppear {
             handleViewAppear()
         }
@@ -113,33 +127,6 @@ struct SwiftUIMessageView: View {
     }
     
     // MARK: - Actions
-    
-    private func goBack() {
-        if viewModel.enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
-        
-        // Try navigation pop first, then fall back to modal dismiss
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first {
-            
-            // Find the navigation controller
-            var currentController = window.rootViewController
-            if let tabController = currentController as? UITabBarController {
-                currentController = tabController.selectedViewController
-            }
-            
-            if let navController = currentController as? UINavigationController,
-               navController.viewControllers.count > 1 {
-                navController.popViewController(animated: true)
-            } else {
-                // Fallback to SwiftUI dismiss
-                dismiss()
-            }
-        } else {
-            dismiss()
-        }
-    }
     
     private func showReplyActions() {
         if viewModel.enableHaptics {

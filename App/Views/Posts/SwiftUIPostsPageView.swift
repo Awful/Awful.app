@@ -27,7 +27,6 @@ struct SwiftUIPostsPageView: View {
     @SwiftUI.Environment(\.theme) private var globalTheme
     @SwiftUI.Environment(\.dismiss) private var dismiss
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @EnvironmentObject private var navigationController: AwfulNavigationController
     
     // MARK: - Forum-Specific Theme
     private var theme: Theme {
@@ -66,6 +65,7 @@ struct SwiftUIPostsPageView: View {
     @State private var hasAttemptedInitialScroll = false
     @State private var scrollTarget: ScrollTarget?
     @State private var handleViewAppearCallCount = 0
+    @State private var isScrollingComplete = false
     
     enum ScrollTarget {
         case specificPost(String)      // Priority 1: Highest (jumpToPostID)
@@ -162,6 +162,7 @@ struct SwiftUIPostsPageView: View {
         
         return mainContentView
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
             .toolbar(navigationBarVisibility, for: .navigationBar)
             .preferredColorScheme(colorScheme)
             .statusBarHidden(false)
@@ -191,11 +192,11 @@ struct SwiftUIPostsPageView: View {
                     Text(thread.title ?? "Thread")
                         .postTitleFont(theme: theme)
                         .foregroundColor(Color(theme[uicolor: "navigationBarTextColor"] ?? UIColor.label))
-                        .lineLimit(UIDevice.current.userInterfaceIdiom == .pad ? 1 : 2)
+                        .lineLimit(2)
                         .truncationMode(.tail)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity)
-                        .fixedSize(horizontal: false, vertical: true) // Allow vertical expansion for multiple lines
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 
                 // Done button for modal presentation or back button for navigation
@@ -209,9 +210,13 @@ struct SwiftUIPostsPageView: View {
                 } else {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: {
-                            // Handle both layers of navigation
-                            _ = navigationController.goBack()
-                            dismiss()
+                            // Use coordinator for navigation
+                            if let coordinator = coordinator as? MainCoordinatorImpl {
+                                coordinator.goBack()
+                            } else {
+                                // Fallback to dismiss if no coordinator
+                                dismiss()
+                            }
                         }) {
                             Image("back")
                                 .renderingMode(.template)
@@ -242,12 +247,19 @@ struct SwiftUIPostsPageView: View {
                 handleViewAppear()
             }
             .onChange(of: viewModel.isLoading) { isLoading in
-                viewState.isLoadingSpinnerVisible = isLoading
-                
-                // Critical: Handle initial scrolling when loading completes
+                // Keep spinner visible until both loading and scrolling are complete
                 if !isLoading {
+                    // Loading is complete, but keep spinner until scrolling is done
+                    print("🔄 Loading complete, waiting for scrolling to finish...")
                     handleInitialScrolling(posts: viewModel.posts)
+                } else {
+                    // Reset scrolling state when new loading starts
+                    isScrollingComplete = false
+                    viewState.isLoadingSpinnerVisible = true
                 }
+                
+                // Update spinner visibility based on both loading and scrolling state
+                updateLoadingSpinnerVisibility()
                 
                 // Reset niggly refresh state when loading completes
                 if !isLoading && viewState.isNigglyRefreshing {
@@ -335,9 +347,11 @@ struct SwiftUIPostsPageView: View {
                 // Reset toolbar visibility on page change
                 resetToolbarVisibility()
                 
-                // Reset scroll attempt flag for new page
+                // Reset scroll state for new page
                 hasAttemptedInitialScroll = false
-                print("🔄 Page changed to \(String(describing: page)) - reset scroll attempt flag")
+                isScrollingComplete = false
+                updateLoadingSpinnerVisibility()
+                print("🔄 Page changed to \(String(describing: page)) - reset scroll state")
             }
             .onChange(of: enableLiquidGlass) { _ in
                 updateLiquidGlassState()
@@ -414,12 +428,21 @@ struct SwiftUIPostsPageView: View {
     
     
     // MARK: - Main Content
+    @ViewBuilder
     private var mainContentView: some View {
         ZStack {
-            // Full-screen background that extends into all safe areas
-            Color(theme[uicolor: "postsViewBackgroundColor"] ?? .systemBackground)
-                .ignoresSafeArea(.all) // Always extend to all areas for consistent overscroll background
-                .zIndex(-1) // Ensure background is behind other content
+            // Simple background safe area behavior: extend when immersive mode is enabled
+            if postsImmersiveMode {
+                // Full-screen background that extends into all safe areas for immersive mode
+                Color(theme[uicolor: "postsViewBackgroundColor"] ?? .systemBackground)
+                    .ignoresSafeArea(.all) // Extend to all areas for immersive mode
+                    .zIndex(-1) // Ensure background is behind other content
+            } else {
+                // Constrained background for normal mode to respect navigation areas 
+                Color(theme[uicolor: "postsViewBackgroundColor"] ?? .systemBackground)
+                    .ignoresSafeArea(.container, edges: .horizontal) // Only extend horizontally
+                    .zIndex(-1) // Ensure background is behind other content
+            }
             
             if viewModel.isLoading && viewModel.posts.isEmpty {
                 // Loading state
@@ -432,8 +455,9 @@ struct SwiftUIPostsPageView: View {
     }
     
     // MARK: - Render View  
+    @ViewBuilder
     private var mainRenderView: some View {
-        SwiftUIRenderViewNative(
+        let baseView = SwiftUIRenderViewNative(
             viewModel: viewModel,
             theme: theme,
             thread: thread,
@@ -448,7 +472,13 @@ struct SwiftUIPostsPageView: View {
         )
         // .id() removed - was causing entire view recreation and performance issues
         .background(Color(theme[uicolor: "postsViewBackgroundColor"] ?? UIColor.systemBackground))
-        .ignoresSafeArea(.container) // Simplified - no conditional safe area changes
+        
+        // Simple safe area behavior: extend when immersive mode is enabled (setting)
+        if postsImmersiveMode {
+            baseView.ignoresSafeArea(.container)
+        } else {
+            baseView
+        }
         // All pull overlays temporarily removed for performance testing
         /*
         .overlay(alignment: .center) {
@@ -563,18 +593,18 @@ struct SwiftUIPostsPageView: View {
                 standardToolbar
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .onAppear { 
-                        print("🔧 TOOLBAR SHOWING: standardToolbar overlay appeared")
+                        print("🔧 TOOLBAR SHOWING: standardToolbar overlay appeared - Device: \(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone")")
                     }
             } else {
                 // Add debug info when toolbar is hidden
                 Color.clear
                     .onAppear {
-                        print("🚫 TOOLBAR HIDDEN: showOverlay=false, shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), postsImmersiveMode=\(postsImmersiveMode), isToolbarVisible=\(isToolbarVisible)")
+                        print("🚫 TOOLBAR HIDDEN: showOverlay=false, shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), postsImmersiveMode=\(postsImmersiveMode), isToolbarVisible=\(isToolbarVisible) - Device: \(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone")")
                     }
             }
         }
         .onAppear {
-            print("🔧 bottomOverlays evaluated: shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), showOverlay=\(showOverlay), postsImmersiveMode=\(postsImmersiveMode)")
+            print("🔧 bottomOverlays evaluated: shouldShowToolbar=\(shouldShowToolbar), useLiquidGlass=\(useLiquidGlass), showOverlay=\(showOverlay), postsImmersiveMode=\(postsImmersiveMode), enableLiquidGlass=\(enableLiquidGlass) - Device: \(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone")")
         }
     }
     
@@ -600,10 +630,11 @@ struct SwiftUIPostsPageView: View {
                 return .visible
             }
         } else {
-            // For non-liquid glass, hide native toolbar and use overlay instead
+            // For non-liquid glass, always hide native toolbar and use overlay instead
             return .hidden
         }
     }
+    
     
     private var navigationBarVisibility: Visibility {
         if postsImmersiveMode {
@@ -616,6 +647,10 @@ struct SwiftUIPostsPageView: View {
     }
     
     private func updateLiquidGlassState() {
+        let currentVersion = ProcessInfo.processInfo.operatingSystemVersion
+        print("🌟 Current iOS version: \(currentVersion.majorVersion).\(currentVersion.minorVersion).\(currentVersion.patchVersion)")
+        print("🌟 Device: \(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone")")
+        
         if #available(iOS 26.0, *) {
             useLiquidGlass = enableLiquidGlass
             print("🌟 Liquid Glass: Available on iOS 26+, enableLiquidGlass=\(enableLiquidGlass), useLiquidGlass=\(useLiquidGlass)")
@@ -624,7 +659,10 @@ struct SwiftUIPostsPageView: View {
             print("🌟 Liquid Glass: Not available on iOS <26, enableLiquidGlass=\(enableLiquidGlass), useLiquidGlass=false")
         }
         print("🌟 Final state: useLiquidGlass=\(useLiquidGlass), postsImmersiveMode=\(postsImmersiveMode)")
+        print("🌟 Should show native toolbar: \(useLiquidGlass), should show overlay: \(!useLiquidGlass)")
+        print("🌟 Toolbar visibility will be: \(useLiquidGlass ? (postsImmersiveMode ? (isToolbarVisible ? "visible" : "hidden") : "visible") : "hidden")")
     }
+    
     
     // MARK: - Toolbar Content (Native iOS Toolbar)
     @ToolbarContentBuilder
@@ -632,6 +670,7 @@ struct SwiftUIPostsPageView: View {
         // Show when liquid glass is enabled and toolbar should be visible
         // In immersive mode, we still use native toolbar but control visibility with .toolbar(.visible/.hidden)
         if #available(iOS 26.0, *), useLiquidGlass && shouldShowToolbar {
+            let _ = print("🌟 Using liquid glass toolbar content")
             LiquidGlassBottomBar.toolbarContent(
                 thread: thread,
                 page: viewModel.currentPage,
@@ -875,9 +914,8 @@ struct SwiftUIPostsPageView: View {
             } else if let specificPage = viewState.specificPageToLoad {
                 // Load the specific page that was requested
                 print("🔵 SwiftUIPostsPageView: Loading specific page: \(specificPage)")
-                // For .nextUnread pages, don't mark as read immediately - let user scroll naturally
-                let shouldUpdateReadPost = specificPage != .nextUnread
-                viewModel.loadPage(specificPage, updatingCache: true, updatingLastReadPost: shouldUpdateReadPost)
+                // Always mark as read when viewing threads from bookmarks
+                viewModel.loadPage(specificPage, updatingCache: true, updatingLastReadPost: true)
                 viewState.specificPageToLoad = nil // Clear it so we don't load again
             } else {
                 // Use default page detection logic
@@ -891,6 +929,9 @@ struct SwiftUIPostsPageView: View {
     }
     
     private func handleViewDisappear() {
+        print("🔵 SwiftUIPostsPageView handleViewDisappear called for thread: \(thread.title ?? "unknown")")
+        print("🔵 Thread bookmarked: \(thread.bookmarked)")
+        
         viewState.resetPullStates()
         invalidateHandoff()
         
@@ -902,6 +943,12 @@ struct SwiftUIPostsPageView: View {
         
         // Also save current scroll position for backward compatibility
         saveScrollPosition()
+        
+        // Notify bookmarks view to refresh if this thread was bookmarked
+        if thread.bookmarked {
+            print("🔵 Posting BookmarkViewShouldRefresh notification")
+            NotificationCenter.default.post(name: Notification.Name("BookmarkViewShouldRefresh"), object: nil)
+        }
     }
     
     private func replyWorkspaceSheet(_ identifiableWorkspace: IdentifiableReplyWorkspace) -> some View {
@@ -1267,17 +1314,37 @@ struct SwiftUIPostsPageView: View {
         }
     }
     
+    
+    // MARK: - Loading Spinner Management
+    /// Updates loading spinner visibility based on both loading and scrolling completion
+    private func updateLoadingSpinnerVisibility() {
+        let shouldShowSpinner = viewModel.isLoading || !isScrollingComplete
+        viewState.isLoadingSpinnerVisible = shouldShowSpinner
+        print("🔄 Loading spinner visibility: \(shouldShowSpinner) (loading: \(viewModel.isLoading), scrollingComplete: \(isScrollingComplete))")
+    }
+    
+    /// Marks scrolling as complete and updates spinner visibility
+    private func markScrollingComplete() {
+        isScrollingComplete = true
+        updateLoadingSpinnerVisibility()
+        print("✅ Scrolling marked as complete")
+    }
+    
     // MARK: - Simplified Initial Scrolling (UIKit-inspired)
     /// Handles initial scrolling with clear priorities and one-time execution, mirroring UIKit approach
     private func handleInitialScrolling(posts: [Post]) {
         // Only attempt once per page load
         guard !hasAttemptedInitialScroll else {
             print("🎯 handleInitialScrolling: Already attempted for this page load")
+            // Mark scrolling as complete if already attempted
+            markScrollingComplete()
             return
         }
         
         guard !posts.isEmpty else {
             print("🎯 handleInitialScrolling: No posts available yet")
+            // Mark scrolling as complete if no posts to scroll to
+            markScrollingComplete()
             return
         }
         
@@ -1291,6 +1358,10 @@ struct SwiftUIPostsPageView: View {
             // Use the new SwiftUI-native scroll coordinator
             scrollCoordinator.jumpToPost(postID)
             viewModel.jumpToPostID = nil  // Clear it immediately since we handled it
+            // Mark scrolling as complete after delay for post jump animation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                self.markScrollingComplete()
+            }
             
         case .fraction(let scrollFraction):
             print("🎯 Priority 2: Restoring scroll position: \(scrollFraction)")
@@ -1298,21 +1369,43 @@ struct SwiftUIPostsPageView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.viewModel.scrollToFraction = scrollFraction
                 self.viewState.pendingScrollFraction = nil
+                // Mark scrolling as complete after scroll restoration
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.markScrollingComplete()
+                }
             }
             
         case .lastPost:
             print("🎯 Priority 3: Jumping to last post")
             // Scroll to the end of the content
             scrollCoordinator.scrollToFractionalOffset(CGPoint(x: 0, y: 1.0))
+            // Mark scrolling as complete after delay for scroll animation
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.markScrollingComplete()
+            }
             
         case .firstUnread:
-            print("🎯 Priority 4: Allowing natural jump to first unread")
-            // Let the system handle unread post positioning naturally
-            // Clear any competing scroll targets
+            print("🎯 Priority 4: Scrolling to top with navigation bar offset")
+            // Use the same navigation bar offset logic as post jumping, with delay for content rendering
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                scrollCoordinator.scrollToTopWithNavBarOffset()
+                // Mark scrolling as complete after additional delay for scroll animation
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.markScrollingComplete()
+                }
+            }
             viewState.pendingScrollFraction = nil
             
         case .none:
-            print("🎯 No scroll target - using default behavior")
+            print("🎯 No scroll target - scrolling to top with navigation bar offset")
+            // Use the same navigation bar offset logic as post jumping, with delay for content rendering
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                scrollCoordinator.scrollToTopWithNavBarOffset()
+                // Mark scrolling as complete after additional delay for scroll animation
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.markScrollingComplete()
+                }
+            }
         }
         
         // Clear the scroll target after execution

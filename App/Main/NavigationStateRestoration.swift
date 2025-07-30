@@ -144,7 +144,7 @@ extension NavigationDestination {
                 finalPage = page
             }
             
-            let destination = ThreadDestination(thread: thread, page: finalPage, author: author, scrollFraction: scrollFraction)
+            let destination = ThreadDestination(thread: thread, author: author, page: finalPage, scrollFraction: scrollFraction)
             print("🔍 RESTORATION DEBUG: Created ThreadDestination has page: \(destination.page)")
             return destination
             

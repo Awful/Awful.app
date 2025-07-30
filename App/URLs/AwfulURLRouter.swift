@@ -147,7 +147,7 @@ struct AwfulURLRouter {
 
                         if let coordinator = self.coordinator {
                             // TODO: This doesn't scroll to the post.
-                            coordinator.navigateToThread(thread, page: page)
+                            coordinator.navigateToThread(thread, page: page, author: nil)
                         } else {
                             let postsVC = PostsPageViewController(thread: thread)
                             postsVC.jumpToPostIDAfterLoading = post.postID

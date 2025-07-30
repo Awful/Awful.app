@@ -16,6 +16,7 @@ struct SwiftUIBookmarksView: View {
     @State private var isLoadingMore = false
     @State private var error: Error?
     @State private var showingError = false
+    @State private var shouldScrollToTop = false
     
     init(managedObjectContext: NSManagedObjectContext, coordinator: (any MainCoordinator)? = nil) {
         self._viewModel = StateObject(wrappedValue: {
@@ -36,9 +37,11 @@ struct SwiftUIBookmarksView: View {
                     viewModel.toggleEditing()
                 }
             )
+            .background(backgroundColor)
             
             bookmarksList
         }
+        .background(backgroundColor)
         .onAppear {
             handleViewAppear()
         }
@@ -53,6 +56,12 @@ struct SwiftUIBookmarksView: View {
                 showAuthorProfile(author)
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("BookmarkViewShouldRefresh"))) { _ in
+            print("🟢 SwiftUIBookmarksView received BookmarkViewShouldRefresh notification")
+            Task { @MainActor in
+                await refreshAndScrollToTop()
+            }
+        }
         .alert("Error", isPresented: $showingError) {
             Button("OK") { }
         } message: {
@@ -64,40 +73,52 @@ struct SwiftUIBookmarksView: View {
     }
     
     private var bookmarksList: some View {
-        List {
-            ForEach(viewModel.threads) { threadViewModel in
-                ThreadRowView(
-                    viewModel: threadViewModel,
-                    onTap: {
-                        handleThreadTap(threadViewModel)
-                    },
-                    onBookmarkToggle: {
-                        handleBookmarkToggle(threadViewModel)
-                    },
-                    thread: viewModel.thread(for: threadViewModel)
-                )
-                .listRowInsets(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
-                .listRowSeparator(.visible, edges: .bottom)
-                .listRowSeparatorTint(Color(theme[uicolor: "listSeparatorColor"] ?? UIColor.separator))
-                .background(Color.clear)
-                .deleteDisabled(!viewModel.isEditing)
+        ScrollViewReader { scrollProxy in
+            List {
+                ForEach(viewModel.threads) { threadViewModel in
+                    ThreadRowView(
+                        viewModel: threadViewModel,
+                        onTap: {
+                            handleThreadTap(threadViewModel)
+                        },
+                        onBookmarkToggle: {
+                            handleBookmarkToggle(threadViewModel)
+                        },
+                        thread: viewModel.thread(for: threadViewModel)
+                    )
+                    .listRowInsets(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
+                    .listRowSeparator(.visible, edges: .bottom)
+                    .listRowSeparatorTint(Color(theme[uicolor: "listSeparatorColor"] ?? UIColor.separator))
+                    .background(Color.clear)
+                    .deleteDisabled(!viewModel.isEditing)
+                }
+                .onDelete(perform: viewModel.isEditing ? deleteThreads : nil)
+                
+                // Load more indicator
+                if viewModel.canLoadMore && !viewModel.threads.isEmpty {
+                    LoadMoreView(isLoading: isLoadingMore) {
+                        await loadMore()
+                    }
+                }
             }
-            .onDelete(perform: viewModel.isEditing ? deleteThreads : nil)
-            
-            // Load more indicator
-            if viewModel.canLoadMore && !viewModel.threads.isEmpty {
-                LoadMoreView(isLoading: isLoadingMore) {
-                    await loadMore()
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(backgroundColor)
+            .refreshable {
+                await refresh()
+            }
+            .environment(\.editMode, .constant(viewModel.isEditing ? .active : .inactive))
+            .onChange(of: shouldScrollToTop) { shouldScroll in
+                if shouldScroll {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        if let firstThread = viewModel.threads.first {
+                            scrollProxy.scrollTo(firstThread.id, anchor: .top)
+                        }
+                    }
+                    shouldScrollToTop = false
                 }
             }
         }
-        .listStyle(.plain)
-        .background(backgroundColor)
-        .scrollContentBackground(.hidden)
-        .refreshable {
-            await refresh()
-        }
-        .environment(\.editMode, .constant(viewModel.isEditing ? .active : .inactive))
     }
     
     private var backgroundColor: Color {
@@ -121,14 +142,21 @@ struct SwiftUIBookmarksView: View {
         guard let thread = viewModel.thread(for: threadViewModel) else { return }
         
         let page: ThreadPage = thread.beenSeen ? .nextUnread : .first
-        let threadDestination = ThreadDestination(
-            thread: thread,
-            page: page,
-            author: nil,
-            scrollFraction: nil,
-            jumpToPostID: nil
-        )
-        NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: threadDestination)
+        
+        // Use coordinator navigation instead of notifications  
+        if let coordinator = coordinator {
+            coordinator.navigateToThread(thread, page: page, author: nil)
+        } else {
+            // Fallback to notification system for cases where coordinator is not available
+            let threadDestination = ThreadDestination(
+                thread: thread,
+                author: nil,
+                page: page,
+                scrollFraction: nil,
+                jumpToPostID: nil
+            )
+            NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: threadDestination)
+        }
     }
     
     private func handleBookmarkToggle(_ threadViewModel: ThreadRowViewModel) {
@@ -155,9 +183,27 @@ struct SwiftUIBookmarksView: View {
     
     @MainActor
     private func refresh() async {
+        print("🔄 SwiftUIBookmarksView pull-to-refresh triggered")
         do {
             try await viewModel.refresh()
+            print("✅ SwiftUIBookmarksView pull-to-refresh completed")
         } catch {
+            print("❌ SwiftUIBookmarksView pull-to-refresh failed: \(error)")
+            self.error = error
+            self.showingError = true
+        }
+    }
+    
+    @MainActor
+    private func refreshAndScrollToTop() async {
+        print("🟢 SwiftUIBookmarksView refreshAndScrollToTop called")
+        do {
+            try await viewModel.refresh()
+            print("🟢 SwiftUIBookmarksView refresh completed, triggering scroll to top")
+            // Trigger scroll to top after refresh completes
+            shouldScrollToTop = true
+        } catch {
+            print("🔴 SwiftUIBookmarksView refresh failed: \(error)")
             self.error = error
             self.showingError = true
         }

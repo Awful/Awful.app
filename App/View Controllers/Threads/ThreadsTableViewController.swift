@@ -241,15 +241,15 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     // MARK: ComposeTextViewControllerDelegate
     
     func composeTextViewController(_ composeTextViewController: ComposeTextViewController, didFinishWithSuccessfulSubmission success: Bool, shouldKeepDraft: Bool) {
-        dismiss(animated: true) {
-            if let thread = self.threadComposeViewController.thread, success {
-                self.coordinator?.navigateToThread(thread)
-            }
-            
-            if !shouldKeepDraft {
-                self.threadComposeViewController = nil
-            }
-        }
+//        dismiss(animated: true) {
+//            if let thread = self.threadComposeViewController.thread, success {
+//                self.coordinator?.navigateToThread(thread)
+//            }
+//            
+//            if !shouldKeepDraft {
+//                self.threadComposeViewController = nil
+//            }
+//        }
     }
     
     // MARK: Filtering by tag
@@ -428,16 +428,7 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
         _ dataSource: ThreadListDataSource,
         didSelectThread thread: AwfulThread
     ) {
-        print("🔵 ThreadListDataSource: didSelectThread called - thread: \(thread.title ?? "Unknown")")
-        print("🔵 ThreadListDataSource: coordinator is \(coordinator != nil ? "available" : "nil")")
-        
-        // Try custom navigation via notification first
-        let destination = ThreadDestination(thread: thread, page: thread.anyUnreadPosts ? .nextUnread : .first, author: nil, jumpToPostID: nil)
-        print("🔵 ThreadDestination: Created for thread: \(thread.title ?? "Unknown"), page: \(destination.page), scrollFraction: \(destination.scrollFraction?.description ?? "none"), jumpToPostID: \(destination.jumpToPostID ?? "none")")
-        NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: destination)
-        
-        // TODO: Remove coordinator fallback once custom navigation is fully working
-        // coordinator?.navigateToThread(thread)
+
     }
 
     func threadListDataSource(
@@ -461,22 +452,7 @@ extension ThreadsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
-        
-        let thread = dataSource!.thread(at: indexPath)
-        print("🔵 TableView: didSelectRowAt called - thread: \(thread.title ?? "Unknown")")
-        print("🔵 TableView: coordinator is \(coordinator != nil ? "available" : "nil")")
-        
-        // Use custom navigation via notification instead of coordinator
-        let destination = ThreadDestination(thread: thread, page: thread.anyUnreadPosts ? .nextUnread : .first, author: nil, jumpToPostID: nil)
-        NotificationCenter.default.post(name: Notification.Name("NavigateToThread"), object: destination)
-        
-        // TODO: Remove coordinator fallback once custom navigation is fully working  
-        // coordinator?.navigateToThread(thread)
-        
-        tableView.deselectRow(at: indexPath, animated: true)
+
     }
 
     override func tableView(

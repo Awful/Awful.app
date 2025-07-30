@@ -156,8 +156,8 @@ struct ThreadRowView: View {
         
         let threadDestination = ThreadDestination(
             thread: thread,
-            page: page,
             author: nil,
+            page: page,
             scrollFraction: nil,
             jumpToPostID: nil
         )

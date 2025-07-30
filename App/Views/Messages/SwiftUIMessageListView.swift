@@ -11,7 +11,7 @@ import SwiftUI
 struct SwiftUIMessageListView: View {
     @StateObject private var viewModel: MessageListViewModel
     @SwiftUI.Environment(\.theme) private var theme
-    @EnvironmentObject private var navigationController: AwfulNavigationController
+    // Removed AwfulNavigationController - using coordinator only
     var coordinator: (any MainCoordinator)?
     
     @State private var isEditing = false
@@ -33,18 +33,24 @@ struct SwiftUIMessageListView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            NavigationHeaderView(
-                title: LocalizedString("private-message-tab.title"),
-                leftButton: HeaderButton(text: isEditing ? "Done" : "Edit") {
-                    toggleEditing()
-                },
-                rightButton: HeaderButton(image: "compose") {
-                    showCompose()
-                }
-            )
+        ZStack {
+            // Background that extends to safe area
+            (theme[color: "navigationBarTintColor"] ?? Color(.systemBackground))
+                .ignoresSafeArea(.all, edges: .top)
             
-            messagesList
+            VStack(spacing: 0) {
+                NavigationHeaderView(
+                    title: LocalizedString("private-message-tab.title"),
+                    leftButton: HeaderButton(text: isEditing ? "Done" : "Edit") {
+                        toggleEditing()
+                    },
+                    rightButton: HeaderButton(image: "compose") {
+                        showCompose()
+                    }
+                )
+                
+                messagesList
+            }
         }
         .onAppear {
             handleViewAppear()
@@ -149,39 +155,11 @@ struct SwiftUIMessageListView: View {
     }
     
     private func showMessage(_ message: PrivateMessage) {
-        // Present SwiftUI message view using navigation push for slide-from-right transition
-        let swiftUIMessageView = SwiftUIMessageView(
-            message: message,
-            managedObjectContext: managedObjectContext,
-            coordinator: coordinator
-        )
+        // Use coordinator to navigate via SwiftUI NavigationStack
+        let destination = PrivateMessageDestination(message: message)
         
-        let hostingController = UIHostingController(rootView: swiftUIMessageView.themed())
-        
-        // Find the current navigation controller
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else { return }
-        
-        // Navigate through the view hierarchy to find the navigation controller
-        func findNavigationController(from viewController: UIViewController?) -> UINavigationController? {
-            if let navController = viewController as? UINavigationController {
-                return navController
-            } else if let tabController = viewController as? UITabBarController {
-                return findNavigationController(from: tabController.selectedViewController)
-            } else if let presented = viewController?.presentedViewController {
-                return findNavigationController(from: presented)
-            }
-            return nil
-        }
-        
-        if let navController = findNavigationController(from: window.rootViewController) {
-            navController.pushViewController(hostingController, animated: true)
-        } else {
-            // Fallback to modal presentation with custom transition
-            hostingController.modalPresentationStyle = .fullScreen
-            hostingController.modalTransitionStyle = .crossDissolve
-            window.rootViewController?.present(hostingController, animated: true)
-        }
+        // Always use main path so messages appear in detail pane on iPad
+        coordinator?.path.append(destination)
     }
     
     private func handleDeleteMessage(_ message: PrivateMessage) {

@@ -41,9 +41,9 @@ extension UIContextMenuConfiguration {
         }
         func jump(to page: ThreadPage) {
             if let threadsVC = presenter as? ThreadsTableViewController {
-                threadsVC.coordinator?.navigateToThread(thread, page: page)
+                threadsVC.coordinator?.navigateToThread(thread, page: page, author: nil)
             } else if let bookmarksVC = presenter as? BookmarksTableViewController {
-                bookmarksVC.coordinator?.navigateToThread(thread, page: page)
+                bookmarksVC.coordinator?.navigateToThread(thread, page: page, author: nil)
             }
         }
         var jumpToFirstPage: UIMenuElement {

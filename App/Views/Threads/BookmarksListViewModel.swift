@@ -115,6 +115,7 @@ final class BookmarksListViewModel: NSObject, ObservableObject {
     }
     
     func refresh() async throws {
+        logger.info("🔄 BookmarksListViewModel.refresh() called")
         isRefreshing = true
         
         do {
@@ -127,6 +128,12 @@ final class BookmarksListViewModel: NSObject, ObservableObject {
             } else {
                 disableLoadMore()
             }
+            
+            // Force the results controller to refetch after network update
+            try resultsController?.performFetch()
+            updateThreads()
+            logger.info("✅ BookmarksListViewModel.refresh() completed successfully")
+            
         } catch {
             logger.error("Failed to refresh bookmarks: \(error)")
             isRefreshing = false

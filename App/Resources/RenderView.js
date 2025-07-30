@@ -1019,6 +1019,30 @@ Awful.embedGfycat = function() {
   }
 }
 
+/**
+ Scrolls to the top of the page with navigation bar offset compensation.
+ Uses the same device detection and offset logic as jumpToPostWithID.
+ */
+Awful.scrollToTopWithNavBarOffset = function() {
+  console.log('Scrolling to top with navigation bar offset compensation');
+  
+  // Use the same device detection logic as jumpToPostWithID
+  const isIPad = window.navigator.userAgent.includes('iPad') || 
+                 (window.navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+  const navBarOffset = isIPad ? 130 : 140; // Same offset as jumpToPostWithID
+  
+  console.log(`Device detected as: ${isIPad ? 'iPad' : 'iPhone'}, using ${navBarOffset}px offset for top scroll`);
+  
+  // Scroll to the navigation bar offset position instead of true top (0)
+  window.scrollTo({
+    top: navBarOffset,
+    left: 0,
+    behavior: 'instant'
+  });
+  
+  console.log(`Scrolled to top with ${navBarOffset}px offset`);
+};
+
 Awful.embedGfycat();
 Awful.loadLotties();
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!

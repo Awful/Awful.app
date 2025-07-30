@@ -32,9 +32,16 @@ class RenderViewScrollCoordinator: ObservableObject {
         }
     }
     
+    
     func jumpToPost(_ postID: String) {
         Task {
             await webViewCoordinator?.jumpToPost(postID)
+        }
+    }
+    
+    func scrollToTopWithNavBarOffset() {
+        Task {
+            await webViewCoordinator?.scrollToTopWithNavBarOffset()
         }
     }
 }
@@ -591,6 +598,7 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
         }
     }
     
+    
     @MainActor
     func jumpToPost(_ postID: String) async {
         let escapedPostID: String
@@ -606,6 +614,16 @@ class WebViewCoordinator: NSObject, WKNavigationDelegate, UIScrollViewDelegate, 
             logger.debug("📜 Successfully called Awful.jumpToPostWithID for post \(postID)")
         } catch {
             logger.error("Could not evaluate jumpToPostWithID: \(error)")
+        }
+    }
+    
+    @MainActor
+    func scrollToTopWithNavBarOffset() async {
+        do {
+            _ = try await webView.eval("if (window.Awful) Awful.scrollToTopWithNavBarOffset()")
+            logger.debug("📜 Successfully called Awful.scrollToTopWithNavBarOffset")
+        } catch {
+            logger.error("Could not evaluate scrollToTopWithNavBarOffset: \(error)")
         }
     }
     

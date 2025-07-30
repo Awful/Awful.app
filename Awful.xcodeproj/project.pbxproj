@@ -184,8 +184,6 @@
 		2D31415E2E3438640002E571 /* UnpopGestureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D31415C2E3438640002E571 /* UnpopGestureTests.swift */; };
 		2D31415F2E3438640002E571 /* NavigationStateRestorationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D31415B2E3438640002E571 /* NavigationStateRestorationTests.swift */; };
 		2D3141602E3438640002E571 /* AwfulRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3141592E3438640002E571 /* AwfulRouteTests.swift */; };
-		2D3141622E3444820002E571 /* NavigationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3141612E3444820002E571 /* NavigationStateManager.swift */; };
-		2D3141642E3445690002E571 /* EdgeGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3141632E3445690002E571 /* EdgeGestureView.swift */; };
 		2D4504BF2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */; };
 		2D4504C12E2E54CD00C01E36 /* PostRenderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */; };
 		2D6C55952E3123E2003BCC50 /* SwiftUIForumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55942E3123E1003BCC50 /* SwiftUIForumsView.swift */; };
@@ -193,7 +191,6 @@
 		2D6C55972E3123E2003BCC50 /* ForumsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55922E3123E1003BCC50 /* ForumsListViewModel.swift */; };
 		2D6C55982E3123E2003BCC50 /* ForumSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55912E3123E1003BCC50 /* ForumSectionHeaderView.swift */; };
 		2D6C55992E3123E2003BCC50 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2D6C55932E3123E1003BCC50 /* README.md */; };
-		2D71C6C32E3465D700C4BF57 /* CustomAwfulNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D71C6C02E3465D700C4BF57 /* CustomAwfulNavigation.swift */; };
 		2D71C6C82E346C5A00C4BF57 /* ThreadRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D71C6C52E346C5A00C4BF57 /* ThreadRowViewModel.swift */; };
 		2D71C6C92E346C5A00C4BF57 /* ThreadRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D71C6C42E346C5A00C4BF57 /* ThreadRowView.swift */; };
 		2D71C6CA2E346C5A00C4BF57 /* ThreadsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D71C6C62E346C5A00C4BF57 /* ThreadsListViewModel.swift */; };
@@ -221,7 +218,6 @@
 		2D94CCF82E34BDA1001C0027 /* ghost_blue.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D94CCD52E34BDA1001C0027 /* ghost_blue.icon */; };
 		2D94CCF92E34BDA1001C0027 /* doggo_tongue.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D94CCCF2E34BDA1001C0027 /* doggo_tongue.icon */; };
 		2D94CCFA2E34BDA1001C0027 /* doggo.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D94CCCE2E34BDA1001C0027 /* doggo.icon */; };
-		2D94CCFD2E34CB26001C0027 /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D94CCFC2E34CB26001C0027 /* App Icons.xcassets */; };
 		2D94CD002E359C51001C0027 /* MessageRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CCFE2E359C51001C0027 /* MessageRowView.swift */; };
 		2D94CD022E359C82001C0027 /* MessageRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD012E359C82001C0027 /* MessageRowViewModel.swift */; };
 		2D94CD042E359C9B001C0027 /* MessageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D94CD032E359C9B001C0027 /* MessageListViewModel.swift */; };
@@ -247,7 +243,6 @@
 		2DB5FC382E1BCE5E003F050F /* PostsPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC372E1BCE5E003F050F /* PostsPageViewModel.swift */; };
 		2DB5FC3B2E1BF6E0003F050F /* FrogPullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC392E1BF6E0003F050F /* FrogPullToRefresh.swift */; };
 		2DB5FC3C2E1BF6E0003F050F /* FrogRefreshAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC3A2E1BF6E0003F050F /* FrogRefreshAnimation.swift */; };
-		2DB5FC3E2E1D1034003F050F /* SwiftUIUnpopModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */; };
 		2DB77D692E1E784C0021B8DE /* NavigationStateRestoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */; };
 		2DB77D6B2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */; };
 		2DB77D6D2E1E9E710021B8DE /* ScrollStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */; };
@@ -549,8 +544,6 @@
 		2D31415A2E3438640002E571 /* AwfulURLRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulURLRouterTests.swift; sourceTree = "<group>"; };
 		2D31415B2E3438640002E571 /* NavigationStateRestorationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateRestorationTests.swift; sourceTree = "<group>"; };
 		2D31415C2E3438640002E571 /* UnpopGestureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpopGestureTests.swift; sourceTree = "<group>"; };
-		2D3141612E3444820002E571 /* NavigationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateManager.swift; sourceTree = "<group>"; };
-		2D3141632E3445690002E571 /* EdgeGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeGestureView.swift; sourceTree = "<group>"; };
 		2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRenderViewNative.swift; sourceTree = "<group>"; };
 		2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRenderModels.swift; sourceTree = "<group>"; };
 		2D6C55902E3123E1003BCC50 /* ForumRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumRowView.swift; sourceTree = "<group>"; };
@@ -558,7 +551,6 @@
 		2D6C55922E3123E1003BCC50 /* ForumsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumsListViewModel.swift; sourceTree = "<group>"; };
 		2D6C55932E3123E1003BCC50 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2D6C55942E3123E1003BCC50 /* SwiftUIForumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIForumsView.swift; sourceTree = "<group>"; };
-		2D71C6C02E3465D700C4BF57 /* CustomAwfulNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAwfulNavigation.swift; sourceTree = "<group>"; };
 		2D71C6C42E346C5A00C4BF57 /* ThreadRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadRowView.swift; sourceTree = "<group>"; };
 		2D71C6C52E346C5A00C4BF57 /* ThreadRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadRowViewModel.swift; sourceTree = "<group>"; };
 		2D71C6C62E346C5A00C4BF57 /* ThreadsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsListViewModel.swift; sourceTree = "<group>"; };
@@ -586,7 +578,6 @@
 		2D94CCDF2E34BDA1001C0027 /* staredog_tongue.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_tongue.icon; sourceTree = "<group>"; };
 		2D94CCE02E34BDA1001C0027 /* rated_five_trans.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_trans.icon; sourceTree = "<group>"; };
 		2D94CCE22E34BDA1001C0027 /* v.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v.icon; sourceTree = "<group>"; };
-		2D94CCFC2E34CB26001C0027 /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
 		2D94CCFE2E359C51001C0027 /* MessageRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRowView.swift; sourceTree = "<group>"; };
 		2D94CD012E359C82001C0027 /* MessageRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRowViewModel.swift; sourceTree = "<group>"; };
 		2D94CD032E359C9B001C0027 /* MessageListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListViewModel.swift; sourceTree = "<group>"; };
@@ -612,7 +603,6 @@
 		2DB5FC372E1BCE5E003F050F /* PostsPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageViewModel.swift; sourceTree = "<group>"; };
 		2DB5FC392E1BF6E0003F050F /* FrogPullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrogPullToRefresh.swift; sourceTree = "<group>"; };
 		2DB5FC3A2E1BF6E0003F050F /* FrogRefreshAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrogRefreshAnimation.swift; sourceTree = "<group>"; };
-		2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUnpopModifier.swift; sourceTree = "<group>"; };
 		2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateRestoration.swift; sourceTree = "<group>"; };
 		2DB77D6A2E1E8A880021B8DE /* SwiftUILoadingViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUILoadingViewFactory.swift; sourceTree = "<group>"; };
 		2DB77D6C2E1E9E710021B8DE /* ScrollStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollStateManager.swift; sourceTree = "<group>"; };
@@ -705,7 +695,6 @@
 		1190F71C13BE4EA900B9D271 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				2D71C6C02E3465D700C4BF57 /* CustomAwfulNavigation.swift */,
 				2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */,
 				2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */,
 				2DE976B12E0FFB0300233423 /* MainView.swift */,
@@ -1100,7 +1089,6 @@
 		1CC065F52D6700BA002BB6A0 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
-				2D94CCFC2E34CB26001C0027 /* App Icons.xcassets */,
 				2D94CCCA2E34BDA1001C0027 /* five.icon */,
 				2D94CCCC2E34BDA1001C0027 /* rated_five.icon */,
 				2D94CCCD2E34BDA1001C0027 /* greenface.icon */,
@@ -1324,11 +1312,9 @@
 			isa = PBXGroup;
 			children = (
 				2D94CCC82E34B833001C0027 /* NavigationHeaderView.swift */,
-				2D3141632E3445690002E571 /* EdgeGestureView.swift */,
 				2D3141572E3438400002E571 /* WebViewGestureCoordinator.swift */,
 				2D872A352E31205E001467B4 /* NigglyRefreshableListView.swift */,
 				2D872A312E311E31001467B4 /* NigglyPullToRefresh.swift */,
-				2DB5FC3D2E1D1034003F050F /* SwiftUIUnpopModifier.swift */,
 				2DB5FC392E1BF6E0003F050F /* FrogPullToRefresh.swift */,
 				2DB5FC3A2E1BF6E0003F050F /* FrogRefreshAnimation.swift */,
 				2DB5FC1C2E1A8042003F050F /* BookmarkColorPicker.swift */,
@@ -1341,7 +1327,6 @@
 		2DB5FC202E1A8042003F050F /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				2D3141612E3444820002E571 /* NavigationStateManager.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -1646,7 +1631,6 @@
 				2D19BA3929C33303009DD94F /* niggly60.json in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
-				2D94CCFD2E34CB26001C0027 /* App Icons.xcassets in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
@@ -1692,7 +1676,6 @@
 				2DAD15402E21FA890057C340 /* SwiftUIArrowPullControl.swift in Sources */,
 				2DAD15422E21FA9A0057C340 /* SwiftUINigglyPullControl.swift in Sources */,
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
-				2D3141642E3445690002E571 /* EdgeGestureView.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				2D3141582E3438400002E571 /* WebViewGestureCoordinator.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
@@ -1701,7 +1684,6 @@
 				2DE976B02E0FF4FB00233423 /* AppViewModel.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
-				2D3141622E3444820002E571 /* NavigationStateManager.swift in Sources */,
 				1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */,
 				1C16FBD91CBAA33600C88BD1 /* PunishmentCell.swift in Sources */,
 				1C16FBF61CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift in Sources */,
@@ -1738,7 +1720,6 @@
 				2D94CD062E359CE0001C0027 /* SwiftUIMessageListView.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
-				2D71C6C32E3465D700C4BF57 /* CustomAwfulNavigation.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
@@ -1784,7 +1765,6 @@
 				2D6C55962E3123E2003BCC50 /* ForumRowView.swift in Sources */,
 				2D6C55972E3123E2003BCC50 /* ForumsListViewModel.swift in Sources */,
 				2D6C55982E3123E2003BCC50 /* ForumSectionHeaderView.swift in Sources */,
-				2DB5FC3E2E1D1034003F050F /* SwiftUIUnpopModifier.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,

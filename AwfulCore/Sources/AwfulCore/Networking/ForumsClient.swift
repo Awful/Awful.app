@@ -84,6 +84,7 @@ public final class ForumsClient {
     @objc private func backgroundManagedObjectContextDidSave(_ notification: Notification) {
         guard let context = managedObjectContext else { return }
 
+        // Extract object IDs on current thread before dispatching to main
         let updatedObjectIDs: [NSManagedObjectID] = {
             guard
                 let userInfo = notification.userInfo,
@@ -92,6 +93,7 @@ public final class ForumsClient {
             return updatedObjects.map { $0.objectID }
         }()
 
+        // Dispatch to main thread to avoid "Publishing changes from background threads" warning
         DispatchQueue.main.async {
             context.perform {
                 updatedObjectIDs
@@ -347,8 +349,12 @@ public final class ForumsClient {
                 threadsToForget.forEach { $0.threadListPage = 0 }
             }
 
-            try backgroundContext.save()
-            return threads
+            return (threads, backgroundContext)
+        }
+        
+        // Save on main thread to avoid publishing warning
+        try await MainActor.run {
+            try backgroundThreads.1.save()
         }
         
         // Ensure any observable notifications happen on main thread
@@ -357,7 +363,7 @@ public final class ForumsClient {
             mainContext.refresh(forum, mergeChanges: true)
         }
         return await mainContext.perform {
-            backgroundThreads.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
+            backgroundThreads.0.compactMap { mainContext.object(with: $0.objectID) as? AwfulThread }
         }
     }
 
@@ -747,6 +753,9 @@ public final class ForumsClient {
 
         if !updateLastReadPost {
             parameters["noseen"] = "1"
+            NSLog("🚨 ForumsClient: Adding noseen=1 because updateLastReadPost=false")
+        } else {
+            NSLog("✅ ForumsClient: NOT adding noseen because updateLastReadPost=true")
         }
 
         if let userID: String = await author?.managedObjectContext?.perform({ author?.userID }) {
@@ -777,11 +786,15 @@ public final class ForumsClient {
 
         let backgroundPosts = try await backgroundContext.perform {
             let posts = try result.upsert(into: backgroundContext)
-            try backgroundContext.save()
-            return posts
+            return (posts, backgroundContext)
+        }
+        
+        // Save on main thread to avoid publishing warning
+        try await MainActor.run {
+            try backgroundPosts.1.save()
         }
         let posts = await mainContext.perform {
-            backgroundPosts.compactMap { mainContext.object(with: $0.objectID) as? Post }
+            backgroundPosts.0.compactMap { mainContext.object(with: $0.objectID) as? Post }
         }
         return (
             posts: posts,

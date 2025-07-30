@@ -159,10 +159,10 @@ struct LiquidGlassBottomBar: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .frame(minHeight: 44) // Standard toolbar height
-        .background(postsImmersiveMode ? Color.clear : Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
+        .background(Color.clear)
         .overlay(
             Rectangle()
-                .fill(postsImmersiveMode ? Color.clear : Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator))
+                .fill(Color.clear)
                 .frame(height: 0.5),
             alignment: .top
         )

@@ -237,7 +237,7 @@ struct PostsToolbarContainer: View {
         .padding(.vertical, 8)
         .padding(.bottom, max(safeAreaInsets.bottom, 0)) // Add safe area padding for iOS 18 compatibility
         .frame(minHeight: 44) // Standard toolbar height
-        .background(toolbarBackgroundColor)
+        .background(Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground))
         .animatedToolbarOffset(toolbarOffset, velocity: currentVelocity)
     }
     
@@ -258,9 +258,6 @@ struct PostsToolbarContainer: View {
         toolbarTextColor.opacity(0.5)
     }
     
-    private var toolbarBackgroundColor: Color {
-        Color(theme[uicolor: "tabBarBackgroundColor"] ?? UIColor.systemBackground)
-    }
     
     private var topBorderColor: Color {
         Color(theme[uicolor: "bottomBarTopBorderColor"] ?? UIColor.separator)
@@ -292,16 +289,16 @@ extension PostsToolbarContainer {
             },
             onBackTapped: {
                 guard case .specific(let pageNumber) = viewController.page, pageNumber > 1 else { return }
-                viewController.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: false)
+                viewController.loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
             },
             onForwardTapped: {
                 guard case .specific(let pageNumber) = viewController.page, 
                       pageNumber < viewController.numberOfPages, 
                       pageNumber > 0 else { return }
-                viewController.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: false)
+                viewController.loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
             },
             onPageSelected: { page in
-                viewController.loadPage(page, updatingCache: true, updatingLastReadPost: false)
+                viewController.loadPage(page, updatingCache: true, updatingLastReadPost: true)
             },
             onGoToLastPost: {
                 viewController.goToLastPost()

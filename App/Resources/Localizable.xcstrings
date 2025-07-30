@@ -364,9 +364,6 @@
     "Delete" : {
 
     },
-    "Detail" : {
-
-    },
     "Done" : {
 
     },
@@ -379,10 +376,7 @@
     "Error" : {
 
     },
-    "Error: Could not access managed object context" : {
-
-    },
-    "Error: Invalid coordinator type" : {
+    "Error: Context not available" : {
 
     },
     "Error: Managed Object Context not available" : {
@@ -459,9 +453,6 @@
           }
         }
       }
-    },
-    "Forward" : {
-
     },
     "FPS: %@" : {
 
@@ -1276,10 +1267,7 @@
     "Search Results" : {
 
     },
-    "Select a forum" : {
-
-    },
-    "Select an item from the sidebar" : {
+    "Select a thread to view posts" : {
 
     },
     "Select Forums" : {

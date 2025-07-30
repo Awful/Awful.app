@@ -142,8 +142,13 @@ struct SwiftUIForumsView: View {
     private func openForum(_ forum: Forum) {
         print("🔍 SwiftUIForumsView: Navigating to forum: \(forum.name ?? "unnamed")")
         
-        // Use custom navigation system via NotificationCenter
-        NotificationCenter.default.post(name: Notification.Name("NavigateToForum"), object: forum)
+        // Use coordinator navigation instead of notifications
+        if let coordinator = coordinator {
+            coordinator.navigateToForum(forum)
+        } else {
+            // Fallback to notification system for cases where coordinator is not available
+            NotificationCenter.default.post(name: Notification.Name("NavigateToForum"), object: forum)
+        }
     }
     
     private func openAnnouncement(_ announcement: Announcement) {
