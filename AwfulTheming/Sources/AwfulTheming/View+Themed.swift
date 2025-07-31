@@ -22,17 +22,26 @@ public struct ThemeViewModifier: ViewModifier {
     
     @AppStorage(Settings.defaultDarkThemeName) var darkThemeName
     @AppStorage(Settings.defaultLightThemeName) var lightThemeName
-    // It would be better to use SwiftUI's `colorScheme` instead of our custom setting. We could override `colorScheme` at the app/root level based on the settings for "automatic dark mode" and "dark mode". We could also override the UITraitCollection at the root level for UIKit screens. For now, though, we're watching the dark mode setting directly.
+    @AppStorage(Settings.autoDarkTheme) var autoDarkTheme
     @AppStorage(Settings.darkMode) var darkMode
+    @SwiftUI.Environment(\.colorScheme) var systemColorScheme
+
+    var effectiveDarkMode: Bool {
+        if autoDarkTheme {
+            return systemColorScheme == .dark
+        } else {
+            return darkMode
+        }
+    }
 
     var theme: Theme {
         // TODO: Wrap this up somewhere closer to the Theme.defaultTheme() implementation so we have one source of truth for resolving "default theme".
-        Theme.theme(named: (darkMode ? darkThemeName : lightThemeName).rawValue)!
+        Theme.theme(named: (effectiveDarkMode ? darkThemeName : lightThemeName).rawValue)!
     }
 
     public func body(content: Content) -> some View {
         content
-            .environment(\.colorScheme, darkMode ? .dark : .light)
+            .environment(\.colorScheme, effectiveDarkMode ? .dark : .light)
             .environment(\.theme, theme)
     }
 }

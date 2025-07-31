@@ -161,6 +161,7 @@ struct SwiftUIPostsPageView: View {
         let colorScheme: ColorScheme = theme["mode"] == "dark" ? .dark : .light
         
         return mainContentView
+            .backSwipeGesture(coordinator: coordinator as? (any MainCoordinator))
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar(navigationBarVisibility, for: .navigationBar)
@@ -195,7 +196,7 @@ struct SwiftUIPostsPageView: View {
                         .lineLimit(2)
                         .truncationMode(.tail)
                         .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 

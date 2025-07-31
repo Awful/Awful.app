@@ -14,6 +14,14 @@ struct LiquidGlassBottomBar: View {
     let numberOfPages: Int
     let isLoadingViewVisible: Bool
     
+    // Number formatter that doesn't use grouping separators (no commas)
+    private static let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        formatter.usesGroupingSeparator = false
+        return formatter
+    }()
+    
     // MARK: - Action Callbacks
     let onSettingsTapped: () -> Void
     let onBackTapped: () -> Void
@@ -68,18 +76,17 @@ struct LiquidGlassBottomBar: View {
             }
             
             // Page selector button
-            Button(action: {
-                guard case .specific = page else { return }
-                showingPagePicker = true
-            }) {
-                if case .specific(let pageNumber) = page, numberOfPages > 0 {
+            if case .specific(let pageNumber) = page, numberOfPages > 0 {
+                Button(action: {
+                    showingPagePicker = true
+                }) {
                     HStack(alignment: .top, spacing: 0) {
                         VStack(spacing: 0) {
-                            Text("\(pageNumber)")
+                            Text(Self.numberFormatter.string(from: NSNumber(value: pageNumber)) ?? "\(pageNumber)")
                                 .font(.footnote.weight(.medium))
                                 .foregroundColor(toolbarTextColor)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
-                            Text("\(numberOfPages)")
+                            Text(Self.numberFormatter.string(from: NSNumber(value: numberOfPages)) ?? "\(numberOfPages)")
                                 .font(.footnote.weight(.medium))
                                 .foregroundColor(toolbarTextColor)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -88,29 +95,21 @@ struct LiquidGlassBottomBar: View {
                             .font(.footnote.weight(.medium))
                             .foregroundColor(toolbarTextColor)
                     }
-                    .frame(minWidth: 30)
-                } else {
-                    Text("...")
-                        .font(.body.weight(.medium))
-                        .foregroundColor(toolbarTextColor)
-                        .frame(minWidth: 60)
+                    .frame(minWidth: 10)
+                }
+                .accessibilityLabel(currentPageAccessibilityLabel)
+                .accessibilityHint("Opens page picker")
+                .popover(isPresented: $showingPagePicker) {
+                    PostsPagePicker(
+                        thread: thread,
+                        numberOfPages: numberOfPages,
+                        currentPage: currentPageNumber,
+                        onPageSelected: onPageSelected,
+                        onGoToLastPost: onGoToLastPost
+                    )
+                    .presentationCompactAdaptation(.popover)
                 }
             }
-            .padding(.trailing, 8) // Add right padding to page picker
-            .disabled(page == nil)
-            .accessibilityLabel(currentPageAccessibilityLabel)
-            .accessibilityHint("Opens page picker")
-            .popover(isPresented: $showingPagePicker) {
-                PostsPagePicker(
-                    thread: thread,
-                    numberOfPages: numberOfPages,
-                    currentPage: currentPageNumber,
-                    onPageSelected: onPageSelected,
-                    onGoToLastPost: onGoToLastPost
-                )
-                .presentationCompactAdaptation(.popover)
-            }
-            .padding(.trailing, isForwardEnabled ? 4 : 0) // Dynamic spacing based on forward button presence
             
             // Forward button - only show when enabled for morphing effect
             if isForwardEnabled {
@@ -340,7 +339,7 @@ struct LiquidGlassBottomBar: View {
         if case .specific(let pageNumber) = page, numberOfPages > 0 {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    Text("\(pageNumber)")
+                    Text(Self.numberFormatter.string(from: NSNumber(value: pageNumber)) ?? "\(pageNumber)")
                         .font(.body.weight(.medium))
                         .foregroundColor(toolbarTextColor)
                     Text(" /")
@@ -349,18 +348,13 @@ struct LiquidGlassBottomBar: View {
                     Spacer()
                 }
                 HStack(spacing: 0) {
-                    Text("\(numberOfPages)")
+                    Text(Self.numberFormatter.string(from: NSNumber(value: numberOfPages)) ?? "\(numberOfPages)")
                         .font(.body.weight(.medium))
                         .foregroundColor(toolbarTextColor)
                     Spacer()
                 }
             }
             .frame(minWidth: 60)
-        } else {
-            Text("...")
-                .font(.body.weight(.medium))
-                .foregroundColor(toolbarTextColor)
-                .frame(minWidth: 60)
         }
     }
     
@@ -397,6 +391,14 @@ private struct NavigationControlsContainer: View {
     let onPageSelected: (ThreadPage) -> Void
     let onGoToLastPost: () -> Void
     
+    // Number formatter that doesn't use grouping separators (no commas)
+    private static let numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        formatter.usesGroupingSeparator = false
+        return formatter
+    }()
+    
     var body: some View {
         HStack(spacing: 8) {
             // Back button - with smooth morphing
@@ -413,20 +415,19 @@ private struct NavigationControlsContainer: View {
                 ))
             }
             
-            // Page selector button - always visible for consistent layout
-            Button(action: {
-                guard case .specific = page else { return }
-                showingPagePicker.wrappedValue = true
-            }) {
-                if case .specific(let pageNumber) = page, numberOfPages > 0 {
+            // Page selector button
+            if case .specific(let pageNumber) = page, numberOfPages > 0 {
+                Button(action: {
+                    showingPagePicker.wrappedValue = true
+                }) {
                     HStack(alignment: .top, spacing: 0) {
                         VStack(spacing: 0) {
-                            Text("\(pageNumber)")
+                            Text(Self.numberFormatter.string(from: NSNumber(value: pageNumber)) ?? "\(pageNumber)")
                                 .font(.footnote.weight(.medium))
                                 .foregroundColor(toolbarTextColor)
                                 .applyFontDesign(if: roundedFonts)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
-                            Text("\(numberOfPages)")
+                            Text(Self.numberFormatter.string(from: NSNumber(value: numberOfPages)) ?? "\(numberOfPages)")
                                 .font(.footnote.weight(.medium))
                                 .foregroundColor(toolbarTextColor)
                                 .applyFontDesign(if: roundedFonts)
@@ -438,32 +439,26 @@ private struct NavigationControlsContainer: View {
                             .applyFontDesign(if: roundedFonts)
                     }
                     .frame(minWidth: 30)
-                } else {
-                    Text("...")
-                        .font(.body.weight(.medium))
-                        .foregroundColor(toolbarTextColor)
-                        .frame(minWidth: 60)
                 }
-            }
-            .padding(.trailing, 8) // Add right padding to page picker
-            .disabled(page == nil)
-            .accessibilityLabel(currentPageAccessibilityLabel)
-            .accessibilityHint("Opens page picker")
-            .padding(.horizontal, 12)
-            .popover(isPresented: showingPagePicker) {
-                PostsPagePicker(
-                    thread: thread,
-                    numberOfPages: numberOfPages,
-                    currentPage: {
-                        if case .specific(let pageNumber) = page {
-                            return pageNumber
-                        }
-                        return 1
-                    }(),
-                    onPageSelected: onPageSelected,
-                    onGoToLastPost: onGoToLastPost
-                )
-                .presentationCompactAdaptation(.popover)
+                .padding(.trailing, 8) // Add right padding to page picker
+                .accessibilityLabel(currentPageAccessibilityLabel)
+                .accessibilityHint("Opens page picker")
+                .padding(.horizontal, 12)
+                .popover(isPresented: showingPagePicker) {
+                    PostsPagePicker(
+                        thread: thread,
+                        numberOfPages: numberOfPages,
+                        currentPage: {
+                            if case .specific(let pageNumber) = page {
+                                return pageNumber
+                            }
+                            return 1
+                        }(),
+                        onPageSelected: onPageSelected,
+                        onGoToLastPost: onGoToLastPost
+                    )
+                    .presentationCompactAdaptation(.popover)
+                }
             }
             
             // Forward button - with smooth morphing

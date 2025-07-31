@@ -80,6 +80,9 @@ struct SwiftUIForumsView: View {
                     onToggleFavorite: { handleToggleFavorite(item) },
                     onToggleExpansion: { handleToggleExpansion(item) }
                 )
+                .listRowPressEffect {
+                    handleItemTap(item)
+                }
             }
             
             if section.type == .favorites {

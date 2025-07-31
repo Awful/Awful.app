@@ -202,6 +202,13 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     private var threadScrollPositions: [String: (page: ThreadPage, author: User?, scrollFraction: CGFloat)] = [:]
     private var threadViewStates: [String: [String: Any]] = [:]
     
+    // Unpop functionality
+    @Published var unpopStateManager = UnpopStateManager()
+    @Published var transitionManager = InteractiveTransitionManager()
+    
+    // Track navigation destinations for unpop functionality  
+    private var navigationStack: [any Hashable] = []
+    
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
     }
@@ -227,6 +234,9 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             page: page
         )
         
+        // Track the destination for unpop functionality
+        navigationStack.append(destination)
+        
         // Always use main path for thread navigation (detail view on iPad)
         path.append(destination)
     }
@@ -241,6 +251,9 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
             scrollFraction: nil,
             jumpToPostID: jumpToPostID
         )
+        
+        // Track the destination for unpop functionality
+        navigationStack.append(destination)
         
         // Always use main path for thread navigation (detail view on iPad)
         path.append(destination)
@@ -257,9 +270,50 @@ class MainCoordinatorImpl: MainCoordinator, ComposeTextViewControllerDelegate {
     
     func goBack() {
         logger.info("📍 Going back")
-        if !path.isEmpty {
+        if !path.isEmpty && !navigationStack.isEmpty {
+            // Store the current destination for unpop before removing it
+            let currentDestination = navigationStack.removeLast()
+            unpopStateManager.storeForUnpop(currentDestination)
+            logger.info("📦 Stored destination for unpop: \(String(describing: currentDestination))")
+            
+            path.removeLast()
+        } else if !path.isEmpty {
+            // Fallback if our tracking is out of sync
             path.removeLast()
         }
+    }
+    
+    private func getCurrentPathElement() -> Any? {
+        // In practice, we need to store the actual destination that's being popped
+        // Since NavigationPath doesn't expose its elements directly, we'll need to 
+        // track destinations when they're pushed. For now, we'll use a simple approach
+        // but in a real implementation, you'd maintain a parallel stack of typed destinations
+        
+        // This is a placeholder - in reality you'd need to either:
+        // 1. Keep a parallel stack of typed destinations alongside NavigationPath
+        // 2. Use a custom navigation system that exposes the current element
+        // 3. Pass the current destination when calling goBack()
+        
+        return nil // Will be implemented when we add the unpop gesture to specific views
+    }
+    
+    func storeDestinationForUnpop(_ destination: any Hashable) {
+        unpopStateManager.storeForUnpop(destination)
+    }
+    
+    func unpopView() -> Bool {
+        guard let restoredElement = unpopStateManager.unpopElement() else {
+            return false
+        }
+        
+        if let hashableElement = restoredElement as? any Hashable {
+            withAnimation(.interactiveSpring()) {
+                path.append(hashableElement)
+            }
+            return true
+        }
+        
+        return false
     }
     
     func shouldHideTabBar(isInSidebar: Bool) -> Bool {

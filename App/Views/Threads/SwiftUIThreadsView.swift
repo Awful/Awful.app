@@ -128,6 +128,9 @@ struct SwiftUIThreadsView: View {
         .navigationBarHidden(true)
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("")
+        .modifier(
+            UnpopGestureViewModifier(coordinator: coordinator)
+        )
         .themed()
     }
     
@@ -144,6 +147,9 @@ struct SwiftUIThreadsView: View {
                     },
                     thread: viewModel.thread(for: threadViewModel)
                 )
+                .listRowPressEffect {
+                    handleThreadTap(threadViewModel)
+                }
                 .listRowInsets(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
                 .listRowSeparator(.visible, edges: .bottom)
                 .listRowSeparatorTint(Color(theme[uicolor: "listSeparatorColor"] ?? UIColor.separator))

@@ -46,10 +46,12 @@ struct PostsToolbarContainer: View {
     private var currentPageText: String {
         if case .specific(let pageNumber) = page {
             if numberOfPages > 0 {
-                return "\(pageNumber) / \(numberOfPages)"
+                let pageStr = PageNumberView.numberFormatter.string(from: NSNumber(value: pageNumber)) ?? "\(pageNumber)"
+                let totalStr = PageNumberView.numberFormatter.string(from: NSNumber(value: numberOfPages)) ?? "\(numberOfPages)"
+                return "\(pageStr) / \(totalStr)"
             } else {
                 // Show just the page number while loading page count
-                return "\(pageNumber)"
+                return PageNumberView.numberFormatter.string(from: NSNumber(value: pageNumber)) ?? "\(pageNumber)"
             }
         } else {
             return ""
@@ -351,7 +353,7 @@ private struct PageNumberView: View {
     @SwiftUI.Environment(\.theme) private var theme
     
     // Number formatter that doesn't use grouping separators (no commas)
-    private static let numberFormatter: NumberFormatter = {
+    static let numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .none
         formatter.usesGroupingSeparator = false

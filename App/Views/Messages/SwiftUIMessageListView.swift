@@ -70,6 +70,9 @@ struct SwiftUIMessageListView: View {
                     },
                     message: viewModel.message(at: index)
                 )
+                .listRowPressEffect {
+                    handleMessageTap(messageViewModel, at: index)
+                }
                 .listRowInsets(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
                 .listRowSeparator(.visible, edges: .bottom)
                 .listRowSeparatorTint(Color(theme[uicolor: "listSeparatorColor"] ?? UIColor.separator))

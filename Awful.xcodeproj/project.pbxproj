@@ -184,6 +184,9 @@
 		2D31415E2E3438640002E571 /* UnpopGestureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D31415C2E3438640002E571 /* UnpopGestureTests.swift */; };
 		2D31415F2E3438640002E571 /* NavigationStateRestorationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D31415B2E3438640002E571 /* NavigationStateRestorationTests.swift */; };
 		2D3141602E3438640002E571 /* AwfulRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3141592E3438640002E571 /* AwfulRouteTests.swift */; };
+		2D39F20D2E3B5BE600B9E57A /* NavigationStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D39F20C2E3B5BE600B9E57A /* NavigationStateManager.swift */; };
+		2D39F20F2E3B5CB000B9E57A /* ListInteractionModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D39F20E2E3B5CB000B9E57A /* ListInteractionModifiers.swift */; };
+		2D39F2112E3B64F900B9E57A /* BackSwipeGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D39F2102E3B64F900B9E57A /* BackSwipeGesture.swift */; };
 		2D4504BF2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */; };
 		2D4504C12E2E54CD00C01E36 /* PostRenderModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */; };
 		2D6C55952E3123E2003BCC50 /* SwiftUIForumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6C55942E3123E1003BCC50 /* SwiftUIForumsView.swift */; };
@@ -544,6 +547,9 @@
 		2D31415A2E3438640002E571 /* AwfulURLRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulURLRouterTests.swift; sourceTree = "<group>"; };
 		2D31415B2E3438640002E571 /* NavigationStateRestorationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateRestorationTests.swift; sourceTree = "<group>"; };
 		2D31415C2E3438640002E571 /* UnpopGestureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnpopGestureTests.swift; sourceTree = "<group>"; };
+		2D39F20C2E3B5BE600B9E57A /* NavigationStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStateManager.swift; sourceTree = "<group>"; };
+		2D39F20E2E3B5CB000B9E57A /* ListInteractionModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListInteractionModifiers.swift; sourceTree = "<group>"; };
+		2D39F2102E3B64F900B9E57A /* BackSwipeGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackSwipeGesture.swift; sourceTree = "<group>"; };
 		2D4504BE2E2E45C100C01E36 /* SwiftUIRenderViewNative.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIRenderViewNative.swift; sourceTree = "<group>"; };
 		2D4504C02E2E54CD00C01E36 /* PostRenderModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRenderModels.swift; sourceTree = "<group>"; };
 		2D6C55902E3123E1003BCC50 /* ForumRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumRowView.swift; sourceTree = "<group>"; };
@@ -695,6 +701,7 @@
 		1190F71C13BE4EA900B9D271 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				2D39F20C2E3B5BE600B9E57A /* NavigationStateManager.swift */,
 				2DB77D682E1E784C0021B8DE /* NavigationStateRestoration.swift */,
 				2D91DB8F2E13EBE000771E25 /* PostsViewModel.swift */,
 				2DE976B12E0FFB0300233423 /* MainView.swift */,
@@ -1311,6 +1318,8 @@
 		2DB5FC1F2E1A8042003F050F /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				2D39F2102E3B64F900B9E57A /* BackSwipeGesture.swift */,
+				2D39F20E2E3B5CB000B9E57A /* ListInteractionModifiers.swift */,
 				2D94CCC82E34B833001C0027 /* NavigationHeaderView.swift */,
 				2D3141572E3438400002E571 /* WebViewGestureCoordinator.swift */,
 				2D872A352E31205E001467B4 /* NigglyRefreshableListView.swift */,
@@ -1677,10 +1686,12 @@
 				2DAD15422E21FA9A0057C340 /* SwiftUINigglyPullControl.swift in Sources */,
 				1C40796A1A228DA6004A082F /* CopyURLActivity.swift in Sources */,
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
+				2D39F2112E3B64F900B9E57A /* BackSwipeGesture.swift in Sources */,
 				2D3141582E3438400002E571 /* WebViewGestureCoordinator.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
 				2D94CD0C2E359D54001C0027 /* SwiftUIMessageComposeView.swift in Sources */,
+				2D39F20F2E3B5CB000B9E57A /* ListInteractionModifiers.swift in Sources */,
 				2DE976B02E0FF4FB00233423 /* AppViewModel.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
 				1C4E68311B32558A00FC2A02 /* ForumListSectionHeaderView.swift in Sources */,
@@ -1723,6 +1734,7 @@
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
+				2D39F20D2E3B5BE600B9E57A /* NavigationStateManager.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */,
