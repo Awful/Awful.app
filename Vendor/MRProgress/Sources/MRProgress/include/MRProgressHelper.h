@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 
 static inline CGFloat MRCGFloatCeil(CGFloat);
 
@@ -52,3 +55,5 @@ static inline CGFloat MRRotationForStatusBarOrientation() {
     }
     return 0;
 }
+
+#pragma clang diagnostic pop

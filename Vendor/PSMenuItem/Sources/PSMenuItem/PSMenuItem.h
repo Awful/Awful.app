@@ -23,6 +23,9 @@
 
 #import <UIKit/UIKit.h>
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 /**
     This subclass adds support for a block-based action on UIMenuItem.
     If you are as annoyed about the missing target/action pattern, you will love this.
@@ -59,3 +62,5 @@
 + (void)installMenuHandlerForObject:(id)object;
 
 @end
+
+#pragma clang diagnostic pop

@@ -25,6 +25,9 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 // imp_implementationWithBlock changed it's type in iOS6 (XCode 4.5)
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 60000
 #define PSPDFBlockImplCast (__bridge void *)
@@ -166,3 +169,5 @@ BOOL PSPDFPIsMenuItemSelector(SEL selector) {
 }
 
 @end
+
+#pragma clang diagnostic pop
