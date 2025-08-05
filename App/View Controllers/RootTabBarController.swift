@@ -10,7 +10,11 @@ import UIKit
 final class RootTabBarController: UITabBarController, UITabBarControllerDelegate, Themeable {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
-    @FoilDefaultStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
+    
+    private var isEarlieriOSVersion: Bool {
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        return version.majorVersion <= 18
+    }
 
     /// Returns a tab bar controller whose tab bar is an instance of `TabBar_FixiOS11iPadLayout`.
     static func makeWithTabBarFixedForiOS11iPadLayout() -> RootTabBarController {
@@ -80,19 +84,21 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
     @objc func themeDidChange() {
         let barAppearance = UITabBarAppearance()
         
-        if disableLiquidGlass {
-            // Classic appearance: opaque background with visible hairline border
+        print("TabBar: iOS version \(ProcessInfo.processInfo.operatingSystemVersion.majorVersion), using opaque: \(isEarlieriOSVersion)")
+        
+        if isEarlieriOSVersion {
+            // iOS 18 and below: opaque background with visible hairline border
             barAppearance.configureWithOpaqueBackground()
             barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]!
             barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]!
             
-            // Set tab bar properties for classic appearance
+            // Set tab bar properties for opaque appearance
             tabBar.isTranslucent = false
             tabBar.barTintColor = theme["tabBarBackgroundColor"]
             tabBar.tintColor = theme["tintColor"]
             tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
         } else {
-            // iOS 26 liquid glass mode: Try nil background to work around rendering bug
+            // iOS 26+: use default liquid glass appearance
             barAppearance.backgroundColor = nil
             barAppearance.backgroundEffect = nil
             barAppearance.shadowImage = nil
@@ -115,7 +121,12 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         tabBar.standardAppearance = barAppearance
         tabBar.scrollEdgeAppearance = barAppearance
         
-        // iOS 26 fix: Force tab bar to refresh its appearance
+        // iOS 26 specific: Ensure both appearances are identical for proper rendering
+        if #available(iOS 15.0, *) {
+            tabBar.scrollEdgeAppearance = tabBar.standardAppearance
+        }
+        
+        // Force tab bar to refresh its appearance
         DispatchQueue.main.async { [weak self] in
             self?.tabBar.setNeedsLayout()
             self?.tabBar.layoutIfNeeded()
@@ -126,7 +137,7 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 /**
  A tab bar that fixes some issues we've come across. Some fixes are specific to Awful's particular use of the tab bar, so this may not be suitable as a general-purpose fix-it subclass.
 
- On iOS 11, `UITabBar` lays out its items with title and icon stacked horizontally whenever we're in a horizontally regular size class, and it does not do well if we constrict its width. Everything falls apart when the tab bar is in the primary view controller of a split view controller. This subclass overrides `traitCollection` and forces an always compact horizontal size class.
+ On iOS 11, `UITabBar` lays out its items with title and icon stacked horizontally whenever we're in a horizontally regular size class, and it does not do well if we constrict its width. Everything falls apart when the tab bar is in the primary view controller of a split view controller. This subclass forces an always compact horizontal size class using the modern `traitOverrides` property on iOS 17+ and the deprecated `traitCollection` override on earlier versions.
 
  On iOS 12, `UITabBar` has a hard time with safe area insets and can completely mess up its own layout after some combination of `hidesBottomBarOnPush` and/or full-screen modal presentation. The layout mess usually fixes itself after the pop animation that results in the tab bar appearing. This subclass overrides `sizeThatFits(_:)` and ensures that the returned height considers the safe area insets.
 
@@ -141,6 +152,23 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
  */
 final class RootTabBar: UITabBar {
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        commonInit()
+    }
+    
+    private func commonInit() {
+        // Force compact horizontal size class to fix iOS 11 iPad layout issues
+        if #available(iOS 17.0, *) {
+            traitOverrides.horizontalSizeClass = .compact
+        }
+    }
+
     private lazy var topBorder: HairlineView = {
         let topBorder = HairlineView()
         topBorder.translatesAutoresizingMaskIntoConstraints = false
@@ -153,10 +181,15 @@ final class RootTabBar: UITabBar {
         set { topBorder.backgroundColor = newValue }
     }
 
+    // For iOS versions before 17.0, keep the deprecated override for compatibility
     override var traitCollection: UITraitCollection {
-        return UITraitCollection(traitsFrom: [
-            super.traitCollection,
-            UITraitCollection(horizontalSizeClass: .compact)])
+        if #available(iOS 17.0, *) {
+            return super.traitCollection
+        } else {
+            return UITraitCollection(traitsFrom: [
+                super.traitCollection,
+                UITraitCollection(horizontalSizeClass: .compact)])
+        }
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {

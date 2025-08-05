@@ -32,7 +32,7 @@ final class VerticalPageNumberView: UIView {
     private let separatorLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "/"
+        label.text = " /"
         label.textAlignment = .center
         label.font = UIFont.preferredFontForTextStyle(.footnote, fontName: nil, sizeAdjustment: 0, weight: .medium)
         label.adjustsFontForContentSizeCategory = true

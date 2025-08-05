@@ -19,7 +19,6 @@ final class PostsPageView: UIView {
 
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
-    @FoilDefaultStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     var viewHasBeenScrolledOnce: Bool = false
     
     // MARK: Loading view
@@ -306,9 +305,9 @@ final class PostsPageView: UIView {
 
         let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
         toolbar.frame = CGRect(
-            x: bounds.minX,
+            x: bounds.minX + layoutMargins.left,
             y: bounds.maxY - layoutMargins.bottom - toolbarHeight,
-            width: bounds.width,
+            width: bounds.width - layoutMargins.left - layoutMargins.right,
             height: toolbarHeight)
 
         let scrollView = renderView.scrollView
@@ -387,28 +386,9 @@ final class PostsPageView: UIView {
     // MARK: - Toolbar Configuration
     
     private func configureToolbarAppearance(_ toolbar: Toolbar) {
-        if disableLiquidGlass {
-            // Classic appearance: opaque background with visible hairline border
-            toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-            toolbar.isTranslucent = false
-            
-            // Create and configure classic appearance
-            let appearance = UIToolbarAppearance()
-            appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = Theme.defaultTheme()["tabBarBackgroundColor"]
-            appearance.shadowColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-            
-            toolbar.standardAppearance = appearance
-            toolbar.compactAppearance = appearance
-            if #available(iOS 15.0, *) {
-                toolbar.scrollEdgeAppearance = appearance
-                toolbar.compactScrollEdgeAppearance = appearance
-            }
-        } else {
-            // Modern iOS 26 appearance: translucent with hidden hairline border
-            toolbar.topBorderColor = UIColor.clear
-            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
-        }
+        // Modern iOS 26 appearance: translucent with hidden hairline border
+        toolbar.topBorderColor = UIColor.clear
+        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
     }
     
     // MARK: Gunk

@@ -35,7 +35,6 @@ public struct SettingsView: View {
     @AppStorage(Settings.forumThreadsSortedUnread) private var sortFirstUnreadThreads
     @AppStorage(Settings.automaticTimg) private var timgLargeImages
     @AppStorage(Settings.useNewSmiliePicker) private var useNewSmiliePicker
-    @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
 
     let appIconDataSource: AppIconDataSource
@@ -292,13 +291,9 @@ public struct SettingsView: View {
 
             Section {
                 Toggle("Unread Announcements Badge", bundle: .module, isOn: $showUnreadAnnouncementsBadge)
-                Toggle("Disable Liquid Glass", bundle: .module, isOn: $disableLiquidGlass)
             } header: {
                 Text("Tabs", bundle: .module)
                     .header()
-            } footer: {
-                Text("Disabling liquid glass restores the classic toolbar appearance with hairline borders instead of the translucent iOS 26 style.", bundle: .module)
-                    .footer()
             }
             .section()
 

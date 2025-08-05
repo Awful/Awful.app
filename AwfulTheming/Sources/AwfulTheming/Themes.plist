@@ -135,6 +135,8 @@
 			<string>#1e84af</string>
 			<key>tabBarBackgroundColor</key>
 			<string>#f7f7f7</string>
+			<key>bottomBarTopBorderColor</key>
+			<string>#cccccc</string>
 			<key>navigationBarTextColor</key>
 			<string>#ffffff</string>
 			<key>navigationBarTintColor</key>

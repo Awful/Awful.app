@@ -26,7 +26,6 @@ final class PostsPageViewController: ViewController {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
-    @FoilDefaultStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
@@ -283,7 +282,7 @@ final class PostsPageViewController: ViewController {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    if !self.disableLiquidGlass {
+                    if #available(iOS 26.0, *) {
                         // Use vertical view: show unknown current page with known total
                         self.verticalPageNumberView.currentPage = 0 // Will display as "?"
                         self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
@@ -340,7 +339,7 @@ final class PostsPageViewController: ViewController {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    if !self.disableLiquidGlass {
+                    if #available(iOS 26.0, *) {
                         // Use vertical view: show unknown current page with known total
                         self.verticalPageNumberView.currentPage = 0 // Will display as "?"
                         self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
@@ -564,8 +563,8 @@ final class PostsPageViewController: ViewController {
             }
         })
         
-        // Set up the bar button item based on liquid glass setting
-        if !disableLiquidGlass {
+        // Set up the bar button item based on iOS version
+        if #available(iOS 26.0, *) {
             // Use vertical page number view for modern appearance wrapped in container for centering
             let containerView = UIView()
             containerView.addSubview(verticalPageNumberView)
@@ -578,7 +577,7 @@ final class PostsPageViewController: ViewController {
             ])
             item.customView = containerView
         } else {
-            // Use traditional text title for classic appearance
+            // Use traditional text title for iOS 18 and below
             item.possibleTitles = ["2345 / 2345"]
         }
         
@@ -679,22 +678,22 @@ final class PostsPageViewController: ViewController {
         }()
 
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            // Update page display based on liquid glass setting
-            if !disableLiquidGlass {
+            // Update page display based on iOS version
+            if #available(iOS 26.0, *) {
                 // Use vertical page number view for modern appearance
                 verticalPageNumberView.currentPage = pageNumber
                 verticalPageNumberView.totalPages = numberOfPages
                 verticalPageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
                 currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             } else {
-                // Use traditional text title for classic appearance
+                // Use traditional text title for iOS 18 and below
                 currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
                 currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
                 currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
             }
         } else {
             // Clear page display
-            if !disableLiquidGlass {
+            if #available(iOS 26.0, *) {
                 verticalPageNumberView.currentPage = 0
                 verticalPageNumberView.totalPages = 0
             } else {
@@ -721,22 +720,8 @@ final class PostsPageViewController: ViewController {
     private func updateToolbarItems() {
         var toolbarItems: [UIBarButtonItem] = [settingsItem, .flexibleSpace()]
         
-        // Add navigation buttons based on liquid glass setting
-        if !disableLiquidGlass {
-            // When liquid glass is enabled, only show enabled buttons
-            if backItem.isEnabled {
-                toolbarItems.append(backItem)
-            }
-            
-            toolbarItems.append(currentPageItem)
-            
-            if forwardItem.isEnabled {
-                toolbarItems.append(forwardItem)
-            }
-        } else {
-            // When liquid glass is disabled, show all buttons (enabled/disabled)
-            toolbarItems.append(contentsOf: [backItem, currentPageItem, forwardItem])
-        }
+        // Add navigation buttons - always show all buttons to maintain consistent spacing
+        toolbarItems.append(contentsOf: [backItem, currentPageItem, forwardItem])
         
         toolbarItems.append(contentsOf: [.flexibleSpace(), actionsItem()])
         postsView.toolbarItems = toolbarItems
@@ -1589,7 +1574,7 @@ final class PostsPageViewController: ViewController {
         }
 
         let appearance = UIToolbarAppearance()
-        if disableLiquidGlass || !postsView.isToolbarTranslucent {
+        if !postsView.isToolbarTranslucent {
             appearance.configureWithOpaqueBackground()
         } else {
             appearance.configureWithDefaultBackground()
