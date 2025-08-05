@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+  <!-- Generator: Adobe Illustrator 29.5.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 141)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #ff8000;
+      }
+
+      .st1 {
+        fill: #00a424;
+      }
+
+      .st2 {
+        fill: #fc0;
+      }
+
+      .st3 {
+        fill: #c400c4;
+      }
+
+      .st4 {
+        fill: red;
+      }
+
+      .st5 {
+        fill: #0077f5;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="st2" x="373.2" y="315.73" width="128" height="392.53" rx="17.07" ry="17.07"/>
+    <rect class="st0" x="223.6" y="315.73" width="128" height="392.53" rx="17.07" ry="17.07"/>
+  </g>
+  <path class="st4" d="M150.8,315.73h34.13c9.43,0,17.07,7.64,17.07,17.07v358.4c0,9.43-7.64,17.07-17.07,17.07h-34.13c-42.42,0-76.8-34.38-76.8-76.8v-238.93c0-42.42,34.38-76.8,76.8-76.8Z"/>
+  <rect class="st1" x="522.8" y="315.73" width="128" height="392.53" rx="17.07" ry="17.07"/>
+  <path class="st3" d="M873.2,315.73h-34.13c-9.43,0-17.07,7.64-17.07,17.07v358.4c0,9.43,7.64,17.07,17.07,17.07h34.13c42.42,0,76.8-34.38,76.8-76.8v-238.93c0-42.42-34.38-76.8-76.8-76.8Z"/>
+  <rect class="st5" x="672.4" y="315.73" width="128" height="392.53" rx="17.07" ry="17.07"/>
+</svg>
