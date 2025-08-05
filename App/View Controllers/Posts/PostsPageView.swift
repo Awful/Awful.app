@@ -19,6 +19,7 @@ final class PostsPageView: UIView {
 
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
+    @FoilDefaultStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     var viewHasBeenScrolledOnce: Bool = false
     
     // MARK: Loading view
@@ -214,11 +215,59 @@ final class PostsPageView: UIView {
 
     private var scrollViewDelegateMux: ScrollViewDelegateMultiplexer?
 
-    let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
+    private lazy var toolbar: UIView = {
+        return Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
+    }()
+    
+    /// Provides access to the toolbar for PostsPageViewController
+    var toolbarView: UIView {
+        return toolbar
+    }
+    
+    /// Returns true if the toolbar is translucent (only available for standard UIToolbar)
+    var isToolbarTranslucent: Bool {
+        if let standardToolbar = toolbar as? Toolbar {
+            return standardToolbar.isTranslucent
+        }
+        return false // Custom toolbar is never translucent
+    }
+    
+    /// Sets toolbar appearance (only available for standard UIToolbar)
+    func setToolbarAppearance(_ appearance: UIToolbarAppearance) {
+        guard let standardToolbar = toolbar as? Toolbar else { return }
+        standardToolbar.standardAppearance = appearance
+        standardToolbar.compactAppearance = appearance
+    }
+    
+    /// Sets toolbar scroll edge appearance (only available for standard UIToolbar) 
+    func setToolbarScrollEdgeAppearance(_ appearance: UIToolbarAppearance) {
+        guard let standardToolbar = toolbar as? Toolbar else { return }
+        if #available(iOS 15.0, *) {
+            standardToolbar.scrollEdgeAppearance = appearance
+            standardToolbar.compactScrollEdgeAppearance = appearance
+        }
+    }
+    
+    /// Sets toolbar user interface style
+    func setToolbarUserInterfaceStyle(_ style: UIUserInterfaceStyle) {
+        if let standardToolbar = toolbar as? Toolbar {
+            standardToolbar.overrideUserInterfaceStyle = style
+        }
+        // Custom toolbar doesn't support overrideUserInterfaceStyle
+    }
 
     var toolbarItems: [UIBarButtonItem] {
-        get { return toolbar.items ?? [] }
-        set { toolbar.items = newValue }
+        get { 
+            if let standardToolbar = toolbar as? Toolbar {
+                return standardToolbar.items ?? []
+            }
+            return []
+        }
+        set { 
+            if let standardToolbar = toolbar as? Toolbar {
+                standardToolbar.items = newValue
+            }
+        }
     }
 
     // MARK: Layout
@@ -230,7 +279,12 @@ final class PostsPageView: UIView {
 
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
 
-        toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
+        if let standardToolbar = toolbar as? Toolbar {
+            standardToolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
+            
+            // Apply initial appearance based on liquid glass setting
+            configureToolbarAppearance(standardToolbar)
+        }
         
         addSubview(renderView)
         addSubview(topBarContainer)
@@ -322,13 +376,41 @@ final class PostsPageView: UIView {
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        toolbar.tintColor =  Theme.defaultTheme()["toolbarTextColor"]!
-        toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        if let standardToolbar = toolbar as? Toolbar {
+            standardToolbar.tintColor = Theme.defaultTheme()["toolbarTextColor"]!
+            configureToolbarAppearance(standardToolbar)
+        }
 
         topBar.themeDidChange(Theme.defaultTheme())
     }
-
+    
+    // MARK: - Toolbar Configuration
+    
+    private func configureToolbarAppearance(_ toolbar: Toolbar) {
+        if disableLiquidGlass {
+            // Classic appearance: opaque background with visible hairline border
+            toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
+            toolbar.isTranslucent = false
+            
+            // Create and configure classic appearance
+            let appearance = UIToolbarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = Theme.defaultTheme()["tabBarBackgroundColor"]
+            appearance.shadowColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
+            
+            toolbar.standardAppearance = appearance
+            toolbar.compactAppearance = appearance
+            if #available(iOS 15.0, *) {
+                toolbar.scrollEdgeAppearance = appearance
+                toolbar.compactScrollEdgeAppearance = appearance
+            }
+        } else {
+            // Modern iOS 26 appearance: translucent with hidden hairline border
+            toolbar.topBorderColor = UIColor.clear
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        }
+    }
+    
     // MARK: Gunk
     
     required init?(coder: NSCoder) {

@@ -4,7 +4,13 @@
     "" : {
 
     },
+    "?" : {
+
+    },
     "%@" : {
+
+    },
+    "%lld" : {
 
     },
     "😕" : {
@@ -44,6 +50,9 @@
 
     },
     "Back" : {
+
+    },
+    "Bookmark Thread" : {
 
     },
     "bookmarks.title" : {
@@ -263,6 +272,9 @@
           }
         }
       }
+    },
+    "Copy link" : {
+
     },
     "Copy Title" : {
 
@@ -657,6 +669,12 @@
     "Mark Unread" : {
 
     },
+    "Menu" : {
+
+    },
+    "Next page" : {
+
+    },
     "No smilies found" : {
 
     },
@@ -668,6 +686,19 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Opens page picker" : {
+
+    },
+    "Page %@ of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Page %1$@ of %2$@"
           }
         }
       }
@@ -837,6 +868,9 @@
           }
         }
       }
+    },
+    "Previous page" : {
+
     },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
@@ -1249,6 +1283,12 @@
 
     },
     "V" : {
+
+    },
+    "Vote" : {
+
+    },
+    "Your posts" : {
 
     }
   },

@@ -26,6 +26,7 @@ final class PostsPageViewController: ViewController {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    @FoilDefaultStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
@@ -282,7 +283,14 @@ final class PostsPageViewController: ViewController {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if !self.disableLiquidGlass {
+                        // Use vertical view: show unknown current page with known total
+                        self.verticalPageNumberView.currentPage = 0 // Will display as "?"
+                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                        self.verticalPageNumberView.textColor = self.theme["toolbarTextColor"] ?? UIColor.systemBlue
+                    } else {
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -332,7 +340,14 @@ final class PostsPageViewController: ViewController {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if !self.disableLiquidGlass {
+                        // Use vertical view: show unknown current page with known total
+                        self.verticalPageNumberView.currentPage = 0 // Will display as "?"
+                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                        self.verticalPageNumberView.textColor = self.theme["toolbarTextColor"] ?? UIColor.systemBlue
+                    } else {
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -530,6 +545,14 @@ final class PostsPageViewController: ViewController {
         return item
     }()
 
+    private lazy var verticalPageNumberView: VerticalPageNumberView = {
+        let view = VerticalPageNumberView()
+        view.onTap = { [weak self] in
+            self?.handlePageNumberTap()
+        }
+        return view
+    }()
+    
     private lazy var currentPageItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
             guard self.postsView.loadingView == nil else { return }
@@ -540,7 +563,25 @@ final class PostsPageViewController: ViewController {
                 popover.barButtonItem = action.sender as? UIBarButtonItem
             }
         })
-        item.possibleTitles = ["2345 / 2345"]
+        
+        // Set up the bar button item based on liquid glass setting
+        if !disableLiquidGlass {
+            // Use vertical page number view for modern appearance wrapped in container for centering
+            let containerView = UIView()
+            containerView.addSubview(verticalPageNumberView)
+            verticalPageNumberView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                verticalPageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                verticalPageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                containerView.widthAnchor.constraint(equalTo: verticalPageNumberView.widthAnchor, constant: 6), // 3 points padding on each side
+                containerView.heightAnchor.constraint(equalTo: verticalPageNumberView.heightAnchor)
+            ])
+            item.customView = containerView
+        } else {
+            // Use traditional text title for classic appearance
+            item.possibleTitles = ["2345 / 2345"]
+        }
+        
         item.accessibilityHint = "Opens page picker"
         return item
     }()
@@ -638,11 +679,27 @@ final class PostsPageViewController: ViewController {
         }()
 
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
-            currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
-            currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
+            // Update page display based on liquid glass setting
+            if !disableLiquidGlass {
+                // Use vertical page number view for modern appearance
+                verticalPageNumberView.currentPage = pageNumber
+                verticalPageNumberView.totalPages = numberOfPages
+                verticalPageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+            } else {
+                // Use traditional text title for classic appearance
+                currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
+                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
+            }
         } else {
-            currentPageItem.title = ""
+            // Clear page display
+            if !disableLiquidGlass {
+                verticalPageNumberView.currentPage = 0
+                verticalPageNumberView.totalPages = 0
+            } else {
+                currentPageItem.title = ""
+            }
             currentPageItem.accessibilityLabel = nil
         }
 
@@ -656,6 +713,33 @@ final class PostsPageViewController: ViewController {
         }()
 
         composeItem.isEnabled = !thread.closed
+        
+        // Update toolbar items based on liquid glass setting and button states
+        updateToolbarItems()
+    }
+    
+    private func updateToolbarItems() {
+        var toolbarItems: [UIBarButtonItem] = [settingsItem, .flexibleSpace()]
+        
+        // Add navigation buttons based on liquid glass setting
+        if !disableLiquidGlass {
+            // When liquid glass is enabled, only show enabled buttons
+            if backItem.isEnabled {
+                toolbarItems.append(backItem)
+            }
+            
+            toolbarItems.append(currentPageItem)
+            
+            if forwardItem.isEnabled {
+                toolbarItems.append(forwardItem)
+            }
+        } else {
+            // When liquid glass is disabled, show all buttons (enabled/disabled)
+            toolbarItems.append(contentsOf: [backItem, currentPageItem, forwardItem])
+        }
+        
+        toolbarItems.append(contentsOf: [.flexibleSpace(), actionsItem()])
+        postsView.toolbarItems = toolbarItems
     }
 
     private func showLoadingView() {
@@ -696,6 +780,18 @@ final class PostsPageViewController: ViewController {
 
         if let popover = selectotron.popoverPresentationController {
             popover.barButtonItem = sender
+        }
+    }
+    
+    private func handlePageNumberTap() {
+        guard postsView.loadingView == nil else { return }
+        let selectotron = Selectotron(postsViewController: self)
+        present(selectotron, animated: true)
+        
+        // For popover presentation with custom view, we need to set sourceView and sourceRect
+        if let popover = selectotron.popoverPresentationController {
+            popover.sourceView = verticalPageNumberView
+            popover.sourceRect = verticalPageNumberView.bounds
         }
     }
 
@@ -1038,10 +1134,7 @@ final class PostsPageViewController: ViewController {
                     overlay.dismiss(true)
 
                     // update toolbar so menu reflects new bookmarked state
-                    var newItems = postsView.toolbarItems
-                    newItems.removeLast()
-                    newItems.append(actionsItem())
-                    postsView.toolbarItems = newItems
+                    updateToolbarItems()
                 }
             } catch {
                 logger.error("error marking thread: \(error)")
@@ -1496,24 +1589,18 @@ final class PostsPageViewController: ViewController {
         }
 
         let appearance = UIToolbarAppearance()
-        if (postsView.toolbar.isTranslucent) {
-            appearance.configureWithDefaultBackground()
-        } else {
+        if disableLiquidGlass || !postsView.isToolbarTranslucent {
             appearance.configureWithOpaqueBackground()
+        } else {
+            appearance.configureWithDefaultBackground()
         }
         appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
         appearance.shadowImage = nil
         appearance.shadowColor = nil
 
-        postsView.toolbar.standardAppearance = appearance
-        postsView.toolbar.compactAppearance = appearance
-
-        if #available(iOS 15.0, *) {
-            postsView.toolbar.scrollEdgeAppearance = appearance
-            postsView.toolbar.compactScrollEdgeAppearance = appearance
-        }
-
-        postsView.toolbar.overrideUserInterfaceStyle = theme["mode"] == "light" ? .light : .dark
+        postsView.setToolbarAppearance(appearance)
+        postsView.setToolbarScrollEdgeAppearance(appearance)
+        postsView.setToolbarUserInterfaceStyle(theme["mode"] == "light" ? .light : .dark)
 
         messageViewController?.themeDidChange()
     }
@@ -1534,11 +1621,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
 
-        let spacer: CGFloat = 12
-        postsView.toolbarItems = [
-            settingsItem, .flexibleSpace(),
-            backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
-            .flexibleSpace(), actionsItem()]
+        // Toolbar items will be set by updateToolbarItems() called from updateUserInterface()
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
@@ -1878,5 +1961,88 @@ extension PostsPageViewController {
         keyCommands.append(UIKeyCommand(action: #selector(newReply), input: "N", modifierFlags: .command, discoverabilityTitle: "New Reply"))
 
         return keyCommands
+    }
+    
+    // MARK: - Custom Toolbar Actions
+    
+    func goToPreviousPage() {
+        guard case .specific(let pageNumber)? = page, pageNumber > 1 else { return }
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        loadPage(.specific(pageNumber - 1), updatingCache: true, updatingLastReadPost: true)
+    }
+    
+    func goToNextPage() {
+        guard case .specific(let pageNumber)? = page, pageNumber < numberOfPages, pageNumber > 0 else { return }
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        loadPage(.specific(pageNumber + 1), updatingCache: true, updatingLastReadPost: true)
+    }
+    
+    func showPagePicker() {
+        guard postsView.loadingView == nil else { return }
+        let selectotron = Selectotron(postsViewController: self)
+        present(selectotron, animated: true)
+    }
+    
+    func showSettings() {
+        let settings = PostsPageSettingsViewController()
+        present(settings, animated: true)
+    }
+    
+    func showActualMenu() {
+        // Show the real thread actions menu
+        let actions: [UIAlertAction] = [
+            UIAlertAction(title: "Bookmark Thread", style: .default) { _ in
+                // Call the actual bookmark functionality
+                // This would need to be implemented based on the existing bookmark logic
+            },
+            UIAlertAction(title: "Copy URL", style: .default) { _ in
+                // Call the actual copy URL functionality
+                // This would need to be implemented based on the existing copy logic
+            },
+            UIAlertAction.cancel()
+        ]
+        let actionSheet = UIAlertController(actionSheetActions: actions)
+        present(actionSheet, animated: false)
+        
+        // Set the popover source for iPad
+        if let popover = actionSheet.popoverPresentationController {
+            popover.sourceView = postsView.toolbarView
+            popover.sourceRect = CGRect(x: postsView.toolbarView.bounds.maxX - 44, y: 0, width: 44, height: 44)
+        }
+    }
+    
+    func showMenu() {
+        // Legacy method - redirect to the actual menu
+        showActualMenu()
+    }
+    
+    // MARK: - Trigger Methods for SwiftUI Toolbar
+    
+    func triggerSettings() {
+        showSettings()
+    }
+    
+    func triggerBookmark() {
+        let action = UIAction(title: "", handler: { _ in })
+        bookmark(action: action)
+    }
+    
+    func triggerCopyLink() {
+        let action = UIAction(title: "", handler: { _ in })
+        copyLink(action: action)
+    }
+    
+    func triggerVote() {
+        let action = UIAction(title: "", handler: { _ in })
+        vote(action: action)
+    }
+    
+    func triggerYourPosts() {
+        let action = UIAction(title: "", handler: { _ in })
+        yourPosts(action: action)
     }
 }

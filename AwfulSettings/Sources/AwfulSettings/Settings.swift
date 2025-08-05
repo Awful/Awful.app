@@ -133,6 +133,9 @@ public enum Settings {
 
     /// Use the new SwiftUI smilie picker with search functionality.
     public static let useNewSmiliePicker = Setting(key: "use_new_smilie_picker", default: true)
+
+    /// Disable the iOS 26 liquid glass effect on toolbars and tab bars, showing the classic appearance with hairline borders.
+    public static let disableLiquidGlass = Setting(key: "disable_liquid_glass", default: false)
 }
 
 /// A theme included with Awful.
