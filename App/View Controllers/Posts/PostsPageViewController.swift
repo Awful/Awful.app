@@ -124,14 +124,34 @@ final class PostsPageViewController: ViewController {
         init() {
             super.init(frame: .zero)
             showsMenuAsPrimaryAction = true
+            // Enable modern iOS 26 menu styling
+            if #available(iOS 16.0, *) {
+                preferredMenuElementOrder = .fixed
+            }
+            // Set the interface style to follow the theme
+            updateInterfaceStyle()
         }
+        
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+        
         func show(menu: UIMenu, from rect: CGRect) {
             frame = rect
             self.menu = menu
+            
+            // Update interface style before showing the menu to ensure it uses the correct theme
+            updateInterfaceStyle()
+            
+            // Use the original approach that was working, but ensure we get iOS 26 styling
+            // This finds the internal touch-down gesture recognizer and manually triggers it
             gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
+        }
+        
+        func updateInterfaceStyle() {
+            // Follow the theme's mode setting for menu appearance
+            let themeMode = Theme.defaultTheme()[string: "mode"]
+            overrideUserInterfaceStyle = themeMode == "light" ? .light : .dark
         }
     }
 
@@ -602,11 +622,24 @@ final class PostsPageViewController: ViewController {
 
 
     private func actionsItem() -> UIBarButtonItem {
-        let buttonItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), menu: threadActionsMenu())
-        if #available(iOS 16.0, *) {
-            buttonItem.preferredMenuElementOrder = .fixed
-        }
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "steamed-ham"), for: .normal)
+        button.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
+        button.addTarget(self, action: #selector(didTapHamburgerMenuButton(_:)), for: .touchUpInside)
+        
+        let buttonItem = UIBarButtonItem(customView: button)
         return buttonItem
+    }
+    
+    @objc private func didTapHamburgerMenuButton(_ sender: UIButton) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        
+        // Get the actual frame of the button in the view's coordinate system
+        let buttonFrameInView = sender.convert(sender.bounds, to: view)
+        
+        hiddenMenuButton.show(menu: threadActionsMenu(), from: buttonFrameInView)
     }
 
     private func refetchPosts() {
@@ -1586,6 +1619,9 @@ final class PostsPageViewController: ViewController {
         postsView.setToolbarAppearance(appearance)
         postsView.setToolbarScrollEdgeAppearance(appearance)
         postsView.setToolbarUserInterfaceStyle(theme["mode"] == "light" ? .light : .dark)
+
+        // Update hidden menu button interface style to match theme
+        hiddenMenuButton.updateInterfaceStyle()
 
         messageViewController?.themeDidChange()
     }
