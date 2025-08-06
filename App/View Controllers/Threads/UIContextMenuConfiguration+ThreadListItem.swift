@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulSettings
+import AwfulTheming
 import MRProgress
 import os
 import SwiftUI
@@ -14,7 +15,8 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 extension UIContextMenuConfiguration {
     static func makeFromThreadList(
         for thread: AwfulThread,
-        presenter: UIViewController
+        presenter: UIViewController,
+        theme: Theme? = nil
     ) -> UIContextMenuConfiguration {
         var copyTitle: UIMenuElement {
             UIAction(
@@ -187,8 +189,8 @@ extension UIContextMenuConfiguration {
                 }
             )
         }
-        return .init(identifier: nil, previewProvider: nil, actionProvider: { suggested in
-            UIMenu(children: [
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { suggested in
+            let menu = UIMenu(children: [
                 jumpToFirstPage,
                 jumpToLastPage,
                 profileAuthor,
@@ -199,6 +201,20 @@ extension UIContextMenuConfiguration {
                 setBookmarkColor,
                 toggleBookmark,
             ].compactMap { $0 })
+            
+            // Apply iOS 26 Liquid Glass styling
+            if #available(iOS 16.0, *) {
+                menu.preferredElementSize = .medium
+            }
+            
+            return menu
         })
+        
+        // Apply iOS 26 styling to the configuration
+        if #available(iOS 16.0, *) {
+            configuration.preferredMenuElementOrder = .fixed
+        }
+        
+        return configuration
     }
 }

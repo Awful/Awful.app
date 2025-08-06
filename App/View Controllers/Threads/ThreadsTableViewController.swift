@@ -424,9 +424,14 @@ extension ThreadsTableViewController {
         contextMenuConfigurationForRowAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
+        // Ensure the table view respects the current theme for context menus
+        let themeMode = theme[string: "mode"]
+        tableView.overrideUserInterfaceStyle = themeMode == "light" ? .light : .dark
+        
         return .makeFromThreadList(
             for: dataSource!.thread(at: indexPath),
-               presenter: self
+               presenter: self,
+               theme: theme
         )
     }
 }

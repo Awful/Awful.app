@@ -293,14 +293,15 @@ extension BookmarksTableViewController {
         contextMenuConfigurationForRowAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
-        let configuration = UIContextMenuConfiguration.makeFromThreadList(
+        // Ensure the table view respects the current theme for context menus
+        let themeMode = theme[string: "mode"]
+        tableView.overrideUserInterfaceStyle = themeMode == "light" ? .light : .dark
+        
+        return UIContextMenuConfiguration.makeFromThreadList(
             for: dataSource!.thread(at: indexPath),
-               presenter: self
+               presenter: self,
+               theme: theme
         )
-        if #available(iOS 16.0, *) {
-            configuration.preferredMenuElementOrder = .fixed
-        }
-        return configuration
     }
 }
 
