@@ -18,18 +18,53 @@ extension UIContextMenuConfiguration {
         presenter: UIViewController,
         theme: Theme? = nil
     ) -> UIContextMenuConfiguration {
-        var copyTitle: UIMenuElement {
-            UIAction(
-                title: NSLocalizedString("Copy Title", comment: ""),
-                image: UIImage(named: "copy-title")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in UIPasteboard.general.string = thread.title }
-            )
+        func jump(to page: ThreadPage) {
+            let postsPage = PostsPageViewController(thread: thread)
+            postsPage.restorationIdentifier = "Posts"
+            postsPage.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+            presenter.showDetailViewController(postsPage, sender: self)
         }
-        var copyURL: UIMenuElement {
-            UIAction(
-                title: NSLocalizedString("Copy URL", comment: ""),
-                image: UIImage(named: "copy-url")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in
+        // Helper function to wrap action handlers
+        func wrappedAction(title: String, image: UIImage?, attributes: UIMenuElement.Attributes = [], handler: @escaping () -> Void) -> UIAction {
+            return UIAction(title: title, image: image, attributes: attributes) { _ in
+                handler()
+                // Theme restoration is handled by UIContextMenuInteractionDelegate
+            }
+        }
+        
+        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { suggested in
+            // Ensure windows match app theme before showing context menu
+            ContextMenuThemeManager.shared.ensureWindowsMatchAppTheme()
+            
+            return UIMenu(children: [
+                wrappedAction(
+                    title: NSLocalizedString("Jump to First Page", comment: ""),
+                    image: UIImage(named: "jump-to-first-page")?.withRenderingMode(.alwaysTemplate)
+                ) { jump(to: .first) },
+                
+                wrappedAction(
+                    title: NSLocalizedString("Last Page", comment: ""),
+                    image: UIImage(named: "jump-to-last-page")?.withRenderingMode(.alwaysTemplate)
+                ) { jump(to: .last) },
+                
+                thread.author.map { author in
+                    wrappedAction(
+                        title: NSLocalizedString("Author Profile", comment: ""),
+                        image: UIImage(named: "user-profile")?.withRenderingMode(.alwaysTemplate)
+                    ) {
+                        let profile = ProfileViewController(user: author)
+                        if presenter.traitCollection.userInterfaceIdiom == .pad {
+                            presenter.present(profile.enclosingNavigationController, animated: true)
+                        } else {
+                            presenter.navigationController?.pushViewController(profile, animated: true)
+                        }
+                    }
+                },
+                
+                wrappedAction(
+                    title: NSLocalizedString("Copy URL", comment: ""),
+                    image: UIImage(named: "copy-url")?.withRenderingMode(.alwaysTemplate)
+                ) {
                     let url = AwfulRoute.threadPage(
                         threadID: thread.threadID,
                         page: .first,
@@ -38,53 +73,19 @@ extension UIContextMenuConfiguration {
                     @FoilDefaultStorageOptional(Settings.lastOfferedPasteboardURLString) var lastOfferedPasteboardURLString
                     lastOfferedPasteboardURLString = url.absoluteString
                     UIPasteboard.general.coercedURL = url
-                }
-            )
-        }
-        func jump(to page: ThreadPage) {
-            let postsPage = PostsPageViewController(thread: thread)
-            postsPage.restorationIdentifier = "Posts"
-            postsPage.loadPage(page, updatingCache: true, updatingLastReadPost: true)
-            presenter.showDetailViewController(postsPage, sender: self)
-        }
-        var jumpToFirstPage: UIMenuElement {
-            UIAction(
-                title: NSLocalizedString("Jump to First Page", comment: ""),
-                image: UIImage(named: "jump-to-first-page")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in jump(to: .first) }
-            )
-        }
-        var setBookmarkColor: UIMenuElement {
-            UIAction(
-                title: "Set color",
-                image: UIImage(named: "rainbow")!.withRenderingMode(.alwaysTemplate),
-                attributes: [],
-                handler: { action in
-                    let profile = UIHostingController(rootView: BookmarkColorPicker(
-                        setBookmarkColor: ForumsClient.shared.setBookmarkColor(_:as:),
-                        thread: thread
-                    ))
-                    profile.modalPresentationStyle = .pageSheet
-                    if let sheet = profile.sheetPresentationController {
-                        sheet.detents = [.medium()]
-                    }
-                    presenter.present(profile, animated: true)
-                }
-            )
-        }
-        var jumpToLastPage: UIMenuElement {
-            UIAction(
-                title: NSLocalizedString("Last Page", comment: ""),
-                image: UIImage(named: "jump-to-last-page")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in jump(to: .last) }
-            )
-        }
-        var markThreadRead: UIMenuElement? {
-            guard !thread.beenSeen else { return nil }
-            return UIAction(
-                title: NSLocalizedString("Mark Thread As Read", comment: ""),
-                image: UIImage(named: "mark-read-up-to-here")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in
+                },
+                
+                wrappedAction(
+                    title: NSLocalizedString("Copy Title", comment: ""),
+                    image: UIImage(named: "copy-title")?.withRenderingMode(.alwaysTemplate)
+                ) {
+                    UIPasteboard.general.string = thread.title
+                },
+                
+                !thread.beenSeen ? wrappedAction(
+                    title: NSLocalizedString("Mark Thread As Read", comment: ""),
+                    image: UIImage(named: "mark-read-up-to-here")?.withRenderingMode(.alwaysTemplate)
+                ) {
                     Task { [weak presenter] in
                         do {
                             _ = try await ForumsClient.shared.listPosts(
@@ -103,15 +104,12 @@ extension UIContextMenuConfiguration {
                             }
                         }
                     }
-                }
-            )
-        }
-        var markThreadUnread: UIMenuElement? {
-            guard thread.beenSeen else { return nil }
-            return UIAction(
-                title: NSLocalizedString("Mark Unread", comment: ""),
-                image: UIImage(named: "mark-as-unread")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in
+                } : nil,
+                
+                thread.beenSeen ? wrappedAction(
+                    title: NSLocalizedString("Mark Unread", comment: ""),
+                    image: UIImage(named: "mark-as-unread")?.withRenderingMode(.alwaysTemplate)
+                ) {
                     let oldSeen = thread.seenPosts
                     thread.seenPosts = 0
                     Task {
@@ -128,34 +126,32 @@ extension UIContextMenuConfiguration {
                             }
                         }
                     }
-                }
-            )
-        }
-        var profileAuthor: UIMenuElement? {
-            guard let author = thread.author else { return nil }
-            return UIAction(
-                title: NSLocalizedString("Author Profile", comment: ""),
-                image: UIImage(named: "user-profile")!.withRenderingMode(.alwaysTemplate),
-                handler: { action in
-                    let profile = ProfileViewController(user: author)
-                    if presenter.traitCollection.userInterfaceIdiom == .pad {
-                        presenter.present(profile.enclosingNavigationController, animated: true)
-                    } else {
-                        presenter.navigationController?.pushViewController(profile, animated: true)
+                } : nil,
+                
+                wrappedAction(
+                    title: "Set color",
+                    image: UIImage(named: "rainbow")?.withRenderingMode(.alwaysTemplate)
+                ) {
+                    let profile = UIHostingController(rootView: BookmarkColorPicker(
+                        setBookmarkColor: ForumsClient.shared.setBookmarkColor(_:as:),
+                        thread: thread
+                    ))
+                    profile.modalPresentationStyle = .pageSheet
+                    if let sheet = profile.sheetPresentationController {
+                        sheet.detents = [.medium()]
                     }
-                }
-            )
-        }
-        var toggleBookmark: UIMenuElement {
-            UIAction(
-                title: (thread.bookmarked
-                        ? NSLocalizedString("Remove Bookmark", comment: "")
-                        : NSLocalizedString("Add Bookmark", comment: "")),
-                image: UIImage(named: thread.bookmarked
-                               ? "remove-bookmark"
-                               : "add-bookmark")!.withRenderingMode(.alwaysTemplate),
-                attributes: thread.bookmarked ? .destructive : [],
-                handler: { action in
+                    presenter.present(profile, animated: true)
+                },
+                
+                wrappedAction(
+                    title: (thread.bookmarked
+                            ? NSLocalizedString("Remove Bookmark", comment: "")
+                            : NSLocalizedString("Add Bookmark", comment: "")),
+                    image: UIImage(named: thread.bookmarked
+                                   ? "remove-bookmark"
+                                   : "add-bookmark")?.withRenderingMode(.alwaysTemplate),
+                    attributes: thread.bookmarked ? .destructive : []
+                ) {
                     Task {
                         do {
                             let wasBookmarked: Bool = thread.managedObjectContext!.performAndWait {
@@ -186,28 +182,8 @@ extension UIContextMenuConfiguration {
                             }
                         }
                     }
-                }
-            )
-        }
-        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { suggested in
-            let menu = UIMenu(children: [
-                jumpToFirstPage,
-                jumpToLastPage,
-                profileAuthor,
-                copyURL,
-                copyTitle,
-                markThreadRead,
-                markThreadUnread,
-                setBookmarkColor,
-                toggleBookmark,
+                },
             ].compactMap { $0 })
-            
-            // Apply iOS 26 Liquid Glass styling
-            if #available(iOS 16.0, *) {
-                menu.preferredElementSize = .medium
-            }
-            
-            return menu
         })
         
         // Apply iOS 26 styling to the configuration

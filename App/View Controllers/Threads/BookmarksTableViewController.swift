@@ -9,6 +9,7 @@ import Combine
 import CoreData
 import os
 import ScrollViewDelegateMultiplexer
+import SwiftUI
 import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BookmarksTableViewController")
@@ -19,6 +20,7 @@ final class BookmarksTableViewController: TableViewController {
     private var dataSource: ThreadListDataSource?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
+    
     private var latestPage = 0
     private var loadMoreFooter: LoadMoreFooter?
     private let managedObjectContext: NSManagedObjectContext
@@ -109,6 +111,7 @@ final class BookmarksTableViewController: TableViewController {
 
         tableView.hideExtraneousSeparators()
         tableView.restorationIdentifier = "Bookmarks table"
+        
 
         dataSource = makeDataSource()
         tableView.reloadData()
@@ -147,6 +150,20 @@ final class BookmarksTableViewController: TableViewController {
         super.themeDidChange()
 
         loadMoreFooter?.themeDidChange()
+
+        // Set interface style for context menus to follow theme
+        let themeMode = theme[string: "mode"]
+        let userInterfaceStyle: UIUserInterfaceStyle = themeMode == "light" ? .light : .dark
+        
+        overrideUserInterfaceStyle = userInterfaceStyle
+        tableView.overrideUserInterfaceStyle = userInterfaceStyle
+        view.overrideUserInterfaceStyle = userInterfaceStyle
+        
+        // Also set the window's interface style to ensure context menus inherit correctly
+        if let window = view.window {
+            window.overrideUserInterfaceStyle = userInterfaceStyle
+        }
+        
 
         tableView.separatorColor = theme["listSeparatorColor"]
         tableView.separatorInset.left = ThreadListCell.separatorLeftInset(
@@ -287,22 +304,14 @@ extension BookmarksTableViewController {
         }
         return .none
     }
-        
-    override func tableView(
-        _ tableView: UITableView,
-        contextMenuConfigurationForRowAt indexPath: IndexPath,
-        point: CGPoint
-    ) -> UIContextMenuConfiguration? {
-        // Ensure the table view respects the current theme for context menus
-        let themeMode = theme[string: "mode"]
-        tableView.overrideUserInterfaceStyle = themeMode == "light" ? .light : .dark
-        
-        return UIContextMenuConfiguration.makeFromThreadList(
-            for: dataSource!.thread(at: indexPath),
-               presenter: self,
-               theme: theme
-        )
+
+    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let thread = dataSource!.thread(at: indexPath)
+        return UIContextMenuConfiguration.makeFromThreadList(for: thread, presenter: self, theme: theme)
     }
+
+
+        
 }
 
 extension BookmarksTableViewController: ThreadListDataSourceDeletionDelegate {

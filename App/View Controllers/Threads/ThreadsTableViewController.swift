@@ -20,6 +20,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     private var dataSource: ThreadListDataSource?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var filterThreadTag: ThreadTag?
+    
     let forum: Forum
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var latestPage = 0
@@ -125,6 +126,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         tableView.hideExtraneousSeparators()
         tableView.restorationIdentifier = "Threads table view"
         
+        
         dataSource = makeDataSource()
         tableView.reloadData()
         
@@ -158,6 +160,20 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         super.themeDidChange()
 
         loadMoreFooter?.themeDidChange()
+        
+        // Set interface style for context menus to follow theme
+        let themeMode = theme[string: "mode"]
+        let userInterfaceStyle: UIUserInterfaceStyle = themeMode == "light" ? .light : .dark
+        
+        overrideUserInterfaceStyle = userInterfaceStyle
+        tableView.overrideUserInterfaceStyle = userInterfaceStyle
+        view.overrideUserInterfaceStyle = userInterfaceStyle
+        
+        // Also set the window's interface style to ensure context menus inherit correctly
+        if let window = view.window {
+            window.overrideUserInterfaceStyle = userInterfaceStyle
+        }
+        
         
         updateFilterButton()
 
@@ -419,19 +435,11 @@ extension ThreadsTableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    override func tableView(
-        _ tableView: UITableView,
-        contextMenuConfigurationForRowAt indexPath: IndexPath,
-        point: CGPoint
-    ) -> UIContextMenuConfiguration? {
-        // Ensure the table view respects the current theme for context menus
-        let themeMode = theme[string: "mode"]
-        tableView.overrideUserInterfaceStyle = themeMode == "light" ? .light : .dark
-        
-        return .makeFromThreadList(
-            for: dataSource!.thread(at: indexPath),
-               presenter: self,
-               theme: theme
-        )
+    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let thread = dataSource!.thread(at: indexPath)
+        return UIContextMenuConfiguration.makeFromThreadList(for: thread, presenter: self, theme: theme)
     }
+
+
+
 }
