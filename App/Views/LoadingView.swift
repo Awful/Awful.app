@@ -70,8 +70,8 @@ private class DefaultLoadingView: LoadingView {
         
         animationView.widthAnchor.constraint(equalToConstant: 90).isActive = true
         animationView.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        animationView.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        animationView.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor).isActive = true
     
         animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce, completion: { [weak self] (finished) in
             if finished {
@@ -120,9 +120,9 @@ private class YOSPOSLoadingView: LoadingView {
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         
-        label.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        self.trailingAnchor.constraint(equalTo: label.trailingAnchor).isActive = true
-        label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+        safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: label.trailingAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -192,8 +192,8 @@ private class MacinyosLoadingView: LoadingView {
         
         imageView.widthAnchor.constraint(equalToConstant: 300).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 275).isActive = true
-        imageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        imageView.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        imageView.centerYAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerYAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -217,8 +217,8 @@ private class Winpos95LoadingView: LoadingView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(imageView)
         
-        centerXConstraint = imageView.centerXAnchor.constraint(equalTo: centerXAnchor)
-        centerYConstraint = imageView.centerYAnchor.constraint(equalTo: centerYAnchor)
+        centerXConstraint = imageView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor)
+        centerYConstraint = imageView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor)
         [centerXConstraint, centerYConstraint].forEach { $0.isActive = true }
         
         addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(didPan)))

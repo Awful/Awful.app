@@ -337,25 +337,25 @@ final class PostsPageView: UIView {
         }
         
         toolbar.frame = CGRect(
-            x: bounds.minX + layoutMargins.left,
+            x: safeAreaInsets.left,
             y: toolbarY,
-            width: bounds.width - layoutMargins.left - layoutMargins.right,
+            width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
             height: toolbarHeight)
 
         let scrollView = renderView.scrollView
 
-        let refreshControlHeight = refreshControlContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
+        let refreshControlHeight = refreshControlContainer.layoutFittingCompressedHeight(targetWidth: bounds.width - safeAreaInsets.left - safeAreaInsets.right)
         refreshControlContainer.frame = CGRect(
-            x: bounds.minX,
+            x: safeAreaInsets.left,
             y: max(scrollView.contentSize.height, scrollView.bounds.height - layoutMargins.bottom),
-            width: bounds.width,
+            width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
             height: refreshControlHeight)
 
-        let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
+        let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width - safeAreaInsets.left - safeAreaInsets.right)
         topBarContainer.frame = CGRect(
-            x: bounds.minX,
+            x: safeAreaInsets.left,
             y: bounds.minY + layoutMargins.top,
-            width: bounds.width,
+            width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
             height: topBarHeight)
         updateTopBarContainerFrameAndScrollViewInsets()
     }
