@@ -97,6 +97,9 @@ final class PostsPageViewController: ViewController {
         postsView.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
         }
+        postsView.setNavigationBarHidden = { [weak self] hidden, animated in
+            self?.navigationController?.setNavigationBarHidden(hidden, animated: animated)
+        }
         postsView.renderView.delegate = self
         postsView.renderView.registerMessage(FYADFlagRequest.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
@@ -838,11 +841,13 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
+        postsView.exitImmersionMode()
         let scrollView = postsView.renderView.scrollView
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
 
     @objc private func scrollToTop(_ sender: UIKeyCommand?) {
+        postsView.exitImmersionMode()
         postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
 
@@ -1739,6 +1744,15 @@ final class PostsPageViewController: ViewController {
         super.viewDidAppear(animated)
 
         configureUserActivityIfPossible()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Restore navigation bar if it was hidden by immersion mode
+        if navigationController?.isNavigationBarHidden == true {
+            navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
