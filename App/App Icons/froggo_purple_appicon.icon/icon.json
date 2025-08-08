@@ -13,7 +13,6 @@
   ],
   "groups" : [
     {
-      "blur-material" : null,
       "layers" : [
         {
           "hidden" : false,
@@ -28,33 +27,27 @@
           }
         }
       ],
-      "name" : "Pupils",
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0.25
+      "position" : {
+        "scale" : 1.14,
+        "translation-in-points" : [
+          0,
+          0
+        ]
       },
-      "specular" : true,
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : false,
       "translucency" : {
         "enabled" : true,
-        "value" : 1
+        "value" : 0.1
       }
     },
     {
       "blur-material" : null,
       "hidden" : false,
       "layers" : [
-        {
-          "hidden" : false,
-          "image-name" : "pupils.svg",
-          "name" : "pupils",
-          "position" : {
-            "scale" : 1.03,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
         {
           "blend-mode" : "normal",
           "glass" : true,
@@ -73,6 +66,13 @@
       ],
       "lighting" : "individual",
       "name" : "Eyes",
+      "position" : {
+        "scale" : 1.14,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.35
@@ -99,7 +99,7 @@
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.1
+        "value" : 0.4
       }
     },
     {
@@ -111,6 +111,13 @@
           "name" : "mouth inner purple"
         }
       ],
+      "position" : {
+        "scale" : 1.14,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0

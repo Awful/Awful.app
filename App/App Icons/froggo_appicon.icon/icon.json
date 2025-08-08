@@ -9,31 +9,6 @@
   "groups" : [
     {
       "blur-material" : null,
-      "layers" : [
-        {
-          "hidden" : false,
-          "image-name" : "pupils.svg",
-          "name" : "pupils",
-          "position" : {
-            "scale" : 1.03,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0.25
-      },
-      "translucency" : {
-        "enabled" : true,
-        "value" : 1
-      }
-    },
-    {
-      "blur-material" : null,
       "hidden" : false,
       "layers" : [
         {
@@ -66,6 +41,13 @@
       ],
       "lighting" : "combined",
       "name" : "Eyes",
+      "position" : {
+        "scale" : 1.143,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.4
@@ -77,22 +59,30 @@
       }
     },
     {
+      "blend-mode" : "normal",
       "blur-material" : 0.5,
       "layers" : [
         {
           "hidden" : false,
-          "image-name" : "skin.svg",
-          "name" : "skin"
+          "image-name" : "frogo2.svg",
+          "name" : "frogo2"
         }
       ],
+      "position" : {
+        "scale" : 1.0000000000000002,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.5
+        "opacity" : 1
       },
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.1
+        "value" : 0.24999999999999997
       }
     },
     {
@@ -101,8 +91,8 @@
       "layers" : [
         {
           "hidden" : false,
-          "image-name" : "mouth inner.svg",
-          "name" : "mouth inner",
+          "image-name" : "mouth inner2.svg",
+          "name" : "mouth inner2",
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
@@ -112,6 +102,13 @@
           }
         }
       ],
+      "position" : {
+        "scale" : 1.143,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0

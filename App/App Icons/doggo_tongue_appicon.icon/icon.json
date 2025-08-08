@@ -24,6 +24,13 @@
         }
       ],
       "lighting" : "combined",
+      "position" : {
+        "scale" : 1.143,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.25
@@ -42,6 +49,13 @@
           "name" : "dog features"
         }
       ],
+      "position" : {
+        "scale" : 1.143,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.25
@@ -69,7 +83,7 @@
         }
       ],
       "position" : {
-        "scale" : 1,
+        "scale" : 1.143,
         "translation-in-points" : [
           0,
           12
@@ -88,13 +102,21 @@
     {
       "layers" : [
         {
+          "hidden" : false,
           "image-name" : "dog skin.svg",
           "name" : "dog skin"
         }
       ],
       "lighting" : "combined",
+      "position" : {
+        "scale" : 1.15,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
-        "kind" : "neutral",
+        "kind" : "layer-color",
         "opacity" : 0.5
       },
       "translucency" : {
