@@ -44,6 +44,10 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         box.contents = self
 
         title = String(localized: "Settings", bundle: .module)
+        tabBarItem.image = UIImage(named: "cog")
+        tabBarItem.selectedImage = UIImage(named: "cog-filled")
+        
+        themeDidChange()
     }
     
     deinit {
@@ -59,8 +63,6 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             name: Theme.themeForForumDidChangeNotification,
             object: Theme.self
         )
-        
-        themeDidChange()
     }
     
     @objc override func themeDidChange() {

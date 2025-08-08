@@ -41,6 +41,11 @@ final class VerticalPageNumberView: UIView {
     
     // MARK: - Properties
     
+    /// Tighten the visual gap between the two number rows. Negative is intentional
+    /// to compensate for UILabel top/bottom padding so the two lines feel closer
+    /// together, similar to compact line spacing.
+    private let interRowSpacing: CGFloat = -2
+
     var currentPage: Int = 1 {
         didSet {
             updateDisplay()
@@ -106,8 +111,9 @@ final class VerticalPageNumberView: UIView {
             separatorLabel.centerYAnchor.constraint(equalTo: currentPageLabel.centerYAnchor),
             separatorLabel.leadingAnchor.constraint(equalTo: currentPageLabel.trailingAnchor),
             
-            // Ensure labels don't overlap vertically
-            currentPageLabel.bottomAnchor.constraint(lessThanOrEqualTo: totalPagesLabel.topAnchor),
+            // Control the vertical spacing between the two rows; negative value intentionally
+            // tightens the gap to better match the compact toolbar design.
+            totalPagesLabel.topAnchor.constraint(equalTo: currentPageLabel.bottomAnchor, constant: interRowSpacing),
             
             // Set a minimum width to ensure proper centering in toolbar
             widthAnchor.constraint(greaterThanOrEqualToConstant: 40),
@@ -175,7 +181,7 @@ final class VerticalPageNumberView: UIView {
         
         // Width is the wider number label plus separator
         let width = max(currentSize.width, totalSize.width) + separatorSize.width
-        let height = currentSize.height + totalSize.height
+        let height = currentSize.height + totalSize.height + interRowSpacing
         
         return CGSize(width: width, height: height)
     }

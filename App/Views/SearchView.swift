@@ -404,9 +404,27 @@ struct NavigationConfigurator: UIViewControllerRepresentable {
                 navAppearance.configureWithOpaqueBackground()
                 navAppearance.backgroundColor = theme[uicolor: "navigationBarTintColor"]
                 navAppearance.shadowColor = .clear
+
+                // Ensure the custom back indicator image from assets is used
+                if let backImage = UIImage(named: "back") {
+                    navAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+                }
                 
                 let textColor = theme[uicolor: "navigationBarTextColor"]!
                 navAppearance.titleTextAttributes = [.foregroundColor: textColor]
+
+                // Ensure text-based bar button items adopt theme font (rounded if enabled)
+                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+                let buttonAttrs: [NSAttributedString.Key: Any] = [
+                    .foregroundColor: textColor,
+                    .font: buttonFont
+                ]
+                navAppearance.buttonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttrs
+                navAppearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
+                navAppearance.backButtonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
                 
                 navigationController.navigationBar.standardAppearance = navAppearance
                 navigationController.navigationBar.scrollEdgeAppearance = navAppearance

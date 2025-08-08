@@ -134,13 +134,40 @@ final class NavigationController: UINavigationController, Themeable {
             appearance.backgroundColor = theme["navigationBarTintColor"]
             appearance.shadowColor = nil
             appearance.shadowImage = nil
+
+            // Ensure the custom back indicator image from assets is used
+            if let backImage = UIImage(named: "back") {
+                appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+            }
             
             let textColor: UIColor? = theme["navigationBarTextColor"]
             appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
                                               NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
             
+            // Ensure all text-based bar button items use the theme's font (rounded if enabled)
+            let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+            let buttonAttributes: [NSAttributedString.Key: Any] = [
+                .foregroundColor: textColor!,
+                .font: buttonFont
+            ]
+            appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
+            appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
+            appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
+            appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+            appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
+            appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+
             navigationBar.standardAppearance = appearance;
             navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance
+        } else {
+            // Fallback for earlier iOS versions: set UIBarButtonItem appearance globally
+            let fallbackTextColor = theme[uicolor: "navigationBarTextColor"]!
+            let attrs: [NSAttributedString.Key: Any] = [
+                .foregroundColor: fallbackTextColor,
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+            ]
+            UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .normal)
+            UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .highlighted)
         }
     }
     

@@ -608,7 +608,8 @@ final class PostsPageViewController: ViewController {
                 verticalPageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
                 verticalPageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
                 containerView.widthAnchor.constraint(equalTo: verticalPageNumberView.widthAnchor, constant: 6), // 3 points padding on each side
-                containerView.heightAnchor.constraint(equalTo: verticalPageNumberView.heightAnchor)
+                // Add a bit of vertical padding so the content appears visually centered in the toolbar
+                containerView.heightAnchor.constraint(equalTo: verticalPageNumberView.heightAnchor, constant: 5)
             ])
             item.customView = containerView
         } else {
