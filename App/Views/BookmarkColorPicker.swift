@@ -49,18 +49,19 @@ private struct BookmarkColor: View {
 
 struct BookmarkColorPicker: View {
     @SwiftUI.Environment(\.dismiss) var dismiss
-    let setBookmarkColor: (AwfulThread, StarCategory) async throws -> Void
+    let setBookmarkColor: (String, StarCategory) async throws -> Void
     let starCategories = Array(StarCategory.allCases.filter { $0 != .none })
     @SwiftUI.Environment(\.theme) var theme
     @ObservedObject var thread: AwfulThread
 
     private func didTap(_ starCategory: StarCategory) {
+        let threadID = thread.threadID
         Task {
             do {
-                try await setBookmarkColor(thread, starCategory)
+                try await setBookmarkColor(threadID, starCategory)
                 dismiss()
             } catch {
-                logger.error("Could not set thread \(thread.threadID) category to \(starCategory.rawValue)")
+                logger.error("Could not set thread \(threadID) category to \(starCategory.rawValue)")
             }
         }
     }

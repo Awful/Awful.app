@@ -354,6 +354,7 @@ func partition<C: Collection>(_ c: C, test: (C.Iterator.Element) -> Bool) -> (C.
     return (c.prefix(upTo: c.endIndex), c.suffix(from: c.endIndex))
 }
 
+@MainActor
 protocol HasSplitViewPreference {
     var prefersSecondaryViewController: Bool { get }
 }

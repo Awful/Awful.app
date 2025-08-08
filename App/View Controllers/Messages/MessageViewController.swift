@@ -255,23 +255,36 @@ final class MessageViewController: ViewController {
             self.loadingView = loadingView
             view.addSubview(loadingView)
 
-            Task {
+            let privateMessageKey = self.privateMessage.objectKey
+            Task { [weak self] in
                 do {
-                    let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessage.objectKey)
-                    title = message.subject
+                    let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: privateMessageKey)
+                    
+                    await MainActor.run {
+                        guard let self else { return }
+                        self.title = message.subject
 
-                    if message.seen == false {
-                        message.seen = true
-                        try await message.managedObjectContext?.perform {
-                            try message.managedObjectContext?.save()
+                        if message.seen == false {
+                            message.seen = true
+                            let context = message.managedObjectContext
+                            Task {
+                                try await context?.perform {
+                                    try context?.save()
+                                }
+                            }
                         }
+                        
+                        self.renderMessage()
+                        self.userActivity?.needsSave = true
                     }
                 } catch {
-                    title = ""
+                    await MainActor.run {
+                        guard let self else { return }
+                        self.title = ""
+                        self.renderMessage()
+                        self.userActivity?.needsSave = true
+                    }
                 }
-
-                renderMessage()
-                userActivity?.needsSave = true
             }
         } else {
             renderMessage()

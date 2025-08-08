@@ -197,12 +197,15 @@ final class SmilieSearchViewModel: ObservableObject {
     
     func updateLastUsedDate(for smilie: Smilie) {
         guard let context = dataStore.managedObjectContext else { return }
+        let smilieObjectID = smilie.objectID
         context.perform {
-            smilie.metadata.lastUsedDate = Date()
-            do {
-                try context.save()
-            } catch {
-                print("Error saving last used date: \(error)")
+            if let smilie = context.object(with: smilieObjectID) as? Smilie {
+                smilie.metadata.lastUsedDate = Date()
+                do {
+                    try context.save()
+                } catch {
+                    print("Error saving last used date: \(error)")
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Sends data to and scrapes data from the Something Awful Forums.
 public final class ForumsClient {
-    private var backgroundManagedObjectContext: NSManagedObjectContext?
+    internal var backgroundManagedObjectContext: NSManagedObjectContext?
     private var lastModifiedObserver: LastModifiedContextObserver?
     private var urlSession: URLSession?
 
@@ -127,12 +127,12 @@ public final class ForumsClient {
         case unexpectedContentType(String, expected: String)
     }
 
-    private enum Method: String {
+    internal enum Method: String {
         case get = "GET"
         case post = "POST"
     }
 
-    private func fetch(
+    internal func fetch(
         method: Method,
         urlString: String,
         parameters: some Sequence<KeyValuePairs<String, Any>.Element>,
@@ -1045,7 +1045,7 @@ public final class ForumsClient {
 
     // MARK: Users
 
-    private func profile(
+    internal func profile(
         parameters: some Sequence<KeyValuePairs<String, Any>.Element>
     ) async throws -> Profile {
         guard let backgroundContext = backgroundManagedObjectContext else {
@@ -1109,7 +1109,7 @@ public final class ForumsClient {
         case username(String)
     }
 
-    private func lepersColony(
+    internal func lepersColony(
         parameters: some Sequence<KeyValuePairs<String, Any>.Element>
     ) async throws -> [LepersColonyScrapeResult.Punishment] {
         let (data, response) = try await fetch(method: .get, urlString: "banlist.php", parameters: parameters)
@@ -1397,9 +1397,9 @@ extension Operation: Cancellable {}
 extension URLSessionTask: Cancellable {}
 
 
-private typealias ParsedDocument = (document: HTMLDocument, url: URL?)
+internal typealias ParsedDocument = (document: HTMLDocument, url: URL?)
 
-private func parseHTML(data: Data, response: URLResponse) throws -> ParsedDocument {
+internal func parseHTML(data: Data, response: URLResponse) throws -> ParsedDocument {
     let contentType = (response as? HTTPURLResponse)?.allHeaderFields["Content-Type"] as? String
     let document = HTMLDocument(data: data, contentTypeHeader: contentType)
     try checkServerErrors(document)
@@ -1415,7 +1415,7 @@ private func parseJSONDict(data: Data, response: URLResponse) throws -> [String:
 }
 
 
-private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElement) {
+internal func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElement) {
     for img in postbody.nodes(matchingSelector: "img[src^='http://awful-image']") {
         if let src = img["src"] {
             let suffix = src.dropFirst("http://".count)
@@ -1449,7 +1449,7 @@ public enum ServerError: LocalizedError {
     }
 }
 
-private func checkServerErrors(_ document: HTMLDocument) throws {
+internal func checkServerErrors(_ document: HTMLDocument) throws {
     if let result = try? DatabaseUnavailableScrapeResult(document, url: nil) {
         throw ServerError.databaseUnavailable(title: result.title, message: result.message)
     } else if let result = try? StandardErrorScrapeResult(document, url: nil) {
@@ -1460,12 +1460,12 @@ private func checkServerErrors(_ document: HTMLDocument) throws {
 }
 
 
-private func prepareFormEntries(_ submission: SubmittableForm.PreparedSubmission) -> [Dictionary<String, Any>.Element] {
+internal func prepareFormEntries(_ submission: SubmittableForm.PreparedSubmission) -> [Dictionary<String, Any>.Element] {
     return submission.entries.map { ($0.name, $0.value ) }
 }
 
 
-private func findMessageText(in parsed: ParsedDocument) throws -> String {
+internal func findMessageText(in parsed: ParsedDocument) throws -> String {
     let form = try Form(parsed.document.requiredNode(matchingSelector: "form[name='vbform']"), url: parsed.url)
     guard let message = form.controls.first(where: { $0.name == "message" }) else {
         throw ScrapingError.missingExpectedElement("textarea[name = 'message']")

@@ -46,6 +46,27 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         title = String(localized: "Settings", bundle: .module)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: Theme.themeForForumDidChangeNotification, object: Theme.self)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(themeDidChange),
+            name: Theme.themeForForumDidChangeNotification,
+            object: Theme.self
+        )
+        
+        themeDidChange()
+    }
+    
+    @objc override func themeDidChange() {
+        super.themeDidChange()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

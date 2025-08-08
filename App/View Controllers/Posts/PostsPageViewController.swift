@@ -17,6 +17,7 @@ import WebKit
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageViewController")
 
 /// Shows a list of posts in a thread.
+@MainActor
 final class PostsPageViewController: ViewController {
     var selectedPost: Post? = nil
     var selectedUser: User? = nil
@@ -41,7 +42,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>?
+    private var networkOperation: Task<PostsPageResult, Error>?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -162,7 +163,7 @@ final class PostsPageViewController: ViewController {
         static let messageName = "fyadFlagRequest"
 
         init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
-            assert(rawMessage.name == FYADFlagRequest.messageName)
+            assert(rawMessage.name == Self.messageName)
         }
     }
 
@@ -275,104 +276,115 @@ final class PostsPageViewController: ViewController {
         let initialTheme = theme
 
         let fetch = Task {
-            try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+            try await ForumsClient.shared.listPosts(threadInfo: thread.threadInfo, authorUserID: author?.userID, page: newPage, updateLastReadPost: updateLastReadPost)
         }
         networkOperation = fetch
         Task { [weak self] in
             do {
-                let (posts, firstUnreadPost, _) = try await fetch.value
+                let result = try await fetch.value
                 guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 guard self.page == newPage else { return }
 
-                if self.theme != initialTheme {
-                    self.themeDidChange()
-                }
-
-                if !posts.isEmpty {
-                    self.posts = posts
-
-                    let anyPost = posts[0]
-                    if self.author != nil {
-                        self.page = .specific(anyPost.singleUserPage)
-                    } else {
-                        self.page = .specific(anyPost.page)
+                // Convert PostsPageResult back to Post objects on main thread and update UI
+                await MainActor.run {
+                    guard let context = self.thread.managedObjectContext else { return }
+                    
+                    let posts = result.postObjectIDs.compactMap { objectID in
+                        context.object(with: objectID) as? Post
                     }
-                }
-
-                switch newPage {
-                case .last where self.posts.isEmpty,
-                     .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    if #available(iOS 26.0, *) {
-                        // Use vertical view: show unknown current page with known total
-                        self.verticalPageNumberView.currentPage = 0 // Will display as "?"
-                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
-                        self.verticalPageNumberView.textColor = self.theme["toolbarTextColor"] ?? UIColor.systemBlue
-                    } else {
-                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    
+                    if self.theme != initialTheme {
+                        self.themeDidChange()
                     }
 
-                case .last, .nextUnread, .specific:
-                    break
-                }
+                    if !posts.isEmpty {
+                        self.posts = posts
 
-                self.configureUserActivityIfPossible()
-
-                if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
-                    self.hiddenPosts = firstUnreadPost - 1
-                }
-
-                if reloadingSamePage || renderedCachedPosts {
-                    self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
-                }
-
-                self.renderPosts()
-
-                self.updateUserInterface()
-
-                if let lastPost = self.posts.last, updateLastReadPost {
-                    if self.thread.seenPosts < lastPost.threadIndex {
-                        self.thread.seenPosts = lastPost.threadIndex
+                        let anyPostInfo = result.postInfos[0]
+                        if self.author != nil {
+                            self.page = .specific(Int(anyPostInfo.singleUserPage))
+                        } else {
+                            self.page = .specific(Int(anyPostInfo.page))
+                        }
                     }
-                }
+                    
+                    switch newPage {
+                    case .last where self.posts.isEmpty,
+                         .nextUnread where self.posts.isEmpty:
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                        if #available(iOS 26.0, *) {
+                            // Use vertical view: show unknown current page with known total
+                            self.verticalPageNumberView.currentPage = 0 // Will display as "?"
+                            self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                            self.verticalPageNumberView.textColor = self.theme["toolbarTextColor"] ?? UIColor.systemBlue
+                        } else {
+                            self.currentPageItem.title = "Page ? of \(pageCount)"
+                        }
 
-                self.postsView.endRefreshing()
+                    case .last, .nextUnread, .specific:
+                        break
+                    }
+
+                    self.configureUserActivityIfPossible()
+
+                    if self.hiddenPosts == 0, let firstUnreadPost = result.firstUnreadPost, firstUnreadPost > 0 {
+                        self.hiddenPosts = firstUnreadPost - 1
+                    }
+
+                    if reloadingSamePage || renderedCachedPosts {
+                        self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
+                    }
+
+                    self.renderPosts()
+                    
+                    self.updateUserInterface()
+
+                    if let lastPost = self.posts.last, updateLastReadPost {
+                        if self.thread.seenPosts < lastPost.threadIndex {
+                            self.thread.seenPosts = lastPost.threadIndex
+                        }
+                    }
+
+                    self.postsView.endRefreshing()
+                }
             } catch {
                 guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 if self.page != newPage { return }
 
-                self.clearLoadingMessage()
+                await MainActor.run {
+                    self.clearLoadingMessage()
 
-                if case .archivesRequired = error as? AwfulCoreError {
-                    let alert = UIAlertController(title: "Archives Required", error: error)
-                    self.present(alert, animated: true)
-                } else {
-                    let offlineMode = (error as NSError).domain == NSURLErrorDomain && (error as NSError).code != NSURLErrorCancelled
-                    if self.posts.isEmpty || !offlineMode {
-                        let alert = UIAlertController(title: "Could Not Load Page", error: error)
+                    if case .archivesRequired = error as? AwfulCoreError {
+                        let alert = UIAlertController(title: "Archives Required", error: error)
                         self.present(alert, animated: true)
-                    }
-                }
-
-                switch newPage {
-                case .last where self.posts.isEmpty,
-                     .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    if #available(iOS 26.0, *) {
-                        // Use vertical view: show unknown current page with known total
-                        self.verticalPageNumberView.currentPage = 0 // Will display as "?"
-                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
-                        self.verticalPageNumberView.textColor = self.theme["toolbarTextColor"] ?? UIColor.systemBlue
                     } else {
-                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                        let offlineMode = (error as NSError).domain == NSURLErrorDomain && (error as NSError).code != NSURLErrorCancelled
+                        if self.posts.isEmpty || !offlineMode {
+                            let alert = UIAlertController(title: "Could Not Load Page", error: error)
+                            self.present(alert, animated: true)
+                        }
                     }
+                    
+                    switch newPage {
+                    case .last where self.posts.isEmpty,
+                         .nextUnread where self.posts.isEmpty:
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                        if #available(iOS 26.0, *) {
+                            // Use vertical view: show unknown current page with known total
+                            self.verticalPageNumberView.currentPage = 0 // Will display as "?"
+                            self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                            self.verticalPageNumberView.textColor = self.theme["toolbarTextColor"] ?? UIColor.systemBlue
+                        } else {
+                            self.currentPageItem.title = "Page ? of \(pageCount)"
+                        }
 
-                case .last, .nextUnread, .specific:
-                    break
+                    case .last, .nextUnread, .specific:
+                        break
+                    }
                 }
             }
         }
@@ -1062,7 +1074,8 @@ final class PostsPageViewController: ViewController {
         Task {
             await dismiss(animated: false)
             do {
-                try await ForumsClient.shared.markThreadAsSeenUpTo(selectedPost!)
+                let postInfo = selectedPost!.postInfo
+                try await ForumsClient.shared.markThreadAsSeenUpTo(postInfo: postInfo)
                 selectedPost!.thread?.seenPosts = selectedPost!.threadIndex
                 postsView.renderView.markReadUpToPost(identifiedBy: selectedPost!.postID)
 

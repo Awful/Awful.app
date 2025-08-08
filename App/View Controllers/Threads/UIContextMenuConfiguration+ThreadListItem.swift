@@ -86,16 +86,17 @@ extension UIContextMenuConfiguration {
                     title: NSLocalizedString("Mark Thread As Read", comment: ""),
                     image: UIImage(named: "mark-read-up-to-here")?.withRenderingMode(.alwaysTemplate)
                 ) {
+                    let threadInfo = thread.threadInfo
                     Task { [weak presenter] in
                         do {
                             _ = try await ForumsClient.shared.listPosts(
-                                in: thread,
-                                writtenBy: nil,
+                                threadInfo: threadInfo,
+                                authorUserID: nil,
                                 page: .last,
                                 updateLastReadPost: true
                             )
                         } catch {
-                            logger.error("could not mark thread \(thread.threadID) as read from table view context menu: \(error)")
+                            logger.error("could not mark thread \(threadInfo.threadID) as read from table view context menu: \(error)")
                             if let presenter {
                                 await MainActor.run {
                                     let alert = UIAlertController(networkError: error)
@@ -111,18 +112,21 @@ extension UIContextMenuConfiguration {
                     image: UIImage(named: "mark-as-unread")?.withRenderingMode(.alwaysTemplate)
                 ) {
                     let oldSeen = thread.seenPosts
+                    let threadID = thread.threadID
                     thread.seenPosts = 0
-                    Task {
+                    Task { [weak presenter] in
                         do {
-                            try await ForumsClient.shared.markUnread(thread)
+                            try await ForumsClient.shared.markUnread(threadID: threadID)
                         } catch {
                             await MainActor.run {
-                                logger.error("could not mark thread \(thread.threadID) unread from table view context menu: \(error)")
+                                logger.error("could not mark thread \(threadID) unread from table view context menu: \(error)")
                                 if thread.seenPosts == 0 {
                                     thread.seenPosts = oldSeen
                                 }
-                                let alert = UIAlertController(networkError: error)
-                                presenter.present(alert, animated: true)
+                                if let presenter {
+                                    let alert = UIAlertController(networkError: error)
+                                    presenter.present(alert, animated: true)
+                                }
                             }
                         }
                     }
@@ -133,7 +137,7 @@ extension UIContextMenuConfiguration {
                     image: UIImage(named: "rainbow")?.withRenderingMode(.alwaysTemplate)
                 ) {
                     let profile = UIHostingController(rootView: BookmarkColorPicker(
-                        setBookmarkColor: ForumsClient.shared.setBookmarkColor(_:as:),
+                        setBookmarkColor: ForumsClient.shared.setBookmarkColor(threadID:category:),
                         thread: thread
                     ))
                     profile.modalPresentationStyle = .pageSheet
@@ -152,33 +156,35 @@ extension UIContextMenuConfiguration {
                                    : "add-bookmark")?.withRenderingMode(.alwaysTemplate),
                     attributes: thread.bookmarked ? .destructive : []
                 ) {
-                    Task {
+                    let wasBookmarked = thread.bookmarked
+                    let threadID = thread.threadID
+                    Task { [weak presenter] in
                         do {
-                            let wasBookmarked: Bool = thread.managedObjectContext!.performAndWait {
-                                thread.bookmarked
-                            }
-                            try await ForumsClient.shared.setThread(thread, isBookmarked: !wasBookmarked)
+                            try await ForumsClient.shared.setThread(threadID: threadID, isBookmarked: !wasBookmarked)
 
                             // Something is weird here, as without this `MainActor.run` we end up on a background thread, but it seems redundant (and, indeed, explicitly annotating the nearest `Task` with `@MainActor` still leaves us on a background thread).
-                            let overlay = await MainActor.run {
-                                MRProgressOverlayView.showOverlayAdded(
+                            let overlay = await MainActor.run { () -> MRProgressOverlayView? in
+                                guard let presenter else { return nil }
+                                return MRProgressOverlayView.showOverlayAdded(
                                     to: presenter.view,
-                                    title: (thread.bookmarked
+                                    title: (!wasBookmarked
                                             ? NSLocalizedString("Added Bookmark", comment: "")
                                             : NSLocalizedString("Removed Bookmark", comment: "")),
                                     mode: .checkmark,
                                     animated: true
-                                )!
+                                )
                             }
                             try? await Task.sleep(timeInterval: 0.7)
                             await MainActor.run {
-                                overlay.dismiss(true)
+                                overlay?.dismiss(true)
                             }
                         } catch {
                             await MainActor.run {
-                                logger.error("could not toggle bookmarked on thread \(thread.threadID) from table view context menu: \(error)")
-                                let alert = UIAlertController(networkError: error)
-                                presenter.present(alert, animated: true)
+                                logger.error("could not toggle bookmarked on thread \(threadID) from table view context menu: \(error)")
+                                if let presenter {
+                                    let alert = UIAlertController(networkError: error)
+                                    presenter.present(alert, animated: true)
+                                }
                             }
                         }
                     }
@@ -188,7 +194,7 @@ extension UIContextMenuConfiguration {
         
         // Apply iOS 26 styling to the configuration
         if #available(iOS 16.0, *) {
-            configuration.preferredMenuElementOrder = .fixed
+            configuration.preferredMenuElementOrder = UIContextMenuConfiguration.ElementOrder.fixed
         }
         
         return configuration
