@@ -241,6 +241,14 @@ final class PostsPageView: UIView {
         return Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
     }()
     
+    /// Gradient overlay for better status bar readability in immersion mode
+    private lazy var safeAreaGradientView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        view.alpha = 0.0 // Initially hidden
+        return view
+    }()
+    
     /// Provides access to the toolbar for PostsPageViewController
     var toolbarView: UIView {
         return toolbar
@@ -312,10 +320,14 @@ final class PostsPageView: UIView {
         addSubview(topBarContainer)
         addSubview(loadingViewContainer)
         addSubview(toolbar)
+        addSubview(safeAreaGradientView)
         renderView.scrollView.addSubview(refreshControlContainer)
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
         scrollViewDelegateMux?.addDelegate(self)
+        
+        // Configure initial gradient
+        configureSafeAreaGradient()
     }
 
     override func layoutSubviews() {
@@ -357,6 +369,20 @@ final class PostsPageView: UIView {
             y: bounds.minY + layoutMargins.top,
             width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
             height: topBarHeight)
+        
+        // Position gradient view to cover only the top safe area
+        let gradientHeight: CGFloat = layoutMargins.top
+        safeAreaGradientView.frame = CGRect(
+            x: 0,
+            y: bounds.minY,
+            width: bounds.width,
+            height: gradientHeight)
+        
+        // Update gradient layer frame to match view bounds
+        if let gradientLayer = safeAreaGradientView.layer.sublayers?.first as? CAGradientLayer {
+            gradientLayer.frame = safeAreaGradientView.bounds
+        }
+        
         updateTopBarContainerFrameAndScrollViewInsets()
     }
 
@@ -428,6 +454,9 @@ final class PostsPageView: UIView {
         }
 
         topBar.themeDidChange(Theme.defaultTheme())
+        
+        // Update safe area gradient colors for new theme
+        configureSafeAreaGradient()
     }
     
     // MARK: - Toolbar Configuration
@@ -436,6 +465,44 @@ final class PostsPageView: UIView {
         // Modern iOS 26 appearance: translucent with hidden hairline border
         toolbar.topBorderColor = UIColor.clear
         toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+    }
+    
+    // MARK: - Safe Area Gradient Configuration
+    
+    private func configureSafeAreaGradient() {
+        // Remove existing gradient layer if any
+        safeAreaGradientView.layer.sublayers?.removeAll()
+        
+        let gradientLayer = CAGradientLayer()
+        let isDarkMode = Theme.defaultTheme()[string: "mode"] == "dark"
+        
+        if isDarkMode {
+            // Black to clear gradient for dark themes
+            gradientLayer.colors = [
+                UIColor.black.cgColor,
+                UIColor.black.withAlphaComponent(0.8).cgColor,
+                UIColor.black.withAlphaComponent(0.4).cgColor,
+                UIColor.clear.cgColor
+            ]
+            // Gradient locations - stronger at the top, fade to clear
+            gradientLayer.locations = [0.0, 0.3, 0.7, 1.0]
+        } else {
+            // For light mode, use a very subtle white gradient that blends seamlessly
+            gradientLayer.colors = [
+                UIColor.white.withAlphaComponent(0.8).cgColor,
+                UIColor.white.withAlphaComponent(0.6).cgColor,
+                UIColor.white.withAlphaComponent(0.2).cgColor,
+                UIColor.white.withAlphaComponent(0.02).cgColor,
+                UIColor.clear.cgColor
+            ]
+            // Fade more quickly to maintain subtlety
+            gradientLayer.locations = [0.0, 0.4, 0.7, 0.9, 1.0]
+        }
+        
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        
+        safeAreaGradientView.layer.addSublayer(gradientLayer)
     }
     
     // MARK: Immersion mode helpers
@@ -458,6 +525,9 @@ final class PostsPageView: UIView {
             // Show toolbar
             self.toolbar.alpha = 1.0
             self.toolbar.transform = .identity
+            
+            // Hide safe area gradient
+            self.safeAreaGradientView.alpha = 0.0
             
             // Update top bar frame and scroll view insets
             self.updateTopBarContainerFrameAndScrollViewInsets()
@@ -484,6 +554,9 @@ final class PostsPageView: UIView {
             let toolbarHeight = self.toolbar.bounds.height
             self.toolbar.alpha = 0.0
             self.toolbar.transform = CGAffineTransform(translationX: 0, y: toolbarHeight)
+            
+            // Show safe area gradient for better status bar readability
+            self.safeAreaGradientView.alpha = 1.0
             
             // Update top bar frame and scroll view insets
             self.updateTopBarContainerFrameAndScrollViewInsets()

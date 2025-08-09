@@ -465,7 +465,7 @@ struct NavigationConfigurator: UIViewControllerRepresentable {
                 navAppearance.titleTextAttributes = [.foregroundColor: textColor]
 
                 // Ensure text-based bar button items adopt theme font (rounded if enabled)
-                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
                 let buttonAttrs: [NSAttributedString.Key: Any] = [
                     .foregroundColor: textColor,
                     .font: buttonFont

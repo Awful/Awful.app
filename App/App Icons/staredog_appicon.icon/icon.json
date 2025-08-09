@@ -23,6 +23,13 @@
         }
       ],
       "lighting" : "combined",
+      "position" : {
+        "scale" : 1.1428571429,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.25
@@ -40,6 +47,13 @@
           "name" : "dog features"
         }
       ],
+      "position" : {
+        "scale" : 1.143,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.25
@@ -58,6 +72,13 @@
         }
       ],
       "lighting" : "combined",
+      "position" : {
+        "scale" : 1.15,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5

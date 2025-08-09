@@ -470,6 +470,7 @@ final class PostsPageViewController: ViewController {
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
+        item.tintColor = theme["navigationBarTextColor"]
         return item
     }()
 
@@ -561,6 +562,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
+        item.tintColor = theme["toolbarTextColor"]
         return item
     }()
 
@@ -576,6 +578,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
+        item.tintColor = theme["toolbarTextColor"]
         return item
     }()
 
@@ -633,6 +636,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
+        item.tintColor = theme["toolbarTextColor"]
         return item
     }()
 
@@ -642,6 +646,7 @@ final class PostsPageViewController: ViewController {
         button.setImage(UIImage(named: "steamed-ham"), for: .normal)
         button.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
         button.addTarget(self, action: #selector(didTapHamburgerMenuButton(_:)), for: .touchUpInside)
+        button.tintColor = theme["toolbarTextColor"]
         
         let buttonItem = UIBarButtonItem(customView: button)
         return buttonItem
@@ -738,7 +743,7 @@ final class PostsPageViewController: ViewController {
                 // Use traditional text title for iOS 18 and below
                 currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
                 currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
-                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
+                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
             }
         } else {
             // Clear page display
@@ -1619,6 +1624,17 @@ final class PostsPageViewController: ViewController {
             navigationItem.titleLabel.numberOfLines = 2
             navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
         }
+        
+        // Update navigation bar button colors
+        composeItem.tintColor = theme["navigationBarTextColor"]
+        
+        // Ensure the navigation bar itself uses the correct tint color for the back button
+        navigationController?.navigationBar.tintColor = theme["navigationBarTextColor"]
+        
+        // Also trigger the navigation controller's theme change to update back button appearance
+        if let navController = navigationController as? NavigationController {
+            navController.themeDidChange()
+        }
 
 
         if postsView.loadingView != nil {
@@ -1641,6 +1657,15 @@ final class PostsPageViewController: ViewController {
 
         // Update hidden menu button interface style to match theme
         hiddenMenuButton.updateInterfaceStyle()
+
+        // Update toolbar button text colors
+        backItem.tintColor = theme["toolbarTextColor"]
+        forwardItem.tintColor = theme["toolbarTextColor"]
+        settingsItem.tintColor = theme["toolbarTextColor"]
+        verticalPageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+        
+        // Update toolbar items to refresh the actions button with new tint color
+        updateToolbarItems()
 
         messageViewController?.themeDidChange()
     }

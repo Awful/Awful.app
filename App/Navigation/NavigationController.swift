@@ -134,9 +134,10 @@ final class NavigationController: UINavigationController, Themeable {
             appearance.shadowColor = nil
             appearance.shadowImage = nil
 
-            // Ensure the custom back indicator image from assets is used
+            // Ensure the custom back indicator image from assets is used with proper tinting
             if let backImage = UIImage(named: "back") {
-                appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+                let tintedBackImage = backImage.withRenderingMode(.alwaysTemplate)
+                appearance.setBackIndicatorImage(tintedBackImage, transitionMaskImage: tintedBackImage)
             }
             
             let textColor: UIColor? = theme["navigationBarTextColor"]
@@ -144,7 +145,7 @@ final class NavigationController: UINavigationController, Themeable {
                                               NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
             
             // Ensure all text-based bar button items use the theme's font (rounded if enabled)
-            let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+            let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
             let buttonAttributes: [NSAttributedString.Key: Any] = [
                 .foregroundColor: textColor!,
                 .font: buttonFont
@@ -169,15 +170,16 @@ final class NavigationController: UINavigationController, Themeable {
             let fallbackTextColor = theme[uicolor: "navigationBarTextColor"]!
             let attrs: [NSAttributedString.Key: Any] = [
                 .foregroundColor: fallbackTextColor,
-                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
             ]
             UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .normal)
             UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .highlighted)
             
-            // Set the back indicator image for earlier iOS versions
+            // Set the back indicator image for earlier iOS versions with proper tinting
             if let backImage = UIImage(named: "back") {
-                navigationBar.backIndicatorImage = backImage
-                navigationBar.backIndicatorTransitionMaskImage = backImage
+                let tintedBackImage = backImage.withRenderingMode(.alwaysTemplate)
+                navigationBar.backIndicatorImage = tintedBackImage
+                navigationBar.backIndicatorTransitionMaskImage = tintedBackImage
             }
         }
     }
