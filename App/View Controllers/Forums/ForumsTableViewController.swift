@@ -196,11 +196,12 @@ final class ForumsTableViewController: TableViewController {
     @objc private func searchForums() {
         let searchView = SearchHostingController()
         searchView.restorationIdentifier = "Search view"
-        if traitCollection.userInterfaceIdiom == .pad {
-            searchView.modalPresentationStyle = .pageSheet
-        } else {
-            searchView.modalPresentationStyle = .fullScreen
-        }
+        // Present full screen on all devices so the presented VC controls the
+        // status bar appearance.
+        searchView.modalPresentationStyle = .fullScreen
+        // Do not capture status bar appearance on the presenter; let the
+        // presented controller decide.
+        modalPresentationCapturesStatusBarAppearance = false
         present(searchView, animated: true)
     }
 

@@ -65,11 +65,10 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        if isDarkContentBackground {
-            return .lightContent
-        } else {
-            return .darkContent
-        }
+        // Always follow the app theme here; avoid UIKit heuristics mixing in
+        // when presenting SwiftUI-hosted controllers.
+        let theme = Theme.defaultTheme()
+        return (theme["statusBarBackground"] == "light") ? .darkContent : .lightContent
     }
     
     
@@ -159,6 +158,12 @@ final class NavigationController: UINavigationController, Themeable {
 
             navigationBar.standardAppearance = appearance;
             navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance
+            
+            // Also set the back indicator image directly on the navigation bar
+            if let backImage = UIImage(named: "back") {
+                navigationBar.backIndicatorImage = backImage
+                navigationBar.backIndicatorTransitionMaskImage = backImage
+            }
         } else {
             // Fallback for earlier iOS versions: set UIBarButtonItem appearance globally
             let fallbackTextColor = theme[uicolor: "navigationBarTextColor"]!
@@ -168,6 +173,12 @@ final class NavigationController: UINavigationController, Themeable {
             ]
             UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .normal)
             UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .highlighted)
+            
+            // Set the back indicator image for earlier iOS versions
+            if let backImage = UIImage(named: "back") {
+                navigationBar.backIndicatorImage = backImage
+                navigationBar.backIndicatorTransitionMaskImage = backImage
+            }
         }
     }
     

@@ -497,6 +497,7 @@ final class PostsPageView: UIView {
         setNavigationBarHidden?(true, animated)
     }
     
+    
     // MARK: Gunk
     
     required init?(coder: NSCoder) {
@@ -852,5 +853,21 @@ extension PostsPageView: ScrollViewDelegateExtras {
                 }
             }
         }
+
+        // If immersed, automatically reveal bars when reaching very top or bottom of content
+        if immersionModeEnabled && immersionModeState == .immersed {
+            let threshold: CGFloat = 20
+            // Near top: contentOffset.y approaches -contentInset.top
+            let isNearTop = scrollView.contentOffset.y <= -scrollView.contentInset.top + threshold
+            // Near bottom: contentOffset.y approaches the maximum offset considering insets
+            let maxOffsetY = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
+            let isNearBottom = scrollView.contentOffset.y >= maxOffsetY - threshold
+
+            if isNearTop || isNearBottom {
+                exitImmersionMode()
+            }
+        }
     }
 }
+
+// (progressive immersive reveal helpers removed)
