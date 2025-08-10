@@ -4,7 +4,6 @@
 
 import AwfulSettings
 import Foundation
-import ImgurAnonymousAPI
 import os
 import Photos
 import UIKit
@@ -50,15 +49,7 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
     let progress = Progress(totalUnitCount: 1)
     
     // Check if we need authentication before proceeding
-    if ImgurAuthManager.shared.needsAuthentication {
-        DispatchQueue.main.async {
-            completion(nil, ImageUploadError.authenticationRequired)
-        }
-        return progress
-    }
-    
-    // Check if token needs refresh
-    if ImgurAuthManager.shared.currentUploadMode == "Imgur Account" && ImgurAuthManager.shared.checkTokenExpiry() {
+    if ImageUploadManager.shared.needsAuthentication {
         DispatchQueue.main.async {
             completion(nil, ImageUploadError.authenticationRequired)
         }
@@ -78,14 +69,6 @@ func uploadImages(attachedTo richText: NSAttributedString, completion: @escaping
         let localerCopy = localCopy.mutableCopy() as! NSMutableAttributedString
         let uploadProgress = uploadImages(fromSources: tags.map { $0.source }, completion: { (urls, error) in
             if let error = error {
-                // If we get an authentication-related error from Imgur, clear the token and report it as auth error
-                if let imgurError = error as? ImgurUploader.Error, imgurError == .invalidClientID {
-                    ImgurAuthManager.shared.logout() // Clear the token as it may be invalid
-                    return DispatchQueue.main.async {
-                        completion(nil, ImageUploadError.authenticationFailed)
-                    }
-                }
-                
                 return DispatchQueue.main.async {
                     completion(nil, error)
                 }
@@ -132,10 +115,10 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
         
         switch source {
         case .image(let image):
-            ImgurUploader.shared.upload(image, completion: { result in
+            ImageUploadManager.shared.upload(image, completion: { result in
                 switch result {
                 case .success(let response):
-                    uploadComplete(response.link, error: nil)
+                    uploadComplete(response.imageURL, error: nil)
                 case .failure(let error):
                     logger.error("Could not upload UIImage: \(error)")
                     uploadComplete(nil, error: error)
@@ -149,10 +132,10 @@ private func uploadImages(fromSources sources: [ImageTag.Source], completion: @e
                 break
             }
             
-            ImgurUploader.shared.upload(asset, completion: { result in
+            ImageUploadManager.shared.upload(asset, completion: { result in
                 switch result {
                 case .success(let response):
-                    uploadComplete(response.link, error: nil)
+                    uploadComplete(response.imageURL, error: nil)
                 case .failure(let error):
                     logger.error("Could not upload PHAsset: \(error)")
                     uploadComplete(nil, error: error)
