@@ -19,17 +19,68 @@ struct SearchResultsView: View {
         NavigationView {
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(model.searchResults) { searchResult in
-                            SearchResultCard(result: searchResult)
-                                .onTapGesture {
-                                    model.viewState = .none
-                                    AppDelegate.instance.open(route: .post(id: searchResult.postID, .noseen))
+                    if model.searchResults.isEmpty && !model.searchState.resultInfo.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            // Parse and display the search info with proper formatting
+                            let lines = model.searchState.resultInfo
+                                .trimmingCharacters(in: .whitespacesAndNewlines)
+                                .components(separatedBy: .newlines)
+                                .map { $0.trimmingCharacters(in: .whitespaces) }
+                                .filter { !$0.isEmpty }
+                            
+                            ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
+                                if line.starts(with: "Searched for") {
+                                    Text(line)
+                                        .font(.headline)
+                                        .foregroundColor(theme[color: "listTextColor"])
+                                        .padding(.bottom, 4)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                } else if line == "following criteria:" {
+                                    Text(line)
+                                        .font(.headline)
+                                        .foregroundColor(theme[color: "listTextColor"])
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                } else if line.starts(with: "Text contains") || line.starts(with: "Posted by") {
+                                    Text(line)
+                                        .font(.body)
+                                        .foregroundColor(theme[color: "listTextColor"])
+                                        .padding(.vertical, 8)
+                                        .padding(.leading, 16)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                } else if line.starts(with: "There were no results") {
+                                    Text(line)
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(theme[color: "listTextColor"])
+                                        .padding(.top, 8)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                } else if !line.isEmpty {
+                                    Text(line)
+                                        .font(.body)
+                                        .foregroundColor(theme[color: "listTextColor"])
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .background(theme[color: "sheetBackgroundColor"]!)
+                        .cornerRadius(12)
+                        .id(topID)
+                        .padding()
+                    } else {
+                        LazyVStack(spacing: 12) {
+                            ForEach(model.searchResults) { searchResult in
+                                SearchResultCard(result: searchResult)
+                                    .onTapGesture {
+                                        model.viewState = .none
+                                        AppDelegate.instance.open(route: .post(id: searchResult.postID, .noseen))
+                                    }
+                            }
+                        }
+                        .id(topID)
+                        .padding()
                     }
-                    .id(topID)
-                    .padding()
                 }
                 .background(theme[color: "backgroundColor"]!)
                 .onChange(of: model.currentPage) { _ in
@@ -59,9 +110,7 @@ struct SearchResultsView: View {
                 }
                 
                 ToolbarItem(placement: .bottomBar) {
-                    if model.totalPages > 1 {
-                        paginationControls
-                    }
+                    paginationControls
                 }
             }
             .background(NavigationConfigurator(theme: theme))
@@ -84,9 +133,11 @@ struct SearchResultsView: View {
             
             Spacer()
             
-            Text("Page \(model.currentPage) of \(model.totalPages)")
+            Text("\(model.currentPage) of \(model.totalPages)")
                 .font(.headline)
                 .foregroundColor(theme[color: "listTextColor"])
+                .frame(minWidth: 80)
+                .lineLimit(1)
             
             Spacer()
             
@@ -404,12 +455,34 @@ struct NavigationConfigurator: UIViewControllerRepresentable {
                 navAppearance.configureWithOpaqueBackground()
                 navAppearance.backgroundColor = theme[uicolor: "navigationBarTintColor"]
                 navAppearance.shadowColor = .clear
+
+                // Ensure the custom back indicator image from assets is used
+                if let backImage = UIImage(named: "back") {
+                    navAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+                }
                 
                 let textColor = theme[uicolor: "navigationBarTextColor"]!
                 navAppearance.titleTextAttributes = [.foregroundColor: textColor]
+
+                // Ensure text-based bar button items adopt theme font (rounded if enabled)
+                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+                let buttonAttrs: [NSAttributedString.Key: Any] = [
+                    .foregroundColor: textColor,
+                    .font: buttonFont
+                ]
+                navAppearance.buttonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttrs
+                navAppearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
+                navAppearance.backButtonAppearance.normal.titleTextAttributes = buttonAttrs
+                navAppearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttrs
                 
                 navigationController.navigationBar.standardAppearance = navAppearance
                 navigationController.navigationBar.scrollEdgeAppearance = navAppearance
+                // Drive the bar style from the current theme so status bar
+                // icons match the theme while Search is presented.
+                let isLightBackground = (theme["statusBarBackground"] == "light")
+                navigationController.navigationBar.barStyle = isLightBackground ? .default : .black
                 
                 // Configure toolbar
                 let toolbarAppearance = UIToolbarAppearance()
@@ -731,6 +804,13 @@ final class SearchPageViewModel: ObservableObject {
                 self.totalPages = maxPage
             } else if let requestedPage = requestedPage {
                 self.currentPage = requestedPage
+                // Preserve totalPages if it was already set and we're just navigating
+                // Only reset to 1 if it was never set (still at initial value)
+                if self.totalPages == 1 && requestedPage > 1 {
+                    // If we're on page > 1 but totalPages is still 1,
+                    // we know there must be at least requestedPage pages
+                    self.totalPages = requestedPage
+                }
             }
         }
     }
@@ -863,6 +943,29 @@ final class SearchHostingController: UIHostingController<SearchView> {
     
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Ensure this controller controls status bar appearance so it stays
+        // consistent with the app's theme while presented
+        modalPresentationCapturesStatusBarAppearance = true
+    }
+
+    // Keep status bar style in sync with the current theme so opening the
+    // search view does not change it unexpectedly.
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        let theme = Theme.defaultTheme()
+        return (theme["statusBarBackground"] == "light") ? .darkContent : .lightContent
+    }
+
+    // Force the system to use this hosting controller's status bar style
+    // instead of deferring to the child SwiftUI navigation controller.
+    override var childForStatusBarStyle: UIViewController? { nil }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setNeedsStatusBarAppearanceUpdate()
     }
 }
 
