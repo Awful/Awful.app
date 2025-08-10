@@ -16,6 +16,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
+    @FoilDefaultStorage(Settings.immersionModeEnabled) private var immersionModeEnabled
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
 
@@ -74,6 +75,17 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         darkMode = sender.isOn
     }
 
+    // Immersion mode UI elements (added programmatically)
+    private var immersionModeStack: UIStackView!
+    private var immersionModeLabel: UILabel!
+    private var immersionModeSwitch: UISwitch!
+    @objc private func toggleImmersionMode(_ sender: UISwitch) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        immersionModeEnabled = sender.isOn
+    }
+
     private lazy var fontScaleFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .percent
@@ -127,6 +139,73 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.imagesSwitch?.isOn = $0 }
             .store(in: &cancellables)
+
+        $immersionModeEnabled
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.immersionModeSwitch?.isOn = $0 }
+            .store(in: &cancellables)
+
+        // Create immersion mode UI at the end of viewDidLoad
+        setupImmersionModeUI()
+    }
+
+    private func setupImmersionModeUI() {
+        // Create immersion mode label
+        immersionModeLabel = UILabel()
+        immersionModeLabel.text = "Immersion Mode"
+        immersionModeLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        immersionModeLabel.textColor = theme["sheetTextColor"] ?? UIColor.darkText
+        immersionModeLabel.accessibilityTraits = []
+        
+        // Create immersion mode switch
+        immersionModeSwitch = UISwitch()
+        immersionModeSwitch.isOn = immersionModeEnabled // Set initial state
+        immersionModeSwitch.onTintColor = theme["settingsSwitchColor"] // Apply theme color
+        immersionModeSwitch.addTarget(self, action: #selector(toggleImmersionMode(_:)), for: .primaryActionTriggered)
+        immersionModeSwitch.accessibilityLabel = "Hide bars when scrolling"
+        
+        // Create stack view for immersion mode
+        immersionModeStack = UIStackView(arrangedSubviews: [immersionModeLabel, immersionModeSwitch])
+        immersionModeStack.axis = .horizontal
+        immersionModeStack.distribution = .equalSpacing
+        immersionModeStack.spacing = 8
+        immersionModeStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Find the main settings stack view and append to it
+        func findMainSettingsStack(in view: UIView) -> UIStackView? {
+            if let stackView = view as? UIStackView,
+               stackView.axis == .vertical,
+               stackView.arrangedSubviews.count >= 4 {
+                return stackView
+            }
+            for subview in view.subviews {
+                if let found = findMainSettingsStack(in: subview) {
+                    return found
+                }
+            }
+            return nil
+        }
+        
+        if let stackView = findMainSettingsStack(in: view) {
+            // Simply append to the end of the stack - much simpler and more reliable
+            stackView.addArrangedSubview(immersionModeStack)
+        } else {
+            print("Could not find settings stack, adding immersion mode to main view")
+            view.addSubview(immersionModeStack)
+            NSLayoutConstraint.activate([
+                immersionModeStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                immersionModeStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                immersionModeStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 200),
+                immersionModeStack.heightAnchor.constraint(equalToConstant: 44)
+            ])
+        }
+        
+        // Add to collections for theming
+        labels.append(immersionModeLabel)
+        switches.append(immersionModeSwitch)
+        
+        // Update preferred content size after adding new UI
+        updatePreferredContentSize()
     }
 
     private func updatePreferredContentSize() {
