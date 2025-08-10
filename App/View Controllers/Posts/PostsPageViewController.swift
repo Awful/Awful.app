@@ -97,6 +97,9 @@ final class PostsPageViewController: ViewController {
         postsView.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
         }
+        postsView.setNavigationBarHidden = { [weak self] hidden, animated in
+            self?.navigationController?.setNavigationBarHidden(hidden, animated: animated)
+        }
         postsView.renderView.delegate = self
         postsView.renderView.registerMessage(FYADFlagRequest.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
@@ -124,14 +127,34 @@ final class PostsPageViewController: ViewController {
         init() {
             super.init(frame: .zero)
             showsMenuAsPrimaryAction = true
+            // Enable modern iOS 26 menu styling
+            if #available(iOS 16.0, *) {
+                preferredMenuElementOrder = .fixed
+            }
+            // Set the interface style to follow the theme
+            updateInterfaceStyle()
         }
+        
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+        
         func show(menu: UIMenu, from rect: CGRect) {
             frame = rect
             self.menu = menu
+            
+            // Update interface style before showing the menu to ensure it uses the correct theme
+            updateInterfaceStyle()
+            
+            // Use the original approach that was working, but ensure we get iOS 26 styling
+            // This finds the internal touch-down gesture recognizer and manually triggers it
             gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
+        }
+        
+        func updateInterfaceStyle() {
+            // Follow the theme's mode setting for menu appearance
+            let themeMode = Theme.defaultTheme()[string: "mode"]
+            overrideUserInterfaceStyle = themeMode == "light" ? .light : .dark
         }
     }
 

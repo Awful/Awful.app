@@ -68,6 +68,9 @@ public enum Settings {
     /// Make the device vibrate when certain things happen.
     public static let enableHaptics = Setting(key: "enable_haptics", default: false)
 
+    /// Hide navigation and toolbar when scrolling down in posts view.
+    public static let immersionModeEnabled = Setting(key: "immersion_mode_enabled", default: false)
+
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
     public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
 
