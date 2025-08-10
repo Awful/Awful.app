@@ -9,6 +9,7 @@ private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Th
 
 final class ThreadListCell: UITableViewCell {
 
+    private let pageCountBackgroundView = UIView()
     private let pageCountLabel = UILabel()
     private let pageIconView = UIImageView()
     private let postInfoLabel = UILabel()
@@ -30,6 +31,13 @@ final class ThreadListCell: UITableViewCell {
             backgroundColor = viewModel.backgroundColor
 
             pageCountLabel.attributedText = viewModel.pageCount
+            
+            if let color = viewModel.unreadCount.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? UIColor {
+                 pageCountBackgroundView.backgroundColor = color.withAlphaComponent(0.2)
+             } else {
+                 pageCountBackgroundView.backgroundColor = .clear
+             }
+            pageCountBackgroundView.isHidden = viewModel.unreadCount.length == 0
 
             pageIconView.image = UIImage(named: "page")?.withTintColor(viewModel.pageIconColor)
             
@@ -83,6 +91,7 @@ final class ThreadListCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
+        contentView.addSubview(pageCountBackgroundView)
         contentView.addSubview(pageCountLabel)
         contentView.addSubview(pageIconView)
         contentView.addSubview(postInfoLabel)
@@ -92,6 +101,8 @@ final class ThreadListCell: UITableViewCell {
         contentView.addSubview(unreadCountLabel)
         contentView.addSubview(secondaryTagImageView)
         contentView.addSubview(stickyImageView)
+
+        pageCountBackgroundView.clipsToBounds = true
     }
 
     required init?(coder: NSCoder) {
@@ -102,6 +113,16 @@ final class ThreadListCell: UITableViewCell {
         super.layoutSubviews()
 
         let layout = Layout(width: contentView.bounds.width, viewModel: viewModel)
+         // Background behind the page count label, with padding and pill shape
+        if viewModel.unreadCount.length > 0 {
+            let backgroundPadding = UIEdgeInsets(top: -2, left: -6, bottom: -2, right: -6)
+            let bgFrame = layout.unreadCountFrame.inset(by: backgroundPadding)
+            pageCountBackgroundView.frame = bgFrame
+            pageCountBackgroundView.layer.cornerRadius = bgFrame.height / 2
+         } else {
+            pageCountBackgroundView.frame = .zero
+         }
+
         pageCountLabel.frame = layout.pageCountFrame
         pageIconView.frame = layout.pageIconFrame
         postInfoLabel.frame = layout.postInfoFrame
