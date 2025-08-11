@@ -65,10 +65,18 @@
       }
     },
     {
+      "hidden" : false,
       "layers" : [
         {
           "image-name" : "dog skin.svg",
-          "name" : "dog skin"
+          "name" : "dog skin",
+          "position" : {
+            "scale" : 1.1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
         }
       ],
       "lighting" : "combined",

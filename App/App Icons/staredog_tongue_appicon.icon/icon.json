@@ -96,10 +96,11 @@
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.6
+        "value" : 0.7
       }
     },
     {
+      "hidden" : false,
       "layers" : [
         {
           "hidden" : false,
@@ -109,7 +110,7 @@
       ],
       "lighting" : "combined",
       "position" : {
-        "scale" : 1.15,
+        "scale" : 1,
         "translation-in-points" : [
           0,
           0

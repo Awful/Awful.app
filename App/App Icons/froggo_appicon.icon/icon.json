@@ -55,7 +55,7 @@
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.1
+        "value" : 0.10000000000000005
       }
     },
     {
@@ -64,8 +64,8 @@
       "layers" : [
         {
           "hidden" : false,
-          "image-name" : "frogo2.svg",
-          "name" : "frogo2"
+          "image-name" : "3.svg",
+          "name" : "3"
         }
       ],
       "position" : {

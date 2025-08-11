@@ -10,14 +10,17 @@
     {
       "blend-mode" : "normal",
       "blur-material" : 1,
+      "hidden" : false,
       "layers" : [
         {
+          "hidden" : false,
           "image-name" : "v.svg",
           "name" : "v"
         }
       ],
       "lighting" : "individual",
       "name" : "Bars",
+      "opacity" : 1,
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.75
@@ -25,24 +28,71 @@
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.35
+        "value" : 0.5
       }
     },
     {
+      "blend-mode" : "plus-lighter",
+      "blur-material" : 1,
+      "hidden" : false,
       "layers" : [
         {
-          "image-name" : "eyez2.svg",
-          "name" : "eyez2"
+          "hidden" : false,
+          "image-name" : "v.svg",
+          "name" : "v"
         }
       ],
+      "lighting" : "individual",
+      "name" : "Bars",
+      "opacity" : 1,
       "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0.24999999999999997
+        "kind" : "none",
+        "opacity" : 0.75
       },
       "specular" : true,
       "translucency" : {
         "enabled" : true,
-        "value" : 0.15
+        "value" : 1
+      }
+    },
+    {
+      "blur-material" : 1,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "eyez2.svg",
+          "name" : "eyez2"
+        }
+      ],
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "blur-material" : 1,
+      "hidden" : false,
+      "layers" : [
+        {
+          "image-name" : "eyez1.svg",
+          "name" : "eyez1"
+        }
+      ],
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
       }
     }
   ],
