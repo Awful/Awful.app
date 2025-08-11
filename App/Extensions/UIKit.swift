@@ -145,6 +145,18 @@ extension UINavigationItem {
     }
 }
 
+extension UIColor {
+    /// Determines if the color is very dark (good background for liquid glass)
+    var isVeryDark: Bool {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        guard getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return false }
+        
+        // Calculate luminance using standard formula
+        let luminance = 0.299 * red + 0.587 * green + 0.114 * blue
+        return luminance < 0.3 // Consider colors with luminance < 30% as very dark
+    }
+}
+
 extension UIPasteboard {
 
      /// Gets the first URL-like item on the pasteboard. A URL-like item is either a URL or a string that can be coerced into a URL.

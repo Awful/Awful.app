@@ -27,6 +27,7 @@ final class PostsPageViewController: ViewController {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
+    @FoilDefaultStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     @FoilDefaultStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
@@ -54,6 +55,16 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.loadImages) private var showImages
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
+    
+    private var _liquidGlassTitleView: UIView?
+    
+    @available(iOS 26.0, *)
+    private var liquidGlassTitleView: LiquidGlassTitleView? {
+        if _liquidGlassTitleView == nil {
+            _liquidGlassTitleView = LiquidGlassTitleView()
+        }
+        return _liquidGlassTitleView as? LiquidGlassTitleView
+    }
 
     func threadActionsMenu() -> UIMenu {
         return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
@@ -205,7 +216,21 @@ final class PostsPageViewController: ViewController {
     }
 
     override var title: String? {
-        didSet { navigationItem.titleLabel.text = title }
+        didSet { 
+            if #available(iOS 26.0, *), !disableLiquidGlass {
+                let glassView = liquidGlassTitleView
+                glassView?.title = title
+                
+                navigationItem.titleView = glassView
+                // Configure navigation bar for liquid glass effect
+                configureNavigationBarForLiquidGlass(true)
+            } else {
+                navigationItem.titleView = nil
+                navigationItem.titleLabel.text = title
+                // Restore default navigation bar appearance
+                configureNavigationBarForLiquidGlass(false)
+            }
+        }
     }
 
     /**
@@ -1613,16 +1638,35 @@ final class PostsPageViewController: ViewController {
         super.themeDidChange()
 
         postsView.themeDidChange(theme)
-        navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
-
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
-        default:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-            navigationItem.titleLabel.numberOfLines = 2
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+        
+        // Update title appearance based on liquid glass setting
+        if #available(iOS 26.0, *), !disableLiquidGlass {
+            let glassView = liquidGlassTitleView
+            // Apply theme to liquid glass title view
+            glassView?.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+            
+            switch UIDevice.current.userInterfaceIdiom {
+            case .pad:
+                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
+            default:
+                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
+            }
+            
+            // Update navigation bar configuration based on new theme
+            configureNavigationBarForLiquidGlass(true)
+        } else {
+            // Apply theme to regular title label
+            navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+            
+            switch UIDevice.current.userInterfaceIdiom {
+            case .pad:
+                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
+                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+            default:
+                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
+                navigationItem.titleLabel.numberOfLines = 2
+                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+            }
         }
         
         // Update navigation bar button colors
@@ -1762,6 +1806,23 @@ final class PostsPageViewController: ViewController {
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.postsView.renderView.loadLinkifiedImages() }
             .store(in: &cancellables)
+        
+        // Observe liquid glass setting changes
+        $disableLiquidGlass
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                // Re-trigger title setter to update the navigation title view
+                let currentTitle = self.title
+                self.title = currentTitle
+                self.themeDidChange()
+                
+                // Update navigation bar appearance
+                if #available(iOS 26.0, *) {
+                    self.configureNavigationBarForLiquidGlass(!self.disableLiquidGlass)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     override func viewDidLayoutSubviews() {
@@ -1778,6 +1839,86 @@ final class PostsPageViewController: ViewController {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
         postsView.layoutMargins = view.safeAreaInsets
     }
+    
+    private func configureNavigationBarForLiquidGlass(_ useLiquidGlass: Bool) {
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        guard let navController = navigationController as? NavigationController else { return }
+        
+        if useLiquidGlass {
+            let navBarTintColor = theme[uicolor: "navigationBarTintColor"]
+            let navBarTextColor = theme[uicolor: "navigationBarTextColor"]
+            
+            // Make transparent if:
+            // 1. Nav bar is dark with light text (good contrast), OR
+            // 2. Title text is black (we want to remove the background when text is black)
+            let shouldMakeTransparent = (navBarTintColor?.isVeryDark ?? false) || (navBarTextColor?.isVeryDark ?? false)
+            
+            // Hide the custom bottom border from NavigationBar
+            if let awfulNavigationBar = navigationBar as? NavigationBar {
+                awfulNavigationBar.bottomBorderColor = .clear
+            }
+            
+            if shouldMakeTransparent {
+                // Only make transparent if nav bar is dark (better contrast with liquid glass)
+                let appearance = UINavigationBarAppearance()
+                appearance.configureWithTransparentBackground()
+                appearance.backgroundColor = .clear
+                appearance.backgroundImage = UIImage()
+                appearance.shadowImage = UIImage()
+                appearance.shadowColor = .clear
+                
+                // Apply to all states
+                navigationBar.standardAppearance = appearance
+                navigationBar.scrollEdgeAppearance = appearance
+                navigationBar.compactAppearance = appearance
+                if #available(iOS 15.0, *) {
+                    navigationBar.compactScrollEdgeAppearance = appearance
+                }
+                
+                // Additional methods to ensure no border
+                navigationBar.setBackgroundImage(UIImage(), for: .default)
+                navigationBar.shadowImage = UIImage()
+                navigationBar.isTranslucent = true
+                navigationBar.backgroundColor = .clear
+                
+                // Remove any default border
+                if #available(iOS 15.0, *) {
+                    navigationBar.standardAppearance.shadowColor = .clear
+                    navigationBar.scrollEdgeAppearance?.shadowColor = .clear
+                }
+            } else {
+                // Keep the original navigation bar background for light themes
+                // Just remove the bottom border for liquid glass
+                if #available(iOS 15.0, *) {
+                    let appearance = UINavigationBarAppearance()
+                    appearance.configureWithOpaqueBackground()
+                    appearance.backgroundColor = navBarTintColor
+                    appearance.shadowImage = UIImage()
+                    appearance.shadowColor = .clear
+                    
+                    navigationBar.standardAppearance = appearance
+                    navigationBar.scrollEdgeAppearance = appearance
+                    navigationBar.compactAppearance = appearance
+                    navigationBar.compactScrollEdgeAppearance = appearance
+                }
+                navigationBar.shadowImage = UIImage()
+            }
+            
+            // Handle status bar style for liquid glass
+            let isLightMode = theme["mode"] == "light"
+            if shouldMakeTransparent {
+                // Only change status bar if we made the nav bar transparent
+                if isLightMode {
+                    navController.statusBarEnterDarkBackground()
+                } else {
+                    navController.statusBarEnterLightBackground()
+                }
+            }
+        } else {
+            // Restore default navigation bar appearance and status bar
+            navController.themeDidChange()
+        }
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -1791,6 +1932,11 @@ final class PostsPageViewController: ViewController {
         // Restore navigation bar if it was hidden by immersion mode
         if navigationController?.isNavigationBarHidden == true {
             navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
+        
+        // Restore default navigation bar appearance when leaving this view
+        if #available(iOS 26.0, *), !disableLiquidGlass {
+            configureNavigationBarForLiquidGlass(false)
         }
     }
 

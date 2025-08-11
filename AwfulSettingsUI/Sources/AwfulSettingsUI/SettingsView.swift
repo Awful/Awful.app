@@ -16,6 +16,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.autoDarkTheme) private var darkModeAutomatic
     @AppStorage(Settings.darkMode) private var darkModeManuallyEnabled
     @AppStorage(Settings.defaultBrowser) private var defaultBrowser
+    @AppStorage(Settings.disableLiquidGlass) private var disableLiquidGlass
     @AppStorage(Settings.jumpToPostEndOnDoubleTap) private var doubleTapPostToJump
     @AppStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @AppStorage(Settings.embedTweets) private var embedTweets
@@ -152,6 +153,9 @@ public struct SettingsView: View {
                 Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
                 Toggle("Double-Tap Post to Jump", bundle: .module, isOn: $doubleTapPostToJump)
                 Toggle("Immersion Mode", bundle: .module, isOn: $immersionModeEnabled)
+                if #available(iOS 26.0, *) {
+                    Toggle("Disable Liquid Glass", bundle: .module, isOn: $disableLiquidGlass)
+                }
                 Toggle("Enable Haptics", bundle: .module, isOn: $enableHaptics)
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)

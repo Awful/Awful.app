@@ -211,6 +211,7 @@
 		2D3524B82E42058B0042AD73 /* five_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D35249E2E42058B0042AD73 /* five_appicon.icon */; };
 		2D3524B92E42058B0042AD73 /* froggo_purple_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3524A02E42058B0042AD73 /* froggo_purple_appicon.icon */; };
 		2D3524BC2E436EB50042AD73 /* ContextMenuThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3524BA2E436EB50042AD73 /* ContextMenuThemeManager.swift */; };
+		2D3C9E322E49F5D600FD8395 /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C9E312E49F5D600FD8395 /* LiquidGlassTitleView.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
@@ -532,6 +533,7 @@
 		2D3524A72E42058B0042AD73 /* smith_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = smith_appicon.icon; sourceTree = "<group>"; };
 		2D3524AA2E42058B0042AD73 /* v_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v_appicon.icon; sourceTree = "<group>"; };
 		2D3524BA2E436EB50042AD73 /* ContextMenuThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuThemeManager.swift; sourceTree = "<group>"; };
+		2D3C9E312E49F5D600FD8395 /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
@@ -1138,6 +1140,7 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2D3C9E312E49F5D600FD8395 /* LiquidGlassTitleView.swift */,
 				2D3524922E40CB3F0042AD73 /* VerticalPageNumberView.swift */,
 				2D10A3842E05C35700544F91 /* SearchView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
@@ -1543,6 +1546,7 @@
 				2D3524BC2E436EB50042AD73 /* ContextMenuThemeManager.swift in Sources */,
 				1CB5F7F5201527550046D080 /* ThreadListCell.swift in Sources */,
 				2D3524932E40CB3F0042AD73 /* VerticalPageNumberView.swift in Sources */,
+				2D3C9E322E49F5D600FD8395 /* LiquidGlassTitleView.swift in Sources */,
 				1C25AC4B1F537A9600977D6F /* WebViewAntiHijacking.swift in Sources */,
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */,
