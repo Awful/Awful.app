@@ -212,7 +212,10 @@
 		2D3524B92E42058B0042AD73 /* froggo_purple_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3524A02E42058B0042AD73 /* froggo_purple_appicon.icon */; };
 		2D3524BC2E436EB50042AD73 /* ContextMenuThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3524BA2E436EB50042AD73 /* ContextMenuThemeManager.swift */; };
 		2D3C9E322E49F5D600FD8395 /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C9E312E49F5D600FD8395 /* LiquidGlassTitleView.swift */; };
+		2D3C9E342E4A08DF00FD8395 /* ImageUploadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C9E332E4A08DF00FD8395 /* ImageUploadProvider.swift */; };
+		2D3C9E362E4A08EA00FD8395 /* ImageUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C9E352E4A08EA00FD8395 /* ImageUploadManager.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
+		2DABC0C72E4A0BAB009ED603 /* PostImagesAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 2DABC0C62E4A0BAB009ED603 /* PostImagesAPI */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
@@ -534,7 +537,10 @@
 		2D3524AA2E42058B0042AD73 /* v_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v_appicon.icon; sourceTree = "<group>"; };
 		2D3524BA2E436EB50042AD73 /* ContextMenuThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuThemeManager.swift; sourceTree = "<group>"; };
 		2D3C9E312E49F5D600FD8395 /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
+		2D3C9E332E4A08DF00FD8395 /* ImageUploadProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadProvider.swift; sourceTree = "<group>"; };
+		2D3C9E352E4A08EA00FD8395 /* ImageUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploadManager.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
+		2DABC0C52E4A0B2E009ED603 /* PostImagesAPI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PostImagesAPI; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
@@ -610,6 +616,7 @@
 				1C5345212B8BF48F001DA96A /* ScrollViewDelegateMultiplexer in Frameworks */,
 				1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
+				2DABC0C72E4A0BAB009ED603 /* PostImagesAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -943,6 +950,7 @@
 		1C8A8CFD1A3C28E900E4F6A4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				2D3C9E352E4A08EA00FD8395 /* ImageUploadManager.swift */,
 				2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */,
 				1C4EAD5D1BC0622D0008BE54 /* AwfulCore.swift */,
 				1C3E180E224C558500BD88E5 /* FLAnimatedImageView+Nuke.swift */,
@@ -1119,6 +1127,7 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				2D3C9E332E4A08DF00FD8395 /* ImageUploadProvider.swift */,
 				1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */,
 				1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */,
 				1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */,
@@ -1178,6 +1187,7 @@
 				1C66A9BA19DD3017001B9A41 /* Smilies Extra */,
 				1C4D63842B6704CA005EB25C /* SystemCapabilities */,
 				1190F76913BE4ECB00B9D271 /* Vendor */,
+				2DABC0C52E4A0B2E009ED603 /* PostImagesAPI */,
 			);
 			name = Awful;
 			sourceTree = "<group>";
@@ -1331,6 +1341,7 @@
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
 				306F740A2D90AA01000717BC /* KeychainAccess */,
+				2DABC0C62E4A0BAB009ED603 /* PostImagesAPI */,
 			);
 			productName = Awful;
 			productReference = 1D6058910D05DD3D006BFB54 /* AwfulDebug.app */;
@@ -1554,6 +1565,7 @@
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
+				2D3C9E362E4A08EA00FD8395 /* ImageUploadManager.swift in Sources */,
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
 				1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */,
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
@@ -1598,6 +1610,7 @@
 				1C397C8E1BC9B12F00CA7FD5 /* UIContextMenuConfiguration+ThreadListItem.swift in Sources */,
 				1C25AC211F532EE600977D6F /* LocalizedString.swift in Sources */,
 				1C25AC451F5377B100977D6F /* ManagedObjectObserver.swift in Sources */,
+				2D3C9E342E4A08DF00FD8395 /* ImageUploadProvider.swift in Sources */,
 				2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */,
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
@@ -2005,6 +2018,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */;
 			productName = Lottie;
+		};
+		2DABC0C62E4A0BAB009ED603 /* PostImagesAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PostImagesAPI;
 		};
 		306F740A2D90AA01000717BC /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
