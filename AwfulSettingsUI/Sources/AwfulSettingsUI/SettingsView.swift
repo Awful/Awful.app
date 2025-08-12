@@ -36,6 +36,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.automaticTimg) private var timgLargeImages
     @AppStorage(Settings.useNewSmiliePicker) private var useNewSmiliePicker
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
+    @AppStorage("image_hosting_provider") private var imageHostingProvider: String = "Imgur"
 
     let appIconDataSource: AppIconDataSource
     let avatarURL: URL?
@@ -163,22 +164,33 @@ public struct SettingsView: View {
             Section {
                 Toggle("[timg] Large Images", bundle: .module, isOn: $timgLargeImages)
                 Toggle("New Smilie Picker", bundle: .module, isOn: $useNewSmiliePicker)
-                Picker("Imgur Uploads", bundle: .module, selection: $imgurUploadMode) {
-                    Text("Off").tag("Off")
-                    Text("Imgur Account").tag("Imgur Account")
-                    Text("Anonymous").tag("Anonymous")
+                Picker("Image Hosting", bundle: .module, selection: $imageHostingProvider) {
+                    Text("PostImages.org").tag("PostImages")
+                    Text("Imgur").tag("Imgur")
                 }
-                .onChange(of: imgurUploadMode) { newValue in
-                    if newValue != "Imgur Account" {
-                        clearImgurCredentials()
+                if imageHostingProvider == "Imgur" {
+                    Picker("Imgur Mode", bundle: .module, selection: $imgurUploadMode) {
+                        Text("Anonymous").tag("Anonymous")
+                        Text("Imgur Account").tag("Imgur Account")
+                    }
+                    .onChange(of: imgurUploadMode) { newValue in
+                        if newValue != "Imgur Account" {
+                            clearImgurCredentials()
+                        }
                     }
                 }
             } header: {
                 Text("Posting", bundle: .module)
                     .header()
             } footer: {
-                Text("\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended.", bundle: .module)
-                    .footer()
+                Group {
+                    if imageHostingProvider == "Imgur" {
+                        Text("Imgur may delete anonymous images whenever they feel like it. Consider using postimages.org for better reliability.", bundle: .module)
+                    } else {
+                        Text("Postimages.org doesn't delete old images, but downscales images to 1280px. Maximum file size is 32MB.", bundle: .module)
+                    }
+                }
+                .footer()
             }
             .section()
 

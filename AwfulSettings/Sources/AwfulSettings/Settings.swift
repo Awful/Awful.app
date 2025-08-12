@@ -70,6 +70,9 @@ public enum Settings {
 
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
     public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
+    
+    /// Which image hosting provider to use
+    public static let imageHostingProvider = Setting(key: "image_hosting_provider", default: ImageHostingProvider.default)
 
     /// What percentage to multiply the default post font size by. Stored as percentage points, i.e. default is `100` aka "100% size" aka the default.
     public static let fontScale = Setting(key: "font_scale", default: 100.0)
@@ -158,11 +161,50 @@ public enum BuiltInTheme: String, UserDefaultsSerializable {
 /// The upload mode for Imgur images.
 public enum ImgurUploadMode: String, CaseIterable, UserDefaultsSerializable {
     // These raw values are persisted in user defaults, so don't change them willy nilly.
-    case off = "Off"
     case anonymous = "Anonymous"
     case account = "Imgur Account"
     
-    static var `default`: Self { .off }
+    static var `default`: Self { .anonymous }
+    
+    public init(storedValue: String) {
+        // Migrate "Off" to anonymous, since we're removing the off option
+        if storedValue == "Off" {
+            self = .anonymous
+        } else {
+            self = Self(rawValue: storedValue) ?? .default
+        }
+    }
+    
+    public var storedValue: String {
+        return rawValue
+    }
+}
+
+/// The image hosting provider to use for uploads
+public enum ImageHostingProvider: String, CaseIterable, UserDefaultsSerializable {
+    // These raw values are persisted in user defaults, so don't change them willy nilly.
+    case imgur = "Imgur"
+    case postImages = "PostImages"
+    
+    static var `default`: Self { .postImages }
+    
+    public var displayName: String {
+        switch self {
+        case .imgur:
+            return "Imgur"
+        case .postImages:
+            return "Postimages.org"
+        }
+    }
+    
+    public var requiresAuthentication: Bool {
+        switch self {
+        case .imgur:
+            return false // Can be used anonymously or with account
+        case .postImages:
+            return false // Always anonymous
+        }
+    }
 }
 
 /// The default browser set by the user via `UserDefaults` and `Settings.defaultBrowser`.
