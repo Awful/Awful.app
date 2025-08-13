@@ -74,11 +74,12 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         }
         darkMode = sender.isOn
     }
-
-    // Immersion mode UI elements (added programmatically)
-    private var immersionModeStack: UIStackView!
-    private var immersionModeLabel: UILabel!
-    private var immersionModeSwitch: UISwitch!
+    
+    // Immersion mode UI elements
+    private var immersionModeStack: UIStackView?
+    private var immersionModeLabel: UILabel?
+    private var immersionModeSwitch: UISwitch?
+    
     @objc private func toggleImmersionMode(_ sender: UISwitch) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -144,78 +145,66 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.immersionModeSwitch?.isOn = $0 }
             .store(in: &cancellables)
-
-        // Create immersion mode UI at the end of viewDidLoad
-        setupImmersionModeUI()
+        
+        // Setup immersion mode UI - safely after viewDidLoad
+        DispatchQueue.main.async { [weak self] in
+            self?.setupImmersionModeUI()
+        }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updatePreferredContentSize()
     }
-
+    
     private func setupImmersionModeUI() {
-        // Create immersion mode label
-        immersionModeLabel = UILabel()
-        immersionModeLabel.text = "Immersion Mode"
-        immersionModeLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        immersionModeLabel.textColor = theme["sheetTextColor"] ?? UIColor.darkText
-        immersionModeLabel.accessibilityTraits = []
+        guard isViewLoaded, immersionModeStack == nil else { return }
         
-        // Create immersion mode switch
-        immersionModeSwitch = UISwitch()
-        immersionModeSwitch.isOn = immersionModeEnabled // Set initial state
-        immersionModeSwitch.onTintColor = theme["settingsSwitchColor"] // Apply theme color
-        immersionModeSwitch.addTarget(self, action: #selector(toggleImmersionMode(_:)), for: .primaryActionTriggered)
-        immersionModeSwitch.accessibilityLabel = "Hide bars when scrolling"
+        // Create label
+        let label = UILabel()
+        label.text = "Immersion Mode"
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.textColor = theme["sheetTextColor"] ?? UIColor.label
+        immersionModeLabel = label
         
-        // Create stack view for immersion mode
-        immersionModeStack = UIStackView(arrangedSubviews: [immersionModeLabel, immersionModeSwitch])
-        immersionModeStack.axis = .horizontal
-        immersionModeStack.distribution = .equalSpacing
-        immersionModeStack.spacing = 8
-        immersionModeStack.translatesAutoresizingMaskIntoConstraints = false
+        // Create switch
+        let modeSwitch = UISwitch()
+        modeSwitch.isOn = immersionModeEnabled
+        modeSwitch.onTintColor = theme["settingsSwitchColor"]
+        modeSwitch.addTarget(self, action: #selector(toggleImmersionMode(_:)), for: .valueChanged)
+        immersionModeSwitch = modeSwitch
         
-        // Find the main settings stack view and append to it
-        func findMainSettingsStack(in view: UIView) -> UIStackView? {
-            if let stackView = view as? UIStackView,
-               stackView.axis == .vertical,
-               stackView.arrangedSubviews.count >= 4 {
-                return stackView
+        // Create stack
+        let stack = UIStackView(arrangedSubviews: [label, modeSwitch])
+        stack.axis = .horizontal
+        stack.distribution = .equalSpacing
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        immersionModeStack = stack
+        
+        // Add to view hierarchy - find parent stack of darkModeStack
+        if let darkModeStack = darkModeStack,
+           let parentStack = darkModeStack.superview as? UIStackView {
+            if let index = parentStack.arrangedSubviews.firstIndex(of: darkModeStack) {
+                parentStack.insertArrangedSubview(stack, at: index + 1)
+            } else {
+                parentStack.addArrangedSubview(stack)
             }
-            for subview in view.subviews {
-                if let found = findMainSettingsStack(in: subview) {
-                    return found
-                }
-            }
-            return nil
-        }
-        
-        if let stackView = findMainSettingsStack(in: view) {
-            // Simply append to the end of the stack - much simpler and more reliable
-            stackView.addArrangedSubview(immersionModeStack)
         } else {
-            print("Could not find settings stack, adding immersion mode to main view")
-            view.addSubview(immersionModeStack)
+            // Fallback - add to main view
+            view.addSubview(stack)
             NSLayoutConstraint.activate([
-                immersionModeStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                immersionModeStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                immersionModeStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 200),
-                immersionModeStack.heightAnchor.constraint(equalToConstant: 44)
+                stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+                stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                stack.heightAnchor.constraint(equalToConstant: 44)
             ])
         }
         
-        // Add to collections for theming
-        labels.append(immersionModeLabel)
-        switches.append(immersionModeSwitch)
-        
-        // Update preferred content size after adding new UI
-        updatePreferredContentSize()
+        // Don't call updatePreferredContentSize() here to avoid layout loops
     }
 
     private func updatePreferredContentSize() {
-        view.setNeedsLayout()
-        view.layoutIfNeeded()
         let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
         preferredContentSize = CGSize(width: 320, height: max(preferredHeight, 246))
     }
@@ -234,6 +223,10 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         for uiswitch in switches {
             uiswitch.onTintColor = theme["settingsSwitchColor"]
         }
+        
+        // Update immersion mode theming
+        immersionModeLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
+        immersionModeSwitch?.onTintColor = theme["settingsSwitchColor"]
     }
     
     // MARK: UIAdaptivePresentationControllerDelegate

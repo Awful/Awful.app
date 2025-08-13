@@ -110,7 +110,15 @@ final class PostsPageViewController: ViewController {
             self?.loadNextPageOrRefresh()
         }
         postsView.setNavigationBarHidden = { [weak self] hidden, animated in
-            self?.navigationController?.setNavigationBarHidden(hidden, animated: animated)
+            // Never hide navigation bar when not in posts view context
+            // This prevents issues when returning to bookmarks view or other views
+            guard let self = self,
+                  self.isViewLoaded,
+                  self.view.window != nil else {
+                return
+            }
+            
+            self.navigationController?.setNavigationBarHidden(hidden, animated: animated)
         }
         postsView.renderView.delegate = self
         postsView.renderView.registerMessage(FYADFlagRequest.self)
@@ -1929,10 +1937,14 @@ final class PostsPageViewController: ViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Restore navigation bar if it was hidden by immersion mode
+        // Always restore navigation bar when leaving posts view to prevent issues
+        // with other views (like bookmarks) not having a visible header
         if navigationController?.isNavigationBarHidden == true {
             navigationController?.setNavigationBarHidden(false, animated: animated)
         }
+        
+        // Exit immersion mode to reset any transforms
+        postsView.exitImmersionMode()
         
         // Restore default navigation bar appearance when leaving this view
         if #available(iOS 26.0, *), !disableLiquidGlass {
