@@ -4,11 +4,8 @@
 
 import AwfulSettings
 import AwfulTheming
-import os
 import ScrollViewDelegateMultiplexer
 import UIKit
-
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageView")
 
 /**
  Manages a posts page's render view, top bar, refresh control, and toolbar.
@@ -27,22 +24,26 @@ final class PostsPageView: UIView {
     /// Callback to hide/show the navigation bar (set by PostsPageViewController)
     var setNavigationBarHidden: ((Bool, Bool) -> Void)?
     
-    private var immersionModeState: ImmersionModeState = .normal {
+    /// Progress of immersion mode (0.0 = bars fully visible, 1.0 = bars fully hidden)
+    private var immersionProgress: CGFloat = 0.0 {
         didSet {
-            let oldDescription = "\(oldValue)"
-            let newDescription = "\(immersionModeState)"
-            logger.debug("immersion mode transitioned from \(oldDescription) to \(newDescription)")
-            
-            switch immersionModeState {
-            case .normal:
-                showBarsAnimated(true)
-            case .immersed:
-                hideBarsAnimated(true)
-            case .transitioning:
-                break
+            guard immersionModeEnabled else {
+                immersionProgress = 0.0
+                return
+            }
+            let oldProgress = oldValue
+            immersionProgress = immersionProgress.clamp(0...1)
+            if oldProgress != immersionProgress {
+                updateBarsForImmersionProgress()
             }
         }
     }
+    
+    /// Last scroll offset to calculate delta
+    private var lastScrollOffset: CGFloat = 0
+    
+    /// Sensitivity of scroll-to-hide (points of scroll for full transition)
+    private let scrollSensitivity: CGFloat = 50.0
     
     // MARK: Loading view
 
@@ -165,10 +166,6 @@ final class PostsPageView: UIView {
             }
         }
         didSet {
-            let oldDescription = "\(oldValue)"
-            let newDescription = "\(refreshControlState)"
-            logger.debug("refresh control transitioned from \(oldDescription) to \(newDescription)")
-
             refreshControl?.state = refreshControlState
 
             switch refreshControlState {
@@ -205,10 +202,6 @@ final class PostsPageView: UIView {
 
     private var topBarState: TopBarState {
         didSet {
-            let oldDescription = "\(oldValue)"
-            let newDescription = "\(topBarState)"
-            logger.debug("top bar transitioned from \(oldDescription) to \(newDescription)")
-
             switch (oldValue, topBarState) {
             case (.hidden, .appearing),
                  (.hidden, .visible),
@@ -339,20 +332,17 @@ final class PostsPageView: UIView {
         loadingViewContainer.frame = bounds
 
         let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
-        let toolbarY: CGFloat
+        let toolbarY = bounds.maxY - layoutMargins.bottom - toolbarHeight
         
-        if immersionModeEnabled && immersionModeState == .immersed {
-            // Position toolbar off-screen when in immersion mode
-            toolbarY = bounds.maxY
-        } else {
-            toolbarY = bounds.maxY - layoutMargins.bottom - toolbarHeight
+        // Only update frame if toolbar doesn't have a transform applied
+        // This prevents layoutSubviews from overriding immersion mode transforms
+        if toolbar.transform.isIdentity {
+            toolbar.frame = CGRect(
+                x: safeAreaInsets.left,
+                y: toolbarY,
+                width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
+                height: toolbarHeight)
         }
-        
-        toolbar.frame = CGRect(
-            x: safeAreaInsets.left,
-            y: toolbarY,
-            width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
-            height: toolbarHeight)
 
         let scrollView = renderView.scrollView
 
@@ -384,19 +374,19 @@ final class PostsPageView: UIView {
         }
         
         updateTopBarContainerFrameAndScrollViewInsets()
+        
+        // Reapply immersion transforms after layout (in case layout reset them)
+        if immersionModeEnabled && immersionProgress > 0 {
+            updateBarsForImmersionProgress()
+        }
     }
 
     /// Assumes that various views (top bar container, refresh control container, toolbar) have been laid out.
     private func updateScrollViewInsets() {
         let scrollView = renderView.scrollView
 
-        let bottomInset: CGFloat
-        if immersionModeEnabled && immersionModeState == .immersed {
-            // When in immersion mode, use full screen for content
-            bottomInset = layoutMargins.bottom
-        } else {
-            bottomInset = bounds.maxY - toolbar.frame.minY
-        }
+        // For drawer-style behavior, use static insets - transforms handle the visual movement
+        let bottomInset = max(layoutMargins.bottom, bounds.maxY - toolbar.frame.minY)
         
         var contentInset = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bottomInset, right: 0)
         if case .refreshing = refreshControlState {
@@ -404,12 +394,7 @@ final class PostsPageView: UIView {
         }
         scrollView.contentInset = contentInset
 
-        let indicatorBottomInset: CGFloat
-        if immersionModeEnabled && immersionModeState == .immersed {
-            indicatorBottomInset = layoutMargins.bottom
-        } else {
-            indicatorBottomInset = bounds.maxY - toolbar.frame.minY
-        }
+        let indicatorBottomInset = max(layoutMargins.bottom, bounds.maxY - toolbar.frame.minY)
         
         var indicatorInsets = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: indicatorBottomInset, right: 0)
         // I'm not sure if this is a bug or if I'm misunderstanding something, but as of iOS 12 it seems that the indicator insets have already taken the layout margins into consideration? That's my guess based on observing their positioning when the indicator insets are set to zero.
@@ -509,66 +494,92 @@ final class PostsPageView: UIView {
     
     /// Force exit immersion mode (useful for scroll-to-top/bottom actions)
     func exitImmersionMode() {
-        guard immersionModeEnabled && immersionModeState == .immersed else { return }
-        immersionModeState = .normal
+        guard immersionModeEnabled && immersionProgress > 0 else { return }
+        immersionProgress = 0.0
     }
     
-    private func showBarsAnimated(_ animated: Bool) {
-        guard immersionModeEnabled else { return }
+    private var isUpdatingBars = false
+    
+    /// Update bars position based on immersion progress (no animation)
+    private func updateBarsForImmersionProgress() {
+        // Prevent recursive calls
+        guard !isUpdatingBars else { return }
+        isUpdatingBars = true
+        defer { isUpdatingBars = false }
         
-        logger.debug("showBarsAnimated called - showing navigation, top bar, and toolbar")
+        // IMPORTANT: Disable any implicit animations during transform application
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         
-        // Show top bar
-        topBarState = .visible
-        
-        UIView.animate(withDuration: animated ? 0.25 : 0) {
-            // Show toolbar
-            self.toolbar.alpha = 1.0
-            self.toolbar.transform = .identity
+        guard immersionModeEnabled else {
+            // Reset everything to visible state
+            safeAreaGradientView.alpha = 0.0
             
-            // Hide safe area gradient
-            self.safeAreaGradientView.alpha = 0.0
+            // Reset navigation bar transform if found
+            if let foundNavBar = findNavigationBar() {
+                foundNavBar.transform = .identity
+            }
             
-            // Update top bar frame and scroll view insets
-            self.updateTopBarContainerFrameAndScrollViewInsets()
+            // Reset bottom toolbar transform
+            toolbar.transform = .identity
             
-            // Update layout margins to account for visible toolbar
-            self.setNeedsLayout()
-            self.layoutIfNeeded()
+            updateScrollViewInsets()
+            CATransaction.commit()
+            return
         }
         
-        // Show navigation bar
-        setNavigationBarHidden?(false, animated)
+        // Update safe area gradient
+        safeAreaGradientView.alpha = immersionProgress
+        
+        // NOTE: Top bar container (subtoolbar) should NOT be affected by immersion mode
+        // It should remain visible and functional
+        
+        // Apply transform to navigation bar if found - NO SYSTEM HIDE/SHOW
+        if let navBar = findNavigationBar() {
+            let navBarHeight = navBar.bounds.height
+            
+            // Use device safe area top (status bar/notch area), not layout margins
+            let deviceSafeAreaTop = window?.safeAreaInsets.top ?? 44
+            let totalUpwardDistance = navBarHeight + deviceSafeAreaTop
+            navBar.transform = CGAffineTransform(translationX: 0, y: -totalUpwardDistance * immersionProgress)
+        }
+        
+        // Update scroll view insets to account for hidden bars
+        updateScrollViewInsets()
+        
+        // Apply transform to bottom toolbar - layoutSubviews now preserves transforms
+        let toolbarHeight = toolbar.bounds.height
+        
+        // Use device safe area bottom (home indicator area), not layout margins
+        let deviceSafeAreaBottom = window?.safeAreaInsets.bottom ?? 34
+        let totalDownwardDistance = toolbarHeight + deviceSafeAreaBottom
+        let toolbarTransform = CGAffineTransform(translationX: 0, y: totalDownwardDistance * immersionProgress)
+        toolbar.transform = toolbarTransform
+        
+        CATransaction.commit()
     }
     
-    private func hideBarsAnimated(_ animated: Bool) {
-        guard immersionModeEnabled else { return }
-        
-        logger.debug("hideBarsAnimated called - hiding navigation, top bar, and toolbar")
-        
-        // Hide top bar
-        topBarState = .hidden
-        
-        UIView.animate(withDuration: animated ? 0.25 : 0) {
-            // Hide toolbar by moving it down and fading it
-            let toolbarHeight = self.toolbar.bounds.height
-            self.toolbar.alpha = 0.0
-            self.toolbar.transform = CGAffineTransform(translationX: 0, y: toolbarHeight)
-            
-            // Show safe area gradient for better status bar readability
-            self.safeAreaGradientView.alpha = 1.0
-            
-            // Update top bar frame and scroll view insets
-            self.updateTopBarContainerFrameAndScrollViewInsets()
-            
-            // Update layout margins to account for hidden toolbar
-            self.setNeedsLayout()
-            self.layoutIfNeeded()
+    /// Helper to find navigation bar consistently
+    private func findNavigationBar() -> UINavigationBar? {
+        // Approach 1: Find through responder chain
+        var responder: UIResponder? = self.next
+        while responder != nil {
+            if let viewController = responder as? UIViewController,
+               let navBar = viewController.navigationController?.navigationBar {
+                return navBar
+            }
+            responder = responder?.next
         }
         
-        // Hide navigation bar
-        setNavigationBarHidden?(true, animated)
+        // Approach 2: Find through window hierarchy if approach 1 failed
+        if let window = self.window,
+           let rootNav = window.rootViewController as? UINavigationController {
+            return rootNav.navigationBar
+        }
+        
+        return nil
     }
+    
     
     
     // MARK: Gunk
@@ -578,18 +589,6 @@ final class PostsPageView: UIView {
     }
 }
 
-// MARK: - Immersion Mode
-
-extension PostsPageView {
-    enum ImmersionModeState {
-        /// Normal state with bars visible
-        case normal
-        /// Immersed state with bars hidden
-        case immersed  
-        /// Transitioning between states
-        case transitioning
-    }
-}
 
 // MARK: - Top bar
 
@@ -769,6 +768,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         willBeginDraggingContentOffset = scrollView.contentOffset
+        lastScrollOffset = scrollView.contentOffset.y
         
         // disable transparency so that scroll thumbs work in dark mode
         if darkMode, !viewHasBeenScrolledOnce {
@@ -778,17 +778,16 @@ extension PostsPageView: ScrollViewDelegateExtras {
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        // Handle immersion mode transitions
+        // Optional: Snap to complete if very close to fully shown/hidden
         if immersionModeEnabled && !refreshControlState.isArmedOrTriggered {
-            let velocityThreshold: CGFloat = 0.5
-            
-            if velocity.y > velocityThreshold && immersionModeState == .normal {
-                // Scrolling down fast enough to enter immersion mode
-                immersionModeState = .immersed
-            } else if velocity.y < -velocityThreshold && immersionModeState == .immersed {
-                // Scrolling up fast enough to exit immersion mode
-                immersionModeState = .normal
+            if immersionProgress > 0.9 {
+                // Snap to fully hidden
+                immersionProgress = 1.0
+            } else if immersionProgress < 0.1 {
+                // Snap to fully visible
+                immersionProgress = 0.0
             }
+            // Otherwise leave at current position
         }
         
         switch refreshControlState {
@@ -797,8 +796,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
             break
 
         case .ready, .awaitingScrollEnd, .refreshing, .disabled:
-            // Only handle regular top bar logic if not in immersion mode
-            if !immersionModeEnabled || immersionModeState == .normal {
+            // Only handle regular top bar logic if immersion mode is disabled
+            if !immersionModeEnabled {
                 switch topBarState {
                 case .hidden where velocity.y < 0:
                     topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
@@ -893,6 +892,24 @@ extension PostsPageView: ScrollViewDelegateExtras {
             break
         }
 
+        // Handle immersion mode drawer-style behavior  
+        if immersionModeEnabled && scrollView.isDragging && !refreshControlState.isArmedOrTriggered {
+            let currentOffset = scrollView.contentOffset.y
+            let scrollDelta = currentOffset - lastScrollOffset
+            
+            // Determine if we're near the bottom of the scroll view
+            let maxOffsetY = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
+            let bottomThreshold: CGFloat = 30 // Distance from bottom to start reversing (reduced for later activation)
+            let isNearBottom = currentOffset >= (maxOffsetY - bottomThreshold)
+            
+            // Normal scroll logic, but reverse direction when near bottom
+            let effectiveScrollDelta = isNearBottom ? -scrollDelta : scrollDelta
+            let newProgress = immersionProgress + (effectiveScrollDelta / scrollSensitivity)
+            immersionProgress = newProgress.clamp(0...1)
+            
+            lastScrollOffset = currentOffset
+        }
+
         switch topBarState {
         case .appearing, .disappearing:
             updateTopBarContainerFrameAndScrollViewInsets()
@@ -907,8 +924,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
             break
 
         case .disabled, .ready, .awaitingScrollEnd, .refreshing:
-            // Only handle regular top bar logic if not in immersion mode
-            if !immersionModeEnabled || immersionModeState == .normal {
+            // Only handle regular top bar logic if immersion mode is disabled
+            if !immersionModeEnabled {
                 switch (topBarState, willBeginDraggingContentOffset)  {
                 case (.hidden, let willBeginDraggingContentOffset?):
                     topBarState = .appearing(fromContentOffset: willBeginDraggingContentOffset)
@@ -924,20 +941,6 @@ extension PostsPageView: ScrollViewDelegateExtras {
                 case (.hidden, _), (.visible, _), (.appearing, _), (.disappearing, _), (.alwaysVisible, _):
                     break
                 }
-            }
-        }
-
-        // If immersed, automatically reveal bars when reaching very top or bottom of content
-        if immersionModeEnabled && immersionModeState == .immersed {
-            let threshold: CGFloat = 20
-            // Near top: contentOffset.y approaches -contentInset.top
-            let isNearTop = scrollView.contentOffset.y <= -scrollView.contentInset.top + threshold
-            // Near bottom: contentOffset.y approaches the maximum offset considering insets
-            let maxOffsetY = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
-            let isNearBottom = scrollView.contentOffset.y >= maxOffsetY - threshold
-
-            if isNearTop || isNearBottom {
-                exitImmersionMode()
             }
         }
     }

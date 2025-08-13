@@ -150,6 +150,9 @@ final class BookmarksTableViewController: TableViewController {
         super.themeDidChange()
 
         loadMoreFooter?.themeDidChange()
+        
+        // Update navigation bar button colors to follow theme
+        editButtonItem.tintColor = theme["navigationBarTextColor"]
 
         // Set interface style for context menus to follow theme
         let themeMode = theme[string: "mode"]

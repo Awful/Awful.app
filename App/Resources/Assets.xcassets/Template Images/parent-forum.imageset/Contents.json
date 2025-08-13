@@ -1,17 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "page_settings.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "page_settings@2x.png",
+      "filename" : "parent-forum@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "page_settings@3x.png",
+      "filename" : "parent-forum@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

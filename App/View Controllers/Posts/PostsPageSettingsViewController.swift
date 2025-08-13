@@ -148,6 +148,11 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         // Create immersion mode UI at the end of viewDidLoad
         setupImmersionModeUI()
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updatePreferredContentSize()
+    }
 
     private func setupImmersionModeUI() {
         // Create immersion mode label
@@ -209,8 +214,10 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     }
 
     private func updatePreferredContentSize() {
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
         let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        preferredContentSize = CGSize(width: 320, height: preferredHeight)
+        preferredContentSize = CGSize(width: 320, height: max(preferredHeight, 246))
     }
 
     override func themeDidChange() {

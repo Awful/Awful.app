@@ -71,7 +71,7 @@ public enum Settings {
     /// Hide navigation and toolbar when scrolling down in posts view.
     public static let immersionModeEnabled = Setting(key: "immersion_mode_enabled", default: false)
 
-    /// Disable the liquid glass effect for navigation titles in iOS 26+.
+    /// Disable the liquid glass effect for navigation titles in iOS 26+ (unused - kept to avoid crashes).
     public static let disableLiquidGlass = Setting(key: "disable_liquid_glass", default: false)
 
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)

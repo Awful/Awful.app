@@ -161,6 +161,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
 
         loadMoreFooter?.themeDidChange()
         
+        // Update navigation bar button colors to follow theme
+        composeBarButtonItem.tintColor = theme["navigationBarTextColor"]
+        
         // Set interface style for context menus to follow theme
         let themeMode = theme[string: "mode"]
         let userInterfaceStyle: UIUserInterfaceStyle = themeMode == "light" ? .light : .dark

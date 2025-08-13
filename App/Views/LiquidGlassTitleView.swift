@@ -11,15 +11,11 @@ final class LiquidGlassTitleView: UIView {
     // MARK: - UI Elements
     
     private var visualEffectView: UIVisualEffectView = {
-        // Use iOS 26's new UIGlassEffect for authentic Liquid Glass appearance
         let effect = UIGlassEffect()
         let view = UIVisualEffectView(effect: effect)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    private var visualEffectViewConstraints: [NSLayoutConstraint] = []
-    private var titleLabelConstraints: [NSLayoutConstraint] = []
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -27,8 +23,7 @@ final class LiquidGlassTitleView: UIView {
         label.textAlignment = .center
         label.numberOfLines = 2
         label.adjustsFontForContentSizeCategory = true
-        label.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        label.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
@@ -38,8 +33,7 @@ final class LiquidGlassTitleView: UIView {
         get { titleLabel.text }
         set {
             titleLabel.text = newValue
-            invalidateIntrinsicContentSize()
-            setNeedsLayout()
+            updateTitleDisplay()
         }
     }
     
@@ -52,71 +46,29 @@ final class LiquidGlassTitleView: UIView {
         get { titleLabel.font }
         set { 
             titleLabel.font = newValue
-            updateLineSpacing()
+            updateTitleDisplay()
         }
     }
     
     /// Sets whether to use dark glass appearance (useful for light mode themes)
     func setUseDarkGlass(_ useDark: Bool) {
-        // Deactivate existing constraints
-        NSLayoutConstraint.deactivate(visualEffectViewConstraints + titleLabelConstraints)
-        
-        // Remove old visual effect view
-        visualEffectView.removeFromSuperview()
-        
-        // Create new visual effect view with appropriate style
-        let newEffectView = UIVisualEffectView()
-        newEffectView.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Set the interface style before applying the effect
-        newEffectView.overrideUserInterfaceStyle = useDark ? .dark : .unspecified
-        
-        // Apply the glass effect after setting the style
-        let effect = UIGlassEffect()
-        newEffectView.effect = effect
-        
-        // Replace the visual effect view
-        visualEffectView = newEffectView
-        
-        // Re-setup view hierarchy and constraints
-        setupVisualEffectViewAndConstraints()
-        
-        // Re-apply corner radius for capsule shape
-        setNeedsLayout()
+        visualEffectView.overrideUserInterfaceStyle = useDark ? .dark : .unspecified
     }
     
-    private func setupVisualEffectViewAndConstraints() {
-        // Add visual effect view
-        addSubview(visualEffectView)
+    private func updateTitleDisplay() {
+        guard let text = titleLabel.text, !text.isEmpty else { return }
         
-        // Add title label to the content view of the visual effect
-        visualEffectView.contentView.addSubview(titleLabel)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        paragraphStyle.lineSpacing = -2
+        paragraphStyle.lineBreakMode = .byWordWrapping
         
-        // Create constraints
-        visualEffectViewConstraints = [
-            visualEffectView.topAnchor.constraint(equalTo: topAnchor),
-            visualEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            visualEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            visualEffectView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: paragraphStyle,
+            .font: titleLabel.font ?? UIFont.preferredFont(forTextStyle: .callout)
         ]
         
-        titleLabelConstraints = [
-            titleLabel.topAnchor.constraint(equalTo: visualEffectView.contentView.topAnchor, constant: 6),
-            titleLabel.leadingAnchor.constraint(equalTo: visualEffectView.contentView.leadingAnchor, constant: 12),
-            titleLabel.trailingAnchor.constraint(equalTo: visualEffectView.contentView.trailingAnchor, constant: -12),
-            titleLabel.bottomAnchor.constraint(equalTo: visualEffectView.contentView.bottomAnchor, constant: -6)
-        ]
-        
-        // Activate constraints
-        NSLayoutConstraint.activate(visualEffectViewConstraints + titleLabelConstraints)
-        
-        // Configure appearance
-        updateLineSpacing()
-        
-        // Make view interactive (for accessibility)
-        isAccessibilityElement = false
-        titleLabel.isAccessibilityElement = true
-        titleLabel.accessibilityTraits = .header
+        titleLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
     
     // MARK: - Initialization
@@ -134,58 +86,44 @@ final class LiquidGlassTitleView: UIView {
     // MARK: - Setup
     
     private func setupViews() {
-        setupVisualEffectViewAndConstraints()
+        addSubview(visualEffectView)
+        visualEffectView.contentView.addSubview(titleLabel)
+        
+        NSLayoutConstraint.activate([
+            visualEffectView.topAnchor.constraint(equalTo: topAnchor),
+            visualEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            visualEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            visualEffectView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: visualEffectView.contentView.topAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: visualEffectView.contentView.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: visualEffectView.contentView.trailingAnchor, constant: -16),
+            titleLabel.bottomAnchor.constraint(equalTo: visualEffectView.contentView.bottomAnchor, constant: -8)
+        ])
+        
+        // Accessibility
+        isAccessibilityElement = false
+        titleLabel.isAccessibilityElement = true
+        titleLabel.accessibilityTraits = .header
     }
-    
-    private func updateLineSpacing() {
-        guard let text = titleLabel.text, !text.isEmpty else { return }
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-        // Tighter line spacing than default
-        paragraphStyle.lineSpacing = -2
-        paragraphStyle.lineBreakMode = .byTruncatingTail
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .paragraphStyle: paragraphStyle,
-            .font: titleLabel.font ?? UIFont.preferredFont(forTextStyle: .callout)
-        ]
-        
-        titleLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
-    }
-    
-    // MARK: - Layout
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Apply capsule shape with corner radius
+        // Apply capsule shape
         let cornerRadius = bounds.height / 2
         visualEffectView.layer.cornerRadius = cornerRadius
         visualEffectView.layer.masksToBounds = true
-        
-        // Apply corner configuration for proper glass capsule shape
         visualEffectView.layer.cornerCurve = .continuous
     }
     
+    
+    
     override var intrinsicContentSize: CGSize {
-        let labelSize = titleLabel.intrinsicContentSize
-        // Add padding: 12 points horizontal on each side, 6 points vertical on each side
-        let width = labelSize.width + 24
-        let height = labelSize.height + 12
-        
-        // Ensure minimum size for the capsule to look good
-        return CGSize(
-            width: max(width, 100),
-            height: max(height, 32)
-        )
+        return CGSize(width: 320, height: 56)
     }
     
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        let labelSize = titleLabel.sizeThatFits(CGSize(width: size.width - 24, height: size.height - 12))
-        return CGSize(
-            width: min(labelSize.width + 24, size.width),
-            height: min(labelSize.height + 12, size.height)
-        )
+        return CGSize(width: 320, height: 56)
     }
 }
