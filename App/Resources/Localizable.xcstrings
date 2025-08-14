@@ -65,6 +65,18 @@
     "Bookmark Thread" : {
 
     },
+    "bookmarks.search.placeholder" : {
+      "comment" : "Placeholder text for the filter field in bookmarks screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter bookmarks..."
+          }
+        }
+      }
+    },
     "bookmarks.title" : {
       "comment" : "Title of the bookmarks screen, shown in the navbar and the tab bar.",
       "extractionState" : "migrated",

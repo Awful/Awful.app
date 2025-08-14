@@ -26,6 +26,14 @@ final class BookmarksTableViewController: TableViewController {
     private let managedObjectContext: NSManagedObjectContext
     @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
     @FoilDefaultStorage(Settings.bookmarksSortedUnread) private var sortUnreadToTop
+    
+    private var currentFilter: BookmarkFilter = .all
+    private var filterButton: UIBarButtonItem!
+    private var filterButtonView: UIButton!
+    private var searchButton: UIBarButtonItem!
+    private var searchBar: UISearchBar!
+    private var searchBarContainerView: UIView!
+    
 
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
         return ScrollViewDelegateMultiplexer(scrollView: tableView)
@@ -40,10 +48,250 @@ final class BookmarksTableViewController: TableViewController {
         
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
-        navigationItem.rightBarButtonItem = editButtonItem
+        
+        setupFilterButton()
+        setupSearchButton()
+        setupSearchBar()
+        navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.rightBarButtonItems = [filterButton, searchButton]
         
         themeDidChange()
     }
+    
+    private func setupFilterButton() {
+        // Create a custom button for better context menu control
+        filterButtonView = UIButton(type: .system)
+        filterButtonView.setImage(UIImage(systemName: "line.3.horizontal.decrease"), for: .normal)
+        filterButtonView.accessibilityLabel = "Filter bookmarks"
+        
+        // Set up context menu with explicit trait collection
+        if #available(iOS 14.0, *) {
+            setupFilterButtonMenu()
+        } else {
+            filterButtonView.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        }
+        
+        // Wrap in bar button item
+        filterButton = UIBarButtonItem(customView: filterButtonView)
+        
+        // Update filter menu when theme changes
+        updateFilterMenuIfNeeded()
+    }
+    
+    @available(iOS 14.0, *)
+    private func setupFilterButtonMenu() {
+        let themeMode = theme[string: "mode"]
+        let userInterfaceStyle: UIUserInterfaceStyle = themeMode == "light" ? .light : .dark
+        
+        // Force the button to use the correct interface style
+        filterButtonView.overrideUserInterfaceStyle = userInterfaceStyle
+        
+        filterButtonView.menu = createFilterMenu()
+        filterButtonView.showsMenuAsPrimaryAction = true
+    }
+    
+    private func setupSearchButton() {
+        searchButton = UIBarButtonItem(
+            image: UIImage(named: "quick-look"),
+            style: .plain,
+            target: self,
+            action: #selector(searchButtonTapped)
+        )
+        searchButton.accessibilityLabel = "Search bookmarks"
+    }
+    
+    private func setupSearchBar() {
+        searchBar = UISearchBar()
+        searchBar.delegate = self
+        searchBar.placeholder = "Search by title or author..."
+        searchBar.showsCancelButton = true
+        searchBar.searchBarStyle = .minimal
+        searchBar.isHidden = true // Start hidden
+        
+        searchBarContainerView = UIView()
+        searchBarContainerView.addSubview(searchBar)
+        
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            searchBar.topAnchor.constraint(equalTo: searchBarContainerView.topAnchor, constant: 8),
+            searchBar.leadingAnchor.constraint(equalTo: searchBarContainerView.leadingAnchor, constant: 16),
+            searchBar.trailingAnchor.constraint(equalTo: searchBarContainerView.trailingAnchor, constant: -16),
+            searchBar.bottomAnchor.constraint(equalTo: searchBarContainerView.bottomAnchor, constant: -8)
+        ])
+    }
+    
+    @available(iOS 14.0, *)
+    private func createFilterMenu() -> UIMenu {
+        var actions: [UIMenuElement] = []
+        
+        // Basic filters
+        let basicActions = [BookmarkFilter.all, .unreadOnly, .readOnly].map { filter in
+            let isSelected = {
+                switch (currentFilter, filter) {
+                case (.all, .all), (.unreadOnly, .unreadOnly), (.readOnly, .readOnly):
+                    return true
+                default:
+                    return false
+                }
+            }()
+            
+            return UIAction(
+                title: filter.title,
+                state: isSelected ? .on : .off
+            ) { [weak self] _ in
+                self?.applyFilter(filter)
+            }
+        }
+        
+        actions.append(UIMenu(title: "", options: .displayInline, children: basicActions))
+        
+        // Star category filters
+        let starActions = StarCategory.allCases.compactMap { category -> UIAction? in
+            guard category != .none else { return nil }
+            let filter = BookmarkFilter.starCategory(category)
+            
+            let isSelected = {
+                if case .starCategory(let currentStar) = currentFilter {
+                    return currentStar == category
+                }
+                return false
+            }()
+            
+            return UIAction(
+                title: filter.title,
+                state: isSelected ? .on : .off
+            ) { [weak self] _ in
+                self?.applyFilter(filter)
+            }
+        }
+        
+        if !starActions.isEmpty {
+            actions.append(UIMenu(title: "Star Categories", options: .displayInline, children: starActions))
+        }
+        
+        return UIMenu(title: "Filter Bookmarks", children: actions)
+    }
+    
+    @available(iOS 14.0, *)
+    private func updateFilterMenu() {
+        setupFilterButtonMenu()
+    }
+    
+    private func updateFilterMenuIfNeeded() {
+        if #available(iOS 14.0, *) {
+            updateFilterMenu()
+        }
+    }
+    
+    @objc private func filterButtonTapped() {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        }
+        
+        let alert = UIAlertController(title: "Filter Bookmarks", message: nil, preferredStyle: .actionSheet)
+        
+        for filter in BookmarkFilter.quickFilters {
+            let action = UIAlertAction(title: filter.title, style: .default) { [weak self] _ in
+                self?.applyFilter(filter)
+            }
+            
+            let isSelected: Bool
+            switch (currentFilter, filter) {
+            case (.all, .all), (.unreadOnly, .unreadOnly), (.readOnly, .readOnly):
+                isSelected = true
+            case (.starCategory(let currentStar), .starCategory(let filterStar)):
+                isSelected = currentStar == filterStar
+            default:
+                isSelected = false
+            }
+            
+            if isSelected {
+                action.setValue(true, forKey: "checked")
+            }
+            alert.addAction(action)
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        if let popover = alert.popoverPresentationController {
+            popover.barButtonItem = filterButton
+        }
+        
+        present(alert, animated: true)
+    }
+    
+    @objc private func searchButtonTapped() {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        }
+        
+        toggleSearchBar()
+    }
+    
+    private func toggleSearchBar() {
+        let isSearchVisible = searchBarContainerView.frame.height > 0
+        
+        if !isSearchVisible {
+            // Show search bar with smooth animation
+            searchBar.isHidden = false
+            searchBar.alpha = 0
+            
+            // Start with height 0, then animate to full height
+            searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
+            tableView.tableHeaderView = searchBarContainerView
+            
+            UIView.animate(
+                withDuration: 0.4,
+                delay: 0,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.3,
+                options: [.curveEaseInOut],
+                animations: {
+                    // Animate height and alpha together
+                    self.searchBarContainerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 56)
+                    self.tableView.tableHeaderView = self.searchBarContainerView
+                    self.searchBar.alpha = 1.0
+                },
+                completion: { _ in
+                    self.searchBar.becomeFirstResponder()
+                }
+            )
+        } else {
+            // Hide search bar with smooth animation
+            searchBar.resignFirstResponder()
+            searchBar.text = ""
+            applyFilter(.all)
+            
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0,
+                usingSpringWithDamping: 0.9,
+                initialSpringVelocity: 0.1,
+                options: [.curveEaseInOut],
+                animations: {
+                    // Animate both height and alpha together
+                    self.searchBarContainerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 0)
+                    self.tableView.tableHeaderView = self.searchBarContainerView
+                    self.searchBar.alpha = 0.0
+                },
+                completion: { _ in
+                    self.searchBar.isHidden = true
+                }
+            )
+        }
+    }
+    
+    private func applyFilter(_ filter: BookmarkFilter) {
+        currentFilter = filter
+        dataSource = makeDataSource()
+        tableView.reloadData()
+        
+        // Update filter menu for iOS 14+
+        if #available(iOS 14.0, *) {
+            updateFilterMenu()
+        }
+    }
+    
     
     deinit {
         if isViewLoaded {
@@ -55,6 +303,7 @@ final class BookmarksTableViewController: TableViewController {
         let dataSource = try! ThreadListDataSource(
             bookmarksSortedByUnread: sortUnreadToTop,
             showsTagAndRating: showThreadTags,
+            filter: currentFilter,
             managedObjectContext: managedObjectContext,
             tableView: tableView
         )
@@ -112,6 +361,11 @@ final class BookmarksTableViewController: TableViewController {
         tableView.hideExtraneousSeparators()
         tableView.restorationIdentifier = "Bookmarks table"
         
+        // Set up search bar as table header view initially hidden
+        searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
+        searchBarContainerView.clipsToBounds = true
+        tableView.tableHeaderView = searchBarContainerView
+        
 
         dataSource = makeDataSource()
         tableView.reloadData()
@@ -153,6 +407,22 @@ final class BookmarksTableViewController: TableViewController {
         
         // Update navigation bar button colors to follow theme
         editButtonItem.tintColor = theme["navigationBarTextColor"]
+        filterButton?.tintColor = theme["navigationBarTextColor"]
+        filterButtonView?.tintColor = theme["navigationBarTextColor"]
+        searchButton?.tintColor = theme["navigationBarTextColor"]
+        
+        // Update search bar theme
+        if let searchBar = searchBar {
+            searchBarContainerView.backgroundColor = theme["listBackgroundColor"]
+            searchBar.barTintColor = theme["listBackgroundColor"]
+            searchBar.backgroundColor = theme["listBackgroundColor"]
+            searchBar.searchTextField.backgroundColor = theme["navigationBarBackgroundColor"]
+            searchBar.searchTextField.textColor = theme["listTextColor"]
+            searchBar.tintColor = theme["tintColor"]
+        }
+        
+        // Update filter menu to match theme
+        updateFilterMenuIfNeeded()
 
         // Set interface style for context menus to follow theme
         let themeMode = theme[string: "mode"]
@@ -162,9 +432,11 @@ final class BookmarksTableViewController: TableViewController {
         tableView.overrideUserInterfaceStyle = userInterfaceStyle
         view.overrideUserInterfaceStyle = userInterfaceStyle
         
-        // Also set the window's interface style to ensure context menus inherit correctly
-        if let window = view.window {
-            window.overrideUserInterfaceStyle = userInterfaceStyle
+        // Update interface style for context menus
+        if #available(iOS 14.0, *) {
+            let themeMode = theme[string: "mode"]
+            let userInterfaceStyle: UIUserInterfaceStyle = themeMode == "light" ? .light : .dark
+            filterButtonView?.overrideUserInterfaceStyle = userInterfaceStyle
         }
         
 
@@ -177,6 +449,9 @@ final class BookmarksTableViewController: TableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        // Ensure context menu has correct appearance
+        updateFilterMenuIfNeeded()
         
         prepareUserActivity()
         
@@ -320,5 +595,24 @@ extension BookmarksTableViewController {
 extension BookmarksTableViewController: ThreadListDataSourceDeletionDelegate {
     func didDeleteThread(_ thread: AwfulThread, in dataSource: ThreadListDataSource) {
         setThread(thread, isBookmarked: false)
+    }
+}
+
+extension BookmarksTableViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let trimmedText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedText.isEmpty {
+            applyFilter(.all)
+        } else {
+            applyFilter(.textSearch(trimmedText))
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        toggleSearchBar()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }
