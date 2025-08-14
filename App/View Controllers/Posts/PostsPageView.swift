@@ -42,8 +42,21 @@ final class PostsPageView: UIView {
     /// Last scroll offset to calculate delta
     private var lastScrollOffset: CGFloat = 0
     
-    /// Sensitivity of scroll-to-hide (points of scroll for full transition)
-    private let scrollSensitivity: CGFloat = 50.0
+    /// Actual distance bars travel when hiding (calculated dynamically based on bar heights)
+    private var totalBarTravelDistance: CGFloat {
+        let toolbarHeight = toolbar.bounds.height
+        let deviceSafeAreaBottom = window?.safeAreaInsets.bottom ?? 34
+        let bottomDistance = toolbarHeight + deviceSafeAreaBottom
+        
+        if let navBar = findNavigationBar() {
+            let navBarHeight = navBar.bounds.height
+            let deviceSafeAreaTop = window?.safeAreaInsets.top ?? 44
+            let topDistance = navBarHeight + deviceSafeAreaTop
+            return max(bottomDistance, topDistance)
+        }
+        
+        return bottomDistance
+    }
     
     // MARK: Loading view
 
@@ -545,8 +558,8 @@ final class PostsPageView: UIView {
             navBar.transform = CGAffineTransform(translationX: 0, y: -totalUpwardDistance * immersionProgress)
         }
         
-        // Update scroll view insets to account for hidden bars
-        updateScrollViewInsets()
+        // Don't update scroll view insets during immersion mode transforms
+        // The insets should remain constant to avoid scroll position jumps
         
         // Apply transform to bottom toolbar - layoutSubviews now preserves transforms
         let toolbarHeight = toolbar.bounds.height
@@ -898,47 +911,72 @@ extension PostsPageView: ScrollViewDelegateExtras {
             let currentOffset = scrollView.contentOffset.y
             let scrollDelta = currentOffset - lastScrollOffset
             
-            // Determine if we're near the bottom of the scroll view
-            let maxOffsetY = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
-            let nearBottomThreshold: CGFloat = 100 // Distance from bottom to start reversing behavior
+            // Calculate the actual bottom position using adjusted content inset
+            // This ensures consistent calculation even as bars move
+            let contentHeight = scrollView.contentSize.height
+            let adjustedBottom = scrollView.adjustedContentInset.bottom
+            let maxOffsetY = max(contentHeight, scrollView.bounds.height - adjustedBottom) - scrollView.bounds.height + adjustedBottom
             
+            // Use the actual bar travel distance as the threshold for smooth 1:1 movement
+            let barTravelDistance = totalBarTravelDistance
+            
+            // Check if near top of scroll view
+            let distanceFromTop = currentOffset + scrollView.adjustedContentInset.top
+            let isNearTop = distanceFromTop <= barTravelDistance
+            
+            // Check if near bottom of scroll view
             let distanceFromBottom = maxOffsetY - currentOffset
-            let isNearBottom = distanceFromBottom <= nearBottomThreshold
+            let isNearBottom = distanceFromBottom <= barTravelDistance
             
-            if isNearBottom {
-                // When near bottom, progressively reveal bars based on how close we are to the bottom
-                // The closer to bottom, the more visible the bars should be
+            if isNearTop && !isNearBottom {
+                // Near top: special handling with sticky zone
+                let stickyTopZone: CGFloat = 20 // Small zone where bars always stay visible
                 
-                if scrollDelta > 0 { // Scrolling down (towards bottom)
-                    // Calculate how much to reveal based on distance from bottom
-                    // As we approach the bottom, we should reveal more aggressively
-                    let revealFactor = 1.0 - (distanceFromBottom / nearBottomThreshold)
-                    let adjustedSensitivity = scrollSensitivity * (1.0 - revealFactor * 0.7) // Increase reveal speed as we get closer
-                    
-                    let newProgress = immersionProgress - (scrollDelta / adjustedSensitivity)
-                    immersionProgress = newProgress.clamp(0...1)
-                } else if scrollDelta < 0 { // Scrolling up (away from bottom)
-                    // When scrolling up from near bottom, allow normal hiding but slower
-                    let hideFactor = distanceFromBottom / nearBottomThreshold
-                    let adjustedSensitivity = scrollSensitivity * (1.0 + hideFactor) // Slower hiding when very close to bottom
-                    
-                    let newProgress = immersionProgress + (-scrollDelta / adjustedSensitivity)
-                    immersionProgress = newProgress.clamp(0...1)
+                if distanceFromTop <= stickyTopZone {
+                    // Very close to top: keep bars fully visible
+                    immersionProgress = 0
+                } else {
+                    // In transition zone: allow normal scroll-based movement
+                    if scrollDelta < 0 { // Scrolling up toward top
+                        // Reveal bars as we approach top
+                        let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
+                        let positionBasedProgress = max(0, distanceFromTop / barTravelDistance)
+                        // Take the minimum to ensure bars become fully visible at top
+                        immersionProgress = min(newProgress, positionBasedProgress).clamp(0...1)
+                    } else if scrollDelta > 0 { // Scrolling down away from top
+                        // Normal hiding behavior when scrolling down
+                        let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
+                        immersionProgress = newProgress.clamp(0...1)
+                    }
                 }
+            } else if isNearBottom && !isNearTop {
+                // Near bottom: special handling with sticky zone
+                let stickyBottomZone: CGFloat = 20 // Small zone where bars always stay visible
                 
-                // Force bars to be fully visible when truly at the bottom
-                if distanceFromBottom <= 5 {
-                    // Smoothly transition to fully visible instead of snapping
-                    let targetProgress: CGFloat = 0.0
-                    let transitionSpeed: CGFloat = 0.3
-                    immersionProgress = immersionProgress * (1.0 - transitionSpeed) + targetProgress * transitionSpeed
+                if distanceFromBottom <= stickyBottomZone {
+                    // Very close to bottom: keep bars fully visible
+                    immersionProgress = 0
+                } else {
+                    // In transition zone: allow normal scroll-based movement
+                    if scrollDelta > 0 { // Scrolling down toward bottom
+                        // Reveal bars as we approach bottom
+                        let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
+                        let positionBasedProgress = max(0, distanceFromBottom / barTravelDistance)
+                        // Take the minimum to ensure bars become fully visible at bottom
+                        immersionProgress = min(newProgress, positionBasedProgress).clamp(0...1)
+                    } else if scrollDelta < 0 { // Scrolling up away from bottom
+                        // Hide bars when scrolling up (note: negative scrollDelta, so we subtract to increase progress)
+                        let newProgress = immersionProgress - (scrollDelta / barTravelDistance)
+                        immersionProgress = newProgress.clamp(0...1)
+                    }
                 }
-            } else {
-                // Normal scroll logic when not near bottom
-                // Scrolling down hides bars, scrolling up reveals them
-                let newProgress = immersionProgress + (scrollDelta / scrollSensitivity)
+            } else if !isNearTop && !isNearBottom {
+                // Middle area: normal scroll logic
+                // Use actual bar travel distance for consistent movement speed
+                let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
                 immersionProgress = newProgress.clamp(0...1)
             }
+            // If both isNearTop and isNearBottom (very short content), don't change immersionProgress
             
             lastScrollOffset = currentOffset
         }
