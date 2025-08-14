@@ -409,6 +409,10 @@ final class PostsPageView: UIView {
         if immersionModeEnabled {
             // Don't update top bar frame/insets during immersion mode
             // The bars are positioned via transforms, not frame changes
+            // But we still need to set initial insets if they haven't been set yet
+            if renderView.scrollView.contentInset.top == 0 {
+                updateScrollViewInsets()
+            }
         } else {
             updateTopBarContainerFrameAndScrollViewInsets()
         }
