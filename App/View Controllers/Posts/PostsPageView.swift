@@ -360,8 +360,9 @@ final class PostsPageView: UIView {
             width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
             height: topBarHeight)
         
-        // Position gradient view to cover only the top safe area
-        let gradientHeight: CGFloat = layoutMargins.top
+        // Position gradient view to cover only the top safe area (status bar/notch)
+        // Use actual device safe area top instead of layoutMargins to prevent extending into content
+        let gradientHeight: CGFloat = window?.safeAreaInsets.top ?? safeAreaInsets.top
         safeAreaGradientView.frame = CGRect(
             x: 0,
             y: bounds.minY,
