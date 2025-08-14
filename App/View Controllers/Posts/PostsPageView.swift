@@ -16,7 +16,22 @@ final class PostsPageView: UIView {
 
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
-    @FoilDefaultStorage(Settings.immersionModeEnabled) private var immersionModeEnabled
+    @FoilDefaultStorage(Settings.immersionModeEnabled) private var immersionModeEnabled {
+        didSet {
+            // When immersion mode is disabled, reset all transforms
+            if !immersionModeEnabled && oldValue {
+                immersionProgress = 0.0
+                // Reset all transforms immediately
+                if let navBar = findNavigationBar() {
+                    navBar.transform = .identity
+                }
+                toolbar.transform = .identity
+                safeAreaGradientView.alpha = 0.0
+                // Update layout to restore normal state
+                setNeedsLayout()
+            }
+        }
+    }
     var viewHasBeenScrolledOnce: Bool = false
     
     // MARK: Immersion mode
@@ -27,7 +42,7 @@ final class PostsPageView: UIView {
     /// Progress of immersion mode (0.0 = bars fully visible, 1.0 = bars fully hidden)
     private var immersionProgress: CGFloat = 0.0 {
         didSet {
-            guard immersionModeEnabled else {
+            guard immersionModeEnabled && !UIAccessibility.isVoiceOverRunning else {
                 immersionProgress = 0.0
                 return
             }
@@ -41,6 +56,9 @@ final class PostsPageView: UIView {
     
     /// Last scroll offset to calculate delta
     private var lastScrollOffset: CGFloat = 0
+    
+    /// Cached navigation bar reference for performance
+    private weak var cachedNavigationBar: UINavigationBar?
     
     /// Actual distance bars travel when hiding (calculated dynamically based on bar heights)
     private var totalBarTravelDistance: CGFloat {
@@ -387,7 +405,13 @@ final class PostsPageView: UIView {
             gradientLayer.frame = safeAreaGradientView.bounds
         }
         
-        updateTopBarContainerFrameAndScrollViewInsets()
+        // Skip updating scroll view insets during immersion mode to prevent shudder
+        if immersionModeEnabled {
+            // Don't update top bar frame/insets during immersion mode
+            // The bars are positioned via transforms, not frame changes
+        } else {
+            updateTopBarContainerFrameAndScrollViewInsets()
+        }
         
         // Reapply immersion transforms after layout (in case layout reset them)
         if immersionModeEnabled && immersionProgress > 0 {
@@ -573,13 +597,19 @@ final class PostsPageView: UIView {
         CATransaction.commit()
     }
     
-    /// Helper to find navigation bar consistently
+    /// Helper to find navigation bar consistently (with caching for performance)
     private func findNavigationBar() -> UINavigationBar? {
+        // Return cached navigation bar if it still exists
+        if let cached = cachedNavigationBar {
+            return cached
+        }
+        
         // Approach 1: Find through responder chain
         var responder: UIResponder? = self.next
         while responder != nil {
             if let viewController = responder as? UIViewController,
                let navBar = viewController.navigationController?.navigationBar {
+                cachedNavigationBar = navBar  // Cache the result
                 return navBar
             }
             responder = responder?.next
@@ -588,10 +618,19 @@ final class PostsPageView: UIView {
         // Approach 2: Find through window hierarchy if approach 1 failed
         if let window = self.window,
            let rootNav = window.rootViewController as? UINavigationController {
+            cachedNavigationBar = rootNav.navigationBar  // Cache the result
             return rootNav.navigationBar
         }
         
         return nil
+    }
+    
+    /// Clear cached navigation bar when view hierarchy changes
+    override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        if newWindow == nil {
+            cachedNavigationBar = nil
+        }
     }
     
     
@@ -907,7 +946,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         // Handle immersion mode drawer-style behavior  
-        if immersionModeEnabled && scrollView.isDragging && !refreshControlState.isArmedOrTriggered {
+        // Disable immersion mode when VoiceOver is running for accessibility
+        if immersionModeEnabled && !UIAccessibility.isVoiceOverRunning && (scrollView.isDragging || scrollView.isDecelerating) && !refreshControlState.isArmedOrTriggered {
             let currentOffset = scrollView.contentOffset.y
             let scrollDelta = currentOffset - lastScrollOffset
             
@@ -936,17 +976,23 @@ extension PostsPageView: ScrollViewDelegateExtras {
                     // Very close to top: keep bars fully visible
                     immersionProgress = 0
                 } else {
-                    // In transition zone: allow normal scroll-based movement
+                    // In transition zone: bars should be visible based on distance from top
+                    // This creates a smooth gradient from hidden to visible as we approach top
+                    let targetProgress = distanceFromTop / barTravelDistance
+                    
+                    // Use incremental change for smooth movement, but constrain to target
+                    let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
+                    
+                    // When scrolling up toward top, reveal bars (progress decreases)
+                    // When scrolling down away from top, allow bars to start hiding (progress increases)
+                    // But always respect the position-based limit
                     if scrollDelta < 0 { // Scrolling up toward top
-                        // Reveal bars as we approach top
-                        let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
-                        let positionBasedProgress = max(0, distanceFromTop / barTravelDistance)
-                        // Take the minimum to ensure bars become fully visible at top
-                        immersionProgress = min(newProgress, positionBasedProgress).clamp(0...1)
-                    } else if scrollDelta > 0 { // Scrolling down away from top
-                        // Normal hiding behavior when scrolling down
-                        let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
-                        immersionProgress = newProgress.clamp(0...1)
+                        // Moving toward top, bars should reveal
+                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
+                    } else { // Scrolling down away from top
+                        // Moving away from top, but still respect the near-top zone
+                        // Don't hide bars more than the position allows
+                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
                     }
                 }
             } else if isNearBottom && !isNearTop {
@@ -957,17 +1003,23 @@ extension PostsPageView: ScrollViewDelegateExtras {
                     // Very close to bottom: keep bars fully visible
                     immersionProgress = 0
                 } else {
-                    // In transition zone: allow normal scroll-based movement
+                    // In transition zone: bars should be visible based on distance from bottom
+                    // This creates a smooth gradient from hidden to visible as we approach bottom
+                    let targetProgress = distanceFromBottom / barTravelDistance
+                    
+                    // Use incremental change for smooth movement, but constrain to target
+                    let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
+                    
+                    // When scrolling down toward bottom, reveal bars (progress decreases)
+                    // When scrolling up away from bottom, allow bars to start hiding (progress increases)
+                    // But always respect the position-based limit
                     if scrollDelta > 0 { // Scrolling down toward bottom
-                        // Reveal bars as we approach bottom
-                        let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
-                        let positionBasedProgress = max(0, distanceFromBottom / barTravelDistance)
-                        // Take the minimum to ensure bars become fully visible at bottom
-                        immersionProgress = min(newProgress, positionBasedProgress).clamp(0...1)
-                    } else if scrollDelta < 0 { // Scrolling up away from bottom
-                        // Hide bars when scrolling up (note: negative scrollDelta, so we subtract to increase progress)
-                        let newProgress = immersionProgress - (scrollDelta / barTravelDistance)
-                        immersionProgress = newProgress.clamp(0...1)
+                        // Moving toward bottom, bars should reveal
+                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
+                    } else { // Scrolling up away from bottom
+                        // Moving away from bottom, but still respect the near-bottom zone
+                        // Don't hide bars more than the position allows
+                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
                     }
                 }
             } else if !isNearTop && !isNearBottom {
