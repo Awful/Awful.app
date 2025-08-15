@@ -25,6 +25,9 @@ final class ThreadListCell: UITableViewCell {
     }()
 
     private let unreadCountLabel = UILabel()
+    
+    // Cache for corner radius to avoid redundant layer operations
+    private var lastBackgroundFrame: CGRect = .zero
 
     var viewModel: ViewModel = .empty {
         didSet {
@@ -117,9 +120,15 @@ final class ThreadListCell: UITableViewCell {
              let backgroundPadding = UIEdgeInsets(top: -2, left: -6, bottom: -2, right: -6)
             let bgFrame = layout.unreadCountFrame.inset(by: backgroundPadding)
              pageCountBackgroundView.frame = bgFrame
-             pageCountBackgroundView.layer.cornerRadius = bgFrame.height / 2
+             
+             // Only update corner radius if frame actually changed to avoid redundant layer operations
+             if !bgFrame.equalTo(lastBackgroundFrame) {
+                 pageCountBackgroundView.layer.cornerRadius = bgFrame.height / 2
+                 lastBackgroundFrame = bgFrame
+             }
          } else {
              pageCountBackgroundView.frame = .zero
+             lastBackgroundFrame = .zero
          }
         pageCountLabel.frame = layout.pageCountFrame
         pageIconView.frame = layout.pageIconFrame

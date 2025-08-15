@@ -428,7 +428,17 @@ final class PostsPageView: UIView {
         let scrollView = renderView.scrollView
 
         // For drawer-style behavior, use static insets - transforms handle the visual movement
-        let bottomInset = max(layoutMargins.bottom, bounds.maxY - toolbar.frame.minY)
+        let bottomInset: CGFloat
+        if immersionModeEnabled {
+            // During immersion mode, use the static toolbar position (without transforms)
+            // to keep contentInset constant and prevent scroll interference
+            let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
+            let staticToolbarY = bounds.maxY - layoutMargins.bottom - toolbarHeight
+            bottomInset = max(layoutMargins.bottom, bounds.maxY - staticToolbarY)
+        } else {
+            // Normal mode: use actual toolbar frame position
+            bottomInset = max(layoutMargins.bottom, bounds.maxY - toolbar.frame.minY)
+        }
         
         var contentInset = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bottomInset, right: 0)
         if case .refreshing = refreshControlState {
@@ -436,7 +446,17 @@ final class PostsPageView: UIView {
         }
         scrollView.contentInset = contentInset
 
-        let indicatorBottomInset = max(layoutMargins.bottom, bounds.maxY - toolbar.frame.minY)
+        // Use the same logic for scroll indicator insets
+        let indicatorBottomInset: CGFloat
+        if immersionModeEnabled {
+            // During immersion mode, use the static toolbar position (without transforms)
+            let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
+            let staticToolbarY = bounds.maxY - layoutMargins.bottom - toolbarHeight
+            indicatorBottomInset = max(layoutMargins.bottom, bounds.maxY - staticToolbarY)
+        } else {
+            // Normal mode: use actual toolbar frame position
+            indicatorBottomInset = max(layoutMargins.bottom, bounds.maxY - toolbar.frame.minY)
+        }
         
         var indicatorInsets = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: indicatorBottomInset, right: 0)
         // I'm not sure if this is a bug or if I'm misunderstanding something, but as of iOS 12 it seems that the indicator insets have already taken the layout margins into consideration? That's my guess based on observing their positioning when the indicator insets are set to zero.

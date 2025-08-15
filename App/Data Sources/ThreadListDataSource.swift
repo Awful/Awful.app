@@ -31,16 +31,25 @@ enum BookmarkFilter {
             return "Read"
         case .starCategory(let category):
             switch category {
-            case .orange: return "Orange Star"
-            case .red: return "Red Star"
-            case .yellow: return "Yellow Star"
-            case .cyan: return "Cyan Star"
-            case .green: return "Green Star"
-            case .purple: return "Purple Star"
-            case .none: return "No Star"
+            case .orange: return "Orange"
+            case .red: return "Red"
+            case .yellow: return "Yellow"
+            case .cyan: return "Cyan"
+            case .green: return "Green"
+            case .purple: return "Purple"
+            case .none: return "No Color"
             }
         case .textSearch(let text):
             return "Search: \(text)"
+        }
+    }
+    
+    var isDefault: Bool {
+        switch self {
+        case .all:
+            return true
+        default:
+            return false
         }
     }
 }
