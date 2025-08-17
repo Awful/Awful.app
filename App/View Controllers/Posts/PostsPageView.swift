@@ -1020,30 +1020,25 @@ extension PostsPageView: ScrollViewDelegateExtras {
                     }
                 }
             } else if isNearBottom && !isNearTop {
-                // Near bottom: special handling with sticky zone
-                let stickyBottomZone: CGFloat = 20 // Small zone where bars always stay visible
+                // Near bottom: ensure bars fully reach starting position when at actual bottom
+                // But allow them to hide again when scrolling up
                 
-                if distanceFromBottom <= stickyBottomZone {
-                    // Very close to bottom: keep bars fully visible
+                if distanceFromBottom <= 5 && scrollDelta > 0 { // Within 5 points AND scrolling down
+                    // Reaching the actual bottom - bars must be fully visible
                     immersionProgress = 0
                 } else {
-                    // In transition zone: bars should be visible based on distance from bottom
-                    // This creates a smooth gradient from hidden to visible as we approach bottom
-                    let targetProgress = distanceFromBottom / barTravelDistance
-                    
-                    // Use incremental change for smooth movement, but constrain to target
+                    // Use smooth incremental movement based on scroll delta
+                    // This provides 1:1 response without interrupting scroll
                     let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
                     
-                    // When scrolling down toward bottom, reveal bars (progress decreases)
-                    // When scrolling up away from bottom, allow bars to start hiding (progress increases)
-                    // But always respect the position-based limit
                     if scrollDelta > 0 { // Scrolling down toward bottom
-                        // Moving toward bottom, bars should reveal
-                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
+                        // Moving toward bottom - gradually reveal bars
+                        // But ensure we can reach 0 (fully visible) at bottom
+                        let maxProgress = distanceFromBottom / barTravelDistance
+                        immersionProgress = min(incrementalProgress, maxProgress).clamp(0...1)
                     } else { // Scrolling up away from bottom
-                        // Moving away from bottom, but still respect the near-bottom zone
-                        // Don't hide bars more than the position allows
-                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
+                        // Moving away from bottom - allow bars to hide with 1:1 response
+                        immersionProgress = incrementalProgress.clamp(0...1)
                     }
                 }
             } else if !isNearTop && !isNearBottom {
