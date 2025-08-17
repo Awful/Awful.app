@@ -23,6 +23,7 @@ private class FilterMenuViewController: UIViewController {
     private let theme: Theme
     private let onFilterSelected: (BookmarkFilter) -> Void
     private let createColorCircleImage: (StarCategory) -> UIImage?
+    var onDismiss: (() -> Void)?
     
     private var visualEffectView: UIVisualEffectView?
     private var contentContainerView: UIView!
@@ -69,7 +70,7 @@ private class FilterMenuViewController: UIViewController {
         view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         
         // Add tap gesture to dismiss when tapping backdrop
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backdropTapped))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backdropTapped(_:)))
         view.addGestureRecognizer(tapGesture)
         
         // Create content container that will be positioned like a popover
@@ -103,8 +104,14 @@ private class FilterMenuViewController: UIViewController {
         }
     }
     
-    @objc private func backdropTapped() {
-        dismiss(animated: true)
+    @objc private func backdropTapped(_ gesture: UITapGestureRecognizer) {
+        // Only dismiss if tap was on the backdrop, not the content
+        let location = gesture.location(in: view)
+        if !contentContainerView.frame.contains(location) {
+            dismiss(animated: true) { [weak self] in
+                self?.onDismiss?()
+            }
+        }
     }
     
     override func viewDidLoad() {
@@ -116,9 +123,23 @@ private class FilterMenuViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Position before the view appears to avoid animation
-        DispatchQueue.main.async { [weak self] in
-            self?.positionContentContainer()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Position after layout is complete, only if not already positioned
+        if positioningConstraints.isEmpty {
+            positionContentContainer()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Clean up UI elements when dismissing (only if being dismissed, not covered)
+        if isBeingDismissed || isMovingFromParent {
+            segmentedControl.isHidden = true
+            stackView.isHidden = true
+            colorButtons.forEach { $0.isHidden = true }
         }
     }
     
@@ -510,8 +531,9 @@ final class BookmarksTableViewController: TableViewController {
         
         // If popover is already shown, dismiss it
         if let existingPopover = filterPopoverController {
-            existingPopover.dismiss(animated: true)
-            filterPopoverController = nil
+            existingPopover.dismiss(animated: true) { [weak self] in
+                self?.filterPopoverController = nil
+            }
             return
         }
         
@@ -524,15 +546,22 @@ final class BookmarksTableViewController: TableViewController {
                     return self?.createColorCircleImage(for: category)
                 },
                 onFilterSelected: { [weak self] filter in
-                    self?.filterPopoverController?.dismiss(animated: true)
-                    self?.filterPopoverController = nil
+                    self?.filterPopoverController?.dismiss(animated: true) { [weak self] in
+                        self?.filterPopoverController = nil
+                    }
                     self?.applyFilter(filter)
                 }
             )
             
+            // Set up onDismiss callback to clear reference
+            filterMenuVC.onDismiss = { [weak self] in
+                self?.filterPopoverController = nil
+            }
+            
             // Use overCurrentContext for glass effect, then position like a popover
             filterMenuVC.modalPresentationStyle = .overCurrentContext
             filterMenuVC.modalTransitionStyle = .crossDissolve
+            filterMenuVC.presentationController?.delegate = self
             
             // Set source button information for positioning
             filterMenuVC.setSourceButton(filterButtonView, in: view)
@@ -998,7 +1027,7 @@ extension BookmarksTableViewController: UISearchBarDelegate {
 }
 
 @available(iOS 14.0, *)
-extension BookmarksTableViewController: UIPopoverPresentationControllerDelegate {
+extension BookmarksTableViewController: UIPopoverPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         // Force popover style on all devices - glass effect now works with our fixes
         return .none
@@ -1010,6 +1039,11 @@ extension BookmarksTableViewController: UIPopoverPresentationControllerDelegate 
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         // Clean up when popover is dismissed by user tapping outside
+        filterPopoverController = nil
+    }
+    
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        // Clean up when dismissed via swipe or other system gesture
         filterPopoverController = nil
     }
 }
