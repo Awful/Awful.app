@@ -380,7 +380,7 @@ final class PostsPageView: UIView {
         let refreshControlHeight = refreshControlContainer.layoutFittingCompressedHeight(targetWidth: bounds.width - safeAreaInsets.left - safeAreaInsets.right)
         refreshControlContainer.frame = CGRect(
             x: safeAreaInsets.left,
-            y: max(scrollView.contentSize.height, scrollView.bounds.height - layoutMargins.bottom),
+            y: max(scrollView.contentSize.height, scrollView.bounds.height - layoutMargins.bottom) - 20,
             width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
             height: refreshControlHeight)
 
