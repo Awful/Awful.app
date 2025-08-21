@@ -218,6 +218,7 @@
 		2DABC0C72E4A0BAB009ED603 /* PostImagesAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 2DABC0C62E4A0BAB009ED603 /* PostImagesAPI */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
+		2DF4301F2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF4301E2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
 		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
@@ -543,6 +544,7 @@
 		2DABC0C52E4A0B2E009ED603 /* PostImagesAPI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PostImagesAPI; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		2DF4301E2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
@@ -762,6 +764,7 @@
 		1C29C382225853A300E1217A /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2DF4301E2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift */,
 				2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */,
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1C16FBE61CBC671A00C88BD1 /* PostRenderModel.swift */,
@@ -1673,6 +1676,7 @@
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
+				2DF4301F2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);

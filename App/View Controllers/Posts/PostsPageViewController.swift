@@ -126,7 +126,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
-        postsView.topBar.goToParentForum = { [unowned self] in
+        postsView.setGoToParentForum { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
         }
@@ -730,12 +730,12 @@ final class PostsPageViewController: ViewController {
             showLoadingView()
         }
 
-        postsView.topBar.showPreviousPosts = hiddenPosts == 0 ? nil : { [unowned self] in
+        postsView.setShowPreviousPosts(hiddenPosts == 0 ? nil : { [unowned self] in
             self.showHiddenSeenPosts()
-        }
-        postsView.topBar.scrollToEnd = posts.isEmpty ? nil : { [unowned self] in
+        })
+        postsView.setScrollToEnd(posts.isEmpty ? nil : { [unowned self] in
             self.scrollToBottom(nil)
-        }
+        })
 
         if pullForNext {
             if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {

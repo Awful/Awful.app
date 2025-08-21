@@ -18,13 +18,18 @@ final class PostsPageView: UIView {
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @FoilDefaultStorage(Settings.immersionModeEnabled) private var immersionModeEnabled {
         didSet {
-            // When immersion mode is disabled, reset all transforms
-            if !immersionModeEnabled && oldValue {
+            if immersionModeEnabled && !oldValue {
+                // When immersion mode is enabled, force layout to ensure proper frame
+                setNeedsLayout()
+                layoutIfNeeded()
+            } else if !immersionModeEnabled && oldValue {
+                // When immersion mode is disabled, reset all transforms
                 immersionProgress = 0.0
                 // Reset all transforms immediately
                 if let navBar = findNavigationBar() {
                     navBar.transform = .identity
                 }
+                topBarContainer.transform = .identity
                 toolbar.transform = .identity
                 safeAreaGradientView.alpha = 0.0
                 // Update layout to restore normal state
@@ -69,7 +74,7 @@ final class PostsPageView: UIView {
         if let navBar = findNavigationBar() {
             let navBarHeight = navBar.bounds.height
             let deviceSafeAreaTop = window?.safeAreaInsets.top ?? 44
-            let topDistance = navBarHeight + deviceSafeAreaTop
+            let topDistance = navBarHeight + deviceSafeAreaTop + 30 // Match the working transform distance
             return max(bottomDistance, topDistance)
         }
         
@@ -225,11 +230,34 @@ final class PostsPageView: UIView {
 
     // MARK: Top bar
 
-    var topBar: PostsPageTopBar {
-        return topBarContainer.topBar
+    /// Sets the goToParentForum callback on the appropriate top bar
+    func setGoToParentForum(_ callback: (() -> Void)?) {
+        if let standardTopBar = topBarContainer.postsTopBar {
+            standardTopBar.goToParentForum = callback
+        } else if #available(iOS 26.0, *), let liquidGlassTopBar = topBarContainer.liquidGlassTopBar {
+            liquidGlassTopBar.goToParentForum = callback
+        }
+    }
+    
+    /// Sets the showPreviousPosts callback on the appropriate top bar
+    func setShowPreviousPosts(_ callback: (() -> Void)?) {
+        if let standardTopBar = topBarContainer.postsTopBar {
+            standardTopBar.showPreviousPosts = callback
+        } else if #available(iOS 26.0, *), let liquidGlassTopBar = topBarContainer.liquidGlassTopBar {
+            liquidGlassTopBar.showPreviousPosts = callback
+        }
+    }
+    
+    /// Sets the scrollToEnd callback on the appropriate top bar
+    func setScrollToEnd(_ callback: (() -> Void)?) {
+        if let standardTopBar = topBarContainer.postsTopBar {
+            standardTopBar.scrollToEnd = callback
+        } else if #available(iOS 26.0, *), let liquidGlassTopBar = topBarContainer.liquidGlassTopBar {
+            liquidGlassTopBar.scrollToEnd = callback
+        }
     }
 
-    private let topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
+    private let topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 0) /* start with zero height when hidden */)
 
     private var topBarState: TopBarState {
         didSet {
@@ -327,7 +355,7 @@ final class PostsPageView: UIView {
     // MARK: Layout
     
     override init(frame: CGRect) {
-        topBarState = UIAccessibility.isVoiceOverRunning ? .alwaysVisible : .hidden
+        topBarState = UIAccessibility.isVoiceOverRunning ? TopBarState.alwaysVisible : TopBarState.hidden
 
         super.init(frame: frame)
 
@@ -352,6 +380,9 @@ final class PostsPageView: UIView {
         
         // Configure initial gradient
         configureSafeAreaGradient()
+        
+        // Ensure topBarContainer starts with correct height based on initial state
+        updateTopBarContainerFrameAndScrollViewInsets()
     }
 
     override func layoutSubviews() {
@@ -385,11 +416,33 @@ final class PostsPageView: UIView {
             height: refreshControlHeight)
 
         let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width - safeAreaInsets.left - safeAreaInsets.right)
-        topBarContainer.frame = CGRect(
-            x: safeAreaInsets.left,
-            y: bounds.minY + layoutMargins.top,
-            width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
-            height: topBarHeight)
+        
+        // Position topBarContainer based on mode and state
+        let topBarY: CGFloat
+        if immersionModeEnabled {
+            // In immersion mode, position it to attach directly to the bottom edge of the navigation bar
+            // The nav bar is positioned at layoutMargins.top, so we attach right below it
+            if let navBar = findNavigationBar() {
+                // Position directly at the bottom edge of the nav bar (no gap)
+                // Nav bar frame.maxY gives us the exact bottom edge position
+                topBarY = navBar.frame.maxY
+            } else {
+                topBarY = bounds.minY + layoutMargins.top + 44 // fallback nav bar height
+            }
+        } else {
+            // In normal mode, position at top of safe area
+            topBarY = bounds.minY + layoutMargins.top
+        }
+        
+        // Only update frame if topBarContainer doesn't have a transform applied
+        // This prevents layoutSubviews from overriding immersion mode transforms
+        if topBarContainer.transform.isIdentity {
+            topBarContainer.frame = CGRect(
+                x: safeAreaInsets.left,
+                y: topBarY,
+                width: bounds.width - safeAreaInsets.left - safeAreaInsets.right,
+                height: topBarHeight)
+        }
         
         // Position gradient view to cover only the top safe area (status bar/notch)
         // Use actual device safe area top instead of layoutMargins to prevent extending into content
@@ -405,17 +458,8 @@ final class PostsPageView: UIView {
             gradientLayer.frame = safeAreaGradientView.bounds
         }
         
-        // Skip updating scroll view insets during immersion mode to prevent shudder
-        if immersionModeEnabled {
-            // Don't update top bar frame/insets during immersion mode
-            // The bars are positioned via transforms, not frame changes
-            // But we still need to set initial insets if they haven't been set yet
-            if renderView.scrollView.contentInset.top == 0 {
-                updateScrollViewInsets()
-            }
-        } else {
-            updateTopBarContainerFrameAndScrollViewInsets()
-        }
+        // Update top bar and scroll view insets based on mode
+        updateTopBarContainerFrameAndScrollViewInsets()
         
         // Reapply immersion transforms after layout (in case layout reset them)
         if immersionModeEnabled && immersionProgress > 0 {
@@ -467,11 +511,11 @@ final class PostsPageView: UIView {
 
     @objc private func voiceOverStatusDidChange(_ notification: Notification) {
         if UIAccessibility.isVoiceOverRunning {
-            topBarState = .alwaysVisible
+            topBarState = TopBarState.alwaysVisible
         } else {
             switch topBarState {
             case .alwaysVisible:
-                topBarState = .visible
+                topBarState = TopBarState.visible
             case .hidden, .appearing, .disappearing, .visible:
                 break
             }
@@ -500,7 +544,12 @@ final class PostsPageView: UIView {
             configureToolbarAppearance(standardToolbar)
         }
 
-        topBar.themeDidChange(Theme.defaultTheme())
+        // Update theme for whichever top bar is in use
+        if let standardTopBar = topBarContainer.postsTopBar {
+            standardTopBar.themeDidChange(Theme.defaultTheme())
+        } else if #available(iOS 26.0, *), let liquidGlassTopBar = topBarContainer.liquidGlassTopBar {
+            liquidGlassTopBar.themeDidChange(Theme.defaultTheme())
+        }
         
         // Update safe area gradient colors for new theme
         configureSafeAreaGradient()
@@ -582,6 +631,9 @@ final class PostsPageView: UIView {
                 foundNavBar.transform = .identity
             }
             
+            // Reset top bar container transform
+            topBarContainer.transform = .identity
+            
             // Reset bottom toolbar transform
             toolbar.transform = .identity
             
@@ -593,18 +645,22 @@ final class PostsPageView: UIView {
         // Update safe area gradient
         safeAreaGradientView.alpha = immersionProgress
         
-        // NOTE: Top bar container (subtoolbar) should NOT be affected by immersion mode
-        // It should remain visible and functional
-        
         // Apply transform to navigation bar if found - NO SYSTEM HIDE/SHOW
+        var navBarTransform: CGFloat = 0
         if let navBar = findNavigationBar() {
             let navBarHeight = navBar.bounds.height
             
             // Use device safe area top (status bar/notch area), not layout margins
             let deviceSafeAreaTop = window?.safeAreaInsets.top ?? 44
-            let totalUpwardDistance = navBarHeight + deviceSafeAreaTop
-            navBar.transform = CGAffineTransform(translationX: 0, y: -totalUpwardDistance * immersionProgress)
+            let totalUpwardDistance = navBarHeight + deviceSafeAreaTop + 30 // Extra distance to fully disappear above safe area
+            navBarTransform = -totalUpwardDistance * immersionProgress
+            navBar.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
         }
+        
+        // Position subtoolbar to move with the navigation bar as a synchronized unit
+        // The subtoolbar should be attached to the bottom of the nav bar and move with it
+        // Since it's positioned below the nav bar in layout, it needs the same transform to stay attached
+        topBarContainer.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
         
         // Don't update scroll view insets during immersion mode transforms
         // The insets should remain constant to avoid scroll position jumps
@@ -674,17 +730,44 @@ extension PostsPageView {
     /// Holds the top bar and clips to bounds, so the top bar doesn't sit behind a possibly-translucent navigation bar and obscure the underlying content.
     final class TopBarContainer: UIView {
 
-        fileprivate lazy var topBar: PostsPageTopBar = {
-            let topBar = PostsPageTopBar()
-            topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
-            return topBar
+        private var topBarHeightConstraint: NSLayoutConstraint?
+        
+        fileprivate lazy var topBar: UIView = {
+            if #available(iOS 26.0, *) {
+                let liquidGlassTopBar = PostsPageTopBarLiquidGlass()
+                topBarHeightConstraint = liquidGlassTopBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+                topBarHeightConstraint?.isActive = true
+                return liquidGlassTopBar
+            } else {
+                let standardTopBar = PostsPageTopBar()
+                topBarHeightConstraint = standardTopBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+                topBarHeightConstraint?.isActive = true
+                return standardTopBar
+            }
         }()
+        
+        /// Controls whether the topBar should be hidden (height = 0) or visible (minimum height = 44)
+        func setHidden(_ hidden: Bool) {
+            topBarHeightConstraint?.constant = hidden ? 0 : 44
+            topBar.isHidden = hidden
+        }
+        
+        /// Returns the top bar as PostsPageTopBar for iOS < 26 or PostsPageTopBarLiquidGlass for iOS 26+
+        var postsTopBar: PostsPageTopBar? {
+            return topBar as? PostsPageTopBar
+        }
+        
+        @available(iOS 26.0, *)
+        var liquidGlassTopBar: PostsPageTopBarLiquidGlass? {
+            return topBar as? PostsPageTopBarLiquidGlass
+        }
 
 
         override init(frame: CGRect) {
             super.init(frame: frame)
 
-            clipsToBounds = true
+            // Don't clip bounds - allows smooth sliding in immersion mode
+            clipsToBounds = false
 
             addSubview(topBar, constrainEdges: [.bottom, .left, .right])
         }
@@ -716,29 +799,52 @@ extension PostsPageView {
     @discardableResult
     private func updateTopBarContainerFrameAndScrollViewInsets() -> TopBarUpdateResult {
         let result: TopBarUpdateResult
-        switch topBarState {
-        case .hidden:
-            topBarContainer.frame.size.height = 0
-            result = .init(progress: 1)
+        
+        if immersionModeEnabled {
+            // In immersion mode, keep subtoolbar at full height when it should be visible
+            // Transforms handle the positioning, not frame height
+            switch topBarState {
+            case .hidden:
+                topBarContainer.setHidden(true)
+                topBarContainer.frame.size.height = 0
+                result = .init(progress: 0) // Progress 0 when hidden
+            case .appearing, .disappearing, .visible, .alwaysVisible:
+                topBarContainer.setHidden(false)
+                // Give it full height so transforms can work properly
+                topBarContainer.layoutIfNeeded()
+                topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
+                result = .init(progress: 1)
+            }
+        } else {
+            // In non-immersion mode, use frame height changes for hiding/showing
+            switch topBarState {
+            case .hidden:
+                topBarContainer.setHidden(true)
+                topBarContainer.frame.size.height = 0
+                result = .init(progress: 0) // Progress 0 when hidden
 
-        case .appearing(fromContentOffset: let initialContentOffset):
-            let distance = initialContentOffset.y - renderView.scrollView.contentOffset.y
-            let upperBound = topBar.bounds.height
-            let clamped = distance.clamp(0...upperBound)
-            topBarContainer.frame.size.height = clamped
-            result = .init(progress: clamped / upperBound)
+            case .appearing(fromContentOffset: let initialContentOffset):
+                topBarContainer.setHidden(false)
+                let distance = initialContentOffset.y - renderView.scrollView.contentOffset.y
+                let upperBound = topBarContainer.topBar.bounds.height
+                let clamped = distance.clamp(0...upperBound)
+                topBarContainer.frame.size.height = clamped
+                result = .init(progress: clamped / upperBound)
 
-        case .disappearing(fromContentOffset: let initialContentOffset):
-            let distance = renderView.scrollView.contentOffset.y - initialContentOffset.y
-            let upperBound = topBar.bounds.height
-            let clamped = distance.clamp(0...upperBound)
-            topBarContainer.frame.size.height = upperBound - clamped
-            result = .init(progress: clamped / upperBound)
+            case .disappearing(fromContentOffset: let initialContentOffset):
+                topBarContainer.setHidden(false)
+                let distance = renderView.scrollView.contentOffset.y - initialContentOffset.y
+                let upperBound = topBarContainer.topBar.bounds.height
+                let clamped = distance.clamp(0...upperBound)
+                topBarContainer.frame.size.height = upperBound - clamped
+                result = .init(progress: clamped / upperBound)
 
-        case .visible, .alwaysVisible:
-            topBarContainer.layoutIfNeeded()
-            topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
-            result = .init(progress: 1)
+            case .visible, .alwaysVisible:
+                topBarContainer.setHidden(false)
+                topBarContainer.layoutIfNeeded()
+                topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
+                result = .init(progress: 1)
+            }
         }
 
         updateScrollViewInsets()
@@ -877,10 +983,10 @@ extension PostsPageView: ScrollViewDelegateExtras {
             if !immersionModeEnabled {
                 switch topBarState {
                 case .hidden where velocity.y < 0:
-                    topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
+                    topBarState = TopBarState.appearing(fromContentOffset: scrollView.contentOffset)
 
                 case .visible where velocity.y > 0:
-                    topBarState = .disappearing(fromContentOffset: scrollView.contentOffset)
+                    topBarState = TopBarState.disappearing(fromContentOffset: scrollView.contentOffset)
 
                 case .hidden, .visible, .appearing, .disappearing, .alwaysVisible:
                     break
@@ -927,10 +1033,10 @@ extension PostsPageView: ScrollViewDelegateExtras {
         let result = updateTopBarContainerFrameAndScrollViewInsets()
         switch topBarState {
         case .appearing:
-            topBarState = result.progress >= 0.75 ? .visible : .hidden
+            topBarState = result.progress >= 0.75 ? TopBarState.visible : TopBarState.hidden
 
         case .disappearing:
-            topBarState = result.progress >= 0.75 ? .hidden : .visible
+            topBarState = result.progress >= 0.75 ? TopBarState.hidden : TopBarState.visible
 
         case .hidden, .visible, .alwaysVisible:
             break
@@ -981,73 +1087,22 @@ extension PostsPageView: ScrollViewDelegateExtras {
             let adjustedBottom = scrollView.adjustedContentInset.bottom
             let maxOffsetY = max(contentHeight, scrollView.bounds.height - adjustedBottom) - scrollView.bounds.height + adjustedBottom
             
-            // Use the actual bar travel distance as the threshold for smooth 1:1 movement
+            // Simplified immersion mode: always allow bars to respond to scroll without position constraints
+            // This ensures bars can fully hide when scrolling up, regardless of scroll position
             let barTravelDistance = totalBarTravelDistance
             
-            // Check if near top of scroll view
-            let distanceFromTop = currentOffset + scrollView.adjustedContentInset.top
-            let isNearTop = distanceFromTop <= barTravelDistance
-            
-            // Check if near bottom of scroll view
+            // Check if near bottom of scroll view for special handling
             let distanceFromBottom = maxOffsetY - currentOffset
             let isNearBottom = distanceFromBottom <= barTravelDistance
             
-            if isNearTop && !isNearBottom {
-                // Near top: special handling with sticky zone
-                let stickyTopZone: CGFloat = 20 // Small zone where bars always stay visible
-                
-                if distanceFromTop <= stickyTopZone {
-                    // Very close to top: keep bars fully visible
-                    immersionProgress = 0
-                } else {
-                    // In transition zone: bars should be visible based on distance from top
-                    // This creates a smooth gradient from hidden to visible as we approach top
-                    let targetProgress = distanceFromTop / barTravelDistance
-                    
-                    // Use incremental change for smooth movement, but constrain to target
-                    let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
-                    
-                    // When scrolling up toward top, reveal bars (progress decreases)
-                    // When scrolling down away from top, allow bars to start hiding (progress increases)
-                    // But always respect the position-based limit
-                    if scrollDelta < 0 { // Scrolling up toward top
-                        // Moving toward top, bars should reveal
-                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
-                    } else { // Scrolling down away from top
-                        // Moving away from top, but still respect the near-top zone
-                        // Don't hide bars more than the position allows
-                        immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
-                    }
-                }
-            } else if isNearBottom && !isNearTop {
-                // Near bottom: ensure bars fully reach starting position when at actual bottom
-                // But allow them to hide again when scrolling up
-                
-                if distanceFromBottom <= 5 && scrollDelta > 0 { // Within 5 points AND scrolling down
-                    // Reaching the actual bottom - bars must be fully visible
-                    immersionProgress = 0
-                } else {
-                    // Use smooth incremental movement based on scroll delta
-                    // This provides 1:1 response without interrupting scroll
-                    let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
-                    
-                    if scrollDelta > 0 { // Scrolling down toward bottom
-                        // Moving toward bottom - gradually reveal bars
-                        // But ensure we can reach 0 (fully visible) at bottom
-                        let maxProgress = distanceFromBottom / barTravelDistance
-                        immersionProgress = min(incrementalProgress, maxProgress).clamp(0...1)
-                    } else { // Scrolling up away from bottom
-                        // Moving away from bottom - allow bars to hide with 1:1 response
-                        immersionProgress = incrementalProgress.clamp(0...1)
-                    }
-                }
-            } else if !isNearTop && !isNearBottom {
-                // Middle area: normal scroll logic
-                // Use actual bar travel distance for consistent movement speed
-                let newProgress = immersionProgress + (scrollDelta / barTravelDistance)
-                immersionProgress = newProgress.clamp(0...1)
+            if isNearBottom && scrollDelta > 0 && distanceFromBottom <= 5 {
+                // At the very bottom and scrolling down - force bars to be visible
+                immersionProgress = 0
+            } else {
+                // All other cases: simple 1:1 scroll response
+                let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
+                immersionProgress = incrementalProgress.clamp(0...1)
             }
-            // If both isNearTop and isNearBottom (very short content), don't change immersionProgress
             
             lastScrollOffset = currentOffset
         }
@@ -1066,23 +1121,25 @@ extension PostsPageView: ScrollViewDelegateExtras {
             break
 
         case .disabled, .ready, .awaitingScrollEnd, .refreshing:
-            // Only handle regular top bar logic if immersion mode is disabled
-            if !immersionModeEnabled {
-                switch (topBarState, willBeginDraggingContentOffset)  {
-                case (.hidden, let willBeginDraggingContentOffset?):
-                    topBarState = .appearing(fromContentOffset: willBeginDraggingContentOffset)
-
-                case (.visible, let willBeginDraggingContentOffset?):
-                    // Without this check, when the refresh control is disabled, it's impossible to scroll content up when at the bottom of the page and the top bar is visible (i.e. after tapping "Scroll to Bottom"). There's surely a better approach, but this gets us working again.
-                    let contentOffsetYAtBottom = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
-                    let isVeryCloseToBottom = abs(willBeginDraggingContentOffset.y - contentOffsetYAtBottom) < 5
-                    if !isVeryCloseToBottom {
-                        topBarState = .disappearing(fromContentOffset: willBeginDraggingContentOffset)
-                    }
-
-                case (.hidden, _), (.visible, _), (.appearing, _), (.disappearing, _), (.alwaysVisible, _):
-                    break
+            // Handle top bar scroll logic for both immersion and non-immersion modes
+            switch (topBarState, willBeginDraggingContentOffset)  {
+            case (.hidden, let willBeginDraggingContentOffset?):
+                // Only trigger appearing if scrolling UP (negative delta)
+                let scrollDelta = scrollView.contentOffset.y - willBeginDraggingContentOffset.y
+                if scrollDelta < 0 {
+                    topBarState = TopBarState.appearing(fromContentOffset: willBeginDraggingContentOffset)
                 }
+
+            case (.visible, let willBeginDraggingContentOffset?):
+                // Without this check, when the refresh control is disabled, it's impossible to scroll content up when at the bottom of the page and the top bar is visible (i.e. after tapping "Scroll to Bottom"). There's surely a better approach, but this gets us working again.
+                let contentOffsetYAtBottom = max(scrollView.contentSize.height + scrollView.contentInset.bottom, scrollView.bounds.height) - scrollView.bounds.height
+                let isVeryCloseToBottom = abs(willBeginDraggingContentOffset.y - contentOffsetYAtBottom) < 5
+                if !isVeryCloseToBottom {
+                    topBarState = TopBarState.disappearing(fromContentOffset: willBeginDraggingContentOffset)
+                }
+
+            case (.hidden, _), (.visible, _), (.appearing, _), (.disappearing, _), (.alwaysVisible, _):
+                break
             }
         }
     }
