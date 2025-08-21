@@ -449,42 +449,96 @@ final class PostsPageViewController: ViewController {
     private func renderPosts() {
         webViewDidLoadOnce = false
 
+        Task { @MainActor in
+            await renderPostsAsync()
+        }
+    }
+    
+    private func renderPostsAsync() async {
         var context: [String: Any] = [:]
 
-        context["stylesheet"] = theme[string: "postsViewCSS"] as Any
+        var stylesheetContent = self.theme[string: "postsViewCSS"] ?? ""
+        
+        // Check if we're using the LiquidSpanKong theme and have a forum ID
+        logger.debug("Current theme name: '\(self.theme.name)', forum ID: '\(self.thread.forum?.forumID ?? "nil")'")
+        
+        if self.theme.name == "liquidSpanKong",
+           let forum = self.thread.forum,
+           !forum.forumID.isEmpty {
+            
+            logger.debug("LiquidSpanKong theme detected for forum \(forum.forumID)")
+            
+            // Download forum CSS and extract background images (main + bottom for some forums)
+            let backgrounds = await ForumCSSDownloader.shared.getForumBackgrounds(forumID: forum.forumID)
+            
+            if backgrounds.hasAnyBackground {
+                var backgroundCSS = """
+                    
+                    /* Forum-specific background for LiquidSpanKong theme */
+                    """
+                
+                // Add CSS variables for forum backgrounds if available
+                var cssVariables = ""
+                
+                if let mainBg = backgrounds.mainBackground {
+                    logger.debug("Found main forum background image: \(mainBg)")
+                    cssVariables += "--forum-main-background: url('\(mainBg)'); "
+                }
+                
+                if let bottomBg = backgrounds.bottomBackground {
+                    logger.debug("Found bottom forum background image: \(bottomBg)")
+                    cssVariables += "--forum-bottom-background: url('\(bottomBg)'); "
+                }
+                
+                if !cssVariables.isEmpty {
+                    backgroundCSS += """
+                        
+                        :root {
+                            \(cssVariables)
+                        }
+                        """
+                }
+                
+                stylesheetContent += backgroundCSS
+            } else {
+                logger.debug("No forum background images found for forum \(forum.forumID)")
+            }
+        }
+        
+        context["stylesheet"] = stylesheetContent
 
-        if posts.count > hiddenPosts {
-            let subset = posts[hiddenPosts...]
+        if self.posts.count > self.hiddenPosts {
+            let subset = self.posts[self.hiddenPosts...]
             context["posts"] = subset.map { PostRenderModel($0).context }
         }
 
-        if let ad = advertisementHTML, !ad.isEmpty {
+        if let ad = self.advertisementHTML, !ad.isEmpty {
             context["advertisementHTML"] = ad
         }
 
-        if context["posts"] != nil, case .specific(let pageNumber)? = page, pageNumber >= numberOfPages {
+        if context["posts"] != nil, case .specific(let pageNumber)? = self.page, pageNumber >= self.numberOfPages {
             context["endMessage"] = true
         }
 
-        context["enableFrogAndGhost"] = frogAndGhostEnabled
+        context["enableFrogAndGhost"] = self.frogAndGhostEnabled
 
         context["ghostJsonData"] = try? String(contentsOf: URL(string: "ghost60.json", relativeTo: Bundle.main.resourceURL)!, encoding: .utf8)
 
-        if let loggedInUsername, !loggedInUsername.isEmpty {
+        if let loggedInUsername = self.loggedInUsername, !loggedInUsername.isEmpty {
             context["loggedInUsername"] = loggedInUsername
         }
 
         context["externalStylesheet"] = PostsViewExternalStylesheetLoader.shared.stylesheet
 
-        if !thread.threadID.isEmpty {
-            context["threadID"] = thread.threadID
+        if !self.thread.threadID.isEmpty {
+            context["threadID"] = self.thread.threadID
         }
 
-        if let forum = thread.forum, !forum.forumID.isEmpty {
+        if let forum = self.thread.forum, !forum.forumID.isEmpty {
             context["forumID"] = forum.forumID
         }
 
-        context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
+        context["tweetTheme"] = self.theme[string: "postsTweetTheme"] ?? "light"
 
         let html: String
         do {
@@ -494,10 +548,8 @@ final class PostsPageViewController: ViewController {
             html = ""
         }
 
-        Task {
-            await postsView.renderView.eraseDocument()
-            self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
-        }
+        await self.postsView.renderView.eraseDocument()
+        self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
     }
 
     private lazy var composeItem: UIBarButtonItem = {

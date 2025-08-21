@@ -155,6 +155,7 @@ public enum BuiltInTheme: String, UserDefaultsSerializable {
     case `default` = "default"
     case fyad = "FYAD"
     case gasChamber = "Gas Chamber"
+    case liquidSpanKong = "liquidSpanKong"
     case macinyos = "Macinyos"
     case oledDark = "oledDark"
     case spankykongDark = "spankykongDark"

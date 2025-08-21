@@ -219,6 +219,7 @@
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		2DF4301F2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF4301E2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift */; };
+		2DF430212E574B6C005E5FCF /* ForumCSSDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF430202E574B6C005E5FCF /* ForumCSSDownloader.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
 		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
@@ -545,6 +546,7 @@
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		2DF4301E2E57297F005E5FCF /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
+		2DF430202E574B6C005E5FCF /* ForumCSSDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumCSSDownloader.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
@@ -1054,6 +1056,7 @@
 		1CC780241612D9DD002AF958 /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2DF430202E574B6C005E5FCF /* ForumCSSDownloader.swift */,
 				1CA3D6FB2D98A7E100D70964 /* OEmbedFetcher.swift */,
 				1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */,
 				1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */,
@@ -1572,6 +1575,7 @@
 				1CB15BFB1A9EC9C800176E73 /* ReportPostViewController.swift in Sources */,
 				1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */,
 				1C25AC491F537A0B00977D6F /* WeakTrampoline.swift in Sources */,
+				2DF430212E574B6C005E5FCF /* ForumCSSDownloader.swift in Sources */,
 				1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */,
 				1C16FC0C1CC41A7800C88BD1 /* ThreadTagLoader.swift in Sources */,
 				1C453F46233849C2007AC6CD /* SafariActivity.swift in Sources */,
