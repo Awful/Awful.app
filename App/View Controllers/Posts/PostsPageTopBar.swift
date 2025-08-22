@@ -20,6 +20,9 @@ final class PostsPageTopBar: UIView {
         parentForumButton.accessibilityHint = LocalizedString("posts-page.parent-forum-button.accessibility-hint")
         parentForumButton.setTitle(LocalizedString("posts-page.parent-forum-button.title"), for: .normal)
         parentForumButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .regular)
+        parentForumButton.titleLabel?.numberOfLines = 1
+        parentForumButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        parentForumButton.titleLabel?.minimumScaleFactor = 0.85
         return parentForumButton
     }()
 
@@ -28,6 +31,9 @@ final class PostsPageTopBar: UIView {
         previousPostsButton.accessibilityLabel = LocalizedString("posts-page.previous-posts-button.accessibility-label")
         previousPostsButton.setTitle(LocalizedString("posts-page.previous-posts-button.title"), for: .normal)
         previousPostsButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .regular)
+        previousPostsButton.titleLabel?.numberOfLines = 1
+        previousPostsButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        previousPostsButton.titleLabel?.minimumScaleFactor = 0.85
         return previousPostsButton
     }()
 
@@ -36,6 +42,9 @@ final class PostsPageTopBar: UIView {
         scrollToEndButton.accessibilityLabel = LocalizedString("posts-page.scroll-to-end-button.accessibility-label")
         scrollToEndButton.setTitle(LocalizedString("posts-page.scroll-to-end-button.title"), for: .normal)
         scrollToEndButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .regular)
+        scrollToEndButton.titleLabel?.numberOfLines = 1
+        scrollToEndButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        scrollToEndButton.titleLabel?.minimumScaleFactor = 0.85
         return scrollToEndButton
     }()
 

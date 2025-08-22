@@ -731,6 +731,7 @@ extension PostsPageView {
     final class TopBarContainer: UIView {
 
         private var topBarHeightConstraint: NSLayoutConstraint?
+        private var isTopBarRemoved = false
         
         fileprivate lazy var topBar: UIView = {
             if #available(iOS 26.0, *) {
@@ -747,9 +748,27 @@ extension PostsPageView {
         }()
         
         /// Controls whether the topBar should be hidden (height = 0) or visible (minimum height = 44)
-        func setHidden(_ hidden: Bool) {
+        func setHidden(_ hidden: Bool, immersionModeEnabled: Bool = false) {
             topBarHeightConstraint?.constant = hidden ? 0 : 44
-            topBar.isHidden = hidden
+            
+            // For iOS 26+ with liquid glass, remove from view hierarchy when hidden and not in immersion mode
+            if #available(iOS 26.0, *), !immersionModeEnabled {
+                if hidden && !isTopBarRemoved {
+                    topBar.removeFromSuperview()
+                    isTopBarRemoved = true
+                } else if !hidden && isTopBarRemoved {
+                    addSubview(topBar, constrainEdges: [.bottom, .left, .right])
+                    isTopBarRemoved = false
+                }
+            } else {
+                // For iOS < 26 or immersion mode, use the standard hide/show approach
+                topBar.isHidden = hidden
+            }
+        }
+        
+        /// Sets the alpha of the topBar for smooth transitions
+        func setTopBarAlpha(_ alpha: CGFloat) {
+            topBar.alpha = alpha
         }
         
         /// Returns the top bar as PostsPageTopBar for iOS < 26 or PostsPageTopBarLiquidGlass for iOS 26+
@@ -805,11 +824,11 @@ extension PostsPageView {
             // Transforms handle the positioning, not frame height
             switch topBarState {
             case .hidden:
-                topBarContainer.setHidden(true)
+                topBarContainer.setHidden(true, immersionModeEnabled: immersionModeEnabled)
                 topBarContainer.frame.size.height = 0
                 result = .init(progress: 0) // Progress 0 when hidden
             case .appearing, .disappearing, .visible, .alwaysVisible:
-                topBarContainer.setHidden(false)
+                topBarContainer.setHidden(false, immersionModeEnabled: immersionModeEnabled)
                 // Give it full height so transforms can work properly
                 topBarContainer.layoutIfNeeded()
                 topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
@@ -819,30 +838,50 @@ extension PostsPageView {
             // In non-immersion mode, use frame height changes for hiding/showing
             switch topBarState {
             case .hidden:
-                topBarContainer.setHidden(true)
+                topBarContainer.setHidden(true, immersionModeEnabled: immersionModeEnabled)
                 topBarContainer.frame.size.height = 0
                 result = .init(progress: 0) // Progress 0 when hidden
 
             case .appearing(fromContentOffset: let initialContentOffset):
-                topBarContainer.setHidden(false)
+                topBarContainer.setHidden(false, immersionModeEnabled: immersionModeEnabled)
                 let distance = initialContentOffset.y - renderView.scrollView.contentOffset.y
                 let upperBound = topBarContainer.topBar.bounds.height
                 let clamped = distance.clamp(0...upperBound)
                 topBarContainer.frame.size.height = clamped
-                result = .init(progress: clamped / upperBound)
+                let progress = clamped / upperBound
+                
+                // For iOS 26+, use alpha transition for smooth appearance
+                if #available(iOS 26.0, *), !immersionModeEnabled {
+                    topBarContainer.setTopBarAlpha(progress)
+                }
+                
+                result = .init(progress: progress)
 
             case .disappearing(fromContentOffset: let initialContentOffset):
-                topBarContainer.setHidden(false)
+                topBarContainer.setHidden(false, immersionModeEnabled: immersionModeEnabled)
                 let distance = renderView.scrollView.contentOffset.y - initialContentOffset.y
                 let upperBound = topBarContainer.topBar.bounds.height
                 let clamped = distance.clamp(0...upperBound)
                 topBarContainer.frame.size.height = upperBound - clamped
-                result = .init(progress: clamped / upperBound)
+                let progress = clamped / upperBound
+                
+                // For iOS 26+, use alpha transition for smooth disappearance
+                if #available(iOS 26.0, *), !immersionModeEnabled {
+                    topBarContainer.setTopBarAlpha(1.0 - progress)
+                }
+                
+                result = .init(progress: progress)
 
             case .visible, .alwaysVisible:
-                topBarContainer.setHidden(false)
+                topBarContainer.setHidden(false, immersionModeEnabled: immersionModeEnabled)
                 topBarContainer.layoutIfNeeded()
                 topBarContainer.frame.size.height = topBarContainer.topBar.bounds.height
+                
+                // Ensure full alpha when visible
+                if #available(iOS 26.0, *), !immersionModeEnabled {
+                    topBarContainer.setTopBarAlpha(1.0)
+                }
+                
                 result = .init(progress: 1)
             }
         }

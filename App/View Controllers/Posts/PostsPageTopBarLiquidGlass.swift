@@ -74,9 +74,13 @@ final class PostsPageTopBarLiquidGlass: UIView {
             return updated
         }
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12)
+        configuration.titleLineBreakMode = .byTruncatingTail
         
         let button = UIButton(configuration: configuration)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.titleLabel?.numberOfLines = 1
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.minimumScaleFactor = 0.85
         button.configurationUpdateHandler = { button in
             guard var config = button.configuration else { return }
             
