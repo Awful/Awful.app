@@ -731,19 +731,38 @@ final class BookmarksTableViewController: TableViewController {
                 latestPage = page
                 RefreshMinder.sharedMinder.didRefresh(.bookmarks)
 
-                if threads.count >= 40 {
-                    enableLoadMore()
-                } else {
-                    disableLoadMore()
+                // Batch UI updates to prevent hitching
+                await MainActor.run {
+                    // Only recreate data source if we're on page 1 (full refresh)
+                    // This prevents unnecessary recreation during load more
+                    if page == 1 {
+                        // Temporarily disable animations to prevent visual glitches
+                        UIView.performWithoutAnimation {
+                            dataSource = makeDataSource()
+                            tableView.reloadData()
+                        }
+                    }
+                    
+                    if threads.count >= 40 {
+                        enableLoadMore()
+                    } else {
+                        disableLoadMore()
+                    }
+                    
+                    // Ensure pull-to-refresh stops after all UI updates
+                    stopAnimatingPullToRefresh()
+                    loadMoreFooter?.didFinish()
                 }
             } catch {
-                if visible {
-                    let alert = UIAlertController(networkError: error)
-                    present(alert, animated: true)
+                await MainActor.run {
+                    if visible {
+                        let alert = UIAlertController(networkError: error)
+                        present(alert, animated: true)
+                    }
+                    stopAnimatingPullToRefresh()
+                    loadMoreFooter?.didFinish()
                 }
             }
-            stopAnimatingPullToRefresh()
-            loadMoreFooter?.didFinish()
         }
     }
     
@@ -889,6 +908,24 @@ final class BookmarksTableViewController: TableViewController {
     // MARK: Actions
 
     private func refresh() {
+        // If search bar is animating, complete it first to prevent UI glitches
+        if !searchBar.isHidden && searchBarContainerView.frame.height != 56 {
+            // Force completion of any ongoing search bar animations
+            searchBarContainerView.layer.removeAllAnimations()
+            searchBar.layer.removeAllAnimations()
+            
+            // Set final state based on whether search is active
+            if searchBar.text?.isEmpty == false {
+                searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 56)
+                searchBar.alpha = 1.0
+            } else {
+                searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
+                searchBar.alpha = 0.0
+                searchBar.isHidden = true
+            }
+            tableView.tableHeaderView = searchBarContainerView
+        }
+        
         startAnimatingPullToRefresh()
         loadPage(page: 1)
     }
