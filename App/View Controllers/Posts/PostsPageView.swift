@@ -1095,11 +1095,28 @@ extension PostsPageView: ScrollViewDelegateExtras {
             let distanceFromBottom = maxOffsetY - currentOffset
             let isNearBottom = distanceFromBottom <= barTravelDistance
             
-            if isNearBottom && scrollDelta > 0 && distanceFromBottom <= 5 {
-                // At the very bottom and scrolling down - force bars to be visible
-                immersionProgress = 0
+            if isNearBottom {
+                // Near bottom: progressive reveal behavior
+                if distanceFromBottom <= 5 {
+                    // At the actual bottom - bars must be fully visible
+                    immersionProgress = 0
+                } else {
+                    // Progressive reveal based on distance from bottom
+                    // Use incremental change for smooth 1:1 response
+                    let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
+                    
+                    if scrollDelta > 0 {
+                        // Scrolling down toward bottom - gradually reveal bars
+                        // Limit progress based on distance to ensure full reveal at bottom
+                        let maxProgress = distanceFromBottom / barTravelDistance
+                        immersionProgress = min(incrementalProgress, maxProgress).clamp(0...1)
+                    } else {
+                        // Scrolling up away from bottom - allow normal 1:1 hiding
+                        immersionProgress = incrementalProgress.clamp(0...1)
+                    }
+                }
             } else {
-                // All other cases: simple 1:1 scroll response
+                // Not near bottom: simple 1:1 scroll response
                 let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
                 immersionProgress = incrementalProgress.clamp(0...1)
             }
