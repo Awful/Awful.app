@@ -370,15 +370,9 @@ final class PostsPageViewController: ViewController {
                         self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                     }
 
-                    self.renderPosts()
+                    self.renderPosts(updateLastReadPost: updateLastReadPost)
                     
                     self.updateUserInterface()
-
-                    if let lastPost = self.posts.last, updateLastReadPost {
-                        if self.thread.seenPosts < lastPost.threadIndex {
-                            self.thread.seenPosts = lastPost.threadIndex
-                        }
-                    }
 
                     self.postsView.endRefreshing()
                 }
@@ -446,15 +440,18 @@ final class PostsPageViewController: ViewController {
         return true
     }
 
-    private func renderPosts() {
+    // IMPORTANT: The updateLastReadPost parameter must be passed through to renderPostsAsync
+    // to ensure thread.seenPosts is updated AFTER PostRenderModels are created.
+    // This prevents posts from incorrectly appearing as "seen" on first view.
+    private func renderPosts(updateLastReadPost: Bool = false) {
         webViewDidLoadOnce = false
 
         Task { @MainActor in
-            await renderPostsAsync()
+            await renderPostsAsync(updateLastReadPost: updateLastReadPost)
         }
     }
     
-    private func renderPostsAsync() async {
+    private func renderPostsAsync(updateLastReadPost: Bool) async {
         var context: [String: Any] = [:]
 
         var stylesheetContent = self.theme[string: "postsViewCSS"] ?? ""
@@ -509,7 +506,17 @@ final class PostsPageViewController: ViewController {
 
         if self.posts.count > self.hiddenPosts {
             let subset = self.posts[self.hiddenPosts...]
+            // IMPORTANT: Create PostRenderModels BEFORE updating thread.seenPosts
+            // This ensures posts maintain their correct seen/unseen status when rendered
             context["posts"] = subset.map { PostRenderModel($0).context }
+            
+            // Update thread.seenPosts AFTER creating PostRenderModels but BEFORE rendering HTML
+            // This prevents a race condition where posts would incorrectly appear as "seen"
+            if let lastPost = self.posts.last, updateLastReadPost {
+                if self.thread.seenPosts < lastPost.threadIndex {
+                    self.thread.seenPosts = lastPost.threadIndex
+                }
+            }
         }
 
         if let ad = self.advertisementHTML, !ad.isEmpty {
