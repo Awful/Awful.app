@@ -171,7 +171,7 @@ class ComposeTextViewController: ViewController {
         
         let options = UIView.AnimationOptions(rawValue: curve << 16)
         
-        UIView.animate(withDuration: duration, delay: 0, options: options, animations: { 
+        UIView.animate(withDuration: duration, delay: 0, options: options, animations: {
             self.textView.contentInset.bottom = overlap.height
             self.textView.verticalScrollIndicatorInsets.bottom = overlap.height
         }, completion: { isFinished in
@@ -428,6 +428,7 @@ protocol ComposeCustomView {
     var initialFirstResponder: UIResponder? { get }
 }
 
+@MainActor
 @objc protocol ComposeTextViewControllerDelegate: AnyObject {
     /**
         Sent to the delegate when composition is either submitted or cancelled.

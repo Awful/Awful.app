@@ -27,6 +27,7 @@ struct AwfulURLRouter {
     
     /// Show the screen appropriate for an "awful" URL.
     @discardableResult
+    @MainActor
     func route(_ route: AwfulRoute) -> Bool {
         
         if enableHaptics {
@@ -206,6 +207,7 @@ struct AwfulURLRouter {
         return nil
     }
     
+    @MainActor
     private func showThread(
         _ threadID: String,
         page: ThreadPage,
