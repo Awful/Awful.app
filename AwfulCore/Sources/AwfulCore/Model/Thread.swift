@@ -39,7 +39,7 @@ public class AwfulThread: AwfulManagedObject, Managed {
     public override var objectKey: ThreadKey { .init(threadID: threadID) }
 }
 
-@objc public enum StarCategory: Int16, CaseIterable {
+@objc public enum StarCategory: Int16, CaseIterable, Sendable {
     case none = -1 // probably should've been 0, oh well
 
     case orange = 0

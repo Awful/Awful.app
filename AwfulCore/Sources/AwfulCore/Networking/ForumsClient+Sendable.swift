@@ -95,8 +95,7 @@ extension ForumsClient {
         page: ThreadPage,
         updateLastReadPost: Bool
     ) async throws -> PostsPageResult {
-        guard let backgroundContext = backgroundManagedObjectContext,
-              let mainContext = managedObjectContext
+        guard let backgroundContext = backgroundManagedObjectContext
         else { throw Error.missingManagedObjectContext }
         
         var parameters: Dictionary<String, Any> = [
@@ -142,8 +141,15 @@ extension ForumsClient {
         
         try Task.checkCancellation()
         
+        // Extract data needed before entering the closure
+        let jumpToPostIndex = result.jumpToPostIndex
+        let advertisement = result.advertisement
+        
         let (backgroundPosts, postInfos) = try await backgroundContext.perform {
-            let posts = try result.upsert(into: backgroundContext)
+            // Reparse inside the closure to avoid capturing non-Sendable types
+            let (innerDocument, innerUrl) = try parseHTML(data: data, response: response)
+            let innerResult = try PostsPageScrapeResult(innerDocument, url: innerUrl)
+            let posts = try innerResult.upsert(into: backgroundContext)
             try backgroundContext.save()
             let postInfos = posts.map { $0.postInfo }
             return (posts, postInfos)
@@ -154,8 +160,8 @@ extension ForumsClient {
         return PostsPageResult(
             postInfos: postInfos,
             postObjectIDs: postObjectIDs,
-            firstUnreadPost: result.jumpToPostIndex.map { $0 + 1 },
-            advertisementHTML: result.advertisement,
+            firstUnreadPost: jumpToPostIndex.map { $0 + 1 },
+            advertisementHTML: advertisement,
             pageNumber: 1, // TODO: Extract from result if available
             totalPages: 1  // TODO: Extract from result if available
         )
@@ -194,9 +200,14 @@ extension ForumsClient {
             "postid": postID,
         ])
         let (document, url) = try parseHTML(data: data, response: response)
-        let result = try ShowPostScrapeResult(document, url: url)
+        // Parse the result outside the closure to avoid capturing non-Sendable type
+        _ = try ShowPostScrapeResult(document, url: url)
+        
+        // Reparse inside the closure
         try await backgroundContext.perform {
-            _ = try result.upsert(into: backgroundContext)
+            let (innerDocument, innerUrl) = try parseHTML(data: data, response: response)
+            let innerResult = try ShowPostScrapeResult(innerDocument, url: innerUrl)
+            _ = try innerResult.upsert(into: backgroundContext)
             try backgroundContext.save()
         }
     }
@@ -260,9 +271,9 @@ extension ForumsClient {
             parameters["username"] = username
         }
         
-        let backgroundProfile = try await profile(parameters: parameters)
+        let backgroundProfileObjectID = try await profile(parameters: parameters).objectID
         return try await mainContext.perform {
-            guard let profile = mainContext.object(with: backgroundProfile.objectID) as? Profile else {
+            guard let profile = mainContext.object(with: backgroundProfileObjectID) as? Profile else {
                 throw AwfulCoreError.parseError(description: "Could not save profile")
             }
             return profile
@@ -282,8 +293,11 @@ extension ForumsClient {
         if userID.isEmpty, let username = userInfo.username {
             // Need to fetch user ID first
             let profile = try await profileUser(userInfo: UserInfo(userID: "", username: username))
-            userID = await profile.managedObjectContext!.perform {
-                profile.user.userID
+            let profileObjectID = profile.objectID
+            let context = profile.managedObjectContext!
+            userID = await context.perform {
+                let profileObj = context.object(with: profileObjectID) as! Profile
+                return profileObj.user.userID
             }
         }
         
@@ -351,9 +365,13 @@ extension ForumsClient {
             "forumid": forumID,
         ])
         let (document, url) = try parseHTML(data: data, response: response)
-        let result = try PostIconListScrapeResult(document, url: url)
+        // Parse result outside closure to validate, then reparse inside
+        _ = try PostIconListScrapeResult(document, url: url)
+        
         let backgroundTags = try await backgroundContext.perform {
-            let managed = try result.upsert(into: backgroundContext)
+            let (innerDocument, innerUrl) = try parseHTML(data: data, response: response)
+            let innerResult = try PostIconListScrapeResult(innerDocument, url: innerUrl)
+            let managed = try innerResult.upsert(into: backgroundContext)
             try backgroundContext.save()
             return (primary: managed.primary, secondary: managed.secondary)
         }
@@ -452,5 +470,297 @@ extension ForumsClient {
             workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
             return postbody.innerHTML
         }
+    }
+}
+
+// MARK: - Thread Listing Operations with Sendable Types
+
+extension ForumsClient {
+    
+    /// Lists threads in a forum using forum ID (Sendable-safe)
+    public func listThreads(
+        forumID: String,
+        threadTagID: String? = nil,
+        page: Int
+    ) async throws -> [AwfulThread] {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
+        
+        var parameters: Dictionary<String, Any> = [
+            "forumid": forumID,
+            "perpage": "40",
+            "pagenumber": "\(page)"
+        ]
+        if let threadTagID = threadTagID, !threadTagID.isEmpty {
+            parameters["posticon"] = threadTagID
+        }
+        
+        let (data, response) = try await fetch(method: .get, urlString: "forumdisplay.php", parameters: parameters)
+        let (document, url) = try parseHTML(data: data, response: response)
+        // Parse result outside closure to validate, then reparse inside
+        let canPostNewThread = try ThreadListScrapeResult(document, url: url).canPostNewThread
+        
+        let backgroundThreadObjectIDs = try await backgroundContext.perform {
+            let (innerDocument, innerUrl) = try parseHTML(data: data, response: response)
+            let innerResult = try ThreadListScrapeResult(innerDocument, url: innerUrl)
+            let threads = try innerResult.upsert(into: backgroundContext)
+            _ = try innerResult.upsertAnnouncements(into: backgroundContext)
+            
+            // Update forum's canPost status
+            let forumFetch = NSFetchRequest<Forum>(entityName: "Forum")
+            forumFetch.predicate = NSPredicate(format: "forumID == %@", forumID)
+            if let forum = try? backgroundContext.fetch(forumFetch).first {
+                forum.canPost = canPostNewThread
+                
+                if page == 1,
+                   var threadsToForget = threads.first?.forum?.threads {
+                    threadsToForget.subtract(threads)
+                    threadsToForget.forEach { $0.threadListPage = 0 }
+                }
+            }
+            
+            try backgroundContext.save()
+            return threads.map { $0.objectID }
+        }
+        
+        return await mainContext.perform {
+            backgroundThreadObjectIDs.compactMap { mainContext.object(with: $0) as? AwfulThread }
+        }
+    }
+}
+
+// MARK: - Post Editing Operations with Sendable Types
+
+extension ForumsClient {
+    
+    /// Edits a post using post ID (Sendable-safe)
+    public func edit(
+        postID: String,
+        bbcode: String
+    ) async throws {
+        let formParams: [KeyValuePairs<String, Any>.Element]
+        do {
+            let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
+                "action": "editpost",
+                "postid": postID,
+            ])
+            let (document, url) = try parseHTML(data: data, response: response)
+            guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
+                throw AwfulCoreError.parseError(description: "Could not edit post; failed to find the form.")
+            }
+            let parsedForm = try Form(htmlForm, url: url)
+            let form = SubmittableForm(parsedForm)
+            try form.enter(text: bbcode, for: "message")
+            let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+            formParams = prepareFormEntries(submission)
+        }
+        
+        _ = try await fetch(method: .post, urlString: "editpost.php", parameters: formParams)
+    }
+    
+    /// Previews editing a post using post ID (Sendable-safe)
+    public func previewEdit(
+        postID: String,
+        bbcode: String
+    ) async throws -> String {
+        let params: [KeyValuePairs<String, Any>.Element]
+        do {
+            let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
+                "action": "editpost",
+                "postid": postID,
+            ])
+            let (document, url) = try parseHTML(data: data, response: response)
+            let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
+            let scrapedForm = try Form(htmlForm, url: url)
+            let form = SubmittableForm(scrapedForm)
+            try form.enter(text: bbcode, for: "message")
+            let submission = form.submit(button: scrapedForm.submitButton(named: "preview"))
+            params = prepareFormEntries(submission)
+        }
+        
+        try Task.checkCancellation()
+        
+        do {
+            let (data, response) = try await fetch(method: .post, urlString: "editpost.php", parameters: params)
+            let (document, _) = try parseHTML(data: data, response: response)
+            guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+                throw AwfulCoreError.parseError(description: "Could not find previewed post")
+            }
+            workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+            return postbody.innerHTML
+        }
+    }
+}
+
+// MARK: - Thread Creation Operations with Sendable Types
+
+extension ForumsClient {
+    
+    /// Posts a new thread to a forum using forum ID (Sendable-safe)
+    public func postThread(
+        forumID: String,
+        subject: String,
+        threadTagID: String? = nil,
+        secondaryThreadTagID: String? = nil,
+        bbcode: String
+    ) async throws -> AwfulThread {
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let mainContext = managedObjectContext
+        else { throw Error.missingManagedObjectContext }
+        
+        // Get the form data
+        let formData: PostNewThreadFormData
+        do {
+            let (data, response) = try await fetch(method: .get, urlString: "newthread.php", parameters: [
+                "action": "newthread",
+                "forumid": forumID,
+            ])
+            let (document, url) = try parseHTML(data: data, response: response)
+            let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
+            formData = try PostNewThreadFormData(htmlForm, url: url)
+        }
+        
+        // Prepare form submission
+        let form = SubmittableForm(formData.form)
+        try form.enter(text: subject, for: "subject")
+        try form.enter(text: bbcode, for: "message")
+        
+        if let threadTagID = threadTagID {
+            if formData.threadTagInputs.allSatisfy({ $0["value"] != threadTagID }) {
+                throw AwfulCoreError.parseError(description: "Could not find thread tag")
+            }
+            try form.select(value: threadTagID, for: formData.threadTagName)
+        }
+        
+        if let secondaryThreadTagID = secondaryThreadTagID,
+           let secondaryName = formData.secondaryThreadTagName {
+            if formData.secondaryThreadTagInputs.allSatisfy({ $0["value"] != secondaryThreadTagID }) {
+                throw AwfulCoreError.parseError(description: "Could not find secondary thread tag")
+            }
+            try form.select(value: secondaryThreadTagID, for: secondaryName)
+        }
+        
+        let submission = form.submit(button: formData.form.submitButton(named: "submit"))
+        let postParams = prepareFormEntries(submission)
+        
+        // Submit the new thread
+        let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: postParams)
+        let (document, _) = try parseHTML(data: data, response: response)
+        
+        guard let link = document.firstNode(matchingSelector: "a[href *= 'showthread']"),
+              let href = link["href"],
+              let components = URLComponents(string: href),
+              let threadID = components.queryItems?.first(where: { $0.name == "threadid" })?.value
+        else {
+            throw AwfulCoreError.parseError(description: "Could not find new thread ID")
+        }
+        
+        // Create the thread in Core Data
+        let backgroundThreadObjectID = await backgroundContext.perform {
+            let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: backgroundContext)
+            thread.title = subject
+            
+            let forumFetch = NSFetchRequest<Forum>(entityName: "Forum")
+            forumFetch.predicate = NSPredicate(format: "forumID == %@", forumID)
+            if let forum = try? backgroundContext.fetch(forumFetch).first {
+                thread.forum = forum
+            }
+            
+            if let threadTagID = threadTagID {
+                let tagFetch = NSFetchRequest<ThreadTag>(entityName: "ThreadTag")
+                tagFetch.predicate = NSPredicate(format: "threadTagID == %@", threadTagID)
+                if let tag = try? backgroundContext.fetch(tagFetch).first {
+                    thread.threadTag = tag
+                }
+            }
+            
+            if let secondaryThreadTagID = secondaryThreadTagID {
+                let tagFetch = NSFetchRequest<ThreadTag>(entityName: "ThreadTag")
+                tagFetch.predicate = NSPredicate(format: "threadTagID == %@", secondaryThreadTagID)
+                if let tag = try? backgroundContext.fetch(tagFetch).first {
+                    thread.secondaryThreadTag = tag
+                }
+            }
+            
+            try? backgroundContext.save()
+            return thread.objectID
+        }
+        
+        return await mainContext.perform {
+            mainContext.object(with: backgroundThreadObjectID) as! AwfulThread
+        }
+    }
+    
+    /// Previews the original post for a new thread using forum ID (Sendable-safe)
+    public func previewOriginalPostForThread(
+        forumID: String,
+        bbcode: String,
+        subject: String,
+        threadTagID: String? = nil,
+        secondaryThreadTagID: String? = nil
+    ) async throws -> String {
+        // Get the form data
+        let formData: PostNewThreadFormData
+        do {
+            let (data, response) = try await fetch(method: .get, urlString: "newthread.php", parameters: [
+                "action": "newthread",
+                "forumid": forumID,
+            ])
+            let (document, url) = try parseHTML(data: data, response: response)
+            let htmlForm = try document.requiredNode(matchingSelector: "form[name = 'vbform']")
+            formData = try PostNewThreadFormData(htmlForm, url: url)
+        }
+        
+        // Prepare form submission for preview
+        let form = SubmittableForm(formData.form)
+        try form.enter(text: subject, for: "subject")
+        try form.enter(text: bbcode, for: "message")
+        
+        if let threadTagID = threadTagID {
+            try form.select(value: threadTagID, for: formData.threadTagName)
+        }
+        
+        if let secondaryThreadTagID = secondaryThreadTagID,
+           let secondaryName = formData.secondaryThreadTagName {
+            try form.select(value: secondaryThreadTagID, for: secondaryName)
+        }
+        
+        let submission = form.submit(button: formData.form.submitButton(named: "preview"))
+        let params = prepareFormEntries(submission)
+        
+        // Get the preview
+        let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
+        let (document, _) = try parseHTML(data: data, response: response)
+        
+        guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+            throw AwfulCoreError.parseError(description: "Could not find previewed post")
+        }
+        
+        workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+        return postbody.innerHTML
+    }
+}
+
+// MARK: - Private Message Reading with Sendable Types
+
+extension ForumsClient {
+    
+    /// Reads a private message using message ID (Sendable-safe)
+    public func readPrivateMessage(
+        messageID: String
+    ) async throws -> String {
+        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [
+            "action": "show",
+            "privatemessageid": messageID,
+        ])
+        let (document, _) = try parseHTML(data: data, response: response)
+        
+        guard let postbody = document.firstNode(matchingSelector: "#postbody") else {
+            throw AwfulCoreError.parseError(description: "Could not find private message content")
+        }
+        
+        workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
+        return postbody.innerHTML
     }
 }

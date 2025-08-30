@@ -42,7 +42,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<PostsPageResult, Error>?
+    private var networkOperation: Task<Void, Error>?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -252,13 +252,9 @@ final class PostsPageViewController: ViewController {
 
         let initialTheme = theme
 
-        let fetch = Task {
-            try await ForumsClient.shared.listPosts(threadInfo: thread.threadInfo, authorUserID: author?.userID, page: newPage, updateLastReadPost: updateLastReadPost)
-        }
-        networkOperation = fetch
-        Task { [weak self] in
+        networkOperation = Task { [weak self, thread, author] in
             do {
-                let result = try await fetch.value
+                let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
                 guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
@@ -268,10 +264,12 @@ final class PostsPageViewController: ViewController {
                     self.themeDidChange()
                 }
 
-                if !posts.isEmpty {
-                    self.posts = posts
+                // Extract posts from the result (but not advertisement HTML to preserve original behavior)
+                self.posts = result.posts
+                // Intentionally not setting self.advertisementHTML to avoid displaying ads
 
-                    let anyPost = posts[0]
+                if !result.posts.isEmpty {
+                    let anyPost = result.posts[0]
                     if self.author != nil {
                         self.page = .specific(anyPost.singleUserPage)
                     } else {
