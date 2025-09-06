@@ -98,7 +98,15 @@ final class PostsPageViewController: ViewController {
             self?.loadNextPageOrRefresh()
         }
         postsView.setNavigationBarHidden = { [weak self] hidden, animated in
-            self?.navigationController?.setNavigationBarHidden(hidden, animated: animated)
+            // Never hide navigation bar when not in posts view context
+            // This prevents issues when returning to bookmarks view or other views
+            guard let self = self,
+                  self.isViewLoaded,
+                  self.view.window != nil else {
+                return
+            }
+            
+            self.navigationController?.setNavigationBarHidden(hidden, animated: animated)
         }
         postsView.renderView.delegate = self
         postsView.renderView.registerMessage(FYADFlagRequest.self)
@@ -127,7 +135,7 @@ final class PostsPageViewController: ViewController {
         init() {
             super.init(frame: .zero)
             showsMenuAsPrimaryAction = true
-            // Enable modern iOS 26 menu styling
+
             if #available(iOS 16.0, *) {
                 preferredMenuElementOrder = .fixed
             }
@@ -152,9 +160,8 @@ final class PostsPageViewController: ViewController {
         }
         
         func updateInterfaceStyle() {
-            // Follow the theme's mode setting for menu appearance
-            let themeMode = Theme.defaultTheme()[string: "mode"]
-            overrideUserInterfaceStyle = themeMode == "light" ? .light : .dark
+            let menuAppearance = Theme.defaultTheme()[string: "menuAppearance"]
+            overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
         }
     }
 
@@ -162,7 +169,7 @@ final class PostsPageViewController: ViewController {
         static let messageName = "fyadFlagRequest"
 
         init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
-            assert(rawMessage.name == FYADFlagRequest.messageName)
+            assert(rawMessage.name == Self.messageName)
         }
     }
 
@@ -626,12 +633,12 @@ final class PostsPageViewController: ViewController {
             showLoadingView()
         }
 
-        postsView.topBar.showPreviousPosts = hiddenPosts == 0 ? nil : { [unowned self] in
+        postsView.setShowPreviousPosts(hiddenPosts == 0 ? nil : { [unowned self] in
             self.showHiddenSeenPosts()
-        }
-        postsView.topBar.scrollToEnd = posts.isEmpty ? nil : { [unowned self] in
+        })
+        postsView.setScrollToEnd(posts.isEmpty ? nil : { [unowned self] in
             self.scrollToBottom(nil)
-        }
+        })
 
         if pullForNext {
             if case .specific(let pageNumber)? = page, numberOfPages > pageNumber {
@@ -747,11 +754,13 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
+        postsView.exitImmersionMode()
         let scrollView = postsView.renderView.scrollView
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
 
     @objc private func scrollToTop(_ sender: UIKeyCommand?) {
+        postsView.exitImmersionMode()
         postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
 
@@ -1658,6 +1667,19 @@ final class PostsPageViewController: ViewController {
         super.viewDidAppear(animated)
 
         configureUserActivityIfPossible()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Always restore navigation bar when leaving posts view to prevent issues
+        // with other views (like bookmarks) not having a visible header
+        if navigationController?.isNavigationBarHidden == true {
+            navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
+        
+        // Exit immersion mode to reset any transforms
+        postsView.exitImmersionMode()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
