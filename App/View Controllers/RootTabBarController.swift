@@ -30,6 +30,10 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         super.init(coder: coder)
         commonInit()
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: Theme.themeForForumDidChangeNotification, object: Theme.self)
+    }
 
     private func commonInit() {
         delegate = self
@@ -50,6 +54,14 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(themeDidChange),
+            name: Theme.themeForForumDidChangeNotification,
+            object: Theme.self
+        )
+
         themeDidChange()
     }
 
@@ -63,21 +75,29 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
          }
      }
         
-    func themeDidChange() {
-        tabBar.barTintColor = theme["tabBarBackgroundColor"]
-        tabBar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
-        tabBar.tintColor = theme["tintColor"]
-        tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
-        
+    @objc func themeDidChange() {
         let barAppearance = UITabBarAppearance()
-        if tabBar.isTranslucent {
-            barAppearance.configureWithDefaultBackground()
+
+        if #available(iOS 26.0, *) {
+            // iOS 26 clear settings to fully enable liquid glass appearance
+            barAppearance.backgroundColor = nil
+            barAppearance.backgroundEffect = nil
+            barAppearance.shadowImage = nil
+            barAppearance.shadowColor = nil
+            
+            tabBar.isTranslucent = true
+            tabBar.barTintColor = nil
+            tabBar.topBorderColor = nil
         } else {
             barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]!
+            barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]!
+            
+            tabBar.isTranslucent = false
+            tabBar.barTintColor = theme["tabBarBackgroundColor"]
+            tabBar.tintColor = theme["tintColor"]
+            tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
         }
-        barAppearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
-        barAppearance.shadowImage = nil
-        barAppearance.shadowColor = nil
         
         let itemAppearance = UITabBarItemAppearance()
         itemAppearance.selected.iconColor = Theme.defaultTheme()["tabBarIconSelectedColor"]!
@@ -89,6 +109,12 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
 
         tabBar.standardAppearance = barAppearance
         tabBar.scrollEdgeAppearance = barAppearance
+
+        // Force tab bar to refresh its appearance
+        DispatchQueue.main.async { [weak self] in
+            self?.tabBar.setNeedsLayout()
+            self?.tabBar.layoutIfNeeded()
+        }
     }
 }
 
