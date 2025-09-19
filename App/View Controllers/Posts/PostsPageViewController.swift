@@ -41,7 +41,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>?
+    private var networkOperation: Task<Void, Never>?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -254,7 +254,10 @@ final class PostsPageViewController: ViewController {
         let fetch = Task {
             try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
         }
-        networkOperation = fetch
+        // Store a type-erased cancellation handle to avoid Sendable issues
+        networkOperation = Task {
+            _ = await fetch.result
+        }
         Task { [weak self] in
             do {
                 let (posts, firstUnreadPost, _) = try await fetch.value
