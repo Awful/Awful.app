@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulSettings
+import AwfulTheming
 import MRProgress
 import os
 import SwiftUI
@@ -14,8 +15,12 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 extension UIContextMenuConfiguration {
     static func makeFromThreadList(
         for thread: AwfulThread,
-        presenter: UIViewController
+        presenter: UIViewController,
+        theme: Theme? = nil
     ) -> UIContextMenuConfiguration {
+        
+        ContextMenuThemeManager.shared.ensureWindowsMatchAppTheme()
+        
         var copyTitle: UIMenuElement {
             UIAction(
                 title: NSLocalizedString("Copy Title", comment: ""),
