@@ -37,6 +37,18 @@ final class MessageViewController: ViewController {
         renderView.delegate = self
         return renderView
     }()
+
+    private var _liquidGlassTitleView: UIView?
+
+    @available(iOS 26.0, *)
+    private var liquidGlassTitleView: LiquidGlassTitleView {
+        if _liquidGlassTitleView == nil {
+            let titleView = LiquidGlassTitleView()
+            titleView.title = privateMessage.subject
+            _liquidGlassTitleView = titleView
+        }
+        return _liquidGlassTitleView as! LiquidGlassTitleView
+    }
     
     private lazy var replyButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(named: "reply"), style: .plain, target: self, action: #selector(didTapReplyButtonItem))
@@ -55,7 +67,13 @@ final class MessageViewController: ViewController {
     }
     
     override var title: String? {
-        didSet { navigationItem.titleLabel.text = title }
+        didSet {
+            if #available(iOS 26.0, *) {
+                liquidGlassTitleView.title = title
+            } else {
+                navigationItem.titleLabel.text = title
+            }
+        }
     }
     
     private func renderMessage() {
@@ -194,10 +212,21 @@ final class MessageViewController: ViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        // Configure extended layout to handle content under navbar properly in iOS 26
+        extendedLayoutIncludesOpaqueBars = true
+
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        renderView.scrollView.contentInsetAdjustmentBehavior = .never
+        renderView.scrollView.delegate = self
         view.insertSubview(renderView, at: 0)
+
+        // Configure navigation bar for iOS 26 liquid glass effect
+        if #available(iOS 26.0, *) {
+            configureNavigationBarForLiquidGlass()
+            configureLiquidGlassTitleView()
+        }
         
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
@@ -280,24 +309,144 @@ final class MessageViewController: ViewController {
     
     override func themeDidChange() {
         super.themeDidChange()
-        
+
         if didRender, let css = theme[string: "postsViewCSS"] {
             renderView.setThemeStylesheet(css)
         }
-        
+
         loadingView?.tintColor = theme["backgroundColor"]
+
+        // Update liquid glass title view for new theme
+        if #available(iOS 26.0, *) {
+            // Only update color if we're at the top (not scrolled)
+            if renderView.scrollView.contentOffset.y <= -renderView.scrollView.adjustedContentInset.top {
+                liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
+            }
+        }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Reset navbar to initial state for iOS 26
+        if #available(iOS 26.0, *) {
+            if let navController = navigationController as? NavigationController {
+                navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
+            }
+        }
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         configureUserActivity()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
+
         userActivity = nil
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateScrollViewContentInsets()
+    }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateScrollViewContentInsets()
+    }
+
+    private func updateScrollViewContentInsets() {
+        // Apply safe area insets manually since we disabled automatic adjustment
+        renderView.scrollView.contentInset.top = view.safeAreaInsets.top
+        renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
+    }
+
+    @available(iOS 26.0, *)
+    private func configureNavigationBarForLiquidGlass() {
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        guard let navController = navigationController as? NavigationController else { return }
+
+        // Hide the custom bottom border from NavigationBar for liquid glass effect
+        if let awfulNavigationBar = navigationBar as? NavigationBar {
+            awfulNavigationBar.bottomBorderColor = .clear
+        }
+
+        // Start with opaque background
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = theme["navigationBarTintColor"]
+        appearance.shadowColor = nil
+        appearance.shadowImage = nil
+
+        // Set text colors from theme
+        let textColor: UIColor = theme["navigationBarTextColor"]!
+        appearance.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: textColor,
+            NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        ]
+
+        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+        let buttonAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: buttonFont
+        ]
+        appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+
+        // Set the back indicator image
+        if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
+            appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+        }
+
+        // Apply to all states
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.compactScrollEdgeAppearance = appearance
+
+        // Set tintColor for theme
+        navigationBar.tintColor = textColor
+
+        // Initialize at scroll position 0 (opaque)
+        navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
+
+        // Force update
+        navigationBar.setNeedsLayout()
+    }
+
+    @available(iOS 26.0, *)
+    private func configureLiquidGlassTitleView() {
+        // Set up the liquid glass title view
+        liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
+
+        // Set font based on device type
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        default:
+            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        }
+
+        navigationItem.titleView = liquidGlassTitleView
+    }
+
+    @available(iOS 26.0, *)
+    private func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
+        if progress < 0.01 {
+            // At top: use theme color
+            liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
+        } else if progress > 0.99 {
+            // Fully scrolled: use nil for dynamic color adaptation
+            liquidGlassTitleView.textColor = nil
+        }
     }
     
     private enum CodingKey {
@@ -394,6 +543,43 @@ extension MessageViewController: RenderViewDelegate {
 extension MessageViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
+    }
+}
+
+extension MessageViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Update navigation bar tint for iOS 26+ dynamic colors
+        if #available(iOS 26.0, *) {
+            // Calculate scroll progress for smooth transition
+            let topInset = scrollView.adjustedContentInset.top
+            let currentOffset = scrollView.contentOffset.y
+            let topPosition = -topInset
+
+            // Define transition zone (30 points for smooth fade)
+            let transitionDistance: CGFloat = 30.0
+
+            // Calculate progress (0.0 = fully at top, 1.0 = fully scrolled)
+            let progress: CGFloat
+            if currentOffset <= topPosition {
+                // At or above the top
+                progress = 0.0
+            } else if currentOffset >= topPosition + transitionDistance {
+                // Fully scrolled past transition zone
+                progress = 1.0
+            } else {
+                // In transition zone - calculate smooth progress
+                let distanceFromTop = currentOffset - topPosition
+                progress = distanceFromTop / transitionDistance
+            }
+
+            // Update navigation controller
+            if let navController = navigationController as? NavigationController {
+                navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
+            }
+
+            // Update title text color based on scroll progress
+            updateTitleViewTextColorForScrollProgress(progress)
+        }
     }
 }
 
