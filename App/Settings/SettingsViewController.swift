@@ -50,6 +50,21 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleThemeDidChange),
+            name: Theme.themeForForumDidChangeNotification,
+            object: Theme.self
+        )
+    }
+
+    @objc private func handleThemeDidChange() {
+        themeDidChange()
+    }
+
     func emptyCache() {
         let usageBefore = Measurement(value: Double(URLCache.shared.currentDiskUsage), unit: UnitInformationStorage.bytes)
         AppDelegate.instance.emptyCache()
