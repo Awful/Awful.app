@@ -174,7 +174,7 @@ final class PostsPageView: UIView {
 
     // MARK: Top bar
 
-    var topBar: PostsPageTopBar {
+    var topBar: PostsPageTopBarProtocol {
         return topBarContainer.topBar
     }
 
@@ -216,6 +216,14 @@ final class PostsPageView: UIView {
 
     let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
+    private lazy var safeAreaGradientView: GradientView = {
+        let view = GradientView()
+        view.isUserInteractionEnabled = false
+        view.alpha = 0.0 // Initially hidden
+        view.isHidden = true // Also hide it to ensure it doesn't interfere
+        return view
+    }()
+
     var toolbarItems: [UIBarButtonItem] {
         get { return toolbar.items ?? [] }
         set { toolbar.items = newValue }
@@ -236,6 +244,7 @@ final class PostsPageView: UIView {
         addSubview(topBarContainer)
         addSubview(loadingViewContainer)
         addSubview(toolbar)
+        addSubview(safeAreaGradientView)
         renderView.scrollView.addSubview(refreshControlContainer)
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
@@ -322,9 +331,15 @@ final class PostsPageView: UIView {
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        toolbar.tintColor =  Theme.defaultTheme()["toolbarTextColor"]!
-        toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        // Only set toolbar colors for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle toolbar colors and borders automatically
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        } else {
+            toolbar.tintColor = Theme.defaultTheme()["toolbarTextColor"]!
+            toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        }
 
         topBar.themeDidChange(Theme.defaultTheme())
     }
@@ -343,8 +358,13 @@ extension PostsPageView {
     /// Holds the top bar and clips to bounds, so the top bar doesn't sit behind a possibly-translucent navigation bar and obscure the underlying content.
     final class TopBarContainer: UIView {
 
-        fileprivate lazy var topBar: PostsPageTopBar = {
-            let topBar = PostsPageTopBar()
+        fileprivate lazy var topBar: PostsPageTopBarProtocol = {
+            let topBar: PostsPageTopBarProtocol
+            if #available(iOS 26.0, *) {
+                topBar = PostsPageTopBarLiquidGlass()
+            } else {
+                topBar = PostsPageTopBar()
+            }
             topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
             return topBar
         }()
@@ -353,7 +373,7 @@ extension PostsPageView {
         override init(frame: CGRect) {
             super.init(frame: frame)
 
-            clipsToBounds = true
+            clipsToBounds = false
 
             addSubview(topBar, constrainEdges: [.bottom, .left, .right])
         }

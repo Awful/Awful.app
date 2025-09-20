@@ -125,6 +125,8 @@
 		</dict>
 		<key>Navbar, tab bar, toolbar</key>
 		<dict>
+			<key>bottomBarTopBorderColor</key>
+			<string>#f7f7f7</string>
 			<key>showRootTabBarLabel</key>
 			<true/>
 			<key>tabBarTintColor</key>

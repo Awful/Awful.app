@@ -54,6 +54,17 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
 
+    // this is to overcome not being allowed to mark stored properties as potentially unavailable using @available
+    private var _liquidGlassTitleView: UIView?
+    
+    @available(iOS 26.0, *)
+    private var liquidGlassTitleView: LiquidGlassTitleView? {
+        if _liquidGlassTitleView == nil {
+            _liquidGlassTitleView = LiquidGlassTitleView()
+        }
+        return _liquidGlassTitleView as? LiquidGlassTitleView
+    }
+
     func threadActionsMenu() -> UIMenu {
         return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
             // Bookmark
@@ -181,7 +192,17 @@ final class PostsPageViewController: ViewController {
     }
 
     override var title: String? {
-        didSet { navigationItem.titleLabel.text = title }
+        didSet {
+            if #available(iOS 26.0, *) {
+                let glassView = liquidGlassTitleView
+                glassView?.title = title
+                
+                navigationItem.titleView = glassView
+            } else {
+                navigationItem.titleView = nil
+                navigationItem.titleLabel.text = title
+            }
+        }
     }
 
     /**
@@ -285,7 +306,12 @@ final class PostsPageViewController: ViewController {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if #available(iOS 26.0, *) {
+                        self.verticalPageNumberView.currentPage = 0
+                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                    } else {
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -335,7 +361,12 @@ final class PostsPageViewController: ViewController {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if #available(iOS 26.0, *) {
+                        self.verticalPageNumberView.currentPage = 0
+                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                    } else {
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -424,6 +455,12 @@ final class PostsPageViewController: ViewController {
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle the color automatically
+        } else {
+            item.tintColor = theme["navigationBarTextColor"]
+        }
         return item
     }()
 
@@ -515,6 +552,12 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle the color automatically
+        } else {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
@@ -530,9 +573,23 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle the color automatically
+        } else {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
+    private lazy var verticalPageNumberView: VerticalPageNumberView = {
+        let view = VerticalPageNumberView()
+        view.onTap = { [weak self] in
+            self?.handlePageNumberTap()
+        }
+        return view
+    }()
+    
     private lazy var currentPageItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
             guard self.postsView.loadingView == nil else { return }
@@ -543,7 +600,26 @@ final class PostsPageViewController: ViewController {
                 popover.barButtonItem = action.sender as? UIBarButtonItem
             }
         })
-        item.possibleTitles = ["2345 / 2345"]
+        
+        // Set up the bar button item based on iOS version
+        if #available(iOS 26.0, *) {
+            // Use vertical page number view for modern appearance wrapped in container for centering
+            let containerView = UIView()
+            containerView.addSubview(verticalPageNumberView)
+            verticalPageNumberView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                verticalPageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                verticalPageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                containerView.widthAnchor.constraint(equalTo: verticalPageNumberView.widthAnchor, constant: 6), // 3 points padding on each side
+                // Add a bit of vertical padding so the content appears visually centered in the toolbar
+                containerView.heightAnchor.constraint(equalTo: verticalPageNumberView.heightAnchor, constant: 5)
+            ])
+            item.customView = containerView
+        } else {
+            // Use traditional text title for iOS 18 and below
+            item.possibleTitles = ["2345 / 2345"]
+        }
+        
         item.accessibilityHint = "Opens page picker"
         return item
     }()
@@ -560,16 +636,45 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle the color automatically
+        } else {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
 
     private func actionsItem() -> UIBarButtonItem {
-        let buttonItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), menu: threadActionsMenu())
-        if #available(iOS 16.0, *) {
-            buttonItem.preferredMenuElementOrder = .fixed
+        // Use primaryAction like the other toolbar buttons
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "steamed-ham"),
+            handler: { [unowned self] action in
+                if self.enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
+                
+                // Get the sender and find its frame
+                if let barButtonItem = action.sender as? UIBarButtonItem,
+                   let view = barButtonItem.value(forKey: "view") as? UIView {
+                    let buttonFrameInView = view.convert(view.bounds, to: self.view)
+                    self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: buttonFrameInView)
+                } else {
+                    // Fallback position
+                    let frame = CGRect(x: self.view.bounds.width - 60, y: self.view.bounds.height - 100, width: 44, height: 44)
+                    self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: frame)
+                }
+            }
+        ))
+        item.accessibilityLabel = "Thread actions"
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle the color automatically
+        } else {
+            item.tintColor = theme["toolbarTextColor"]
         }
-        return buttonItem
+        return item
     }
 
     private func refetchPosts() {
@@ -641,11 +746,27 @@ final class PostsPageViewController: ViewController {
         }()
 
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
-            currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
-            currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
+            // Update page display based on iOS version
+            if #available(iOS 26.0, *) {
+                // Use vertical page number view for modern appearance
+                verticalPageNumberView.currentPage = pageNumber
+                verticalPageNumberView.totalPages = numberOfPages
+                // iOS 26+ handles colors automatically
+                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+            } else {
+                // Use traditional text title for iOS 18 and below
+                currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
+                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
+            }
         } else {
-            currentPageItem.title = ""
+            // Clear page display
+            if #available(iOS 26.0, *) {
+                verticalPageNumberView.currentPage = 0
+                verticalPageNumberView.totalPages = 0
+            } else {
+                currentPageItem.title = ""
+            }
             currentPageItem.accessibilityLabel = nil
         }
 
@@ -659,6 +780,19 @@ final class PostsPageViewController: ViewController {
         }()
 
         composeItem.isEnabled = !thread.closed
+        
+        // Update toolbar items based on liquid glass setting and button states
+        updateToolbarItems()
+    }
+    
+    private func updateToolbarItems() {
+        var toolbarItems: [UIBarButtonItem] = [settingsItem, .flexibleSpace()]
+        
+        // Add navigation buttons - always show all buttons to maintain consistent spacing
+        toolbarItems.append(contentsOf: [backItem, currentPageItem, forwardItem])
+        
+        toolbarItems.append(contentsOf: [.flexibleSpace(), actionsItem()])
+        postsView.toolbarItems = toolbarItems
     }
 
     private func showLoadingView() {
@@ -699,6 +833,18 @@ final class PostsPageViewController: ViewController {
 
         if let popover = selectotron.popoverPresentationController {
             popover.barButtonItem = sender
+        }
+    }
+    
+    private func handlePageNumberTap() {
+        guard postsView.loadingView == nil else { return }
+        let selectotron = Selectotron(postsViewController: self)
+        present(selectotron, animated: true)
+        
+        // For popover presentation with custom view, we need to set sourceView and sourceRect
+        if let popover = selectotron.popoverPresentationController {
+            popover.sourceView = verticalPageNumberView
+            popover.sourceRect = verticalPageNumberView.bounds
         }
     }
 
@@ -1041,10 +1187,7 @@ final class PostsPageViewController: ViewController {
                     overlay.dismiss(true)
 
                     // update toolbar so menu reflects new bookmarked state
-                    var newItems = postsView.toolbarItems
-                    newItems.removeLast()
-                    newItems.append(actionsItem())
-                    postsView.toolbarItems = newItems
+                    updateToolbarItems()
                 }
             } catch {
                 logger.error("error marking thread: \(error)")
@@ -1481,16 +1624,46 @@ final class PostsPageViewController: ViewController {
         super.themeDidChange()
 
         postsView.themeDidChange(theme)
-        navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+        
+        // Update title appearance for iOS 26+
+        if #available(iOS 26.0, *) {
+            let glassView = liquidGlassTitleView
 
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
-        default:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-            navigationItem.titleLabel.numberOfLines = 2
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+            // Let iOS 26 handle text color automatically - only set font
+            switch UIDevice.current.userInterfaceIdiom {
+            case .pad:
+                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
+            default:
+                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
+            }
+            
+        } else {
+            // Apply theme to regular title label for iOS < 26
+            navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+            
+            switch UIDevice.current.userInterfaceIdiom {
+            case .pad:
+                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
+                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+            default:
+                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
+                navigationItem.titleLabel.numberOfLines = 2
+                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+            }
+        }
+        
+        // Update navigation bar button colors (only for iOS < 26)
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle colors automatically
+        } else {
+            composeItem.tintColor = theme["navigationBarTextColor"]
+            // Ensure the navigation bar itself uses the correct tint color for the back button
+            navigationController?.navigationBar.tintColor = theme["navigationBarTextColor"]
+        }
+        
+        // Also trigger the navigation controller's theme change to update back button appearance
+        if let navController = navigationController as? NavigationController {
+            navController.themeDidChange()
         }
 
 
@@ -1510,10 +1683,17 @@ final class PostsPageViewController: ViewController {
 
         postsView.toolbar.standardAppearance = appearance
         postsView.toolbar.compactAppearance = appearance
-
-        if #available(iOS 15.0, *) {
-            postsView.toolbar.scrollEdgeAppearance = appearance
-            postsView.toolbar.compactScrollEdgeAppearance = appearance
+        postsView.toolbar.scrollEdgeAppearance = appearance
+        postsView.toolbar.compactScrollEdgeAppearance = appearance
+        
+        // Update toolbar button text colors (only for iOS < 26)
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle colors automatically
+        } else {
+            backItem.tintColor = theme["toolbarTextColor"]
+            forwardItem.tintColor = theme["toolbarTextColor"]
+            settingsItem.tintColor = theme["toolbarTextColor"]
+            verticalPageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         }
 
         postsView.toolbar.overrideUserInterfaceStyle = theme["mode"] == "light" ? .light : .dark
