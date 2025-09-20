@@ -49,7 +49,12 @@ final class NavigationController: UINavigationController, Themeable {
     /// Creates a gradient background image for iOS 26+ liquid glass effect
     @available(iOS 26.0, *)
     private func createGradientBackgroundImage(from color: UIColor, size: CGSize = CGSize(width: 1, height: 96)) -> UIImage? {
-        return UIGraphicsImageRenderer(size: size).image { context in
+        // Create a non-opaque renderer to allow transparency
+        let format = UIGraphicsImageRendererFormat()
+        format.opaque = false
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+
+        return renderer.image { context in
             let colorSpace = CGColorSpaceCreateDeviceRGB()
             let colors = [color.cgColor, color.withAlphaComponent(0.0).cgColor] as CFArray
             let locations: [CGFloat] = [0.0, 1.0]
@@ -221,14 +226,11 @@ final class NavigationController: UINavigationController, Themeable {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = theme["navigationBarTintColor"]
         } else if progress > 0.99 {
-            // Fully scrolled - use gradient background
+            // Fully scrolled - use completely transparent background for liquid glass effect
             appearance.configureWithTransparentBackground()
-            let listHeaderBackgroundColor: UIColor = theme["listHeaderBackgroundColor"]!
-            if let gradientImage = createGradientBackgroundImage(from: listHeaderBackgroundColor) {
-                appearance.backgroundImage = gradientImage
-            } else {
-                appearance.backgroundColor = listHeaderBackgroundColor
-            }
+            // Don't set any background image or color - let it be fully transparent
+            appearance.backgroundColor = .clear
+            appearance.backgroundImage = nil
         } else {
             // In transition - interpolate between states
             appearance.configureWithTransparentBackground()
