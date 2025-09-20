@@ -222,6 +222,7 @@
 		2D3FECE22E7EAED900817DFB /* cute_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECC72E7EAED900817DFB /* cute_appicon.icon */; };
 		2D3FECE32E7EAED900817DFB /* ghost_blue_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCB2E7EAED900817DFB /* ghost_blue_appicon.icon */; };
 		2D3FECE42E7EAED900817DFB /* greenface_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCC2E7EAED900817DFB /* greenface_appicon.icon */; };
+		2D3FECE72E7EB74F00817DFB /* ContextMenuThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECE62E7EB74100817DFB /* ContextMenuThemeManager.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
@@ -557,6 +558,7 @@
 		2D3FECD32E7EAED900817DFB /* staredog_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_appicon.icon; sourceTree = "<group>"; };
 		2D3FECD42E7EAED900817DFB /* staredog_tongue_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_tongue_appicon.icon; sourceTree = "<group>"; };
 		2D3FECD52E7EAED900817DFB /* v_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v_appicon.icon; sourceTree = "<group>"; };
+		2D3FECE62E7EB74100817DFB /* ContextMenuThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuThemeManager.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
@@ -873,6 +875,7 @@
 				1CC065F12D66EC14002BB6A0 /* Config */,
 				1CD005D41BB8DA4700232FFD /* Data Sources */,
 				1C8A8CFD1A3C28E900E4F6A4 /* Extensions */,
+				2D3FECE52E7EB71700817DFB /* Helpers */,
 				1C28B34A1729DC9700254EE7 /* In-App Actions */,
 				1190F71C13BE4EA900B9D271 /* Main */,
 				1C25AC1F1F532EC400977D6F /* Misc */,
@@ -1237,6 +1240,14 @@
 				2D19BA3229C330A2009DD94F /* mainthrobber60.json */,
 			);
 			path = Lotties;
+			sourceTree = "<group>";
+		};
+		2D3FECE52E7EB71700817DFB /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2D3FECE62E7EB74100817DFB /* ContextMenuThemeManager.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		30E0C51B2E35C89D0030DC0A /* SmiliePicker */ = {
@@ -1716,6 +1727,7 @@
 				1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
+				2D3FECE72E7EB74F00817DFB /* ContextMenuThemeManager.swift in Sources */,
 				2D3FECC02E7E1B4D00817DFB /* LiquidGlassTitleView.swift in Sources */,
 				1C16FC061CC3E1AF00C88BD1 /* UnpoppingViewHandler.swift in Sources */,
 				1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */,

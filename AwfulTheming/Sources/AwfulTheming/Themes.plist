@@ -4,6 +4,8 @@
 <dict>
 	<key>BYOB</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
 		<key>keyboardAppearance</key>
 		<string>Light</string>
 		<key>relevantForumID</key>
@@ -62,6 +64,8 @@
 		<key>statusBarBackground</key>
 		<string>dark</string>
 		<key>mode</key>
+		<string>light</string>
+		<key>menuAppearance</key>
 		<string>light</string>
 		<key>favoriteStarTintColor</key>
 		<string>#1e84af</string>
@@ -211,6 +215,8 @@
 	</dict>
 	<key>dark</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>dark</string>
 		<key>mode</key>
 		<string>dark</string>
 		<key>description</key>
@@ -321,6 +327,8 @@
 	</dict>
 	<key>alternateDefault</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
 		<key>mode</key>
 		<string>light</string>
 		<key>description</key>
@@ -420,6 +428,8 @@
 	</dict>
 	<key>alternateDark</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>dark</string>
 		<key>mode</key>
 		<string>dark</string>
 		<key>description</key>
@@ -524,6 +534,8 @@
 	</dict>
 	<key>oledDark</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>dark</string>
 		<key>mode</key>
 		<string>dark</string>
 		<key>description</key>
@@ -636,6 +648,8 @@
 	</dict>
 	<key>brightLight</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
 		<key>mode</key>
 		<string>light</string>
 		<key>description</key>
@@ -735,6 +749,8 @@
 	</dict>
 	<key>FYAD</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
 		<key>mode</key>
 		<string>light</string>
 		<key>keyboardAppearance</key>
@@ -825,6 +841,8 @@
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
 		<key>mode</key>
 		<string>light</string>
 		<key>relevantForumID</key>
@@ -846,6 +864,8 @@
 	</dict>
 	<key>Macinyos</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
 		<key>mode</key>
 		<string>light</string>
 		<key>relevantForumID</key>
@@ -867,6 +887,8 @@
 	</dict>
 	<key>spankykongDark</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>dark</string>
 		<key>mode</key>
 		<string>dark</string>
 		<key>roundedFonts</key>
@@ -1062,6 +1084,8 @@
 	</dict>
 	<key>spankykongLight</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
 		<key>statusBarBackground</key>
 		<string>light</string>
 		<key>mode</key>
@@ -1257,6 +1281,10 @@
 	</dict>
 	<key>Winpos 95</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>light</string>
+		<key>mode</key>
+		<string>light</string>
 		<key>toolbarTintColor</key>
 		<string>#000000</string>
 		<key>relevantForumID</key>
@@ -1299,6 +1327,8 @@
 	</dict>
 	<key>YOSPOS</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>dark</string>
 		<key>mode</key>
 		<string>dark</string>
 		<key>keyboardAppearance</key>
@@ -1404,6 +1434,8 @@
 	</dict>
 	<key>YOSPOS (amber)</key>
 	<dict>
+		<key>menuAppearance</key>
+		<string>dark</string>
 		<key>mode</key>
 		<string>dark</string>
 		<key>keyboardAppearance</key>
