@@ -27,6 +27,7 @@ struct AwfulURLRouter {
     
     /// Show the screen appropriate for an "awful" URL.
     @discardableResult
+    @MainActor
     func route(_ route: AwfulRoute) -> Bool {
         
         if enableHaptics {
@@ -206,6 +207,7 @@ struct AwfulURLRouter {
         return nil
     }
     
+    @MainActor
     private func showThread(
         _ threadID: String,
         page: ThreadPage,
@@ -213,11 +215,11 @@ struct AwfulURLRouter {
         updateSeen: AwfulRoute.UpdateSeen
     ) -> Bool {
         let threadKey = ThreadKey(threadID: threadID)
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext) 
+        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext)
         let postsVC: PostsPageViewController
         if let userID = userID, !userID.isEmpty {
             let userKey = UserKey(userID: userID, username: nil)
-            let user = User.objectForKey(objectKey: userKey, in: managedObjectContext) 
+            let user = User.objectForKey(objectKey: userKey, in: managedObjectContext)
             postsVC = PostsPageViewController(thread: thread, author: user)
         } else {
             postsVC = PostsPageViewController(thread: thread)

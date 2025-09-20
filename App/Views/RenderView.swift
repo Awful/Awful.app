@@ -153,6 +153,7 @@ extension RenderView: WKNavigationDelegate {
 /**
  A message that can be sent from the render view. Allows communication from the web view to the native side of the app.
  */
+@MainActor
 protocol RenderViewMessage {
 
     /// The name of the message. JavaScript can send this message by calling `window.webkit.messageHandlers.messageName.postMessage`, replacing `messageName` with the value returned here.
@@ -795,6 +796,7 @@ extension RenderView {
     }
 }
 
+@MainActor
 protocol RenderViewDelegate: AnyObject {
     func didFinishRenderingHTML(in view: RenderView)
     func didReceive(message: RenderViewMessage, in view: RenderView)

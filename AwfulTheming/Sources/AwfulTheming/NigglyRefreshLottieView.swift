@@ -91,13 +91,13 @@ extension NigglyRefreshLottieView {
             case .initial:
                 view.animationView.play()
                 view.animationView.pause()
-                
+
             case .releasing(let progress) where progress < 1:
                 view.animationView.pause()
-                
+
             case .loading, .releasing:
                 view.animationView.play()
-                
+
             case .finished:
                 view.animationView.stop()
             }

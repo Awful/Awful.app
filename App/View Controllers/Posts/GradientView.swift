@@ -32,7 +32,7 @@ final class GradientView: UIView {
     /// Configure the gradient based on the current theme
     private func configureGradient() {
         let isDarkMode = Theme.defaultTheme()[string: "mode"] == "dark"
-        
+
         if isDarkMode {
             // Black to clear gradient for dark themes
             gradientLayer.colors = [
@@ -55,11 +55,11 @@ final class GradientView: UIView {
             // Fade more quickly to maintain subtlety
             gradientLayer.locations = [0.0, 0.4, 0.7, 0.9, 1.0]
         }
-        
+
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
     }
-    
+
     /// Update gradient when theme changes
     func themeDidChange() {
         configureGradient()

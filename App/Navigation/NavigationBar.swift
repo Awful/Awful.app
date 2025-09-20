@@ -24,21 +24,16 @@ final class NavigationBar: UINavigationBar {
         
         // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
         isTranslucent = false
-        
+
         // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
         barStyle = .black
         
-        backIndicatorImage = UIImage(named: "back")
-        backIndicatorTransitionMaskImage = UIImage(named: "back")
+        backIndicatorImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+        backIndicatorTransitionMaskImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
         
         titleTextAttributes = [.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)]
         
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
-        
-        if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
-            scrollEdgeAppearance = standardAppearance
-        }
     }
     
     required init?(coder: NSCoder) {
