@@ -40,6 +40,12 @@ final class NigglyRefreshLottieView: UIView, Themeable {
         animationView.loopMode = .loop
         animationView.animationSpeed = 1
         animationView.translatesAutoresizingMaskIntoConstraints = false
+
+        // On iOS 26+, start with the animation invisible
+        if #available(iOS 26.0, *) {
+            animationView.alpha = 0
+        }
+
         addSubview(animationView)
 
         directionalLayoutMargins = .init(top: 6, leading: 0, bottom: 6, trailing: 0)
@@ -92,14 +98,55 @@ extension NigglyRefreshLottieView {
                 view.animationView.play()
                 view.animationView.pause()
 
-            case .releasing(let progress) where progress < 1:
-                view.animationView.pause()
+                // Keep invisible on iOS 26+ in initial state (normal scrolling)
+                if #available(iOS 26.0, *) {
+                    UIView.animate(withDuration: 0.2) { [weak view] in
+                        view?.animationView.alpha = 0
+                    }
+                }
 
-            case .loading, .releasing:
+            case .releasing(let progress):
+                // Only show animation when actually pulling to refresh (arming)
+                if progress > 0 {
+                    // Fade in on iOS 26+ when user starts pulling to refresh
+                    if #available(iOS 26.0, *) {
+                        UIView.animate(withDuration: 0.1) { [weak view] in
+                            view?.animationView.alpha = 1
+                        }
+                    }
+
+                    if progress < 1 {
+                        view.animationView.pause()
+                    } else {
+                        view.animationView.play()
+                    }
+                } else {
+                    // Keep hidden during normal scrolling
+                    view.animationView.pause()
+                    if #available(iOS 26.0, *) {
+                        view.animationView.alpha = 0
+                    }
+                }
+
+            case .loading:
                 view.animationView.play()
+
+                // Ensure visible during loading on iOS 26+
+                if #available(iOS 26.0, *) {
+                    UIView.animate(withDuration: 0.2) { [weak view] in
+                        view?.animationView.alpha = 1
+                    }
+                }
 
             case .finished:
                 view.animationView.stop()
+
+                // Fade out on iOS 26+ when finished
+                if #available(iOS 26.0, *) {
+                    UIView.animate(withDuration: 0.3, delay: 0.2, options: []) { [weak view] in
+                        view?.animationView.alpha = 0
+                    }
+                }
             }
         }
     }
