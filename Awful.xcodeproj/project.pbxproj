@@ -207,6 +207,21 @@
 		2D3FECC22E7E22E700817DFB /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECC12E7E22E300817DFB /* PostsPageTopBarLiquidGlass.swift */; };
 		2D3FECC42E7E238400817DFB /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECC32E7E237B00817DFB /* GradientView.swift */; };
 		2D3FECC62E7E277D00817DFB /* PostsPageTopBarProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECC52E7E277D00817DFB /* PostsPageTopBarProtocol.swift */; };
+		2D3FECD62E7EAED900817DFB /* rated_five_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCD2E7EAED900817DFB /* rated_five_appicon.icon */; };
+		2D3FECD72E7EAED900817DFB /* froggo_purple_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCA2E7EAED900817DFB /* froggo_purple_appicon.icon */; };
+		2D3FECD82E7EAED900817DFB /* staredog_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECD32E7EAED900817DFB /* staredog_appicon.icon */; };
+		2D3FECD92E7EAED900817DFB /* staredog_tongue_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECD42E7EAED900817DFB /* staredog_tongue_appicon.icon */; };
+		2D3FECDA2E7EAED900817DFB /* smith_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECD12E7EAED900817DFB /* smith_appicon.icon */; };
+		2D3FECDB2E7EAED900817DFB /* riker_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECD02E7EAED900817DFB /* riker_appicon.icon */; };
+		2D3FECDC2E7EAED900817DFB /* stare_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECD22E7EAED900817DFB /* stare_appicon.icon */; };
+		2D3FECDD2E7EAED900817DFB /* five_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECC82E7EAED900817DFB /* five_appicon.icon */; };
+		2D3FECDE2E7EAED900817DFB /* v_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECD52E7EAED900817DFB /* v_appicon.icon */; };
+		2D3FECDF2E7EAED900817DFB /* rated_five_pride_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCE2E7EAED900817DFB /* rated_five_pride_appicon.icon */; };
+		2D3FECE02E7EAED900817DFB /* froggo_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECC92E7EAED900817DFB /* froggo_appicon.icon */; };
+		2D3FECE12E7EAED900817DFB /* rated_five_trans_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCF2E7EAED900817DFB /* rated_five_trans_appicon.icon */; };
+		2D3FECE22E7EAED900817DFB /* cute_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECC72E7EAED900817DFB /* cute_appicon.icon */; };
+		2D3FECE32E7EAED900817DFB /* ghost_blue_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCB2E7EAED900817DFB /* ghost_blue_appicon.icon */; };
+		2D3FECE42E7EAED900817DFB /* greenface_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3FECCC2E7EAED900817DFB /* greenface_appicon.icon */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
@@ -527,6 +542,21 @@
 		2D3FECC12E7E22E300817DFB /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
 		2D3FECC32E7E237B00817DFB /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2D3FECC52E7E277D00817DFB /* PostsPageTopBarProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarProtocol.swift; sourceTree = "<group>"; };
+		2D3FECC72E7EAED900817DFB /* cute_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = cute_appicon.icon; sourceTree = "<group>"; };
+		2D3FECC82E7EAED900817DFB /* five_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = five_appicon.icon; sourceTree = "<group>"; };
+		2D3FECC92E7EAED900817DFB /* froggo_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = froggo_appicon.icon; sourceTree = "<group>"; };
+		2D3FECCA2E7EAED900817DFB /* froggo_purple_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = froggo_purple_appicon.icon; sourceTree = "<group>"; };
+		2D3FECCB2E7EAED900817DFB /* ghost_blue_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ghost_blue_appicon.icon; sourceTree = "<group>"; };
+		2D3FECCC2E7EAED900817DFB /* greenface_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = greenface_appicon.icon; sourceTree = "<group>"; };
+		2D3FECCD2E7EAED900817DFB /* rated_five_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_appicon.icon; sourceTree = "<group>"; };
+		2D3FECCE2E7EAED900817DFB /* rated_five_pride_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_pride_appicon.icon; sourceTree = "<group>"; };
+		2D3FECCF2E7EAED900817DFB /* rated_five_trans_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_trans_appicon.icon; sourceTree = "<group>"; };
+		2D3FECD02E7EAED900817DFB /* riker_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = riker_appicon.icon; sourceTree = "<group>"; };
+		2D3FECD12E7EAED900817DFB /* smith_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = smith_appicon.icon; sourceTree = "<group>"; };
+		2D3FECD22E7EAED900817DFB /* stare_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = stare_appicon.icon; sourceTree = "<group>"; };
+		2D3FECD32E7EAED900817DFB /* staredog_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_appicon.icon; sourceTree = "<group>"; };
+		2D3FECD42E7EAED900817DFB /* staredog_tongue_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_tongue_appicon.icon; sourceTree = "<group>"; };
+		2D3FECD52E7EAED900817DFB /* v_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v_appicon.icon; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
@@ -1024,6 +1054,21 @@
 		1CC065F52D6700BA002BB6A0 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
+				2D3FECC72E7EAED900817DFB /* cute_appicon.icon */,
+				2D3FECC82E7EAED900817DFB /* five_appicon.icon */,
+				2D3FECC92E7EAED900817DFB /* froggo_appicon.icon */,
+				2D3FECCA2E7EAED900817DFB /* froggo_purple_appicon.icon */,
+				2D3FECCB2E7EAED900817DFB /* ghost_blue_appicon.icon */,
+				2D3FECCC2E7EAED900817DFB /* greenface_appicon.icon */,
+				2D3FECCD2E7EAED900817DFB /* rated_five_appicon.icon */,
+				2D3FECCE2E7EAED900817DFB /* rated_five_pride_appicon.icon */,
+				2D3FECCF2E7EAED900817DFB /* rated_five_trans_appicon.icon */,
+				2D3FECD02E7EAED900817DFB /* riker_appicon.icon */,
+				2D3FECD12E7EAED900817DFB /* smith_appicon.icon */,
+				2D3FECD22E7EAED900817DFB /* stare_appicon.icon */,
+				2D3FECD32E7EAED900817DFB /* staredog_appicon.icon */,
+				2D3FECD42E7EAED900817DFB /* staredog_tongue_appicon.icon */,
+				2D3FECD52E7EAED900817DFB /* v_appicon.icon */,
 				1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */,
 				1CC065F02D66EC14002BB6A0 /* App Icons.xcconfig */,
 				1CC065F62D67028F002BB6A0 /* AppIconImageNames.swift */,
@@ -1476,6 +1521,21 @@
 				1C47AF4C19A790910098B828 /* PostsPageSettings.xib in Resources */,
 				1C8F67FF2221BDE8007E61ED /* PostPreview.html.stencil in Resources */,
 				1C29BD532251208200E1217A /* quote-post.png in Resources */,
+				2D3FECD62E7EAED900817DFB /* rated_five_appicon.icon in Resources */,
+				2D3FECD72E7EAED900817DFB /* froggo_purple_appicon.icon in Resources */,
+				2D3FECD82E7EAED900817DFB /* staredog_appicon.icon in Resources */,
+				2D3FECD92E7EAED900817DFB /* staredog_tongue_appicon.icon in Resources */,
+				2D3FECDA2E7EAED900817DFB /* smith_appicon.icon in Resources */,
+				2D3FECDB2E7EAED900817DFB /* riker_appicon.icon in Resources */,
+				2D3FECDC2E7EAED900817DFB /* stare_appicon.icon in Resources */,
+				2D3FECDD2E7EAED900817DFB /* five_appicon.icon in Resources */,
+				2D3FECDE2E7EAED900817DFB /* v_appicon.icon in Resources */,
+				2D3FECDF2E7EAED900817DFB /* rated_five_pride_appicon.icon in Resources */,
+				2D3FECE02E7EAED900817DFB /* froggo_appicon.icon in Resources */,
+				2D3FECE12E7EAED900817DFB /* rated_five_trans_appicon.icon in Resources */,
+				2D3FECE22E7EAED900817DFB /* cute_appicon.icon in Resources */,
+				2D3FECE32E7EAED900817DFB /* ghost_blue_appicon.icon in Resources */,
+				2D3FECE42E7EAED900817DFB /* greenface_appicon.icon in Resources */,
 				2D19BA3B29C33303009DD94F /* toot60.json in Resources */,
 				8C4F06B51686C1CB003CE53C /* macinyos-heading-left.png in Resources */,
 				1C8F67FA2221AFB1007E61ED /* Announcement.html.stencil in Resources */,
@@ -1819,6 +1879,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
@@ -1835,6 +1896,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;

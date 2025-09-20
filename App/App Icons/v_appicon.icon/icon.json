@@ -1,0 +1,102 @@
+{
+  "color-space-for-untagged-svg-colors" : "display-p3",
+  "fill" : {
+    "linear-gradient" : [
+      "srgb:0.00000,0.40000,1.00000,1.00000",
+      "display-p3:0.00000,0.30000,0.75000,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "blend-mode" : "normal",
+      "blur-material" : 1,
+      "hidden" : false,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "v.svg",
+          "name" : "v"
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Bars",
+      "opacity" : 1,
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.75
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "blend-mode" : "plus-lighter",
+      "blur-material" : 1,
+      "hidden" : false,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "v.svg",
+          "name" : "v"
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Bars",
+      "opacity" : 1,
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0.75
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 1
+      }
+    },
+    {
+      "blur-material" : 1,
+      "layers" : [
+        {
+          "hidden" : false,
+          "image-name" : "eyez2.svg",
+          "name" : "eyez2"
+        }
+      ],
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "blur-material" : 1,
+      "hidden" : false,
+      "layers" : [
+        {
+          "image-name" : "eyez1.svg",
+          "name" : "eyez1"
+        }
+      ],
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0
+      },
+      "specular" : false,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

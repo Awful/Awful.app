@@ -1,0 +1,103 @@
+{
+  "color-space-for-untagged-svg-colors" : "display-p3",
+  "fill" : {
+    "linear-gradient" : [
+      "srgb:0.00000,0.40000,1.00000,1.00000",
+      "display-p3:0.00000,0.30000,0.75000,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "blur-material" : null,
+      "hidden" : false,
+      "layers" : [
+        {
+          "image-name" : "1.svg",
+          "name" : "1"
+        },
+        {
+          "image-name" : "2.svg",
+          "name" : "2"
+        }
+      ],
+      "opacity" : 1,
+      "position" : {
+        "scale" : 1.04,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.75
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.75
+      }
+    },
+    {
+      "blend-mode" : "plus-lighter",
+      "hidden" : false,
+      "layers" : [
+        {
+          "image-name" : "1.svg",
+          "name" : "1"
+        },
+        {
+          "image-name" : "2.svg",
+          "name" : "2"
+        }
+      ],
+      "opacity" : 0.24999999999999997,
+      "position" : {
+        "scale" : 1.04,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.75
+      }
+    },
+    {
+      "blend-mode" : "plus-lighter",
+      "blur-material" : 0.7,
+      "hidden" : false,
+      "layers" : [
+        {
+          "image-name" : "bars back.svg",
+          "name" : "bars back",
+          "position" : {
+            "scale" : 1.04,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "opacity" : 1,
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.25
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}
