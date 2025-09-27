@@ -64,7 +64,6 @@ final class PostsPageView: UIView {
                         refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
                         containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)])
                 } else {
-                    // arrow view is hidden behind the toolbar and revealed when pulled up
                     if refreshControl is PostsPageRefreshArrowView {
                         NSLayoutConstraint.activate([
                             refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
@@ -73,7 +72,6 @@ final class PostsPageView: UIView {
                             containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
                         ])
                     }
-                    // spinner view is visible above the toolbar, before any scroll triggers occur
                     if refreshControl is GetOutFrogRefreshSpinnerView {
                         NSLayoutConstraint.activate([
                             refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
@@ -219,7 +217,6 @@ final class PostsPageView: UIView {
     private lazy var safeAreaGradientView: GradientView = {
         let view = GradientView()
         view.isUserInteractionEnabled = false
-        // Show gradient only on iOS 26+
         if #available(iOS 26.0, *) {
             view.alpha = 1.0
             view.isHidden = false
@@ -247,7 +244,7 @@ final class PostsPageView: UIView {
         toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
         
         addSubview(renderView)
-        addSubview(safeAreaGradientView)  // Add gradient before top bar so it appears behind
+        addSubview(safeAreaGradientView)
         addSubview(topBarContainer)
         addSubview(loadingViewContainer)
         addSubview(toolbar)
@@ -265,14 +262,11 @@ final class PostsPageView: UIView {
         renderView.frame = bounds
         loadingViewContainer.frame = bounds
 
-        // Position gradient view in the status bar area only
         if #available(iOS 26.0, *) {
-            // Position gradient to cover only the top safe area (status bar/notch)
-            // Use actual device safe area top instead of layoutMargins to prevent extending into content
             let gradientHeight: CGFloat = window?.safeAreaInsets.top ?? safeAreaInsets.top
             safeAreaGradientView.frame = CGRect(
                 x: bounds.minX,
-                y: bounds.minY,  // Start at top of screen
+                y: bounds.minY,
                 width: bounds.width,
                 height: gradientHeight)
         }
@@ -349,9 +343,7 @@ final class PostsPageView: UIView {
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        // Only set toolbar colors for iOS < 26
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle toolbar colors and borders automatically
             toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
         } else {
             toolbar.tintColor = Theme.defaultTheme()["toolbarTextColor"]!
@@ -361,7 +353,6 @@ final class PostsPageView: UIView {
 
         topBar.themeDidChange(Theme.defaultTheme())
 
-        // Update gradient view for theme changes
         if #available(iOS 26.0, *) {
             safeAreaGradientView.themeDidChange()
         }
@@ -398,7 +389,6 @@ extension PostsPageView {
 
             clipsToBounds = true
 
-            // Use clear background for iOS 26+ to allow liquid glass effect
             if #available(iOS 26.0, *) {
                 backgroundColor = .clear
             }
@@ -552,8 +542,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         willBeginDraggingContentOffset = scrollView.contentOffset
-        
-        // disable transparency so that scroll thumbs work in dark mode
+
         if darkMode, !viewHasBeenScrolledOnce {
             renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
             viewHasBeenScrolledOnce = true
@@ -691,39 +680,28 @@ extension PostsPageView: ScrollViewDelegateExtras {
             }
         }
 
-        // Update navigation bar appearance for iOS 26+ based on scroll progress
         if #available(iOS 26.0, *) {
-            // Calculate scroll progress for smooth navbar transition
             let topInset = scrollView.adjustedContentInset.top
             let currentOffset = scrollView.contentOffset.y
             let topPosition = -topInset
 
-            // Define transition zone (30 points for smooth fade)
             let transitionDistance: CGFloat = 30.0
 
-            // Calculate progress (0.0 = fully at top, 1.0 = fully scrolled)
             let progress: CGFloat
             if currentOffset <= topPosition {
-                // At or above the top
                 progress = 0.0
             } else if currentOffset >= topPosition + transitionDistance {
-                // Fully scrolled past transition zone
                 progress = 1.0
             } else {
-                // In transition zone - calculate smooth progress
                 let distanceFromTop = currentOffset - topPosition
                 progress = distanceFromTop / transitionDistance
             }
 
-            // Find the parent view controller by walking up the responder chain
             var responder: UIResponder? = self
             while responder != nil {
                 if let viewController = responder as? PostsPageViewController,
                    let navController = viewController.navigationController as? NavigationController {
-                    // NavigationController will handle the navbar tint color and back button
                     navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
-
-                    // Update the liquid glass title view text color based on scroll progress
                     viewController.updateTitleViewTextColorForScrollProgress(progress)
 
                     break

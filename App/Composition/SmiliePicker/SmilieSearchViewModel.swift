@@ -200,7 +200,6 @@ final class SmilieSearchViewModel: ObservableObject {
               let smilieText = smilie.text else { return }
 
         context.perform {
-            // Fetch the smilie within the context's queue
             let fetchRequest = NSFetchRequest<Smilie>(entityName: "Smilie")
             fetchRequest.predicate = NSPredicate(format: "text == %@", smilieText)
             fetchRequest.fetchLimit = 1

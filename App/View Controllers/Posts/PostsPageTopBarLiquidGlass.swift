@@ -55,8 +55,7 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            
-            // Ensure buttons have a minimum height for good touch targets
+
             parentForumButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 32),
             previousPostsButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 32),
             scrollToEndButton.heightAnchor.constraint(greaterThanOrEqualToConstant: 32)
@@ -71,13 +70,11 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
         return button
     }
 
-    // Custom button class that properly handles glass effect
     private class GlassButton: UIButton {
         private let glassView: UIVisualEffectView
         private let label: UILabel
 
         override init(frame: CGRect) {
-            // Create glass effect
             let glassEffect = UIGlassEffect()
             glassView = UIVisualEffectView(effect: glassEffect)
             glassView.translatesAutoresizingMaskIntoConstraints = false
@@ -85,10 +82,8 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
             glassView.layer.cornerRadius = 16
             glassView.layer.masksToBounds = true
             glassView.layer.cornerCurve = .continuous
-            // Disable shadow
             glassView.layer.shadowOpacity = 0
 
-            // Create label
             label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
             label.font = UIFont.preferredFontForTextStyle(.footnote, sizeAdjustment: 0, weight: .medium)
@@ -101,15 +96,11 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
 
             super.init(frame: frame)
 
-            // Ensure button itself is transparent
             backgroundColor = .clear
 
-            // Add glass view as background
             insertSubview(glassView, at: 0)
-            // Add label to content view
             glassView.contentView.addSubview(label)
 
-            // Constraints
             NSLayoutConstraint.activate([
                 glassView.leadingAnchor.constraint(equalTo: leadingAnchor),
                 glassView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -130,7 +121,6 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
         }
 
         override func setTitle(_ title: String?, for state: UIControl.State) {
-            // Override setTitle to set our label's text instead
             if state == .normal {
                 label.text = title
             }
@@ -144,7 +134,6 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
     }
     
     func themeDidChange(_ theme: Theme) {
-        // Update button colors and glass effects to match new theme
         for button in [parentForumButton, previousPostsButton, scrollToEndButton] {
             button.setNeedsUpdateConfiguration()
         }

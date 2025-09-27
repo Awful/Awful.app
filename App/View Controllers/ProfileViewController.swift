@@ -74,7 +74,6 @@ final class ProfileViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Configure extended layout to handle content under navbar properly in iOS 26
         extendedLayoutIncludesOpaqueBars = true
 
         view.addSubview(renderView)
@@ -84,7 +83,6 @@ final class ProfileViewController: ViewController {
         renderView.scrollView.contentInsetAdjustmentBehavior = .never
         renderView.scrollView.delegate = self
 
-        // Configure navigation bar for iOS 26 liquid glass effect
         if #available(iOS 26.0, *) {
             configureNavigationBarForLiquidGlass()
             configureLiquidGlassTitleView()
@@ -96,9 +94,7 @@ final class ProfileViewController: ViewController {
 
         renderProfile()
 
-        // Update liquid glass title view for new theme
         if #available(iOS 26.0, *) {
-            // Only update color if we're at the top (not scrolled)
             if renderView.scrollView.contentOffset.y <= -renderView.scrollView.adjustedContentInset.top {
                 liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
             }
@@ -108,7 +104,6 @@ final class ProfileViewController: ViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        // Reset navbar to initial state for iOS 26
         if #available(iOS 26.0, *) {
             if let navController = navigationController as? NavigationController {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
@@ -154,7 +149,6 @@ final class ProfileViewController: ViewController {
     }
 
     private func updateScrollViewContentInsets() {
-        // Apply safe area insets manually since we disabled automatic adjustment
         renderView.scrollView.contentInset.top = view.safeAreaInsets.top
         renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
         renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
@@ -165,19 +159,16 @@ final class ProfileViewController: ViewController {
         guard let navigationBar = navigationController?.navigationBar else { return }
         guard let navController = navigationController as? NavigationController else { return }
 
-        // Hide the custom bottom border from NavigationBar for liquid glass effect
         if let awfulNavigationBar = navigationBar as? NavigationBar {
             awfulNavigationBar.bottomBorderColor = .clear
         }
 
-        // Start with opaque background
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = theme["navigationBarTintColor"]
         appearance.shadowColor = nil
         appearance.shadowImage = nil
 
-        // Set text colors from theme
         let textColor: UIColor = theme["navigationBarTextColor"]!
         appearance.titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: textColor,
@@ -196,33 +187,26 @@ final class ProfileViewController: ViewController {
         appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
         appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
 
-        // Set the back indicator image
         if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
             appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         }
 
-        // Apply to all states
         navigationBar.standardAppearance = appearance
         navigationBar.scrollEdgeAppearance = appearance
         navigationBar.compactAppearance = appearance
         navigationBar.compactScrollEdgeAppearance = appearance
 
-        // Set tintColor for theme
         navigationBar.tintColor = textColor
 
-        // Initialize at scroll position 0 (opaque)
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
 
-        // Force update
         navigationBar.setNeedsLayout()
     }
 
     @available(iOS 26.0, *)
     private func configureLiquidGlassTitleView() {
-        // Set up the liquid glass title view
         liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
 
-        // Set font based on device type
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
             liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
@@ -236,10 +220,8 @@ final class ProfileViewController: ViewController {
     @available(iOS 26.0, *)
     private func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
         if progress < 0.01 {
-            // At top: use theme color
             liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
         } else if progress > 0.99 {
-            // Fully scrolled: use nil for dynamic color adaptation
             liquidGlassTitleView.textColor = nil
         }
     }
@@ -302,36 +284,27 @@ private struct ShowHomepageActions: RenderViewMessage {
 
 extension ProfileViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Update navigation bar tint for iOS 26+ dynamic colors
         if #available(iOS 26.0, *) {
-            // Calculate scroll progress for smooth transition
             let topInset = scrollView.adjustedContentInset.top
             let currentOffset = scrollView.contentOffset.y
             let topPosition = -topInset
 
-            // Define transition zone (30 points for smooth fade)
             let transitionDistance: CGFloat = 30.0
 
-            // Calculate progress (0.0 = fully at top, 1.0 = fully scrolled)
             let progress: CGFloat
             if currentOffset <= topPosition {
-                // At or above the top
                 progress = 0.0
             } else if currentOffset >= topPosition + transitionDistance {
-                // Fully scrolled past transition zone
                 progress = 1.0
             } else {
-                // In transition zone - calculate smooth progress
                 let distanceFromTop = currentOffset - topPosition
                 progress = distanceFromTop / transitionDistance
             }
 
-            // Update navigation controller
             if let navController = navigationController as? NavigationController {
                 navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
             }
 
-            // Update title text color based on scroll progress
             updateTitleViewTextColorForScrollProgress(progress)
         }
     }
@@ -419,7 +392,6 @@ private struct RenderModel: StencilContextConvertible {
             let html = profile.user.customTitleHTML
             return html == "<br/>" ? nil : html
         }()
-        // No good reason for profile.css to be loaded via theme: profile.less imports some of the posts view .less helpers, so it's easier to generate all the .css files in one place.
         css = try! theme.stylesheet(named: "profile")!
         dark = FoilDefaultStorage(Settings.darkMode).wrappedValue
         gender = profile.gender?.rawValue ?? LocalizedString("profile.default-gender")

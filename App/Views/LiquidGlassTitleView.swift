@@ -4,12 +4,9 @@
 
 import UIKit
 
-/// A custom navigation title view with iOS 26's liquid glass effect in a capsule shape.
 @available(iOS 26.0, *)
 final class LiquidGlassTitleView: UIView {
-    
-    // MARK: - UI Elements
-    
+
     private var visualEffectView: UIVisualEffectView = {
         let effect = UIGlassEffect()
         let view = UIVisualEffectView(effect: effect)
@@ -26,9 +23,7 @@ final class LiquidGlassTitleView: UIView {
         label.lineBreakMode = .byWordWrapping
         return label
     }()
-    
-    // MARK: - Properties
-    
+
     var title: String? {
         get { titleLabel.text }
         set {
@@ -49,8 +44,7 @@ final class LiquidGlassTitleView: UIView {
             updateTitleDisplay()
         }
     }
-    
-    /// Sets whether to use dark glass appearance (useful for light mode themes)
+
     func setUseDarkGlass(_ useDark: Bool) {
         visualEffectView.overrideUserInterfaceStyle = useDark ? .dark : .unspecified
     }
@@ -70,9 +64,7 @@ final class LiquidGlassTitleView: UIView {
         
         titleLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
-    
-    // MARK: - Initialization
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -82,9 +74,7 @@ final class LiquidGlassTitleView: UIView {
         super.init(coder: coder)
         setupViews()
     }
-    
-    // MARK: - Setup
-    
+
     private func setupViews() {
         addSubview(visualEffectView)
         visualEffectView.contentView.addSubview(titleLabel)
@@ -100,8 +90,7 @@ final class LiquidGlassTitleView: UIView {
             titleLabel.trailingAnchor.constraint(equalTo: visualEffectView.contentView.trailingAnchor, constant: -16),
             titleLabel.bottomAnchor.constraint(equalTo: visualEffectView.contentView.bottomAnchor, constant: -8)
         ])
-        
-        // Accessibility
+
         isAccessibilityElement = false
         titleLabel.isAccessibilityElement = true
         titleLabel.accessibilityTraits = .header
@@ -109,16 +98,13 @@ final class LiquidGlassTitleView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        // Apply capsule shape
+
         let cornerRadius = bounds.height / 2
         visualEffectView.layer.cornerRadius = cornerRadius
         visualEffectView.layer.masksToBounds = true
         visualEffectView.layer.cornerCurve = .continuous
     }
-    
-    
-    
+
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 320, height: 56)
     }

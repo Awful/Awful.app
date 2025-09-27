@@ -34,11 +34,8 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
         
         spinner.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-
+        
         rotateArrow(Angles.waiting, animated: false)
-
-        // Start hidden
-        alpha = 0.0
     }
     
     private func transition(from oldState: PostsPageView.RefreshControlState, to newState: PostsPageView.RefreshControlState) {
@@ -109,32 +106,6 @@ final class PostsPageRefreshArrowView: UIView, PostsPageRefreshControlContent {
     var state: PostsPageView.RefreshControlState = .ready {
         didSet {
             transition(from: oldValue, to: state)
-
-            // Handle opacity changes based on state
-            switch state {
-            case .ready, .disabled:
-                // Hide when not in use
-                UIView.animate(withDuration: 0.2) {
-                    self.alpha = 0.0
-                }
-
-            case .armed(let triggeredFraction):
-                // Fade in based on pull progress
-                let targetAlpha = min(1.0, triggeredFraction * 2)  // Fade in quickly
-                UIView.animate(withDuration: 0.1) {
-                    self.alpha = targetAlpha
-                }
-
-            case .triggered, .refreshing:
-                // Full opacity when active
-                UIView.animate(withDuration: 0.2) {
-                    self.alpha = 1.0
-                }
-
-            case .awaitingScrollEnd:
-                // Keep current opacity
-                break
-            }
         }
     }
     
