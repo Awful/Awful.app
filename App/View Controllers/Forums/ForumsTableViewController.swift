@@ -117,7 +117,7 @@ final class ForumsTableViewController: TableViewController {
     }
 
     private func updateEditingState(favoriteCount: Int) {
-        navigationItem.setRightBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+        navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
 
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)
@@ -176,7 +176,7 @@ final class ForumsTableViewController: TableViewController {
         }()
 
         if canSendPrivateMessages {
-            navigationItem.setLeftBarButton(searchButton, animated: true)
+            navigationItem.setRightBarButton(searchButton, animated: true)
         }
         
         // Add observer for changes to canSendPrivateMessages
@@ -185,9 +185,9 @@ final class ForumsTableViewController: TableViewController {
             .sink { [weak self] canSend in
                 guard let self else { return }
                 if canSend {
-                    navigationItem.setLeftBarButton(searchButton, animated: true)
+                    navigationItem.setRightBarButton(searchButton, animated: true)
                 } else {
-                    navigationItem.setLeftBarButton(nil, animated: true)
+                    navigationItem.setRightBarButton(nil, animated: true)
                 }
             }
             .store(in: &cancellables)
