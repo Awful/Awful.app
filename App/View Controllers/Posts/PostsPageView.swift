@@ -173,10 +173,28 @@ final class PostsPageView: UIView {
     // MARK: Top bar
 
     var topBar: PostsPageTopBarProtocol {
-        return topBarContainer.topBar
+        return topBarContainer.topBar as! PostsPageTopBarProtocol
     }
 
     private let topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
+
+    func setGoToParentForum(_ callback: (() -> Void)?) {
+        if let topBar = topBarContainer.postsTopBar {
+            topBar.goToParentForum = callback
+        }
+    }
+    
+    func setShowPreviousPosts(_ callback: (() -> Void)?) {
+        if let topBar = topBarContainer.postsTopBar {
+            topBar.showPreviousPosts = callback
+        }
+    }
+    
+    func setScrollToEnd(_ callback: (() -> Void)?) {
+        if let topBar = topBarContainer.postsTopBar {
+            topBar.scrollToEnd = callback
+        }
+    }
 
     private var topBarState: TopBarState {
         didSet {
@@ -372,16 +390,24 @@ extension PostsPageView {
     /// Holds the top bar and clips to bounds, so the top bar doesn't sit behind a possibly-translucent navigation bar and obscure the underlying content.
     final class TopBarContainer: UIView {
 
-        fileprivate lazy var topBar: PostsPageTopBarProtocol = {
-            let topBar: PostsPageTopBarProtocol
-            if #available(iOS 26.0, *) {
-                topBar = PostsPageTopBarLiquidGlass()
-            } else {
-                topBar = PostsPageTopBar()
-            }
-            topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
-            return topBar
+        private var topBarHeightConstraint: NSLayoutConstraint?
+        private var isTopBarRemoved = false
+        
+        fileprivate lazy var topBar: UIView = {
+                let topBar: UIView & PostsPageTopBarProtocol
+                if #available(iOS 26.0, *) {
+                    topBar = PostsPageTopBarLiquidGlass()
+                } else {
+                    topBar = PostsPageTopBar()
+                }
+                topBarHeightConstraint = topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+                topBarHeightConstraint?.isActive = true
+                return topBar
         }()
+        
+        var postsTopBar: PostsPageTopBarProtocol? {
+            return topBar as? PostsPageTopBarProtocol
+        }
 
 
         override init(frame: CGRect) {
