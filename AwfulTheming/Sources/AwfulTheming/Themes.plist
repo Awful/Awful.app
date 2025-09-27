@@ -18,6 +18,8 @@
 		<string>#9999ff</string>
 		<key>Lists</key>
 		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#9999ff</string>
 			<key>listFontName</key>
 			<string>ChalkboardSE-Regular</string>
 			<key>listTextColor</key>
@@ -800,6 +802,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#ff3399</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#ff80ff</string>
 			<key>listTextColor</key>
@@ -1387,6 +1391,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#000000</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>listSecondaryTextColor</key>
