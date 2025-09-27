@@ -614,6 +614,35 @@ Awful.jumpToPostWithID = function(postID) {
   window.location.hash = `#${postID}`;
 };
 
+/**
+ Scrolls smoothly to the identified post with offset for navigation bar.
+ */
+Awful.scrollToPostWithID = function(postID, animated = true, topOffset = 0) {
+  var post = document.getElementById(postID);
+  if (!post) {
+    // Fallback to jump if post not found
+    Awful.jumpToPostWithID(postID);
+    return;
+  }
+
+  // Calculate the position accounting for any top content inset
+  // The scroll position should place the post below the navigation/top bar
+  var rect = post.getBoundingClientRect();
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  // Subtract the topOffset to account for content inset
+  var targetPosition = rect.top + scrollTop - topOffset;
+
+  if (animated) {
+    // Smooth scroll to the target position
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth'
+    });
+  } else {
+    window.scrollTo(0, targetPosition);
+  }
+};
+
 
 /**
  Returns the web view frame of the post at (x, y) in web view coordinates.

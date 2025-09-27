@@ -149,19 +149,31 @@ final class PostsPageViewController: ViewController {
                 preferredMenuElementOrder = .fixed
             }
             updateInterfaceStyle()
+
+            // Start with user interaction disabled to not block touches
+            isUserInteractionEnabled = false
         }
-        
+
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
-        
+
         func show(menu: UIMenu, from rect: CGRect) {
             frame = rect
             self.menu = menu
 
             updateInterfaceStyle()
 
+            // Enable interaction only when showing menu
+            isUserInteractionEnabled = true
+
             gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
+
+            // Disable interaction after menu interaction completes
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.isUserInteractionEnabled = false
+                self?.frame = .zero
+            }
         }
         
         func updateInterfaceStyle() {
@@ -2069,6 +2081,15 @@ extension PostsPageViewController: RenderViewDelegate {
             if url.fragment == "awful-ignored", case let .post(id: postID, _) = route {
                 if let i = posts.firstIndex(where: { $0.postID == postID }) {
                     readIgnoredPostAtIndex(i)
+                }
+            } else if case let .post(id: postID, _) = route {
+                // Check if the post is on the current page
+                if posts.contains(where: { $0.postID == postID }) {
+                    // Post is on current page, scroll to it smoothly
+                    postsView.renderView.scrollToPost(identifiedBy: postID, animated: true)
+                } else {
+                    // Post is not on current page, open the route
+                    AppDelegate.instance.open(route: route)
                 }
             } else {
                 AppDelegate.instance.open(route: route)
