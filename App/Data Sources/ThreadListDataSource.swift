@@ -297,7 +297,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                     }
                 }
                 return NSAttributedString(string: "\(thread.unreadPosts)", attributes: [
-                    .font: UIFont.preferredFontForTextStyle(.caption1, fontName: theme["listFontName"], sizeAdjustment: 1, weight: .semibold), .foregroundColor: color])
+                    .font: UIFont.preferredFontForTextStyle(.caption1, fontName: theme["listFontName"], sizeAdjustment: 1, weight: .bold), .foregroundColor: color])
         }())
     }
 

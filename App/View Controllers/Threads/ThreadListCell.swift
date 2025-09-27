@@ -33,7 +33,7 @@ final class ThreadListCell: UITableViewCell {
             pageCountLabel.attributedText = viewModel.pageCount
             
             if let color = viewModel.unreadCount.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? UIColor {
-                 pageCountBackgroundView.backgroundColor = color.withAlphaComponent(0.2)
+                 pageCountBackgroundView.backgroundColor = color
              } else {
                  pageCountBackgroundView.backgroundColor = .clear
              }
@@ -56,6 +56,7 @@ final class ThreadListCell: UITableViewCell {
             titleLabel.attributedText = viewModel.title
 
             unreadCountLabel.attributedText = viewModel.unreadCount
+            unreadCountLabel.textColor = viewModel.backgroundColor
 
             setNeedsLayout()
         }
@@ -115,8 +116,16 @@ final class ThreadListCell: UITableViewCell {
         let layout = Layout(width: contentView.bounds.width, viewModel: viewModel)
          // Background behind the page count label, with padding and pill shape
         if viewModel.unreadCount.length > 0 {
-            let backgroundPadding = UIEdgeInsets(top: -2, left: -6, bottom: -2, right: -6)
-            let bgFrame = layout.unreadCountFrame.inset(by: backgroundPadding)
+            let backgroundPadding = UIEdgeInsets(top: 0, left: -3, bottom: 0, right: -3)
+            var bgFrame = layout.unreadCountFrame.inset(by: backgroundPadding)
+
+            // Ensure minimum width equals height for circular appearance on single digits
+            if bgFrame.width < bgFrame.height {
+                let widthDiff = bgFrame.height - bgFrame.width
+                bgFrame.origin.x -= widthDiff / 2
+                bgFrame.size.width = bgFrame.height
+            }
+
             pageCountBackgroundView.frame = bgFrame
             pageCountBackgroundView.layer.cornerRadius = bgFrame.height / 2
          } else {
@@ -158,6 +167,7 @@ final class ThreadListCell: UITableViewCell {
         static let tagRightMargin: CGFloat = 6
         static let titleBottomMargin: CGFloat = 2
         static let unreadLeftMargin: CGFloat = 5
+        static let unreadRightMargin: CGFloat = 10
 
         init(width: CGFloat, viewModel: ViewModel) {
             // 1. See how much width we have for the text.
@@ -221,7 +231,7 @@ final class ThreadListCell: UITableViewCell {
 
             // 4. Unread count
             unreadCountFrame = CGRect(
-                x: width - Layout.outerMargin - unreadSize.width,
+                x: width - Layout.unreadRightMargin - unreadSize.width,
                 y: (height - unreadSize.height) / 2,
                 width: unreadSize.width,
                 height: unreadSize.height)

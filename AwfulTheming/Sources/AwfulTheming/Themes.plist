@@ -18,6 +18,8 @@
 		<string>#9999ff</string>
 		<key>Lists</key>
 		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#9999ff</string>
 			<key>listFontName</key>
 			<string>ChalkboardSE-Regular</string>
 			<key>listTextColor</key>
@@ -204,11 +206,11 @@
 			<key>unreadBadgeRedColor</key>
 			<string>#ff0000</string>
 			<key>unreadBadgeYellowColor</key>
-			<string>#f3f135</string>
+			<string>#FFCD00</string>
 			<key>unreadBadgeGreenColor</key>
 			<string>#7ec071</string>
 			<key>unreadBadgeCyanColor</key>
-			<string>#6cecf0</string>
+			<string>#0066FF</string>
 			<key>unreadBadgePurpleColor</key>
 			<string>#9437ff</string>
 		</dict>
@@ -800,6 +802,8 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#ff3399</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#ff80ff</string>
 			<key>listTextColor</key>
@@ -1349,6 +1353,8 @@
 		<key>descriptiveColor</key>
 		<string>#57ff57</string>
 		<key>backgroundColor</key>
+		<string>#000000</string>
+		<key>navigationBarTintColor</key>
 		<string>#000000</string>
 		<key>Action icons</key>
 		<dict>

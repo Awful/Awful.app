@@ -57,7 +57,6 @@
 		1C1BF9C219AB9E6200E8FBBC /* InAppActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C1BF9C119AB9E6200E8FBBC /* InAppActionSheet.xib */; };
 		1C1E57512C2521580075E3B6 /* platinum-member-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C1E57502C2521580075E3B6 /* platinum-member-white.png */; };
 		1C1F0F162B8B0AD700F097D3 /* AwfulTheming in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F0F152B8B0AD700F097D3 /* AwfulTheming */; };
-		1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */ = {isa = PBXBuildFile; productRef = 1C1F8A2C2664BDF4003EA62C /* Smilies */; };
 		1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C220E3A2B814D5A00DA92B0 /* SettingsViewController.swift */; };
 		1C220E3D2B815AFC00DA92B0 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C220E3C2B815AFC00DA92B0 /* Bundle+.swift */; };
 		1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23C7041A7AB8940089BD5C /* SlopButton.swift */; };
@@ -121,10 +120,6 @@
 		1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */; };
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
 		1C5E98292B4B5FAE00D891CD /* AwfulExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5E98282B4B5FAE00D891CD /* AwfulExtensions */; };
-		1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */; };
-		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
-		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C6B2A9A272F992E00671F0C /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6B2A99272F992E00671F0C /* Nuke */; };
@@ -188,7 +183,6 @@
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
 		1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */; };
 		1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF280972055EB9B00913149 /* AwfulRoute.swift */; };
-		1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521742C228E76009712A7 /* PrivacyInfo.xcprivacy */; };
 		1CF521772C228F88009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */; };
 		1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786A201E751D009A9640 /* MessageListDataSource.swift */; };
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
@@ -262,13 +256,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C66A9EE19DD3939001B9A41;
-			remoteInfo = "Smilie Keyboard";
-		};
 		1C9AEBC8210C3B2300C9A567 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -305,7 +292,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -444,7 +430,6 @@
 		1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TUSafariActivity.bundle; sourceTree = "<group>"; };
 		1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ARChromeActivity.xcassets; sourceTree = "<group>"; };
 		1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromeActivity.swift; sourceTree = "<group>"; };
-		1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SmilieKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C66A9F219DD393A001B9A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C66A9F319DD393A001B9A41 /* KeyboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardViewController.h; sourceTree = "<group>"; };
 		1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyboardViewController.m; sourceTree = "<group>"; };
@@ -607,14 +592,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1C66A9EC19DD3939001B9A41 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1C9AEBC0210C3B2200C9A567 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -682,7 +659,6 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* AwfulDebug.app */,
-				1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */,
 				1C3A143319DFC5D10022C44C /* SmilieExtractor.app */,
 				1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */,
 			);
@@ -1317,26 +1293,6 @@
 			productReference = 1C3A143319DFC5D10022C44C /* SmilieExtractor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */;
-			buildPhases = (
-				1C66A9EB19DD3939001B9A41 /* Sources */,
-				1C66A9EC19DD3939001B9A41 /* Frameworks */,
-				1C66A9ED19DD3939001B9A41 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SmilieKeyboard;
-			packageProductDependencies = (
-				1C1F8A2C2664BDF4003EA62C /* Smilies */,
-			);
-			productName = "Smilie Keyboard";
-			productReference = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		1C9AEBC2210C3B2200C9A567 /* AwfulTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C9AEBCA210C3B2300C9A567 /* Build configuration list for PBXNativeTarget "AwfulTests" */;
@@ -1371,7 +1327,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 			);
 			name = Awful;
 			packageProductDependencies = (
@@ -1412,26 +1367,13 @@
 					1C3A143219DFC5D10022C44C = {
 						CreatedOnToolsVersion = 6.0.1;
 					};
-					1C66A9EE19DD3939001B9A41 = {
-						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = 9RR6L9X39A;
-						LastSwiftMigration = 0900;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
-					};
 					1C9AEBC2210C3B2200C9A567 = {
 						CreatedOnToolsVersion = 10.0;
-						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = 9RR6L9X39A;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1465,7 +1407,6 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1C9AEBC2210C3B2200C9A567 /* AwfulTests */,
-				1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
 			);
 		};
@@ -1480,15 +1421,6 @@
 				1C3A144119DFC5D10022C44C /* Main.storyboard in Resources */,
 				1C3A144619DFC5D10022C44C /* LaunchScreen.xib in Resources */,
 				1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9ED19DD3939001B9A41 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */,
-				1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1595,15 +1527,6 @@
 				1C3A143E19DFC5D10022C44C /* ViewController.m in Sources */,
 				1C3A143B19DFC5D10022C44C /* AppDelegate.m in Sources */,
 				1C3A143819DFC5D10022C44C /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9EB19DD3939001B9A41 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */,
-				1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1765,12 +1688,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1C66A9F719DD393A001B9A41 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			platformFilter = ios;
-			target = 1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */;
-			targetProxy = 1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */;
-		};
 		1C9AEBC9210C3B2300C9A567 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1D6058900D05DD3D006BFB54 /* Awful */;
@@ -1803,12 +1720,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spankykong.awful.--PRODUCT-NAME-rfc1034identifier-";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.spankykong.awful.SmilieExtractor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1818,33 +1737,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spankykong.awful.--PRODUCT-NAME-rfc1034identifier-";
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.spankykong.awful.SmilieExtractor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		1C66A9FD19DD393A001B9A41 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug.SmilieKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
-			};
-			name = Debug;
-		};
-		1C66A9FE19DD393A001B9A41 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.SmilieKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Release;
 		};
@@ -1860,8 +1761,9 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = App/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
@@ -1880,8 +1782,9 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = App/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
@@ -1893,9 +1796,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.debug;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = AwfulDebug;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1910,9 +1814,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				BUNDLE_SHORT_VERSION = 5.5;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = Awful;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1953,15 +1858,6 @@
 			buildConfigurations = (
 				1C3A145319DFC5D10022C44C /* Debug */,
 				1C3A145419DFC5D10022C44C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1C66A9FD19DD393A001B9A41 /* Debug */,
-				1C66A9FE19DD393A001B9A41 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -2054,10 +1950,6 @@
 		1C1F0F152B8B0AD700F097D3 /* AwfulTheming */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulTheming;
-		};
-		1C1F8A2C2664BDF4003EA62C /* Smilies */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Smilies;
 		};
 		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
