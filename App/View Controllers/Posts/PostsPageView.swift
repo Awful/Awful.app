@@ -241,27 +241,27 @@ final class PostsPageView: UIView {
 
     // MARK: Top bar
 
-    var topBar: PostsPageTopBar {
-        return topBarContainer.topBar as! PostsPageTopBar
+    var topBar: PostsPageTopBarProtocol {
+        return topBarContainer.topBar as! PostsPageTopBarProtocol
     }
 
     private let topBarContainer = TopBarContainer(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
     func setGoToParentForum(_ callback: (() -> Void)?) {
-        if let standardTopBar = topBarContainer.postsTopBar {
-            standardTopBar.goToParentForum = callback
+        if let topBar = topBarContainer.postsTopBar {
+            topBar.goToParentForum = callback
         }
     }
     
     func setShowPreviousPosts(_ callback: (() -> Void)?) {
-        if let standardTopBar = topBarContainer.postsTopBar {
-            standardTopBar.showPreviousPosts = callback
+        if let topBar = topBarContainer.postsTopBar {
+            topBar.showPreviousPosts = callback
         }
     }
     
     func setScrollToEnd(_ callback: (() -> Void)?) {
-        if let standardTopBar = topBarContainer.postsTopBar {
-            standardTopBar.scrollToEnd = callback
+        if let topBar = topBarContainer.postsTopBar {
+            topBar.scrollToEnd = callback
         }
     }
 
@@ -627,10 +627,15 @@ extension PostsPageView {
         private var isTopBarRemoved = false
         
         fileprivate lazy var topBar: UIView = {
-                let standardTopBar = PostsPageTopBar()
-                topBarHeightConstraint = standardTopBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+                let topBar: UIView & PostsPageTopBarProtocol
+                if #available(iOS 26.0, *) {
+                    topBar = PostsPageTopBarLiquidGlass()
+                } else {
+                    topBar = PostsPageTopBar()
+                }
+                topBarHeightConstraint = topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
                 topBarHeightConstraint?.isActive = true
-                return standardTopBar
+                return topBar
         }()
 
         /// Controls whether the topBar should be hidden (height = 0) or visible (minimum height = 44)
@@ -657,9 +662,9 @@ extension PostsPageView {
             topBar.alpha = alpha
         }
         
-        /// Returns the top bar as PostsPageTopBar for iOS < 26 or PostsPageTopBarLiquidGlass for iOS 26+
-        var postsTopBar: PostsPageTopBar? {
-            return topBar as? PostsPageTopBar
+        /// Returns the top bar conforming to PostsPageTopBarProtocol
+        var postsTopBar: PostsPageTopBarProtocol? {
+            return topBar as? PostsPageTopBarProtocol
         }
 
         override init(frame: CGRect) {

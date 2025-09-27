@@ -652,13 +652,21 @@ Awful.markReadUpToPostWithID = function(postID) {
   var currentPost = lastReadPost;
   while (currentPost) {
     currentPost.classList.add('seen');
+    var divider = currentPost.querySelector('.divider');
+    if (divider) {
+      divider.classList.add('divider-seen');
+    }
     currentPost = currentPost.previousElementSibling;
   }
 
   // Go forward, marking as unseen.
-  var currentPost = lastReadPost.nextElementSibling;
+  currentPost = lastReadPost.nextElementSibling;
   while (currentPost) {
     currentPost.classList.remove('seen');
+    var divider = currentPost.querySelector('.divider');
+    if (divider) {
+      divider.classList.remove('divider-seen');
+    }
     currentPost = currentPost.nextElementSibling;
   }
 };

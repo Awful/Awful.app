@@ -176,10 +176,15 @@ final class PostPreviewViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
-        renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        view.insertSubview(renderView, at: 0)
+        view.addSubview(renderView)
+        renderView.translatesAutoresizingMaskIntoConstraints = false
         
+        NSLayoutConstraint.activate([renderView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                                     renderView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                                     renderView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                                     renderView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                                    ])
+
         let loadingView = LoadingView.loadingViewWithTheme(theme)
         self.loadingView = loadingView
         view.addSubview(loadingView)
