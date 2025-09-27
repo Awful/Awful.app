@@ -908,11 +908,13 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
+        postsView.exitImmersionMode()
         let scrollView = postsView.renderView.scrollView
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
 
     @objc private func scrollToTop(_ sender: UIKeyCommand?) {
+        postsView.exitImmersionMode()
         postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
 
@@ -1906,6 +1908,14 @@ final class PostsPageViewController: ViewController {
         super.viewDidDisappear(animated)
 
         userActivity = nil
+        
+        // Always restore navigation bar when leaving posts view to prevent issues
+        // with other views (like bookmarks) not having a visible header
+        if navigationController?.isNavigationBarHidden == true {
+            navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
+        
+        postsView.exitImmersionMode()
     }
 
     override func encodeRestorableState(with coder: NSCoder) {
