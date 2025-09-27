@@ -150,6 +150,7 @@ final class ReplyWorkspace: NSObject {
             rightButtonItem.title = draft.submitButtonTitle
             rightButtonItem.action = #selector(ReplyWorkspace.didTapPost(_:))
         }
+        rightButtonItem.style = .plain
     }
     
     @IBAction private func didTapCancel(_ sender: UIBarButtonItem) {
@@ -199,7 +200,7 @@ final class ReplyWorkspace: NSObject {
         } else {
             preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? .init())
         }
-        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
+        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .plain, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
         (viewController as! UINavigationController).pushViewController(preview, animated: true)
     }
     

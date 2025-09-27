@@ -18,8 +18,6 @@
 		<string>#9999ff</string>
 		<key>Lists</key>
 		<dict>
-			<key>navigationBarTintColor</key>
-			<string>#9999ff</string>
 			<key>listFontName</key>
 			<string>ChalkboardSE-Regular</string>
 			<key>listTextColor</key>
@@ -34,6 +32,11 @@
 			<string>#e7e7ff</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#99f</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#9999ff</string>
 		</dict>
 		<key>Posts</key>
 		<dict>
@@ -802,8 +805,6 @@
 		</dict>
 		<key>Lists</key>
 		<dict>
-			<key>navigationBarTintColor</key>
-			<string>#ff3399</string>
 			<key>ratingIconEmptyColor</key>
 			<string>#ff80ff</string>
 			<key>listTextColor</key>
@@ -814,6 +815,11 @@
 			<string>#ffccff</string>
 			<key>listSelectedBackgroundColor</key>
 			<string>#cea8ce</string>
+		</dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#ff3399</string>
 		</dict>
 		<key>Posts</key>
 		<dict>
@@ -845,6 +851,11 @@
 	</dict>
 	<key>Gas Chamber</key>
 	<dict>
+		<key>Navbar, tab bar, toolbar</key>
+		<dict>
+			<key>navigationBarTintColor</key>
+			<string>#68cc24</string>
+		</dict>
 		<key>menuAppearance</key>
 		<string>light</string>
 		<key>mode</key>
@@ -1389,10 +1400,13 @@
 			<key>voteIconColor</key>
 			<string>#57FF57</string>
 		</dict>
-		<key>Lists</key>
+		<key>Navbar, tab bar, toolbar</key>
 		<dict>
 			<key>navigationBarTintColor</key>
 			<string>#000000</string>
+		</dict>
+		<key>Lists</key>
+		<dict>
 			<key>ratingIconEmptyColor</key>
 			<string>#4d4d4d</string>
 			<key>listSecondaryTextColor</key>
