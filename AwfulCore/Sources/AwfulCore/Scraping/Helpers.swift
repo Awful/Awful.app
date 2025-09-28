@@ -108,10 +108,53 @@ func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
 }
 
 
+struct PageNavigationData {
+    let currentPage: Int
+    let totalPages: Int
+    let baseURL: String?
+    let perPage: Int?
+}
+
+func scrapePageNavigationData(_ node: HTMLNode) -> PageNavigationData? {
+    guard let pageDiv = node.firstNode(matchingSelector: "div.pages") else {
+        return nil
+    }
+
+    if let currentPageStr = pageDiv["data-current-page"],
+       let totalPagesStr = pageDiv["data-total-pages"],
+       let currentPage = Int(currentPageStr),
+       let totalPages = Int(totalPagesStr) {
+
+        let baseURL = pageDiv["data-base-url"]
+        let perPage = pageDiv["data-per-page"].flatMap { Int($0) }
+
+        print("[PageNav] Using data attributes: page \(currentPage)/\(totalPages)")
+
+        return PageNavigationData(
+            currentPage: currentPage,
+            totalPages: totalPages,
+            baseURL: baseURL,
+            perPage: perPage
+        )
+    }
+
+    return nil
+}
+
 func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?) {
     guard let pageDiv = node.firstNode(matchingSelector: "div.pages") else {
         return (nil, nil)
     }
+
+    if let currentPageStr = pageDiv["data-current-page"],
+       let totalPagesStr = pageDiv["data-total-pages"],
+       let currentPage = Int(currentPageStr),
+       let totalPages = Int(totalPagesStr) {
+        print("[PageNav] Using data attributes: page \(currentPage)/\(totalPages)")
+        return (pageNumber: currentPage, pageCount: totalPages)
+    }
+
+    // Fallback to old select menu method
     let pageSelect = pageDiv.firstNode(matchingSelector: "select")
     let pageCount = pageSelect?.childElementNodes.count ?? 1
 
@@ -121,6 +164,7 @@ func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?)
         .flatMap { Int($0) }
         ?? 1
 
+    print("[PageNav] Using select menu fallback: page \(pageNumber)/\(pageCount)")
     return (pageNumber: pageNumber, pageCount: pageCount)
 }
 
