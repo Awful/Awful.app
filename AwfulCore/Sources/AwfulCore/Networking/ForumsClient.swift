@@ -1152,21 +1152,241 @@ public final class ForumsClient {
     // MARK: Private Messages
 
     public func listPrivateMessagesInInbox() async throws -> [PrivateMessage] {
+        return try await listPrivateMessagesInFolder(folderID: "0")
+    }
+
+    public func listPrivateMessagesInFolder(folderID: String, page: Int = 1) async throws -> [PrivateMessage] {
         guard let mainContext = managedObjectContext,
             let backgroundContext = backgroundManagedObjectContext
         else { throw Error.missingManagedObjectContext }
 
-        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [])
+        var parameters: [String: Any] = ["folderid": folderID]
+        if page > 1 {
+            parameters["pagenumber"] = "\(page)"
+        }
+
+        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: parameters)
         let (document, url) = try parseHTML(data: data, response: response)
         let result = try PrivateMessageFolderScrapeResult(document, url: url)
         let backgroundMessages = try await backgroundContext.perform {
-            let messages = try result.upsert(into: backgroundContext)
-            try backgroundContext.save()
+            let messages = try result.upsert(into: backgroundContext, folderID: folderID)
+            do {
+                try backgroundContext.save()
+            } catch let error as NSError {
+                // Log detailed validation errors
+                print("Core Data Save Error when loading folder \(folderID): \(error)")
+                print("Error Code: \(error.code)")
+                print("Error Domain: \(error.domain)")
+
+                if let detailedErrors = error.userInfo[NSDetailedErrorsKey] as? [NSError] {
+                    print("Detailed Errors:")
+                    for detailedError in detailedErrors {
+                        print("  - Error Code: \(detailedError.code), Domain: \(detailedError.domain)")
+                        print("    Description: \(detailedError.localizedDescription)")
+                        if let entity = detailedError.userInfo[NSValidationObjectErrorKey] as? NSManagedObject {
+                            print("    Entity: \(entity.entity.name ?? "unknown")")
+                        }
+                        if let key = detailedError.userInfo[NSValidationKeyErrorKey] as? String {
+                            print("    Key: \(key)")
+                        }
+                        if let value = detailedError.userInfo[NSValidationValueErrorKey] {
+                            print("    Value: \(value)")
+                        }
+                        if let predicate = detailedError.userInfo[NSValidationPredicateErrorKey] {
+                            print("    Predicate: \(predicate)")
+                        }
+                    }
+                }
+                throw error
+            }
             return messages
         }
         return await mainContext.perform {
             backgroundMessages.compactMap { mainContext.object(with: $0.objectID) as? PrivateMessage }
         }
+    }
+
+    public func listPrivateMessageFolders() async throws -> [PrivateMessageFolder] {
+        guard let mainContext = managedObjectContext,
+            let backgroundContext = backgroundManagedObjectContext
+        else { throw Error.missingManagedObjectContext }
+
+        let (data, response) = try await fetch(method: .get, urlString: "private.php", parameters: [:])
+        let (document, url) = try parseHTML(data: data, response: response)
+        let result = try PrivateMessageFolderScrapeResult(document, url: url)
+
+        let backgroundFolders = try await backgroundContext.perform {
+            var folders: [PrivateMessageFolder] = []
+
+            for folderInfo in result.allFolders {
+                let folder = PrivateMessageFolder.findOrCreate(in: backgroundContext, matching: .init("\(\PrivateMessageFolder.folderID) = \(folderInfo.id.rawValue)")) {
+                    $0.folderID = folderInfo.id.rawValue
+                }
+                folder.name = folderInfo.name
+
+                switch folderInfo.id.rawValue {
+                case "0":
+                    folder.folderType = "inbox"
+                case "-1":
+                    folder.folderType = "sent"
+                default:
+                    folder.folderType = "custom"
+                }
+
+                folders.append(folder)
+            }
+
+            try backgroundContext.save()
+            return folders
+        }
+
+        return await mainContext.perform {
+            backgroundFolders.compactMap { mainContext.object(with: $0.objectID) as? PrivateMessageFolder }
+        }
+    }
+
+    public func createPrivateMessageFolder(name: String) async throws {
+        logger.info("[FOLDER_MGT] ForumsClient: Creating folder with name: '\(name)'")
+
+        // First, get the edit folders page to retrieve current folder structure
+        logger.debug("[FOLDER_MGT] ForumsClient: Fetching edit folders page")
+        let (getPageData, getPageResponse) = try await fetch(method: .get, urlString: "private.php", parameters: ["action": "editfolders"])
+        let (getPageDoc, _) = try parseHTML(data: getPageData, response: getPageResponse)
+
+        // Parse existing folders and their IDs from the form
+        var folderListParams: [String: String] = [:]
+        var highestID = 0
+
+        // Find all existing folder inputs
+        let inputs = getPageDoc.nodes(matchingSelector: "input[name^='folderlist[']")
+        logger.debug("[FOLDER_MGT] ForumsClient: Found \(inputs.count) existing folder inputs")
+
+        for input in inputs {
+            guard let nameAttr = input["name"],
+                  let value = input["value"] else { continue }
+
+            // Keep existing folders with their values
+            if !value.isEmpty {
+                folderListParams[nameAttr] = value
+                logger.debug("[FOLDER_MGT] ForumsClient: Existing folder: \(nameAttr) = '\(value)'")
+            }
+
+            // Extract the ID number from folderlist[N]
+            if let startIndex = nameAttr.firstIndex(of: "["),
+               let endIndex = nameAttr.firstIndex(of: "]"),
+               startIndex < endIndex {
+                let idStr = String(nameAttr[nameAttr.index(after: startIndex)..<endIndex])
+                if let id = Int(idStr) {
+                    highestID = max(highestID, id)
+                }
+            }
+        }
+
+        // Find the highest value from the hidden field
+        if let highestInput = getPageDoc.firstNode(matchingSelector: "input[name='highest']"),
+           let highestValue = highestInput["value"],
+           let highestInt = Int(highestValue) {
+            highestID = max(highestID, highestInt)
+            logger.debug("[FOLDER_MGT] ForumsClient: Highest ID from form: \(highestInt)")
+        }
+
+        // Add the new folder
+        let newFolderID = highestID + 1
+        folderListParams["folderlist[\(newFolderID)]"] = name
+        logger.debug("[FOLDER_MGT] ForumsClient: Adding new folder at ID \(newFolderID): '\(name)'")
+
+        // Prepare POST parameters
+        var parameters = folderListParams
+        parameters["action"] = "doeditfolders"
+        parameters["highest"] = String(newFolderID)
+        parameters["submit"] = "Edit Folders"
+
+        logger.debug("[FOLDER_MGT] ForumsClient: POST parameters: \(parameters)")
+
+        let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
+        let (document, _) = try parseHTML(data: data, response: response)
+
+        logger.debug("[FOLDER_MGT] ForumsClient: Received response for folder creation")
+        try checkServerErrors(document)
+        logger.info("[FOLDER_MGT] ForumsClient: Folder created successfully")
+    }
+
+    public func deletePrivateMessageFolder(folderID: String) async throws {
+        // Note: According to SA forums documentation, deleting a folder should move all messages
+        // in that folder to the inbox. This is handled server-side.
+        logger.info("[FOLDER_MGT] ForumsClient: Deleting folder with ID: '\(folderID)'")
+
+        // First, get the edit folders page to retrieve current folder structure
+        logger.debug("[FOLDER_MGT] ForumsClient: Fetching edit folders page")
+        let (getPageData, getPageResponse) = try await fetch(method: .get, urlString: "private.php", parameters: ["action": "editfolders"])
+        let (getPageDoc, _) = try parseHTML(data: getPageData, response: getPageResponse)
+
+        // Parse existing folders and their IDs from the form
+        var folderListParams: [String: String] = [:]
+        var highestID = 0
+        var folderDeleted = false
+
+        // Find all existing folder inputs
+        let inputs = getPageDoc.nodes(matchingSelector: "input[name^='folderlist[']")
+        logger.debug("[FOLDER_MGT] ForumsClient: Found \(inputs.count) existing folder inputs")
+
+        // The folderID we get is the custom folder ID (1, 2, 3, etc.)
+        // We need to map it to the actual form field ID which starts at 2 for custom folders
+        let targetFormID = (Int(folderID) ?? 0) + 1  // Add 1 because custom folders start at ID 2 in the form
+
+        for input in inputs {
+            guard let nameAttr = input["name"],
+                  let value = input["value"] else { continue }
+
+            // Extract the ID number from folderlist[N]
+            if let startIndex = nameAttr.firstIndex(of: "["),
+               let endIndex = nameAttr.firstIndex(of: "]"),
+               startIndex < endIndex {
+                let idStr = String(nameAttr[nameAttr.index(after: startIndex)..<endIndex])
+                if let id = Int(idStr) {
+                    highestID = max(highestID, id)
+
+                    // Check if this is the folder to delete
+                    if id == targetFormID {
+                        // Delete by leaving it empty
+                        folderListParams[nameAttr] = ""
+                        logger.debug("[FOLDER_MGT] ForumsClient: Deleting folder at form ID \(id): '\(value)'")
+                        folderDeleted = true
+                    } else if !value.isEmpty {
+                        // Keep other folders
+                        folderListParams[nameAttr] = value
+                        logger.debug("[FOLDER_MGT] ForumsClient: Keeping folder: \(nameAttr) = '\(value)'")
+                    }
+                }
+            }
+        }
+
+        if !folderDeleted {
+            logger.error("[FOLDER_MGT] ForumsClient: Folder with ID \(folderID) (form ID \(targetFormID)) not found")
+            throw AwfulCoreError.parseError(description: "Folder not found")
+        }
+
+        // Find the highest value from the hidden field
+        if let highestInput = getPageDoc.firstNode(matchingSelector: "input[name='highest']"),
+           let highestValue = highestInput["value"],
+           let highestInt = Int(highestValue) {
+            highestID = max(highestID, highestInt)
+        }
+
+        // Prepare POST parameters
+        var parameters = folderListParams
+        parameters["action"] = "doeditfolders"
+        parameters["highest"] = String(highestID)
+        parameters["submit"] = "Edit Folders"
+
+        logger.debug("[FOLDER_MGT] ForumsClient: POST parameters: \(parameters)")
+
+        let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
+        let (document, _) = try parseHTML(data: data, response: response)
+
+        logger.debug("[FOLDER_MGT] ForumsClient: Received response for folder deletion")
+        try checkServerErrors(document)
+        logger.info("[FOLDER_MGT] ForumsClient: Folder deleted successfully")
     }
 
     public func deletePrivateMessage(
@@ -1182,6 +1402,51 @@ public final class ForumsClient {
         ])
         let (document, _) = try parseHTML(data: data, response: response)
         try checkServerErrors(document)
+    }
+
+    public func movePrivateMessage(
+        _ message: PrivateMessage,
+        toFolderID folderID: String
+    ) async throws {
+        guard let mainContext = managedObjectContext else {
+            throw Error.missingManagedObjectContext
+        }
+
+        let (messageID, currentFolderID) = await mainContext.perform {
+            (message.messageID, message.folder?.folderID ?? "0")
+        }
+
+        // Use the form parameters from the HTML
+        let parameters = [
+            "action": "dostuff",
+            "thisfolder": currentFolderID,
+            "folderid": folderID,
+            "privatemessage[\(messageID)]": "yes",
+            "move": "Move"
+        ]
+
+        let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
+        let (document, _) = try parseHTML(data: data, response: response)
+        try checkServerErrors(document)
+
+        // Update Core Data to reflect the move
+        await mainContext.perform {
+            let folders = try? PrivateMessageFolder.fetch(in: mainContext) {
+                $0.predicate = NSPredicate(format: "%K = %@", #keyPath(PrivateMessageFolder.folderID), folderID)
+                $0.fetchLimit = 1
+            }
+
+            if let newFolder = folders?.first {
+                message.folder = newFolder
+                message.lastModifiedDate = Date()
+
+                do {
+                    try mainContext.save()
+                } catch {
+                    logger.error("Failed to update message folder locally: \(error)")
+                }
+            }
+        }
     }
 
     public func readPrivateMessage(

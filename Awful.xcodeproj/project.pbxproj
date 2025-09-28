@@ -188,6 +188,7 @@
 		1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF6786D201E8F45009A9640 /* MessageListCell.swift */; };
 		1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */; };
 		2D10A3852E05C35700544F91 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D10A3842E05C35700544F91 /* SearchView.swift */; };
+		2D16C88A2E88E937003EB43A /* MessageFolderManagementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D16C8892E88E937003EB43A /* MessageFolderManagementViewController.swift */; };
 		2D19BA3329C330A2009DD94F /* mainthrobber60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3229C330A2009DD94F /* mainthrobber60.json */; };
 		2D19BA3529C33273009DD94F /* ghost60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3429C33273009DD94F /* ghost60.json */; };
 		2D19BA3929C33303009DD94F /* niggly60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3629C33302009DD94F /* niggly60.json */; };
@@ -219,6 +220,7 @@
 		2D3FECE72E7EB74F00817DFB /* ContextMenuThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECE62E7EB74100817DFB /* ContextMenuThemeManager.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2D941B732E88CD570045F51C /* ImmersiveModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D941B722E88CD570045F51C /* ImmersiveModeViewController.swift */; };
+		2D941B752E88E66D0045F51C /* MessageFolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D941B742E88E66D0045F51C /* MessageFolderPickerView.swift */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
@@ -517,6 +519,7 @@
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D0BB35827F440AF00242D2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D10A3842E05C35700544F91 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		2D16C8892E88E937003EB43A /* MessageFolderManagementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFolderManagementViewController.swift; sourceTree = "<group>"; };
 		2D19BA3229C330A2009DD94F /* mainthrobber60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mainthrobber60.json; sourceTree = "<group>"; };
 		2D19BA3429C33273009DD94F /* ghost60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ghost60.json; sourceTree = "<group>"; };
 		2D19BA3629C33302009DD94F /* niggly60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = niggly60.json; sourceTree = "<group>"; };
@@ -547,6 +550,7 @@
 		2D3FECE62E7EB74100817DFB /* ContextMenuThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuThemeManager.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2D941B722E88CD570045F51C /* ImmersiveModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveModeViewController.swift; sourceTree = "<group>"; };
+		2D941B742E88E66D0045F51C /* MessageFolderPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageFolderPickerView.swift; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
@@ -815,6 +819,8 @@
 		1C29C3852258547C00E1217A /* Messages */ = {
 			isa = PBXGroup;
 			children = (
+				2D16C8892E88E937003EB43A /* MessageFolderManagementViewController.swift */,
+				2D941B742E88E66D0045F51C /* MessageFolderPickerView.swift */,
 				1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */,
 				1CF6786D201E8F45009A9640 /* MessageListCell.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
@@ -1651,6 +1657,7 @@
 				1C16FC041CC3D84500C88BD1 /* PostsPageView.swift in Sources */,
 				1C16FBA01CB492C600C88BD1 /* ComposeField.swift in Sources */,
 				1C3E181D224FAE9500BD88E5 /* SmilieDataStore+Query.swift in Sources */,
+				2D16C88A2E88E937003EB43A /* MessageFolderManagementViewController.swift in Sources */,
 				1C42A2251FD46B4400F67BA1 /* ForumListDataSource.swift in Sources */,
 				1CB5F7F920156C990046D080 /* PageIconView.swift in Sources */,
 				2D3FECE72E7EB74F00817DFB /* ContextMenuThemeManager.swift in Sources */,
@@ -1661,6 +1668,7 @@
 				1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */,
 				1C24BC98200A9BE00022C85F /* ThreadListDataSource.swift in Sources */,
 				1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */,
+				2D941B752E88E66D0045F51C /* MessageFolderPickerView.swift in Sources */,
 				1C16FBB21CB86ACD00C88BD1 /* EmptyViewController.swift in Sources */,
 				1C353C071E416FE200CCBA51 /* SpriteSheetView.swift in Sources */,
 				1C16FBA21CB49D2700C88BD1 /* SelfHostingAttachmentInterpolator.swift in Sources */,

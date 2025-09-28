@@ -10,6 +10,7 @@ public class PrivateMessage: AwfulManagedObject, Managed {
 
     @NSManaged public var forwarded: Bool
     @NSManaged public var innerHTML: String?
+    @NSManaged public var isSent: Bool
     @NSManaged var lastModifiedDate: Date
     @NSManaged public var messageID: String
     // When we scrape a folder of messages, we can't get at the "from" user's userID. rawFromUsername holds this unhelpful bit of data until we learn of the user's ID and can use the `from` relationship.
@@ -19,12 +20,26 @@ public class PrivateMessage: AwfulManagedObject, Managed {
     @NSManaged public var sentDate: Date?
     @NSManaged public var sentDateRaw: String?
     @NSManaged public var subject: String?
-    
+
+    @NSManaged public var folder: PrivateMessageFolder?
     @NSManaged internal var primitiveFrom: User? /* via sentPrivateMessages */
     @NSManaged public var threadTag: ThreadTag?
-    @NSManaged var to: User? /* via receivedPrivateMessages */
+    @NSManaged public var to: User? /* via receivedPrivateMessages */
 
     public override var objectKey: PrivateMessageKey { .init(messageID: messageID) }
+
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+
+        // Initialize required fields with default values
+        lastModifiedDate = Date()
+
+        // These booleans have defaults in Core Data model but initialize them explicitly
+        forwarded = false
+        seen = false
+        replied = false
+        isSent = false
+    }
 }
 
 extension PrivateMessage {
