@@ -512,6 +512,20 @@ extension NavigationController: UIGestureRecognizerDelegate {
 
 extension NavigationController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        // Check if we're transitioning FROM a view controller with transformed navigation bar
+        // This ensures navigation bar is restored when leaving immersion mode views
+        if let previousVC = navigationController.transitionCoordinator?.viewController(forKey: .from) {
+            // Reset navigation bar transform when it's not identity (immersion mode active)
+            if !navigationController.navigationBar.transform.isIdentity {
+                navigationController.navigationBar.transform = .identity
+            }
+
+            // If the previous VC responds to exitImmersionMode, call it
+            if let immersiveVC = previousVC as? ImmersiveModeViewController {
+                immersiveVC.exitImmersionMode()
+            }
+        }
+
         let vcTheme: Theme
         if let themeableViewController = viewController as? Themeable {
             vcTheme = themeableViewController.theme

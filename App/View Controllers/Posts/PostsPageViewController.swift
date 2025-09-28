@@ -18,7 +18,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Shows a list of posts in a thread.
 @MainActor
-final class PostsPageViewController: ViewController {
+final class PostsPageViewController: ViewController, ImmersiveModeViewController {
     var selectedPost: Post? = nil
     var selectedUser: User? = nil
     var selectedFrame: CGRect? = nil
@@ -153,11 +153,11 @@ final class PostsPageViewController: ViewController {
             // Start with user interaction disabled to not block touches
             isUserInteractionEnabled = false
         }
-
+        
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
-
+        
         func show(menu: UIMenu, from rect: CGRect) {
             frame = rect
             self.menu = menu
@@ -435,6 +435,9 @@ final class PostsPageViewController: ViewController {
         return true
     }
 
+    // IMPORTANT: The updateLastReadPost parameter must be passed through to renderPostsAsync
+    // to ensure thread.seenPosts is updated AFTER PostRenderModels are created.
+    // This prevents posts from incorrectly appearing as "seen" on first view.
     private func renderPosts(updateLastReadPost: Bool = false) {
         webViewDidLoadOnce = false
 
@@ -743,7 +746,7 @@ final class PostsPageViewController: ViewController {
         do {
             posts = try context.fetch(request)
         } catch {
-            print("\(#function) error fetching posts: \(error)")
+            logger.error("\(#function) error fetching posts: \(error)")
         }
     }
 
@@ -911,13 +914,11 @@ final class PostsPageViewController: ViewController {
     }
 
     @objc private func scrollToBottom(_ sender: UIKeyCommand?) {
-        postsView.exitImmersionMode()
         let scrollView = postsView.renderView.scrollView
         scrollView.scrollRectToVisible(CGRect(x: 0, y: scrollView.contentSize.height - 1, width: 1, height: 1), animated: true)
     }
 
     @objc private func scrollToTop(_ sender: UIKeyCommand?) {
-        postsView.exitImmersionMode()
         postsView.renderView.scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
 
@@ -1118,7 +1119,6 @@ final class PostsPageViewController: ViewController {
             self.present(activityVC, animated: false)
 
             if let popover = activityVC.popoverPresentationController {
-                // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
                 popover.sourceRect = self.selectedFrame!
                 popover.sourceView = self.postsView.renderView
             }
@@ -1752,6 +1752,15 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
 
+        // Configure the immersion mode manager with navigation controller
+        postsView.immersionModeManager.configure(
+            postsView: postsView,
+            navigationController: navigationController,
+            renderView: postsView.renderView,
+            toolbar: postsView.toolbar,
+            topBarContainer: postsView.topBarContainer
+        )
+
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
@@ -1907,18 +1916,47 @@ final class PostsPageViewController: ViewController {
         configureUserActivityIfPossible()
     }
 
+    // MARK: - ImmersiveModeViewController
+
+    func exitImmersionMode() {
+        postsView.immersionModeManager.exitImmersionMode()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Reset navigation bar BEFORE the transition starts
+        // This ensures the bar is visible during swipe-back gestures
+        exitImmersionMode()
+
+        // Immediately reset navigation bar transform
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.transform = .identity
+        }
+
+        // Ensure navigation bar is not hidden
+        if navigationController?.isNavigationBarHidden == true {
+            navigationController?.setNavigationBarHidden(false, animated: false)
+        }
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         userActivity = nil
-        
-        // Always restore navigation bar when leaving posts view to prevent issues
-        // with other views (like bookmarks) not having a visible header
+
+        // Additional cleanup as fallback (in case viewWillDisappear wasn't called)
+        postsView.immersionModeManager.exitImmersionMode()
+
+        // Reset navigation bar transform to identity to ensure it's visible
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.transform = .identity
+        }
+
+        // Also check if navigation bar was hidden via system API
         if navigationController?.isNavigationBarHidden == true {
             navigationController?.setNavigationBarHidden(false, animated: animated)
         }
-        
-        postsView.exitImmersionMode()
     }
 
     override func encodeRestorableState(with coder: NSCoder) {
