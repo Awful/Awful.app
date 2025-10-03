@@ -128,8 +128,6 @@ func scrapePageNavigationData(_ node: HTMLNode) -> PageNavigationData? {
         let baseURL = pageDiv["data-base-url"]
         let perPage = pageDiv["data-per-page"].flatMap { Int($0) }
 
-        print("[PageNav] Using data attributes: page \(currentPage)/\(totalPages)")
-
         return PageNavigationData(
             currentPage: currentPage,
             totalPages: totalPages,
@@ -139,33 +137,6 @@ func scrapePageNavigationData(_ node: HTMLNode) -> PageNavigationData? {
     }
 
     return nil
-}
-
-func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?) {
-    guard let pageDiv = node.firstNode(matchingSelector: "div.pages") else {
-        return (nil, nil)
-    }
-
-    if let currentPageStr = pageDiv["data-current-page"],
-       let totalPagesStr = pageDiv["data-total-pages"],
-       let currentPage = Int(currentPageStr),
-       let totalPages = Int(totalPagesStr) {
-        print("[PageNav] Using data attributes: page \(currentPage)/\(totalPages)")
-        return (pageNumber: currentPage, pageCount: totalPages)
-    }
-
-    // Fallback to old select menu method
-    let pageSelect = pageDiv.firstNode(matchingSelector: "select")
-    let pageCount = pageSelect?.childElementNodes.count ?? 1
-
-    let pageNumber = pageSelect
-        .flatMap { $0.firstNode(matchingSelector: "option[selected]") }
-        .flatMap { $0["value"] }
-        .flatMap { Int($0) }
-        ?? 1
-
-    print("[PageNav] Using select menu fallback: page \(pageNumber)/\(pageCount)")
-    return (pageNumber: pageNumber, pageCount: pageCount)
 }
 
 enum ForumGroupID: String {
