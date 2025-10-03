@@ -2,12 +2,12 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AwfulCore
+@preconcurrency import AwfulCore
 import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
 import Combine
-import CoreData
+@preconcurrency import CoreData
 import MobileCoreServices
 import MRProgress
 import os
@@ -41,7 +41,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>?
+    private var networkOperation: Any?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -160,7 +160,7 @@ final class PostsPageViewController: ViewController {
     }
 
     deinit {
-        networkOperation?.cancel()
+        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
     }
 
     var posts: [Post] = []
@@ -198,7 +198,7 @@ final class PostsPageViewController: ViewController {
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-        networkOperation?.cancel()
+        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
         networkOperation = nil
 
         // prevent white flash caused by webview being opaque during refreshes
