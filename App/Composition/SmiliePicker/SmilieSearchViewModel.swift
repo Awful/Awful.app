@@ -199,7 +199,6 @@ final class SmilieSearchViewModel: ObservableObject {
         guard let context = dataStore.managedObjectContext,
               let smilieText = smilie.text else { return }
         context.perform {
-            // Fetch the smilie within the context's perform block
             let fetchRequest = NSFetchRequest<Smilie>(entityName: "Smilie")
             fetchRequest.predicate = NSPredicate(format: "text == %@", smilieText)
             fetchRequest.fetchLimit = 1
