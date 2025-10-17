@@ -80,7 +80,9 @@ public struct ThreadListScrapeResult: ScrapeResult {
 
         isBookmarkedThreadsPage = body.firstNode(matchingSelector: "form[name='bookmarks']") != nil
 
-        (pageNumber: pageNumber, pageCount: pageCount) = scrapePageDropdown(body)
+        let pageNavData = scrapePageNavigationData(body)
+        pageNumber = pageNavData?.currentPage
+        pageCount = pageNavData?.totalPages
     }
 }
 

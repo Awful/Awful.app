@@ -108,20 +108,35 @@ func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
 }
 
 
-func scrapePageDropdown(_ node: HTMLNode) -> (pageNumber: Int?, pageCount: Int?) {
+struct PageNavigationData {
+    let currentPage: Int
+    let totalPages: Int
+    let baseURL: String?
+    let perPage: Int?
+}
+
+func scrapePageNavigationData(_ node: HTMLNode) -> PageNavigationData? {
     guard let pageDiv = node.firstNode(matchingSelector: "div.pages") else {
-        return (nil, nil)
+        return nil
     }
-    let pageSelect = pageDiv.firstNode(matchingSelector: "select")
-    let pageCount = pageSelect?.childElementNodes.count ?? 1
 
-    let pageNumber = pageSelect
-        .flatMap { $0.firstNode(matchingSelector: "option[selected]") }
-        .flatMap { $0["value"] }
-        .flatMap { Int($0) }
-        ?? 1
+    if let currentPageStr = pageDiv["data-current-page"],
+       let totalPagesStr = pageDiv["data-total-pages"],
+       let currentPage = Int(currentPageStr),
+       let totalPages = Int(totalPagesStr) {
 
-    return (pageNumber: pageNumber, pageCount: pageCount)
+        let baseURL = pageDiv["data-base-url"]
+        let perPage = pageDiv["data-per-page"].flatMap { Int($0) }
+
+        return PageNavigationData(
+            currentPage: currentPage,
+            totalPages: totalPages,
+            baseURL: baseURL,
+            perPage: perPage
+        )
+    }
+
+    return nil
 }
 
 enum ForumGroupID: String {

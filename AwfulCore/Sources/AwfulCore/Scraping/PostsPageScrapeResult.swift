@@ -34,7 +34,9 @@ public struct PostsPageScrapeResult: ScrapeResult {
 
         isSingleUserFilterEnabled = body.firstNode(matchingSelector: "table.post a.user_jump[title *= 'Remove']") != nil
 
-        (pageNumber: pageNumber, pageCount: pageCount) = scrapePageDropdown(body)
+        let pageNavData = scrapePageNavigationData(body)
+        pageNumber = pageNavData?.currentPage
+        pageCount = pageNavData?.totalPages
 
         let posts = try body
             .nodes(matchingSelector: "table.post")
