@@ -41,6 +41,8 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
+    // Stored as Any because Task returns non-Sendable Core Data objects (Post: NSManagedObject).
+    // Swift 6 requires Task<Success, Failure> Success types to be Sendable.
     private var networkOperation: Any?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
