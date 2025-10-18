@@ -5,7 +5,7 @@
 import CoreData
 
 /// A slightly more convenient NSManagedObject for entities with a custom class.
-public class AwfulManagedObject: NSManagedObject {
+public class AwfulManagedObject: NSManagedObject, @unchecked Sendable {
     public var objectKey: AwfulObjectKey {
         fatalError("subclass implementation please")
     }

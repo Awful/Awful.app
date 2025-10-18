@@ -6,7 +6,7 @@ import CoreData
 
 /// A single reply to a thread.
 @objc(Post)
-public class Post: AwfulManagedObject, Managed {
+public class Post: AwfulManagedObject, Managed, @unchecked Sendable {
     public static var entityName: String { "Post" }
     
     /// Whether the logged-in user can edit the post.
