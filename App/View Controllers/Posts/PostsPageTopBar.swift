@@ -6,7 +6,7 @@ import AwfulSettings
 import AwfulTheming
 import UIKit
 
-final class PostsPageTopBar: UIView {
+final class PostsPageTopBar: UIView, PostsPageTopBarProtocol {
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [parentForumButton, previousPostsButton, scrollToEndButton])

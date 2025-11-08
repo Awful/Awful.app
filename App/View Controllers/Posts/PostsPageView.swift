@@ -174,7 +174,7 @@ final class PostsPageView: UIView {
 
     // MARK: Top bar
 
-    var topBar: PostsPageTopBar {
+    var topBar: PostsPageTopBarProtocol {
         return topBarContainer.topBar
     }
 
@@ -216,6 +216,20 @@ final class PostsPageView: UIView {
 
     let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
+    private lazy var safeAreaGradientView: GradientView = {
+        let view = GradientView()
+        view.isUserInteractionEnabled = false
+        // Show gradient only on iOS 26+
+        if #available(iOS 26.0, *) {
+            view.alpha = 1.0
+            view.isHidden = false
+        } else {
+            view.alpha = 0.0
+            view.isHidden = true
+        }
+        return view
+    }()
+
     var toolbarItems: [UIBarButtonItem] {
         get { return toolbar.items ?? [] }
         set { toolbar.items = newValue }
@@ -233,6 +247,7 @@ final class PostsPageView: UIView {
         toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
         
         addSubview(renderView)
+        addSubview(safeAreaGradientView)  // Add gradient before top bar so it appears behind
         addSubview(topBarContainer)
         addSubview(loadingViewContainer)
         addSubview(toolbar)
@@ -249,6 +264,18 @@ final class PostsPageView: UIView {
 
         renderView.frame = bounds
         loadingViewContainer.frame = bounds
+
+        // Position gradient view in the status bar area only
+        if #available(iOS 26.0, *) {
+            // Position gradient to cover only the top safe area (status bar/notch)
+            // Use actual device safe area top instead of layoutMargins to prevent extending into content
+            let gradientHeight: CGFloat = window?.safeAreaInsets.top ?? safeAreaInsets.top
+            safeAreaGradientView.frame = CGRect(
+                x: bounds.minX,
+                y: bounds.minY,  // Start at top of screen
+                width: bounds.width,
+                height: gradientHeight)
+        }
 
         let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
         toolbar.frame = CGRect(
@@ -322,11 +349,22 @@ final class PostsPageView: UIView {
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        toolbar.tintColor =  Theme.defaultTheme()["toolbarTextColor"]!
-        toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        // Only set toolbar colors for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle toolbar colors and borders automatically
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        } else {
+            toolbar.tintColor = Theme.defaultTheme()["toolbarTextColor"]!
+            toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        }
 
         topBar.themeDidChange(Theme.defaultTheme())
+
+        // Update gradient view for theme changes
+        if #available(iOS 26.0, *) {
+            safeAreaGradientView.themeDidChange()
+        }
     }
 
     // MARK: Gunk
@@ -343,8 +381,13 @@ extension PostsPageView {
     /// Holds the top bar and clips to bounds, so the top bar doesn't sit behind a possibly-translucent navigation bar and obscure the underlying content.
     final class TopBarContainer: UIView {
 
-        fileprivate lazy var topBar: PostsPageTopBar = {
-            let topBar = PostsPageTopBar()
+        fileprivate lazy var topBar: PostsPageTopBarProtocol = {
+            let topBar: PostsPageTopBarProtocol
+            if #available(iOS 26.0, *) {
+                topBar = PostsPageTopBarLiquidGlass()
+            } else {
+                topBar = PostsPageTopBar()
+            }
             topBar.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
             return topBar
         }()
@@ -354,6 +397,11 @@ extension PostsPageView {
             super.init(frame: frame)
 
             clipsToBounds = true
+
+            // Use clear background for iOS 26+ to allow liquid glass effect
+            if #available(iOS 26.0, *) {
+                backgroundColor = .clear
+            }
 
             addSubview(topBar, constrainEdges: [.bottom, .left, .right])
         }
@@ -640,6 +688,47 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
             case (.hidden, _), (.visible, _), (.appearing, _), (.disappearing, _), (.alwaysVisible, _):
                 break
+            }
+        }
+
+        // Update navigation bar appearance for iOS 26+ based on scroll progress
+        if #available(iOS 26.0, *) {
+            // Calculate scroll progress for smooth navbar transition
+            let topInset = scrollView.adjustedContentInset.top
+            let currentOffset = scrollView.contentOffset.y
+            let topPosition = -topInset
+
+            // Define transition zone (30 points for smooth fade)
+            let transitionDistance: CGFloat = 30.0
+
+            // Calculate progress (0.0 = fully at top, 1.0 = fully scrolled)
+            let progress: CGFloat
+            if currentOffset <= topPosition {
+                // At or above the top
+                progress = 0.0
+            } else if currentOffset >= topPosition + transitionDistance {
+                // Fully scrolled past transition zone
+                progress = 1.0
+            } else {
+                // In transition zone - calculate smooth progress
+                let distanceFromTop = currentOffset - topPosition
+                progress = distanceFromTop / transitionDistance
+            }
+
+            // Find the parent view controller by walking up the responder chain
+            var responder: UIResponder? = self
+            while responder != nil {
+                if let viewController = responder as? PostsPageViewController,
+                   let navController = viewController.navigationController as? NavigationController {
+                    // NavigationController will handle the navbar tint color and back button
+                    navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
+
+                    // Update the liquid glass title view text color based on scroll progress
+                    viewController.updateTitleViewTextColorForScrollProgress(progress)
+
+                    break
+                }
+                responder = responder?.next
             }
         }
     }
