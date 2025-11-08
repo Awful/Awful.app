@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "froggo purp@2x.png",
+      "filename" : "Froggo Purp v6 2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,12 +26,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "froggo purp dark@2x.png",
+      "filename" : "Froggo Purp v6 dark 2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "froggo purp@3x.png",
+      "filename" : "Froggo Purp v6 3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -42,7 +42,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "froggo purp dark@3x.png",
+      "filename" : "Froggo Purp v6 dark 3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
