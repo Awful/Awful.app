@@ -266,12 +266,17 @@ final class NavigationController: UINavigationController, Themeable {
             appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
             appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
             appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-        } else if progress > 0.99 {
+        }
+        else if progress > 0.99 {
+            let textColor: UIColor = theme["mode"] == "dark" ? .white : .black
+
             appearance.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor: textColor,
                 NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
             ]
             let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
             let buttonAttributes: [NSAttributedString.Key: Any] = [
+                .foregroundColor: textColor,
                 .font: buttonFont
             ]
             appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
@@ -512,14 +517,6 @@ extension NavigationController: UIGestureRecognizerDelegate {
 
 extension NavigationController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        // Check if we're transitioning FROM a view controller with transformed navigation bar
-        // This ensures navigation bar is restored when leaving immersion mode views
-        if (navigationController.transitionCoordinator?.viewController(forKey: .from)) != nil {
-            // Reset navigation bar transform when it's not identity (immersion mode active)
-            if !navigationController.navigationBar.transform.isIdentity {
-                navigationController.navigationBar.transform = .identity
-            }
-        }
 
         let vcTheme: Theme
         if let themeableViewController = viewController as? Themeable {
