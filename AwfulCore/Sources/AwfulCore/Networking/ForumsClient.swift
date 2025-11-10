@@ -792,8 +792,9 @@ public final class ForumsClient {
 
     public func reply(
         to thread: AwfulThread,
-        bbcode: String
-    ) async throws -> ReplyLocation {
+        bbcode: String,
+        attachment: (data: Data, filename: String, mimeType: String)? = nil
+    ) async throws -> (location: ReplyLocation, attachmentLimits: (maxFileSize: Int, maxDimension: Int)?) {
         guard let mainContext = managedObjectContext else {
             throw Error.missingManagedObjectContext
         }
@@ -802,12 +803,16 @@ public final class ForumsClient {
             (thread.closed, thread.threadID)
         }
         let formParams: [KeyValuePairs<String, Any>.Element]
+        var parsedLimits: (maxFileSize: Int, maxDimension: Int)?
         do {
             let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
                 "action": "newreply",
                 "threadid": threadID,
             ])
             let (document, url) = try parseHTML(data: data, response: response)
+
+            parsedLimits = parseAttachmentLimits(from: document)
+
             guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
                 let description = if wasThreadClosed {
                     "Could not reply; the thread may be closed."
@@ -822,10 +827,26 @@ public final class ForumsClient {
             let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
             formParams = prepareFormEntries(submission)
         }
-        
+
         let postID: String?
         do {
-            let (data, response) = try await fetch(method: .post, urlString: "newreply.php", parameters: formParams)
+            let (data, response): (Data, URLResponse)
+            if let attachment = attachment {
+                guard let urlSession else {
+                    throw Error.missingURLSession
+                }
+                guard let url = URL(string: "newreply.php", relativeTo: baseURL) else {
+                    throw Error.invalidBaseURL
+                }
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                let escapedParams = formParams.lazy.map(win1252Escaped(_:))
+                try request.setMultipartFormData(escapedParams, encoding: .windowsCP1252)
+                try request.appendFileData(attachment.data, withName: "attachment", filename: attachment.filename, mimeType: attachment.mimeType)
+                (data, response) = try await urlSession.data(for: request)
+            } else {
+                (data, response) = try await fetch(method: .post, urlString: "newreply.php", parameters: formParams)
+            }
             let (document, _) = try parseHTML(data: data, response: response)
             let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
             ?? document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
@@ -839,13 +860,93 @@ public final class ForumsClient {
                 nil
             }
         }
-        return await mainContext.perform {
+        let location = await mainContext.perform {
             if let postID {
-                .post(Post.objectForKey(objectKey: PostKey(postID: postID), in: mainContext))
+                ReplyLocation.post(Post.objectForKey(objectKey: PostKey(postID: postID), in: mainContext))
             } else {
-                .lastPostInThread
+                ReplyLocation.lastPostInThread
             }
         }
+        return (location: location, attachmentLimits: parsedLimits)
+    }
+
+    public func fetchAttachmentLimits(for thread: AwfulThread) async throws -> (maxFileSize: Int, maxDimension: Int) {
+        let threadID: String = await thread.managedObjectContext!.perform {
+            thread.threadID
+        }
+        let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
+            "action": "newreply",
+            "threadid": threadID,
+        ])
+        let (document, _) = try parseHTML(data: data, response: response)
+
+        if let limits = parseAttachmentLimits(from: document) {
+            return limits
+        }
+
+        return (maxFileSize: 2_097_152, maxDimension: 4096)
+    }
+
+    private func parseAttachmentLimits(from document: HTMLDocument) -> (maxFileSize: Int, maxDimension: Int)? {
+        guard let maxFileSizeString = document.firstNode(matchingSelector: "input[name='MAX_FILE_SIZE']")?["value"],
+              let maxFileSize = Int(maxFileSizeString) else {
+            return nil
+        }
+
+        var maxDimension = 4096
+        for td in document.nodes(matchingSelector: "td") {
+            let text = td.textContent
+            if text.contains("Attach file:") {
+                var nextSibling: HTMLElement?
+                if let sibling = td.nextSibling as? HTMLElement {
+                    nextSibling = sibling
+                } else if let parent = td.parent {
+                    let children = parent.children.compactMap { $0 as? HTMLElement }
+                    if let index = children.firstIndex(where: { $0 === td }), index + 1 < children.count {
+                        nextSibling = children[index + 1]
+                    }
+                }
+
+                if let nextSibling = nextSibling {
+                    let limitsText = nextSibling.textContent
+                    let pattern = #"dimensions:\s*(\d+)x(\d+)"#
+                    if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]),
+                       let match = regex.firstMatch(in: limitsText, range: NSRange(limitsText.startIndex..., in: limitsText)),
+                       let dimensionRange = Range(match.range(at: 1), in: limitsText),
+                       let parsedDimension = Int(limitsText[dimensionRange]) {
+                        maxDimension = parsedDimension
+                    }
+                }
+                break
+            }
+        }
+
+        return (maxFileSize: maxFileSize, maxDimension: maxDimension)
+    }
+
+    public func fetchAttachmentImage(postID: String) async throws -> Data {
+        guard let url = URL(string: "attachment.php?postid=\(postID)", relativeTo: baseURL) else {
+            throw Error.invalidBaseURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        guard let session = urlSession else {
+            throw Error.invalidBaseURL
+        }
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+
+        guard httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+
+        return data
     }
 
     public func previewReply(
@@ -909,14 +1010,26 @@ public final class ForumsClient {
         return try findMessageText(in: parsed)
     }
 
+    public enum AttachmentAction {
+        case keep
+        case delete
+    }
+
     public func edit(
         _ post: Post,
-        bbcode: String
+        bbcode: String,
+        attachmentAction: AttachmentAction = .keep
     ) async throws {
         let params: [KeyValuePairs<String, Any>.Element]
         do {
             let parsedForm = try await editForm(for: post)
             let form = SubmittableForm(parsedForm)
+
+            if parsedForm.controls.contains(where: { $0.name == "attachmentaction" }) {
+                let value = attachmentAction == .keep ? "keep" : "delete"
+                try form.select(value: value, for: "attachmentaction")
+            }
+
             try form.enter(text: bbcode, for: "message")
             let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
             params = prepareFormEntries(submission)
@@ -945,6 +1058,29 @@ public final class ForumsClient {
             }
         }
         return try Form(htmlForm, url: url)
+    }
+
+    public func findAttachmentInfo(for post: Post) async throws -> (id: String, filename: String)? {
+        let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
+            "action": "editpost",
+            "postid": await post.managedObjectContext!.perform { post.postID },
+        ])
+        let (document, _) = try parseHTML(data: data, response: response)
+
+        guard let attachmentLink = document.firstNode(matchingSelector: "a[href*='attachment.php']"),
+              let href = attachmentLink["href"] else {
+            return nil
+        }
+
+        let filename = attachmentLink.textContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !filename.isEmpty,
+              let components = URLComponents(string: href),
+              let queryItems = components.queryItems,
+              let attachmentID = queryItems.first(where: { $0.name == "attachmentid" })?.value else {
+            return nil
+        }
+
+        return (id: attachmentID, filename: filename)
     }
 
     /**

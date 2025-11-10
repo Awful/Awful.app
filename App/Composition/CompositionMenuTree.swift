@@ -16,20 +16,27 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 final class CompositionMenuTree: NSObject {
     // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
-    
+
     @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
-    
+
     fileprivate var imgurUploadsEnabled: Bool {
         return imgurUploadMode != .off
     }
-    
+
     let textView: UITextView
-    
+    weak var draft: (NSObject & ReplyDraft)?
+    var onAttachmentChanged: (() -> Void)?
+    var onResizingStarted: (() -> Void)?
+
+    private var pendingImage: UIImage?
+    private var pendingImageAssetIdentifier: String?
+
     /// The textView's class will have some responder chain methods swizzled.
-    init(textView: UITextView) {
+    init(textView: UITextView, draft: (NSObject & ReplyDraft)? = nil) {
         self.textView = textView
+        self.draft = draft
         super.init()
-        
+
         PSMenuItem.installMenuHandler(for: textView)
         
         NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: UITextView.textDidBeginEditingNotification, object: textView)
@@ -83,13 +90,7 @@ final class CompositionMenuTree: NSObject {
         shouldPopWhenMenuHides = true
     }
     
-    func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
-        // Check if we need to authenticate with Imgur first
-        if ImgurAuthManager.shared.needsAuthentication {
-            authenticateWithImgur()
-            return
-        }
-        
+    fileprivate func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
         let mediaType = UTType.image
@@ -269,16 +270,16 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             textView.nearestViewController?.present(alert, animated: true)
             return
         }
-        
-        if let asset = info[.phAsset] as? PHAsset {
-            insertImage(image, withAssetIdentifier: asset.localIdentifier)
-        } else {
-            insertImage(image)
-        }
 
-        picker.dismiss(animated: true, completion: {
+        let assetIdentifier = (info[.phAsset] as? PHAsset)?.localIdentifier
+
+        pendingImage = image
+        pendingImageAssetIdentifier = assetIdentifier
+
+        picker.dismiss(animated: true) {
             self.textView.becomeFirstResponder()
-        })
+            self.showSubmenu(imageDestinationItems(tree: self))
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -289,6 +290,141 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         textView.becomeFirstResponder()
+    }
+
+    private func validationErrorMessage(for error: ForumAttachment.ValidationError) -> String {
+        switch error {
+        case .fileTooLarge(let actualSize, let maxSize):
+            let formatter = ByteCountFormatter()
+            formatter.countStyle = .file
+            return "File size (\(formatter.string(fromByteCount: Int64(actualSize)))) exceeds maximum (\(formatter.string(fromByteCount: Int64(maxSize))))"
+        case .dimensionsTooLarge(let width, let height, let maxDimension):
+            return "Image dimensions (\(width)x\(height)) exceed maximum (\(maxDimension)x\(maxDimension))"
+        case .unsupportedFormat:
+            return "Unsupported image format. Please use GIF, JPG, JPEG, or PNG"
+        case .imageDataConversionFailed:
+            return "Failed to process image data"
+        }
+    }
+
+    fileprivate func useImageHostForPendingImage() {
+        guard let image = pendingImage else { return }
+
+        if ImgurAuthManager.shared.needsAuthentication {
+            authenticateWithImgur()
+            return
+        }
+
+        if let assetID = pendingImageAssetIdentifier {
+            insertImage(image, withAssetIdentifier: assetID)
+        } else {
+            insertImage(image)
+        }
+
+        pendingImage = nil
+        pendingImageAssetIdentifier = nil
+    }
+
+    fileprivate func useForumAttachmentForPendingImage() {
+        guard let image = pendingImage else { return }
+
+        let attachment = ForumAttachment(image: image, photoAssetIdentifier: pendingImageAssetIdentifier)
+        if let error = attachment.validationError {
+            if canResize(error) {
+                let alert = UIAlertController(
+                    title: "Attachment Too Large",
+                    message: "\(validationErrorMessage(for: error))\n\nWould you like to automatically resize the image to fit?",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self] _ in
+                    self?.pendingImage = nil
+                    self?.pendingImageAssetIdentifier = nil
+                })
+                alert.addAction(UIAlertAction(title: "Resize & Continue", style: .default) { [weak self] _ in
+                    self?.resizeAndAttachPendingImage()
+                })
+                textView.nearestViewController?.present(alert, animated: true)
+            } else {
+                let alert = UIAlertController(
+                    title: "Invalid Attachment",
+                    message: validationErrorMessage(for: error),
+                    alertActions: [.ok()]
+                )
+                textView.nearestViewController?.present(alert, animated: true)
+                pendingImage = nil
+                pendingImageAssetIdentifier = nil
+            }
+            return
+        }
+
+        draft?.forumAttachment = attachment
+        pendingImage = nil
+        pendingImageAssetIdentifier = nil
+
+        onAttachmentChanged?()
+        // Success message removed - the preview card is sufficient feedback
+    }
+
+    private func canResize(_ error: ForumAttachment.ValidationError) -> Bool {
+        switch error {
+        case .fileTooLarge, .dimensionsTooLarge:
+            return true
+        default:
+            return false
+        }
+    }
+
+    private func resizeAndAttachPendingImage() {
+        guard let image = pendingImage else { return }
+
+        // Show resizing placeholder immediately
+        onResizingStarted?()
+
+        // Perform resize in background
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+
+            let originalAttachment = ForumAttachment(image: image, photoAssetIdentifier: self.pendingImageAssetIdentifier)
+            let resizedAttachment = originalAttachment.resized()
+
+            DispatchQueue.main.async {
+                self.pendingImage = nil
+                self.pendingImageAssetIdentifier = nil
+
+                guard let resizedAttachment = resizedAttachment else {
+                    // Remove placeholder on failure
+                    self.draft?.forumAttachment = nil
+                    self.onAttachmentChanged?()
+
+                    let alert = UIAlertController(
+                        title: "Resize Failed",
+                        message: "Unable to resize image to meet requirements. Please try a different image.",
+                        alertActions: [.ok()]
+                    )
+                    self.textView.nearestViewController?.present(alert, animated: true)
+                    return
+                }
+
+                if let error = resizedAttachment.validationError {
+                    // Remove placeholder on validation failure
+                    self.draft?.forumAttachment = nil
+                    self.onAttachmentChanged?()
+
+                    let alert = UIAlertController(
+                        title: "Resize Failed",
+                        message: "\(self.validationErrorMessage(for: error))\n\nPlease try a different image.",
+                        alertActions: [.ok()]
+                    )
+                    self.textView.nearestViewController?.present(alert, animated: true)
+                    return
+                }
+
+                // Update with resized attachment
+                self.draft?.forumAttachment = resizedAttachment
+                self.onAttachmentChanged?()
+                // Success message removed - the preview card is sufficient feedback
+            }
+        }
     }
 }
 
@@ -331,10 +467,11 @@ fileprivate let rootItems = [
         original line: MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
      */
     MenuItem(title: "[img]", action: { tree in
-        // If Imgur uploads are enabled in settings, show the full image submenu
-        // Otherwise, only allow pasting URLs
-        if tree.imgurUploadsEnabled {
-            tree.showSubmenu(imageItems)
+        // Show the image submenu if either:
+        // 1. Imgur uploads are enabled in settings, OR
+        // 2. The draft is a NewReplyDraft (for forum attachments)
+        if tree.imgurUploadsEnabled || tree.draft is NewReplyDraft {
+            tree.showSubmenu(imageItems(tree: tree))
         } else {
             if UIPasteboard.general.coercedURL == nil {
                 linkifySelection(tree)
@@ -365,23 +502,38 @@ fileprivate let URLItems = [
     })
 ]
 
-fileprivate let imageItems = [
-    MenuItem(title: "From Camera", action: { $0.showImagePicker(.camera) }, enabled: isPickerAvailable(.camera)),
-    MenuItem(title: "From Library", action: { $0.showImagePicker(.photoLibrary) }, enabled: isPickerAvailable(.photoLibrary)),
-    MenuItem(title: "[img]", action: wrapSelectionInTag("[img]")),
-    MenuItem(title: "Paste [img]", action:{ tree in
-        if let text = UIPasteboard.general.coercedURL {
+fileprivate func imageItems(tree: CompositionMenuTree) -> [MenuItem] {
+    var items: [MenuItem] = []
+
+    if UIPasteboard.general.coercedURL != nil {
+        items.append(MenuItem(title: "Paste URL", action: { tree in
             if let textRange = tree.textView.selectedTextRange {
                 tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
             }
-        }
-    }, enabled: { UIPasteboard.general.coercedURL != nil }),
-    MenuItem(title: "Paste", action: { tree in
-        if let image = UIPasteboard.general.image {
-            tree.insertImage(image)
-        }
-        }, enabled: { UIPasteboard.general.image != nil })
-]
+        }))
+    }
+
+    items.append(contentsOf: [
+        MenuItem(title: "From Library", action: { $0.showImagePicker(.photoLibrary) }, enabled: isPickerAvailable(.photoLibrary)),
+        MenuItem(title: "[img]", action: wrapSelectionInTag("[img]"))
+    ])
+
+    return items
+}
+
+fileprivate func imageDestinationItems(tree: CompositionMenuTree) -> [MenuItem] {
+    var items: [MenuItem] = []
+
+    if tree.imgurUploadsEnabled {
+        items.append(MenuItem(title: "Image Host", action: { $0.useImageHostForPendingImage() }))
+    }
+
+    if tree.draft is NewReplyDraft {
+        items.append(MenuItem(title: "Forum Attachment", action: { $0.useForumAttachmentForPendingImage() }))
+    }
+
+    return items
+}
 
 fileprivate let formattingItems = [
     MenuItem(title: "[b]", action: wrapSelectionInTag("[b]")),

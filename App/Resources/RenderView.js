@@ -953,6 +953,30 @@ Awful.embedGfycat = function() {
 }
 
 Awful.embedGfycat();
+
+// Load attachment images asynchronously
+Awful.loadAttachmentImages = function() {
+  var attachmentImages = document.querySelectorAll('img[data-awful-attachment-postid]');
+  attachmentImages.forEach(function(img) {
+    var postID = img.getAttribute('data-awful-attachment-postid');
+    var id = 'attachment-' + Date.now() + '-' + Math.random();
+    img.setAttribute('data-awful-attachment-id', id);
+    window.webkit.messageHandlers.fetchAttachmentImage.postMessage({
+      id: id,
+      postid: postID
+    });
+  });
+};
+
+Awful.didFetchAttachmentImage = function(id, dataURL) {
+  var img = document.querySelector('img[data-awful-attachment-id="' + id + '"]');
+  if (img) {
+    img.src = dataURL;
+  }
+};
+
+Awful.loadAttachmentImages();
+
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.
 window.webkit.messageHandlers.didRender.postMessage({});

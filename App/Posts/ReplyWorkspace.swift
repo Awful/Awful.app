@@ -94,10 +94,13 @@ final class ReplyWorkspace: NSObject {
     Unfortunately, any compositionViewController that we preserve in encodeRestorableStateWithCoder() is not yet available in objectWithRestorationIdentifierPath(_:coder:); it only becomes available in decodeRestorableStateWithCoder().
     This didSet encompasses the junk we want to set up on the compositionViewController no matter how it's created and really belongs in init(), except we're stuck.
     */
-    fileprivate var compositionViewController: CompositionViewController! {
+    var compositionViewController: CompositionViewController! {
         didSet {
             assert(oldValue == nil, "please set compositionViewController only once")
-            
+
+            // Ensure the view is loaded before accessing textView
+            compositionViewController.loadViewIfNeeded()
+
             let textView = compositionViewController.textView
             textView.attributedText = draft.text
 
@@ -116,11 +119,11 @@ final class ReplyWorkspace: NSObject {
             textViewNotificationToken = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
                 self.rightButtonItem.isEnabled = textView.hasText
             }
-            
+
             let navigationItem = compositionViewController.navigationItem
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
             navigationItem.rightBarButtonItem = rightButtonItem
-            
+
             $confirmBeforeReplying
                 .receive(on: RunLoop.main)
                 .sink { [weak self] _ in self?.updateRightButtonItem() }
@@ -133,6 +136,8 @@ final class ReplyWorkspace: NSObject {
                 textView.autocorrectionType = tweaks.autocorrectionType
                 textView.spellCheckingType = tweaks.spellCheckingType
             }
+
+            compositionViewController.setDraft(draft)
         }
     }
     
@@ -348,6 +353,8 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     var thread: AwfulThread { get }
     var text: NSAttributedString? { get set }
     var title: String { get }
+    var forumAttachment: ForumAttachment? { get set }
+    var shouldDeleteAttachment: Bool { get set }
 }
 
 @objc protocol SubmittableDraft {
@@ -362,28 +369,36 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
 final class NewReplyDraft: NSObject, ReplyDraft {
     let thread: AwfulThread
     var text: NSAttributedString?
-    
+    var forumAttachment: ForumAttachment?
+    var existingAttachmentInfo: (id: String, filename: String)?
+    var shouldDeleteAttachment = false
+
     init(thread: AwfulThread, text: NSAttributedString? = nil) {
         self.thread = thread
         self.text = text
         super.init()
     }
-    
+
     convenience init?(coder: NSCoder) {
         let threadKey = coder.decodeObject(forKey: Keys.threadKey) as! ThreadKey
         let thread = AwfulThread.objectForKey(objectKey: threadKey, in: AppDelegate.instance.managedObjectContext)
         let text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
         self.init(thread: thread, text: text)
+        self.forumAttachment = coder.decodeObject(of: ForumAttachment.self, forKey: Keys.forumAttachment)
     }
-    
+
     func encode(with coder: NSCoder) {
         coder.encode(thread.objectKey, forKey: Keys.threadKey)
         coder.encode(text, forKey: Keys.text)
+        if let forumAttachment = forumAttachment {
+            coder.encode(forumAttachment, forKey: Keys.forumAttachment)
+        }
     }
-    
+
     fileprivate struct Keys {
         static let threadKey = "threadKey"
         static let text = "text"
+        static let forumAttachment = "forumAttachment"
     }
     
     var storePath: String {
@@ -396,30 +411,66 @@ final class NewReplyDraft: NSObject, ReplyDraft {
 }
 
 final class EditReplyDraft: NSObject, ReplyDraft {
+    enum AttachmentAction {
+        case keep
+        case delete
+    }
+
     let post: Post
     var text: NSAttributedString?
-    
+    var forumAttachment: ForumAttachment?
+    var existingAttachmentInfo: (id: String, filename: String)?
+    var shouldDeleteAttachment = false
+
+    var attachmentAction: AttachmentAction {
+        get { shouldDeleteAttachment ? .delete : .keep }
+        set { shouldDeleteAttachment = (newValue == .delete) }
+    }
+
+    var existingAttachmentFilename: String? {
+        return existingAttachmentInfo?.filename
+    }
+
+    var existingAttachmentFilesize: String? {
+        // We don't have filesize info from the server, so return nil
+        return nil
+    }
+
     init(post: Post, text: NSAttributedString? = nil) {
         self.post = post
         self.text = text
         super.init()
     }
-    
+
     convenience init?(coder: NSCoder) {
         let postKey = coder.decodeObject(forKey: Keys.postKey) as! PostKey
         let post = Post.objectForKey(objectKey: postKey, in: AppDelegate.instance.managedObjectContext)
         let text = coder.decodeObject(forKey: Keys.text) as? NSAttributedString
         self.init(post: post, text: text)
+
+        if let attachmentID = coder.decodeObject(of: NSString.self, forKey: Keys.attachmentID) as? String,
+           let attachmentFilename = coder.decodeObject(of: NSString.self, forKey: Keys.attachmentFilename) as? String {
+            self.existingAttachmentInfo = (id: attachmentID, filename: attachmentFilename)
+        }
+        self.shouldDeleteAttachment = coder.decodeBool(forKey: Keys.shouldDeleteAttachment)
     }
-    
+
     func encode(with coder: NSCoder) {
         coder.encode(post.objectKey, forKey: Keys.postKey)
         coder.encode(text, forKey: Keys.text)
+        if let existingAttachmentInfo = existingAttachmentInfo {
+            coder.encode(existingAttachmentInfo.id as NSString, forKey: Keys.attachmentID)
+            coder.encode(existingAttachmentInfo.filename as NSString, forKey: Keys.attachmentFilename)
+        }
+        coder.encode(shouldDeleteAttachment, forKey: Keys.shouldDeleteAttachment)
     }
-    
+
     fileprivate struct Keys {
         static let postKey = "postKey"
         static let text = "text"
+        static let attachmentID = "attachmentID"
+        static let attachmentFilename = "attachmentFilename"
+        static let shouldDeleteAttachment = "shouldDeleteAttachment"
     }
     
     var thread: AwfulThread {
@@ -444,13 +495,45 @@ extension NewReplyDraft: SubmittableDraft {
             } else {
                 Task { @MainActor in
                     do {
-                        _ = try await ForumsClient.shared.reply(to: thread, bbcode: plainText ?? "")
+                        var attachmentData: (data: Data, filename: String, mimeType: String)?
+                        if let forumAttachment = forumAttachment {
+                            let limits = try await ForumsClient.shared.fetchAttachmentLimits(for: thread)
+
+                            if let validationError = forumAttachment.validate(
+                                maxFileSize: limits.maxFileSize,
+                                maxDimension: limits.maxDimension
+                            ) {
+                                let error = NSError(domain: "Awful", code: 0, userInfo: [
+                                    NSLocalizedDescriptionKey: self.validationErrorMessage(for: validationError)
+                                ])
+                                completion(error)
+                                return
+                            }
+                            attachmentData = try forumAttachment.imageData()
+                        }
+
+                        _ = try await ForumsClient.shared.reply(to: thread, bbcode: plainText ?? "", attachment: attachmentData)
                         completion(nil)
                     } catch {
                         completion(error)
                     }
                 }
             }
+        }
+    }
+
+    private func validationErrorMessage(for error: ForumAttachment.ValidationError) -> String {
+        switch error {
+        case .fileTooLarge(let actualSize, let maxSize):
+            let actualMB = Double(actualSize) / 1_048_576
+            let maxMB = Double(maxSize) / 1_048_576
+            return String(format: "Image is too large (%.1f MB). Maximum size is %.1f MB.", actualMB, maxMB)
+        case .dimensionsTooLarge(let width, let height, let maxDimension):
+            return "Image dimensions (\(width)×\(height)) exceed maximum (\(maxDimension)×\(maxDimension))."
+        case .unsupportedFormat:
+            return "Unsupported image format. Supported formats: GIF, JPEG, PNG"
+        case .imageDataConversionFailed:
+            return "Failed to convert image data"
         }
     }
 }
@@ -463,7 +546,8 @@ extension EditReplyDraft: SubmittableDraft {
             } else {
                 Task { @MainActor in
                     do {
-                        try await ForumsClient.shared.edit(post, bbcode: plainText ?? "")
+                        let attachmentAction: ForumsClient.AttachmentAction = shouldDeleteAttachment ? .delete : .keep
+                        try await ForumsClient.shared.edit(post, bbcode: plainText ?? "", attachmentAction: attachmentAction)
                         completion(nil)
                     } catch {
                         completion(error)

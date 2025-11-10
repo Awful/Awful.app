@@ -105,6 +105,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchAttachmentImage.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
@@ -1249,7 +1250,15 @@ final class PostsPageViewController: ViewController {
             Task {
                 do {
                     let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost!)
+                    let attachmentInfo = try? await ForumsClient.shared.findAttachmentInfo(for: selectedPost!)
                     let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
+
+                    // Set attachment info before creating the composition view controller
+                    if let attachmentInfo = attachmentInfo,
+                       let editDraft = replyWorkspace.draft as? EditReplyDraft {
+                        editDraft.existingAttachmentInfo = attachmentInfo
+                    }
+
                     self.replyWorkspace = replyWorkspace
                     replyWorkspace.completion = replyCompletionBlock
                     present(replyWorkspace.viewController, animated: true)
@@ -1362,6 +1371,23 @@ final class PostsPageViewController: ViewController {
         Task {
             let callbackData = await oEmbedFetcher.fetch(url: url, id: id)
             postsView.renderView.didFetchOEmbed(id: id, response: callbackData)
+        }
+    }
+
+    private func fetchAttachmentImage(postID: String, id: String) {
+        Task {
+            do {
+                let imageData = try await ForumsClient.shared.fetchAttachmentImage(postID: postID)
+                if let image = UIImage(data: imageData), let pngData = image.pngData() {
+                    let base64 = pngData.base64EncodedString()
+                    let dataURL = "data:image/png;base64,\(base64)"
+                    await MainActor.run {
+                        postsView.renderView.didFetchAttachmentImage(id: id, dataURL: dataURL)
+                    }
+                }
+            } catch {
+                logger.error("Failed to fetch attachment image for postID \(postID): \(error)")
+            }
         }
     }
 
@@ -1791,6 +1817,9 @@ extension PostsPageViewController: RenderViewDelegate {
             
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
+
+        case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
+            fetchAttachmentImage(postID: message.postID, id: message.id)
 
         case is FYADFlagRequest:
             fetchNewFlag()
