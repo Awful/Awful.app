@@ -71,8 +71,8 @@ final class PostsPageViewController: ViewController {
     @available(iOS 26.0, *)
     func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
         if progress < 0.01 {
-            // At top: use theme color
-            liquidGlassTitleView?.textColor = theme["navigationBarTextColor"]
+            // At top: use mode-based color for proper contrast
+            liquidGlassTitleView?.textColor = theme["mode"] == "dark" ? .white : .black
         } else if progress > 0.99 {
             // Fully scrolled: use nil for dynamic color adaptation
             liquidGlassTitleView?.textColor = nil
@@ -225,7 +225,7 @@ final class PostsPageViewController: ViewController {
             if #available(iOS 26.0, *) {
                 let glassView = liquidGlassTitleView
                 glassView?.title = title
-                glassView?.textColor = theme["navigationBarTextColor"]
+                glassView?.textColor = theme["mode"] == "dark" ? .white : .black
 
                 switch UIDevice.current.userInterfaceIdiom {
                 case .pad:
@@ -1665,7 +1665,7 @@ final class PostsPageViewController: ViewController {
         if #available(iOS 26.0, *) {
             let glassView = liquidGlassTitleView
             // Set both text color and font from theme
-            glassView?.textColor = theme["navigationBarTextColor"]
+            glassView?.textColor = theme["mode"] == "dark" ? .white : .black
 
             switch UIDevice.current.userInterfaceIdiom {
             case .pad:
@@ -1896,7 +1896,7 @@ final class PostsPageViewController: ViewController {
         navigationBar.compactScrollEdgeAppearance = appearance
 
         // CRITICAL: Set tintColor AFTER applying appearance to ensure back button uses theme color
-        let navTextColor: UIColor = theme["navigationBarTextColor"]!
+        let navTextColor: UIColor = theme["mode"] == "dark" ? .white : .black
         print("DEBUG: Setting navigationBar.tintColor to: \(navTextColor) for theme: \(theme["name"] ?? "unknown")")
         navigationBar.tintColor = navTextColor
 

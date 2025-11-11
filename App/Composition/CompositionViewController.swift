@@ -77,7 +77,14 @@ final class CompositionViewController: ViewController {
         
         // Leave an escape hatch in case we were restored without an associated workspace. This can happen when a crash leaves old state information behind.
         if navigationItem.leftBarButtonItem == nil {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(CompositionViewController.didTapCancel))
+            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(CompositionViewController.didTapCancel))
+            // Only set explicit tint color for iOS < 26
+            if #available(iOS 26.0, *) {
+                // Let iOS 26+ handle the color automatically
+            } else {
+                cancelButton.tintColor = theme["navigationBarTextColor"]
+            }
+            navigationItem.leftBarButtonItem = cancelButton
         }
     }
     
