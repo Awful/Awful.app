@@ -398,10 +398,8 @@ final class PostsPageViewController: ViewController {
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                     if #available(iOS 26.0, *) {
-                        // Use vertical view: show unknown current page with known total
-                        self.pageNumberView.currentPage = 0 // Will display as "?"
+                        self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
-                        // iOS 26+ handles colors automatically
                     } else {
                         self.currentPageItem.title = "Page ? of \(pageCount)"
                     }
@@ -495,7 +493,6 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
         // Only set explicit tint color for iOS < 26
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle the color automatically
         } else {
             item.tintColor = theme["navigationBarTextColor"]
         }
@@ -592,7 +589,6 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = "Settings"
         // Only set explicit tint color for iOS < 26
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle the color automatically
         } else {
             item.tintColor = theme["toolbarTextColor"]
         }
@@ -613,7 +609,6 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = "Previous page"
         // Only set explicit tint color for iOS < 26
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle the color automatically
         } else {
             item.tintColor = theme["toolbarTextColor"]
         }
@@ -638,8 +633,7 @@ final class PostsPageViewController: ViewController {
                 popover.barButtonItem = action.sender as? UIBarButtonItem
             }
         })
-        
-        // Set up the bar button item based on iOS version
+
         if #available(iOS 26.0, *) {
             let containerView = UIView()
             containerView.addSubview(pageNumberView)
@@ -652,7 +646,6 @@ final class PostsPageViewController: ViewController {
             ])
             item.customView = containerView
         } else {
-            // Use traditional text title for iOS 18 and below
             item.possibleTitles = ["2345 / 2345"]
         }
         
@@ -674,7 +667,6 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = "Next page"
         // Only set explicit tint color for iOS < 26
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle the color automatically
         } else {
             item.tintColor = theme["toolbarTextColor"]
         }
@@ -706,7 +698,6 @@ final class PostsPageViewController: ViewController {
         item.accessibilityLabel = "Thread actions"
         // Only set explicit tint color for iOS < 26
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle the color automatically
         } else {
             item.tintColor = theme["toolbarTextColor"]
         }
@@ -792,7 +783,6 @@ final class PostsPageViewController: ViewController {
                 currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
             }
         } else {
-            // Clear page display
             if #available(iOS 26.0, *) {
                 pageNumberView.currentPage = 0
                 pageNumberView.totalPages = 0
@@ -870,8 +860,7 @@ final class PostsPageViewController: ViewController {
         guard postsView.loadingView == nil else { return }
         let selectotron = Selectotron(postsViewController: self)
         present(selectotron, animated: true)
-        
-        // For popover presentation with custom view, we need to set sourceView and sourceRect
+
         if let popover = selectotron.popoverPresentationController {
             popover.sourceView = pageNumberView
             popover.sourceRect = pageNumberView.bounds
@@ -1687,7 +1676,6 @@ final class PostsPageViewController: ViewController {
         
         // Update navigation bar button colors (only for iOS < 26)
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle colors automatically
         } else {
             composeItem.tintColor = theme["navigationBarTextColor"]
             // Ensure the navigation bar itself uses the correct tint color for the back button
@@ -1718,18 +1706,15 @@ final class PostsPageViewController: ViewController {
         postsView.toolbar.compactAppearance = appearance
         postsView.toolbar.scrollEdgeAppearance = appearance
         postsView.toolbar.compactScrollEdgeAppearance = appearance
-        
-        // Update toolbar button text colors (only for iOS < 26)
+
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle colors automatically
         } else {
             backItem.tintColor = theme["toolbarTextColor"]
             forwardItem.tintColor = theme["toolbarTextColor"]
             settingsItem.tintColor = theme["toolbarTextColor"]
             pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         }
-        
-        // Update toolbar items to refresh the actions button
+
         updateToolbarItems()
 
         messageViewController?.themeDidChange()
