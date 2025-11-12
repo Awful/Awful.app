@@ -343,8 +343,8 @@ final class PostsPageViewController: ViewController {
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                     if #available(iOS 26.0, *) {
-                        self.verticalPageNumberView.currentPage = 0
-                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                        self.pageNumberView.currentPage = 0
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
                         self.currentPageItem.title = "Page ? of \(pageCount)"
                     }
@@ -399,8 +399,8 @@ final class PostsPageViewController: ViewController {
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                     if #available(iOS 26.0, *) {
                         // Use vertical view: show unknown current page with known total
-                        self.verticalPageNumberView.currentPage = 0 // Will display as "?"
-                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                        self.pageNumberView.currentPage = 0 // Will display as "?"
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                         // iOS 26+ handles colors automatically
                     } else {
                         self.currentPageItem.title = "Page ? of \(pageCount)"
@@ -620,8 +620,8 @@ final class PostsPageViewController: ViewController {
         return item
     }()
 
-    private lazy var verticalPageNumberView: VerticalPageNumberView = {
-        let view = VerticalPageNumberView()
+    private lazy var pageNumberView: PageNumberView = {
+        let view = PageNumberView()
         view.onTap = { [weak self] in
             self?.handlePageNumberTap()
         }
@@ -641,16 +641,14 @@ final class PostsPageViewController: ViewController {
         
         // Set up the bar button item based on iOS version
         if #available(iOS 26.0, *) {
-            // Use vertical page number view for modern appearance wrapped in container for centering
             let containerView = UIView()
-            containerView.addSubview(verticalPageNumberView)
-            verticalPageNumberView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview(pageNumberView)
+            pageNumberView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                verticalPageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-                verticalPageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-                containerView.widthAnchor.constraint(equalTo: verticalPageNumberView.widthAnchor, constant: 6), // 3 points padding on each side
-                // Add a bit of vertical padding so the content appears visually centered in the toolbar
-                containerView.heightAnchor.constraint(equalTo: verticalPageNumberView.heightAnchor, constant: 5)
+                pageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                pageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                containerView.widthAnchor.constraint(equalTo: pageNumberView.widthAnchor, constant: 2),
+                containerView.heightAnchor.constraint(equalTo: pageNumberView.heightAnchor, constant: 2)
             ])
             item.customView = containerView
         } else {
@@ -784,15 +782,11 @@ final class PostsPageViewController: ViewController {
         }()
 
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            // Update page display based on iOS version
             if #available(iOS 26.0, *) {
-                // Use vertical page number view for modern appearance
-                verticalPageNumberView.currentPage = pageNumber
-                verticalPageNumberView.totalPages = numberOfPages
-                // iOS 26+ handles colors automatically
+                pageNumberView.currentPage = pageNumber
+                pageNumberView.totalPages = numberOfPages
                 currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             } else {
-                // Use traditional text title for iOS 18 and below
                 currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
                 currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
                 currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
@@ -800,8 +794,8 @@ final class PostsPageViewController: ViewController {
         } else {
             // Clear page display
             if #available(iOS 26.0, *) {
-                verticalPageNumberView.currentPage = 0
-                verticalPageNumberView.totalPages = 0
+                pageNumberView.currentPage = 0
+                pageNumberView.totalPages = 0
             } else {
                 currentPageItem.title = ""
             }
@@ -879,8 +873,8 @@ final class PostsPageViewController: ViewController {
         
         // For popover presentation with custom view, we need to set sourceView and sourceRect
         if let popover = selectotron.popoverPresentationController {
-            popover.sourceView = verticalPageNumberView
-            popover.sourceRect = verticalPageNumberView.bounds
+            popover.sourceView = pageNumberView
+            popover.sourceRect = pageNumberView.bounds
         }
     }
 
@@ -1732,7 +1726,7 @@ final class PostsPageViewController: ViewController {
             backItem.tintColor = theme["toolbarTextColor"]
             forwardItem.tintColor = theme["toolbarTextColor"]
             settingsItem.tintColor = theme["toolbarTextColor"]
-            verticalPageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+            pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         }
         
         // Update toolbar items to refresh the actions button
