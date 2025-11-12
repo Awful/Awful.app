@@ -44,6 +44,10 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         box.contents = self
 
         title = String(localized: "Settings", bundle: .module)
+        tabBarItem.image = UIImage(named: "cog")
+        tabBarItem.selectedImage = UIImage(named: "cog-filled")
+
+        themeDidChange()
     }
     
     required init?(coder: NSCoder) {
@@ -81,6 +85,18 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
 
     func goToAwfulThread() {
         AppDelegate.instance.open(route: .threadPage(threadID: "3837546", page: .nextUnread, .seen))
+    }
+    
+    override func themeDidChange() {
+        super.themeDidChange()
+
+        if theme[bool: "showRootTabBarLabel"] == false {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        } else {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tabBarItem.title = title
+        }
     }
 }
 

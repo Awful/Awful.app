@@ -22,3 +22,5 @@ xcuserdata
 /.build/
 /.swiftpm/
 /Package.resolved
+
+build-spankykong.sh

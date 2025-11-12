@@ -42,7 +42,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<Void, Never>?
+    private var networkOperation: Any?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -68,7 +68,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     @available(iOS 26.0, *)
     func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
         if progress < 0.01 {
-            liquidGlassTitleView?.textColor = theme["navigationBarTextColor"]
+            liquidGlassTitleView?.textColor = theme["mode"] == "dark" ? .white : .black
         } else if progress > 0.99 {
             liquidGlassTitleView?.textColor = nil
         }
@@ -123,6 +123,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchAttachmentImage.self)
+        
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
@@ -148,35 +150,28 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             if #available(iOS 16.0, *) {
                 preferredMenuElementOrder = .fixed
             }
+            // Set the interface style to follow the theme
             updateInterfaceStyle()
-
-            // Start with user interaction disabled to not block touches
-            isUserInteractionEnabled = false
         }
-        
+
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
-        
+
         func show(menu: UIMenu, from rect: CGRect) {
             frame = rect
             self.menu = menu
 
+            // Update interface style before showing the menu to ensure it uses the correct theme
             updateInterfaceStyle()
 
-            // Enable interaction only when showing menu
-            isUserInteractionEnabled = true
-
+            // Use the original approach that was working, but ensure we get iOS 26 styling
+            // This finds the internal touch-down gesture recognizer and manually triggers it
             gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
-
-            // Disable interaction after menu interaction completes
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                self?.isUserInteractionEnabled = false
-                self?.frame = .zero
-            }
         }
-        
+
         func updateInterfaceStyle() {
+            // Follow the theme's menuAppearance setting for menu appearance
             let menuAppearance = Theme.defaultTheme()[string: "menuAppearance"]
             overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
         }
@@ -207,7 +202,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     }
 
     deinit {
-        networkOperation?.cancel()
+        (networkOperation as? Task<Any, Error>)?.cancel()
     }
 
     var posts: [Post] = []
@@ -232,7 +227,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             if #available(iOS 26.0, *) {
                 let glassView = liquidGlassTitleView
                 glassView?.title = title
-                glassView?.textColor = theme["navigationBarTextColor"]
+                glassView?.textColor = theme["mode"] == "dark" ? .white : .black
 
                 switch UIDevice.current.userInterfaceIdiom {
                 case .pad:
@@ -264,7 +259,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-        networkOperation?.cancel()
+        (networkOperation as? Task<Any, Error>)?.cancel()
         networkOperation = nil
 
         if darkMode {
@@ -312,16 +307,10 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
 
         let initialTheme = theme
 
-        let fetch = Task {
-            try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
-        }
-        networkOperation = Task {
-            _ = await fetch.result
-        }
-        Task { [weak self] in
+        let fetch = Task { @MainActor [weak self] in
+            guard let self else { return }
             do {
-                let (posts, firstUnreadPost, _) = try await fetch.value
-                guard let self else { return }
+                let (posts, firstUnreadPost, _) = try await ForumsClient.shared.listPosts(in: self.thread, writtenBy: self.author, page: newPage, updateLastReadPost: updateLastReadPost)
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 guard self.page == newPage else { return }
@@ -346,8 +335,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                     if #available(iOS 26.0, *) {
-                        self.verticalPageNumberView.currentPage = 0
-                        self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                        self.pageNumberView.currentPage = 0
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
                         self.currentPageItem.title = "Page ? of \(pageCount)"
                     }
@@ -372,44 +361,41 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
 
                 self.postsView.endRefreshing()
             } catch {
-                guard let self else { return }
-
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 if self.page != newPage { return }
 
-                await MainActor.run {
-                    self.clearLoadingMessage()
+                self.clearLoadingMessage()
 
-                    if case .archivesRequired = error as? AwfulCoreError {
-                        let alert = UIAlertController(title: "Archives Required", error: error)
+                if case .archivesRequired = error as? AwfulCoreError {
+                    let alert = UIAlertController(title: "Archives Required", error: error)
+                    self.present(alert, animated: true)
+                } else {
+                    let offlineMode = (error as NSError).domain == NSURLErrorDomain && (error as NSError).code != NSURLErrorCancelled
+                    if self.posts.isEmpty || !offlineMode {
+                        let alert = UIAlertController(title: "Could Not Load Page", error: error)
                         self.present(alert, animated: true)
-                    } else {
-                        let offlineMode = (error as NSError).domain == NSURLErrorDomain && (error as NSError).code != NSURLErrorCancelled
-                        if self.posts.isEmpty || !offlineMode {
-                            let alert = UIAlertController(title: "Could Not Load Page", error: error)
-                            self.present(alert, animated: true)
-                        }
                     }
-                    
-                    switch newPage {
-                    case .last where self.posts.isEmpty,
-                         .nextUnread where self.posts.isEmpty:
-                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                        if #available(iOS 26.0, *) {
-                            // Use vertical view: show unknown current page with known total
-                            self.verticalPageNumberView.currentPage = 0 // Will display as "?"
-                            self.verticalPageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
-                            // iOS 26+ handles colors automatically
-                        } else {
-                            self.currentPageItem.title = "Page ? of \(pageCount)"
-                        }
+                }
 
-                    case .last, .nextUnread, .specific:
-                        break
+                switch newPage {
+                case .last where self.posts.isEmpty,
+                     .nextUnread where self.posts.isEmpty:
+                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                    if #available(iOS 26.0, *) {
+                        // Use vertical view: show unknown current page with known total
+                        self.pageNumberView.currentPage = 0 // Will display as "?"
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                        // iOS 26+ handles colors automatically
+                    } else {
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
                     }
+
+                case .last, .nextUnread, .specific:
+                    break
                 }
             }
         }
+        networkOperation = fetch
     }
 
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
@@ -630,8 +616,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         return item
     }()
 
-    private lazy var verticalPageNumberView: VerticalPageNumberView = {
-        let view = VerticalPageNumberView()
+    private lazy var pageNumberView: PageNumberView = {
+        let view = PageNumberView()
         view.onTap = { [weak self] in
             self?.handlePageNumberTap()
         }
@@ -653,14 +639,13 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         if #available(iOS 26.0, *) {
             // Use vertical page number view for modern appearance wrapped in container for centering
             let containerView = UIView()
-            containerView.addSubview(verticalPageNumberView)
-            verticalPageNumberView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview(pageNumberView)
+            pageNumberView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                verticalPageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-                verticalPageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-                containerView.widthAnchor.constraint(equalTo: verticalPageNumberView.widthAnchor, constant: 6), // 3 points padding on each side
-                // Add a bit of vertical padding so the content appears visually centered in the toolbar
-                containerView.heightAnchor.constraint(equalTo: verticalPageNumberView.heightAnchor, constant: 5)
+                pageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                pageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                containerView.widthAnchor.constraint(equalTo: pageNumberView.widthAnchor, constant: 2),
+                containerView.heightAnchor.constraint(equalTo: pageNumberView.heightAnchor, constant: 2)
             ])
             item.customView = containerView
         } else {
@@ -793,8 +778,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
 
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
             if #available(iOS 26.0, *) {
-                verticalPageNumberView.currentPage = pageNumber
-                verticalPageNumberView.totalPages = numberOfPages
+                pageNumberView.currentPage = pageNumber
+                pageNumberView.totalPages = numberOfPages
                 currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
             } else {
                 currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
@@ -804,8 +789,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         } else {
             // Clear page display
             if #available(iOS 26.0, *) {
-                verticalPageNumberView.currentPage = 0
-                verticalPageNumberView.totalPages = 0
+                pageNumberView.currentPage = 0
+                pageNumberView.totalPages = 0
             } else {
                 currentPageItem.title = ""
             }
@@ -884,8 +869,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         
         // For popover presentation with custom view, we need to set sourceView and sourceRect
         if let popover = selectotron.popoverPresentationController {
-            popover.sourceView = verticalPageNumberView
-            popover.sourceRect = verticalPageNumberView.bounds
+            popover.sourceView = pageNumberView
+            popover.sourceRect = pageNumberView.bounds
         }
     }
 
@@ -1433,7 +1418,15 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             Task {
                 do {
                     let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost!)
+                    let attachmentInfo = try? await ForumsClient.shared.findAttachmentInfo(for: selectedPost!)
                     let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
+
+                    // Set attachment info before creating the composition view controller
+                    if let attachmentInfo = attachmentInfo,
+                       let editDraft = replyWorkspace.draft as? EditReplyDraft {
+                        editDraft.existingAttachmentInfo = attachmentInfo
+                    }
+
                     self.replyWorkspace = replyWorkspace
                     replyWorkspace.completion = replyCompletionBlock
                     present(replyWorkspace.viewController, animated: true)
@@ -1546,6 +1539,23 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         Task {
             let callbackData = await oEmbedFetcher.fetch(url: url, id: id)
             postsView.renderView.didFetchOEmbed(id: id, response: callbackData)
+        }
+    }
+    
+    private func fetchAttachmentImage(postID: String, id: String) {
+        Task {
+            do {
+                let imageData = try await ForumsClient.shared.fetchAttachmentImage(postID: postID)
+                if let image = UIImage(data: imageData), let pngData = image.pngData() {
+                    let base64 = pngData.base64EncodedString()
+                    let dataURL = "data:image/png;base64,\(base64)"
+                    await MainActor.run {
+                        postsView.renderView.didFetchAttachmentImage(id: id, dataURL: dataURL)
+                    }
+                }
+            } catch {
+                logger.error("Failed to fetch attachment image for postID \(postID): \(error)")
+            }
         }
     }
 
@@ -1667,8 +1677,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         
         if #available(iOS 26.0, *) {
             let glassView = liquidGlassTitleView
-            // Set both text color and font from theme
-            glassView?.textColor = theme["navigationBarTextColor"]
+            glassView?.textColor = theme["mode"] == "dark" ? .white : .black
 
             switch UIDevice.current.userInterfaceIdiom {
             case .pad:
@@ -1728,7 +1737,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             backItem.tintColor = theme["toolbarTextColor"]
             forwardItem.tintColor = theme["toolbarTextColor"]
             settingsItem.tintColor = theme["toolbarTextColor"]
-            verticalPageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
+            pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         }
         
         updateToolbarItems()
@@ -1896,7 +1905,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         navigationBar.compactAppearance = appearance
         navigationBar.compactScrollEdgeAppearance = appearance
 
-        let navTextColor: UIColor = theme["navigationBarTextColor"]!
+        let navTextColor: UIColor = theme["mode"] == "dark" ? .white : .black
         navigationBar.tintColor = navTextColor
 
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
@@ -2057,10 +2066,6 @@ extension PostsPageViewController: RenderViewDelegate {
             view.embedTweets()
         }
 
-        if frogAndGhostEnabled {
-            view.loadLottiePlayer()
-        }
-
         webViewDidLoadOnce = true
 
         if jumpToLastPost {
@@ -2106,6 +2111,9 @@ extension PostsPageViewController: RenderViewDelegate {
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
 
+        case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
+                fetchAttachmentImage(postID: message.postID, id: message.id)
+            
         case is FYADFlagRequest:
             fetchNewFlag()
 

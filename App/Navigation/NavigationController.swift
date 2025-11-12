@@ -14,6 +14,13 @@ import UIKit
  - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
  */
 final class NavigationController: UINavigationController, Themeable {
+
+    /// Scroll progress thresholds for navigation bar appearance transitions
+    private enum ScrollProgress {
+        static let atTop: CGFloat = 0.01
+        static let fullyScrolled: CGFloat = 0.99
+    }
+
     fileprivate weak var realDelegate: UINavigationControllerDelegate?
     fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return nil }
@@ -152,43 +159,36 @@ final class NavigationController: UINavigationController, Themeable {
         updateNavigationBarAppearance(with: theme)
     }
 
+    /// Configures button appearance attributes for iOS 26 liquid glass compatibility.
+    /// Omits foregroundColor to allow navigationBar.tintColor to control button text color.
+    private func configureButtonAppearance(_ appearance: UINavigationBarAppearance, font: UIFont) {
+        let buttonAttributes: [NSAttributedString.Key: Any] = [.font: font]
+        appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+    }
+
     @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
         guard #available(iOS 26.0, *) else { return }
 
         let progressValue = CGFloat(progress.floatValue)
 
-        // First update the background appearance
         updateNavigationBarBackgroundWithProgress(progressValue)
 
-        // Then update text colors and tint based on threshold (keep existing behavior for text)
-        if progressValue < 0.01 {
-            // Fully at top: use theme colors
-            let textColor: UIColor = theme["navigationBarTextColor"]!
-
-            // Set tintColor which affects back button and bar button items
-            awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
-
-            // Force update bar button items to use the theme color
-            if let topViewController = topViewController {
-                topViewController.navigationItem.leftBarButtonItem?.tintColor = textColor
-                topViewController.navigationItem.rightBarButtonItem?.tintColor = textColor
-                topViewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = textColor }
-                topViewController.navigationItem.rightBarButtonItems?.forEach { $0.tintColor = textColor }
-            }
-
+        if progressValue < ScrollProgress.atTop {
             isScrolledFromTop = false
 
-            // Set status bar based on theme
             if theme["statusBarBackground"] == "light" {
                 statusBarEnterLightBackground()
             } else {
                 statusBarEnterDarkBackground()
             }
-        } else if progressValue > 0.99 {
-            // Fully scrolled: nil for dynamic adaptation
+        } else if progressValue > ScrollProgress.fullyScrolled {
             awfulNavigationBar.tintColor = nil
 
-            // Reset bar button items to inherit dynamic color
             if let topViewController = topViewController {
                 topViewController.navigationItem.leftBarButtonItem?.tintColor = nil
                 topViewController.navigationItem.rightBarButtonItem?.tintColor = nil
@@ -203,20 +203,29 @@ final class NavigationController: UINavigationController, Themeable {
 
     @objc func updateNavigationBarTintForScrollPosition(_ isAtTop: NSNumber) {
         guard #available(iOS 26.0, *) else { return }
-        // Convert boolean to progress (0 or 1)
         let progress = isAtTop.boolValue ? 0.0 : 1.0
         updateNavigationBarTintForScrollProgress(NSNumber(value: progress))
     }
 
+    /// Updates the navigation bar appearance based on scroll progress for iOS 26+ liquid glass effect.
+    ///
+    /// This method creates a dynamic navigation bar that transitions between three states:
+    /// - At top (progress < 0.01): Opaque background with theme colors
+    /// - Fully scrolled (progress > 0.99): Transparent background with system-provided contrasting colors
+    /// - Mid-scroll (0.01...0.99): Gradient transition between opaque and transparent states
+    ///
+    /// The dynamic appearance ensures optimal button visibility by letting the system adapt
+    /// colors to content underneath when scrolled, while maintaining theme consistency at the top.
+    ///
+    /// - Parameter progress: Scroll progress value from 0.0 (at top) to 1.0 (fully scrolled)
+    @available(iOS 26.0, *)
     private func updateNavigationBarBackgroundWithProgress(_ progress: CGFloat) {
-        guard #available(iOS 26.0, *) else { return }
-
         let appearance = UINavigationBarAppearance()
 
-        if progress < 0.01 {
+        if progress < ScrollProgress.atTop {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = theme["navigationBarTintColor"]
-        } else if progress > 0.99 {
+        } else if progress > ScrollProgress.fullyScrolled {
             appearance.configureWithTransparentBackground()
             appearance.backgroundColor = .clear
             appearance.backgroundImage = nil
@@ -238,7 +247,7 @@ final class NavigationController: UINavigationController, Themeable {
         appearance.shadowColor = nil
         appearance.shadowImage = nil
 
-        if progress > 0.99 {
+        if progress > ScrollProgress.fullyScrolled {
             if let backImage = UIImage(named: "back")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
                 appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
             }
@@ -248,7 +257,7 @@ final class NavigationController: UINavigationController, Themeable {
             }
         }
 
-        if progress < 0.01 {
+        if progress < ScrollProgress.atTop {
             let textColor: UIColor = theme["navigationBarTextColor"]!
 
             appearance.titleTextAttributes = [
@@ -256,30 +265,17 @@ final class NavigationController: UINavigationController, Themeable {
                 NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
             ]
             let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-            let buttonAttributes: [NSAttributedString.Key: Any] = [
-                .foregroundColor: textColor,
-                .font: buttonFont
-            ]
-            appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
-            appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-            appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-        } else if progress > 0.99 {
+            configureButtonAppearance(appearance, font: buttonFont)
+        }
+        else if progress > ScrollProgress.fullyScrolled {
+            let textColor: UIColor = theme["mode"] == "dark" ? .white : .black
+
             appearance.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor: textColor,
                 NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
             ]
             let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-            let buttonAttributes: [NSAttributedString.Key: Any] = [
-                .font: buttonFont
-            ]
-            appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
-            appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-            appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+            configureButtonAppearance(appearance, font: buttonFont)
         } else {
             let textColor: UIColor = theme["navigationBarTextColor"]!
 
@@ -288,16 +284,7 @@ final class NavigationController: UINavigationController, Themeable {
                 NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
             ]
             let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-            let buttonAttributes: [NSAttributedString.Key: Any] = [
-                .foregroundColor: textColor,
-                .font: buttonFont
-            ]
-            appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
-            appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-            appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
-            appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+            configureButtonAppearance(appearance, font: buttonFont)
         }
 
         awfulNavigationBar.standardAppearance = appearance
@@ -305,9 +292,9 @@ final class NavigationController: UINavigationController, Themeable {
         awfulNavigationBar.compactAppearance = appearance
         awfulNavigationBar.compactScrollEdgeAppearance = appearance
 
-        if progress < 0.01 {
-            awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
-        } else if progress > 0.99 {
+        if progress < ScrollProgress.atTop {
+            awfulNavigationBar.tintColor = theme["mode"] == "dark" ? .white : .black
+        } else if progress > ScrollProgress.fullyScrolled {
             awfulNavigationBar.tintColor = nil
         }
     }
@@ -373,24 +360,14 @@ final class NavigationController: UINavigationController, Themeable {
                     NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
                 ]
                 let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-                let buttonAttributes: [NSAttributedString.Key: Any] = [
-                    .foregroundColor: textColor,
-                    .font: buttonFont
-                ]
-                initialAppearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
-                initialAppearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
-                initialAppearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
-                initialAppearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-                initialAppearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
-                initialAppearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+                configureButtonAppearance(initialAppearance, font: buttonFont)
 
-                // Apply the initial appearance to all states
                 awfulNavigationBar.standardAppearance = initialAppearance
                 awfulNavigationBar.scrollEdgeAppearance = initialAppearance
                 awfulNavigationBar.compactAppearance = initialAppearance
                 awfulNavigationBar.compactScrollEdgeAppearance = initialAppearance
 
-                awfulNavigationBar.tintColor = textColor
+                awfulNavigationBar.tintColor = nil
 
                 awfulNavigationBar.setNeedsLayout()
                 awfulNavigationBar.layoutIfNeeded()
@@ -411,16 +388,7 @@ final class NavigationController: UINavigationController, Themeable {
                                                  NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
 
                 let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-                let buttonAttributes: [NSAttributedString.Key: Any] = [
-                    .foregroundColor: textColor,
-                    .font: buttonFont
-                ]
-                appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
-                appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
-                appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
-                appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
-                appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
-                appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+                configureButtonAppearance(appearance, font: buttonFont)
 
                 awfulNavigationBar.standardAppearance = appearance
                 awfulNavigationBar.scrollEdgeAppearance = appearance
@@ -512,19 +480,6 @@ extension NavigationController: UIGestureRecognizerDelegate {
 
 extension NavigationController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        // Check if we're transitioning FROM a view controller with transformed navigation bar
-        // This ensures navigation bar is restored when leaving immersion mode views
-        if let previousVC = navigationController.transitionCoordinator?.viewController(forKey: .from) {
-            // Reset navigation bar transform when it's not identity (immersion mode active)
-            if !navigationController.navigationBar.transform.isIdentity {
-                navigationController.navigationBar.transform = .identity
-            }
-
-            // If the previous VC responds to exitImmersionMode, call it
-            if let immersiveVC = previousVC as? ImmersiveModeViewController {
-                immersiveVC.exitImmersionMode()
-            }
-        }
 
         let vcTheme: Theme
         if let themeableViewController = viewController as? Themeable {
@@ -545,14 +500,17 @@ extension NavigationController: UINavigationControllerDelegate {
 
             awfulNavigationBar.tintColor = textColor
 
-            viewController.navigationItem.leftBarButtonItem?.tintColor = textColor
-            viewController.navigationItem.rightBarButtonItem?.tintColor = textColor
-            viewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = textColor }
-            viewController.navigationItem.rightBarButtonItems?.forEach { $0.tintColor = textColor }
+            // Only set explicit bar button item colors on iOS < 26
+            if #unavailable(iOS 26.0) {
+                viewController.navigationItem.leftBarButtonItem?.tintColor = textColor
+                viewController.navigationItem.rightBarButtonItem?.tintColor = textColor
+                viewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = textColor }
+                viewController.navigationItem.rightBarButtonItems?.forEach { $0.tintColor = textColor }
 
-            if viewControllers.count > 1 {
-                let previousVC = viewControllers[viewControllers.count - 2]
-                previousVC.navigationItem.backBarButtonItem?.tintColor = textColor
+                if viewControllers.count > 1 {
+                    let previousVC = viewControllers[viewControllers.count - 2]
+                    previousVC.navigationItem.backBarButtonItem?.tintColor = textColor
+                }
             }
         }
 

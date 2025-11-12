@@ -51,8 +51,6 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         
         let settings = SettingsViewController(managedObjectContext: managedObjectContext)
         settings.restorationIdentifier = "Settings"
-        settings.tabBarItem.image = UIImage(named: "cog")
-        settings.tabBarItem.selectedImage = UIImage(named: "cog-filled")
 
         tabBarController.restorationIdentifier = "Tabbar"
         tabBarController.viewControllers = [forums, bookmarks, lepers, settings].map() {

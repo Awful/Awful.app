@@ -197,7 +197,10 @@
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
-		2D3FECBE2E7E17D600817DFB /* VerticalPageNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECBD2E7E17CB00817DFB /* VerticalPageNumberView.swift */; };
+		2D3C9C342EC1ED930052E6C6 /* AttachmentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C9C332EC1ED8F0052E6C6 /* AttachmentEditView.swift */; };
+		2D3C9C362EC1EDAD0052E6C6 /* AttachmentPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C9C352EC1EDA60052E6C6 /* AttachmentPreviewView.swift */; };
+		2D3C9C382EC1EE110052E6C6 /* ForumAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3C9C372EC1EE0E0052E6C6 /* ForumAttachment.swift */; };
+		2D3FECBE2E7E17D600817DFB /* PageNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECBD2E7E17CB00817DFB /* PageNumberView.swift */; };
 		2D3FECC02E7E1B4D00817DFB /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECBF2E7E1B4A00817DFB /* LiquidGlassTitleView.swift */; };
 		2D3FECC22E7E22E700817DFB /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECC12E7E22E300817DFB /* PostsPageTopBarLiquidGlass.swift */; };
 		2D3FECC42E7E238400817DFB /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3FECC32E7E237B00817DFB /* GradientView.swift */; };
@@ -527,7 +530,11 @@
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
-		2D3FECBD2E7E17CB00817DFB /* VerticalPageNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalPageNumberView.swift; sourceTree = "<group>"; };
+		2D3C9C332EC1ED8F0052E6C6 /* AttachmentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentEditView.swift; sourceTree = "<group>"; };
+		2D3C9C352EC1EDA60052E6C6 /* AttachmentPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentPreviewView.swift; sourceTree = "<group>"; };
+		2D3C9C372EC1EE0E0052E6C6 /* ForumAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumAttachment.swift; sourceTree = "<group>"; };
+		2D3CB32D2EBF3CA200BD4A12 /* lottie-player.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "lottie-player.js"; path = "Vendor/lottie-player.js"; sourceTree = "<group>"; };
+		2D3FECBD2E7E17CB00817DFB /* PageNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageNumberView.swift; sourceTree = "<group>"; };
 		2D3FECBF2E7E1B4A00817DFB /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
 		2D3FECC12E7E22E300817DFB /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
 		2D3FECC32E7E237B00817DFB /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
@@ -1143,6 +1150,9 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				2D3C9C372EC1EE0E0052E6C6 /* ForumAttachment.swift */,
+				2D3C9C352EC1EDA60052E6C6 /* AttachmentPreviewView.swift */,
+				2D3C9C332EC1ED8F0052E6C6 /* AttachmentEditView.swift */,
 				1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */,
 				1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */,
 				1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */,
@@ -1165,7 +1175,7 @@
 			isa = PBXGroup;
 			children = (
 				2D3FECBF2E7E1B4A00817DFB /* LiquidGlassTitleView.swift */,
-				2D3FECBD2E7E17CB00817DFB /* VerticalPageNumberView.swift */,
+				2D3FECBD2E7E17CB00817DFB /* PageNumberView.swift */,
 				2D10A3842E05C35700544F91 /* SearchView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
@@ -1182,6 +1192,7 @@
 		29B97314FDCFA39411CA2CEA /* Awful */ = {
 			isa = PBXGroup;
 			children = (
+				2D3CB32D2EBF3CA200BD4A12 /* lottie-player.js */,
 				1C3857A115675AFE0078AF95 /* App */,
 				1CDAC85C2AE10966006CEE88 /* AwfulCore */,
 				1CDAC85E2AE10966006CEE88 /* AwfulExtensions */,
@@ -1444,6 +1455,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CAD42B62CD3050400579B8E /* lottie-player.js in Resources */,
 				1C273AA021C1DC25002875A9 /* RenderView-AllFrames.js in Resources */,
 				8C8FA48119AD7CA300B67AAA /* image-coder.png in Resources */,
 				8C8FA47E19AD7CA300B67AAA /* award.png in Resources */,
@@ -1498,7 +1510,6 @@
 				8CEB405916877D2A00BFA9A8 /* winpos95-heading-seen.png in Resources */,
 				1CF521772C228F88009712A7 /* PrivacyInfo.xcprivacy in Resources */,
 				8CEB405C16877E1600BFA9A8 /* winpos95-heading-left-seen.png in Resources */,
-				1CAD42B62CD3050400579B8E /* lottie-player.js in Resources */,
 				2D921269292F588100B16011 /* platinum-member.png in Resources */,
 				8CEB405E1687865300BFA9A8 /* hourglass.gif in Resources */,
 				1C5C2C5322D2579E00EA5A80 /* TUSafariActivity.bundle in Resources */,
@@ -1570,7 +1581,7 @@
 				1C16FC0E1CC477B200C88BD1 /* ThreadTagPickerViewController.swift in Sources */,
 				1C796A292218C41F0035E154 /* DefaultBrowser+.swift in Sources */,
 				1CB5F7F5201527550046D080 /* ThreadListCell.swift in Sources */,
-				2D3FECBE2E7E17D600817DFB /* VerticalPageNumberView.swift in Sources */,
+				2D3FECBE2E7E17D600817DFB /* PageNumberView.swift in Sources */,
 				1C25AC4B1F537A9600977D6F /* WebViewAntiHijacking.swift in Sources */,
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */,
@@ -1596,6 +1607,7 @@
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
+				2D3C9C362EC1EDAD0052E6C6 /* AttachmentPreviewView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
@@ -1605,9 +1617,11 @@
 				1CC256B51A398084003FA7A8 /* ScrollViewKeyboardAvoider.swift in Sources */,
 				1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */,
 				1CB15BEE1A9D33F600176E73 /* URLMenuPresenter.swift in Sources */,
+				2D3C9C382EC1EE110052E6C6 /* ForumAttachment.swift in Sources */,
 				1C220E3D2B815AFC00DA92B0 /* Bundle+.swift in Sources */,
 				1CD0C54F1BE674D700C3AC80 /* PostsPageRefreshSpinnerView.swift in Sources */,
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
+				2D3C9C342EC1ED930052E6C6 /* AttachmentEditView.swift in Sources */,
 				1CA3D6FC2D98A7E400D70964 /* OEmbedFetcher.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
 				2D3FECC62E7E277D00817DFB /* PostsPageTopBarProtocol.swift in Sources */,

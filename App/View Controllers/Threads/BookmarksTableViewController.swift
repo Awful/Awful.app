@@ -684,6 +684,7 @@ final class BookmarksTableViewController: TableViewController {
     private var filterButton: UIBarButtonItem!
     private var filterButtonView: UIButton!
     private var searchButton: UIBarButtonItem!
+    private var searchButtonView: UIButton!
     private var searchBar: UISearchBar!
     private var searchBarContainerView: UIView!
     private var filterPopoverController: UIViewController?
@@ -718,10 +719,15 @@ final class BookmarksTableViewController: TableViewController {
         filterButtonView.setImage(UIImage(systemName: "line.3.horizontal.decrease"), for: .normal)
         filterButtonView.accessibilityLabel = "Filter bookmarks"
         filterButtonView.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
-        
+
+        // For iOS 26+: Prevent button from adopting parent tint color changes during scroll
+        if #available(iOS 26.0, *) {
+            filterButtonView.tintAdjustmentMode = .normal
+        }
+
         // Wrap in bar button item
         filterButton = UIBarButtonItem(customView: filterButtonView)
-        
+
         // Update filter menu when theme changes
         updateFilterMenuIfNeeded()
     }
@@ -751,13 +757,19 @@ final class BookmarksTableViewController: TableViewController {
     }
     
     private func setupSearchButton() {
-        searchButton = UIBarButtonItem(
-            image: UIImage(named: "quick-look"),
-            style: .plain,
-            target: self,
-            action: #selector(searchButtonTapped)
-        )
-        searchButton.accessibilityLabel = "Search bookmarks"
+        // Create a custom button for better control
+        searchButtonView = UIButton(type: .system)
+        searchButtonView.setImage(UIImage(named: "quick-look"), for: .normal)
+        searchButtonView.accessibilityLabel = "Search bookmarks"
+        searchButtonView.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
+
+        // For iOS 26+: Prevent button from adopting parent tint color changes during scroll
+        if #available(iOS 26.0, *) {
+            searchButtonView.tintAdjustmentMode = .normal
+        }
+
+        // Wrap in bar button item
+        searchButton = UIBarButtonItem(customView: searchButtonView)
     }
     
     private func setupSearchBar() {
@@ -856,16 +868,25 @@ final class BookmarksTableViewController: TableViewController {
     
     private func toggleSearchBar() {
         let isSearchVisible = searchBarContainerView.frame.height > 0
-        
+
         if !isSearchVisible {
             // Show search bar with smooth animation
             searchBar.isHidden = false
             searchBar.alpha = 0
-            
+
             // Start with height 0, then animate to full height
             searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
             tableView.tableHeaderView = searchBarContainerView
-            
+
+            // Temporarily set height to non-zero so updateButtonColors detects search as visible
+            searchBarContainerView.frame.size.height = 52
+
+            // Update button color immediately when showing search
+            updateButtonColors()
+
+            // Reset height to 0 for animation
+            searchBarContainerView.frame.size.height = 0
+
             UIView.animate(
                 withDuration: 0.4,
                 delay: 0,
@@ -880,7 +901,6 @@ final class BookmarksTableViewController: TableViewController {
                 },
                 completion: { _ in
                     self.searchBar.becomeFirstResponder()
-                    self.updateButtonColors()
                 }
             )
         } else {
@@ -888,7 +908,17 @@ final class BookmarksTableViewController: TableViewController {
             searchBar.resignFirstResponder()
             searchBar.text = ""
             applyFilter(.all)
-            
+
+            // Temporarily set height to 0 so updateButtonColors detects search as hidden
+            let originalHeight = searchBarContainerView.frame.height
+            searchBarContainerView.frame.size.height = 0
+
+            // Update button color immediately when hiding search
+            updateButtonColors()
+
+            // Restore height for animation
+            searchBarContainerView.frame.size.height = originalHeight
+
             UIView.animate(
                 withDuration: 0.3,
                 delay: 0,
@@ -903,7 +933,6 @@ final class BookmarksTableViewController: TableViewController {
                 },
                 completion: { _ in
                     self.searchBar.isHidden = true
-                    self.updateButtonColors()
                 }
             )
         }
@@ -931,32 +960,65 @@ final class BookmarksTableViewController: TableViewController {
         
         let isSearchVisible = searchBarContainerView.frame.height > 0
         let isFilterMenuOpen = filterPopoverController != nil
-        
-        // Use the same selected color for both filter and search when active
-        let selectedColor = theme[uicolor: "tintColor"] ?? theme[uicolor: "navigationBarTextColor"]
-        let normalColor = theme[uicolor: "navigationBarTextColor"]
-        
-        // Filter button should be highlighted if filter is active OR menu is open
-        let filterColor = (isFilterActive || isFilterMenuOpen) ? selectedColor : normalColor
-        let searchColor = isSearchVisible ? selectedColor : normalColor
-        
-        // Debug logging
-        print("Updating button colors: filter active=\(isFilterActive), menu open=\(isFilterMenuOpen), search visible=\(isSearchVisible)")
-        print("Filter color: \(String(describing: filterColor)), Normal color: \(String(describing: normalColor))")
-        
-        // Apply colors to both the bar button item and the custom view
-        filterButton?.tintColor = filterColor
-        filterButtonView?.tintColor = filterColor
-        
-        // For custom views in bar button items, sometimes we need to set the image tint color directly
-        if let buttonView = filterButtonView,
-           let currentImage = buttonView.currentImage,
-           let color = filterColor {
-            let tintedImage = currentImage.withTintColor(color, renderingMode: .alwaysTemplate)
-            buttonView.setImage(tintedImage, for: .normal)
+
+        if #available(iOS 26.0, *) {
+            // For iOS 26+, set explicit tint color based on theme mode (like liquid glass title view)
+            // This prevents the system from applying default blue tint when NavigationController sets tintColor = nil
+            let buttonTintColor = theme["mode"] == "dark" ? UIColor.white : UIColor.black
+
+            filterButton?.tintColor = buttonTintColor
+            filterButtonView?.tintColor = buttonTintColor
+            searchButton?.tintColor = buttonTintColor
+            searchButtonView?.tintColor = buttonTintColor
+
+            // Use alpha to indicate selected state
+            // Filter button should be semi-transparent when filter is active OR menu is open
+            filterButton?.customView?.alpha = (isFilterActive || isFilterMenuOpen) ? 0.5 : 1.0
+            filterButtonView?.alpha = (isFilterActive || isFilterMenuOpen) ? 0.5 : 1.0
+
+            // Search button should be semi-transparent when search is visible
+            searchButton?.customView?.alpha = isSearchVisible ? 0.5 : 1.0
+            searchButtonView?.alpha = isSearchVisible ? 0.5 : 1.0
+        } else {
+            // Pre-iOS 26: Use tint colors for selected state
+            // Ensure alpha is always 1.0 (full opacity) when using tint colors
+            filterButton?.customView?.alpha = 1.0
+            filterButtonView?.alpha = 1.0
+            searchButton?.customView?.alpha = 1.0
+            searchButtonView?.alpha = 1.0
+
+            let selectedColor = theme[uicolor: "tintColor"] ?? theme[uicolor: "navigationBarTextColor"]
+            let normalColor = theme[uicolor: "navigationBarTextColor"]
+
+            // Filter button should be highlighted if filter is active OR menu is open
+            let filterColor = (isFilterActive || isFilterMenuOpen) ? selectedColor : normalColor
+
+            let searchColor = isSearchVisible ? selectedColor : normalColor
+            
+            // Apply colors to both the bar button item and the custom view
+            filterButton?.tintColor = filterColor
+            filterButtonView?.tintColor = filterColor
+            
+            
+            // For custom views in bar button items, sometimes we need to set the image tint color directly
+            if let buttonView = filterButtonView,
+               let currentImage = buttonView.currentImage,
+               let color = filterColor {
+                let tintedImage = currentImage.withTintColor(color, renderingMode: .alwaysTemplate)
+                buttonView.setImage(tintedImage, for: .normal)
+            }
+
+            searchButton?.tintColor = searchColor
+            searchButtonView?.tintColor = searchColor
+
+            // Apply search button image tint color directly
+            if let buttonView = searchButtonView,
+               let currentImage = buttonView.currentImage,
+               let color = searchColor {
+                let tintedImage = currentImage.withTintColor(color, renderingMode: .alwaysTemplate)
+                buttonView.setImage(tintedImage, for: .normal)
+            }
         }
-        
-        searchButton?.tintColor = searchColor
     }
     
     
@@ -1086,8 +1148,12 @@ final class BookmarksTableViewController: TableViewController {
 
         loadMoreFooter?.themeDidChange()
         
-        // Update navigation bar button colors to follow theme
-        editButtonItem.tintColor = theme[uicolor: "navigationBarTextColor"]
+        if #available(iOS 26.0, *) {
+            // don't set any colors
+        } else {
+            // Update navigation bar button colors to follow theme
+            editButtonItem.tintColor = theme[uicolor: "navigationBarTextColor"]
+        }
         updateButtonColors()
         
         

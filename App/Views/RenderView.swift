@@ -29,8 +29,19 @@ final class RenderView: UIView {
 
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
-        
+
         let bundle = Bundle(for: RenderView.self)
+
+        // Conditionally load lottie-player.js if frog and ghost animations are enabled
+        let frogAndGhostEnabled = FoilDefaultStorage(Settings.frogAndGhostEnabled).wrappedValue
+        if frogAndGhostEnabled {
+            configuration.userContentController.addUserScript({
+                let url = bundle.url(forResource: "lottie-player.js", withExtension: nil)!
+                let script = try! String(contentsOf: url)
+                return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+            }())
+        }
+
         configuration.userContentController.addUserScript({
             let url = bundle.url(forResource: "RenderView.js", withExtension: nil)!
             let script = try! String(contentsOf: url)
@@ -280,6 +291,27 @@ extension RenderView: WKScriptMessageHandler {
                 self.url = url
             }
         }
+        
+        struct FetchAttachmentImage: RenderViewMessage {
+            static let messageName = "fetchAttachmentImage"
+
+            /// An opaque `id` to use when calling back with the response.
+            let id: String
+
+            /// The post ID for the attachment.
+            let postID: String
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let id = body["id"] as? String,
+                      let postID = body["postid"] as? String
+                else { return nil }
+
+                self.id = id
+                self.postID = postID
+            }
+        }
     }
 }
 
@@ -327,15 +359,6 @@ extension RenderView {
         }
     }
     
-    func loadLottiePlayer() {
-        Task {
-            do {
-                try await webView.eval("if (window.Awful) Awful.loadLotties()")
-            } catch {
-                self.mentionError(error, explanation: "could not evaluate loadLotties")
-            }
-        }
-    }
 
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied
     /// webview must be transparent to prevent white flashes during content refreshes. setting opaque to true in viewDidAppear helped, but still sometimes produced white flashes.
@@ -506,6 +529,18 @@ extension RenderView {
         }
     }
 
+    func didFetchAttachmentImage(id: String, dataURL: String) {
+        Task {
+            do {
+                try await webView.eval("""
+                    window.Awful?.didFetchAttachmentImage(\(escapeForEval(id)), \(escapeForEval(dataURL)));
+                """)
+            } catch {
+                logger.error("error calling back after fetching attachment image: \(error)")
+            }
+        }
+    }
+    
     /**
      How far the web document is offset from the scroll view's bounds.
 
