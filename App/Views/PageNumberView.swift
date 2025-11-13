@@ -10,7 +10,7 @@ final class PageNumberView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: 0, weight: .regular)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
