@@ -1715,6 +1715,8 @@ final class PostsPageViewController: ViewController {
             pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         }
 
+        pageNumberView.updateTheme()
+
         updateToolbarItems()
 
         messageViewController?.themeDidChange()

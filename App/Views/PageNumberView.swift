@@ -107,6 +107,10 @@ final class PageNumberView: UIView {
         pageLabel.textColor = textColor
     }
 
+    func updateTheme() {
+        pageLabel.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: 0, weight: .regular)
+    }
+
     override var intrinsicContentSize: CGSize {
         let labelSize = pageLabel.intrinsicContentSize
         let height: CGFloat
