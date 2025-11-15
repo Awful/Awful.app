@@ -325,15 +325,10 @@ final class PostsPageView: UIView {
 
         let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
 
-        // Position topBarContainer based on immersive mode state
-        let topBarY: CGFloat
-        if immersiveModeManager.shouldPositionTopBarForImmersive() {
-            // In immersive mode, position to attach directly to navigation bar
-            topBarY = immersiveModeManager.calculateTopBarY(normalY: bounds.minY + layoutMargins.top)
-        } else {
-            // Normal positioning
-            topBarY = bounds.minY + layoutMargins.top
-        }
+        let normalY = bounds.minY + layoutMargins.top
+        let topBarY = immersiveModeManager.shouldPositionTopBarForImmersive()
+            ? immersiveModeManager.calculateTopBarY(normalY: normalY)
+            : normalY
 
         topBarContainer.frame = CGRect(
             x: bounds.minX,
@@ -348,8 +343,6 @@ final class PostsPageView: UIView {
     /// Assumes that various views (top bar container, refresh control container, toolbar) have been laid out.
     func updateScrollViewInsets() {
         let scrollView = renderView.scrollView
-
-        // Calculate bottom inset based on immersive mode state
         let bottomInset = calculateBottomInset()
 
         var contentInset = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bottomInset, right: 0)
@@ -358,7 +351,6 @@ final class PostsPageView: UIView {
         }
         scrollView.contentInset = contentInset
 
-        // Calculate indicator bottom inset based on immersive mode state
         let indicatorBottomInset = calculateBottomInset()
 
         var indicatorInsets = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: indicatorBottomInset, right: 0)
@@ -633,7 +625,6 @@ extension PostsPageView: ScrollViewDelegateExtras {
             viewHasBeenScrolledOnce = true
         }
 
-        // Delegate immersive mode handling to manager
         immersiveModeManager.handleScrollViewWillBeginDragging(scrollView)
     }
 
@@ -806,28 +797,34 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         if #available(iOS 26.0, *) {
-            let topInset = scrollView.adjustedContentInset.top
-            let currentOffset = scrollView.contentOffset.y
-            let topPosition = -topInset
-
-            let transitionDistance: CGFloat = 30.0
-
-            let progress: CGFloat
-            if currentOffset <= topPosition {
-                progress = 0.0
-            } else if currentOffset >= topPosition + transitionDistance {
-                progress = 1.0
-            } else {
-                let distanceFromTop = currentOffset - topPosition
-                progress = distanceFromTop / transitionDistance
-            }
-
-            // Update navigation bar tint and title view text color based on scroll progress
-            if let viewController = postsPageViewController,
-               let navController = viewController.navigationController as? NavigationController {
-                navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
-                viewController.updateTitleViewTextColorForScrollProgress(progress)
-            }
+            updateNavigationBarForScrollProgress(scrollView)
         }
+    }
+
+    @available(iOS 26.0, *)
+    private func updateNavigationBarForScrollProgress(_ scrollView: UIScrollView) {
+        let topInset = scrollView.adjustedContentInset.top
+        let currentOffset = scrollView.contentOffset.y
+        let topPosition = -topInset
+
+        let transitionDistance: CGFloat = 30.0
+
+        let progress: CGFloat
+        if currentOffset <= topPosition {
+            progress = 0.0
+        } else if currentOffset >= topPosition + transitionDistance {
+            progress = 1.0
+        } else {
+            let distanceFromTop = currentOffset - topPosition
+            progress = distanceFromTop / transitionDistance
+        }
+
+        guard let viewController = postsPageViewController,
+              let navController = viewController.navigationController as? NavigationController else {
+            return
+        }
+
+        navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
+        viewController.updateTitleViewTextColorForScrollProgress(progress)
     }
 }

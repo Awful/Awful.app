@@ -1,4 +1,4 @@
-//  ImmersiveModeViewController.swift
+//  ImmersiveModeManager.swift
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -10,6 +10,7 @@ import AwfulSettings
 
 /// Manages immersive mode behavior for posts view
 /// Handles hiding/showing navigation bars and toolbars with scroll gestures
+@MainActor
 final class ImmersiveModeManager: NSObject {
 
     // MARK: - Constants
@@ -25,19 +26,10 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Dependencies
 
-    /// The posts view that contains the bars to be transformed
     weak var postsView: PostsPageView?
-
-    /// The navigation controller for accessing the navigation bar
     weak var navigationController: UINavigationController?
-
-    /// The render view containing the scroll view
     weak var renderView: RenderView?
-
-    /// The toolbar to be transformed
     weak var toolbar: UIToolbar?
-
-    /// The top bar container to be transformed
     weak var topBarContainer: UIView?
 
     // MARK: - Configuration
@@ -59,7 +51,7 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - State Properties
 
-    /// Progress of immersive mode (0.0 = bars fully visible, 1.0 = bars fully hidden)
+    /// Immersive mode progress (0.0 = bars fully visible, 1.0 = bars fully hidden)
     private var _immersiveProgress: CGFloat = 0.0
     private var immersiveProgress: CGFloat {
         get { _immersiveProgress }
@@ -78,16 +70,9 @@ final class ImmersiveModeManager: NSObject {
         }
     }
 
-    /// Last scroll offset to calculate delta
     private var lastScrollOffset: CGFloat = 0
-
-    /// Cached navigation bar reference for performance
     private weak var cachedNavigationBar: UINavigationBar?
-
-    /// Flag to prevent recursive updates
     private var isUpdatingBars = false
-
-    /// Cached value for total bar travel distance
     private var cachedTotalBarTravelDistance: CGFloat?
 
     // MARK: - UI Elements
@@ -148,8 +133,6 @@ final class ImmersiveModeManager: NSObject {
         self.renderView = renderView
         self.toolbar = toolbar
         self.topBarContainer = topBarContainer
-
-        // Clear cached navigation bar when configuration changes
         cachedNavigationBar = nil
     }
 
@@ -310,16 +293,18 @@ final class ImmersiveModeManager: NSObject {
         let nearBottomThreshold = barTravelDistance * Self.progressiveRevealMultiplier
         let isNearBottom = distanceFromBottom <= nearBottomThreshold
 
+        let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
+
         // When approaching the bottom while scrolling down, progressively reveal bars
         // so they're fully visible when reaching the end of content. This prevents users
         // from being unable to access navigation when at the bottom of the page.
         if isNearBottom && scrollDelta > 0 {
             // Calculate target progress based on proximity to bottom (closer = more revealed)
             let targetProgress = (distanceFromBottom / nearBottomThreshold).clamp(0...1)
-            let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
+            // Use min() to cap the reveal rate - can't reveal faster than natural scroll progression
+            // but can slow down reveal as we approach the bottom (targetProgress becomes constraint)
             immersiveProgress = min(incrementalProgress, targetProgress).clamp(0...1)
         } else {
-            let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
             immersiveProgress = incrementalProgress.clamp(0...1)
         }
 

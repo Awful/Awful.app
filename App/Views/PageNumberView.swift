@@ -11,13 +11,13 @@ final class PageNumberView: UIView {
     private static let heightModern: CGFloat = 39  // iOS 26+
     private static let heightLegacy: CGFloat = 44  // iOS < 26
 
-    private static var currentHeight: CGFloat {
+    private static let currentHeight: CGFloat = {
         if #available(iOS 26.0, *) {
             return heightModern
         } else {
             return heightLegacy
         }
-    }
+    }()
 
     private let pageLabel: UILabel = {
         let label = UILabel()

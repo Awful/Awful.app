@@ -57,19 +57,21 @@ final class PostsPageViewController: ViewController {
     private var _liquidGlassTitleView: UIView?
 
     @available(iOS 26.0, *)
-    private var liquidGlassTitleView: LiquidGlassTitleView? {
+    private var liquidGlassTitleView: LiquidGlassTitleView {
         if _liquidGlassTitleView == nil {
             _liquidGlassTitleView = LiquidGlassTitleView()
         }
-        return _liquidGlassTitleView as? LiquidGlassTitleView
+        return _liquidGlassTitleView as! LiquidGlassTitleView
     }
 
     @available(iOS 26.0, *)
     func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
+        // Use thresholds (0.01, 0.99) instead of exact 0.0/1.0 to avoid color flickering
+        // during small scroll position adjustments and floating point precision issues
         if progress < 0.01 {
-            liquidGlassTitleView?.textColor = theme["mode"] == "dark" ? .white : .black
+            liquidGlassTitleView.textColor = theme["mode"] == "dark" ? .white : .black
         } else if progress > 0.99 {
-            liquidGlassTitleView?.textColor = nil
+            liquidGlassTitleView.textColor = nil
         }
     }
 
@@ -204,9 +206,9 @@ final class PostsPageViewController: ViewController {
         didSet {
             if #available(iOS 26.0, *) {
                 let glassView = liquidGlassTitleView
-                glassView?.title = title
-                glassView?.textColor = theme["mode"] == "dark" ? .white : .black
-                glassView?.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
+                glassView.title = title
+                glassView.textColor = theme["mode"] == "dark" ? .white : .black
+                glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
                 navigationItem.titleView = glassView
                 configureNavigationBarForLiquidGlass()
@@ -1602,8 +1604,8 @@ final class PostsPageViewController: ViewController {
         if #available(iOS 26.0, *) {
             let glassView = liquidGlassTitleView
             // Set both text color and font from theme
-            glassView?.textColor = theme["mode"] == "dark" ? .white : .black
-            glassView?.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
+            glassView.textColor = theme["mode"] == "dark" ? .white : .black
+            glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
             // Update navigation bar configuration based on new theme
             configureNavigationBarForLiquidGlass()
