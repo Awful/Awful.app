@@ -113,6 +113,7 @@ final class PostsPageViewController: ViewController {
 
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
+        postsView.postsPageViewController = self
         postsView.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
         }
@@ -205,13 +206,7 @@ final class PostsPageViewController: ViewController {
                 let glassView = liquidGlassTitleView
                 glassView?.title = title
                 glassView?.textColor = theme["mode"] == "dark" ? .white : .black
-
-                switch UIDevice.current.userInterfaceIdiom {
-                case .pad:
-                    glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-                default:
-                    glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-                }
+                glassView?.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
                 navigationItem.titleView = glassView
                 configureNavigationBarForLiquidGlass()
@@ -1608,29 +1603,20 @@ final class PostsPageViewController: ViewController {
             let glassView = liquidGlassTitleView
             // Set both text color and font from theme
             glassView?.textColor = theme["mode"] == "dark" ? .white : .black
-
-            switch UIDevice.current.userInterfaceIdiom {
-            case .pad:
-                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            default:
-                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-            }
+            glassView?.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
             // Update navigation bar configuration based on new theme
             configureNavigationBarForLiquidGlass()
         } else {
             // Apply theme to regular title label for iOS < 26
             navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
-            
-            switch UIDevice.current.userInterfaceIdiom {
-            case .pad:
-                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
-            default:
-                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
+            navigationItem.titleLabel.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
+
+            if UIDevice.current.userInterfaceIdiom == .phone {
                 navigationItem.titleLabel.numberOfLines = 2
-                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
             }
+
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
         }
         
         // Update navigation bar button colors (only for iOS < 26)
@@ -1797,7 +1783,19 @@ final class PostsPageViewController: ViewController {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
         postsView.layoutMargins = view.safeAreaInsets
     }
-    
+
+    /// Safely retrieves font configuration from the theme with fallback defaults
+    private func fontForPostTitle(from theme: Theme, idiom: UIUserInterfaceIdiom) -> UIFont {
+        let sizeAdjustmentKey = idiom == .pad ? "postTitleFontSizeAdjustmentPad" : "postTitleFontSizeAdjustmentPhone"
+        let weightKey = idiom == .pad ? "postTitleFontWeightPad" : "postTitleFontWeightPhone"
+
+        let sizeAdjustment = theme[double: sizeAdjustmentKey] ?? (idiom == .pad ? 0 : -1)
+        let weightString = theme[weightKey] ?? "semibold"
+        let weight = FontWeight(rawValue: weightString)?.weight ?? .semibold
+
+        return UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: sizeAdjustment, weight: weight)
+    }
+
     @available(iOS 26.0, *)
     private func configureNavigationBarForLiquidGlass() {
         guard let navigationBar = navigationController?.navigationBar else { return }
@@ -1814,7 +1812,7 @@ final class PostsPageViewController: ViewController {
         appearance.shadowColor = nil
         appearance.shadowImage = nil
 
-        let textColor: UIColor = theme["navigationBarTextColor"]!
+        let textColor: UIColor = theme["navigationBarTextColor"] ?? .label
         appearance.titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: textColor,
             NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)

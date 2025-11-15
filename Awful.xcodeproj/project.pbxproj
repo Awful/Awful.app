@@ -202,7 +202,7 @@
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
-		2D571B492EC8765F0026826C /* ImmersiveModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B482EC876590026826C /* ImmersiveModeViewController.swift */; };
+		2D571B492EC8765F0026826C /* ImmersiveModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B482EC876590026826C /* ImmersiveModeManager.swift */; };
 		2D571B4B2EC876A20026826C /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B4A2EC8769E0026826C /* GradientView.swift */; };
 		2D571B4D2EC878230026826C /* PostsPageTopBarProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B4C2EC8781E0026826C /* PostsPageTopBarProtocol.swift */; };
 		2D571B4F2EC878A70026826C /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B4E2EC878A40026826C /* PostsPageTopBarLiquidGlass.swift */; };
@@ -523,7 +523,7 @@
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
-		2D571B482EC876590026826C /* ImmersiveModeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveModeViewController.swift; sourceTree = "<group>"; };
+		2D571B482EC876590026826C /* ImmersiveModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveModeManager.swift; sourceTree = "<group>"; };
 		2D571B4A2EC8769E0026826C /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2D571B4C2EC8781E0026826C /* PostsPageTopBarProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarProtocol.swift; sourceTree = "<group>"; };
 		2D571B4E2EC878A40026826C /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
@@ -662,7 +662,7 @@
 		1C00E0AB173A006B008895E7 /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				2D571B482EC876590026826C /* ImmersiveModeViewController.swift */,
+				2D571B482EC876590026826C /* ImmersiveModeManager.swift */,
 				1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */,
 				1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */,
 				1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */,
@@ -1618,7 +1618,7 @@
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				2D571B4B2EC876A20026826C /* GradientView.swift in Sources */,
 				1CC065F72D67028F002BB6A0 /* AppIconImageNames.swift in Sources */,
-				2D571B492EC8765F0026826C /* ImmersiveModeViewController.swift in Sources */,
+				2D571B492EC8765F0026826C /* ImmersiveModeManager.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,

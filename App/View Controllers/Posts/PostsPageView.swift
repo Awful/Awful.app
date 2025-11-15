@@ -22,6 +22,9 @@ final class PostsPageView: UIView {
     var viewHasBeenScrolledOnce: Bool = false
 
     let immersiveModeManager = ImmersiveModeManager()
+
+    /// Weak reference to the posts page view controller to avoid responder chain traversal
+    weak var postsPageViewController: PostsPageViewController?
     
     // MARK: Loading view
 
@@ -819,16 +822,11 @@ extension PostsPageView: ScrollViewDelegateExtras {
                 progress = distanceFromTop / transitionDistance
             }
 
-            var responder: UIResponder? = self
-            while responder != nil {
-                if let viewController = responder as? PostsPageViewController,
-                   let navController = viewController.navigationController as? NavigationController {
-                    navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
-                    viewController.updateTitleViewTextColorForScrollProgress(progress)
-
-                    break
-                }
-                responder = responder?.next
+            // Update navigation bar tint and title view text color based on scroll progress
+            if let viewController = postsPageViewController,
+               let navController = viewController.navigationController as? NavigationController {
+                navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
+                viewController.updateTitleViewTextColorForScrollProgress(progress)
             }
         }
     }

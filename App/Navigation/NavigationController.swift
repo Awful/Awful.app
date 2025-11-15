@@ -21,7 +21,6 @@ final class NavigationController: UINavigationController, Themeable {
         static let fullyScrolled: CGFloat = 0.99
     }
 
-    private static let gradientImageAlpha: CGFloat = 2.0
     private static let gradientImageSize = CGSize(width: 1, height: 96)
 
     fileprivate weak var realDelegate: UINavigationControllerDelegate?
@@ -312,8 +311,13 @@ final class NavigationController: UINavigationController, Themeable {
         var startRed: CGFloat = 0, startGreen: CGFloat = 0, startBlue: CGFloat = 0, startAlpha: CGFloat = 0
         var endRed: CGFloat = 0, endGreen: CGFloat = 0, endBlue: CGFloat = 0, endAlpha: CGFloat = 0
 
-        startColor.getRed(&startRed, green: &startGreen, blue: &startBlue, alpha: &startAlpha)
-        endColor.getRed(&endRed, green: &endGreen, blue: &endBlue, alpha: &endAlpha)
+        // Convert colors to RGB color space if needed and handle failures
+        guard startColor.getRed(&startRed, green: &startGreen, blue: &startBlue, alpha: &startAlpha),
+              endColor.getRed(&endRed, green: &endGreen, blue: &endBlue, alpha: &endAlpha) else {
+            // If color conversion fails (e.g., non-RGB color space), return the end color at full progress
+            // or start color at zero progress
+            return progress >= 0.5 ? endColor : startColor
+        }
 
         let red = startRed + (endRed - startRed) * progress
         let green = startGreen + (endGreen - startGreen) * progress
