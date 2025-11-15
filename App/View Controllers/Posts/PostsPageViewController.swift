@@ -41,6 +41,8 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
+    // Stored as Any because Task returns non-Sendable Core Data objects (Post: NSManagedObject).
+    // Swift 6 requires Task<Success, Failure> Success types to be Sendable.
     private var networkOperation: Any?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
@@ -54,6 +56,7 @@ final class PostsPageViewController: ViewController {
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
 
+    // this is to overcome not being allowed to mark stored properties as potentially unavailable using @available
     private var _liquidGlassTitleView: UIView?
 
     @available(iOS 26.0, *)
@@ -148,6 +151,12 @@ final class PostsPageViewController: ViewController {
         init() {
             super.init(frame: .zero)
             showsMenuAsPrimaryAction = true
+
+            if #available(iOS 16.0, *) {
+                preferredMenuElementOrder = .fixed
+            }
+
+            updateInterfaceStyle()
         }
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
@@ -155,7 +164,16 @@ final class PostsPageViewController: ViewController {
         func show(menu: UIMenu, from rect: CGRect) {
             frame = rect
             self.menu = menu
+
+            updateInterfaceStyle()
+
             gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
+        }
+
+        func updateInterfaceStyle() {
+            // Follow the theme's menuAppearance setting for menu appearance
+            let menuAppearance = Theme.defaultTheme()[string: "menuAppearance"]
+            overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
         }
     }
 
@@ -213,6 +231,7 @@ final class PostsPageViewController: ViewController {
                 glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
                 navigationItem.titleView = glassView
+
                 configureNavigationBarForLiquidGlass()
             } else {
                 navigationItem.titleView = nil
@@ -463,6 +482,11 @@ final class PostsPageViewController: ViewController {
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+        } else {
+            item.tintColor = theme["navigationBarTextColor"]
+        }
         return item
     }()
 
@@ -554,6 +578,11 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+        } else {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
@@ -569,6 +598,11 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+        } else {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
@@ -590,7 +624,7 @@ final class PostsPageViewController: ViewController {
                 popover.barButtonItem = action.sender as? UIBarButtonItem
             }
         })
-        
+
         if #available(iOS 26.0, *) {
             let containerView = UIView()
             containerView.addSubview(pageNumberView)
@@ -605,7 +639,7 @@ final class PostsPageViewController: ViewController {
         } else {
             item.possibleTitles = ["2345 / 2345"]
         }
-
+        
         item.accessibilityHint = "Opens page picker"
         return item
     }()
@@ -622,7 +656,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
-
+        // Only set explicit tint color for iOS < 26
         if #available(iOS 26.0, *) {
         } else {
             item.tintColor = theme["toolbarTextColor"]
@@ -1810,6 +1844,7 @@ final class PostsPageViewController: ViewController {
             awfulNavigationBar.bottomBorderColor = .clear
         }
 
+        // Start with opaque background - NavigationController will handle the transition to clear on scroll
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = theme["navigationBarTintColor"]
@@ -1834,18 +1869,23 @@ final class PostsPageViewController: ViewController {
         appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
         appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
 
+        // Set the back indicator image with template mode
         if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
             appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         }
 
+        // Apply to all states
         navigationBar.standardAppearance = appearance
         navigationBar.scrollEdgeAppearance = appearance
         navigationBar.compactAppearance = appearance
         navigationBar.compactScrollEdgeAppearance = appearance
 
+        // Set tintColor AFTER applying appearance to ensure back button uses theme color
         let navTextColor: UIColor = theme["mode"] == "dark" ? .white : .black
         navigationBar.tintColor = navTextColor
 
+        // Force the navigation controller to start at scroll position 0 (top)
+        // This will also update tintColor based on scroll position if needed
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
 
         navigationBar.setNeedsLayout()
@@ -1887,6 +1927,7 @@ final class PostsPageViewController: ViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+
         userActivity = nil
     }
 
