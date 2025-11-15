@@ -16,8 +16,6 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 final class CompositionMenuTree: NSObject {
-    // Manages composition menu items and acts as image picker delegate for attachment handling.
-
     @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
 
     fileprivate var imgurUploadsEnabled: Bool {
@@ -357,50 +355,66 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
 
         isProcessingImage = true
         let attachment = ForumAttachment(image: image, photoAssetIdentifier: pendingImageAssetIdentifier)
-        if let error = attachment.validationError {
-            // Check if the error can be fixed by resizing
-            let canResize = switch error {
-            case .fileTooLarge, .dimensionsTooLarge: true
-            default: false
-            }
 
-            if canResize {
-                guard let viewController = textView.nearestViewController else { return }
-                presentAlert(
-                    in: viewController,
-                    title: "Attachment Too Large",
-                    message: "\(error.localizedDescription)\n\nWould you like to automatically resize the image to fit?",
-                    actions: [
-                        ("Cancel", .cancel, { [weak self] in
-                            self?.clearPendingImage()
-                        }),
-                        ("Resize & Continue", .default, { [weak self] in
-                            self?.resizeAndAttachPendingImage()
-                        })
-                    ]
-                )
-            } else {
-                guard let viewController = textView.nearestViewController else { return }
-                presentAlert(
-                    in: viewController,
-                    title: "Invalid Attachment",
-                    message: error.localizedDescription,
-                    actions: [("OK", .default, nil)]
-                )
-                clearPendingImage()
-            }
+        if let error = attachment.validationError {
+            handleAttachmentValidationError(error)
             return
         }
 
+        applyAttachmentAndClear(attachment)
+    }
+
+    private func handleAttachmentValidationError(_ error: ForumAttachment.ValidationError) {
+        if canResizeToFix(error) {
+            presentResizePrompt(for: error)
+        } else {
+            presentValidationErrorAlert(error)
+        }
+    }
+
+    private func canResizeToFix(_ error: ForumAttachment.ValidationError) -> Bool {
+        switch error {
+        case .fileTooLarge, .dimensionsTooLarge: return true
+        default: return false
+        }
+    }
+
+    private func presentResizePrompt(for error: ForumAttachment.ValidationError) {
+        guard let viewController = textView.nearestViewController else { return }
+        presentAlert(
+            in: viewController,
+            title: "Attachment Too Large",
+            message: "\(error.localizedDescription)\n\nWould you like to automatically resize the image to fit?",
+            actions: [
+                ("Cancel", .cancel, { [weak self] in
+                    self?.clearPendingImage()
+                }),
+                ("Resize & Continue", .default, { [weak self] in
+                    self?.resizeAndAttachPendingImage()
+                })
+            ]
+        )
+    }
+
+    private func presentValidationErrorAlert(_ error: ForumAttachment.ValidationError) {
+        guard let viewController = textView.nearestViewController else { return }
+        presentAlert(
+            in: viewController,
+            title: "Invalid Attachment",
+            message: error.localizedDescription,
+            actions: [("OK", .default, nil)]
+        )
+        clearPendingImage()
+    }
+
+    private func applyAttachmentAndClear(_ attachment: ForumAttachment) {
         draft?.forumAttachment = attachment
         clearPendingImage()
-
         onAttachmentChanged?()
     }
 
     private func resizeAndAttachPendingImage() {
         guard let image = pendingImage, let assetID = pendingImageAssetIdentifier else {
-            // Use weak capture to prevent retaining the full image if not needed
             guard let image = pendingImage else { return }
             resizeAndAttach(image: image, assetIdentifier: nil)
             return
@@ -409,76 +423,60 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     }
 
     private func resizeAndAttach(image: UIImage, assetIdentifier: String?) {
-        // Show resizing placeholder immediately
         onResizingStarted?()
 
-        // Perform resize in background with weak image reference to prevent memory leak
         imageProcessingQueue.async { [weak self] in
             guard let self = self else { return }
 
-            let resizedAttachment = autoreleasepool { () -> ForumAttachment? in
-                let originalAttachment = ForumAttachment(image: image, photoAssetIdentifier: assetIdentifier)
-                return originalAttachment.resized()
+            let resizedAttachment = autoreleasepool {
+                ForumAttachment(image: image, photoAssetIdentifier: assetIdentifier).resized()
             }
 
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-
-                guard let resizedAttachment = resizedAttachment else {
-                    // Don't clear pendingImage - allow retry
-                    self.isProcessingImage = false
-                    // Clear placeholder on failure
-                    self.onAttachmentChanged?()
-
-                    guard let viewController = self.textView.nearestViewController else { return }
-                    self.presentAlert(
-                        in: viewController,
-                        title: "Resize Failed",
-                        message: "Unable to resize image to meet requirements.",
-                        actions: [
-                            ("Try Again", .default, { [weak self] in
-                                self?.resizeAndAttachPendingImage()
-                            }),
-                            ("Cancel", .cancel, { [weak self] in
-                                self?.clearPendingImage()
-                                self?.onAttachmentChanged?()
-                            })
-                        ]
-                    )
-                    return
-                }
-
-                if let error = resizedAttachment.validationError {
-                    // Don't clear pendingImage - allow retry
-                    self.isProcessingImage = false
-                    // Clear placeholder on validation failure
-                    self.onAttachmentChanged?()
-
-                    guard let viewController = self.textView.nearestViewController else { return }
-                    self.presentAlert(
-                        in: viewController,
-                        title: "Resize Failed",
-                        message: "\(error.localizedDescription)",
-                        actions: [
-                            ("Try Again", .default, { [weak self] in
-                                self?.resizeAndAttachPendingImage()
-                            }),
-                            ("Cancel", .cancel, { [weak self] in
-                                self?.clearPendingImage()
-                                self?.onAttachmentChanged?()
-                            })
-                        ]
-                    )
-                    return
-                }
-
-                // Success - now we can clear the pending image
-                self.clearPendingImage()
-                // Update with resized attachment
-                self.draft?.forumAttachment = resizedAttachment
-                self.onAttachmentChanged?()
+                self?.handleResizeResult(resizedAttachment)
             }
         }
+    }
+
+    private func handleResizeResult(_ resizedAttachment: ForumAttachment?) {
+        guard let attachment = resizedAttachment else {
+            handleResizeFailure(message: "Unable to resize image to meet requirements.")
+            return
+        }
+
+        if let error = attachment.validationError {
+            handleResizeFailure(message: error.localizedDescription)
+            return
+        }
+
+        handleResizeSuccess(attachment)
+    }
+
+    private func handleResizeFailure(message: String) {
+        isProcessingImage = false
+        onAttachmentChanged?()
+
+        guard let viewController = textView.nearestViewController else { return }
+        presentAlert(
+            in: viewController,
+            title: "Resize Failed",
+            message: message,
+            actions: [
+                ("Try Again", .default, { [weak self] in
+                    self?.resizeAndAttachPendingImage()
+                }),
+                ("Cancel", .cancel, { [weak self] in
+                    self?.clearPendingImage()
+                    self?.onAttachmentChanged?()
+                })
+            ]
+        )
+    }
+
+    private func handleResizeSuccess(_ attachment: ForumAttachment) {
+        clearPendingImage()
+        draft?.forumAttachment = attachment
+        onAttachmentChanged?()
     }
 }
 

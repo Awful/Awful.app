@@ -41,15 +41,10 @@ public final class ForumAttachment: NSObject, NSCoding {
     public static let supportedExtensions = ["gif", "jpg", "jpeg", "png"]
 
     private struct CompressionSettings {
-        /// Initial JPEG compression quality (0.9 provides good balance between file size and visual quality)
         static let defaultQuality: CGFloat = 0.9
-        /// Amount to reduce quality on each compression iteration (0.1 provides smooth quality degradation)
         static let qualityDecrement: CGFloat = 0.1
-        /// Minimum acceptable JPEG quality before switching to dimension reduction (0.1 prevents over-compression artifacts)
         static let minQuality: CGFloat = 0.1
-        /// Factor to scale down dimensions for PNG images with alpha (0.9 provides gradual size reduction)
         static let dimensionScaleFactor: CGFloat = 0.9
-        /// Minimum image dimension to maintain readability (100px ensures text/details remain visible)
         static let minimumDimension = 100
     }
 
@@ -79,18 +74,30 @@ public final class ForumAttachment: NSObject, NSCoding {
                 let options = PHImageRequestOptions()
                 options.isSynchronous = true
                 options.deliveryMode = .highQualityFormat
+                options.isNetworkAccessAllowed = true
+
                 var resultImage: UIImage?
                 var requestError: Error?
+                var timedOut = false
+
+                let semaphore = DispatchSemaphore(value: 0)
+
                 PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: options) { image, info in
                     resultImage = image
                     if let error = info?[PHImageErrorKey] as? Error {
                         requestError = error
                     }
+                    semaphore.signal()
+                }
+
+                if semaphore.wait(timeout: .now() + 30) == .timedOut {
+                    timedOut = true
+                    logger.error("Photo library request timed out for asset: \(photoAssetIdentifier as String)")
                 }
 
                 if let error = requestError {
                     logger.error("Failed to load image from photo library asset: \(error.localizedDescription)")
-                } else if resultImage == nil {
+                } else if resultImage == nil && !timedOut {
                     logger.error("Photo library request returned nil image for asset: \(photoAssetIdentifier as String)")
                 }
 
@@ -247,12 +254,16 @@ public final class ForumAttachment: NSObject, NSCoding {
 }
 
 extension ForumAttachment.ValidationError {
+    private static let byteFormatter: ByteCountFormatter = {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        return formatter
+    }()
+
     public var localizedDescription: String {
         switch self {
         case .fileTooLarge(let actualSize, let maxSize):
-            let formatter = ByteCountFormatter()
-            formatter.countStyle = .file
-            return "File size (\(formatter.string(fromByteCount: Int64(actualSize)))) exceeds maximum (\(formatter.string(fromByteCount: Int64(maxSize))))"
+            return "File size (\(Self.byteFormatter.string(fromByteCount: Int64(actualSize)))) exceeds maximum (\(Self.byteFormatter.string(fromByteCount: Int64(maxSize))))"
         case .dimensionsTooLarge(let width, let height, let maxDimension):
             return "Image dimensions (\(width)×\(height)) exceed maximum (\(maxDimension)×\(maxDimension))"
         case .unsupportedFormat:
