@@ -1150,6 +1150,10 @@ public final class ForumsClient {
         ])
         let (document, _) = try parseHTML(data: data, response: response)
 
+        return parseAttachmentInfo(from: document)
+    }
+
+    private func parseAttachmentInfo(from document: HTMLDocument) -> (id: String, filename: String)? {
         guard let attachmentLink = document.firstNode(matchingSelector: "a[href*='attachment.php']"),
               let href = attachmentLink["href"] else {
             return nil
@@ -1175,7 +1179,6 @@ public final class ForumsClient {
      - Throws: An error if the request fails or no attachment is found.
      */
     public func fetchAttachmentImage(postID: String) async throws -> Data {
-        // First, get the attachment info from the edit page
         guard let urlSession else { throw Error.missingURLSession }
 
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
@@ -1184,11 +1187,7 @@ public final class ForumsClient {
         ])
         let (document, _) = try parseHTML(data: data, response: response)
 
-        guard let attachmentLink = document.firstNode(matchingSelector: "a[href*='attachment.php']"),
-              let href = attachmentLink["href"],
-              let components = URLComponents(string: href),
-              let queryItems = components.queryItems,
-              let attachmentID = queryItems.first(where: { $0.name == "attachmentid" })?.value else {
+        guard let (attachmentID, _) = parseAttachmentInfo(from: document) else {
             throw NSError(domain: "Awful", code: 0, userInfo: [
                 NSLocalizedDescriptionKey: "No attachment found for this post"
             ])

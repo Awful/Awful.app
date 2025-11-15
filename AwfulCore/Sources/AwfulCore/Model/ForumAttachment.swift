@@ -77,27 +77,15 @@ public final class ForumAttachment: NSObject, NSCoding {
                 options.isNetworkAccessAllowed = true
 
                 var resultImage: UIImage?
-                var requestError: Error?
-                var timedOut = false
-
-                let semaphore = DispatchSemaphore(value: 0)
 
                 PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: options) { image, info in
                     resultImage = image
                     if let error = info?[PHImageErrorKey] as? Error {
-                        requestError = error
+                        logger.error("Failed to load image from photo library asset: \(error.localizedDescription)")
                     }
-                    semaphore.signal()
                 }
 
-                if semaphore.wait(timeout: .now() + 30) == .timedOut {
-                    timedOut = true
-                    logger.error("Photo library request timed out for asset: \(photoAssetIdentifier as String)")
-                }
-
-                if let error = requestError {
-                    logger.error("Failed to load image from photo library asset: \(error.localizedDescription)")
-                } else if resultImage == nil && !timedOut {
+                if resultImage == nil {
                     logger.error("Photo library request returned nil image for asset: \(photoAssetIdentifier as String)")
                 }
 
@@ -222,6 +210,7 @@ public final class ForumAttachment: NSObject, NSCoding {
         var currentWidth = targetWidth
         var currentHeight = targetHeight
         var resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
+        var lastValidImage: UIImage?
 
         while compressionQuality > CompressionSettings.minQuality {
             let hasAlpha = resizedImage.hasAlpha
@@ -240,16 +229,22 @@ public final class ForumAttachment: NSObject, NSCoding {
             if hasAlpha {
                 let newWidth = Int(CGFloat(currentWidth) * CompressionSettings.dimensionScaleFactor)
                 let newHeight = Int(CGFloat(currentHeight) * CompressionSettings.dimensionScaleFactor)
-                if newWidth < CompressionSettings.minimumDimension || newHeight < CompressionSettings.minimumDimension { break }
+                if newWidth < CompressionSettings.minimumDimension || newHeight < CompressionSettings.minimumDimension {
+                    break
+                }
                 currentWidth = newWidth
                 currentHeight = newHeight
                 resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
+
+                if let data = resizedImage.pngData(), data.count <= maxFileSize {
+                    lastValidImage = resizedImage
+                }
             } else {
                 compressionQuality -= CompressionSettings.qualityDecrement
             }
         }
 
-        return nil
+        return lastValidImage
     }
 }
 

@@ -30,21 +30,28 @@ final class CompositionMenuTree: NSObject {
     private let imageProcessingQueue = DispatchQueue(label: "com.awful.attachment.processing", qos: .userInitiated)
     private var pendingImage: UIImage?
     private var pendingImageAssetIdentifier: String?
+    private let imageProcessingLock = NSLock()
     private var _isProcessingImage = false
 
-    private var isProcessingImage: Bool {
-        get {
-            imageProcessingQueue.sync { _isProcessingImage }
-        }
-        set {
-            imageProcessingQueue.sync { _isProcessingImage = newValue }
-        }
+    private func tryStartProcessing() -> Bool {
+        imageProcessingLock.lock()
+        defer { imageProcessingLock.unlock() }
+
+        guard !_isProcessingImage else { return false }
+        _isProcessingImage = true
+        return true
+    }
+
+    private func finishProcessing() {
+        imageProcessingLock.lock()
+        defer { imageProcessingLock.unlock() }
+        _isProcessingImage = false
     }
 
     private func clearPendingImage() {
         pendingImage = nil
         pendingImageAssetIdentifier = nil
-        isProcessingImage = false
+        finishProcessing()
     }
 
     /// The textView's class will have some responder chain methods swizzled.
@@ -348,12 +355,11 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
 
     fileprivate func useForumAttachmentForPendingImage() {
         guard let image = pendingImage else { return }
-        guard !isProcessingImage else {
+        guard tryStartProcessing() else {
             logger.warning("Image already being processed, ignoring concurrent request")
             return
         }
 
-        isProcessingImage = true
         let attachment = ForumAttachment(image: image, photoAssetIdentifier: pendingImageAssetIdentifier)
 
         if let error = attachment.validationError {
@@ -414,12 +420,8 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     }
 
     private func resizeAndAttachPendingImage() {
-        guard let image = pendingImage, let assetID = pendingImageAssetIdentifier else {
-            guard let image = pendingImage else { return }
-            resizeAndAttach(image: image, assetIdentifier: nil)
-            return
-        }
-        resizeAndAttach(image: image, assetIdentifier: assetID)
+        guard let image = pendingImage else { return }
+        resizeAndAttach(image: image, assetIdentifier: pendingImageAssetIdentifier)
     }
 
     private func resizeAndAttach(image: UIImage, assetIdentifier: String?) {
@@ -453,7 +455,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     }
 
     private func handleResizeFailure(message: String) {
-        isProcessingImage = false
+        finishProcessing()
         onAttachmentChanged?()
 
         guard let viewController = textView.nearestViewController else { return }

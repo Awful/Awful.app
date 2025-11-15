@@ -137,7 +137,10 @@ final class ReplyWorkspace: NSObject {
                 textView.spellCheckingType = tweaks.spellCheckingType
             }
 
-            compositionViewController.setDraft(draft)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.compositionViewController.setDraft(self.draft)
+            }
         }
     }
     
