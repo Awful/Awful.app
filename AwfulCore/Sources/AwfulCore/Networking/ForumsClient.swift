@@ -921,7 +921,8 @@ public final class ForumsClient {
         }
 
         var maxDimension = ForumAttachment.maxDimension
-        for td in document.nodes(matchingSelector: "td") {
+        // Search only within form table cells to avoid processing unrelated page content
+        for td in document.nodes(matchingSelector: "form[name='vbform'] td") {
             let text = td.textContent
             if text.contains("Attach file:") {
                 var nextSibling: HTMLElement?
@@ -955,43 +956,6 @@ public final class ForumsClient {
         }
 
         return (maxFileSize: maxFileSize, maxDimension: maxDimension)
-    }
-
-    /**
-     Fetches an attachment image for a post with authentication.
-
-     This method downloads attachment images that require authentication,
-     typically for posts being edited that already have attachments.
-
-     - Parameter postID: The ID of the post containing the attachment.
-
-     - Returns: The raw image data.
-
-     - Throws: An error if the request fails or returns a non-200 status code.
-     */
-    public func fetchAttachmentImage(postID: String) async throws -> Data {
-        guard let url = URL(string: "attachment.php?postid=\(postID)", relativeTo: baseURL) else {
-            throw Error.invalidBaseURL
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-
-        guard let session = urlSession else {
-            throw Error.invalidBaseURL
-        }
-
-        let (data, response) = try await session.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw URLError(.badServerResponse)
-        }
-
-        guard httpResponse.statusCode == 200 else {
-            throw URLError(.badServerResponse)
-        }
-
-        return data
     }
 
     public func previewReply(

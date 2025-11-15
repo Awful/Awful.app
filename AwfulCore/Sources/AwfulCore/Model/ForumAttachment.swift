@@ -41,10 +41,15 @@ public final class ForumAttachment: NSObject, NSCoding {
     public static let supportedExtensions = ["gif", "jpg", "jpeg", "png"]
 
     private struct CompressionSettings {
+        /// Initial JPEG compression quality (0.9 provides good balance between file size and visual quality)
         static let defaultQuality: CGFloat = 0.9
+        /// Amount to reduce quality on each compression iteration (0.1 provides smooth quality degradation)
         static let qualityDecrement: CGFloat = 0.1
+        /// Minimum acceptable JPEG quality before switching to dimension reduction (0.1 prevents over-compression artifacts)
         static let minQuality: CGFloat = 0.1
+        /// Factor to scale down dimensions for PNG images with alpha (0.9 provides gradual size reduction)
         static let dimensionScaleFactor: CGFloat = 0.9
+        /// Minimum image dimension to maintain readability (100px ensures text/details remain visible)
         static let minimumDimension = 100
     }
 
@@ -63,7 +68,7 @@ public final class ForumAttachment: NSObject, NSCoding {
         self.image = image
         self.photoAssetIdentifier = photoAssetIdentifier
         super.init()
-        self.validationError = performValidation()
+        self.validationError = validate()
     }
 
     public required init?(coder: NSCoder) {
@@ -86,12 +91,12 @@ public final class ForumAttachment: NSObject, NSCoding {
                 if let error = requestError {
                     logger.error("Failed to load image from photo library asset: \(error.localizedDescription)")
                 } else if resultImage == nil {
-                    logger.warning("Photo library request returned nil image for asset: \(photoAssetIdentifier as String)")
+                    logger.error("Photo library request returned nil image for asset: \(photoAssetIdentifier as String)")
                 }
 
                 self.image = resultImage
             } else {
-                logger.warning("Photo asset not found for identifier: \(photoAssetIdentifier as String)")
+                logger.error("Photo asset not found for identifier: \(photoAssetIdentifier as String)")
                 self.image = nil
             }
         } else if let imageData = coder.decodeObject(of: NSData.self, forKey: CodingKeys.imageData.rawValue) {
@@ -102,7 +107,7 @@ public final class ForumAttachment: NSObject, NSCoding {
         }
 
         super.init()
-        self.validationError = performValidation()
+        self.validationError = validate()
     }
 
     public func encode(with coder: NSCoder) {
@@ -148,10 +153,6 @@ public final class ForumAttachment: NSObject, NSCoding {
         }
 
         return nil
-    }
-
-    private func performValidation() -> ValidationError? {
-        return validate()
     }
 
     public func imageData() throws -> (data: Data, filename: String, mimeType: String) {
