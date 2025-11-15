@@ -9,17 +9,7 @@ import UIKit
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AttachmentPreviewView")
 
 /// A card-style view that shows a preview of an attached image with options to remove it.
-final class AttachmentPreviewView: UIView, AttachmentCardView {
-
-    let imageView: UIImageView = {
-        let iv = AttachmentPreviewView.createImageView()
-        iv.contentMode = .scaleAspectFill
-        return iv
-    }()
-
-    let titleLabel: UILabel = AttachmentPreviewView.createTitleLabel(text: LocalizedString("compose.attachment.preview-title"))
-
-    let detailLabel: UILabel = AttachmentPreviewView.createDetailLabel()
+final class AttachmentPreviewView: AttachmentCardView {
 
     private let removeButton: UIButton = {
         let button = UIButton(type: .system)
@@ -39,17 +29,19 @@ final class AttachmentPreviewView: UIView, AttachmentCardView {
         imageView.backgroundColor = .secondarySystemFill
     }
 
-    init() {
-        super.init(frame: .zero)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupViews()
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        setupViews()
     }
 
     private func setupViews() {
-        configureCardAppearance()
+        imageView.contentMode = .scaleAspectFill
+        titleLabel.text = LocalizedString("compose.attachment.preview-title")
 
         addSubview(imageView)
         addSubview(titleLabel)

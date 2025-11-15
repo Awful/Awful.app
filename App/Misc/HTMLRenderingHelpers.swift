@@ -155,7 +155,11 @@ extension HTMLDocument {
                 if src.hasPrefix("http") {
                     attachmentSrc = src
                 } else if let baseURL = ForumsClient.shared.baseURL {
-                    attachmentSrc = baseURL.absoluteString + src
+                    // Use URLComponents for safe URL construction instead of string concatenation
+                    guard let url = URL(string: src, relativeTo: baseURL)?.absoluteString else {
+                        continue
+                    }
+                    attachmentSrc = url
                 } else {
                     continue
                 }
@@ -480,8 +484,9 @@ private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
         pathExtension = "jpg"
     }
     
-    // Pretty sure NSURLComponents init should always succeed from a URL.
-    var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+    guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+        return nil
+    }
     components.host = "randomwaffle.gbs.fm"
     components.path = "/images/\(hashPrefix)/\(hash).\(pathExtension)"
     return components.url

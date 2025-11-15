@@ -29,9 +29,19 @@ final class CompositionMenuTree: NSObject {
     var onAttachmentChanged: (() -> Void)?
     var onResizingStarted: (() -> Void)?
 
+    private let imageProcessingQueue = DispatchQueue(label: "com.awful.attachment.processing", qos: .userInitiated)
     private var pendingImage: UIImage?
     private var pendingImageAssetIdentifier: String?
-    private var isProcessingImage = false
+    private var _isProcessingImage = false
+
+    private var isProcessingImage: Bool {
+        get {
+            imageProcessingQueue.sync { _isProcessingImage }
+        }
+        set {
+            imageProcessingQueue.sync { _isProcessingImage = newValue }
+        }
+    }
 
     private func clearPendingImage() {
         pendingImage = nil
@@ -125,23 +135,20 @@ final class CompositionMenuTree: NSObject {
     }
 
     private func showAuthenticationPrompt(in viewController: UIViewController) {
-        let alert = UIAlertController(
+        presentAlert(
+            in: viewController,
             title: "Imgur Authentication Required",
             message: "You've enabled Imgur Account uploads in settings. To upload images with your account, you'll need to log in to Imgur.",
-            preferredStyle: .alert
+            actions: [
+                ("Log In", .default, { [weak self] in
+                    self?.performAuthentication(in: viewController)
+                }),
+                ("Use Anonymous Upload", .default, { [weak self] in
+                    self?.switchToAnonymousUploads()
+                }),
+                ("Cancel", .cancel, nil)
+            ]
         )
-
-        alert.addAction(UIAlertAction(title: "Log In", style: .default) { [weak self] _ in
-            self?.performAuthentication(in: viewController)
-        })
-
-        alert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { [weak self] _ in
-            self?.switchToAnonymousUploads()
-        })
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        viewController.present(alert, animated: true)
     }
 
     private func performAuthentication(in viewController: UIViewController) {
@@ -175,58 +182,71 @@ final class CompositionMenuTree: NSObject {
     }
 
     private func presentAuthenticationSuccessAlert(in viewController: UIViewController) {
-        let alert = UIAlertController(
+        presentAlert(
+            in: viewController,
             title: "Successfully Logged In",
             message: "You're now logged in to Imgur and can upload images with your account.",
-            preferredStyle: .alert
+            actions: [
+                ("Continue", .default, { [weak self] in
+                    self?.showImagePicker(.photoLibrary)
+                })
+            ]
         )
-
-        alert.addAction(UIAlertAction(title: "Continue", style: .default) { [weak self] _ in
-            self?.showImagePicker(.photoLibrary)
-        })
-
-        viewController.present(alert, animated: true)
     }
 
     private func presentRateLimitAlert(in viewController: UIViewController) {
-        let alert = UIAlertController(
+        presentAlert(
+            in: viewController,
             title: "Imgur Rate Limit Exceeded",
             message: "Imgur's API is currently rate limited. You can try again later or use anonymous uploads for now.",
-            preferredStyle: .alert
+            actions: [
+                ("Use Anonymous Uploads", .default, { [weak self] in
+                    self?.switchToAnonymousUploads()
+                }),
+                ("Cancel", .cancel, nil)
+            ]
         )
-
-        alert.addAction(UIAlertAction(title: "Use Anonymous Uploads", style: .default) { [weak self] _ in
-            self?.switchToAnonymousUploads()
-        })
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        viewController.present(alert, animated: true)
     }
 
     private func presentAuthenticationFailureAlert(in viewController: UIViewController) {
-        let alert = UIAlertController(
+        presentAlert(
+            in: viewController,
             title: "Authentication Failed",
             message: "Could not log in to Imgur. You can try again or choose anonymous uploads in settings.",
-            preferredStyle: .alert
+            actions: [
+                ("Try Again", .default, { [weak self] in
+                    self?.authenticateWithImgur()
+                }),
+                ("Use Anonymous Upload", .default, { [weak self] in
+                    self?.switchToAnonymousUploads()
+                }),
+                ("Cancel", .cancel, nil)
+            ]
         )
-
-        alert.addAction(UIAlertAction(title: "Try Again", style: .default) { [weak self] _ in
-            self?.authenticateWithImgur()
-        })
-
-        alert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { [weak self] _ in
-            self?.switchToAnonymousUploads()
-        })
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        viewController.present(alert, animated: true)
     }
 
     private func switchToAnonymousUploads() {
         imgurUploadMode = .anonymous
         showImagePicker(.photoLibrary)
+    }
+
+    // MARK: - Alert Helper
+
+    private func presentAlert(
+        in viewController: UIViewController,
+        title: String,
+        message: String,
+        actions: [(title: String, style: UIAlertAction.Style, handler: (() -> Void)?)]
+    ) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+        for (actionTitle, style, handler) in actions {
+            alert.addAction(UIAlertAction(title: actionTitle, style: style) { _ in
+                handler?()
+            })
+        }
+
+        viewController.present(alert, animated: true)
     }
     
     func insertImage(_ image: UIImage, withAssetIdentifier assetID: String? = nil) {
@@ -345,25 +365,28 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             }
 
             if canResize {
-                let alert = UIAlertController(
+                guard let viewController = textView.nearestViewController else { return }
+                presentAlert(
+                    in: viewController,
                     title: "Attachment Too Large",
                     message: "\(error.localizedDescription)\n\nWould you like to automatically resize the image to fit?",
-                    preferredStyle: .alert
+                    actions: [
+                        ("Cancel", .cancel, { [weak self] in
+                            self?.clearPendingImage()
+                        }),
+                        ("Resize & Continue", .default, { [weak self] in
+                            self?.resizeAndAttachPendingImage()
+                        })
+                    ]
                 )
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self] _ in
-                    self?.clearPendingImage()
-                })
-                alert.addAction(UIAlertAction(title: "Resize & Continue", style: .default) { [weak self] _ in
-                    self?.resizeAndAttachPendingImage()
-                })
-                textView.nearestViewController?.present(alert, animated: true)
             } else {
-                let alert = UIAlertController(
+                guard let viewController = textView.nearestViewController else { return }
+                presentAlert(
+                    in: viewController,
                     title: "Invalid Attachment",
                     message: error.localizedDescription,
-                    alertActions: [.ok()]
+                    actions: [("OK", .default, nil)]
                 )
-                textView.nearestViewController?.present(alert, animated: true)
                 clearPendingImage()
             }
             return
@@ -376,49 +399,81 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     }
 
     private func resizeAndAttachPendingImage() {
-        guard let image = pendingImage else { return }
+        guard let image = pendingImage, let assetID = pendingImageAssetIdentifier else {
+            // Use weak capture to prevent retaining the full image if not needed
+            guard let image = pendingImage else { return }
+            resizeAndAttach(image: image, assetIdentifier: nil)
+            return
+        }
+        resizeAndAttach(image: image, assetIdentifier: assetID)
+    }
 
+    private func resizeAndAttach(image: UIImage, assetIdentifier: String?) {
         // Show resizing placeholder immediately
         onResizingStarted?()
 
-        // Perform resize in background
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        // Perform resize in background with weak image reference to prevent memory leak
+        imageProcessingQueue.async { [weak self] in
             guard let self = self else { return }
 
             let resizedAttachment = autoreleasepool { () -> ForumAttachment? in
-                let originalAttachment = ForumAttachment(image: image, photoAssetIdentifier: self.pendingImageAssetIdentifier)
+                let originalAttachment = ForumAttachment(image: image, photoAssetIdentifier: assetIdentifier)
                 return originalAttachment.resized()
             }
 
-            DispatchQueue.main.async {
-                self.clearPendingImage()
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
 
                 guard let resizedAttachment = resizedAttachment else {
+                    // Don't clear pendingImage - allow retry
+                    self.isProcessingImage = false
                     // Clear placeholder on failure
                     self.onAttachmentChanged?()
 
-                    let alert = UIAlertController(
+                    guard let viewController = self.textView.nearestViewController else { return }
+                    self.presentAlert(
+                        in: viewController,
                         title: "Resize Failed",
-                        message: "Unable to resize image to meet requirements. Please try a different image.",
-                        alertActions: [.ok()]
+                        message: "Unable to resize image to meet requirements.",
+                        actions: [
+                            ("Try Again", .default, { [weak self] in
+                                self?.resizeAndAttachPendingImage()
+                            }),
+                            ("Cancel", .cancel, { [weak self] in
+                                self?.clearPendingImage()
+                                self?.onAttachmentChanged?()
+                            })
+                        ]
                     )
-                    self.textView.nearestViewController?.present(alert, animated: true)
                     return
                 }
 
                 if let error = resizedAttachment.validationError {
+                    // Don't clear pendingImage - allow retry
+                    self.isProcessingImage = false
                     // Clear placeholder on validation failure
                     self.onAttachmentChanged?()
 
-                    let alert = UIAlertController(
+                    guard let viewController = self.textView.nearestViewController else { return }
+                    self.presentAlert(
+                        in: viewController,
                         title: "Resize Failed",
-                        message: "\(error.localizedDescription)\n\nPlease try a different image.",
-                        alertActions: [.ok()]
+                        message: "\(error.localizedDescription)",
+                        actions: [
+                            ("Try Again", .default, { [weak self] in
+                                self?.resizeAndAttachPendingImage()
+                            }),
+                            ("Cancel", .cancel, { [weak self] in
+                                self?.clearPendingImage()
+                                self?.onAttachmentChanged?()
+                            })
+                        ]
                     )
-                    self.textView.nearestViewController?.present(alert, animated: true)
                     return
                 }
 
+                // Success - now we can clear the pending image
+                self.clearPendingImage()
                 // Update with resized attachment
                 self.draft?.forumAttachment = resizedAttachment
                 self.onAttachmentChanged?()

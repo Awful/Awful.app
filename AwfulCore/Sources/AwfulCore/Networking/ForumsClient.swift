@@ -816,72 +816,134 @@ public final class ForumsClient {
         let (wasThreadClosed, threadID) = await thread.managedObjectContext!.perform {
             (thread.closed, thread.threadID)
         }
-        let formParams: [KeyValuePairs<String, Any>.Element]
-        var parsedLimits: (maxFileSize: Int, maxDimension: Int)?
-        do {
-            let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
-                "action": "newreply",
-                "threadid": threadID,
-            ])
-            let (document, url) = try parseHTML(data: data, response: response)
 
-            parsedLimits = parseAttachmentLimits(from: document)
+        // Fetch and prepare the reply form
+        let (formParams, parsedLimits) = try await fetchAndPrepareReplyForm(
+            threadID: threadID,
+            bbcode: bbcode,
+            wasThreadClosed: wasThreadClosed
+        )
 
-            guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
-                let description = if wasThreadClosed {
-                    "Could not reply; the thread may be closed."
-                } else {
-                    "Could not reply; failed to find the form."
-                }
-                throw AwfulCoreError.parseError(description: description)
+        // Submit the reply
+        let postID = try await submitReply(
+            formParams: formParams,
+            attachment: attachment
+        )
+
+        // Determine reply location
+        let location = await determineReplyLocation(postID: postID, in: mainContext)
+
+        return (location: location, attachmentLimits: parsedLimits)
+    }
+
+    /// Fetches the reply form and prepares form parameters
+    private func fetchAndPrepareReplyForm(
+        threadID: String,
+        bbcode: String,
+        wasThreadClosed: Bool
+    ) async throws -> (formParams: [KeyValuePairs<String, Any>.Element], limits: (maxFileSize: Int, maxDimension: Int)?) {
+        let (data, response) = try await fetch(method: .get, urlString: "newreply.php", parameters: [
+            "action": "newreply",
+            "threadid": threadID,
+        ])
+        let (document, url) = try parseHTML(data: data, response: response)
+
+        let parsedLimits = parseAttachmentLimits(from: document)
+
+        guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
+            let description = if wasThreadClosed {
+                "Could not reply; the thread may be closed."
+            } else {
+                "Could not reply; failed to find the form."
             }
-            let parsedForm = try Form(htmlForm, url: url)
-            let form = SubmittableForm(parsedForm)
-            try form.enter(text: bbcode, for: "message")
-            let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
-            formParams = prepareFormEntries(submission)
+            throw AwfulCoreError.parseError(description: description)
         }
 
-        let postID: String?
-        do {
-            let (data, response): (Data, URLResponse)
-            if let attachment = attachment {
-                guard let urlSession else {
-                    throw Error.missingURLSession
-                }
-                guard let url = URL(string: "newreply.php", relativeTo: baseURL) else {
-                    throw Error.invalidBaseURL
-                }
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                let escapedParams = formParams.lazy.map(win1252Escaped(_:))
-                try request.setMultipartFormData(escapedParams, encoding: .windowsCP1252)
-                try request.appendFileData(attachment.data, withName: "attachment", filename: attachment.filename, mimeType: attachment.mimeType)
-                (data, response) = try await urlSession.data(for: request)
-            } else {
-                (data, response) = try await fetch(method: .post, urlString: "newreply.php", parameters: formParams)
-            }
-            let (document, _) = try parseHTML(data: data, response: response)
-            let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
+        let parsedForm = try Form(htmlForm, url: url)
+        let form = SubmittableForm(parsedForm)
+        try form.enter(text: bbcode, for: "message")
+        let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+        let formParams = prepareFormEntries(submission)
+
+        return (formParams: formParams, limits: parsedLimits)
+    }
+
+    /// Submits the reply with or without attachment
+    private func submitReply(
+        formParams: [KeyValuePairs<String, Any>.Element],
+        attachment: (data: Data, filename: String, mimeType: String)?
+    ) async throws -> String? {
+        let (data, response): (Data, URLResponse)
+
+        if let attachment = attachment {
+            (data, response) = try await submitReplyWithAttachment(
+                formParams: formParams,
+                attachment: attachment
+            )
+        } else {
+            (data, response) = try await fetch(method: .post, urlString: "newreply.php", parameters: formParams)
+        }
+
+        return try parseReplyResponse(data: data, response: response)
+    }
+
+    /// Submits reply with multipart form data for attachment
+    private func submitReplyWithAttachment(
+        formParams: [KeyValuePairs<String, Any>.Element],
+        attachment: (data: Data, filename: String, mimeType: String)
+    ) async throws -> (Data, URLResponse) {
+        guard let urlSession else {
+            throw Error.missingURLSession
+        }
+        guard let url = URL(string: "newreply.php", relativeTo: baseURL) else {
+            throw Error.invalidBaseURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let escapedParams = formParams.lazy.map(win1252Escaped(_:))
+        try request.setMultipartFormData(escapedParams, encoding: .windowsCP1252)
+        try request.appendFileData(
+            attachment.data,
+            withName: "attachment",
+            filename: attachment.filename,
+            mimeType: attachment.mimeType
+        )
+
+        return try await urlSession.data(for: request)
+    }
+
+    /// Parses the reply response to extract post ID
+    private func parseReplyResponse(data: Data, response: URLResponse) throws -> String? {
+        let (document, _) = try parseHTML(data: data, response: response)
+
+        let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
             ?? document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
-            let queryItems = link
-                .flatMap { $0["href"] }
-                .flatMap { URLComponents(string: $0) }
-                .flatMap { $0.queryItems }
-            postID = if let goto = queryItems?.first(where: { $0.name == "goto" }), goto.value == "post" {
-                queryItems?.first(where: { $0.name == "postid" })?.value
-            } else {
-                nil
-            }
+
+        let queryItems = link
+            .flatMap { $0["href"] }
+            .flatMap { URLComponents(string: $0) }
+            .flatMap { $0.queryItems }
+
+        if let goto = queryItems?.first(where: { $0.name == "goto" }), goto.value == "post" {
+            return queryItems?.first(where: { $0.name == "postid" })?.value
         }
-        let location = await mainContext.perform {
+
+        return nil
+    }
+
+    /// Determines the reply location from post ID
+    private func determineReplyLocation(
+        postID: String?,
+        in context: NSManagedObjectContext
+    ) async -> ReplyLocation {
+        await context.perform {
             if let postID {
-                ReplyLocation.post(Post.objectForKey(objectKey: PostKey(postID: postID), in: mainContext))
+                ReplyLocation.post(Post.objectForKey(objectKey: PostKey(postID: postID), in: context))
             } else {
                 ReplyLocation.lastPostInThread
             }
         }
-        return (location: location, attachmentLimits: parsedLimits)
     }
 
     /**
@@ -1093,7 +1155,8 @@ public final class ForumsClient {
             return nil
         }
 
-        let filename = attachmentLink.textContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        let rawFilename = attachmentLink.textContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        let filename = sanitizeFilename(rawFilename)
         guard !filename.isEmpty,
               let components = URLComponents(string: href),
               let queryItems = components.queryItems,
@@ -1674,4 +1737,24 @@ private func findIgnoreFormkey(in parsed: ParsedDocument) throws -> String {
         .flatMap { $0.parent?.firstNode(matchingSelector: "input[name = 'formkey']") }
         .map { $0["value"] }
     ?? ""
+}
+
+private func sanitizeFilename(_ filename: String) -> String {
+    // Remove path traversal attempts and dangerous characters
+    var sanitized = filename
+        .replacingOccurrences(of: "../", with: "")
+        .replacingOccurrences(of: "..\\", with: "")
+        .replacingOccurrences(of: "/", with: "_")
+        .replacingOccurrences(of: "\\", with: "_")
+        .replacingOccurrences(of: "\0", with: "")
+
+    // Remove leading/trailing dots and spaces which can cause issues on some filesystems
+    sanitized = sanitized.trimmingCharacters(in: CharacterSet(charactersIn: ". "))
+
+    // Limit length to reasonable maximum (most filesystems support 255 bytes)
+    if sanitized.utf8.count > 255 {
+        sanitized = String(sanitized.prefix(255))
+    }
+
+    return sanitized
 }

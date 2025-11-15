@@ -16,52 +16,51 @@ enum AttachmentCardLayout {
     static let actionButtonSize: CGFloat = 30
 }
 
-/// Protocol defining common behavior for attachment card views
-protocol AttachmentCardView: UIView {
-    var imageView: UIImageView { get }
-    var titleLabel: UILabel { get }
-    var detailLabel: UILabel { get }
+/// Base class for attachment card views with common UI elements and styling
+class AttachmentCardView: UIView {
 
-    func updateTextColor(_ color: UIColor?)
-}
-
-extension AttachmentCardView {
-    /// Default implementation for updating text colors
-    func updateTextColor(_ color: UIColor?) {
-        titleLabel.textColor = color
-        detailLabel.textColor = color?.withAlphaComponent(0.7)
-    }
-
-    /// Creates a standard image view for attachment cards
-    static func createImageView() -> UIImageView {
+    let imageView: UIImageView = {
         let iv = UIImageView()
         iv.clipsToBounds = true
         iv.layer.cornerRadius = AttachmentCardLayout.imageCornerRadius
         iv.backgroundColor = .secondarySystemFill
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
-    }
+    }()
 
-    /// Creates a standard title label for attachment cards
-    static func createTitleLabel(text: String) -> UILabel {
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        label.text = text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }
+    }()
 
-    /// Creates a standard detail label for attachment cards
-    static func createDetailLabel() -> UILabel {
+    let detailLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
         label.textColor = .secondaryLabel
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configureCardAppearance()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        configureCardAppearance()
+    }
+
+    /// Updates the text color for title and detail labels
+    func updateTextColor(_ color: UIColor?) {
+        titleLabel.textColor = color
+        detailLabel.textColor = color?.withAlphaComponent(0.7)
     }
 
     /// Configures the card's appearance with standard styling
-    func configureCardAppearance() {
+    private func configureCardAppearance() {
         backgroundColor = .clear
         layer.cornerRadius = AttachmentCardLayout.cardCornerRadius
     }

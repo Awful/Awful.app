@@ -5,17 +5,7 @@
 import UIKit
 
 /// A card-style view that shows existing attachment info with options to keep or delete it.
-final class AttachmentEditView: UIView, AttachmentCardView {
-
-    let imageView: UIImageView = {
-        let iv = AttachmentEditView.createImageView()
-        iv.contentMode = .scaleAspectFit
-        return iv
-    }()
-
-    let titleLabel: UILabel = AttachmentEditView.createTitleLabel(text: LocalizedString("compose.attachment.edit-title"))
-
-    let detailLabel: UILabel = AttachmentEditView.createDetailLabel()
+final class AttachmentEditView: AttachmentCardView {
 
     private let actionSegmentedControl: UISegmentedControl = {
         let items = [
@@ -44,17 +34,19 @@ final class AttachmentEditView: UIView, AttachmentCardView {
         case delete
     }
 
-    init() {
-        super.init(frame: .zero)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupViews()
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        setupViews()
     }
 
     private func setupViews() {
-        configureCardAppearance()
+        imageView.contentMode = .scaleAspectFit
+        titleLabel.text = LocalizedString("compose.attachment.edit-title")
 
         addSubview(imageView)
         addSubview(titleLabel)
