@@ -21,6 +21,8 @@ final class NavigationController: UINavigationController, Themeable {
         static let fullyScrolled: CGFloat = 0.99
     }
 
+    private static let gradientImageSize = CGSize(width: 1, height: 96)
+
     fileprivate weak var realDelegate: UINavigationControllerDelegate?
     fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return nil }
@@ -54,7 +56,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     @available(iOS 26.0, *)
-    private func createGradientBackgroundImage(from color: UIColor, size: CGSize = CGSize(width: 1, height: 96)) -> UIImage? {
+    private func createGradientBackgroundImage(from color: UIColor, size: CGSize = gradientImageSize) -> UIImage? {
         let format = UIGraphicsImageRendererFormat()
         format.opaque = false
         let renderer = UIGraphicsImageRenderer(size: size, format: format)
@@ -222,6 +224,17 @@ final class NavigationController: UINavigationController, Themeable {
     private func updateNavigationBarBackgroundWithProgress(_ progress: CGFloat) {
         let appearance = UINavigationBarAppearance()
 
+        configureBackground(for: appearance, progress: progress)
+        configureBackIndicator(for: appearance, progress: progress)
+        configureTitleAndButtons(for: appearance, progress: progress)
+        applyAppearance(appearance, progress: progress)
+    }
+
+    @available(iOS 26.0, *)
+    private func configureBackground(for appearance: UINavigationBarAppearance, progress: CGFloat) {
+        appearance.shadowColor = nil
+        appearance.shadowImage = nil
+
         if progress < ScrollProgress.atTop {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = theme["navigationBarTintColor"]
@@ -232,8 +245,10 @@ final class NavigationController: UINavigationController, Themeable {
         } else {
             appearance.configureWithTransparentBackground()
 
-            let opaqueColor: UIColor = theme["navigationBarTintColor"]!
-            let gradientBaseColor: UIColor = theme["listHeaderBackgroundColor"]!
+            guard let opaqueColor = theme[uicolor: "navigationBarTintColor"],
+                  let gradientBaseColor = theme[uicolor: "listHeaderBackgroundColor"] else {
+                return
+            }
 
             if let gradientImage = createGradientBackgroundImage(from: gradientBaseColor) {
                 appearance.backgroundImage = gradientImage
@@ -243,10 +258,10 @@ final class NavigationController: UINavigationController, Themeable {
                 appearance.backgroundColor = interpolateColor(from: opaqueColor, to: gradientBaseColor, progress: progress)
             }
         }
+    }
 
-        appearance.shadowColor = nil
-        appearance.shadowImage = nil
-
+    @available(iOS 26.0, *)
+    private func configureBackIndicator(for appearance: UINavigationBarAppearance, progress: CGFloat) {
         if progress > ScrollProgress.fullyScrolled {
             if let backImage = UIImage(named: "back")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
                 appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
@@ -256,37 +271,28 @@ final class NavigationController: UINavigationController, Themeable {
                 appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
             }
         }
+    }
 
-        if progress < ScrollProgress.atTop {
-            let textColor: UIColor = theme["navigationBarTextColor"]!
-
-            appearance.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: textColor,
-                NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-            ]
-            let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-            configureButtonAppearance(appearance, font: buttonFont)
-        }
-        else if progress > ScrollProgress.fullyScrolled {
-            let textColor: UIColor = theme["mode"] == "dark" ? .white : .black
-
-            appearance.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: textColor,
-                NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-            ]
-            let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-            configureButtonAppearance(appearance, font: buttonFont)
+    @available(iOS 26.0, *)
+    private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
+        let textColor: UIColor
+        if progress > ScrollProgress.fullyScrolled {
+            textColor = theme["mode"] == "dark" ? .white : .black
         } else {
-            let textColor: UIColor = theme["navigationBarTextColor"]!
-
-            appearance.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: textColor,
-                NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
-            ]
-            let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
-            configureButtonAppearance(appearance, font: buttonFont)
+            textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
         }
 
+        appearance.titleTextAttributes = [
+            .foregroundColor: textColor,
+            .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        ]
+
+        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+        configureButtonAppearance(appearance, font: buttonFont)
+    }
+
+    @available(iOS 26.0, *)
+    private func applyAppearance(_ appearance: UINavigationBarAppearance, progress: CGFloat) {
         awfulNavigationBar.standardAppearance = appearance
         awfulNavigationBar.scrollEdgeAppearance = appearance
         awfulNavigationBar.compactAppearance = appearance
@@ -305,8 +311,13 @@ final class NavigationController: UINavigationController, Themeable {
         var startRed: CGFloat = 0, startGreen: CGFloat = 0, startBlue: CGFloat = 0, startAlpha: CGFloat = 0
         var endRed: CGFloat = 0, endGreen: CGFloat = 0, endBlue: CGFloat = 0, endAlpha: CGFloat = 0
 
-        startColor.getRed(&startRed, green: &startGreen, blue: &startBlue, alpha: &startAlpha)
-        endColor.getRed(&endRed, green: &endGreen, blue: &endBlue, alpha: &endAlpha)
+        // Convert colors to RGB color space if needed and handle failures
+        guard startColor.getRed(&startRed, green: &startGreen, blue: &startBlue, alpha: &startAlpha),
+              endColor.getRed(&endRed, green: &endGreen, blue: &endBlue, alpha: &endAlpha) else {
+            // If color conversion fails (e.g., non-RGB color space), return the end color at full progress
+            // or start color at zero progress
+            return progress >= 0.5 ? endColor : startColor
+        }
 
         let red = startRed + (endRed - startRed) * progress
         let green = startGreen + (endGreen - startGreen) * progress
@@ -318,15 +329,13 @@ final class NavigationController: UINavigationController, Themeable {
     
     private func updateNavigationBarAppearance(with theme: Theme, for viewController: UIViewController? = nil) {
         awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
-        
-        // iOS 26: Hide bottom border for liquid glass effect, earlier versions show themed border
+
         if #available(iOS 26.0, *) {
             awfulNavigationBar.bottomBorderColor = .clear
         } else {
             awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         }
-        
-        // iOS 26: Remove shadow for liquid glass effect, earlier versions use themed shadow
+
         if #available(iOS 26.0, *) {
             awfulNavigationBar.layer.shadowOpacity = 0
             awfulNavigationBar.layer.shadowColor = UIColor.clear.cgColor
@@ -349,15 +358,15 @@ final class NavigationController: UINavigationController, Themeable {
                 initialAppearance.shadowColor = nil
                 initialAppearance.shadowImage = nil
 
-                let textColor: UIColor = theme["navigationBarTextColor"]!
+                let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
 
                 if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
                     initialAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
                 }
 
                 initialAppearance.titleTextAttributes = [
-                    NSAttributedString.Key.foregroundColor: textColor,
-                    NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+                    .foregroundColor: textColor,
+                    .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
                 ]
                 let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
                 configureButtonAppearance(initialAppearance, font: buttonFont)
@@ -383,9 +392,9 @@ final class NavigationController: UINavigationController, Themeable {
                     appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
                 }
 
-                let textColor: UIColor = theme["navigationBarTextColor"]!
-                appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor,
-                                                 NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
+                let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+                appearance.titleTextAttributes = [.foregroundColor: textColor,
+                                                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
 
                 let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
                 configureButtonAppearance(appearance, font: buttonFont)
@@ -401,7 +410,7 @@ final class NavigationController: UINavigationController, Themeable {
                 awfulNavigationBar.layoutIfNeeded()
             }
         } else {
-            let fallbackTextColor = theme[uicolor: "navigationBarTextColor"]!
+            guard let fallbackTextColor = theme[uicolor: "navigationBarTextColor"] else { return }
             let attrs: [NSAttributedString.Key: Any] = [
                 .foregroundColor: fallbackTextColor,
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
@@ -496,11 +505,10 @@ extension NavigationController: UINavigationControllerDelegate {
         }
 
         if !isScrolledFromTop {
-            let textColor: UIColor = vcTheme["navigationBarTextColor"]!
+            guard let textColor = vcTheme[uicolor: "navigationBarTextColor"] else { return }
 
             awfulNavigationBar.tintColor = textColor
 
-            // Only set explicit bar button item colors on iOS < 26
             if #unavailable(iOS 26.0) {
                 viewController.navigationItem.leftBarButtonItem?.tintColor = textColor
                 viewController.navigationItem.rightBarButtonItem?.tintColor = textColor

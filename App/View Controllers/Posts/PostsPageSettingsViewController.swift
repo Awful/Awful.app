@@ -33,34 +33,26 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     @IBOutlet private var avatarsSwitch: UISwitch!
     @IBAction func toggleAvatars(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         showAvatars = sender.isOn
     }
 
     @IBOutlet private var imagesSwitch: UISwitch!
     @IBAction private func toggleImages(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         showImages = sender.isOn
     }
     
     @IBOutlet private var scaleTextLabel: UILabel!
     @IBOutlet private var scaleTextStepper: UIStepper!
     @IBAction private func scaleStepperDidChange(_ sender: UIStepper) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         fontScale = sender.value
     }
-    
+
     @IBOutlet private var automaticDarkModeSwitch: UISwitch!
     @IBAction func toggleAutomaticDarkMode(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         automaticDarkTheme = sender.isOn
     }
 
@@ -68,10 +60,20 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @IBOutlet private var darkModeLabel: UILabel!
     @IBOutlet private var darkModeSwitch: UISwitch!
     @IBAction func toggleDarkMode(_ sender: UISwitch) {
+        performHapticFeedback()
+        darkMode = sender.isOn
+    }
+
+    @objc private func toggleImmersiveMode(_ sender: UISwitch) {
+        performHapticFeedback()
+    }
+
+    // MARK: - Helper Methods
+
+    private func performHapticFeedback() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        darkMode = sender.isOn
     }
 
     private lazy var fontScaleFormatter: NumberFormatter = {
@@ -118,6 +120,9 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             }
             .store(in: &cancellables)
 
+        // Using RunLoop.main instead of DispatchQueue.main is intentional here.
+        // This defers UI updates during scrolling (tracking mode) for better performance.
+        // Settings toggles are not time-critical and can wait until scrolling completes.
         $showAvatars
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.avatarsSwitch?.isOn = $0 }
@@ -131,7 +136,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
 
     private func updatePreferredContentSize() {
         let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        preferredContentSize = CGSize(width: 320, height: preferredHeight)
+        preferredContentSize = CGSize(width: 320, height: max(preferredHeight, 246))
     }
 
     override func themeDidChange() {

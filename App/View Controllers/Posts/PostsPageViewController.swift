@@ -60,22 +60,23 @@ final class PostsPageViewController: ViewController {
     private var _liquidGlassTitleView: UIView?
 
     @available(iOS 26.0, *)
-    private var liquidGlassTitleView: LiquidGlassTitleView? {
-        if _liquidGlassTitleView == nil {
-            _liquidGlassTitleView = LiquidGlassTitleView()
+    private var liquidGlassTitleView: LiquidGlassTitleView {
+        if let existingView = _liquidGlassTitleView as? LiquidGlassTitleView {
+            return existingView
         }
-        return _liquidGlassTitleView as? LiquidGlassTitleView
+        let newView = LiquidGlassTitleView()
+        _liquidGlassTitleView = newView
+        return newView
     }
 
-    /// Updates the title view text color based on scroll position for dynamic adaptation
     @available(iOS 26.0, *)
     func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
+        // Use thresholds (0.01, 0.99) instead of exact 0.0/1.0 to avoid color flickering
+        // during small scroll position adjustments and floating point precision issues
         if progress < 0.01 {
-            // At top: use mode-based color for proper contrast
-            liquidGlassTitleView?.textColor = theme["mode"] == "dark" ? .white : .black
+            liquidGlassTitleView.textColor = theme["mode"] == "dark" ? .white : .black
         } else if progress > 0.99 {
-            // Fully scrolled: use nil for dynamic color adaptation
-            liquidGlassTitleView?.textColor = nil
+            liquidGlassTitleView.textColor = nil
         }
     }
 
@@ -119,6 +120,7 @@ final class PostsPageViewController: ViewController {
 
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
+        postsView.postsPageViewController = self
         postsView.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
         }
@@ -224,15 +226,9 @@ final class PostsPageViewController: ViewController {
         didSet {
             if #available(iOS 26.0, *) {
                 let glassView = liquidGlassTitleView
-                glassView?.title = title
-                glassView?.textColor = theme["mode"] == "dark" ? .white : .black
-
-                switch UIDevice.current.userInterfaceIdiom {
-                case .pad:
-                    glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-                default:
-                    glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-                }
+                glassView.title = title
+                glassView.textColor = theme["mode"] == "dark" ? .white : .black
+                glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
                 navigationItem.titleView = glassView
 
@@ -342,12 +338,7 @@ final class PostsPageViewController: ViewController {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    if #available(iOS 26.0, *) {
-                        self.pageNumberView.currentPage = 0
-                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
-                    } else {
-                        self.currentPageItem.title = "Page ? of \(pageCount)"
-                    }
+                    self.currentPageItem.title = "Page ? of \(pageCount)"
 
                 case .last, .nextUnread, .specific:
                     break
@@ -673,7 +664,6 @@ final class PostsPageViewController: ViewController {
         return item
     }()
 
-
     private func actionsItem() -> UIBarButtonItem {
         // Use primaryAction like the other toolbar buttons
         let item = UIBarButtonItem(primaryAction: UIAction(
@@ -727,7 +717,7 @@ final class PostsPageViewController: ViewController {
         do {
             posts = try context.fetch(request)
         } catch {
-            print("\(#function) error fetching posts: \(error)")
+            logger.error("\(#function) error fetching posts: \(error)")
         }
     }
 
@@ -783,6 +773,7 @@ final class PostsPageViewController: ViewController {
                 currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
             }
         } else {
+            // Clear page display
             if #available(iOS 26.0, *) {
                 pageNumberView.currentPage = 0
                 pageNumberView.totalPages = 0
@@ -855,18 +846,19 @@ final class PostsPageViewController: ViewController {
             popover.barButtonItem = sender
         }
     }
-    
+
     private func handlePageNumberTap() {
         guard postsView.loadingView == nil else { return }
         let selectotron = Selectotron(postsViewController: self)
         present(selectotron, animated: true)
-
+        
+        // For popover presentation with custom view, we need to set sourceView and sourceRect
         if let popover = selectotron.popoverPresentationController {
             popover.sourceView = pageNumberView
             popover.sourceRect = pageNumberView.bounds
         }
     }
-
+    
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -1648,30 +1640,21 @@ final class PostsPageViewController: ViewController {
         if #available(iOS 26.0, *) {
             let glassView = liquidGlassTitleView
             // Set both text color and font from theme
-            glassView?.textColor = theme["mode"] == "dark" ? .white : .black
-
-            switch UIDevice.current.userInterfaceIdiom {
-            case .pad:
-                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            default:
-                glassView?.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-            }
+            glassView.textColor = theme["mode"] == "dark" ? .white : .black
+            glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
             // Update navigation bar configuration based on new theme
             configureNavigationBarForLiquidGlass()
         } else {
             // Apply theme to regular title label for iOS < 26
             navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
-            
-            switch UIDevice.current.userInterfaceIdiom {
-            case .pad:
-                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
-            default:
-                navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
+            navigationItem.titleLabel.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
+
+            if UIDevice.current.userInterfaceIdiom == .phone {
                 navigationItem.titleLabel.numberOfLines = 2
-                navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
             }
+
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
         }
         
         // Update navigation bar button colors (only for iOS < 26)
@@ -1828,7 +1811,19 @@ final class PostsPageViewController: ViewController {
         // See commentary in `viewDidLoad()` about our layout strategy here. tl;dr layout margins were the highest-level approach available on all versions of iOS that Awful supported, so we'll use them exclusively to represent the safe area. Probably not necessary anymore.
         postsView.layoutMargins = view.safeAreaInsets
     }
-    
+
+    /// Safely retrieves font configuration from the theme with fallback defaults
+    private func fontForPostTitle(from theme: Theme, idiom: UIUserInterfaceIdiom) -> UIFont {
+        let sizeAdjustmentKey = idiom == .pad ? "postTitleFontSizeAdjustmentPad" : "postTitleFontSizeAdjustmentPhone"
+        let weightKey = idiom == .pad ? "postTitleFontWeightPad" : "postTitleFontWeightPhone"
+
+        let sizeAdjustment = theme[double: sizeAdjustmentKey] ?? (idiom == .pad ? 0 : -1)
+        let weightString = theme[weightKey] ?? "semibold"
+        let weight = FontWeight(rawValue: weightString)?.weight ?? .semibold
+
+        return UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: sizeAdjustment, weight: weight)
+    }
+
     @available(iOS 26.0, *)
     private func configureNavigationBarForLiquidGlass() {
         guard let navigationBar = navigationController?.navigationBar else { return }
@@ -1846,8 +1841,7 @@ final class PostsPageViewController: ViewController {
         appearance.shadowColor = nil
         appearance.shadowImage = nil
 
-        // Set initial text colors from theme
-        let textColor: UIColor = theme["navigationBarTextColor"]!
+        let textColor: UIColor = theme["navigationBarTextColor"] ?? .label
         appearance.titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: textColor,
             NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
@@ -1876,26 +1870,21 @@ final class PostsPageViewController: ViewController {
         navigationBar.compactAppearance = appearance
         navigationBar.compactScrollEdgeAppearance = appearance
 
-        // CRITICAL: Set tintColor AFTER applying appearance to ensure back button uses theme color
+        // Set tintColor AFTER applying appearance to ensure back button uses theme color
         let navTextColor: UIColor = theme["mode"] == "dark" ? .white : .black
-        print("DEBUG: Setting navigationBar.tintColor to: \(navTextColor) for theme: \(theme["name"] ?? "unknown")")
         navigationBar.tintColor = navTextColor
 
         // Force the navigation controller to start at scroll position 0 (top)
         // This will also update tintColor based on scroll position if needed
         navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
 
-        // Force navigation bar to update its appearance
         navigationBar.setNeedsLayout()
         navigationBar.layoutIfNeeded()
 
-        // Try setting the back button tint directly on the previous view controller
         if let previousVC = navigationController?.viewControllers.dropLast().last {
             previousVC.navigationItem.backBarButtonItem?.tintColor = navTextColor
         }
 
-        // The NavigationController will handle the dynamic transition based on scroll position
-        // iOS 26 handles status bar style automatically with liquid glass
     }
 
     override func viewDidAppear(_ animated: Bool) {

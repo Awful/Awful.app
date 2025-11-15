@@ -6,11 +6,24 @@
 import UIKit
 
 final class PageNumberView: UIView {
+
+    private static let minWidth: CGFloat = 60
+    private static let heightModern: CGFloat = 39  // iOS 26+
+    private static let heightLegacy: CGFloat = 44  // iOS < 26
+
+    private static let currentHeight: CGFloat = {
+        if #available(iOS 26.0, *) {
+            return heightModern
+        } else {
+            return heightLegacy
+        }
+    }()
+
     private let pageLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: 0, weight: .regular)
+        label.font = UIFont.preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
@@ -27,9 +40,7 @@ final class PageNumberView: UIView {
         }
     }
 
-    var textColor: UIColor = {
-        return .label
-    }() {
+    var textColor: UIColor = .label {
         didSet {
             updateColors()
         }
@@ -60,14 +71,8 @@ final class PageNumberView: UIView {
             pageLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             pageLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
             pageLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
-            widthAnchor.constraint(greaterThanOrEqualToConstant: 60),
-            heightAnchor.constraint(equalToConstant: {
-                if #available(iOS 26.0, *) {
-                    return 39
-                } else {
-                    return 44
-                }
-            }())
+            widthAnchor.constraint(greaterThanOrEqualToConstant: Self.minWidth),
+            heightAnchor.constraint(equalToConstant: Self.currentHeight)
         ])
 
         pageLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -110,16 +115,10 @@ final class PageNumberView: UIView {
     func updateTheme() {
         pageLabel.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: 0, weight: .regular)
     }
-
+    
     override var intrinsicContentSize: CGSize {
         let labelSize = pageLabel.intrinsicContentSize
-        let height: CGFloat
-        if #available(iOS 26.0, *) {
-            height = 39
-        } else {
-            height = 44
-        }
-        return CGSize(width: max(labelSize.width, 60), height: height)
+        return CGSize(width: max(labelSize.width, Self.minWidth), height: Self.currentHeight)
     }
 
     override func layoutSubviews() {

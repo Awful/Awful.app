@@ -7,13 +7,19 @@ import UIKit
 @available(iOS 26.0, *)
 final class LiquidGlassTitleView: UIView {
 
+    private static let lineSpacing: CGFloat = -2
+    private static let horizontalPadding: CGFloat = 16
+    private static let verticalPadding: CGFloat = 8
+    private static let defaultWidth: CGFloat = 320
+    private static let defaultHeight: CGFloat = 56
+
     private var visualEffectView: UIVisualEffectView = {
         let effect = UIGlassEffect()
         let view = UIVisualEffectView(effect: effect)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -51,17 +57,17 @@ final class LiquidGlassTitleView: UIView {
     
     private func updateTitleDisplay() {
         guard let text = titleLabel.text, !text.isEmpty else { return }
-        
+
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        paragraphStyle.lineSpacing = -2
+        paragraphStyle.lineSpacing = Self.lineSpacing
         paragraphStyle.lineBreakMode = .byWordWrapping
-        
+
         let attributes: [NSAttributedString.Key: Any] = [
             .paragraphStyle: paragraphStyle,
             .font: titleLabel.font ?? UIFont.preferredFont(forTextStyle: .callout)
         ]
-        
+
         titleLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
 
@@ -84,11 +90,11 @@ final class LiquidGlassTitleView: UIView {
             visualEffectView.leadingAnchor.constraint(equalTo: leadingAnchor),
             visualEffectView.trailingAnchor.constraint(equalTo: trailingAnchor),
             visualEffectView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            titleLabel.topAnchor.constraint(equalTo: visualEffectView.contentView.topAnchor, constant: 8),
-            titleLabel.leadingAnchor.constraint(equalTo: visualEffectView.contentView.leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: visualEffectView.contentView.trailingAnchor, constant: -16),
-            titleLabel.bottomAnchor.constraint(equalTo: visualEffectView.contentView.bottomAnchor, constant: -8)
+
+            titleLabel.topAnchor.constraint(equalTo: visualEffectView.contentView.topAnchor, constant: Self.verticalPadding),
+            titleLabel.leadingAnchor.constraint(equalTo: visualEffectView.contentView.leadingAnchor, constant: Self.horizontalPadding),
+            titleLabel.trailingAnchor.constraint(equalTo: visualEffectView.contentView.trailingAnchor, constant: -Self.horizontalPadding),
+            titleLabel.bottomAnchor.constraint(equalTo: visualEffectView.contentView.bottomAnchor, constant: -Self.verticalPadding)
         ])
 
         isAccessibilityElement = false
@@ -106,10 +112,10 @@ final class LiquidGlassTitleView: UIView {
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 320, height: 56)
+        return CGSize(width: Self.defaultWidth, height: Self.defaultHeight)
     }
-    
+
     override func sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize(width: 320, height: 56)
+        return CGSize(width: Self.defaultWidth, height: Self.defaultHeight)
     }
 }
