@@ -1697,8 +1697,8 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
 
-        // Configure the immersion mode manager with navigation controller
-        postsView.immersionModeManager.configure(
+        // Configure the immersive mode manager with navigation controller
+        postsView.immersiveModeManager.configure(
             postsView: postsView,
             navigationController: navigationController,
             renderView: postsView.renderView,
@@ -1861,18 +1861,14 @@ final class PostsPageViewController: ViewController {
         configureUserActivityIfPossible()
     }
 
-    // MARK: - ImmersiveModeViewController
-
-    func exitImmersionMode() {
-        postsView.immersionModeManager.exitImmersionMode()
+    func exitImmersiveMode() {
+        postsView.immersiveModeManager.exitImmersiveMode()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        // Reset navigation bar BEFORE the transition starts
-        // This ensures the bar is visible during swipe-back gestures
-        exitImmersionMode()
+        exitImmersiveMode()
 
         // Immediately reset navigation bar transform
         if let navigationBar = navigationController?.navigationBar {
@@ -1891,7 +1887,7 @@ final class PostsPageViewController: ViewController {
         userActivity = nil
 
         // Additional cleanup as fallback (in case viewWillDisappear wasn't called)
-        postsView.immersionModeManager.exitImmersionMode()
+        postsView.immersiveModeManager.exitImmersiveMode()
 
         // Reset navigation bar transform to identity to ensure it's visible
         if let navigationBar = navigationController?.navigationBar {

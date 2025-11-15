@@ -21,7 +21,7 @@ final class PostsPageView: UIView {
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     var viewHasBeenScrolledOnce: Bool = false
 
-    let immersionModeManager = ImmersionModeManager()
+    let immersiveModeManager = ImmersiveModeManager()
     
     // MARK: Loading view
 
@@ -235,7 +235,7 @@ final class PostsPageView: UIView {
     let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
     private var safeAreaGradientView: GradientView {
-        return immersionModeManager.safeAreaGradientView
+        return immersiveModeManager.safeAreaGradientView
     }
 
     private lazy var fallbackSafeAreaGradientView: GradientView = {
@@ -269,7 +269,7 @@ final class PostsPageView: UIView {
 
         addSubview(renderView)
         if #available(iOS 26.0, *) {
-            addSubview(immersionModeManager.safeAreaGradientView)
+            addSubview(immersiveModeManager.safeAreaGradientView)
         } else {
             addSubview(fallbackSafeAreaGradientView)
         }
@@ -278,7 +278,7 @@ final class PostsPageView: UIView {
         addSubview(toolbar)
         renderView.scrollView.addSubview(refreshControlContainer)
 
-        immersionModeManager.configure(
+        immersiveModeManager.configure(
             postsView: self,
             navigationController: nil, // Will be set from PostsPageViewController
             renderView: renderView,
@@ -299,7 +299,7 @@ final class PostsPageView: UIView {
         loadingViewContainer.frame = bounds
 
         if #available(iOS 26.0, *) {
-            immersionModeManager.updateGradientLayout(in: self)
+            immersiveModeManager.updateGradientLayout(in: self)
         }
 
         if toolbar.transform == .identity {
@@ -322,11 +322,11 @@ final class PostsPageView: UIView {
 
         let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
 
-        // Position topBarContainer based on immersion mode state
+        // Position topBarContainer based on immersive mode state
         let topBarY: CGFloat
-        if immersionModeManager.shouldPositionTopBarForImmersion() {
-            // In immersion mode, position to attach directly to navigation bar
-            topBarY = immersionModeManager.calculateTopBarY(normalY: bounds.minY + layoutMargins.top)
+        if immersiveModeManager.shouldPositionTopBarForImmersive() {
+            // In immersive mode, position to attach directly to navigation bar
+            topBarY = immersiveModeManager.calculateTopBarY(normalY: bounds.minY + layoutMargins.top)
         } else {
             // Normal positioning
             topBarY = bounds.minY + layoutMargins.top
@@ -339,18 +339,18 @@ final class PostsPageView: UIView {
             height: topBarHeight)
         updateTopBarContainerFrameAndScrollViewInsets()
 
-        immersionModeManager.reapplyTransformsAfterLayout()
+        immersiveModeManager.reapplyTransformsAfterLayout()
     }
 
     /// Assumes that various views (top bar container, refresh control container, toolbar) have been laid out.
     func updateScrollViewInsets() {
         let scrollView = renderView.scrollView
 
-        // Calculate bottom inset based on immersion mode state
+        // Calculate bottom inset based on immersive mode state
         let bottomInset: CGFloat
-        if immersionModeManager.shouldAdjustScrollInsets() {
+        if immersiveModeManager.shouldAdjustScrollInsets() {
             let normalInset = bounds.maxY - toolbar.frame.minY
-            bottomInset = immersionModeManager.calculateBottomInset(normalBottomInset: normalInset)
+            bottomInset = immersiveModeManager.calculateBottomInset(normalBottomInset: normalInset)
         } else {
             bottomInset = bounds.maxY - toolbar.frame.minY
         }
@@ -361,10 +361,10 @@ final class PostsPageView: UIView {
         }
         scrollView.contentInset = contentInset
 
-        // Calculate indicator bottom inset based on immersion mode state
+        // Calculate indicator bottom inset based on immersive mode state
         let indicatorBottomInset: CGFloat
-        if immersionModeManager.shouldAdjustScrollInsets() {
-            indicatorBottomInset = immersionModeManager.calculateBottomInset(normalBottomInset: bounds.maxY - toolbar.frame.minY)
+        if immersiveModeManager.shouldAdjustScrollInsets() {
+            indicatorBottomInset = immersiveModeManager.calculateBottomInset(normalBottomInset: bounds.maxY - toolbar.frame.minY)
         } else {
             indicatorBottomInset = bounds.maxY - toolbar.frame.minY
         }
@@ -620,7 +620,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
     func scrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
         setNeedsLayout()
 
-        immersionModeManager.handleScrollViewDidChangeContentSize(scrollView)
+        immersiveModeManager.handleScrollViewDidChangeContentSize(scrollView)
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -631,13 +631,13 @@ extension PostsPageView: ScrollViewDelegateExtras {
             viewHasBeenScrolledOnce = true
         }
 
-        // Delegate immersion mode handling to manager
-        immersionModeManager.handleScrollViewWillBeginDragging(scrollView)
+        // Delegate immersive mode handling to manager
+        immersiveModeManager.handleScrollViewWillBeginDragging(scrollView)
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
 
-        immersionModeManager.handleScrollViewWillEndDragging(
+        immersiveModeManager.handleScrollViewWillEndDragging(
             scrollView,
             withVelocity: velocity,
             targetContentOffset: targetContentOffset,
@@ -650,8 +650,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
             break
 
         case .ready, .awaitingScrollEnd, .refreshing, .disabled:
-            // Only handle top bar if immersion mode is disabled
-            if !immersionModeManager.shouldPositionTopBarForImmersion() {
+            // Only handle top bar if immersive mode is disabled
+            if !immersiveModeManager.shouldPositionTopBarForImmersive() {
                 switch topBarState {
                 case .hidden where velocity.y < 0:
                     topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
@@ -684,7 +684,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
         if !willDecelerate {
             updateTopBarDidEndDecelerating()
 
-            immersionModeManager.handleScrollViewDidEndDragging(
+            immersiveModeManager.handleScrollViewDidEndDragging(
                 scrollView,
                 willDecelerate: willDecelerate,
                 isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
@@ -705,7 +705,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
         updateTopBarDidEndDecelerating()
 
-        immersionModeManager.handleScrollViewDidEndDecelerating(
+        immersiveModeManager.handleScrollViewDidEndDecelerating(
             scrollView,
             isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
         )
@@ -757,7 +757,7 @@ extension PostsPageView: ScrollViewDelegateExtras {
             break
         }
 
-        immersionModeManager.handleScrollViewDidScroll(
+        immersiveModeManager.handleScrollViewDidScroll(
             scrollView,
             isDragging: scrollView.isDragging,
             isDecelerating: scrollView.isDecelerating,

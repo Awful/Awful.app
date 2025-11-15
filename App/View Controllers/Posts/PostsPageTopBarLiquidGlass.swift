@@ -174,9 +174,7 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
     var scrollToEnd: (() -> Void)? {
         didSet { updateButtonsEnabled() }
     }
-    
-    // MARK: Gunk
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

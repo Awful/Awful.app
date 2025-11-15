@@ -6,20 +6,22 @@ import Foundation
 import UIKit
 import AwfulSettings
 
-/// Protocol for view controllers that support immersion mode
-/// This allows NavigationController to properly handle transitions
-@MainActor
-protocol ImmersiveModeViewController {
-    /// Called when the view controller should exit immersion mode
-    /// This is typically called when transitioning away from the view controller
-    func exitImmersionMode()
-}
+// MARK: - ImmersiveModeManager
 
-// MARK: - ImmersionModeManager
-
-/// Manages immersion mode behavior for posts view
+/// Manages immersive mode behavior for posts view
 /// Handles hiding/showing navigation bars and toolbars with scroll gestures
-final class ImmersionModeManager: NSObject {
+final class ImmersiveModeManager: NSObject {
+
+    // MARK: - Constants
+
+    private static let bottomProximityDistance: CGFloat = 30
+    private static let topProximityThreshold: CGFloat = 20
+    private static let minScrollDelta: CGFloat = 0.5
+    private static let snapToHiddenThreshold: CGFloat = 0.9
+    private static let snapToVisibleThreshold: CGFloat = 0.1
+    private static let bottomSnapThreshold: CGFloat = 0.15
+    private static let bottomDistanceThreshold: CGFloat = 5.0
+    private static let progressiveRevealMultiplier: CGFloat = 2.0
 
     // MARK: - Dependencies
 
@@ -40,16 +42,14 @@ final class ImmersionModeManager: NSObject {
 
     // MARK: - Configuration
 
-    /// Whether immersion mode is enabled in settings
-    @FoilDefaultStorage(Settings.immersionModeEnabled) private var immersionModeEnabled {
+    /// Whether immersive mode is enabled in settings
+    @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled {
         didSet {
-            if immersionModeEnabled && !oldValue {
-                // Just enabled - may need to update layout
+            if immersiveModeEnabled && !oldValue {
                 postsView?.setNeedsLayout()
                 postsView?.layoutIfNeeded()
-            } else if !immersionModeEnabled && oldValue {
-                // Just disabled - reset everything
-                immersionProgress = 0.0
+            } else if !immersiveModeEnabled && oldValue {
+                immersiveProgress = 0.0
                 resetAllTransforms()
                 safeAreaGradientView.alpha = 0.0
                 postsView?.setNeedsLayout()
@@ -59,17 +59,17 @@ final class ImmersionModeManager: NSObject {
 
     // MARK: - State Properties
 
-    /// Progress of immersion mode (0.0 = bars fully visible, 1.0 = bars fully hidden)
-    private var immersionProgress: CGFloat = 0.0 {
+    /// Progress of immersive mode (0.0 = bars fully visible, 1.0 = bars fully hidden)
+    private var immersiveProgress: CGFloat = 0.0 {
         didSet {
-            guard immersionModeEnabled && !UIAccessibility.isVoiceOverRunning else {
-                immersionProgress = 0.0
+            guard immersiveModeEnabled && !UIAccessibility.isVoiceOverRunning else {
+                immersiveProgress = 0.0
                 return
             }
             let oldProgress = oldValue
-            immersionProgress = immersionProgress.clamp(0...1)
-            if oldProgress != immersionProgress {
-                updateBarsForImmersionProgress()
+            immersiveProgress = immersiveProgress.clamp(0...1)
+            if oldProgress != immersiveProgress {
+                updateBarsForImmersiveProgress()
             }
         }
     }
@@ -106,24 +106,18 @@ final class ImmersionModeManager: NSObject {
         if let navBar = findNavigationBar() {
             let navBarHeight = navBar.bounds.height
             let deviceSafeAreaTop = window.safeAreaInsets.top
-            let topDistance = navBarHeight + deviceSafeAreaTop + 30
+            let topDistance = navBarHeight + deviceSafeAreaTop + Self.bottomProximityDistance
             return max(bottomDistance, topDistance)
         }
 
         return bottomDistance
     }
 
-    /// Check if content is scrollable enough to warrant immersion mode
-    private var isContentScrollableEnoughForImmersion: Bool {
+    /// Check if content is scrollable enough to warrant immersive mode
+    private var isContentScrollableEnoughForImmersive: Bool {
         guard let scrollView = renderView?.scrollView else { return false }
         let scrollableHeight = scrollView.contentSize.height - scrollView.bounds.height + scrollView.adjustedContentInset.bottom
         return scrollableHeight > (totalBarTravelDistance * 2)
-    }
-
-    // MARK: - Initialization
-
-    override init() {
-        super.init()
     }
 
     // MARK: - Configuration
@@ -148,33 +142,29 @@ final class ImmersionModeManager: NSObject {
 
     // MARK: - Public Methods
 
-    /// Force exit immersion mode (useful for scroll-to-top/bottom actions)
-    func exitImmersionMode() {
-        guard immersionModeEnabled && immersionProgress > 0 else { return }
-        immersionProgress = 0.0
+    /// Force exit immersive mode (useful for scroll-to-top/bottom actions)
+    func exitImmersiveMode() {
+        guard immersiveModeEnabled && immersiveProgress > 0 else { return }
+        immersiveProgress = 0.0
 
-        // Explicitly reset navigation bar transform when exiting immersion mode
-        // This ensures the navigation bar is visible when returning to previous view
         if let navBar = findNavigationBar() {
             navBar.transform = .identity
         }
     }
 
-    /// Check if immersion mode should affect scroll insets
+    /// Check if immersive mode should affect scroll insets
     func shouldAdjustScrollInsets() -> Bool {
-        return immersionModeEnabled
+        return immersiveModeEnabled
     }
 
-    /// Calculate bottom inset adjustment for immersion mode
+    /// Calculate bottom inset adjustment for immersive mode
     func calculateBottomInset(normalBottomInset: CGFloat) -> CGFloat {
-        guard immersionModeEnabled,
+        guard immersiveModeEnabled,
               let toolbar = toolbar,
               let postsView = postsView else {
             return normalBottomInset
         }
 
-        // During immersion mode, use the static toolbar position (without transforms)
-        // to keep contentInset constant and prevent scroll interference
         let toolbarHeight = toolbar.sizeThatFits(postsView.bounds.size).height
         let staticToolbarY = postsView.bounds.maxY - postsView.layoutMargins.bottom - toolbarHeight
         return max(postsView.layoutMargins.bottom, postsView.bounds.maxY - staticToolbarY)
@@ -193,28 +183,25 @@ final class ImmersionModeManager: NSObject {
         )
     }
 
-    /// Apply immersion transforms after layout if needed
+    /// Apply immersive transforms after layout if needed
     func reapplyTransformsAfterLayout() {
-        if immersionModeEnabled && immersionProgress > 0 {
-            updateBarsForImmersionProgress()
+        if immersiveModeEnabled && immersiveProgress > 0 {
+            updateBarsForImmersiveProgress()
         }
     }
 
-    /// Determine if top bar should be positioned for immersion mode
-    func shouldPositionTopBarForImmersion() -> Bool {
-        return immersionModeEnabled
+    /// Determine if top bar should be positioned for immersive mode
+    func shouldPositionTopBarForImmersive() -> Bool {
+        return immersiveModeEnabled
     }
 
-    /// Calculate top bar Y position for immersion mode
+    /// Calculate top bar Y position for immersive mode
     func calculateTopBarY(normalY: CGFloat) -> CGFloat {
-        guard immersionModeEnabled else { return normalY }
+        guard immersiveModeEnabled else { return normalY }
 
-        // In immersion mode, position it to attach directly to the bottom edge of the navigation bar
         if let navBar = findNavigationBar() {
-            // Position directly at the bottom edge of the nav bar (no gap)
             return navBar.frame.maxY
         } else {
-            // Fallback to estimated position
             return postsView?.bounds.minY ?? 0 + (postsView?.layoutMargins.top ?? 0) + 44
         }
     }
@@ -223,10 +210,8 @@ final class ImmersionModeManager: NSObject {
 
     /// Handle scroll view content size changes
     func handleScrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
-        // Check if content is still scrollable enough for immersion mode
-        if immersionModeEnabled && !isContentScrollableEnoughForImmersion {
-            // Reset bars to visible if content becomes too short
-            immersionProgress = 0
+        if immersiveModeEnabled && !isContentScrollableEnoughForImmersive {
+            immersiveProgress = 0
         }
     }
 
@@ -234,9 +219,8 @@ final class ImmersionModeManager: NSObject {
     func handleScrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastScrollOffset = scrollView.contentOffset.y
 
-        // On first drag, ensure bars start visible if at top
-        if immersionModeEnabled && scrollView.contentOffset.y < 20 {
-            immersionProgress = 0
+        if immersiveModeEnabled && scrollView.contentOffset.y < Self.topProximityThreshold {
+            immersiveProgress = 0
         }
     }
 
@@ -247,16 +231,12 @@ final class ImmersionModeManager: NSObject {
         targetContentOffset: UnsafeMutablePointer<CGPoint>,
         isRefreshControlArmedOrTriggered: Bool
     ) {
-        // Optional: Snap to complete if very close to fully shown/hidden
-        if immersionModeEnabled && !isRefreshControlArmedOrTriggered {
-            if immersionProgress > 0.9 {
-                // Snap to fully hidden
-                immersionProgress = 1.0
-            } else if immersionProgress < 0.1 {
-                // Snap to fully visible
-                immersionProgress = 0.0
+        if immersiveModeEnabled && !isRefreshControlArmedOrTriggered {
+            if immersiveProgress > Self.snapToHiddenThreshold {
+                immersiveProgress = 1.0
+            } else if immersiveProgress < Self.snapToVisibleThreshold {
+                immersiveProgress = 0.0
             }
-            // Otherwise leave at current position
         }
     }
 
@@ -267,21 +247,7 @@ final class ImmersionModeManager: NSObject {
         isRefreshControlArmedOrTriggered: Bool
     ) {
         guard !willDecelerate else { return }
-
-        // Handle immersion mode completion when drag ends
-        if immersionModeEnabled && !isRefreshControlArmedOrTriggered && isContentScrollableEnoughForImmersion {
-            // Check if we're at the very bottom
-            let contentHeight = scrollView.contentSize.height
-            let adjustedBottom = scrollView.adjustedContentInset.bottom
-            let maxOffsetY = max(contentHeight, scrollView.bounds.height - adjustedBottom) - scrollView.bounds.height + adjustedBottom
-            let distanceFromBottom = maxOffsetY - scrollView.contentOffset.y
-
-            // Only snap to fully visible if we're at the very bottom AND bars are almost visible
-            // This prevents jarring snaps and lets the progressive reveal complete naturally
-            if distanceFromBottom <= 5 && immersionProgress < 0.15 {
-                immersionProgress = 0
-            }
-        }
+        snapToVisibleIfAtBottom(scrollView, isRefreshControlArmedOrTriggered: isRefreshControlArmedOrTriggered)
     }
 
     /// Handle scroll view did end decelerating
@@ -289,31 +255,17 @@ final class ImmersionModeManager: NSObject {
         _ scrollView: UIScrollView,
         isRefreshControlArmedOrTriggered: Bool
     ) {
-        // Handle immersion mode completion when deceleration ends
-        if immersionModeEnabled && !isRefreshControlArmedOrTriggered && isContentScrollableEnoughForImmersion {
-            // Check if we're at the very bottom
-            let contentHeight = scrollView.contentSize.height
-            let adjustedBottom = scrollView.adjustedContentInset.bottom
-            let maxOffsetY = max(contentHeight, scrollView.bounds.height - adjustedBottom) - scrollView.bounds.height + adjustedBottom
-            let distanceFromBottom = maxOffsetY - scrollView.contentOffset.y
-
-            // Only snap to fully visible if we're at the very bottom AND bars are almost visible
-            // This prevents jarring snaps and lets the progressive reveal complete naturally
-            if distanceFromBottom <= 5 && immersionProgress < 0.15 {
-                immersionProgress = 0
-            }
-        }
+        snapToVisibleIfAtBottom(scrollView, isRefreshControlArmedOrTriggered: isRefreshControlArmedOrTriggered)
     }
 
-    /// Main scroll handling logic for immersion mode
+    /// Main scroll handling logic for immersive mode
     func handleScrollViewDidScroll(
         _ scrollView: UIScrollView,
         isDragging: Bool,
         isDecelerating: Bool,
         isRefreshControlArmedOrTriggered: Bool
     ) {
-        // Handle immersion mode drawer-style behavior
-        guard immersionModeEnabled,
+        guard immersiveModeEnabled,
               !UIAccessibility.isVoiceOverRunning,
               (isDragging || isDecelerating),
               !isRefreshControlArmedOrTriggered else { return }
@@ -321,46 +273,34 @@ final class ImmersionModeManager: NSObject {
         let currentOffset = scrollView.contentOffset.y
         let scrollDelta = currentOffset - lastScrollOffset
 
-        // Only proceed if content is scrollable enough for immersion mode
-        guard isContentScrollableEnoughForImmersion else {
-            // Force bars visible if content is too short
-            immersionProgress = 0
+        guard isContentScrollableEnoughForImmersive else {
+            immersiveProgress = 0
             lastScrollOffset = currentOffset
             return
         }
 
-        // Dead zone at top to prevent jitter
-        if currentOffset < 20 {
-            // When very close to top, force bars to be fully visible
-            immersionProgress = 0
+        if currentOffset < Self.topProximityThreshold {
+            immersiveProgress = 0
             lastScrollOffset = currentOffset
             return
         }
 
-        // Minimum scroll delta threshold to prevent micro-movement responses
-        guard abs(scrollDelta) > 0.5 else {
-            // Ignore tiny movements that cause jitter
+        guard abs(scrollDelta) > Self.minScrollDelta else {
             return
         }
 
-        let contentHeight = scrollView.contentSize.height
-        let adjustedBottom = scrollView.adjustedContentInset.bottom
-        let maxOffsetY = max(contentHeight, scrollView.bounds.height - adjustedBottom) - scrollView.bounds.height + adjustedBottom
-
+        let distanceFromBottom = calculateDistanceFromBottom(scrollView)
         let barTravelDistance = totalBarTravelDistance
-        let distanceFromBottom = maxOffsetY - currentOffset
-        let nearBottomThreshold = barTravelDistance * 2.0
+        let nearBottomThreshold = barTravelDistance * Self.progressiveRevealMultiplier
         let isNearBottom = distanceFromBottom <= nearBottomThreshold
 
         if isNearBottom && scrollDelta > 0 {
-            // Scrolling down toward bottom - progressively reveal bars
             let targetProgress = (distanceFromBottom / nearBottomThreshold).clamp(0...1)
-            let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
-            immersionProgress = min(incrementalProgress, targetProgress).clamp(0...1)
+            let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
+            immersiveProgress = min(incrementalProgress, targetProgress).clamp(0...1)
         } else {
-            // Normal 1:1 scroll response
-            let incrementalProgress = immersionProgress + (scrollDelta / barTravelDistance)
-            immersionProgress = incrementalProgress.clamp(0...1)
+            let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
+            immersiveProgress = incrementalProgress.clamp(0...1)
         }
 
         lastScrollOffset = currentOffset
@@ -368,7 +308,7 @@ final class ImmersionModeManager: NSObject {
 
     // MARK: - Private Methods
 
-    private func updateBarsForImmersionProgress() {
+    private func updateBarsForImmersiveProgress() {
         guard !isUpdatingBars else { return }
         isUpdatingBars = true
         defer { isUpdatingBars = false }
@@ -376,21 +316,21 @@ final class ImmersionModeManager: NSObject {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
 
-        guard immersionModeEnabled && immersionProgress > 0 else {
+        guard immersiveModeEnabled && immersiveProgress > 0 else {
             safeAreaGradientView.alpha = 0.0
             resetAllTransforms()
             CATransaction.commit()
             return
         }
 
-        safeAreaGradientView.alpha = immersionProgress
+        safeAreaGradientView.alpha = immersiveProgress
 
         var navBarTransform: CGFloat = 0
         if let navBar = findNavigationBar() {
             let navBarHeight = navBar.bounds.height
             let deviceSafeAreaTop = postsView?.window?.safeAreaInsets.top ?? 44
-            let totalUpwardDistance = navBarHeight + deviceSafeAreaTop + 30
-            navBarTransform = -totalUpwardDistance * immersionProgress
+            let totalUpwardDistance = navBarHeight + deviceSafeAreaTop + Self.bottomProximityDistance
+            navBarTransform = -totalUpwardDistance * immersiveProgress
             navBar.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
         }
 
@@ -400,13 +340,12 @@ final class ImmersionModeManager: NSObject {
             let toolbarHeight = toolbar.bounds.height
             let deviceSafeAreaBottom = postsView?.window?.safeAreaInsets.bottom ?? 34
             let totalDownwardDistance = toolbarHeight + deviceSafeAreaBottom
-            toolbar.transform = CGAffineTransform(translationX: 0, y: totalDownwardDistance * immersionProgress)
+            toolbar.transform = CGAffineTransform(translationX: 0, y: totalDownwardDistance * immersiveProgress)
         }
 
         CATransaction.commit()
     }
 
-    /// Reset all transforms to identity
     private func resetAllTransforms() {
         if let foundNavBar = findNavigationBar() {
             foundNavBar.transform = .identity
@@ -415,8 +354,21 @@ final class ImmersionModeManager: NSObject {
         toolbar?.transform = .identity
     }
 
-    private func updateScrollViewInsetsIfNeeded() {
-        postsView?.updateScrollViewInsets()
+    private func calculateDistanceFromBottom(_ scrollView: UIScrollView) -> CGFloat {
+        let contentHeight = scrollView.contentSize.height
+        let adjustedBottom = scrollView.adjustedContentInset.bottom
+        let maxOffsetY = max(contentHeight, scrollView.bounds.height - adjustedBottom) - scrollView.bounds.height + adjustedBottom
+        return maxOffsetY - scrollView.contentOffset.y
+    }
+
+    private func snapToVisibleIfAtBottom(_ scrollView: UIScrollView, isRefreshControlArmedOrTriggered: Bool) {
+        if immersiveModeEnabled && !isRefreshControlArmedOrTriggered && isContentScrollableEnoughForImmersive {
+            let distanceFromBottom = calculateDistanceFromBottom(scrollView)
+
+            if distanceFromBottom <= Self.bottomDistanceThreshold && immersiveProgress < Self.bottomSnapThreshold {
+                immersiveProgress = 0
+            }
+        }
     }
 
     private func findNavigationBar() -> UINavigationBar? {
@@ -449,11 +401,6 @@ final class ImmersionModeManager: NSObject {
         }
 
         return nil
-    }
-
-    /// Clear cached navigation bar when view hierarchy changes
-    func clearNavigationBarCache() {
-        cachedNavigationBar = nil
     }
 }
 
