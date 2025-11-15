@@ -370,7 +370,6 @@ final class NewReplyDraft: NSObject, ReplyDraft {
     let thread: AwfulThread
     var text: NSAttributedString?
     var forumAttachment: ForumAttachment?
-    var existingAttachmentInfo: (id: String, filename: String)?
     var shouldDeleteAttachment = false
 
     init(thread: AwfulThread, text: NSAttributedString? = nil) {

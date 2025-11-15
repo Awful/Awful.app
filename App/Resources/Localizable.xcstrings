@@ -716,6 +716,18 @@
         }
       }
     },
+    "posts-page.error.attachment-preview-failed" : {
+      "comment" : "Message shown when attachment image preview fails to load.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not load attachment preview"
+          }
+        }
+      }
+    },
     "posts-page.error.could-not-edit-post" : {
       "comment" : "Title of alert shown when failing to edit post.",
       "extractionState" : "migrated",

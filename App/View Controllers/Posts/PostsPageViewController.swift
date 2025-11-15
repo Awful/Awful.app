@@ -1249,9 +1249,14 @@ final class PostsPageViewController: ViewController {
         func presentNewReplyWorkspace() {
             Task {
                 do {
-                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost!)
-                    let attachmentInfo = try? await ForumsClient.shared.findAttachmentInfo(for: selectedPost!)
-                    let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
+                    guard let selectedPost = selectedPost else {
+                        logger.error("Cannot edit: no post selected")
+                        return
+                    }
+
+                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost)
+                    let attachmentInfo = try? await ForumsClient.shared.findAttachmentInfo(for: selectedPost)
+                    let replyWorkspace = ReplyWorkspace(post: selectedPost, bbcode: text)
 
                     // Set attachment info and fetch image before creating the composition view controller
                     if let attachmentInfo = attachmentInfo,
@@ -1260,12 +1265,23 @@ final class PostsPageViewController: ViewController {
 
                         // Fetch the attachment image
                         do {
-                            let imageData = try await ForumsClient.shared.fetchAttachmentImage(postID: selectedPost!.postID)
+                            let imageData = try await ForumsClient.shared.fetchAttachmentImage(postID: selectedPost.postID)
                             if let image = UIImage(data: imageData) {
                                 editDraft.existingAttachmentImage = image
                             }
                         } catch {
                             logger.error("Failed to fetch attachment image for edit: \(error)")
+                            // Show a toast notification to inform the user
+                            let alert = UIAlertController(
+                                title: nil,
+                                message: LocalizedString("posts-page.error.attachment-preview-failed"),
+                                preferredStyle: .alert
+                            )
+                            present(alert, animated: true)
+                            // Auto-dismiss after 2 seconds
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                alert.dismiss(animated: true)
+                            }
                             // Continue anyway - AttachmentEditView will show generic icon
                         }
                     }
