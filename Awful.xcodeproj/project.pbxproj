@@ -202,8 +202,11 @@
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
+		2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B462EC83DD00026826C /* AttachmentCardView.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
+		2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */; };
+		2DB447312EC1E2DA00F03402 /* AttachmentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
@@ -517,11 +520,13 @@
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
+		2D571B462EC83DD00026826C /* AttachmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCardView.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
+		2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentEditView.swift; sourceTree = "<group>"; };
+		2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentPreviewView.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
-		30E0C5172E35C89D0030DC0A /* SmilieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieData.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
 		30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieSearchViewModel.swift; sourceTree = "<group>"; };
@@ -1098,6 +1103,9 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				2D571B462EC83DD00026826C /* AttachmentCardView.swift */,
+				2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */,
+				2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */,
 				1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */,
 				1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */,
 				1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */,
@@ -1541,7 +1549,6 @@
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
-				30E0C51C2E35C89D0030DC0A /* SmilieData.swift in Sources */,
 				30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */,
 				30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */,
 				30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */,
@@ -1609,6 +1616,7 @@
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
 				1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */,
+				2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
@@ -1661,6 +1669,8 @@
 				1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
+				2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */,
+				2DB447312EC1E2DA00F03402 /* AttachmentEditView.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
 				1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */,

@@ -105,16 +105,11 @@ Awful.embedTweets = function() {
           const player = post.target.querySelectorAll("lottie-player");
           player.forEach((lottiePlayer) => {
             lottiePlayer.play();
-            // comment out when not testing
-            //console.log("Lottie playing.");
           });
         } else {
-            // pause all lottie players if this post is not intersecting
             const player = post.target.querySelectorAll("lottie-player");
             player.forEach((lottiePlayer) => {
               lottiePlayer.pause();
-              // this log is to confirm that pausing actually occurs while scrolling. comment out when not testing
-              //console.log("Lottie paused.");
             });
         }
       });
@@ -953,6 +948,32 @@ Awful.embedGfycat = function() {
 }
 
 Awful.embedGfycat();
+
+// Load attachment images asynchronously
+Awful.loadAttachmentImages = function() {
+  var attachmentImages = document.querySelectorAll('img[data-awful-attachment-postid]');
+  attachmentImages.forEach(function(img, index) {
+    var postID = img.getAttribute('data-awful-attachment-postid');
+    var id = 'attachment-' + postID + '-' + index + '-' + Date.now();
+    img.setAttribute('data-awful-attachment-id', id);
+    window.webkit.messageHandlers.fetchAttachmentImage.postMessage({
+      id: id,
+      postid: postID
+    });
+  });
+};
+
+Awful.didFetchAttachmentImage = function(id, dataURL) {
+  var img = document.querySelector('img[data-awful-attachment-id="' + id + '"]');
+  if (img && dataURL) {
+    img.src = dataURL;
+  }
+};
+
+if (document.querySelectorAll('img[data-awful-attachment-postid]').length > 0) {
+  Awful.loadAttachmentImages();
+}
+
 // THIS SHOULD STAY AT THE BOTTOM OF THE FILE!
 // All done; tell the native side we're ready.
 window.webkit.messageHandlers.didRender.postMessage({});

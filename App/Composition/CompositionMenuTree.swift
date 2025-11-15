@@ -2,34 +2,69 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
+import AwfulSettings
+import Foil
+import ImgurAnonymousAPI
 import MobileCoreServices
 import os
 import Photos
 import PSMenuItem
 import UIKit
-import AwfulSettings
-import Foil
-import ImgurAnonymousAPI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "CompositionMenuTree")
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 final class CompositionMenuTree: NSObject {
-    // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
-    
     @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
-    
+
     fileprivate var imgurUploadsEnabled: Bool {
         return imgurUploadMode != .off
     }
-    
+
     let textView: UITextView
-    
+    weak var draft: (NSObject & ReplyDraft)?
+    var onAttachmentChanged: (() -> Void)?
+    var onResizingStarted: (() -> Void)?
+
+    private let imageProcessingQueue = DispatchQueue(label: "com.awful.attachment.processing", qos: .userInitiated)
+
+    // Thread safety: pendingImage properties are only accessed from the main thread during image picker flow.
+    // They are set on the main thread before dispatching to imageProcessingQueue, and cleared on the main
+    // thread after processing completes. No lock is needed as there's no concurrent access.
+    private var pendingImage: UIImage?
+    private var pendingImageAssetIdentifier: String?
+
+    private let imageProcessingLock = NSLock()
+    private var _isProcessingImage = false
+
+    private func tryStartProcessing() -> Bool {
+        imageProcessingLock.lock()
+        defer { imageProcessingLock.unlock() }
+
+        guard !_isProcessingImage else { return false }
+        _isProcessingImage = true
+        return true
+    }
+
+    private func finishProcessing() {
+        imageProcessingLock.lock()
+        defer { imageProcessingLock.unlock() }
+        _isProcessingImage = false
+    }
+
+    private func clearPendingImage() {
+        pendingImage = nil
+        pendingImageAssetIdentifier = nil
+        finishProcessing()
+    }
+
     /// The textView's class will have some responder chain methods swizzled.
-    init(textView: UITextView) {
+    init(textView: UITextView, draft: (NSObject & ReplyDraft)? = nil) {
         self.textView = textView
+        self.draft = draft
         super.init()
-        
+
         PSMenuItem.installMenuHandler(for: textView)
         
         NotificationCenter.default.addObserver(self, selector: #selector(UITextViewDelegate.textViewDidBeginEditing(_:)), name: UITextView.textDidBeginEditingNotification, object: textView)
@@ -82,14 +117,9 @@ final class CompositionMenuTree: NSObject {
         
         shouldPopWhenMenuHides = true
     }
-    
-    func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
-        // Check if we need to authenticate with Imgur first
-        if ImgurAuthManager.shared.needsAuthentication {
-            authenticateWithImgur()
-            return
-        }
-        
+
+    // fileprivate to allow access from MenuItem action closures defined at file scope
+    fileprivate func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
         let mediaType = UTType.image
@@ -106,106 +136,126 @@ final class CompositionMenuTree: NSObject {
         }
         textView.nearestViewController?.present(picker, animated: true, completion: nil)
     }
-    
+
+    // MARK: - Imgur Authentication
+
     private func authenticateWithImgur() {
         guard let viewController = textView.nearestViewController else { return }
-        
-        // Show an alert to explain why authentication is needed
-        let alert = UIAlertController(
+        showAuthenticationPrompt(in: viewController)
+    }
+
+    private func showAuthenticationPrompt(in viewController: UIViewController) {
+        presentAlert(
+            in: viewController,
             title: "Imgur Authentication Required",
             message: "You've enabled Imgur Account uploads in settings. To upload images with your account, you'll need to log in to Imgur.",
+            actions: [
+                ("Log In", .default, { [weak self] in
+                    self?.performAuthentication(in: viewController)
+                }),
+                ("Use Anonymous Upload", .default, { [weak self] in
+                    self?.switchToAnonymousUploads()
+                }),
+                ("Cancel", .cancel, nil)
+            ]
+        )
+    }
+
+    private func performAuthentication(in viewController: UIViewController) {
+        let loadingAlert = UIAlertController(
+            title: "Connecting to Imgur",
+            message: "Please wait...",
             preferredStyle: .alert
         )
-        
-        alert.addAction(UIAlertAction(title: "Log In", style: .default) { _ in
-            // Show loading indicator
-            let loadingAlert = UIAlertController(
-                title: "Connecting to Imgur",
-                message: "Please wait...",
-                preferredStyle: .alert
-            )
-            viewController.present(loadingAlert, animated: true)
-            
-            ImgurAuthManager.shared.authenticate(from: viewController) { success in
-                // Dismiss loading indicator
-                DispatchQueue.main.async {
-                    loadingAlert.dismiss(animated: true) {
-                        if success {
-                            // If authentication was successful, continue with the upload
-                            // Show a success message
-                            let successAlert = UIAlertController(
-                                title: "Successfully Logged In",
-                                message: "You're now logged in to Imgur and can upload images with your account.",
-                                preferredStyle: .alert
-                            )
-                            
-                            successAlert.addAction(UIAlertAction(title: "Continue", style: .default) { _ in
-                                // Continue with image picker after successful authentication
-                                self.showImagePicker(.photoLibrary)
-                            })
-                            
-                            viewController.present(successAlert, animated: true)
-                        } else {
-                            // Check if it's a rate limiting issue (check logs from ImgurAuthManager)
-                            let isRateLimited = UserDefaults.standard.bool(forKey: ImgurAuthManager.DefaultsKeys.rateLimited)
-                            
-                            if isRateLimited {
-                                // Show specific rate limiting error
-                                let rateLimitAlert = UIAlertController(
-                                    title: "Imgur Rate Limit Exceeded",
-                                    message: "Imgur's API is currently rate limited. You can try again later or use anonymous uploads for now.",
-                                    preferredStyle: .alert
-                                )
-                                
-                                rateLimitAlert.addAction(UIAlertAction(title: "Use Anonymous Uploads", style: .default) { _ in
-                                    // Switch to anonymous uploads for this session
-                                    self.imgurUploadMode = .anonymous
-                                    // Continue with image picker
-                                    self.showImagePicker(.photoLibrary)
-                                })
-                                
-                                rateLimitAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                                
-                                viewController.present(rateLimitAlert, animated: true)
-                            } else {
-                                // General authentication failure
-                                let failureAlert = UIAlertController(
-                                    title: "Authentication Failed",
-                                    message: "Could not log in to Imgur. You can try again or choose anonymous uploads in settings.",
-                                    preferredStyle: .alert
-                                )
-                                
-                                failureAlert.addAction(UIAlertAction(title: "Try Again", style: .default) { _ in
-                                    // Try authentication again
-                                    self.authenticateWithImgur()
-                                })
-                                
-                                failureAlert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { _ in
-                                    // Use anonymous uploads for this session
-                                    self.imgurUploadMode = .anonymous
-                                    // Continue with image picker
-                                    self.showImagePicker(.photoLibrary)
-                                })
-                                
-                                failureAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                                
-                                viewController.present(failureAlert, animated: true)
-                            }
-                        }
-                    }
+        viewController.present(loadingAlert, animated: true)
+
+        ImgurAuthManager.shared.authenticate(from: viewController) { [weak self] success in
+            DispatchQueue.main.async {
+                loadingAlert.dismiss(animated: true) {
+                    self?.handleAuthenticationResult(success, in: viewController)
                 }
             }
-        })
-        
-        alert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { _ in
-            // Use anonymous uploads just for this session
-            self.imgurUploadMode = .anonymous
-            // Show image picker with anonymous uploads
-            self.showImagePicker(.photoLibrary)
-        })
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
+        }
+    }
+
+    private func handleAuthenticationResult(_ success: Bool, in viewController: UIViewController) {
+        if success {
+            presentAuthenticationSuccessAlert(in: viewController)
+        } else {
+            let isRateLimited = UserDefaults.standard.bool(forKey: ImgurAuthManager.DefaultsKeys.rateLimited)
+            if isRateLimited {
+                presentRateLimitAlert(in: viewController)
+            } else {
+                presentAuthenticationFailureAlert(in: viewController)
+            }
+        }
+    }
+
+    private func presentAuthenticationSuccessAlert(in viewController: UIViewController) {
+        presentAlert(
+            in: viewController,
+            title: "Successfully Logged In",
+            message: "You're now logged in to Imgur and can upload images with your account.",
+            actions: [
+                ("Continue", .default, { [weak self] in
+                    self?.showImagePicker(.photoLibrary)
+                })
+            ]
+        )
+    }
+
+    private func presentRateLimitAlert(in viewController: UIViewController) {
+        presentAlert(
+            in: viewController,
+            title: "Imgur Rate Limit Exceeded",
+            message: "Imgur's API is currently rate limited. You can try again later or use anonymous uploads for now.",
+            actions: [
+                ("Use Anonymous Uploads", .default, { [weak self] in
+                    self?.switchToAnonymousUploads()
+                }),
+                ("Cancel", .cancel, nil)
+            ]
+        )
+    }
+
+    private func presentAuthenticationFailureAlert(in viewController: UIViewController) {
+        presentAlert(
+            in: viewController,
+            title: "Authentication Failed",
+            message: "Could not log in to Imgur. You can try again or choose anonymous uploads in settings.",
+            actions: [
+                ("Try Again", .default, { [weak self] in
+                    self?.authenticateWithImgur()
+                }),
+                ("Use Anonymous Upload", .default, { [weak self] in
+                    self?.switchToAnonymousUploads()
+                }),
+                ("Cancel", .cancel, nil)
+            ]
+        )
+    }
+
+    private func switchToAnonymousUploads() {
+        imgurUploadMode = .anonymous
+        showImagePicker(.photoLibrary)
+    }
+
+    // MARK: - Alert Helper
+
+    private func presentAlert(
+        in viewController: UIViewController,
+        title: String,
+        message: String,
+        actions: [(title: String, style: UIAlertAction.Style, handler: (() -> Void)?)]
+    ) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+        for (actionTitle, style, handler) in actions {
+            alert.addAction(UIAlertAction(title: actionTitle, style: style) { _ in
+                handler?()
+            })
+        }
+
         viewController.present(alert, animated: true)
     }
     
@@ -269,16 +319,16 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             textView.nearestViewController?.present(alert, animated: true)
             return
         }
-        
-        if let asset = info[.phAsset] as? PHAsset {
-            insertImage(image, withAssetIdentifier: asset.localIdentifier)
-        } else {
-            insertImage(image)
-        }
 
-        picker.dismiss(animated: true, completion: {
+        let assetIdentifier = (info[.phAsset] as? PHAsset)?.localIdentifier
+
+        pendingImage = image
+        pendingImageAssetIdentifier = assetIdentifier
+
+        picker.dismiss(animated: true) {
             self.textView.becomeFirstResponder()
-        })
+            self.showSubmenu(imageDestinationItems(tree: self))
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -289,6 +339,151 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         textView.becomeFirstResponder()
+    }
+
+    fileprivate func useImageHostForPendingImage() {
+        guard let image = pendingImage else { return }
+
+        if ImgurAuthManager.shared.needsAuthentication {
+            authenticateWithImgur()
+            return
+        }
+
+        if let assetID = pendingImageAssetIdentifier {
+            insertImage(image, withAssetIdentifier: assetID)
+        } else {
+            insertImage(image)
+        }
+
+        clearPendingImage()
+    }
+
+    fileprivate func useForumAttachmentForPendingImage() {
+        guard let image = pendingImage else { return }
+        guard tryStartProcessing() else {
+            logger.warning("Image already being processed, ignoring concurrent request")
+            return
+        }
+
+        let attachment = ForumAttachment(image: image, photoAssetIdentifier: pendingImageAssetIdentifier)
+
+        if let error = attachment.validationError {
+            handleAttachmentValidationError(error)
+            return
+        }
+
+        applyAttachmentAndClear(attachment)
+    }
+
+    private func handleAttachmentValidationError(_ error: ForumAttachment.ValidationError) {
+        if canResizeToFix(error) {
+            presentResizePrompt(for: error)
+        } else {
+            presentValidationErrorAlert(error)
+        }
+    }
+
+    private func canResizeToFix(_ error: ForumAttachment.ValidationError) -> Bool {
+        switch error {
+        case .fileTooLarge, .dimensionsTooLarge: return true
+        default: return false
+        }
+    }
+
+    private func presentResizePrompt(for error: ForumAttachment.ValidationError) {
+        guard let viewController = textView.nearestViewController else { return }
+        presentAlert(
+            in: viewController,
+            title: "Attachment Too Large",
+            message: "\(error.localizedDescription)\n\nWould you like to automatically resize the image to fit?",
+            actions: [
+                ("Cancel", .cancel, { [weak self] in
+                    self?.clearPendingImage()
+                }),
+                ("Resize & Continue", .default, { [weak self] in
+                    self?.resizeAndAttachPendingImage()
+                })
+            ]
+        )
+    }
+
+    private func presentValidationErrorAlert(_ error: ForumAttachment.ValidationError) {
+        guard let viewController = textView.nearestViewController else { return }
+        presentAlert(
+            in: viewController,
+            title: "Invalid Attachment",
+            message: error.localizedDescription,
+            actions: [("OK", .default, nil)]
+        )
+        clearPendingImage()
+    }
+
+    private func applyAttachmentAndClear(_ attachment: ForumAttachment) {
+        draft?.forumAttachment = attachment
+        clearPendingImage()
+        onAttachmentChanged?()
+    }
+
+    private func resizeAndAttachPendingImage() {
+        guard let image = pendingImage else { return }
+        resizeAndAttach(image: image, assetIdentifier: pendingImageAssetIdentifier)
+    }
+
+    private func resizeAndAttach(image: UIImage, assetIdentifier: String?) {
+        onResizingStarted?()
+
+        imageProcessingQueue.async { [weak self] in
+            guard let self = self else { return }
+
+            let resizedAttachment = autoreleasepool {
+                ForumAttachment(image: image, photoAssetIdentifier: assetIdentifier).resized()
+            }
+
+            DispatchQueue.main.async { [weak self] in
+                self?.handleResizeResult(resizedAttachment)
+            }
+        }
+    }
+
+    private func handleResizeResult(_ resizedAttachment: ForumAttachment?) {
+        guard let attachment = resizedAttachment else {
+            handleResizeFailure(message: "Unable to resize image to meet requirements.")
+            return
+        }
+
+        if let error = attachment.validationError {
+            handleResizeFailure(message: error.localizedDescription)
+            return
+        }
+
+        handleResizeSuccess(attachment)
+    }
+
+    private func handleResizeFailure(message: String) {
+        finishProcessing()
+        onAttachmentChanged?()
+
+        guard let viewController = textView.nearestViewController else { return }
+        presentAlert(
+            in: viewController,
+            title: "Resize Failed",
+            message: message,
+            actions: [
+                ("Try Again", .default, { [weak self] in
+                    self?.resizeAndAttachPendingImage()
+                }),
+                ("Cancel", .cancel, { [weak self] in
+                    self?.clearPendingImage()
+                    self?.onAttachmentChanged?()
+                })
+            ]
+        )
+    }
+
+    private func handleResizeSuccess(_ attachment: ForumAttachment) {
+        clearPendingImage()
+        draft?.forumAttachment = attachment
+        onAttachmentChanged?()
     }
 }
 
@@ -310,10 +505,6 @@ fileprivate struct MenuItem {
     init(title: String, action: @escaping (CompositionMenuTree) -> Void) {
         self.init(title: title, action: action, enabled: { true })
     }
-    
-    func psItem(_ tree: CompositionMenuTree) {
-        return
-    }
 }
 
 fileprivate let rootItems = [
@@ -324,18 +515,12 @@ fileprivate let rootItems = [
             tree.showSubmenu(URLItems)
         }
     }),
-    /**
-        Temporarily disabling the menu items that attempt image uploads. This is a bandaid fix and no imgur uploading code is being removed from the app at this time.
-        TODO: Re-enable these menu items as part of a proper imgur replacement update. (imgur is deleting anonymous inactive images)
-     
-        original line: MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
-     */
     MenuItem(title: "[img]", action: { tree in
-        // If Imgur uploads are enabled in settings, show the full image submenu
-        // Otherwise, only allow pasting URLs
-        if tree.imgurUploadsEnabled {
-            tree.showSubmenu(imageItems)
+        // Show the image submenu if Imgur uploads are enabled or forum attachments are available
+        if tree.imgurUploadsEnabled || tree.draft is NewReplyDraft {
+            tree.showSubmenu(imageItems(tree: tree))
         } else {
+            // Fallback: paste image URL from clipboard or wrap selection
             if UIPasteboard.general.coercedURL == nil {
                 linkifySelection(tree)
             } else {
@@ -365,23 +550,38 @@ fileprivate let URLItems = [
     })
 ]
 
-fileprivate let imageItems = [
-    MenuItem(title: "From Camera", action: { $0.showImagePicker(.camera) }, enabled: isPickerAvailable(.camera)),
-    MenuItem(title: "From Library", action: { $0.showImagePicker(.photoLibrary) }, enabled: isPickerAvailable(.photoLibrary)),
-    MenuItem(title: "[img]", action: wrapSelectionInTag("[img]")),
-    MenuItem(title: "Paste [img]", action:{ tree in
-        if let text = UIPasteboard.general.coercedURL {
+fileprivate func imageItems(tree: CompositionMenuTree) -> [MenuItem] {
+    var items: [MenuItem] = []
+
+    if UIPasteboard.general.coercedURL != nil {
+        items.append(MenuItem(title: "Paste URL", action: { tree in
             if let textRange = tree.textView.selectedTextRange {
                 tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
             }
-        }
-    }, enabled: { UIPasteboard.general.coercedURL != nil }),
-    MenuItem(title: "Paste", action: { tree in
-        if let image = UIPasteboard.general.image {
-            tree.insertImage(image)
-        }
-        }, enabled: { UIPasteboard.general.image != nil })
-]
+        }))
+    }
+
+    items.append(contentsOf: [
+        MenuItem(title: "From Library", action: { $0.showImagePicker(.photoLibrary) }, enabled: isPickerAvailable(.photoLibrary)),
+        MenuItem(title: "[img]", action: wrapSelectionInTag("[img]"))
+    ])
+
+    return items
+}
+
+fileprivate func imageDestinationItems(tree: CompositionMenuTree) -> [MenuItem] {
+    var items: [MenuItem] = []
+
+    if tree.imgurUploadsEnabled {
+        items.append(MenuItem(title: "Image Host", action: { $0.useImageHostForPendingImage() }))
+    }
+
+    if tree.draft is NewReplyDraft {
+        items.append(MenuItem(title: "Forum Attachment", action: { $0.useForumAttachmentForPendingImage() }))
+    }
+
+    return items
+}
 
 fileprivate let formattingItems = [
     MenuItem(title: "[b]", action: wrapSelectionInTag("[b]")),

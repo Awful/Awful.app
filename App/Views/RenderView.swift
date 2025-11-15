@@ -260,13 +260,13 @@ extension RenderView: WKScriptMessageHandler {
         
         struct FetchOEmbedFragment: RenderViewMessage {
             static let messageName = "fetchOEmbedFragment"
-            
+
             /// An opaque `id` to use when calling back with the response.
             let id: String
-            
+
             /// The OEmbed URL to fetch.
             let url: URL
-            
+
             init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
                 assert(rawMessage.name == Self.messageName)
                 guard let body = rawMessage.body as? [String: Any],
@@ -274,9 +274,30 @@ extension RenderView: WKScriptMessageHandler {
                       let rawURL = body["url"] as? String,
                       let url = URL(string: rawURL)
                 else { return nil }
-                
+
                 self.id = id
                 self.url = url
+            }
+        }
+
+        struct FetchAttachmentImage: RenderViewMessage {
+            static let messageName = "fetchAttachmentImage"
+
+            /// An opaque `id` to use when calling back with the response.
+            let id: String
+
+            /// The post ID for the attachment.
+            let postID: String
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let id = body["id"] as? String,
+                      let postID = body["postid"] as? String
+                else { return nil }
+
+                self.id = id
+                self.postID = postID
             }
         }
     }
@@ -501,6 +522,18 @@ extension RenderView {
                 """)
             } catch {
                 logger.error("error calling back after fetching oembed: \(error)")
+            }
+        }
+    }
+
+    func didFetchAttachmentImage(id: String, dataURL: String) {
+        Task {
+            do {
+                try await webView.eval("""
+                    window.Awful?.didFetchAttachmentImage(\(escapeForEval(id)), \(escapeForEval(dataURL)));
+                """)
+            } catch {
+                logger.error("error calling back after fetching attachment image: \(error)")
             }
         }
     }

@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import AwfulSettings
 import AwfulTheming
 import UIKit
@@ -10,64 +11,241 @@ final class CompositionViewController: ViewController {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
+    private enum AttachmentViewLayout {
+        static let previewHeight: CGFloat = 84
+        static let editHeight: CGFloat = 120
+        static let spacing: CGFloat = 8
+        static let animationDuration: TimeInterval = 0.3
+    }
+
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nil, bundle: nil)
         restorationClass = type(of: self)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override var title: String? {
         didSet {
             navigationItem.titleLabel.text = title
             navigationItem.titleLabel.sizeToFit()
         }
     }
-    
+
     @objc fileprivate func didTapCancel() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         dismiss(animated: true)
     }
-    
+
     @objc func cancel(_ sender: UIKeyCommand) {
         self.didTapCancel()
     }
-    
+
+    private var _textView: CompositionTextView!
     var textView: UITextView {
-        return view as! UITextView
+        return _textView
     }
-    
+
+    private let containerView = UIView()
+    private let attachmentPreviewView = AttachmentPreviewView()
+    private let attachmentEditView = AttachmentEditView()
+    private var attachmentPreviewHeightConstraint: NSLayoutConstraint!
+    private var attachmentEditHeightConstraint: NSLayoutConstraint!
+    private var textViewTopConstraint: NSLayoutConstraint!
+
     override func loadView() {
-        let textView = CompositionTextView()
-        textView.restorationIdentifier = "Composition text view"
-        view = textView
-        
-        BBcodeBar = CompositionInputAccessoryView(textView: textView)
-        textView.inputAccessoryView = BBcodeBar
+        view = containerView
+
+        _textView = CompositionTextView()
+        _textView.restorationIdentifier = "Composition text view"
+        _textView.translatesAutoresizingMaskIntoConstraints = false
+
+        attachmentPreviewView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentPreviewView.isHidden = true
+        attachmentPreviewView.onRemove = { [weak self] in
+            self?.removeAttachment()
+        }
+
+        attachmentEditView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentEditView.isHidden = true
+        attachmentEditView.onActionChanged = { [weak self] action in
+            self?.handleAttachmentEditAction(action)
+        }
+
+        containerView.addSubview(attachmentPreviewView)
+        containerView.addSubview(attachmentEditView)
+        containerView.addSubview(_textView)
+
+        attachmentPreviewHeightConstraint = attachmentPreviewView.heightAnchor.constraint(equalToConstant: 0)
+        attachmentEditHeightConstraint = attachmentEditView.heightAnchor.constraint(equalToConstant: 0)
+
+        // Default: text view top anchors to preview view bottom (which starts at height 0)
+        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentPreviewView.bottomAnchor, constant: AttachmentViewLayout.spacing)
+
+        NSLayoutConstraint.activate([
+            attachmentPreviewView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            attachmentPreviewView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+            attachmentPreviewView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
+            attachmentPreviewHeightConstraint,
+
+            attachmentEditView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            attachmentEditView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+            attachmentEditView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
+            attachmentEditHeightConstraint,
+
+            textViewTopConstraint,
+            _textView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            _textView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            _textView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        ])
+
+        BBcodeBar = CompositionInputAccessoryView(textView: _textView)
+        _textView.inputAccessoryView = BBcodeBar
     }
-    
+
     fileprivate var keyboardAvoider: ScrollViewKeyboardAvoider?
     fileprivate var BBcodeBar: CompositionInputAccessoryView?
     fileprivate var menuTree: CompositionMenuTree?
-    
+    private weak var currentDraft: (NSObject & ReplyDraft)?
+
+    func setDraft(_ draft: NSObject & ReplyDraft) {
+        menuTree?.draft = draft
+        currentDraft = draft
+        updateAttachmentPreview()
+    }
+
+    func showResizingPlaceholder() {
+        attachmentPreviewView.showResizingPlaceholder()
+        updateAttachmentViewVisibility(
+            showPreview: true, previewHeight: AttachmentViewLayout.previewHeight,
+            showEdit: false, editHeight: 0,
+            anchorTextViewTo: attachmentPreviewView.bottomAnchor
+        )
+    }
+
+    private func updateAttachmentPreview() {
+        guard let draft = currentDraft else {
+            hideAllAttachmentViews()
+            return
+        }
+
+        // For edits, show existing attachment info if available
+        if let editDraft = draft as? EditReplyDraft {
+            if let existingFilename = editDraft.existingAttachmentFilename {
+                showAttachmentEditView(filename: existingFilename, filesize: editDraft.existingAttachmentFilesize, image: editDraft.existingAttachmentImage)
+                return
+            }
+        }
+
+        // For new posts, show preview if attachment is set
+        if let attachment = draft.forumAttachment {
+            showAttachmentPreview(with: attachment)
+        } else {
+            hideAllAttachmentViews()
+        }
+    }
+
+    private func showAttachmentPreview(with attachment: ForumAttachment) {
+        attachmentPreviewView.configure(with: attachment)
+        updateAttachmentViewVisibility(
+            showPreview: true, previewHeight: AttachmentViewLayout.previewHeight,
+            showEdit: false, editHeight: 0,
+            anchorTextViewTo: attachmentPreviewView.bottomAnchor
+        )
+    }
+
+    private func showAttachmentEditView(filename: String, filesize: String?, image: UIImage? = nil) {
+        attachmentEditView.configure(filename: filename, filesize: filesize, image: image)
+        updateAttachmentViewVisibility(
+            showPreview: false, previewHeight: 0,
+            showEdit: true, editHeight: AttachmentViewLayout.editHeight,
+            anchorTextViewTo: attachmentEditView.bottomAnchor
+        )
+    }
+
+    private func hideAllAttachmentViews() {
+        updateAttachmentViewVisibility(
+            showPreview: false, previewHeight: 0,
+            showEdit: false, editHeight: 0,
+            anchorTextViewTo: attachmentPreviewView.bottomAnchor
+        )
+    }
+
+    private func updateAttachmentViewVisibility(
+        showPreview: Bool, previewHeight: CGFloat,
+        showEdit: Bool, editHeight: CGFloat,
+        anchorTextViewTo anchor: NSLayoutYAxisAnchor
+    ) {
+        attachmentPreviewView.isHidden = !showPreview
+        attachmentPreviewHeightConstraint.constant = previewHeight
+
+        attachmentEditView.isHidden = !showEdit
+        attachmentEditHeightConstraint.constant = editHeight
+
+        updateTextViewConstraint(anchoredTo: anchor)
+    }
+
+    private func updateTextViewConstraint(anchoredTo anchor: NSLayoutYAxisAnchor, constant: CGFloat = AttachmentViewLayout.spacing) {
+        textViewTopConstraint.isActive = false
+        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: anchor, constant: constant)
+        textViewTopConstraint.isActive = true
+
+        UIView.animate(withDuration: AttachmentViewLayout.animationDuration) {
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    private func removeAttachment() {
+        currentDraft?.forumAttachment = nil
+        hideAllAttachmentViews()
+    }
+
+    private func handleAttachmentEditAction(_ action: AttachmentEditView.AttachmentAction) {
+        guard let editDraft = currentDraft as? EditReplyDraft else { return }
+
+        editDraft.attachmentAction = (action == .keep) ? .keep : .delete
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         keyboardAvoider = ScrollViewKeyboardAvoider(textView)
         menuTree = CompositionMenuTree(textView: textView)
+        menuTree?.onAttachmentChanged = { [weak self] in
+            self?.updateAttachmentPreview()
+        }
+        menuTree?.onResizingStarted = { [weak self] in
+            self?.showResizingPlaceholder()
+        }
     }
     
     override func themeDidChange() {
         super.themeDidChange()
-        
+
+        textView.backgroundColor = theme["backgroundColor"]
         textView.textColor = theme["listTextColor"]
         textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.keyboardAppearance = theme.keyboardAppearance
         BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
+
+        // Theme the attachment cards
+        let listTextColor: UIColor? = theme["listTextColor"]
+        let borderColor: UIColor? = theme["listSecondaryTextColor"]
+
+        attachmentPreviewView.backgroundColor = theme["backgroundColor"]
+        attachmentPreviewView.layer.borderColor = borderColor?.cgColor
+        attachmentPreviewView.layer.borderWidth = 1
+        attachmentPreviewView.updateTextColor(listTextColor)
+
+        attachmentEditView.backgroundColor = theme["backgroundColor"]
+        attachmentEditView.layer.borderColor = borderColor?.cgColor
+        attachmentEditView.layer.borderWidth = 1
+        attachmentEditView.updateTextColor(listTextColor)
+        attachmentEditView.updateSegmentedControlColors(selectedColor: theme["tabBarIconSelectedColor"])
     }
     
     override func viewWillAppear(_ animated: Bool) {

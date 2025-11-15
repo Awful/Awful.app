@@ -36,11 +36,11 @@ extension HTMLTextNode {
 
     /**
      Splits the text node in two or three, isolating the text at `range` in its own node, and replaces the text node with the newly-created text nodes.
-     
+
      If the range covers the entire text node, it is returned unchanged.
-     
+
      If the text node has no parent, returned text nodes will also have no parent.
-     
+
      It is a programmer error if `range` exceeds the bounds of the text node's data.
      */
     func split(_ range: Range<String.Index>) -> SplitRangeResult {

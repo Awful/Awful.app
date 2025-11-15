@@ -35,6 +35,24 @@ extension HTMLElement {
             .components(separatedBy: .asciiWhitespace)
             .filter { !$0.isEmpty }
     }
+
+    /**
+     Returns the next sibling element in the DOM tree.
+
+     This helper method handles cases where the next sibling might be a text node or other non-element node,
+     returning the first element sibling found.
+     */
+    var nextSiblingElement: HTMLElement? {
+        if let sibling = nextSibling as? HTMLElement {
+            return sibling
+        } else if let parent = parent {
+            let children = parent.children.compactMap { $0 as? HTMLElement }
+            if let index = children.firstIndex(where: { $0 === self }), index + 1 < children.count {
+                return children[index + 1]
+            }
+        }
+        return nil
+    }
 }
 
 
