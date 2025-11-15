@@ -1105,6 +1105,45 @@ public final class ForumsClient {
     }
 
     /**
+     Fetches the image data for an attachment associated with a post.
+
+     - Parameter postID: The ID of the post containing the attachment.
+     - Returns: The image data for the attachment.
+     - Throws: An error if the request fails or no attachment is found.
+     */
+    public func fetchAttachmentImage(postID: String) async throws -> Data {
+        // First, get the attachment info from the edit page
+        guard let urlSession else { throw Error.missingURLSession }
+
+        let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
+            "action": "editpost",
+            "postid": postID,
+        ])
+        let (document, _) = try parseHTML(data: data, response: response)
+
+        guard let attachmentLink = document.firstNode(matchingSelector: "a[href*='attachment.php']"),
+              let href = attachmentLink["href"],
+              let components = URLComponents(string: href),
+              let queryItems = components.queryItems,
+              let attachmentID = queryItems.first(where: { $0.name == "attachmentid" })?.value else {
+            throw NSError(domain: "Awful", code: 0, userInfo: [
+                NSLocalizedDescriptionKey: "No attachment found for this post"
+            ])
+        }
+
+        // Now fetch the actual attachment image
+        guard let attachmentURL = URL(string: "attachment.php?attachmentid=\(attachmentID)", relativeTo: baseURL) else {
+            throw Error.invalidBaseURL
+        }
+
+        var request = URLRequest(url: attachmentURL)
+        request.httpMethod = "GET"
+
+        let (imageData, _) = try await urlSession.data(for: request)
+        return imageData
+    }
+
+    /**
      - Parameter postID: The post's ID. Specified directly in case no such post exists, which would make for a useless `Post`.
      - Returns: The promise of a post (with its `thread` set) and the page containing the post (may be `AwfulThreadPage.last`).
      */

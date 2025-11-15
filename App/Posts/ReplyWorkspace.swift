@@ -495,12 +495,23 @@ final class EditReplyDraft: NSObject, ReplyDraft {
 }
 
 extension NewReplyDraft: SubmittableDraft {
+    enum SubmissionError: LocalizedError {
+        case emptyText
+        case attachmentValidationFailed(ForumAttachment.ValidationError)
+
+        var errorDescription: String? {
+            switch self {
+            case .emptyText:
+                return "Post text cannot be empty"
+            case .attachmentValidationFailed(let validationError):
+                return validationError.localizedDescription
+            }
+        }
+    }
+
     func submit(_ completion: @escaping (Error?) -> Void) -> Progress {
         guard let text = text else {
-            let error = NSError(domain: "Awful", code: 0, userInfo: [
-                NSLocalizedDescriptionKey: "Post text cannot be empty"
-            ])
-            completion(error)
+            completion(SubmissionError.emptyText)
             return Progress(totalUnitCount: 1)
         }
 
@@ -518,10 +529,7 @@ extension NewReplyDraft: SubmittableDraft {
                                 maxFileSize: limits.maxFileSize,
                                 maxDimension: limits.maxDimension
                             ) {
-                                let error = NSError(domain: "Awful", code: 0, userInfo: [
-                                    NSLocalizedDescriptionKey: validationError.localizedDescription
-                                ])
-                                completion(error)
+                                completion(SubmissionError.attachmentValidationFailed(validationError))
                                 return
                             }
                             attachmentData = try forumAttachment.imageData()
@@ -539,12 +547,20 @@ extension NewReplyDraft: SubmittableDraft {
 }
 
 extension EditReplyDraft: SubmittableDraft {
+    enum SubmissionError: LocalizedError {
+        case emptyText
+
+        var errorDescription: String? {
+            switch self {
+            case .emptyText:
+                return "Post text cannot be empty"
+            }
+        }
+    }
+
     func submit(_ completion: @escaping (Error?) -> Void) -> Progress {
         guard let text = text else {
-            let error = NSError(domain: "Awful", code: 0, userInfo: [
-                NSLocalizedDescriptionKey: "Post text cannot be empty"
-            ])
-            completion(error)
+            completion(SubmissionError.emptyText)
             return Progress(totalUnitCount: 1)
         }
 

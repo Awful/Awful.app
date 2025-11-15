@@ -16,7 +16,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 /// Can take over UIMenuController to show a tree of composition-related items on behalf of a text view.
 final class CompositionMenuTree: NSObject {
-    // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
+    // Manages composition menu items and acts as image picker delegate for attachment handling.
 
     @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
 
@@ -31,10 +31,12 @@ final class CompositionMenuTree: NSObject {
 
     private var pendingImage: UIImage?
     private var pendingImageAssetIdentifier: String?
+    private var isProcessingImage = false
 
     private func clearPendingImage() {
         pendingImage = nil
         pendingImageAssetIdentifier = nil
+        isProcessingImage = false
     }
 
     /// The textView's class will have some responder chain methods swizzled.
@@ -328,7 +330,12 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
 
     fileprivate func useForumAttachmentForPendingImage() {
         guard let image = pendingImage else { return }
+        guard !isProcessingImage else {
+            logger.warning("Image already being processed, ignoring concurrent request")
+            return
+        }
 
+        isProcessingImage = true
         let attachment = ForumAttachment(image: image, photoAssetIdentifier: pendingImageAssetIdentifier)
         if let error = attachment.validationError {
             // Check if the error can be fixed by resizing

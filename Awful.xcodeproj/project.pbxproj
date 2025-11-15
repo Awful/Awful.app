@@ -202,6 +202,7 @@
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
+		2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B462EC83DD00026826C /* AttachmentCardView.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */; };
@@ -519,6 +520,7 @@
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
+		2D571B462EC83DD00026826C /* AttachmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCardView.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentEditView.swift; sourceTree = "<group>"; };
@@ -1101,6 +1103,7 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				2D571B462EC83DD00026826C /* AttachmentCardView.swift */,
 				2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */,
 				2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */,
 				1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */,
@@ -1613,6 +1616,7 @@
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
 				1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */,
+				2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,

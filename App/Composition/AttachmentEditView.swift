@@ -5,36 +5,23 @@
 import UIKit
 
 /// A card-style view that shows existing attachment info with options to keep or delete it.
-final class AttachmentEditView: UIView {
+final class AttachmentEditView: UIView, AttachmentCardView {
 
-    private let imageView: UIImageView = {
-        let iv = UIImageView()
+    let imageView: UIImageView = {
+        let iv = AttachmentEditView.createImageView()
         iv.contentMode = .scaleAspectFit
-        iv.clipsToBounds = true
-        iv.layer.cornerRadius = 4
-        iv.backgroundColor = .secondarySystemFill
-        iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
 
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        label.text = "Current Attachment"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    let titleLabel: UILabel = AttachmentEditView.createTitleLabel(text: LocalizedString("compose.attachment.edit-title"))
 
-    private let detailLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .caption1)
-        label.textColor = .secondaryLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    let detailLabel: UILabel = AttachmentEditView.createDetailLabel()
 
     private let actionSegmentedControl: UISegmentedControl = {
-        let items = ["Keep", "Delete"]
+        let items = [
+            LocalizedString("compose.attachment.action-keep"),
+            LocalizedString("compose.attachment.action-delete")
+        ]
         let sc = UISegmentedControl(items: items)
         sc.selectedSegmentIndex = 0
         sc.translatesAutoresizingMaskIntoConstraints = false
@@ -43,16 +30,9 @@ final class AttachmentEditView: UIView {
 
     var onActionChanged: ((AttachmentAction) -> Void)?
 
-    func updateTextColor(_ color: UIColor?) {
-        titleLabel.textColor = color
-        detailLabel.textColor = color?.withAlphaComponent(0.7)
-    }
-
     func updateSegmentedControlColors(selectedColor: UIColor?) {
-        // Set normal state text color to white
         actionSegmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
 
-        // Set selected state text color to white with the selected background color
         if let selectedColor = selectedColor {
             actionSegmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
             actionSegmentedControl.selectedSegmentTintColor = selectedColor
@@ -74,8 +54,7 @@ final class AttachmentEditView: UIView {
     }
 
     private func setupViews() {
-        // Background color will be set by the parent view controller based on theme
-        layer.cornerRadius = 8
+        configureCardAppearance()
 
         addSubview(imageView)
         addSubview(titleLabel)
@@ -85,27 +64,23 @@ final class AttachmentEditView: UIView {
         actionSegmentedControl.addTarget(self, action: #selector(actionChanged), for: .valueChanged)
 
         NSLayoutConstraint.activate([
-            // Image view on the left
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            imageView.widthAnchor.constraint(equalToConstant: 60),
-            imageView.heightAnchor.constraint(equalToConstant: 60),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: AttachmentCardLayout.cardPadding),
+            imageView.topAnchor.constraint(equalTo: topAnchor, constant: AttachmentCardLayout.cardPadding),
+            imageView.widthAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
+            imageView.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
 
-            // Title label
-            titleLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 12),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            titleLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: AttachmentCardLayout.imageSpacing),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: AttachmentCardLayout.labelTopPadding),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -AttachmentCardLayout.cardPadding),
 
-            // Detail label below title
             detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: AttachmentCardLayout.titleDetailSpacing),
             detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
 
-            // Segmented control at the bottom
-            actionSegmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            actionSegmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            actionSegmentedControl.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 12),
-            actionSegmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
+            actionSegmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: AttachmentCardLayout.cardPadding),
+            actionSegmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -AttachmentCardLayout.cardPadding),
+            actionSegmentedControl.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: AttachmentCardLayout.imageSpacing),
+            actionSegmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding)
         ])
     }
 
@@ -115,7 +90,7 @@ final class AttachmentEditView: UIView {
     }
 
     func configure(filename: String, filesize: String?, image: UIImage? = nil) {
-        titleLabel.text = "Current Attachment"
+        titleLabel.text = LocalizedString("compose.attachment.edit-title")
         if let filesize = filesize {
             detailLabel.text = "\(filename) • \(filesize)"
         } else {
@@ -123,12 +98,10 @@ final class AttachmentEditView: UIView {
         }
 
         if let image = image {
-            // Display the actual attachment image
             imageView.image = image
             imageView.tintColor = nil
             imageView.contentMode = .scaleAspectFit
         } else {
-            // Show a generic document icon as fallback
             let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
             imageView.image = UIImage(systemName: "doc.fill", withConfiguration: config)
             imageView.tintColor = .tertiaryLabel

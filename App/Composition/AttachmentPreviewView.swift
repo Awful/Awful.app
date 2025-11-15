@@ -9,32 +9,17 @@ import UIKit
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AttachmentPreviewView")
 
 /// A card-style view that shows a preview of an attached image with options to remove it.
-final class AttachmentPreviewView: UIView {
+final class AttachmentPreviewView: UIView, AttachmentCardView {
 
-    private let imageView: UIImageView = {
-        let iv = UIImageView()
+    let imageView: UIImageView = {
+        let iv = AttachmentPreviewView.createImageView()
         iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
-        iv.layer.cornerRadius = 4
-        iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
 
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        label.text = "Attachment"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    let titleLabel: UILabel = AttachmentPreviewView.createTitleLabel(text: LocalizedString("compose.attachment.preview-title"))
 
-    private let detailLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .caption1)
-        label.textColor = .secondaryLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    let detailLabel: UILabel = AttachmentPreviewView.createDetailLabel()
 
     private let removeButton: UIButton = {
         let button = UIButton(type: .system)
@@ -47,14 +32,9 @@ final class AttachmentPreviewView: UIView {
 
     var onRemove: (() -> Void)?
 
-    func updateTextColor(_ color: UIColor?) {
-        titleLabel.textColor = color
-        detailLabel.textColor = color?.withAlphaComponent(0.7)
-    }
-
     func showResizingPlaceholder() {
-        titleLabel.text = "Resizing Image..."
-        detailLabel.text = "Please wait"
+        titleLabel.text = LocalizedString("compose.attachment.resizing-title")
+        detailLabel.text = LocalizedString("compose.attachment.resizing-message")
         imageView.image = nil
         imageView.backgroundColor = .secondarySystemFill
     }
@@ -69,8 +49,7 @@ final class AttachmentPreviewView: UIView {
     }
 
     private func setupViews() {
-        // Background color will be set by the parent view controller based on theme
-        layer.cornerRadius = 8
+        configureCardAppearance()
 
         addSubview(imageView)
         addSubview(titleLabel)
@@ -80,28 +59,24 @@ final class AttachmentPreviewView: UIView {
         removeButton.addTarget(self, action: #selector(didTapRemove), for: .touchUpInside)
 
         NSLayoutConstraint.activate([
-            // Image view on the left
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
-            imageView.widthAnchor.constraint(equalToConstant: 60),
-            imageView.heightAnchor.constraint(equalToConstant: 60),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: AttachmentCardLayout.cardPadding),
+            imageView.topAnchor.constraint(equalTo: topAnchor, constant: AttachmentCardLayout.cardPadding),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding),
+            imageView.widthAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
+            imageView.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.imageSize),
 
-            // Title label
-            titleLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 12),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: AttachmentCardLayout.imageSpacing),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: AttachmentCardLayout.labelTopPadding),
             titleLabel.trailingAnchor.constraint(equalTo: removeButton.leadingAnchor, constant: -8),
 
-            // Detail label below title
             detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: AttachmentCardLayout.titleDetailSpacing),
             detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
 
-            // Remove button on the right
-            removeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            removeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -AttachmentCardLayout.cardPadding),
             removeButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            removeButton.widthAnchor.constraint(equalToConstant: 30),
-            removeButton.heightAnchor.constraint(equalToConstant: 30)
+            removeButton.widthAnchor.constraint(equalToConstant: AttachmentCardLayout.actionButtonSize),
+            removeButton.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.actionButtonSize)
         ])
     }
 
@@ -110,7 +85,7 @@ final class AttachmentPreviewView: UIView {
     }
 
     func configure(with attachment: ForumAttachment) {
-        titleLabel.text = "Attachment"
+        titleLabel.text = LocalizedString("compose.attachment.preview-title")
         imageView.backgroundColor = .clear
         imageView.image = attachment.image
 
