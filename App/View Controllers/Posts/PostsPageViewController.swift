@@ -58,10 +58,12 @@ final class PostsPageViewController: ViewController {
 
     @available(iOS 26.0, *)
     private var liquidGlassTitleView: LiquidGlassTitleView {
-        if _liquidGlassTitleView == nil {
-            _liquidGlassTitleView = LiquidGlassTitleView()
+        if let existingView = _liquidGlassTitleView as? LiquidGlassTitleView {
+            return existingView
         }
-        return _liquidGlassTitleView as! LiquidGlassTitleView
+        let newView = LiquidGlassTitleView()
+        _liquidGlassTitleView = newView
+        return newView
     }
 
     @available(iOS 26.0, *)

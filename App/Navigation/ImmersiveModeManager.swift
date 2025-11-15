@@ -51,6 +51,12 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - State Properties
 
+    /// Whether scroll events should be processed for immersive mode
+    private var shouldProcessScroll: Bool {
+        immersiveModeEnabled
+        && !UIAccessibility.isVoiceOverRunning
+    }
+
     /// Immersive mode progress (0.0 = bars fully visible, 1.0 = bars fully hidden)
     private var _immersiveProgress: CGFloat = 0.0
     private var immersiveProgress: CGFloat {
@@ -262,8 +268,7 @@ final class ImmersiveModeManager: NSObject {
         isDecelerating: Bool,
         isRefreshControlArmedOrTriggered: Bool
     ) {
-        guard immersiveModeEnabled,
-              !UIAccessibility.isVoiceOverRunning,
+        guard shouldProcessScroll,
               (isDragging || isDecelerating),
               !isRefreshControlArmedOrTriggered else { return }
 
