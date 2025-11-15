@@ -354,7 +354,6 @@ extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
     var text: NSAttributedString? { get set }
     var title: String { get }
     var forumAttachment: ForumAttachment? { get set }
-    var shouldDeleteAttachment: Bool { get set }
 }
 
 @objc protocol SubmittableDraft {

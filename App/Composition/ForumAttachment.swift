@@ -8,17 +8,45 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumAttachment")
 
+/**
+ Represents an image attachment for a forum post with validation and compression capabilities.
+
+ `ForumAttachment` handles image validation, resizing, and compression to meet forum requirements.
+ It supports both direct image instances and photo library assets, with automatic validation
+ against file size and dimension limits.
+
+ ## Validation Rules
+
+ Attachments are validated against:
+ - Maximum file size: 2 MB (2,097,152 bytes)
+ - Maximum dimensions: 4096×4096 pixels
+ - Supported formats: GIF, JPEG, PNG
+
+ ## Resizing and Compression
+
+ When an image exceeds limits, `ForumAttachment` can automatically:
+ 1. Scale down dimensions while maintaining aspect ratio
+ 2. Apply progressive JPEG compression (for non-transparent images)
+ 3. Scale down PNG images with transparency until they meet size requirements
+
+ ## State Preservation
+
+ Conforms to `NSCoding` to support UIKit state restoration. Photo library assets are
+ stored by identifier and reloaded on restoration.
+ */
 final class ForumAttachment: NSObject, NSCoding {
 
     static let maxFileSize = 2_097_152
     static let maxDimension = 4096
     static let supportedExtensions = ["gif", "jpg", "jpeg", "png"]
 
-    private static let defaultCompressionQuality: CGFloat = 0.9
-    private static let compressionQualityDecrement: CGFloat = 0.1
-    private static let minCompressionQuality: CGFloat = 0.1
-    private static let dimensionScaleFactor: CGFloat = 0.9
-    private static let minimumDimension = 100
+    private struct CompressionSettings {
+        static let defaultQuality: CGFloat = 0.9
+        static let qualityDecrement: CGFloat = 0.1
+        static let minQuality: CGFloat = 0.1
+        static let dimensionScaleFactor: CGFloat = 0.9
+        static let minimumDimension = 100
+    }
 
     let image: UIImage?
     let photoAssetIdentifier: String?
@@ -137,7 +165,7 @@ final class ForumAttachment: NSObject, NSCoding {
 
         if hasAlpha, let pngData = image.pngData() {
             return (pngData, "photo-\(timestamp).png", "image/png")
-        } else if let jpegData = image.jpegData(compressionQuality: Self.defaultCompressionQuality) {
+        } else if let jpegData = image.jpegData(compressionQuality: CompressionSettings.defaultQuality) {
             return (jpegData, "photo-\(timestamp).jpg", "image/jpeg")
         } else {
             throw ValidationError.imageDataConversionFailed
@@ -181,12 +209,12 @@ final class ForumAttachment: NSObject, NSCoding {
         targetHeight: Int,
         maxFileSize: Int
     ) -> UIImage? {
-        var compressionQuality = Self.defaultCompressionQuality
+        var compressionQuality = CompressionSettings.defaultQuality
         var currentWidth = targetWidth
         var currentHeight = targetHeight
         var resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
 
-        while compressionQuality > Self.minCompressionQuality {
+        while compressionQuality > CompressionSettings.minQuality {
             let hasAlpha = resizedImage.hasAlpha
             let data: Data?
 
@@ -201,14 +229,14 @@ final class ForumAttachment: NSObject, NSCoding {
             }
 
             if hasAlpha {
-                let newWidth = Int(CGFloat(currentWidth) * Self.dimensionScaleFactor)
-                let newHeight = Int(CGFloat(currentHeight) * Self.dimensionScaleFactor)
-                if newWidth < Self.minimumDimension || newHeight < Self.minimumDimension { break }
+                let newWidth = Int(CGFloat(currentWidth) * CompressionSettings.dimensionScaleFactor)
+                let newHeight = Int(CGFloat(currentHeight) * CompressionSettings.dimensionScaleFactor)
+                if newWidth < CompressionSettings.minimumDimension || newHeight < CompressionSettings.minimumDimension { break }
                 currentWidth = newWidth
                 currentHeight = newHeight
                 resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
             } else {
-                compressionQuality -= Self.compressionQualityDecrement
+                compressionQuality -= CompressionSettings.qualityDecrement
             }
         }
 

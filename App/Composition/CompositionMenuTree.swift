@@ -323,7 +323,13 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
 
         let attachment = ForumAttachment(image: image, photoAssetIdentifier: pendingImageAssetIdentifier)
         if let error = attachment.validationError {
-            if canResize(error) {
+            // Check if the error can be fixed by resizing
+            let canResize = switch error {
+            case .fileTooLarge, .dimensionsTooLarge: true
+            default: false
+            }
+
+            if canResize {
                 let alert = UIAlertController(
                     title: "Attachment Too Large",
                     message: "\(error.localizedDescription)\n\nWould you like to automatically resize the image to fit?",
@@ -357,15 +363,6 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         onAttachmentChanged?()
     }
 
-    private func canResize(_ error: ForumAttachment.ValidationError) -> Bool {
-        switch error {
-        case .fileTooLarge, .dimensionsTooLarge:
-            return true
-        default:
-            return false
-        }
-    }
-
     private func resizeAndAttachPendingImage() {
         guard let image = pendingImage else { return }
 
@@ -386,8 +383,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
                 self.pendingImageAssetIdentifier = nil
 
                 guard let resizedAttachment = resizedAttachment else {
-                    // Remove placeholder on failure
-                    self.draft?.forumAttachment = nil
+                    // Clear placeholder on failure
                     self.onAttachmentChanged?()
 
                     let alert = UIAlertController(
@@ -400,8 +396,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
                 }
 
                 if let error = resizedAttachment.validationError {
-                    // Remove placeholder on validation failure
-                    self.draft?.forumAttachment = nil
+                    // Clear placeholder on validation failure
                     self.onAttachmentChanged?()
 
                     let alert = UIAlertController(
@@ -449,19 +444,12 @@ fileprivate let rootItems = [
             tree.showSubmenu(URLItems)
         }
     }),
-    /**
-        Temporarily disabling the menu items that attempt image uploads. This is a bandaid fix and no imgur uploading code is being removed from the app at this time.
-        TODO: Re-enable these menu items as part of a proper imgur replacement update. (imgur is deleting anonymous inactive images)
-     
-        original line: MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
-     */
     MenuItem(title: "[img]", action: { tree in
-        // Show the image submenu if either:
-        // 1. Imgur uploads are enabled in settings, OR
-        // 2. The draft is a NewReplyDraft (for forum attachments)
+        // Show the image submenu if Imgur uploads are enabled or forum attachments are available
         if tree.imgurUploadsEnabled || tree.draft is NewReplyDraft {
             tree.showSubmenu(imageItems(tree: tree))
         } else {
+            // Fallback: paste image URL from clipboard or wrap selection
             if UIPasteboard.general.coercedURL == nil {
                 linkifySelection(tree)
             } else {

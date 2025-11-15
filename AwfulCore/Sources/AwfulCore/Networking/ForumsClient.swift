@@ -790,6 +790,20 @@ public final class ForumsClient {
         case post(Post)
     }
 
+    /**
+     Posts a new reply to a thread.
+
+     - Parameters:
+        - thread: The thread to reply to.
+        - bbcode: The BBCode content of the reply.
+        - attachment: Optional attachment data including the file data, filename, and MIME type.
+
+     - Returns: A tuple containing:
+        - location: The location of the posted reply (either a specific post or the last post in the thread).
+        - attachmentLimits: The parsed attachment size and dimension limits from the server, if available.
+
+     - Throws: An error if the reply fails to post or if the thread is closed.
+     */
     public func reply(
         to thread: AwfulThread,
         bbcode: String,
@@ -870,6 +884,16 @@ public final class ForumsClient {
         return (location: location, attachmentLimits: parsedLimits)
     }
 
+    /**
+     Fetches the attachment size and dimension limits for a thread.
+
+     - Parameter thread: The thread to fetch attachment limits for.
+
+     - Returns: A tuple containing the maximum file size (in bytes) and maximum dimension (in pixels).
+                Falls back to SA default limits (2 MB, 4096px) if parsing fails.
+
+     - Throws: An error if the request fails.
+     */
     public func fetchAttachmentLimits(for thread: AwfulThread) async throws -> (maxFileSize: Int, maxDimension: Int) {
         let threadID: String = await thread.managedObjectContext!.perform {
             thread.threadID
@@ -926,6 +950,18 @@ public final class ForumsClient {
         return (maxFileSize: maxFileSize, maxDimension: maxDimension)
     }
 
+    /**
+     Fetches an attachment image for a post with authentication.
+
+     This method downloads attachment images that require authentication,
+     typically for posts being edited that already have attachments.
+
+     - Parameter postID: The ID of the post containing the attachment.
+
+     - Returns: The raw image data.
+
+     - Throws: An error if the request fails or returns a non-200 status code.
+     */
     public func fetchAttachmentImage(postID: String) async throws -> Data {
         guard let url = URL(string: "attachment.php?postid=\(postID)", relativeTo: baseURL) else {
             throw Error.invalidBaseURL
@@ -1062,6 +1098,18 @@ public final class ForumsClient {
         return try Form(htmlForm, url: url)
     }
 
+    /**
+     Finds attachment information for a post being edited.
+
+     This method parses the edit form to find any existing attachment
+     associated with a post, returning the attachment ID and filename.
+
+     - Parameter post: The post to check for attachment information.
+
+     - Returns: A tuple containing the attachment ID and filename, or `nil` if no attachment exists.
+
+     - Throws: An error if the request fails.
+     */
     public func findAttachmentInfo(for post: Post) async throws -> (id: String, filename: String)? {
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
             "action": "editpost",

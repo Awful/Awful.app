@@ -10,6 +10,12 @@ final class CompositionViewController: ViewController {
 
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
 
+    private enum AttachmentViewLayout {
+        static let previewHeight: CGFloat = 84
+        static let editHeight: CGFloat = 120
+        static let spacing: CGFloat = 8
+    }
+
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nil, bundle: nil)
         restorationClass = type(of: self)
@@ -76,7 +82,7 @@ final class CompositionViewController: ViewController {
         attachmentEditHeightConstraint = attachmentEditView.heightAnchor.constraint(equalToConstant: 0)
 
         // Default: text view top anchors to preview view bottom (which starts at height 0)
-        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentPreviewView.bottomAnchor, constant: 8)
+        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentPreviewView.bottomAnchor, constant: AttachmentViewLayout.spacing)
 
         NSLayoutConstraint.activate([
             attachmentPreviewView.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 8),
@@ -112,13 +118,11 @@ final class CompositionViewController: ViewController {
 
     func showResizingPlaceholder() {
         attachmentPreviewView.showResizingPlaceholder()
-        attachmentPreviewView.isHidden = false
-        attachmentPreviewHeightConstraint.constant = 84
-
-        attachmentEditView.isHidden = true
-        attachmentEditHeightConstraint.constant = 0
-
-        updateTextViewConstraint(anchoredTo: attachmentPreviewView.bottomAnchor)
+        updateAttachmentViewVisibility(
+            showPreview: true, previewHeight: AttachmentViewLayout.previewHeight,
+            showEdit: false, editHeight: 0,
+            anchorTextViewTo: attachmentPreviewView.bottomAnchor
+        )
     }
 
     private func updateAttachmentPreview() {
@@ -144,38 +148,46 @@ final class CompositionViewController: ViewController {
     }
 
     private func showAttachmentPreview(with attachment: ForumAttachment) {
-        attachmentEditView.isHidden = true
-        attachmentEditHeightConstraint.constant = 0
-
         attachmentPreviewView.configure(with: attachment)
-        attachmentPreviewView.isHidden = false
-        attachmentPreviewHeightConstraint.constant = 84
-
-        updateTextViewConstraint(anchoredTo: attachmentPreviewView.bottomAnchor)
+        updateAttachmentViewVisibility(
+            showPreview: true, previewHeight: AttachmentViewLayout.previewHeight,
+            showEdit: false, editHeight: 0,
+            anchorTextViewTo: attachmentPreviewView.bottomAnchor
+        )
     }
 
     private func showAttachmentEditView(filename: String, filesize: String?, image: UIImage? = nil) {
-        attachmentPreviewView.isHidden = true
-        attachmentPreviewHeightConstraint.constant = 0
-
         attachmentEditView.configure(filename: filename, filesize: filesize, image: image)
-        attachmentEditView.isHidden = false
-        attachmentEditHeightConstraint.constant = 120
-
-        updateTextViewConstraint(anchoredTo: attachmentEditView.bottomAnchor)
+        updateAttachmentViewVisibility(
+            showPreview: false, previewHeight: 0,
+            showEdit: true, editHeight: AttachmentViewLayout.editHeight,
+            anchorTextViewTo: attachmentEditView.bottomAnchor
+        )
     }
 
     private func hideAllAttachmentViews() {
-        attachmentPreviewView.isHidden = true
-        attachmentPreviewHeightConstraint.constant = 0
-
-        attachmentEditView.isHidden = true
-        attachmentEditHeightConstraint.constant = 0
-
-        updateTextViewConstraint(anchoredTo: attachmentPreviewView.bottomAnchor)
+        updateAttachmentViewVisibility(
+            showPreview: false, previewHeight: 0,
+            showEdit: false, editHeight: 0,
+            anchorTextViewTo: attachmentPreviewView.bottomAnchor
+        )
     }
 
-    private func updateTextViewConstraint(anchoredTo anchor: NSLayoutYAxisAnchor, constant: CGFloat = 8) {
+    private func updateAttachmentViewVisibility(
+        showPreview: Bool, previewHeight: CGFloat,
+        showEdit: Bool, editHeight: CGFloat,
+        anchorTextViewTo anchor: NSLayoutYAxisAnchor
+    ) {
+        attachmentPreviewView.isHidden = !showPreview
+        attachmentPreviewHeightConstraint.constant = previewHeight
+
+        attachmentEditView.isHidden = !showEdit
+        attachmentEditHeightConstraint.constant = editHeight
+
+        updateTextViewConstraint(anchoredTo: anchor)
+    }
+
+    private func updateTextViewConstraint(anchoredTo anchor: NSLayoutYAxisAnchor, constant: CGFloat = AttachmentViewLayout.spacing) {
         textViewTopConstraint.isActive = false
         textViewTopConstraint = _textView.topAnchor.constraint(equalTo: anchor, constant: constant)
         textViewTopConstraint.isActive = true
