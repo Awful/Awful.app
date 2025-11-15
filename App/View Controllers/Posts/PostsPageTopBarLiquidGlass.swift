@@ -180,3 +180,10 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
     }
 }
 
+protocol PostsPageTopBarProtocol: UIView {
+    var goToParentForum: (() -> Void)? { get set }
+    var showPreviousPosts: (() -> Void)? { get set }
+    var scrollToEnd: (() -> Void)? { get set }
+
+    func themeDidChange(_ theme: Theme)
+}

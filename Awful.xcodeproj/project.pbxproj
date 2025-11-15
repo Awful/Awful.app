@@ -204,7 +204,6 @@
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
 		2D571B492EC8765F0026826C /* ImmersiveModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B482EC876590026826C /* ImmersiveModeManager.swift */; };
 		2D571B4B2EC876A20026826C /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B4A2EC8769E0026826C /* GradientView.swift */; };
-		2D571B4D2EC878230026826C /* PostsPageTopBarProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B4C2EC8781E0026826C /* PostsPageTopBarProtocol.swift */; };
 		2D571B4F2EC878A70026826C /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B4E2EC878A40026826C /* PostsPageTopBarLiquidGlass.swift */; };
 		2D571B512EC8795B0026826C /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B502EC879590026826C /* LiquidGlassTitleView.swift */; };
 		2D571B532EC87B010026826C /* PageNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B522EC87AFE0026826C /* PageNumberView.swift */; };
@@ -525,7 +524,6 @@
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
 		2D571B482EC876590026826C /* ImmersiveModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveModeManager.swift; sourceTree = "<group>"; };
 		2D571B4A2EC8769E0026826C /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
-		2D571B4C2EC8781E0026826C /* PostsPageTopBarProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarProtocol.swift; sourceTree = "<group>"; };
 		2D571B4E2EC878A40026826C /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
 		2D571B502EC879590026826C /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
 		2D571B522EC87AFE0026826C /* PageNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageNumberView.swift; sourceTree = "<group>"; };
@@ -761,7 +759,6 @@
 			isa = PBXGroup;
 			children = (
 				2D571B4E2EC878A40026826C /* PostsPageTopBarLiquidGlass.swift */,
-				2D571B4C2EC8781E0026826C /* PostsPageTopBarProtocol.swift */,
 				2D571B4A2EC8769E0026826C /* GradientView.swift */,
 				2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */,
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
@@ -1650,7 +1647,6 @@
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
 				1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */,
-				2D571B4D2EC878230026826C /* PostsPageTopBarProtocol.swift in Sources */,
 				1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */,
 				1CF6786E201E8F45009A9640 /* MessageListCell.swift in Sources */,
 				1C16FBB01CB863E600C88BD1 /* IconActionItem.swift in Sources */,
