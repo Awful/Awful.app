@@ -175,6 +175,23 @@ final class ForumAttachment: NSObject, NSCoding {
     }
 }
 
+extension ForumAttachment.ValidationError {
+    var localizedDescription: String {
+        switch self {
+        case .fileTooLarge(let actualSize, let maxSize):
+            let formatter = ByteCountFormatter()
+            formatter.countStyle = .file
+            return "File size (\(formatter.string(fromByteCount: Int64(actualSize)))) exceeds maximum (\(formatter.string(fromByteCount: Int64(maxSize))))"
+        case .dimensionsTooLarge(let width, let height, let maxDimension):
+            return "Image dimensions (\(width)×\(height)) exceed maximum (\(maxDimension)×\(maxDimension))"
+        case .unsupportedFormat:
+            return "Unsupported image format. Supported formats: GIF, JPEG, PNG"
+        case .imageDataConversionFailed:
+            return "Failed to process image data"
+        }
+    }
+}
+
 private extension UIImage {
     var hasAlpha: Bool {
         guard let alphaInfo = cgImage?.alphaInfo else { return false }

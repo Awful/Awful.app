@@ -137,7 +137,7 @@ final class CompositionViewController: ViewController {
         // For edits, show existing attachment info if available
         if let editDraft = draft as? EditReplyDraft {
             if let existingFilename = editDraft.existingAttachmentFilename {
-                showAttachmentEditView(filename: existingFilename, filesize: editDraft.existingAttachmentFilesize)
+                showAttachmentEditView(filename: existingFilename, filesize: editDraft.existingAttachmentFilesize, image: editDraft.existingAttachmentImage)
                 return
             }
         }
@@ -168,11 +168,11 @@ final class CompositionViewController: ViewController {
         }
     }
 
-    private func showAttachmentEditView(filename: String, filesize: String?) {
+    private func showAttachmentEditView(filename: String, filesize: String?, image: UIImage? = nil) {
         attachmentPreviewView.isHidden = true
         attachmentPreviewHeightConstraint.constant = 0
 
-        attachmentEditView.configure(filename: filename, filesize: filesize)
+        attachmentEditView.configure(filename: filename, filesize: filesize, image: image)
         attachmentEditView.isHidden = false
         attachmentEditHeightConstraint.constant = 120
 

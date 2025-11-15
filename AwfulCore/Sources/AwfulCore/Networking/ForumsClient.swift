@@ -884,6 +884,8 @@ public final class ForumsClient {
             return limits
         }
 
+        // Fallback to SA default attachment limits (2 MB file size, 4096px max dimension)
+        // These values match ForumAttachment.maxFileSize and ForumAttachment.maxDimension
         return (maxFileSize: 2_097_152, maxDimension: 4096)
     }
 

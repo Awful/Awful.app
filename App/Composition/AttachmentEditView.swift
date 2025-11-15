@@ -114,7 +114,7 @@ final class AttachmentEditView: UIView {
         onActionChanged?(action)
     }
 
-    func configure(filename: String, filesize: String?) {
+    func configure(filename: String, filesize: String?, image: UIImage? = nil) {
         titleLabel.text = "Current Attachment"
         if let filesize = filesize {
             detailLabel.text = "\(filename) • \(filesize)"
@@ -122,11 +122,18 @@ final class AttachmentEditView: UIView {
             detailLabel.text = filename
         }
 
-        // Show a generic document icon since we don't have the actual image
-        let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
-        imageView.image = UIImage(systemName: "doc.fill", withConfiguration: config)
-        imageView.tintColor = .tertiaryLabel
-        imageView.contentMode = .center
+        if let image = image {
+            // Display the actual attachment image
+            imageView.image = image
+            imageView.tintColor = nil
+            imageView.contentMode = .scaleAspectFit
+        } else {
+            // Show a generic document icon as fallback
+            let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .light)
+            imageView.image = UIImage(systemName: "doc.fill", withConfiguration: config)
+            imageView.tintColor = .tertiaryLabel
+            imageView.contentMode = .center
+        }
     }
 
     var selectedAction: AttachmentAction {

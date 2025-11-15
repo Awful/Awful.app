@@ -420,6 +420,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     var text: NSAttributedString?
     var forumAttachment: ForumAttachment?
     var existingAttachmentInfo: (id: String, filename: String)?
+    var existingAttachmentImage: UIImage?
     var shouldDeleteAttachment = false
 
     var attachmentAction: AttachmentAction {
@@ -452,6 +453,9 @@ final class EditReplyDraft: NSObject, ReplyDraft {
            let attachmentFilename = coder.decodeObject(of: NSString.self, forKey: Keys.attachmentFilename) as? String {
             self.existingAttachmentInfo = (id: attachmentID, filename: attachmentFilename)
         }
+        if let imageData = coder.decodeObject(of: NSData.self, forKey: Keys.attachmentImageData) as? Data {
+            self.existingAttachmentImage = UIImage(data: imageData)
+        }
         self.shouldDeleteAttachment = coder.decodeBool(forKey: Keys.shouldDeleteAttachment)
     }
 
@@ -462,6 +466,9 @@ final class EditReplyDraft: NSObject, ReplyDraft {
             coder.encode(existingAttachmentInfo.id as NSString, forKey: Keys.attachmentID)
             coder.encode(existingAttachmentInfo.filename as NSString, forKey: Keys.attachmentFilename)
         }
+        if let imageData = existingAttachmentImage?.pngData() {
+            coder.encode(imageData as NSData, forKey: Keys.attachmentImageData)
+        }
         coder.encode(shouldDeleteAttachment, forKey: Keys.shouldDeleteAttachment)
     }
 
@@ -470,12 +477,15 @@ final class EditReplyDraft: NSObject, ReplyDraft {
         static let text = "text"
         static let attachmentID = "attachmentID"
         static let attachmentFilename = "attachmentFilename"
+        static let attachmentImageData = "attachmentImageData"
         static let shouldDeleteAttachment = "shouldDeleteAttachment"
     }
     
     var thread: AwfulThread {
-        // TODO can we assume an edited post always has a thread?
-        return post.thread!
+        guard let thread = post.thread else {
+            fatalError("EditReplyDraft requires post to have an associated thread")
+        }
+        return thread
     }
 
     var title: String {
@@ -504,7 +514,7 @@ extension NewReplyDraft: SubmittableDraft {
                                 maxDimension: limits.maxDimension
                             ) {
                                 let error = NSError(domain: "Awful", code: 0, userInfo: [
-                                    NSLocalizedDescriptionKey: self.validationErrorMessage(for: validationError)
+                                    NSLocalizedDescriptionKey: validationError.localizedDescription
                                 ])
                                 completion(error)
                                 return
@@ -519,21 +529,6 @@ extension NewReplyDraft: SubmittableDraft {
                     }
                 }
             }
-        }
-    }
-
-    private func validationErrorMessage(for error: ForumAttachment.ValidationError) -> String {
-        switch error {
-        case .fileTooLarge(let actualSize, let maxSize):
-            let actualMB = Double(actualSize) / 1_048_576
-            let maxMB = Double(maxSize) / 1_048_576
-            return String(format: "Image is too large (%.1f MB). Maximum size is %.1f MB.", actualMB, maxMB)
-        case .dimensionsTooLarge(let width, let height, let maxDimension):
-            return "Image dimensions (\(width)×\(height)) exceed maximum (\(maxDimension)×\(maxDimension))."
-        case .unsupportedFormat:
-            return "Unsupported image format. Supported formats: GIF, JPEG, PNG"
-        case .imageDataConversionFailed:
-            return "Failed to convert image data"
         }
     }
 }

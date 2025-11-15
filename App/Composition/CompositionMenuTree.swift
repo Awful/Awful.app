@@ -292,21 +292,6 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         textView.becomeFirstResponder()
     }
 
-    private func validationErrorMessage(for error: ForumAttachment.ValidationError) -> String {
-        switch error {
-        case .fileTooLarge(let actualSize, let maxSize):
-            let formatter = ByteCountFormatter()
-            formatter.countStyle = .file
-            return "File size (\(formatter.string(fromByteCount: Int64(actualSize)))) exceeds maximum (\(formatter.string(fromByteCount: Int64(maxSize))))"
-        case .dimensionsTooLarge(let width, let height, let maxDimension):
-            return "Image dimensions (\(width)x\(height)) exceed maximum (\(maxDimension)x\(maxDimension))"
-        case .unsupportedFormat:
-            return "Unsupported image format. Please use GIF, JPG, JPEG, or PNG"
-        case .imageDataConversionFailed:
-            return "Failed to process image data"
-        }
-    }
-
     fileprivate func useImageHostForPendingImage() {
         guard let image = pendingImage else { return }
 
@@ -333,7 +318,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             if canResize(error) {
                 let alert = UIAlertController(
                     title: "Attachment Too Large",
-                    message: "\(validationErrorMessage(for: error))\n\nWould you like to automatically resize the image to fit?",
+                    message: "\(error.localizedDescription)\n\nWould you like to automatically resize the image to fit?",
                     preferredStyle: .alert
                 )
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self] _ in
@@ -347,7 +332,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             } else {
                 let alert = UIAlertController(
                     title: "Invalid Attachment",
-                    message: validationErrorMessage(for: error),
+                    message: error.localizedDescription,
                     alertActions: [.ok()]
                 )
                 textView.nearestViewController?.present(alert, animated: true)
@@ -362,7 +347,6 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         pendingImageAssetIdentifier = nil
 
         onAttachmentChanged?()
-        // Success message removed - the preview card is sufficient feedback
     }
 
     private func canResize(_ error: ForumAttachment.ValidationError) -> Bool {
@@ -412,7 +396,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
 
                     let alert = UIAlertController(
                         title: "Resize Failed",
-                        message: "\(self.validationErrorMessage(for: error))\n\nPlease try a different image.",
+                        message: "\(error.localizedDescription)\n\nPlease try a different image.",
                         alertActions: [.ok()]
                     )
                     self.textView.nearestViewController?.present(alert, animated: true)
@@ -422,7 +406,6 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
                 // Update with resized attachment
                 self.draft?.forumAttachment = resizedAttachment
                 self.onAttachmentChanged?()
-                // Success message removed - the preview card is sufficient feedback
             }
         }
     }

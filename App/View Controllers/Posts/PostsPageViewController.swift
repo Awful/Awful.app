@@ -1253,10 +1253,21 @@ final class PostsPageViewController: ViewController {
                     let attachmentInfo = try? await ForumsClient.shared.findAttachmentInfo(for: selectedPost!)
                     let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
 
-                    // Set attachment info before creating the composition view controller
+                    // Set attachment info and fetch image before creating the composition view controller
                     if let attachmentInfo = attachmentInfo,
                        let editDraft = replyWorkspace.draft as? EditReplyDraft {
                         editDraft.existingAttachmentInfo = attachmentInfo
+
+                        // Fetch the attachment image
+                        do {
+                            let imageData = try await ForumsClient.shared.fetchAttachmentImage(postID: selectedPost!.postID)
+                            if let image = UIImage(data: imageData) {
+                                editDraft.existingAttachmentImage = image
+                            }
+                        } catch {
+                            logger.error("Failed to fetch attachment image for edit: \(error)")
+                            // Continue anyway - AttachmentEditView will show generic icon
+                        }
                     }
 
                     self.replyWorkspace = replyWorkspace
