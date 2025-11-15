@@ -34,11 +34,11 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
  Conforms to `NSCoding` to support UIKit state restoration. Photo library assets are
  stored by identifier and reloaded on restoration.
  */
-final class ForumAttachment: NSObject, NSCoding {
+public final class ForumAttachment: NSObject, NSCoding {
 
-    static let maxFileSize = 2_097_152
-    static let maxDimension = 4096
-    static let supportedExtensions = ["gif", "jpg", "jpeg", "png"]
+    public static let maxFileSize = 2_097_152
+    public static let maxDimension = 4096
+    public static let supportedExtensions = ["gif", "jpg", "jpeg", "png"]
 
     private struct CompressionSettings {
         static let defaultQuality: CGFloat = 0.9
@@ -48,25 +48,25 @@ final class ForumAttachment: NSObject, NSCoding {
         static let minimumDimension = 100
     }
 
-    let image: UIImage?
-    let photoAssetIdentifier: String?
-    private(set) var validationError: ValidationError?
+    public let image: UIImage?
+    public let photoAssetIdentifier: String?
+    public private(set) var validationError: ValidationError?
 
-    enum ValidationError: Error {
+    public enum ValidationError: Error {
         case fileTooLarge(actualSize: Int, maxSize: Int)
         case dimensionsTooLarge(width: Int, height: Int, maxDimension: Int)
         case unsupportedFormat
         case imageDataConversionFailed
     }
 
-    init(image: UIImage, photoAssetIdentifier: String? = nil) {
+    public init(image: UIImage, photoAssetIdentifier: String? = nil) {
         self.image = image
         self.photoAssetIdentifier = photoAssetIdentifier
         super.init()
         self.validationError = performValidation()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         if let photoAssetIdentifier = coder.decodeObject(of: NSString.self, forKey: CodingKeys.assetIdentifier.rawValue) {
             self.photoAssetIdentifier = photoAssetIdentifier as String
 
@@ -105,7 +105,7 @@ final class ForumAttachment: NSObject, NSCoding {
         self.validationError = performValidation()
     }
 
-    func encode(with coder: NSCoder) {
+    public func encode(with coder: NSCoder) {
         if let photoAssetIdentifier = photoAssetIdentifier {
             coder.encode(photoAssetIdentifier as NSString, forKey: CodingKeys.assetIdentifier.rawValue)
         } else if let image = image, let imageData = image.pngData() {
@@ -118,11 +118,11 @@ final class ForumAttachment: NSObject, NSCoding {
         case imageData
     }
 
-    var isValid: Bool {
+    public var isValid: Bool {
         return validationError == nil
     }
 
-    func validate(maxFileSize: Int? = nil, maxDimension: Int? = nil) -> ValidationError? {
+    public func validate(maxFileSize: Int? = nil, maxDimension: Int? = nil) -> ValidationError? {
         guard let image = image else {
             return .imageDataConversionFailed
         }
@@ -143,6 +143,7 @@ final class ForumAttachment: NSObject, NSCoding {
                 return .fileTooLarge(actualSize: data.count, maxSize: effectiveMaxFileSize)
             }
         } catch {
+            logger.error("Failed to convert image to data during validation: \(error)")
             return .imageDataConversionFailed
         }
 
@@ -153,7 +154,7 @@ final class ForumAttachment: NSObject, NSCoding {
         return validate()
     }
 
-    func imageData() throws -> (data: Data, filename: String, mimeType: String) {
+    public func imageData() throws -> (data: Data, filename: String, mimeType: String) {
         guard let image = image else {
             throw ValidationError.imageDataConversionFailed
         }
@@ -172,7 +173,7 @@ final class ForumAttachment: NSObject, NSCoding {
         }
     }
 
-    func resized(maxDimension: Int? = nil, maxFileSize: Int? = nil) -> ForumAttachment? {
+    public func resized(maxDimension: Int? = nil, maxFileSize: Int? = nil) -> ForumAttachment? {
         guard let originalImage = image else { return nil }
 
         let effectiveMaxDimension = maxDimension ?? Self.maxDimension
@@ -245,7 +246,7 @@ final class ForumAttachment: NSObject, NSCoding {
 }
 
 extension ForumAttachment.ValidationError {
-    var localizedDescription: String {
+    public var localizedDescription: String {
         switch self {
         case .fileTooLarge(let actualSize, let maxSize):
             let formatter = ByteCountFormatter()

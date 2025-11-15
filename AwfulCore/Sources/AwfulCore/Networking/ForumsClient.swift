@@ -910,16 +910,17 @@ public final class ForumsClient {
 
         // Fallback to SA default attachment limits (2 MB file size, 4096px max dimension)
         // These values match ForumAttachment.maxFileSize and ForumAttachment.maxDimension
-        return (maxFileSize: 2_097_152, maxDimension: 4096)
+        return (maxFileSize: ForumAttachment.maxFileSize, maxDimension: ForumAttachment.maxDimension)
     }
 
     private func parseAttachmentLimits(from document: HTMLDocument) -> (maxFileSize: Int, maxDimension: Int)? {
         guard let maxFileSizeString = document.firstNode(matchingSelector: "input[name='MAX_FILE_SIZE']")?["value"],
               let maxFileSize = Int(maxFileSizeString) else {
+            logger.debug("Could not parse MAX_FILE_SIZE from HTML, falling back to defaults")
             return nil
         }
 
-        var maxDimension = 4096
+        var maxDimension = ForumAttachment.maxDimension
         for td in document.nodes(matchingSelector: "td") {
             let text = td.textContent
             if text.contains("Attach file:") {
@@ -936,11 +937,17 @@ public final class ForumsClient {
                 if let nextSibling = nextSibling {
                     let limitsText = nextSibling.textContent
                     let pattern = #"dimensions:\s*(\d+)x(\d+)"#
-                    if let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]),
-                       let match = regex.firstMatch(in: limitsText, range: NSRange(limitsText.startIndex..., in: limitsText)),
-                       let dimensionRange = Range(match.range(at: 1), in: limitsText),
-                       let parsedDimension = Int(limitsText[dimensionRange]) {
-                        maxDimension = parsedDimension
+                    do {
+                        let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
+                        if let match = regex.firstMatch(in: limitsText, range: NSRange(limitsText.startIndex..., in: limitsText)),
+                           let dimensionRange = Range(match.range(at: 1), in: limitsText),
+                           let parsedDimension = Int(limitsText[dimensionRange]) {
+                            maxDimension = parsedDimension
+                        } else {
+                            logger.debug("Could not parse dimension limits from text: '\(limitsText)', using default")
+                        }
+                    } catch {
+                        logger.error("Failed to create regex for dimension parsing: \(error)")
                     }
                 }
                 break

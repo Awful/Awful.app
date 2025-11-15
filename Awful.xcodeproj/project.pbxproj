@@ -199,7 +199,6 @@
 		2D19BA3929C33303009DD94F /* niggly60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3629C33302009DD94F /* niggly60.json */; };
 		2D19BA3A29C33303009DD94F /* frogrefresh60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3729C33302009DD94F /* frogrefresh60.json */; };
 		2D19BA3B29C33303009DD94F /* toot60.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D19BA3829C33302009DD94F /* toot60.json */; };
-		2D21C8822EC1C6730089284B /* ForumAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D21C8812EC1C6730089284B /* ForumAttachment.swift */; };
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
@@ -518,7 +517,6 @@
 		2D19BA3629C33302009DD94F /* niggly60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = niggly60.json; sourceTree = "<group>"; };
 		2D19BA3729C33302009DD94F /* frogrefresh60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = frogrefresh60.json; sourceTree = "<group>"; };
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
-		2D21C8812EC1C6730089284B /* ForumAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumAttachment.swift; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
@@ -1105,7 +1103,6 @@
 			children = (
 				2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */,
 				2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */,
-				2D21C8812EC1C6730089284B /* ForumAttachment.swift */,
 				1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */,
 				1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */,
 				1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */,
@@ -1587,7 +1584,6 @@
 				1C16FBBA1CB8961F00C88BD1 /* ImageURLProtocol.swift in Sources */,
 				1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */,
 				1C48538E1F93BADF0042531A /* HTMLRenderingHelpers.swift in Sources */,
-				2D21C8822EC1C6730089284B /* ForumAttachment.swift in Sources */,
 				1C16FC081CC3F01B00C88BD1 /* RapSheetViewController.swift in Sources */,
 				1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */,
 				1C42A2271FD47AEB00F67BA1 /* Forum+Presentation.swift in Sources */,

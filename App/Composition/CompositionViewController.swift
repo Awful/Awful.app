@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import AwfulSettings
 import AwfulTheming
 import UIKit
@@ -14,6 +15,7 @@ final class CompositionViewController: ViewController {
         static let previewHeight: CGFloat = 84
         static let editHeight: CGFloat = 120
         static let spacing: CGFloat = 8
+        static let animationDuration: TimeInterval = 0.3
     }
 
     override init(nibName: String?, bundle: Bundle?) {
@@ -192,7 +194,7 @@ final class CompositionViewController: ViewController {
         textViewTopConstraint = _textView.topAnchor.constraint(equalTo: anchor, constant: constant)
         textViewTopConstraint.isActive = true
 
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: AttachmentViewLayout.animationDuration) {
             self.view.layoutIfNeeded()
         }
     }

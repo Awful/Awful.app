@@ -135,8 +135,4 @@ final class AttachmentEditView: UIView {
             imageView.contentMode = .center
         }
     }
-
-    var selectedAction: AttachmentAction {
-        return actionSegmentedControl.selectedSegmentIndex == 0 ? .keep : .delete
-    }
 }

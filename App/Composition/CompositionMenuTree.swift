@@ -2,14 +2,15 @@
 //
 //  Copyright 2013 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
+import AwfulSettings
+import Foil
+import ImgurAnonymousAPI
 import MobileCoreServices
 import os
 import Photos
 import PSMenuItem
 import UIKit
-import AwfulSettings
-import Foil
-import ImgurAnonymousAPI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "CompositionMenuTree")
 
@@ -30,6 +31,11 @@ final class CompositionMenuTree: NSObject {
 
     private var pendingImage: UIImage?
     private var pendingImageAssetIdentifier: String?
+
+    private func clearPendingImage() {
+        pendingImage = nil
+        pendingImageAssetIdentifier = nil
+    }
 
     /// The textView's class will have some responder chain methods swizzled.
     init(textView: UITextView, draft: (NSObject & ReplyDraft)? = nil) {
@@ -89,7 +95,8 @@ final class CompositionMenuTree: NSObject {
         
         shouldPopWhenMenuHides = true
     }
-    
+
+    // fileprivate to allow access from MenuItem action closures defined at file scope
     fileprivate func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
@@ -107,7 +114,9 @@ final class CompositionMenuTree: NSObject {
         }
         textView.nearestViewController?.present(picker, animated: true, completion: nil)
     }
-    
+
+    // MARK: - Imgur Authentication
+
     private func authenticateWithImgur() {
         guard let viewController = textView.nearestViewController else { return }
         showAuthenticationPrompt(in: viewController)
@@ -314,8 +323,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             insertImage(image)
         }
 
-        pendingImage = nil
-        pendingImageAssetIdentifier = nil
+        clearPendingImage()
     }
 
     fileprivate func useForumAttachmentForPendingImage() {
@@ -336,8 +344,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
                     preferredStyle: .alert
                 )
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self] _ in
-                    self?.pendingImage = nil
-                    self?.pendingImageAssetIdentifier = nil
+                    self?.clearPendingImage()
                 })
                 alert.addAction(UIAlertAction(title: "Resize & Continue", style: .default) { [weak self] _ in
                     self?.resizeAndAttachPendingImage()
@@ -350,15 +357,13 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
                     alertActions: [.ok()]
                 )
                 textView.nearestViewController?.present(alert, animated: true)
-                pendingImage = nil
-                pendingImageAssetIdentifier = nil
+                clearPendingImage()
             }
             return
         }
 
         draft?.forumAttachment = attachment
-        pendingImage = nil
-        pendingImageAssetIdentifier = nil
+        clearPendingImage()
 
         onAttachmentChanged?()
     }
@@ -379,8 +384,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
             }
 
             DispatchQueue.main.async {
-                self.pendingImage = nil
-                self.pendingImageAssetIdentifier = nil
+                self.clearPendingImage()
 
                 guard let resizedAttachment = resizedAttachment else {
                     // Clear placeholder on failure
