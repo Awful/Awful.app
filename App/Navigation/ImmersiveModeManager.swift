@@ -118,8 +118,6 @@ final class ImmersiveModeManager: NSObject {
         return scrollableHeight > (totalBarTravelDistance * 2)
     }
 
-    // MARK: - Configuration
-
     /// Configure the manager with required view references
     func configure(
         postsView: PostsPageView,
@@ -295,14 +293,9 @@ final class ImmersiveModeManager: NSObject {
 
         let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
 
-        // When approaching the bottom while scrolling down, progressively reveal bars
-        // so they're fully visible when reaching the end of content. This prevents users
-        // from being unable to access navigation when at the bottom of the page.
+        // Progressively reveal bars when near bottom to ensure they're visible at end of content
         if isNearBottom && scrollDelta > 0 {
-            // Calculate target progress based on proximity to bottom (closer = more revealed)
             let targetProgress = (distanceFromBottom / nearBottomThreshold).clamp(0...1)
-            // Use min() to cap the reveal rate - can't reveal faster than natural scroll progression
-            // but can slow down reveal as we approach the bottom (targetProgress becomes constraint)
             immersiveProgress = min(incrementalProgress, targetProgress).clamp(0...1)
         } else {
             immersiveProgress = incrementalProgress.clamp(0...1)
@@ -313,6 +306,8 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Private Methods
 
+    /// Updates the visual state of navigation bars and toolbar based on current immersive progress
+    /// Uses CATransaction.setDisableActions to prevent implicit animations during scroll-driven transforms
     private func updateBarsForImmersiveProgress() {
         guard !isUpdatingBars else { return }
         isUpdatingBars = true

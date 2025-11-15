@@ -719,7 +719,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Guard against concurrent scroll handling
+        // WKWebView may trigger scroll events on background threads during content loading.
+        // Dispatch to main thread to ensure safe access to UI state and prevent data races.
         guard Thread.isMainThread else {
             DispatchQueue.main.async { [weak self] in
                 self?.scrollViewDidScroll(scrollView)
