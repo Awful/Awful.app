@@ -6,13 +6,21 @@ import UIKit
 
 /// Shared layout constants for attachment card views
 enum AttachmentCardLayout {
+    /// Size of the thumbnail image (width and height)
     static let imageSize: CGFloat = 60
+    /// Corner radius for the thumbnail image
     static let imageCornerRadius: CGFloat = 4
+    /// Corner radius for the card container
     static let cardCornerRadius: CGFloat = 8
+    /// Padding around the card edges
     static let cardPadding: CGFloat = 12
+    /// Spacing between image and text labels
     static let imageSpacing: CGFloat = 12
+    /// Top padding for labels (larger to optically center with image)
     static let labelTopPadding: CGFloat = 16
+    /// Spacing between title and detail labels
     static let titleDetailSpacing: CGFloat = 4
+    /// Size of action buttons (remove, etc.)
     static let actionButtonSize: CGFloat = 30
 }
 

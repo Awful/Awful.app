@@ -978,7 +978,7 @@ public final class ForumsClient {
     private func parseAttachmentLimits(from document: HTMLDocument) -> (maxFileSize: Int, maxDimension: Int)? {
         guard let maxFileSizeString = document.firstNode(matchingSelector: "input[name='MAX_FILE_SIZE']")?["value"],
               let maxFileSize = Int(maxFileSizeString) else {
-            logger.debug("Could not parse MAX_FILE_SIZE from HTML, falling back to defaults")
+            logger.warning("Could not parse MAX_FILE_SIZE from HTML, falling back to defaults")
             return nil
         }
 
@@ -987,17 +987,7 @@ public final class ForumsClient {
         for td in document.nodes(matchingSelector: "form[name='vbform'] td") {
             let text = td.textContent
             if text.contains("Attach file:") {
-                var nextSibling: HTMLElement?
-                if let sibling = td.nextSibling as? HTMLElement {
-                    nextSibling = sibling
-                } else if let parent = td.parent {
-                    let children = parent.children.compactMap { $0 as? HTMLElement }
-                    if let index = children.firstIndex(where: { $0 === td }), index + 1 < children.count {
-                        nextSibling = children[index + 1]
-                    }
-                }
-
-                if let nextSibling = nextSibling {
+                if let nextSibling = td.nextSiblingElement {
                     let limitsText = nextSibling.textContent
                     let pattern = #"dimensions:\s*(\d+)x(\d+)"#
                     do {

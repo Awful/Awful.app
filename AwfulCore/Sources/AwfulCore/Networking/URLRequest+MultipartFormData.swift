@@ -3,6 +3,9 @@
 //  Copyright 2023 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "com.awful.Awful", category: "MultipartFormData")
 
 extension URLRequest {
     /**
@@ -151,7 +154,9 @@ extension URLRequest {
                    bytes[3] == 0x38 && (bytes[4] == 0x37 || bytes[4] == 0x39)
 
         default:
-            return true
+            // Unknown MIME type - log warning and reject for security
+            logger.warning("Attempted to upload file with unknown MIME type: \(mimeType)")
+            return false
         }
     }
 }

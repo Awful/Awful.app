@@ -68,7 +68,7 @@ final class AttachmentPreviewView: AttachmentCardView {
             removeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -AttachmentCardLayout.cardPadding),
             removeButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             removeButton.widthAnchor.constraint(equalToConstant: AttachmentCardLayout.actionButtonSize),
-            removeButton.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.actionButtonSize)
+            removeButton.heightAnchor.constraint(equalToConstant: AttachmentCardLayout.actionButtonSize),
         ])
     }
 

@@ -66,15 +66,27 @@ public final class ForumAttachment: NSObject, NSCoding {
         self.validationError = validate()
     }
 
+    /**
+     Restores a ForumAttachment from encoded state.
+
+     - Important: This initializer performs synchronous photo library requests when restoring from a photo asset.
+       During state restoration, this blocking behavior is acceptable as it ensures the attachment is fully
+       loaded before the UI is presented. The synchronous request is configured to allow network access,
+       so images stored in iCloud Photos may incur network delays.
+
+     - Parameter coder: The decoder to read data from
+
+     - Returns: A restored ForumAttachment, or nil if decoding fails
+     */
     public required init?(coder: NSCoder) {
         if let photoAssetIdentifier = coder.decodeObject(of: NSString.self, forKey: CodingKeys.assetIdentifier.rawValue) {
             self.photoAssetIdentifier = photoAssetIdentifier as String
 
             if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [photoAssetIdentifier as String], options: nil).firstObject {
                 let options = PHImageRequestOptions()
-                options.isSynchronous = true
+                options.isSynchronous = true  // Blocking call - acceptable during state restoration
                 options.deliveryMode = .highQualityFormat
-                options.isNetworkAccessAllowed = true
+                options.isNetworkAccessAllowed = true  // May fetch from iCloud if needed
 
                 var resultImage: UIImage?
 
@@ -200,6 +212,23 @@ public final class ForumAttachment: NSObject, NSCoding {
         return nil
     }
 
+    /**
+     Compresses an image to fit within the specified dimensions and file size limits.
+
+     The compression algorithm uses a two-pronged approach:
+     - For images without alpha channel: Uses JPEG compression with progressively decreasing quality
+     - For images with alpha channel: Uses PNG compression with progressively smaller dimensions
+
+     This strategy optimizes for file size while preserving visual quality and transparency where needed.
+
+     - Parameters:
+       - originalImage: The source image to compress
+       - targetWidth: Maximum width in pixels
+       - targetHeight: Maximum height in pixels
+       - maxFileSize: Maximum file size in bytes
+
+     - Returns: A compressed image that fits within the constraints, or `nil` if compression failed
+     */
     private func compressImage(
         _ originalImage: UIImage,
         targetWidth: Int,
@@ -212,20 +241,24 @@ public final class ForumAttachment: NSObject, NSCoding {
         var resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
         var lastValidImage: UIImage?
 
+        // Iteratively compress until we meet the file size constraint
         while compressionQuality > CompressionSettings.minQuality {
             let hasAlpha = resizedImage.hasAlpha
             let data: Data?
 
+            // Choose encoding based on alpha channel presence
             if hasAlpha {
                 data = resizedImage.pngData()
             } else {
                 data = resizedImage.jpegData(compressionQuality: compressionQuality)
             }
 
+            // Success: image fits within file size limit
             if let imageData = data, imageData.count <= maxFileSize {
                 return resizedImage
             }
 
+            // For images with alpha: reduce dimensions (PNG doesn't support quality adjustment)
             if hasAlpha {
                 let newWidth = Int(CGFloat(currentWidth) * CompressionSettings.dimensionScaleFactor)
                 let newHeight = Int(CGFloat(currentHeight) * CompressionSettings.dimensionScaleFactor)
@@ -240,10 +273,12 @@ public final class ForumAttachment: NSObject, NSCoding {
                     lastValidImage = resizedImage
                 }
             } else {
+                // For images without alpha: reduce JPEG quality
                 compressionQuality -= CompressionSettings.qualityDecrement
             }
         }
 
+        // Return the last image that fit within constraints, or nil if none did
         return lastValidImage
     }
 }

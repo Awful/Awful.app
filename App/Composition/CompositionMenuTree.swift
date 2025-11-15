@@ -28,8 +28,13 @@ final class CompositionMenuTree: NSObject {
     var onResizingStarted: (() -> Void)?
 
     private let imageProcessingQueue = DispatchQueue(label: "com.awful.attachment.processing", qos: .userInitiated)
+
+    // Thread safety: pendingImage properties are only accessed from the main thread during image picker flow.
+    // They are set on the main thread before dispatching to imageProcessingQueue, and cleared on the main
+    // thread after processing completes. No lock is needed as there's no concurrent access.
     private var pendingImage: UIImage?
     private var pendingImageAssetIdentifier: String?
+
     private let imageProcessingLock = NSLock()
     private var _isProcessingImage = false
 

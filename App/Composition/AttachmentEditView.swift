@@ -72,7 +72,7 @@ final class AttachmentEditView: AttachmentCardView {
             actionSegmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: AttachmentCardLayout.cardPadding),
             actionSegmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -AttachmentCardLayout.cardPadding),
             actionSegmentedControl.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: AttachmentCardLayout.imageSpacing),
-            actionSegmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding)
+            actionSegmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -AttachmentCardLayout.cardPadding),
         ])
     }
 
