@@ -34,17 +34,26 @@ extension URLRequest {
 
             for (rawName, rawValue) in parameters {
                 if !body.isEmpty {
-                    body.append("\r\n".data(using: .utf8)!)
+                    guard let newline = "\r\n".data(using: .utf8) else {
+                        throw EncodingError("UTF-8 encoding failed")
+                    }
+                    body.append(newline)
                 }
 
-                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                guard let boundaryData = "--\(boundary)\r\n".data(using: .utf8) else {
+                    throw EncodingError("UTF-8 encoding failed")
+                }
+                body.append(boundaryData)
 
                 guard rawName.canBeConverted(to: encoding),
                       let disposition = "Content-Disposition: form-data; name=\"\(rawName)\"\r\n".data(using: .utf8)
                 else { throw EncodingError("name") }
                 body.append(disposition)
 
-                body.append("\r\n".data(using: .utf8)!)
+                guard let headerEnd = "\r\n".data(using: .utf8) else {
+                    throw EncodingError("UTF-8 encoding failed")
+                }
+                body.append(headerEnd)
 
                 guard let value = rawValue.data(using: encoding) else {
                     throw EncodingError("value")
@@ -53,7 +62,10 @@ extension URLRequest {
                 body.append(value)
             }
 
-            body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+            guard let finalBoundary = "\r\n--\(boundary)--\r\n".data(using: .utf8) else {
+                throw EncodingError("UTF-8 encoding failed")
+            }
+            body.append(finalBoundary)
 
             return body
         }()
@@ -78,7 +90,10 @@ extension URLRequest {
 
         let boundary = String(contentType[boundaryRange.upperBound...]).trimmingCharacters(in: .whitespaces)
 
-        let lastBoundary = "--\(boundary)--\r\n".data(using: .utf8)!
+        guard let lastBoundary = "--\(boundary)--\r\n".data(using: .utf8) else {
+            throw EncodingError("UTF-8 encoding failed")
+        }
+
         if existingBody.suffix(lastBoundary.count) == lastBoundary {
             existingBody.removeLast(lastBoundary.count)
         } else {
@@ -86,12 +101,21 @@ extension URLRequest {
         }
 
         var filePartData = Data()
-        filePartData.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        filePartData.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
-        filePartData.append("Content-Type: \(mimeType)\r\n".data(using: .utf8)!)
-        filePartData.append("\r\n".data(using: .utf8)!)
+
+        guard let newline = "\r\n--\(boundary)\r\n".data(using: .utf8),
+              let disposition = "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename)\"\r\n".data(using: .utf8),
+              let contentTypeData = "Content-Type: \(mimeType)\r\n".data(using: .utf8),
+              let headerEnd = "\r\n".data(using: .utf8),
+              let finalBoundary = "\r\n--\(boundary)--\r\n".data(using: .utf8) else {
+            throw EncodingError("UTF-8 encoding failed")
+        }
+
+        filePartData.append(newline)
+        filePartData.append(disposition)
+        filePartData.append(contentTypeData)
+        filePartData.append(headerEnd)
         filePartData.append(data)
-        filePartData.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        filePartData.append(finalBoundary)
 
         existingBody.append(filePartData)
         httpBody = existingBody

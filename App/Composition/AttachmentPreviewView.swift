@@ -2,7 +2,10 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import os
 import UIKit
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AttachmentPreviewView")
 
 /// A card-style view that shows a preview of an attached image with options to remove it.
 final class AttachmentPreviewView: UIView {
@@ -121,6 +124,7 @@ final class AttachmentPreviewView: UIView {
                 let sizeString = formatter.string(fromByteCount: Int64(data.count))
                 detailLabel.text = "\(width) × \(height) • \(sizeString)"
             } catch {
+                logger.error("Failed to get image data for attachment preview: \(error.localizedDescription)")
                 detailLabel.text = "\(width) × \(height)"
             }
         }

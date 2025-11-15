@@ -957,9 +957,9 @@ Awful.embedGfycat();
 // Load attachment images asynchronously
 Awful.loadAttachmentImages = function() {
   var attachmentImages = document.querySelectorAll('img[data-awful-attachment-postid]');
-  attachmentImages.forEach(function(img) {
+  attachmentImages.forEach(function(img, index) {
     var postID = img.getAttribute('data-awful-attachment-postid');
-    var id = 'attachment-' + Date.now() + '-' + Math.random();
+    var id = 'attachment-' + postID + '-' + index + '-' + Date.now();
     img.setAttribute('data-awful-attachment-id', id);
     window.webkit.messageHandlers.fetchAttachmentImage.postMessage({
       id: id,

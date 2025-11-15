@@ -368,8 +368,10 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
 
-            let originalAttachment = ForumAttachment(image: image, photoAssetIdentifier: self.pendingImageAssetIdentifier)
-            let resizedAttachment = originalAttachment.resized()
+            let resizedAttachment = autoreleasepool { () -> ForumAttachment? in
+                let originalAttachment = ForumAttachment(image: image, photoAssetIdentifier: self.pendingImageAssetIdentifier)
+                return originalAttachment.resized()
+            }
 
             DispatchQueue.main.async {
                 self.pendingImage = nil

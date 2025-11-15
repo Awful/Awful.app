@@ -2,8 +2,11 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import os
 import Photos
 import UIKit
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumAttachment")
 
 final class ForumAttachment: NSObject, NSCoding {
 
@@ -38,11 +41,23 @@ final class ForumAttachment: NSObject, NSCoding {
                 options.isSynchronous = true
                 options.deliveryMode = .highQualityFormat
                 var resultImage: UIImage?
-                PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: options) { image, _ in
+                var requestError: Error?
+                PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: options) { image, info in
                     resultImage = image
+                    if let error = info?[PHImageErrorKey] as? Error {
+                        requestError = error
+                    }
                 }
+
+                if let error = requestError {
+                    logger.error("Failed to load image from photo library asset: \(error.localizedDescription)")
+                } else if resultImage == nil {
+                    logger.warning("Photo library request returned nil image for asset: \(photoAssetIdentifier as String)")
+                }
+
                 self.image = resultImage
             } else {
+                logger.warning("Photo asset not found for identifier: \(photoAssetIdentifier as String)")
                 self.image = nil
             }
         } else if let imageData = coder.decodeObject(of: NSData.self, forKey: CodingKeys.imageData.rawValue) {
@@ -142,8 +157,28 @@ final class ForumAttachment: NSObject, NSCoding {
             targetHeight = Int(CGFloat(originalHeight) * ratio)
         }
 
+        if let compressed = compressImage(
+            originalImage,
+            targetWidth: targetWidth,
+            targetHeight: targetHeight,
+            maxFileSize: effectiveMaxFileSize
+        ) {
+            return ForumAttachment(image: compressed, photoAssetIdentifier: photoAssetIdentifier)
+        }
+
+        return nil
+    }
+
+    private func compressImage(
+        _ originalImage: UIImage,
+        targetWidth: Int,
+        targetHeight: Int,
+        maxFileSize: Int
+    ) -> UIImage? {
         var compressionQuality: CGFloat = 0.9
-        var resizedImage = originalImage.resized(to: CGSize(width: targetWidth, height: targetHeight))
+        var currentWidth = targetWidth
+        var currentHeight = targetHeight
+        var resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
 
         while compressionQuality > 0.1 {
             let hasAlpha = resizedImage.hasAlpha
@@ -155,17 +190,17 @@ final class ForumAttachment: NSObject, NSCoding {
                 data = resizedImage.jpegData(compressionQuality: compressionQuality)
             }
 
-            if let imageData = data, imageData.count <= effectiveMaxFileSize {
-                return ForumAttachment(image: resizedImage, photoAssetIdentifier: photoAssetIdentifier)
+            if let imageData = data, imageData.count <= maxFileSize {
+                return resizedImage
             }
 
             if hasAlpha {
-                let newWidth = Int(CGFloat(targetWidth) * 0.9)
-                let newHeight = Int(CGFloat(targetHeight) * 0.9)
+                let newWidth = Int(CGFloat(currentWidth) * 0.9)
+                let newHeight = Int(CGFloat(currentHeight) * 0.9)
                 if newWidth < 100 || newHeight < 100 { break }
-                targetWidth = newWidth
-                targetHeight = newHeight
-                resizedImage = originalImage.resized(to: CGSize(width: targetWidth, height: targetHeight))
+                currentWidth = newWidth
+                currentHeight = newHeight
+                resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
             } else {
                 compressionQuality -= 0.1
             }
