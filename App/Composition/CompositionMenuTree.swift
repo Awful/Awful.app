@@ -110,104 +110,112 @@ final class CompositionMenuTree: NSObject {
     
     private func authenticateWithImgur() {
         guard let viewController = textView.nearestViewController else { return }
-        
-        // Show an alert to explain why authentication is needed
+        showAuthenticationPrompt(in: viewController)
+    }
+
+    private func showAuthenticationPrompt(in viewController: UIViewController) {
         let alert = UIAlertController(
             title: "Imgur Authentication Required",
             message: "You've enabled Imgur Account uploads in settings. To upload images with your account, you'll need to log in to Imgur.",
             preferredStyle: .alert
         )
-        
-        alert.addAction(UIAlertAction(title: "Log In", style: .default) { _ in
-            // Show loading indicator
-            let loadingAlert = UIAlertController(
-                title: "Connecting to Imgur",
-                message: "Please wait...",
-                preferredStyle: .alert
-            )
-            viewController.present(loadingAlert, animated: true)
-            
-            ImgurAuthManager.shared.authenticate(from: viewController) { success in
-                // Dismiss loading indicator
-                DispatchQueue.main.async {
-                    loadingAlert.dismiss(animated: true) {
-                        if success {
-                            // If authentication was successful, continue with the upload
-                            // Show a success message
-                            let successAlert = UIAlertController(
-                                title: "Successfully Logged In",
-                                message: "You're now logged in to Imgur and can upload images with your account.",
-                                preferredStyle: .alert
-                            )
-                            
-                            successAlert.addAction(UIAlertAction(title: "Continue", style: .default) { _ in
-                                // Continue with image picker after successful authentication
-                                self.showImagePicker(.photoLibrary)
-                            })
-                            
-                            viewController.present(successAlert, animated: true)
-                        } else {
-                            // Check if it's a rate limiting issue (check logs from ImgurAuthManager)
-                            let isRateLimited = UserDefaults.standard.bool(forKey: ImgurAuthManager.DefaultsKeys.rateLimited)
-                            
-                            if isRateLimited {
-                                // Show specific rate limiting error
-                                let rateLimitAlert = UIAlertController(
-                                    title: "Imgur Rate Limit Exceeded",
-                                    message: "Imgur's API is currently rate limited. You can try again later or use anonymous uploads for now.",
-                                    preferredStyle: .alert
-                                )
-                                
-                                rateLimitAlert.addAction(UIAlertAction(title: "Use Anonymous Uploads", style: .default) { _ in
-                                    // Switch to anonymous uploads for this session
-                                    self.imgurUploadMode = .anonymous
-                                    // Continue with image picker
-                                    self.showImagePicker(.photoLibrary)
-                                })
-                                
-                                rateLimitAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                                
-                                viewController.present(rateLimitAlert, animated: true)
-                            } else {
-                                // General authentication failure
-                                let failureAlert = UIAlertController(
-                                    title: "Authentication Failed",
-                                    message: "Could not log in to Imgur. You can try again or choose anonymous uploads in settings.",
-                                    preferredStyle: .alert
-                                )
-                                
-                                failureAlert.addAction(UIAlertAction(title: "Try Again", style: .default) { _ in
-                                    // Try authentication again
-                                    self.authenticateWithImgur()
-                                })
-                                
-                                failureAlert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { _ in
-                                    // Use anonymous uploads for this session
-                                    self.imgurUploadMode = .anonymous
-                                    // Continue with image picker
-                                    self.showImagePicker(.photoLibrary)
-                                })
-                                
-                                failureAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                                
-                                viewController.present(failureAlert, animated: true)
-                            }
-                        }
-                    }
+
+        alert.addAction(UIAlertAction(title: "Log In", style: .default) { [weak self] _ in
+            self?.performAuthentication(in: viewController)
+        })
+
+        alert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { [weak self] _ in
+            self?.switchToAnonymousUploads()
+        })
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        viewController.present(alert, animated: true)
+    }
+
+    private func performAuthentication(in viewController: UIViewController) {
+        let loadingAlert = UIAlertController(
+            title: "Connecting to Imgur",
+            message: "Please wait...",
+            preferredStyle: .alert
+        )
+        viewController.present(loadingAlert, animated: true)
+
+        ImgurAuthManager.shared.authenticate(from: viewController) { [weak self] success in
+            DispatchQueue.main.async {
+                loadingAlert.dismiss(animated: true) {
+                    self?.handleAuthenticationResult(success, in: viewController)
                 }
             }
+        }
+    }
+
+    private func handleAuthenticationResult(_ success: Bool, in viewController: UIViewController) {
+        if success {
+            presentAuthenticationSuccessAlert(in: viewController)
+        } else {
+            let isRateLimited = UserDefaults.standard.bool(forKey: ImgurAuthManager.DefaultsKeys.rateLimited)
+            if isRateLimited {
+                presentRateLimitAlert(in: viewController)
+            } else {
+                presentAuthenticationFailureAlert(in: viewController)
+            }
+        }
+    }
+
+    private func presentAuthenticationSuccessAlert(in viewController: UIViewController) {
+        let alert = UIAlertController(
+            title: "Successfully Logged In",
+            message: "You're now logged in to Imgur and can upload images with your account.",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "Continue", style: .default) { [weak self] _ in
+            self?.showImagePicker(.photoLibrary)
         })
-        
-        alert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { _ in
-            // Use anonymous uploads just for this session
-            self.imgurUploadMode = .anonymous
-            // Show image picker with anonymous uploads
-            self.showImagePicker(.photoLibrary)
-        })
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
+
         viewController.present(alert, animated: true)
+    }
+
+    private func presentRateLimitAlert(in viewController: UIViewController) {
+        let alert = UIAlertController(
+            title: "Imgur Rate Limit Exceeded",
+            message: "Imgur's API is currently rate limited. You can try again later or use anonymous uploads for now.",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "Use Anonymous Uploads", style: .default) { [weak self] _ in
+            self?.switchToAnonymousUploads()
+        })
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        viewController.present(alert, animated: true)
+    }
+
+    private func presentAuthenticationFailureAlert(in viewController: UIViewController) {
+        let alert = UIAlertController(
+            title: "Authentication Failed",
+            message: "Could not log in to Imgur. You can try again or choose anonymous uploads in settings.",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "Try Again", style: .default) { [weak self] _ in
+            self?.authenticateWithImgur()
+        })
+
+        alert.addAction(UIAlertAction(title: "Use Anonymous Upload", style: .default) { [weak self] _ in
+            self?.switchToAnonymousUploads()
+        })
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        viewController.present(alert, animated: true)
+    }
+
+    private func switchToAnonymousUploads() {
+        imgurUploadMode = .anonymous
+        showImagePicker(.photoLibrary)
     }
     
     func insertImage(_ image: UIImage, withAssetIdentifier assetID: String? = nil) {
@@ -430,10 +438,6 @@ fileprivate struct MenuItem {
     
     init(title: String, action: @escaping (CompositionMenuTree) -> Void) {
         self.init(title: title, action: action, enabled: { true })
-    }
-    
-    func psItem(_ tree: CompositionMenuTree) {
-        return
     }
 }
 

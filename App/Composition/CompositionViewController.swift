@@ -118,14 +118,7 @@ final class CompositionViewController: ViewController {
         attachmentEditView.isHidden = true
         attachmentEditHeightConstraint.constant = 0
 
-        // Update text view constraint to anchor to preview view
-        textViewTopConstraint.isActive = false
-        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentPreviewView.bottomAnchor, constant: 8)
-        textViewTopConstraint.isActive = true
-
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
+        updateTextViewConstraint(anchoredTo: attachmentPreviewView.bottomAnchor)
     }
 
     private func updateAttachmentPreview() {
@@ -158,14 +151,7 @@ final class CompositionViewController: ViewController {
         attachmentPreviewView.isHidden = false
         attachmentPreviewHeightConstraint.constant = 84
 
-        // Update text view constraint to anchor to preview view
-        textViewTopConstraint.isActive = false
-        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentPreviewView.bottomAnchor, constant: 8)
-        textViewTopConstraint.isActive = true
-
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
+        updateTextViewConstraint(anchoredTo: attachmentPreviewView.bottomAnchor)
     }
 
     private func showAttachmentEditView(filename: String, filesize: String?, image: UIImage? = nil) {
@@ -176,14 +162,7 @@ final class CompositionViewController: ViewController {
         attachmentEditView.isHidden = false
         attachmentEditHeightConstraint.constant = 120
 
-        // Update text view constraint to anchor to edit view
-        textViewTopConstraint.isActive = false
-        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentEditView.bottomAnchor, constant: 8)
-        textViewTopConstraint.isActive = true
-
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
+        updateTextViewConstraint(anchoredTo: attachmentEditView.bottomAnchor)
     }
 
     private func hideAllAttachmentViews() {
@@ -193,9 +172,12 @@ final class CompositionViewController: ViewController {
         attachmentEditView.isHidden = true
         attachmentEditHeightConstraint.constant = 0
 
-        // Reset text view constraint to anchor to preview view (at height 0)
+        updateTextViewConstraint(anchoredTo: attachmentPreviewView.bottomAnchor)
+    }
+
+    private func updateTextViewConstraint(anchoredTo anchor: NSLayoutYAxisAnchor, constant: CGFloat = 8) {
         textViewTopConstraint.isActive = false
-        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: attachmentPreviewView.bottomAnchor, constant: 8)
+        textViewTopConstraint = _textView.topAnchor.constraint(equalTo: anchor, constant: constant)
         textViewTopConstraint.isActive = true
 
         UIView.animate(withDuration: 0.3) {

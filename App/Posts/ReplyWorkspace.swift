@@ -498,7 +498,15 @@ final class EditReplyDraft: NSObject, ReplyDraft {
 
 extension NewReplyDraft: SubmittableDraft {
     func submit(_ completion: @escaping (Error?) -> Void) -> Progress {
-        return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
+        guard let text = text else {
+            let error = NSError(domain: "Awful", code: 0, userInfo: [
+                NSLocalizedDescriptionKey: "Post text cannot be empty"
+            ])
+            completion(error)
+            return Progress(totalUnitCount: 1)
+        }
+
+        return uploadImages(attachedTo: text) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {
@@ -534,7 +542,15 @@ extension NewReplyDraft: SubmittableDraft {
 
 extension EditReplyDraft: SubmittableDraft {
     func submit(_ completion: @escaping (Error?) -> Void) -> Progress {
-        return uploadImages(attachedTo: text!) { [unowned self] plainText, error in
+        guard let text = text else {
+            let error = NSError(domain: "Awful", code: 0, userInfo: [
+                NSLocalizedDescriptionKey: "Post text cannot be empty"
+            ])
+            completion(error)
+            return Progress(totalUnitCount: 1)
+        }
+
+        return uploadImages(attachedTo: text) { [unowned self] plainText, error in
             if let error = error {
                 completion(error)
             } else {

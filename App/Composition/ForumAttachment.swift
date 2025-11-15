@@ -14,6 +14,12 @@ final class ForumAttachment: NSObject, NSCoding {
     static let maxDimension = 4096
     static let supportedExtensions = ["gif", "jpg", "jpeg", "png"]
 
+    private static let defaultCompressionQuality: CGFloat = 0.9
+    private static let compressionQualityDecrement: CGFloat = 0.1
+    private static let minCompressionQuality: CGFloat = 0.1
+    private static let dimensionScaleFactor: CGFloat = 0.9
+    private static let minimumDimension = 100
+
     let image: UIImage?
     let photoAssetIdentifier: String?
     private(set) var validationError: ValidationError?
@@ -131,7 +137,7 @@ final class ForumAttachment: NSObject, NSCoding {
 
         if hasAlpha, let pngData = image.pngData() {
             return (pngData, "photo-\(timestamp).png", "image/png")
-        } else if let jpegData = image.jpegData(compressionQuality: 0.9) {
+        } else if let jpegData = image.jpegData(compressionQuality: Self.defaultCompressionQuality) {
             return (jpegData, "photo-\(timestamp).jpg", "image/jpeg")
         } else {
             throw ValidationError.imageDataConversionFailed
@@ -175,12 +181,12 @@ final class ForumAttachment: NSObject, NSCoding {
         targetHeight: Int,
         maxFileSize: Int
     ) -> UIImage? {
-        var compressionQuality: CGFloat = 0.9
+        var compressionQuality = Self.defaultCompressionQuality
         var currentWidth = targetWidth
         var currentHeight = targetHeight
         var resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
 
-        while compressionQuality > 0.1 {
+        while compressionQuality > Self.minCompressionQuality {
             let hasAlpha = resizedImage.hasAlpha
             let data: Data?
 
@@ -195,14 +201,14 @@ final class ForumAttachment: NSObject, NSCoding {
             }
 
             if hasAlpha {
-                let newWidth = Int(CGFloat(currentWidth) * 0.9)
-                let newHeight = Int(CGFloat(currentHeight) * 0.9)
-                if newWidth < 100 || newHeight < 100 { break }
+                let newWidth = Int(CGFloat(currentWidth) * Self.dimensionScaleFactor)
+                let newHeight = Int(CGFloat(currentHeight) * Self.dimensionScaleFactor)
+                if newWidth < Self.minimumDimension || newHeight < Self.minimumDimension { break }
                 currentWidth = newWidth
                 currentHeight = newHeight
                 resizedImage = originalImage.resized(to: CGSize(width: currentWidth, height: currentHeight))
             } else {
-                compressionQuality -= 0.1
+                compressionQuality -= Self.compressionQualityDecrement
             }
         }
 
@@ -228,9 +234,11 @@ extension ForumAttachment.ValidationError {
 }
 
 private extension UIImage {
+    private static let alphaInfoTypes: Set<CGImageAlphaInfo> = [.first, .last, .premultipliedFirst, .premultipliedLast]
+
     var hasAlpha: Bool {
         guard let alphaInfo = cgImage?.alphaInfo else { return false }
-        return alphaInfo == .first || alphaInfo == .last || alphaInfo == .premultipliedFirst || alphaInfo == .premultipliedLast
+        return Self.alphaInfoTypes.contains(alphaInfo)
     }
 
     func resized(to targetSize: CGSize) -> UIImage {
