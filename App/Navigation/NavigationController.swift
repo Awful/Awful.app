@@ -325,15 +325,13 @@ final class NavigationController: UINavigationController, Themeable {
     
     private func updateNavigationBarAppearance(with theme: Theme, for viewController: UIViewController? = nil) {
         awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
-        
-        // iOS 26: Hide bottom border for liquid glass effect, earlier versions show themed border
+
         if #available(iOS 26.0, *) {
             awfulNavigationBar.bottomBorderColor = .clear
         } else {
             awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
         }
-        
-        // iOS 26: Remove shadow for liquid glass effect, earlier versions use themed shadow
+
         if #available(iOS 26.0, *) {
             awfulNavigationBar.layer.shadowOpacity = 0
             awfulNavigationBar.layer.shadowColor = UIColor.clear.cgColor

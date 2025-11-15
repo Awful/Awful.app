@@ -34,34 +34,26 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     @IBOutlet private var avatarsSwitch: UISwitch!
     @IBAction func toggleAvatars(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         showAvatars = sender.isOn
     }
 
     @IBOutlet private var imagesSwitch: UISwitch!
     @IBAction private func toggleImages(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         showImages = sender.isOn
     }
-    
+
     @IBOutlet private var scaleTextLabel: UILabel!
     @IBOutlet private var scaleTextStepper: UIStepper!
     @IBAction private func scaleStepperDidChange(_ sender: UIStepper) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         fontScale = sender.value
     }
-    
+
     @IBOutlet private var automaticDarkModeSwitch: UISwitch!
     @IBAction func toggleAutomaticDarkMode(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         automaticDarkTheme = sender.isOn
     }
 
@@ -69,21 +61,25 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @IBOutlet private var darkModeLabel: UILabel!
     @IBOutlet private var darkModeSwitch: UISwitch!
     @IBAction func toggleDarkMode(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         darkMode = sender.isOn
     }
-    
+
     private var immersiveModeStack: UIStackView?
     private var immersiveModeLabel: UILabel?
     private var immersiveModeSwitch: UISwitch?
-    
+
     @objc private func toggleImmersiveMode(_ sender: UISwitch) {
+        performHapticFeedback()
+        immersiveModeEnabled = sender.isOn
+    }
+
+    // MARK: - Helper Methods
+
+    private func performHapticFeedback() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        immersiveModeEnabled = sender.isOn
     }
 
     private lazy var fontScaleFormatter: NumberFormatter = {

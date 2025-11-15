@@ -347,13 +347,7 @@ final class PostsPageView: UIView {
         let scrollView = renderView.scrollView
 
         // Calculate bottom inset based on immersive mode state
-        let bottomInset: CGFloat
-        if immersiveModeManager.shouldAdjustScrollInsets() {
-            let normalInset = bounds.maxY - toolbar.frame.minY
-            bottomInset = immersiveModeManager.calculateBottomInset(normalBottomInset: normalInset)
-        } else {
-            bottomInset = bounds.maxY - toolbar.frame.minY
-        }
+        let bottomInset = calculateBottomInset()
 
         var contentInset = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: bottomInset, right: 0)
         if case .refreshing = refreshControlState {
@@ -362,18 +356,23 @@ final class PostsPageView: UIView {
         scrollView.contentInset = contentInset
 
         // Calculate indicator bottom inset based on immersive mode state
-        let indicatorBottomInset: CGFloat
-        if immersiveModeManager.shouldAdjustScrollInsets() {
-            indicatorBottomInset = immersiveModeManager.calculateBottomInset(normalBottomInset: bounds.maxY - toolbar.frame.minY)
-        } else {
-            indicatorBottomInset = bounds.maxY - toolbar.frame.minY
-        }
+        let indicatorBottomInset = calculateBottomInset()
 
         var indicatorInsets = UIEdgeInsets(top: topBarContainer.frame.maxY, left: 0, bottom: indicatorBottomInset, right: 0)
         // I'm not sure if this is a bug or if I'm misunderstanding something, but as of iOS 12 it seems that the indicator insets have already taken the layout margins into consideration? That's my guess based on observing their positioning when the indicator insets are set to zero.
         indicatorInsets.top -= layoutMargins.top
         indicatorInsets.bottom -= layoutMargins.bottom
         scrollView.scrollIndicatorInsets = indicatorInsets
+    }
+
+    private func calculateBottomInset() -> CGFloat {
+        let normalInset = bounds.maxY - toolbar.frame.minY
+
+        if immersiveModeManager.shouldAdjustScrollInsets() {
+            return immersiveModeManager.calculateBottomInset(normalBottomInset: normalInset)
+        } else {
+            return normalInset
+        }
     }
 
     @objc private func voiceOverStatusDidChange(_ notification: Notification) {
@@ -726,6 +725,14 @@ extension PostsPageView: ScrollViewDelegateExtras {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Guard against concurrent scroll handling
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.scrollViewDidScroll(scrollView)
+            }
+            return
+        }
+
         let info = ScrollViewInfo(refreshControlHeight: refreshControlContainer.bounds.height, scrollView: scrollView)
 
         // Update refreshControlState first, then decide if we care about topBarState.

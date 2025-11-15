@@ -60,17 +60,21 @@ final class ImmersiveModeManager: NSObject {
     // MARK: - State Properties
 
     /// Progress of immersive mode (0.0 = bars fully visible, 1.0 = bars fully hidden)
-    private var immersiveProgress: CGFloat = 0.0 {
-        didSet {
+    private var _immersiveProgress: CGFloat = 0.0
+    private var immersiveProgress: CGFloat {
+        get { _immersiveProgress }
+        set {
+            let clampedValue = newValue.clamp(0...1)
+
             guard immersiveModeEnabled && !UIAccessibility.isVoiceOverRunning else {
-                immersiveProgress = 0.0
+                _immersiveProgress = 0.0
                 return
             }
-            let oldProgress = oldValue
-            immersiveProgress = immersiveProgress.clamp(0...1)
-            if oldProgress != immersiveProgress {
-                updateBarsForImmersiveProgress()
-            }
+
+            guard _immersiveProgress != clampedValue else { return }
+
+            _immersiveProgress = clampedValue
+            updateBarsForImmersiveProgress()
         }
     }
 
@@ -82,6 +86,9 @@ final class ImmersiveModeManager: NSObject {
 
     /// Flag to prevent recursive updates
     private var isUpdatingBars = false
+
+    /// Cached value for total bar travel distance
+    private var cachedTotalBarTravelDistance: CGFloat?
 
     // MARK: - UI Elements
 
@@ -96,6 +103,10 @@ final class ImmersiveModeManager: NSObject {
 
     /// Actual distance bars travel when hiding (calculated dynamically based on bar heights)
     private var totalBarTravelDistance: CGFloat {
+        if let cached = cachedTotalBarTravelDistance {
+            return cached
+        }
+
         guard let postsView = postsView,
               let window = postsView.window else { return 100 }
 
@@ -107,10 +118,12 @@ final class ImmersiveModeManager: NSObject {
             let navBarHeight = navBar.bounds.height
             let deviceSafeAreaTop = window.safeAreaInsets.top
             let topDistance = navBarHeight + deviceSafeAreaTop + Self.bottomProximityDistance
-            return max(bottomDistance, topDistance)
+            cachedTotalBarTravelDistance = max(bottomDistance, topDistance)
+        } else {
+            cachedTotalBarTravelDistance = bottomDistance
         }
 
-        return bottomDistance
+        return cachedTotalBarTravelDistance ?? 100
     }
 
     /// Check if content is scrollable enough to warrant immersive mode
@@ -185,6 +198,9 @@ final class ImmersiveModeManager: NSObject {
 
     /// Apply immersive transforms after layout if needed
     func reapplyTransformsAfterLayout() {
+        // Invalidate cached distance as layout may have changed bar sizes
+        cachedTotalBarTravelDistance = nil
+
         if immersiveModeEnabled && immersiveProgress > 0 {
             updateBarsForImmersiveProgress()
         }
@@ -294,7 +310,11 @@ final class ImmersiveModeManager: NSObject {
         let nearBottomThreshold = barTravelDistance * Self.progressiveRevealMultiplier
         let isNearBottom = distanceFromBottom <= nearBottomThreshold
 
+        // When approaching the bottom while scrolling down, progressively reveal bars
+        // so they're fully visible when reaching the end of content. This prevents users
+        // from being unable to access navigation when at the bottom of the page.
         if isNearBottom && scrollDelta > 0 {
+            // Calculate target progress based on proximity to bottom (closer = more revealed)
             let targetProgress = (distanceFromBottom / nearBottomThreshold).clamp(0...1)
             let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
             immersiveProgress = min(incrementalProgress, targetProgress).clamp(0...1)
@@ -325,25 +345,37 @@ final class ImmersiveModeManager: NSObject {
 
         safeAreaGradientView.alpha = immersiveProgress
 
-        var navBarTransform: CGFloat = 0
+        let navBarTransform = calculateNavigationBarTransform()
         if let navBar = findNavigationBar() {
-            let navBarHeight = navBar.bounds.height
-            let deviceSafeAreaTop = postsView?.window?.safeAreaInsets.top ?? 44
-            let totalUpwardDistance = navBarHeight + deviceSafeAreaTop + Self.bottomProximityDistance
-            navBarTransform = -totalUpwardDistance * immersiveProgress
             navBar.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
         }
 
         topBarContainer?.transform = CGAffineTransform(translationX: 0, y: navBarTransform)
 
         if let toolbar = toolbar {
-            let toolbarHeight = toolbar.bounds.height
-            let deviceSafeAreaBottom = postsView?.window?.safeAreaInsets.bottom ?? 34
-            let totalDownwardDistance = toolbarHeight + deviceSafeAreaBottom
-            toolbar.transform = CGAffineTransform(translationX: 0, y: totalDownwardDistance * immersiveProgress)
+            let toolbarTransform = calculateToolbarTransform()
+            toolbar.transform = CGAffineTransform(translationX: 0, y: toolbarTransform)
         }
 
         CATransaction.commit()
+    }
+
+    private func calculateNavigationBarTransform() -> CGFloat {
+        guard let navBar = findNavigationBar() else { return 0 }
+
+        let navBarHeight = navBar.bounds.height
+        let deviceSafeAreaTop = postsView?.window?.safeAreaInsets.top ?? 44
+        let totalUpwardDistance = navBarHeight + deviceSafeAreaTop + Self.bottomProximityDistance
+        return -totalUpwardDistance * immersiveProgress
+    }
+
+    private func calculateToolbarTransform() -> CGFloat {
+        guard let toolbar = toolbar else { return 0 }
+
+        let toolbarHeight = toolbar.bounds.height
+        let deviceSafeAreaBottom = postsView?.window?.safeAreaInsets.bottom ?? 34
+        let totalDownwardDistance = toolbarHeight + deviceSafeAreaBottom
+        return totalDownwardDistance * immersiveProgress
     }
 
     private func resetAllTransforms() {
@@ -354,6 +386,14 @@ final class ImmersiveModeManager: NSObject {
         toolbar?.transform = .identity
     }
 
+    /// Calculates the remaining scrollable distance from current position to the bottom of content
+    ///
+    /// The calculation accounts for:
+    /// - Content that is shorter than the scroll view bounds (uses bounds height as minimum)
+    /// - Bottom content inset (typically the toolbar height)
+    /// - Current scroll offset
+    ///
+    /// - Returns: Distance in points from current scroll position to the effective bottom
     private func calculateDistanceFromBottom(_ scrollView: UIScrollView) -> CGFloat {
         let contentHeight = scrollView.contentSize.height
         let adjustedBottom = scrollView.adjustedContentInset.bottom

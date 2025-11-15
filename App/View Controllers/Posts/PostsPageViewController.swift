@@ -1863,41 +1863,29 @@ final class PostsPageViewController: ViewController {
 
     func exitImmersiveMode() {
         postsView.immersiveModeManager.exitImmersiveMode()
+        resetNavigationBarState(animated: false)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        exitImmersiveMode()
-
-        // Immediately reset navigation bar transform
+    private func resetNavigationBarState(animated: Bool) {
+        // Reset navigation bar transform to identity
         if let navigationBar = navigationController?.navigationBar {
             navigationBar.transform = .identity
         }
 
         // Ensure navigation bar is not hidden
         if navigationController?.isNavigationBarHidden == true {
-            navigationController?.setNavigationBarHidden(false, animated: false)
+            navigationController?.setNavigationBarHidden(false, animated: animated)
         }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        exitImmersiveMode()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
         userActivity = nil
-
-        // Additional cleanup as fallback (in case viewWillDisappear wasn't called)
-        postsView.immersiveModeManager.exitImmersiveMode()
-
-        // Reset navigation bar transform to identity to ensure it's visible
-        if let navigationBar = navigationController?.navigationBar {
-            navigationBar.transform = .identity
-        }
-
-        // Also check if navigation bar was hidden via system API
-        if navigationController?.isNavigationBarHidden == true {
-            navigationController?.setNavigationBarHidden(false, animated: animated)
-        }
     }
 
     override func encodeRestorableState(with coder: NSCoder) {
