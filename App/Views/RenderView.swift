@@ -537,6 +537,28 @@ extension RenderView {
             }
         }
     }
+
+    /// Scrolls smoothly to the identified post with proper offset for navigation bar.
+    func scrollToPost(identifiedBy postID: String, animated: Bool = true) {
+        let escapedPostID: String
+        do {
+            escapedPostID = try escapeForEval(postID)
+        } catch {
+            logger.warning("could not JSON-escape the post ID: \(error)")
+            return
+        }
+
+        // Get the content inset top to pass as offset
+        let topOffset = scrollView.contentInset.top
+
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.scrollToPostWithID(\(escapedPostID), \(animated), \(topOffset))")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate scrollToPostWithID")
+            }
+        }
+    }
     
     /// Turns each link with a `data-awful-linkified-image` attribute into a a proper `img` element.
     func loadLinkifiedImages() {

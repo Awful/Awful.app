@@ -71,6 +71,9 @@ public enum Settings {
     /// Mode for Imgur image uploads (Off, Anonymous, or with Account)
     public static let imgurUploadMode = Setting(key: "imgur_upload_mode", default: ImgurUploadMode.default)
 
+    /// Hide navigation and toolbar when scrolling down in posts view.
+    public static let immersionModeEnabled = Setting(key: "immersion_mode_enabled", default: false)
+    
     /// What percentage to multiply the default post font size by. Stored as percentage points, i.e. default is `100` aka "100% size" aka the default.
     public static let fontScale = Setting(key: "font_scale", default: 100.0)
 
