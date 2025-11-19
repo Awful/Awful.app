@@ -203,7 +203,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     }
 
     deinit {
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
+        (networkOperation as? Task<Any, Error>)?.cancel()
     }
 
     var posts: [Post] = []
@@ -260,7 +260,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
+        (networkOperation as? Task<Any, Error>)?.cancel()
         networkOperation = nil
 
         // prevent white flash caused by webview being opaque during refreshes
@@ -313,17 +313,11 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
 
         let initialTheme = theme
 
-        let fetch = Task {
-            await MainActor.run {
-                self.postsView.loadingView?.updateStatus("Fetching posts from server...")
-            }
-            return try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
-        }
-        networkOperation = fetch
-        Task { [weak self] in
+        networkOperation = Task { @MainActor [weak self] in
             do {
-                let (posts, firstUnreadPost, _) = try await fetch.value
                 guard let self else { return }
+                self.postsView.loadingView?.updateStatus("Fetching posts from server...")
+                let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 guard self.page == newPage else { return }
@@ -331,6 +325,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
                 if self.theme != initialTheme {
                     self.themeDidChange()
                 }
+
+                let (posts, firstUnreadPost, _) = result
 
                 if !posts.isEmpty {
                     self.posts = posts
