@@ -29,8 +29,31 @@ final class RenderView: UIView {
 
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
-        
+
         let bundle = Bundle(for: RenderView.self)
+
+        // Conditionally load lottie-player.js if frog and ghost animations are enabled
+        let frogAndGhostEnabled = FoilDefaultStorage(Settings.frogAndGhostEnabled).wrappedValue
+        if frogAndGhostEnabled {
+            configuration.userContentController.addUserScript({
+                let url = bundle.url(forResource: "lottie-player.js", withExtension: nil)!
+                let script = try! String(contentsOf: url)
+                return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+            }())
+        }
+
+        // Inject early script to track when DOMContentLoaded fires
+        configuration.userContentController.addUserScript({
+            let script = """
+            if (!window.Awful) { window.Awful = {}; }
+            window.Awful.domContentLoadedFired = false;
+            document.addEventListener('DOMContentLoaded', function() {
+                window.Awful.domContentLoadedFired = true;
+            });
+            """
+            return WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+        }())
+
         configuration.userContentController.addUserScript({
             let url = bundle.url(forResource: "RenderView.js", withExtension: nil)!
             let script = try! String(contentsOf: url)
@@ -260,13 +283,13 @@ extension RenderView: WKScriptMessageHandler {
         
         struct FetchOEmbedFragment: RenderViewMessage {
             static let messageName = "fetchOEmbedFragment"
-            
+
             /// An opaque `id` to use when calling back with the response.
             let id: String
-            
+
             /// The OEmbed URL to fetch.
             let url: URL
-            
+
             init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
                 assert(rawMessage.name == Self.messageName)
                 guard let body = rawMessage.body as? [String: Any],
@@ -274,9 +297,36 @@ extension RenderView: WKScriptMessageHandler {
                       let rawURL = body["url"] as? String,
                       let url = URL(string: rawURL)
                 else { return nil }
-                
+
                 self.id = id
                 self.url = url
+            }
+        }
+
+        /// Sent from the web view to report image loading progress.
+        struct ImageLoadProgress: RenderViewMessage {
+            static let messageName = "imageLoadProgress"
+
+            /// Number of images loaded so far
+            let loaded: Int
+
+            /// Total number of images to load
+            let total: Int
+
+            /// Whether all images have finished loading
+            let complete: Bool
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let loaded = body["loaded"] as? Int,
+                      let total = body["total"] as? Int,
+                      let complete = body["complete"] as? Bool
+                else { return nil }
+
+                self.loaded = loaded
+                self.total = total
+                self.complete = complete
             }
         }
     }
@@ -325,13 +375,36 @@ extension RenderView {
             }
         }
     }
-    
-    func loadLottiePlayer() {
+
+    /// Applies timeout detection to images that are loading immediately (first 10).
+    func applyTimeoutToLoadingImages() {
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.loadLotties()")
+                try await webView.eval("if (window.Awful) { Awful.applyTimeoutToLoadingImages(); }")
             } catch {
-                self.mentionError(error, explanation: "could not evaluate loadLotties")
+                self.mentionError(error, explanation: "could not evaluate applyTimeoutToLoadingImages")
+            }
+        }
+    }
+
+    /// Sets up lazy loading for deferred images (11+).
+    func setupImageLazyLoading() {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) { Awful.setupImageLazyLoading(); }")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setupImageLazyLoading")
+            }
+        }
+    }
+
+    /// Sets up retry handler for dead image badges.
+    func setupRetryHandler() {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) { Awful.setupRetryHandler(); }")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setupRetryHandler")
             }
         }
     }

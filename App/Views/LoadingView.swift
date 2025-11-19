@@ -36,11 +36,19 @@ class LoadingView: UIView {
             return DefaultLoadingView(theme: theme)
         }
     }
-    
+
+    /// Callback invoked when user requests early dismissal
+    var onDismiss: (() -> Void)?
+
+    /// Update status text (override in subclasses to implement)
+    func updateStatus(_ text: String) {
+        // Override in subclasses
+    }
+
     fileprivate func retheme() {
         // nop
     }
-    
+
     override func willMove(toSuperview newSuperview: UIView?) {
         guard let newSuperview = newSuperview else { return }
         frame = CGRect(origin: .zero, size: newSuperview.bounds.size)
@@ -52,27 +60,64 @@ class LoadingView: UIView {
 private class DefaultLoadingView: LoadingView {
 
     private let animationView: LottieAnimationView
-    
+    private let statusLabel: UILabel
+    private let showNowButton: UIButton
+
     override init(theme: Theme?) {
         animationView = LottieAnimationView(
             animation: LottieAnimation.named("mainthrobber60"),
             configuration: LottieConfiguration(renderingEngine: .mainThread))
 
+        statusLabel = UILabel()
+        showNowButton = UIButton(type: .system)
+
         super.init(theme: theme)
 
+        // Setup animation view
         animationView.currentFrame = 0
         animationView.contentMode = .scaleAspectFit
         animationView.animationSpeed = 1
         animationView.isOpaque = true
         animationView.translatesAutoresizingMaskIntoConstraints = false
-        
         addSubview(animationView)
-        
-        animationView.widthAnchor.constraint(equalToConstant: 90).isActive = true
-        animationView.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-    
+
+        // Setup status label
+        statusLabel.text = "Loading..."
+        statusLabel.font = .preferredFont(forTextStyle: .subheadline)
+        statusLabel.textAlignment = .center
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(statusLabel)
+
+        // Setup Show Now button as X in circle icon
+        let xCircleImage = UIImage(systemName: "xmark.circle.fill")
+        showNowButton.setImage(xCircleImage, for: .normal)
+        showNowButton.addTarget(self, action: #selector(showNowTapped), for: .touchUpInside)
+        showNowButton.translatesAutoresizingMaskIntoConstraints = false
+        showNowButton.contentHorizontalAlignment = .fill
+        showNowButton.contentVerticalAlignment = .fill
+        addSubview(showNowButton)
+
+        // Layout constraints
+        NSLayoutConstraint.activate([
+            // Animation centered, shifted up
+            animationView.widthAnchor.constraint(equalToConstant: 90),
+            animationView.heightAnchor.constraint(equalToConstant: 90),
+            animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            animationView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -40),
+
+            // Status label below animation
+            statusLabel.topAnchor.constraint(equalTo: animationView.bottomAnchor, constant: 16),
+            statusLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            statusLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
+            trailingAnchor.constraint(greaterThanOrEqualTo: statusLabel.trailingAnchor, constant: 20),
+
+            // Button below status (X icon)
+            showNowButton.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 16),
+            showNowButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            showNowButton.widthAnchor.constraint(equalToConstant: 32),
+            showNowButton.heightAnchor.constraint(equalToConstant: 32)
+        ])
+
         animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce, completion: { [weak self] (finished) in
             if finished {
                 // first animation complete! start second one and loop
@@ -82,6 +127,14 @@ private class DefaultLoadingView: LoadingView {
             }
         })
     }
+
+    @objc private func showNowTapped() {
+        onDismiss?()
+    }
+
+    override func updateStatus(_ text: String) {
+        statusLabel.text = text
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -89,13 +142,19 @@ private class DefaultLoadingView: LoadingView {
     
     override func retheme() {
         super.retheme()
-        
+
         backgroundColor = theme?[uicolor: "postsLoadingViewTintColor"]
         if let tintColor = theme?[uicolor: "tintColor"] {
             animationView.setValueProvider(
                 ColorValueProvider(tintColor.lottieColorValue),
                 keypath: "**.Fill 1.Color"
             )
+            showNowButton.tintColor = tintColor
+        }
+
+        // Apply text color to status label
+        if let textColor = theme?[uicolor: "listTextColor"] {
+            statusLabel.textColor = textColor
         }
     }
     

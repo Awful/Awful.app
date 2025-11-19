@@ -138,8 +138,12 @@ extension HTMLDocument {
      - Turns all non-smiley `<img src=>` elements into `<a data-awful='image'>src</a>` elements (if linkifyNonSmiles == true).
      - Adds .awful-smile to smilie elements.
      - Rewrites URLs for some external image hosts that have changed domains and/or URL schemes.
+     - Defers loading of post content images beyond the first 10 (lazy loading).
      */
     func processImgTags(shouldLinkifyNonSmilies: Bool) {
+        var postContentImageCount = 0
+        let initialLoadCount = 10  // First 10 post content images load immediately
+
         for img in nodes(matchingSelector: "img") {
             guard
                 let src = img["src"],
@@ -150,10 +154,38 @@ extension HTMLDocument {
             
             if isSmilie {
                 img.toggleClass("awful-smile")
-            } else if let postimageURL = fixPostimageURL(url) {
-                img["src"] = postimageURL.absoluteString
-            } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
-                img["src"] = waffleURL.absoluteString
+            } else {
+                // Check if this is an avatar (has class="avatar")
+                let isAvatar = img["class"]?.contains("avatar") ?? false
+
+                // Skip attachment.php files (require auth, handled elsewhere)
+                let isAttachment = url.lastPathComponent == "attachment.php"
+
+                if !isAvatar && !isAttachment {
+                    // This is a post content image (not avatar, not smilie, not attachment)
+                    postContentImageCount += 1
+
+                    if postContentImageCount > initialLoadCount {
+                        // Defer loading for images beyond the first 10
+                        img["data-lazy-src"] = src
+                        img["src"] = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                    }
+                }
+
+                // Apply URL fixes
+                if let postimageURL = fixPostimageURL(url) {
+                    if postContentImageCount <= initialLoadCount || isAvatar {
+                        img["src"] = postimageURL.absoluteString
+                    } else {
+                        img["data-lazy-src"] = postimageURL.absoluteString
+                    }
+                } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
+                    if postContentImageCount <= initialLoadCount || isAvatar {
+                        img["src"] = waffleURL.absoluteString
+                    } else {
+                        img["data-lazy-src"] = waffleURL.absoluteString
+                    }
+                }
             }
             
             if shouldLinkifyNonSmilies, !isSmilie {
