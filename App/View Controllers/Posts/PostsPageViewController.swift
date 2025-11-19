@@ -679,7 +679,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     }()
 
 
-    private func actionsItem() -> UIBarButtonItem {
+    private lazy var actionsItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction(
             image: UIImage(named: "steamed-ham"),
             handler: { [unowned self] action in
@@ -692,21 +692,18 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
                     let buttonFrameInView = view.convert(view.bounds, to: self.view)
                     self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: buttonFrameInView)
                 } else {
-                    // Fallback position
                     let frame = CGRect(x: self.view.bounds.width - 60, y: self.view.bounds.height - 100, width: 44, height: 44)
                     self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: frame)
                 }
             }
         ))
         item.accessibilityLabel = "Thread actions"
-        // Only set explicit tint color for iOS < 26
         if #available(iOS 26.0, *) {
-            // Let iOS 26+ handle the color automatically
         } else {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
-    }
+    }()
 
     private func refetchPosts() {
         guard case .specific(let pageNumber)? = page else {
@@ -817,7 +814,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         // Add navigation buttons - always show all buttons to maintain consistent spacing
         toolbarItems.append(contentsOf: [backItem, currentPageItem, forwardItem])
         
-        toolbarItems.append(contentsOf: [.flexibleSpace(), actionsItem()])
+        toolbarItems.append(contentsOf: [.flexibleSpace(), actionsItem])
         postsView.toolbarItems = toolbarItems
     }
 
@@ -1317,7 +1314,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
-                popover.barButtonItem = actionsItem()
+                popover.barButtonItem = actionsItem
             }
         }
     }
@@ -1739,6 +1736,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             settingsItem.tintColor = theme["toolbarTextColor"]
             pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         }
+        
+        pageNumberView.updateTheme()
         
         updateToolbarItems()
 
