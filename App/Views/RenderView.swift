@@ -42,6 +42,18 @@ final class RenderView: UIView {
             }())
         }
 
+        // Inject early script to track when DOMContentLoaded fires
+        configuration.userContentController.addUserScript({
+            let script = """
+            if (!window.Awful) { window.Awful = {}; }
+            window.Awful.domContentLoadedFired = false;
+            document.addEventListener('DOMContentLoaded', function() {
+                window.Awful.domContentLoadedFired = true;
+            });
+            """
+            return WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+        }())
+
         configuration.userContentController.addUserScript({
             let url = bundle.url(forResource: "RenderView.js", withExtension: nil)!
             let script = try! String(contentsOf: url)
@@ -164,7 +176,6 @@ extension RenderView: WKNavigationDelegate {
 /**
  A message that can be sent from the render view. Allows communication from the web view to the native side of the app.
  */
-@MainActor
 protocol RenderViewMessage {
 
     /// The name of the message. JavaScript can send this message by calling `window.webkit.messageHandlers.messageName.postMessage`, replacing `messageName` with the value returned here.
@@ -291,7 +302,7 @@ extension RenderView: WKScriptMessageHandler {
                 self.url = url
             }
         }
-        
+
         struct FetchAttachmentImage: RenderViewMessage {
             static let messageName = "fetchAttachmentImage"
 
@@ -310,6 +321,33 @@ extension RenderView: WKScriptMessageHandler {
 
                 self.id = id
                 self.postID = postID
+            }
+        }
+
+        /// Sent from the web view to report image loading progress.
+        struct ImageLoadProgress: RenderViewMessage {
+            static let messageName = "imageLoadProgress"
+
+            /// Number of images loaded so far
+            let loaded: Int
+
+            /// Total number of images to load
+            let total: Int
+
+            /// Whether all images have finished loading
+            let complete: Bool
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let loaded = body["loaded"] as? Int,
+                      let total = body["total"] as? Int,
+                      let complete = body["complete"] as? Bool
+                else { return nil }
+
+                self.loaded = loaded
+                self.total = total
+                self.complete = complete
             }
         }
     }
@@ -358,7 +396,39 @@ extension RenderView {
             }
         }
     }
-    
+
+    /// Applies timeout detection to images that are loading immediately (first 10).
+    func applyTimeoutToLoadingImages() {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) { Awful.applyTimeoutToLoadingImages(); }")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate applyTimeoutToLoadingImages")
+            }
+        }
+    }
+
+    /// Sets up lazy loading for deferred images (11+).
+    func setupImageLazyLoading() {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) { Awful.setupImageLazyLoading(); }")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setupImageLazyLoading")
+            }
+        }
+    }
+
+    /// Sets up retry handler for dead image badges.
+    func setupRetryHandler() {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) { Awful.setupRetryHandler(); }")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setupRetryHandler")
+            }
+        }
+    }
 
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied
     /// webview must be transparent to prevent white flashes during content refreshes. setting opaque to true in viewDidAppear helped, but still sometimes produced white flashes.
@@ -853,7 +923,6 @@ extension RenderView {
     }
 }
 
-@MainActor
 protocol RenderViewDelegate: AnyObject {
     func didFinishRenderingHTML(in view: RenderView)
     func didReceive(message: RenderViewMessage, in view: RenderView)

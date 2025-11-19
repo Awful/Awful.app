@@ -2,12 +2,12 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import AwfulCore
+@preconcurrency import AwfulCore
 import AwfulModelTypes
 import AwfulSettings
 import AwfulTheming
 import Combine
-import CoreData
+@preconcurrency import CoreData
 import MobileCoreServices
 import MRProgress
 import os
@@ -17,7 +17,6 @@ import WebKit
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "PostsPageViewController")
 
 /// Shows a list of posts in a thread.
-@MainActor
 final class PostsPageViewController: ViewController, ImmersiveModeViewController {
     var selectedPost: Post? = nil
     var selectedUser: User? = nil
@@ -42,6 +41,8 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
+    // Stored as Any because Task returns non-Sendable Core Data objects (Post: NSManagedObject).
+    // Swift 6 requires Task<Success, Failure> Success types to be Sendable.
     private var networkOperation: Any?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
@@ -124,7 +125,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchAttachmentImage.self)
-        
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
@@ -202,7 +203,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     }
 
     deinit {
-        (networkOperation as? Task<Any, Error>)?.cancel()
+        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
     }
 
     var posts: [Post] = []
@@ -259,17 +260,22 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-        (networkOperation as? Task<Any, Error>)?.cancel()
+        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
         networkOperation = nil
 
+        // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
             postsView.renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: false)
             postsView.viewHasBeenScrolledOnce = false
         }
 
+        // Clear the post or fractional offset to scroll to. It's assumed that whatever calls this will
+        // take care of re-establishing where to scroll to after calling loadPage().
         jumpToPostIDAfterLoading = nil
         scrollToFractionAfterLoading = nil
         jumpToLastPost = false
+
+        // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
         var newPage = newPage
         if let author = author, case .last? = page {
             newPage = .specific(Int(thread.filteredNumberOfPagesForAuthor(author)))
@@ -307,10 +313,17 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
 
         let initialTheme = theme
 
-        let fetch = Task { @MainActor [weak self] in
-            guard let self else { return }
+        let fetch = Task {
+            await MainActor.run {
+                self.postsView.loadingView?.updateStatus("Fetching posts from server...")
+            }
+            return try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+        }
+        networkOperation = fetch
+        Task { [weak self] in
             do {
-                let (posts, firstUnreadPost, _) = try await ForumsClient.shared.listPosts(in: self.thread, writtenBy: self.author, page: newPage, updateLastReadPost: updateLastReadPost)
+                let (posts, firstUnreadPost, _) = try await fetch.value
+                guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 guard self.page == newPage else { return }
@@ -355,12 +368,21 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                 }
 
-                self.renderPosts(updateLastReadPost: updateLastReadPost)
+                self.postsView.loadingView?.updateStatus("Generating page...")
+                self.renderPosts()
 
                 self.updateUserInterface()
 
+                if let lastPost = self.posts.last, updateLastReadPost {
+                    if self.thread.seenPosts < lastPost.threadIndex {
+                        self.thread.seenPosts = lastPost.threadIndex
+                    }
+                }
+
                 self.postsView.endRefreshing()
             } catch {
+                guard let self else { return }
+
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
                 if self.page != newPage { return }
 
@@ -381,21 +403,13 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
                     let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    if #available(iOS 26.0, *) {
-                        // Use vertical view: show unknown current page with known total
-                        self.pageNumberView.currentPage = 0 // Will display as "?"
-                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
-                        // iOS 26+ handles colors automatically
-                    } else {
-                        self.currentPageItem.title = "Page ? of \(pageCount)"
-                    }
+                    self.currentPageItem.title = "Page ? of \(pageCount)"
 
                 case .last, .nextUnread, .specific:
                     break
                 }
             }
         }
-        networkOperation = fetch
     }
 
     /// Scroll the posts view so that a particular post is visible (if the post is on the current(ly loading) page).
@@ -421,60 +435,45 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
         return true
     }
 
-    // IMPORTANT: The updateLastReadPost parameter must be passed through to renderPostsAsync
-    // to ensure thread.seenPosts is updated AFTER PostRenderModels are created.
-    // This prevents posts from incorrectly appearing as "seen" on first view.
-    private func renderPosts(updateLastReadPost: Bool = false) {
+    private func renderPosts() {
         webViewDidLoadOnce = false
 
-        Task { @MainActor in
-            await renderPostsAsync(updateLastReadPost: updateLastReadPost)
-        }
-    }
-    
-    private func renderPostsAsync(updateLastReadPost: Bool) async {
         var context: [String: Any] = [:]
 
         context["stylesheet"] = theme[string: "postsViewCSS"] as Any
 
-        if self.posts.count > self.hiddenPosts {
-            let subset = self.posts[self.hiddenPosts...]
+        if posts.count > hiddenPosts {
+            let subset = posts[hiddenPosts...]
             context["posts"] = subset.map { PostRenderModel($0).context }
         }
 
-        if let ad = self.advertisementHTML, !ad.isEmpty {
+        if let ad = advertisementHTML, !ad.isEmpty {
             context["advertisementHTML"] = ad
         }
 
-        if context["posts"] != nil, case .specific(let pageNumber)? = self.page, pageNumber >= self.numberOfPages {
+        if context["posts"] != nil, case .specific(let pageNumber)? = page, pageNumber >= numberOfPages {
             context["endMessage"] = true
         }
 
-        context["enableFrogAndGhost"] = self.frogAndGhostEnabled
+        context["enableFrogAndGhost"] = frogAndGhostEnabled
 
         context["ghostJsonData"] = try? String(contentsOf: URL(string: "ghost60.json", relativeTo: Bundle.main.resourceURL)!, encoding: .utf8)
 
-        if let loggedInUsername = self.loggedInUsername, !loggedInUsername.isEmpty {
+        if let loggedInUsername, !loggedInUsername.isEmpty {
             context["loggedInUsername"] = loggedInUsername
         }
 
         context["externalStylesheet"] = PostsViewExternalStylesheetLoader.shared.stylesheet
 
-        if !self.thread.threadID.isEmpty {
-            context["threadID"] = self.thread.threadID
+        if !thread.threadID.isEmpty {
+            context["threadID"] = thread.threadID
         }
 
-        if let forum = self.thread.forum, !forum.forumID.isEmpty {
+        if let forum = thread.forum, !forum.forumID.isEmpty {
             context["forumID"] = forum.forumID
         }
 
-        context["tweetTheme"] = self.theme[string: "postsTweetTheme"] ?? "light"
-
-        if let lastPost = self.posts.last, updateLastReadPost {
-            if self.thread.seenPosts < lastPost.threadIndex {
-                self.thread.seenPosts = lastPost.threadIndex
-            }
-        }
+        context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
 
         let html: String
         do {
@@ -484,11 +483,16 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             html = ""
         }
 
-        await self.postsView.renderView.eraseDocument()
-        self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        Task {
+            await postsView.renderView.eraseDocument()
+            await MainActor.run {
+                self.postsView.loadingView?.updateStatus("Loading page...")
+            }
+            self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+        }
     }
 
-    private lazy var composeItem: UIBarButtonItem = { [unowned self] in
+    private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
         if #available(iOS 26.0, *) {
@@ -820,7 +824,12 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
 
     private func showLoadingView() {
         guard postsView.loadingView == nil else { return }
-        postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
+        let loadingView = LoadingView.loadingViewWithTheme(theme)
+        loadingView.updateStatus("Loading...")
+        loadingView.onDismiss = { [weak self] in
+            self?.clearLoadingMessage()
+        }
+        postsView.loadingView = loadingView
     }
 
     private func clearLoadingMessage() {
@@ -1101,6 +1110,7 @@ final class PostsPageViewController: ViewController, ImmersiveModeViewController
             self.present(activityVC, animated: false)
 
             if let popover = activityVC.popoverPresentationController {
+                // TODO: previously this would eval some js on the webview to find the new location of the header after rotating, but that sync call on UIWebView is async on WKWebView, so ???
                 popover.sourceRect = self.selectedFrame!
                 popover.sourceView = self.postsView.renderView
             }
@@ -2111,8 +2121,17 @@ extension PostsPageViewController: RenderViewDelegate {
             fetchOEmbed(url: message.url, id: message.id)
 
         case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
-                fetchAttachmentImage(postID: message.postID, id: message.id)
-            
+            fetchAttachmentImage(postID: message.postID, id: message.id)
+
+        case let message as RenderView.BuiltInMessage.ImageLoadProgress:
+            let statusText = "Downloading images: \(message.loaded)/\(message.total)"
+            postsView.loadingView?.updateStatus(statusText)
+
+            // Dismiss loading view when all images are done
+            if message.complete {
+                clearLoadingMessage()
+            }
+
         case is FYADFlagRequest:
             fetchNewFlag()
 
