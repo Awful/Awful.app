@@ -10,7 +10,7 @@ extension HTMLDocument {
 
     /// Number of post images to load immediately before deferring to lazy loading.
     /// First 10 images load right away for better perceived performance.
-    /// IMPORTANT: This value must match IMMEDIATELY_LOADED_IMAGE_COUNT in RenderView.js (line 17)
+    /// IMPORTANT: This value must match IMMEDIATELY_LOADED_IMAGE_COUNT constant in RenderView.js
     private static let immediatelyLoadedImageCount = 10
 
     /// 1x1 transparent GIF used as placeholder for lazy-loaded images

@@ -489,15 +489,9 @@ Awful.imageLoadTracker = {
     total: 0,
 
     initialize: function(totalCount) {
-        // Guard against zero-image case (prevents misleading progress reports)
-        if (totalCount === 0) {
-            this.loaded = 0;
-            this.total = 0;
-            return; // Don't report progress for pages with no images
-        }
         this.loaded = 0;
         this.total = totalCount;
-        this.reportProgress();
+        this.reportProgress(); // Always report - Swift side handles zero case correctly
     },
 
     incrementLoaded: function() {
@@ -640,7 +634,7 @@ Awful.applyTimeoutToLoadingImages = function() {
         const imageID = `img-init-${index}`;
         const imageURL = img.src;
 
-        // Note: attachment.php and data: URLs already filtered out above (line 565-567)
+        // Note: attachment.php and data: URLs already filtered out in initialImages filter above
 
         // Skip if already loaded (but count it)
         // Note: img.complete is true for both successfully loaded AND failed images
@@ -836,6 +830,17 @@ Awful.cleanupRetryHandler = function() {
 };
 
 /**
+ * Cleanup function to clear all image timeout interval timers.
+ * Prevents timers from running after page navigation or view destruction.
+ */
+Awful.cleanupImageTimers = function() {
+    if (Awful.imageTimeoutCheckers) {
+        Awful.imageTimeoutCheckers.forEach(timer => clearInterval(timer));
+        Awful.imageTimeoutCheckers = [];
+    }
+};
+
+/**
  * Cleanup function to disconnect all IntersectionObservers and prevent memory leaks.
  * Should be called when the view is destroyed or navigating away from the page.
  */
@@ -852,6 +857,9 @@ Awful.cleanupObservers = function() {
         Awful.imageLazyLoadObserver.disconnect();
         Awful.imageLazyLoadObserver = null;
     }
+
+    // Also cleanup image timers
+    Awful.cleanupImageTimers();
 };
 
 Awful.tweetTheme = function() {
