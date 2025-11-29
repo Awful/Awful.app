@@ -128,6 +128,7 @@ private class DefaultLoadingView: LoadingView {
             animationView.widthAnchor.constraint(equalToConstant: 90),
             animationView.heightAnchor.constraint(equalToConstant: 90),
             animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            // Center animation slightly above true center for better visual balance with status text below
             animationView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -40),
 
             // Status label below animation

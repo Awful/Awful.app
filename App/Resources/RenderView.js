@@ -13,6 +13,7 @@ if (!window.Awful) {
 // MARK: - Configuration Constants
 
 /// Number of post images to load immediately before lazy loading kicks in
+/// IMPORTANT: This value must match immediatelyLoadedImageCount in HTMLRenderingHelpers.swift (line 13)
 const IMMEDIATELY_LOADED_IMAGE_COUNT = 10;
 
 /// How far ahead (in pixels) to start loading lazy content before it enters viewport
@@ -54,18 +55,27 @@ const IMAGE_LOAD_TIMEOUT_CONFIG = {
 /**
  * Sets up a Lottie player to load ghost animation data.
  * Helper to avoid code duplication for dead tweet/image badge initialization.
+ * Properly removes existing listeners before adding new ones to prevent accumulation.
  *
  * @param {HTMLElement} container - The container element containing lottie-player elements
  */
 Awful.setupGhostLottiePlayer = function(container) {
     const players = container.querySelectorAll(SELECTORS.LOTTIE_PLAYERS);
     players.forEach((lottiePlayer) => {
-        lottiePlayer.addEventListener("rendered", () => {
+        // Remove any existing listener before adding new one to prevent accumulation
+        if (lottiePlayer._ghostLoadHandler) {
+            lottiePlayer.removeEventListener("rendered", lottiePlayer._ghostLoadHandler);
+        }
+
+        // Store handler reference for cleanup
+        lottiePlayer._ghostLoadHandler = () => {
             const ghostData = document.getElementById("ghost-json-data");
             if (ghostData) {
                 lottiePlayer.load(ghostData.innerText);
             }
-        });
+        };
+
+        lottiePlayer.addEventListener("rendered", lottiePlayer._ghostLoadHandler);
     });
 };
 
@@ -249,8 +259,8 @@ Awful.embedTweetNow = function(thisPostElement) {
         // Group tweet links by ID for deduplication
         const tweetIDsToLinks = {};
         Array.prototype.forEach.call(tweetLinks, function(a) {
-            // Skip tweets with NWS content
-            if (a.parentElement.querySelector('img.awful-smile[title=":nws:"]')) {
+            // Skip tweets with NWS content (use optional chaining to avoid null reference errors)
+            if (a.parentElement?.querySelector('img.awful-smile[title=":nws:"]')) {
                 return;
             }
             const tweetID = a.dataset.tweetId;
@@ -263,10 +273,13 @@ Awful.embedTweetNow = function(thisPostElement) {
         // Fetch and embed each unique tweet
         Object.keys(tweetIDsToLinks).forEach(function(tweetID) {
             const callback = `jsonp_callback_${tweetID}`;
+            // Validate theme is an expected value to prevent URL injection
             const tweetTheme = Awful.tweetTheme();
+            const validThemes = ['light', 'dark'];
+            const safeTheme = validThemes.includes(tweetTheme) ? tweetTheme : 'light';
 
             const script = document.createElement('script');
-            script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${tweetTheme}&callback=${callback}`;
+            script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${safeTheme}&callback=${callback}`;
 
             window[callback] = function(data) {
                 cleanUp(script);
@@ -372,7 +385,9 @@ Awful.embedBlueskyPosts = function() {
  * Also sets up Lottie animation play/pause for ghost tweets in the viewport.
  */
 Awful.embedTweets = function() {
-  // Prevent concurrent setup (race condition protection)
+  // Prevent concurrent setup to avoid race conditions where multiple calls could
+  // create duplicate observers and listeners. The flag is reset in the finally block
+  // to ensure it's always cleared even if errors occur.
   if (Awful.embedTweetsInProgress) {
     return;
   }
@@ -562,7 +577,9 @@ Awful.setupImageLazyLoading = function() {
                 const lazySrc = img.dataset.lazySrc;
 
                 if (lazySrc) {
-                    // Skip attachment.php files (defensive check, shouldn't be lazy-loaded)
+                    // Skip attachment.php files - these require authentication and are handled by the native
+                    // ImageURLProtocol. Loading them through fetchWithTimeout would fail auth checks.
+                    // This is a defensive check; attachment.php images shouldn't be lazy-loaded in the first place.
                     if (lazySrc.includes('attachment.php')) {
                         delete img.dataset.lazySrc;
                         img.src = lazySrc;  // Load normally without timeout
@@ -613,7 +630,10 @@ Awful.applyTimeoutToLoadingImages = function() {
     Awful.imageLoadTracker.initialize(totalImages);
 
     // Store interval timers for cleanup (prevents memory leaks)
-    // Reset array on each call to prevent memory leak across page reloads
+    // Clear all existing timers before resetting array to prevent orphaned intervals
+    if (Awful.imageTimeoutCheckers) {
+        Awful.imageTimeoutCheckers.forEach(timer => clearInterval(timer));
+    }
     Awful.imageTimeoutCheckers = [];
 
     initialImages.forEach((img, index) => {
@@ -635,13 +655,19 @@ Awful.applyTimeoutToLoadingImages = function() {
         let handled = false;
 
         const handleSuccess = () => {
-            if (handled) return;
+            if (handled) {
+                console.warn(`[Image Load] Duplicate success event for ${imageID} (already handled)`);
+                return;
+            }
             handled = true;
             Awful.imageLoadTracker.incrementLoaded();
         };
 
         const handleFailure = () => {
-            if (handled) return;
+            if (handled) {
+                console.warn(`[Image Load] Duplicate failure event for ${imageID} (already handled)`);
+                return;
+            }
             handled = true;
 
             if (enableGhost && img.parentNode) {
@@ -796,6 +822,36 @@ Awful.setupRetryHandler = function() {
 
     // Register the event listener with stored reference
     document.addEventListener('click', Awful.retryClickHandler, { once: false });
+};
+
+/**
+ * Cleanup function to remove retry click handler and prevent memory leaks.
+ * Should be called when the view is destroyed or navigating away from the page.
+ */
+Awful.cleanupRetryHandler = function() {
+    if (Awful.retryClickHandler) {
+        document.removeEventListener('click', Awful.retryClickHandler);
+        Awful.retryClickHandler = null;
+    }
+};
+
+/**
+ * Cleanup function to disconnect all IntersectionObservers and prevent memory leaks.
+ * Should be called when the view is destroyed or navigating away from the page.
+ */
+Awful.cleanupObservers = function() {
+    if (Awful.ghostLottieObserver) {
+        Awful.ghostLottieObserver.disconnect();
+        Awful.ghostLottieObserver = null;
+    }
+    if (Awful.tweetLazyLoadObserver) {
+        Awful.tweetLazyLoadObserver.disconnect();
+        Awful.tweetLazyLoadObserver = null;
+    }
+    if (Awful.imageLazyLoadObserver) {
+        Awful.imageLazyLoadObserver.disconnect();
+        Awful.imageLazyLoadObserver = null;
+    }
 };
 
 Awful.tweetTheme = function() {
