@@ -13,7 +13,7 @@ if (!window.Awful) {
 // MARK: - Configuration Constants
 
 /// Number of post images to load immediately before lazy loading kicks in
-/// IMPORTANT: This value must match immediatelyLoadedImageCount in HTMLRenderingHelpers.swift (line 13)
+/// IMPORTANT: This value must match immediatelyLoadedImageCount constant in HTMLRenderingHelpers.swift
 const IMMEDIATELY_LOADED_IMAGE_COUNT = 10;
 
 /// How far ahead (in pixels) to start loading lazy content before it enters viewport
@@ -21,26 +21,13 @@ const LAZY_LOAD_LOOKAHEAD_DISTANCE = '600px';
 
 /// CSS selectors used throughout the code
 const SELECTORS = {
-    LAZY_IMAGE: 'img[data-lazy-src]',
-    LOADING_IMAGES: 'section.postbody img[src]:not(.awful-smile):not(.awful-avatar):not([data-lazy-src])',
+    LOADING_IMAGES: 'section.postbody img[src]:not(.awful-smile):not(.awful-avatar):not([loading="lazy"])',
     POST_ELEMENTS: 'post',
     LOTTIE_PLAYERS: 'lottie-player'
 };
 
-/// Timeout configuration for image loading with progress detection
+/// Timeout configuration for image loading
 const IMAGE_LOAD_TIMEOUT_CONFIG = {
-    /// Milliseconds to wait for initial connection before aborting (no bytes received)
-    /// 1000ms gives slow connections a chance while quickly failing on unreachable hosts
-    connectionTimeout: 1000,
-
-    /// Milliseconds to wait during download if progress stalls
-    /// 2500ms accommodates network hiccups without excessive waiting on stalled downloads
-    downloadStallTimeout: 2500,
-
-    /// Milliseconds between progress checks during download
-    /// 500ms balances responsiveness with minimal performance overhead
-    progressCheckInterval: 500,
-
     /// Maximum number of checks for initial image loading timeout detection
     /// 3 checks × 1000ms = 3 seconds max wait for images to start loading
     maxImageChecks: 3,
@@ -114,74 +101,6 @@ Awful.escapeHTML = function(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
-};
-
-/**
- * Fetches a URL with smart timeout detection that monitors download progress.
- * Times out only when connection fails to start or download stalls.
- *
- * @param {string} url - The URL to fetch
- * @param {Object} config - Optional timeout configuration (uses IMAGE_LOAD_TIMEOUT_CONFIG by default)
- * @returns {Promise<Blob>} The fetched content as a Blob
- * @throws {Error} If connection times out, download stalls, or HTTP error occurs
- */
-Awful.fetchWithTimeout = async function(url, config = IMAGE_LOAD_TIMEOUT_CONFIG) {
-    const connectionTimeout = config.connectionTimeout;
-    const downloadStallTimeout = config.downloadStallTimeout;
-    const progressCheckInterval = config.progressCheckInterval;
-    const MAX_TOTAL_TIMEOUT = 30000; // 30 seconds absolute maximum
-
-    const controller = new AbortController();
-    let lastProgressTime = Date.now();
-    const startTime = Date.now();
-    let totalBytesReceived = 0;
-    let progressCheckTimer = null;
-
-    // Monitor download progress and abort if stalled
-    progressCheckTimer = setInterval(() => {
-        const timeSinceLastProgress = Date.now() - lastProgressTime;
-
-        if (totalBytesReceived === 0 && timeSinceLastProgress > connectionTimeout) {
-            // No connection established within timeout
-            clearInterval(progressCheckTimer);
-            controller.abort();
-        } else if (totalBytesReceived > 0 && timeSinceLastProgress > downloadStallTimeout) {
-            // Download started but has stalled
-            clearInterval(progressCheckTimer);
-            controller.abort();
-        }
-    }, progressCheckInterval);
-
-    try {
-        const response = await fetch(url, { signal: controller.signal });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const reader = response.body.getReader();
-        const chunks = [];
-
-        while (true) {
-            // Check absolute timeout to prevent indefinite hangs
-            if (Date.now() - startTime > MAX_TOTAL_TIMEOUT) {
-                throw new Error('Total timeout exceeded');
-            }
-
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            chunks.push(value);
-            totalBytesReceived += value.length;
-            lastProgressTime = Date.now();
-        }
-
-        return new Blob(chunks);
-
-    } finally {
-        // Always clean up timer, even if an error occurs
-        clearInterval(progressCheckTimer);
-    }
 };
 
 /**
@@ -427,10 +346,10 @@ Awful.embedTweets = function() {
     });
   }
 
-  // Image lazy loading (works regardless of ghost feature being enabled)
+  // Image loading and retry handling (works regardless of ghost feature being enabled)
   Awful.applyTimeoutToLoadingImages();
-  Awful.setupImageLazyLoading();
   Awful.setupRetryHandler();
+  Awful.setupLazyImageErrorHandling();
 
   // Set up lazy-loading IntersectionObserver for tweet embeds
   // Tweets are loaded before entering the viewport based on LAZY_LOAD_LOOKAHEAD_DISTANCE
@@ -504,107 +423,13 @@ Awful.imageLoadTracker = {
 };
 
 /**
- * Loads an image with smart timeout detection.
- * Monitors download progress and only times out stalled connections.
- *
- * @param {string} url - The image URL to load
- * @param {HTMLImageElement} img - The image element
- * @param {string} imageID - Unique ID for this image
- * @param {boolean} enableGhost - Whether to show dead image badge on failure
- * @param {boolean} trackProgress - Whether to track progress (default: false, only for initial images)
- */
-Awful.loadImageWithProgressDetection = async function(url, img, imageID, enableGhost, trackProgress = false) {
-    try {
-        const blob = await Awful.fetchWithTimeout(url);
-        const objectURL = URL.createObjectURL(blob);
-        img.src = objectURL;
-
-        // Clean up object URL after image loads
-        img.onload = () => {
-            URL.revokeObjectURL(objectURL);
-            // Only track progress for initial images, not lazy-loaded ones
-            if (trackProgress) {
-                Awful.imageLoadTracker.incrementLoaded();
-            }
-        };
-
-        // Handle image decode failures (corrupt image data)
-        img.onerror = () => {
-            URL.revokeObjectURL(objectURL);
-            const decodeError = new Error("Image decode failed");
-            Awful.handleImageLoadError(decodeError, url, img, imageID, enableGhost, trackProgress);
-        };
-
-    } catch (error) {
-        // Handle fetch/network failures
-        Awful.handleImageLoadError(error, url, img, imageID, enableGhost, trackProgress);
-    }
-};
-
-/**
- * Lazy loads post content images using IntersectionObserver (for images 11+).
- * Images load as they approach the viewport with a lookahead distance.
- */
-Awful.setupImageLazyLoading = function() {
-    const enableGhost = Awful.renderGhostTweets || false;
-
-    // Disconnect previous observer if it exists (prevents memory leak on re-render)
-    if (Awful.imageLazyLoadObserver) {
-        Awful.imageLazyLoadObserver.disconnect();
-    }
-
-    // Reset sequential counter for lazy image IDs (prevents ID collisions on page reload)
-    Awful.lazyImageIDCounter = 0;
-
-    // IntersectionObserver with lookahead (same as tweets)
-    Awful.imageLazyLoadObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                const lazySrc = img.dataset.lazySrc;
-
-                if (lazySrc) {
-                    // Skip attachment.php files - these require authentication and are handled by the native
-                    // ImageURLProtocol. Loading them through fetchWithTimeout would fail auth checks.
-                    // This is a defensive check; attachment.php images shouldn't be lazy-loaded in the first place.
-                    if (lazySrc.includes('attachment.php')) {
-                        delete img.dataset.lazySrc;
-                        img.src = lazySrc;  // Load normally without timeout
-                        Awful.imageLazyLoadObserver.unobserve(img);
-                        return;
-                    }
-
-                    // Use sequential counter for guaranteed unique IDs
-                    const imageID = `lazy-${Awful.lazyImageIDCounter++}`;
-                    delete img.dataset.lazySrc;
-
-                    // Load with smart timeout detection
-                    // trackProgress = false because lazy images don't count toward progress
-                    Awful.loadImageWithProgressDetection(lazySrc, img, imageID, enableGhost, false);
-
-                    Awful.imageLazyLoadObserver.unobserve(img);
-                }
-            }
-        });
-    }, {
-        rootMargin: `${LAZY_LOAD_LOOKAHEAD_DISTANCE} 0px`,
-        threshold: 0.01
-    });
-
-    // Observe all lazy-loadable images
-    document.querySelectorAll(SELECTORS.LAZY_IMAGE).forEach(img => {
-        Awful.imageLazyLoadObserver.observe(img);
-    });
-};
-
-/**
  * Apply timeout detection to images that are loading normally (first 10).
  * Monitors initial image loading and tracks progress for the loading view.
  */
 Awful.applyTimeoutToLoadingImages = function() {
     const enableGhost = Awful.renderGhostTweets || false;
 
-    // Find images with real src (not data-lazy-src) - these are the first 10 images
+    // Find post content images (excluding smilies, avatars, and lazy-loaded images) - these are the first 10 images
     const loadingImages = document.querySelectorAll(SELECTORS.LOADING_IMAGES);
 
     // Count only the initially loading images (first 10), excluding attachment.php and data URLs
@@ -736,67 +561,34 @@ Awful.setupRetryHandler = function() {
                 retryLink.textContent = 'Retrying...';
                 retryLink.style.pointerEvents = 'none';  // Disable clicking during retry
 
-                // Create hidden image element to test loading
-                const img = document.createElement('img');
-                img.style.display = 'none';
-                container.parentNode.insertBefore(img, container);
+                // Create new image element with native browser loading
+                const successImg = document.createElement('img');
+                successImg.setAttribute('alt', '');
 
-                // Retry loading with feedback
-                const retryWithFeedback = async function() {
-                    let objectURL = null;
-                    try {
-                        const blob = await Awful.fetchWithTimeout(imageURL);
-                        objectURL = URL.createObjectURL(blob);
+                // Handle successful load
+                successImg.addEventListener('load', () => {
+                    // Replace the dead badge container with the successful image
+                    container.parentNode.replaceChild(successImg, container);
+                }, { once: true });
 
-                        const successImg = document.createElement('img');
-                        successImg.setAttribute('alt', '');
-                        successImg.src = objectURL;
+                // Handle load failure
+                successImg.addEventListener('error', (error) => {
+                    // FAILED - restore retry button with "Failed" feedback
+                    console.error(`Retry failed: ${error.message || 'Unknown error'} - ${imageURL}`);
 
-                        successImg.onload = () => {
-                            URL.revokeObjectURL(objectURL);
-                            objectURL = null; // Mark as revoked
-                            // Replace the container with the successful image
-                            container.parentNode.replaceChild(successImg, container);
-                            // Remove the hidden test image
-                            if (img.parentNode) {
-                                img.parentNode.removeChild(img);
-                            }
-                        };
+                    retryLink.textContent = 'Retry Failed - Try Again';
+                    retryLink.style.pointerEvents = 'auto';  // Re-enable clicking
 
-                        // Handle decode failures on retry
-                        successImg.onerror = () => {
-                            URL.revokeObjectURL(objectURL);
-                            objectURL = null; // Mark as revoked
-                            throw new Error("Image decode failed on retry");
-                        };
-
-                    } catch (error) {
-                        // Ensure objectURL is revoked even on error
-                        if (objectURL) {
-                            URL.revokeObjectURL(objectURL);
+                    // Reset to just "Retry" after configured delay
+                    setTimeout(() => {
+                        if (retryLink.textContent === 'Retry Failed - Try Again') {
+                            retryLink.textContent = 'Retry';
                         }
+                    }, IMAGE_LOAD_TIMEOUT_CONFIG.retryResetDelay);
+                }, { once: true });
 
-                        // FAILED - restore retry button with "Failed" feedback
-                        console.error(`Retry failed: ${error.message} - ${imageURL}`);
-
-                        retryLink.textContent = 'Retry Failed - Try Again';
-                        retryLink.style.pointerEvents = 'auto';  // Re-enable clicking
-
-                        // Remove the hidden test image
-                        if (img.parentNode) {
-                            img.parentNode.removeChild(img);
-                        }
-
-                        // Reset to just "Retry" after configured delay
-                        setTimeout(() => {
-                            if (retryLink.textContent === 'Retry Failed - Try Again') {
-                                retryLink.textContent = 'Retry';
-                            }
-                        }, IMAGE_LOAD_TIMEOUT_CONFIG.retryResetDelay);
-                    }
-                };
-
-                retryWithFeedback();
+                // Start loading (native browser handles everything)
+                successImg.src = imageURL;
             }
         }
     };
@@ -814,6 +606,35 @@ Awful.cleanupRetryHandler = function() {
         document.removeEventListener('click', Awful.retryClickHandler);
         Awful.retryClickHandler = null;
     }
+};
+
+/**
+ * Sets up error handling for lazy-loaded images (those with loading="lazy" attribute).
+ * Attaches error event listeners that display dead image badges when browser attempts
+ * to load the image and it fails (404, broken, etc.). Only triggers after browser
+ * attempts load - doesn't interfere with native lazy loading.
+ */
+Awful.setupLazyImageErrorHandling = function() {
+    const enableGhost = Awful.renderGhostTweets || false;
+    const lazyImages = document.querySelectorAll('section.postbody img[loading="lazy"]');
+
+    lazyImages.forEach((img, index) => {
+        const imageID = `lazy-error-${index}`;
+
+        // Only attach error listener - don't interfere with lazy loading
+        img.addEventListener('error', function() {
+            // Browser attempted to load this image and it failed
+            const imageURL = img.src;
+            Awful.handleImageLoadError(
+                new Error("Lazy image load failed"),
+                imageURL,
+                img,
+                imageID,
+                enableGhost,
+                false // trackProgress = false, lazy images don't count toward progress
+            );
+        }, { once: true });
+    });
 };
 
 /**
@@ -839,10 +660,6 @@ Awful.cleanupObservers = function() {
     if (Awful.tweetLazyLoadObserver) {
         Awful.tweetLazyLoadObserver.disconnect();
         Awful.tweetLazyLoadObserver = null;
-    }
-    if (Awful.imageLazyLoadObserver) {
-        Awful.imageLazyLoadObserver.disconnect();
-        Awful.imageLazyLoadObserver = null;
     }
 
     Awful.cleanupImageTimers();
@@ -1616,15 +1433,15 @@ Awful.embedGfycat();
 if (Awful.domContentLoadedFired) {
     if (typeof Awful.applyTimeoutToLoadingImages === 'function') {
         Awful.applyTimeoutToLoadingImages();
-        Awful.setupImageLazyLoading();
         Awful.setupRetryHandler();
+        Awful.setupLazyImageErrorHandling();
     }
 } else {
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof Awful.applyTimeoutToLoadingImages === 'function') {
             Awful.applyTimeoutToLoadingImages();
-            Awful.setupImageLazyLoading();
             Awful.setupRetryHandler();
+            Awful.setupLazyImageErrorHandling();
         }
     });
 }

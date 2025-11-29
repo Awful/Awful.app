@@ -185,9 +185,9 @@ extension HTMLDocument {
                     postContentImageCount += 1
 
                     if postContentImageCount > Self.immediatelyLoadedImageCount {
-                        // Defer loading for images beyond the immediately loaded count
-                        img["data-lazy-src"] = finalURL
-                        img["src"] = Self.transparentPixelPlaceholder
+                        // Defer loading for images beyond the immediately loaded count (browser handles lazy loading)
+                        img["loading"] = "lazy"
+                        img["src"] = finalURL
                     } else {
                         // Load immediately
                         img["src"] = finalURL
