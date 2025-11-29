@@ -376,37 +376,45 @@ extension RenderView {
         }
     }
 
-    /// Applies timeout detection to images that are loading immediately (first 10).
+    // MARK: - Private Helpers
+
+    /// Helper to evaluate Awful JavaScript functions with consistent error handling.
+    private func evalAwfulFunction(_ functionName: String) {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) { Awful.\(functionName)(); }")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate \(functionName)")
+            }
+        }
+    }
+
+    // MARK: - Image Loading Methods
+
+    /// Applies timeout detection to images that are loading immediately (first 10 images).
+    ///
+    /// Monitors download progress and replaces stalled images with dead image badges.
+    /// This function should be called after the page has loaded to set up monitoring
+    /// for the initial batch of images.
     func applyTimeoutToLoadingImages() {
-        Task {
-            do {
-                try await webView.eval("if (window.Awful) { Awful.applyTimeoutToLoadingImages(); }")
-            } catch {
-                self.mentionError(error, explanation: "could not evaluate applyTimeoutToLoadingImages")
-            }
-        }
+        evalAwfulFunction("applyTimeoutToLoadingImages")
     }
 
-    /// Sets up lazy loading for deferred images (11+).
+    /// Sets up lazy loading for deferred images (images 11+).
+    ///
+    /// Uses IntersectionObserver to load images as they approach the viewport.
+    /// Images are loaded approximately 600px before they would be visible to the user
+    /// for a seamless scrolling experience.
     func setupImageLazyLoading() {
-        Task {
-            do {
-                try await webView.eval("if (window.Awful) { Awful.setupImageLazyLoading(); }")
-            } catch {
-                self.mentionError(error, explanation: "could not evaluate setupImageLazyLoading")
-            }
-        }
+        evalAwfulFunction("setupImageLazyLoading")
     }
 
-    /// Sets up retry handler for dead image badges.
+    /// Sets up click handler for retry links on failed images.
+    ///
+    /// Allows users to retry loading images that timed out or failed to load.
+    /// The retry mechanism uses the same timeout detection as initial image loading.
     func setupRetryHandler() {
-        Task {
-            do {
-                try await webView.eval("if (window.Awful) { Awful.setupRetryHandler(); }")
-            } catch {
-                self.mentionError(error, explanation: "could not evaluate setupRetryHandler")
-            }
-        }
+        evalAwfulFunction("setupRetryHandler")
     }
 
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied

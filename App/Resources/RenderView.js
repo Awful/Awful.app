@@ -10,6 +10,122 @@ if (!window.Awful) {
     window.Awful = {};
 }
 
+// MARK: - Configuration Constants
+
+/// Number of post images to load immediately before lazy loading kicks in
+const IMMEDIATELY_LOADED_IMAGE_COUNT = 10;
+
+/// How far ahead (in pixels) to start loading lazy content before it enters viewport
+const LAZY_LOAD_LOOKAHEAD_DISTANCE = '600px';
+
+/// Timeout configuration for image loading with progress detection
+const IMAGE_LOAD_TIMEOUT_CONFIG = {
+    /// Milliseconds to wait for initial connection before aborting (no bytes received)
+    connectionTimeout: 1000,
+
+    /// Milliseconds to wait during download if progress stalls
+    downloadStallTimeout: 2500,
+
+    /// Milliseconds between progress checks during download
+    progressCheckInterval: 500
+};
+
+// MARK: - Utility Functions
+
+/**
+ * Fetches a URL with smart timeout detection that monitors download progress.
+ * Times out only when connection fails to start or download stalls.
+ *
+ * @param {string} url - The URL to fetch
+ * @param {Object} config - Optional timeout configuration (uses IMAGE_LOAD_TIMEOUT_CONFIG by default)
+ * @returns {Promise<Blob>} The fetched content as a Blob
+ * @throws {Error} If connection times out, download stalls, or HTTP error occurs
+ */
+Awful.fetchWithTimeout = async function(url, config = IMAGE_LOAD_TIMEOUT_CONFIG) {
+    const connectionTimeout = config.connectionTimeout;
+    const downloadStallTimeout = config.downloadStallTimeout;
+    const progressCheckInterval = config.progressCheckInterval;
+
+    const controller = new AbortController();
+    let lastProgressTime = Date.now();
+    let totalBytesReceived = 0;
+    let progressCheckTimer = null;
+
+    // Monitor download progress and abort if stalled
+    progressCheckTimer = setInterval(() => {
+        const timeSinceLastProgress = Date.now() - lastProgressTime;
+
+        if (totalBytesReceived === 0 && timeSinceLastProgress > connectionTimeout) {
+            // No connection established within timeout
+            clearInterval(progressCheckTimer);
+            controller.abort();
+        } else if (totalBytesReceived > 0 && timeSinceLastProgress > downloadStallTimeout) {
+            // Download started but has stalled
+            clearInterval(progressCheckTimer);
+            controller.abort();
+        }
+    }, progressCheckInterval);
+
+    try {
+        const response = await fetch(url, { signal: controller.signal });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const reader = response.body.getReader();
+        const chunks = [];
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            chunks.push(value);
+            totalBytesReceived += value.length;
+            lastProgressTime = Date.now();
+        }
+
+        clearInterval(progressCheckTimer);
+        return new Blob(chunks);
+
+    } catch (error) {
+        clearInterval(progressCheckTimer);
+        throw error;
+    }
+};
+
+/**
+ * Helper for consistent error handling when images fail to load.
+ * Replaces failed images with dead image badges and updates progress tracker.
+ *
+ * @param {Error} error - The error that occurred
+ * @param {string} url - The URL that failed to load
+ * @param {HTMLImageElement} img - The image element that failed
+ * @param {string} imageID - Unique ID for this image
+ * @param {boolean} enableGhost - Whether to show dead image badge
+ */
+Awful.handleImageLoadError = function(error, url, img, imageID, enableGhost) {
+    console.error(`Image load failed: ${error.message} - ${url}`);
+
+    if (enableGhost && img.parentNode) {
+        const div = document.createElement('div');
+        div.classList.add('dead-embed-container');
+        div.innerHTML = Awful.deadImageBadgeHTML(url, imageID);
+        img.parentNode.replaceChild(div, img);
+
+        const player = div.querySelector("lottie-player");
+        if (player) {
+            player.addEventListener("rendered", () => {
+                const ghostData = document.getElementById("ghost-json-data");
+                if (ghostData) {
+                    player.load(ghostData.innerText);
+                }
+            });
+        }
+    }
+
+    Awful.imageLoadTracker.incrementLoaded();
+};
 
 /**
  Retrieves an OEmbed HTML fragment.
@@ -209,22 +325,23 @@ Awful.embedTweets = function() {
     postElements.forEach((post) => {
       ghostObserver.observe(post);
     });
-
-    // Apply timeout detection to initial images (first 10)
-    Awful.applyTimeoutToLoadingImages();
-
-    // Setup lazy loading for deferred images (11+)
-    Awful.setupImageLazyLoading();
-
-    // Setup retry handler
-    Awful.setupRetryHandler();
   }
 
+  // Image lazy loading (works regardless of ghost feature being enabled)
+  // Apply timeout detection to initial images (first 10)
+  Awful.applyTimeoutToLoadingImages();
+
+  // Setup lazy loading for deferred images (11+)
+  Awful.setupImageLazyLoading();
+
+  // Setup retry handler
+  Awful.setupRetryHandler();
+
   // Set up lazy-loading IntersectionObserver for tweet embeds
-  // 600px rootMargin means tweets are loaded ~600px before entering the viewport
+  // Tweets are loaded before entering the viewport based on LAZY_LOAD_LOOKAHEAD_DISTANCE
   const lazyLoadConfig = {
     root: null,
-    rootMargin: '600px 0px',
+    rootMargin: `${LAZY_LOAD_LOOKAHEAD_DISTANCE} 0px`,
     threshold: 0.000001,
   };
 
@@ -281,60 +398,18 @@ Awful.imageLoadTracker = {
     }
 };
 
-// Image loading with smart timeout detection
-// Monitors download progress and only times out stalled connections
+/**
+ * Loads an image with smart timeout detection.
+ * Monitors download progress and only times out stalled connections.
+ *
+ * @param {string} url - The image URL to load
+ * @param {HTMLImageElement} img - The image element
+ * @param {string} imageID - Unique ID for this image
+ * @param {boolean} enableGhost - Whether to show dead image badge on failure
+ */
 Awful.loadImageWithProgressDetection = async function(url, img, imageID, enableGhost) {
-    const initialTimeout = 1000;  // 1s timeout if no bytes received
-    const stallTimeout = 2500;    // 2.5s timeout if download stalls
-    const heartbeatInterval = 500; // Check progress every 500ms
-
-    const controller = new AbortController();
-    let lastProgressTime = Date.now();
-    let totalBytes = 0;
-    let heartbeatTimer = null;
-
-    // Heartbeat check: abort if no progress
-    heartbeatTimer = setInterval(() => {
-        const timeSinceProgress = Date.now() - lastProgressTime;
-
-        if (totalBytes === 0 && timeSinceProgress > initialTimeout) {
-            // No bytes received at all - connection never started
-            console.warn(`Image timeout: no connection after ${initialTimeout}ms - ${url}`);
-            clearInterval(heartbeatTimer);
-            controller.abort();
-        } else if (totalBytes > 0 && timeSinceProgress > stallTimeout) {
-            // Download started but stalled
-            console.warn(`Image stalled: no progress for ${stallTimeout}ms after ${totalBytes} bytes - ${url}`);
-            clearInterval(heartbeatTimer);
-            controller.abort();
-        }
-    }, heartbeatInterval);
-
     try {
-        const response = await fetch(url, { signal: controller.signal });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const reader = response.body.getReader();
-        const chunks = [];
-
-        while (true) {
-            const { done, value } = await reader.read();
-
-            if (done) break;
-
-            // Bytes received! Update progress tracking
-            chunks.push(value);
-            totalBytes += value.length;
-            lastProgressTime = Date.now();
-        }
-
-        clearInterval(heartbeatTimer);
-
-        // Success! Create blob and set image source
-        const blob = new Blob(chunks);
+        const blob = await Awful.fetchWithTimeout(url);
         const objectURL = URL.createObjectURL(blob);
         img.src = objectURL;
 
@@ -345,29 +420,8 @@ Awful.loadImageWithProgressDetection = async function(url, img, imageID, enableG
         };
 
     } catch (error) {
-        clearInterval(heartbeatTimer);
-
-        // Replace image with dead image badge
-        if (enableGhost && img.parentNode) {
-            const div = document.createElement('div');
-            div.classList.add('dead-embed-container');
-            div.innerHTML = Awful.deadImageBadgeHTML(url, imageID);
-            img.parentNode.replaceChild(div, img);
-
-            // Setup Lottie animation
-            const player = div.querySelector("lottie-player");
-            if (player) {
-                player.addEventListener("rendered", () => {
-                    const ghostData = document.getElementById("ghost-json-data");
-                    if (ghostData) {
-                        player.load(ghostData.innerText);
-                    }
-                });
-            }
-        }
-
-        console.error(`Image load failed: ${error.message} - ${url}`);
-        Awful.imageLoadTracker.incrementLoaded();
+        // Handle failure with consistent error handler
+        Awful.handleImageLoadError(error, url, img, imageID, enableGhost);
     }
 };
 
@@ -420,7 +474,7 @@ Awful.loadImagesWithTimeout = function() {
 Awful.setupImageLazyLoading = function() {
     const enableGhost = Awful.renderGhostTweets || false;
 
-    // IntersectionObserver with 600px lookahead (same as tweets)
+    // IntersectionObserver with lookahead (same as tweets)
     const imageObserver = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -447,7 +501,7 @@ Awful.setupImageLazyLoading = function() {
             }
         });
     }, {
-        rootMargin: '600px 0px',  // Load 600px before entering viewport
+        rootMargin: `${LAZY_LOAD_LOOKAHEAD_DISTANCE} 0px`,
         threshold: 0.01
     });
 
@@ -473,7 +527,7 @@ Awful.applyTimeoutToLoadingImages = function() {
     // Initialize progress tracker (only tracks first 10 images, not lazy-loaded ones)
     Awful.imageLoadTracker.initialize(totalImages);
 
-    loadingImages.forEach((img, index) => {
+    initialImages.forEach((img, index) => {
         const imageID = `img-${Date.now()}-${index}`;
         const imageURL = img.src;
 
@@ -529,8 +583,8 @@ Awful.applyTimeoutToLoadingImages = function() {
 
         // Set up timeout checker
         let checkCount = 0;
-        const maxChecks = 3;  // Check 3 times (at 1s, 2s, 3s)
-        const checkInterval = 1000;  // Check every 1 second
+        const maxChecks = 3;  // Check 3 times total
+        const checkInterval = IMAGE_LOAD_TIMEOUT_CONFIG.connectionTimeout;  // Check every second
 
         const timeoutChecker = setInterval(() => {
             checkCount++;
@@ -571,6 +625,12 @@ Awful.applyTimeoutToLoadingImages = function() {
 
 // Setup retry click handler (using event delegation) - call once on page load
 Awful.setupRetryHandler = function() {
+    // Prevent duplicate event listener registration (memory leak fix)
+    if (Awful.retryHandlerInitialized) {
+        return; // Already set up
+    }
+    Awful.retryHandlerInitialized = true;
+
     document.addEventListener('click', function(event) {
         const retryLink = event.target;
         if (retryLink.hasAttribute('data-retry-image')) {
@@ -589,54 +649,10 @@ Awful.setupRetryHandler = function() {
                 img.style.display = 'none';
                 container.parentNode.insertBefore(img, container);
 
-                // Custom retry with success/failure callbacks
+                // Retry loading with feedback
                 const retryWithFeedback = async function() {
-                    const initialTimeout = 1000;
-                    const stallTimeout = 2500;
-                    const heartbeatInterval = 500;
-
-                    const controller = new AbortController();
-                    let lastProgressTime = Date.now();
-                    let totalBytes = 0;
-                    let heartbeatTimer = null;
-
-                    heartbeatTimer = setInterval(() => {
-                        const timeSinceProgress = Date.now() - lastProgressTime;
-
-                        if (totalBytes === 0 && timeSinceProgress > initialTimeout) {
-                            console.warn(`Retry failed: no connection after ${initialTimeout}ms - ${imageURL}`);
-                            clearInterval(heartbeatTimer);
-                            controller.abort();
-                        } else if (totalBytes > 0 && timeSinceProgress > stallTimeout) {
-                            console.warn(`Retry failed: stalled after ${totalBytes} bytes - ${imageURL}`);
-                            clearInterval(heartbeatTimer);
-                            controller.abort();
-                        }
-                    }, heartbeatInterval);
-
                     try {
-                        const response = await fetch(imageURL, { signal: controller.signal });
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}`);
-                        }
-
-                        const reader = response.body.getReader();
-                        const chunks = [];
-
-                        while (true) {
-                            const { done, value } = await reader.read();
-                            if (done) break;
-
-                            chunks.push(value);
-                            totalBytes += value.length;
-                            lastProgressTime = Date.now();
-                        }
-
-                        clearInterval(heartbeatTimer);
-
-                        // SUCCESS! Create blob and replace badge with image
-                        const blob = new Blob(chunks);
+                        const blob = await Awful.fetchWithTimeout(imageURL);
                         const objectURL = URL.createObjectURL(blob);
 
                         const successImg = document.createElement('img');
@@ -654,8 +670,6 @@ Awful.setupRetryHandler = function() {
                         };
 
                     } catch (error) {
-                        clearInterval(heartbeatTimer);
-
                         // FAILED - restore retry button with "Failed" feedback
                         console.error(`Retry failed: ${error.message} - ${imageURL}`);
 

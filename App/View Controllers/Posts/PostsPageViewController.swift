@@ -422,7 +422,7 @@ final class PostsPageViewController: ViewController {
         Task {
             await postsView.renderView.eraseDocument()
             await MainActor.run {
-                self.postsView.loadingView?.updateStatus("Loading page...")
+                self.postsView.loadingView?.updateStatus("Rendering page...")
             }
             self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
@@ -1805,12 +1805,17 @@ extension PostsPageViewController: RenderViewDelegate {
             fetchOEmbed(url: message.url, id: message.id)
 
         case let message as RenderView.BuiltInMessage.ImageLoadProgress:
-            let statusText = "Downloading images: \(message.loaded)/\(message.total)"
-            postsView.loadingView?.updateStatus(statusText)
-
-            // Dismiss loading view when all images are done
-            if message.complete {
+            if message.total == 0 {
+                // No images to load, dismiss immediately
                 clearLoadingMessage()
+            } else {
+                let statusText = "Downloading images: \(message.loaded)/\(message.total)"
+                postsView.loadingView?.updateStatus(statusText)
+
+                // Dismiss loading view when all images are done
+                if message.complete {
+                    clearLoadingMessage()
+                }
             }
 
         case is FYADFlagRequest:

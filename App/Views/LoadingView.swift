@@ -9,17 +9,26 @@ import Lottie
 
 /// A view that covers its superview with an indeterminate progress indicator.
 class LoadingView: UIView {
+
+    // MARK: - Constants
+
+    /// Duration in seconds before showing the exit button and status messages.
+    /// 3 seconds gives users time to see loading begin while preventing accidental early dismissal.
+    fileprivate static let statusElementsVisibilityDelay: TimeInterval = 3.0
+
+    // MARK: - Properties
+
     fileprivate let theme: Theme?
-    
+
     fileprivate init(theme: Theme?) {
         self.theme = theme
         super.init(frame: .zero)
     }
-    
+
     convenience init() {
         self.init(theme: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -37,10 +46,23 @@ class LoadingView: UIView {
         }
     }
 
-    /// Callback invoked when user requests early dismissal
+    /// Callback invoked when user dismisses the loading view via the X button.
+    ///
+    /// Use weak/unowned captures to avoid retain cycles:
+    /// ```swift
+    /// loadingView.onDismiss = { [weak self] in
+    ///     self?.handleDismissal()
+    /// }
+    /// ```
     var onDismiss: (() -> Void)?
 
-    /// Update status text (override in subclasses to implement)
+    /// Updates the status text displayed in the loading view.
+    ///
+    /// This method should be overridden in subclasses to implement status updates.
+    /// The default implementation does nothing. Only the default loading view theme
+    /// currently supports status updates.
+    ///
+    /// - Parameter text: The status message to display
     func updateStatus(_ text: String) {
         // Override in subclasses
     }
@@ -169,8 +191,10 @@ private class DefaultLoadingView: LoadingView {
         super.willMove(toSuperview: newSuperview)
 
         if newSuperview != nil {
-            // Start 3-second timer to show status and button
-            visibilityTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { [weak self] _ in
+            // Invalidate any existing timer first to prevent race conditions
+            visibilityTimer?.invalidate()
+            // Start timer to show status and button after delay
+            visibilityTimer = Timer.scheduledTimer(withTimeInterval: LoadingView.statusElementsVisibilityDelay, repeats: false) { [weak self] _ in
                 self?.showStatusElements()
             }
         } else {

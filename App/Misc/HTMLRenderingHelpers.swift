@@ -6,6 +6,17 @@ import HTMLReader
 
 extension HTMLDocument {
 
+    // MARK: - Constants
+
+    /// Number of post images to load immediately before deferring to lazy loading.
+    /// First 10 images load right away for better perceived performance.
+    private static let immediatelyLoadedImageCount = 10
+
+    /// 1x1 transparent GIF used as placeholder for lazy-loaded images
+    private static let transparentPixelPlaceholder = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+
+    // MARK: - HTML Processing Methods
+
     /// Finds links that appear to be to Bluesky posts and adds a `data-bluesky-post` attribute to those links.
     func addAttributeToBlueskyLinks() {
         for a in nodes(matchingSelector: "a[href *= 'bsky.app']") {
@@ -142,16 +153,15 @@ extension HTMLDocument {
      */
     func processImgTags(shouldLinkifyNonSmilies: Bool) {
         var postContentImageCount = 0
-        let initialLoadCount = 10  // First 10 post content images load immediately
 
         for img in nodes(matchingSelector: "img") {
             guard
                 let src = img["src"],
                 let url = URL(string: src)
                 else { continue }
-            
+
             let isSmilie = isSmilieURL(url)
-            
+
             if isSmilie {
                 img.toggleClass("awful-smile")
             } else {
@@ -161,30 +171,30 @@ extension HTMLDocument {
                 // Skip attachment.php files (require auth, handled elsewhere)
                 let isAttachment = url.lastPathComponent == "attachment.php"
 
+                // Apply URL fixes first to get the final URL
+                var finalURL = src
+                if let postimageURL = fixPostimageURL(url) {
+                    finalURL = postimageURL.absoluteString
+                } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
+                    finalURL = waffleURL.absoluteString
+                }
+
+                // Determine whether to load immediately or defer based on image type and count
                 if !isAvatar && !isAttachment {
                     // This is a post content image (not avatar, not smilie, not attachment)
                     postContentImageCount += 1
 
-                    if postContentImageCount > initialLoadCount {
-                        // Defer loading for images beyond the first 10
-                        img["data-lazy-src"] = src
-                        img["src"] = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                    }
-                }
-
-                // Apply URL fixes
-                if let postimageURL = fixPostimageURL(url) {
-                    if postContentImageCount <= initialLoadCount || isAvatar {
-                        img["src"] = postimageURL.absoluteString
+                    if postContentImageCount > Self.immediatelyLoadedImageCount {
+                        // Defer loading for images beyond the immediately loaded count
+                        img["data-lazy-src"] = finalURL
+                        img["src"] = Self.transparentPixelPlaceholder
                     } else {
-                        img["data-lazy-src"] = postimageURL.absoluteString
+                        // Load immediately
+                        img["src"] = finalURL
                     }
-                } else if let waffleURL = randomwaffleURLForWaffleimagesURL(url) {
-                    if postContentImageCount <= initialLoadCount || isAvatar {
-                        img["src"] = waffleURL.absoluteString
-                    } else {
-                        img["data-lazy-src"] = waffleURL.absoluteString
-                    }
+                } else {
+                    // Avatars and attachments always load immediately
+                    img["src"] = finalURL
                 }
             }
             
