@@ -205,7 +205,12 @@ private class DefaultLoadingView: LoadingView {
     }
 
     private func showStatusElements() {
+        // Check that view is still in hierarchy before animating (prevents race condition)
+        guard superview != nil else { return }
+
         UIView.animate(withDuration: 0.3) { [weak self] in
+            // Double-check during animation block
+            guard self?.superview != nil else { return }
             self?.statusLabel.alpha = 1.0
             self?.showNowButton.alpha = 1.0
         }
