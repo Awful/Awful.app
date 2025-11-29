@@ -3,8 +3,11 @@
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import os
 import Smilies
 import SwiftUI
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "AwfulApp")
 
 @main
 struct AwfulApp: App {
@@ -41,7 +44,7 @@ struct AwfulApp: App {
             do {
                 try appDelegate.managedObjectContext.save()
             } catch {
-                print("Failed to save on background: \(error)")
+                logger.error("Failed to save on background: \(error)")
             }
         @unknown default:
             break
