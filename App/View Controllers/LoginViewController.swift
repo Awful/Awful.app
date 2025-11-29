@@ -16,14 +16,14 @@ private let termsOfServiceURL = URL(string: "https://www.somethingawful.com/foru
 
 class LoginViewController: ViewController {
     var completionBlock: ((LoginViewController) -> Void)?
-    
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var usernameTextField: UITextField!
-    @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var nextBarButtonItem: UIBarButtonItem!
-    @IBOutlet weak var forgotPasswordButton: UIButton!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet private var consentToTermsTextView: UITextView!
+
+    private(set) var scrollView: UIScrollView!
+    private(set) var usernameTextField: UITextField!
+    private(set) var passwordTextField: UITextField!
+    private(set) var nextBarButtonItem: UIBarButtonItem!
+    private(set) var forgotPasswordButton: UIButton!
+    private(set) var activityIndicator: UIActivityIndicatorView!
+    private var consentToTermsTextView: UITextView!
 
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     @FoilDefaultStorageOptional(Settings.userID) private var userID
@@ -77,13 +77,17 @@ class LoginViewController: ViewController {
     }
     
     class func newFromStoryboard() -> LoginViewController {
-        return UIStoryboard(name: "Login", bundle: nil).instantiateInitialViewController() as! LoginViewController
+        return LoginViewController()
     }
     
+    override func loadView() {
+        super.loadView()
+        setupViews()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Can't set this in the storyboard for some reason.
+
         nextBarButtonItem.isEnabled = false
 
         consentToTermsTextView.attributedText = {
@@ -157,6 +161,147 @@ class LoginViewController: ViewController {
     
     @IBAction func didTapForgetPassword() {
         UIApplication.shared.open(lostPasswordURL)
+    }
+
+    private func setupViews() {
+        title = "Log In"
+
+        scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+
+        let contentView = UIView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+
+        let textFieldContainer = UIView()
+        textFieldContainer.translatesAutoresizingMaskIntoConstraints = false
+        textFieldContainer.backgroundColor = .systemBackground
+        contentView.addSubview(textFieldContainer)
+
+        let usernameLabel = UILabel()
+        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
+        usernameLabel.text = "Username"
+        usernameLabel.font = .preferredFont(forTextStyle: .body)
+        usernameLabel.textAlignment = .right
+        textFieldContainer.addSubview(usernameLabel)
+
+        usernameTextField = UITextField()
+        usernameTextField.translatesAutoresizingMaskIntoConstraints = false
+        usernameTextField.placeholder = "Forums Poster"
+        usernameTextField.font = .preferredFont(forTextStyle: .body)
+        usernameTextField.autocorrectionType = .no
+        usernameTextField.spellCheckingType = .no
+        usernameTextField.delegate = self
+        usernameTextField.addTarget(self, action: #selector(didChangeUsername(_:)), for: .editingChanged)
+        textFieldContainer.addSubview(usernameTextField)
+
+        let separator1 = UIView()
+        separator1.translatesAutoresizingMaskIntoConstraints = false
+        separator1.backgroundColor = UIColor(red: 0.902, green: 0.902, blue: 0.902, alpha: 1.0)
+        textFieldContainer.addSubview(separator1)
+
+        let passwordLabel = UILabel()
+        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
+        passwordLabel.text = "Password"
+        passwordLabel.font = .preferredFont(forTextStyle: .body)
+        passwordLabel.textAlignment = .right
+        textFieldContainer.addSubview(passwordLabel)
+
+        passwordTextField = UITextField()
+        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
+        passwordTextField.placeholder = "Required"
+        passwordTextField.font = .preferredFont(forTextStyle: .body)
+        passwordTextField.autocorrectionType = .no
+        passwordTextField.spellCheckingType = .no
+        passwordTextField.isSecureTextEntry = true
+        passwordTextField.delegate = self
+        passwordTextField.addTarget(self, action: #selector(didChangePassword(_:)), for: .editingChanged)
+        textFieldContainer.addSubview(passwordTextField)
+
+        let separator2 = UIView()
+        separator2.translatesAutoresizingMaskIntoConstraints = false
+        separator2.backgroundColor = UIColor(red: 0.902, green: 0.902, blue: 0.902, alpha: 1.0)
+        textFieldContainer.addSubview(separator2)
+
+        forgotPasswordButton = UIButton(type: .system)
+        forgotPasswordButton.translatesAutoresizingMaskIntoConstraints = false
+        forgotPasswordButton.setTitle("Forgot your password?", for: .normal)
+        forgotPasswordButton.addTarget(self, action: #selector(didTapForgetPassword), for: .touchUpInside)
+        contentView.addSubview(forgotPasswordButton)
+
+        activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.hidesWhenStopped = true
+        contentView.addSubview(activityIndicator)
+
+        consentToTermsTextView = UITextView()
+        consentToTermsTextView.translatesAutoresizingMaskIntoConstraints = false
+        consentToTermsTextView.isEditable = false
+        consentToTermsTextView.isScrollEnabled = false
+        consentToTermsTextView.backgroundColor = .clear
+        consentToTermsTextView.delegate = self
+        contentView.addSubview(consentToTermsTextView)
+
+        nextBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(didTapNext))
+        navigationItem.rightBarButtonItem = nextBarButtonItem
+
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
+            textFieldContainer.topAnchor.constraint(equalTo: contentView.topAnchor),
+            textFieldContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            textFieldContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            textFieldContainer.widthAnchor.constraint(greaterThanOrEqualToConstant: 320),
+            textFieldContainer.widthAnchor.constraint(lessThanOrEqualToConstant: 480),
+
+            usernameLabel.leadingAnchor.constraint(equalTo: textFieldContainer.leadingAnchor, constant: 8),
+            usernameLabel.topAnchor.constraint(equalTo: textFieldContainer.topAnchor, constant: 36),
+            usernameLabel.widthAnchor.constraint(equalToConstant: 90),
+
+            usernameTextField.leadingAnchor.constraint(equalTo: usernameLabel.trailingAnchor, constant: 14),
+            usernameTextField.trailingAnchor.constraint(equalTo: textFieldContainer.trailingAnchor, constant: -8),
+            usernameTextField.firstBaselineAnchor.constraint(equalTo: usernameLabel.firstBaselineAnchor),
+
+            separator1.leadingAnchor.constraint(equalTo: usernameLabel.leadingAnchor),
+            separator1.trailingAnchor.constraint(equalTo: usernameTextField.trailingAnchor),
+            separator1.topAnchor.constraint(equalTo: usernameTextField.bottomAnchor, constant: 7),
+            separator1.heightAnchor.constraint(equalToConstant: 0.5),
+
+            passwordLabel.leadingAnchor.constraint(equalTo: textFieldContainer.leadingAnchor, constant: 8),
+            passwordLabel.topAnchor.constraint(equalTo: separator1.bottomAnchor, constant: 16),
+            passwordLabel.widthAnchor.constraint(equalTo: usernameLabel.widthAnchor),
+
+            passwordTextField.leadingAnchor.constraint(equalTo: usernameTextField.leadingAnchor),
+            passwordTextField.trailingAnchor.constraint(equalTo: usernameTextField.trailingAnchor),
+            passwordTextField.firstBaselineAnchor.constraint(equalTo: passwordLabel.firstBaselineAnchor),
+
+            separator2.leadingAnchor.constraint(equalTo: passwordLabel.leadingAnchor),
+            separator2.trailingAnchor.constraint(equalTo: passwordTextField.trailingAnchor),
+            separator2.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 7),
+            separator2.heightAnchor.constraint(equalToConstant: 0.5),
+            separator2.bottomAnchor.constraint(equalTo: textFieldContainer.bottomAnchor),
+
+            forgotPasswordButton.topAnchor.constraint(equalTo: textFieldContainer.bottomAnchor, constant: 16),
+            forgotPasswordButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+
+            activityIndicator.topAnchor.constraint(equalTo: forgotPasswordButton.bottomAnchor, constant: 16),
+            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+
+            consentToTermsTextView.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor, constant: 16),
+            consentToTermsTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            consentToTermsTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            consentToTermsTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+        ])
     }
 }
 

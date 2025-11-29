@@ -148,7 +148,6 @@
 		1C8F680B222B8F06007E61ED /* NamedThreadTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F680A222B8F06007E61ED /* NamedThreadTag.swift */; };
 		1C917CF81C4F21B800BBF672 /* HairlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC22AB419F972C200D5BABD /* HairlineView.swift */; };
 		1C9AEBC6210C3B2300C9A567 /* CloseBBcodeTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */; };
-		1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9AEBCD210C3BAF00C9A567 /* main.swift */; };
 		1CA3D6FC2D98A7E400D70964 /* OEmbedFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA3D6FB2D98A7E100D70964 /* OEmbedFetcher.swift */; };
 		1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1CA45D931F2C0AD1005BEEC5 /* RenderView.js */; };
 		1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */; };
@@ -179,14 +178,11 @@
 		1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD9FB631D1A38030070C8C7 /* NigglyRefreshView.swift */; };
 		1CDC53DA21FCF38F0086BD2B /* OpenCopiedURLController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */; };
 		1CDC53DC220131400086BD2B /* ImgurAnonymousAPI+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */; };
-		1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */; };
 		1CDD0A4919B7EB3F009811C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */; };
 		1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE2B76619C2372200FDC33E /* LoginViewController.swift */; };
-		1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CE2B76A19C2374C00FDC33E /* Login.storyboard */; };
 		1CE55A7A1A1072D900E474A6 /* ForumsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */; };
 		1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */; };
 		1CF186A617D48E5700B26717 /* Thread Tags in Resources */ = {isa = PBXBuildFile; fileRef = 1CF186A517D48E5700B26717 /* Thread Tags */; };
-		1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */; };
 		1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF280972055EB9B00913149 /* AwfulRoute.swift */; };
 		1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521742C228E76009712A7 /* PrivacyInfo.xcprivacy */; };
 		1CF521772C228F88009712A7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */; };
@@ -204,6 +200,8 @@
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
+		2DBE262F2EDA765700E095A6 /* RootViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE262E2EDA765700E095A6 /* RootViewControllerRepresentable.swift */; };
+		2DBE26302EDA765700E095A6 /* AwfulApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBE262D2EDA765700E095A6 /* AwfulApp.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
@@ -450,7 +448,6 @@
 		1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwfulTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C9AEBC5210C3B2300C9A567 /* CloseBBcodeTagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseBBcodeTagTests.swift; sourceTree = "<group>"; };
 		1C9AEBC7210C3B2300C9A567 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1C9AEBCD210C3BAF00C9A567 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		1CA3D6FB2D98A7E100D70964 /* OEmbedFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OEmbedFetcher.swift; sourceTree = "<group>"; };
 		1CA45D931F2C0AD1005BEEC5 /* RenderView.js */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.javascript; path = RenderView.js; sourceTree = "<group>"; tabWidth = 2; };
 		1CA56FEA1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableTexts.plist; sourceTree = "<group>"; };
@@ -492,15 +489,12 @@
 		1CDC53D921FCF38F0086BD2B /* OpenCopiedURLController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenCopiedURLController.swift; sourceTree = "<group>"; };
 		1CDC53DB220131400086BD2B /* ImgurAnonymousAPI+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImgurAnonymousAPI+Shared.swift"; sourceTree = "<group>"; };
 		1CDC9F652AE5FB19005DA08D /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = test.yml; path = .github/workflows/test.yml; sourceTree = SOURCE_ROOT; };
-		1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1CE2B76619C2372200FDC33E /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		1CE2B76A19C2374C00FDC33E /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		1CE55A791A1072D900E474A6 /* ForumsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForumsTableViewController.swift; sourceTree = "<group>"; };
 		1CEB5BFE19AB9C1700C82C30 /* InAppActionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionViewController.swift; sourceTree = "<group>"; };
 		1CF0A6C520A50FC5004C26EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1CF186A517D48E5700B26717 /* Thread Tags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Thread Tags"; sourceTree = "<group>"; };
-		1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = RootTabBarController.storyboard; sourceTree = "<group>"; };
 		1CF280972055EB9B00913149 /* AwfulRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulRoute.swift; sourceTree = "<group>"; };
 		1CF521742C228E76009712A7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -519,9 +513,10 @@
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
+		2DBE262D2EDA765700E095A6 /* AwfulApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwfulApp.swift; sourceTree = "<group>"; };
+		2DBE262E2EDA765700E095A6 /* RootViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewControllerRepresentable.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
-		30E0C5172E35C89D0030DC0A /* SmilieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieData.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
 		30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieSearchViewModel.swift; sourceTree = "<group>"; };
@@ -611,12 +606,12 @@
 		1190F71C13BE4EA900B9D271 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				2DBE262D2EDA765700E095A6 /* AwfulApp.swift */,
+				2DBE262E2EDA765700E095A6 /* RootViewControllerRepresentable.swift */,
 				1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */,
 				1CBE1B1119CAAFA200510187 /* AwfulSplitViewController.swift */,
 				1C220E3C2B815AFC00DA92B0 /* Bundle+.swift */,
 				1C4506C31A2BAB3800767306 /* Handoff.swift */,
-				1CDD0A4619B7D89B009811C4 /* LaunchScreen.storyboard */,
-				1C9AEBCD210C3BAF00C9A567 /* main.swift */,
 				1CF521762C228F88009712A7 /* PrivacyInfo.xcprivacy */,
 				1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */,
 			);
@@ -1036,13 +1031,11 @@
 				1C16FBB11CB86ACD00C88BD1 /* EmptyViewController.swift */,
 				1C29C3812258538A00E1217A /* Forums */,
 				1CBE1B0819CA050300510187 /* ImageViewController.swift */,
-				1CE2B76A19C2374C00FDC33E /* Login.storyboard */,
 				1CE2B76619C2372200FDC33E /* LoginViewController.swift */,
 				1C29C3852258547C00E1217A /* Messages */,
 				1C29C382225853A300E1217A /* Posts */,
 				1CDD0A4819B7EB3E009811C4 /* ProfileViewController.swift */,
 				1C29C3842258544B00E1217A /* Rap Sheet */,
-				1CF264C91F7811EA0059CCCA /* RootTabBarController.storyboard */,
 				1C29BD54225121F100E1217A /* RootTabBarController.swift */,
 				1C29C3872258551700E1217A /* Thread Tags */,
 				1C29C3832258543200E1217A /* Threads */,
@@ -1455,7 +1448,6 @@
 				1AB84FD92ADC611B00E7334D /* bat.svg in Resources */,
 				8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */,
 				1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */,
-				1CE2B76B19C2374C00FDC33E /* Login.storyboard in Resources */,
 				1CC10E3B1DD9558B00E0FB63 /* PotentiallyObjectionableThreadTags.plist in Resources */,
 				8C483FC216852E5D00D02482 /* macinyos-loading@2x.png in Resources */,
 				1C8F67FD2221BB57007E61ED /* PrivateMessage.html.stencil in Resources */,
@@ -1479,7 +1471,6 @@
 				1CA45D941F2C0AD1005BEEC5 /* RenderView.js in Resources */,
 				1C4EE1CE28470C2400A7507E /* Assets.xcassets in Resources */,
 				8C8813A218492AC80058009E /* mac-watch.png in Resources */,
-				1CF264CA1F7811EA0059CCCA /* RootTabBarController.storyboard in Resources */,
 				8C9834E2169091CE009F0CD6 /* fyad-bubble.png in Resources */,
 				1C41B8A716CD573D00718F79 /* title-banned.gif in Resources */,
 				1C1E57512C2521580075E3B6 /* platinum-member-white.png in Resources */,
@@ -1487,7 +1478,6 @@
 				2D19BA3929C33303009DD94F /* niggly60.json in Resources */,
 				1C41B8A816CD573D00718F79 /* title-permabanned.gif in Resources */,
 				8CE6100818CAAF74002E92DA /* cat.gif in Resources */,
-				1CDD0A4719B7D89B009811C4 /* LaunchScreen.storyboard in Resources */,
 				F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */,
 				1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */,
 				1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */,
@@ -1541,9 +1531,10 @@
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
-				30E0C51C2E35C89D0030DC0A /* SmilieData.swift in Sources */,
 				30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */,
 				30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */,
+				2DBE262F2EDA765700E095A6 /* RootViewControllerRepresentable.swift in Sources */,
+				2DBE26302EDA765700E095A6 /* AwfulApp.swift in Sources */,
 				30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */,
 				30E0C5202E35C89D0030DC0A /* SmilieGridItem.swift in Sources */,
 				1C16FBF31CBDC58B00C88BD1 /* URL+OpensInBrowser.swift in Sources */,
@@ -1593,7 +1584,6 @@
 				1CEB5BFF19AB9C1700C82C30 /* InAppActionViewController.swift in Sources */,
 				1CA3D6FC2D98A7E400D70964 /* OEmbedFetcher.swift in Sources */,
 				1C16FBAA1CB5D38700C88BD1 /* CompositionInputAccessoryView.swift in Sources */,
-				1C9AEBCE210C3BAF00C9A567 /* main.swift in Sources */,
 				1C16FBE71CBC671A00C88BD1 /* PostRenderModel.swift in Sources */,
 				1CB5F7F7201547D90046D080 /* Thread+Presentation.swift in Sources */,
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,

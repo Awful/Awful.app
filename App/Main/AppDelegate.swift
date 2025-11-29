@@ -57,23 +57,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
             #endif
         }()
-        
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.tintColor = Theme.defaultTheme()["tintColor"]
-        
-        if ForumsClient.shared.isLoggedIn {
-            setRootViewController(rootViewControllerStack.rootViewController, animated: false, completion: nil)
-        } else {
-            setRootViewController(loginViewController.enclosingNavigationController, animated: false, completion: nil)
-        }
-        
-        openCopiedURLController = OpenCopiedURLController(window: window!, router: {
-            [unowned self] in
-            self.open(route: $0)
-        })
-        
-        window?.makeKeyAndVisible()
-        
+
         return true
     }
     
@@ -81,9 +65,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        // Don't want to lazily create it now.
-        _rootViewControllerStack?.didAppear()
-        
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
         
         showPromptIfLoginCookieExpiresSoon()
@@ -144,9 +125,25 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(true)
-        
+
         // Screen brightness may have changed while the app wasn't paying attention.
         automaticallyUpdateDarkModeEnabledIfNecessary()
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        do {
+            try managedObjectContext.save()
+        } catch {
+            logger.error("Failed to save context on background: \(error)")
+        }
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        do {
+            try managedObjectContext.save()
+        } catch {
+            logger.error("Failed to save context on termination: \(error)")
+        }
     }
     
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
@@ -221,7 +218,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         urlRouter?.route(route)
     }
     
-    private func updateShortcutItems() {
+    func automaticallyUpdateDarkModeEnabledIfNecessary() {
+        guard automaticDarkTheme else { return }
+
+        let shouldDarkModeBeEnabled = (window ?? keyWindow)?.traitCollection.userInterfaceStyle == .dark
+        if shouldDarkModeBeEnabled != darkMode {
+            darkMode.toggle()
+        }
+    }
+
+    func updateShortcutItems() {
         guard urlRouter != nil else {
             UIApplication.shared.shortcutItems = []
             return
@@ -268,7 +274,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private var _rootViewControllerStack: RootViewControllerStack?
     private var urlRouter: AwfulURLRouter?
-    private var rootViewControllerStack: RootViewControllerStack {
+    var rootViewControllerStack: RootViewControllerStack {
         if let stack = _rootViewControllerStack { return stack }
         let stack = RootViewControllerStack(managedObjectContext: managedObjectContext)
         urlRouter = AwfulURLRouter(rootViewController: stack.rootViewController, managedObjectContext: managedObjectContext)
@@ -276,33 +282,56 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _rootViewControllerStack = stack
         return stack
     }
-    
-    private lazy var loginViewController: LoginViewController! = {
+
+    lazy var loginViewController: LoginViewController! = {
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
             guard let self = self else { return }
-            self.setRootViewController(self.rootViewControllerStack.rootViewController, animated: true, completion: { [weak self] in
-                guard let self = self else { return }
-                self.rootViewControllerStack.didAppear()
-                self.loginViewController = nil
-            })
+            self.swapToMainViewController()
         }
         return loginVC
     }()
+
+    func swapToMainViewController() {
+        guard let window = self.window ?? self.keyWindow else { return }
+
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = self.rootViewControllerStack.rootViewController
+        }) { [weak self] _ in
+            self?.rootViewControllerStack.didAppear()
+            self?.loginViewController = nil
+        }
+    }
+
+    func setupOpenCopiedURLController() {
+        guard openCopiedURLController == nil else { return }
+        guard let window = self.window ?? self.keyWindow else { return }
+
+        openCopiedURLController = OpenCopiedURLController(window: window, router: { [unowned self] in
+            self.open(route: $0)
+        })
+    }
+
+    private var keyWindow: UIWindow? {
+        return UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+    }
 }
 
 private extension AppDelegate {
     func setRootViewController(_ rootViewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
-        guard let window = window else { return }
-        UIView.transition(with: window, duration: animated ? 0.3 : 0, options: .transitionCrossDissolve, animations: { 
+        guard let window = window ?? keyWindow else { return }
+        UIView.transition(with: window, duration: animated ? 0.3 : 0, options: .transitionCrossDissolve, animations: {
             window.rootViewController = rootViewController
             }) { (completed) in
                 completion?()
         }
     }
-    
+
     func themeDidChange() {
-        guard let window = window else { return }
+        guard let window = window ?? keyWindow else { return }
 
         window.tintColor = Theme.defaultTheme()["tintColor"]
 
@@ -320,7 +349,11 @@ private extension AppDelegate {
     }
     
     private func showSnapshotDuringThemeDidChange() {
-        if let window = window, let snapshot = window.snapshotView(afterScreenUpdates: false) {
+        guard let window = window ?? keyWindow else {
+            themeDidChange()
+            return
+        }
+        if let snapshot = window.snapshotView(afterScreenUpdates: false) {
             window.addSubview(snapshot)
             themeDidChange()
             
@@ -338,15 +371,6 @@ private extension AppDelegate {
         }
     }
 
-    private func automaticallyUpdateDarkModeEnabledIfNecessary() {
-        guard automaticDarkTheme else { return }
-
-        let shouldDarkModeBeEnabled = window?.traitCollection.userInterfaceStyle == .dark
-        if shouldDarkModeBeEnabled != darkMode {
-            darkMode.toggle()
-        }
-    }
-    
     @objc func preferredContentSizeDidChange(_ notification: Notification) {
         themeDidChange()
     }
@@ -358,7 +382,7 @@ private extension AppDelegate {
             else { return }
         let lastPromptDate = UserDefaults.standard.object(forKey: loginCookieLastExpiryPromptDateKey) as? Date ?? .distantFuture
         guard lastPromptDate.timeIntervalSinceNow < -loginCookieExpiryPromptFrequency else { return }
-        
+
         let alert = UIAlertController(
             title: LocalizedString("session-expiry-imminent.title"),
             message: String(format: LocalizedString("session-expiry-imminent.message"), DateFormatter.localizedString(from: expiryDate, dateStyle: .short, timeStyle: .none)),
@@ -366,7 +390,7 @@ private extension AppDelegate {
                 UserDefaults.standard.set(Date(), forKey: loginCookieLastExpiryPromptDateKey)
             })]
         )
-        window?.rootViewController?.present(alert, animated: true, completion: nil)
+        (window ?? keyWindow)?.rootViewController?.present(alert, animated: true, completion: nil)
     }
 }
 
