@@ -46,23 +46,8 @@ class LoadingView: UIView {
         }
     }
 
-    /// Callback invoked when user dismisses the loading view via the X button.
-    ///
-    /// Use weak/unowned captures to avoid retain cycles:
-    /// ```swift
-    /// loadingView.onDismiss = { [weak self] in
-    ///     self?.handleDismissal()
-    /// }
-    /// ```
     var onDismiss: (() -> Void)?
 
-    /// Updates the status text displayed in the loading view.
-    ///
-    /// This method should be overridden in subclasses to implement status updates.
-    /// The default implementation does nothing. Only the default loading view theme
-    /// currently supports status updates.
-    ///
-    /// - Parameter text: The status message to display
     func updateStatus(_ text: String) {
         // Override in subclasses
     }

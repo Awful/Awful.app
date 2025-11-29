@@ -62,12 +62,10 @@ const IMAGE_LOAD_TIMEOUT_CONFIG = {
 Awful.setupGhostLottiePlayer = function(container) {
     const players = container.querySelectorAll(SELECTORS.LOTTIE_PLAYERS);
     players.forEach((lottiePlayer) => {
-        // Remove any existing listener before adding new one to prevent accumulation
         if (lottiePlayer._ghostLoadHandler) {
             lottiePlayer.removeEventListener("rendered", lottiePlayer._ghostLoadHandler);
         }
 
-        // Store handler reference for cleanup
         lottiePlayer._ghostLoadHandler = () => {
             const ghostData = document.getElementById("ghost-json-data");
             if (ghostData) {
@@ -430,13 +428,8 @@ Awful.embedTweets = function() {
   }
 
   // Image lazy loading (works regardless of ghost feature being enabled)
-  // Apply timeout detection to initial images (first 10)
   Awful.applyTimeoutToLoadingImages();
-
-  // Setup lazy loading for deferred images (11+)
   Awful.setupImageLazyLoading();
-
-  // Setup retry handler
   Awful.setupRetryHandler();
 
   // Set up lazy-loading IntersectionObserver for tweet embeds
@@ -620,10 +613,8 @@ Awful.applyTimeoutToLoadingImages = function() {
     );
     const totalImages = initialImages.length;
 
-    // Initialize progress tracker (only tracks first 10 images, not lazy-loaded ones)
     Awful.imageLoadTracker.initialize(totalImages);
 
-    // Store interval timers for cleanup (prevents memory leaks)
     // Clear all existing timers before resetting array to prevent orphaned intervals
     if (Awful.imageTimeoutCheckers) {
         Awful.imageTimeoutCheckers.forEach(timer => clearInterval(timer));
@@ -634,17 +625,13 @@ Awful.applyTimeoutToLoadingImages = function() {
         const imageID = `img-init-${index}`;
         const imageURL = img.src;
 
-        // Note: attachment.php and data: URLs already filtered out in initialImages filter above
-
-        // Skip if already loaded (but count it)
-        // Note: img.complete is true for both successfully loaded AND failed images
+        // img.complete is true for both successfully loaded AND failed images
         // We discriminate using naturalHeight: >0 means success, ===0 means failure
         if (img.complete && img.naturalHeight !== 0) {
             Awful.imageLoadTracker.incrementLoaded();
             return;
         }
 
-        // Let browser load the image naturally, but monitor for timeout
         // Track if we've already handled this image to prevent double-counting
         let handled = false;
 
@@ -858,7 +845,6 @@ Awful.cleanupObservers = function() {
         Awful.imageLazyLoadObserver = null;
     }
 
-    // Also cleanup image timers
     Awful.cleanupImageTimers();
 };
 

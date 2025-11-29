@@ -1781,7 +1781,7 @@ extension PostsPageViewController: RenderViewDelegate {
         }
 
         // Note: Loading view is now dismissed when image loading completes (via ImageLoadProgress message)
-        // or when user taps "Show Now" button
+        // or when user taps (X) button
     }
 
     func didReceive(message: RenderViewMessage, in view: RenderView) {
