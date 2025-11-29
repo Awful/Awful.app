@@ -147,9 +147,8 @@ private class DefaultLoadingView: LoadingView {
             if finished {
                 // first animation complete! start second one and loop
                 self?.animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .loop, completion: nil)
-            } else {
-               // animation cancelled
             }
+            // If not finished, animation was cancelled - no action needed
         })
     }
 
