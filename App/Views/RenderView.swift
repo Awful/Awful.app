@@ -199,7 +199,10 @@ extension RenderView: WKScriptMessageHandler {
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive rawMessage: WKScriptMessage) {
-        logger.debug("received message from JavaScript: \(rawMessage.name)")
+        // Skip logging high-frequency progress updates to reduce console noise
+        if rawMessage.name != "imageLoadProgress" {
+            logger.debug("received message from JavaScript: \(rawMessage.name)")
+        }
 
         guard let messageType = registeredMessages[rawMessage.name] else {
             logger.warning("ignoring unexpected message from JavaScript: \(rawMessage.name). Did you forget to register a message type with the RenderView?")
