@@ -179,8 +179,11 @@ extension HTMLDocument {
                     finalURL = waffleURL.absoluteString
                 }
 
+                // Check if this is a data: URI (inline data that shouldn't be lazy-loaded)
+                let isDataURI = finalURL.starts(with: "data:")
+
                 // Determine whether to load immediately or defer based on image type and count
-                if !isAvatar && !isAttachment {
+                if !isAvatar && !isAttachment && !isDataURI {
                     // This is a post content image (not avatar, not smilie, not attachment)
                     postContentImageCount += 1
 
@@ -193,7 +196,7 @@ extension HTMLDocument {
                         img["src"] = finalURL
                     }
                 } else {
-                    // Avatars and attachments always load immediately
+                    // Avatars, attachments, and data URIs always load immediately
                     img["src"] = finalURL
                 }
             }

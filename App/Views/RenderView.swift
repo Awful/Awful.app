@@ -403,15 +403,6 @@ extension RenderView {
         evalAwfulFunction("applyTimeoutToLoadingImages")
     }
 
-    /// Sets up lazy loading for deferred images (images 11+).
-    ///
-    /// Uses IntersectionObserver to load images as they approach the viewport.
-    /// Images are loaded approximately 600px before they would be visible to the user
-    /// for a seamless scrolling experience.
-    func setupImageLazyLoading() {
-        evalAwfulFunction("setupImageLazyLoading")
-    }
-
     /// Sets up click handler for retry links on failed images.
     ///
     /// Allows users to retry loading images that timed out or failed to load.

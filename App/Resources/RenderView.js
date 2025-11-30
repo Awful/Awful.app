@@ -221,7 +221,7 @@ Awful.embedTweetNow = function(thisPostElement) {
                 cleanUp(this);
                 console.error(`The embed markup for tweet ${tweetID} failed to load`);
 
-                // Replace failed tweets with ghost Lottie animation
+              // when a tweet errors out, insert a floating ghost lottie in somber rememberence of the tweet that used to be
                 if (enableGhost) {
                     tweetIDsToLinks[tweetID].forEach(function(a) {
                         if (a.parentNode) {
