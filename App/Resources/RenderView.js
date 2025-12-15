@@ -37,6 +37,10 @@ const IMAGE_LOAD_TIMEOUT_CONFIG = {
     retryResetDelay: 3000
 };
 
+/// Timeout for tweet embedding via Twitter API
+/// 5 seconds gives enough time for API response while preventing indefinite waiting
+const TWEET_EMBED_TIMEOUT = 5000;
+
 // MARK: - Utility Functions
 
 /**
@@ -156,6 +160,138 @@ Awful.fetchOEmbed = async function(url) {
   });
 };
 
+// MARK: - Tweet Embedding Helper Functions
+
+/**
+ * Shows a dead tweet badge for a failed tweet.
+ * Centralizes the logic for displaying dead tweet badges to avoid code duplication
+ * between main embedding and retry functionality.
+ *
+ * @param {string} tweetID - The tweet ID
+ * @param {string} tweetURL - The original tweet URL
+ * @param {Element} containerToReplace - The element to replace with dead badge
+ */
+Awful.showDeadTweetBadge = function(tweetID, tweetURL, containerToReplace) {
+    if (!window.Awful.renderGhostTweets || !containerToReplace || !containerToReplace.parentNode) {
+        return;
+    }
+
+    const div = document.createElement('div');
+    div.classList.add('dead-tweet-container');
+    div.innerHTML = Awful.deadTweetBadgeHTML(tweetURL, tweetID);
+    containerToReplace.parentNode.replaceChild(div, containerToReplace);
+    Awful.setupGhostLottiePlayer(div);
+};
+
+/**
+ * Calls Twitter widgets.load() with proper race condition handling.
+ * Checks if widgets.js is fully loaded (has widgets property), otherwise queues the call
+ * via twttr.ready() to ensure it executes after widgets.js finishes loading.
+ */
+Awful.loadTwitterWidgetsForEmbeds = function() {
+    if (!window.twttr) {
+        return;
+    }
+
+    if (window.twttr.widgets) {
+        // Real widgets.js is loaded (has widgets property), call immediately
+        twttr.widgets.load();
+    } else {
+        // widgets.js still loading (only has stub), queue the call
+        twttr.ready(function() {
+            twttr.widgets.load();
+        });
+    }
+};
+
+/**
+ * Fetches a single tweet via JSONP with timeout protection and comprehensive error handling.
+ * Centralizes all tweet fetching logic to ensure consistent behavior between main embedding
+ * and retry functionality.
+ *
+ * @param {string} tweetID - The tweet ID to fetch
+ * @param {Function} onSuccess - Called with (data, tweetID) on successful fetch
+ * @param {Function} onFailure - Called with (reason, tweetID, data) on failure
+ *                                 reason can be: 'timeout', 'api_error', 'network'
+ * @returns {object} - Object with cleanup() function to manually abort the request
+ */
+Awful.fetchTweetOEmbed = function(tweetID, onSuccess, onFailure) {
+    // Create unique callback name to prevent collisions when same tweet appears in multiple posts
+    let callback = `jsonp_callback_${tweetID}`;
+    let counter = 0;
+    while (window[callback]) {
+        callback = `jsonp_callback_${tweetID}_${++counter}`;
+    }
+
+    const script = document.createElement('script');
+    const tweetTheme = Awful.tweetTheme();
+    const validThemes = ['light', 'dark'];
+    const safeTheme = validThemes.includes(tweetTheme) ? tweetTheme : 'light';
+    script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${safeTheme}&callback=${callback}`;
+
+    let timedOut = false;
+
+    let timeoutId = setTimeout(function() {
+        timedOut = true;
+        cleanUp(script);
+        console.error(`Tweet ${tweetID} embedding timed out after ${TWEET_EMBED_TIMEOUT}ms`);
+        if (onFailure) {
+            onFailure('timeout', tweetID);
+        }
+    }, TWEET_EMBED_TIMEOUT);
+
+    // Track timeout for global cleanup on page unload
+    if (!Awful.tweetEmbedTimeouts) {
+        Awful.tweetEmbedTimeouts = [];
+    }
+    Awful.tweetEmbedTimeouts.push(timeoutId);
+
+    window[callback] = function(data) {
+        if (timedOut) {
+            console.warn(`Ignoring late response for tweet ${tweetID}`);
+            return;
+        }
+
+        clearTimeout(timeoutId);
+        cleanUp(script);
+
+        // Validate response - check for data existence but don't inspect HTML content (iframe issues)
+        if (!data || !data.html || data.error) {
+            console.error(`Tweet ${tweetID} API returned error:`, data ? data.error : 'No data');
+            if (onFailure) {
+                onFailure('api_error', tweetID, data);
+            }
+            return;
+        }
+
+        // Success
+        if (onSuccess) {
+            onSuccess(data, tweetID);
+        }
+    };
+
+    script.onerror = function() {
+        if (timedOut) return;
+        cleanUp(this);
+        console.error(`Tweet ${tweetID} network error`);
+        if (onFailure) {
+            onFailure('network', tweetID);
+        }
+    };
+
+    function cleanUp(script) {
+        clearTimeout(timeoutId);
+        delete window[callback];
+        if (script.parentNode) {
+            script.parentNode.removeChild(script);
+        }
+    }
+
+    document.body.appendChild(script);
+
+    return { cleanup: function() { cleanUp(script); } };
+};
+
 /**
  * Embeds tweets within a specific post element using Twitter's OEmbed API.
  * Called by IntersectionObserver when a post enters the viewport.
@@ -163,45 +299,64 @@ Awful.fetchOEmbed = async function(url) {
  * @param {Element} thisPostElement - The post element to process for tweet embeds
  */
 Awful.embedTweetNow = function(thisPostElement) {
-    if (!thisPostElement.classList.contains("embed-processed")) {
+    // Check if already processing or processed
+    if (thisPostElement.classList.contains("embed-processed") ||
+        thisPostElement.classList.contains("embed-processing")) {
+        return;
+    }
+
+    // Mark as processing to prevent duplicate IntersectionObserver calls during embedding
+    thisPostElement.classList.add("embed-processing");
+
+    const enableGhost = (window.Awful.renderGhostTweets == true);
+    const tweetLinks = thisPostElement.querySelectorAll('a[data-tweet-id]');
+
+    if (tweetLinks.length == 0) {
+        // No tweets to embed, mark as processed immediately
+        thisPostElement.classList.remove("embed-processing");
         thisPostElement.classList.add("embed-processed");
+        return;
+    }
 
-        const enableGhost = (window.Awful.renderGhostTweets == true);
-        const tweetLinks = thisPostElement.querySelectorAll('a[data-tweet-id]');
-
-        if (tweetLinks.length == 0) {
+    // Group tweet links by ID for deduplication
+    const tweetIDsToLinks = {};
+    Array.prototype.forEach.call(tweetLinks, function(a) {
+        // Skip tweets with NWS content (use optional chaining to avoid null reference errors)
+        if (a.parentElement?.querySelector('img.awful-smile[title=":nws:"]')) {
             return;
         }
+        const tweetID = a.dataset.tweetId;
+        if (!(tweetID in tweetIDsToLinks)) {
+            tweetIDsToLinks[tweetID] = [];
+        }
+        tweetIDsToLinks[tweetID].push(a);
+    });
 
-        // Group tweet links by ID for deduplication
-        const tweetIDsToLinks = {};
-        Array.prototype.forEach.call(tweetLinks, function(a) {
-            // Skip tweets with NWS content (use optional chaining to avoid null reference errors)
-            if (a.parentElement?.querySelector('img.awful-smile[title=":nws:"]')) {
-                return;
-            }
-            const tweetID = a.dataset.tweetId;
-            if (!(tweetID in tweetIDsToLinks)) {
-                tweetIDsToLinks[tweetID] = [];
-            }
-            tweetIDsToLinks[tweetID].push(a);
-        });
+    // Track completion of tweets in this post - only mark as processed when ALL complete
+    let pendingTweets = Object.keys(tweetIDsToLinks).length;
 
-        // Fetch and embed each unique tweet
-        Object.keys(tweetIDsToLinks).forEach(function(tweetID) {
-            const callback = `jsonp_callback_${tweetID}`;
-            // Validate theme is an expected value to prevent URL injection
-            const tweetTheme = Awful.tweetTheme();
-            const validThemes = ['light', 'dark'];
-            const safeTheme = validThemes.includes(tweetTheme) ? tweetTheme : 'light';
+    function markTweetComplete() {
+        pendingTweets--;
+        if (pendingTweets === 0) {
+            // All tweets done (success or failure) - now safe to mark as processed
+            thisPostElement.classList.remove("embed-processing");
+            thisPostElement.classList.add("embed-processed");
+        }
+    }
 
-            const script = document.createElement('script');
-            script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${safeTheme}&callback=${callback}`;
+    // Fetch and embed each unique tweet using shared helper function
+    Object.keys(tweetIDsToLinks).forEach(function(tweetID) {
+        const tweetLinks = tweetIDsToLinks[tweetID];
 
-            window[callback] = function(data) {
-                cleanUp(script);
+        // Get first link's URL for error messages
+        const firstLink = tweetLinks[0];
+        const tweetURL = firstLink ? firstLink.href : '';
 
-                // Replace all links for this tweet with the embedded HTML
+        Awful.fetchTweetOEmbed(
+            tweetID,
+            // onSuccess callback
+            function(data, tweetID) {
+                // Replace all links for this tweet with embedded HTML
                 tweetIDsToLinks[tweetID].forEach(function(a) {
                     if (a.parentNode) {
                         const div = document.createElement('div');
@@ -211,42 +366,26 @@ Awful.embedTweetNow = function(thisPostElement) {
                     }
                 });
 
-                // Load Twitter widgets to render the embedded tweets
-                if (window.twttr) {
-                    twttr.widgets.load();
-                }
-            };
+                // Load Twitter widgets (with race condition fix)
+                Awful.loadTwitterWidgetsForEmbeds();
 
-            script.onerror = function() {
-                cleanUp(this);
-                console.error(`The embed markup for tweet ${tweetID} failed to load`);
+                // Mark this tweet as complete
+                markTweetComplete();
+            },
+            // onFailure callback
+            function(reason, tweetID) {
+                // Show dead tweet badge for all links with this tweet ID
+                tweetIDsToLinks[tweetID].forEach(function(a) {
+                    if (a.parentNode) {
+                        Awful.showDeadTweetBadge(tweetID, tweetURL, a);
+                    }
+                });
 
-              // when a tweet errors out, insert a floating ghost lottie in somber rememberence of the tweet that used to be
-                if (enableGhost) {
-                    tweetIDsToLinks[tweetID].forEach(function(a) {
-                        if (a.parentNode) {
-                            const div = document.createElement('div');
-                            div.classList.add('dead-tweet-container');
-                            div.innerHTML = Awful.deadTweetBadgeHTML(a.href.toString(), `${tweetID}`);
-                            a.parentNode.replaceChild(div, a);
-
-                            // Use helper function to set up Lottie player (fixes code duplication and null check)
-                            Awful.setupGhostLottiePlayer(div);
-                        }
-                    });
-                }
-            };
-
-            function cleanUp(script) {
-                delete window[callback];
-                if (script.parentNode) {
-                    script.parentNode.removeChild(script);
-                }
+                // Mark this tweet as complete (even though it failed)
+                markTweetComplete();
             }
-
-            document.body.appendChild(script);
-        });
-    }
+        );
+    });
 };
 
 /**
@@ -311,6 +450,10 @@ Awful.embedTweets = function() {
   Awful.embedTweetsInProgress = true;
 
   try {
+    // Clean up any existing observers/timers before setting up new ones
+    // This handles the case where embedTweets() is called multiple times on the same page
+    Awful.cleanupObservers();
+
     Awful.loadTwitterWidgets();
     const enableGhost = (window.Awful.renderGhostTweets == true);
 
@@ -350,6 +493,9 @@ Awful.embedTweets = function() {
   Awful.applyTimeoutToLoadingImages();
   Awful.setupRetryHandler();
   Awful.setupLazyImageErrorHandling();
+
+  // Tweet retry handling
+  Awful.setupTweetRetryHandler();
 
   // Set up lazy-loading IntersectionObserver for tweet embeds
   // Tweets are loaded before entering the viewport based on LAZY_LOAD_LOOKAHEAD_DISTANCE
@@ -598,6 +744,76 @@ Awful.setupRetryHandler = function() {
 };
 
 /**
+ * Sets up a click event listener for retrying failed tweet embeds.
+ * Uses shared fetchTweetOEmbed helper for consistent timeout and error handling.
+ */
+Awful.setupTweetRetryHandler = function() {
+    // Remove old event listener if it exists (prevents memory leak on page re-render)
+    if (Awful.tweetRetryClickHandler) {
+        document.removeEventListener('click', Awful.tweetRetryClickHandler);
+    }
+
+    // Define handler function and store reference for cleanup
+    Awful.tweetRetryClickHandler = function(event) {
+        const button = event.target;
+        if (button.hasAttribute('data-retry-tweet')) {
+            event.preventDefault();
+
+            const tweetID = button.getAttribute('data-retry-tweet');
+            const tweetURL = button.getAttribute('data-tweet-url');
+            const deadContainer = button.closest('.dead-tweet-container');
+
+            if (!deadContainer || !deadContainer.parentNode) {
+                return;
+            }
+
+            // Validate URL is actually a Twitter/X URL (security check)
+            if (!tweetURL.match(/^https?:\/\/(www\.)?(twitter\.com|x\.com)\//)) {
+                console.error('Invalid tweet URL for retry:', tweetURL);
+                return;
+            }
+
+            // Disable button during retry
+            button.disabled = true;
+            button.textContent = 'Retrying...';
+
+            // Create loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'tweet-loading';
+            loadingDiv.textContent = 'Loading tweet...';
+            deadContainer.parentNode.replaceChild(loadingDiv, deadContainer);
+
+            // Use shared fetch function
+            Awful.fetchTweetOEmbed(
+                tweetID,
+                // onSuccess
+                function(data, tweetID) {
+                    if (loadingDiv.parentNode) {
+                        const div = document.createElement('div');
+                        div.classList.add('tweet');
+                        div.innerHTML = data.html;
+                        loadingDiv.parentNode.replaceChild(div, loadingDiv);
+
+                        // Load Twitter widgets (using shared function)
+                        Awful.loadTwitterWidgetsForEmbeds();
+                    }
+                },
+                // onFailure
+                function(reason, tweetID) {
+                    // Show dead badge again using shared function
+                    if (loadingDiv.parentNode) {
+                        Awful.showDeadTweetBadge(tweetID, tweetURL, loadingDiv);
+                    }
+                }
+            );
+        }
+    };
+
+    // Register the event listener with stored reference
+    document.addEventListener('click', Awful.tweetRetryClickHandler, { once: false });
+};
+
+/**
  * Cleanup function to remove retry click handler and prevent memory leaks.
  * Should be called when the view is destroyed or navigating away from the page.
  */
@@ -649,6 +865,19 @@ Awful.cleanupImageTimers = function() {
 };
 
 /**
+ * Cleanup function to clear all tweet embedding timeout timers.
+ * Prevents timers from running after page navigation or view destruction.
+ */
+Awful.cleanupTweetTimers = function() {
+    if (Awful.tweetEmbedTimeouts) {
+        Awful.tweetEmbedTimeouts.forEach(function(timeoutId) {
+            clearTimeout(timeoutId);
+        });
+        Awful.tweetEmbedTimeouts = [];
+    }
+};
+
+/**
  * Cleanup function to disconnect all IntersectionObservers and prevent memory leaks.
  * Should be called when the view is destroyed or navigating away from the page.
  */
@@ -663,6 +892,7 @@ Awful.cleanupObservers = function() {
     }
 
     Awful.cleanupImageTimers();
+    Awful.cleanupTweetTimers();
 };
 
 Awful.tweetTheme = function() {
@@ -691,11 +921,26 @@ Awful.loadTwitterWidgets = function() {
   var script = document.createElement('script');
   script.id = 'twitter-wjs';
   script.src = "https://platform.twitter.com/widgets.js";
+
+  // Add error handler for widgets.js load failure
+  script.onerror = function() {
+    console.error('Failed to load Twitter widgets.js');
+    // Set flag to prevent queuing more callbacks
+    if (window.twttr) {
+      window.twttr._failed = true;
+    }
+  };
+
   document.body.appendChild(script);
 
   window.twttr = {
     _e: [],
+    _failed: false,  // Track load failure
     ready: function(f) {
+      if (window.twttr._failed) {
+        console.warn('Twitter widgets.js failed to load, skipping callback');
+        return;
+      }
       twttr._e.push(f);
     }
   };
@@ -1176,6 +1421,7 @@ Awful.deadTweetBadgeHTML = function(url, tweetID){
      </div>
     <span class="dead-tweet-title">DEAD TWEET</span>
     <a class="dead-tweet-link" href="${safeURL}">@${tweeter}</a>
+    <a class="dead-embed-retry" data-retry-tweet="${safeTweetID}" data-tweet-url="${safeURL}" href="#">Retry</a>
     `;
 
     return html;
