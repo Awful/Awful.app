@@ -7,40 +7,66 @@ import FLAnimatedImage
 import UIKit
 import Lottie
 
+/// Configuration for LoadingView behavior
+enum LoadingViewConfiguration {
+    /// Shows status text and exit button after delay (for thread pages)
+    case showStatusElements
+
+    /// Never shows status text or exit button (for previews and messages)
+    case hideStatusElements
+}
+
 /// A view that covers its superview with an indeterminate progress indicator.
 class LoadingView: UIView {
+
+    // MARK: - Constants
+
+    /// Duration in seconds before showing the exit button and status messages.
+    /// 3 seconds gives users time to see loading begin while preventing accidental early dismissal.
+    fileprivate static let statusElementsVisibilityDelay: TimeInterval = 3.0
+
+    // MARK: - Properties
+
     fileprivate let theme: Theme?
-    
-    fileprivate init(theme: Theme?) {
+    let configuration: LoadingViewConfiguration
+
+    fileprivate init(theme: Theme?, configuration: LoadingViewConfiguration) {
         self.theme = theme
+        self.configuration = configuration
         super.init(frame: .zero)
     }
-    
+
     convenience init() {
-        self.init(theme: nil)
+        self.init(theme: nil, configuration: .showStatusElements)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    class func loadingViewWithTheme(_ theme: Theme) -> LoadingView {
+    class func loadingViewWithTheme(_ theme: Theme, configuration: LoadingViewConfiguration = .showStatusElements) -> LoadingView {
         switch theme[string: "postsLoadingViewType"] {
         case "Macinyos"?:
-            return MacinyosLoadingView(theme: theme)
+            return MacinyosLoadingView(theme: theme, configuration: configuration)
         case "Winpos95"?:
-            return Winpos95LoadingView(theme: theme)
+            return Winpos95LoadingView(theme: theme, configuration: configuration)
         case "YOSPOS"?:
-            return YOSPOSLoadingView(theme: theme)
+            return YOSPOSLoadingView(theme: theme, configuration: configuration)
         default:
-            return DefaultLoadingView(theme: theme)
+            return DefaultLoadingView(theme: theme, configuration: configuration)
         }
     }
-    
+
+    var onDismiss: (() -> Void)?
+
+    func updateStatus(_ text: String) {
+        // Override in subclasses
+    }
+
     fileprivate func retheme() {
         // nop
     }
-    
+
     override func willMove(toSuperview newSuperview: UIView?) {
         guard let newSuperview = newSuperview else { return }
         frame = CGRect(origin: .zero, size: newSuperview.bounds.size)
@@ -52,65 +78,150 @@ class LoadingView: UIView {
 private class DefaultLoadingView: LoadingView {
 
     private let animationView: LottieAnimationView
-    
-    override init(theme: Theme?) {
+    private let statusLabel: UILabel
+    private let showNowButton: UIButton
+    private var visibilityTimer: Timer?
+
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
         animationView = LottieAnimationView(
             animation: LottieAnimation.named("mainthrobber60"),
             configuration: LottieConfiguration(renderingEngine: .mainThread))
 
-        super.init(theme: theme)
+        statusLabel = UILabel()
+        showNowButton = UIButton(type: .system)
 
+        super.init(theme: theme, configuration: configuration)
+
+        // Setup animation view
         animationView.currentFrame = 0
         animationView.contentMode = .scaleAspectFit
         animationView.animationSpeed = 1
         animationView.isOpaque = true
         animationView.translatesAutoresizingMaskIntoConstraints = false
-        
         addSubview(animationView)
-        
-        animationView.widthAnchor.constraint(equalToConstant: 90).isActive = true
-        animationView.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        animationView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        animationView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-    
+
+        // Setup status label
+        statusLabel.text = "Loading..."
+        statusLabel.font = .preferredFont(forTextStyle: .subheadline)
+        statusLabel.textAlignment = .center
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        statusLabel.alpha = 0 // Initially hidden
+        addSubview(statusLabel)
+
+        // Setup Show Now button as X in circle icon
+        let xCircleImage = UIImage(systemName: "xmark.circle.fill")
+        showNowButton.setImage(xCircleImage, for: .normal)
+        showNowButton.addTarget(self, action: #selector(showNowTapped), for: .touchUpInside)
+        showNowButton.translatesAutoresizingMaskIntoConstraints = false
+        showNowButton.contentHorizontalAlignment = .fill
+        showNowButton.contentVerticalAlignment = .fill
+        showNowButton.alpha = 0 // Initially hidden
+        addSubview(showNowButton)
+
+        // Layout constraints
+        NSLayoutConstraint.activate([
+            // Animation centered, shifted up
+            animationView.widthAnchor.constraint(equalToConstant: 90),
+            animationView.heightAnchor.constraint(equalToConstant: 90),
+            animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            // Center animation slightly above true center for better visual balance with status text below
+            animationView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -40),
+
+            // Status label below animation
+            statusLabel.topAnchor.constraint(equalTo: animationView.bottomAnchor, constant: 16),
+            statusLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            statusLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 20),
+            trailingAnchor.constraint(greaterThanOrEqualTo: statusLabel.trailingAnchor, constant: 20),
+
+            // Button below status (X icon)
+            showNowButton.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 16),
+            showNowButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            showNowButton.widthAnchor.constraint(equalToConstant: 32),
+            showNowButton.heightAnchor.constraint(equalToConstant: 32)
+        ])
+
         animationView.play(fromFrame: 0, toFrame: 25, loopMode: .playOnce, completion: { [weak self] (finished) in
             if finished {
                 // first animation complete! start second one and loop
                 self?.animationView.play(fromFrame: 25, toFrame: .infinity, loopMode: .loop, completion: nil)
-            } else {
-               // animation cancelled
             }
+            // If not finished, animation was cancelled - no action needed
         })
     }
-    
+
+    @objc private func showNowTapped() {
+        onDismiss?()
+    }
+
+    override func updateStatus(_ text: String) {
+        statusLabel.text = text
+    }
+
+    deinit {
+        visibilityTimer?.invalidate()
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override func retheme() {
         super.retheme()
-        
+
         backgroundColor = theme?[uicolor: "postsLoadingViewTintColor"]
         if let tintColor = theme?[uicolor: "tintColor"] {
             animationView.setValueProvider(
                 ColorValueProvider(tintColor.lottieColorValue),
                 keypath: "**.Fill 1.Color"
             )
+            showNowButton.tintColor = tintColor
+        }
+
+        // Apply text color to status label
+        if let textColor = theme?[uicolor: "listTextColor"] {
+            statusLabel.textColor = textColor
         }
     }
     
     fileprivate override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        
+
+        if newSuperview != nil {
+            // Only start timer if configuration allows status elements
+            guard configuration == .showStatusElements else { return }
+
+            // Invalidate any existing timer first to prevent race conditions
+            visibilityTimer?.invalidate()
+            // Start timer to show status and button after delay
+            visibilityTimer = Timer.scheduledTimer(withTimeInterval: LoadingView.statusElementsVisibilityDelay, repeats: false) { [weak self] _ in
+                self?.showStatusElements()
+            }
+        } else {
+            // Clean up timer when view is removed
+            visibilityTimer?.invalidate()
+            visibilityTimer = nil
+        }
+    }
+
+    private func showStatusElements() {
+        // Check that view is still in hierarchy before animating (prevents race condition)
+        guard superview != nil else { return }
+
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            // Double-check during animation block
+            guard self?.superview != nil else { return }
+            self?.statusLabel.alpha = 1.0
+            self?.showNowButton.alpha = 1.0
+        }
     }
 }
 
 private class YOSPOSLoadingView: LoadingView {
     let label = UILabel()
     fileprivate var timer: Timer?
-    
-    override init(theme: Theme?) {
-        super.init(theme: theme)
+
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
+        super.init(theme: theme, configuration: configuration)
         
         backgroundColor = .black
         
@@ -174,9 +285,9 @@ private class YOSPOSLoadingView: LoadingView {
 
 private class MacinyosLoadingView: LoadingView {
     let imageView = UIImageView()
-    
-    override init(theme: Theme?) {
-        super.init(theme: theme)
+
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
+        super.init(theme: theme, configuration: configuration)
         
         if let wallpaper = UIImage(named: "macinyos-wallpaper") {
             backgroundColor = UIColor(patternImage: wallpaper)
@@ -205,9 +316,9 @@ private class Winpos95LoadingView: LoadingView {
     let imageView = FLAnimatedImageView()
     var centerXConstraint: NSLayoutConstraint!
     var centerYConstraint: NSLayoutConstraint!
-    
-    override init(theme: Theme?) {
-        super.init(theme: theme)
+
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
+        super.init(theme: theme, configuration: configuration)
         
         backgroundColor = UIColor(red: 0.067, green: 0.502, blue: 0.502, alpha: 1)
         

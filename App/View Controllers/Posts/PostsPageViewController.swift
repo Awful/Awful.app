@@ -105,6 +105,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
@@ -254,7 +255,10 @@ final class PostsPageViewController: ViewController {
         let initialTheme = theme
 
         let fetch = Task {
-            try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+            await MainActor.run {
+                self.postsView.loadingView?.updateStatus("Fetching posts from server...")
+            }
+            return try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
         }
         networkOperation = fetch
         Task { [weak self] in
@@ -300,6 +304,7 @@ final class PostsPageViewController: ViewController {
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                 }
 
+                self.postsView.loadingView?.updateStatus("Generating page...")
                 self.renderPosts()
 
                 self.updateUserInterface()
@@ -416,6 +421,9 @@ final class PostsPageViewController: ViewController {
 
         Task {
             await postsView.renderView.eraseDocument()
+            await MainActor.run {
+                self.postsView.loadingView?.updateStatus("Rendering page...")
+            }
             self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
@@ -662,7 +670,12 @@ final class PostsPageViewController: ViewController {
 
     private func showLoadingView() {
         guard postsView.loadingView == nil else { return }
-        postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
+        let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
+        loadingView.updateStatus("Loading...")
+        loadingView.onDismiss = { [weak self] in
+            self?.clearLoadingMessage()
+        }
+        postsView.loadingView = loadingView
     }
 
     private func clearLoadingMessage() {
@@ -1494,7 +1507,7 @@ final class PostsPageViewController: ViewController {
 
 
         if postsView.loadingView != nil {
-            postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
+            postsView.loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
         }
 
         let appearance = UIToolbarAppearance()
@@ -1743,9 +1756,7 @@ extension PostsPageViewController: RenderViewDelegate {
             view.embedTweets()
         }
 
-        if frogAndGhostEnabled {
-            view.loadLottiePlayer()
-        }
+        // Note: Image loading tracking is set up automatically via DOMContentLoaded event in RenderView.js
 
         webViewDidLoadOnce = true
 
@@ -1769,7 +1780,8 @@ extension PostsPageViewController: RenderViewDelegate {
             postsView.renderView.scrollToFractionalOffset(fractionalOffset)
         }
 
-        clearLoadingMessage()
+        // Note: Loading view is now dismissed when image loading completes (via ImageLoadProgress message)
+        // or when user taps (X) button
     }
 
     func didReceive(message: RenderViewMessage, in view: RenderView) {
@@ -1791,6 +1803,20 @@ extension PostsPageViewController: RenderViewDelegate {
             
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
+
+        case let message as RenderView.BuiltInMessage.ImageLoadProgress:
+            if message.total == 0 {
+                // No images to load, dismiss immediately
+                clearLoadingMessage()
+            } else {
+                let statusText = "Downloading images: \(message.loaded)/\(message.total)"
+                postsView.loadingView?.updateStatus(statusText)
+
+                // Dismiss loading view when all images are done
+                if message.complete {
+                    clearLoadingMessage()
+                }
+            }
 
         case is FYADFlagRequest:
             fetchNewFlag()

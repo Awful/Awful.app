@@ -187,8 +187,8 @@ final class ThreadPreviewViewController: ViewController {
         
         threadCell.autoresizingMask = .flexibleWidth
         renderView.scrollView.addSubview(threadCell)
-        
-        let loadingView = LoadingView.loadingViewWithTheme(theme)
+
+        let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .hideStatusElements)
         self.loadingView = loadingView
         view.addSubview(loadingView)
         
