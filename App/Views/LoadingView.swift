@@ -7,6 +7,15 @@ import FLAnimatedImage
 import UIKit
 import Lottie
 
+/// Configuration for LoadingView behavior
+enum LoadingViewConfiguration {
+    /// Shows status text and exit button after delay (for thread pages)
+    case showStatusElements
+
+    /// Never shows status text or exit button (for previews and messages)
+    case hideStatusElements
+}
+
 /// A view that covers its superview with an indeterminate progress indicator.
 class LoadingView: UIView {
 
@@ -19,30 +28,32 @@ class LoadingView: UIView {
     // MARK: - Properties
 
     fileprivate let theme: Theme?
+    let configuration: LoadingViewConfiguration
 
-    fileprivate init(theme: Theme?) {
+    fileprivate init(theme: Theme?, configuration: LoadingViewConfiguration) {
         self.theme = theme
+        self.configuration = configuration
         super.init(frame: .zero)
     }
 
     convenience init() {
-        self.init(theme: nil)
+        self.init(theme: nil, configuration: .showStatusElements)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    class func loadingViewWithTheme(_ theme: Theme) -> LoadingView {
+    class func loadingViewWithTheme(_ theme: Theme, configuration: LoadingViewConfiguration = .showStatusElements) -> LoadingView {
         switch theme[string: "postsLoadingViewType"] {
         case "Macinyos"?:
-            return MacinyosLoadingView(theme: theme)
+            return MacinyosLoadingView(theme: theme, configuration: configuration)
         case "Winpos95"?:
-            return Winpos95LoadingView(theme: theme)
+            return Winpos95LoadingView(theme: theme, configuration: configuration)
         case "YOSPOS"?:
-            return YOSPOSLoadingView(theme: theme)
+            return YOSPOSLoadingView(theme: theme, configuration: configuration)
         default:
-            return DefaultLoadingView(theme: theme)
+            return DefaultLoadingView(theme: theme, configuration: configuration)
         }
     }
 
@@ -71,7 +82,7 @@ private class DefaultLoadingView: LoadingView {
     private let showNowButton: UIButton
     private var visibilityTimer: Timer?
 
-    override init(theme: Theme?) {
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
         animationView = LottieAnimationView(
             animation: LottieAnimation.named("mainthrobber60"),
             configuration: LottieConfiguration(renderingEngine: .mainThread))
@@ -79,7 +90,7 @@ private class DefaultLoadingView: LoadingView {
         statusLabel = UILabel()
         showNowButton = UIButton(type: .system)
 
-        super.init(theme: theme)
+        super.init(theme: theme, configuration: configuration)
 
         // Setup animation view
         animationView.currentFrame = 0
@@ -176,6 +187,9 @@ private class DefaultLoadingView: LoadingView {
         super.willMove(toSuperview: newSuperview)
 
         if newSuperview != nil {
+            // Only start timer if configuration allows status elements
+            guard configuration == .showStatusElements else { return }
+
             // Invalidate any existing timer first to prevent race conditions
             visibilityTimer?.invalidate()
             // Start timer to show status and button after delay
@@ -205,9 +219,9 @@ private class DefaultLoadingView: LoadingView {
 private class YOSPOSLoadingView: LoadingView {
     let label = UILabel()
     fileprivate var timer: Timer?
-    
-    override init(theme: Theme?) {
-        super.init(theme: theme)
+
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
+        super.init(theme: theme, configuration: configuration)
         
         backgroundColor = .black
         
@@ -271,9 +285,9 @@ private class YOSPOSLoadingView: LoadingView {
 
 private class MacinyosLoadingView: LoadingView {
     let imageView = UIImageView()
-    
-    override init(theme: Theme?) {
-        super.init(theme: theme)
+
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
+        super.init(theme: theme, configuration: configuration)
         
         if let wallpaper = UIImage(named: "macinyos-wallpaper") {
             backgroundColor = UIColor(patternImage: wallpaper)
@@ -302,9 +316,9 @@ private class Winpos95LoadingView: LoadingView {
     let imageView = FLAnimatedImageView()
     var centerXConstraint: NSLayoutConstraint!
     var centerYConstraint: NSLayoutConstraint!
-    
-    override init(theme: Theme?) {
-        super.init(theme: theme)
+
+    override init(theme: Theme?, configuration: LoadingViewConfiguration) {
+        super.init(theme: theme, configuration: configuration)
         
         backgroundColor = UIColor(red: 0.067, green: 0.502, blue: 0.502, alpha: 1)
         

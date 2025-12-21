@@ -670,7 +670,7 @@ final class PostsPageViewController: ViewController {
 
     private func showLoadingView() {
         guard postsView.loadingView == nil else { return }
-        let loadingView = LoadingView.loadingViewWithTheme(theme)
+        let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
         loadingView.updateStatus("Loading...")
         loadingView.onDismiss = { [weak self] in
             self?.clearLoadingMessage()
@@ -1507,7 +1507,7 @@ final class PostsPageViewController: ViewController {
 
 
         if postsView.loadingView != nil {
-            postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
+            postsView.loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
         }
 
         let appearance = UIToolbarAppearance()

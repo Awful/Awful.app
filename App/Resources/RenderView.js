@@ -34,12 +34,20 @@ const IMAGE_LOAD_TIMEOUT_CONFIG = {
 
     /// Milliseconds to wait before resetting retry button text after failed retry
     /// 3000ms gives user time to read the error message before it resets
-    retryResetDelay: 3000
+    retryResetDelay: 3000,
+
+    /// Milliseconds between timeout checks for image loading
+    /// 1000ms = 1 second interval for checking if images have started loading
+    connectionTimeout: 1000
 };
 
 /// Timeout for tweet embedding via Twitter API
 /// 5 seconds gives enough time for API response while preventing indefinite waiting
 const TWEET_EMBED_TIMEOUT = 5000;
+
+/// Threshold for IntersectionObserver - triggers when even tiny fraction is visible
+/// This minimal threshold ensures the observer fires as soon as element enters viewport
+const INTERSECTION_THRESHOLD_MIN = 0.000001;
 
 // MARK: - Utility Functions
 
@@ -467,7 +475,7 @@ Awful.embedTweets = function() {
     const ghostConfig = {
       root: document.body.posts,
       rootMargin: '0px',
-      threshold: 0.000001,
+      threshold: INTERSECTION_THRESHOLD_MIN,
     };
 
     Awful.ghostLottieObserver = new IntersectionObserver(function(posts) {
@@ -507,7 +515,7 @@ Awful.embedTweets = function() {
   const lazyLoadConfig = {
     root: null,
     rootMargin: `${LAZY_LOAD_LOOKAHEAD_DISTANCE} 0px`,
-    threshold: 0.000001,
+    threshold: INTERSECTION_THRESHOLD_MIN,
   };
 
   Awful.tweetLazyLoadObserver = new IntersectionObserver(function(entries) {

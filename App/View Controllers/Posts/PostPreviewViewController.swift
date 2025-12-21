@@ -179,8 +179,8 @@ final class PostPreviewViewController: ViewController {
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
-        
-        let loadingView = LoadingView.loadingViewWithTheme(theme)
+
+        let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .hideStatusElements)
         self.loadingView = loadingView
         view.addSubview(loadingView)
         
