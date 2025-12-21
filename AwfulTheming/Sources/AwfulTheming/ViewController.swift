@@ -263,6 +263,41 @@ open class TableViewController: UITableViewController, Themeable {
         
         visible = false
     }
+
+    // MARK: Scroll view delegate for iOS 26 dynamic color adaptation
+
+    open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Update navigation bar tint for iOS 26+ dynamic colors
+        if #available(iOS 26.0, *) {
+            // Calculate scroll progress for smooth transition
+            let topInset = scrollView.adjustedContentInset.top
+            let currentOffset = scrollView.contentOffset.y
+            let topPosition = -topInset
+
+            // Define transition zone (30 points for smooth fade)
+            let transitionDistance: CGFloat = 30.0
+
+            // Calculate progress (0.0 = fully at top, 1.0 = fully scrolled)
+            let progress: CGFloat
+            if currentOffset <= topPosition {
+                // At or above the top
+                progress = 0.0
+            } else if currentOffset >= topPosition + transitionDistance {
+                // Fully scrolled past transition zone
+                progress = 1.0
+            } else {
+                // In transition zone - calculate smooth progress
+                let distanceFromTop = currentOffset - topPosition
+                progress = distanceFromTop / transitionDistance
+            }
+
+            // Find the navigation controller and call update method if it exists
+            if let navController = navigationController,
+               navController.responds(to: Selector(("updateNavigationBarTintForScrollProgress:"))) {
+                navController.perform(Selector(("updateNavigationBarTintForScrollProgress:")), with: NSNumber(value: Float(progress)))
+            }
+        }
+    }
 }
 
 /// A thin customization of UICollectionViewController that extends Theme support.

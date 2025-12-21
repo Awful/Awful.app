@@ -37,6 +37,18 @@ final class MessageViewController: ViewController {
         renderView.delegate = self
         return renderView
     }()
+
+    private var _liquidGlassTitleView: UIView?
+
+    @available(iOS 26.0, *)
+    private var liquidGlassTitleView: LiquidGlassTitleView {
+        if _liquidGlassTitleView == nil {
+            let titleView = LiquidGlassTitleView()
+            titleView.title = privateMessage.subject
+            _liquidGlassTitleView = titleView
+        }
+        return _liquidGlassTitleView as! LiquidGlassTitleView
+    }
     
     private lazy var replyButtonItem: UIBarButtonItem = {
         return UIBarButtonItem(image: UIImage(named: "reply"), style: .plain, target: self, action: #selector(didTapReplyButtonItem))
@@ -55,7 +67,13 @@ final class MessageViewController: ViewController {
     }
     
     override var title: String? {
-        didSet { navigationItem.titleLabel.text = title }
+        didSet {
+            if #available(iOS 26.0, *) {
+                liquidGlassTitleView.title = title
+            } else {
+                navigationItem.titleLabel.text = title
+            }
+        }
     }
     
     private func renderMessage() {
@@ -194,10 +212,19 @@ final class MessageViewController: ViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        extendedLayoutIncludesOpaqueBars = true
+
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        renderView.scrollView.contentInsetAdjustmentBehavior = .never
+        renderView.scrollView.delegate = self
         view.insertSubview(renderView, at: 0)
+
+        if #available(iOS 26.0, *) {
+            configureNavigationBarForLiquidGlass()
+            configureLiquidGlassTitleView()
+        }
         
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         renderView.registerMessage(RenderView.BuiltInMessage.DidFinishLoadingTweets.self)
@@ -286,8 +313,24 @@ final class MessageViewController: ViewController {
         }
         
         loadingView?.tintColor = theme["backgroundColor"]
+
+        if #available(iOS 26.0, *) {
+            if renderView.scrollView.contentOffset.y <= -renderView.scrollView.adjustedContentInset.top {
+                liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
+            }
+        }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if #available(iOS 26.0, *) {
+            if let navController = navigationController as? NavigationController {
+                navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
+            }
+        }
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -298,6 +341,94 @@ final class MessageViewController: ViewController {
         super.viewDidDisappear(animated)
         
         userActivity = nil
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateScrollViewContentInsets()
+    }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        updateScrollViewContentInsets()
+    }
+
+    private func updateScrollViewContentInsets() {
+        renderView.scrollView.contentInset.top = view.safeAreaInsets.top
+        renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
+    }
+
+    @available(iOS 26.0, *)
+    private func configureNavigationBarForLiquidGlass() {
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        guard let navController = navigationController as? NavigationController else { return }
+
+        if let awfulNavigationBar = navigationBar as? NavigationBar {
+            awfulNavigationBar.bottomBorderColor = .clear
+        }
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = theme["navigationBarTintColor"]
+        appearance.shadowColor = nil
+        appearance.shadowImage = nil
+
+        let textColor: UIColor = theme["navigationBarTextColor"]!
+        appearance.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: textColor,
+            NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        ]
+
+        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+        let buttonAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: buttonFont
+        ]
+        appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+
+        if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
+            appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+        }
+
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.compactScrollEdgeAppearance = appearance
+
+        navigationBar.tintColor = textColor
+
+        navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
+
+        navigationBar.setNeedsLayout()
+    }
+
+    @available(iOS 26.0, *)
+    private func configureLiquidGlassTitleView() {
+        liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
+
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        default:
+            liquidGlassTitleView.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        }
+
+        navigationItem.titleView = liquidGlassTitleView
+    }
+
+    @available(iOS 26.0, *)
+    private func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
+        if progress < 0.01 {
+            liquidGlassTitleView.textColor = theme["navigationBarTextColor"]
+        } else if progress > 0.99 {
+            liquidGlassTitleView.textColor = nil
+        }
     }
     
     private enum CodingKey {
@@ -394,6 +525,34 @@ extension MessageViewController: RenderViewDelegate {
 extension MessageViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
+    }
+}
+
+extension MessageViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if #available(iOS 26.0, *) {
+            let topInset = scrollView.adjustedContentInset.top
+            let currentOffset = scrollView.contentOffset.y
+            let topPosition = -topInset
+
+            let transitionDistance: CGFloat = 30.0
+
+            let progress: CGFloat
+            if currentOffset <= topPosition {
+                progress = 0.0
+            } else if currentOffset >= topPosition + transitionDistance {
+                progress = 1.0
+            } else {
+                let distanceFromTop = currentOffset - topPosition
+                progress = distanceFromTop / transitionDistance
+            }
+
+            if let navController = navigationController as? NavigationController {
+                navController.updateNavigationBarTintForScrollProgress(NSNumber(value: Float(progress)))
+            }
+
+            updateTitleViewTextColorForScrollProgress(progress)
+        }
     }
 }
 

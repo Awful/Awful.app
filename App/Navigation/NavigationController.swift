@@ -14,6 +14,15 @@ import UIKit
  - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
  */
 final class NavigationController: UINavigationController, Themeable {
+
+    /// Scroll progress thresholds for navigation bar appearance transitions
+    private enum ScrollProgress {
+        static let atTop: CGFloat = 0.01
+        static let fullyScrolled: CGFloat = 0.99
+    }
+
+    private static let gradientImageSize = CGSize(width: 1, height: 96)
+
     fileprivate weak var realDelegate: UINavigationControllerDelegate?
     fileprivate lazy var unpopHandler: UnpoppingViewHandler? = {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return nil }
@@ -46,13 +55,40 @@ final class NavigationController: UINavigationController, Themeable {
         return navigationBar as! NavigationBar
     }
 
+    @available(iOS 26.0, *)
+    private func createGradientBackgroundImage(from color: UIColor, size: CGSize = gradientImageSize) -> UIImage? {
+        let format = UIGraphicsImageRendererFormat()
+        format.opaque = false
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+
+        return renderer.image { context in
+            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            let colors = [color.cgColor, color.withAlphaComponent(0.0).cgColor] as CFArray
+            let locations: [CGFloat] = [0.0, 1.0]
+            
+            guard let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: locations) else {
+                return
+            }
+            
+            let startPoint = CGPoint(x: 0, y: 0)
+            let endPoint = CGPoint(x: 0, y: size.height)
+            
+            context.cgContext.drawLinearGradient(gradient, start: startPoint, end: endPoint, options: [])
+        }
+    }
+
     var theme: Theme {
+        // Get theme from the top view controller if it's Themeable
+        if let themeableVC = topViewController as? Themeable {
+            return themeableVC.theme
+        }
+        // Fallback to default theme
         return Theme.defaultTheme()
     }
     
-    // MARK: set the status icons (clock, wifi, battery) to black or white depending on the mode of the theme
-    // thanks sarunw https://sarunw.com/posts/how-to-set-status-bar-style/
+    // MARK: Status bar style management
     var isDarkContentBackground = false
+    var isScrolledFromTop = false
 
     func statusBarEnterLightBackground() {
         isDarkContentBackground = false
@@ -65,6 +101,12 @@ final class NavigationController: UINavigationController, Themeable {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
+        // For iOS 26+: use dynamic when scrolled
+        if #available(iOS 26.0, *), isScrolledFromTop {
+            return .default  // Let system handle it dynamically when scrolled
+        }
+
+        // Otherwise: follow the theme setting
         if isDarkContentBackground {
             return .lightContent
         } else {
@@ -116,11 +158,192 @@ final class NavigationController: UINavigationController, Themeable {
     }
     
     func themeDidChange() {
-        awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
-        awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
-        awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
-        awfulNavigationBar.tintColor = theme["navigationBarTextColor"]
+        updateNavigationBarAppearance(with: theme)
+    }
 
+    /// Configures button appearance attributes for iOS 26 liquid glass compatibility.
+    /// Omits foregroundColor to allow navigationBar.tintColor to control button text color.
+    private func configureButtonAppearance(_ appearance: UINavigationBarAppearance, font: UIFont) {
+        let buttonAttributes: [NSAttributedString.Key: Any] = [.font: font]
+        appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+    }
+
+    @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
+        guard #available(iOS 26.0, *) else { return }
+
+        let progressValue = CGFloat(progress.floatValue)
+
+        updateNavigationBarBackgroundWithProgress(progressValue)
+
+        if progressValue < ScrollProgress.atTop {
+            isScrolledFromTop = false
+
+            if theme["statusBarBackground"] == "light" {
+                statusBarEnterLightBackground()
+            } else {
+                statusBarEnterDarkBackground()
+            }
+        } else if progressValue > ScrollProgress.fullyScrolled {
+            awfulNavigationBar.tintColor = nil
+
+            if let topViewController = topViewController {
+                topViewController.navigationItem.leftBarButtonItem?.tintColor = nil
+                topViewController.navigationItem.rightBarButtonItem?.tintColor = nil
+                topViewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = nil }
+                topViewController.navigationItem.rightBarButtonItems?.forEach { $0.tintColor = nil }
+            }
+
+            isScrolledFromTop = true
+            setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+
+    @objc func updateNavigationBarTintForScrollPosition(_ isAtTop: NSNumber) {
+        guard #available(iOS 26.0, *) else { return }
+        let progress = isAtTop.boolValue ? 0.0 : 1.0
+        updateNavigationBarTintForScrollProgress(NSNumber(value: progress))
+    }
+
+    /// Updates the navigation bar appearance based on scroll progress for iOS 26+ liquid glass effect.
+    ///
+    /// This method creates a dynamic navigation bar that transitions between three states:
+    /// - At top (progress < 0.01): Opaque background with theme colors
+    /// - Fully scrolled (progress > 0.99): Transparent background with system-provided contrasting colors
+    /// - Mid-scroll (0.01...0.99): Gradient transition between opaque and transparent states
+    ///
+    /// The dynamic appearance ensures optimal button visibility by letting the system adapt
+    /// colors to content underneath when scrolled, while maintaining theme consistency at the top.
+    ///
+    /// - Parameter progress: Scroll progress value from 0.0 (at top) to 1.0 (fully scrolled)
+    @available(iOS 26.0, *)
+    private func updateNavigationBarBackgroundWithProgress(_ progress: CGFloat) {
+        let appearance = UINavigationBarAppearance()
+
+        configureBackground(for: appearance, progress: progress)
+        configureBackIndicator(for: appearance, progress: progress)
+        configureTitleAndButtons(for: appearance, progress: progress)
+        applyAppearance(appearance, progress: progress)
+    }
+
+    @available(iOS 26.0, *)
+    private func configureBackground(for appearance: UINavigationBarAppearance, progress: CGFloat) {
+        appearance.shadowColor = nil
+        appearance.shadowImage = nil
+
+        if progress < ScrollProgress.atTop {
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = theme["navigationBarTintColor"]
+        } else if progress > ScrollProgress.fullyScrolled {
+            appearance.configureWithTransparentBackground()
+            appearance.backgroundColor = .clear
+            appearance.backgroundImage = nil
+        } else {
+            appearance.configureWithTransparentBackground()
+
+            guard let opaqueColor = theme[uicolor: "navigationBarTintColor"],
+                  let gradientBaseColor = theme[uicolor: "listHeaderBackgroundColor"] else {
+                return
+            }
+
+            if let gradientImage = createGradientBackgroundImage(from: gradientBaseColor) {
+                appearance.backgroundImage = gradientImage
+                let overlayAlpha = 1.0 - progress
+                appearance.backgroundColor = opaqueColor.withAlphaComponent(overlayAlpha)
+            } else {
+                appearance.backgroundColor = interpolateColor(from: opaqueColor, to: gradientBaseColor, progress: progress)
+            }
+        }
+    }
+
+    @available(iOS 26.0, *)
+    private func configureBackIndicator(for appearance: UINavigationBarAppearance, progress: CGFloat) {
+        if progress > ScrollProgress.fullyScrolled {
+            if let backImage = UIImage(named: "back")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
+                appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+            }
+        } else {
+            if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
+                appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+            }
+        }
+    }
+
+    @available(iOS 26.0, *)
+    private func configureTitleAndButtons(for appearance: UINavigationBarAppearance, progress: CGFloat) {
+        let textColor: UIColor
+        if progress > ScrollProgress.fullyScrolled {
+            textColor = theme["mode"] == "dark" ? .white : .black
+        } else {
+            textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+        }
+
+        appearance.titleTextAttributes = [
+            .foregroundColor: textColor,
+            .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        ]
+
+        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+        configureButtonAppearance(appearance, font: buttonFont)
+    }
+
+    @available(iOS 26.0, *)
+    private func applyAppearance(_ appearance: UINavigationBarAppearance, progress: CGFloat) {
+        awfulNavigationBar.standardAppearance = appearance
+        awfulNavigationBar.scrollEdgeAppearance = appearance
+        awfulNavigationBar.compactAppearance = appearance
+        awfulNavigationBar.compactScrollEdgeAppearance = appearance
+
+        if progress < ScrollProgress.atTop {
+            awfulNavigationBar.tintColor = theme["mode"] == "dark" ? .white : .black
+        } else if progress > ScrollProgress.fullyScrolled {
+            awfulNavigationBar.tintColor = nil
+        }
+    }
+
+    private func interpolateColor(from startColor: UIColor, to endColor: UIColor, progress: CGFloat) -> UIColor {
+        let progress = max(0, min(1, progress)) // Clamp to 0-1
+
+        var startRed: CGFloat = 0, startGreen: CGFloat = 0, startBlue: CGFloat = 0, startAlpha: CGFloat = 0
+        var endRed: CGFloat = 0, endGreen: CGFloat = 0, endBlue: CGFloat = 0, endAlpha: CGFloat = 0
+
+        // Convert colors to RGB color space if needed and handle failures
+        guard startColor.getRed(&startRed, green: &startGreen, blue: &startBlue, alpha: &startAlpha),
+              endColor.getRed(&endRed, green: &endGreen, blue: &endBlue, alpha: &endAlpha) else {
+            // If color conversion fails (e.g., non-RGB color space), return the end color at full progress
+            // or start color at zero progress
+            return progress >= 0.5 ? endColor : startColor
+        }
+
+        let red = startRed + (endRed - startRed) * progress
+        let green = startGreen + (endGreen - startGreen) * progress
+        let blue = startBlue + (endBlue - startBlue) * progress
+        let alpha = startAlpha + (endAlpha - startAlpha) * progress
+
+        return UIColor(red: red, green: green, blue: blue, alpha: alpha)
+    }
+    
+    private func updateNavigationBarAppearance(with theme: Theme, for viewController: UIViewController? = nil) {
+        awfulNavigationBar.barTintColor = theme["navigationBarTintColor"]
+
+        if #available(iOS 26.0, *) {
+            awfulNavigationBar.bottomBorderColor = .clear
+        } else {
+            awfulNavigationBar.bottomBorderColor = theme["topBarBottomBorderColor"]
+        }
+
+        if #available(iOS 26.0, *) {
+            awfulNavigationBar.layer.shadowOpacity = 0
+            awfulNavigationBar.layer.shadowColor = UIColor.clear.cgColor
+        } else {
+            awfulNavigationBar.layer.shadowOpacity = Float(theme[double: "navigationBarShadowOpacity"] ?? 1)
+        }
+
+        // Apply theme's status bar setting
         if theme["statusBarBackground"] == "light" {
             statusBarEnterLightBackground()
         } else {
@@ -128,19 +351,78 @@ final class NavigationController: UINavigationController, Themeable {
         }
 
         if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = theme["navigationBarTintColor"]
-            appearance.shadowColor = nil
-            appearance.shadowImage = nil
-            
-            let textColor: UIColor? = theme["navigationBarTextColor"]
-            appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor!,
-                                              NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
-            
-            navigationBar.standardAppearance = appearance;
-            navigationBar.scrollEdgeAppearance = navigationBar.standardAppearance
+            if #available(iOS 26.0, *) {
+                let initialAppearance = UINavigationBarAppearance()
+                initialAppearance.configureWithOpaqueBackground()
+                initialAppearance.backgroundColor = theme["navigationBarTintColor"]
+                initialAppearance.shadowColor = nil
+                initialAppearance.shadowImage = nil
+
+                let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+
+                if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
+                    initialAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+                }
+
+                initialAppearance.titleTextAttributes = [
+                    .foregroundColor: textColor,
+                    .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+                ]
+                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+                configureButtonAppearance(initialAppearance, font: buttonFont)
+
+                awfulNavigationBar.standardAppearance = initialAppearance
+                awfulNavigationBar.scrollEdgeAppearance = initialAppearance
+                awfulNavigationBar.compactAppearance = initialAppearance
+                awfulNavigationBar.compactScrollEdgeAppearance = initialAppearance
+
+                awfulNavigationBar.tintColor = nil
+
+                awfulNavigationBar.setNeedsLayout()
+                awfulNavigationBar.layoutIfNeeded()
+
+            } else {
+                let appearance = UINavigationBarAppearance()
+                appearance.configureWithOpaqueBackground()
+                appearance.backgroundColor = theme["navigationBarTintColor"]
+                appearance.shadowColor = nil
+                appearance.shadowImage = nil
+
+                if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
+                    appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+                }
+
+                let textColor = theme[uicolor: "navigationBarTextColor"] ?? .label
+                appearance.titleTextAttributes = [.foregroundColor: textColor,
+                                                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)]
+
+                let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+                configureButtonAppearance(appearance, font: buttonFont)
+
+                awfulNavigationBar.standardAppearance = appearance
+                awfulNavigationBar.scrollEdgeAppearance = appearance
+                awfulNavigationBar.compactAppearance = appearance
+                awfulNavigationBar.compactScrollEdgeAppearance = appearance
+
+                awfulNavigationBar.tintColor = textColor
+
+                awfulNavigationBar.setNeedsLayout()
+                awfulNavigationBar.layoutIfNeeded()
+            }
+        } else {
+            guard let fallbackTextColor = theme[uicolor: "navigationBarTextColor"] else { return }
+            let attrs: [NSAttributedString.Key: Any] = [
+                .foregroundColor: fallbackTextColor,
+                .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+            ]
+            UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .normal)
+            UIBarButtonItem.appearance().setTitleTextAttributes(attrs, for: .highlighted)
+
+            if let backImage = UIImage(named: "back") {
+                let tintedBackImage = backImage.withRenderingMode(.alwaysTemplate)
+                navigationBar.backIndicatorImage = tintedBackImage
+                navigationBar.backIndicatorTransitionMaskImage = tintedBackImage
+            }
         }
     }
     
@@ -207,6 +489,46 @@ extension NavigationController: UIGestureRecognizerDelegate {
 
 extension NavigationController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+
+        let vcTheme: Theme
+        if let themeableViewController = viewController as? Themeable {
+            vcTheme = themeableViewController.theme
+            updateNavigationBarAppearance(with: vcTheme, for: viewController)
+        } else {
+            vcTheme = theme
+            updateNavigationBarAppearance(with: vcTheme, for: viewController)
+        }
+
+        if awfulNavigationBar.backIndicatorImage == nil {
+            awfulNavigationBar.backIndicatorImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+            awfulNavigationBar.backIndicatorTransitionMaskImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+        }
+
+        if !isScrolledFromTop {
+            guard let textColor = vcTheme[uicolor: "navigationBarTextColor"] else { return }
+
+            awfulNavigationBar.tintColor = textColor
+
+            if #unavailable(iOS 26.0) {
+                viewController.navigationItem.leftBarButtonItem?.tintColor = textColor
+                viewController.navigationItem.rightBarButtonItem?.tintColor = textColor
+                viewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = textColor }
+                viewController.navigationItem.rightBarButtonItems?.forEach { $0.tintColor = textColor }
+
+                if viewControllers.count > 1 {
+                    let previousVC = viewControllers[viewControllers.count - 2]
+                    previousVC.navigationItem.backBarButtonItem?.tintColor = textColor
+                }
+            }
+        }
+
+        awfulNavigationBar.setNeedsLayout()
+        awfulNavigationBar.layoutIfNeeded()
+
+        if #available(iOS 26.0, *) {
+            isScrolledFromTop = false
+        }
+        
         if let unpopHandler = unpopHandler , animated {
             unpopHandler.navigationControllerDidBeginAnimating()
             

@@ -118,7 +118,14 @@ final class ReplyWorkspace: NSObject {
             }
             
             let navigationItem = compositionViewController.navigationItem
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
+            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(ReplyWorkspace.didTapCancel(_:)))
+            // Only set explicit tint color for iOS < 26
+            if #available(iOS 26.0, *) {
+                // Let iOS 26+ handle the color automatically
+            } else {
+                cancelButton.tintColor = compositionViewController.theme["navigationBarTextColor"]
+            }
+            navigationItem.leftBarButtonItem = cancelButton
             navigationItem.rightBarButtonItem = rightButtonItem
             
             $confirmBeforeReplying
@@ -139,7 +146,7 @@ final class ReplyWorkspace: NSObject {
     fileprivate var textViewNotificationToken: AnyObject?
     
     fileprivate lazy var rightButtonItem: UIBarButtonItem = { [unowned self] in
-        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
+        return UIBarButtonItem(title: self.draft.submitButtonTitle, style: .plain, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
         }()
     
     fileprivate func updateRightButtonItem() {
@@ -199,7 +206,14 @@ final class ReplyWorkspace: NSObject {
         } else {
             preview = PostPreviewViewController(thread: draft.thread, BBcode: draft.text ?? .init())
         }
-        preview.navigationItem.rightBarButtonItem = UIBarButtonItem(title: draft.submitButtonTitle, style: .done, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
+        let postButton = UIBarButtonItem(title: draft.submitButtonTitle, style: .plain, target: self, action: #selector(ReplyWorkspace.didTapPost(_:)))
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+            // Let iOS 26+ handle the color automatically
+        } else {
+            postButton.tintColor = compositionViewController.theme["navigationBarTextColor"]
+        }
+        preview.navigationItem.rightBarButtonItem = postButton
         (viewController as! UINavigationController).pushViewController(preview, animated: true)
     }
     
