@@ -68,30 +68,29 @@ final class ShowSmilieKeyboardCommand: NSObject {
         
         // Dismiss keyboard before showing smilie picker
         textView.resignFirstResponder()
-        
-        weak var weakTextView = textView
-        let pickerView = SmiliePickerView(dataStore: smilieKeyboard.dataStore) { [weak self] smilie in
+
+        let pickerView = SmiliePickerView(dataStore: smilieKeyboard.dataStore) { [weak self, weak textView] smilie in
             self?.insertSmilie(smilie)
             // Delay keyboard reactivation to ensure smooth animation after sheet dismissal
             // Without this delay, the keyboard animation can conflict with sheet dismissal
             DispatchQueue.main.async {
-                weakTextView?.becomeFirstResponder()
+                textView?.becomeFirstResponder()
             }
         }
-        .onDisappear {
+        .onDisappear { [weak textView] in
             // Delay keyboard reactivation when view disappears (handles Done button case)
             // This ensures the sheet dismissal animation completes before keyboard appears
             DispatchQueue.main.async {
-                weakTextView?.becomeFirstResponder()
+                textView?.becomeFirstResponder()
             }
         }
         .themed()
-        
+
         let hostingController = UIHostingController(rootView: pickerView)
-        hostingController.modalPresentationStyle = .pageSheet
-        
+        hostingController.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+
         if let sheet = hostingController.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
+            sheet.detents = [UISheetPresentationController.Detent.medium(), UISheetPresentationController.Detent.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
             sheet.delegate = self
