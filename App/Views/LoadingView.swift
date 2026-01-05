@@ -62,6 +62,7 @@ private class DefaultLoadingView: LoadingView {
     private let animationView: LottieAnimationView
     private let statusLabel: UILabel
     private let showNowButton: UIButton
+    private var visibilityTimer: Timer?
 
     override init(theme: Theme?) {
         animationView = LottieAnimationView(
@@ -86,6 +87,7 @@ private class DefaultLoadingView: LoadingView {
         statusLabel.font = .preferredFont(forTextStyle: .subheadline)
         statusLabel.textAlignment = .center
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        statusLabel.alpha = 0 // Initially hidden
         addSubview(statusLabel)
 
         // Setup Show Now button as X in circle icon
@@ -95,6 +97,7 @@ private class DefaultLoadingView: LoadingView {
         showNowButton.translatesAutoresizingMaskIntoConstraints = false
         showNowButton.contentHorizontalAlignment = .fill
         showNowButton.contentVerticalAlignment = .fill
+        showNowButton.alpha = 0 // Initially hidden
         addSubview(showNowButton)
 
         // Layout constraints
@@ -135,7 +138,11 @@ private class DefaultLoadingView: LoadingView {
     override func updateStatus(_ text: String) {
         statusLabel.text = text
     }
-    
+
+    deinit {
+        visibilityTimer?.invalidate()
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -160,7 +167,24 @@ private class DefaultLoadingView: LoadingView {
     
     fileprivate override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        
+
+        if newSuperview != nil {
+            // Start 3-second timer to show status and button
+            visibilityTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { [weak self] _ in
+                self?.showStatusElements()
+            }
+        } else {
+            // Clean up timer when view is removed
+            visibilityTimer?.invalidate()
+            visibilityTimer = nil
+        }
+    }
+
+    private func showStatusElements() {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.statusLabel.alpha = 1.0
+            self?.showNowButton.alpha = 1.0
+        }
     }
 }
 

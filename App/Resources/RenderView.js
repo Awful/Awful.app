@@ -10,6 +10,132 @@ if (!window.Awful) {
     window.Awful = {};
 }
 
+// MARK: - Configuration Constants
+
+/// Number of post images to load immediately before lazy loading kicks in
+/// IMPORTANT: This value must match immediatelyLoadedImageCount constant in HTMLRenderingHelpers.swift
+const IMMEDIATELY_LOADED_IMAGE_COUNT = 10;
+
+/// How far ahead (in pixels) to start loading lazy content before it enters viewport
+const LAZY_LOAD_LOOKAHEAD_DISTANCE = '600px';
+
+/// CSS selectors used throughout the code
+const SELECTORS = {
+    LOADING_IMAGES: 'section.postbody img[src]:not(.awful-smile):not(.awful-avatar):not([loading="lazy"])',
+    POST_ELEMENTS: 'post',
+    LOTTIE_PLAYERS: 'lottie-player'
+};
+
+/// Timeout configuration for image loading
+const IMAGE_LOAD_TIMEOUT_CONFIG = {
+    /// Maximum number of checks for initial image loading timeout detection
+    /// 3 checks × 1000ms = 3 seconds max wait for images to start loading
+    maxImageChecks: 3,
+
+    /// Milliseconds to wait before resetting retry button text after failed retry
+    /// 3000ms gives user time to read the error message before it resets
+    retryResetDelay: 3000
+};
+
+/// Timeout for tweet embedding via Twitter API
+/// 5 seconds gives enough time for API response while preventing indefinite waiting
+const TWEET_EMBED_TIMEOUT = 5000;
+
+// MARK: - Utility Functions
+
+/**
+ * Sets up a Lottie player to load ghost animation data.
+ * Helper to avoid code duplication for dead tweet/image badge initialization.
+ * Properly removes existing listeners before adding new ones to prevent accumulation.
+ *
+ * @param {HTMLElement} container - The container element containing lottie-player elements
+ */
+Awful.setupGhostLottiePlayer = function(container) {
+    const players = container.querySelectorAll(SELECTORS.LOTTIE_PLAYERS);
+    players.forEach((lottiePlayer) => {
+        if (lottiePlayer._ghostLoadHandler) {
+            lottiePlayer.removeEventListener("rendered", lottiePlayer._ghostLoadHandler);
+        }
+
+        lottiePlayer._ghostLoadHandler = () => {
+            const ghostData = document.getElementById("ghost-json-data");
+            if (ghostData) {
+                lottiePlayer.load(ghostData.innerText);
+            }
+        };
+
+        lottiePlayer.addEventListener("rendered", lottiePlayer._ghostLoadHandler);
+    });
+};
+
+/**
+ * Sanitizes a URL to prevent XSS attacks.
+ * Ensures URLs don't contain dangerous protocols like javascript: or data:text/html
+ *
+ * @param {string} url - The URL to sanitize
+ * @returns {string} The sanitized URL or '#' if dangerous
+ */
+Awful.sanitizeURL = function(url) {
+    if (!url) return '#';
+
+    const urlLower = url.trim().toLowerCase();
+
+    // Block dangerous protocols
+    if (urlLower.startsWith('javascript:') ||
+        urlLower.startsWith('vbscript:')) {
+        return '#';
+    }
+
+    // Block all data: URLs except safe image formats
+    if (urlLower.startsWith('data:') &&
+        !urlLower.startsWith('data:image/')) {
+        return '#';
+    }
+
+    return url;
+};
+
+/**
+ * HTML-escapes a string to prevent XSS when used in HTML context.
+ *
+ * @param {string} str - The string to escape
+ * @returns {string} The escaped string
+ */
+Awful.escapeHTML = function(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+};
+
+/**
+ * Helper for consistent error handling when images fail to load.
+ * Replaces failed images with dead image badges and optionally updates progress tracker.
+ *
+ * @param {Error} error - The error that occurred
+ * @param {string} url - The URL that failed to load
+ * @param {HTMLImageElement} img - The image element that failed
+ * @param {string} imageID - Unique ID for this image
+ * @param {boolean} enableGhost - Whether to show dead image badge
+ * @param {boolean} trackProgress - Whether to increment the progress tracker (default: true)
+ */
+Awful.handleImageLoadError = function(error, url, img, imageID, enableGhost, trackProgress = true) {
+    console.error(`Image load failed: ${error.message} - ${url}`);
+
+    if (enableGhost && img.parentNode) {
+        const div = document.createElement('div');
+        div.classList.add('dead-embed-container');
+        div.innerHTML = Awful.deadImageBadgeHTML(url, imageID);
+        img.parentNode.replaceChild(div, img);
+
+        // Use helper function to set up Lottie player (fixes code duplication)
+        Awful.setupGhostLottiePlayer(div);
+    }
+
+    // Only increment progress for initially loaded images, not lazy-loaded ones
+    if (trackProgress) {
+        Awful.imageLoadTracker.incrementLoaded();
+    }
+};
 
 /**
  Retrieves an OEmbed HTML fragment.
@@ -34,6 +160,138 @@ Awful.fetchOEmbed = async function(url) {
   });
 };
 
+// MARK: - Tweet Embedding Helper Functions
+
+/**
+ * Shows a dead tweet badge for a failed tweet.
+ * Centralizes the logic for displaying dead tweet badges to avoid code duplication
+ * between main embedding and retry functionality.
+ *
+ * @param {string} tweetID - The tweet ID
+ * @param {string} tweetURL - The original tweet URL
+ * @param {Element} containerToReplace - The element to replace with dead badge
+ */
+Awful.showDeadTweetBadge = function(tweetID, tweetURL, containerToReplace) {
+    if (!window.Awful.renderGhostTweets || !containerToReplace || !containerToReplace.parentNode) {
+        return;
+    }
+
+    const div = document.createElement('div');
+    div.classList.add('dead-tweet-container');
+    div.innerHTML = Awful.deadTweetBadgeHTML(tweetURL, tweetID);
+    containerToReplace.parentNode.replaceChild(div, containerToReplace);
+    Awful.setupGhostLottiePlayer(div);
+};
+
+/**
+ * Calls Twitter widgets.load() with proper race condition handling.
+ * Checks if widgets.js is fully loaded (has widgets property), otherwise queues the call
+ * via twttr.ready() to ensure it executes after widgets.js finishes loading.
+ */
+Awful.loadTwitterWidgetsForEmbeds = function() {
+    if (!window.twttr) {
+        return;
+    }
+
+    if (window.twttr.widgets) {
+        // Real widgets.js is loaded (has widgets property), call immediately
+        twttr.widgets.load();
+    } else {
+        // widgets.js still loading (only has stub), queue the call
+        twttr.ready(function() {
+            twttr.widgets.load();
+        });
+    }
+};
+
+/**
+ * Fetches a single tweet via JSONP with timeout protection and comprehensive error handling.
+ * Centralizes all tweet fetching logic to ensure consistent behavior between main embedding
+ * and retry functionality.
+ *
+ * @param {string} tweetID - The tweet ID to fetch
+ * @param {Function} onSuccess - Called with (data, tweetID) on successful fetch
+ * @param {Function} onFailure - Called with (reason, tweetID, data) on failure
+ *                                 reason can be: 'timeout', 'api_error', 'network'
+ * @returns {object} - Object with cleanup() function to manually abort the request
+ */
+Awful.fetchTweetOEmbed = function(tweetID, onSuccess, onFailure) {
+    // Create unique callback name to prevent collisions when same tweet appears in multiple posts
+    let callback = `jsonp_callback_${tweetID}`;
+    let counter = 0;
+    while (window[callback]) {
+        callback = `jsonp_callback_${tweetID}_${++counter}`;
+    }
+
+    const script = document.createElement('script');
+    const tweetTheme = Awful.tweetTheme();
+    const validThemes = ['light', 'dark'];
+    const safeTheme = validThemes.includes(tweetTheme) ? tweetTheme : 'light';
+    script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${safeTheme}&callback=${callback}`;
+
+    let timedOut = false;
+
+    let timeoutId = setTimeout(function() {
+        timedOut = true;
+        cleanUp(script);
+        console.error(`Tweet ${tweetID} embedding timed out after ${TWEET_EMBED_TIMEOUT}ms`);
+        if (onFailure) {
+            onFailure('timeout', tweetID);
+        }
+    }, TWEET_EMBED_TIMEOUT);
+
+    // Track timeout for global cleanup on page unload
+    if (!Awful.tweetEmbedTimeouts) {
+        Awful.tweetEmbedTimeouts = [];
+    }
+    Awful.tweetEmbedTimeouts.push(timeoutId);
+
+    window[callback] = function(data) {
+        if (timedOut) {
+            console.warn(`Ignoring late response for tweet ${tweetID}`);
+            return;
+        }
+
+        clearTimeout(timeoutId);
+        cleanUp(script);
+
+        // Validate response - check for data existence but don't inspect HTML content (iframe issues)
+        if (!data || !data.html || data.error) {
+            console.error(`Tweet ${tweetID} API returned error:`, data ? data.error : 'No data');
+            if (onFailure) {
+                onFailure('api_error', tweetID, data);
+            }
+            return;
+        }
+
+        // Success
+        if (onSuccess) {
+            onSuccess(data, tweetID);
+        }
+    };
+
+    script.onerror = function() {
+        if (timedOut) return;
+        cleanUp(this);
+        console.error(`Tweet ${tweetID} network error`);
+        if (onFailure) {
+            onFailure('network', tweetID);
+        }
+    };
+
+    function cleanUp(script) {
+        clearTimeout(timeoutId);
+        delete window[callback];
+        if (script.parentNode) {
+            script.parentNode.removeChild(script);
+        }
+    }
+
+    document.body.appendChild(script);
+
+    return { cleanup: function() { cleanUp(script); } };
+};
+
 /**
  * Embeds tweets within a specific post element using Twitter's OEmbed API.
  * Called by IntersectionObserver when a post enters the viewport.
@@ -41,42 +299,64 @@ Awful.fetchOEmbed = async function(url) {
  * @param {Element} thisPostElement - The post element to process for tweet embeds
  */
 Awful.embedTweetNow = function(thisPostElement) {
-    if (!thisPostElement.classList.contains("embed-processed")) {
+    // Check if already processing or processed
+    if (thisPostElement.classList.contains("embed-processed") ||
+        thisPostElement.classList.contains("embed-processing")) {
+        return;
+    }
+
+    // Mark as processing to prevent duplicate IntersectionObserver calls during embedding
+    thisPostElement.classList.add("embed-processing");
+
+    const enableGhost = (window.Awful.renderGhostTweets == true);
+    const tweetLinks = thisPostElement.querySelectorAll('a[data-tweet-id]');
+
+    if (tweetLinks.length == 0) {
+        // No tweets to embed, mark as processed immediately
+        thisPostElement.classList.remove("embed-processing");
         thisPostElement.classList.add("embed-processed");
+        return;
+    }
 
-        const enableGhost = (window.Awful.renderGhostTweets == true);
-        const tweetLinks = thisPostElement.querySelectorAll('a[data-tweet-id]');
-
-        if (tweetLinks.length == 0) {
+    // Group tweet links by ID for deduplication
+    const tweetIDsToLinks = {};
+    Array.prototype.forEach.call(tweetLinks, function(a) {
+        // Skip tweets with NWS content (use optional chaining to avoid null reference errors)
+        if (a.parentElement?.querySelector('img.awful-smile[title=":nws:"]')) {
             return;
         }
+        const tweetID = a.dataset.tweetId;
+        if (!(tweetID in tweetIDsToLinks)) {
+            tweetIDsToLinks[tweetID] = [];
+        }
+        tweetIDsToLinks[tweetID].push(a);
+    });
 
-        // Group tweet links by ID for deduplication
-        const tweetIDsToLinks = {};
-        Array.prototype.forEach.call(tweetLinks, function(a) {
-            // Skip tweets with NWS content
-            if (a.parentElement.querySelector('img.awful-smile[title=":nws:"]')) {
-                return;
-            }
-            const tweetID = a.dataset.tweetId;
-            if (!(tweetID in tweetIDsToLinks)) {
-                tweetIDsToLinks[tweetID] = [];
-            }
-            tweetIDsToLinks[tweetID].push(a);
-        });
+    // Track completion of tweets in this post - only mark as processed when ALL complete
+    let pendingTweets = Object.keys(tweetIDsToLinks).length;
 
-        // Fetch and embed each unique tweet
-        Object.keys(tweetIDsToLinks).forEach(function(tweetID) {
-            const callback = `jsonp_callback_${tweetID}`;
-            const tweetTheme = Awful.tweetTheme();
+    function markTweetComplete() {
+        pendingTweets--;
+        if (pendingTweets === 0) {
+            // All tweets done (success or failure) - now safe to mark as processed
+            thisPostElement.classList.remove("embed-processing");
+            thisPostElement.classList.add("embed-processed");
+        }
+    }
 
-            const script = document.createElement('script');
-            script.src = `https://api.twitter.com/1/statuses/oembed.json?id=${tweetID}&omit_script=true&dnt=true&theme=${tweetTheme}&callback=${callback}`;
+    // Fetch and embed each unique tweet using shared helper function
+    Object.keys(tweetIDsToLinks).forEach(function(tweetID) {
+        const tweetLinks = tweetIDsToLinks[tweetID];
 
-            window[callback] = function(data) {
-                cleanUp(script);
+        // Get first link's URL for error messages
+        const firstLink = tweetLinks[0];
+        const tweetURL = firstLink ? firstLink.href : '';
 
-                // Replace all links for this tweet with the embedded HTML
+        Awful.fetchTweetOEmbed(
+            tweetID,
+            // onSuccess callback
+            function(data, tweetID) {
+                // Replace all links for this tweet with embedded HTML
                 tweetIDsToLinks[tweetID].forEach(function(a) {
                     if (a.parentNode) {
                         const div = document.createElement('div');
@@ -86,46 +366,26 @@ Awful.embedTweetNow = function(thisPostElement) {
                     }
                 });
 
-                // Load Twitter widgets to render the embedded tweets
-                if (window.twttr) {
-                    twttr.widgets.load();
-                }
-            };
+                // Load Twitter widgets (with race condition fix)
+                Awful.loadTwitterWidgetsForEmbeds();
 
-            script.onerror = function() {
-                cleanUp(this);
-                console.error(`The embed markup for tweet ${tweetID} failed to load`);
+                // Mark this tweet as complete
+                markTweetComplete();
+            },
+            // onFailure callback
+            function(reason, tweetID) {
+                // Show dead tweet badge for all links with this tweet ID
+                tweetIDsToLinks[tweetID].forEach(function(a) {
+                    if (a.parentNode) {
+                        Awful.showDeadTweetBadge(tweetID, tweetURL, a);
+                    }
+                });
 
-                // Replace failed tweets with ghost Lottie animation
-                if (enableGhost) {
-                    tweetIDsToLinks[tweetID].forEach(function(a) {
-                        if (a.parentNode) {
-                            const div = document.createElement('div');
-                            div.classList.add('dead-tweet-container');
-                            div.innerHTML = Awful.deadTweetBadgeHTML(a.href.toString(), `${tweetID}`);
-                            a.parentNode.replaceChild(div, a);
-
-                            const player = div.querySelectorAll("lottie-player");
-                            player.forEach((lottiePlayer) => {
-                                lottiePlayer.addEventListener("rendered", () => {
-                                    lottiePlayer.load(document.getElementById("ghost-json-data").innerText);
-                                });
-                            });
-                        }
-                    });
-                }
-            };
-
-            function cleanUp(script) {
-                delete window[callback];
-                if (script.parentNode) {
-                    script.parentNode.removeChild(script);
-                }
+                // Mark this tweet as complete (even though it failed)
+                markTweetComplete();
             }
-
-            document.body.appendChild(script);
-        });
-    }
+        );
+    });
 };
 
 /**
@@ -181,20 +441,38 @@ Awful.embedBlueskyPosts = function() {
  * Also sets up Lottie animation play/pause for ghost tweets in the viewport.
  */
 Awful.embedTweets = function() {
-  Awful.loadTwitterWidgets();
-  const enableGhost = (window.Awful.renderGhostTweets == true);
+  // Prevent concurrent setup to avoid race conditions where multiple calls could
+  // create duplicate observers and listeners. The flag is reset in the finally block
+  // to ensure it's always cleared even if errors occur.
+  if (Awful.embedTweetsInProgress) {
+    return;
+  }
+  Awful.embedTweetsInProgress = true;
+
+  try {
+    // Clean up any existing observers/timers before setting up new ones
+    // This handles the case where embedTweets() is called multiple times on the same page
+    Awful.cleanupObservers();
+
+    Awful.loadTwitterWidgets();
+    const enableGhost = (window.Awful.renderGhostTweets == true);
 
   // Set up IntersectionObserver for ghost Lottie animations (play/pause on scroll)
   if (enableGhost) {
+    // Disconnect previous observer if it exists (prevents memory leak on re-render)
+    if (Awful.ghostLottieObserver) {
+      Awful.ghostLottieObserver.disconnect();
+    }
+
     const ghostConfig = {
       root: document.body.posts,
       rootMargin: '0px',
       threshold: 0.000001,
     };
 
-    const ghostObserver = new IntersectionObserver(function(posts) {
+    Awful.ghostLottieObserver = new IntersectionObserver(function(posts) {
       posts.forEach((post) => {
-        const players = post.target.querySelectorAll("lottie-player");
+        const players = post.target.querySelectorAll(SELECTORS.LOTTIE_PLAYERS);
         players.forEach((lottiePlayer) => {
           if (post.isIntersecting) {
             lottiePlayer.play();
@@ -205,30 +483,34 @@ Awful.embedTweets = function() {
       });
     }, ghostConfig);
 
-    const postElements = document.querySelectorAll("post");
+    const postElements = document.querySelectorAll(SELECTORS.POST_ELEMENTS);
     postElements.forEach((post) => {
-      ghostObserver.observe(post);
+      Awful.ghostLottieObserver.observe(post);
     });
-
-    // Apply timeout detection to initial images (first 10)
-    Awful.applyTimeoutToLoadingImages();
-
-    // Setup lazy loading for deferred images (11+)
-    Awful.setupImageLazyLoading();
-
-    // Setup retry handler
-    Awful.setupRetryHandler();
   }
 
+  // Image loading and retry handling (works regardless of ghost feature being enabled)
+  Awful.applyTimeoutToLoadingImages();
+  Awful.setupRetryHandler();
+  Awful.setupLazyImageErrorHandling();
+
+  // Tweet retry handling
+  Awful.setupTweetRetryHandler();
+
   // Set up lazy-loading IntersectionObserver for tweet embeds
-  // 600px rootMargin means tweets are loaded ~600px before entering the viewport
+  // Tweets are loaded before entering the viewport based on LAZY_LOAD_LOOKAHEAD_DISTANCE
+  // Disconnect previous observer if it exists (prevents memory leak on re-render)
+  if (Awful.tweetLazyLoadObserver) {
+    Awful.tweetLazyLoadObserver.disconnect();
+  }
+
   const lazyLoadConfig = {
     root: null,
-    rootMargin: '600px 0px',
+    rootMargin: `${LAZY_LOAD_LOOKAHEAD_DISTANCE} 0px`,
     threshold: 0.000001,
   };
 
-  const lazyLoadObserver = new IntersectionObserver(function(entries) {
+  Awful.tweetLazyLoadObserver = new IntersectionObserver(function(entries) {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         Awful.embedTweetNow(entry.target);
@@ -237,9 +519,9 @@ Awful.embedTweets = function() {
   }, lazyLoadConfig);
 
   // Observe all post elements for lazy loading
-  const posts = document.querySelectorAll("post");
+  const posts = document.querySelectorAll(SELECTORS.POST_ELEMENTS);
   posts.forEach((post) => {
-    lazyLoadObserver.observe(post);
+    Awful.tweetLazyLoadObserver.observe(post);
   });
 
   // Notify native side when tweets are loaded
@@ -252,6 +534,11 @@ Awful.embedTweets = function() {
       }
     });
   }
+
+  } finally {
+    // Always reset flag, even if an error occurs
+    Awful.embedTweetsInProgress = false;
+  }
 };
 
 // Image load progress tracker
@@ -262,7 +549,7 @@ Awful.imageLoadTracker = {
     initialize: function(totalCount) {
         this.loaded = 0;
         this.total = totalCount;
-        this.reportProgress();
+        this.reportProgress(); // Always report - Swift side handles zero case correctly
     },
 
     incrementLoaded: function() {
@@ -281,188 +568,15 @@ Awful.imageLoadTracker = {
     }
 };
 
-// Image loading with smart timeout detection
-// Monitors download progress and only times out stalled connections
-Awful.loadImageWithProgressDetection = async function(url, img, imageID, enableGhost) {
-    const initialTimeout = 1000;  // 1s timeout if no bytes received
-    const stallTimeout = 2500;    // 2.5s timeout if download stalls
-    const heartbeatInterval = 500; // Check progress every 500ms
-
-    const controller = new AbortController();
-    let lastProgressTime = Date.now();
-    let totalBytes = 0;
-    let heartbeatTimer = null;
-
-    // Heartbeat check: abort if no progress
-    heartbeatTimer = setInterval(() => {
-        const timeSinceProgress = Date.now() - lastProgressTime;
-
-        if (totalBytes === 0 && timeSinceProgress > initialTimeout) {
-            // No bytes received at all - connection never started
-            console.warn(`Image timeout: no connection after ${initialTimeout}ms - ${url}`);
-            clearInterval(heartbeatTimer);
-            controller.abort();
-        } else if (totalBytes > 0 && timeSinceProgress > stallTimeout) {
-            // Download started but stalled
-            console.warn(`Image stalled: no progress for ${stallTimeout}ms after ${totalBytes} bytes - ${url}`);
-            clearInterval(heartbeatTimer);
-            controller.abort();
-        }
-    }, heartbeatInterval);
-
-    try {
-        const response = await fetch(url, { signal: controller.signal });
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const reader = response.body.getReader();
-        const chunks = [];
-
-        while (true) {
-            const { done, value } = await reader.read();
-
-            if (done) break;
-
-            // Bytes received! Update progress tracking
-            chunks.push(value);
-            totalBytes += value.length;
-            lastProgressTime = Date.now();
-        }
-
-        clearInterval(heartbeatTimer);
-
-        // Success! Create blob and set image source
-        const blob = new Blob(chunks);
-        const objectURL = URL.createObjectURL(blob);
-        img.src = objectURL;
-
-        // Clean up object URL after image loads
-        img.onload = () => {
-            URL.revokeObjectURL(objectURL);
-            Awful.imageLoadTracker.incrementLoaded();
-        };
-
-    } catch (error) {
-        clearInterval(heartbeatTimer);
-
-        // Replace image with dead image badge
-        if (enableGhost && img.parentNode) {
-            const div = document.createElement('div');
-            div.classList.add('dead-embed-container');
-            div.innerHTML = Awful.deadImageBadgeHTML(url, imageID);
-            img.parentNode.replaceChild(div, img);
-
-            // Setup Lottie animation
-            const player = div.querySelector("lottie-player");
-            if (player) {
-                player.addEventListener("rendered", () => {
-                    const ghostData = document.getElementById("ghost-json-data");
-                    if (ghostData) {
-                        player.load(ghostData.innerText);
-                    }
-                });
-            }
-        }
-
-        console.error(`Image load failed: ${error.message} - ${url}`);
-        Awful.imageLoadTracker.incrementLoaded();
-    }
-};
-
-// Main function to apply timeout detection to all post images
-Awful.loadImagesWithTimeout = function() {
-    const enableGhost = Awful.renderGhostTweets || false;
-
-    // Only process images in post content, exclude avatars and smilies
-    const contentImages = document.querySelectorAll('section.postbody img:not(.awful-smile):not(.awful-avatar)');
-
-    contentImages.forEach((img, index) => {
-        const imageID = `img-${Date.now()}-${index}`;
-
-        // Skip if already loaded
-        if (img.complete && img.naturalHeight !== 0) {
-            return;
-        }
-
-        // Clear the src to prevent default loading, we'll handle it with fetch
-        const originalSrc = img.src;
-        img.removeAttribute('src');
-
-        // Load with progress detection
-        Awful.loadImageWithProgressDetection(originalSrc, img, imageID, enableGhost);
-    });
-
-    // Setup retry click handler (using event delegation)
-    document.addEventListener('click', function(event) {
-        const retryLink = event.target;
-        if (retryLink.hasAttribute('data-retry-image')) {
-            event.preventDefault();
-
-            const imageURL = retryLink.getAttribute('data-retry-image');
-            const imageID = retryLink.getAttribute('data-image-id');
-            const container = retryLink.closest('.dead-embed-container');
-
-            if (container) {
-                const img = document.createElement('img');
-                img.setAttribute('alt', '');
-                container.parentNode.replaceChild(img, container);
-
-                // Retry loading with timeout detection
-                Awful.loadImageWithProgressDetection(imageURL, img, imageID, enableGhost);
-            }
-        }
-    }, { once: false });
-};
-
-// Lazy loads post content images using IntersectionObserver (for images 11+)
-Awful.setupImageLazyLoading = function() {
-    const enableGhost = Awful.renderGhostTweets || false;
-
-    // IntersectionObserver with 600px lookahead (same as tweets)
-    const imageObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                const lazySrc = img.dataset.lazySrc;
-
-                if (lazySrc) {
-                    // Skip attachment.php files (defensive check, shouldn't be lazy-loaded)
-                    if (lazySrc.includes('attachment.php')) {
-                        delete img.dataset.lazySrc;
-                        img.src = lazySrc;  // Load normally without timeout
-                        imageObserver.unobserve(img);
-                        return;
-                    }
-
-                    const imageID = `lazy-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-                    delete img.dataset.lazySrc;
-
-                    // Load with smart timeout detection
-                    Awful.loadImageWithProgressDetection(lazySrc, img, imageID, enableGhost);
-
-                    imageObserver.unobserve(img);
-                }
-            }
-        });
-    }, {
-        rootMargin: '600px 0px',  // Load 600px before entering viewport
-        threshold: 0.01
-    });
-
-    // Observe all lazy-loadable images
-    document.querySelectorAll('img[data-lazy-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-};
-
-// Apply timeout detection to images that are loading normally (first 10)
+/**
+ * Apply timeout detection to images that are loading normally (first 10).
+ * Monitors initial image loading and tracks progress for the loading view.
+ */
 Awful.applyTimeoutToLoadingImages = function() {
     const enableGhost = Awful.renderGhostTweets || false;
 
-    // Find images with real src (not data-lazy-src) - these are the first 10 images
-    const loadingImages = document.querySelectorAll('section.postbody img[src]:not(.awful-smile):not(.awful-avatar):not([data-lazy-src])');
+    // Find post content images (excluding smilies, avatars, and lazy-loaded images) - these are the first 10 images
+    const loadingImages = document.querySelectorAll(SELECTORS.LOADING_IMAGES);
 
     // Count only the initially loading images (first 10), excluding attachment.php and data URLs
     const initialImages = Array.from(loadingImages).filter(img =>
@@ -470,41 +584,42 @@ Awful.applyTimeoutToLoadingImages = function() {
     );
     const totalImages = initialImages.length;
 
-    // Initialize progress tracker (only tracks first 10 images, not lazy-loaded ones)
     Awful.imageLoadTracker.initialize(totalImages);
 
-    loadingImages.forEach((img, index) => {
-        const imageID = `img-${Date.now()}-${index}`;
+    // Clear all existing timers before resetting array to prevent orphaned intervals
+    if (Awful.imageTimeoutCheckers) {
+        Awful.imageTimeoutCheckers.forEach(timer => clearInterval(timer));
+    }
+    Awful.imageTimeoutCheckers = [];
+
+    initialImages.forEach((img, index) => {
+        const imageID = `img-init-${index}`;
         const imageURL = img.src;
 
-        // Skip data URLs (placeholders)
-        if (imageURL.startsWith('data:')) {
-            return;
-        }
-
-        // Skip attachment.php files (require auth, handled elsewhere)
-        if (imageURL.includes('attachment.php')) {
-            return;
-        }
-
-        // Skip if already loaded (but count it)
+        // img.complete is true for both successfully loaded AND failed images
+        // We discriminate using naturalHeight: >0 means success, ===0 means failure
         if (img.complete && img.naturalHeight !== 0) {
             Awful.imageLoadTracker.incrementLoaded();
             return;
         }
 
-        // Let browser load the image naturally, but monitor for timeout
         // Track if we've already handled this image to prevent double-counting
         let handled = false;
 
         const handleSuccess = () => {
-            if (handled) return;
+            if (handled) {
+                console.warn(`[Image Load] Duplicate success event for ${imageID} (already handled)`);
+                return;
+            }
             handled = true;
             Awful.imageLoadTracker.incrementLoaded();
         };
 
         const handleFailure = () => {
-            if (handled) return;
+            if (handled) {
+                console.warn(`[Image Load] Duplicate failure event for ${imageID} (already handled)`);
+                return;
+            }
             handled = true;
 
             if (enableGhost && img.parentNode) {
@@ -513,29 +628,24 @@ Awful.applyTimeoutToLoadingImages = function() {
                 div.innerHTML = Awful.deadImageBadgeHTML(imageURL, imageID);
                 img.parentNode.replaceChild(div, img);
 
-                const player = div.querySelector("lottie-player");
-                if (player) {
-                    player.addEventListener("rendered", () => {
-                        const ghostData = document.getElementById("ghost-json-data");
-                        if (ghostData) {
-                            player.load(ghostData.innerText);
-                        }
-                    });
-                }
+                // Use helper function to set up Lottie player (fixes code duplication)
+                Awful.setupGhostLottiePlayer(div);
             }
 
             Awful.imageLoadTracker.incrementLoaded();
         };
 
-        // Set up timeout checker
+        // Set up timeout checker using config constants
         let checkCount = 0;
-        const maxChecks = 3;  // Check 3 times (at 1s, 2s, 3s)
-        const checkInterval = 1000;  // Check every 1 second
+        const maxChecks = IMAGE_LOAD_TIMEOUT_CONFIG.maxImageChecks;
+        const checkInterval = IMAGE_LOAD_TIMEOUT_CONFIG.connectionTimeout;
 
         const timeoutChecker = setInterval(() => {
             checkCount++;
 
             // If image loaded successfully
+            // Note: img.complete is true for both success and failure
+            // naturalHeight > 0 indicates successful load
             if (img.complete && img.naturalHeight !== 0) {
                 clearInterval(timeoutChecker);
                 handleSuccess();
@@ -543,18 +653,22 @@ Awful.applyTimeoutToLoadingImages = function() {
             }
 
             // If image failed to load (error state)
+            // img.complete true + naturalHeight === 0 indicates load failure
             if (img.complete && img.naturalHeight === 0) {
                 clearInterval(timeoutChecker);
-                handleFailure('failed');
+                handleFailure();
                 return;
             }
 
             // If we've checked enough times and it's still not loaded, timeout
             if (checkCount >= maxChecks) {
                 clearInterval(timeoutChecker);
-                handleFailure(`timed out after ${checkCount * checkInterval}ms`);
+                handleFailure();
             }
         }, checkInterval);
+
+        // Store timer for potential cleanup
+        Awful.imageTimeoutCheckers.push(timeoutChecker);
 
         // Also listen for load/error events to handle immediately
         img.addEventListener('load', () => {
@@ -564,14 +678,23 @@ Awful.applyTimeoutToLoadingImages = function() {
 
         img.addEventListener('error', () => {
             clearInterval(timeoutChecker);
-            handleFailure('error event');
+            handleFailure();
         }, { once: true });
     });
 };
 
-// Setup retry click handler (using event delegation) - call once on page load
+/**
+ * Setup retry click handler (using event delegation) - call once on page load.
+ * Allows users to retry loading failed images.
+ */
 Awful.setupRetryHandler = function() {
-    document.addEventListener('click', function(event) {
+    // Remove old event listener if it exists (prevents memory leak on page re-render)
+    if (Awful.retryClickHandler) {
+        document.removeEventListener('click', Awful.retryClickHandler);
+    }
+
+    // Define handler function and store reference for cleanup
+    Awful.retryClickHandler = function(event) {
         const retryLink = event.target;
         if (retryLink.hasAttribute('data-retry-image')) {
             event.preventDefault();
@@ -584,102 +707,192 @@ Awful.setupRetryHandler = function() {
                 retryLink.textContent = 'Retrying...';
                 retryLink.style.pointerEvents = 'none';  // Disable clicking during retry
 
-                // Create hidden image element to test loading
-                const img = document.createElement('img');
-                img.style.display = 'none';
-                container.parentNode.insertBefore(img, container);
+                // Create new image element with native browser loading
+                const successImg = document.createElement('img');
+                successImg.setAttribute('alt', '');
 
-                // Custom retry with success/failure callbacks
-                const retryWithFeedback = async function() {
-                    const initialTimeout = 1000;
-                    const stallTimeout = 2500;
-                    const heartbeatInterval = 500;
+                // Handle successful load
+                successImg.addEventListener('load', () => {
+                    // Replace the dead badge container with the successful image
+                    container.parentNode.replaceChild(successImg, container);
+                }, { once: true });
 
-                    const controller = new AbortController();
-                    let lastProgressTime = Date.now();
-                    let totalBytes = 0;
-                    let heartbeatTimer = null;
+                // Handle load failure
+                successImg.addEventListener('error', (error) => {
+                    // FAILED - restore retry button with "Failed" feedback
+                    console.error(`Retry failed: ${error.message || 'Unknown error'} - ${imageURL}`);
 
-                    heartbeatTimer = setInterval(() => {
-                        const timeSinceProgress = Date.now() - lastProgressTime;
+                    retryLink.textContent = 'Retry Failed - Try Again';
+                    retryLink.style.pointerEvents = 'auto';  // Re-enable clicking
 
-                        if (totalBytes === 0 && timeSinceProgress > initialTimeout) {
-                            console.warn(`Retry failed: no connection after ${initialTimeout}ms - ${imageURL}`);
-                            clearInterval(heartbeatTimer);
-                            controller.abort();
-                        } else if (totalBytes > 0 && timeSinceProgress > stallTimeout) {
-                            console.warn(`Retry failed: stalled after ${totalBytes} bytes - ${imageURL}`);
-                            clearInterval(heartbeatTimer);
-                            controller.abort();
+                    // Reset to just "Retry" after configured delay
+                    setTimeout(() => {
+                        if (retryLink.textContent === 'Retry Failed - Try Again') {
+                            retryLink.textContent = 'Retry';
                         }
-                    }, heartbeatInterval);
+                    }, IMAGE_LOAD_TIMEOUT_CONFIG.retryResetDelay);
+                }, { once: true });
 
-                    try {
-                        const response = await fetch(imageURL, { signal: controller.signal });
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}`);
-                        }
-
-                        const reader = response.body.getReader();
-                        const chunks = [];
-
-                        while (true) {
-                            const { done, value } = await reader.read();
-                            if (done) break;
-
-                            chunks.push(value);
-                            totalBytes += value.length;
-                            lastProgressTime = Date.now();
-                        }
-
-                        clearInterval(heartbeatTimer);
-
-                        // SUCCESS! Create blob and replace badge with image
-                        const blob = new Blob(chunks);
-                        const objectURL = URL.createObjectURL(blob);
-
-                        const successImg = document.createElement('img');
-                        successImg.setAttribute('alt', '');
-                        successImg.src = objectURL;
-
-                        successImg.onload = () => {
-                            URL.revokeObjectURL(objectURL);
-                            // Replace the container with the successful image
-                            container.parentNode.replaceChild(successImg, container);
-                            // Remove the hidden test image
-                            if (img.parentNode) {
-                                img.parentNode.removeChild(img);
-                            }
-                        };
-
-                    } catch (error) {
-                        clearInterval(heartbeatTimer);
-
-                        // FAILED - restore retry button with "Failed" feedback
-                        console.error(`Retry failed: ${error.message} - ${imageURL}`);
-
-                        retryLink.textContent = 'Retry Failed - Try Again';
-                        retryLink.style.pointerEvents = 'auto';  // Re-enable clicking
-
-                        // Remove the hidden test image
-                        if (img.parentNode) {
-                            img.parentNode.removeChild(img);
-                        }
-
-                        // Reset to just "Retry" after 3 seconds
-                        setTimeout(() => {
-                            if (retryLink.textContent === 'Retry Failed - Try Again') {
-                                retryLink.textContent = 'Retry';
-                            }
-                        }, 3000);
-                    }
-                };
-
-                retryWithFeedback();
+                // Start loading (native browser handles everything)
+                successImg.src = imageURL;
             }
         }
-    }, { once: false });
+    };
+
+    // Register the event listener with stored reference
+    document.addEventListener('click', Awful.retryClickHandler, { once: false });
+};
+
+/**
+ * Sets up a click event listener for retrying failed tweet embeds.
+ * Uses shared fetchTweetOEmbed helper for consistent timeout and error handling.
+ */
+Awful.setupTweetRetryHandler = function() {
+    // Remove old event listener if it exists (prevents memory leak on page re-render)
+    if (Awful.tweetRetryClickHandler) {
+        document.removeEventListener('click', Awful.tweetRetryClickHandler);
+    }
+
+    // Define handler function and store reference for cleanup
+    Awful.tweetRetryClickHandler = function(event) {
+        const button = event.target;
+        if (button.hasAttribute('data-retry-tweet')) {
+            event.preventDefault();
+
+            const tweetID = button.getAttribute('data-retry-tweet');
+            const tweetURL = button.getAttribute('data-tweet-url');
+            const deadContainer = button.closest('.dead-tweet-container');
+
+            if (!deadContainer || !deadContainer.parentNode) {
+                return;
+            }
+
+            // Validate URL is actually a Twitter/X URL (security check)
+            if (!tweetURL.match(/^https?:\/\/(www\.)?(twitter\.com|x\.com)\//)) {
+                console.error('Invalid tweet URL for retry:', tweetURL);
+                return;
+            }
+
+            // Disable button during retry
+            button.disabled = true;
+            button.textContent = 'Retrying...';
+
+            // Create loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'tweet-loading';
+            loadingDiv.textContent = 'Loading tweet...';
+            deadContainer.parentNode.replaceChild(loadingDiv, deadContainer);
+
+            // Use shared fetch function
+            Awful.fetchTweetOEmbed(
+                tweetID,
+                // onSuccess
+                function(data, tweetID) {
+                    if (loadingDiv.parentNode) {
+                        const div = document.createElement('div');
+                        div.classList.add('tweet');
+                        div.innerHTML = data.html;
+                        loadingDiv.parentNode.replaceChild(div, loadingDiv);
+
+                        // Load Twitter widgets (using shared function)
+                        Awful.loadTwitterWidgetsForEmbeds();
+                    }
+                },
+                // onFailure
+                function(reason, tweetID) {
+                    // Show dead badge again using shared function
+                    if (loadingDiv.parentNode) {
+                        Awful.showDeadTweetBadge(tweetID, tweetURL, loadingDiv);
+                    }
+                }
+            );
+        }
+    };
+
+    // Register the event listener with stored reference
+    document.addEventListener('click', Awful.tweetRetryClickHandler, { once: false });
+};
+
+/**
+ * Cleanup function to remove retry click handler and prevent memory leaks.
+ * Should be called when the view is destroyed or navigating away from the page.
+ */
+Awful.cleanupRetryHandler = function() {
+    if (Awful.retryClickHandler) {
+        document.removeEventListener('click', Awful.retryClickHandler);
+        Awful.retryClickHandler = null;
+    }
+};
+
+/**
+ * Sets up error handling for lazy-loaded images (those with loading="lazy" attribute).
+ * Attaches error event listeners that display dead image badges when browser attempts
+ * to load the image and it fails (404, broken, etc.). Only triggers after browser
+ * attempts load - doesn't interfere with native lazy loading.
+ */
+Awful.setupLazyImageErrorHandling = function() {
+    const enableGhost = Awful.renderGhostTweets || false;
+    const lazyImages = document.querySelectorAll('section.postbody img[loading="lazy"]');
+
+    lazyImages.forEach((img, index) => {
+        const imageID = `lazy-error-${index}`;
+
+        // Only attach error listener - don't interfere with lazy loading
+        img.addEventListener('error', function() {
+            // Browser attempted to load this image and it failed
+            const imageURL = img.src;
+            Awful.handleImageLoadError(
+                new Error("Lazy image load failed"),
+                imageURL,
+                img,
+                imageID,
+                enableGhost,
+                false // trackProgress = false, lazy images don't count toward progress
+            );
+        }, { once: true });
+    });
+};
+
+/**
+ * Cleanup function to clear all image timeout interval timers.
+ * Prevents timers from running after page navigation or view destruction.
+ */
+Awful.cleanupImageTimers = function() {
+    if (Awful.imageTimeoutCheckers) {
+        Awful.imageTimeoutCheckers.forEach(timer => clearInterval(timer));
+        Awful.imageTimeoutCheckers = [];
+    }
+};
+
+/**
+ * Cleanup function to clear all tweet embedding timeout timers.
+ * Prevents timers from running after page navigation or view destruction.
+ */
+Awful.cleanupTweetTimers = function() {
+    if (Awful.tweetEmbedTimeouts) {
+        Awful.tweetEmbedTimeouts.forEach(function(timeoutId) {
+            clearTimeout(timeoutId);
+        });
+        Awful.tweetEmbedTimeouts = [];
+    }
+};
+
+/**
+ * Cleanup function to disconnect all IntersectionObservers and prevent memory leaks.
+ * Should be called when the view is destroyed or navigating away from the page.
+ */
+Awful.cleanupObservers = function() {
+    if (Awful.ghostLottieObserver) {
+        Awful.ghostLottieObserver.disconnect();
+        Awful.ghostLottieObserver = null;
+    }
+    if (Awful.tweetLazyLoadObserver) {
+        Awful.tweetLazyLoadObserver.disconnect();
+        Awful.tweetLazyLoadObserver = null;
+    }
+
+    Awful.cleanupImageTimers();
+    Awful.cleanupTweetTimers();
 };
 
 Awful.tweetTheme = function() {
@@ -708,15 +921,31 @@ Awful.loadTwitterWidgets = function() {
   var script = document.createElement('script');
   script.id = 'twitter-wjs';
   script.src = "https://platform.twitter.com/widgets.js";
+
+  // Add error handler for widgets.js load failure
+  script.onerror = function() {
+    console.error('Failed to load Twitter widgets.js');
+    // Set flag to prevent queuing more callbacks
+    if (window.twttr) {
+      window.twttr._failed = true;
+    }
+  };
+
   document.body.appendChild(script);
 
   window.twttr = {
     _e: [],
+    _failed: false,  // Track load failure
     ready: function(f) {
+      if (window.twttr._failed) {
+        console.warn('Twitter widgets.js failed to load, skipping callback');
+        return;
+      }
       twttr._e.push(f);
     }
   };
 };
+
 
 /**
  Scrolls the document past a fraction of the document.
@@ -1058,35 +1287,6 @@ Awful.jumpToPostWithID = function(postID) {
   window.location.hash = `#${postID}`;
 };
 
-/**
- Scrolls smoothly to the identified post with offset for navigation bar.
- */
-Awful.scrollToPostWithID = function(postID, animated = true, topOffset = 0) {
-  var post = document.getElementById(postID);
-  if (!post) {
-    // Fallback to jump if post not found
-    Awful.jumpToPostWithID(postID);
-    return;
-  }
-
-  // Calculate the position accounting for any top content inset
-  // The scroll position should place the post below the navigation/top bar
-  var rect = post.getBoundingClientRect();
-  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  // Subtract the topOffset to account for content inset
-  var targetPosition = rect.top + scrollTop - topOffset;
-
-  if (animated) {
-    // Smooth scroll to the target position
-    window.scrollTo({
-      top: targetPosition,
-      behavior: 'smooth'
-    });
-  } else {
-    window.scrollTo(0, targetPosition);
-  }
-};
-
 
 /**
  Returns the web view frame of the post at (x, y) in web view coordinates.
@@ -1125,21 +1325,13 @@ Awful.markReadUpToPostWithID = function(postID) {
   var currentPost = lastReadPost;
   while (currentPost) {
     currentPost.classList.add('seen');
-    var divider = currentPost.querySelector('.divider');
-    if (divider) {
-      divider.classList.add('divider-seen');
-    }
     currentPost = currentPost.previousElementSibling;
   }
 
   // Go forward, marking as unseen.
-  currentPost = lastReadPost.nextElementSibling;
+  var currentPost = lastReadPost.nextElementSibling;
   while (currentPost) {
     currentPost.classList.remove('seen');
-    var divider = currentPost.querySelector('.divider');
-    if (divider) {
-      divider.classList.remove('divider-seen');
-    }
     currentPost = currentPost.nextElementSibling;
   }
 };
@@ -1205,16 +1397,31 @@ Awful.setAnnouncementHTML = function(html) {
 
 
 Awful.deadTweetBadgeHTML = function(url, tweetID){
-    // get twitter username from url
-    var tweeter = url.match(/(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)/)[1];
-    
+    // Sanitize URL to prevent XSS attacks
+    const safeURL = Awful.sanitizeURL(url);
+
+    // get twitter username from url (with fallback for malformed URLs)
+    let tweeter = 'unknown';
+    try {
+        const match = url.match(/(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)/);
+        if (match && match[1]) {
+            tweeter = Awful.escapeHTML(match[1]);
+        }
+    } catch (e) {
+        console.error('Error parsing tweet URL:', e);
+    }
+
+    // Escape tweetID for use in HTML attributes
+    const safeTweetID = Awful.escapeHTML(tweetID);
+
     var html =
     `<div class="ghost-lottie">
-            <lottie-player id="left-ghost-${tweetID}" class="left-ghost-${tweetID}" background="transparent" speed="1" loop autoplay>
+            <lottie-player id="left-ghost-${safeTweetID}" class="left-ghost-${safeTweetID}" background="transparent" speed="1" loop autoplay>
             </lottie-player>
      </div>
     <span class="dead-tweet-title">DEAD TWEET</span>
-    <a class="dead-tweet-link" href="${url}">@${tweeter}</a>
+    <a class="dead-tweet-link" href="${safeURL}">@${tweeter}</a>
+    <a class="dead-embed-retry" data-retry-tweet="${safeTweetID}" data-tweet-url="${safeURL}" href="#">Retry</a>
     `;
 
     return html;
@@ -1222,17 +1429,31 @@ Awful.deadTweetBadgeHTML = function(url, tweetID){
 
 // Dead Image Badge (similar to dead tweet)
 Awful.deadImageBadgeHTML = function(url, imageID) {
-    // Extract filename from URL
-    var filename = url.split('/').pop().split('?')[0] || 'unknown';
+    // Sanitize URL to prevent XSS attacks
+    const safeURL = Awful.sanitizeURL(url);
+
+    // Extract filename from URL and escape it
+    let filename = 'unknown';
+    try {
+        const urlParts = url.split('/').pop().split('?')[0];
+        if (urlParts) {
+            filename = Awful.escapeHTML(urlParts);
+        }
+    } catch (e) {
+        console.error('Error parsing image URL:', e);
+    }
+
+    // Escape imageID for use in HTML attributes
+    const safeImageID = Awful.escapeHTML(imageID);
 
     var html =
     `<div class="ghost-lottie">
-            <lottie-player id="image-ghost-${imageID}" class="image-ghost-${imageID}" background="transparent" speed="1" loop autoplay>
+            <lottie-player id="image-ghost-${safeImageID}" class="image-ghost-${safeImageID}" background="transparent" speed="1" loop autoplay>
             </lottie-player>
      </div>
     <span class="dead-embed-title">DEAD IMAGE</span>
-    <a class="dead-embed-link" href="${url}">${filename}</a>
-    <a class="dead-embed-retry" data-retry-image="${url}" data-image-id="${imageID}" href="#">Retry</a>
+    <a class="dead-embed-link" href="${safeURL}">${filename}</a>
+    <a class="dead-embed-retry" data-retry-image="${safeURL}" href="#">Retry</a>
     `;
 
     return html;
@@ -1481,15 +1702,15 @@ Awful.embedGfycat();
 if (Awful.domContentLoadedFired) {
     if (typeof Awful.applyTimeoutToLoadingImages === 'function') {
         Awful.applyTimeoutToLoadingImages();
-        Awful.setupImageLazyLoading();
         Awful.setupRetryHandler();
+        Awful.setupLazyImageErrorHandling();
     }
 } else {
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof Awful.applyTimeoutToLoadingImages === 'function') {
             Awful.applyTimeoutToLoadingImages();
-            Awful.setupImageLazyLoading();
             Awful.setupRetryHandler();
+            Awful.setupLazyImageErrorHandling();
         }
     });
 }
