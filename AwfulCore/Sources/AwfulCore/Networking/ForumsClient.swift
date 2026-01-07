@@ -1245,10 +1245,7 @@ public final class ForumsClient {
     }
 
     public func createPrivateMessageFolder(name: String) async throws {
-        logger.info("[FOLDER_MGT] ForumsClient: Creating folder with name: '\(name)'")
-
         // First, get the edit folders page to retrieve current folder structure
-        logger.debug("[FOLDER_MGT] ForumsClient: Fetching edit folders page")
         let (getPageData, getPageResponse) = try await fetch(method: .get, urlString: "private.php", parameters: ["action": "editfolders"])
         let (getPageDoc, _) = try parseHTML(data: getPageData, response: getPageResponse)
 
@@ -1258,7 +1255,6 @@ public final class ForumsClient {
 
         // Find all existing folder inputs
         let inputs = getPageDoc.nodes(matchingSelector: "input[name^='folderlist[']")
-        logger.debug("[FOLDER_MGT] ForumsClient: Found \(inputs.count) existing folder inputs")
 
         for input in inputs {
             guard let nameAttr = input["name"],
@@ -1267,7 +1263,6 @@ public final class ForumsClient {
             // Keep existing folders with their values
             if !value.isEmpty {
                 folderListParams[nameAttr] = value
-                logger.debug("[FOLDER_MGT] ForumsClient: Existing folder: \(nameAttr) = '\(value)'")
             }
 
             // Extract the ID number from folderlist[N]
@@ -1286,13 +1281,11 @@ public final class ForumsClient {
            let highestValue = highestInput["value"],
            let highestInt = Int(highestValue) {
             highestID = max(highestID, highestInt)
-            logger.debug("[FOLDER_MGT] ForumsClient: Highest ID from form: \(highestInt)")
         }
 
         // Add the new folder
         let newFolderID = highestID + 1
         folderListParams["folderlist[\(newFolderID)]"] = name
-        logger.debug("[FOLDER_MGT] ForumsClient: Adding new folder at ID \(newFolderID): '\(name)'")
 
         // Prepare POST parameters
         var parameters = folderListParams
@@ -1300,23 +1293,13 @@ public final class ForumsClient {
         parameters["highest"] = String(newFolderID)
         parameters["submit"] = "Edit Folders"
 
-        logger.debug("[FOLDER_MGT] ForumsClient: POST parameters: \(parameters)")
-
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
         let (document, _) = try parseHTML(data: data, response: response)
-
-        logger.debug("[FOLDER_MGT] ForumsClient: Received response for folder creation")
         try checkServerErrors(document)
-        logger.info("[FOLDER_MGT] ForumsClient: Folder created successfully")
     }
 
-    public func deletePrivateMessageFolder(folderID: String) async throws {
-        // Note: According to SA forums documentation, deleting a folder should move all messages
-        // in that folder to the inbox. This is handled server-side.
-        logger.info("[FOLDER_MGT] ForumsClient: Deleting folder with ID: '\(folderID)'")
-
+    public func deletePrivateMessageFolder(folderID: String, folderName: String? = nil) async throws {
         // First, get the edit folders page to retrieve current folder structure
-        logger.debug("[FOLDER_MGT] ForumsClient: Fetching edit folders page")
         let (getPageData, getPageResponse) = try await fetch(method: .get, urlString: "private.php", parameters: ["action": "editfolders"])
         let (getPageDoc, _) = try parseHTML(data: getPageData, response: getPageResponse)
 
@@ -1327,11 +1310,6 @@ public final class ForumsClient {
 
         // Find all existing folder inputs
         let inputs = getPageDoc.nodes(matchingSelector: "input[name^='folderlist[']")
-        logger.debug("[FOLDER_MGT] ForumsClient: Found \(inputs.count) existing folder inputs")
-
-        // The folderID we get is the custom folder ID (1, 2, 3, etc.)
-        // We need to map it to the actual form field ID which starts at 2 for custom folders
-        let targetFormID = (Int(folderID) ?? 0) + 1  // Add 1 because custom folders start at ID 2 in the form
 
         for input in inputs {
             guard let nameAttr = input["name"],
@@ -1345,23 +1323,30 @@ public final class ForumsClient {
                 if let id = Int(idStr) {
                     highestID = max(highestID, id)
 
-                    // Check if this is the folder to delete
-                    if id == targetFormID {
+                    // Match by folder name if provided, otherwise try to match by position
+                    let shouldDelete: Bool
+                    if let name = folderName, !name.isEmpty {
+                        // Match by name (case-insensitive)
+                        shouldDelete = value.lowercased() == name.lowercased()
+                    } else {
+                        // Fallback: try to match by ID mapping (less reliable)
+                        let targetFormID = (Int(folderID) ?? 0) + 1
+                        shouldDelete = id == targetFormID
+                    }
+
+                    if shouldDelete && !value.isEmpty {
                         // Delete by leaving it empty
                         folderListParams[nameAttr] = ""
-                        logger.debug("[FOLDER_MGT] ForumsClient: Deleting folder at form ID \(id): '\(value)'")
                         folderDeleted = true
                     } else if !value.isEmpty {
                         // Keep other folders
                         folderListParams[nameAttr] = value
-                        logger.debug("[FOLDER_MGT] ForumsClient: Keeping folder: \(nameAttr) = '\(value)'")
                     }
                 }
             }
         }
 
         if !folderDeleted {
-            logger.error("[FOLDER_MGT] ForumsClient: Folder with ID \(folderID) (form ID \(targetFormID)) not found")
             throw AwfulCoreError.parseError(description: "Folder not found")
         }
 
@@ -1378,14 +1363,9 @@ public final class ForumsClient {
         parameters["highest"] = String(highestID)
         parameters["submit"] = "Edit Folders"
 
-        logger.debug("[FOLDER_MGT] ForumsClient: POST parameters: \(parameters)")
-
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
         let (document, _) = try parseHTML(data: data, response: response)
-
-        logger.debug("[FOLDER_MGT] ForumsClient: Received response for folder deletion")
         try checkServerErrors(document)
-        logger.info("[FOLDER_MGT] ForumsClient: Folder deleted successfully")
     }
 
     public func deletePrivateMessage(

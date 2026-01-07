@@ -195,22 +195,13 @@ final class MessageListViewController: TableViewController {
     }
 
     private func showFolderPicker(for message: PrivateMessage) {
-        let alert = UIAlertController(
-            title: LocalizedString("private-messages-list.move-folder.title"),
-            message: LocalizedString("private-messages-list.move-folder.message"),
-            preferredStyle: .actionSheet
-        )
-
-        // Add folder options, excluding the current folder
-        for folder in allFolders where folder.folderID != currentFolder?.folderID {
-            alert.addAction(UIAlertAction(title: displayName(for: folder), style: .default) { [weak self] _ in
-                self?.moveMessage(message, to: folder)
-            })
+        let alert = buildFolderPickerAlert(
+            message: LocalizedString("private-messages-list.move-folder.message")
+        ) { [weak self] folder in
+            self?.moveMessage(message, to: folder)
         }
 
-        alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
-
-        // Configure for iPad
+        // Configure for iPad - use the message's row as source
         if let popover = alert.popoverPresentationController {
             popover.sourceView = tableView
             if let indexPath = dataSource?.indexPath(for: message) {
@@ -219,6 +210,29 @@ final class MessageListViewController: TableViewController {
         }
 
         present(alert, animated: true)
+    }
+
+    /// Builds a folder picker action sheet with folder options.
+    private func buildFolderPickerAlert(
+        message: String,
+        onFolderSelected: @escaping (PrivateMessageFolder) -> Void
+    ) -> UIAlertController {
+        let alert = UIAlertController(
+            title: LocalizedString("private-messages-list.move-folder.title"),
+            message: message,
+            preferredStyle: .actionSheet
+        )
+
+        // Add folder options, excluding the current folder
+        for folder in allFolders where folder.folderID != currentFolder?.folderID {
+            alert.addAction(UIAlertAction(title: displayName(for: folder), style: .default) { _ in
+                onFolderSelected(folder)
+            })
+        }
+
+        alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
+
+        return alert
     }
 
     private func moveMessage(_ message: PrivateMessage, to folder: PrivateMessageFolder) {
@@ -472,34 +486,31 @@ final class MessageListViewController: TableViewController {
     }
 
     private func showFolderPickerForMultiple(messages indexPaths: [IndexPath]) {
-        let alert = UIAlertController(
-            title: LocalizedString("private-messages-list.move-folder.title"),
-            message: String(format: LocalizedString("private-messages-list.move-multiple.message"), indexPaths.count),
-            preferredStyle: .actionSheet
-        )
-
-        // Add folder options, excluding the current folder
-        for folder in allFolders where folder.folderID != currentFolder?.folderID {
-            alert.addAction(UIAlertAction(title: displayName(for: folder), style: .default) { [weak self] _ in
-                // Collect messages first to avoid index path invalidation during iteration
-                let messages = indexPaths.compactMap { self?.dataSource?.message(at: $0) }
-                for message in messages {
-                    self?.moveMessage(message, to: folder)
-                }
-                self?.setEditing(false, animated: true)
-            })
+        let alert = buildFolderPickerAlert(
+            message: String(format: LocalizedString("private-messages-list.move-multiple.message"), indexPaths.count)
+        ) { [weak self] folder in
+            // Collect messages first to avoid index path invalidation during iteration
+            let messages = indexPaths.compactMap { self?.dataSource?.message(at: $0) }
+            for message in messages {
+                self?.moveMessage(message, to: folder)
+            }
+            self?.setEditing(false, animated: true)
         }
 
-        alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
-
-        // Configure for iPad
+        // Configure for iPad - use the Move button from editToolbar as the source
         if let popover = alert.popoverPresentationController {
-            popover.barButtonItem = toolbarItems?.first
+            // The Move button is at index 1 in editToolbar (after flexSpace1)
+            if let moveButton = editToolbar?.items?[1] {
+                popover.barButtonItem = moveButton
+            } else {
+                // Fallback to center of table view
+                popover.sourceView = tableView
+                popover.sourceRect = CGRect(x: tableView.bounds.midX, y: tableView.bounds.midY, width: 0, height: 0)
+            }
         }
 
         present(alert, animated: true)
     }
-    
 
     override func themeDidChange() {
         super.themeDidChange()
@@ -525,7 +536,8 @@ final class MessageListViewController: TableViewController {
 // MARK: UITableViewDelegate
 extension MessageListViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return dataSource!.tableView(tableView, heightForRowAt: indexPath)
+        guard let dataSource else { return UITableView.automaticDimension }
+        return dataSource.tableView(tableView, heightForRowAt: indexPath)
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -535,7 +547,8 @@ extension MessageListViewController {
             return
         }
 
-        let message = dataSource!.message(at: indexPath)
+        guard let dataSource else { return }
+        let message = dataSource.message(at: indexPath)
         showMessage(message)
     }
 

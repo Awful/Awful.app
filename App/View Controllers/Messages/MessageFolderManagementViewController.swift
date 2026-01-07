@@ -10,7 +10,7 @@ import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageFolderManagement")
 
-// Maximum folder name length allowed by the forums
+/// Maximum folder name length allowed by the SA Forums API
 private let maxFolderNameLength = 25
 
 final class MessageFolderManagementViewController: TableViewController {
@@ -64,21 +64,15 @@ final class MessageFolderManagementViewController: TableViewController {
     }
 
     private func loadFolders() {
-        logger.info("[FOLDER_MGT] Loading folders list")
         Task {
             do {
                 let allFolders = try await ForumsClient.shared.listPrivateMessageFolders()
-                logger.info("[FOLDER_MGT] Loaded \(allFolders.count) total folders")
                 await MainActor.run {
                     self.folders = allFolders.filter { $0.isCustom }
-                    logger.info("[FOLDER_MGT] Filtered to \(self.folders.count) custom folders")
-                    for folder in self.folders {
-                        logger.debug("[FOLDER_MGT]   - Folder: '\(folder.name)' (ID: \(folder.folderID))")
-                    }
                     self.tableView.reloadData()
                 }
             } catch {
-                logger.error("[FOLDER_MGT] Failed to load folders: \(error)")
+                logger.error("Failed to load folders: \(error)")
                 await MainActor.run {
                     let alert = UIAlertController(networkError: error)
                     present(alert, animated: true)
@@ -145,18 +139,15 @@ final class MessageFolderManagementViewController: TableViewController {
     }
 
     private func createFolder(name: String) {
-        logger.info("[FOLDER_MGT] Creating folder with name: '\(name)'")
         Task {
             do {
-                logger.info("[FOLDER_MGT] Calling API to create folder: '\(name)'")
                 try await ForumsClient.shared.createPrivateMessageFolder(name: name)
-                logger.info("[FOLDER_MGT] Successfully created folder: '\(name)'")
                 loadFolders()
                 await MainActor.run { [weak self] in
                     self?.onFoldersChanged?()
                 }
             } catch {
-                logger.error("[FOLDER_MGT] Failed to create folder '\(name)': \(error)")
+                logger.error("Failed to create folder '\(name)': \(error)")
                 await MainActor.run {
                     let alert = UIAlertController(
                         title: LocalizedString("private-message-folder.create-error-title"),
@@ -170,45 +161,61 @@ final class MessageFolderManagementViewController: TableViewController {
 
     private func deleteFolder(at indexPath: IndexPath) {
         let folder = folders[indexPath.row]
-        logger.info("[FOLDER_MGT] Deleting folder: '\(folder.name)' with ID: '\(folder.folderID)'")
 
+        // Show confirmation - the server automatically moves messages to inbox when deleting a folder
+        let alert = UIAlertController(
+            title: LocalizedString("private-message-folder.delete-confirm-title"),
+            message: LocalizedString("private-message-folder.delete-confirm-message"),
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
+
+        alert.addAction(UIAlertAction(
+            title: LocalizedString("private-message-folder.delete-button"),
+            style: .destructive
+        ) { [weak self] _ in
+            self?.performFolderDeletion(folder: folder, at: indexPath)
+        })
+
+        present(alert, animated: true)
+    }
+
+    private func performFolderDeletion(folder: PrivateMessageFolder, at indexPath: IndexPath) {
         Task {
             do {
-                // First, move all messages in this folder to inbox or sent
-                logger.info("[FOLDER_MGT] Moving messages from folder '\(folder.name)' before deletion")
-
-                // Fetch all messages in this folder
+                // The server does NOT automatically move messages when deleting a folder.
+                // Messages remain in a "ghost" folder accessible by ID but invisible in the UI.
+                // We must manually move each message before deleting the folder.
                 let messages = try await ForumsClient.shared.listPrivateMessagesInFolder(folderID: folder.folderID)
-                logger.info("[FOLDER_MGT] Found \(messages.count) messages to move")
 
-                // Get current username to determine sent messages
-                let currentUsername = UserDefaults.standard.string(forKey: "com.awfulapp.Awful.username")
+                // Get current username to determine if message was sent or received
+                let currentUsername = UserDefaults.standard.string(forKey: "username")
 
-                // Move each message to the appropriate folder
+                // Move each message: sent messages to Sent folder, received to Inbox
                 for message in messages {
-                    // Check if message was sent by the current user
                     let wasSentByCurrentUser = message.from?.username == currentUsername
-                    let targetFolderID = wasSentByCurrentUser ? "-1" : "0"  // -1 for sent, 0 for inbox
-                    logger.info("[FOLDER_MGT] Moving message '\(message.subject ?? "")' from '\(message.from?.username ?? "unknown")' to \(wasSentByCurrentUser ? "sent" : "inbox")")
+                    let targetFolderID = wasSentByCurrentUser ? "-1" : "0"
                     try await ForumsClient.shared.movePrivateMessage(message, toFolderID: targetFolderID)
                 }
 
-                logger.info("[FOLDER_MGT] All messages moved. Now deleting folder ID: '\(folder.folderID)'")
-                try await ForumsClient.shared.deletePrivateMessageFolder(folderID: folder.folderID)
-                logger.info("[FOLDER_MGT] Successfully deleted folder: '\(folder.name)'")
+                // Now safe to delete the folder
+                try await ForumsClient.shared.deletePrivateMessageFolder(folderID: folder.folderID, folderName: folder.name)
+
                 await MainActor.run { [weak self] in
-                    self?.folders.remove(at: indexPath.row)
-                    self?.tableView.deleteRows(at: [indexPath], with: .automatic)
-                    self?.onFoldersChanged?()
+                    guard let self else { return }
+                    self.folders.remove(at: indexPath.row)
+                    self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    self.onFoldersChanged?()
                 }
             } catch {
-                logger.error("[FOLDER_MGT] Failed to delete folder '\(folder.name)' (ID: \(folder.folderID)): \(error)")
-                await MainActor.run {
+                logger.error("Failed to delete folder '\(folder.name)': \(error)")
+                await MainActor.run { [weak self] in
                     let alert = UIAlertController(
                         title: LocalizedString("private-message-folder.delete-error-title"),
                         error: error
                     )
-                    present(alert, animated: true)
+                    self?.present(alert, animated: true)
                 }
             }
         }

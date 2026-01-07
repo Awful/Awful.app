@@ -914,13 +914,46 @@
         }
       }
     },
+    "private-message-folder.delete-confirm-title" : {
+      "comment" : "Title of confirmation dialog when deleting a folder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Folder?"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-confirm-message" : {
+      "comment" : "Message shown when deleting a folder explaining that messages will be moved",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages in this folder will be moved to Inbox or Sent."
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-button" : {
+      "comment" : "Button to confirm folder deletion",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
     "private-message-folder.footer-editing" : {
       "comment" : "Footer text shown in folder management when editing mode is active",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select folders for deletion. Messages in these folders will NOT be deleted! They will be moved to Inbox or Sent depending on their origin."
+            "value" : "Tap the minus button to delete a folder."
           }
         }
       }

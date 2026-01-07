@@ -75,7 +75,8 @@ internal extension PrivateMessageFolderScrapeResult {
 
             // For sent messages, set the current user as the sender
             if folderID == "-1", message.from == nil {
-                if let currentUsername = UserDefaults.standard.string(forKey: "com.awfulapp.Awful.username"),
+                // Key matches Settings.username from AwfulSettings
+                if let currentUsername = UserDefaults.standard.string(forKey: "username"),
                    !currentUsername.isEmpty {
                     let currentUser = User.findOrCreate(in: context, matching: NSPredicate(format: "%K = %@", #keyPath(User.username), currentUsername)) {
                         $0.username = currentUsername
