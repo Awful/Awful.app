@@ -14,9 +14,6 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 // MARK: - Layout Constants
 private enum LayoutConstants {
     static let folderPickerHeight: CGFloat = 39
-    static let editToolbarHeight: CGFloat = 44
-    static let toolbarLeadingSpace: CGFloat = 8
-    static let toolbarTrailingSpace: CGFloat = 55  // Aligns delete button with Settings tab
 }
 
 // MARK: - UserDefaults Keys
@@ -38,7 +35,7 @@ final class MessageListViewController: TableViewController {
     private var currentFolder: PrivateMessageFolder?
     private var allFolders: [PrivateMessageFolder] = []
     private var editToolbar: UIToolbar?
-    
+
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
         super.init(nibName: nil, bundle: nil)
@@ -367,15 +364,17 @@ final class MessageListViewController: TableViewController {
     }
 
     private func showEditToolbar() {
-        // Remove any existing toolbar first
         editToolbar?.removeFromSuperview()
 
-        // Create custom toolbar
-        let toolbar = UIToolbar()
+        let toolbarHeight: CGFloat = 44
+
+        // Create toolbar with initial frame for proper item layout
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: toolbarHeight))
         toolbar.translatesAutoresizingMaskIntoConstraints = false
 
-        let leftSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        leftSpace.width = LayoutConstants.toolbarLeadingSpace
+        let flexSpace1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let flexSpace2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let flexSpace3 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
         let moveButton = UIBarButtonItem(
             title: LocalizedString("table-view.action.move"),
@@ -392,28 +391,22 @@ final class MessageListViewController: TableViewController {
         )
         deleteButton.tintColor = .systemRed
 
-        let rightSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        rightSpace.width = LayoutConstants.toolbarTrailingSpace
+        toolbar.setItems([flexSpace1, moveButton, flexSpace2, deleteButton, flexSpace3], animated: false)
 
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-
-        toolbar.items = [leftSpace, moveButton, flexSpace, deleteButton, rightSpace]
-
-        // Add toolbar to the view hierarchy
         view.addSubview(toolbar)
 
-        // Position toolbar above the tab bar
         NSLayoutConstraint.activate([
             toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: toolbarHeight)
         ])
 
         editToolbar = toolbar
 
-        // Adjust table view content inset to make room for toolbar
+        // Adjust table view content inset
         var contentInset = tableView.contentInset
-        contentInset.bottom = LayoutConstants.editToolbarHeight
+        contentInset.bottom = toolbarHeight
         tableView.contentInset = contentInset
         tableView.scrollIndicatorInsets = contentInset
     }
