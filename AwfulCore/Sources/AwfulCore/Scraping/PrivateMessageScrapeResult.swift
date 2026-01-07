@@ -33,8 +33,12 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
         author = try? AuthorSidebarScrapeResult(html, url: url)
 
         subject = html.firstNode(matchingSelector: "div.breadcrumbs b")
-            .flatMap { (el: HTMLElement) -> HTMLTextNode? in el.children.lastObject as? HTMLTextNode }
-            .map { (node: HTMLTextNode) -> String in node.textContent }
+            .map { (el: HTMLElement) -> String in
+                let fullText = el.textContent
+                // Split by " > " separator and take the last component (the subject)
+                let components = fullText.components(separatedBy: " > ")
+                return components.last?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            }
             ?? ""
 
         do {
