@@ -81,7 +81,9 @@ final class PostsPageView: UIView {
                         NSLayoutConstraint.activate([
                             refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
                             containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
-                            containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
+                            containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor),
+                            // controls frog lottie position between last post and bottom toolbar
+                            refreshControl.heightAnchor.constraint(equalToConstant: 90)
                         ])
                     }
                 }
