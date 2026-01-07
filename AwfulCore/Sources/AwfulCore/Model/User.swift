@@ -31,6 +31,27 @@ public class User: AwfulManagedObject, Managed {
     public override var objectKey: UserKey {
         .init(userID: userID, username: username)
     }
+
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+
+        // Initialize lastModifiedDate
+        lastModifiedDate = Date()
+
+        // If userID is not set, create a placeholder based on username
+        // This happens when we only know the username (e.g., message recipients in Sent folder)
+        // The real userID will be updated when we encounter this user in a context where we have their ID
+        if userID == nil || userID.isEmpty {
+            if let name = username, !name.isEmpty {
+                // Create a deterministic placeholder ID based on username
+                // Prefix with "unknown-" to indicate this is a placeholder
+                userID = "unknown-\(name.lowercased().replacingOccurrences(of: " ", with: "_"))"
+            } else {
+                // Fallback to a UUID if we don't even have a username
+                userID = "unknown-\(UUID().uuidString)"
+            }
+        }
+    }
 }
 
 extension User {
