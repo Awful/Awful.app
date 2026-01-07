@@ -42,7 +42,10 @@ final class ImmersiveModeManager: NSObject {
                 postsView?.layoutIfNeeded()
             } else if !immersiveModeEnabled && oldValue {
                 immersiveProgress = 0.0
+                isInBottomFadeMode = false
+                bottomFadeProgress = 0.0
                 resetAllTransforms()
+                restoreBarAlphas()
                 safeAreaGradientView.alpha = 0.0
                 postsView?.setNeedsLayout()
             }
@@ -80,6 +83,10 @@ final class ImmersiveModeManager: NSObject {
     private weak var cachedNavigationBar: UINavigationBar?
     private var isUpdatingBars = false
     private var cachedTotalBarTravelDistance: CGFloat?
+
+    // Bottom fade mode state - used instead of sliding when at bottom of scroll
+    private var isInBottomFadeMode = false
+    private var bottomFadeProgress: CGFloat = 0.0  // 0 = transparent, 1 = opaque
 
     // MARK: - UI Elements
 
@@ -144,20 +151,22 @@ final class ImmersiveModeManager: NSObject {
 
     /// Force exit immersive mode (useful for scroll-to-top/bottom actions)
     func exitImmersiveMode() {
-        guard immersiveModeEnabled && immersiveProgress > 0 else { return }
-        immersiveProgress = 0.0
+        guard immersiveModeEnabled else { return }
 
-        if let navBar = findNavigationBar() {
-            navBar.transform = .identity
+        if isInBottomFadeMode {
+            isInBottomFadeMode = false
+            bottomFadeProgress = 0.0
+            restoreBarAlphas()
         }
+
+        guard immersiveProgress > 0 else { return }
+        immersiveProgress = 0.0
     }
 
-    /// Check if immersive mode should affect scroll insets
     func shouldAdjustScrollInsets() -> Bool {
         return immersiveModeEnabled
     }
 
-    /// Calculate bottom inset adjustment for immersive mode
     func calculateBottomInset(normalBottomInset: CGFloat) -> CGFloat {
         guard immersiveModeEnabled,
               let toolbar = toolbar,
@@ -170,7 +179,6 @@ final class ImmersiveModeManager: NSObject {
         return max(postsView.layoutMargins.bottom, postsView.bounds.maxY - staticToolbarY)
     }
 
-    /// Update layout for gradient view
     func updateGradientLayout(in containerView: UIView) {
         guard #available(iOS 26.0, *) else { return }
 
@@ -193,32 +201,28 @@ final class ImmersiveModeManager: NSObject {
         }
     }
 
-    /// Determine if top bar should be positioned for immersive mode
     func shouldPositionTopBarForImmersive() -> Bool {
         return immersiveModeEnabled
     }
 
-    /// Calculate top bar Y position for immersive mode
     func calculateTopBarY(normalY: CGFloat) -> CGFloat {
         guard immersiveModeEnabled else { return normalY }
 
         if let navBar = findNavigationBar() {
             return navBar.frame.maxY
         } else {
-            return postsView?.bounds.minY ?? 0 + (postsView?.layoutMargins.top ?? 0) + 44
+            return (postsView?.bounds.minY ?? 0) + (postsView?.layoutMargins.top ?? 0) + 44
         }
     }
 
     // MARK: - Scroll View Delegate Methods
 
-    /// Handle scroll view content size changes
     func handleScrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
         if immersiveModeEnabled && !isContentScrollableEnoughForImmersive {
             immersiveProgress = 0
         }
     }
 
-    /// Handle scroll view will begin dragging
     func handleScrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastScrollOffset = scrollView.contentOffset.y
 
@@ -227,7 +231,6 @@ final class ImmersiveModeManager: NSObject {
         }
     }
 
-    /// Handle scroll view will end dragging
     func handleScrollViewWillEndDragging(
         _ scrollView: UIScrollView,
         withVelocity velocity: CGPoint,
@@ -243,7 +246,6 @@ final class ImmersiveModeManager: NSObject {
         }
     }
 
-    /// Handle scroll view did end dragging
     func handleScrollViewDidEndDragging(
         _ scrollView: UIScrollView,
         willDecelerate: Bool,
@@ -253,7 +255,6 @@ final class ImmersiveModeManager: NSObject {
         snapToVisibleIfAtBottom(scrollView, isRefreshControlArmedOrTriggered: isRefreshControlArmedOrTriggered)
     }
 
-    /// Handle scroll view did end decelerating
     func handleScrollViewDidEndDecelerating(
         _ scrollView: UIScrollView,
         isRefreshControlArmedOrTriggered: Bool
@@ -269,42 +270,71 @@ final class ImmersiveModeManager: NSObject {
         isRefreshControlArmedOrTriggered: Bool
     ) {
         guard shouldProcessScroll,
-              (isDragging || isDecelerating),
               !isRefreshControlArmedOrTriggered else { return }
+
+        // Always check for bottom, even when not actively scrolling
+        let distanceFromBottom = calculateDistanceFromBottom(scrollView)
+        let barTravelDistance = totalBarTravelDistance
+        let bottomFadeZone = barTravelDistance * Self.progressiveRevealMultiplier
+        let isNearBottom = distanceFromBottom <= bottomFadeZone
+
+        if isNearBottom {
+            if !isInBottomFadeMode {
+                isInBottomFadeMode = true
+                bottomFadeProgress = 1.0
+                updateBarsForBottomFade()
+            }
+            lastScrollOffset = scrollView.contentOffset.y
+            return
+        }
+
+        // For everything else, require active scrolling
+        guard isDragging || isDecelerating else { return }
 
         let currentOffset = scrollView.contentOffset.y
         let scrollDelta = currentOffset - lastScrollOffset
 
         guard isContentScrollableEnoughForImmersive else {
+            if isInBottomFadeMode {
+                exitBottomFadeMode()
+            }
             immersiveProgress = 0
             lastScrollOffset = currentOffset
             return
         }
 
         if currentOffset < Self.topProximityThreshold {
+            if isInBottomFadeMode {
+                exitBottomFadeMode()
+            }
             immersiveProgress = 0
             lastScrollOffset = currentOffset
             return
         }
 
+        // Handle fading out when scrolling away from bottom
+        if isInBottomFadeMode {
+            let fadeOutDistance: CGFloat = 50.0
+            let distancePastThreshold = distanceFromBottom - bottomFadeZone
+            let fadeProgress = 1.0 - (distancePastThreshold / fadeOutDistance)
+            bottomFadeProgress = fadeProgress.clamp(0...1)
+
+            if bottomFadeProgress > 0 {
+                updateBarsForBottomFade()
+                lastScrollOffset = currentOffset
+                return
+            } else {
+                exitBottomFadeMode()
+            }
+        }
+
+        // For normal sliding behavior, ignore tiny scroll deltas
         guard abs(scrollDelta) > Self.minScrollDelta else {
             return
         }
 
-        let distanceFromBottom = calculateDistanceFromBottom(scrollView)
-        let barTravelDistance = totalBarTravelDistance
-        let nearBottomThreshold = barTravelDistance * Self.progressiveRevealMultiplier
-        let isNearBottom = distanceFromBottom <= nearBottomThreshold
-
         let incrementalProgress = immersiveProgress + (scrollDelta / barTravelDistance)
-
-        // Progressively reveal bars when near bottom to ensure they're visible at end of content
-        if isNearBottom && scrollDelta > 0 {
-            let targetProgress = (distanceFromBottom / nearBottomThreshold).clamp(0...1)
-            immersiveProgress = min(incrementalProgress, targetProgress).clamp(0...1)
-        } else {
-            immersiveProgress = incrementalProgress.clamp(0...1)
-        }
+        immersiveProgress = incrementalProgress.clamp(0...1)
 
         lastScrollOffset = currentOffset
     }
@@ -315,6 +345,10 @@ final class ImmersiveModeManager: NSObject {
     /// Uses CATransaction.setDisableActions to prevent implicit animations during scroll-driven transforms
     private func updateBarsForImmersiveProgress() {
         guard !isUpdatingBars else { return }
+
+        // Don't apply transforms when in bottom fade mode - alpha controls visibility instead
+        guard !isInBottomFadeMode else { return }
+
         isUpdatingBars = true
         defer { isUpdatingBars = false }
 
@@ -345,6 +379,47 @@ final class ImmersiveModeManager: NSObject {
         CATransaction.commit()
     }
 
+    /// Updates bar visibility using alpha/opacity for bottom fade mode
+    /// Bars remain in their normal position (no transforms) and fade in/out
+    private func updateBarsForBottomFade() {
+        guard !isUpdatingBars else { return }
+        isUpdatingBars = true
+        defer { isUpdatingBars = false }
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+
+        resetAllTransforms()
+
+        let alpha = bottomFadeProgress
+
+        if let navBar = findNavigationBar() {
+            navBar.alpha = alpha
+        }
+        topBarContainer?.alpha = alpha
+        toolbar?.alpha = alpha
+
+        // Gradient view should be hidden when bars are visible via fade
+        safeAreaGradientView.alpha = 0.0
+
+        CATransaction.commit()
+    }
+
+    /// Exits bottom fade mode and restores bars to hidden state via transforms
+    private func exitBottomFadeMode() {
+        guard isInBottomFadeMode else { return }
+
+        isInBottomFadeMode = false
+        bottomFadeProgress = 0.0
+
+        // Restore alpha to full before applying transforms
+        restoreBarAlphas()
+
+        // Set immersive progress to fully hidden and apply transforms
+        _immersiveProgress = 1.0
+        updateBarsForImmersiveProgress()
+    }
+
     private func calculateNavigationBarTransform() -> CGFloat {
         guard let navBar = findNavigationBar() else { return 0 }
 
@@ -371,6 +446,14 @@ final class ImmersiveModeManager: NSObject {
         toolbar?.transform = .identity
     }
 
+    private func restoreBarAlphas() {
+        if let navBar = findNavigationBar() {
+            navBar.alpha = 1.0
+        }
+        topBarContainer?.alpha = 1.0
+        toolbar?.alpha = 1.0
+    }
+
     /// Calculates the remaining scrollable distance from current position to the bottom of content
     ///
     /// The calculation accounts for:
@@ -387,12 +470,19 @@ final class ImmersiveModeManager: NSObject {
     }
 
     private func snapToVisibleIfAtBottom(_ scrollView: UIScrollView, isRefreshControlArmedOrTriggered: Bool) {
-        if immersiveModeEnabled && !isRefreshControlArmedOrTriggered && isContentScrollableEnoughForImmersive {
-            let distanceFromBottom = calculateDistanceFromBottom(scrollView)
+        guard immersiveModeEnabled && !isRefreshControlArmedOrTriggered && isContentScrollableEnoughForImmersive else { return }
 
-            if distanceFromBottom <= Self.bottomDistanceThreshold && immersiveProgress < Self.bottomSnapThreshold {
-                immersiveProgress = 0
+        let distanceFromBottom = calculateDistanceFromBottom(scrollView)
+        let bottomFadeZone = totalBarTravelDistance * Self.progressiveRevealMultiplier
+
+        // If near bottom, ensure bars are fully visible via fade mode
+        if distanceFromBottom <= bottomFadeZone {
+            if !isInBottomFadeMode {
+                isInBottomFadeMode = true
             }
+            // Snap to fully visible when scroll stops near bottom
+            bottomFadeProgress = 1.0
+            updateBarsForBottomFade()
         }
     }
 
