@@ -18,7 +18,6 @@ final class MessageFolderPickerView: UIView {
     private let segmentedControl: UISegmentedControl
     private var customFolders: [PrivateMessageFolder] = []
     private var currentFolder: PrivateMessageFolder?
-    private var showingFoldersMenu = false
 
     override init(frame: CGRect) {
         self.segmentedControl = UISegmentedControl(items: [
@@ -169,7 +168,8 @@ final class MessageFolderPickerView: UIView {
                 case "-1":
                     self.segmentedControl.selectedSegmentIndex = 1
                 default:
-                    self.segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
+                    // Custom folder - keep segment 2 selected (shows folder name)
+                    self.segmentedControl.selectedSegmentIndex = 2
                 }
             }
         }
@@ -193,8 +193,6 @@ final class MessageFolderPickerView: UIView {
                     delegate?.folderPicker(self, didSelectFolder: inbox)
                 }
             }
-        } else if let current = currentFolder {
-            selectFolder(current)
         }
 
         // If there are no custom folders and the third segment shows a custom folder name,
@@ -261,12 +259,9 @@ final class MessageFolderPickerView: UIView {
     }
 
     @objc private func handleSegmentTap(_ gesture: UITapGestureRecognizer) {
-        let location = gesture.location(in: segmentedControl)
-        let segmentWidth = segmentedControl.bounds.width / CGFloat(segmentedControl.numberOfSegments)
-        let tappedSegment = Int(location.x / segmentWidth)
-
-        // If tapping the third segment (Folders) and it's already selected, show menu
-        if tappedSegment == 2 && segmentedControl.selectedSegmentIndex == 2 {
+        // If segment 2 is already selected, show the folders menu
+        // The gesture delegate already verified we're tapping segment 2
+        if segmentedControl.selectedSegmentIndex == 2 {
             showFoldersMenu()
         }
     }
@@ -275,14 +270,24 @@ final class MessageFolderPickerView: UIView {
 // MARK: - UIGestureRecognizerDelegate
 extension MessageFolderPickerView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // Only handle the gesture if it's on the third segment and it's already selected
-        let location = touch.location(in: segmentedControl)
-        let segmentWidth = segmentedControl.bounds.width / CGFloat(segmentedControl.numberOfSegments)
-        let tappedSegment = Int(location.x / segmentWidth)
+        // Only intercept if segment 2 is already selected and we're tapping on it
+        guard segmentedControl.selectedSegmentIndex == 2 else { return false }
 
-        // Only intercept if tapping the already-selected third segment
-        // (regardless of whether it shows "Folders" or a folder name)
-        return tappedSegment == 2 && segmentedControl.selectedSegmentIndex == 2
+        // Calculate which segment was tapped by checking segment frames
+        // Note: apportionsSegmentWidthsByContent makes segments have variable widths,
+        // so we can't assume equal widths. Instead, check if tap is past segments 0 and 1.
+        let location = touch.location(in: segmentedControl)
+        let width0 = segmentedControl.widthForSegment(at: 0)
+        let width1 = segmentedControl.widthForSegment(at: 1)
+
+        // If widths are 0 (automatic), fall back to checking if tap is in rightmost third
+        if width0 == 0 || width1 == 0 {
+            let segmentWidth = segmentedControl.bounds.width / 3.0
+            return location.x >= segmentWidth * 2
+        }
+
+        // Tap is on segment 2 if it's past segments 0 and 1
+        return location.x >= width0 + width1
     }
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -293,12 +298,5 @@ extension MessageFolderPickerView: UIGestureRecognizerDelegate {
 extension MessageFolderPickerView: UIPopoverPresentationControllerDelegate {
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         restorePreviousSelection()
-    }
-}
-
-private extension Array {
-    subscript(safe index: Int) -> Element? {
-        guard index >= 0, index < count else { return nil }
-        return self[index]
     }
 }

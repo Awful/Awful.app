@@ -10,6 +10,9 @@ import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageFolderManagement")
 
+// Maximum folder name length allowed by the forums
+private let maxFolderNameLength = 25
+
 final class MessageFolderManagementViewController: TableViewController {
 
     private let managedObjectContext: NSManagedObjectContext
@@ -107,7 +110,7 @@ final class MessageFolderManagementViewController: TableViewController {
         ) { [weak self] _ in
             guard let folderName = alert.textFields?.first?.text,
                   !folderName.isEmpty,
-                  folderName.count <= 25 else { return }
+                  folderName.count <= maxFolderNameLength else { return }
             self?.createFolder(name: folderName)
         }
         // Start with create button disabled
@@ -125,16 +128,16 @@ final class MessageFolderManagementViewController: TableViewController {
     }
 
     @objc private func textFieldDidChange(_ textField: UITextField) {
-        // Limit to 25 characters
-        if let text = textField.text, text.count > 25 {
-            textField.text = String(text.prefix(25))
+        // Limit to max folder name length
+        if let text = textField.text, text.count > maxFolderNameLength {
+            textField.text = String(text.prefix(maxFolderNameLength))
         }
 
         // Enable/disable create button based on text length
         if let alertController = presentedViewController as? UIAlertController,
            let text = textField.text,
            !text.isEmpty,
-           text.count <= 25 {
+           text.count <= maxFolderNameLength {
             alertController.actions.first?.isEnabled = true
         } else if let alertController = presentedViewController as? UIAlertController {
             alertController.actions.first?.isEnabled = false
@@ -249,9 +252,9 @@ extension MessageFolderManagementViewController {
 
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if tableView.isEditing {
-            return "Tap the red circle to delete folders. Messages will be moved to Inbox or Sent based on their origin."
+            return LocalizedString("private-message-folder.footer-editing")
         }
-        return "Tap Edit to delete folders."
+        return LocalizedString("private-message-folder.footer-normal")
     }
 
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

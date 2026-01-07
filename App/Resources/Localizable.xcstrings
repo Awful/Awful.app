@@ -980,6 +980,28 @@
         }
       }
     },
+    "private-message-folder.footer-editing" : {
+      "comment" : "Footer text shown in folder management when editing mode is active",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the red circle to delete folders. Messages will be moved to Inbox or Sent based on their origin."
+          }
+        }
+      }
+    },
+    "private-message-folder.footer-normal" : {
+      "comment" : "Footer text shown in folder management when not in editing mode",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Edit to delete folders."
+          }
+        }
+      }
+    },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
       "extractionState" : "migrated",

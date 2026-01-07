@@ -1174,26 +1174,25 @@ public final class ForumsClient {
                 try backgroundContext.save()
             } catch let error as NSError {
                 // Log detailed validation errors
-                print("Core Data Save Error when loading folder \(folderID): \(error)")
-                print("Error Code: \(error.code)")
-                print("Error Domain: \(error.domain)")
+                logger.error("Core Data Save Error when loading folder \(folderID): \(error)")
+                logger.error("Error Code: \(error.code), Domain: \(error.domain)")
 
                 if let detailedErrors = error.userInfo[NSDetailedErrorsKey] as? [NSError] {
-                    print("Detailed Errors:")
+                    logger.error("Detailed Errors:")
                     for detailedError in detailedErrors {
-                        print("  - Error Code: \(detailedError.code), Domain: \(detailedError.domain)")
-                        print("    Description: \(detailedError.localizedDescription)")
+                        logger.error("  - Error Code: \(detailedError.code), Domain: \(detailedError.domain)")
+                        logger.error("    Description: \(detailedError.localizedDescription)")
                         if let entity = detailedError.userInfo[NSValidationObjectErrorKey] as? NSManagedObject {
-                            print("    Entity: \(entity.entity.name ?? "unknown")")
+                            logger.error("    Entity: \(entity.entity.name ?? "unknown")")
                         }
                         if let key = detailedError.userInfo[NSValidationKeyErrorKey] as? String {
-                            print("    Key: \(key)")
+                            logger.error("    Key: \(key)")
                         }
                         if let value = detailedError.userInfo[NSValidationValueErrorKey] {
-                            print("    Value: \(value)")
+                            logger.error("    Value: \(String(describing: value))")
                         }
                         if let predicate = detailedError.userInfo[NSValidationPredicateErrorKey] {
-                            print("    Predicate: \(predicate)")
+                            logger.error("    Predicate: \(String(describing: predicate))")
                         }
                     }
                 }

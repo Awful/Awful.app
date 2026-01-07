@@ -11,6 +11,19 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "MessageListViewController")
 
+// MARK: - Layout Constants
+private enum LayoutConstants {
+    static let folderPickerHeight: CGFloat = 39
+    static let editToolbarHeight: CGFloat = 44
+    static let toolbarLeadingSpace: CGFloat = 8
+    static let toolbarTrailingSpace: CGFloat = 55  // Aligns delete button with Settings tab
+}
+
+// MARK: - UserDefaults Keys
+private enum UserDefaultsKey {
+    static let lastFolderID = "MessageListLastFolderID"
+}
+
 @objc(MessageListViewController)
 final class MessageListViewController: TableViewController {
 
@@ -147,14 +160,14 @@ final class MessageListViewController: TableViewController {
     }
 
     private func setCurrentFolder(_ folder: PrivateMessageFolder) {
-        guard folder != currentFolder else { return }
+        guard folder.folderID != currentFolder?.folderID else { return }
         currentFolder = folder
         folderPicker?.selectFolder(folder)
 
         dataSource = makeDataSource()
         tableView.reloadData()
 
-        UserDefaults.standard.set(folder.folderID, forKey: "MessageListLastFolderID")
+        UserDefaults.standard.set(folder.folderID, forKey: UserDefaultsKey.lastFolderID)
     }
     
     func showMessage(_ message: PrivateMessage) {
@@ -193,16 +206,7 @@ final class MessageListViewController: TableViewController {
 
         // Add folder options, excluding the current folder
         for folder in allFolders where folder.folderID != currentFolder?.folderID {
-            let folderName: String
-            if folder.folderID == "0" {
-                folderName = LocalizedString("private-message-folder.inbox")
-            } else if folder.folderID == "-1" {
-                folderName = LocalizedString("private-message-folder.sent")
-            } else {
-                folderName = folder.name
-            }
-
-            alert.addAction(UIAlertAction(title: folderName, style: .default) { [weak self] _ in
+            alert.addAction(UIAlertAction(title: displayName(for: folder), style: .default) { [weak self] _ in
                 self?.moveMessage(message, to: folder)
             })
         }
@@ -235,6 +239,17 @@ final class MessageListViewController: TableViewController {
                     present(alert, animated: true)
                 }
             }
+        }
+    }
+
+    private func displayName(for folder: PrivateMessageFolder) -> String {
+        switch folder.folderID {
+        case "0":
+            return LocalizedString("private-message-folder.inbox")
+        case "-1":
+            return LocalizedString("private-message-folder.sent")
+        default:
+            return folder.name
         }
     }
 
@@ -297,7 +312,7 @@ final class MessageListViewController: TableViewController {
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: 39),
+            headerView.heightAnchor.constraint(equalToConstant: LayoutConstants.folderPickerHeight),
 
             // Picker constraints
             picker.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
@@ -308,8 +323,8 @@ final class MessageListViewController: TableViewController {
         // Adjust table view content to be below the header
         // Don't use constraints on the table view itself since it's managed by UITableViewController
         // Keep automatic adjustment for safe area but add our header height
-        tableView.contentInset.top = 39
-        tableView.verticalScrollIndicatorInsets.top = 39
+        tableView.contentInset.top = LayoutConstants.folderPickerHeight
+        tableView.verticalScrollIndicatorInsets.top = LayoutConstants.folderPickerHeight
 
         // Scroll to top to ensure content starts at the right position
         tableView.setContentOffset(CGPoint(x: 0, y: -tableView.contentInset.top), animated: false)
@@ -317,7 +332,7 @@ final class MessageListViewController: TableViewController {
 
 
     private func loadInitialFolder() {
-        let lastFolderID = UserDefaults.standard.string(forKey: "MessageListLastFolderID") ?? "0"
+        let lastFolderID = UserDefaults.standard.string(forKey: UserDefaultsKey.lastFolderID) ?? "0"
 
         Task {
             await loadFolders()
@@ -359,9 +374,8 @@ final class MessageListViewController: TableViewController {
         let toolbar = UIToolbar()
         toolbar.translatesAutoresizingMaskIntoConstraints = false
 
-        // Add small fixed space on the left (8px)
         let leftSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        leftSpace.width = 8
+        leftSpace.width = LayoutConstants.toolbarLeadingSpace
 
         let moveButton = UIBarButtonItem(
             title: LocalizedString("table-view.action.move"),
@@ -378,9 +392,8 @@ final class MessageListViewController: TableViewController {
         )
         deleteButton.tintColor = .systemRed
 
-        // Larger fixed space to push delete button to align with Settings tab
         let rightSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        rightSpace.width = 55  // Adjusted to align with Settings tab
+        rightSpace.width = LayoutConstants.toolbarTrailingSpace
 
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
@@ -400,7 +413,7 @@ final class MessageListViewController: TableViewController {
 
         // Adjust table view content inset to make room for toolbar
         var contentInset = tableView.contentInset
-        contentInset.bottom = 44 // Standard toolbar height
+        contentInset.bottom = LayoutConstants.editToolbarHeight
         tableView.contentInset = contentInset
         tableView.scrollIndicatorInsets = contentInset
     }
@@ -454,10 +467,10 @@ final class MessageListViewController: TableViewController {
 
         alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
         alert.addAction(UIAlertAction(title: LocalizedString("table-view.action.delete"), style: .destructive) { [weak self] _ in
-            for indexPath in selectedRows {
-                if let message = self?.dataSource?.message(at: indexPath) {
-                    self?.deleteMessage(message)
-                }
+            // Collect messages first to avoid index path invalidation during iteration
+            let messages = selectedRows.compactMap { self?.dataSource?.message(at: $0) }
+            for message in messages {
+                self?.deleteMessage(message)
             }
             self?.setEditing(false, animated: true)
         })
@@ -474,20 +487,11 @@ final class MessageListViewController: TableViewController {
 
         // Add folder options, excluding the current folder
         for folder in allFolders where folder.folderID != currentFolder?.folderID {
-            let folderName: String
-            if folder.folderID == "0" {
-                folderName = LocalizedString("private-message-folder.inbox")
-            } else if folder.folderID == "-1" {
-                folderName = LocalizedString("private-message-folder.sent")
-            } else {
-                folderName = folder.name
-            }
-
-            alert.addAction(UIAlertAction(title: folderName, style: .default) { [weak self] _ in
-                for indexPath in indexPaths {
-                    if let message = self?.dataSource?.message(at: indexPath) {
-                        self?.moveMessage(message, to: folder)
-                    }
+            alert.addAction(UIAlertAction(title: displayName(for: folder), style: .default) { [weak self] _ in
+                // Collect messages first to avoid index path invalidation during iteration
+                let messages = indexPaths.compactMap { self?.dataSource?.message(at: $0) }
+                for message in messages {
+                    self?.moveMessage(message, to: folder)
                 }
                 self?.setEditing(false, animated: true)
             })

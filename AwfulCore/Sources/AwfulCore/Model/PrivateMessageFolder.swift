@@ -24,6 +24,15 @@ public class PrivateMessageFolder: AwfulManagedObject, Managed {
     public var isCustom: Bool {
         !isInbox && !isSent
     }
+
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+
+        // Initialize required string properties with empty values
+        folderID = ""
+        folderType = ""
+        name = ""
+    }
 }
 
 @objc(PrivateMessageFolderKey)
@@ -36,7 +45,10 @@ public final class PrivateMessageFolderKey: AwfulObjectKey {
     }
 
     public required init?(coder: NSCoder) {
-        folderID = coder.decodeObject(forKey: folderIDKey) as! String
+        guard let id = coder.decodeObject(forKey: folderIDKey) as? String else {
+            return nil
+        }
+        folderID = id
         super.init(coder: coder)
     }
 
