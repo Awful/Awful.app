@@ -16,6 +16,7 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
+    @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
 
@@ -33,34 +34,26 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     
     @IBOutlet private var avatarsSwitch: UISwitch!
     @IBAction func toggleAvatars(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         showAvatars = sender.isOn
     }
 
     @IBOutlet private var imagesSwitch: UISwitch!
     @IBAction private func toggleImages(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         showImages = sender.isOn
     }
-    
+
     @IBOutlet private var scaleTextLabel: UILabel!
     @IBOutlet private var scaleTextStepper: UIStepper!
     @IBAction private func scaleStepperDidChange(_ sender: UIStepper) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         fontScale = sender.value
     }
-    
+
     @IBOutlet private var automaticDarkModeSwitch: UISwitch!
     @IBAction func toggleAutomaticDarkMode(_ sender: UISwitch) {
-        if enableHaptics {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        }
+        performHapticFeedback()
         automaticDarkTheme = sender.isOn
     }
 
@@ -68,10 +61,25 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
     @IBOutlet private var darkModeLabel: UILabel!
     @IBOutlet private var darkModeSwitch: UISwitch!
     @IBAction func toggleDarkMode(_ sender: UISwitch) {
+        performHapticFeedback()
+        darkMode = sender.isOn
+    }
+
+    private var immersiveModeStack: UIStackView?
+    private var immersiveModeLabel: UILabel?
+    private var immersiveModeSwitch: UISwitch?
+
+    @objc private func toggleImmersiveMode(_ sender: UISwitch) {
+        performHapticFeedback()
+        immersiveModeEnabled = sender.isOn
+    }
+
+    // MARK: - Helper Methods
+
+    private func performHapticFeedback() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        darkMode = sender.isOn
     }
 
     private lazy var fontScaleFormatter: NumberFormatter = {
@@ -118,6 +126,9 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             }
             .store(in: &cancellables)
 
+        // Using RunLoop.main instead of DispatchQueue.main is intentional here.
+        // This defers UI updates during scrolling (tracking mode) for better performance.
+        // Settings toggles are not time-critical and can wait until scrolling completes.
         $showAvatars
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.avatarsSwitch?.isOn = $0 }
@@ -127,11 +138,65 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
             .receive(on: RunLoop.main)
             .sink { [weak self] in self?.imagesSwitch?.isOn = $0 }
             .store(in: &cancellables)
+
+        $immersiveModeEnabled
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.immersiveModeSwitch?.isOn = $0 }
+            .store(in: &cancellables)
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.setupImmersiveModeUI()
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updatePreferredContentSize()
+    }
+    
+    private func setupImmersiveModeUI() {
+        guard isViewLoaded, immersiveModeStack == nil else { return }
+        
+        let label = UILabel()
+        label.text = "Immersive Mode"
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.textColor = theme["sheetTextColor"] ?? UIColor.label
+        immersiveModeLabel = label
+        
+        let modeSwitch = UISwitch()
+        modeSwitch.isOn = immersiveModeEnabled
+        modeSwitch.onTintColor = theme["settingsSwitchColor"]
+        modeSwitch.addTarget(self, action: #selector(toggleImmersiveMode(_:)), for: .valueChanged)
+        immersiveModeSwitch = modeSwitch
+        
+        let stack = UIStackView(arrangedSubviews: [label, modeSwitch])
+        stack.axis = .horizontal
+        stack.distribution = .equalSpacing
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        immersiveModeStack = stack
+        
+        if let darkModeStack = darkModeStack,
+           let parentStack = darkModeStack.superview as? UIStackView {
+            if let index = parentStack.arrangedSubviews.firstIndex(of: darkModeStack) {
+                parentStack.insertArrangedSubview(stack, at: index + 1)
+            } else {
+                parentStack.addArrangedSubview(stack)
+            }
+        } else {
+            view.addSubview(stack)
+            NSLayoutConstraint.activate([
+                stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+                stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                stack.heightAnchor.constraint(equalToConstant: 44)
+            ])
+        }
     }
 
     private func updatePreferredContentSize() {
         let preferredHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        preferredContentSize = CGSize(width: 320, height: preferredHeight)
+        preferredContentSize = CGSize(width: 320, height: max(preferredHeight, 246))
     }
 
     override func themeDidChange() {
@@ -148,6 +213,9 @@ final class PostsPageSettingsViewController: ViewController, UIPopoverPresentati
         for uiswitch in switches {
             uiswitch.onTintColor = theme["settingsSwitchColor"]
         }
+        
+        immersiveModeLabel?.textColor = theme["sheetTextColor"] ?? UIColor.label
+        immersiveModeSwitch?.onTintColor = theme["settingsSwitchColor"]
     }
     
     // MARK: UIAdaptivePresentationControllerDelegate

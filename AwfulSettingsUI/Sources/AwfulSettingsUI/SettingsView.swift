@@ -24,6 +24,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @AppStorage(Settings.handoffEnabled) private var handoffEnabled
     @AppStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
+    @AppStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     @AppStorage(Settings.loadImages) private var loadImages
     @AppStorage(Settings.openTwitterLinksInTwitter) private var openLinksInTwitter
     @AppStorage(Settings.openYouTubeLinksInYouTube) private var openLinksInYouTube
@@ -150,6 +151,7 @@ public struct SettingsView: View {
                 Toggle("Embed Bluesky Posts", bundle: .module, isOn: $embedBlueskyPosts)
                 Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
                 Toggle("Double-Tap Post to Jump", bundle: .module, isOn: $doubleTapPostToJump)
+                Toggle("Immersive Mode", bundle: .module, isOn: $immersiveModeEnabled)
                 Toggle("Enable Haptics", bundle: .module, isOn: $enableHaptics)
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)
