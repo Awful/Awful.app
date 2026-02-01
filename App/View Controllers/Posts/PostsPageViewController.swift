@@ -41,9 +41,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    // Stored as Any because Task returns non-Sendable Core Data objects (Post: NSManagedObject).
-    // Swift 6 requires Task<Success, Failure> Success types to be Sendable.
-    private var networkOperation: Any?
+    private var networkOperation: Task<Void, Never>?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -163,7 +161,10 @@ final class PostsPageViewController: ViewController {
     }
 
     deinit {
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
+        // Avoid warning in Xcode 14 beta 1 "cannot access property with a non-sendable type from a non-isolated deinit"
+        // UIViewController actually does guarantee deinit on the main queue, but the Swift compiler doesn't know that.
+        // (Also, it seems like an oversight that wrapping the access in an immediately-executed closure avoids the warning, so be prepared for more warnings here.)
+        { networkOperation?.cancel() }()
     }
 
     var posts: [Post] = []
@@ -201,8 +202,8 @@ final class PostsPageViewController: ViewController {
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
-        networkOperation = nil
+
+        guard networkOperation == nil else { return }
 
         // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
@@ -260,8 +261,9 @@ final class PostsPageViewController: ViewController {
             }
             return try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
         }
-        networkOperation = fetch
-        Task { [weak self] in
+
+        networkOperation = Task { @MainActor [weak self] in
+            defer { self?.networkOperation = nil }
             do {
                 let (posts, firstUnreadPost, _) = try await fetch.value
                 guard let self else { return }
