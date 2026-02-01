@@ -62,22 +62,32 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
              UIImpactFeedbackGenerator(style: .medium).impactOccurred()
          }
      }
-        
+
     func themeDidChange() {
-        tabBar.barTintColor = theme["tabBarBackgroundColor"]
-        tabBar.isTranslucent = theme[bool: "tabBarIsTranslucent"] ?? true
-        tabBar.tintColor = theme["tintColor"]
-        tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
-        
         let barAppearance = UITabBarAppearance()
-        if tabBar.isTranslucent {
-            barAppearance.configureWithDefaultBackground()
+
+        if #available(iOS 26.0, *) {
+            let menuAppearance = theme[string: "menuAppearance"]
+            tabBar.overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
+
+            barAppearance.backgroundColor = nil
+            barAppearance.backgroundEffect = nil
+            barAppearance.shadowImage = nil
+            barAppearance.shadowColor = nil
+
+            tabBar.isTranslucent = true
+            tabBar.barTintColor = nil
+            tabBar.topBorderColor = nil
         } else {
             barAppearance.configureWithOpaqueBackground()
+            barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]!
+            barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]!
+            
+            tabBar.isTranslucent = false
+            tabBar.barTintColor = theme["tabBarBackgroundColor"]
+            tabBar.tintColor = theme["tintColor"]
+            tabBar.topBorderColor = theme["bottomBarTopBorderColor"]
         }
-        barAppearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
-        barAppearance.shadowImage = nil
-        barAppearance.shadowColor = nil
         
         let itemAppearance = UITabBarItemAppearance()
         itemAppearance.selected.iconColor = Theme.defaultTheme()["tabBarIconSelectedColor"]!
