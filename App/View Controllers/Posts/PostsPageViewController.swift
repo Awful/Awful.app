@@ -571,13 +571,13 @@ final class PostsPageViewController: ViewController {
     }()
 
 
-    private func actionsItem() -> UIBarButtonItem {
+    private lazy var actionsItem: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), menu: threadActionsMenu())
         if #available(iOS 16.0, *) {
             buttonItem.preferredMenuElementOrder = .fixed
         }
         return buttonItem
-    }
+    }()
 
     private func refetchPosts() {
         guard case .specific(let pageNumber)? = page else {
@@ -1055,7 +1055,7 @@ final class PostsPageViewController: ViewController {
                     // update toolbar so menu reflects new bookmarked state
                     var newItems = postsView.toolbarItems
                     newItems.removeLast()
-                    newItems.append(actionsItem())
+                    newItems.append(actionsItem)
                     postsView.toolbarItems = newItems
                 }
             } catch {
@@ -1161,7 +1161,7 @@ final class PostsPageViewController: ViewController {
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
-                popover.barButtonItem = actionsItem()
+                popover.barButtonItem = actionsItem
             }
         }
     }
@@ -1553,7 +1553,7 @@ final class PostsPageViewController: ViewController {
         postsView.toolbarItems = [
             settingsItem, .flexibleSpace(),
             backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
-            .flexibleSpace(), actionsItem()]
+            .flexibleSpace(), actionsItem]
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
