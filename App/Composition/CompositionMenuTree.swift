@@ -17,11 +17,8 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 final class CompositionMenuTree: NSObject {
     // This class exists to expose the struct-defined menu to Objective-C and to act as an image picker delegate.
     
+    @FoilDefaultStorage(Settings.imageHostingProvider) private var imageHostingProvider
     @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
-    
-    fileprivate var imgurUploadsEnabled: Bool {
-        return imgurUploadMode != .off
-    }
     
     let textView: UITextView
     
@@ -331,19 +328,8 @@ fileprivate let rootItems = [
         original line: MenuItem(title: "[img]", action: { $0.showSubmenu(imageItems) }),
      */
     MenuItem(title: "[img]", action: { tree in
-        // If Imgur uploads are enabled in settings, show the full image submenu
-        // Otherwise, only allow pasting URLs
-        if tree.imgurUploadsEnabled {
-            tree.showSubmenu(imageItems)
-        } else {
-            if UIPasteboard.general.coercedURL == nil {
-                linkifySelection(tree)
-            } else {
-                if let textRange = tree.textView.selectedTextRange {
-                    tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
-                }
-            }
-        }
+        // Image uploads are always enabled now (via Imgur or PostImages)
+        tree.showSubmenu(imageItems)
     }),
     MenuItem(title: "Format", action: { $0.showSubmenu(formattingItems) }),
     MenuItem(title: "[video]", action: { tree in
