@@ -99,8 +99,12 @@ func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
         return element.tagName == "br" && element.hasClass("pb")
     }
 
-    return html
-        .firstNode(matchingSelector: "dl.userinfo dd.title")
+    // Some PM pages have malformed HTML with duplicate dd.title elements where the first is empty.
+    // Try to find the dd.title that actually contains an image first.
+    let titleElement = html.firstNode(matchingSelector: "dl.userinfo dd.title img")?.parentElement
+        ?? html.firstNode(matchingSelector: "dl.userinfo dd.title")
+
+    return titleElement
         .flatMap { $0.children.array as? [HTMLNode] }?
         .filter { !isSuperfluousLineBreak($0) }
         .map { $0.serializedFragment }

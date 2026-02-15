@@ -6,7 +6,8 @@ import CoreData
 
 internal extension PrivateMessageFolderScrapeResult {
     func upsert(
-        into context: NSManagedObjectContext
+        into context: NSManagedObjectContext,
+        folderID: String = "0"
     ) throws -> [PrivateMessage] {
         var existingMessages: [PrivateMessageID: PrivateMessage] = [:]
         do {
@@ -35,11 +36,55 @@ internal extension PrivateMessageFolderScrapeResult {
             }
         }
 
+        let folder = PrivateMessageFolder.findOrCreate(in: context, matching: .init("\(\PrivateMessageFolder.folderID) = \(folderID)")) {
+            $0.folderID = folderID
+            switch folderID {
+            case "0":
+                $0.folderType = "inbox"
+                $0.name = "Inbox"
+            case "-1":
+                $0.folderType = "sent"
+                $0.name = "Sent Items"
+            default:
+                $0.folderType = "custom"
+                $0.name = self.folder?.name ?? "Folder"
+            }
+        }
+
         var messages: [PrivateMessage] = []
 
         for rawMessage in self.messages {
-            let message = existingMessages[rawMessage.id] ?? PrivateMessage.insert(into: context)
-            rawMessage.update(message)
+            let message: PrivateMessage
+            if let existing = existingMessages[rawMessage.id] {
+                message = existing
+            } else {
+                message = PrivateMessage.insert(into: context)
+                // Set messageID immediately for new messages
+                message.messageID = rawMessage.id.rawValue
+            }
+            rawMessage.update(message, isSentFolder: folderID == "-1")
+
+            // Update lastModifiedDate when modifying the message
+            message.lastModifiedDate = Date()
+
+            if message.folder != folder {
+                message.folder = folder
+            }
+
+            message.isSent = (folderID == "-1")
+
+            // For sent messages, set the current user as the sender
+            if folderID == "-1", message.from == nil {
+                // Key matches Settings.username from AwfulSettings
+                if let currentUsername = UserDefaults.standard.string(forKey: "username"),
+                   !currentUsername.isEmpty {
+                    let currentUser = User.findOrCreate(in: context, matching: NSPredicate(format: "%K = %@", #keyPath(User.username), currentUsername)) {
+                        $0.username = currentUsername
+                        // userID will be set by awakeFromInsert if not already present
+                    }
+                    message.from = currentUser
+                }
+            }
 
             let threadTag: ThreadTag?
             if let imageName = rawMessage.iconImage.map(ThreadTag.imageName) {
@@ -68,10 +113,29 @@ internal extension PrivateMessageFolderScrapeResult {
 }
 
 private extension PrivateMessageFolderScrapeResult.Message {
-    func update(_ message: PrivateMessage) {
+    func update(_ message: PrivateMessage, isSentFolder: Bool = false) {
         if hasBeenSeen != message.seen { message.seen = hasBeenSeen }
         if id.rawValue != message.messageID { message.messageID = id.rawValue }
-        if !senderUsername.isEmpty, senderUsername != message.rawFromUsername { message.rawFromUsername = senderUsername }
+
+        // For sent messages, senderUsername is actually the recipient
+        if isSentFolder {
+            // Store recipient username in a way we can retrieve it
+            if !senderUsername.isEmpty {
+                // Try to find or create the recipient user
+                if let context = message.managedObjectContext {
+                    let user = User.findOrCreate(in: context, matching: NSPredicate(format: "%K = %@", #keyPath(User.username), senderUsername)) {
+                        $0.username = senderUsername
+                        // userID will be set by awakeFromInsert if not already present
+                    }
+                    message.to = user
+                }
+            }
+        } else {
+            if !senderUsername.isEmpty, senderUsername != message.rawFromUsername {
+                message.rawFromUsername = senderUsername
+            }
+        }
+
         if let sentDate = sentDate, sentDate != message.sentDate { message.sentDate = sentDate }
         if let sentDateRaw = sentDateRaw, sentDateRaw != message.sentDateRaw { message.sentDateRaw = sentDateRaw }
         if !subject.isEmpty, subject != message.subject { message.subject = subject }
@@ -103,6 +167,9 @@ internal extension PrivateMessageScrapeResult {
         if from != message.from { message.from = from }
 
         update(message)
+
+        // Update lastModifiedDate when modifying the message
+        message.lastModifiedDate = Date()
 
         return message
     }

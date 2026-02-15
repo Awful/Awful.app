@@ -848,6 +848,193 @@
         }
       }
     },
+    "private-message-folder.add-message" : {
+      "comment" : "Message in new folder dialog",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a name for the new folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.add-title" : {
+      "comment" : "Title of new folder dialog",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.create" : {
+      "comment" : "Button to create new folder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        }
+      }
+    },
+    "private-message-folder.create-error-title" : {
+      "comment" : "Error title when folder creation fails",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not create folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.custom-folders-header" : {
+      "comment" : "Header for custom folders section",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-error-title" : {
+      "comment" : "Error title when folder deletion fails",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not delete folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-confirm-title" : {
+      "comment" : "Title of confirmation dialog when deleting a folder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Folder?"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-confirm-message" : {
+      "comment" : "Message shown when deleting a folder explaining that messages will be moved",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages in this folder will be moved to Inbox or Sent."
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-button" : {
+      "comment" : "Button to confirm folder deletion",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "private-message-folder.footer-editing" : {
+      "comment" : "Footer text shown in folder management when editing mode is active",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the minus button to delete a folder."
+          }
+        }
+      }
+    },
+    "private-message-folder.footer-normal" : {
+      "comment" : "Footer text shown in folder management when not in editing mode",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Edit to delete folders."
+          }
+        }
+      }
+    },
+    "private-message-folder.inbox" : {
+      "comment" : "Label for inbox folder in folder picker",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inbox"
+          }
+        }
+      }
+    },
+    "private-message-folder.manage" : {
+      "comment" : "Menu item to manage folders",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.manage-title" : {
+      "comment" : "Title of folder management screen",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.more" : {
+      "comment" : "Label for more folders dropdown button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.name-placeholder" : {
+      "comment" : "Placeholder text for folder name field",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folder name"
+          }
+        }
+      }
+    },
+    "private-message-folder.sent" : {
+      "comment" : "Label for sent folder in folder picker",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent"
+          }
+        }
+      }
+    },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
       "extractionState" : "migrated",
@@ -932,6 +1119,28 @@
         }
       }
     },
+    "private-messages-list.delete-confirm.message" : {
+      "comment" : "Message of confirmation alert when deleting multiple messages. Parameter is the count.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to delete %d messages?"
+          }
+        }
+      }
+    },
+    "private-messages-list.delete-confirm.title" : {
+      "comment" : "Title of confirmation alert when deleting multiple messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Messages?"
+          }
+        }
+      }
+    },
     "private-messages-list.deletion-error.title" : {
       "comment" : "Title of alert shown when there's a problem deleting a private message from the list.",
       "extractionState" : "migrated",
@@ -952,6 +1161,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@. %2$@. %3$@"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-error.title" : {
+      "comment" : "Title of alert shown when there's a problem moving a private message to a different folder.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could Not Move Message"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-folder.message" : {
+      "comment" : "Message of alert shown when selecting a folder to move a message to.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a folder to move this message to:"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-folder.title" : {
+      "comment" : "Title of alert shown when selecting a folder to move a message to.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move to Folder"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-multiple.message" : {
+      "comment" : "Message shown when moving multiple messages. Parameter is the count of messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move %d messages to:"
+          }
+        }
+      }
+    },
+    "private-messages-list.no-selection.message" : {
+      "comment" : "Message shown when trying to perform an action without selecting any messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select at least one message first."
+          }
+        }
+      }
+    },
+    "private-messages-list.no-selection.title" : {
+      "comment" : "Title shown when trying to perform an action without selecting any messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Messages Selected"
           }
         }
       }
@@ -1188,6 +1463,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete"
+          }
+        }
+      }
+    },
+    "table-view.action.move" : {
+      "comment" : "Text of move button shown in tables after swiping on the cell in edit mode.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move"
           }
         }
       }
