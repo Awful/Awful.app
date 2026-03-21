@@ -203,7 +203,8 @@ final class PostsPageViewController: ViewController {
         flagRequest?.cancel()
         flagRequest = nil
 
-        guard networkOperation == nil else { return }
+        networkOperation?.cancel()
+        networkOperation = nil
 
         // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
