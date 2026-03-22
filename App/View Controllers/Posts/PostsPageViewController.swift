@@ -256,17 +256,22 @@ final class PostsPageViewController: ViewController {
 
         let initialTheme = theme
 
-        let fetch = Task {
-            await MainActor.run {
-                self.postsView.loadingView?.updateStatus("Fetching posts from server...")
-            }
-            return try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+        struct FetchResult: @unchecked Sendable {
+            let posts: [Post]
+            let firstUnreadPost: Int?
+            let advertisementHTML: String
+        }
+        let fetch = Task { @MainActor in
+            self.postsView.loadingView?.updateStatus("Fetching posts from server...")
+            let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+            return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML)
         }
 
         networkOperation = Task { @MainActor [weak self] in
             defer { self?.networkOperation = nil }
             do {
-                let (posts, firstUnreadPost, _) = try await fetch.value
+                let fetchResult = try await fetch.value
+                let (posts, firstUnreadPost) = (fetchResult.posts, fetchResult.firstUnreadPost)
                 guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
