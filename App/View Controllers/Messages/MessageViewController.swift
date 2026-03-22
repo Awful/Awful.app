@@ -262,9 +262,7 @@ final class MessageViewController: ViewController {
 
                     if message.seen == false {
                         message.seen = true
-                        try await message.managedObjectContext?.perform {
-                            try message.managedObjectContext?.save()
-                        }
+                        try message.managedObjectContext?.save()
                     }
                 } catch {
                     title = ""

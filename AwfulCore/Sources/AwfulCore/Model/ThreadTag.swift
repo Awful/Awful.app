@@ -34,7 +34,7 @@ extension ThreadTag {
 }
 
 @objc(ThreadTagKey)
-public final class ThreadTagKey: AwfulObjectKey {
+public final class ThreadTagKey: AwfulObjectKey, @unchecked Sendable {
     @objc public let imageName: String?
     @objc public let threadTagID: String?
     
