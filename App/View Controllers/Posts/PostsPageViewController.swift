@@ -419,20 +419,20 @@ final class PostsPageViewController: ViewController {
 
         context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
 
-        let html: String
-        do {
-            html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
-        } catch {
-            logger.error("could not render posts view HTML: \(error)")
-            html = ""
-        }
+        Task.detached(priority: .userInitiated) { [context] in
+            let html: String
+            do {
+                html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
+            } catch {
+                logger.error("could not render posts view HTML: \(error)")
+                html = ""
+            }
 
-        Task {
-            await postsView.renderView.eraseDocument()
+            await self.postsView.renderView.eraseDocument()
             await MainActor.run {
                 self.postsView.loadingView?.updateStatus("Rendering page...")
             }
-            self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+            await self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
 
