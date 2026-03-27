@@ -155,7 +155,6 @@ extension HTMLDocument {
                 if src.hasPrefix("http") {
                     attachmentSrc = src
                 } else if let baseURL = ForumsClient.shared.baseURL {
-                    // Use URLComponents for safe URL construction instead of string concatenation
                     guard let url = URL(string: src, relativeTo: baseURL)?.absoluteString else {
                         continue
                     }
@@ -164,13 +163,13 @@ extension HTMLDocument {
                     continue
                 }
 
-                // Extract postid from URL
+                // Extract attachmentid from URL query parameters
                 if let urlComponents = URLComponents(string: attachmentSrc),
-                   let postIDItem = urlComponents.queryItems?.first(where: { $0.name == "postid" }),
-                   let postID = postIDItem.value {
+                   let attachmentIDItem = urlComponents.queryItems?.first(where: { $0.name == "attachmentid" }),
+                   let attachmentID = attachmentIDItem.value {
 
-                    // Mark as attachment image and store the postID for async loading
-                    img["data-awful-attachment-postid"] = postID
+                    // Mark as attachment image and store the attachmentID for async loading
+                    img["data-awful-attachment-id"] = attachmentID
                     img["data-awful-attachment-url"] = attachmentSrc
                     // Use a placeholder while loading
                     img["src"] = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ddd' width='100' height='100'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-family='sans-serif' font-size='14'%3ELoading...%3C/text%3E%3C/svg%3E"

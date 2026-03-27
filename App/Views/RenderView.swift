@@ -286,18 +286,18 @@ extension RenderView: WKScriptMessageHandler {
             /// An opaque `id` to use when calling back with the response.
             let id: String
 
-            /// The post ID for the attachment.
-            let postID: String
+            /// The attachment ID to fetch.
+            let attachmentID: String
 
             init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
                 assert(rawMessage.name == Self.messageName)
                 guard let body = rawMessage.body as? [String: Any],
                       let id = body["id"] as? String,
-                      let postID = body["postid"] as? String
+                      let attachmentID = body["attachmentid"] as? String
                 else { return nil }
 
                 self.id = id
-                self.postID = postID
+                self.attachmentID = attachmentID
             }
         }
     }

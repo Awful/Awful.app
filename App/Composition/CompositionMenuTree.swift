@@ -118,6 +118,17 @@ final class CompositionMenuTree: NSObject {
         shouldPopWhenMenuHides = true
     }
 
+    /// When true, the next image picked will be used directly as a forum attachment
+    /// (skipping the destination submenu). Used for the "Replace" flow.
+    private var pickingForDirectAttachment = false
+
+    /// Opens the photo library picker specifically for selecting a forum attachment
+    /// (replacement or new addition), skipping the destination submenu.
+    func pickImageForAttachment() {
+        pickingForDirectAttachment = true
+        showImagePicker(.photoLibrary)
+    }
+
     // fileprivate to allow access from MenuItem action closures defined at file scope
     fileprivate func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
@@ -327,11 +338,17 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
 
         picker.dismiss(animated: true) {
             self.textView.becomeFirstResponder()
-            self.showSubmenu(imageDestinationItems(tree: self))
+            if self.pickingForDirectAttachment {
+                self.pickingForDirectAttachment = false
+                self.useForumAttachmentForPendingImage()
+            } else {
+                self.showSubmenu(imageDestinationItems(tree: self))
+            }
         }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        pickingForDirectAttachment = false
         picker.dismiss(animated: true, completion: {
             self.textView.becomeFirstResponder()
         })
@@ -517,7 +534,8 @@ fileprivate let rootItems = [
     }),
     MenuItem(title: "[img]", action: { tree in
         // Show the image submenu if Imgur uploads are enabled or forum attachments are available
-        if tree.imgurUploadsEnabled || tree.draft is NewReplyDraft {
+        let canAttachInEdit = (tree.draft as? EditReplyDraft)?.canAddAttachment ?? false
+        if tree.imgurUploadsEnabled || tree.draft is NewReplyDraft || canAttachInEdit {
             tree.showSubmenu(imageItems(tree: tree))
         } else {
             // Fallback: paste image URL from clipboard or wrap selection
@@ -576,7 +594,16 @@ fileprivate func imageDestinationItems(tree: CompositionMenuTree) -> [MenuItem] 
         items.append(MenuItem(title: "Image Host", action: { $0.useImageHostForPendingImage() }))
     }
 
+    // Show Forum Attachment for new replies, or for edits where the server supports it
+    let canAttach: Bool
     if tree.draft is NewReplyDraft {
+        canAttach = true
+    } else if let editDraft = tree.draft as? EditReplyDraft {
+        canAttach = editDraft.canAddAttachment
+    } else {
+        canAttach = false
+    }
+    if canAttach {
         items.append(MenuItem(title: "Forum Attachment", action: { $0.useForumAttachmentForPendingImage() }))
     }
 

@@ -1074,6 +1074,8 @@ public final class ForumsClient {
     public enum AttachmentAction {
         case keep
         case delete
+        /// Upload a new attachment (replacing any existing one, or adding to a post without one).
+        case upload(data: Data, filename: String, mimeType: String)
     }
 
     public func edit(
@@ -1081,21 +1083,71 @@ public final class ForumsClient {
         bbcode: String,
         attachmentAction: AttachmentAction = .keep
     ) async throws {
-        let params: [KeyValuePairs<String, Any>.Element]
-        do {
-            let parsedForm = try await editForm(for: post)
-            let form = SubmittableForm(parsedForm)
+        let parsedForm = try await editForm(for: post)
+        let form = SubmittableForm(parsedForm)
 
-            if parsedForm.controls.contains(where: { $0.name == "attachmentaction" }) {
-                let value = attachmentAction == .keep ? "keep" : "delete"
-                try form.select(value: value, for: "attachmentaction")
+        let hasAttachmentActionControl = parsedForm.controls.contains(where: { $0.name == "attachmentaction" })
+
+        // Determine which attachmentaction values the form supports
+        let hasDeleteValue = parsedForm.controls.contains(where: { $0.name == "attachmentaction" && $0.value == "delete" })
+        let hasNewValue = parsedForm.controls.contains(where: { $0.name == "attachmentaction" && $0.value == "new" })
+
+        switch attachmentAction {
+        case .keep:
+            if hasAttachmentActionControl {
+                try form.select(value: "keep", for: "attachmentaction")
             }
 
-            try form.enter(text: bbcode, for: "message")
-            let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
-            params = prepareFormEntries(submission)
+        case .delete:
+            if hasDeleteValue {
+                try form.select(value: "delete", for: "attachmentaction")
+            }
+
+        case .upload:
+            if hasNewValue {
+                // "new" is used for both adding and replacing attachments
+                try form.select(value: "new", for: "attachmentaction")
+            }
         }
-        _ = try await fetch(method: .post, urlString: "editpost.php", parameters: params)
+
+        try form.enter(text: bbcode, for: "message")
+        let submission = form.submit(button: parsedForm.submitButton(named: "submit"))
+        let params = prepareFormEntries(submission)
+
+        if case .upload(let data, let filename, let mimeType) = attachmentAction {
+            _ = try await submitEditWithAttachment(
+                formParams: params,
+                attachment: (data: data, filename: filename, mimeType: mimeType)
+            )
+        } else {
+            _ = try await fetch(method: .post, urlString: "editpost.php", parameters: params)
+        }
+    }
+
+    /// Submits edit with multipart form data for attachment upload
+    private func submitEditWithAttachment(
+        formParams: [KeyValuePairs<String, Any>.Element],
+        attachment: (data: Data, filename: String, mimeType: String)
+    ) async throws -> (Data, URLResponse) {
+        guard let urlSession else {
+            throw Error.missingURLSession
+        }
+        guard let url = URL(string: "editpost.php", relativeTo: baseURL) else {
+            throw Error.invalidBaseURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let escapedParams = formParams.lazy.map(win1252Escaped(_:))
+        try request.setMultipartFormData(escapedParams, encoding: .windowsCP1252)
+        try request.appendFileData(
+            attachment.data,
+            withName: "attachment",
+            filename: attachment.filename,
+            mimeType: attachment.mimeType
+        )
+
+        return try await urlSession.data(for: request)
     }
 
     private func editForm(
@@ -1109,6 +1161,7 @@ public final class ForumsClient {
             "postid": postID,
         ])
         let (document, url) = try parseHTML(data: data, response: response)
+
         guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
             if let specialMessage = document.firstNode(matchingSelector: "#content center div.standard"),
                specialMessage.textContent.contains("permission")
@@ -1121,26 +1174,30 @@ public final class ForumsClient {
         return try Form(htmlForm, url: url)
     }
 
-    /**
-     Finds attachment information for a post being edited.
+    public struct EditAttachmentCapabilities {
+        /// Existing attachment on the post, if any.
+        public let existingAttachment: (id: String, filename: String)?
+        /// Whether the edit form supports adding/uploading a new attachment.
+        public let canAddAttachment: Bool
+    }
 
-     This method parses the edit form to find any existing attachment
-     associated with a post, returning the attachment ID and filename.
-
-     - Parameter post: The post to check for attachment information.
-
-     - Returns: A tuple containing the attachment ID and filename, or `nil` if no attachment exists.
-
-     - Throws: An error if the request fails.
-     */
-    public func findAttachmentInfo(for post: Post) async throws -> (id: String, filename: String)? {
+    public func findEditAttachmentCapabilities(for post: Post) async throws -> EditAttachmentCapabilities {
         let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
             "action": "editpost",
             "postid": await post.managedObjectContext!.perform { post.postID },
         ])
         let (document, _) = try parseHTML(data: data, response: response)
 
-        return parseAttachmentInfo(from: document)
+        let existingAttachment = parseAttachmentInfo(from: document)
+
+        // Check if the form has an attachment file input (indicating the server supports attachment uploads for this post)
+        let hasFileInput = document.firstNode(matchingSelector: "input[type='file'][name='attachment']") != nil
+        let hasAttachmentAction = document.firstNode(matchingSelector: "input[name='attachmentaction']") != nil
+
+        return EditAttachmentCapabilities(
+            existingAttachment: existingAttachment,
+            canAddAttachment: hasFileInput || hasAttachmentAction
+        )
     }
 
     private func parseAttachmentInfo(from document: HTMLDocument) -> (id: String, filename: String)? {
@@ -1161,29 +1218,10 @@ public final class ForumsClient {
         return (id: attachmentID, filename: filename)
     }
 
-    /**
-     Fetches the image data for an attachment associated with a post.
-
-     - Parameter postID: The ID of the post containing the attachment.
-     - Returns: The image data for the attachment.
-     - Throws: An error if the request fails or no attachment is found.
-     */
-    public func fetchAttachmentImage(postID: String) async throws -> Data {
+    /// Fetches attachment image data directly by attachment ID.
+    public func fetchAttachmentImageByID(attachmentID: String) async throws -> Data {
         guard let urlSession else { throw Error.missingURLSession }
 
-        let (data, response) = try await fetch(method: .get, urlString: "editpost.php", parameters: [
-            "action": "editpost",
-            "postid": postID,
-        ])
-        let (document, _) = try parseHTML(data: data, response: response)
-
-        guard let (attachmentID, _) = parseAttachmentInfo(from: document) else {
-            throw NSError(domain: "Awful", code: 0, userInfo: [
-                NSLocalizedDescriptionKey: "No attachment found for this post"
-            ])
-        }
-
-        // Now fetch the actual attachment image
         guard let attachmentURL = URL(string: "attachment.php?attachmentid=\(attachmentID)", relativeTo: baseURL) else {
             throw Error.invalidBaseURL
         }

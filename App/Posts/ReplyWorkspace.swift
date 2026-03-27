@@ -137,6 +137,10 @@ final class ReplyWorkspace: NSObject {
                 textView.spellCheckingType = tweaks.spellCheckingType
             }
 
+            compositionViewController.onAttachmentProcessingChanged = { [weak self] isProcessing in
+                self?.rightButtonItem.isEnabled = !isProcessing
+            }
+
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.compositionViewController.setDraft(self.draft)
@@ -414,6 +418,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     enum AttachmentAction {
         case keep
         case delete
+        case replace
     }
 
     let post: Post
@@ -422,10 +427,28 @@ final class EditReplyDraft: NSObject, ReplyDraft {
     var existingAttachmentInfo: (id: String, filename: String)?
     var existingAttachmentImage: UIImage?
     var shouldDeleteAttachment = false
+    /// Whether the server's edit form supports attachment uploads for this post.
+    var canAddAttachment = false
 
     var attachmentAction: AttachmentAction {
-        get { shouldDeleteAttachment ? .delete : .keep }
-        set { shouldDeleteAttachment = (newValue == .delete) }
+        get {
+            if forumAttachment != nil {
+                return .replace
+            }
+            return shouldDeleteAttachment ? .delete : .keep
+        }
+        set {
+            switch newValue {
+            case .keep:
+                shouldDeleteAttachment = false
+                forumAttachment = nil
+            case .delete:
+                shouldDeleteAttachment = true
+                forumAttachment = nil
+            case .replace:
+                shouldDeleteAttachment = true
+            }
+        }
     }
 
     var existingAttachmentFilename: String? {
@@ -457,6 +480,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
             self.existingAttachmentImage = UIImage(data: imageData)
         }
         self.shouldDeleteAttachment = coder.decodeBool(forKey: Keys.shouldDeleteAttachment)
+        self.forumAttachment = coder.decodeObject(of: ForumAttachment.self, forKey: Keys.forumAttachment)
     }
 
     func encode(with coder: NSCoder) {
@@ -470,6 +494,9 @@ final class EditReplyDraft: NSObject, ReplyDraft {
             coder.encode(imageData as NSData, forKey: Keys.attachmentImageData)
         }
         coder.encode(shouldDeleteAttachment, forKey: Keys.shouldDeleteAttachment)
+        if let forumAttachment = forumAttachment {
+            coder.encode(forumAttachment, forKey: Keys.forumAttachment)
+        }
     }
 
     fileprivate struct Keys {
@@ -479,6 +506,7 @@ final class EditReplyDraft: NSObject, ReplyDraft {
         static let attachmentFilename = "attachmentFilename"
         static let attachmentImageData = "attachmentImageData"
         static let shouldDeleteAttachment = "shouldDeleteAttachment"
+        static let forumAttachment = "forumAttachment"
     }
     
     var thread: AwfulThread {
@@ -552,11 +580,14 @@ extension NewReplyDraft: SubmittableDraft {
 extension EditReplyDraft: SubmittableDraft {
     enum SubmissionError: LocalizedError {
         case emptyText
+        case attachmentValidationFailed(ForumAttachment.ValidationError)
 
         var errorDescription: String? {
             switch self {
             case .emptyText:
                 return "Post text cannot be empty"
+            case .attachmentValidationFailed(let validationError):
+                return validationError.localizedDescription
             }
         }
     }
@@ -573,8 +604,28 @@ extension EditReplyDraft: SubmittableDraft {
             } else {
                 Task { @MainActor in
                     do {
-                        let attachmentAction: ForumsClient.AttachmentAction = shouldDeleteAttachment ? .delete : .keep
-                        try await ForumsClient.shared.edit(post, bbcode: plainText ?? "", attachmentAction: attachmentAction)
+                        let clientAction: ForumsClient.AttachmentAction
+
+                        if let newAttachment = forumAttachment {
+                            // Uploading a new attachment (replace existing or add to post without one)
+                            let limits = try await ForumsClient.shared.fetchAttachmentLimits(for: thread)
+
+                            if let validationError = newAttachment.validate(
+                                maxFileSize: limits.maxFileSize,
+                                maxDimension: limits.maxDimension
+                            ) {
+                                completion(SubmissionError.attachmentValidationFailed(validationError))
+                                return
+                            }
+                            let imageData = try newAttachment.imageData()
+                            clientAction = .upload(data: imageData.data, filename: imageData.filename, mimeType: imageData.mimeType)
+                        } else if shouldDeleteAttachment {
+                            clientAction = .delete
+                        } else {
+                            clientAction = .keep
+                        }
+
+                        try await ForumsClient.shared.edit(post, bbcode: plainText ?? "", attachmentAction: clientAction)
                         completion(nil)
                     } catch {
                         completion(error)

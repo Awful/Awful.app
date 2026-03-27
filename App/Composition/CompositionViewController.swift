@@ -112,6 +112,9 @@ final class CompositionViewController: ViewController {
     fileprivate var menuTree: CompositionMenuTree?
     private weak var currentDraft: (NSObject & ReplyDraft)?
 
+    /// Called when attachment processing starts or finishes. `true` means processing is in progress.
+    var onAttachmentProcessingChanged: ((Bool) -> Void)?
+
     func setDraft(_ draft: NSObject & ReplyDraft) {
         menuTree?.draft = draft
         currentDraft = draft
@@ -120,6 +123,7 @@ final class CompositionViewController: ViewController {
 
     func showResizingPlaceholder() {
         attachmentPreviewView.showResizingPlaceholder()
+        onAttachmentProcessingChanged?(true)
         updateAttachmentViewVisibility(
             showPreview: true, previewHeight: AttachmentViewLayout.previewHeight,
             showEdit: false, editHeight: 0,
@@ -133,20 +137,20 @@ final class CompositionViewController: ViewController {
             return
         }
 
-        // For edits, show existing attachment info if available
-        if let editDraft = draft as? EditReplyDraft {
-            if let existingFilename = editDraft.existingAttachmentFilename {
-                showAttachmentEditView(filename: existingFilename, filesize: editDraft.existingAttachmentFilesize, image: editDraft.existingAttachmentImage)
-                return
-            }
-        }
-
-        // For new posts, show preview if attachment is set
+        // If a new attachment has been selected (for new reply, add-to-edit, or replace), show its preview
         if let attachment = draft.forumAttachment {
             showAttachmentPreview(with: attachment)
-        } else {
-            hideAllAttachmentViews()
+            return
         }
+
+        // For edits with an existing attachment (and no replacement selected), show the edit view
+        if let editDraft = draft as? EditReplyDraft,
+           let existingFilename = editDraft.existingAttachmentFilename {
+            showAttachmentEditView(filename: existingFilename, filesize: editDraft.existingAttachmentFilesize, image: editDraft.existingAttachmentImage)
+            return
+        }
+
+        hideAllAttachmentViews()
     }
 
     private func showAttachmentPreview(with attachment: ForumAttachment) {
@@ -201,13 +205,20 @@ final class CompositionViewController: ViewController {
 
     private func removeAttachment() {
         currentDraft?.forumAttachment = nil
-        hideAllAttachmentViews()
+        updateAttachmentPreview()
     }
 
     private func handleAttachmentEditAction(_ action: AttachmentEditView.AttachmentAction) {
         guard let editDraft = currentDraft as? EditReplyDraft else { return }
 
-        editDraft.attachmentAction = (action == .keep) ? .keep : .delete
+        switch action {
+        case .keep:
+            editDraft.attachmentAction = .keep
+        case .delete:
+            editDraft.attachmentAction = .delete
+        case .replace:
+            menuTree?.pickImageForAttachment()
+        }
     }
 
     override func viewDidLoad() {
@@ -216,6 +227,7 @@ final class CompositionViewController: ViewController {
         keyboardAvoider = ScrollViewKeyboardAvoider(textView)
         menuTree = CompositionMenuTree(textView: textView)
         menuTree?.onAttachmentChanged = { [weak self] in
+            self?.onAttachmentProcessingChanged?(false)
             self?.updateAttachmentPreview()
         }
         menuTree?.onResizingStarted = { [weak self] in

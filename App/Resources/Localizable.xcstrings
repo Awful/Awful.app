@@ -114,6 +114,18 @@
         }
       }
     },
+    "compose.attachment.action-replace" : {
+      "comment" : "Segmented control option to replace an existing attachment with a new one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace"
+          }
+        }
+      }
+    },
     "compose.attachment.edit-title" : {
       "comment" : "Title shown on the attachment edit card.",
       "extractionState" : "manual",

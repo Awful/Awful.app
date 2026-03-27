@@ -1255,34 +1255,34 @@ final class PostsPageViewController: ViewController {
                     }
 
                     let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost)
-                    let attachmentInfo = try? await ForumsClient.shared.findAttachmentInfo(for: selectedPost)
+                    let capabilities = try? await ForumsClient.shared.findEditAttachmentCapabilities(for: selectedPost)
                     let replyWorkspace = ReplyWorkspace(post: selectedPost, bbcode: text)
 
-                    // Set attachment info and fetch image before creating the composition view controller
-                    if let attachmentInfo = attachmentInfo,
-                       let editDraft = replyWorkspace.draft as? EditReplyDraft {
-                        editDraft.existingAttachmentInfo = attachmentInfo
+                    // Set attachment info and capabilities before creating the composition view controller
+                    if let editDraft = replyWorkspace.draft as? EditReplyDraft {
+                        editDraft.canAddAttachment = capabilities?.canAddAttachment ?? false
 
-                        // Fetch the attachment image
-                        do {
-                            let imageData = try await ForumsClient.shared.fetchAttachmentImage(postID: selectedPost.postID)
-                            if let image = UIImage(data: imageData) {
-                                editDraft.existingAttachmentImage = image
+                        if let attachmentInfo = capabilities?.existingAttachment {
+                            editDraft.existingAttachmentInfo = attachmentInfo
+
+                            // Fetch the attachment image
+                            do {
+                                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentInfo.id)
+                                if let image = UIImage(data: imageData) {
+                                    editDraft.existingAttachmentImage = image
+                                }
+                            } catch {
+                                logger.error("Failed to fetch attachment image for edit: \(error)")
+                                let alert = UIAlertController(
+                                    title: nil,
+                                    message: LocalizedString("posts-page.error.attachment-preview-failed"),
+                                    preferredStyle: .alert
+                                )
+                                present(alert, animated: true)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                    alert.dismiss(animated: true)
+                                }
                             }
-                        } catch {
-                            logger.error("Failed to fetch attachment image for edit: \(error)")
-                            // Show a toast notification to inform the user
-                            let alert = UIAlertController(
-                                title: nil,
-                                message: LocalizedString("posts-page.error.attachment-preview-failed"),
-                                preferredStyle: .alert
-                            )
-                            present(alert, animated: true)
-                            // Auto-dismiss after 2 seconds
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                alert.dismiss(animated: true)
-                            }
-                            // Continue anyway - AttachmentEditView will show generic icon
                         }
                     }
 
@@ -1401,10 +1401,10 @@ final class PostsPageViewController: ViewController {
         }
     }
 
-    private func fetchAttachmentImage(postID: String, id: String) {
+    private func fetchAttachmentImage(attachmentID: String, id: String) {
         Task {
             do {
-                let imageData = try await ForumsClient.shared.fetchAttachmentImage(postID: postID)
+                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentID)
                 if let image = UIImage(data: imageData), let pngData = image.pngData() {
                     let base64 = pngData.base64EncodedString()
                     let dataURL = "data:image/png;base64,\(base64)"
@@ -1413,7 +1413,7 @@ final class PostsPageViewController: ViewController {
                     }
                 }
             } catch {
-                logger.error("Failed to fetch attachment image for postID \(postID): \(error)")
+                logger.error("Failed to fetch attachment image \(attachmentID): \(error)")
             }
         }
     }
@@ -1846,7 +1846,7 @@ extension PostsPageViewController: RenderViewDelegate {
             fetchOEmbed(url: message.url, id: message.id)
 
         case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
-            fetchAttachmentImage(postID: message.postID, id: message.id)
+            fetchAttachmentImage(attachmentID: message.attachmentID, id: message.id)
 
         case is FYADFlagRequest:
             fetchNewFlag()

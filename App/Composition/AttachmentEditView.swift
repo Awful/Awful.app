@@ -10,7 +10,8 @@ final class AttachmentEditView: AttachmentCardView {
     private let actionSegmentedControl: UISegmentedControl = {
         let items = [
             LocalizedString("compose.attachment.action-keep"),
-            LocalizedString("compose.attachment.action-delete")
+            LocalizedString("compose.attachment.action-delete"),
+            LocalizedString("compose.attachment.action-replace")
         ]
         let sc = UISegmentedControl(items: items)
         sc.selectedSegmentIndex = 0
@@ -32,6 +33,7 @@ final class AttachmentEditView: AttachmentCardView {
     enum AttachmentAction {
         case keep
         case delete
+        case replace
     }
 
     override init(frame: CGRect) {
@@ -77,7 +79,13 @@ final class AttachmentEditView: AttachmentCardView {
     }
 
     @objc private func actionChanged() {
-        let action: AttachmentAction = actionSegmentedControl.selectedSegmentIndex == 0 ? .keep : .delete
+        let action: AttachmentAction
+        switch actionSegmentedControl.selectedSegmentIndex {
+        case 0: action = .keep
+        case 1: action = .delete
+        case 2: action = .replace
+        default: action = .keep
+        }
         onActionChanged?(action)
     }
 

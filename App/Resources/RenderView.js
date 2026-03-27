@@ -951,26 +951,26 @@ Awful.embedGfycat();
 
 // Load attachment images asynchronously
 Awful.loadAttachmentImages = function() {
-  var attachmentImages = document.querySelectorAll('img[data-awful-attachment-postid]');
+  var attachmentImages = document.querySelectorAll('img[data-awful-attachment-id]');
   attachmentImages.forEach(function(img, index) {
-    var postID = img.getAttribute('data-awful-attachment-postid');
-    var id = 'attachment-' + postID + '-' + index + '-' + Date.now();
-    img.setAttribute('data-awful-attachment-id', id);
+    var attachmentID = img.getAttribute('data-awful-attachment-id');
+    var callbackID = 'attachment-' + attachmentID + '-' + index + '-' + Date.now();
+    img.setAttribute('data-awful-attachment-callback-id', callbackID);
     window.webkit.messageHandlers.fetchAttachmentImage.postMessage({
-      id: id,
-      postid: postID
+      id: callbackID,
+      attachmentid: attachmentID
     });
   });
 };
 
 Awful.didFetchAttachmentImage = function(id, dataURL) {
-  var img = document.querySelector('img[data-awful-attachment-id="' + id + '"]');
+  var img = document.querySelector('img[data-awful-attachment-callback-id="' + id + '"]');
   if (img && dataURL) {
     img.src = dataURL;
   }
 };
 
-if (document.querySelectorAll('img[data-awful-attachment-postid]').length > 0) {
+if (document.querySelectorAll('img[data-awful-attachment-id]').length > 0) {
   Awful.loadAttachmentImages();
 }
 
