@@ -1061,10 +1061,7 @@ final class PostsPageViewController: ViewController {
                     overlay.dismiss(true)
 
                     // update toolbar so menu reflects new bookmarked state
-                    var newItems = postsView.toolbarItems
-                    newItems.removeLast()
-                    newItems.append(actionsItem)
-                    postsView.toolbarItems = newItems
+                    actionsItem.menu = threadActionsMenu()
                 }
             } catch {
                 logger.error("error marking thread: \(error)")
