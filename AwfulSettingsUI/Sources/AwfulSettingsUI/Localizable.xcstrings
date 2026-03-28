@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended." : {
-
-    },
     "[timg] Large Images" : {
 
     },
@@ -112,10 +109,19 @@
     "Hide Sidebar in Landscape" : {
 
     },
+    "Image Hosting" : {
+
+    },
+    "Imgur" : {
+
+    },
     "Imgur Account" : {
 
     },
-    "Imgur Uploads" : {
+    "Imgur may delete anonymous images whenever they feel like it. Consider using postimages.org for better reliability." : {
+
+    },
+    "Imgur Mode" : {
 
     },
     "Links" : {
@@ -143,6 +149,12 @@
 
     },
     "Post feedback, bug reports, and feature suggestions. Do not contact anyone who works for Something Awful about this app." : {
+
+    },
+    "PostImages.org" : {
+
+    },
+    "Postimages.org doesn't delete old images, but downscales images to 1280px. Maximum file size is 32MB." : {
 
     },
     "Posting" : {

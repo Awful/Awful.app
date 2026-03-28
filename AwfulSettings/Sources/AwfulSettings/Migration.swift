@@ -22,6 +22,7 @@ extension SettingsMigration {
         keepSidebarOpen(defaults)
         alternateAppTheme(defaults)
         forumSpecificThemes(defaults)
+        migrateImageHostingProvider(defaults)
     }
 
     static func yosposStyle(_ defaults: UserDefaults) {
@@ -94,6 +95,29 @@ extension SettingsMigration {
             }
             defaults.removeObject(forKey: oldKey)
         }
+    }
+    
+    /// Migrate all users to PostImages.org to encourage its use
+    static func migrateImageHostingProvider(_ defaults: UserDefaults) {
+        // Check if user has already been migrated
+        let migrationKey = "did_migrate_to_postimages_v1"
+        if defaults.bool(forKey: migrationKey) {
+            return
+        }
+        
+        // Check current Imgur mode to handle the "Off" case
+        let imgurMode = defaults.string(forKey: Settings.imgurUploadMode.key)
+        
+        // If they had "Off", set Imgur mode to anonymous for when they switch back
+        if imgurMode == "Off" {
+            defaults.set("Anonymous", forKey: Settings.imgurUploadMode.key)
+        }
+        
+        // Move everyone to PostImages.org by default (they can switch back if they want)
+        defaults.set("PostImages", forKey: Settings.imageHostingProvider.key)
+        
+        // Mark migration as complete
+        defaults.set(true, forKey: migrationKey)
     }
 }
 
