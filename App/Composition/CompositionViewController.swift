@@ -103,12 +103,15 @@ final class CompositionViewController: ViewController {
             _textView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
 
-        BBcodeBar = CompositionInputAccessoryView(textView: _textView)
-        _textView.inputAccessoryView = BBcodeBar
+        toolbarContainer = CompositionToolbarContainer(textView: _textView)
+        toolbarContainer?.onToolbarAction = { [weak self] action in
+            self?.handleToolbarAction(action)
+        }
+        _textView.inputAccessoryView = toolbarContainer
     }
 
     fileprivate var keyboardAvoider: ScrollViewKeyboardAvoider?
-    fileprivate var BBcodeBar: CompositionInputAccessoryView?
+    fileprivate var toolbarContainer: CompositionToolbarContainer?
     fileprivate var menuTree: CompositionMenuTree?
     private weak var currentDraft: (NSObject & ReplyDraft)?
 
@@ -233,6 +236,15 @@ final class CompositionViewController: ViewController {
         menuTree?.onResizingStarted = { [weak self] in
             self?.showResizingPlaceholder()
         }
+        menuTree?.onShowURLPrompt = { [weak self] in
+            self?.showURLPrompt()
+        }
+        menuTree?.onShowVideoPrompt = { [weak self] in
+            self?.showVideoPrompt()
+        }
+        menuTree?.onShowImageOptions = { [weak self] in
+            self?.showImageOptions()
+        }
     }
     
     override func themeDidChange() {
@@ -242,7 +254,8 @@ final class CompositionViewController: ViewController {
         textView.textColor = theme["listTextColor"]
         textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.keyboardAppearance = theme.keyboardAppearance
-        BBcodeBar?.keyboardAppearance = theme.keyboardAppearance
+        toolbarContainer?.keyboardAppearance = theme.keyboardAppearance
+        toolbarContainer?.fontName = theme["listFontName"]
 
         // Theme the attachment cards
         let listTextColor: UIColor? = theme["listTextColor"]
@@ -283,6 +296,157 @@ final class CompositionViewController: ViewController {
         view.endEditing(true)
     }
     
+    // MARK: - Toolbar Actions
+
+    private func handleToolbarAction(_ action: ModernToolbarAction) {
+        switch action {
+        case .url:
+            showURLPrompt()
+        case .image:
+            showImageOptions()
+        case .format(let option):
+            let helper = BBcodeTagHelper(textView: textView)
+            helper.applyFormat(option)
+        case .video:
+            showVideoPrompt()
+        }
+    }
+
+    // MARK: - URL and Video Prompts
+
+    func showURLPrompt() {
+        let alert = UIAlertController(title: "Insert Link", message: nil, preferredStyle: .alert)
+
+        alert.addTextField { textField in
+            textField.placeholder = "URL (e.g., https://example.com)"
+            textField.keyboardType = .URL
+            textField.autocapitalizationType = .none
+            textField.autocorrectionType = .no
+            if let clipboardURL = UIPasteboard.general.coercedURL {
+                textField.text = clipboardURL.absoluteString
+            }
+        }
+
+        alert.addTextField { [weak self] textField in
+            textField.placeholder = "Display text (optional)"
+            if let selection = self?.textView.selectedTextRange,
+               let selectedText = self?.textView.text(in: selection),
+               !selectedText.isEmpty {
+                textField.text = selectedText
+            }
+        }
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Insert", style: .default) { [weak self] _ in
+            let url = alert.textFields?[0].text ?? ""
+            let displayText = alert.textFields?[1].text ?? ""
+            self?.insertURLTag(url: url, displayText: displayText)
+        })
+
+        present(alert, animated: true)
+    }
+
+    private func insertURLTag(url: String, displayText: String) {
+        guard !url.isEmpty else { return }
+        let helper = BBcodeTagHelper(textView: textView)
+        if displayText.isEmpty {
+            helper.insertText("[url]\(url)[/url]")
+        } else {
+            helper.insertText("[url=\(url)]\(displayText)[/url]")
+        }
+    }
+
+    func showVideoPrompt() {
+        let alert = UIAlertController(title: "Insert Video", message: "Supported: YouTube, Vimeo, TikTok, CNN, Yahoo, FOXNews", preferredStyle: .alert)
+
+        alert.addTextField { textField in
+            textField.placeholder = "Video URL"
+            textField.keyboardType = .URL
+            textField.autocapitalizationType = .none
+            textField.autocorrectionType = .no
+            if let clipboardURL = UIPasteboard.general.coercedURL {
+                textField.text = clipboardURL.absoluteString
+            }
+        }
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Insert", style: .default) { [weak self] _ in
+            guard let urlString = alert.textFields?[0].text, !urlString.isEmpty else { return }
+            self?.insertVideoTag(urlString: urlString)
+        })
+
+        present(alert, animated: true)
+    }
+
+    private func insertVideoTag(urlString: String) {
+        let helper = BBcodeTagHelper(textView: textView)
+        if let url = URL(string: urlString),
+           let normalizedURL = BBcodeTagHelper.videoTagURL(for: url) {
+            helper.insertText("[video]\(normalizedURL.absoluteString)[/video]")
+        } else {
+            helper.insertText("[video]\(urlString)[/video]")
+        }
+    }
+
+    // MARK: - Image Options
+
+    func showImageOptions() {
+        let alert = UIAlertController(title: "Insert Image", message: nil, preferredStyle: .actionSheet)
+
+        if BBcodeTagHelper.clipboardHasURL {
+            alert.addAction(UIAlertAction(title: "Paste URL from Clipboard", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                if let url = UIPasteboard.general.coercedURL {
+                    let helper = BBcodeTagHelper(textView: self.textView)
+                    helper.insertText("[img]\(url.absoluteString)[/img]")
+                }
+            })
+        }
+
+        let canAttachInEdit = (menuTree?.draft as? EditReplyDraft)?.canAddAttachment ?? false
+        if let menuTree = menuTree, menuTree.imgurUploadsEnabled || menuTree.draft is NewReplyDraft || canAttachInEdit {
+            alert.addAction(UIAlertAction(title: "From Library", style: .default) { [weak self] _ in
+                self?.menuTree?.showImagePicker(.photoLibrary)
+            })
+        }
+
+        alert.addAction(UIAlertAction(title: "Enter URL", style: .default) { [weak self] _ in
+            self?.showImagePrompt()
+        })
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = textView
+            popover.sourceRect = textView.selectedRect ?? textView.bounds
+        }
+
+        present(alert, animated: true)
+    }
+
+    func showImagePrompt() {
+        let alert = UIAlertController(title: "Insert Image", message: nil, preferredStyle: .alert)
+
+        alert.addTextField { textField in
+            textField.placeholder = "Image URL"
+            textField.keyboardType = .URL
+            textField.autocapitalizationType = .none
+            textField.autocorrectionType = .no
+            if let clipboardURL = UIPasteboard.general.coercedURL {
+                textField.text = clipboardURL.absoluteString
+            }
+        }
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Insert", style: .default) { [weak self] _ in
+            guard let urlString = alert.textFields?[0].text, !urlString.isEmpty else { return }
+            let helper = BBcodeTagHelper(textView: self?.textView ?? UITextView())
+            helper.insertText("[img]\(urlString)[/img]")
+        })
+
+        present(alert, animated: true)
+    }
+
     override var keyCommands: [UIKeyCommand]? {
         return [
             UIKeyCommand(action: #selector(cancel(_:)), input: UIKeyCommand.inputEscape, discoverabilityTitle: "Cancel"),
