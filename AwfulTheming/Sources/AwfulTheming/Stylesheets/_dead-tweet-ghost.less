@@ -1,5 +1,6 @@
-.dead-tweet(@tweetLinkColor, @backgroundColor, @ghostColor) {
-    .dead-tweet-container {
+// Generic mixin for all dead embeds (tweets, images, etc.)
+.dead-embed(@linkColor, @backgroundColor, @ghostColor) {
+    .dead-embed-container {
         display: grid;
         grid-column: 2;
         place-items: start;
@@ -14,7 +15,7 @@
         width: 6em;
     }
 
-    .dead-tweet-title {
+    .dead-embed-title {
         grid-column: 2;
         grid-row: 3;
         place-items: start;
@@ -24,14 +25,27 @@
         font-weight: 600;
     }
 
-    .dead-tweet-link {
+    .dead-embed-link {
         grid-column: 2;
         grid-row: 4;
         place-items: start;
         padding-right: 23px;
-        color: @tweetLinkColor;
+        color: @linkColor;
         font: -apple-system-headline;
         font-weight: 450;
+    }
+
+    .dead-embed-retry {
+        grid-column: 2;
+        grid-row: 5;
+        place-items: start;
+        padding-right: 23px;
+        padding-top: 0.5em;
+        color: @linkColor;
+        font: -apple-system-body;
+        font-weight: 600;
+        text-decoration: underline;
+        cursor: pointer;
     }
 
     .ghost-fill {
@@ -44,5 +58,23 @@
 
     .ghost-stroke {
         stroke: @ghostColor;
+    }
+}
+
+// Backward-compatible wrapper for dead tweets
+.dead-tweet(@tweetLinkColor, @backgroundColor, @ghostColor) {
+    .dead-embed(@tweetLinkColor, @backgroundColor, @ghostColor);
+
+    // Aliases for backward compatibility with existing dead tweet code
+    .dead-tweet-container {
+        .dead-embed-container();
+    }
+
+    .dead-tweet-title {
+        .dead-embed-title();
+    }
+
+    .dead-tweet-link {
+        .dead-embed-link();
     }
 }

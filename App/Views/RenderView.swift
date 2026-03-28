@@ -29,8 +29,31 @@ final class RenderView: UIView {
 
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
-        
+
         let bundle = Bundle(for: RenderView.self)
+
+        // Conditionally load lottie-player.js if frog and ghost animations are enabled
+        let frogAndGhostEnabled = FoilDefaultStorage(Settings.frogAndGhostEnabled).wrappedValue
+        if frogAndGhostEnabled {
+            configuration.userContentController.addUserScript({
+                let url = bundle.url(forResource: "lottie-player.js", withExtension: nil)!
+                let script = try! String(contentsOf: url)
+                return WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+            }())
+        }
+
+        // Inject early script to track when DOMContentLoaded fires
+        configuration.userContentController.addUserScript({
+            let script = """
+            if (!window.Awful) { window.Awful = {}; }
+            window.Awful.domContentLoadedFired = false;
+            document.addEventListener('DOMContentLoaded', function() {
+                window.Awful.domContentLoadedFired = true;
+            });
+            """
+            return WKUserScript(source: script, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+        }())
+
         configuration.userContentController.addUserScript({
             let url = bundle.url(forResource: "RenderView.js", withExtension: nil)!
             let script = try! String(contentsOf: url)
@@ -176,7 +199,10 @@ extension RenderView: WKScriptMessageHandler {
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive rawMessage: WKScriptMessage) {
-        logger.debug("received message from JavaScript: \(rawMessage.name)")
+        // Skip logging high-frequency progress updates to reduce console noise
+        if rawMessage.name != "imageLoadProgress" {
+            logger.debug("received message from JavaScript: \(rawMessage.name)")
+        }
 
         guard let messageType = registeredMessages[rawMessage.name] else {
             logger.warning("ignoring unexpected message from JavaScript: \(rawMessage.name). Did you forget to register a message type with the RenderView?")
@@ -260,13 +286,13 @@ extension RenderView: WKScriptMessageHandler {
         
         struct FetchOEmbedFragment: RenderViewMessage {
             static let messageName = "fetchOEmbedFragment"
-            
+
             /// An opaque `id` to use when calling back with the response.
             let id: String
-            
+
             /// The OEmbed URL to fetch.
             let url: URL
-            
+
             init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
                 assert(rawMessage.name == Self.messageName)
                 guard let body = rawMessage.body as? [String: Any],
@@ -274,9 +300,36 @@ extension RenderView: WKScriptMessageHandler {
                       let rawURL = body["url"] as? String,
                       let url = URL(string: rawURL)
                 else { return nil }
-                
+
                 self.id = id
                 self.url = url
+            }
+        }
+
+        /// Sent from the web view to report image loading progress.
+        struct ImageLoadProgress: RenderViewMessage {
+            static let messageName = "imageLoadProgress"
+
+            /// Number of images loaded so far
+            let loaded: Int
+
+            /// Total number of images to load
+            let total: Int
+
+            /// Whether all images have finished loading
+            let complete: Bool
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let loaded = body["loaded"] as? Int,
+                      let total = body["total"] as? Int,
+                      let complete = body["complete"] as? Bool
+                else { return nil }
+
+                self.loaded = loaded
+                self.total = total
+                self.complete = complete
             }
         }
     }
@@ -325,15 +378,37 @@ extension RenderView {
             }
         }
     }
-    
-    func loadLottiePlayer() {
+
+    // MARK: - Private Helpers
+
+    /// Helper to evaluate Awful JavaScript functions with consistent error handling.
+    private func evalAwfulFunction(_ functionName: String) {
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.loadLotties()")
+                try await webView.eval("if (window.Awful) { Awful.\(functionName)(); }")
             } catch {
-                self.mentionError(error, explanation: "could not evaluate loadLotties")
+                self.mentionError(error, explanation: "could not evaluate \(functionName)")
             }
         }
+    }
+
+    // MARK: - Image Loading Methods
+
+    /// Applies timeout detection to images that are loading immediately (first 10 images).
+    ///
+    /// Monitors download progress and replaces stalled images with dead image badges.
+    /// This function should be called after the page has loaded to set up monitoring
+    /// for the initial batch of images.
+    func applyTimeoutToLoadingImages() {
+        evalAwfulFunction("applyTimeoutToLoadingImages")
+    }
+
+    /// Sets up click handler for retry links on failed images.
+    ///
+    /// Allows users to retry loading images that timed out or failed to load.
+    /// The retry mechanism uses the same timeout detection as initial image loading.
+    func setupRetryHandler() {
+        evalAwfulFunction("setupRetryHandler")
     }
 
     /// iOS 15 and transparent webviews = dark "missing" scroll thumbs, regardless of settings applied

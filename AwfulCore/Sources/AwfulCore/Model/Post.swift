@@ -6,7 +6,7 @@ import CoreData
 
 /// A single reply to a thread.
 @objc(Post)
-public class Post: AwfulManagedObject, Managed, @unchecked Sendable {
+public class Post: AwfulManagedObject, Managed {
     public static var entityName: String { "Post" }
     
     /// Whether the logged-in user can edit the post.
@@ -74,7 +74,7 @@ private func pageForIndex(index: Int32) -> Int {
 }
 
 @objc(PostKey)
-public final class PostKey: AwfulObjectKey {
+public final class PostKey: AwfulObjectKey, @unchecked Sendable {
     @objc public let postID: String
     
     public init(postID: String) {
