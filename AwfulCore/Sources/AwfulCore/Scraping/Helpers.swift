@@ -5,6 +5,22 @@
 import Foundation
 import HTMLReader
 
+extension HTMLSelector {
+    private static let cache = NSCache<NSString, HTMLSelector>()
+
+    public static func cached(_ selectorString: String) -> HTMLSelector {
+        let key = selectorString as NSString
+        if let cached = cache.object(forKey: key) {
+            return cached
+        }
+        let selector = HTMLSelector(string: selectorString)
+        if selector.error == nil {
+            cache.setObject(selector, forKey: key)
+        }
+        return selector
+    }
+}
+
 func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")
 }
@@ -21,7 +37,7 @@ extension HTMLNode {
     }
 
     func requiredNode(matchingSelector selector: String) throws -> HTMLElement {
-        guard let node = firstNode(matchingSelector: selector) else {
+        guard let node = firstNode(matchingParsedSelector: .cached(selector)) else {
             throw ScrapingError.missingExpectedElement(selector)
         }
         return node
@@ -100,7 +116,7 @@ func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
     }
 
     return html
-        .firstNode(matchingSelector: "dl.userinfo dd.title")
+        .firstNode(matchingParsedSelector: .cached("dl.userinfo dd.title"))
         .flatMap { $0.children.array as? [HTMLNode] }?
         .filter { !isSuperfluousLineBreak($0) }
         .map { $0.serializedFragment }
@@ -116,7 +132,7 @@ struct PageNavigationData {
 }
 
 func scrapePageNavigationData(_ node: HTMLNode) -> PageNavigationData? {
-    guard let pageDiv = node.firstNode(matchingSelector: "div.pages") else {
+    guard let pageDiv = node.firstNode(matchingParsedSelector: .cached("div.pages")) else {
         return nil
     }
 

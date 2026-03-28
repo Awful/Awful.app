@@ -9,16 +9,16 @@ public struct BannedScrapeResult: ScrapeResult {
     public let reason: URL?
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        guard let body = html.firstNode(matchingSelector: "body.banned") else {
+        guard let body = html.firstNode(matchingParsedSelector: .cached("body.banned")) else {
             throw ScrapingError.missingExpectedElement("body.banned")
         }
 
         help = body
-            .firstNode(matchingSelector: "a[href*='showthread.php']")
+            .firstNode(matchingParsedSelector: .cached("a[href*='showthread.php']"))
             .flatMap { $0["href"] }
             .flatMap { URL(string: $0) }
         reason = body
-            .firstNode(matchingSelector: "a[href*='banlist.php']")
+            .firstNode(matchingParsedSelector: .cached("a[href*='banlist.php']"))
             .flatMap { $0["href"] }
             .flatMap { URL(string: $0) }
     }

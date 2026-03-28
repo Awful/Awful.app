@@ -422,7 +422,7 @@ private struct RenderModel: CustomDebugStringConvertible, Equatable, StencilCont
         postedDateRaw = {
             let document = HTMLDocument(string: announcement.bodyHTML)
             return document
-                .firstNode(matchingSelector: "td.postdate")
+                .firstNode(matchingParsedSelector: .cached("td.postdate"))
                 .flatMap { $0.children.lastObject as? HTMLNode }
                 .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
         }()

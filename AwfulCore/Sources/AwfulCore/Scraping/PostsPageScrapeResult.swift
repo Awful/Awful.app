@@ -24,7 +24,7 @@ public struct PostsPageScrapeResult: ScrapeResult {
         let body = try html.requiredNode(matchingSelector: "body")
 
         advertisement = body
-            .firstNode(matchingSelector: "#ad_banner_user a")?
+            .firstNode(matchingParsedSelector: .cached("#ad_banner_user a"))?
             .serializedFragment
             ?? ""
 
@@ -32,14 +32,14 @@ public struct PostsPageScrapeResult: ScrapeResult {
 
         forumID = (body["data-forum"] as String?).map { ForumID($0) }
 
-        isSingleUserFilterEnabled = body.firstNode(matchingSelector: "table.post a.user_jump[title *= 'Remove']") != nil
+        isSingleUserFilterEnabled = body.firstNode(matchingParsedSelector: .cached("table.post a.user_jump[title *= 'Remove']")) != nil
 
         let pageNavData = scrapePageNavigationData(body)
         pageNumber = pageNavData?.currentPage
         pageCount = pageNavData?.totalPages
 
         let posts = try body
-            .nodes(matchingSelector: "table.post")
+            .nodes(matchingParsedSelector: .cached("table.post"))
             .map { (element: HTMLElement) -> PostScrapeResult in try PostScrapeResult(element, url: url) }
         self.posts = posts
 
@@ -70,7 +70,7 @@ public struct PostsPageScrapeResult: ScrapeResult {
         threadID = (body["data-thread"] as String?).flatMap { ThreadID(rawValue: $0) }
 
         threadIsBookmarked = body
-            .firstNode(matchingSelector: "div.threadbar img.thread_bookmark")
+            .firstNode(matchingParsedSelector: .cached("div.threadbar img.thread_bookmark"))
             .flatMap { (img) -> Bool? in
                 switch (img.hasClass("unbookmark"), img.hasClass("bookmark")) {
                 case (true, false): return true
@@ -79,10 +79,10 @@ public struct PostsPageScrapeResult: ScrapeResult {
                 }
         }
 
-        threadIsClosed = body.firstNode(matchingSelector: "ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']") != nil
+        threadIsClosed = body.firstNode(matchingParsedSelector: .cached("ul.postbuttons a[href *= 'newreply'] img[src *= 'closed']")) != nil
 
         threadTitle = body
-            .firstNode(matchingSelector: "div.breadcrumbs a[href *= 'threadid']")?
+            .firstNode(matchingParsedSelector: .cached("div.breadcrumbs a[href *= 'threadid']"))?
             .textContent
             ?? ""
     }

@@ -30,24 +30,24 @@ public struct PrivateMessageFolderScrapeResult: ScrapeResult {
     }
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        let folderDropdown = html.firstNode(matchingSelector: "select[name = 'folderid']")
+        let folderDropdown = html.firstNode(matchingParsedSelector: .cached("select[name = 'folderid']"))
 
         allFolders = folderDropdown?
-            .nodes(matchingSelector: "option[value]")
+            .nodes(matchingParsedSelector: .cached("option[value]"))
             .compactMap { try? Folder($0) }
             ?? []
 
         folder = folderDropdown
-            .flatMap { $0.firstNode(matchingSelector: "option[selected][value]") }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("option[selected][value]")) }
             .flatMap { try? Folder($0) }
 
         isOnlyShowingLastFiftyMessages = html
-            .firstNode(matchingSelector: "div.pmwarn")?
-            .firstNode(matchingSelector: "a[href *= 'showall']")
+            .firstNode(matchingParsedSelector: .cached("div.pmwarn"))?
+            .firstNode(matchingParsedSelector: .cached("a[href *= 'showall']"))
             != nil
 
         messages = try html.requiredNode(matchingSelector: "table.standard")
-            .nodes(matchingSelector: "tbody tr")
+            .nodes(matchingParsedSelector: .cached("tbody tr"))
             .compactMap { try? Message($0) }
     }
 }
@@ -84,22 +84,22 @@ private extension PrivateMessageFolderScrapeResult.Message {
 
         self.id = id
 
-        let iconImage = tr.firstNode(matchingSelector: "td.icon img")
+        let iconImage = tr.firstNode(matchingParsedSelector: .cached("td.icon img"))
         iconDescription = iconImage?["alt"] ?? ""
         self.iconImage = iconImage
             .flatMap { $0["src"] }
             .flatMap { URL(string: $0) }
 
-        senderUsername = tr.firstNode(matchingSelector: "td.sender a")?.textContent ?? ""
+        senderUsername = tr.firstNode(matchingParsedSelector: .cached("td.sender a"))?.textContent ?? ""
         
-        sentDateRaw = tr.firstNode(matchingSelector: "td.date")
+        sentDateRaw = tr.firstNode(matchingParsedSelector: .cached("td.date"))
             .map { $0.textContent }
         
-        sentDate = tr.firstNode(matchingSelector: "td.date")
+        sentDate = tr.firstNode(matchingParsedSelector: .cached("td.date"))
             .flatMap { twelveHourSentDateFormatter.date(from: $0.textContent)
                 ?? twentyFourHourSentDateFormatter.date(from: $0.textContent) }
 
-        let statusImageSource = tr.firstNode(matchingSelector: "td.status img[src]")?["src"]
+        let statusImageSource = tr.firstNode(matchingParsedSelector: .cached("td.status img[src]"))?["src"]
         hasBeenSeen = !(statusImageSource?.contains("newpm") ?? false)
         wasForwarded = statusImageSource?.contains("forwarded") ?? false
         wasRepliedTo = statusImageSource?.contains("replied") ?? false
