@@ -66,7 +66,7 @@ extension PrivateMessage {
 }
 
 @objc(PrivateMessageKey)
-public final class PrivateMessageKey: AwfulObjectKey {
+public final class PrivateMessageKey: AwfulObjectKey, @unchecked Sendable {
     @objc public let messageID: String
     
     public init(messageID: String) {

@@ -322,9 +322,13 @@ final class PostsPageView: UIView {
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        toolbar.tintColor =  Theme.defaultTheme()["toolbarTextColor"]!
-        toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        if #available(iOS 26.0, *) {
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        } else {
+            toolbar.tintColor = Theme.defaultTheme()["toolbarTextColor"]!
+            toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        }
 
         topBar.themeDidChange(Theme.defaultTheme())
     }

@@ -41,9 +41,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    // Stored as Any because Task returns non-Sendable Core Data objects (Post: NSManagedObject).
-    // Swift 6 requires Task<Success, Failure> Success types to be Sendable.
-    private var networkOperation: Any?
+    private var networkOperation: Task<Void, Never>?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -163,7 +161,10 @@ final class PostsPageViewController: ViewController {
     }
 
     deinit {
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
+        // Avoid warning in Xcode 14 beta 1 "cannot access property with a non-sendable type from a non-isolated deinit"
+        // UIViewController actually does guarantee deinit on the main queue, but the Swift compiler doesn't know that.
+        // (Also, it seems like an oversight that wrapping the access in an immediately-executed closure avoids the warning, so be prepared for more warnings here.)
+        { networkOperation?.cancel() }()
     }
 
     var posts: [Post] = []
@@ -201,7 +202,8 @@ final class PostsPageViewController: ViewController {
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
+
+        networkOperation?.cancel()
         networkOperation = nil
 
         // prevent white flash caused by webview being opaque during refreshes
@@ -254,16 +256,22 @@ final class PostsPageViewController: ViewController {
 
         let initialTheme = theme
 
-        let fetch = Task {
-            await MainActor.run {
-                self.postsView.loadingView?.updateStatus("Fetching posts from server...")
-            }
-            return try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+        struct FetchResult: @unchecked Sendable {
+            let posts: [Post]
+            let firstUnreadPost: Int?
+            let advertisementHTML: String
         }
-        networkOperation = fetch
-        Task { [weak self] in
+        let fetch = Task { @MainActor in
+            self.postsView.loadingView?.updateStatus("Fetching posts from server...")
+            let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+            return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML)
+        }
+
+        networkOperation = Task { @MainActor [weak self] in
+            defer { self?.networkOperation = nil }
             do {
-                let (posts, firstUnreadPost, _) = try await fetch.value
+                let fetchResult = try await fetch.value
+                let (posts, firstUnreadPost) = (fetchResult.posts, fetchResult.firstUnreadPost)
                 guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
@@ -571,13 +579,13 @@ final class PostsPageViewController: ViewController {
     }()
 
 
-    private func actionsItem() -> UIBarButtonItem {
+    private lazy var actionsItem: UIBarButtonItem = {
         let buttonItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), menu: threadActionsMenu())
         if #available(iOS 16.0, *) {
             buttonItem.preferredMenuElementOrder = .fixed
         }
         return buttonItem
-    }
+    }()
 
     private func refetchPosts() {
         guard case .specific(let pageNumber)? = page else {
@@ -1055,7 +1063,7 @@ final class PostsPageViewController: ViewController {
                     // update toolbar so menu reflects new bookmarked state
                     var newItems = postsView.toolbarItems
                     newItems.removeLast()
-                    newItems.append(actionsItem())
+                    newItems.append(actionsItem)
                     postsView.toolbarItems = newItems
                 }
             } catch {
@@ -1161,7 +1169,7 @@ final class PostsPageViewController: ViewController {
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
-                popover.barButtonItem = actionsItem()
+                popover.barButtonItem = actionsItem
             }
         }
     }
@@ -1553,7 +1561,7 @@ final class PostsPageViewController: ViewController {
         postsView.toolbarItems = [
             settingsItem, .flexibleSpace(),
             backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
-            .flexibleSpace(), actionsItem()]
+            .flexibleSpace(), actionsItem]
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self

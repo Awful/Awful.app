@@ -5,14 +5,14 @@
 import CoreData
 
 /// A slightly more convenient NSManagedObject for entities with a custom class.
-public class AwfulManagedObject: NSManagedObject, @unchecked Sendable {
+public class AwfulManagedObject: NSManagedObject {
     public var objectKey: AwfulObjectKey {
         fatalError("subclass implementation please")
     }
 }
 
 /// An object key uniquely identifies an AwfulManagedObject, but (unlike NSManagedObjectID) in an Awful-specific away.
-public class AwfulObjectKey: NSObject, NSCoding, NSCopying {
+public class AwfulObjectKey: NSObject, NSCoding, NSCopying, @unchecked Sendable {
     let entityName: String
     var keys: [String] {
         fatalError("subclass implementation please")
