@@ -67,7 +67,7 @@ def export_archive(archive_path, export_path, platform):
             <plist version="1.0">
             <dict>
                 <key>method</key>
-                <string>app-store</string>
+                <string>app-store-connect</string>
             </dict>
             </plist>
             """).encode('utf-8'))

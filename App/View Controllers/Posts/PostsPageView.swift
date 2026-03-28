@@ -23,8 +23,8 @@ final class PostsPageView: UIView {
     
     // MARK: Loading view
 
-    var loadingView: UIView? {
-        get { return loadingViewContainer.subviews.first }
+    var loadingView: LoadingView? {
+        get { return loadingViewContainer.subviews.first as? LoadingView }
         set {
             loadingViewContainer.subviews.forEach { $0.removeFromSuperview() }
             if let newValue = newValue {
@@ -322,9 +322,13 @@ final class PostsPageView: UIView {
         renderView.scrollView.indicatorStyle = theme.scrollIndicatorStyle
         renderView.setThemeStylesheet(theme["postsViewCSS"] ?? "")
 
-        toolbar.tintColor =  Theme.defaultTheme()["toolbarTextColor"]!
-        toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
-        toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        if #available(iOS 26.0, *) {
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        } else {
+            toolbar.tintColor = Theme.defaultTheme()["toolbarTextColor"]!
+            toolbar.topBorderColor = Theme.defaultTheme()["bottomBarTopBorderColor"]
+            toolbar.isTranslucent = Theme.defaultTheme()[bool: "tabBarIsTranslucent"] ?? false
+        }
 
         topBar.themeDidChange(Theme.defaultTheme())
     }

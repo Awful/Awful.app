@@ -142,7 +142,7 @@ extension AwfulThread {
 }
 
 @objc(ThreadKey)
-public final class ThreadKey: AwfulObjectKey {
+public final class ThreadKey: AwfulObjectKey, @unchecked Sendable {
     @objc let threadID: String
     
     public init(threadID: String) {

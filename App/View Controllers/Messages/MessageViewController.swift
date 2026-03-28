@@ -251,7 +251,7 @@ final class MessageViewController: ViewController {
             .store(in: &cancellables)
 
         if privateMessage.innerHTML == nil || privateMessage.innerHTML?.isEmpty == true || privateMessage.from == nil {
-            let loadingView = LoadingView.loadingViewWithTheme(theme)
+            let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .hideStatusElements)
             self.loadingView = loadingView
             view.addSubview(loadingView)
 
@@ -262,9 +262,7 @@ final class MessageViewController: ViewController {
 
                     if message.seen == false {
                         message.seen = true
-                        try await message.managedObjectContext?.perform {
-                            try message.managedObjectContext?.save()
-                        }
+                        try message.managedObjectContext?.save()
                     }
                 } catch {
                     title = ""
