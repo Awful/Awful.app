@@ -36,7 +36,7 @@ public class Forum: AwfulManagedObject, Managed {
 }
 
 @objc(ForumKey)
-public final class ForumKey: AwfulObjectKey {
+public final class ForumKey: AwfulObjectKey, @unchecked Sendable {
     @objc let forumID: String
     
     public init(forumID: String) {
@@ -99,7 +99,7 @@ public class ForumGroup: AwfulManagedObject, Managed {
 }
 
 @objc(ForumGroupKey)
-public final class ForumGroupKey: AwfulObjectKey {
+public final class ForumGroupKey: AwfulObjectKey, @unchecked Sendable {
     let groupID: String
     
     public init(groupID: String) {

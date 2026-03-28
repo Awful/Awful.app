@@ -51,7 +51,7 @@ public func extractAvatarURL(fromCustomTitleHTML customTitleHTML: String) -> URL
 }
 
 @objc(UserKey)
-public final class UserKey: AwfulObjectKey {
+public final class UserKey: AwfulObjectKey, @unchecked Sendable {
     @objc public let userID: String
     @objc let username: String?
     
