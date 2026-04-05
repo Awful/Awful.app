@@ -64,7 +64,8 @@ final class ThemePickerViewController: TableViewController {
             let fontName = themes[indexPath.row][string: "listFontName"]
                 ?? descriptor.object(forKey: .name) as? String
             else { fatalError("couldn't find font name") }
-        return UIFont(name: fontName, size: descriptor.pointSize)!
+        return UIFont(name: fontName, size: descriptor.pointSize)
+            ?? UIFont(descriptor: descriptor, size: descriptor.pointSize)
     }
 
     // MARK: KVO

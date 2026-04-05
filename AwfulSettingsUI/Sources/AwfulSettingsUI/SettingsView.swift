@@ -238,6 +238,9 @@ public struct SettingsView: View {
                         .environment(\.managedObjectContext, managedObjectContext) // Not inherited from SettingsView's environment?
                         .navigationTitle("Forum-Specific Themes", bundle: .module)
                 }
+                NavigationLink("Custom Theme Editor") {
+                    CustomThemeEditorView()
+                }
                 Toggle("Dark Mode", bundle: .module, isOn: $darkModeManuallyEnabled)
                     .disabled(darkModeAutomatic)
                 Toggle("Automatic Dark Mode", bundle: .module, isOn: $darkModeAutomatic)

@@ -58,6 +58,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             #endif
         }()
         
+        CustomThemeManager.shared.load()
+        Theme.reloadCustomTheme()
+
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.tintColor = Theme.defaultTheme()["tintColor"]
         
@@ -94,6 +97,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         do {
             NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
+            NotificationCenter.default.addObserver(self, selector: #selector(customThemeDidChange), name: Theme.customThemeDidChangeNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(preferredContentSizeDidChange), name: UIContentSizeCategory.didChangeNotification, object: nil)
         }
 
@@ -316,6 +320,10 @@ private extension AppDelegate {
     }
     
     @objc private func forumSpecificThemeDidChange(_ notification: Notification) {
+        showSnapshotDuringThemeDidChange()
+    }
+
+    @objc private func customThemeDidChange(_ notification: Notification) {
         showSnapshotDuringThemeDidChange()
     }
     

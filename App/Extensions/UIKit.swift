@@ -73,8 +73,8 @@ extension UIFont {
             font = metrics.scaledFont(for: UIFont(descriptor: descriptor, size: descriptor.pointSize + sizeAdjustment), maximumPointSize: 30, compatibleWith: UITraitCollection(preferredContentSizeCategory: UIApplication.shared.preferredContentSizeCategory))
         }
         
-        if let fontName = fontName {
-            font = metrics.scaledFont(for: UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment)!, maximumPointSize: 30, compatibleWith: traitCollection)
+        if let fontName = fontName, let customFont = UIFont(name: fontName, size: descriptor.pointSize + sizeAdjustment) {
+            font = metrics.scaledFont(for: customFont, maximumPointSize: 30, compatibleWith: traitCollection)
         } else {
             if let descriptor = font.fontDescriptor.withDesign(.rounded) {
                 if Theme.defaultTheme().roundedFonts {

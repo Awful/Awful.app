@@ -27,10 +27,17 @@ public class Theme {
     public let name: String
     fileprivate let dictionary: [String: Any]
     fileprivate var parent: Theme?
-    
+    fileprivate var overrides: [String: Any]?
+    fileprivate var customCSS: String?
+
     fileprivate init(name: String, dictionary: [String: Any]) {
         self.name = name
         self.dictionary = flatten(dictionary)
+    }
+
+    /// Returns the effective value for a key, checking overrides first, then the bundled dictionary.
+    fileprivate func effectiveValue(forKey key: String) -> Any? {
+        overrides?[key] ?? dictionary[key]
     }
 
     public enum Mode: CaseIterable, Hashable {
@@ -67,27 +74,27 @@ extension Theme {
 
     /// The name of the theme, suitable for presentation.
     public var descriptiveName: String {
-        return dictionary["descriptiveName"] as? String ?? name
+        return effectiveValue(forKey: "descriptiveName") as? String ?? name
     }
-    
+
     /// A color representative of the theme, suitable for presentation.
-    var descriptiveColor: UIColor {
+    public var descriptiveColor: UIColor {
         return self["descriptive"]!
     }
-    
+
     /// The ID of the forum for which the theme is designed, or nil if there was no forum in mind.
     var forumID: String? {
-        return dictionary["relevantForumID"] as! String?
+        return effectiveValue(forKey: "relevantForumID") as? String
     }
-    
+
     /// Does the theme use standed system font or rounded
     public var roundedFonts: Bool {
-        return dictionary["roundedFonts"] as? Bool ?? false
+        return effectiveValue(forKey: "roundedFonts") as? Bool ?? false
     }
-    
+
     /// The desired appearance for the keyboard. If unspecified by the theme and its ancestors, returns .Default.
     public var keyboardAppearance: UIKeyboardAppearance {
-        let appearance = dictionary["keyboardAppearance"] as? String
+        let appearance = effectiveValue(forKey: "keyboardAppearance") as? String
             ?? parent?["keyboardAppearance"]
             ?? "default"
 
@@ -105,7 +112,7 @@ extension Theme {
     
     /// The desired scroll indicator style for scrollbars. Must be specified by the theme or one of its ancestors.
     public var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
-        guard let style = dictionary["scrollIndicatorStyle"] as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
+        guard let style = effectiveValue(forKey: "scrollIndicatorStyle") as? String ?? parent?["scrollIndicatorStyle"] else { return .default }
 
         switch style {
         case "Dark", "dark":
@@ -118,13 +125,13 @@ extension Theme {
     }
 
     public subscript(bool key: String) -> Bool? {
-        return dictionary[key] as? Bool ?? parent?[bool: key]
+        return effectiveValue(forKey: key) as? Bool ?? parent?[bool: key]
     }
 
     /// The named color (the "Color" suffix is optional).
     public subscript(uicolor colorName: String) -> UIColor? {
         let key = colorName.hasSuffix("Color") ? colorName : "\(colorName)Color"
-        guard let value = dictionary[key] as? String else { return parent?[key] }
+        guard let value = effectiveValue(forKey: key) as? String else { return parent?[key] }
 
         if let hexColor = UIColor(hex: value) {
             return hexColor
@@ -152,12 +159,17 @@ extension Theme {
     }
 
     public subscript(double key: String) -> Double? {
-        return dictionary[key] as? Double ?? parent?[double: key]
+        return effectiveValue(forKey: key) as? Double ?? parent?[double: key]
     }
 
     /// The named theme attribute as a string.
     public subscript(string key: String) -> String? {
-        guard let value = dictionary[key] as? String ?? parent?[key] else { return nil }
+        // For the custom theme, CSS keys return user-provided CSS stored on the theme object
+        if key.hasSuffix("CSS"), name == "customDefault", let css = customCSS {
+            return css
+        }
+
+        guard let value = effectiveValue(forKey: key) as? String ?? parent?[key] else { return nil }
         if key.hasSuffix("CSS") {
             let css: String?
             do {
@@ -210,6 +222,10 @@ extension Theme: Comparable {
                 return nil
             }
         }
+
+        // customDefault always sorts last
+        if lhs.name == "customDefault" { return false }
+        if rhs.name == "customDefault" { return true }
 
         return givePriority(to: "default")
             ?? givePriority(to: "dark")
@@ -359,6 +375,52 @@ extension Theme {
             altogether["theme-light-\(forumID)"] = themeName
         }
         return altogether
+    }
+}
+
+// MARK: - Custom theme support
+
+extension Theme {
+    /// Posted when the custom theme's overrides or CSS change.
+    public static let customThemeDidChangeNotification = Notification.Name("Awful custom theme did change")
+
+    /// Applies current overrides from CustomThemeManager to the custom theme and posts a change notification.
+    @MainActor
+    public static func reloadCustomTheme() {
+        guard let customTheme = bundledThemes["customDefault"] else { return }
+        customTheme.overrides = CustomThemeManager.shared.overrides
+        customTheme.customCSS = CustomThemeManager.shared.resolvedCSS()
+        NotificationCenter.default.post(name: customThemeDidChangeNotification, object: self)
+    }
+
+    /// Returns a flat dictionary of all resolved property values, walking up the parent chain.
+    /// Used by CustomThemeManager.copyFromTheme() to snapshot a theme.
+    public func allResolvedValues() -> [String: Any] {
+        var result: [String: Any] = [:]
+
+        // Collect all keys from this theme and all ancestors
+        var current: Theme? = self
+        var allKeys = Set<String>()
+        while let theme = current {
+            for key in theme.dictionary.keys {
+                allKeys.insert(key)
+            }
+            current = theme.parent
+        }
+
+        // Resolve each key's effective value through the chain
+        for key in allKeys where key != "parent" {
+            current = self
+            while let theme = current {
+                if let value = theme.dictionary[key] {
+                    result[key] = value
+                    break
+                }
+                current = theme.parent
+            }
+        }
+
+        return result
     }
 }
 

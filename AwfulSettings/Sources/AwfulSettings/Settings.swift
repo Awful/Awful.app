@@ -153,6 +153,7 @@ public enum BuiltInTheme: String, UserDefaultsSerializable {
     case winpos95 = "Winpos 95"
     case yosposAmber = "YOSPOS (amber)"
     case yosposGreen = "YOSPOS"
+    case customDefault = "customDefault"
 }
 
 /// The upload mode for Imgur images.
