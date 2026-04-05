@@ -1997,10 +1997,6 @@ extension PostsPageViewController: RenderViewDelegate {
             view.embedTweets()
         }
 
-        if frogAndGhostEnabled {
-            view.loadLottiePlayer()
-        }
-
         webViewDidLoadOnce = true
 
         if jumpToLastPost {
