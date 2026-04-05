@@ -217,7 +217,11 @@
 		2D3CB32A2EBF09C300BD4A12 /* rated_five_pride_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3162EBF09C300BD4A12 /* rated_five_pride_appicon.icon */; };
 		2D3CB32B2EBF09C300BD4A12 /* ghost_blue_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3132EBF09C300BD4A12 /* ghost_blue_appicon.icon */; };
 		2D3CB32C2EBF09C300BD4A12 /* rated_five_trans_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3172EBF09C300BD4A12 /* rated_five_trans_appicon.icon */; };
+		2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */; };
+		2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */; };
+		2D62DEA82EBFEB2000F7121B /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA72EBFEB1D00F7121B /* GradientView.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
+		2D939F232EC48FDE00F3464B /* PageNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D939F222EC48FDE00F3464B /* PageNumberView.swift */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
@@ -547,7 +551,11 @@
 		2D3CB31B2EBF09C300BD4A12 /* staredog_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_appicon.icon; sourceTree = "<group>"; };
 		2D3CB31C2EBF09C300BD4A12 /* staredog_tongue_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_tongue_appicon.icon; sourceTree = "<group>"; };
 		2D3CB31D2EBF09C300BD4A12 /* v_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v_appicon.icon; sourceTree = "<group>"; };
+		2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
+		2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
+		2D62DEA72EBFEB1D00F7121B /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
+		2D939F222EC48FDE00F3464B /* PageNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageNumberView.swift; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
@@ -777,6 +785,8 @@
 		1C29C382225853A300E1217A /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2D62DEA72EBFEB1D00F7121B /* GradientView.swift */,
+				2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */,
 				2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */,
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1C16FBE61CBC671A00C88BD1 /* PostRenderModel.swift */,
@@ -1163,6 +1173,8 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2D939F222EC48FDE00F3464B /* PageNumberView.swift */,
+				2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */,
 				2D10A3842E05C35700544F91 /* SearchView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
@@ -1616,6 +1628,7 @@
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */,
 				2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */,
+				2D62DEA82EBFEB2000F7121B /* GradientView.swift in Sources */,
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
@@ -1657,6 +1670,7 @@
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1CC065F72D67028F002BB6A0 /* AppIconImageNames.swift in Sources */,
+				2D939F232EC48FDE00F3464B /* PageNumberView.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
@@ -1672,6 +1686,7 @@
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
+				2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */,
 				1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */,
@@ -1725,6 +1740,7 @@
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
+				2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);
