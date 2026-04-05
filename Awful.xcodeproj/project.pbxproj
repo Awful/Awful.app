@@ -17,6 +17,8 @@
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */; };
 		1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */; };
+		6FDFDD5EDA73CAB878C6B73C /* PostScreenshotter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */; };
+		F7DD3BB290F57E0EF4014ECD /* ScreenshotterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */; };
 		1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */; };
 		1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */; };
 		1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */; };
@@ -304,6 +306,8 @@
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulURLRouter.swift; sourceTree = "<group>"; };
 		1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageViewController.swift; sourceTree = "<group>"; };
+		1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreenshotter.swift; sourceTree = "<group>"; };
+		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
 		1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -758,6 +762,8 @@
 				1C16FBD61CBAA00200C88BD1 /* PostsPageTopBar.swift */,
 				1C16FC031CC3D84500C88BD1 /* PostsPageView.swift */,
 				1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */,
+				1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */,
+				BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */,
 				1CB15BFA1A9EC9C800176E73 /* ReportPostViewController.swift */,
 				1C82AC4A199F585000CB15FE /* Selectotron.swift */,
 				1C82AC4C199F5C1500CB15FE /* Selectotron.xib */,
@@ -1628,6 +1634,8 @@
 				1C16FC021CC29B2C00C88BD1 /* LoadingView.swift in Sources */,
 				1C47AF4A19A7905F0098B828 /* PostsPageSettingsViewController.swift in Sources */,
 				1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */,
+				6FDFDD5EDA73CAB878C6B73C /* PostScreenshotter.swift in Sources */,
+				F7DD3BB290F57E0EF4014ECD /* ScreenshotterViewController.swift in Sources */,
 				1CC256B71A39A6BE003FA7A8 /* AwfulBrowser.swift in Sources */,
 				1CF280982055EB9B00913149 /* AwfulRoute.swift in Sources */,
 				1CD9FB641D1A38030070C8C7 /* NigglyRefreshView.swift in Sources */,
