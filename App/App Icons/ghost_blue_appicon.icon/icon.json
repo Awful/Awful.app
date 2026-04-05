@@ -1,0 +1,79 @@
+{
+  "color-space-for-untagged-svg-colors" : "display-p3",
+  "fill" : {
+    "linear-gradient" : [
+      "srgb:0.00000,0.30000,0.75000,1.00000",
+      "display-p3:0.04000,0.10400,0.20000,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "blend-mode" : "soft-light",
+      "blur-material" : 1,
+      "hidden" : false,
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "fill" : "none",
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "ghost.svg",
+          "name" : "ghost",
+          "opacity" : 1,
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              -5
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Bars",
+      "opacity" : 1,
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.25
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 1
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : 1,
+      "hidden" : false,
+      "layers" : [
+        {
+          "image-name" : "ghost.svg",
+          "name" : "ghost",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              -5
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Bars",
+      "opacity" : 1,
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.25000000000000006
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.75
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

@@ -202,9 +202,34 @@
 		2D265F8C292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */; };
 		2D265F8F292CB447001336ED /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 2D265F8E292CB447001336ED /* Lottie */; };
 		2D327DD627F468CE00D21AB0 /* BookmarkColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */; };
+		2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B462EC83DD00026826C /* AttachmentCardView.swift */; };
+		2D3CB31E2EBF09C300BD4A12 /* five_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3102EBF09C300BD4A12 /* five_appicon.icon */; };
+		2D3CB31F2EBF09C300BD4A12 /* smith_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3192EBF09C300BD4A12 /* smith_appicon.icon */; };
+		2D3CB3202EBF09C300BD4A12 /* froggo_purple_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3122EBF09C300BD4A12 /* froggo_purple_appicon.icon */; };
+		2D3CB3212EBF09C300BD4A12 /* v_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB31D2EBF09C300BD4A12 /* v_appicon.icon */; };
+		2D3CB3222EBF09C300BD4A12 /* froggo_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3112EBF09C300BD4A12 /* froggo_appicon.icon */; };
+		2D3CB3232EBF09C300BD4A12 /* cute_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB30F2EBF09C300BD4A12 /* cute_appicon.icon */; };
+		2D3CB3242EBF09C300BD4A12 /* staredog_tongue_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB31C2EBF09C300BD4A12 /* staredog_tongue_appicon.icon */; };
+		2D3CB3252EBF09C300BD4A12 /* riker_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3182EBF09C300BD4A12 /* riker_appicon.icon */; };
+		2D3CB3262EBF09C300BD4A12 /* stare_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB31A2EBF09C300BD4A12 /* stare_appicon.icon */; };
+		2D3CB3272EBF09C300BD4A12 /* greenface_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3142EBF09C300BD4A12 /* greenface_appicon.icon */; };
+		2D3CB3282EBF09C300BD4A12 /* staredog_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB31B2EBF09C300BD4A12 /* staredog_appicon.icon */; };
+		2D3CB3292EBF09C300BD4A12 /* rated_five_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3152EBF09C300BD4A12 /* rated_five_appicon.icon */; };
+		2D3CB32A2EBF09C300BD4A12 /* rated_five_pride_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3162EBF09C300BD4A12 /* rated_five_pride_appicon.icon */; };
+		2D3CB32B2EBF09C300BD4A12 /* ghost_blue_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3132EBF09C300BD4A12 /* ghost_blue_appicon.icon */; };
+		2D3CB32C2EBF09C300BD4A12 /* rated_five_trans_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3172EBF09C300BD4A12 /* rated_five_trans_appicon.icon */; };
+		2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */; };
+		2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */; };
+		2D62DEA82EBFEB2000F7121B /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA72EBFEB1D00F7121B /* GradientView.swift */; };
 		2D921269292F588100B16011 /* platinum-member.png in Resources */ = {isa = PBXBuildFile; fileRef = 2D921268292F588100B16011 /* platinum-member.png */; };
+		2D939F232EC48FDE00F3464B /* PageNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D939F222EC48FDE00F3464B /* PageNumberView.swift */; };
 		2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */; };
+		2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */; };
+		2DB447312EC1E2DA00F03402 /* AttachmentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
+		2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */; };
+		2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */; };
+		2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
 		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
@@ -517,11 +542,35 @@
 		2D19BA3829C33302009DD94F /* toot60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = toot60.json; sourceTree = "<group>"; };
 		2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOutFrogRefreshSpinnerView.swift; sourceTree = "<group>"; };
 		2D327DD527F468CE00D21AB0 /* BookmarkColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkColorPicker.swift; sourceTree = "<group>"; };
+		2D571B462EC83DD00026826C /* AttachmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCardView.swift; sourceTree = "<group>"; };
+		2D3CB30F2EBF09C300BD4A12 /* cute_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = cute_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3102EBF09C300BD4A12 /* five_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = five_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3112EBF09C300BD4A12 /* froggo_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = froggo_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3122EBF09C300BD4A12 /* froggo_purple_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = froggo_purple_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3132EBF09C300BD4A12 /* ghost_blue_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ghost_blue_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3142EBF09C300BD4A12 /* greenface_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = greenface_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3152EBF09C300BD4A12 /* rated_five_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3162EBF09C300BD4A12 /* rated_five_pride_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_pride_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3172EBF09C300BD4A12 /* rated_five_trans_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = rated_five_trans_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3182EBF09C300BD4A12 /* riker_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = riker_appicon.icon; sourceTree = "<group>"; };
+		2D3CB3192EBF09C300BD4A12 /* smith_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = smith_appicon.icon; sourceTree = "<group>"; };
+		2D3CB31A2EBF09C300BD4A12 /* stare_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = stare_appicon.icon; sourceTree = "<group>"; };
+		2D3CB31B2EBF09C300BD4A12 /* staredog_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_appicon.icon; sourceTree = "<group>"; };
+		2D3CB31C2EBF09C300BD4A12 /* staredog_tongue_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = staredog_tongue_appicon.icon; sourceTree = "<group>"; };
+		2D3CB31D2EBF09C300BD4A12 /* v_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v_appicon.icon; sourceTree = "<group>"; };
+		2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
+		2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
+		2D62DEA72EBFEB1D00F7121B /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		2D921268292F588100B16011 /* platinum-member.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "platinum-member.png"; sourceTree = "<group>"; };
+		2D939F222EC48FDE00F3464B /* PageNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageNumberView.swift; sourceTree = "<group>"; };
 		2DAF1FE02E05D3EB006F6BC4 /* View+FontDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+FontDesign.swift"; sourceTree = "<group>"; };
+		2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentEditView.swift; sourceTree = "<group>"; };
+		2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentPreviewView.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBcodeTagHelper.swift; sourceTree = "<group>"; };
+		2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionToolbarContainer.swift; sourceTree = "<group>"; };
+		2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernBBcodeToolbar.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
-		30E0C5172E35C89D0030DC0A /* SmilieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieData.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
 		30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieSearchViewModel.swift; sourceTree = "<group>"; };
@@ -748,6 +797,8 @@
 		1C29C382225853A300E1217A /* Posts */ = {
 			isa = PBXGroup;
 			children = (
+				2D62DEA72EBFEB1D00F7121B /* GradientView.swift */,
+				2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */,
 				2D265F8B292CB429001336ED /* GetOutFrogRefreshSpinnerView.swift */,
 				1C16FC191CD42EB300C88BD1 /* PostPreviewViewController.swift */,
 				1C16FBE61CBC671A00C88BD1 /* PostRenderModel.swift */,
@@ -1012,6 +1063,21 @@
 		1CC065F52D6700BA002BB6A0 /* App Icons */ = {
 			isa = PBXGroup;
 			children = (
+				2D3CB30F2EBF09C300BD4A12 /* cute_appicon.icon */,
+				2D3CB3102EBF09C300BD4A12 /* five_appicon.icon */,
+				2D3CB3112EBF09C300BD4A12 /* froggo_appicon.icon */,
+				2D3CB3122EBF09C300BD4A12 /* froggo_purple_appicon.icon */,
+				2D3CB3132EBF09C300BD4A12 /* ghost_blue_appicon.icon */,
+				2D3CB3142EBF09C300BD4A12 /* greenface_appicon.icon */,
+				2D3CB3152EBF09C300BD4A12 /* rated_five_appicon.icon */,
+				2D3CB3162EBF09C300BD4A12 /* rated_five_pride_appicon.icon */,
+				2D3CB3172EBF09C300BD4A12 /* rated_five_trans_appicon.icon */,
+				2D3CB3182EBF09C300BD4A12 /* riker_appicon.icon */,
+				2D3CB3192EBF09C300BD4A12 /* smith_appicon.icon */,
+				2D3CB31A2EBF09C300BD4A12 /* stare_appicon.icon */,
+				2D3CB31B2EBF09C300BD4A12 /* staredog_appicon.icon */,
+				2D3CB31C2EBF09C300BD4A12 /* staredog_tongue_appicon.icon */,
+				2D3CB31D2EBF09C300BD4A12 /* v_appicon.icon */,
 				1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */,
 				1CC065F02D66EC14002BB6A0 /* App Icons.xcconfig */,
 				1CC065F62D67028F002BB6A0 /* AppIconImageNames.swift */,
@@ -1098,6 +1164,12 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */,
+				2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */,
+				2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */,
+				2D571B462EC83DD00026826C /* AttachmentCardView.swift */,
+				2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */,
+				2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */,
 				1C2C1F0D1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift */,
 				1C16FB9F1CB492C600C88BD1 /* ComposeField.swift */,
 				1C16FBA31CB4A41C00C88BD1 /* ComposeTextView.swift */,
@@ -1119,6 +1191,8 @@
 		1CF7FACB1BB60C2200A077F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2D939F222EC48FDE00F3464B /* PageNumberView.swift */,
+				2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */,
 				2D10A3842E05C35700544F91 /* SearchView.swift */,
 				1CC22AB419F972C200D5BABD /* HairlineView.swift */,
 				1C16FC011CC29B2C00C88BD1 /* LoadingView.swift */,
@@ -1493,6 +1567,21 @@
 				1C5C2C5922D2586D00EA5A80 /* ARChromeActivity.xcassets in Resources */,
 				8CE8F2E11BBB754C00E81544 /* spinner-button.png in Resources */,
 				1CF186A617D48E5700B26717 /* Thread Tags in Resources */,
+				2D3CB31E2EBF09C300BD4A12 /* five_appicon.icon in Resources */,
+				2D3CB31F2EBF09C300BD4A12 /* smith_appicon.icon in Resources */,
+				2D3CB3202EBF09C300BD4A12 /* froggo_purple_appicon.icon in Resources */,
+				2D3CB3212EBF09C300BD4A12 /* v_appicon.icon in Resources */,
+				2D3CB3222EBF09C300BD4A12 /* froggo_appicon.icon in Resources */,
+				2D3CB3232EBF09C300BD4A12 /* cute_appicon.icon in Resources */,
+				2D3CB3242EBF09C300BD4A12 /* staredog_tongue_appicon.icon in Resources */,
+				2D3CB3252EBF09C300BD4A12 /* riker_appicon.icon in Resources */,
+				2D3CB3262EBF09C300BD4A12 /* stare_appicon.icon in Resources */,
+				2D3CB3272EBF09C300BD4A12 /* greenface_appicon.icon in Resources */,
+				2D3CB3282EBF09C300BD4A12 /* staredog_appicon.icon in Resources */,
+				2D3CB3292EBF09C300BD4A12 /* rated_five_appicon.icon in Resources */,
+				2D3CB32A2EBF09C300BD4A12 /* rated_five_pride_appicon.icon in Resources */,
+				2D3CB32B2EBF09C300BD4A12 /* ghost_blue_appicon.icon in Resources */,
+				2D3CB32C2EBF09C300BD4A12 /* rated_five_trans_appicon.icon in Resources */,
 				1AB84FDA2ADC611B00E7334D /* ghost.svg in Resources */,
 				8C8FA48019AD7CA300B67AAA /* ik.png in Resources */,
 				8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */,
@@ -1541,7 +1630,6 @@
 				83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */,
 				1C273A9E21B316DB002875A9 /* LoadMoreFooter.swift in Sources */,
 				1C2C1F0E1CE16FE200CD27DD /* CloseBBcodeTagCommand.swift in Sources */,
-				30E0C51C2E35C89D0030DC0A /* SmilieData.swift in Sources */,
 				30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */,
 				30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */,
 				30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */,
@@ -1558,6 +1646,7 @@
 				1CD005D11BB8800800232FFD /* ThreadsTableViewController.swift in Sources */,
 				1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */,
 				2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */,
+				2D62DEA82EBFEB2000F7121B /* GradientView.swift in Sources */,
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
@@ -1573,6 +1662,9 @@
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
+				2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */,
+				2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */,
+				2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
@@ -1599,6 +1691,7 @@
 				1C16FC181CD1848400C88BD1 /* ComposeTextViewController.swift in Sources */,
 				1CC256B11A38526B003FA7A8 /* MessageListViewController.swift in Sources */,
 				1CC065F72D67028F002BB6A0 /* AppIconImageNames.swift in Sources */,
+				2D939F232EC48FDE00F3464B /* PageNumberView.swift in Sources */,
 				1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */,
 				1C16FC101CC6F19700C88BD1 /* ThreadPreviewViewController.swift in Sources */,
 				1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */,
@@ -1609,11 +1702,13 @@
 				1C4506C41A2BAB3800767306 /* Handoff.swift in Sources */,
 				1C16FBFE1CBF237800C88BD1 /* PrivateMessageInboxRefresher.swift in Sources */,
 				1C3E181B224FAE1200BD88E5 /* SmilieDataStore+Shared.swift in Sources */,
+				2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */,
 				1C16FC1A1CD42EB300C88BD1 /* PostPreviewViewController.swift in Sources */,
 				1C24BC962002BF2F0022C85F /* ForumListCell.swift in Sources */,
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
+				2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */,
 				1C220E3B2B814D5A00DA92B0 /* SettingsViewController.swift in Sources */,
@@ -1661,12 +1756,15 @@
 				1C16FBD71CBAA00200C88BD1 /* PostsPageTopBar.swift in Sources */,
 				1CC256B31A3876F7003FA7A8 /* CompositionViewController.swift in Sources */,
 				1C16FBFC1CBF0F6B00C88BD1 /* ThreadTagPickerCell.swift in Sources */,
+				2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */,
+				2DB447312EC1E2DA00F03402 /* AttachmentEditView.swift in Sources */,
 				1CC256BF1A3AC9C0003FA7A8 /* CompositionMenuTree.swift in Sources */,
 				1CC6645D220D224C00BEF5A6 /* Environment.swift in Sources */,
 				1C8F6807222B6DD9007E61ED /* ThreadTagDataLoader.swift in Sources */,
 				1C16FBC21CB9525B00C88BD1 /* NewThreadFieldView.swift in Sources */,
 				1C397C9B1BCC333D00CA7FD5 /* ResourceURLProtocol.swift in Sources */,
 				1C0060A52170347300E5329A /* HTMLReader.swift in Sources */,
+				2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */,
 				1CA887B01F40AE1A0059FEEC /* User+Presentation.swift in Sources */,
 				1C82AC4B199F585000CB15FE /* Selectotron.swift in Sources */,
 			);

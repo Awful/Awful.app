@@ -6,7 +6,9 @@ import AwfulSettings
 import AwfulTheming
 import UIKit
 
-final class PostsPageTopBar: UIView {
+final class PostsPageTopBar: UIView, PostsPageTopBarProtocol {
+
+    private static let buttonFont = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .regular)
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [parentForumButton, previousPostsButton, scrollToEndButton])
@@ -19,7 +21,7 @@ final class PostsPageTopBar: UIView {
         parentForumButton.accessibilityLabel = LocalizedString("posts-page.parent-forum-button.accessibility-label")
         parentForumButton.accessibilityHint = LocalizedString("posts-page.parent-forum-button.accessibility-hint")
         parentForumButton.setTitle(LocalizedString("posts-page.parent-forum-button.title"), for: .normal)
-        parentForumButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .regular)
+        parentForumButton.titleLabel?.font = Self.buttonFont
         return parentForumButton
     }()
 
@@ -27,15 +29,15 @@ final class PostsPageTopBar: UIView {
         let previousPostsButton = UIButton(type: .system)
         previousPostsButton.accessibilityLabel = LocalizedString("posts-page.previous-posts-button.accessibility-label")
         previousPostsButton.setTitle(LocalizedString("posts-page.previous-posts-button.title"), for: .normal)
-        previousPostsButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .regular)
+        previousPostsButton.titleLabel?.font = Self.buttonFont
         return previousPostsButton
     }()
 
-    private let scrollToEndButton: UIButton = {
+    private lazy var scrollToEndButton: UIButton = {
         let scrollToEndButton = UIButton(type: .system)
         scrollToEndButton.accessibilityLabel = LocalizedString("posts-page.scroll-to-end-button.accessibility-label")
         scrollToEndButton.setTitle(LocalizedString("posts-page.scroll-to-end-button.title"), for: .normal)
-        scrollToEndButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .regular)
+        scrollToEndButton.titleLabel?.font = Self.buttonFont
         return scrollToEndButton
     }()
 

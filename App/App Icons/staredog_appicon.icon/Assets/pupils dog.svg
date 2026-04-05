@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="pupil" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #341300;
+      }
+    </style>
+  </defs>
+  <circle class="cls-1" cx="311.38" cy="275.93" r="26.22"/>
+  <circle class="cls-1" cx="713.54" cy="275.93" r="26.22"/>
+</svg>

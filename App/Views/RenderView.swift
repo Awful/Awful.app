@@ -306,6 +306,27 @@ extension RenderView: WKScriptMessageHandler {
             }
         }
 
+        struct FetchAttachmentImage: RenderViewMessage {
+            static let messageName = "fetchAttachmentImage"
+
+            /// An opaque `id` to use when calling back with the response.
+            let id: String
+
+            /// The attachment ID to fetch.
+            let attachmentID: String
+
+            init?(rawMessage: WKScriptMessage, in renderView: RenderView) {
+                assert(rawMessage.name == Self.messageName)
+                guard let body = rawMessage.body as? [String: Any],
+                      let id = body["id"] as? String,
+                      let attachmentID = body["attachmentid"] as? String
+                else { return nil }
+
+                self.id = id
+                self.attachmentID = attachmentID
+            }
+        }
+
         /// Sent from the web view to report image loading progress.
         struct ImageLoadProgress: RenderViewMessage {
             static let messageName = "imageLoadProgress"
@@ -576,6 +597,18 @@ extension RenderView {
                 """)
             } catch {
                 logger.error("error calling back after fetching oembed: \(error)")
+            }
+        }
+    }
+
+    func didFetchAttachmentImage(id: String, dataURL: String) {
+        Task {
+            do {
+                try await webView.eval("""
+                    window.Awful?.didFetchAttachmentImage(\(escapeForEval(id)), \(escapeForEval(dataURL)));
+                """)
+            } catch {
+                logger.error("error calling back after fetching attachment image: \(error)")
             }
         }
     }

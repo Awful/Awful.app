@@ -17,6 +17,7 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
         arrows.topAnchor.constraint(equalTo: topAnchor).isActive = true
         arrows.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         arrows.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        alpha = 0.0
     }
 
     required init?(coder: NSCoder) {
@@ -90,6 +91,27 @@ final class PostsPageRefreshSpinnerView: UIView, PostsPageRefreshControlContent 
     var state: PostsPageView.RefreshControlState = .ready {
         didSet {
             transition(from: oldValue, to: state)
+
+            switch state {
+            case .ready, .disabled:
+                UIView.animate(withDuration: 0.2) {
+                    self.alpha = 0.0
+                }
+
+            case .armed(let triggeredFraction):
+                let targetAlpha = min(1.0, triggeredFraction * 2)
+                UIView.animate(withDuration: 0.1) {
+                    self.alpha = targetAlpha
+                }
+
+            case .triggered, .refreshing:
+                UIView.animate(withDuration: 0.2) {
+                    self.alpha = 1.0
+                }
+
+            case .awaitingScrollEnd:
+                break
+            }
         }
     }
 }

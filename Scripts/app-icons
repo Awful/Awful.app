@@ -8,7 +8,8 @@ PRIMARY_APP_ICONSET = "rated_five_appicon"
 script_dir = Path(__file__).parent
 
 asset_catalog_path = script_dir.joinpath('..', 'App', 'App Icons', 'App Icons.xcassets').resolve()
-appiconsets = list(p.stem for p in asset_catalog_path.iterdir() if p.suffix == '.appiconset')
+app_icons_path = script_dir.joinpath('..', 'App', 'App Icons').resolve()
+appiconsets = list(p.stem for p in app_icons_path.iterdir() if p.suffix == '.icon')
 previews = set(p.stem for p in asset_catalog_path.iterdir() if p.stem.endswith('_preview'))
 assert PRIMARY_APP_ICONSET in appiconsets, f'Missing {PRIMARY_APP_ICONSET}'
 for a in appiconsets:
