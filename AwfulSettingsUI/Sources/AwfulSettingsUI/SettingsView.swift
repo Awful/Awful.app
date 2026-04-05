@@ -40,15 +40,19 @@ public struct SettingsView: View {
     let appIconDataSource: AppIconDataSource
     let avatarURL: URL?
     let buildInfo = BuildInfo()
+    let cacheSizeText: String
     let canOpenURL: (URL) -> Bool
     let currentUsername: String
     @State private var didScrollToSelectedAppIcon = false
     let emptyCache: () -> Void
+    let exportSettings: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
+    let importSettings: () -> Void
     let isMac: Bool
     let isPad: Bool
     let logOut: () -> Void
+    let resetSettings: () -> Void
     @Environment(\.managedObjectContext) var managedObjectContext
     @Environment(\.theme) var theme
 
@@ -80,32 +84,39 @@ public struct SettingsView: View {
     public init(
         appIconDataSource: AppIconDataSource,
         avatarURL: URL?,
+        cacheSizeText: String,
         canOpenURL: @escaping (URL) -> Bool,
         currentUsername: String,
         emptyCache: @escaping () -> Void,
+        exportSettings: @escaping () -> Void,
         goToAwfulThread: @escaping () -> Void,
         hasRegularSizeClassInLandscape: Bool,
+        importSettings: @escaping () -> Void,
         isMac: Bool,
         isPad: Bool,
-        logOut: @escaping () -> Void
+        logOut: @escaping () -> Void,
+        resetSettings: @escaping () -> Void
     ) {
         self.appIconDataSource = appIconDataSource
         self.avatarURL = avatarURL
+        self.cacheSizeText = cacheSizeText
         self.canOpenURL = canOpenURL
         self.currentUsername = currentUsername
         self.emptyCache = emptyCache
+        self.exportSettings = exportSettings
         self.goToAwfulThread = goToAwfulThread
         self.hasRegularSizeClassInLandscape = hasRegularSizeClassInLandscape
+        self.importSettings = importSettings
         self.isMac = isMac
         self.isPad = isPad
         self.logOut = logOut
+        self.resetSettings = resetSettings
     }
 
     public var body: some View {
         Form {
             Section {
                 Button("Log Out", bundle: .module) { logOut() }
-                Button("Empty Cache", bundle: .module) { emptyCache() }
             } header: {
                 VStack(alignment: .leading) {
                     Group {
@@ -125,7 +136,7 @@ public struct SettingsView: View {
                 }
                 .header()
             } footer: {
-                Text("Logging out erases all cached forums, threads, and posts.", bundle: .module)
+                Text("Logging out erases cached forums, threads, and posts. Your settings and preferences will be preserved.", bundle: .module)
                     .footer()
             }
             .section()
@@ -298,6 +309,27 @@ public struct SettingsView: View {
             .section()
 
             Section {
+                Button { emptyCache() } label: {
+                    HStack {
+                        Text("Clear Cache", bundle: .module)
+                        Spacer()
+                        Text(cacheSizeText)
+                            .foregroundStyle(theme[color: "listSecondaryText"]!)
+                    }
+                }
+                Button("Reset All Settings", bundle: .module) { resetSettings() }
+                Button("Export Settings", bundle: .module) { exportSettings() }
+                Button("Import Settings", bundle: .module) { importSettings() }
+            } header: {
+                Text("Data Management", bundle: .module)
+                    .header()
+            } footer: {
+                Text("Clearing the cache removes all downloaded images, web data, and temporary files. Resetting settings restores all preferences to their defaults.", bundle: .module)
+                    .footer()
+            }
+            .section()
+
+            Section {
                 NavigationLink("Acknowledgements", bundle: .module) {
                     AcknowledgementsView()
                         .navigationTitle("Acknowledgements", bundle: .module)
@@ -354,14 +386,18 @@ private struct SectionModifier: ViewModifier {
         SettingsView(
             appIconDataSource: .preview,
             avatarURL: nil,
+            cacheSizeText: "42.3 MB",
             canOpenURL: { _ in true },
             currentUsername: "Random Newbie",
             emptyCache: { print("emptying cache") },
+            exportSettings: { print("exporting settings") },
             goToAwfulThread: { print("navigating to Awful's thread") },
             hasRegularSizeClassInLandscape: true,
+            importSettings: { print("importing settings") },
             isMac: false,
             isPad: true,
-            logOut: { print("logging out") }
+            logOut: { print("logging out") },
+            resetSettings: { print("resetting settings") }
         )
         .navigationTitle(Text(verbatim: "Settings"))
         .navigationBarTitleDisplayMode(.inline)

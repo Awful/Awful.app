@@ -67,7 +67,16 @@
     "Checking the clipboard for a forums URL when you open the app allows you to jump straight to a copied URL in Awful." : {
 
     },
+    "Clear Cache" : {
+
+    },
+    "Clearing the cache removes all downloaded images, web data, and temporary files. Resetting settings restores all preferences to their defaults." : {
+
+    },
     "Dark Mode" : {
+
+    },
+    "Data Management" : {
 
     },
     "Default Browser" : {
@@ -88,13 +97,13 @@
     "Embed Tweets" : {
 
     },
-    "Empty Cache" : {
-
-    },
     "Enable Custom Title Post Layout" : {
 
     },
     "Enable Haptics" : {
+
+    },
+    "Export Settings" : {
 
     },
     "Forum-Specific Themes" : {
@@ -118,6 +127,9 @@
     "Imgur Uploads" : {
 
     },
+    "Import Settings" : {
+
+    },
     "Links" : {
 
     },
@@ -127,7 +139,7 @@
     "Log Out" : {
 
     },
-    "Logging out erases all cached forums, threads, and posts." : {
+    "Logging out erases cached forums, threads, and posts. Your settings and preferences will be preserved." : {
 
     },
     "New Smilie Picker" : {
@@ -152,6 +164,9 @@
 
     },
     "Pull for Next Page" : {
+
+    },
+    "Reset All Settings" : {
 
     },
     "Scale Text %@%%" : {

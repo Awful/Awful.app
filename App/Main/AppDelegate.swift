@@ -186,13 +186,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func logOut() {
-        // Logging out doubles as an "empty cache" button.
         let cookieJar = HTTPCookieStorage.shared
         for cookie in cookieJar.cookies ?? [] {
             cookieJar.deleteCookie(cookie)
         }
-        UserDefaults.standard.removeAllObjectsInMainBundleDomain()
-        emptyCache()
+        UserDefaults.standard.removeSessionObjects()
+        Task { await emptyCache() }
         
         let loginVC = LoginViewController.newFromStoryboard()
         loginVC.completionBlock = { [weak self] (login) in
@@ -212,9 +211,55 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func emptyCache() {
+    func emptyCache() async {
         URLCache.shared.removeAllCachedResponses()
-        ImageCache.shared.removeAll()
+        ImagePipeline.shared.cache.removeAll()
+
+        // Clear WKWebView data (cookies, cache, localStorage, etc.)
+        let dataStore = WKWebsiteDataStore.default()
+        let dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
+        await dataStore.removeData(ofTypes: dataTypes, modifiedSince: .distantPast)
+
+        // Clear external stylesheet cache
+        PostsViewExternalStylesheetLoader.shared.clearCache()
+    }
+
+    func calculateCacheSize() async -> Int64 {
+        var totalSize: Int64 = 0
+        let fileManager = FileManager.default
+
+        // Caches directory (includes URLCache, Nuke disk cache, external stylesheet, etc.)
+        if let cachesURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            totalSize += Self.directorySize(at: cachesURL)
+        }
+
+        // WKWebView data is typically stored in Library/WebKit
+        if let libraryURL = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first {
+            let webKitDir = libraryURL.appendingPathComponent("WebKit", isDirectory: true)
+            totalSize += Self.directorySize(at: webKitDir)
+        }
+
+        return totalSize
+    }
+
+    static func directorySize(at url: URL) -> Int64 {
+        let fileManager = FileManager.default
+        guard let enumerator = fileManager.enumerator(
+            at: url,
+            includingPropertiesForKeys: [.fileSizeKey, .isDirectoryKey],
+            options: [.skipsHiddenFiles]
+        ) else { return 0 }
+
+        var size: Int64 = 0
+        for case let fileURL as URL in enumerator {
+            guard
+                let values = try? fileURL.resourceValues(forKeys: [.fileSizeKey, .isDirectoryKey]),
+                values.isDirectory != true,
+                let fileSize = values.fileSize
+            else { continue }
+            size += Int64(fileSize)
+        }
+        return size
     }
 
     func open(route: AwfulRoute) {
