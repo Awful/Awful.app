@@ -1307,13 +1307,56 @@ public final class ForumsClient {
         }
     }
 
+    public struct ReportFormContents: Sendable {
+        public let instructionText: String
+        public let nwsLabelText: String
+        public let maxCharacters: Int
+    }
+
+    /**
+     Fetches the report form page for a post. If the post has already been reported, this will throw a `ServerError.standard` with the server's message.
+     */
+    public func fetchReportForm(for post: Post) async throws -> ReportFormContents {
+        let postID: String = await post.managedObjectContext!.perform {
+            post.postID
+        }
+        let (data, response) = try await fetch(method: .get, urlString: "modalert.php", parameters: [
+            ("postid", postID),
+        ])
+        let (document, _) = try parseHTML(data: data, response: response)
+
+        let instructionText = document
+            .firstNode(matchingSelector: "tr.altcolor2 td span.smalltext")?
+            .textContent
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            ?? "Did this post break the forum rules? If so, please report it."
+
+        let nwsLabelText = document
+            .firstNode(matchingSelector: "label[for='nwscheckbox']")?
+            .textContent
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            ?? "Reported post contains NWS content"
+
+        let maxCharacters: Int = document
+            .firstNode(matchingSelector: ".character-count[data-maxchars]")
+            .flatMap { Int($0["data-maxchars"] ?? "") }
+            ?? 1000
+
+        return ReportFormContents(
+            instructionText: instructionText,
+            nwsLabelText: nwsLabelText,
+            maxCharacters: maxCharacters
+        )
+    }
+
     /**
      - Parameter reason: A further explanation of what's wrong with the post.
      */
     public func report(
         _ post: Post,
         nws: Bool,
-        reason: String
+        reason: String,
+        maxCharacters: Int = 1000
     ) async throws {
         let postID: String = await post.managedObjectContext!.perform {
             post.postID
@@ -1321,7 +1364,7 @@ public final class ForumsClient {
         var parameters: [String: Any] = [
             "action": "submit",
             "postid": postID,
-            "comments": String(reason.prefix(960)),
+            "message": String(reason.prefix(maxCharacters)),
         ]
         if nws {
             parameters["nws"] = "yes"
