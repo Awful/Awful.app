@@ -1,0 +1,61 @@
+{
+  "color-space-for-untagged-svg-colors" : "display-p3",
+  "fill-specializations" : [
+    {
+      "value" : "system-dark"
+    },
+    {
+      "appearance" : "light",
+      "value" : {
+        "linear-gradient" : [
+          "srgb:0.34510,0.18824,0.55294,1.00000",
+          "display-p3:1.00000,0.48844,0.86275,1.00000"
+        ]
+      }
+    }
+  ],
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "srgb:0.84000,0.84000,0.84000,1.00000"
+          },
+          "image-name" : "shine.svg",
+          "name" : "shine"
+        },
+        {
+          "image-name" : "cute.svg",
+          "name" : "cute"
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "cute bg.svg",
+          "name" : "cute bg"
+        }
+      ],
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.6
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}
