@@ -130,6 +130,8 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchAttachmentImage.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
             AppDelegate.instance.open(route: .forum(id: forum.forumID))
@@ -1403,8 +1405,43 @@ final class PostsPageViewController: ViewController {
         func presentNewReplyWorkspace() {
             Task {
                 do {
-                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost!)
-                    let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
+                    guard let selectedPost = selectedPost else {
+                        logger.error("Cannot edit: no post selected")
+                        return
+                    }
+
+                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost)
+                    let capabilities = try? await ForumsClient.shared.findEditAttachmentCapabilities(for: selectedPost)
+                    let replyWorkspace = ReplyWorkspace(post: selectedPost, bbcode: text)
+
+                    // Set attachment info and capabilities before creating the composition view controller
+                    if let editDraft = replyWorkspace.draft as? EditReplyDraft {
+                        editDraft.canAddAttachment = capabilities?.canAddAttachment ?? false
+
+                        if let attachmentInfo = capabilities?.existingAttachment {
+                            editDraft.existingAttachmentInfo = attachmentInfo
+
+                            // Fetch the attachment image
+                            do {
+                                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentInfo.id)
+                                if let image = UIImage(data: imageData) {
+                                    editDraft.existingAttachmentImage = image
+                                }
+                            } catch {
+                                logger.error("Failed to fetch attachment image for edit: \(error)")
+                                let alert = UIAlertController(
+                                    title: nil,
+                                    message: LocalizedString("posts-page.error.attachment-preview-failed"),
+                                    preferredStyle: .alert
+                                )
+                                present(alert, animated: true)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                    alert.dismiss(animated: true)
+                                }
+                            }
+                        }
+                    }
+
                     self.replyWorkspace = replyWorkspace
                     replyWorkspace.completion = replyCompletionBlock
                     present(replyWorkspace.viewController, animated: true)
@@ -1517,6 +1554,23 @@ final class PostsPageViewController: ViewController {
         Task {
             let callbackData = await oEmbedFetcher.fetch(url: url, id: id)
             postsView.renderView.didFetchOEmbed(id: id, response: callbackData)
+        }
+    }
+
+    private func fetchAttachmentImage(attachmentID: String, id: String) {
+        Task {
+            do {
+                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentID)
+                if let image = UIImage(data: imageData), let pngData = image.pngData() {
+                    let base64 = pngData.base64EncodedString()
+                    let dataURL = "data:image/png;base64,\(base64)"
+                    await MainActor.run {
+                        postsView.renderView.didFetchAttachmentImage(id: id, dataURL: dataURL)
+                    }
+                }
+            } catch {
+                logger.error("Failed to fetch attachment image \(attachmentID): \(error)")
+            }
         }
     }
 
@@ -2041,6 +2095,23 @@ extension PostsPageViewController: RenderViewDelegate {
             
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
+
+        case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
+            fetchAttachmentImage(attachmentID: message.attachmentID, id: message.id)
+
+        case let message as RenderView.BuiltInMessage.ImageLoadProgress:
+            if message.total == 0 {
+                // No images to load, dismiss immediately
+                clearLoadingMessage()
+            } else {
+                let statusText = "Downloading images: \(message.loaded)/\(message.total)"
+                postsView.loadingView?.updateStatus(statusText)
+
+                // Dismiss loading view when all images are done
+                if message.complete {
+                    clearLoadingMessage()
+                }
+            }
 
         case is FYADFlagRequest:
             fetchNewFlag()

@@ -2,7 +2,9 @@
 //
 //  Copyright 2017 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import HTMLReader
+import UIKit
 
 extension HTMLDocument {
 
@@ -160,6 +162,43 @@ extension HTMLDocument {
                 let url = URL(string: src)
                 else { continue }
 
+            // Handle attachment images by adding a placeholder and data attribute
+            // These will be loaded asynchronously via JavaScript after page load
+            if src.contains("attachment.php") {
+                let attachmentSrc: String
+                if src.hasPrefix("http") {
+                    attachmentSrc = src
+                } else if let baseURL = ForumsClient.shared.baseURL {
+                    guard let url = URL(string: src, relativeTo: baseURL)?.absoluteString else {
+                        continue
+                    }
+                    attachmentSrc = url
+                } else {
+                    continue
+                }
+
+                // Extract attachmentid from URL query parameters
+                if let urlComponents = URLComponents(string: attachmentSrc),
+                   let attachmentIDItem = urlComponents.queryItems?.first(where: { $0.name == "attachmentid" }),
+                   let attachmentID = attachmentIDItem.value {
+
+                    // Mark as attachment image and store the attachmentID for async loading
+                    img["data-awful-attachment-id"] = attachmentID
+                    img["data-awful-attachment-url"] = attachmentSrc
+                    // Use a placeholder while loading
+                    img["src"] = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23ddd' width='100' height='100'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23999' font-family='sans-serif' font-size='14'%3ELoading...%3C/text%3E%3C/svg%3E"
+                }
+                continue
+            }
+
+            // Fix relative non-attachment URLs to be absolute
+            if !src.hasPrefix("http") {
+                if let baseURL = ForumsClient.shared.baseURL {
+                    img["src"] = baseURL.absoluteString + src
+                }
+            }
+
+
             let isSmilie = isSmilieURL(url)
 
             if isSmilie {
@@ -200,11 +239,12 @@ extension HTMLDocument {
                     img["src"] = finalURL
                 }
             }
-            
+
             if shouldLinkifyNonSmilies, !isSmilie {
                 let link = HTMLElement(tagName: "span", attributes: [
                     "data-awful-linkified-image": ""])
-                link.textContent = src
+                // Use the updated src attribute after any URL fixes
+                link.textContent = img["src"] ?? src
                 img.parent?.replace(child: img, with: link)
             }
         }
@@ -489,8 +529,9 @@ private func randomwaffleURLForWaffleimagesURL(_ url: URL) -> URL? {
         pathExtension = "jpg"
     }
     
-    // Pretty sure NSURLComponents init should always succeed from a URL.
-    var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+    guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+        return nil
+    }
     components.host = "randomwaffle.gbs.fm"
     components.path = "/images/\(hashPrefix)/\(hash).\(pathExtension)"
     return components.url
