@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "trans@2x.png",
+      "filename" : "Trans v3 2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,12 +26,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "trans dark@2x.png",
+      "filename" : "Trans v3 dark 2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "trans@3x.png",
+      "filename" : "Trans v3 3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -42,7 +42,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "trans dark@3x.png",
+      "filename" : "Trans v3 dark 3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
