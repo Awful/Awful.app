@@ -227,6 +227,9 @@
 		2DB447302EC1E2DA00F03402 /* AttachmentPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */; };
 		2DB447312EC1E2DA00F03402 /* AttachmentEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */; };
 		2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */; };
+		2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */; };
+		2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */; };
+		2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */; };
 		306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 306F740A2D90AA01000717BC /* KeychainAccess */; };
 		30E0C51D2E35C89D0030DC0A /* AnimatedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */; };
 		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
@@ -564,6 +567,9 @@
 		2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentEditView.swift; sourceTree = "<group>"; };
 		2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentPreviewView.swift; sourceTree = "<group>"; };
 		2DD8209B25DDD9BF0015A90D /* CopyImageActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyImageActivity.swift; sourceTree = "<group>"; };
+		2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBcodeTagHelper.swift; sourceTree = "<group>"; };
+		2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionToolbarContainer.swift; sourceTree = "<group>"; };
+		2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernBBcodeToolbar.swift; sourceTree = "<group>"; };
 		30E0C5162E35C89D0030DC0A /* AnimatedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImageView.swift; sourceTree = "<group>"; };
 		30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmilieGridItem.swift; sourceTree = "<group>"; };
 		30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmiliePickerView.swift; sourceTree = "<group>"; };
@@ -1158,6 +1164,9 @@
 		1CF2462016DD957300C75E05 /* Composition */ = {
 			isa = PBXGroup;
 			children = (
+				2DDCCE9C2F77A73E0011BCA2 /* BBcodeTagHelper.swift */,
+				2DDCCE9D2F77A73E0011BCA2 /* CompositionToolbarContainer.swift */,
+				2DDCCE9E2F77A73E0011BCA2 /* ModernBBcodeToolbar.swift */,
 				2D571B462EC83DD00026826C /* AttachmentCardView.swift */,
 				2DB4472E2EC1E2DA00F03402 /* AttachmentEditView.swift */,
 				2DB4472F2EC1E2DA00F03402 /* AttachmentPreviewView.swift */,
@@ -1653,6 +1662,9 @@
 				1C2C1F141CEE90D900CD27DD /* AppDelegate.swift in Sources */,
 				1CF6786B201E751D009A9640 /* MessageListDataSource.swift in Sources */,
 				1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */,
+				2DDCCE9F2F77A73E0011BCA2 /* CompositionToolbarContainer.swift in Sources */,
+				2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */,
+				2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,

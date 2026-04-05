@@ -18,7 +18,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 final class CompositionMenuTree: NSObject {
     @FoilDefaultStorage(Settings.imgurUploadMode) private var imgurUploadMode
 
-    fileprivate var imgurUploadsEnabled: Bool {
+    var imgurUploadsEnabled: Bool {
         return imgurUploadMode != .off
     }
 
@@ -26,6 +26,9 @@ final class CompositionMenuTree: NSObject {
     weak var draft: (NSObject & ReplyDraft)?
     var onAttachmentChanged: (() -> Void)?
     var onResizingStarted: (() -> Void)?
+    var onShowURLPrompt: (() -> Void)?
+    var onShowVideoPrompt: (() -> Void)?
+    var onShowImageOptions: (() -> Void)?
 
     private let imageProcessingQueue = DispatchQueue(label: "com.awful.attachment.processing", qos: .userInitiated)
 
@@ -129,8 +132,7 @@ final class CompositionMenuTree: NSObject {
         showImagePicker(.photoLibrary)
     }
 
-    // fileprivate to allow access from MenuItem action closures defined at file scope
-    fileprivate func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
+    func showImagePicker(_ sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
         let mediaType = UTType.image
@@ -526,36 +528,14 @@ fileprivate struct MenuItem {
 
 fileprivate let rootItems = [
     MenuItem(title: "[url]", action: { tree in
-        if UIPasteboard.general.coercedURL == nil {
-            linkifySelection(tree)
-        } else {
-            tree.showSubmenu(URLItems)
-        }
+        tree.onShowURLPrompt?()
     }),
     MenuItem(title: "[img]", action: { tree in
-        // Show the image submenu if Imgur uploads are enabled or forum attachments are available
-        let canAttachInEdit = (tree.draft as? EditReplyDraft)?.canAddAttachment ?? false
-        if tree.imgurUploadsEnabled || tree.draft is NewReplyDraft || canAttachInEdit {
-            tree.showSubmenu(imageItems(tree: tree))
-        } else {
-            // Fallback: paste image URL from clipboard or wrap selection
-            if UIPasteboard.general.coercedURL == nil {
-                linkifySelection(tree)
-            } else {
-                if let textRange = tree.textView.selectedTextRange {
-                    tree.textView.replace(textRange, withText:("[img]" + UIPasteboard.general.coercedURL!.absoluteString + "[/img]"))
-                }
-            }
-        }
+        tree.onShowImageOptions?()
     }),
     MenuItem(title: "Format", action: { $0.showSubmenu(formattingItems) }),
     MenuItem(title: "[video]", action: { tree in
-        if let URL = UIPasteboard.general.coercedURL {
-            if videoTagURLForURL(URL) != nil {
-                return tree.showSubmenu(videoSubmenuItems)
-            }
-        }
-        wrapSelectionInTag("[video]")(tree)
+        tree.onShowVideoPrompt?()
     })
 ]
 
