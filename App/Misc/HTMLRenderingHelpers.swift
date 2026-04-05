@@ -21,7 +21,7 @@ extension HTMLDocument {
 
     /// Finds links that appear to be to Bluesky posts and adds a `data-bluesky-post` attribute to those links.
     func addAttributeToBlueskyLinks() {
-        for a in nodes(matchingSelector: "a[href *= 'bsky.app']") {
+        for a in nodes(matchingParsedSelector: .cached("a[href *= 'bsky.app']")) {
             guard let href = a["href"],
                   let url = URL(string: href),
                   url.host?.caseInsensitiveCompare("bsky.app") == .orderedSame,
@@ -34,7 +34,7 @@ extension HTMLDocument {
 
     /// Finds links that appear to be to tweets and adds a `data-tweet-id` attribute to those links.
     func addAttributeToTweetLinks() {
-        for a in nodes(matchingSelector: "a[href *= 'twitter.com'], a[href *= 'x.com']") {
+        for a in nodes(matchingParsedSelector: .cached("a[href *= 'twitter.com'], a[href *= 'x.com']")) {
             guard
                 let href = a["href"],
                 let url = URL(string: href),
@@ -64,7 +64,7 @@ extension HTMLDocument {
      This function is only called if the forum is Imp Zone. It is important to know when one has found magic cake.
      */
     func addMagicCakeCSS() {
-        for h4 in nodes(matchingSelector: ".quote_link[href$=\"420\"]") {
+        for h4 in nodes(matchingParsedSelector: .cached(".quote_link[href$=\"420\"]")) {
             h4.toggleClass("magic_cake")
         }
     }
@@ -132,7 +132,7 @@ extension HTMLDocument {
      */
     func identifyQuotesCitingUser(named username: String, shouldHighlight isHighlighted: Bool) {
         let loggedInUserPosted = "\(username) posted:"
-        for h4 in nodes(matchingSelector: ".bbc-block h4") where h4.textContent == loggedInUserPosted {
+        for h4 in nodes(matchingParsedSelector: .cached(".bbc-block h4")) where h4.textContent == loggedInUserPosted {
             var block = h4.parentElement
             while let next = block, !next.hasClass("bbc-block") {
                 block = next.parentElement
@@ -156,7 +156,7 @@ extension HTMLDocument {
     func processImgTags(shouldLinkifyNonSmilies: Bool) {
         var postContentImageCount = 0
 
-        for img in nodes(matchingSelector: "img") {
+        for img in nodes(matchingParsedSelector: .cached("img")) {
             guard
                 let src = img["src"],
                 let url = URL(string: src)
@@ -254,7 +254,7 @@ extension HTMLDocument {
      Modifies the document in place, deleting all elements with the `editedby` class that have no text content.
      */
     func removeEmptyEditedByParagraphs() {
-        for p in nodes(matchingSelector: "p.editedby") {
+        for p in nodes(matchingParsedSelector: .cached("p.editedby")) {
             if p.textContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 p.removeFromParentNode()
             }
@@ -265,7 +265,7 @@ extension HTMLDocument {
      Modifies the document in place, removing the `style`, `onmouseover`, and `onmouseout` attributes from `bbc-spoiler` spans.
      */
     func removeSpoilerStylingAndEvents() {
-        for element in nodes(matchingSelector: "span.bbc-spoiler") {
+        for element in nodes(matchingParsedSelector: .cached("span.bbc-spoiler")) {
             element.removeAttribute(withName: "onmouseover")
             element.removeAttribute(withName: "onmouseout")
             element.removeAttribute(withName: "style")
@@ -276,7 +276,7 @@ extension HTMLDocument {
      Modifies the document in place to stop GIFs at various hosts from autoplaying.
      */
     func stopGIFAutoplay() {
-        for img in nodes(matchingSelector: "img") {
+        for img in nodes(matchingParsedSelector: .cached("img")) {
             guard
                 let src = img["src"],
                 let url = URL(string: src),
@@ -332,7 +332,7 @@ extension HTMLDocument {
      Modifies the document in place, replacing Flash-based Vimeo players with HTML5-based players.
      */
     func useHTML5VimeoPlayer() {
-        for param in nodes(matchingSelector: "div.bbcode_video object param[name='movie'][value*='://vimeo.com/']") {
+        for param in nodes(matchingParsedSelector: .cached("div.bbcode_video object param[name='movie'][value*='://vimeo.com/']")) {
             guard
                 let value = param["value"],
                 let sourceURL = URL(string: value),
@@ -368,7 +368,7 @@ extension HTMLDocument {
     }
 
     func postElementContainsNWS(post: HTMLElement) -> Bool {
-        return post.firstNode(matchingSelector: "img[title=':nws:']") != nil;
+        return post.firstNode(matchingParsedSelector: .cached("img[title=':nws:']")) != nil;
     }
 
     func containingPostIsNWS(node: HTMLNode) -> Bool {
@@ -383,7 +383,7 @@ extension HTMLDocument {
     }
 
     func embedVideos() {
-        for a in nodes(matchingSelector: "a") {
+        for a in nodes(matchingParsedSelector: .cached("a")) {
             if let href = a["href"],
                let url = URL(string: href),
                let host = url.host

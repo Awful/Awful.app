@@ -553,7 +553,7 @@ public final class ForumsClient {
         let params = prepareFormEntries(submission)
         let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: params)
         let (document, _) = try parseHTML(data: data, response: response)
-        guard let link = document.firstNode(matchingSelector: "a[href *= 'showthread']"),
+        guard let link = document.firstNode(matchingParsedSelector: .cached("a[href *= 'showthread']")),
               let href = link["href"],
               let components = URLComponents(string: href),
               let queryItems = components.queryItems,
@@ -587,9 +587,9 @@ public final class ForumsClient {
                 "forumid": forumID,
             ])
             let (document, url) = try parseHTML(data: data, response: response)
-            guard let htmlForm = document.firstNode(matchingSelector: "form[name = 'vbform']") else {
+            guard let htmlForm = document.firstNode(matchingParsedSelector: .cached("form[name = 'vbform']")) else {
                 if
-                    let specialMessage = document.firstNode(matchingSelector: "#content center div.standard"),
+                    let specialMessage = document.firstNode(matchingParsedSelector: .cached("#content center div.standard")),
                     specialMessage.textContent.contains("accepting")
                 {
                     throw AwfulCoreError.forbidden(description: "You're not allowed to post threads in this forum")
@@ -613,7 +613,7 @@ public final class ForumsClient {
         do {
             let (data, response) = try await fetch(method: .post, urlString: "newthread.php", parameters: previewParameters)
             let (document, url) = try parseHTML(data: data, response: response)
-            guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+            guard let postbody = document.firstNode(matchingParsedSelector: .cached(".postbody")) else {
                 throw AwfulCoreError.parseError(description: "Could not find previewed original post")
             }
             workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
@@ -850,7 +850,7 @@ public final class ForumsClient {
 
         let parsedLimits = parseAttachmentLimits(from: document)
 
-        guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
+        guard let htmlForm = document.firstNode(matchingParsedSelector: .cached("form[name='vbform']")) else {
             let description = if wasThreadClosed {
                 "Could not reply; the thread may be closed."
             } else {
@@ -917,8 +917,8 @@ public final class ForumsClient {
     private func parseReplyResponse(data: Data, response: URLResponse) throws -> String? {
         let (document, _) = try parseHTML(data: data, response: response)
 
-        let link = document.firstNode(matchingSelector: "a[href *= 'goto=post']")
-            ?? document.firstNode(matchingSelector: "a[href *= 'goto=lastpost']")
+        let link = document.firstNode(matchingParsedSelector: .cached("a[href *= 'goto=post']"))
+            ?? document.firstNode(matchingParsedSelector: .cached("a[href *= 'goto=lastpost']"))
 
         let queryItems = link
             .flatMap { $0["href"] }
@@ -976,7 +976,7 @@ public final class ForumsClient {
     }
 
     private func parseAttachmentLimits(from document: HTMLDocument) -> (maxFileSize: Int, maxDimension: Int)? {
-        guard let maxFileSizeString = document.firstNode(matchingSelector: "input[name='MAX_FILE_SIZE']")?["value"],
+        guard let maxFileSizeString = document.firstNode(matchingParsedSelector: .cached("input[name='MAX_FILE_SIZE']"))?["value"],
               let maxFileSize = Int(maxFileSizeString) else {
             logger.warning("Could not parse MAX_FILE_SIZE from HTML, falling back to defaults")
             return nil
@@ -984,7 +984,7 @@ public final class ForumsClient {
 
         var maxDimension = ForumAttachment.maxDimension
         // Search only within form table cells to avoid processing unrelated page content
-        for td in document.nodes(matchingSelector: "form[name='vbform'] td") {
+        for td in document.nodes(matchingParsedSelector: .cached("form[name='vbform'] td")) {
             let text = td.textContent
             if text.contains("Attach file:") {
                 if let nextSibling = td.nextSiblingElement {
@@ -1037,7 +1037,7 @@ public final class ForumsClient {
         do {
             let (data, response) = try await fetch(method: .post, urlString: "newreply.php", parameters: params)
             let (document, _) = try parseHTML(data: data, response: response)
-            guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+            guard let postbody = document.firstNode(matchingParsedSelector: .cached(".postbody")) else {
                 throw AwfulCoreError.parseError(description: "Could not find previewed post")
             }
             workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
@@ -1162,8 +1162,8 @@ public final class ForumsClient {
         ])
         let (document, url) = try parseHTML(data: data, response: response)
 
-        guard let htmlForm = document.firstNode(matchingSelector: "form[name='vbform']") else {
-            if let specialMessage = document.firstNode(matchingSelector: "#content center div.standard"),
+        guard let htmlForm = document.firstNode(matchingParsedSelector: .cached("form[name='vbform']")) else {
+            if let specialMessage = document.firstNode(matchingParsedSelector: .cached("#content center div.standard")),
                specialMessage.textContent.contains("permission")
             {
                 throw AwfulCoreError.forbidden(description: "You're not allowed to edit posts in this thread")
@@ -1191,8 +1191,8 @@ public final class ForumsClient {
         let existingAttachment = parseAttachmentInfo(from: document)
 
         // Check if the form has an attachment file input (indicating the server supports attachment uploads for this post)
-        let hasFileInput = document.firstNode(matchingSelector: "input[type='file'][name='attachment']") != nil
-        let hasAttachmentAction = document.firstNode(matchingSelector: "input[name='attachmentaction']") != nil
+        let hasFileInput = document.firstNode(matchingParsedSelector: .cached("input[type='file'][name='attachment']")) != nil
+        let hasAttachmentAction = document.firstNode(matchingParsedSelector: .cached("input[name='attachmentaction']")) != nil
 
         return EditAttachmentCapabilities(
             existingAttachment: existingAttachment,
@@ -1201,7 +1201,7 @@ public final class ForumsClient {
     }
 
     private func parseAttachmentInfo(from document: HTMLDocument) -> (id: String, filename: String)? {
-        guard let attachmentLink = document.firstNode(matchingSelector: "a[href*='attachment.php']"),
+        guard let attachmentLink = document.firstNode(matchingParsedSelector: .cached("a[href*='attachment.php']")),
               let href = attachmentLink["href"] else {
             return nil
         }
@@ -1299,7 +1299,7 @@ public final class ForumsClient {
         do {
             let (data, response) = try await fetch(method: .post, urlString: "editpost.php", parameters: params)
             let (document, _) = try parseHTML(data: data, response: response)
-            guard let postbody = document.firstNode(matchingSelector: ".postbody") else {
+            guard let postbody = document.firstNode(matchingParsedSelector: .cached(".postbody")) else {
                 throw AwfulCoreError.parseError(description: "Could not find previewed post")
             }
             workAroundAnnoyingImageBBcodeTagNotMatching(in: postbody)
@@ -1326,19 +1326,19 @@ public final class ForumsClient {
         let (document, _) = try parseHTML(data: data, response: response)
 
         let instructionText = document
-            .firstNode(matchingSelector: "tr.altcolor2 td span.smalltext")?
+            .firstNode(matchingParsedSelector: .cached("tr.altcolor2 td span.smalltext"))?
             .textContent
             .trimmingCharacters(in: .whitespacesAndNewlines)
             ?? "Did this post break the forum rules? If so, please report it."
 
         let nwsLabelText = document
-            .firstNode(matchingSelector: "label[for='nwscheckbox']")?
+            .firstNode(matchingParsedSelector: .cached("label[for='nwscheckbox']"))?
             .textContent
             .trimmingCharacters(in: .whitespacesAndNewlines)
             ?? "Reported post contains NWS content"
 
         let maxCharacters: Int = document
-            .firstNode(matchingSelector: ".character-count[data-maxchars]")
+            .firstNode(matchingParsedSelector: .cached(".character-count[data-maxchars]"))
             .flatMap { Int($0["data-maxchars"] ?? "") }
             ?? 1000
 
@@ -1745,7 +1745,7 @@ private func parseJSONDict(data: Data, response: URLResponse) throws -> [String:
 
 
 private func workAroundAnnoyingImageBBcodeTagNotMatching(in postbody: HTMLElement) {
-    for img in postbody.nodes(matchingSelector: "img[src^='http://awful-image']") {
+    for img in postbody.nodes(matchingParsedSelector: .cached("img[src^='http://awful-image']")) {
         if let src = img["src"] {
             let suffix = src.dropFirst("http://".count)
             img["src"] = String(suffix)
@@ -1803,8 +1803,8 @@ private func findMessageText(in parsed: ParsedDocument) throws -> String {
 }
 
 private func findIgnoreFormkey(in parsed: ParsedDocument) throws -> String {
-    return parsed.document.firstNode(matchingSelector: "input[value='ignore']")
-        .flatMap { $0.parent?.firstNode(matchingSelector: "input[name = 'formkey']") }
+    return parsed.document.firstNode(matchingParsedSelector: .cached("input[value='ignore']"))
+        .flatMap { $0.parent?.firstNode(matchingParsedSelector: .cached("input[name = 'formkey']")) }
         .map { $0["value"] }
     ?? ""
 }

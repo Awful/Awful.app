@@ -38,7 +38,7 @@ public struct LepersColonyScrapeResult: ScrapeResult {
 
     public init(_ html: HTMLNode, url: URL?) throws {
         let table = try html.requiredNode(matchingSelector: "table.standard")
-        punishments = table.nodes(matchingSelector: "tr").compactMap { try? Punishment($0) }
+        punishments = table.nodes(matchingParsedSelector: .cached("tr")).compactMap { try? Punishment($0) }
     }
 }
 
@@ -46,7 +46,7 @@ private extension LepersColonyScrapeResult.Punishment {
     init(_ html: HTMLNode) throws {
         let typeCell = try html.requiredNode(matchingSelector: "td:nth-of-type(1)")
 
-        post = typeCell.firstNode(matchingSelector: "a[href]")
+        post = typeCell.firstNode(matchingParsedSelector: .cached("a[href]"))
             .flatMap { $0["href"] }
             .flatMap { URLComponents(string: $0) }
             .flatMap { $0.queryItems }
@@ -56,20 +56,20 @@ private extension LepersColonyScrapeResult.Punishment {
 
         sentence = try? LepersColonyScrapeResult.Punishment.Sentence(typeCell)
 
-        let approverLink = html.firstNode(matchingSelector: "td:nth-of-type(6) a")
+        let approverLink = html.firstNode(matchingParsedSelector: .cached("td:nth-of-type(6) a"))
         (approver, approverUsername) = scrapeUserIDAndUsername(approverLink)
 
         date = html
-            .firstNode(matchingSelector: "td:nth-of-type(2)")
+            .firstNode(matchingParsedSelector: .cached("td:nth-of-type(2)"))
             .map { $0.textContent }
             .flatMap(dateFormatter.date)
 
-        reason = html.firstNode(matchingSelector: "td:nth-of-type(4)")?.innerHTML ?? ""
+        reason = html.firstNode(matchingParsedSelector: .cached("td:nth-of-type(4)"))?.innerHTML ?? ""
 
-        let requesterLink = html.firstNode(matchingSelector: "td:nth-of-type(5) a")
+        let requesterLink = html.firstNode(matchingParsedSelector: .cached("td:nth-of-type(5) a"))
         (requester, requesterUsername) = scrapeUserIDAndUsername(requesterLink)
 
-        let subjectLink = html.firstNode(matchingSelector: "td:nth-of-type(3) a[href]")
+        let subjectLink = html.firstNode(matchingParsedSelector: .cached("td:nth-of-type(3) a[href]"))
         (subject, subjectUsername) = scrapeUserIDAndUsername(subjectLink)
         
         reasonAttributed = LepersColonyScrapeResult.Punishment.getAttributedString(for: reason)
