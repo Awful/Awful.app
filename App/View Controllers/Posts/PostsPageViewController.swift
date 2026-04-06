@@ -41,9 +41,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    // Stored as Any because Task returns non-Sendable Core Data objects (Post: NSManagedObject).
-    // Swift 6 requires Task<Success, Failure> Success types to be Sendable.
-    private var networkOperation: Any?
+    private var cancelNetworkOperation: (() -> Void)?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
@@ -204,7 +202,7 @@ final class PostsPageViewController: ViewController {
     }
 
     deinit {
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
+        cancelNetworkOperation?()
     }
 
     var posts: [Post] = []
@@ -256,8 +254,8 @@ final class PostsPageViewController: ViewController {
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-        (networkOperation as? Task<(posts: [Post], firstUnreadPost: Int?, advertisementHTML: String), Error>)?.cancel()
-        networkOperation = nil
+        cancelNetworkOperation?()
+        cancelNetworkOperation = nil
 
         // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
@@ -309,13 +307,20 @@ final class PostsPageViewController: ViewController {
 
         let initialTheme = theme
 
-        let fetch = Task {
-            try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+        struct FetchResult: @unchecked Sendable {
+            let posts: [Post]
+            let firstUnreadPost: Int?
+            let advertisementHTML: String
         }
-        networkOperation = fetch
+        let fetch = Task {
+            let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
+            return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML)
+        }
+        cancelNetworkOperation = { fetch.cancel() }
         Task { [weak self] in
             do {
-                let (posts, firstUnreadPost, _) = try await fetch.value
+                let fetchResult = try await fetch.value
+                let (posts, firstUnreadPost) = (fetchResult.posts, fetchResult.firstUnreadPost)
                 guard let self else { return }
 
                 // We can get out-of-sync here as there's no cancelling the overall scraping operation. Make sure we've got the right page.
