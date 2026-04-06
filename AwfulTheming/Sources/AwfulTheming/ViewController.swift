@@ -269,6 +269,12 @@ open class TableViewController: UITableViewController, Themeable {
     open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Update navigation bar tint for iOS 26+ dynamic colors
         if #available(iOS 26.0, *) {
+            // Skip programmatic offset changes (e.g. pull-to-refresh) that can
+            // briefly appear "fully scrolled" and flip the nav bar to transparent.
+            guard scrollView.isDragging || scrollView.isDecelerating else {
+                return
+            }
+
             // Calculate scroll progress for smooth transition
             let topInset = scrollView.adjustedContentInset.top
             let currentOffset = scrollView.contentOffset.y

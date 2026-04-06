@@ -89,6 +89,7 @@ final class NavigationController: UINavigationController, Themeable {
     // MARK: Status bar style management
     var isDarkContentBackground = false
     var isScrolledFromTop = false
+    private var lastAppliedScrollProgress: CGFloat = -1
 
     func statusBarEnterLightBackground() {
         isDarkContentBackground = false
@@ -158,6 +159,7 @@ final class NavigationController: UINavigationController, Themeable {
     }
     
     func themeDidChange() {
+        lastAppliedScrollProgress = -1
         updateNavigationBarAppearance(with: theme)
     }
 
@@ -177,6 +179,12 @@ final class NavigationController: UINavigationController, Themeable {
         guard #available(iOS 26.0, *) else { return }
 
         let progressValue = CGFloat(progress.floatValue)
+
+        // Avoid redundant appearance rebuilds when progress hasn't changed.
+        if abs(progressValue - lastAppliedScrollProgress) < 0.005 {
+            return
+        }
+        lastAppliedScrollProgress = progressValue
 
         updateNavigationBarBackgroundWithProgress(progressValue)
 
