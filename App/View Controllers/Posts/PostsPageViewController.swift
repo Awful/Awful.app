@@ -114,6 +114,7 @@ final class PostsPageViewController: ViewController {
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
     }
+    private var hiddenPostsAfterLoading: Int?
 
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
@@ -348,7 +349,10 @@ final class PostsPageViewController: ViewController {
 
                 self.configureUserActivityIfPossible()
 
-                if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
+                if let pendingHidden = self.hiddenPostsAfterLoading {
+                    self.hiddenPosts = pendingHidden
+                    self.hiddenPostsAfterLoading = nil
+                } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
                     self.hiddenPosts = firstUnreadPost - 1
                 }
 
@@ -1675,10 +1679,18 @@ final class PostsPageViewController: ViewController {
         return postsView.renderView.scrollView.fractionalContentOffset.y
     }
 
-    /// Stages a vertical scroll fraction to apply once the WKWebView finishes rendering. Used by
-    /// `SceneDelegate` to restore the user's place after iOS terminates the scene.
-    func prepareForRestoration(scrollFraction: CGFloat) {
-        scrollToFractionAfterLoading = scrollFraction
+    var currentHiddenPosts: Int { hiddenPosts }
+
+    /// Stages a vertical scroll fraction and hidden-posts count to apply once the WKWebView
+    /// finishes rendering. Used by `SceneDelegate` to restore the user's place after iOS
+    /// terminates the scene.
+    func prepareForRestoration(scrollFraction: CGFloat?, hiddenPosts: Int?) {
+        if let scrollFraction = scrollFraction {
+            scrollToFractionAfterLoading = scrollFraction
+        }
+        if let hiddenPosts = hiddenPosts {
+            hiddenPostsAfterLoading = hiddenPosts
+        }
     }
 
     private func configureUserActivityIfPossible() {

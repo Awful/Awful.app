@@ -338,6 +338,12 @@ extension ThreadsTableViewController: ThreadListDataSourceDelegate {
     }
 }
 
+extension ThreadsTableViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .forum(id: forum.forumID)
+    }
+}
+
 // MARK: UITableViewDelegate
 extension ThreadsTableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -136,17 +136,17 @@ class ComposeTextViewController: ViewController {
             self?.bodyTextDidChange()
         })
     }
-
-    /// Override in subclasses to react to body text changes (e.g. to auto-save a draft).
-    /// Called from the same `UITextView.textDidChangeNotification` observer that updates the
-    /// submit button.
-    func bodyTextDidChange() {}
     private func endObservingTextChangeNotification() {
         guard let token = textDidChangeObserver else { return }
         NotificationCenter.default.removeObserver(token)
         textDidChangeObserver = nil
     }
     private var textDidChangeObserver: NSObjectProtocol?
+
+    /// Override in subclasses to react to body text changes (e.g. to auto-save a draft).
+    /// Called from the same `UITextView.textDidChangeNotification` observer that updates the
+    /// submit button.
+    func bodyTextDidChange() {}
     
     fileprivate func beginObservingKeyboardNotifications() {
         guard keyboardWillChangeFrameObserver == nil else { return }

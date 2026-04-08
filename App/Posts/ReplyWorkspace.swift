@@ -245,8 +245,8 @@ final class ReplyWorkspace: NSObject {
                     self.viewController.present(alert, animated: true)
                 }
             } else {
-                DraftStore.sharedStore().deleteDraft(self.draft)
-                
+                self.forgetDraft()
+
                 self.completion(.posted)
             }
         }

@@ -307,3 +307,9 @@ extension BookmarksTableViewController: ThreadListDataSourceDeletionDelegate {
         setThread(thread, isBookmarked: false)
     }
 }
+
+extension BookmarksTableViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .bookmarks
+    }
+}

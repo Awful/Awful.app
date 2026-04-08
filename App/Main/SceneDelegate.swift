@@ -10,8 +10,12 @@ import UIKit
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SceneDelegate")
 
 /// `NSUserActivity.userInfo` key carrying the vertical scroll fraction (Double, 0...1) for a
-/// restored `PostsPageViewController`.
+/// restored `PostsPageViewController` or `MessageViewController`.
 private let restorationScrollFractionKey = "AwfulRestorationScrollFraction"
+
+/// `NSUserActivity.userInfo` key carrying the `hiddenPosts` count for a restored
+/// `PostsPageViewController`.
+private let restorationHiddenPostsKey = "AwfulRestorationHiddenPosts"
 
 /// Single window scene delegate. Adopting `UIScene` is what gives us iOS-managed state restoration
 /// on iOS 13+: when the system kills our scene to reclaim memory, it will replay the
@@ -84,12 +88,15 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else if let activity = pendingRestorationActivity, let route = activity.route {
             pendingRestorationActivity = nil
             logger.debug("restoring scene to \(activity.activityType)")
-            let savedFraction = activity.userInfo?[restorationScrollFractionKey] as? Double
+            let savedFraction = (activity.userInfo?[restorationScrollFractionKey] as? Double).map(CGFloat.init)
+            let savedHiddenPosts = activity.userInfo?[restorationHiddenPostsKey] as? Int
             DispatchQueue.main.async {
                 AppDelegate.instance.open(route: route)
-                if let fraction = savedFraction,
-                   let topPosts = AppDelegate.instance.rootViewControllerStackIfLoaded?.topPostsPageViewController {
-                    topPosts.prepareForRestoration(scrollFraction: CGFloat(fraction))
+                guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded else { return }
+                if let topPosts = stack.topPostsPageViewController {
+                    topPosts.prepareForRestoration(scrollFraction: savedFraction, hiddenPosts: savedHiddenPosts)
+                } else if let topMessage = stack.topMessageViewController, let fraction = savedFraction {
+                    topMessage.prepareForRestoration(scrollFraction: fraction)
                 }
             }
         }
@@ -137,7 +144,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         let activity = NSUserActivity(activityType: activityType)
         activity.route = route
-        if let fraction = stack.topPostsPageViewController?.currentScrollFraction {
+        if let topPosts = stack.topPostsPageViewController {
+            var extras: [AnyHashable: Any] = [restorationHiddenPostsKey: topPosts.currentHiddenPosts]
+            if let fraction = topPosts.currentScrollFraction {
+                extras[restorationScrollFractionKey] = Double(fraction)
+            }
+            activity.addUserInfoEntries(from: extras)
+        } else if let topMessage = stack.topMessageViewController,
+                  let fraction = topMessage.currentScrollFraction {
             activity.addUserInfoEntries(from: [restorationScrollFractionKey: Double(fraction)])
         }
         return activity

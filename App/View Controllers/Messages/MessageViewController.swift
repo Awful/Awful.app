@@ -26,6 +26,7 @@ final class MessageViewController: ViewController {
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var loadingView: LoadingView?
+    private var scrollToFractionAfterLoading: CGFloat?
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private let privateMessage: PrivateMessage
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
@@ -186,6 +187,17 @@ final class MessageViewController: ViewController {
 
     var restorationRoute: AwfulRoute? {
         .message(id: privateMessage.messageID)
+    }
+
+    var currentScrollFraction: CGFloat? {
+        guard isViewLoaded else { return nil }
+        return renderView.scrollView.fractionalContentOffset.y
+    }
+
+    /// Stages a vertical scroll fraction to apply once the WKWebView finishes rendering. Used by
+    /// `SceneDelegate` to restore the user's place after iOS terminates the scene.
+    func prepareForRestoration(scrollFraction: CGFloat) {
+        scrollToFractionAfterLoading = scrollFraction
     }
 
     private func configureUserActivity() {
@@ -445,6 +457,13 @@ extension MessageViewController: RenderViewDelegate {
     func didFinishRenderingHTML(in view: RenderView) {
         loadingView?.removeFromSuperview()
         loadingView = nil
+
+        if let fraction = scrollToFractionAfterLoading {
+            scrollToFractionAfterLoading = nil
+            var offset = renderView.scrollView.fractionalContentOffset
+            offset.y = fraction
+            renderView.scrollToFractionalOffset(offset)
+        }
 
         if embedBlueskyPosts {
             renderView.embedBlueskyPosts()

@@ -153,10 +153,16 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         firstVisibleViewController { ($0 as? RestorableLocation)?.restorationRoute }
     }
 
-    /// Topmost visible `PostsPageViewController`, used by `SceneDelegate` to apply a restored
-    /// scroll fraction after the URL router has pushed a fresh instance.
+    /// Topmost visible `PostsPageViewController`, used by `SceneDelegate` to apply restored
+    /// scroll fraction and hidden-posts state after the URL router has pushed a fresh instance.
     var topPostsPageViewController: PostsPageViewController? {
         firstVisibleViewController { $0 as? PostsPageViewController }
+    }
+
+    /// Topmost visible `MessageViewController`, used by `SceneDelegate` to apply a restored
+    /// scroll fraction after the URL router has pushed a fresh instance.
+    var topMessageViewController: MessageViewController? {
+        firstVisibleViewController { $0 as? MessageViewController }
     }
 
     private func firstVisibleViewController<T>(matching transform: (UIViewController) -> T?) -> T? {
