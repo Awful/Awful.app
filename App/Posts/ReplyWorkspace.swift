@@ -12,23 +12,14 @@ import os
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ReplyWorkspace")
 
-/**
-A place for someone to compose a reply to a thread.
-
-ReplyWorkspace conforms to UIStateRestoring, so it is ok to involve it in UIKit state preservation and restoration.
-*/
+/// A place for someone to compose a reply to a thread.
 final class ReplyWorkspace: NSObject {
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.confirmBeforeReplying) private var confirmBeforeReplying
     let draft: NSObject & ReplyDraft
     @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
-    private let restorationIdentifier: String
-    
-    /**
-    Called when the viewController should be dismissed.
 
-    The closure can't be saved as part of UIKit state preservation, so be sure to set something after restoring state.
-    */
+    /// Called when the viewController should be dismissed.
     var completion: (CompletionResult) -> Void = { _ in }
 
     enum CompletionResult {
@@ -36,27 +27,21 @@ final class ReplyWorkspace: NSObject {
         case posted
         case saveDraft
     }
-    
+
     /// Constructs a workspace for a new reply to a thread.
     convenience init(thread: AwfulThread) {
-        let draft = NewReplyDraft(thread: thread)
-        self.init(draft: draft, didRestoreWithRestorationIdentifier: nil)
+        self.init(draft: NewReplyDraft(thread: thread))
     }
-    
+
     /// Constructs a workspace for editing a reply.
     convenience init(post: Post, bbcode: String) {
-        let draft = EditReplyDraft(post: post)
-        self.init(draft: draft, didRestoreWithRestorationIdentifier: nil)
+        self.init(draft: EditReplyDraft(post: post))
         bbcodeForNewlyCreatedCompositionViewController = bbcode
     }
-    
-    /// A nil restorationIdentifier implies that we were not created by UIKit state restoration.
-    fileprivate init(draft: NSObject & ReplyDraft, didRestoreWithRestorationIdentifier restorationIdentifier: String?) {
+
+    private init(draft: NSObject & ReplyDraft) {
         self.draft = draft
-        self.restorationIdentifier = restorationIdentifier ?? UUID().uuidString
         super.init()
-        
-        UIApplication.registerObject(forStateRestoration: self, restorationIdentifier: self.restorationIdentifier)
     }
     
     deinit {
@@ -89,11 +74,6 @@ final class ReplyWorkspace: NSObject {
     // compositionViewController isn't available at init time, but sometimes we already know the bbcode.
     private var bbcodeForNewlyCreatedCompositionViewController: String?
 
-    /*
-    Dealing with compositionViewController is annoyingly complicated. Ideally it'd be a constant ivar, so we could either restore state by passing it in via init() or make a new one if we're not restoring state.
-    Unfortunately, any compositionViewController that we preserve in encodeRestorableStateWithCoder() is not yet available in objectWithRestorationIdentifierPath(_:coder:); it only becomes available in decodeRestorableStateWithCoder().
-    This didSet encompasses the junk we want to set up on the compositionViewController no matter how it's created and really belongs in init(), except we're stuck.
-    */
     var compositionViewController: CompositionViewController! {
         didSet {
             assert(oldValue == nil, "please set compositionViewController only once")
@@ -297,7 +277,6 @@ final class ReplyWorkspace: NSObject {
     fileprivate func createCompositionViewController() {
         if compositionViewController == nil {
             compositionViewController = CompositionViewController()
-            compositionViewController.restorationIdentifier = "\(self.restorationIdentifier) Reply composition"
 
             if let bbcodeForNewlyCreatedCompositionViewController {
                 compositionViewController.textView.text = bbcodeForNewlyCreatedCompositionViewController
@@ -333,40 +312,6 @@ final class ReplyWorkspace: NSObject {
         }
 
         textView.replaceSelection(with: replacement)
-    }
-}
-
-extension ReplyWorkspace: UIObjectRestoration, UIStateRestoring {
-    var objectRestorationClass: UIObjectRestoration.Type? {
-        return ReplyWorkspace.self
-    }
-    
-    func encodeRestorableState(with coder: NSCoder) {
-        saveTextToDraft()
-        DraftStore.sharedStore().saveDraft(draft)
-        coder.encode(draft.storePath, forKey: Keys.draftPath)
-        coder.encode(compositionViewController, forKey: Keys.compositionViewController)
-    }
-    
-    class func object(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIStateRestoring? {
-        if let path = coder.decodeObject(forKey: Keys.draftPath) as! String? {
-            if let draft = DraftStore.sharedStore().loadDraft(path) as! (NSObject & ReplyDraft)? {
-                return self.init(draft: draft, didRestoreWithRestorationIdentifier: identifierComponents.last )
-            }
-        }
-        
-        logger.error("failing intentionally as no saved draft was found")
-        return nil
-    }
-    
-    func decodeRestorableState(with coder: NSCoder) {
-        // Our encoded CompositionViewController is not available any earlier (i.e. in objectWithRestorationIdentifierPath(_:coder:)).
-        compositionViewController = (coder.decodeObject(forKey: Keys.compositionViewController) as! CompositionViewController)
-    }
-
-    fileprivate struct Keys {
-        static let draftPath = "draftPath"
-        static let compositionViewController = "compositionViewController"
     }
 }
 

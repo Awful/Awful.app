@@ -36,7 +36,6 @@ final class ThreadComposeViewController: ComposeTextViewController {
         
         title = defaultTitle
         submitButtonItem.title = "Preview"
-        restorationClass = type(of: self)
     }
     
     required init?(coder: NSCoder) {
@@ -252,28 +251,6 @@ final class ThreadComposeViewController: ComposeTextViewController {
         }
     }
     
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(forum.objectKey, forKey: Keys.ForumKey.rawValue)
-        coder.encode(fieldView.subjectField.textField.text, forKey: Keys.SubjectKey.rawValue)
-        coder.encode(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
-        coder.encode(secondaryThreadTag?.objectKey, forKey: Keys.SecondaryThreadTagKey.rawValue)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        fieldView.subjectField.textField.text = coder.decodeObject(forKey: Keys.SubjectKey.rawValue) as? String
-        
-        if let tagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(objectKey: tagKey, in: forum.managedObjectContext!)
-        }
-        
-        if let secondaryTagKey = coder.decodeObject(forKey: Keys.SecondaryThreadTagKey.rawValue) as? ThreadTagKey {
-            secondaryThreadTag = ThreadTag.objectForKey(objectKey: secondaryTagKey, in: forum.managedObjectContext!)
-        }
-        
-        super.decodeRestorableState(with: coder)
-    }
 }
 
 extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
@@ -309,24 +286,4 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
     }
 }
 
-extension ThreadComposeViewController: UIViewControllerRestoration {
-    static func viewController(
-        withRestorationIdentifierPath identifierComponents: [String],
-        coder: NSCoder
-    ) -> UIViewController? {
-        guard let forumKey = coder.decodeObject(forKey: Keys.ForumKey.rawValue) as? ForumKey else { return nil }
-        let forum = Forum.objectForKey(objectKey: forumKey, in: AppDelegate.instance.managedObjectContext)
-        let composeViewController = ThreadComposeViewController(forum: forum)
-        composeViewController.restorationIdentifier = identifierComponents.last
-        return composeViewController
-    }
-}
-
 private let defaultTitle = "New Thread"
-
-private enum Keys: String {
-    case ForumKey
-    case SubjectKey = "AwfulSubject"
-    case ThreadTagKey
-    case SecondaryThreadTagKey
-}

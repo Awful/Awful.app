@@ -20,7 +20,6 @@ final class CompositionViewController: ViewController {
 
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nil, bundle: nil)
-        restorationClass = type(of: self)
     }
 
     required init?(coder: NSCoder) {
@@ -61,7 +60,6 @@ final class CompositionViewController: ViewController {
         view = containerView
 
         _textView = CompositionTextView()
-        _textView.restorationIdentifier = "Composition text view"
         _textView.translatesAutoresizingMaskIntoConstraints = false
 
         attachmentPreviewView.translatesAutoresizingMaskIntoConstraints = false
@@ -277,18 +275,6 @@ final class CompositionViewController: ViewController {
         super.viewWillAppear(animated)
         
         textView.becomeFirstResponder()
-        
-        // Leave an escape hatch in case we were restored without an associated workspace. This can happen when a crash leaves old state information behind.
-        if navigationItem.leftBarButtonItem == nil {
-            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(CompositionViewController.didTapCancel))
-            // Only set explicit tint color for iOS < 26
-            if #available(iOS 26.0, *) {
-                // Let iOS 26+ handle the color automatically
-            } else {
-                cancelButton.tintColor = theme["navigationBarTextColor"]
-            }
-            navigationItem.leftBarButtonItem = cancelButton
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -458,14 +444,6 @@ final class CompositionViewController: ViewController {
         return [
             UIKeyCommand(action: #selector(cancel(_:)), input: UIKeyCommand.inputEscape, discoverabilityTitle: "Cancel"),
         ]
-    }
-}
-
-extension CompositionViewController: UIViewControllerRestoration {
-    class func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let composition = self.init()
-        composition.restorationIdentifier = identifierComponents.last 
-        return composition
     }
 }
 

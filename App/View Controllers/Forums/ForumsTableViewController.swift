@@ -129,8 +129,6 @@ final class ForumsTableViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let threadList = ThreadsTableViewController(forum: forum)
-        threadList.restorationClass = ThreadsTableViewController.self
-        threadList.restorationIdentifier = "Thread"
         navigationController?.pushViewController(threadList, animated: animated)
     }
 
@@ -139,7 +137,6 @@ final class ForumsTableViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let vc = AnnouncementViewController(announcement: announcement)
-        vc.restorationIdentifier = "Announcement"
         showDetailViewController(vc, sender: self)
     }
 
@@ -157,7 +154,6 @@ final class ForumsTableViewController: TableViewController {
         super.viewDidLoad()
 
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
-        tableView.restorationIdentifier = "Forums table"
         tableView.sectionFooterHeight = 0
         tableView.separatorInset.left = tableSeparatorLeftMargin
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
@@ -195,7 +191,6 @@ final class ForumsTableViewController: TableViewController {
             
     @objc private func searchForums() {
         let searchView = SearchHostingController()
-        searchView.restorationIdentifier = "Search view"
         if traitCollection.userInterfaceIdiom == .pad {
             searchView.modalPresentationStyle = .pageSheet
         } else {

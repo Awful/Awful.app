@@ -9,7 +9,7 @@ import UIKit
  Navigation controller with special powers:
 
  - Theming support.
- - Custom navbar class `NavigationBar`, including after state restoration.
+ - Custom navbar class `NavigationBar`.
  - Shows and hides the toolbar depending on whether the view controller has toolbar items.
  - On iPhone, allows swiping from the *right* screen edge to unpop a view controller.
  */
@@ -30,15 +30,14 @@ final class NavigationController: UINavigationController, Themeable {
     }()
     fileprivate var pushAnimationInProgress = false
     
-    // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can, and handle our own restoration, to ensure our navigation bar and toolbar classes are used.
-    
+    // We cannot override the designated initializer, -initWithNibName:bundle:, and call -initWithNavigationBarClass:toolbarClass: within. So we override what we can to ensure our navigation bar and toolbar classes are used.
+
     override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
     }
-    
+
     required init() {
         super.init(navigationBarClass: NavigationBar.self, toolbarClass: Toolbar.self)
-        restorationClass = type(of: self)
         delegate = self
     }
     
@@ -434,20 +433,6 @@ final class NavigationController: UINavigationController, Themeable {
         }
     }
     
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(unpopHandler?.viewControllers, forKey: Key.FutureViewControllers.rawValue)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        super.decodeRestorableState(with: coder)
-        
-        if let viewControllers = coder.decodeObject(forKey: Key.FutureViewControllers.rawValue) as? [UIViewController] {
-            unpopHandler?.viewControllers = viewControllers
-        }
-    }
-
     // MARK: Delegate delegation
     
     override weak var delegate: UINavigationControllerDelegate? {
@@ -471,10 +456,6 @@ final class NavigationController: UINavigationController, Themeable {
         }
         return nil
     }
-}
-
-private enum Key: String {
-    case FutureViewControllers = "AwfulFutureViewControllers"
 }
 
 extension NavigationController: UIGestureRecognizerDelegate {
@@ -591,13 +572,5 @@ extension NavigationController: UINavigationControllerDelegate {
         }
         
         return realDelegate?.navigationController?(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
-    }
-}
-
-extension NavigationController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let nav = self.init()
-        nav.restorationIdentifier = identifierComponents.last
-        return nav
     }
 }

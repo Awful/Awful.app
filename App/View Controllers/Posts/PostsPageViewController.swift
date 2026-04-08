@@ -47,7 +47,6 @@ final class PostsPageViewController: ViewController {
     private(set) var page: ThreadPage?
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
-    private var restoringState = false
     private var scrollToFractionAfterLoading: CGFloat?
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
@@ -194,8 +193,6 @@ final class PostsPageViewController: ViewController {
         self.author = author
         super.init(nibName: nil, bundle: nil)
 
-        restorationClass = type(of: self)
-
         navigationItem.rightBarButtonItem = composeItem
 
         hidesBottomBarWhenPushed = true
@@ -283,9 +280,7 @@ final class PostsPageViewController: ViewController {
 
             updateUserInterface()
 
-            if !restoringState {
-                hiddenPosts = 0
-            }
+            hiddenPosts = 0
 
             refetchPosts()
 
@@ -1181,7 +1176,6 @@ final class PostsPageViewController: ViewController {
             let user = User.objectForKey(objectKey: userKey, in: self.thread.managedObjectContext!)
 
             let postsVC = PostsPageViewController(thread: self.thread, author: user)
-            postsVC.restorationIdentifier = "Just your posts"
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
 
             self.navigationController?.pushViewController(postsVC, animated: true)
@@ -1333,7 +1327,6 @@ final class PostsPageViewController: ViewController {
 
         self.dismiss(animated: false) {
             let postsVC = PostsPageViewController(thread: self.thread, author: self.selectedUser!)
-            postsVC.restorationIdentifier = "Just their posts"
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
             self.navigationController?.pushViewController(postsVC, animated: true)
         }
@@ -1348,7 +1341,6 @@ final class PostsPageViewController: ViewController {
             let messageVC = MessageComposeViewController(recipient: self.selectedUser!)
             self.messageViewController = messageVC
             messageVC.delegate = self
-            messageVC.restorationIdentifier = "New PM from posts view"
             self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
         }
     }
@@ -1978,86 +1970,8 @@ final class PostsPageViewController: ViewController {
         userActivity = nil
     }
 
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-
-        coder.encode(thread.objectKey, forKey: Keys.threadKey)
-        if let page = page {
-            coder.encode(page.nsCoderIntValue, forKey: Keys.page)
-        }
-        coder.encode(author?.objectKey, forKey: Keys.authorUserKey)
-        coder.encode(hiddenPosts, forKey: Keys.hiddenPosts)
-        coder.encode(messageViewController, forKey: Keys.messageViewController)
-        coder.encode(advertisementHTML, forKey: Keys.advertisementHTML)
-        coder.encode(Float(postsView.renderView.scrollView.fractionalContentOffset.y), forKey: Keys.scrolledFractionOfContent)
-        coder.encode(replyWorkspace, forKey: Keys.replyWorkspace)
-    }
-
-    override func decodeRestorableState(with coder: NSCoder) {
-        restoringState = true
-
-        super.decodeRestorableState(with: coder)
-
-        messageViewController = coder.decodeObject(forKey: Keys.messageViewController) as? MessageComposeViewController
-        messageViewController?.delegate = self
-
-        hiddenPosts = coder.decodeInteger(forKey: Keys.hiddenPosts)
-        let page: ThreadPage = {
-            guard
-                coder.containsValue(forKey: Keys.page),
-                let page = ThreadPage(nsCoderIntValue: coder.decodeInteger(forKey: Keys.page))
-                else { return .specific(1) }
-            return page
-        }()
-        self.page = page
-        loadPage(page, updatingCache: false, updatingLastReadPost: true)
-        if posts.isEmpty {
-            loadPage(page, updatingCache: true, updatingLastReadPost: true)
-        }
-
-        advertisementHTML = coder.decodeObject(forKey: Keys.advertisementHTML) as? String
-        scrollToFractionAfterLoading = CGFloat(coder.decodeFloat(forKey: Keys.scrolledFractionOfContent))
-
-        replyWorkspace = coder.decodeObject(forKey: Keys.replyWorkspace) as? ReplyWorkspace
-        replyWorkspace?.completion = replyCompletionBlock
-    }
-
-    override func applicationFinishedRestoringState() {
-        super.applicationFinishedRestoringState()
-
-        restoringState = false
-    }
-
-    // MARK: Gunk
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension ThreadPage {
-    init?(nsCoderIntValue: Int) {
-        switch nsCoderIntValue {
-        case -2:
-            self = .last
-        case -1:
-            self = .nextUnread
-        case 1...Int.max:
-            self = .specific(nsCoderIntValue)
-        default:
-            return nil
-        }
-    }
-
-    var nsCoderIntValue: Int {
-        switch self {
-        case .last:
-            return -2
-        case .nextUnread:
-            return -1
-        case .specific(let pageNumber):
-            return pageNumber
-        }
     }
 }
 
@@ -2174,37 +2088,6 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
 }
 
 extension PostsPageViewController: RestorableLocation {}
-
-extension PostsPageViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let context = AppDelegate.instance.managedObjectContext
-        guard let threadKey = coder.decodeObject(forKey: Keys.threadKey) as? ThreadKey else { return nil }
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: context)
-        let userKey = coder.decodeObject(forKey: Keys.authorUserKey) as? UserKey
-        let author: User?
-        if let userKey = userKey {
-            author = User.objectForKey(objectKey: userKey, in: context)
-        } else {
-            author = nil
-        }
-
-        let postsVC = PostsPageViewController(thread: thread, author: author)
-        postsVC.restorationIdentifier = identifierComponents.last
-        return postsVC
-    }
-}
-
-private struct Keys {
-    static let threadKey = "ThreadKey"
-    static let page = "AwfulCurrentPage"
-    static let authorUserKey = "AuthorUserKey"
-    static let hiddenPosts = "AwfulHiddenPosts"
-    static let replyViewController = "AwfulReplyViewController"
-    static let messageViewController = "AwfulMessageViewController"
-    static let advertisementHTML = "AwfulAdvertisementHTML"
-    static let scrolledFractionOfContent = "AwfulScrolledFractionOfContentSize"
-    static let replyWorkspace = "Reply workspace"
-}
 
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {

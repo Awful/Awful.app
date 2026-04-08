@@ -237,8 +237,6 @@ struct AwfulURLRouter {
     }
     
     private func showPostsViewController(_ postsVC: PostsPageViewController) -> Bool {
-        postsVC.restorationIdentifier = "Posts from URL"
-        
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
         let targetNav: UINavigationController
         guard let splitVC = rootViewController.children.first as? UISplitViewController else { return false }

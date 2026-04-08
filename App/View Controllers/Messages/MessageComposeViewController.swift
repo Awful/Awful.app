@@ -75,7 +75,6 @@ final class MessageComposeViewController: ComposeTextViewController {
     fileprivate func commonInit() {
         title = "Private Message"
         submitButtonItem.title = "Send"
-        restorationClass = type(of: self)
     }
     
     private var threadTagTask: ImageTask?
@@ -235,26 +234,6 @@ final class MessageComposeViewController: ComposeTextViewController {
         updateAvailableThreadTagsIfNecessary()
     }
     
-    // MARK: State restoration
-    
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(recipient?.objectKey, forKey: Keys.RecipientUserKey.rawValue)
-        coder.encode(regardingMessage?.objectKey, forKey: Keys.RegardingMessageKey.rawValue)
-        coder.encode(forwardingMessage?.objectKey, forKey: Keys.ForwardingMessageKey.rawValue)
-        coder.encode(initialContents, forKey: Keys.InitialContents.rawValue)
-        coder.encode(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        let context = AppDelegate.instance.managedObjectContext
-        if let threadTagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(objectKey: threadTagKey, in: context)
-        }
-        
-        super.decodeRestorableState(with: coder)
-    }
 }
 
 extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
@@ -284,36 +263,3 @@ extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
     }
 }
 
-extension MessageComposeViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let recipientKey = coder.decodeObject(forKey: Keys.RecipientUserKey.rawValue) as? UserKey
-        let regardingKey = coder.decodeObject(forKey: Keys.RegardingMessageKey.rawValue) as? PrivateMessageKey
-        let forwardingKey = coder.decodeObject(forKey: Keys.ForwardingMessageKey.rawValue) as? PrivateMessageKey
-        let initialContents = coder.decodeObject(forKey: Keys.InitialContents.rawValue) as? String
-        let context = AppDelegate.instance.managedObjectContext
-        
-        let composeViewController: MessageComposeViewController
-        if let recipientKey = recipientKey {
-            let recipient = User.objectForKey(objectKey: recipientKey, in: context)
-            composeViewController = MessageComposeViewController(recipient: recipient)
-        } else if let regardingKey = regardingKey {
-            let regardingMessage = PrivateMessage.objectForKey(objectKey: regardingKey, in: context)
-            composeViewController = MessageComposeViewController(regardingMessage: regardingMessage, initialContents: initialContents)
-        } else if let forwardingKey = forwardingKey {
-            let forwardingMessage = PrivateMessage.objectForKey(objectKey: forwardingKey, in: context)
-            composeViewController = MessageComposeViewController(forwardingMessage: forwardingMessage, initialContents: initialContents)
-        } else {
-            return nil
-        }
-        composeViewController.restorationIdentifier = identifierComponents.last
-        return composeViewController
-    }
-}
-
-private enum Keys: String {
-    case RecipientUserKey
-    case RegardingMessageKey
-    case ForwardingMessageKey
-    case InitialContents
-    case ThreadTagKey
-}
