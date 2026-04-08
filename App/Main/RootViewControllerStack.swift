@@ -165,6 +165,12 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         firstVisibleViewController { $0 as? MessageViewController }
     }
 
+    /// The currently selected tab's `NavigationController`, used by `SceneDelegate` to save and
+    /// restore its swipe-from-right-edge unpop stack.
+    var currentPrimaryNavigationController: NavigationController? {
+        primaryNavigationController as? NavigationController
+    }
+
     private func firstVisibleViewController<T>(matching transform: (UIViewController) -> T?) -> T? {
         let navs: [UINavigationController]
         if splitViewController.isCollapsed {

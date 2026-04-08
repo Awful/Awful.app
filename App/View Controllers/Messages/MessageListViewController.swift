@@ -235,3 +235,9 @@ extension MessageListViewController: MessageListDataSourceDeletionDelegate {
         deleteMessage(message)
     }
 }
+
+extension MessageListViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .messagesList
+    }
+}

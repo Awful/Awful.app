@@ -50,6 +50,22 @@ final class NavigationController: UINavigationController, Themeable {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// Routes describing the swipe-from-right-edge "unpop" stack, used by `SceneDelegate` to
+    /// preserve it across cold launches. View controllers that don't conform to
+    /// `RestorableLocation` (or whose `restorationRoute` is nil) are dropped, since the scene
+    /// activity can only carry route-shaped data.
+    var unpopRoutes: [AwfulRoute] {
+        guard let handler = unpopHandler else { return [] }
+        return handler.viewControllers.compactMap { ($0 as? RestorableLocation)?.restorationRoute }
+    }
+
+    /// Replaces the unpop stack contents with the given view controllers without performing any
+    /// navigation. Caller is responsible for constructing the view controllers (typically from
+    /// previously saved `unpopRoutes`).
+    func setUnpopStack(_ viewControllers: [UIViewController]) {
+        unpopHandler?.viewControllers = viewControllers
+    }
+
     private var awfulNavigationBar: NavigationBar {
         return navigationBar as! NavigationBar
     }

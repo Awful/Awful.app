@@ -333,3 +333,9 @@ private enum SectionHeader {
     static let height: CGFloat = 44
     static let reuseIdentifier = "Header"
 }
+
+extension ForumsTableViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .forumList
+    }
+}

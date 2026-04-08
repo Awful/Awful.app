@@ -4,6 +4,7 @@
 
 import AwfulCore
 import AwfulTheming
+import CoreData
 import os
 import UIKit
 
@@ -16,6 +17,10 @@ private let restorationScrollFractionKey = "AwfulRestorationScrollFraction"
 /// `NSUserActivity.userInfo` key carrying the `hiddenPosts` count for a restored
 /// `PostsPageViewController`.
 private let restorationHiddenPostsKey = "AwfulRestorationHiddenPosts"
+
+/// `NSUserActivity.userInfo` key carrying the swipe-from-right-edge unpop stack for the visible
+/// primary `NavigationController`, encoded as an array of `AwfulRoute.httpURL` strings.
+private let restorationUnpopRoutesKey = "AwfulRestorationUnpopRoutes"
 
 /// Single window scene delegate. Adopting `UIScene` is what gives us iOS-managed state restoration
 /// on iOS 13+: when the system kills our scene to reclaim memory, it will replay the
@@ -88,8 +93,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else if let activity = pendingRestorationActivity, let route = activity.route {
             pendingRestorationActivity = nil
             logger.debug("restoring scene to \(activity.activityType)")
-            let savedFraction = (activity.userInfo?[restorationScrollFractionKey] as? Double).map(CGFloat.init)
+            let savedFraction = (activity.userInfo?[restorationScrollFractionKey] as? Double).map { CGFloat($0) }
             let savedHiddenPosts = activity.userInfo?[restorationHiddenPostsKey] as? Int
+            let savedUnpopRoutes = (activity.userInfo?[restorationUnpopRoutesKey] as? [String])?
+                .compactMap(URL.init(string:))
+                .compactMap { try? AwfulRoute($0) } ?? []
             DispatchQueue.main.async {
                 AppDelegate.instance.open(route: route)
                 guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded else { return }
@@ -97,6 +105,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     topPosts.prepareForRestoration(scrollFraction: savedFraction, hiddenPosts: savedHiddenPosts)
                 } else if let topMessage = stack.topMessageViewController, let fraction = savedFraction {
                     topMessage.prepareForRestoration(scrollFraction: fraction)
+                }
+                if !savedUnpopRoutes.isEmpty, let primaryNav = stack.currentPrimaryNavigationController {
+                    let context = AppDelegate.instance.managedObjectContext
+                    let restoredVCs = savedUnpopRoutes.compactMap { makeUnpopViewController(for: $0, in: context) }
+                    primaryNav.setUnpopStack(restoredVCs)
                 }
             }
         }
@@ -127,10 +140,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         completionHandler(true)
     }
 
-    /// Returns an `NSUserActivity` wrapping the deepest visible `RestorableLocation`'s route, plus
-    /// the current scroll fraction when applicable. UIKit hands this back to us in
-    /// `connectionOptions.session.stateRestorationActivity` after killing the scene for memory
-    /// pressure, and we replay it through the existing `AwfulURLRouter`.
+    /// Returns an `NSUserActivity` wrapping the deepest visible `RestorableLocation`'s route,
+    /// the current scroll fraction and hidden-posts count where applicable, and the
+    /// swipe-from-right-edge unpop stack of the visible primary navigation. UIKit hands this back
+    /// to us in `connectionOptions.session.stateRestorationActivity` after killing the scene for
+    /// memory pressure, and we replay it through the existing `AwfulURLRouter`.
     func stateRestorationActivity(for scene: UIScene) -> NSUserActivity? {
         guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded,
               let route = stack.currentRestorationRoute
@@ -154,6 +168,39 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                   let fraction = topMessage.currentScrollFraction {
             activity.addUserInfoEntries(from: [restorationScrollFractionKey: Double(fraction)])
         }
+        let unpopURLs = stack.currentPrimaryNavigationController?.unpopRoutes.map(\.httpURL.absoluteString) ?? []
+        if !unpopURLs.isEmpty {
+            activity.addUserInfoEntries(from: [restorationUnpopRoutesKey: unpopURLs])
+        }
         return activity
+    }
+}
+
+/// Builds a fresh view controller for a route from the swipe-to-unpop restoration stack. Returns
+/// nil for routes that can't be reconstructed standalone (e.g. `.post`, which needs a network
+/// lookup), in which case that entry is silently dropped from the restored unpop stack.
+private func makeUnpopViewController(for route: AwfulRoute, in context: NSManagedObjectContext) -> UIViewController? {
+    switch route {
+    case .bookmarks:
+        return BookmarksTableViewController(managedObjectContext: context)
+    case let .forum(id: forumID):
+        let forum = Forum.objectForKey(objectKey: ForumKey(forumID: forumID), in: context)
+        return ThreadsTableViewController(forum: forum)
+    case let .message(id: messageID):
+        let message = PrivateMessage.objectForKey(objectKey: PrivateMessageKey(messageID: messageID), in: context)
+        return MessageViewController(privateMessage: message)
+    case let .threadPage(threadID: threadID, page: page, _):
+        let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
+        let postsVC = PostsPageViewController(thread: thread)
+        postsVC.loadPage(page, updatingCache: false, updatingLastReadPost: true)
+        return postsVC
+    case let .threadPageSingleUser(threadID: threadID, userID: userID, page: page, _):
+        let thread = AwfulThread.objectForKey(objectKey: ThreadKey(threadID: threadID), in: context)
+        let user = User.objectForKey(objectKey: UserKey(userID: userID, username: nil), in: context)
+        let postsVC = PostsPageViewController(thread: thread, author: user)
+        postsVC.loadPage(page, updatingCache: false, updatingLastReadPost: true)
+        return postsVC
+    default:
+        return nil
     }
 }
