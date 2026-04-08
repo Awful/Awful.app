@@ -205,6 +205,15 @@ final class MessageComposeViewController: ComposeTextViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
 
+    /// Synchronously runs any pending auto-save. Called on dismissal so the last keystrokes
+    /// aren't lost to the 0.5 s debounce.
+    private func flushDraftAutoSave() {
+        guard autoSaveWorkItem != nil else { return }
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        saveDraftNow()
+    }
+
     private func saveDraftNow() {
         draft.to = fieldView.toField.textField.text ?? ""
         draft.subject = fieldView.subjectField.textField.text ?? ""
@@ -287,10 +296,20 @@ final class MessageComposeViewController: ComposeTextViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         updateAvailableThreadTagsIfNecessary()
     }
-    
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Flush the debounced draft save on the way out so nothing the user typed in the last
+        // 0.5 s is dropped if they dismiss immediately after typing.
+        if isMovingFromParent || isBeingDismissed {
+            flushDraftAutoSave()
+        }
+    }
+
 }
 
 extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {

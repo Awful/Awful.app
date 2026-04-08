@@ -187,6 +187,7 @@ final class ReplyWorkspace: NSObject {
                     self.completion(.forgetAboutIt)
                 },
                 .default(title: NSLocalizedString("compose.cancel-menu.save-draft", comment: "")) {
+                    self.flushDraftAutoSave()
                     self.completion(.saveDraft)
                 },
                 .cancel(),
@@ -293,17 +294,26 @@ final class ReplyWorkspace: NSObject {
     /// thread). If the user has cleared everything, deletes the draft instead.
     private func scheduleDraftAutoSave() {
         autoSaveWorkItem?.cancel()
-        let work = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
-            self.saveTextToDraft()
-            if self.compositionViewController.textView.attributedText.length == 0 {
-                DraftStore.sharedStore().deleteDraft(self.draft)
-            } else {
-                DraftStore.sharedStore().saveDraft(self.draft)
-            }
-        }
+        let work = DispatchWorkItem { [weak self] in self?.performDraftAutoSave() }
         autoSaveWorkItem = work
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
+    }
+
+    /// Synchronously runs the pending auto-save. Called on dismissal paths where the 0.5 s
+    /// debounce might otherwise drop the user's most recent edits.
+    private func flushDraftAutoSave() {
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        performDraftAutoSave()
+    }
+
+    private func performDraftAutoSave() {
+        saveTextToDraft()
+        if compositionViewController.textView.attributedText.length == 0 {
+            DraftStore.sharedStore().deleteDraft(draft)
+        } else {
+            DraftStore.sharedStore().saveDraft(draft)
+        }
     }
     
     /// Present this view controller to let someone compose a reply.

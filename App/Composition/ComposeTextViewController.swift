@@ -398,7 +398,6 @@ class ComposeTextViewController: ViewController {
         
         view.endEditing(true)
     }
-    
 }
 
 // For benefit of subclasses.

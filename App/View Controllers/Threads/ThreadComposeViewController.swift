@@ -198,6 +198,22 @@ final class ThreadComposeViewController: ComposeTextViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
 
+    /// Synchronously runs any pending auto-save. Called on dismissal so the last keystrokes
+    /// aren't lost to the 0.5 s debounce.
+    private func flushDraftAutoSave() {
+        guard autoSaveWorkItem != nil else { return }
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        saveDraftNow()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent || isBeingDismissed {
+            flushDraftAutoSave()
+        }
+    }
+
     private func saveDraftNow() {
         draft.subject = fieldView.subjectField.textField.text ?? ""
         draft.threadTag = threadTag

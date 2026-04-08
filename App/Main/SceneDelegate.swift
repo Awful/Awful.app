@@ -77,10 +77,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        AppDelegate.instance.rootViewControllerStackIfLoaded?.didAppear()
-
         guard !didProcessConnectionLaunch else { return }
         didProcessConnectionLaunch = true
+
+        // Only run the split-view display-mode fix-up on first activation after the scene
+        // connects. Running it on every foregrounding can clobber a user-adjusted display mode.
+        AppDelegate.instance.rootViewControllerStackIfLoaded?.didAppear()
 
         AppDelegate.instance.showPromptIfLoginCookieExpiresSoon()
 
@@ -90,8 +92,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             DispatchQueue.main.async {
                 AppDelegate.instance.open(route: route)
             }
-        } else if let activity = pendingRestorationActivity, let route = activity.route {
+        } else if let activity = pendingRestorationActivity {
             pendingRestorationActivity = nil
+            guard let route = activity.route else { return }
             logger.debug("restoring scene to \(activity.activityType)")
             let savedFraction = (activity.userInfo?[restorationScrollFractionKey] as? Double).map { CGFloat($0) }
             let savedHiddenPosts = activity.userInfo?[restorationHiddenPostsKey] as? Int
@@ -124,7 +127,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        guard let route = userActivity.route else { return }
+        guard ForumsClient.shared.isLoggedIn, let route = userActivity.route else { return }
         AppDelegate.instance.open(route: route)
     }
 
