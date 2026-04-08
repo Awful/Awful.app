@@ -15,6 +15,8 @@ final class MessageComposeViewController: ComposeTextViewController {
     fileprivate let regardingMessage: PrivateMessage?
     fileprivate let forwardingMessage: PrivateMessage?
     fileprivate let initialContents: String?
+    private let draft: PrivateMessageDraft
+    private var autoSaveWorkItem: DispatchWorkItem?
     fileprivate var threadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
@@ -37,41 +39,60 @@ final class MessageComposeViewController: ComposeTextViewController {
         regardingMessage = nil
         forwardingMessage = nil
         initialContents = nil
+        self.draft = Self.loadDraft(kind: .new)
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     init(recipient: User) {
         self.recipient = recipient
         regardingMessage = nil
         forwardingMessage = nil
         initialContents = nil
+        self.draft = Self.loadDraft(kind: .to(recipient))
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     init(regardingMessage: PrivateMessage, initialContents: String?) {
         self.regardingMessage = regardingMessage
         recipient = nil
         forwardingMessage = nil
         self.initialContents = initialContents
+        self.draft = Self.loadDraft(kind: .replying(to: regardingMessage))
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     init(forwardingMessage: PrivateMessage, initialContents: String?) {
         self.forwardingMessage = forwardingMessage
         recipient = nil
         regardingMessage = nil
         self.initialContents = initialContents
+        self.draft = Self.loadDraft(kind: .forwarding(forwardingMessage))
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    deinit {
+        autoSaveWorkItem?.cancel()
+    }
+
+    /// Returns a fresh draft if no on-disk draft exists for the given kind, otherwise the loaded
+    /// draft. Resolving the on-disk path doesn't depend on the actual `PrivateMessage` instance,
+    /// just its message ID, so this works at init time before any properties are set.
+    private static func loadDraft(kind: PrivateMessageDraft.Kind) -> PrivateMessageDraft {
+        let placeholder = PrivateMessageDraft(kind: kind)
+        if let saved = DraftStore.sharedStore().loadDraft(placeholder.storePath) as? PrivateMessageDraft {
+            return saved
+        }
+        return placeholder
+    }
+
     fileprivate func commonInit() {
         title = "Private Message"
         submitButtonItem.title = "Send"
@@ -143,6 +164,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                     relevant = .none
                 }
                 try await ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, about: relevant)
+                deleteDraft()
                 completion(true)
             } catch {
                 completion(false)
@@ -164,10 +186,45 @@ final class MessageComposeViewController: ComposeTextViewController {
     
     @objc fileprivate func toFieldDidChange() {
         updateSubmitButtonItem()
+        scheduleDraftAutoSave()
     }
-    
+
     @objc fileprivate func subjectFieldDidChange() {
         updateSubmitButtonItem()
+        scheduleDraftAutoSave()
+    }
+
+    override func bodyTextDidChange() {
+        scheduleDraftAutoSave()
+    }
+
+    private func scheduleDraftAutoSave() {
+        autoSaveWorkItem?.cancel()
+        let work = DispatchWorkItem { [weak self] in self?.saveDraftNow() }
+        autoSaveWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
+    }
+
+    private func saveDraftNow() {
+        draft.to = fieldView.toField.textField.text ?? ""
+        draft.subject = fieldView.subjectField.textField.text ?? ""
+        draft.threadTag = threadTag
+        draft.text = textView.attributedText
+        if draft.to.isEmpty
+            && draft.subject.isEmpty
+            && draft.threadTag == nil
+            && (draft.text?.length ?? 0) == 0
+        {
+            DraftStore.sharedStore().deleteDraft(draft)
+        } else {
+            DraftStore.sharedStore().saveDraft(draft)
+        }
+    }
+
+    private func deleteDraft() {
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        DraftStore.sharedStore().deleteDraft(draft)
     }
     
     // MARK: View lifecycle
@@ -192,39 +249,39 @@ final class MessageComposeViewController: ComposeTextViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        threadTag = draft.threadTag
         updateThreadTagButtonImage()
-        
-        if let recipient = recipient {
-            if fieldView.toField.textField.text?.isEmpty ?? true {
-                fieldView.toField.textField.text = recipient.username
-            }
+
+        // Saved-draft contents take precedence over the defaults derived from the recipient or
+        // the message being replied to/forwarded — the draft already incorporates any user edits.
+        if !draft.to.isEmpty {
+            fieldView.toField.textField.text = draft.to
+        } else if let recipient = recipient {
+            fieldView.toField.textField.text = recipient.username
         } else if let regardingMessage = regardingMessage {
-            if fieldView.toField.textField.text?.isEmpty ?? true {
-                fieldView.toField.textField.text = regardingMessage.from?.username
-            }
-            
-            if fieldView.subjectField.textField.text?.isEmpty ?? true {
-                var subject = regardingMessage.subject ?? ""
-                if !subject.hasPrefix("Re: ") {
-                    subject = "Re: \(subject)"
-                }
-                fieldView.subjectField.textField.text = subject
-            }
-            
-            if let initialContents = initialContents , textView.text.isEmpty {
-                textView.text = initialContents
-            }
-        } else if let forwardingMessage = forwardingMessage {
-            if fieldView.subjectField.textField.text?.isEmpty ?? true {
-                fieldView.subjectField.textField.text = "Fw: \(forwardingMessage.subject ?? "")"
-            }
-            
-            if let initialContents = initialContents , textView.text.isEmpty {
-                textView.text = initialContents
-            }
+            fieldView.toField.textField.text = regardingMessage.from?.username
         }
-        
+
+        if !draft.subject.isEmpty {
+            fieldView.subjectField.textField.text = draft.subject
+        } else if let regardingMessage = regardingMessage {
+            var subject = regardingMessage.subject ?? ""
+            if !subject.hasPrefix("Re: ") {
+                subject = "Re: \(subject)"
+            }
+            fieldView.subjectField.textField.text = subject
+        } else if let forwardingMessage = forwardingMessage {
+            fieldView.subjectField.textField.text = "Fw: \(forwardingMessage.subject ?? "")"
+        }
+
+        if let savedText = draft.text {
+            textView.attributedText = savedText
+            updateSubmitButtonItem()
+        } else if let initialContents = initialContents, textView.text.isEmpty {
+            textView.text = initialContents
+        }
+
         updateAvailableThreadTagsIfNecessary()
     }
     
@@ -248,9 +305,10 @@ extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
         } else {
             threadTag = nil
         }
-        
+        scheduleDraftAutoSave()
+
         picker.dismiss()
-        
+
         focusInitialFirstResponder()
     }
     

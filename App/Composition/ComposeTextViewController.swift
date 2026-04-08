@@ -133,8 +133,14 @@ class ComposeTextViewController: ViewController {
         guard textDidChangeObserver == nil else { return }
         textDidChangeObserver = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
             self?.updateSubmitButtonItem()
+            self?.bodyTextDidChange()
         })
     }
+
+    /// Override in subclasses to react to body text changes (e.g. to auto-save a draft).
+    /// Called from the same `UITextView.textDidChangeNotification` observer that updates the
+    /// submit button.
+    func bodyTextDidChange() {}
     private func endObservingTextChangeNotification() {
         guard let token = textDidChangeObserver else { return }
         NotificationCenter.default.removeObserver(token)

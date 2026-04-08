@@ -28,24 +28,31 @@ final class ReplyWorkspace: NSObject {
         case saveDraft
     }
 
-    /// Constructs a workspace for a new reply to a thread.
+    /// Constructs a workspace for a new reply to a thread, loading any saved draft from disk.
     convenience init(thread: AwfulThread) {
-        self.init(draft: NewReplyDraft(thread: thread))
+        let draft = (DraftStore.sharedStore().loadDraft("replies/\(thread.threadID)") as? NewReplyDraft)
+            ?? NewReplyDraft(thread: thread)
+        self.init(draft: draft)
     }
 
-    /// Constructs a workspace for editing a reply.
+    /// Constructs a workspace for editing a reply, loading any saved edit draft from disk.
     convenience init(post: Post, bbcode: String) {
-        self.init(draft: EditReplyDraft(post: post))
-        bbcodeForNewlyCreatedCompositionViewController = bbcode
+        if let saved = DraftStore.sharedStore().loadDraft("edits/\(post.postID)") as? EditReplyDraft {
+            self.init(draft: saved)
+        } else {
+            self.init(draft: EditReplyDraft(post: post))
+            bbcodeForNewlyCreatedCompositionViewController = bbcode
+        }
     }
 
     private init(draft: NSObject & ReplyDraft) {
         self.draft = draft
         super.init()
     }
-    
+
     deinit {
         draftTitleObserver?.invalidate()
+        autoSaveWorkItem?.cancel()
 
         if let textViewNotificationToken = textViewNotificationToken {
             NotificationCenter.default.removeObserver(textViewNotificationToken)
@@ -98,6 +105,7 @@ final class ReplyWorkspace: NSObject {
 
             textViewNotificationToken = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: compositionViewController.textView, queue: OperationQueue.main) { [unowned self] note in
                 self.rightButtonItem.isEnabled = textView.hasText
+                self.scheduleDraftAutoSave()
             }
 
             let navigationItem = compositionViewController.navigationItem
@@ -153,6 +161,7 @@ final class ReplyWorkspace: NSObject {
     
     @IBAction private func didTapCancel(_ sender: UIBarButtonItem) {
         if compositionViewController.textView.attributedText.length == 0 {
+            forgetDraft()
             return completion(.forgetAboutIt)
         }
 
@@ -174,6 +183,7 @@ final class ReplyWorkspace: NSObject {
             title: title,
             actionSheetActions: [
                 .destructive(title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: "")) {
+                    self.forgetDraft()
                     self.completion(.forgetAboutIt)
                 },
                 .default(title: NSLocalizedString("compose.cancel-menu.save-draft", comment: "")) {
@@ -266,6 +276,34 @@ final class ReplyWorkspace: NSObject {
     
     fileprivate func saveTextToDraft() {
         draft.text = compositionViewController.textView.attributedText
+    }
+
+    /// Deletes the on-disk draft and cancels any pending auto-save. Used when the user explicitly
+    /// discards the draft via the Cancel action sheet.
+    private func forgetDraft() {
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        DraftStore.sharedStore().deleteDraft(draft)
+    }
+
+    private var autoSaveWorkItem: DispatchWorkItem?
+
+    /// Debounced auto-save: copies the text view's contents into the in-memory draft and writes
+    /// the draft to disk so it can be recovered on next launch (or next Reply tap on the same
+    /// thread). If the user has cleared everything, deletes the draft instead.
+    private func scheduleDraftAutoSave() {
+        autoSaveWorkItem?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            self.saveTextToDraft()
+            if self.compositionViewController.textView.attributedText.length == 0 {
+                DraftStore.sharedStore().deleteDraft(self.draft)
+            } else {
+                DraftStore.sharedStore().saveDraft(self.draft)
+            }
+        }
+        autoSaveWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
     }
     
     /// Present this view controller to let someone compose a reply.

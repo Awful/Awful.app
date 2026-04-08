@@ -135,6 +135,8 @@
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C88EC9B2AE1062300FA766F /* PullToRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = 1C88EC9A2AE1062300FA766F /* PullToRefresh */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
+		2D3D26012F85E80100862513 /* NewThreadDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26002F85E80100862513 /* NewThreadDraft.swift */; };
+		2D3D26032F85E80100862514 /* PrivateMessageDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */; };
 		1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67F722210DED007E61ED /* Profile.html.stencil */; };
@@ -463,6 +465,8 @@
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
+		2D3D26002F85E80100862513 /* NewThreadDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThreadDraft.swift; sourceTree = "<group>"; };
+		2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateMessageDraft.swift; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilEnvironment.swift; sourceTree = "<group>"; };
 		1C8F67F722210DED007E61ED /* Profile.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Profile.html.stencil; sourceTree = "<group>"; };
@@ -850,6 +854,7 @@
 			isa = PBXGroup;
 			children = (
 				1C16FC131CCEE60C00C88BD1 /* MessageComposeViewController.swift */,
+				2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */,
 				1CF6786D201E8F45009A9640 /* MessageListCell.swift */,
 				1CC256B01A38526B003FA7A8 /* MessageListViewController.swift */,
 				1C2C1F111CE547A600CD27DD /* MessageViewController.swift */,
@@ -1097,6 +1102,7 @@
 				1CA3D6FB2D98A7E100D70964 /* OEmbedFetcher.swift */,
 				1C16FBD41CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift */,
 				1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */,
+				2D3D26002F85E80100862513 /* NewThreadDraft.swift */,
 			);
 			path = Posts;
 			sourceTree = "<group>";
@@ -1672,6 +1678,7 @@
 				2DDCCEA02F77A73E0011BCA2 /* ModernBBcodeToolbar.swift in Sources */,
 				2DDCCEA12F77A73E0011BCA2 /* BBcodeTagHelper.swift in Sources */,
 				1C16FC141CCEE60C00C88BD1 /* MessageComposeViewController.swift in Sources */,
+				2D3D26032F85E80100862514 /* PrivateMessageDraft.swift in Sources */,
 				1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */,
 				1C23C7051A7AB8940089BD5C /* SlopButton.swift in Sources */,
 				1CBE1B1219CAAFA200510187 /* AwfulSplitViewController.swift in Sources */,
@@ -1716,6 +1723,7 @@
 				1C4EAD5E1BC0622D0008BE54 /* AwfulCore.swift in Sources */,
 				1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */,
 				1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */,
+				2D3D26012F85E80100862513 /* NewThreadDraft.swift in Sources */,
 				2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */,
 				1CC256BC1A3AA82F003FA7A8 /* ShowSmilieKeyboardCommand.swift in Sources */,
 				2DAF1FE12E05D3ED006F6BC4 /* View+FontDesign.swift in Sources */,

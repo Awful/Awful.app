@@ -29,13 +29,23 @@ final class ThreadComposeViewController: ComposeTextViewController {
     private var threadTagPicker: ThreadTagPickerViewController?
     private var formData: ForumsClient.PostNewThreadFormData?
     
-    /// - parameter forum: The forum in which the new thread is posted.
+    private let draft: NewThreadDraft
+    private var autoSaveWorkItem: DispatchWorkItem?
+
+    /// - parameter forum: The forum in which the new thread is posted. Loads any saved draft for
+    ///   this forum from `DraftStore` so the in-progress thread is recovered across launches.
     init(forum: Forum) {
         self.forum = forum
+        let saved = DraftStore.sharedStore().loadDraft("newThreads/\(forum.forumID)") as? NewThreadDraft
+        self.draft = saved ?? NewThreadDraft(forum: forum)
         super.init(nibName: nil, bundle: nil)
-        
+
         title = defaultTitle
         submitButtonItem.title = "Preview"
+    }
+
+    deinit {
+        autoSaveWorkItem?.cancel()
     }
     
     required init?(coder: NSCoder) {
@@ -58,10 +68,21 @@ final class ThreadComposeViewController: ComposeTextViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         updateTweaks()
+        threadTag = draft.threadTag
+        secondaryThreadTag = draft.secondaryThreadTag
         updateThreadTagButtonImage()
         updateAvailableThreadTagsIfNecessary()
+
+        if !draft.subject.isEmpty {
+            fieldView.subjectField.textField.text = draft.subject
+            title = draft.subject
+        }
+        if let savedText = draft.text {
+            textView.attributedText = savedText
+            updateSubmitButtonItem()
+        }
     }
     
     override var theme: Theme {
@@ -161,8 +182,42 @@ final class ThreadComposeViewController: ComposeTextViewController {
         } else {
             title = defaultTitle
         }
-        
+
         updateSubmitButtonItem()
+        scheduleDraftAutoSave()
+    }
+
+    override func bodyTextDidChange() {
+        scheduleDraftAutoSave()
+    }
+
+    private func scheduleDraftAutoSave() {
+        autoSaveWorkItem?.cancel()
+        let work = DispatchWorkItem { [weak self] in self?.saveDraftNow() }
+        autoSaveWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
+    }
+
+    private func saveDraftNow() {
+        draft.subject = fieldView.subjectField.textField.text ?? ""
+        draft.threadTag = threadTag
+        draft.secondaryThreadTag = secondaryThreadTag
+        draft.text = textView.attributedText
+        if draft.subject.isEmpty
+            && draft.threadTag == nil
+            && draft.secondaryThreadTag == nil
+            && (draft.text?.length ?? 0) == 0
+        {
+            DraftStore.sharedStore().deleteDraft(draft)
+        } else {
+            DraftStore.sharedStore().saveDraft(draft)
+        }
+    }
+
+    private func deleteDraft() {
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        DraftStore.sharedStore().deleteDraft(draft)
     }
     
     private func updateAvailableThreadTagsIfNecessary() {
@@ -241,6 +296,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
                     bbcode: composition
                 )
                 self.thread = thread
+                deleteDraft()
                 completion(true)
             } catch {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: {
@@ -265,7 +321,8 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
         } else {
             threadTag = nil
         }
-        
+        scheduleDraftAutoSave()
+
         if availableSecondaryThreadTags?.isEmpty ?? true {
             picker.dismiss()
             focusInitialFirstResponder()
@@ -279,6 +336,7 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
         {
             secondaryThreadTag = tags[i]
         }
+        scheduleDraftAutoSave()
     }
     
     func didDismissPicker(_ picker: ThreadTagPickerViewController) {
