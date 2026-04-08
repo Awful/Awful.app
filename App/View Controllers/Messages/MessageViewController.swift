@@ -188,7 +188,11 @@ final class MessageViewController: ViewController {
     }
     
     // MARK: Handoff
-    
+
+    var restorationRoute: AwfulRoute? {
+        .message(id: privateMessage.messageID)
+    }
+
     private func configureUserActivity() {
         guard handoffEnabled else { return }
         userActivity = NSUserActivity(activityType: Handoff.ActivityType.readingMessage)
@@ -553,6 +557,8 @@ extension MessageViewController: UIScrollViewDelegate {
         }
     }
 }
+
+extension MessageViewController: RestorableLocation {}
 
 extension MessageViewController: UIViewControllerRestoration {
     static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {

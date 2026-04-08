@@ -1669,6 +1669,26 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    var restorationRoute: AwfulRoute? {
+        guard let page = page, case .specific = page else { return nil }
+        if let author = author {
+            return .threadPageSingleUser(threadID: thread.threadID, userID: author.userID, page: page, .seen)
+        } else {
+            return .threadPage(threadID: thread.threadID, page: page, .seen)
+        }
+    }
+
+    var currentScrollFraction: CGFloat? {
+        guard isViewLoaded else { return nil }
+        return postsView.renderView.scrollView.fractionalContentOffset.y
+    }
+
+    /// Stages a vertical scroll fraction to apply once the WKWebView finishes rendering. Used by
+    /// `SceneDelegate` to restore the user's place after iOS terminates the scene.
+    func prepareForRestoration(scrollFraction: CGFloat) {
+        scrollToFractionAfterLoading = scrollFraction
+    }
+
     private func configureUserActivityIfPossible() {
         guard case .specific? = page, handoffEnabled else {
             userActivity = nil
@@ -2152,6 +2172,8 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
         return true
     }
 }
+
+extension PostsPageViewController: RestorableLocation {}
 
 extension PostsPageViewController: UIViewControllerRestoration {
     static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {

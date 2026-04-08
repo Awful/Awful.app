@@ -205,6 +205,35 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         ]
     }
     
+    /// Route describing the deepest visible `RestorableLocation`, used by `SceneDelegate` to
+    /// build the scene's `stateRestorationActivity`.
+    var currentRestorationRoute: AwfulRoute? {
+        firstVisibleViewController { ($0 as? RestorableLocation)?.restorationRoute }
+    }
+
+    /// Topmost visible `PostsPageViewController`, used by `SceneDelegate` to apply a restored
+    /// scroll fraction after the URL router has pushed a fresh instance.
+    var topPostsPageViewController: PostsPageViewController? {
+        firstVisibleViewController { $0 as? PostsPageViewController }
+    }
+
+    private func firstVisibleViewController<T>(matching transform: (UIViewController) -> T?) -> T? {
+        let navs: [UINavigationController]
+        if splitViewController.isCollapsed {
+            navs = [primaryNavigationController]
+        } else {
+            navs = [detailNavigationController, primaryNavigationController].compactMap { $0 }
+        }
+        for nav in navs {
+            for vc in nav.viewControllers.reversed() {
+                if let result = transform(vc) {
+                    return result
+                }
+            }
+        }
+        return nil
+    }
+
     private var primaryNavigationController: UINavigationController {
         return tabBarController.selectedViewController as! UINavigationController
     }
