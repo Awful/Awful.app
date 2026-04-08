@@ -310,6 +310,59 @@ final class MessageComposeViewController: ComposeTextViewController {
         }
     }
 
+    /// Overrides the base class to surface a Delete/Save action sheet when the user taps Cancel
+    /// and there's meaningful content on screen, mirroring the reply-workspace prompt. An empty
+    /// compose dismisses straight away (and clears any empty draft on disk).
+    override func cancel() {
+        let hasContent = !(fieldView.toField.textField.text?.isEmpty ?? true)
+            || !(fieldView.subjectField.textField.text?.isEmpty ?? true)
+            || threadTag != nil
+            || textView.attributedText.length > 0
+        guard hasContent else {
+            deleteDraft()
+            dismissCompose(shouldKeepDraft: false)
+            return
+        }
+
+        let actionSheet = UIAlertController(
+            title: NSLocalizedString("compose.draft-menu.private-message.title", comment: ""),
+            actionSheetActions: [
+                .destructive(title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: "")) { [weak self] in
+                    guard let self = self else { return }
+                    self.deleteDraft()
+                    self.dismissCompose(shouldKeepDraft: false)
+                },
+                .default(title: NSLocalizedString("compose.cancel-menu.save-draft", comment: "")) { [weak self] in
+                    guard let self = self else { return }
+                    self.flushDraftAutoSave()
+                    self.dismissCompose(shouldKeepDraft: true)
+                },
+                .cancel(),
+            ]
+        )
+        if let popover = actionSheet.popoverPresentationController {
+            popover.barButtonItem = cancelButtonItem
+        }
+        present(actionSheet, animated: true)
+    }
+
+    /// Base `ComposeTextViewController.cancel()` always reports `shouldKeepDraft: true` to its
+    /// delegate. Callers like `MessageListViewController` cache the compose controller and only
+    /// release it when the delegate callback says the draft should be dropped — so when the user
+    /// picks "Delete Draft" we need to notify the delegate directly with `shouldKeepDraft: false`,
+    /// bypassing the base implementation.
+    private func dismissCompose(shouldKeepDraft: Bool) {
+        if let delegate = delegate {
+            delegate.composeTextViewController(
+                self,
+                didFinishWithSuccessfulSubmission: false,
+                shouldKeepDraft: shouldKeepDraft
+            )
+        } else {
+            dismiss(animated: true)
+        }
+    }
+
 }
 
 extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
