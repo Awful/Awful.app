@@ -10,6 +10,15 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SceneDelegate")
 
+/// Dedicated `NSUserActivity.activityType` for scene state restoration. Distinct from the
+/// `Handoff.ActivityType` values so the restoration payload can carry any `AwfulRoute`
+/// (including list tabs like `.bookmarks` / `.forumList`) without having to fit into Handoff's
+/// narrower schema.
+private let restorationActivityType = "com.awfulapp.Awful.activity.scene-restoration"
+
+/// `NSUserActivity.userInfo` key carrying the restored primary route's `httpURL` string.
+private let restorationPrimaryRouteKey = "AwfulRestorationPrimaryRoute"
+
 /// `NSUserActivity.userInfo` key carrying the vertical scroll fraction (Double, 0...1) for a
 /// restored `PostsPageViewController` or `MessageViewController`.
 private let restorationScrollFractionKey = "AwfulRestorationScrollFraction"
@@ -21,6 +30,15 @@ private let restorationHiddenPostsKey = "AwfulRestorationHiddenPosts"
 /// `NSUserActivity.userInfo` key carrying the swipe-from-right-edge unpop stack for the visible
 /// primary `NavigationController`, encoded as an array of `AwfulRoute.httpURL` strings.
 private let restorationUnpopRoutesKey = "AwfulRestorationUnpopRoutes"
+
+/// `UserDefaults` key for a fallback copy of the scene's most recent restoration activity.
+///
+/// iOS only calls `stateRestorationActivity(for:)` when the scene is actually disconnected
+/// (app-switcher kill, system memory reclaim). A plain Home-press keeps the scene connected,
+/// so a subsequent crash or `Stop` from Xcode leaves `session.stateRestorationActivity` nil and
+/// restoration silently fails. We work around this by snapshotting the same payload into
+/// `UserDefaults` on every background transition, and falling back to it on cold launch.
+private let restorationFallbackDefaultsKey = "AwfulSceneRestorationFallback"
 
 /// Single window scene delegate. Adopting `UIScene` is what gives us iOS-managed state restoration
 /// on iOS 13+: when the system kills our scene to reclaim memory, it will replay the
@@ -71,8 +89,22 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                   let url = URL(string: shortcutItem.type),
                   let route = try? AwfulRoute(url) {
             pendingLaunchRoute = route
+        } else if let activity = session.stateRestorationActivity {
+            pendingRestorationActivity = activity
         } else {
-            pendingRestorationActivity = session.stateRestorationActivity
+            pendingRestorationActivity = loadFallbackRestorationActivity()
+        }
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        // Snapshot the current restoration activity to UserDefaults as a fallback for the cases
+        // where iOS doesn't get a chance to call `stateRestorationActivity(for:)` itself (Xcode
+        // Stop, crash while backgrounded). Scene disconnect will still go through the regular
+        // path and overwrite whatever UIKit persists on `session.stateRestorationActivity`.
+        if let activity = stateRestorationActivity(for: scene) {
+            saveFallbackRestorationActivity(activity)
+        } else {
+            clearFallbackRestorationActivity()
         }
     }
 
@@ -94,7 +126,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         } else if let activity = pendingRestorationActivity {
             pendingRestorationActivity = nil
-            guard let route = activity.route else { return }
+            clearFallbackRestorationActivity()
+            guard let route = restoredRoute(from: activity) else {
+                logger.debug("no route in restoration activity \(activity.activityType); skipping")
+                return
+            }
             logger.debug("restoring scene to \(activity.activityType)")
             let savedFraction = (activity.userInfo?[restorationScrollFractionKey] as? Double).map { CGFloat($0) }
             let savedHiddenPosts = activity.userInfo?[restorationHiddenPostsKey] as? Int
@@ -152,15 +188,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded,
               let route = stack.currentRestorationRoute
         else { return nil }
-        let activityType: String
-        switch route {
-        case .message:
-            activityType = Handoff.ActivityType.readingMessage
-        default:
-            activityType = Handoff.ActivityType.browsingPosts
-        }
-        let activity = NSUserActivity(activityType: activityType)
-        activity.route = route
+        let activity = NSUserActivity(activityType: restorationActivityType)
+        activity.addUserInfoEntries(from: [restorationPrimaryRouteKey: route.httpURL.absoluteString])
         if let topPosts = stack.topPostsPageViewController {
             var extras: [AnyHashable: Any] = [restorationHiddenPostsKey: topPosts.currentHiddenPosts]
             if let fraction = topPosts.currentScrollFraction {
@@ -177,6 +206,52 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         return activity
     }
+}
+
+/// Persists the given restoration activity's payload to `UserDefaults` as a fallback for
+/// scenarios where iOS never calls `stateRestorationActivity(for:)` (Xcode Stop, crash in
+/// background). Only plist-safe keys are written.
+private func saveFallbackRestorationActivity(_ activity: NSUserActivity) {
+    guard let userInfo = activity.userInfo else {
+        UserDefaults.standard.removeObject(forKey: restorationFallbackDefaultsKey)
+        return
+    }
+    var payload: [String: Any] = ["activityType": activity.activityType]
+    for (key, value) in userInfo {
+        guard let key = key as? String else { continue }
+        payload[key] = value
+    }
+    UserDefaults.standard.set(payload, forKey: restorationFallbackDefaultsKey)
+}
+
+/// Reconstructs an `NSUserActivity` from the `UserDefaults` fallback, if present.
+private func loadFallbackRestorationActivity() -> NSUserActivity? {
+    guard let payload = UserDefaults.standard.dictionary(forKey: restorationFallbackDefaultsKey),
+          let activityType = payload["activityType"] as? String
+    else { return nil }
+    let activity = NSUserActivity(activityType: activityType)
+    var userInfo = payload
+    userInfo.removeValue(forKey: "activityType")
+    activity.addUserInfoEntries(from: userInfo)
+    return activity
+}
+
+private func clearFallbackRestorationActivity() {
+    UserDefaults.standard.removeObject(forKey: restorationFallbackDefaultsKey)
+}
+
+/// Decodes an `AwfulRoute` from a saved scene-restoration activity. Prefers the dedicated
+/// `restorationPrimaryRouteKey` (which carries the route's `httpURL` string and covers every
+/// `AwfulRoute` case), and falls back to the Handoff `NSUserActivity.route` getter so activities
+/// surfaced via the handoff path still work.
+private func restoredRoute(from activity: NSUserActivity) -> AwfulRoute? {
+    if let urlString = activity.userInfo?[restorationPrimaryRouteKey] as? String,
+       let url = URL(string: urlString),
+       let route = try? AwfulRoute(url)
+    {
+        return route
+    }
+    return activity.route
 }
 
 /// Builds a fresh view controller for a route from the swipe-to-unpop restoration stack. Returns
