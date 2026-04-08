@@ -7,7 +7,7 @@ import Combine
 import CoreData
 import UIKit
 
-/// The RootViewControllerStack initializes the logged-in root view controller, implements releated delegate methods, and handles state restoration.
+/// The RootViewControllerStack initializes the logged-in root view controller and implements related delegate methods.
 final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate {
     
     private var cancellables: Set<AnyCancellable> = []
@@ -19,7 +19,6 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     lazy private(set) var rootViewController: UIViewController = {
         // This was a fun one! If you change the app icon (using `UIApplication.setAlternateIconName(…)`), the alert it presents causes `UISplitViewController` to dismiss its primary view controller. Even on a phone when there is no secondary view controller. The fix? It seems like the alert is presented on the current `rootViewController`, so if that isn't the split view controller then we're all set!
         let container = PassthroughViewController()
-        container.restorationIdentifier = "Root container"
         container.userInterfaceStyleDidChange = { [weak self] in self?.userInterfaceStyleDidChange() }
         container.addChild(self.splitViewController)
         self.splitViewController.view.frame = CGRect(origin: .zero, size: container.view.bounds.size)
@@ -41,34 +40,17 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         super.init()
         
         let forums = ForumsTableViewController(managedObjectContext: managedObjectContext)
-        forums.restorationIdentifier = "Forum list"
-        
         let bookmarks = BookmarksTableViewController(managedObjectContext: managedObjectContext)
-        bookmarks.restorationIdentifier = "Bookmarks"
-        
         let lepers = RapSheetViewController()
-        lepers.restorationIdentifier = "Leper's Colony"
-        
         let settings = SettingsViewController(managedObjectContext: managedObjectContext)
-        settings.restorationIdentifier = "Settings"
 
-        tabBarController.restorationIdentifier = "Tabbar"
-        tabBarController.viewControllers = [forums, bookmarks, lepers, settings].map() {
-            let navigationController = $0.enclosingNavigationController
-            
-            // We want the root navigation controllers to preserve their state, but we want to provide the restored instance ourselves.
-            navigationController.restorationClass = nil
-            navigationController.restorationIdentifier = navigationIdentifier($0.restorationIdentifier)
-            
-            return navigationController
-        }
-        
+        tabBarController.viewControllers = [forums, bookmarks, lepers, settings].map { $0.enclosingNavigationController }
+
         let emptyNavigationController = createEmptyDetailNavigationController()
         emptyNavigationController.pushViewController(EmptyViewController(), animated: false)
-        
+
         splitViewController.viewControllers = [tabBarController, emptyNavigationController]
         splitViewController.delegate = self
-        splitViewController.restorationIdentifier = "Root splitview"
         splitViewController.maximumPrimaryColumnWidth = 350
         splitViewController.preferredPrimaryColumnWidthFraction = 0.5
         
@@ -90,38 +72,22 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {
-        let emptyNavigationController = NavigationController()
-        emptyNavigationController.restorationIdentifier = navigationIdentifier("Detail")
-        emptyNavigationController.restorationClass = nil
-        return emptyNavigationController
+        return NavigationController()
     }
-    
+
     private func updateMessagesTabPresence() {
         let roots = tabBarController.mutableArrayValue(forKey: "viewControllers")
-        let messagesRestorationIdentifier = "Messages"
-        var messagesTabIndex: Int?
-        for (i, root) in roots.enumerated() {
-            let navigationController = root as! UINavigationController
-            let viewController = navigationController.viewControllers[0]
-            if viewController.restorationIdentifier == messagesRestorationIdentifier {
-                messagesTabIndex = i
-                break
-            }
-        }
-        
+        let messagesTabIndex = roots.indexOfObject(passingTest: { root, _, _ in
+            (root as? UINavigationController)?.viewControllers.first is MessageListViewController
+        })
+
         if canSendPrivateMessages {
-            if messagesTabIndex == nil {
+            if messagesTabIndex == NSNotFound {
                 let messages = MessageListViewController(managedObjectContext: managedObjectContext)
-                messages.restorationIdentifier = messagesRestorationIdentifier
-                let navigationController = messages.enclosingNavigationController
-                navigationController.restorationIdentifier = navigationIdentifier(messages.restorationIdentifier)
-                navigationController.restorationClass = nil
-                roots.insert(navigationController, at: 2)
+                roots.insert(messages.enclosingNavigationController, at: 2)
             }
-        } else {
-            if let messagesTabIndex = messagesTabIndex {
-                roots.removeObject(at: messagesTabIndex)
-            }
+        } else if messagesTabIndex != NSNotFound {
+            roots.removeObject(at: messagesTabIndex)
         }
     }
 	
@@ -140,42 +106,19 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         }
     }
 
-    func viewControllerWithRestorationIdentifierPath(_ identifierComponents: [String]) -> UIViewController? {
-        // I can't recursively call a nested function? Toss it in a closure then I guess.
-        var search: ([String], [UIViewController]) -> UIViewController? = { _, _ in nil }
-        search = { identifierComponents, viewControllers in
-            if let i = viewControllers.map({ $0.restorationIdentifier ?? "" }).firstIndex(of: identifierComponents[0]) {
-                let currentViewController = viewControllers[i]
-                if identifierComponents.count == 1 {
-                    return currentViewController
-                }
-                else {
-                    // dropFirst(identifierComponents) did weird stuff here, so I guess let's turn up the awkwardness.
-                    let remainingPath = identifierComponents[1...]
-                    let subsequentViewControllers = currentViewController.immediateDescendants
-                    return search(Array(remainingPath), subsequentViewControllers)
-                }
-            }
-            return nil
-        }
-        return search(identifierComponents, [rootViewController])
-    }
-
     func didAppear() {
         // Believe me, it occurs to me that this is highly suspicious and probably indicates misuse of the split view controller. I would happily welcome corrected impressions and/or simplification suggestions. This is ugly.
-        
+
         // I can't seem to get the iPhone 6+ to open in landscape to a primary overlay display mode. This makes that happen.
         kindaFixReallyAnnoyingSplitViewHideSidebarInLandscapeBehavior()
-        
-        // Sometimes after restoring state the split view decides to get the wrong display mode, possibly through some combination of state restoration goofiness (e.g. preserving in one orientation then restoring in another) and the "Hide sidebar in landscape" setting (set to NO in both cases).
+
+        // Sometimes after restoring scene state the split view decides to get the wrong display mode, possibly through some combination of preserving in one orientation then restoring in another and the "Hide sidebar in landscape" setting (set to NO in both cases).
         let isPortrait = splitViewController.view.frame.width < splitViewController.view.frame.height
         if !splitViewController.isCollapsed {
-            // One possibility is restoring in portrait orientation with the sidebar always visible.
             if isPortrait && splitViewController.displayMode == .oneBesideSecondary {
                 splitViewController.preferredDisplayMode = .secondaryOnly
             }
-            
-            // Another possibility is restoring in landscape orientation with the sidebar always hidden, and no button to show it.
+
             if !isPortrait && splitViewController.displayMode == .secondaryOnly && splitViewController.preferredDisplayMode == .automatic {
                 splitViewController.preferredDisplayMode = .oneBesideSecondary
                 splitViewController.preferredDisplayMode = .automatic
@@ -185,7 +128,6 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         let updateLeftButtonItem = { [weak self] in
             guard let self = self else { return }
             if let detail = self.detailNavigationController?.viewControllers.first {
-                // Our UISplitViewControllerDelegate methods get called *before* we're done restoring state, so the "show sidebar" button item doesn't get put in place properly. Fix that here.
                 if self.splitViewController.displayMode != .oneBesideSecondary {
                     detail.navigationItem.leftBarButtonItem = self.backBarButtonItem
                 }
@@ -205,6 +147,47 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         ]
     }
     
+    /// Route describing the deepest visible `RestorableLocation`, used by `SceneDelegate` to
+    /// build the scene's `stateRestorationActivity`.
+    var currentRestorationRoute: AwfulRoute? {
+        firstVisibleViewController { ($0 as? RestorableLocation)?.restorationRoute }
+    }
+
+    /// Topmost visible `PostsPageViewController`, used by `SceneDelegate` to apply restored
+    /// scroll fraction and hidden-posts state after the URL router has pushed a fresh instance.
+    var topPostsPageViewController: PostsPageViewController? {
+        firstVisibleViewController { $0 as? PostsPageViewController }
+    }
+
+    /// Topmost visible `MessageViewController`, used by `SceneDelegate` to apply a restored
+    /// scroll fraction after the URL router has pushed a fresh instance.
+    var topMessageViewController: MessageViewController? {
+        firstVisibleViewController { $0 as? MessageViewController }
+    }
+
+    /// The currently selected tab's `NavigationController`, used by `SceneDelegate` to save and
+    /// restore its swipe-from-right-edge unpop stack.
+    var currentPrimaryNavigationController: NavigationController? {
+        primaryNavigationController as? NavigationController
+    }
+
+    private func firstVisibleViewController<T>(matching transform: (UIViewController) -> T?) -> T? {
+        let navs: [UINavigationController]
+        if splitViewController.isCollapsed {
+            navs = [primaryNavigationController]
+        } else {
+            navs = [detailNavigationController, primaryNavigationController].compactMap { $0 }
+        }
+        for nav in navs {
+            for vc in nav.viewControllers.reversed() {
+                if let result = transform(vc) {
+                    return result
+                }
+            }
+        }
+        return nil
+    }
+
     private var primaryNavigationController: UINavigationController {
         return tabBarController.selectedViewController as! UINavigationController
     }
@@ -337,14 +320,6 @@ extension RootViewControllerStack {
     }
 }
 
-private func navigationIdentifier(_ rootIdentifier: String?) -> String {
-    if let identifier = rootIdentifier {
-        return "\(identifier) navigation"
-    } else {
-        return "Navigation"
-    }
-}
-
 func partition<C: Collection>(_ c: C, test: (C.Iterator.Element) -> Bool) -> (C.SubSequence, C.SubSequence) {
     if let i = c.firstIndex(where: test) {
         return (c.prefix(upTo: i), c.suffix(from: i))
@@ -404,17 +379,6 @@ private final class PassthroughViewController: UIViewController {
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return children.first?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
-    }
-    
-    private enum StateKeys {
-        static let childViewControllers = "childViewControllers"
-    }
-    
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        // Just need to save them. No real need to decode; we'll set up the root stack outside of the state restoration system.
-        coder.encode(children, forKey: StateKeys.childViewControllers)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

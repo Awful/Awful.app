@@ -12,7 +12,6 @@ final class AwfulBrowser: NSObject {
     {
         let browser = SFSafariViewController(url: url)
         browser.delegate = sharedInstance
-        browser.restorationIdentifier = "Awful Browser"
         presentingViewController.present(browser, animated: true)
         return browser
     }

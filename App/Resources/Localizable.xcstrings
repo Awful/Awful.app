@@ -263,6 +263,17 @@
         }
       }
     },
+    "compose.draft-menu.private-message.title" : {
+      "comment" : "Title of compose draft menu when writing a private message.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently writing a private message"
+          }
+        }
+      }
+    },
     "compose.draft-menu.replying.title" : {
       "comment" : "Title of compose draft menu when replying to the thread.",
       "localizations" : {

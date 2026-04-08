@@ -108,7 +108,6 @@ final class BookmarksTableViewController: TableViewController {
         multiplexer.addDelegate(self)
 
         tableView.hideExtraneousSeparators()
-        tableView.restorationIdentifier = "Bookmarks table"
 
         dataSource = makeDataSource()
         tableView.reloadData()
@@ -256,7 +255,6 @@ extension BookmarksTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let thread = dataSource!.thread(at: indexPath)
         let postsViewController = PostsPageViewController(thread: thread)
-        postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
@@ -307,5 +305,11 @@ extension BookmarksTableViewController {
 extension BookmarksTableViewController: ThreadListDataSourceDeletionDelegate {
     func didDeleteThread(_ thread: AwfulThread, in dataSource: ThreadListDataSource) {
         setThread(thread, isBookmarked: false)
+    }
+}
+
+extension BookmarksTableViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .bookmarks
     }
 }

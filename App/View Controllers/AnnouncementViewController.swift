@@ -20,7 +20,6 @@ final class AnnouncementViewController: ViewController {
     private var announcementObserver: ManagedObjectObserver?
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var clientCancellable: Task<Void, Never>?
-    private var desiredFractionalContentOffsetAfterRendering: CGFloat?
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
     @FoilDefaultStorageOptional(Settings.username) private var loggedInUsername
@@ -82,8 +81,6 @@ final class AnnouncementViewController: ViewController {
 
         hidesBottomBarWhenPushed = true
 
-        restorationClass = type(of: self)
-
         title = !announcement.title.isEmpty
             ? announcement.title
             : LocalizedString("announcements.title")
@@ -91,25 +88,6 @@ final class AnnouncementViewController: ViewController {
 
     override var title: String? {
         didSet { navigationItem.titleLabel.text = title }
-    }
-
-    private func setFractionalContentOffsetAfterRendering(fractionalContentOffset: CGFloat) {
-        switch state {
-        case .initialized, .loading, .renderingFirstTime, .rerendering:
-            desiredFractionalContentOffsetAfterRendering = fractionalContentOffset
-
-        case .rendered:
-            scrollToFractionalOffset(fractionalContentOffset)
-
-        case .failed:
-            logger.warning("ignoring attempt set fractional content offset; announcement failed to load")
-        }
-    }
-
-    private func scrollToFractionalOffset(_ fractionalOffsetY: CGFloat) {
-        renderView.scrollToFractionalOffset(CGPoint(x: 0, y: fractionalOffsetY))
-
-        desiredFractionalContentOffsetAfterRendering = nil
     }
 
     private func updateScrollViewContentInsets() {
@@ -233,10 +211,6 @@ final class AnnouncementViewController: ViewController {
 
             hideLoadingView()
 
-            if let fractionalOffset = desiredFractionalContentOffsetAfterRendering {
-                scrollToFractionalOffset(fractionalOffset)
-            }
-
         case (_, .failed(let error)):
             present(UIAlertController(networkError: error), animated: true)
 
@@ -282,7 +256,6 @@ final class AnnouncementViewController: ViewController {
                 let messageVC = MessageComposeViewController(recipient: user)
                 self.messageViewController = messageVC
                 messageVC.delegate = self
-                messageVC.restorationIdentifier = "New PM from announcement view"
                 self.present(messageVC.enclosingNavigationController, animated: true)
             }))
         }
@@ -313,56 +286,6 @@ final class AnnouncementViewController: ViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-extension AnnouncementViewController: UIViewControllerRestoration {
-    private enum StateKey {
-        static let announcementListIndex = "announcement list index"
-        static let fractionalContentOffsetY = "fractional content offset y-value"
-        static let messageViewController = "message view controller"
-    }
-
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-
-        coder.encode(announcement.listIndex, forKey: StateKey.announcementListIndex)
-        coder.encode(messageViewController, forKey: StateKey.messageViewController)
-        coder.encode(Float(renderView.scrollView.fractionalContentOffset.y), forKey: StateKey.fractionalContentOffsetY)
-    }
-
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let listIndex = coder.decodeInt32(forKey: StateKey.announcementListIndex)
-        let fetchRequest = Announcement.makeFetchRequest()
-        fetchRequest.fetchLimit = 1
-        fetchRequest.predicate = NSPredicate(format: "%K = %d", #keyPath(Announcement.listIndex), listIndex)
-        let maybeAnnouncement: Announcement?
-        do {
-            maybeAnnouncement = try AppDelegate.instance.managedObjectContext.fetch(fetchRequest).first
-        }
-        catch {
-            logger.error("error attempting to fetch announcement: \(error)")
-            return nil
-        }
-
-        guard let announcement = maybeAnnouncement else {
-            logger.warning("couldn't find announcement at list index \(listIndex); skipping announcement view state restoration")
-            return nil
-        }
-
-        let announcementVC = AnnouncementViewController(announcement: announcement)
-        announcementVC.restorationIdentifier = identifierComponents.last
-        return announcementVC
-    }
-
-    override func decodeRestorableState(with coder: NSCoder) {
-        super.decodeRestorableState(with: coder)
-
-        messageViewController = coder.decodeObject(of: MessageComposeViewController.self, forKey: StateKey.messageViewController)
-        messageViewController?.delegate = self
-
-        let fractionalOffset = coder.decodeFloat(forKey: StateKey.fractionalContentOffsetY)
-        setFractionalContentOffsetAfterRendering(fractionalContentOffset: CGFloat(fractionalOffset))
     }
 }
 

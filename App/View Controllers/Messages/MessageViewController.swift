@@ -24,9 +24,9 @@ final class MessageViewController: ViewController {
     @FoilDefaultStorage(Settings.embedTweets) private var embedTweets
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
-    private var fractionalContentOffsetOnLoad: CGFloat = 0
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var loadingView: LoadingView?
+    private var scrollToFractionAfterLoading: CGFloat?
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private let privateMessage: PrivateMessage
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
@@ -62,8 +62,6 @@ final class MessageViewController: ViewController {
         
         navigationItem.rightBarButtonItem = replyButtonItem
         hidesBottomBarWhenPushed = true
-        
-        restorationClass = type(of: self)
     }
     
     override var title: String? {
@@ -103,7 +101,6 @@ final class MessageViewController: ViewController {
                     let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: privateMessage)
                     let composeVC = MessageComposeViewController(regardingMessage: privateMessage, initialContents: bbcode)
                     composeVC.delegate = self
-                    composeVC.restorationIdentifier = "New private message replying to private message"
                     self.composeVC = composeVC
                     present(composeVC.enclosingNavigationController, animated: true, completion: nil)
                 } catch {
@@ -117,7 +114,6 @@ final class MessageViewController: ViewController {
                     let bbcode = try await ForumsClient.shared.quoteBBcodeContents(of: privateMessage)
                     let composeVC = MessageComposeViewController(forwardingMessage: privateMessage, initialContents: bbcode)
                     composeVC.delegate = self
-                    composeVC.restorationIdentifier = "New private message forwarding private message"
                     self.composeVC = composeVC
                     present(composeVC.enclosingNavigationController, animated: true)
                 } catch {
@@ -188,7 +184,22 @@ final class MessageViewController: ViewController {
     }
     
     // MARK: Handoff
-    
+
+    var restorationRoute: AwfulRoute? {
+        .message(id: privateMessage.messageID)
+    }
+
+    var currentScrollFraction: CGFloat? {
+        guard isViewLoaded else { return nil }
+        return renderView.scrollView.fractionalContentOffset.y
+    }
+
+    /// Stages a vertical scroll fraction to apply once the WKWebView finishes rendering. Used by
+    /// `SceneDelegate` to restore the user's place after iOS terminates the scene.
+    func prepareForRestoration(scrollFraction: CGFloat) {
+        scrollToFractionAfterLoading = scrollFraction
+    }
+
     private func configureUserActivity() {
         guard handoffEnabled else { return }
         userActivity = NSUserActivity(activityType: Handoff.ActivityType.readingMessage)
@@ -429,31 +440,6 @@ final class MessageViewController: ViewController {
         }
     }
     
-    private enum CodingKey {
-        static let composeViewController = "AwfulComposeViewController"
-        static let message = "MessageKey"
-        static let scrollFracton = "AwfulScrollFraction"
-    }
-    
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(privateMessage.objectKey, forKey: CodingKey.message)
-        coder.encode(composeVC, forKey: CodingKey.composeViewController)
-        coder.encode(Float(renderView.scrollView.fractionalContentOffset.y), forKey: CodingKey.scrollFracton)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        super.decodeRestorableState(with: coder)
-        
-        composeVC = coder.decodeObject(of: MessageComposeViewController.self, forKey: CodingKey.composeViewController)
-        composeVC?.delegate = self
-        
-        fractionalContentOffsetOnLoad = CGFloat(coder.decodeFloat(forKey: CodingKey.scrollFracton))
-    }
-    
-    // MARK: Gunk
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -469,12 +455,15 @@ extension MessageViewController: ComposeTextViewControllerDelegate {
 
 extension MessageViewController: RenderViewDelegate {
     func didFinishRenderingHTML(in view: RenderView) {
-        if fractionalContentOffsetOnLoad > 0 {
-            renderView.scrollToFractionalOffset(CGPoint(x: 0, y: fractionalContentOffsetOnLoad))
-        }
-        
         loadingView?.removeFromSuperview()
         loadingView = nil
+
+        if let fraction = scrollToFractionAfterLoading {
+            scrollToFractionAfterLoading = nil
+            var offset = renderView.scrollView.fractionalContentOffset
+            offset.y = fraction
+            renderView.scrollToFractionalOffset(offset)
+        }
 
         if embedBlueskyPosts {
             renderView.embedBlueskyPosts()
@@ -486,11 +475,6 @@ extension MessageViewController: RenderViewDelegate {
     
     func didReceive(message: RenderViewMessage, in view: RenderView) {
         switch message {
-        case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
-            if fractionalContentOffsetOnLoad > 0 {
-                renderView.scrollToFractionalOffset(CGPoint(x: 0, y: fractionalContentOffsetOnLoad))
-            }
-            
         case let didTapHeader as RenderView.BuiltInMessage.DidTapAuthorHeader:
             showUserActions(from: didTapHeader.frame)
             
@@ -554,20 +538,7 @@ extension MessageViewController: UIScrollViewDelegate {
     }
 }
 
-extension MessageViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        guard let messageKey = coder.decodeObject(of: PrivateMessageKey.self, forKey: CodingKey.message) else {
-            return nil
-        }
-        
-        let context = AppDelegate.instance.managedObjectContext
-        let privateMessage = PrivateMessage.objectForKey(objectKey: messageKey, in: context)
-        let messageVC = self.init(privateMessage: privateMessage)
-        messageVC.restorationIdentifier = identifierComponents.last
-        return messageVC
-    }
-}
-
+extension MessageViewController: RestorableLocation {}
 
 private struct RenderModel: StencilContextConvertible {
     let context: [String: Any]

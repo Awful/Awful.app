@@ -151,3 +151,9 @@ struct SettingsContainerView: View {
         .themed()
     }
 }
+
+extension SettingsViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .settings
+    }
+}

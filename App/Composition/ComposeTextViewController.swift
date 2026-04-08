@@ -133,6 +133,7 @@ class ComposeTextViewController: ViewController {
         guard textDidChangeObserver == nil else { return }
         textDidChangeObserver = NotificationCenter.default.addObserver(forName: UITextView.textDidChangeNotification, object: textView, queue: OperationQueue.main, using: { [weak self] (note: Notification) in
             self?.updateSubmitButtonItem()
+            self?.bodyTextDidChange()
         })
     }
     private func endObservingTextChangeNotification() {
@@ -141,6 +142,11 @@ class ComposeTextViewController: ViewController {
         textDidChangeObserver = nil
     }
     private var textDidChangeObserver: NSObjectProtocol?
+
+    /// Override in subclasses to react to body text changes (e.g. to auto-save a draft).
+    /// Called from the same `UITextView.textDidChangeNotification` observer that updates the
+    /// submit button.
+    func bodyTextDidChange() {}
     
     fileprivate func beginObservingKeyboardNotifications() {
         guard keyboardWillChangeFrameObserver == nil else { return }
@@ -340,7 +346,6 @@ class ComposeTextViewController: ViewController {
     
     override func loadView() {
         let textView = ComposeTextView()
-        textView.restorationIdentifier = "ComposeTextView"
         textView.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -0.5, weight: .regular)
         textView.delegate = self
         view = textView
@@ -393,29 +398,6 @@ class ComposeTextViewController: ViewController {
         
         view.endEditing(true)
     }
-    
-    // MARK: State restoration
-    
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(textView.attributedText, forKey: Keys.AttributedText.rawValue)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        super.decodeRestorableState(with: coder)
-        
-        textView.attributedText = coder.decodeObject(forKey: Keys.AttributedText.rawValue) as? NSAttributedString
-        
-        // -viewDidLoad gets called before -decodeRestorableStateWithCoder: and so the text color gets loaded from the saved attributed string. Reapply the theme after restoring state.
-        themeDidChange()
-        
-        updateSubmitButtonItem()
-    }
-}
-
-fileprivate enum Keys: String {
-    case AttributedText
 }
 
 // For benefit of subclasses.
