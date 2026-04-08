@@ -48,6 +48,11 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
     private var scrollToFractionAfterLoading: CGFloat?
+    /// When true, the next `loadPage` network completion skips its usual "save current scroll
+    /// offset so we land in the same place after re-render" step. Set by `prepareForRestoration`
+    /// so a freshly restored scroll fraction isn't clobbered by the in-flight fetch that the URL
+    /// router kicked off before `SceneDelegate` could stage the restored value.
+    private var suppressNextScrollFractionPreservation = false
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
     let thread: AwfulThread
@@ -356,7 +361,9 @@ final class PostsPageViewController: ViewController {
                     self.hiddenPosts = firstUnreadPost - 1
                 }
 
-                if reloadingSamePage || renderedCachedPosts {
+                if self.suppressNextScrollFractionPreservation {
+                    self.suppressNextScrollFractionPreservation = false
+                } else if reloadingSamePage || renderedCachedPosts {
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                 }
 
@@ -1687,6 +1694,10 @@ final class PostsPageViewController: ViewController {
     func prepareForRestoration(scrollFraction: CGFloat?, hiddenPosts: Int?) {
         if let scrollFraction = scrollFraction {
             scrollToFractionAfterLoading = scrollFraction
+            // The URL router already kicked off `loadPage(updatingCache: true)`, which renders
+            // cached posts immediately and then re-renders when the network fetch completes —
+            // and that completion would otherwise overwrite the scroll fraction we just staged.
+            suppressNextScrollFractionPreservation = true
         }
         if let hiddenPosts = hiddenPosts {
             hiddenPostsAfterLoading = hiddenPosts
