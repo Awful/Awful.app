@@ -20,13 +20,13 @@ private struct SidebarButtonView: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.system(size: 17, weight: weight))
-                .foregroundStyle(color)
-        }
-        .buttonStyle(.plain)
-        .glassEffect(.identity)
+        Text(title)
+            .font(.system(size: 17, weight: weight))
+            .foregroundStyle(color)
+            .fixedSize()
+            .glassEffect(.identity)
+            .contentShape(Rectangle())
+            .onTapGesture(perform: action)
     }
 }
 
@@ -80,8 +80,8 @@ final class SidebarTitleView: UIView {
         ])
 
         hostingController = hosting
-        hosting.view.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        setContentHuggingPriority(.defaultLow, for: .horizontal)
+        hosting.view.setContentHuggingPriority(.required, for: .horizontal)
+        setContentHuggingPriority(.required, for: .horizontal)
         hosting.view.invalidateIntrinsicContentSize()
         invalidateIntrinsicContentSize()
     }
@@ -460,9 +460,7 @@ final class NavigationController: UINavigationController, Themeable {
         }
         let hosting = UIHostingController(rootView: content)
         hosting.view.backgroundColor = .clear
-        // Use sizeThatFits with unconstrained width to get natural size
-        let size = hosting.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44))
-        hosting.view.frame = CGRect(origin: .zero, size: size)
+        hosting.view.sizeToFit()
         return UIBarButtonItem(customView: hosting.view)
     }
 
