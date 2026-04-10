@@ -286,9 +286,9 @@ final class PostsPageView: UIView {
         if toolbar.transform == .identity {
             let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
             toolbar.frame = CGRect(
-                x: bounds.minX,
+                x: bounds.minX + layoutMargins.left,
                 y: bounds.maxY - layoutMargins.bottom - toolbarHeight,
-                width: bounds.width,
+                width: bounds.width - layoutMargins.left - layoutMargins.right,
                 height: toolbarHeight)
         }
 
