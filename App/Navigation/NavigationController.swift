@@ -193,6 +193,14 @@ final class NavigationController: UINavigationController, Themeable {
     @objc func updateNavigationBarTintForScrollProgress(_ progress: NSNumber) {
         guard #available(iOS 26.0, *) else { return }
 
+        // On iPad with expanded split view, keep the nav bar opaque with
+        // theme colors. The liquid glass scroll transition only applies on
+        // iPhone where the system provides glass capsules on bar button items.
+        if let splitVC = tabBarController?.splitViewController ?? splitViewController,
+           !splitVC.isCollapsed {
+            return
+        }
+
         let progressValue = CGFloat(progress.floatValue)
 
         // Avoid redundant appearance rebuilds when progress hasn't changed.
@@ -228,6 +236,8 @@ final class NavigationController: UINavigationController, Themeable {
 
     @objc func updateNavigationBarTintForScrollPosition(_ isAtTop: NSNumber) {
         guard #available(iOS 26.0, *) else { return }
+        // Scroll-based appearance handled in updateNavigationBarTintForScrollProgress,
+        // which already guards against iPad split view.
         let progress = isAtTop.boolValue ? 0.0 : 1.0
         updateNavigationBarTintForScrollProgress(NSNumber(value: progress))
     }
@@ -514,7 +524,21 @@ extension NavigationController: UINavigationControllerDelegate {
 
             awfulNavigationBar.tintColor = textColor
 
-            if #unavailable(iOS 26.0) {
+            // On iOS 26 iPhone, the liquid glass system handles button
+            // colors dynamically. On iPad (no glass transition) and older
+            // iOS, apply theme colors to button items directly.
+            let needsManualButtonTint: Bool = {
+                if #available(iOS 26.0, *) {
+                    if let splitVC = tabBarController?.splitViewController ?? splitViewController,
+                       !splitVC.isCollapsed {
+                        return true // iPad with expanded split view
+                    }
+                    return false // iPhone — glass handles tint
+                }
+                return true // pre-iOS 26
+            }()
+
+            if needsManualButtonTint {
                 viewController.navigationItem.leftBarButtonItem?.tintColor = textColor
                 viewController.navigationItem.rightBarButtonItem?.tintColor = textColor
                 viewController.navigationItem.leftBarButtonItems?.forEach { $0.tintColor = textColor }
