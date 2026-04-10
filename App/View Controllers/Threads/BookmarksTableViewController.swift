@@ -36,10 +36,10 @@ final class BookmarksTableViewController: TableViewController {
         super.init(style: .plain)
         
         title = LocalizedString("bookmarks.title")
-        
+
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
-        navigationItem.rightBarButtonItem = editButtonItem
+        navigationItem.leftBarButtonItem = editButtonItem
         
         themeDidChange()
     }

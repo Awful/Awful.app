@@ -67,8 +67,11 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         let barAppearance = UITabBarAppearance()
 
         if #available(iOS 26.0, *) {
+            // Set on self (not tabBar) so the trait propagates to the
+            // glass tab bar — this is what makes the Settings SwiftUI tab
+            // work (its HostingController propagates colorScheme).
             let menuAppearance = theme[string: "menuAppearance"]
-            tabBar.overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
+            overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
 
             barAppearance.backgroundColor = nil
             barAppearance.backgroundEffect = nil
@@ -78,11 +81,14 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
             tabBar.isTranslucent = true
             tabBar.barTintColor = nil
             tabBar.topBorderColor = nil
+
+            // Force glass to re-render after trait change (needed on macOS)
+            tabBar.standardAppearance = barAppearance
         } else {
             barAppearance.configureWithOpaqueBackground()
             barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]!
             barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]!
-            
+
             tabBar.isTranslucent = false
             tabBar.barTintColor = theme["tabBarBackgroundColor"]
             tabBar.tintColor = theme["tintColor"]

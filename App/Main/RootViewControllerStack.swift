@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulSettings
+import AwfulTheming
 import Combine
 import CoreData
 import UIKit
@@ -314,9 +315,13 @@ extension RootViewControllerStack {
         guard !splitViewController.isCollapsed else {
             return nil
         }
-        
+
         let realItem = splitViewController.displayModeButtonItem
-        return UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: realItem.target, action: realItem.action)
+        let item = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: realItem.target, action: realItem.action)
+        if let textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] {
+            item.tintColor = textColor
+        }
+        return item
     }
 }
 

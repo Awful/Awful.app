@@ -303,9 +303,9 @@ final class PostsPageView: UIView {
 
         let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
         topBarContainer.frame = CGRect(
-            x: bounds.minX,
+            x: bounds.minX + layoutMargins.left,
             y: bounds.minY + layoutMargins.top,
-            width: bounds.width,
+            width: bounds.width - layoutMargins.left - layoutMargins.right,
             height: topBarHeight)
         updateTopBarContainerFrameAndScrollViewInsets()
     }

@@ -400,13 +400,13 @@
 
     },
     "Done" : {
-
+      "comment" : "Edit button done state"
     },
     "Double-check your username and password, then try again." : {
 
     },
     "Edit" : {
-
+      "comment" : "Edit button"
     },
     "Example searches:" : {
 

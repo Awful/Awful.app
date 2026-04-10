@@ -45,6 +45,35 @@ final class NavigationBar: UINavigationBar {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// When set, `layoutSubviews` forces this color as `tintColor` and
+    /// recolors all internal labels on every layout pass. Used by
+    /// NavigationController for iPad sidebar where iOS 26 flat rendering
+    /// ignores appearance APIs and colors elements with the app tintColor.
+    var forcedTintColor: UIColor?
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard let forced = forcedTintColor else { return }
+
+        if tintColor != forced {
+            tintColor = forced
+        }
+
+        // Force tintColor on every subview in the nav bar so the flat
+        // rendering's buttons pick up the correct color regardless of
+        // which view they inherit tintColor from.
+        func forceTint(in view: UIView) {
+            if view.tintColor != forced {
+                view.tintColor = forced
+            }
+            for child in view.subviews {
+                forceTint(in: child)
+            }
+        }
+        forceTint(in: self)
+    }
+
     @objc fileprivate func didLongPress(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
         guard backItem != nil else { return }
