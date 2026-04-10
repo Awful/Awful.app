@@ -167,9 +167,9 @@ final class NavigationController: UINavigationController, Themeable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         themeDidChange()
-        
+
         interactivePopGestureRecognizer?.delegate = self
     }
     

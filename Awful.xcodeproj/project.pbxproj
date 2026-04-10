@@ -135,8 +135,6 @@
 		1C82AC4D199F5C1500CB15FE /* Selectotron.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C82AC4C199F5C1500CB15FE /* Selectotron.xib */; };
 		1C88EC9B2AE1062300FA766F /* PullToRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = 1C88EC9A2AE1062300FA766F /* PullToRefresh */; };
 		1C8A8CFA1A3C14DF00E4F6A4 /* ReplyWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */; };
-		2D3D26012F85E80100862513 /* NewThreadDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26002F85E80100862513 /* NewThreadDraft.swift */; };
-		2D3D26032F85E80100862514 /* PrivateMessageDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */; };
 		1C8D114719ACDAD9005D46CB /* RootViewControllerStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */; };
 		1C8F67F4222105E4007E61ED /* StencilEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */; };
 		1C8F67F822210DED007E61ED /* Profile.html.stencil in Resources */ = {isa = PBXBuildFile; fileRef = 1C8F67F722210DED007E61ED /* Profile.html.stencil */; };
@@ -221,6 +219,8 @@
 		2D3CB32C2EBF09C300BD4A12 /* rated_five_trans_appicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 2D3CB3172EBF09C300BD4A12 /* rated_five_trans_appicon.icon */; };
 		2D3D25F92F85E50500862513 /* RestorableLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D25F82F85E50500862513 /* RestorableLocation.swift */; };
 		2D3D25FB2F85E50500862514 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D25FA2F85E50500862514 /* SceneDelegate.swift */; };
+		2D3D26012F85E80100862513 /* NewThreadDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26002F85E80100862513 /* NewThreadDraft.swift */; };
+		2D3D26032F85E80100862514 /* PrivateMessageDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */; };
 		2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B462EC83DD00026826C /* AttachmentCardView.swift */; };
 		2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */; };
 		2D62DEA62EBFE95B00F7121B /* PostsPageTopBarLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */; };
@@ -465,8 +465,6 @@
 		1C82AC4A199F585000CB15FE /* Selectotron.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Selectotron.swift; sourceTree = "<group>"; };
 		1C82AC4C199F5C1500CB15FE /* Selectotron.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Selectotron.xib; sourceTree = "<group>"; };
 		1C8A8CF91A3C14DF00E4F6A4 /* ReplyWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyWorkspace.swift; sourceTree = "<group>"; };
-		2D3D26002F85E80100862513 /* NewThreadDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThreadDraft.swift; sourceTree = "<group>"; };
-		2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateMessageDraft.swift; sourceTree = "<group>"; };
 		1C8D114619ACDAD9005D46CB /* RootViewControllerStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewControllerStack.swift; sourceTree = "<group>"; };
 		1C8F67F3222105E4007E61ED /* StencilEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StencilEnvironment.swift; sourceTree = "<group>"; };
 		1C8F67F722210DED007E61ED /* Profile.html.stencil */ = {isa = PBXFileReference; explicitFileType = text.html; fileEncoding = 4; path = Profile.html.stencil; sourceTree = "<group>"; };
@@ -565,6 +563,8 @@
 		2D3CB31D2EBF09C300BD4A12 /* v_appicon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = v_appicon.icon; sourceTree = "<group>"; };
 		2D3D25F82F85E50500862513 /* RestorableLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestorableLocation.swift; sourceTree = "<group>"; };
 		2D3D25FA2F85E50500862514 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		2D3D26002F85E80100862513 /* NewThreadDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThreadDraft.swift; sourceTree = "<group>"; };
+		2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateMessageDraft.swift; sourceTree = "<group>"; };
 		2D571B462EC83DD00026826C /* AttachmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCardView.swift; sourceTree = "<group>"; };
 		2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
 		2D62DEA52EBFE95500F7121B /* PostsPageTopBarLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsPageTopBarLiquidGlass.swift; sourceTree = "<group>"; };
