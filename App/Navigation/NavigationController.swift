@@ -80,8 +80,8 @@ final class SidebarTitleView: UIView {
         ])
 
         hostingController = hosting
-        hosting.view.setContentHuggingPriority(.required, for: .horizontal)
-        setContentHuggingPriority(.required, for: .horizontal)
+        hosting.view.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        setContentHuggingPriority(.defaultLow, for: .horizontal)
         hosting.view.invalidateIntrinsicContentSize()
         invalidateIntrinsicContentSize()
     }
@@ -326,7 +326,9 @@ final class NavigationController: UINavigationController, Themeable {
             .foregroundColor: textColor,
             .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
         ]
-        if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
+        // Use .alwaysOriginal with the color baked in to bypass the glass
+        // panel's vibrancy compositing (same approach as title images).
+        if let backImage = UIImage(named: "back")?.withTintColor(textColor, renderingMode: .alwaysOriginal) {
             sidebarAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         }
         let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
@@ -366,6 +368,15 @@ final class NavigationController: UINavigationController, Themeable {
                 let titleView = SidebarTitleView(title: topVC.title ?? "", color: textColor)
                 titleView.sizeToFit()
                 topVC.navigationItem.titleView = titleView
+            }
+
+            // Hide the back button text to avoid vibrancy tinting it blue.
+            // The back arrow image still shows (it responds to forcedTintColor).
+            if viewControllers.count > 1 {
+                let previousVC = viewControllers[viewControllers.count - 2]
+                previousVC.navigationItem.backBarButtonItem = UIBarButtonItem(
+                    title: "", style: .plain, target: nil, action: nil
+                )
             }
         }
     }
@@ -865,9 +876,24 @@ extension NavigationController: UINavigationControllerDelegate {
             updateNavigationBarAppearance(with: vcTheme, for: viewController)
         }
 
+        // Apply sidebar glass bypass (titleView, button replacement) for
+        // pushed VCs too, not just on tab switches.
+        if #available(iOS 26.0, *) {
+            applySidebarAppearanceIfNeeded(with: vcTheme)
+        }
+
         if awfulNavigationBar.backIndicatorImage == nil {
-            awfulNavigationBar.backIndicatorImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
-            awfulNavigationBar.backIndicatorTransitionMaskImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+            if #available(iOS 26.0, *),
+               UIDevice.current.userInterfaceIdiom == .pad,
+               tabBarController != nil,
+               let textColor = vcTheme[uicolor: "navigationBarTextColor"] {
+                // Sidebar: bake color in with .alwaysOriginal to bypass glass vibrancy
+                awfulNavigationBar.backIndicatorImage = UIImage(named: "back")?.withTintColor(textColor, renderingMode: .alwaysOriginal)
+                awfulNavigationBar.backIndicatorTransitionMaskImage = UIImage(named: "back")?.withTintColor(textColor, renderingMode: .alwaysOriginal)
+            } else {
+                awfulNavigationBar.backIndicatorImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+                awfulNavigationBar.backIndicatorTransitionMaskImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+            }
         }
 
         if !isScrolledFromTop {
