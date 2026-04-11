@@ -109,6 +109,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
+        // Sync dark mode with system appearance on every foreground entry. The old
+        // `applicationDidBecomeActive` path no longer fires under the scene lifecycle.
+        AppDelegate.instance.automaticallyUpdateDarkModeEnabledIfNecessary()
+
         guard !didProcessConnectionLaunch else { return }
         didProcessConnectionLaunch = true
 

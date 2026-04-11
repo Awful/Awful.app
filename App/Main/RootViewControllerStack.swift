@@ -350,6 +350,15 @@ private final class PassthroughViewController: UIViewController {
 
     var userInterfaceStyleDidChange: () -> Void = {}
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if #available(iOS 17.0, *) {
+            registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: PassthroughViewController, _: UITraitCollection) in
+                self.userInterfaceStyleDidChange()
+            }
+        }
+    }
+
     #if !targetEnvironment(macCatalyst)
     override var childForHomeIndicatorAutoHidden: UIViewController? {
         return children.first
@@ -387,8 +396,10 @@ private final class PassthroughViewController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
-            userInterfaceStyleDidChange()
+        if #unavailable(iOS 17.0) {
+            if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+                userInterfaceStyleDidChange()
+            }
         }
     }
 }
