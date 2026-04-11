@@ -294,6 +294,7 @@ final class NavigationController: UINavigationController, Themeable {
         if #available(iOS 26.0, *) {
             applySidebarAppearanceIfNeeded(with: theme)
         }
+
     }
 
     func themeDidChange() {
@@ -379,6 +380,7 @@ final class NavigationController: UINavigationController, Themeable {
                 )
             }
         }
+
     }
 
     /// Replaces text-based bar button items with custom-view equivalents that

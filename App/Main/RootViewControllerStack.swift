@@ -54,7 +54,25 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         splitViewController.delegate = self
         splitViewController.maximumPrimaryColumnWidth = 350
         splitViewController.preferredPrimaryColumnWidthFraction = 0.5
-        
+
+        // Try to control the system-inserted sidebar toggle button color.
+        if #available(iOS 26.0, *) {
+            if let textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] {
+                splitViewController.view.tintColor = textColor
+                let toggleItem = splitViewController.displayModeButtonItem
+                toggleItem.tintColor = textColor
+                // Remove the Liquid Glass capsule so the button falls back
+                // to tintColor instead of labelColor-based glass rendering.
+                toggleItem.isHidden = false
+                toggleItem.hidesSharedBackground = true
+            }
+        } else {
+            if let textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] {
+                splitViewController.view.tintColor = textColor
+                splitViewController.displayModeButtonItem.tintColor = textColor
+            }
+        }
+
         updateMessagesTabPresence()
         
         $hideSidebarInLandscape
