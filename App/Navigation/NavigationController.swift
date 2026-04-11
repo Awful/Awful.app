@@ -12,14 +12,18 @@ import UIKit
 
 /// A SwiftUI button with `.glassEffect(.identity)` that bypasses the glass
 /// panel's vibrancy compositing for bar button items in the sidebar.
+/// Reads `navigationBarTextColor` from the theme environment so the color
+/// updates automatically when the user switches themes.
 @available(iOS 26.0, *)
 private struct SidebarButtonView: View {
     let title: String
-    let color: Color
     var weight: Font.Weight = .regular
     let action: () -> Void
 
+    @SwiftUI.Environment(\.theme) private var theme
+
     var body: some View {
+        let color = theme[color: "navigationBarTextColor"] ?? .white
         Text(title)
             .font(.system(size: 17, weight: weight))
             .foregroundStyle(color)
@@ -27,6 +31,28 @@ private struct SidebarButtonView: View {
             .glassEffect(.identity)
             .contentShape(Rectangle())
             .onTapGesture(perform: action)
+    }
+}
+
+/// A SwiftUI image button with `.glassEffect(.identity)` that bypasses the
+/// glass panel's vibrancy compositing. Reads color from the theme environment.
+@available(iOS 26.0, *)
+private struct SidebarImageButtonView: View {
+    let image: Image
+    let accessibilityLabel: String?
+    let action: () -> Void
+
+    @SwiftUI.Environment(\.theme) private var theme
+
+    var body: some View {
+        let color = theme[color: "navigationBarTextColor"] ?? .white
+        Button(action: action) {
+            image
+                .foregroundStyle(color)
+        }
+        .buttonStyle(.plain)
+        .glassEffect(.identity)
+        .accessibilityLabel(accessibilityLabel ?? "")
     }
 }
 
@@ -300,6 +326,10 @@ final class NavigationController: UINavigationController, Themeable {
     func themeDidChange() {
         lastAppliedScrollProgress = -1
         updateNavigationBarAppearance(with: theme)
+
+        if #available(iOS 26.0, *) {
+            applySidebarAppearanceIfNeeded(with: theme)
+        }
     }
 
     /// On iPad sidebar, the nav bar is inside a glass panel so buttons get
@@ -359,7 +389,7 @@ final class NavigationController: UINavigationController, Themeable {
         if let topVC = topViewController {
             // Replace system bar button items with custom-view equivalents
             // that bypass the glass panel's vibrancy compositing.
-            replaceSidebarBarButtonItems(for: topVC, color: textColor)
+            replaceSidebarBarButtonItems(for: topVC)
 
             // Custom titleView using SwiftUI Text with .glassEffect(.identity)
             // to bypass the glass panel's vibrancy compositing.
@@ -386,10 +416,11 @@ final class NavigationController: UINavigationController, Themeable {
     /// Replaces text-based bar button items with custom-view equivalents that
     /// bypass the glass panel's content-level vibrancy compositing.
     @available(iOS 26.0, *)
-    private func replaceSidebarBarButtonItems(for viewController: UIViewController, color: UIColor) {
+    private func replaceSidebarBarButtonItems(for viewController: UIViewController) {
         func replaceItem(_ item: UIBarButtonItem) -> UIBarButtonItem {
             // Skip items that are already custom-view items (including
-            // ones we created on a previous pass).
+            // ones we created on a previous pass). The SwiftUI views read
+            // color from @Environment(\.theme) so they update automatically.
             if item.customView != nil { return item }
 
             // Text-based items need custom-view wrappers to bypass glass
@@ -400,13 +431,12 @@ final class NavigationController: UINavigationController, Themeable {
                 || item === viewController.editButtonItem
 
             if isEditButton {
-                return makeEditBarButtonItem(for: viewController, color: color)
+                return makeEditBarButtonItem(for: viewController)
             }
 
             if !title.isEmpty {
                 return makeTextBarButtonItem(
                     title: title,
-                    color: color,
                     target: item.target as AnyObject?,
                     action: item.action
                 )
@@ -417,14 +447,12 @@ final class NavigationController: UINavigationController, Themeable {
             if let image = item.image {
                 return makeImageBarButtonItem(
                     image: image,
-                    color: color,
                     accessibilityLabel: item.accessibilityLabel,
                     target: item.target as AnyObject?,
                     action: item.action
                 )
             }
 
-            item.tintColor = color
             return item
         }
 
@@ -461,17 +489,15 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     private func makeTextBarButtonItem(
         title: String,
-        color: UIColor,
         target: AnyObject?,
         action: Selector?
     ) -> UIBarButtonItem {
-        let swiftUIColor = Color(color)
-        let content = SidebarButtonView(title: title, color: swiftUIColor) {
+        let content = SidebarButtonView(title: title) {
             if let target = target as? NSObject, let action {
                 target.perform(action, with: nil)
             }
-        }
-        let hosting = UIHostingController(rootView: content)
+        }.themed()
+        let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
         hosting.view.sizeToFit()
         return UIBarButtonItem(customView: hosting.view)
@@ -480,22 +506,21 @@ final class NavigationController: UINavigationController, Themeable {
     /// Creates a custom-view bar button item that replicates `editButtonItem` behavior
     /// using SwiftUI with `.glassEffect(.identity)` to bypass vibrancy.
     @available(iOS 26.0, *)
-    private func makeEditBarButtonItem(for viewController: UIViewController, color: UIColor) -> UIBarButtonItem {
+    private func makeEditBarButtonItem(for viewController: UIViewController) -> UIBarButtonItem {
         let isEditing = viewController.isEditing
         let title = isEditing
             ? NSLocalizedString("Done", comment: "Edit button done state")
             : NSLocalizedString("Edit", comment: "Edit button")
         let weight: Font.Weight = isEditing ? .bold : .regular
-        let swiftUIColor = Color(color)
 
-        let view = SidebarButtonView(title: title, color: swiftUIColor, weight: weight) { [weak viewController] in
+        let view = SidebarButtonView(title: title, weight: weight) { [weak viewController] in
             guard let vc = viewController else { return }
             vc.setEditing(!vc.isEditing, animated: true)
             if let nav = vc.navigationController as? NavigationController {
                 nav.applySidebarAppearanceIfNeeded(with: nav.theme)
             }
-        }
-        let hosting = UIHostingController(rootView: view)
+        }.themed()
+        let hosting = UIHostingController(rootView: AnyView(view))
         hosting.view.backgroundColor = .clear
         let size = hosting.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44))
         hosting.view.frame = CGRect(origin: .zero, size: size)
@@ -507,29 +532,24 @@ final class NavigationController: UINavigationController, Themeable {
     @available(iOS 26.0, *)
     private func makeImageBarButtonItem(
         image: UIImage,
-        color: UIColor,
         accessibilityLabel: String?,
         target: AnyObject?,
         action: Selector?
     ) -> UIBarButtonItem {
-        let swiftUIColor = Color(color)
         let swiftUIImage = Image(uiImage: image.withRenderingMode(.alwaysTemplate))
-        let content = Button {
+        let content = SidebarImageButtonView(
+            image: swiftUIImage,
+            accessibilityLabel: accessibilityLabel
+        ) {
             if let target = target as? NSObject, let action {
                 target.perform(action, with: nil)
             }
-        } label: {
-            swiftUIImage
-                .foregroundStyle(swiftUIColor)
-        }
-        .buttonStyle(.plain)
-        .glassEffect(.identity)
+        }.themed()
 
         let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
         let size = hosting.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44))
         hosting.view.frame = CGRect(origin: .zero, size: size)
-        hosting.view.accessibilityLabel = accessibilityLabel
         return UIBarButtonItem(customView: hosting.view)
     }
 
@@ -768,11 +788,7 @@ final class NavigationController: UINavigationController, Themeable {
                 awfulNavigationBar.compactAppearance = initialAppearance
                 awfulNavigationBar.compactScrollEdgeAppearance = initialAppearance
 
-                // Start with themed tintColor so the sidebar toggle button
-                // (and other bar items) are visible against the dark nav bar
-                // background. The scroll transition code nils this out when
-                // fully scrolled so glass can handle colors dynamically.
-                awfulNavigationBar.tintColor = textColor
+                awfulNavigationBar.tintColor = nil
 
                 awfulNavigationBar.setNeedsLayout()
                 awfulNavigationBar.layoutIfNeeded()
@@ -925,7 +941,7 @@ extension NavigationController: UINavigationControllerDelegate {
                 if #available(iOS 26.0, *),
                    UIDevice.current.userInterfaceIdiom == .pad,
                    tabBarController != nil {
-                    replaceSidebarBarButtonItems(for: viewController, color: textColor)
+                    replaceSidebarBarButtonItems(for: viewController)
                 } else {
                     viewController.navigationItem.leftBarButtonItem?.tintColor = textColor
                     viewController.navigationItem.rightBarButtonItem?.tintColor = textColor

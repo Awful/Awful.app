@@ -76,23 +76,29 @@ final class NavigationBar: UINavigationBar {
                imageView.tag != Self.sidebarToggleOverlayTag,
                let image = imageView.image,
                image.isSymbolImage,
-               !imageView.isHidden,
                String(describing: image).contains("sidebar.leading") {
+                // Use both isHidden and alpha to prevent UIKit from
+                // resetting visibility during its own layout passes.
                 imageView.isHidden = true
-                if let parent = imageView.superview,
-                   parent.viewWithTag(Self.sidebarToggleOverlayTag) == nil {
-                    let replacement = UIImageView(
-                        image: UIImage(systemName: "sidebar.leading")?
+                imageView.alpha = 0
+                if let parent = imageView.superview {
+                    if let existing = parent.viewWithTag(Self.sidebarToggleOverlayTag) as? UIImageView {
+                        existing.image = UIImage(systemName: "sidebar.leading")?
                             .withTintColor(forced, renderingMode: .alwaysOriginal)
-                    )
-                    replacement.tag = Self.sidebarToggleOverlayTag
-                    replacement.isUserInteractionEnabled = false
-                    replacement.translatesAutoresizingMaskIntoConstraints = false
-                    parent.addSubview(replacement)
-                    NSLayoutConstraint.activate([
-                        replacement.centerXAnchor.constraint(equalTo: parent.centerXAnchor),
-                        replacement.centerYAnchor.constraint(equalTo: parent.centerYAnchor),
-                    ])
+                    } else {
+                        let replacement = UIImageView(
+                            image: UIImage(systemName: "sidebar.leading")?
+                                .withTintColor(forced, renderingMode: .alwaysOriginal)
+                        )
+                        replacement.tag = Self.sidebarToggleOverlayTag
+                        replacement.isUserInteractionEnabled = false
+                        replacement.translatesAutoresizingMaskIntoConstraints = false
+                        parent.addSubview(replacement)
+                        NSLayoutConstraint.activate([
+                            replacement.centerXAnchor.constraint(equalTo: parent.centerXAnchor),
+                            replacement.centerYAnchor.constraint(equalTo: parent.centerYAnchor),
+                        ])
+                    }
                 }
             }
             for child in view.subviews {
