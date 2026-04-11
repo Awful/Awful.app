@@ -6,9 +6,7 @@ import AwfulTheming
 import SwiftUI
 import UIKit
 
-// MARK: - Sidebar Glass Bypass Helpers
-
-// MARK: - Sidebar Button View
+// MARK: - Sidebar Glass Bypass Views
 
 /// A SwiftUI button with `.glassEffect(.identity)` that bypasses the glass
 /// panel's vibrancy compositing for bar button items in the sidebar.
@@ -26,6 +24,7 @@ private struct SidebarButtonView: View {
         let color = theme[color: "navigationBarTextColor"] ?? .white
         Text(title)
             .font(.system(size: 17, weight: weight))
+            .applyFontDesign(if: theme.roundedFonts)
             .foregroundStyle(color)
             .fixedSize()
             .glassEffect(.identity)
@@ -65,10 +64,12 @@ final class SidebarTitleView: UIView {
     private var hostingController: UIHostingController<AnyView>?
     private var currentTitle: String
     private var currentColor: UIColor
+    private var useRoundedFont: Bool
 
-    init(title: String, color: UIColor) {
+    init(title: String, color: UIColor, roundedFont: Bool) {
         self.currentTitle = title
         self.currentColor = color
+        self.useRoundedFont = roundedFont
         super.init(frame: .zero)
         setupHostingView()
     }
@@ -77,10 +78,11 @@ final class SidebarTitleView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(title: String, color: UIColor) {
-        guard title != currentTitle || color != currentColor else { return }
+    func update(title: String, color: UIColor, roundedFont: Bool) {
+        guard title != currentTitle || color != currentColor || roundedFont != useRoundedFont else { return }
         currentTitle = title
         currentColor = color
+        useRoundedFont = roundedFont
         setupHostingView()
     }
 
@@ -90,6 +92,7 @@ final class SidebarTitleView: UIView {
         let swiftUIColor = Color(currentColor)
         let content = Text(currentTitle)
             .font(.system(size: 17, weight: .semibold))
+            .applyFontDesign(if: useRoundedFont)
             .foregroundStyle(swiftUIColor)
             .glassEffect(.identity)
 
@@ -162,13 +165,6 @@ final class NavigationController: UINavigationController, Themeable {
     override convenience init(rootViewController: UIViewController) {
         self.init()
         viewControllers = [rootViewController]
-
-        // Set forcedTintColor at init time for iPad sidebar nav controllers.
-        // This ensures the very first layoutSubviews uses the correct color
-        // before any view lifecycle methods fire.
-        if #available(iOS 26.0, *), UIDevice.current.userInterfaceIdiom == .pad {
-            awfulNavigationBar.forcedTintColor = .white
-        }
     }
     
     required init?(coder: NSCoder) {
@@ -320,7 +316,6 @@ final class NavigationController: UINavigationController, Themeable {
         if #available(iOS 26.0, *) {
             applySidebarAppearanceIfNeeded(with: theme)
         }
-
     }
 
     func themeDidChange() {
@@ -393,10 +388,11 @@ final class NavigationController: UINavigationController, Themeable {
 
             // Custom titleView using SwiftUI Text with .glassEffect(.identity)
             // to bypass the glass panel's vibrancy compositing.
+            let roundedFont = theme.roundedFonts
             if let existing = topVC.navigationItem.titleView as? SidebarTitleView {
-                existing.update(title: topVC.title ?? "", color: textColor)
+                existing.update(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
             } else {
-                let titleView = SidebarTitleView(title: topVC.title ?? "", color: textColor)
+                let titleView = SidebarTitleView(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
                 titleView.sizeToFit()
                 topVC.navigationItem.titleView = titleView
             }
@@ -410,7 +406,6 @@ final class NavigationController: UINavigationController, Themeable {
                 )
             }
         }
-
     }
 
     /// Replaces text-based bar button items with custom-view equivalents that
