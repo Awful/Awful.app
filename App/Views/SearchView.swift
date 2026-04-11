@@ -932,13 +932,12 @@ extension Int {
 }
 
 // MARK: - Custom Hosting Controller
-final class SearchHostingController: UIHostingController<SearchView> {
-    // Strong reference to keep the view model alive
+final class SearchHostingController: UIHostingController<AnyView> {
     private let searchModel: SearchPageViewModel
-    
+
     init() {
         self.searchModel = SearchPageViewModel()
-        super.init(rootView: SearchView(model: searchModel))
+        super.init(rootView: AnyView(SearchView(model: searchModel).themed()))
     }
     
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {

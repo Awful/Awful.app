@@ -14,9 +14,10 @@ import SwiftUI
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
 
 final class ForumsTableViewController: TableViewController {
-    
+
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var listDataSource: ForumListDataSource!
@@ -197,6 +198,16 @@ final class ForumsTableViewController: TableViewController {
             searchView.modalPresentationStyle = .fullScreen
         }
         present(searchView, animated: true)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let currentWidth = tableView.bounds.width
+        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+            ForumListCell.lastKnownContentViewWidth = nil
+        }
+        lastKnownTableWidth = currentWidth
     }
 
     override func themeDidChange() {

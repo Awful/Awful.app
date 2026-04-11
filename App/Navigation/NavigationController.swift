@@ -22,14 +22,15 @@ private struct SidebarButtonView: View {
 
     var body: some View {
         let color = theme[color: "navigationBarTextColor"] ?? .white
-        Text(title)
-            .font(.system(size: 17, weight: weight))
-            .applyFontDesign(if: theme.roundedFonts)
-            .foregroundStyle(color)
-            .fixedSize()
-            .glassEffect(.identity)
-            .contentShape(Rectangle())
-            .onTapGesture(perform: action)
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 17, weight: weight))
+                .applyFontDesign(if: theme.roundedFonts)
+                .foregroundStyle(color)
+                .fixedSize()
+        }
+        .buttonStyle(.plain)
+        .glassEffect(.identity)
     }
 }
 

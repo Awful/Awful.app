@@ -596,11 +596,6 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
-            item.tintColor = theme["toolbarTextColor"]
-        }
         return item
     }()
 
@@ -694,11 +689,6 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Thread actions"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
-            item.tintColor = theme["toolbarTextColor"]
-        }
         return item
     }
 
