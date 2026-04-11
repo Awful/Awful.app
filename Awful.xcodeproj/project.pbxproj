@@ -1853,7 +1853,7 @@
 		1C66A9FD19DD393A001B9A41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug.SmilieKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1864,7 +1864,7 @@
 		1C66A9FE19DD393A001B9A41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.SmilieKeyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1916,7 +1916,7 @@
 			baseConfigurationReference = 1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_SHORT_VERSION = 5.5;
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug;
@@ -1933,7 +1933,7 @@
 			baseConfigurationReference = 1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_SHORT_VERSION = 5.5;
-				DEVELOPMENT_TEAM = HYV8H97F7J;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful;
