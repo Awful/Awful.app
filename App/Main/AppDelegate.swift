@@ -283,7 +283,7 @@ extension AppDelegate {
         }
     }
 
-    private func automaticallyUpdateDarkModeEnabledIfNecessary() {
+    func automaticallyUpdateDarkModeEnabledIfNecessary() {
         guard automaticDarkTheme else { return }
 
         let shouldDarkModeBeEnabled = window?.traitCollection.userInterfaceStyle == .dark

@@ -18,6 +18,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
+    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var filterThreadTag: ThreadTag?
     let forum: Forum
@@ -122,6 +123,7 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         multiplexer.addDelegate(self)
 
         tableView.estimatedRowHeight = ThreadListCell.estimatedHeight
+        tableView.insetsContentViewsToSafeArea = false
         tableView.hideExtraneousSeparators()
 
         dataSource = makeDataSource()
@@ -153,6 +155,19 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         .store(in: &cancellables)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        // Invalidate the cached contentView width when the table view
+        // width changes (rotation, split-view resize) so heightForRowAt
+        // picks up the new width on the next pass.
+        let currentWidth = tableView.bounds.width
+        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+            ThreadListCell.lastKnownContentViewWidth = nil
+        }
+        lastKnownTableWidth = currentWidth
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
 

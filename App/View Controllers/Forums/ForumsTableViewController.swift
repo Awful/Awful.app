@@ -14,9 +14,10 @@ import SwiftUI
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
 
 final class ForumsTableViewController: TableViewController {
-    
+
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var listDataSource: ForumListDataSource!
@@ -117,7 +118,7 @@ final class ForumsTableViewController: TableViewController {
     }
 
     private func updateEditingState(favoriteCount: Int) {
-        navigationItem.setRightBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+        navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
 
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)
@@ -172,18 +173,18 @@ final class ForumsTableViewController: TableViewController {
         }()
 
         if canSendPrivateMessages {
-            navigationItem.setLeftBarButton(searchButton, animated: true)
+            navigationItem.setRightBarButton(searchButton, animated: true)
         }
-        
+
         // Add observer for changes to canSendPrivateMessages
         $canSendPrivateMessages
             .receive(on: RunLoop.main)
             .sink { [weak self] canSend in
                 guard let self else { return }
                 if canSend {
-                    navigationItem.setLeftBarButton(searchButton, animated: true)
+                    navigationItem.setRightBarButton(searchButton, animated: true)
                 } else {
-                    navigationItem.setLeftBarButton(nil, animated: true)
+                    navigationItem.setRightBarButton(nil, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -197,6 +198,16 @@ final class ForumsTableViewController: TableViewController {
             searchView.modalPresentationStyle = .fullScreen
         }
         present(searchView, animated: true)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let currentWidth = tableView.bounds.width
+        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+            ForumListCell.lastKnownContentViewWidth = nil
+        }
+        lastKnownTableWidth = currentWidth
     }
 
     override func themeDidChange() {

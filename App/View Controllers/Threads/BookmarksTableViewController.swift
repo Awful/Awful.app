@@ -17,6 +17,7 @@ final class BookmarksTableViewController: TableViewController {
     
     private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
+    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var latestPage = 0
@@ -35,10 +36,10 @@ final class BookmarksTableViewController: TableViewController {
         super.init(style: .plain)
         
         title = LocalizedString("bookmarks.title")
-        
+
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
-        navigationItem.rightBarButtonItem = editButtonItem
+        navigationItem.leftBarButtonItem = editButtonItem
         
         themeDidChange()
     }
@@ -107,6 +108,7 @@ final class BookmarksTableViewController: TableViewController {
         
         multiplexer.addDelegate(self)
 
+        tableView.insetsContentViewsToSafeArea = false
         tableView.hideExtraneousSeparators()
 
         dataSource = makeDataSource()
@@ -142,6 +144,16 @@ final class BookmarksTableViewController: TableViewController {
         tableView.setEditing(editing, animated: true)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let currentWidth = tableView.bounds.width
+        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+            ThreadListCell.lastKnownContentViewWidth = nil
+        }
+        lastKnownTableWidth = currentWidth
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
 

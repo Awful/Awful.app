@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulSettings
+import AwfulTheming
 import Combine
 import CoreData
 import UIKit
@@ -53,7 +54,7 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         splitViewController.delegate = self
         splitViewController.maximumPrimaryColumnWidth = 350
         splitViewController.preferredPrimaryColumnWidthFraction = 0.5
-        
+
         updateMessagesTabPresence()
         
         $hideSidebarInLandscape
@@ -314,8 +315,10 @@ extension RootViewControllerStack {
         guard !splitViewController.isCollapsed else {
             return nil
         }
-        
+
         let realItem = splitViewController.displayModeButtonItem
+        // Don't set explicit tintColor — let Liquid Glass adapt the color
+        // dynamically based on the content behind the detail nav bar.
         return UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: realItem.target, action: realItem.action)
     }
 }
@@ -346,6 +349,15 @@ extension MessageViewController: HasSplitViewPreference {
 private final class PassthroughViewController: UIViewController {
 
     var userInterfaceStyleDidChange: () -> Void = {}
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if #available(iOS 17.0, *) {
+            registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: PassthroughViewController, _: UITraitCollection) in
+                self.userInterfaceStyleDidChange()
+            }
+        }
+    }
 
     #if !targetEnvironment(macCatalyst)
     override var childForHomeIndicatorAutoHidden: UIViewController? {
@@ -384,8 +396,10 @@ private final class PassthroughViewController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
-            userInterfaceStyleDidChange()
+        if #unavailable(iOS 17.0) {
+            if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+                userInterfaceStyleDidChange()
+            }
         }
     }
 }

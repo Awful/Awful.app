@@ -281,14 +281,18 @@ final class PostsPageView: UIView {
          */
 
         renderView.frame = bounds
-        loadingViewContainer.frame = bounds
+        loadingViewContainer.frame = CGRect(
+            x: bounds.minX + layoutMargins.left,
+            y: bounds.minY,
+            width: bounds.width - layoutMargins.left - layoutMargins.right,
+            height: bounds.height)
 
         if toolbar.transform == .identity {
             let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
             toolbar.frame = CGRect(
-                x: bounds.minX,
+                x: bounds.minX + layoutMargins.left,
                 y: bounds.maxY - layoutMargins.bottom - toolbarHeight,
-                width: bounds.width,
+                width: bounds.width - layoutMargins.left - layoutMargins.right,
                 height: toolbarHeight)
         }
 
@@ -303,9 +307,9 @@ final class PostsPageView: UIView {
 
         let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
         topBarContainer.frame = CGRect(
-            x: bounds.minX,
+            x: bounds.minX + layoutMargins.left,
             y: bounds.minY + layoutMargins.top,
-            width: bounds.width,
+            width: bounds.width - layoutMargins.left - layoutMargins.right,
             height: topBarHeight)
         updateTopBarContainerFrameAndScrollViewInsets()
     }

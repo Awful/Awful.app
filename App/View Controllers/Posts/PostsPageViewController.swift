@@ -345,8 +345,13 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if #available(iOS 26.0, *) {
+                        self.pageNumberView.currentPage = 0
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                    } else {
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -400,11 +405,11 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                     if #available(iOS 26.0, *) {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                         self.currentPageItem.title = "Page ? of \(pageCount)"
                     }
 
@@ -591,11 +596,6 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
-            item.tintColor = theme["toolbarTextColor"]
-        }
         return item
     }()
 
@@ -611,11 +611,6 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
-            item.tintColor = theme["toolbarTextColor"]
-        }
         return item
     }()
 
@@ -626,7 +621,7 @@ final class PostsPageViewController: ViewController {
         }
         return view
     }()
-    
+
     private lazy var currentPageItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
             guard self.postsView.loadingView == nil else { return }
@@ -652,7 +647,7 @@ final class PostsPageViewController: ViewController {
         } else {
             item.possibleTitles = ["2345 / 2345"]
         }
-        
+
         item.accessibilityHint = "Opens page picker"
         return item
     }()
@@ -669,11 +664,6 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
-            item.tintColor = theme["toolbarTextColor"]
-        }
         return item
     }()
 
@@ -699,11 +689,6 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Thread actions"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
-            item.tintColor = theme["toolbarTextColor"]
-        }
         return item
     }
 
@@ -786,7 +771,6 @@ final class PostsPageViewController: ViewController {
                 currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
             }
         } else {
-            // Clear page display
             if #available(iOS 26.0, *) {
                 pageNumberView.currentPage = 0
                 pageNumberView.totalPages = 0
@@ -811,12 +795,7 @@ final class PostsPageViewController: ViewController {
     }
     
     private func updateToolbarItems() {
-        var toolbarItems: [UIBarButtonItem] = [settingsItem, .flexibleSpace()]
-
-        toolbarItems.append(contentsOf: [backItem, currentPageItem, forwardItem])
-        
-        toolbarItems.append(contentsOf: [.flexibleSpace(), actionsItem()])
-        postsView.toolbarItems = toolbarItems
+        postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem()]
     }
 
     private func showLoadingView() {
