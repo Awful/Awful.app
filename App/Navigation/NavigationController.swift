@@ -634,9 +634,6 @@ final class NavigationController: UINavigationController, Themeable {
 
     @available(iOS 26.0, *)
     private func configureBackground(for appearance: UINavigationBarAppearance, progress: CGFloat) {
-        appearance.shadowColor = nil
-        appearance.shadowImage = nil
-
         if progress < ScrollProgress.atTop {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = theme["navigationBarTintColor"]
@@ -660,6 +657,12 @@ final class NavigationController: UINavigationController, Themeable {
                 appearance.backgroundColor = interpolateColor(from: opaqueColor, to: gradientBaseColor, progress: progress)
             }
         }
+
+        // Must be set AFTER configureWith* — those methods reset shadow state
+        // back to system defaults, which renders as a grey hairline on dark
+        // themes (most visible on SpankyKongDark) once scrolled off the top.
+        appearance.shadowColor = .clear
+        appearance.shadowImage = nil
     }
 
     @available(iOS 26.0, *)
