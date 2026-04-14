@@ -289,9 +289,18 @@ final class PostsPageView: UIView {
 
         if toolbar.transform == .identity {
             let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
+            // On iPad / Mac (Designed for iPad), the system safe area at the
+            // bottom can be 0 (windowed multitasking, Catalyst), which would
+            // pin the toolbar flush against the window's bottom edge. Enforce
+            // a minimum bottom inset so the toolbar reads as aligned with the
+            // sidebar's RootTabBar instead of disappearing off the bottom.
+            let minimumPadBottomInset: CGFloat = 28
+            let effectiveBottomInset: CGFloat = traitCollection.userInterfaceIdiom == .pad
+                ? max(layoutMargins.bottom, minimumPadBottomInset)
+                : layoutMargins.bottom
             toolbar.frame = CGRect(
                 x: bounds.minX + layoutMargins.left,
-                y: bounds.maxY - layoutMargins.bottom - toolbarHeight,
+                y: bounds.maxY - effectiveBottomInset - toolbarHeight,
                 width: bounds.width - layoutMargins.left - layoutMargins.right,
                 height: toolbarHeight)
         }
