@@ -76,10 +76,17 @@ final class PostsPageView: UIView {
                         ])
                     }
                     if refreshControl is GetOutFrogRefreshSpinnerView {
+                        // Horizontal anchors use PostsPageView's layoutMarginsGuide so the
+                        // frog centers within the visible detail column on iPad/macOS
+                        // (accounting for the sidebar's safe-area inset), rather than within
+                        // the full scroll-view width. PostsPageViewController keeps
+                        // postsView.layoutMargins synced with view.safeAreaInsets, so on
+                        // iPhone these margins are zero and centering is unchanged.
                         NSLayoutConstraint.activate([
-                            refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
-                            containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
-                            containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
+                            refreshControl.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor),
+                            layoutMarginsGuide.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                            containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor),
+                            refreshControl.heightAnchor.constraint(equalToConstant: 110)
                         ])
                     }
                 }
