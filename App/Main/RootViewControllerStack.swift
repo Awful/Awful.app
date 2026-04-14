@@ -154,14 +154,45 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
         firstVisibleViewController { ($0 as? RestorableLocation)?.restorationRoute }
     }
 
-    /// Topmost visible `PostsPageViewController`, used by `SceneDelegate` to apply restored
-    /// scroll fraction and hidden-posts state after the URL router has pushed a fresh instance.
+    /// Route identifying the currently selected sidebar tab's root VC. Saved by `SceneDelegate`
+    /// so the sidebar tab is restored independently of whatever detail thread/message the
+    /// primary route captured. On iPad/macOS the detail pane and the sidebar tab are
+    /// orthogonal — the primary route records the detail, this records the tab.
+    var currentSidebarTabRoute: AwfulRoute? {
+        guard let rootNav = tabBarController.selectedViewController as? UINavigationController,
+              let root = rootNav.viewControllers.first as? RestorableLocation
+        else { return nil }
+        return root.restorationRoute
+    }
+
+    /// Route for the deepest `RestorableLocation` pushed on top of the selected tab's root
+    /// (e.g. `.forum(id:)` for a `ThreadsTableViewController` pushed under `ForumsTableViewController`).
+    /// Saved by `SceneDelegate` so that cold-launch restoration rebuilds the mid-stack
+    /// navigation depth — without this, restoring a thread detail would land the user back on
+    /// the forum list instead of the specific forum's thread list they had drilled into.
+    /// Returns nil when the primary nav has only the tab root (redundant with
+    /// `currentSidebarTabRoute`).
+    var currentPrimaryDeepRoute: AwfulRoute? {
+        guard let nav = tabBarController.selectedViewController as? UINavigationController else { return nil }
+        let stack = nav.viewControllers
+        guard stack.count > 1 else { return nil }
+        for vc in stack.reversed() {
+            if vc === stack.first { break }
+            if let route = (vc as? RestorableLocation)?.restorationRoute {
+                return route
+            }
+        }
+        return nil
+    }
+
+    /// Topmost visible `PostsPageViewController`, used by `SceneDelegate` to read the current
+    /// scroll fraction and hidden-posts count when building the scene's restoration activity.
     var topPostsPageViewController: PostsPageViewController? {
         firstVisibleViewController { $0 as? PostsPageViewController }
     }
 
-    /// Topmost visible `MessageViewController`, used by `SceneDelegate` to apply a restored
-    /// scroll fraction after the URL router has pushed a fresh instance.
+    /// Topmost visible `MessageViewController`, used by `SceneDelegate` to read the current
+    /// scroll fraction when building the scene's restoration activity.
     var topMessageViewController: MessageViewController? {
         firstVisibleViewController { $0 as? MessageViewController }
     }
