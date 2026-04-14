@@ -31,6 +31,21 @@ private let restorationHiddenPostsKey = "AwfulRestorationHiddenPosts"
 /// primary `NavigationController`, encoded as an array of `AwfulRoute.httpURL` strings.
 private let restorationUnpopRoutesKey = "AwfulRestorationUnpopRoutes"
 
+/// `NSUserActivity.userInfo` key carrying the selected sidebar tab's root route (e.g.
+/// `.forumList` / `.bookmarks` / `.messagesList` / `.settings`), encoded as its `httpURL`
+/// string. On iPad/macOS the detail pane and the sidebar tab are orthogonal: the primary
+/// route captures the detail thread/message, this captures which tab the sidebar was on.
+/// On iPhone this records the tab the primary navigation stack was rooted at, which we
+/// re-select on replay before pushing the detail route so `showPostsViewController` lands
+/// in the right tab's nav stack.
+private let restorationSidebarTabKey = "AwfulRestorationSidebarTab"
+
+/// `NSUserActivity.userInfo` key carrying the deepest non-root `RestorableLocation` on the
+/// selected tab's navigation stack (e.g. `.forum(id:)` when the user had drilled into a
+/// specific forum's thread list). Replayed between the sidebar tab selection and the detail
+/// route so the mid-stack view (thread list) is rebuilt before the leaf (thread detail).
+private let restorationPrimaryDeepRouteKey = "AwfulRestorationPrimaryDeepRoute"
+
 /// `UserDefaults` key for a fallback copy of the scene's most recent restoration activity.
 ///
 /// iOS only calls `stateRestorationActivity(for:)` when the scene is actually disconnected
@@ -96,11 +111,25 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
+    func sceneWillResignActive(_ scene: UIScene) {
+        // Save the UserDefaults fallback on `willResignActive` as well as on
+        // `didEnterBackground`, to narrow the race where Xcode's Stop-the-process arrives
+        // before `didEnterBackground` is delivered asynchronously (and on iPad some Home
+        // paths can leave the scene in `foregroundInactive` without ever reaching
+        // `background`). `willResignActive` runs synchronously on the main queue as part
+        // of the resign transition, so we catch the state earlier.
+        snapshotFallback(for: scene)
+    }
+
     func sceneDidEnterBackground(_ scene: UIScene) {
         // Snapshot the current restoration activity to UserDefaults as a fallback for the cases
         // where iOS doesn't get a chance to call `stateRestorationActivity(for:)` itself (Xcode
         // Stop, crash while backgrounded). Scene disconnect will still go through the regular
         // path and overwrite whatever UIKit persists on `session.stateRestorationActivity`.
+        snapshotFallback(for: scene)
+    }
+
+    private func snapshotFallback(for scene: UIScene) {
         if let activity = stateRestorationActivity(for: scene) {
             saveFallbackRestorationActivity(activity)
         } else {
@@ -141,14 +170,55 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let savedUnpopRoutes = (activity.userInfo?[restorationUnpopRoutesKey] as? [String])?
                 .compactMap(URL.init(string:))
                 .compactMap { try? AwfulRoute($0) } ?? []
+            let savedTabRoute = (activity.userInfo?[restorationSidebarTabKey] as? String)
+                .flatMap(URL.init(string:))
+                .flatMap { try? AwfulRoute($0) }
+            let savedPrimaryDeepRoute = (activity.userInfo?[restorationPrimaryDeepRouteKey] as? String)
+                .flatMap(URL.init(string:))
+                .flatMap { try? AwfulRoute($0) }
             DispatchQueue.main.async {
-                AppDelegate.instance.open(route: route)
-                guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded else { return }
-                if let topPosts = stack.topPostsPageViewController {
-                    topPosts.prepareForRestoration(scrollFraction: savedFraction, hiddenPosts: savedHiddenPosts)
-                } else if let topMessage = stack.topMessageViewController, let fraction = savedFraction {
-                    topMessage.prepareForRestoration(scrollFraction: fraction)
+                // Select the sidebar tab FIRST so the detail-route push (below) lands in
+                // the correct context: on iPad `showPostsViewController` pushes into the
+                // detail nav regardless, but the sidebar's visible tab needs to match;
+                // on iPhone the detail route pushes onto the selected tab's nav, so the
+                // tab must already be correct before we open the detail route.
+                if let tabRoute = savedTabRoute, tabRoute.httpURL != route.httpURL {
+                    AppDelegate.instance.open(route: tabRoute)
                 }
+                // Then rebuild the mid-stack primary navigation depth (e.g. the specific
+                // forum's thread list the user had drilled into) BEFORE pushing the detail
+                // route, so the primary nav ends up as [tabRoot, midStack] on iPad, or
+                // [tabRoot, midStack, detail] on iPhone when `showPostsViewController` then
+                // pushes the detail onto the selected tab's nav.
+                if let primaryDeepRoute = savedPrimaryDeepRoute,
+                   primaryDeepRoute.httpURL != route.httpURL,
+                   primaryDeepRoute.httpURL != savedTabRoute?.httpURL
+                {
+                    AppDelegate.instance.open(route: primaryDeepRoute)
+                }
+                // Stage any scroll-fraction / hidden-posts payload through the router so
+                // the freshly-constructed `PostsPageViewController` / `MessageViewController`
+                // applies it before its first render. Doing this after `open(route:)` returns
+                // is too late on iPad, where the cached render can fire WKWebView callbacks
+                // before we get a chance to call `prepareForRestoration`.
+                switch route {
+                case .threadPage, .threadPageSingleUser:
+                    AppDelegate.instance.open(
+                        route: route,
+                        pendingPostsRestoration: PendingPostsRestoration(
+                            scrollFraction: savedFraction,
+                            hiddenPosts: savedHiddenPosts
+                        )
+                    )
+                case .message:
+                    AppDelegate.instance.open(
+                        route: route,
+                        pendingMessageRestoration: savedFraction.map { PendingMessageRestoration(scrollFraction: $0) }
+                    )
+                default:
+                    AppDelegate.instance.open(route: route)
+                }
+                guard let stack = AppDelegate.instance.rootViewControllerStackIfLoaded else { return }
                 if !savedUnpopRoutes.isEmpty, let primaryNav = stack.currentPrimaryNavigationController {
                     let context = AppDelegate.instance.managedObjectContext
                     let restoredVCs = savedUnpopRoutes.compactMap { makeUnpopViewController(for: $0, in: context) }
@@ -194,6 +264,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         else { return nil }
         let activity = NSUserActivity(activityType: restorationActivityType)
         activity.addUserInfoEntries(from: [restorationPrimaryRouteKey: route.httpURL.absoluteString])
+        if let tabRoute = stack.currentSidebarTabRoute {
+            activity.addUserInfoEntries(from: [restorationSidebarTabKey: tabRoute.httpURL.absoluteString])
+        }
+        if let primaryDeepRoute = stack.currentPrimaryDeepRoute,
+           primaryDeepRoute.httpURL != route.httpURL
+        {
+            activity.addUserInfoEntries(from: [restorationPrimaryDeepRouteKey: primaryDeepRoute.httpURL.absoluteString])
+        }
         if let topPosts = stack.topPostsPageViewController {
             var extras: [AnyHashable: Any] = [restorationHiddenPostsKey: topPosts.currentHiddenPosts]
             if let fraction = topPosts.currentScrollFraction {

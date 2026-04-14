@@ -109,11 +109,14 @@ final class MessageListViewController: TableViewController {
         }
     }
     
-    func showMessage(_ message: PrivateMessage) {
+    func showMessage(_ message: PrivateMessage, pendingRestoration: PendingMessageRestoration? = nil) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let viewController = MessageViewController(privateMessage: message)
+        if let pending = pendingRestoration {
+            viewController.prepareForRestoration(scrollFraction: pending.scrollFraction)
+        }
         showDetailViewController(viewController, sender: self)
     }
 

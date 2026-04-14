@@ -174,6 +174,21 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func open(route: AwfulRoute) {
         urlRouter?.route(route)
     }
+
+    /// Overload that threads scene-restoration payloads through to the router so a
+    /// freshly-constructed `PostsPageViewController` / `MessageViewController` can stage
+    /// its restored scroll fraction (and hidden-posts count) before its first render.
+    func open(
+        route: AwfulRoute,
+        pendingPostsRestoration: PendingPostsRestoration? = nil,
+        pendingMessageRestoration: PendingMessageRestoration? = nil
+    ) {
+        urlRouter?.route(
+            route,
+            pendingPostsRestoration: pendingPostsRestoration,
+            pendingMessageRestoration: pendingMessageRestoration
+        )
+    }
     
     private func updateShortcutItems() {
         guard urlRouter != nil else {
