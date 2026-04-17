@@ -64,10 +64,6 @@ final class ThreadListDataSource: NSObject {
 
         try self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest, tableView: tableView, ignoreSticky: true, showsTagAndRating: showsTagAndRating, placeholder: .thread(tintColor: nil))
     }
-    
-    convenience init(bookmarksSortedByUnread sortedByUnread: Bool, showsTagAndRating: Bool, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
-        try self.init(bookmarksSortedByUnread: sortedByUnread, showsTagAndRating: showsTagAndRating, filter: .all, managedObjectContext: managedObjectContext, tableView: tableView)
-    }
 
     convenience init(forum: Forum, sortedByUnread: Bool, showsTagAndRating: Bool, threadTagFilter: Set<ThreadTag>, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
         let fetchRequest = AwfulThread.makeFetchRequest()

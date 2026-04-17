@@ -54,7 +54,6 @@ private class FilterMenuViewController: UIViewController {
         return view
     }()
     private var sourceButtonRect: CGRect?
-    private var sourceButtonSuperview: UIView?
     private var positioningConstraints: [NSLayoutConstraint] = []
     private var colorButtons: [UIButton] = []
     
@@ -85,7 +84,6 @@ private class FilterMenuViewController: UIViewController {
     
     func setSourceButtonRect(_ rect: CGRect) {
         sourceButtonRect = rect
-        sourceButtonSuperview = view
     }
     
     required init?(coder: NSCoder) {
@@ -317,20 +315,13 @@ private class FilterMenuViewController: UIViewController {
             return
         }
 
-        let convertedRect: CGRect
-        if let sourceSuperview = sourceButtonSuperview, sourceSuperview != view {
-            convertedRect = view.convert(sourceRect, from: sourceSuperview)
-        } else {
-            convertedRect = sourceRect
-        }
-        
-        let containerX = max(16, min(convertedRect.maxX - Layout.containerWidth, view.bounds.width - Layout.containerWidth - 16))
+        let containerX = max(16, min(sourceRect.maxX - Layout.containerWidth, view.bounds.width - Layout.containerWidth - 16))
 
         let navBarBottom = navigationController?.navigationBar.frame.maxY ?? 100
         let safeAreaTop = view.safeAreaInsets.top
         let containerY = max(navBarBottom + 8, safeAreaTop + 8)
         let finalY = (containerY + Layout.containerHeight > view.bounds.height - 44)
-            ? convertedRect.minY - Layout.containerHeight - 8
+            ? sourceRect.minY - Layout.containerHeight - 8
             : containerY
         
         NSLayoutConstraint.deactivate(positioningConstraints)
@@ -466,7 +457,7 @@ private class FilterMenuViewController: UIViewController {
     
     @objc private func colorButtonTapped(_ sender: UIButton) {
         let category = StarCategory(rawValue: Int16(sender.tag)) ?? .orange
-        
+
         if case .starCategory(let currentCategory) = currentFilter, currentCategory == category {
             currentFilter = .all
             onFilterSelected(.all)
@@ -482,17 +473,15 @@ private class FilterMenuViewController: UIViewController {
                 UISelectionFeedbackGenerator().selectionChanged()
             }
         }
-        
-        UIView.animate(withDuration: 0.2) { [weak self] in
-            self?.updateFilterUI()
-        }
+
+        animateSelectionThenDismiss()
     }
 
     @objc private func segmentChanged() {
         if enableHaptics {
             UISelectionFeedbackGenerator().selectionChanged()
         }
-        
+
         let filter: BookmarkFilter
         switch segmentedControl.selectedSegmentIndex {
         case 0: filter = .all
@@ -500,13 +489,25 @@ private class FilterMenuViewController: UIViewController {
         case 2: filter = .readOnly
         default: filter = .all
         }
-        
+
         currentFilter = filter
         onFilterSelected(filter)
-        
-        UIView.animate(withDuration: 0.2) { [weak self] in
-            self?.updateFilterUI()
-        }
+
+        animateSelectionThenDismiss()
+    }
+
+    private func animateSelectionThenDismiss() {
+        UIView.animate(
+            withDuration: 0.2,
+            animations: { [weak self] in
+                self?.updateFilterUI()
+            },
+            completion: { [weak self] _ in
+                self?.dismiss(animated: true) { [weak self] in
+                    self?.onDismiss?()
+                }
+            }
+        )
     }
 
     private func updateFilterUI() {
@@ -592,6 +593,7 @@ final class BookmarksTableViewController: TableViewController {
     private var searchButtonView: UIButton!
     private var searchBar: UISearchBar!
     private var searchBarContainerView: UIView!
+    private var isSearchVisible = false
     private var filterPopoverController: UIViewController?
     
 
@@ -682,16 +684,10 @@ final class BookmarksTableViewController: TableViewController {
             theme: theme,
             enableHaptics: enableHaptics,
             onFilterSelected: { [weak self] filter in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self?.filterPopoverController?.dismiss(animated: true) { [weak self] in
-                        self?.filterPopoverController = nil
-                        self?.updateButtonColors()
-                    }
-                }
                 self?.applyFilter(filter)
             }
         )
-        
+
         filterMenuVC.onDismiss = { [weak self] in
             self?.filterPopoverController = nil
             self?.updateButtonColors()
@@ -720,19 +716,14 @@ final class BookmarksTableViewController: TableViewController {
     }
     
     private func toggleSearchBar() {
-        let isSearchVisible = searchBarContainerView.frame.height > 0
-
         if !isSearchVisible {
+            isSearchVisible = true
             searchBar.isHidden = false
             searchBar.alpha = 0
 
             searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
             tableView.tableHeaderView = searchBarContainerView
-
-            // Briefly set non-zero height so updateButtonColors detects search as visible
-            searchBarContainerView.frame.size.height = 52
             updateButtonColors()
-            searchBarContainerView.frame.size.height = 0
 
             UIView.animate(
                 withDuration: 0.4,
@@ -750,15 +741,10 @@ final class BookmarksTableViewController: TableViewController {
                 }
             )
         } else {
+            isSearchVisible = false
             searchBar.resignFirstResponder()
             searchBar.text = ""
             applyFilter(.all)
-
-            // Briefly set zero height so updateButtonColors detects search as hidden
-            let originalHeight = searchBarContainerView.frame.height
-            searchBarContainerView.frame.size.height = 0
-            updateButtonColors()
-            searchBarContainerView.frame.size.height = originalHeight
 
             UIView.animate(
                 withDuration: 0.3,
@@ -797,7 +783,6 @@ final class BookmarksTableViewController: TableViewController {
             isFilterActive = true
         }
         
-        let isSearchVisible = searchBarContainerView.frame.height > 0
         let isFilterMenuOpen = filterPopoverController != nil
 
         if #available(iOS 26.0, *) {
@@ -951,14 +936,12 @@ final class BookmarksTableViewController: TableViewController {
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {
-        // Takes care of toggling the button's title.
         super.setEditing(editing, animated: true)
 
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
-        // Toggle table view editing.
+
         tableView.setEditing(editing, animated: true)
     }
     
@@ -976,9 +959,8 @@ final class BookmarksTableViewController: TableViewController {
         super.themeDidChange()
 
         loadMoreFooter?.themeDidChange()
-        
-        if #available(iOS 26.0, *) {
-        } else {
+
+        if #unavailable(iOS 26.0) {
             editButtonItem.tintColor = theme[uicolor: "navigationBarTextColor"]
         }
         updateButtonColors()
@@ -1039,22 +1021,23 @@ final class BookmarksTableViewController: TableViewController {
     // MARK: Actions
 
     private func refresh() {
-        // Complete any in-progress search bar animations before refreshing
-        if !searchBar.isHidden && searchBarContainerView.frame.height != 52 {
+        // Snap any in-flight search bar animation to its terminal state so
+        // pull-to-refresh doesn't fight the spring animation.
+        if isSearchVisible, searchBarContainerView.frame.height != 52 {
             searchBarContainerView.layer.removeAllAnimations()
             searchBar.layer.removeAllAnimations()
-
-            if searchBar.text?.isEmpty == false {
-                searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 52)
-                searchBar.alpha = 1.0
-            } else {
-                searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
-                searchBar.alpha = 0.0
-                searchBar.isHidden = true
-            }
+            searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 52)
+            searchBar.alpha = 1.0
+            tableView.tableHeaderView = searchBarContainerView
+        } else if !isSearchVisible, !searchBar.isHidden {
+            searchBarContainerView.layer.removeAllAnimations()
+            searchBar.layer.removeAllAnimations()
+            searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
+            searchBar.alpha = 0.0
+            searchBar.isHidden = true
             tableView.tableHeaderView = searchBarContainerView
         }
-        
+
         startAnimatingPullToRefresh()
         loadPage(page: 1)
     }
