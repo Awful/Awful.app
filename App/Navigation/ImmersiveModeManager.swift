@@ -18,6 +18,9 @@ final class ImmersiveModeManager: NSObject {
     /// Extra upward travel beyond the nav bar height so it fully clears the status bar
     /// and doesn't peek when the user scrolls near the top.
     private static let navBarHideOvertravel: CGFloat = 30
+    /// Extra downward travel so the toolbar fully clears the bottom safe area
+    /// and doesn't leave a few pixels peeking at the bottom of the screen.
+    private static let toolbarHideOvertravel: CGFloat = 20
     private static let topProximityThreshold: CGFloat = 20
     private static let minScrollDelta: CGFloat = 0.5
     private static let snapToHiddenThreshold: CGFloat = 0.9
@@ -89,6 +92,13 @@ final class ImmersiveModeManager: NSObject {
     // Bottom fade mode state - used instead of sliding when at bottom of scroll
     private var isInBottomFadeMode = false
     private var bottomFadeProgress: CGFloat = 0.0  // 0 = transparent, 1 = opaque
+
+    /// True while the fade-in animation kicked off by `animateIntoBottomFade()`
+    /// is still running. `updateBarsForBottomFade` checks this so later scroll
+    /// ticks (e.g. `snapToVisibleIfAtBottom` from `didEndDecelerating`) don't
+    /// hammer alpha to 1 via CATransaction.setDisableActions and cancel the
+    /// in-flight CAAnimation.
+    private var isFadingIntoBottom = false
 
     // MARK: - UI Elements
 
@@ -284,7 +294,7 @@ final class ImmersiveModeManager: NSObject {
             if !isInBottomFadeMode {
                 isInBottomFadeMode = true
                 bottomFadeProgress = 1.0
-                updateBarsForBottomFade()
+                animateIntoBottomFade()
             }
             lastScrollOffset = scrollView.contentOffset.y
             return
@@ -381,10 +391,62 @@ final class ImmersiveModeManager: NSObject {
         CATransaction.commit()
     }
 
+    /// Smoothly fades bars back in when entering bottom fade mode. Previously
+    /// the entry was a snap: transforms reset to identity and alpha jumped to 1
+    /// in a single non-animated pass, so the bars popped into place. This zeros
+    /// the alphas while the bars are still translated off-screen, resets the
+    /// transforms (invisible because alpha is 0), then animates alpha back to 1.
+    private func animateIntoBottomFade() {
+        guard !isUpdatingBars else { return }
+        isUpdatingBars = true
+        defer { isUpdatingBars = false }
+
+        let navBar = findNavigationBar()
+
+        // Snap to the "invisible at natural position" starting state in the
+        // current runloop tick: alphas to 0 and transforms to identity, with
+        // all implicit CA actions suppressed so nothing animates yet.
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        navBar?.alpha = 0
+        topBarContainer?.alpha = 0
+        toolbar?.alpha = 0
+        resetAllTransforms()
+        safeAreaGradientView.alpha = 0.0
+        CATransaction.commit()
+        CATransaction.flush()
+
+        // Fade alpha back to 1. `isFadingIntoBottom` blocks concurrent
+        // `updateBarsForBottomFade` calls (e.g. from `didEndDecelerating`)
+        // that would otherwise snap alpha to 1 mid-animation and cancel
+        // the CAAnimation.
+        isFadingIntoBottom = true
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.allowUserInteraction],
+            animations: {
+                navBar?.alpha = 1
+                self.topBarContainer?.alpha = 1
+                self.toolbar?.alpha = 1
+            },
+            completion: { [weak self] _ in
+                self?.isFadingIntoBottom = false
+            }
+        )
+    }
+
     /// Updates bar visibility using alpha/opacity for bottom fade mode
     /// Bars remain in their normal position (no transforms) and fade in/out
     private func updateBarsForBottomFade() {
         guard !isUpdatingBars else { return }
+
+        // If the entry fade-in is still running and we'd just be snapping
+        // alpha back to 1, let the animation finish instead of cancelling it.
+        if isFadingIntoBottom && bottomFadeProgress >= 1.0 {
+            return
+        }
+
         isUpdatingBars = true
         defer { isUpdatingBars = false }
 
@@ -434,7 +496,7 @@ final class ImmersiveModeManager: NSObject {
     private func calculateToolbarTransform() -> CGFloat {
         guard let toolbar = toolbar else { return 0 }
 
-        let toolbarHeight = toolbar.bounds.height
+        let toolbarHeight = toolbar.bounds.height + Self.toolbarHideOvertravel
         // Use postsView.effectiveBottomInset to account for the iPad minimum bottom inset
         // that raises the toolbar above the window edge. Translating by just the device
         // safe area would leave the top of the toolbar visible on iPad.
@@ -482,12 +544,14 @@ final class ImmersiveModeManager: NSObject {
 
         // If near bottom, ensure bars are fully visible via fade mode
         if distanceFromBottom <= bottomFadeZone {
-            if !isInBottomFadeMode {
-                isInBottomFadeMode = true
-            }
-            // Snap to fully visible when scroll stops near bottom
+            let wasInBottomFadeMode = isInBottomFadeMode
+            isInBottomFadeMode = true
             bottomFadeProgress = 1.0
-            updateBarsForBottomFade()
+            if wasInBottomFadeMode {
+                updateBarsForBottomFade()
+            } else {
+                animateIntoBottomFade()
+            }
         }
     }
 
