@@ -9,12 +9,12 @@ public struct DatabaseUnavailableScrapeResult: ScrapeResult {
     public let message: String
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        guard let body = html.firstNode(matchingSelector: "body"), body.hasClass("database_error") else {
+        guard let body = html.firstNode(matchingParsedSelector: .cached("body")), body.hasClass("database_error") else {
             throw ScrapingError.missingExpectedElement("body.database_error")
         }
 
-        let msg = body.firstNode(matchingSelector: "#msg")
-        let h1 = msg?.firstNode(matchingSelector: "h1")
+        let msg = body.firstNode(matchingParsedSelector: .cached("#msg"))
+        let h1 = msg?.firstNode(matchingParsedSelector: .cached("h1"))
 
         title = h1?.textContent ?? ""
 

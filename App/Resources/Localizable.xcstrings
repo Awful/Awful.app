@@ -68,6 +68,138 @@
         }
       }
     },
+    "bookmarks.filter.all" : {
+      "comment" : "Segmented control label for showing all bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.unread" : {
+      "comment" : "Segmented control label for showing only unread bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unread"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.read" : {
+      "comment" : "Segmented control label for showing only read bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.button.accessibility-label" : {
+      "comment" : "Accessibility label for the filter button in the bookmarks navigation bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter bookmarks"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.menu.accessibility-label" : {
+      "comment" : "Accessibility label for the filter menu popover.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter Menu"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.menu.accessibility-hint" : {
+      "comment" : "Accessibility hint for the filter menu popover.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter bookmarks by read status or star color"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-label" : {
+      "comment" : "Accessibility label for a star color filter button. %@ is the color name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter by %@ star"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-hint.selected" : {
+      "comment" : "Accessibility hint for a currently selected star color filter button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currently selected. Double-tap to deselect."
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-hint.unselected" : {
+      "comment" : "Accessibility hint for an unselected star color filter button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double-tap to filter by this star color."
+          }
+        }
+      }
+    },
+    "bookmarks.search.button.accessibility-label" : {
+      "comment" : "Accessibility label for the search button in the bookmarks navigation bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search bookmarks"
+          }
+        }
+      }
+    },
+    "bookmarks.search.placeholder" : {
+      "comment" : "Placeholder text for the bookmarks search bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search by title or author\u2026"
+          }
+        }
+      }
+    },
     "cancel" : {
       "comment" : "Title of button that dismisses without taking any action.",
       "localizations" : {
@@ -86,6 +218,90 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reply"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-delete" : {
+      "comment" : "Segmented control option to delete an existing attachment.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-keep" : {
+      "comment" : "Segmented control option to keep an existing attachment.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-replace" : {
+      "comment" : "Segmented control option to replace an existing attachment with a new one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace"
+          }
+        }
+      }
+    },
+    "compose.attachment.edit-title" : {
+      "comment" : "Title shown on the attachment edit card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Attachment"
+          }
+        }
+      }
+    },
+    "compose.attachment.preview-title" : {
+      "comment" : "Title shown on the attachment preview card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attachment"
+          }
+        }
+      }
+    },
+    "compose.attachment.resizing-message" : {
+      "comment" : "Message shown while an attachment is being resized.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please wait"
+          }
+        }
+      }
+    },
+    "compose.attachment.resizing-title" : {
+      "comment" : "Title shown while an attachment is being resized.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resizing Image..."
           }
         }
       }
@@ -175,6 +391,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "You're currently editing someone else's post"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.private-message.title" : {
+      "comment" : "Title of compose draft menu when writing a private message.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently writing a private message"
           }
         }
       }
@@ -295,6 +522,9 @@
     "Creep" : {
 
     },
+    "Cute" : {
+
+    },
     "Doggo" : {
 
     },
@@ -302,10 +532,13 @@
 
     },
     "Done" : {
-
+      "comment" : "Edit button done state"
     },
     "Double-check your username and password, then try again." : {
 
+    },
+    "Edit" : {
+      "comment" : "Edit button"
     },
     "Example searches:" : {
 
@@ -700,6 +933,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copied post!"
+          }
+        }
+      }
+    },
+    "posts-page.error.attachment-preview-failed" : {
+      "comment" : "Message shown when attachment image preview fails to load.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not load attachment preview"
           }
         }
       }
@@ -1453,6 +1698,9 @@
 
     },
     "Smith" : {
+
+    },
+    "Stare" : {
 
     },
     "table-view.action.delete" : {

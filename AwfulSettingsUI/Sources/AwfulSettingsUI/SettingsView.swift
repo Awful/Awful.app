@@ -24,6 +24,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @AppStorage(Settings.handoffEnabled) private var handoffEnabled
     @AppStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
+    @AppStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     @AppStorage(Settings.loadImages) private var loadImages
     @AppStorage(Settings.openTwitterLinksInTwitter) private var openLinksInTwitter
     @AppStorage(Settings.openYouTubeLinksInYouTube) private var openLinksInYouTube
@@ -37,12 +38,11 @@ public struct SettingsView: View {
     @AppStorage(Settings.useNewSmiliePicker) private var useNewSmiliePicker
     @AppStorage("imgur_upload_mode") private var imgurUploadMode: String = "Off"
 
-    let appIconDataSource: AppIconDataSource
+    @ObservedObject var appIconDataSource: AppIconDataSource
     let avatarURL: URL?
     let buildInfo = BuildInfo()
     let canOpenURL: (URL) -> Bool
     let currentUsername: String
-    @State private var didScrollToSelectedAppIcon = false
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
@@ -150,6 +150,7 @@ public struct SettingsView: View {
                 Toggle("Embed Bluesky Posts", bundle: .module, isOn: $embedBlueskyPosts)
                 Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
                 Toggle("Double-Tap Post to Jump", bundle: .module, isOn: $doubleTapPostToJump)
+                Toggle("Immersive Mode", bundle: .module, isOn: $immersiveModeEnabled)
                 Toggle("Enable Haptics", bundle: .module, isOn: $enableHaptics)
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)
@@ -273,14 +274,18 @@ public struct SettingsView: View {
 
             if !isMac {
                 Section {
-                    ScrollViewReader { scrollView in
-                        AppIconPicker(appIconDataSource: appIconDataSource)
-                            .onAppear {
-                                if didScrollToSelectedAppIcon { return }
-                                defer { didScrollToSelectedAppIcon = true }
-                                
-                                scrollView.scrollTo(appIconDataSource.selected.id)
-                            }
+                    NavigationLink {
+                        AppIconGridView(appIconDataSource: appIconDataSource)
+                    } label: {
+                        HStack {
+                            Text("App Icon", bundle: .module)
+                            Spacer()
+                            appIconDataSource.imageLoader(appIconDataSource.selected)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 29, height: 29)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                        }
                     }
                 } header: {
                     Text("App Icon", bundle: .module)

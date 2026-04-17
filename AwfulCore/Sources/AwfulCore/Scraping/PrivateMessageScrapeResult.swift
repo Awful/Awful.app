@@ -18,7 +18,7 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
 
     public init(_ html: HTMLNode, url: URL?) throws {
         guard
-            let replyLink = html.firstNode(matchingSelector: "div.buttons a[href]"),
+            let replyLink = html.firstNode(matchingParsedSelector: .cached("div.buttons a[href]")),
             let href: String = replyLink["href"],
             let components = URLComponents(string: href),
             let messageIDPair: URLQueryItem = components.queryItems?
@@ -32,7 +32,7 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
 
         author = try? AuthorSidebarScrapeResult(html, url: url)
 
-        subject = html.firstNode(matchingSelector: "div.breadcrumbs b")
+        subject = html.firstNode(matchingParsedSelector: .cached("div.breadcrumbs b"))
             .map { (el: HTMLElement) -> String in
                 let fullText = el.textContent
                 // Split by " > " separator and take the last component (the subject)
@@ -42,9 +42,9 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
             ?? ""
 
         do {
-            let postDateCell = html.firstNode(matchingSelector: "td.postdate")
+            let postDateCell = html.firstNode(matchingParsedSelector: .cached("td.postdate"))
 
-            let iconImageSrc = postDateCell?.firstNode(matchingSelector: "img[src]")
+            let iconImageSrc = postDateCell?.firstNode(matchingParsedSelector: .cached("img[src]"))
                 .flatMap { (el: HTMLElement) -> String? in el["src"] }
             hasBeenSeen = iconImageSrc.map { !$0.contains("newpm") } ?? false
             wasForwarded = iconImageSrc?.contains("forwarded") ?? false
@@ -60,7 +60,7 @@ public struct PrivateMessageScrapeResult: ScrapeResult {
                 .map { $0.textContent }
         }
 
-        body = html.firstNode(matchingSelector: "td.postbody")
+        body = html.firstNode(matchingParsedSelector: .cached("td.postbody"))
             .map { (el: HTMLElement) -> String in el.innerHTML }
             ?? ""
     }

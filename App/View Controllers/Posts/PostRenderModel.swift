@@ -138,7 +138,7 @@ private var enableCustomTitlePostLayout: Bool {
 private extension HTMLDocument {
     func markRevealIgnoredPostLink() {
         guard
-            let link = firstNode(matchingSelector: "a[title=\"DON'T DO IT!!\"]"),
+            let link = firstNode(matchingParsedSelector: .cached("a[title=\"DON'T DO IT!!\"]")),
             let href = link["href"],
             var components = URLComponents(string: href)
             else { return }

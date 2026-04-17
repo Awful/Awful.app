@@ -63,9 +63,9 @@ extension User {
 // TODO: this is very stupid, just handle it during scraping
 public func extractAvatarURL(fromCustomTitleHTML customTitleHTML: String) -> URL? {
     let document = HTMLDocument(string: customTitleHTML)
-    let img = document.firstNode(matchingSelector: "div > img:first-of-type") ??
-        document.firstNode(matchingSelector: "body > img:first-of-type") ??
-        document.firstNode(matchingSelector: "a > img:first-of-type")
+    let img = document.firstNode(matchingParsedSelector: .cached("div > img:first-of-type")) ??
+        document.firstNode(matchingParsedSelector: .cached("body > img:first-of-type")) ??
+        document.firstNode(matchingParsedSelector: .cached("a > img:first-of-type"))
 
     let src = img?["data-cfsrc"] ?? img?["src"]
     return src.flatMap { URL(string: $0) }

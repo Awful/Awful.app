@@ -60,25 +60,25 @@ public struct ThreadListScrapeResult: ScrapeResult {
     public init(_ html: HTMLNode, url: URL?) throws {
         let body = try html.requiredNode(matchingSelector: "body")
 
-        (announcements, threads) = scrapeAnnouncementsAndThreads(body.nodes(matchingSelector: "tr.thread"))
+        (announcements, threads) = scrapeAnnouncementsAndThreads(body.nodes(matchingParsedSelector: .cached("tr.thread")))
 
         breadcrumbs = try? ForumBreadcrumbsScrapeResult(body, url: url)
 
         canPostNewThread = body
-            .firstNode(matchingSelector: "ul.postbuttons")
-            .flatMap { $0.firstNode(matchingSelector: "a[href*='newthread']") }
+            .firstNode(matchingParsedSelector: .cached("ul.postbuttons"))
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("a[href*='newthread']")) }
             != nil
 
         filterableIcons = body
-            .firstNode(matchingSelector: "div.thread_tags")
-            .map { $0.nodes(matchingSelector: "a[href*='posticon']") }
+            .firstNode(matchingParsedSelector: .cached("div.thread_tags"))
+            .map { $0.nodes(matchingParsedSelector: .cached("a[href*='posticon']")) }
             .map { links in return links.compactMap { try? PostIcon($0) } }
             ?? []
 
         forum = (body["data-forum"] as String?)
             .map { ForumID($0) }
 
-        isBookmarkedThreadsPage = body.firstNode(matchingSelector: "form[name='bookmarks']") != nil
+        isBookmarkedThreadsPage = body.firstNode(matchingParsedSelector: .cached("form[name='bookmarks']")) != nil
 
         let pageNavData = scrapePageNavigationData(body)
         pageNumber = pageNavData?.currentPage
@@ -89,8 +89,8 @@ public struct ThreadListScrapeResult: ScrapeResult {
 private extension ThreadListScrapeResult.Announcement {
     init(_ html: HTMLElement) throws {
         let authorLink = html
-            .firstNode(matchingSelector: "td.author")
-            .flatMap { $0.firstNode(matchingSelector: "a[href]") }
+            .firstNode(matchingParsedSelector: .cached("td.author"))
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("a[href]")) }
 
         author = authorLink
             .flatMap { $0["href"] }
@@ -103,19 +103,19 @@ private extension ThreadListScrapeResult.Announcement {
         authorUsername = authorLink?.textContent ?? ""
 
         lastUpdated = html
-            .firstNode(matchingSelector: "td.lastpost")
+            .firstNode(matchingParsedSelector: .cached("td.lastpost"))
             .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
             .flatMap(parseLastPostDate)
 
         iconURL = html
-            .firstNode(matchingSelector: "td.icon")
-            .flatMap { $0.firstNode(matchingSelector: "img[src]") }
+            .firstNode(matchingParsedSelector: .cached("td.icon"))
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("img[src]")) }
             .flatMap { $0["src"] }
             .flatMap { URL(string: $0) }
 
         title = html
-            .firstNode(matchingSelector: "td.title")
-            .flatMap { $0.firstNode(matchingSelector: "a") }
+            .firstNode(matchingParsedSelector: .cached("td.title"))
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("a")) }
             .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
             ?? ""
     }
@@ -124,7 +124,7 @@ private extension ThreadListScrapeResult.Announcement {
 private extension PostIcon {
     init(_ html: HTMLElement) throws {
         let idFromLink = html
-            .firstNode(matchingSelector: "a[href]")
+            .firstNode(matchingParsedSelector: .cached("a[href]"))
             .flatMap { $0["href"] }
             .flatMap { URLComponents(string: $0) }
             .flatMap { $0.queryItems }
@@ -133,7 +133,7 @@ private extension PostIcon {
 
 
         guard
-            let img = html.firstNode(matchingSelector: "img"),
+            let img = html.firstNode(matchingParsedSelector: .cached("img")),
             let src = img["src"],
             let url = URL(string: src) else
         {
@@ -164,8 +164,8 @@ private extension ThreadListScrapeResult.Thread {
         }
 
         let authorLink = html
-            .firstNode(matchingSelector: "td.author")
-            .flatMap { $0.firstNode(matchingSelector: "a") }
+            .firstNode(matchingParsedSelector: .cached("td.author"))
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("a")) }
 
         author = authorLink
             .flatMap { $0["href"] }
@@ -178,7 +178,7 @@ private extension ThreadListScrapeResult.Thread {
         authorUsername = authorLink?.textContent ?? ""
 
         bookmark = html
-            .firstNode(matchingSelector: "td.star")
+            .firstNode(matchingParsedSelector: .cached("td.star"))
             .map { $0.classList }
             .flatMap { $0.lazy
                 .compactMap { Bookmark(class: $0) }
@@ -186,37 +186,37 @@ private extension ThreadListScrapeResult.Thread {
             }
             ?? .none
 
-        let ratingCell = html.firstNode(matchingSelector: "td.rating")
+        let ratingCell = html.firstNode(matchingParsedSelector: .cached("td.rating"))
 
-        let iconImage = html.firstNode(matchingSelector: "td.icon")?.firstNode(matchingSelector: "img")
-            ?? ratingCell?.firstNode(matchingSelector: "img[src *= '/rate/reviews']")
+        let iconImage = html.firstNode(matchingParsedSelector: .cached("td.icon"))?.firstNode(matchingParsedSelector: .cached("img"))
+            ?? ratingCell?.firstNode(matchingParsedSelector: .cached("img[src *= '/rate/reviews']"))
         
         icon = iconImage.flatMap { try? PostIcon($0) }
 
         isClosed = html.hasClass("closed")
 
-        let titleCell = html.firstNode(matchingSelector: "td.title")
+        let titleCell = html.firstNode(matchingParsedSelector: .cached("td.title"))
 
         isSticky = titleCell?.hasClass("title_sticky") ?? false
 
-        let lastSeen = titleCell?.firstNode(matchingSelector: "div.lastseen")
+        let lastSeen = titleCell?.firstNode(matchingParsedSelector: .cached("div.lastseen"))
 
-        isUnread = lastSeen?.firstNode(matchingSelector: "a.x") == nil
+        isUnread = lastSeen?.firstNode(matchingParsedSelector: .cached("a.x")) == nil
 
-        let lastPostCell = html.firstNode(matchingSelector: "td.lastpost")
+        let lastPostCell = html.firstNode(matchingParsedSelector: .cached("td.lastpost"))
 
         lastPostAuthorUsername = lastPostCell
-            .flatMap { $0.firstNode(matchingSelector: "a.author") }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("a.author")) }
             .map { $0.textContent }
             ?? ""
 
         lastPostDate = lastPostCell
-            .flatMap { $0.firstNode(matchingSelector: "div.date") }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("div.date")) }
             .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
             .flatMap(parseLastPostDate)
 
         (ratingAverage, ratingCount) = ratingCell
-            .flatMap { $0.firstNode(matchingSelector: "img[title]")?["title"] }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("img[title]"))?["title"] }
             .map { title in
                 let scanner = Scanner(scraping: title)
                 _ = scanner.scanUpToCharacters(from: .decimalDigits)
@@ -231,27 +231,27 @@ private extension ThreadListScrapeResult.Thread {
         
         
         ratingImageBasename = ratingCell
-            .flatMap { $0.firstNode(matchingSelector: "img[src]")?["src"] }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("img[src]"))?["src"] }
             .flatMap { URL(string: $0)?.deletingPathExtension().lastPathComponent }
 
         replyCount = html
-            .firstNode(matchingSelector: "td.replies")
-            .map { $0.firstNode(matchingSelector: "a") ?? $0 }
+            .firstNode(matchingParsedSelector: .cached("td.replies"))
+            .map { $0.firstNode(matchingParsedSelector: .cached("a")) ?? $0 }
             .map { $0.textContent }
             .flatMap { Int($0) }
 
-        secondaryIcon = html.firstNode(matchingSelector: "td.icon2")
-            .flatMap { $0.firstNode(matchingSelector: "img") }
+        secondaryIcon = html.firstNode(matchingParsedSelector: .cached("td.icon2"))
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("img")) }
             .flatMap { try? PostIcon($0) }
 
         title = titleCell
-            .flatMap { $0.firstNode(matchingSelector: "a.thread_title") }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("a.thread_title")) }
             .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) }
             ?? ""
 
         unreadPostCount = lastSeen
-            .flatMap { $0.firstNode(matchingSelector: "a.count") }
-            .flatMap { $0.firstNode(matchingSelector: "b") }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("a.count")) }
+            .flatMap { $0.firstNode(matchingParsedSelector: .cached("b")) }
             .map { $0.textContent }
             .flatMap { Int($0) }
     }
@@ -290,8 +290,8 @@ private func scrapeAnnouncementsAndThreads(_ rows: [HTMLElement])
 
     for row in rows {
         if
-            let title = row.firstNode(matchingSelector: "td.title"),
-            title.firstNode(matchingSelector: "a.announcement") != nil
+            let title = row.firstNode(matchingParsedSelector: .cached("td.title")),
+            title.firstNode(matchingParsedSelector: .cached("a.announcement")) != nil
         {
             if let announcement = try? ThreadListScrapeResult.Announcement(row) {
                 announcements.append(announcement)

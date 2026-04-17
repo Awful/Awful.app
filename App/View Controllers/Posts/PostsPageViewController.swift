@@ -41,18 +41,46 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<Void, Never>?
+    private var cancelNetworkOperation: (() -> Void)?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
-    private var restoringState = false
     private var scrollToFractionAfterLoading: CGFloat?
+    /// When true, the next `loadPage` network completion skips its usual "save current scroll
+    /// offset so we land in the same place after re-render" step. Set by `prepareForRestoration`
+    /// so a freshly restored scroll fraction isn't clobbered by the in-flight fetch that the URL
+    /// router kicked off before `SceneDelegate` could stage the restored value.
+    private var suppressNextScrollFractionPreservation = false
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
     let thread: AwfulThread
     private var webViewDidLoadOnce = false
+
+    // this is to overcome not being allowed to mark stored properties as potentially unavailable using @available
+    private var _liquidGlassTitleView: UIView?
+
+    @available(iOS 26.0, *)
+    private var liquidGlassTitleView: LiquidGlassTitleView {
+        if let existingView = _liquidGlassTitleView as? LiquidGlassTitleView {
+            return existingView
+        }
+        let newView = LiquidGlassTitleView()
+        _liquidGlassTitleView = newView
+        return newView
+    }
+
+    @available(iOS 26.0, *)
+    func updateTitleViewTextColorForScrollProgress(_ progress: CGFloat) {
+        // Use thresholds (0.01, 0.99) instead of exact 0.0/1.0 to avoid color flickering
+        // during small scroll position adjustments and floating point precision issues
+        if progress < 0.01 {
+            liquidGlassTitleView.textColor = theme["mode"] == "dark" ? .white : .black
+        } else if progress > 0.99 {
+            liquidGlassTitleView.textColor = nil
+        }
+    }
 
     func threadActionsMenu() -> UIMenu {
         return UIMenu(title: thread.title ?? "", image: nil, identifier: nil, options: .displayInline, children: [
@@ -91,9 +119,11 @@ final class PostsPageViewController: ViewController {
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
     }
+    private var hiddenPostsAfterLoading: Int?
 
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
+        postsView.postsPageViewController = self
         postsView.didStartRefreshing = { [weak self] in
             self?.loadNextPageOrRefresh()
         }
@@ -103,6 +133,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchAttachmentImage.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
@@ -125,6 +156,12 @@ final class PostsPageViewController: ViewController {
         init() {
             super.init(frame: .zero)
             showsMenuAsPrimaryAction = true
+
+            if #available(iOS 16.0, *) {
+                preferredMenuElementOrder = .fixed
+            }
+
+            updateInterfaceStyle()
         }
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
@@ -132,7 +169,16 @@ final class PostsPageViewController: ViewController {
         func show(menu: UIMenu, from rect: CGRect) {
             frame = rect
             self.menu = menu
+
+            updateInterfaceStyle()
+
             gestureRecognizers?.first { "\(type(of: $0))".contains("TouchDown") }?.touchesBegan([], with: .init())
+        }
+
+        func updateInterfaceStyle() {
+            // Follow the theme's menuAppearance setting for menu appearance
+            let menuAppearance = Theme.defaultTheme()[string: "menuAppearance"]
+            overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
         }
     }
 
@@ -153,18 +199,13 @@ final class PostsPageViewController: ViewController {
         self.author = author
         super.init(nibName: nil, bundle: nil)
 
-        restorationClass = type(of: self)
-
         navigationItem.rightBarButtonItem = composeItem
 
         hidesBottomBarWhenPushed = true
     }
 
     deinit {
-        // Avoid warning in Xcode 14 beta 1 "cannot access property with a non-sendable type from a non-isolated deinit"
-        // UIViewController actually does guarantee deinit on the main queue, but the Swift compiler doesn't know that.
-        // (Also, it seems like an oversight that wrapping the access in an immediately-executed closure avoids the warning, so be prepared for more warnings here.)
-        { networkOperation?.cancel() }()
+        cancelNetworkOperation?()
     }
 
     var posts: [Post] = []
@@ -185,7 +226,21 @@ final class PostsPageViewController: ViewController {
     }
 
     override var title: String? {
-        didSet { navigationItem.titleLabel.text = title }
+        didSet {
+            if #available(iOS 26.0, *) {
+                let glassView = liquidGlassTitleView
+                glassView.title = title
+                glassView.textColor = theme["mode"] == "dark" ? .white : .black
+                glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
+
+                navigationItem.titleView = glassView
+
+                configureNavigationBarForLiquidGlass()
+            } else {
+                navigationItem.titleView = nil
+                navigationItem.titleLabel.text = title
+            }
+        }
     }
 
     /**
@@ -202,9 +257,8 @@ final class PostsPageViewController: ViewController {
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-
-        networkOperation?.cancel()
-        networkOperation = nil
+        cancelNetworkOperation?()
+        cancelNetworkOperation = nil
 
         // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
@@ -232,9 +286,7 @@ final class PostsPageViewController: ViewController {
 
             updateUserInterface()
 
-            if !restoringState {
-                hiddenPosts = 0
-            }
+            hiddenPosts = 0
 
             refetchPosts()
 
@@ -261,14 +313,12 @@ final class PostsPageViewController: ViewController {
             let firstUnreadPost: Int?
             let advertisementHTML: String
         }
-        let fetch = Task { @MainActor in
-            self.postsView.loadingView?.updateStatus("Fetching posts from server...")
+        let fetch = Task {
             let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
             return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML)
         }
-
-        networkOperation = Task { @MainActor [weak self] in
-            defer { self?.networkOperation = nil }
+        cancelNetworkOperation = { fetch.cancel() }
+        Task { [weak self] in
             do {
                 let fetchResult = try await fetch.value
                 let (posts, firstUnreadPost) = (fetchResult.posts, fetchResult.firstUnreadPost)
@@ -295,8 +345,13 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if #available(iOS 26.0, *) {
+                        self.pageNumberView.currentPage = 0
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                    } else {
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -304,15 +359,19 @@ final class PostsPageViewController: ViewController {
 
                 self.configureUserActivityIfPossible()
 
-                if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
+                if let pendingHidden = self.hiddenPostsAfterLoading {
+                    self.hiddenPosts = pendingHidden
+                    self.hiddenPostsAfterLoading = nil
+                } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
                     self.hiddenPosts = firstUnreadPost - 1
                 }
 
-                if reloadingSamePage || renderedCachedPosts {
+                if self.suppressNextScrollFractionPreservation {
+                    self.suppressNextScrollFractionPreservation = false
+                } else if reloadingSamePage || renderedCachedPosts {
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                 }
 
-                self.postsView.loadingView?.updateStatus("Generating page...")
                 self.renderPosts()
 
                 self.updateUserInterface()
@@ -346,8 +405,13 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if #available(iOS 26.0, *) {
+                        self.pageNumberView.currentPage = 0
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                    } else {
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -419,26 +483,28 @@ final class PostsPageViewController: ViewController {
 
         context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
 
-        let html: String
-        do {
-            html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
-        } catch {
-            logger.error("could not render posts view HTML: \(error)")
-            html = ""
-        }
-
-        Task {
-            await postsView.renderView.eraseDocument()
-            await MainActor.run {
-                self.postsView.loadingView?.updateStatus("Rendering page...")
+        Task.detached(priority: .userInitiated) { [context] in
+            let html: String
+            do {
+                html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
+            } catch {
+                logger.error("could not render posts view HTML: \(error)")
+                html = ""
             }
-            self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+
+            await self.postsView.renderView.eraseDocument()
+            await self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
 
     private lazy var composeItem: UIBarButtonItem = {
         let item = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(compose))
         item.accessibilityLabel = NSLocalizedString("compose.accessibility-label", comment: "")
+        // Only set explicit tint color for iOS < 26
+        if #available(iOS 26.0, *) {
+        } else {
+            item.tintColor = theme["navigationBarTextColor"]
+        }
         return item
     }()
 
@@ -530,6 +596,9 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
@@ -545,7 +614,18 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
+    }()
+
+    private lazy var pageNumberView: PageNumberView = {
+        let view = PageNumberView()
+        view.onTap = { [weak self] in
+            self?.handlePageNumberTap()
+        }
+        return view
     }()
 
     private lazy var currentPageItem: UIBarButtonItem = {
@@ -558,7 +638,22 @@ final class PostsPageViewController: ViewController {
                 popover.barButtonItem = action.sender as? UIBarButtonItem
             }
         })
-        item.possibleTitles = ["2345 / 2345"]
+
+        if #available(iOS 26.0, *) {
+            let containerView = UIView()
+            containerView.addSubview(pageNumberView)
+            pageNumberView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                pageNumberView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                pageNumberView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                containerView.widthAnchor.constraint(equalTo: pageNumberView.widthAnchor, constant: 2),
+                containerView.heightAnchor.constraint(equalTo: pageNumberView.heightAnchor, constant: 2)
+            ])
+            item.customView = containerView
+        } else {
+            item.possibleTitles = ["2345 / 2345"]
+        }
+
         item.accessibilityHint = "Opens page picker"
         return item
     }()
@@ -575,17 +670,39 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
+    private func actionsItem() -> UIBarButtonItem {
+        // Use primaryAction like the other toolbar buttons
+        let item = UIBarButtonItem(primaryAction: UIAction(
+            image: UIImage(named: "steamed-ham"),
+            handler: { [unowned self] action in
+                if self.enableHaptics {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                }
 
-    private lazy var actionsItem: UIBarButtonItem = {
-        let buttonItem = UIBarButtonItem(title: "Menu", image: UIImage(named: "steamed-ham"), menu: threadActionsMenu())
-        if #available(iOS 16.0, *) {
-            buttonItem.preferredMenuElementOrder = .fixed
+                // Get the sender and find its frame
+                if let barButtonItem = action.sender as? UIBarButtonItem,
+                   let view = barButtonItem.value(forKey: "view") as? UIView {
+                    let buttonFrameInView = view.convert(view.bounds, to: self.view)
+                    self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: buttonFrameInView)
+                } else {
+                    // Fallback position
+                    let frame = CGRect(x: self.view.bounds.width - 60, y: self.view.bounds.height - 100, width: 44, height: 44)
+                    self.hiddenMenuButton.show(menu: self.threadActionsMenu(), from: frame)
+                }
+            }
+        ))
+        item.accessibilityLabel = "Thread actions"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
         }
-        return buttonItem
-    }()
+        return item
+    }
 
     private func refetchPosts() {
         guard case .specific(let pageNumber)? = page else {
@@ -610,7 +727,7 @@ final class PostsPageViewController: ViewController {
         do {
             posts = try context.fetch(request)
         } catch {
-            print("\(#function) error fetching posts: \(error)")
+            logger.error("\(#function) error fetching posts: \(error)")
         }
     }
 
@@ -656,11 +773,22 @@ final class PostsPageViewController: ViewController {
         }()
 
         if case .specific(let pageNumber)? = page, numberOfPages > 0 {
-            currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
-            currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
-            currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .medium)], for: .normal)
+            if #available(iOS 26.0, *) {
+                pageNumberView.currentPage = pageNumber
+                pageNumberView.totalPages = numberOfPages
+                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+            } else {
+                currentPageItem.title = "\(pageNumber) / \(numberOfPages)"
+                currentPageItem.accessibilityLabel = "Page \(pageNumber) of \(numberOfPages)"
+                currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
+            }
         } else {
-            currentPageItem.title = ""
+            if #available(iOS 26.0, *) {
+                pageNumberView.currentPage = 0
+                pageNumberView.totalPages = 0
+            } else {
+                currentPageItem.title = ""
+            }
             currentPageItem.accessibilityLabel = nil
         }
 
@@ -674,16 +802,17 @@ final class PostsPageViewController: ViewController {
         }()
 
         composeItem.isEnabled = !thread.closed
+
+        updateToolbarItems()
+    }
+    
+    private func updateToolbarItems() {
+        postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem()]
     }
 
     private func showLoadingView() {
         guard postsView.loadingView == nil else { return }
-        let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
-        loadingView.updateStatus("Loading...")
-        loadingView.onDismiss = { [weak self] in
-            self?.clearLoadingMessage()
-        }
-        postsView.loadingView = loadingView
+        postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
     }
 
     private func clearLoadingMessage() {
@@ -722,6 +851,18 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    private func handlePageNumberTap() {
+        guard postsView.loadingView == nil else { return }
+        let selectotron = Selectotron(postsViewController: self)
+        present(selectotron, animated: true)
+        
+        // For popover presentation with custom view, we need to set sourceView and sourceRect
+        if let popover = selectotron.popoverPresentationController {
+            popover.sourceView = pageNumberView
+            popover.sourceRect = pageNumberView.bounds
+        }
+    }
+    
     @objc private func loadPreviousPage(_ sender: UIKeyCommand) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -1037,7 +1178,6 @@ final class PostsPageViewController: ViewController {
             let user = User.objectForKey(objectKey: userKey, in: self.thread.managedObjectContext!)
 
             let postsVC = PostsPageViewController(thread: self.thread, author: user)
-            postsVC.restorationIdentifier = "Just your posts"
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
 
             self.navigationController?.pushViewController(postsVC, animated: true)
@@ -1061,10 +1201,7 @@ final class PostsPageViewController: ViewController {
                     overlay.dismiss(true)
 
                     // update toolbar so menu reflects new bookmarked state
-                    var newItems = postsView.toolbarItems
-                    newItems.removeLast()
-                    newItems.append(actionsItem)
-                    postsView.toolbarItems = newItems
+                    updateToolbarItems()
                 }
             } catch {
                 logger.error("error marking thread: \(error)")
@@ -1169,7 +1306,7 @@ final class PostsPageViewController: ViewController {
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
-                popover.barButtonItem = actionsItem
+                popover.barButtonItem = actionsItem()
             }
         }
     }
@@ -1192,7 +1329,6 @@ final class PostsPageViewController: ViewController {
 
         self.dismiss(animated: false) {
             let postsVC = PostsPageViewController(thread: self.thread, author: self.selectedUser!)
-            postsVC.restorationIdentifier = "Just their posts"
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
             self.navigationController?.pushViewController(postsVC, animated: true)
         }
@@ -1207,7 +1343,6 @@ final class PostsPageViewController: ViewController {
             let messageVC = MessageComposeViewController(recipient: self.selectedUser!)
             self.messageViewController = messageVC
             messageVC.delegate = self
-            messageVC.restorationIdentifier = "New PM from posts view"
             self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
         }
     }
@@ -1269,8 +1404,43 @@ final class PostsPageViewController: ViewController {
         func presentNewReplyWorkspace() {
             Task {
                 do {
-                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost!)
-                    let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
+                    guard let selectedPost = selectedPost else {
+                        logger.error("Cannot edit: no post selected")
+                        return
+                    }
+
+                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost)
+                    let capabilities = try? await ForumsClient.shared.findEditAttachmentCapabilities(for: selectedPost)
+                    let replyWorkspace = ReplyWorkspace(post: selectedPost, bbcode: text)
+
+                    // Set attachment info and capabilities before creating the composition view controller
+                    if let editDraft = replyWorkspace.draft as? EditReplyDraft {
+                        editDraft.canAddAttachment = capabilities?.canAddAttachment ?? false
+
+                        if let attachmentInfo = capabilities?.existingAttachment {
+                            editDraft.existingAttachmentInfo = attachmentInfo
+
+                            // Fetch the attachment image
+                            do {
+                                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentInfo.id)
+                                if let image = UIImage(data: imageData) {
+                                    editDraft.existingAttachmentImage = image
+                                }
+                            } catch {
+                                logger.error("Failed to fetch attachment image for edit: \(error)")
+                                let alert = UIAlertController(
+                                    title: nil,
+                                    message: LocalizedString("posts-page.error.attachment-preview-failed"),
+                                    preferredStyle: .alert
+                                )
+                                present(alert, animated: true)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                    alert.dismiss(animated: true)
+                                }
+                            }
+                        }
+                    }
+
                     self.replyWorkspace = replyWorkspace
                     replyWorkspace.completion = replyCompletionBlock
                     present(replyWorkspace.viewController, animated: true)
@@ -1386,6 +1556,23 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    private func fetchAttachmentImage(attachmentID: String, id: String) {
+        Task {
+            do {
+                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentID)
+                if let image = UIImage(data: imageData), let pngData = image.pngData() {
+                    let base64 = pngData.base64EncodedString()
+                    let dataURL = "data:image/png;base64,\(base64)"
+                    await MainActor.run {
+                        postsView.renderView.didFetchAttachmentImage(id: id, dataURL: dataURL)
+                    }
+                }
+            } catch {
+                logger.error("Failed to fetch attachment image \(attachmentID): \(error)")
+            }
+        }
+    }
+
     private func presentDraftMenu(
         from source: DraftMenuSource,
         options: DraftMenuOptions
@@ -1476,6 +1663,38 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    var restorationRoute: AwfulRoute? {
+        guard let page = page, case .specific = page else { return nil }
+        if let author = author {
+            return .threadPageSingleUser(threadID: thread.threadID, userID: author.userID, page: page, .seen)
+        } else {
+            return .threadPage(threadID: thread.threadID, page: page, .seen)
+        }
+    }
+
+    var currentScrollFraction: CGFloat? {
+        guard isViewLoaded else { return nil }
+        return postsView.renderView.scrollView.fractionalContentOffset.y
+    }
+
+    var currentHiddenPosts: Int { hiddenPosts }
+
+    /// Stages a vertical scroll fraction and hidden-posts count to apply once the WKWebView
+    /// finishes rendering. Used by `SceneDelegate` to restore the user's place after iOS
+    /// terminates the scene.
+    func prepareForRestoration(scrollFraction: CGFloat?, hiddenPosts: Int?) {
+        if let scrollFraction = scrollFraction {
+            scrollToFractionAfterLoading = scrollFraction
+            // The URL router already kicked off `loadPage(updatingCache: true)`, which renders
+            // cached posts immediately and then re-renders when the network fetch completes —
+            // and that completion would otherwise overwrite the scroll fraction we just staged.
+            suppressNextScrollFractionPreservation = true
+        }
+        if let hiddenPosts = hiddenPosts {
+            hiddenPostsAfterLoading = hiddenPosts
+        }
+    }
+
     private func configureUserActivityIfPossible() {
         guard case .specific? = page, handoffEnabled else {
             userActivity = nil
@@ -1501,42 +1720,75 @@ final class PostsPageViewController: ViewController {
         super.themeDidChange()
 
         postsView.themeDidChange(theme)
-        navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+        
+        // Update title appearance for iOS 26+
+        if #available(iOS 26.0, *) {
+            let glassView = liquidGlassTitleView
+            // Set both text color and font from theme
+            glassView.textColor = theme["mode"] == "dark" ? .white : .black
+            glassView.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
 
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPad"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPad"]!)!.weight)
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
-        default:
-            navigationItem.titleLabel.font = UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: theme[double: "postTitleFontSizeAdjustmentPhone"]!, weight: FontWeight(rawValue: theme["postTitleFontWeightPhone"]!)!.weight)
-            navigationItem.titleLabel.numberOfLines = 2
-            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"]!
+            // Update navigation bar configuration based on new theme
+            configureNavigationBarForLiquidGlass()
+        } else {
+            // Apply theme to regular title label for iOS < 26
+            navigationItem.titleLabel.textColor = theme["navigationBarTextColor"]
+            navigationItem.titleLabel.font = fontForPostTitle(from: theme, idiom: UIDevice.current.userInterfaceIdiom)
+
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                navigationItem.titleLabel.numberOfLines = 2
+            }
+
+            navigationItem.titleLabel.textColor = Theme.defaultTheme()[uicolor: "navigationBarTextColor"] ?? .label
+        }
+        
+        // Update navigation bar button colors (only for iOS < 26)
+        if #available(iOS 26.0, *) {
+        } else {
+            composeItem.tintColor = theme["navigationBarTextColor"]
+            // Ensure the navigation bar itself uses the correct tint color for the back button
+            navigationController?.navigationBar.tintColor = theme["navigationBarTextColor"]
+        }
+        
+        // Also trigger the navigation controller's theme change to update back button appearance
+        if let navController = navigationController as? NavigationController {
+            navController.themeDidChange()
         }
 
 
         if postsView.loadingView != nil {
-            postsView.loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
+            postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
         }
 
         let appearance = UIToolbarAppearance()
-        if (postsView.toolbar.isTranslucent) {
+        if #available(iOS 26.0, *), postsView.toolbar.isTranslucent {
             appearance.configureWithDefaultBackground()
         } else {
+            // Force opaque on iOS <26. Otherwise the toolbar renders
+            // translucent on iPad iOS 18 and post content bleeds through.
+            postsView.toolbar.isTranslucent = false
             appearance.configureWithOpaqueBackground()
         }
-        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]
         appearance.shadowImage = nil
         appearance.shadowColor = nil
 
         postsView.toolbar.standardAppearance = appearance
         postsView.toolbar.compactAppearance = appearance
+        postsView.toolbar.scrollEdgeAppearance = appearance
+        postsView.toolbar.compactScrollEdgeAppearance = appearance
 
-        if #available(iOS 15.0, *) {
-            postsView.toolbar.scrollEdgeAppearance = appearance
-            postsView.toolbar.compactScrollEdgeAppearance = appearance
+        if #available(iOS 26.0, *) {
+        } else {
+            backItem.tintColor = theme["toolbarTextColor"]
+            forwardItem.tintColor = theme["toolbarTextColor"]
+            settingsItem.tintColor = theme["toolbarTextColor"]
+            pageNumberView.textColor = theme["toolbarTextColor"] ?? UIColor.systemBlue
         }
 
-        postsView.toolbar.overrideUserInterfaceStyle = theme["mode"] == "light" ? .light : .dark
+        pageNumberView.updateTheme()
+
+        updateToolbarItems()
 
         messageViewController?.themeDidChange()
     }
@@ -1557,11 +1809,13 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
 
-        let spacer: CGFloat = 12
-        postsView.toolbarItems = [
-            settingsItem, .flexibleSpace(),
-            backItem, .fixedSpace(spacer), currentPageItem, .fixedSpace(spacer), forwardItem,
-            .flexibleSpace(), actionsItem]
+        postsView.immersiveModeManager.configure(
+            postsView: postsView,
+            navigationController: navigationController,
+            renderView: postsView.renderView,
+            toolbar: postsView.toolbar,
+            topBarContainer: postsView.topBarContainer
+        )
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
@@ -1654,10 +1908,90 @@ final class PostsPageViewController: ViewController {
         postsView.layoutMargins = view.safeAreaInsets
     }
 
+    /// Safely retrieves font configuration from the theme with fallback defaults
+    private func fontForPostTitle(from theme: Theme, idiom: UIUserInterfaceIdiom) -> UIFont {
+        let sizeAdjustmentKey = idiom == .pad ? "postTitleFontSizeAdjustmentPad" : "postTitleFontSizeAdjustmentPhone"
+        let weightKey = idiom == .pad ? "postTitleFontWeightPad" : "postTitleFontWeightPhone"
+
+        let sizeAdjustment = theme[double: sizeAdjustmentKey] ?? (idiom == .pad ? 0 : -1)
+        let weightString = theme[weightKey] ?? "semibold"
+        let weight = FontWeight(rawValue: weightString)?.weight ?? .semibold
+
+        return UIFont.preferredFontForTextStyle(.callout, fontName: nil, sizeAdjustment: sizeAdjustment, weight: weight)
+    }
+
+    @available(iOS 26.0, *)
+    private func configureNavigationBarForLiquidGlass() {
+        guard let navigationBar = navigationController?.navigationBar else { return }
+        guard let navController = navigationController as? NavigationController else { return }
+
+        // Hide the custom bottom border from NavigationBar for liquid glass effect
+        if let awfulNavigationBar = navigationBar as? NavigationBar {
+            awfulNavigationBar.bottomBorderColor = .clear
+        }
+
+        // Start with opaque background - NavigationController will handle the transition to clear on scroll
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = theme["navigationBarTintColor"]
+        appearance.shadowColor = nil
+        appearance.shadowImage = nil
+
+        let textColor: UIColor = theme["navigationBarTextColor"] ?? .label
+        appearance.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: textColor,
+            NSAttributedString.Key.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .semibold)
+        ]
+
+        let buttonFont = UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)
+        let buttonAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: buttonFont
+        ]
+        appearance.buttonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.buttonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.doneButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.normal.titleTextAttributes = buttonAttributes
+        appearance.backButtonAppearance.highlighted.titleTextAttributes = buttonAttributes
+
+        // Set the back indicator image with template mode
+        if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
+            appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
+        }
+
+        // Apply to all states
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.compactScrollEdgeAppearance = appearance
+
+        // Set tintColor AFTER applying appearance to ensure back button uses theme color
+        let navTextColor: UIColor = theme["mode"] == "dark" ? .white : .black
+        navigationBar.tintColor = navTextColor
+
+        // Force the navigation controller to start at scroll position 0 (top)
+        // This will also update tintColor based on scroll position if needed
+        navController.updateNavigationBarTintForScrollProgress(NSNumber(value: 0.0))
+
+        navigationBar.setNeedsLayout()
+        navigationBar.layoutIfNeeded()
+
+        if let previousVC = navigationController?.viewControllers.dropLast().last {
+            previousVC.navigationItem.backBarButtonItem?.tintColor = navTextColor
+        }
+
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         configureUserActivityIfPossible()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        postsView.immersiveModeManager.exitImmersiveMode()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -1666,86 +2000,8 @@ final class PostsPageViewController: ViewController {
         userActivity = nil
     }
 
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-
-        coder.encode(thread.objectKey, forKey: Keys.threadKey)
-        if let page = page {
-            coder.encode(page.nsCoderIntValue, forKey: Keys.page)
-        }
-        coder.encode(author?.objectKey, forKey: Keys.authorUserKey)
-        coder.encode(hiddenPosts, forKey: Keys.hiddenPosts)
-        coder.encode(messageViewController, forKey: Keys.messageViewController)
-        coder.encode(advertisementHTML, forKey: Keys.advertisementHTML)
-        coder.encode(Float(postsView.renderView.scrollView.fractionalContentOffset.y), forKey: Keys.scrolledFractionOfContent)
-        coder.encode(replyWorkspace, forKey: Keys.replyWorkspace)
-    }
-
-    override func decodeRestorableState(with coder: NSCoder) {
-        restoringState = true
-
-        super.decodeRestorableState(with: coder)
-
-        messageViewController = coder.decodeObject(forKey: Keys.messageViewController) as? MessageComposeViewController
-        messageViewController?.delegate = self
-
-        hiddenPosts = coder.decodeInteger(forKey: Keys.hiddenPosts)
-        let page: ThreadPage = {
-            guard
-                coder.containsValue(forKey: Keys.page),
-                let page = ThreadPage(nsCoderIntValue: coder.decodeInteger(forKey: Keys.page))
-                else { return .specific(1) }
-            return page
-        }()
-        self.page = page
-        loadPage(page, updatingCache: false, updatingLastReadPost: true)
-        if posts.isEmpty {
-            loadPage(page, updatingCache: true, updatingLastReadPost: true)
-        }
-
-        advertisementHTML = coder.decodeObject(forKey: Keys.advertisementHTML) as? String
-        scrollToFractionAfterLoading = CGFloat(coder.decodeFloat(forKey: Keys.scrolledFractionOfContent))
-
-        replyWorkspace = coder.decodeObject(forKey: Keys.replyWorkspace) as? ReplyWorkspace
-        replyWorkspace?.completion = replyCompletionBlock
-    }
-
-    override func applicationFinishedRestoringState() {
-        super.applicationFinishedRestoringState()
-
-        restoringState = false
-    }
-
-    // MARK: Gunk
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension ThreadPage {
-    init?(nsCoderIntValue: Int) {
-        switch nsCoderIntValue {
-        case -2:
-            self = .last
-        case -1:
-            self = .nextUnread
-        case 1...Int.max:
-            self = .specific(nsCoderIntValue)
-        default:
-            return nil
-        }
-    }
-
-    var nsCoderIntValue: Int {
-        switch self {
-        case .last:
-            return -2
-        case .nextUnread:
-            return -1
-        case .specific(let pageNumber):
-            return pageNumber
-        }
     }
 }
 
@@ -1763,8 +2019,6 @@ extension PostsPageViewController: RenderViewDelegate {
         if embedTweets {
             view.embedTweets()
         }
-
-        // Note: Image loading tracking is set up automatically via DOMContentLoaded event in RenderView.js
 
         webViewDidLoadOnce = true
 
@@ -1788,8 +2042,7 @@ extension PostsPageViewController: RenderViewDelegate {
             postsView.renderView.scrollToFractionalOffset(fractionalOffset)
         }
 
-        // Note: Loading view is now dismissed when image loading completes (via ImageLoadProgress message)
-        // or when user taps (X) button
+        clearLoadingMessage()
     }
 
     func didReceive(message: RenderViewMessage, in view: RenderView) {
@@ -1811,6 +2064,9 @@ extension PostsPageViewController: RenderViewDelegate {
             
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
+
+        case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
+            fetchAttachmentImage(attachmentID: message.attachmentID, id: message.id)
 
         case let message as RenderView.BuiltInMessage.ImageLoadProgress:
             if message.total == 0 {
@@ -1861,36 +2117,7 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
     }
 }
 
-extension PostsPageViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let context = AppDelegate.instance.managedObjectContext
-        guard let threadKey = coder.decodeObject(forKey: Keys.threadKey) as? ThreadKey else { return nil }
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: context)
-        let userKey = coder.decodeObject(forKey: Keys.authorUserKey) as? UserKey
-        let author: User?
-        if let userKey = userKey {
-            author = User.objectForKey(objectKey: userKey, in: context)
-        } else {
-            author = nil
-        }
-
-        let postsVC = PostsPageViewController(thread: thread, author: author)
-        postsVC.restorationIdentifier = identifierComponents.last
-        return postsVC
-    }
-}
-
-private struct Keys {
-    static let threadKey = "ThreadKey"
-    static let page = "AwfulCurrentPage"
-    static let authorUserKey = "AuthorUserKey"
-    static let hiddenPosts = "AwfulHiddenPosts"
-    static let replyViewController = "AwfulReplyViewController"
-    static let messageViewController = "AwfulMessageViewController"
-    static let advertisementHTML = "AwfulAdvertisementHTML"
-    static let scrolledFractionOfContent = "AwfulScrolledFractionOfContentSize"
-    static let replyWorkspace = "Reply workspace"
-}
+extension PostsPageViewController: RestorableLocation {}
 
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {

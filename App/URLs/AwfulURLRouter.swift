@@ -9,6 +9,22 @@ import CoreData
 import MRProgress
 import UIKit
 
+/// Scroll fraction and hidden-posts state staged by scene-restoration for an incoming
+/// `.threadPage` / `.threadPageSingleUser` route. Applied to the freshly-constructed
+/// `PostsPageViewController` before its view renders, so the restored offset survives the
+/// initial cached-render window (which on iPad would otherwise fire `didFinishRenderingHTML`
+/// with no fraction staged).
+struct PendingPostsRestoration {
+    let scrollFraction: CGFloat?
+    let hiddenPosts: Int?
+}
+
+/// Scroll fraction staged by scene-restoration for an incoming `.message` route. Applied to
+/// the freshly-constructed `MessageViewController` before its view renders.
+struct PendingMessageRestoration {
+    let scrollFraction: CGFloat
+}
+
 /// Translates URLs with the scheme "awful" into an appropriate shown screen.
 struct AwfulURLRouter {
 
@@ -27,12 +43,16 @@ struct AwfulURLRouter {
     
     /// Show the screen appropriate for an "awful" URL.
     @discardableResult
-    func route(_ route: AwfulRoute) -> Bool {
-        
+    func route(
+        _ route: AwfulRoute,
+        pendingPostsRestoration: PendingPostsRestoration? = nil,
+        pendingMessageRestoration: PendingMessageRestoration? = nil
+    ) -> Bool {
+
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        
+
         switch route {
         case .bookmarks:
             return selectTopmostViewController(containingViewControllerOfClass: BookmarksTableViewController.self) != nil
@@ -56,7 +76,7 @@ struct AwfulURLRouter {
 
             let key = PrivateMessageKey(messageID: messageID)
             if let message = PrivateMessage.existingObjectForKey(objectKey: key, in: managedObjectContext) {
-                inbox.showMessage(message)
+                inbox.showMessage(message, pendingRestoration: pendingMessageRestoration)
                 return true
             }
 
@@ -68,7 +88,7 @@ struct AwfulURLRouter {
                 do {
                     let message = try await ForumsClient.shared.readPrivateMessage(identifiedBy: key)
                     overlay.dismiss(true, completion: {
-                        inbox.showMessage(message)
+                        inbox.showMessage(message, pendingRestoration: pendingMessageRestoration)
                     })
                 } catch {
                     overlay.titleLabelText = "Message Not Found"
@@ -160,10 +180,10 @@ struct AwfulURLRouter {
             return selectTopmostViewController(containingViewControllerOfClass: SettingsViewController.self) != nil
 
         case let .threadPage(threadID: threadID, page: page, updateSeen):
-            return showThread(threadID, page: page, updateSeen: updateSeen)
+            return showThread(threadID, page: page, updateSeen: updateSeen, pendingRestoration: pendingPostsRestoration)
 
         case let .threadPageSingleUser(threadID: threadID, userID: userID, page: page, updateSeen):
-            return showThread(threadID, page: page, justPostsByUser: userID, updateSeen: updateSeen)
+            return showThread(threadID, page: page, justPostsByUser: userID, updateSeen: updateSeen, pendingRestoration: pendingPostsRestoration)
         }
     }
     
@@ -210,19 +230,20 @@ struct AwfulURLRouter {
         _ threadID: String,
         page: ThreadPage,
         justPostsByUser userID: String? = nil,
-        updateSeen: AwfulRoute.UpdateSeen
+        updateSeen: AwfulRoute.UpdateSeen,
+        pendingRestoration: PendingPostsRestoration? = nil
     ) -> Bool {
         let threadKey = ThreadKey(threadID: threadID)
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext) 
+        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: managedObjectContext)
         let postsVC: PostsPageViewController
         if let userID = userID, !userID.isEmpty {
             let userKey = UserKey(userID: userID, username: nil)
-            let user = User.objectForKey(objectKey: userKey, in: managedObjectContext) 
+            let user = User.objectForKey(objectKey: userKey, in: managedObjectContext)
             postsVC = PostsPageViewController(thread: thread, author: user)
         } else {
             postsVC = PostsPageViewController(thread: thread)
         }
-        
+
         try! managedObjectContext.save()
 
         var updateLastRead: Bool {
@@ -232,13 +253,23 @@ struct AwfulURLRouter {
             }
         }
         postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: updateLastRead)
-        
+
+        // Stage the restored scroll fraction / hiddenPosts inside the same synchronous
+        // run-loop turn as `loadPage`, so the cached-render path (which fires WKWebView
+        // callbacks on a subsequent main-queue tick) sees the staged values. Doing this
+        // here instead of after `open(route:)` returns closes the iPad race where
+        // `didFinishRenderingHTML` could fire with `scrollToFractionAfterLoading == nil`.
+        if let pending = pendingRestoration {
+            postsVC.prepareForRestoration(
+                scrollFraction: pending.scrollFraction,
+                hiddenPosts: pending.hiddenPosts
+            )
+        }
+
         return showPostsViewController(postsVC)
     }
     
     private func showPostsViewController(_ postsVC: PostsPageViewController) -> Bool {
-        postsVC.restorationIdentifier = "Posts from URL"
-        
         // Showing a posts view controller as a result of opening a URL is not the same as simply showing a detail view controller. We want to push it on to an existing navigation stack. Which one depends on how the split view is currently configured.
         let targetNav: UINavigationController
         guard let splitVC = rootViewController.children.first as? UISplitViewController else { return false }

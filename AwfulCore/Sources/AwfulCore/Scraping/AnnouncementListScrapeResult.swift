@@ -23,7 +23,7 @@ public struct AnnouncementListScrapeResult: ScrapeResult {
     }
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        let tableBody = html.firstNode(matchingSelector: "table.post tbody")
+        let tableBody = html.firstNode(matchingParsedSelector: .cached("table.post tbody"))
         let rows = (tableBody?.childElementNodes ?? []).filter { $0.tagName == "tr" }
 
         let bodyRows = stride(from: rows.startIndex, to: rows.endIndex, by: 2).map { rows[$0] }
@@ -39,12 +39,12 @@ public struct AnnouncementListScrapeResult: ScrapeResult {
 
 private extension AnnouncementListScrapeResult.Announcement {
     init(bodyRow: HTMLNode, dateRow: HTMLNode) throws {
-        author = try bodyRow.firstNode(matchingSelector: "dl.userinfo")
+        author = try bodyRow.firstNode(matchingParsedSelector: .cached("dl.userinfo"))
             .map(AnnouncementListScrapeResult.Author.init)
 
         body = try bodyRow.requiredNode(matchingSelector: "td.postbody").innerHTML
         
-        dateRaw = dateRow.firstNode(matchingSelector: "td.postdate")
+        dateRaw = dateRow.firstNode(matchingParsedSelector: .cached("td.postdate"))
             .map { $0.textContent }
         
         date = dateRaw
@@ -57,7 +57,7 @@ private extension AnnouncementListScrapeResult.Author {
         customTitle = scrapeCustomTitle(html) ?? ""
 
         regdateRaw = html
-            .firstNode(matchingSelector: "dd.registered")
+            .firstNode(matchingParsedSelector: .cached("dd.registered"))
             .map {$0.textContent }
         
         regdate = regdateRaw
