@@ -6,6 +6,7 @@ import UIKit
 
 /// Forwards status bar style questions to its first view controller; tells delegate when split view controller will transition to a new size.
 class AwfulSplitViewController: UISplitViewController {
+
     override var childForStatusBarStyle : UIViewController? {
         return viewControllers.first as UIViewController?
     }

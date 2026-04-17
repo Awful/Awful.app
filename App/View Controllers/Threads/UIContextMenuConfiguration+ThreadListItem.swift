@@ -41,7 +41,6 @@ extension UIContextMenuConfiguration {
         }
         func jump(to page: ThreadPage) {
             let postsPage = PostsPageViewController(thread: thread)
-            postsPage.restorationIdentifier = "Posts"
             postsPage.loadPage(page, updatingCache: true, updatingLastReadPost: true)
             presenter.showDetailViewController(postsPage, sender: self)
         }

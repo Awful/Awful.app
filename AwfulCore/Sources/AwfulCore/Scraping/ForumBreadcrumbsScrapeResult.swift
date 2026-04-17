@@ -17,7 +17,7 @@ public struct ForumBreadcrumbsScrapeResult: ScrapeResult {
         }
         
         forums = try breadcrumbs
-            .nodes(matchingSelector: "a[href *= 'forumdisplay.php']")
+            .nodes(matchingParsedSelector: .cached("a[href *= 'forumdisplay.php']"))
             .enumerated()
             .map { try ForumBreadcrumb($1, depth: $0) }
     }

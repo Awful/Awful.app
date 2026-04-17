@@ -16,7 +16,7 @@ public struct ShowPostScrapeResult: ScrapeResult {
 
         post = try PostScrapeResult(html, url: url)
 
-        threadID = html.firstNode(matchingSelector: "#thread")
+        threadID = html.firstNode(matchingParsedSelector: .cached("#thread"))
             .flatMap { $0["class"] }
             .flatMap { cls in
                 let scanner = Scanner(scraping: cls)
@@ -25,7 +25,7 @@ public struct ShowPostScrapeResult: ScrapeResult {
             }
             .flatMap(ThreadID.init)
 
-        threadTitle = html.firstNode(matchingSelector: "title")
+        threadTitle = html.firstNode(matchingParsedSelector: .cached("title"))
             .flatMap { title in
                 let scanner = Scanner(scraping: title.textContent)
                 guard scanner.scanUpToAndPastString(" - ") else { return nil }

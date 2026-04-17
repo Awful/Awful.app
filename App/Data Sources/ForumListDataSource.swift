@@ -397,7 +397,8 @@ extension ForumListDataSource: UITableViewDataSource {
     // This is actually a UITableViewDelegate method.
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let viewModel = viewModelForCell(at: indexPath)
-        let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
+        let tableWidth = ForumListCell.lastKnownContentViewWidth
+            ?? tableView.safeAreaLayoutGuide.layoutFrame.width
         return ForumListCell.heightForViewModel(viewModel, inTableWithWidth: tableWidth)
     }
     

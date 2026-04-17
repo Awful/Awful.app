@@ -8,6 +8,11 @@ import UIKit
 /// In the Forum list, each cell represents either a favorite forum or a plain old forum.
 final class ForumListCell: UITableViewCell {
 
+    /// The actual contentView width from the most recent layout pass.
+    /// On Mac Catalyst, contentView can be narrower than the table view
+    /// due to platform-specific insets (grouped style, safe area, etc.).
+    static var lastKnownContentViewWidth: CGFloat?
+
     /// Called when the expand/collapes button is tapped.
     var didTapExpand: ((ForumListCell) -> Void)?
 
@@ -144,7 +149,22 @@ final class ForumListCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel, isEditing: isEditing)
+        let contentWidth = contentView.bounds.width
+        let previousWidth = ForumListCell.lastKnownContentViewWidth
+        ForumListCell.lastKnownContentViewWidth = contentWidth
+
+        if previousWidth.map({ abs($0 - contentWidth) > 1 }) != false {
+            DispatchQueue.main.async { [weak self] in
+                guard let tableView = self?.superview as? UITableView
+                    ?? self?.superview?.superview as? UITableView else { return }
+                UIView.performWithoutAnimation {
+                    tableView.beginUpdates()
+                    tableView.endUpdates()
+                }
+            }
+        }
+
+        let layout = Layout(width: contentWidth, viewModel: viewModel, isEditing: isEditing)
         expandButton.frame = layout.expandFrame
         favoriteButton.frame = layout.favoriteStarFrame
         nameLabel.frame = layout.nameFrame

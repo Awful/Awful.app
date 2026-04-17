@@ -173,6 +173,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#808080</string>
 			<key>sheetBackgroundColor</key>
 			<string>#eeeeee</string>
 			<key>sheetTitleColor</key>
@@ -291,6 +293,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#808080</string>
 			<key>sheetBackgroundColor</key>
 			<string>#0c0c0c</string>
 			<key>sheetTitleColor</key>
@@ -618,6 +622,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#808080</string>
 			<key>sheetBackgroundColor</key>
 			<string>#0c0c0c</string>
 			<key>sheetTitleColor</key>
@@ -818,6 +824,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#000000</string>
 			<key>sheetTitleColor</key>
 			<string>#ffffff</string>
 			<key>sheetTitleBackgroundColor</key>
@@ -1042,6 +1050,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#4d4d4d</string>
 			<key>sheetBackgroundColor</key>
 			<string>#000000</string>
 			<key>sheetTitleColor</key>
@@ -1239,6 +1249,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#999999</string>
 			<key>sheetBackgroundColor</key>
 			<string>#e6e6e6</string>
 			<key>sheetTitleColor</key>
@@ -1415,6 +1427,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#57ff57</string>
 			<key>sheetTextColor</key>
 			<string>#57FF57</string>
 			<key>sheetTitleColor</key>
@@ -1516,6 +1530,8 @@
 		</dict>
 		<key>Sheets</key>
 		<dict>
+			<key>sheetTextAreaBorderColor</key>
+			<string>#ebd04b</string>
 			<key>sheetTextColor</key>
 			<string>#ebd04b</string>
 			<key>sheetTitleColor</key>

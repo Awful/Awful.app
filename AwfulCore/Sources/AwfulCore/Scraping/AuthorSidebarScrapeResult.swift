@@ -18,7 +18,7 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
 
     public init(_ html: HTMLNode, url: URL?) throws {
         if
-            let profileLink = html.firstNode(matchingSelector: "ul.profilelinks a[href *= 'userid']"),
+            let profileLink = html.firstNode(matchingParsedSelector: .cached("ul.profilelinks a[href *= 'userid']")),
             let href = profileLink["href"],
             let components = URLComponents(string: href),
             let userIDItem = components.queryItems?.first(where: { $0.name == "userid" }),
@@ -28,14 +28,14 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
             self.userID = userID
         }
         else if
-            let userInfo = html.firstNode(matchingSelector: "td.userinfo"),
+            let userInfo = html.firstNode(matchingParsedSelector: .cached("td.userinfo")),
             let htmlClass = userInfo["class"],
             let userID = parseUserID(htmlClass)
         {
             self.userID = userID
         }
         else if
-            let userIDInput = html.firstNode(matchingSelector: "input[name = 'userid']"),
+            let userIDInput = html.firstNode(matchingParsedSelector: .cached("input[name = 'userid']")),
             let rawID = userIDInput["value"],
             let userID = UserID(rawValue: rawID)
         {
@@ -45,7 +45,7 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
             throw ScrapingError.missingRequiredValue("userID")
         }
 
-        let authorTerm = html.firstNode(matchingSelector: "dt.author")
+        let authorTerm = html.firstNode(matchingParsedSelector: .cached("dt.author"))
         username = authorTerm?.textContent ?? ""
 
         var classes = Set((authorTerm?["class"] ?? "")
@@ -55,12 +55,12 @@ public struct AuthorSidebarScrapeResult: ScrapeResult {
         additionalAuthorClasses = classes
 
         regdate = html
-            .firstNode(matchingSelector: "dd.registered")
+            .firstNode(matchingParsedSelector: .cached("dd.registered"))
             .map { $0.textContent }
             .flatMap(RegdateFormatter.date(from:))
         
         regdateRaw = html
-            .firstNode(matchingSelector: "dd.registered")?.textContent ?? ""
+            .firstNode(matchingParsedSelector: .cached("dd.registered"))?.textContent ?? ""
 
         customTitle = scrapeCustomTitle(html) ?? ""
     }

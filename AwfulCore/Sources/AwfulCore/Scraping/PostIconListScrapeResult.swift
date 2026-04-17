@@ -12,7 +12,7 @@ public struct PostIconListScrapeResult: ScrapeResult {
     public let selectedSecondaryIconFormName: String
 
     public init(_ html: HTMLNode, url: URL?) throws {
-        let primaryDivs = html.nodes(matchingSelector: "div.posticon")
+        let primaryDivs = html.nodes(matchingParsedSelector: .cached("div.posticon"))
         guard !primaryDivs.isEmpty else {
             throw ScrapingError.missingExpectedElement("div.posticon")
         }
@@ -22,8 +22,8 @@ public struct PostIconListScrapeResult: ScrapeResult {
         selectedPrimaryIconFormName = try primaryDivs.first!
             .requiredNode(matchingSelector: "input[name]")["name"]!
 
-        let secondaryInputs = html.nodes(matchingSelector: "input[type = 'radio']:not([name = 'iconid'])")
-        let secondaryImages = html.nodes(matchingSelector: "input[type = 'radio']:not([name = 'iconid']) + img")
+        let secondaryInputs = html.nodes(matchingParsedSelector: .cached("input[type = 'radio']:not([name = 'iconid'])"))
+        let secondaryImages = html.nodes(matchingParsedSelector: .cached("input[type = 'radio']:not([name = 'iconid']) + img"))
         guard secondaryInputs.count == secondaryImages.count else {
             secondaryIcons = []
             selectedSecondaryIconFormName = ""

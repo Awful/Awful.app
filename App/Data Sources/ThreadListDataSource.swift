@@ -9,6 +9,14 @@ import CoreData
 import os
 import UIKit
 
+enum BookmarkFilter {
+    case all
+    case unreadOnly
+    case readOnly
+    case starCategory(StarCategory)
+    case textSearch(String)
+}
+
 private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadListDataSource")
 
 final class ThreadListDataSource: NSObject {
@@ -20,10 +28,30 @@ final class ThreadListDataSource: NSObject {
     private let showsTagAndRating: Bool
     private let tableView: UITableView
 
-    convenience init(bookmarksSortedByUnread sortedByUnread: Bool, showsTagAndRating: Bool, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
+    convenience init(bookmarksSortedByUnread sortedByUnread: Bool, showsTagAndRating: Bool, filter: BookmarkFilter, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
         let fetchRequest = AwfulThread.makeFetchRequest()
 
-        fetchRequest.predicate = NSPredicate(format: "%K == YES && %K > 0", #keyPath(AwfulThread.bookmarked), #keyPath(AwfulThread.bookmarkListPage))
+        var predicates = [
+            NSPredicate(format: "%K == YES && %K > 0", #keyPath(AwfulThread.bookmarked), #keyPath(AwfulThread.bookmarkListPage))
+        ]
+        
+        switch filter {
+        case .all:
+            break
+        case .unreadOnly:
+            predicates.append(NSPredicate(format: "%K == YES", #keyPath(AwfulThread.anyUnreadPosts)))
+        case .readOnly:
+            predicates.append(NSPredicate(format: "%K == NO", #keyPath(AwfulThread.anyUnreadPosts)))
+        case .starCategory(let category):
+            predicates.append(NSPredicate(format: "%K == %d", "starCategory", category.rawValue))
+        case .textSearch(let searchText):
+            let titlePredicate = NSPredicate(format: "%K CONTAINS[cd] %@", #keyPath(AwfulThread.title), searchText)
+            let authorPredicate = NSPredicate(format: "%K.%K CONTAINS[cd] %@", #keyPath(AwfulThread.author), #keyPath(User.username), searchText)
+            let textPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [titlePredicate, authorPredicate])
+            predicates.append(textPredicate)
+        }
+
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
 
         fetchRequest.sortDescriptors = {
             var descriptors = [NSSortDescriptor(key: #keyPath(AwfulThread.bookmarkListPage), ascending: true)]
@@ -134,7 +162,8 @@ extension ThreadListDataSource: UITableViewDataSource {
     // This is actually a UITableViewDelegate method.
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let viewModel = viewModelForCell(at: indexPath)
-        let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
+        let tableWidth = ThreadListCell.lastKnownContentViewWidth
+            ?? tableView.safeAreaLayoutGuide.layoutFrame.width
 
         return ThreadListCell.heightForViewModel(viewModel, inTableWithWidth: tableWidth)
     }

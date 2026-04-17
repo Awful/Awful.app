@@ -68,6 +68,138 @@
         }
       }
     },
+    "bookmarks.filter.all" : {
+      "comment" : "Segmented control label for showing all bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.unread" : {
+      "comment" : "Segmented control label for showing only unread bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unread"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.read" : {
+      "comment" : "Segmented control label for showing only read bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.button.accessibility-label" : {
+      "comment" : "Accessibility label for the filter button in the bookmarks navigation bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter bookmarks"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.menu.accessibility-label" : {
+      "comment" : "Accessibility label for the filter menu popover.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter Menu"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.menu.accessibility-hint" : {
+      "comment" : "Accessibility hint for the filter menu popover.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter bookmarks by read status or star color"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-label" : {
+      "comment" : "Accessibility label for a star color filter button. %@ is the color name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter by %@ star"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-hint.selected" : {
+      "comment" : "Accessibility hint for a currently selected star color filter button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currently selected. Double-tap to deselect."
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-hint.unselected" : {
+      "comment" : "Accessibility hint for an unselected star color filter button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double-tap to filter by this star color."
+          }
+        }
+      }
+    },
+    "bookmarks.search.button.accessibility-label" : {
+      "comment" : "Accessibility label for the search button in the bookmarks navigation bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search bookmarks"
+          }
+        }
+      }
+    },
+    "bookmarks.search.placeholder" : {
+      "comment" : "Placeholder text for the bookmarks search bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search by title or author\u2026"
+          }
+        }
+      }
+    },
     "cancel" : {
       "comment" : "Title of button that dismisses without taking any action.",
       "localizations" : {
@@ -86,6 +218,90 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reply"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-delete" : {
+      "comment" : "Segmented control option to delete an existing attachment.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-keep" : {
+      "comment" : "Segmented control option to keep an existing attachment.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-replace" : {
+      "comment" : "Segmented control option to replace an existing attachment with a new one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace"
+          }
+        }
+      }
+    },
+    "compose.attachment.edit-title" : {
+      "comment" : "Title shown on the attachment edit card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Attachment"
+          }
+        }
+      }
+    },
+    "compose.attachment.preview-title" : {
+      "comment" : "Title shown on the attachment preview card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attachment"
+          }
+        }
+      }
+    },
+    "compose.attachment.resizing-message" : {
+      "comment" : "Message shown while an attachment is being resized.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please wait"
+          }
+        }
+      }
+    },
+    "compose.attachment.resizing-title" : {
+      "comment" : "Title shown while an attachment is being resized.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resizing Image..."
           }
         }
       }
@@ -175,6 +391,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "You're currently editing someone else's post"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.private-message.title" : {
+      "comment" : "Title of compose draft menu when writing a private message.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently writing a private message"
           }
         }
       }
@@ -295,6 +522,9 @@
     "Creep" : {
 
     },
+    "Cute" : {
+
+    },
     "Doggo" : {
 
     },
@@ -302,10 +532,13 @@
 
     },
     "Done" : {
-
+      "comment" : "Edit button done state"
     },
     "Double-check your username and password, then try again." : {
 
+    },
+    "Edit" : {
+      "comment" : "Edit button"
     },
     "Example searches:" : {
 
@@ -704,6 +937,18 @@
         }
       }
     },
+    "posts-page.error.attachment-preview-failed" : {
+      "comment" : "Message shown when attachment image preview fails to load.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not load attachment preview"
+          }
+        }
+      }
+    },
     "posts-page.error.could-not-copy-post" : {
       "comment" : "Title of alert shown when failing to copy post to pasteboard.",
       "extractionState" : "migrated",
@@ -848,6 +1093,193 @@
         }
       }
     },
+    "private-message-folder.add-message" : {
+      "comment" : "Message in new folder dialog",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a name for the new folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.add-title" : {
+      "comment" : "Title of new folder dialog",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.create" : {
+      "comment" : "Button to create new folder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        }
+      }
+    },
+    "private-message-folder.create-error-title" : {
+      "comment" : "Error title when folder creation fails",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not create folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.custom-folders-header" : {
+      "comment" : "Header for custom folders section",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-error-title" : {
+      "comment" : "Error title when folder deletion fails",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not delete folder"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-confirm-title" : {
+      "comment" : "Title of confirmation dialog when deleting a folder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Folder?"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-confirm-message" : {
+      "comment" : "Message shown when deleting a folder explaining that messages will be moved",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Messages in this folder will be moved to Inbox or Sent."
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-button" : {
+      "comment" : "Button to confirm folder deletion",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "private-message-folder.footer-editing" : {
+      "comment" : "Footer text shown in folder management when editing mode is active",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the minus button to delete a folder."
+          }
+        }
+      }
+    },
+    "private-message-folder.footer-normal" : {
+      "comment" : "Footer text shown in folder management when not in editing mode",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Edit to delete folders."
+          }
+        }
+      }
+    },
+    "private-message-folder.inbox" : {
+      "comment" : "Label for inbox folder in folder picker",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inbox"
+          }
+        }
+      }
+    },
+    "private-message-folder.manage" : {
+      "comment" : "Menu item to manage folders",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.manage-title" : {
+      "comment" : "Title of folder management screen",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.more" : {
+      "comment" : "Label for more folders dropdown button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folders"
+          }
+        }
+      }
+    },
+    "private-message-folder.name-placeholder" : {
+      "comment" : "Placeholder text for folder name field",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folder name"
+          }
+        }
+      }
+    },
+    "private-message-folder.sent" : {
+      "comment" : "Label for sent folder in folder picker",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sent"
+          }
+        }
+      }
+    },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
       "extractionState" : "migrated",
@@ -932,6 +1364,28 @@
         }
       }
     },
+    "private-messages-list.delete-confirm.message" : {
+      "comment" : "Message of confirmation alert when deleting multiple messages. Parameter is the count.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to delete %d messages?"
+          }
+        }
+      }
+    },
+    "private-messages-list.delete-confirm.title" : {
+      "comment" : "Title of confirmation alert when deleting multiple messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Messages?"
+          }
+        }
+      }
+    },
     "private-messages-list.deletion-error.title" : {
       "comment" : "Title of alert shown when there's a problem deleting a private message from the list.",
       "extractionState" : "migrated",
@@ -952,6 +1406,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@. %2$@. %3$@"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-error.title" : {
+      "comment" : "Title of alert shown when there's a problem moving a private message to a different folder.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could Not Move Message"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-folder.message" : {
+      "comment" : "Message of alert shown when selecting a folder to move a message to.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a folder to move this message to:"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-folder.title" : {
+      "comment" : "Title of alert shown when selecting a folder to move a message to.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move to Folder"
+          }
+        }
+      }
+    },
+    "private-messages-list.move-multiple.message" : {
+      "comment" : "Message shown when moving multiple messages. Parameter is the count of messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move %d messages to:"
+          }
+        }
+      }
+    },
+    "private-messages-list.no-selection.message" : {
+      "comment" : "Message shown when trying to perform an action without selecting any messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select at least one message first."
+          }
+        }
+      }
+    },
+    "private-messages-list.no-selection.title" : {
+      "comment" : "Title shown when trying to perform an action without selecting any messages.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Messages Selected"
           }
         }
       }
@@ -1180,6 +1700,9 @@
     "Smith" : {
 
     },
+    "Stare" : {
+
+    },
     "table-view.action.delete" : {
       "comment" : "Text of delete button shown in tables on iOS 11 after swiping on the cell. (We can't use the system delete button here as it automatically deletes when you swipe all the way across the cell, which isn't what we want.)",
       "extractionState" : "migrated",
@@ -1188,6 +1711,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete"
+          }
+        }
+      }
+    },
+    "table-view.action.move" : {
+      "comment" : "Text of move button shown in tables after swiping on the cell in edit mode.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move"
           }
         }
       }

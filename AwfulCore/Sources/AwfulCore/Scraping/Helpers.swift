@@ -5,6 +5,22 @@
 import Foundation
 import HTMLReader
 
+extension HTMLSelector {
+    private static let cache = NSCache<NSString, HTMLSelector>()
+
+    public static func cached(_ selectorString: String) -> HTMLSelector {
+        let key = selectorString as NSString
+        if let cached = cache.object(forKey: key) {
+            return cached
+        }
+        let selector = HTMLSelector(string: selectorString)
+        if selector.error == nil {
+            cache.setObject(selector, forKey: key)
+        }
+        return selector
+    }
+}
+
 func LocalizedString(_ key: String) -> String {
     return NSLocalizedString(key, bundle: Bundle(for: ForumsClient.self), comment: "")
 }
@@ -21,7 +37,7 @@ extension HTMLNode {
     }
 
     func requiredNode(matchingSelector selector: String) throws -> HTMLElement {
-        guard let node = firstNode(matchingSelector: selector) else {
+        guard let node = firstNode(matchingParsedSelector: .cached(selector)) else {
             throw ScrapingError.missingExpectedElement(selector)
         }
         return node
@@ -34,6 +50,24 @@ extension HTMLElement {
         (self["class"] ?? "")
             .components(separatedBy: .asciiWhitespace)
             .filter { !$0.isEmpty }
+    }
+
+    /**
+     Returns the next sibling element in the DOM tree.
+
+     This helper method handles cases where the next sibling might be a text node or other non-element node,
+     returning the first element sibling found.
+     */
+    var nextSiblingElement: HTMLElement? {
+        if let sibling = nextSibling as? HTMLElement {
+            return sibling
+        } else if let parent = parent {
+            let children = parent.children.compactMap { $0 as? HTMLElement }
+            if let index = children.firstIndex(where: { $0 === self }), index + 1 < children.count {
+                return children[index + 1]
+            }
+        }
+        return nil
     }
 }
 
@@ -99,8 +133,12 @@ func scrapeCustomTitle(_ html: HTMLNode) -> RawHTML? {
         return element.tagName == "br" && element.hasClass("pb")
     }
 
-    return html
-        .firstNode(matchingSelector: "dl.userinfo dd.title")
+    // Some PM pages have malformed HTML with duplicate dd.title elements where the first is empty.
+    // Try to find the dd.title that actually contains an image first.
+    let titleElement = html.firstNode(matchingParsedSelector: .cached("dl.userinfo dd.title img"))?.parentElement
+        ?? html.firstNode(matchingParsedSelector: .cached("dl.userinfo dd.title"))
+
+    return titleElement
         .flatMap { $0.children.array as? [HTMLNode] }?
         .filter { !isSuperfluousLineBreak($0) }
         .map { $0.serializedFragment }
@@ -116,7 +154,7 @@ struct PageNavigationData {
 }
 
 func scrapePageNavigationData(_ node: HTMLNode) -> PageNavigationData? {
-    guard let pageDiv = node.firstNode(matchingSelector: "div.pages") else {
+    guard let pageDiv = node.firstNode(matchingParsedSelector: .cached("div.pages")) else {
         return nil
     }
 

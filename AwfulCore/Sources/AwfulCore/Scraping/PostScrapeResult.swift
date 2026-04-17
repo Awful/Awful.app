@@ -42,27 +42,27 @@ public struct PostScrapeResult {
 
         author = try AuthorSidebarScrapeResult(table, url: url)
 
-        authorCanReceivePrivateMessages = table.firstNode(matchingSelector: "ul.profilelinks a[href *= 'private.php']") != nil
+        authorCanReceivePrivateMessages = table.firstNode(matchingParsedSelector: .cached("ul.profilelinks a[href *= 'private.php']")) != nil
 
-        authorIsOriginalPoster = table.firstNode(matchingSelector: "dt.author.op") != nil
+        authorIsOriginalPoster = table.firstNode(matchingParsedSelector: .cached("dt.author.op")) != nil
 
-        body = table.firstNode(matchingSelector: "div.complete_shit")?.innerHTML
-            ?? table.firstNode(matchingSelector: "td.postbody")?.innerHTML
+        body = table.firstNode(matchingParsedSelector: .cached("div.complete_shit"))?.innerHTML
+            ?? table.firstNode(matchingParsedSelector: .cached("td.postbody"))?.innerHTML
             ?? ""
         
-        hasBeenSeen = table.firstNode(matchingSelector: "tr.seen1")
-            ?? table.firstNode(matchingSelector: "tr.seen2")
+        hasBeenSeen = table.firstNode(matchingParsedSelector: .cached("tr.seen1"))
+            ?? table.firstNode(matchingParsedSelector: .cached("tr.seen2"))
             != nil
 
         indexInThread = (table["data-idx"] as String?)
             .flatMap { Int($0) }
 
-        isEditable = table.firstNode(matchingSelector: "ul.postbuttons a[href *= 'editpost.php']") != nil
+        isEditable = table.firstNode(matchingParsedSelector: .cached("ul.postbuttons a[href *= 'editpost.php']")) != nil
 
         isIgnored = table.hasClass("ignored")
 
         postDateRaw = table
-            .firstNode(matchingSelector: "td.postdate")
+            .firstNode(matchingParsedSelector: .cached("td.postdate"))
             .flatMap { $0.children.lastObject as? HTMLNode }
             .map { $0.textContent.trimmingCharacters(in: .whitespacesAndNewlines) } ?? ""
         

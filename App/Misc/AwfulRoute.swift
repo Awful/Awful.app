@@ -244,12 +244,18 @@ extension AwfulRoute {
         }
 
         switch url.path.caseInsensitive {
+        case "", "/":
+            return .forumList
+
         case "/banlist.php":
             if let userID = url.valueForFirstQueryItem(named: "userid"), !userID.isEmpty {
                 return .rapSheet(userID: userID)
             } else {
                 return .lepersColony
             }
+
+        case "/bookmarkthreads.php":
+            return .bookmarks
 
         case "/forumdisplay.php":
             guard let forumID = url.valueForFirstQueryItem(named: "forumid"), !forumID.isEmpty else {
@@ -262,6 +268,18 @@ extension AwfulRoute {
                 throw ParseError.missingUserID
             }
             return .profile(userID: userID)
+
+        case "/private.php":
+            if url.valueForFirstQueryItem(named: "action") == "show",
+               let messageID = url.valueForFirstQueryItem(named: "privatemessageid"),
+               !messageID.isEmpty
+            {
+                return .message(id: messageID)
+            }
+            return .messagesList
+
+        case "/usercp.php":
+            return .settings
 
         case "/showthread.php":
 

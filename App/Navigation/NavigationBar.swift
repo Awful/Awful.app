@@ -23,28 +23,91 @@ final class NavigationBar: UINavigationBar {
         super.init(frame: frame)
         
         // For whatever reason, translucent navbars with a barTintColor do not necessarily blur their backgrounds. An iPad 3, for example, blurs a bar without a barTintColor but is simply semitransparent with a barTintColor. The semitransparent, non-blur effect looks awful, so just turn it off.
-        isTranslucent = false
-        
+        // iOS 26: Allow translucency for liquid glass effect
+        if #available(iOS 26.0, *) {
+            isTranslucent = true
+        } else {
+            isTranslucent = false
+        }
+
         // Setting the barStyle to UIBarStyleBlack results in an appropriate status bar style.
         barStyle = .black
         
-        backIndicatorImage = UIImage(named: "back")
-        backIndicatorTransitionMaskImage = UIImage(named: "back")
+        backIndicatorImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+        backIndicatorTransitionMaskImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
         
         titleTextAttributes = [.font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular)]
         
         addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(didLongPress)))
-        
-        if #available(iOS 15.0, *) {
-            // Fix odd grey navigation bar background when scrolled to top on iOS 15.
-            scrollEdgeAppearance = standardAppearance
-        }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// When set, `layoutSubviews` forces this color as `tintColor` and
+    /// recolors all internal labels on every layout pass. Used by
+    /// NavigationController for iPad sidebar where iOS 26 flat rendering
+    /// ignores appearance APIs and colors elements with the app tintColor.
+    var forcedTintColor: UIColor?
+
+    private static let sidebarToggleOverlayTag = 9999
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard let forced = forcedTintColor else { return }
+
+        if tintColor != forced {
+            tintColor = forced
+        }
+
+        // Force tintColor on every subview in the nav bar so the flat
+        // rendering's buttons pick up the correct color regardless of
+        // which view they inherit tintColor from.
+        func forceTint(in view: UIView) {
+            if view.tintColor != forced {
+                view.tintColor = forced
+            }
+            // Also catch the system sidebar toggle: find SF Symbol images
+            // with vibrancy rendering and overlay with .alwaysOriginal.
+            // Skip our own replacement (identified by tag).
+            if let imageView = view as? UIImageView,
+               imageView.tag != Self.sidebarToggleOverlayTag,
+               let image = imageView.image,
+               image.isSymbolImage,
+               String(describing: image).contains("sidebar.leading") {
+                // Use both isHidden and alpha to prevent UIKit from
+                // resetting visibility during its own layout passes.
+                imageView.isHidden = true
+                imageView.alpha = 0
+                if let parent = imageView.superview {
+                    if let existing = parent.viewWithTag(Self.sidebarToggleOverlayTag) as? UIImageView {
+                        existing.image = UIImage(systemName: "sidebar.leading")?
+                            .withTintColor(forced, renderingMode: .alwaysOriginal)
+                    } else {
+                        let replacement = UIImageView(
+                            image: UIImage(systemName: "sidebar.leading")?
+                                .withTintColor(forced, renderingMode: .alwaysOriginal)
+                        )
+                        replacement.tag = Self.sidebarToggleOverlayTag
+                        replacement.isUserInteractionEnabled = false
+                        replacement.translatesAutoresizingMaskIntoConstraints = false
+                        parent.addSubview(replacement)
+                        NSLayoutConstraint.activate([
+                            replacement.centerXAnchor.constraint(equalTo: parent.centerXAnchor),
+                            replacement.centerYAnchor.constraint(equalTo: parent.centerYAnchor),
+                        ])
+                    }
+                }
+            }
+            for child in view.subviews {
+                forceTint(in: child)
+            }
+        }
+        forceTint(in: self)
+    }
+
     @objc fileprivate func didLongPress(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
         guard backItem != nil else { return }
