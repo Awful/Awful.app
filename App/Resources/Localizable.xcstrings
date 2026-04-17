@@ -222,6 +222,90 @@
         }
       }
     },
+    "compose.attachment.action-delete" : {
+      "comment" : "Segmented control option to delete an existing attachment.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-keep" : {
+      "comment" : "Segmented control option to keep an existing attachment.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep"
+          }
+        }
+      }
+    },
+    "compose.attachment.action-replace" : {
+      "comment" : "Segmented control option to replace an existing attachment with a new one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace"
+          }
+        }
+      }
+    },
+    "compose.attachment.edit-title" : {
+      "comment" : "Title shown on the attachment edit card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Attachment"
+          }
+        }
+      }
+    },
+    "compose.attachment.preview-title" : {
+      "comment" : "Title shown on the attachment preview card.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attachment"
+          }
+        }
+      }
+    },
+    "compose.attachment.resizing-message" : {
+      "comment" : "Message shown while an attachment is being resized.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please wait"
+          }
+        }
+      }
+    },
+    "compose.attachment.resizing-title" : {
+      "comment" : "Title shown while an attachment is being resized.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resizing Image..."
+          }
+        }
+      }
+    },
     "compose.cancel-menu.delete-draft" : {
       "comment" : "Destructive button in action sheet that deletes the draft.",
       "localizations" : {
@@ -307,6 +391,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "You're currently editing someone else's post"
+          }
+        }
+      }
+    },
+    "compose.draft-menu.private-message.title" : {
+      "comment" : "Title of compose draft menu when writing a private message.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're currently writing a private message"
           }
         }
       }
@@ -427,6 +522,9 @@
     "Creep" : {
 
     },
+    "Cute" : {
+
+    },
     "Doggo" : {
 
     },
@@ -434,10 +532,13 @@
 
     },
     "Done" : {
-
+      "comment" : "Edit button done state"
     },
     "Double-check your username and password, then try again." : {
 
+    },
+    "Edit" : {
+      "comment" : "Edit button"
     },
     "Example searches:" : {
 
@@ -832,6 +933,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copied post!"
+          }
+        }
+      }
+    },
+    "posts-page.error.attachment-preview-failed" : {
+      "comment" : "Message shown when attachment image preview fails to load.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not load attachment preview"
           }
         }
       }
@@ -1310,6 +1423,9 @@
 
     },
     "Smith" : {
+
+    },
+    "Stare" : {
 
     },
     "table-view.action.delete" : {

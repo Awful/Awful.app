@@ -576,6 +576,7 @@ final class BookmarksTableViewController: TableViewController {
     
     private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
+    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var latestPage = 0
@@ -604,16 +605,16 @@ final class BookmarksTableViewController: TableViewController {
         super.init(style: .plain)
         
         title = LocalizedString("bookmarks.title")
-        
+
         tabBarItem.image = UIImage(named: "bookmarks")
         tabBarItem.selectedImage = UIImage(named: "bookmarks-filled")
-        
+
         setupFilterButton()
         setupSearchButton()
         setupSearchBar()
         navigationItem.leftBarButtonItem = editButtonItem
         navigationItem.rightBarButtonItems = [filterButton, searchButton]
-        
+
         themeDidChange()
     }
     
@@ -921,9 +922,9 @@ final class BookmarksTableViewController: TableViewController {
         
         multiplexer.addDelegate(self)
 
+        tableView.insetsContentViewsToSafeArea = false
         tableView.hideExtraneousSeparators()
-        tableView.restorationIdentifier = "Bookmarks table"
-        
+
         searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
         searchBarContainerView.clipsToBounds = true
         tableView.tableHeaderView = searchBarContainerView
@@ -961,6 +962,16 @@ final class BookmarksTableViewController: TableViewController {
         tableView.setEditing(editing, animated: true)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let currentWidth = tableView.bounds.width
+        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+            ThreadListCell.lastKnownContentViewWidth = nil
+        }
+        lastKnownTableWidth = currentWidth
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
 
@@ -1115,7 +1126,6 @@ extension BookmarksTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let thread = dataSource!.thread(at: indexPath)
         let postsViewController = PostsPageViewController(thread: thread)
-        postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
@@ -1165,6 +1175,12 @@ extension BookmarksTableViewController: ThreadListDataSourceDeletionDelegate {
     }
 }
 
+extension BookmarksTableViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .bookmarks
+    }
+}
+
 extension BookmarksTableViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let trimmedText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -1174,11 +1190,11 @@ extension BookmarksTableViewController: UISearchBarDelegate {
             applyFilter(.textSearch(trimmedText))
         }
     }
-    
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         toggleSearchBar()
     }
-    
+
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }

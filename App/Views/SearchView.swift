@@ -702,21 +702,21 @@ final class SearchPageViewModel: ObservableObject {
     }
     
     func scrapeForumSelectOptions() async {
-        if let forumListHtmlDoc = searchPageHtmlDoc.firstNode(matchingSelector: "form[action='query.php']") {
+        if let forumListHtmlDoc = searchPageHtmlDoc.firstNode(matchingParsedSelector: .cached("form[action='query.php']")) {
             // Extract search message
-            searchState.message = forumListHtmlDoc.firstNode(matchingSelector: ".search_message")?.textContent ?? ""
+            searchState.message = forumListHtmlDoc.firstNode(matchingParsedSelector: .cached(".search_message"))?.textContent ?? ""
             
             // Extract help hints
-            if let searchHelpText = forumListHtmlDoc.firstNode(matchingSelector: ".search_help") {
-                searchHelpHints = searchHelpText.nodes(matchingSelector: ".term").map { node in
+            if let searchHelpText = forumListHtmlDoc.firstNode(matchingParsedSelector: .cached(".search_help")) {
+                searchHelpHints = searchHelpText.nodes(matchingParsedSelector: .cached(".term")).map { node in
                     SearchHelpHint(text: node.textContent)
                 }
             }
             
             // Extract forum options
-            forumSelectOptions = forumListHtmlDoc.nodes(matchingSelector: ".search_forum")
+            forumSelectOptions = forumListHtmlDoc.nodes(matchingParsedSelector: .cached(".search_forum"))
                 .compactMap { div -> ForumSelectOption? in
-                    guard let input = div.firstNode(matchingSelector: ".forumcheck"),
+                    guard let input = div.firstNode(matchingParsedSelector: .cached(".forumcheck")),
                           let value = input["value"],
                           let text = div.textContent.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: .newlines).first?.trimmingCharacters(in: .whitespacesAndNewlines),
                           text != "Select All Forums",
@@ -745,10 +745,10 @@ final class SearchPageViewModel: ObservableObject {
     
     func scrapeForumResultsPage(requestedPage: Int? = nil) async {
         if let resultHtmlDoc = searchResultsHtmlDoc {
-            searchState.resultInfo = resultHtmlDoc.firstNode(matchingSelector: "#search_info")?.textContent ?? ""
+            searchState.resultInfo = resultHtmlDoc.firstNode(matchingParsedSelector: .cached("#search_info"))?.textContent ?? ""
             
-            searchResults = resultHtmlDoc.nodes(matchingSelector: ".search_result").map { searchResult in
-                let blurbNode: HTMLNode? = searchResult.firstNode(matchingSelector: ".blurb")
+            searchResults = resultHtmlDoc.nodes(matchingParsedSelector: .cached(".search_result")).map { searchResult in
+                let blurbNode: HTMLNode? = searchResult.firstNode(matchingParsedSelector: .cached(".blurb"))
                 let blurb: String
                 if let element = blurbNode as? HTMLElement {
                     blurb = element.innerHTML
@@ -756,28 +756,28 @@ final class SearchPageViewModel: ObservableObject {
                     blurb = blurbNode?.textContent ?? ""
                 }
                 return SearchResult(
-                    threadTitle: searchResult.firstNode(matchingSelector: ".threadtitle")?.textContent ?? "",
-                    resultNumber: searchResult.firstNode(matchingSelector: ".result_number")?.textContent ?? "",
+                    threadTitle: searchResult.firstNode(matchingParsedSelector: .cached(".threadtitle"))?.textContent ?? "",
+                    resultNumber: searchResult.firstNode(matchingParsedSelector: .cached(".result_number"))?.textContent ?? "",
                     blurb: blurb,
-                    forumTitle: searchResult.firstNode(matchingSelector: ".forumtitle")?.textContent ?? "",
-                    postID: searchResult.firstNode(matchingSelector: ".threadtitle")?["href"]
+                    forumTitle: searchResult.firstNode(matchingParsedSelector: .cached(".forumtitle"))?.textContent ?? "",
+                    postID: searchResult.firstNode(matchingParsedSelector: .cached(".threadtitle"))?["href"]
                         .flatMap { URLComponents(string: $0) }?
                         .queryItems?
                         .first { $0.name == "postid" }?
                         .value ?? "",
-                    userName: searchResult.firstNode(matchingSelector: ".username")?.textContent ?? "",
-                    postedDateTime: searchResult.firstNode(matchingSelector: ".hit_info")?.textContent ?? ""
+                    userName: searchResult.firstNode(matchingParsedSelector: .cached(".username"))?.textContent ?? "",
+                    postedDateTime: searchResult.firstNode(matchingParsedSelector: .cached(".hit_info"))?.textContent ?? ""
                 )
             }
             
-            if let pagesDiv = resultHtmlDoc.firstNode(matchingSelector: ".pages") {
-                if let currentPageNode = pagesDiv.firstNode(matchingSelector: "b") {
+            if let pagesDiv = resultHtmlDoc.firstNode(matchingParsedSelector: .cached(".pages")) {
+                if let currentPageNode = pagesDiv.firstNode(matchingParsedSelector: .cached("b")) {
                     self.currentPage = Int(currentPageNode.textContent.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 1
                 } else if let requestedPage = requestedPage {
                     self.currentPage = requestedPage
                 }
                 
-                let pageLinks = pagesDiv.nodes(matchingSelector: "a")
+                let pageLinks = pagesDiv.nodes(matchingParsedSelector: .cached("a"))
                 var maxPage = currentPage
 
                 if self.searchQueryID == nil,
@@ -932,13 +932,12 @@ extension Int {
 }
 
 // MARK: - Custom Hosting Controller
-final class SearchHostingController: UIHostingController<SearchView> {
-    // Strong reference to keep the view model alive
+final class SearchHostingController: UIHostingController<AnyView> {
     private let searchModel: SearchPageViewModel
-    
+
     init() {
         self.searchModel = SearchPageViewModel()
-        super.init(rootView: SearchView(model: searchModel))
+        super.init(rootView: AnyView(SearchView(model: searchModel).themed()))
     }
     
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {

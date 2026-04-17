@@ -15,6 +15,8 @@ final class MessageComposeViewController: ComposeTextViewController {
     fileprivate let regardingMessage: PrivateMessage?
     fileprivate let forwardingMessage: PrivateMessage?
     fileprivate let initialContents: String?
+    private let draft: PrivateMessageDraft
+    private var autoSaveWorkItem: DispatchWorkItem?
     fileprivate var threadTag: ThreadTag? {
         didSet { updateThreadTagButtonImage() }
     }
@@ -37,45 +39,63 @@ final class MessageComposeViewController: ComposeTextViewController {
         regardingMessage = nil
         forwardingMessage = nil
         initialContents = nil
+        self.draft = Self.loadDraft(kind: .new)
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     init(recipient: User) {
         self.recipient = recipient
         regardingMessage = nil
         forwardingMessage = nil
         initialContents = nil
+        self.draft = Self.loadDraft(kind: .to(recipient))
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     init(regardingMessage: PrivateMessage, initialContents: String?) {
         self.regardingMessage = regardingMessage
         recipient = nil
         forwardingMessage = nil
         self.initialContents = initialContents
+        self.draft = Self.loadDraft(kind: .replying(to: regardingMessage))
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     init(forwardingMessage: PrivateMessage, initialContents: String?) {
         self.forwardingMessage = forwardingMessage
         recipient = nil
         regardingMessage = nil
         self.initialContents = initialContents
+        self.draft = Self.loadDraft(kind: .forwarding(forwardingMessage))
         super.init(nibName: nil, bundle: nil)
         commonInit()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    deinit {
+        autoSaveWorkItem?.cancel()
+    }
+
+    /// Returns a fresh draft if no on-disk draft exists for the given kind, otherwise the loaded
+    /// draft. Resolving the on-disk path doesn't depend on the actual `PrivateMessage` instance,
+    /// just its message ID, so this works at init time before any properties are set.
+    private static func loadDraft(kind: PrivateMessageDraft.Kind) -> PrivateMessageDraft {
+        let placeholder = PrivateMessageDraft(kind: kind)
+        if let saved = DraftStore.sharedStore().loadDraft(placeholder.storePath) as? PrivateMessageDraft {
+            return saved
+        }
+        return placeholder
+    }
+
     fileprivate func commonInit() {
         title = "Private Message"
         submitButtonItem.title = "Send"
-        restorationClass = type(of: self)
     }
     
     private var threadTagTask: ImageTask?
@@ -144,6 +164,7 @@ final class MessageComposeViewController: ComposeTextViewController {
                     relevant = .none
                 }
                 try await ForumsClient.shared.sendPrivateMessage(to: to, subject: subject, threadTag: threadTag, bbcode: composition, about: relevant)
+                deleteDraft()
                 completion(true)
             } catch {
                 completion(false)
@@ -165,10 +186,54 @@ final class MessageComposeViewController: ComposeTextViewController {
     
     @objc fileprivate func toFieldDidChange() {
         updateSubmitButtonItem()
+        scheduleDraftAutoSave()
     }
-    
+
     @objc fileprivate func subjectFieldDidChange() {
         updateSubmitButtonItem()
+        scheduleDraftAutoSave()
+    }
+
+    override func bodyTextDidChange() {
+        scheduleDraftAutoSave()
+    }
+
+    private func scheduleDraftAutoSave() {
+        autoSaveWorkItem?.cancel()
+        let work = DispatchWorkItem { [weak self] in self?.saveDraftNow() }
+        autoSaveWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
+    }
+
+    /// Synchronously runs any pending auto-save. Called on dismissal so the last keystrokes
+    /// aren't lost to the 0.5 s debounce.
+    private func flushDraftAutoSave() {
+        guard autoSaveWorkItem != nil else { return }
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        saveDraftNow()
+    }
+
+    private func saveDraftNow() {
+        draft.to = fieldView.toField.textField.text ?? ""
+        draft.subject = fieldView.subjectField.textField.text ?? ""
+        draft.threadTag = threadTag
+        draft.text = textView.attributedText
+        if draft.to.isEmpty
+            && draft.subject.isEmpty
+            && draft.threadTag == nil
+            && (draft.text?.length ?? 0) == 0
+        {
+            DraftStore.sharedStore().deleteDraft(draft)
+        } else {
+            DraftStore.sharedStore().saveDraft(draft)
+        }
+    }
+
+    private func deleteDraft() {
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        DraftStore.sharedStore().deleteDraft(draft)
     }
     
     // MARK: View lifecycle
@@ -193,68 +258,111 @@ final class MessageComposeViewController: ComposeTextViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        threadTag = draft.threadTag
         updateThreadTagButtonImage()
-        
-        if let recipient = recipient {
-            if fieldView.toField.textField.text?.isEmpty ?? true {
-                fieldView.toField.textField.text = recipient.username
-            }
+
+        // Saved-draft contents take precedence over the defaults derived from the recipient or
+        // the message being replied to/forwarded — the draft already incorporates any user edits.
+        if !draft.to.isEmpty {
+            fieldView.toField.textField.text = draft.to
+        } else if let recipient = recipient {
+            fieldView.toField.textField.text = recipient.username
         } else if let regardingMessage = regardingMessage {
-            if fieldView.toField.textField.text?.isEmpty ?? true {
-                fieldView.toField.textField.text = regardingMessage.from?.username
-            }
-            
-            if fieldView.subjectField.textField.text?.isEmpty ?? true {
-                var subject = regardingMessage.subject ?? ""
-                if !subject.hasPrefix("Re: ") {
-                    subject = "Re: \(subject)"
-                }
-                fieldView.subjectField.textField.text = subject
-            }
-            
-            if let initialContents = initialContents , textView.text.isEmpty {
-                textView.text = initialContents
-            }
-        } else if let forwardingMessage = forwardingMessage {
-            if fieldView.subjectField.textField.text?.isEmpty ?? true {
-                fieldView.subjectField.textField.text = "Fw: \(forwardingMessage.subject ?? "")"
-            }
-            
-            if let initialContents = initialContents , textView.text.isEmpty {
-                textView.text = initialContents
-            }
+            fieldView.toField.textField.text = regardingMessage.from?.username
         }
-        
+
+        if !draft.subject.isEmpty {
+            fieldView.subjectField.textField.text = draft.subject
+        } else if let regardingMessage = regardingMessage {
+            var subject = regardingMessage.subject ?? ""
+            if !subject.hasPrefix("Re: ") {
+                subject = "Re: \(subject)"
+            }
+            fieldView.subjectField.textField.text = subject
+        } else if let forwardingMessage = forwardingMessage {
+            fieldView.subjectField.textField.text = "Fw: \(forwardingMessage.subject ?? "")"
+        }
+
+        if let savedText = draft.text {
+            textView.attributedText = savedText
+            updateSubmitButtonItem()
+        } else if let initialContents = initialContents, textView.text.isEmpty {
+            textView.text = initialContents
+        }
+
         updateAvailableThreadTagsIfNecessary()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         updateAvailableThreadTagsIfNecessary()
     }
-    
-    // MARK: State restoration
-    
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(recipient?.objectKey, forKey: Keys.RecipientUserKey.rawValue)
-        coder.encode(regardingMessage?.objectKey, forKey: Keys.RegardingMessageKey.rawValue)
-        coder.encode(forwardingMessage?.objectKey, forKey: Keys.ForwardingMessageKey.rawValue)
-        coder.encode(initialContents, forKey: Keys.InitialContents.rawValue)
-        coder.encode(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        let context = AppDelegate.instance.managedObjectContext
-        if let threadTagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(objectKey: threadTagKey, in: context)
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Flush the debounced draft save on the way out so nothing the user typed in the last
+        // 0.5 s is dropped if they dismiss immediately after typing.
+        if isMovingFromParent || isBeingDismissed {
+            flushDraftAutoSave()
         }
-        
-        super.decodeRestorableState(with: coder)
     }
+
+    /// Overrides the base class to surface a Delete/Save action sheet when the user taps Cancel
+    /// and there's meaningful content on screen, mirroring the reply-workspace prompt. An empty
+    /// compose dismisses straight away (and clears any empty draft on disk).
+    override func cancel() {
+        let hasContent = !(fieldView.toField.textField.text?.isEmpty ?? true)
+            || !(fieldView.subjectField.textField.text?.isEmpty ?? true)
+            || threadTag != nil
+            || textView.attributedText.length > 0
+        guard hasContent else {
+            deleteDraft()
+            dismissCompose(shouldKeepDraft: false)
+            return
+        }
+
+        let actionSheet = UIAlertController(
+            title: NSLocalizedString("compose.draft-menu.private-message.title", comment: ""),
+            actionSheetActions: [
+                .destructive(title: NSLocalizedString("compose.cancel-menu.delete-draft", comment: "")) { [weak self] in
+                    guard let self = self else { return }
+                    self.deleteDraft()
+                    self.dismissCompose(shouldKeepDraft: false)
+                },
+                .default(title: NSLocalizedString("compose.cancel-menu.save-draft", comment: "")) { [weak self] in
+                    guard let self = self else { return }
+                    self.flushDraftAutoSave()
+                    self.dismissCompose(shouldKeepDraft: true)
+                },
+                .cancel(),
+            ]
+        )
+        if let popover = actionSheet.popoverPresentationController {
+            popover.barButtonItem = cancelButtonItem
+        }
+        present(actionSheet, animated: true)
+    }
+
+    /// Base `ComposeTextViewController.cancel()` always reports `shouldKeepDraft: true` to its
+    /// delegate. Callers like `MessageListViewController` cache the compose controller and only
+    /// release it when the delegate callback says the draft should be dropped — so when the user
+    /// picks "Delete Draft" we need to notify the delegate directly with `shouldKeepDraft: false`,
+    /// bypassing the base implementation.
+    private func dismissCompose(shouldKeepDraft: Bool) {
+        if let delegate = delegate {
+            delegate.composeTextViewController(
+                self,
+                didFinishWithSuccessfulSubmission: false,
+                shouldKeepDraft: shouldKeepDraft
+            )
+        } else {
+            dismiss(animated: true)
+        }
+    }
+
 }
 
 extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
@@ -269,9 +377,10 @@ extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
         } else {
             threadTag = nil
         }
-        
+        scheduleDraftAutoSave()
+
         picker.dismiss()
-        
+
         focusInitialFirstResponder()
     }
     
@@ -284,36 +393,3 @@ extension MessageComposeViewController: ThreadTagPickerViewControllerDelegate {
     }
 }
 
-extension MessageComposeViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let recipientKey = coder.decodeObject(forKey: Keys.RecipientUserKey.rawValue) as? UserKey
-        let regardingKey = coder.decodeObject(forKey: Keys.RegardingMessageKey.rawValue) as? PrivateMessageKey
-        let forwardingKey = coder.decodeObject(forKey: Keys.ForwardingMessageKey.rawValue) as? PrivateMessageKey
-        let initialContents = coder.decodeObject(forKey: Keys.InitialContents.rawValue) as? String
-        let context = AppDelegate.instance.managedObjectContext
-        
-        let composeViewController: MessageComposeViewController
-        if let recipientKey = recipientKey {
-            let recipient = User.objectForKey(objectKey: recipientKey, in: context)
-            composeViewController = MessageComposeViewController(recipient: recipient)
-        } else if let regardingKey = regardingKey {
-            let regardingMessage = PrivateMessage.objectForKey(objectKey: regardingKey, in: context)
-            composeViewController = MessageComposeViewController(regardingMessage: regardingMessage, initialContents: initialContents)
-        } else if let forwardingKey = forwardingKey {
-            let forwardingMessage = PrivateMessage.objectForKey(objectKey: forwardingKey, in: context)
-            composeViewController = MessageComposeViewController(forwardingMessage: forwardingMessage, initialContents: initialContents)
-        } else {
-            return nil
-        }
-        composeViewController.restorationIdentifier = identifierComponents.last
-        return composeViewController
-    }
-}
-
-private enum Keys: String {
-    case RecipientUserKey
-    case RegardingMessageKey
-    case ForwardingMessageKey
-    case InitialContents
-    case ThreadTagKey
-}

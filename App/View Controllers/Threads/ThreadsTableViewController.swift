@@ -14,10 +14,11 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadsTableViewController")
 
-final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate, UIViewControllerRestoration {
+final class ThreadsTableViewController: TableViewController, ComposeTextViewControllerDelegate, ThreadTagPickerViewControllerDelegate {
     
     private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
+    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     private var filterThreadTag: ThreadTag?
     let forum: Forum
@@ -122,9 +123,9 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         multiplexer.addDelegate(self)
 
         tableView.estimatedRowHeight = ThreadListCell.estimatedHeight
+        tableView.insetsContentViewsToSafeArea = false
         tableView.hideExtraneousSeparators()
-        tableView.restorationIdentifier = "Threads table view"
-        
+
         dataSource = makeDataSource()
         tableView.reloadData()
         
@@ -154,6 +155,19 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         .store(in: &cancellables)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        // Invalidate the cached contentView width when the table view
+        // width changes (rotation, split-view resize) so heightForRowAt
+        // picks up the new width on the next pass.
+        let currentWidth = tableView.bounds.width
+        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+            ThreadListCell.lastKnownContentViewWidth = nil
+        }
+        lastKnownTableWidth = currentWidth
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
 
@@ -209,7 +223,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
     
     private lazy var threadComposeViewController: ThreadComposeViewController! = { [unowned self] in
         let composeViewController = ThreadComposeViewController(forum: self.forum)
-        composeViewController.restorationIdentifier = "New thread composition"
         composeViewController.delegate = self
         return composeViewController
         }()
@@ -231,7 +244,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         dismiss(animated: true) {
             if let thread = self.threadComposeViewController.thread , success {
                 let postsPage = PostsPageViewController(thread: thread)
-                postsPage.restorationIdentifier = "Posts"
                 postsPage.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
                 self.showDetailViewController(postsPage, sender: self)
             }
@@ -330,64 +342,6 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
         logger.debug("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
     
-    // MARK: UIViewControllerRestoration
-    
-    class func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        var forumKey = coder.decodeObject(forKey: RestorationKeys.forumKey) as! ForumKey?
-        if forumKey == nil {
-            guard let forumID = coder.decodeObject(forKey: ObsoleteRestorationKeys.forumID) as? String else { return nil }
-            forumKey = ForumKey(forumID: forumID)
-        }
-        let managedObjectContext = AppDelegate.instance.managedObjectContext
-        let forum = Forum.objectForKey(objectKey: forumKey!, in: managedObjectContext)
-        let viewController = self.init(forum: forum)
-        viewController.restorationIdentifier = identifierComponents.last 
-        viewController.restorationClass = self
-        return viewController
-    }
-    
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(forum.objectKey, forKey: RestorationKeys.forumKey)
-        coder.encode(threadComposeViewController, forKey: RestorationKeys.newThreadViewController)
-        coder.encode(filterThreadTag?.objectKey, forKey: RestorationKeys.filterThreadTagKey)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        super.decodeRestorableState(with: coder)
-        
-        if let compose = coder.decodeObject(forKey: RestorationKeys.newThreadViewController) as? ThreadComposeViewController {
-            compose.delegate = self
-            threadComposeViewController = compose
-        }
-        
-        var tagKey = coder.decodeObject(forKey: RestorationKeys.filterThreadTagKey) as! ThreadTagKey?
-        if tagKey == nil {
-            if let tagID = coder.decodeObject(forKey: ObsoleteRestorationKeys.filterThreadTagID) as? String {
-                tagKey = ThreadTagKey(imageName: nil, threadTagID: tagID)
-            }
-        }
-        if let tagKey = tagKey {
-            filterThreadTag = ThreadTag.objectForKey(objectKey: tagKey, in: forum.managedObjectContext!)
-        }
-        
-        updateFilterButton()
-    }
-    
-    private struct RestorationKeys {
-        static let forumKey = "ForumKey"
-        static let newThreadViewController = "AwfulNewThreadViewController"
-        static let filterThreadTagKey = "FilterThreadTagKey"
-    }
-    
-    private struct ObsoleteRestorationKeys {
-        static let forumID = "AwfulForumID"
-        static let filterThreadTagID = "AwfulFilterThreadTagID"
-    }
-    
-    // MARK: Gunk
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -396,6 +350,12 @@ final class ThreadsTableViewController: TableViewController, ComposeTextViewCont
 extension ThreadsTableViewController: ThreadListDataSourceDelegate {
     func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme {
         return theme
+    }
+}
+
+extension ThreadsTableViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .forum(id: forum.forumID)
     }
 }
 
@@ -411,7 +371,6 @@ extension ThreadsTableViewController {
         }
         let thread = dataSource!.thread(at: indexPath)
         let postsViewController = PostsPageViewController(thread: thread)
-        postsViewController.restorationIdentifier = "Posts"
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)

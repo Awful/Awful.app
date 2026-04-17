@@ -27,9 +27,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     @FoilDefaultStorage(Settings.defaultLightThemeName) private var defaultLightTheme
     private var inboxRefresher: PrivateMessageInboxRefresher?
     var managedObjectContext: NSManagedObjectContext { return dataStore.mainManagedObjectContext }
-    private var openCopiedURLController: OpenCopiedURLController?
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.enableCustomTitlePostLayout) private var showCustomTitles
+    /// Owned by `SceneDelegate`; set here so the existing AppDelegate-side helpers (theming
+    /// snapshots, login flow, etc.) keep working without each having to walk `connectedScenes`.
     var window: UIWindow?
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -57,36 +58,25 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             return URLCache(memoryCapacity: megabytes(5), diskCapacity: megabytes(50), diskPath: nil)
             #endif
         }()
-        
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.tintColor = Theme.defaultTheme()["tintColor"]
-        
-        if ForumsClient.shared.isLoggedIn {
-            setRootViewController(rootViewControllerStack.rootViewController, animated: false, completion: nil)
-        } else {
-            setRootViewController(loginViewController.enclosingNavigationController, animated: false, completion: nil)
-        }
-        
-        openCopiedURLController = OpenCopiedURLController(window: window!, router: {
-            [unowned self] in
-            self.open(route: $0)
-        })
-        
-        window?.makeKeyAndVisible()
-        
+
         return true
+    }
+
+    /// Called by `SceneDelegate` once its window exists. Installs either the logged-in root view
+    /// controller stack or the login screen as the window's root view controller.
+    func installInitialRootViewController(in window: UIWindow) {
+        if ForumsClient.shared.isLoggedIn {
+            window.rootViewController = rootViewControllerStack.rootViewController
+        } else {
+            window.rootViewController = loginViewController.enclosingNavigationController
+        }
     }
     
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        // Don't want to lazily create it now.
-        _rootViewControllerStack?.didAppear()
-        
         ignoreSilentSwitchWhenPlayingEmbeddedVideo()
-        
-        showPromptIfLoginCookieExpiresSoon()
 
         announcementListRefresher = AnnouncementListRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
         inboxRefresher = PrivateMessageInboxRefresher(client: ForumsClient.shared, minder: RefreshMinder.sharedMinder)
@@ -135,54 +125,18 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         return true
     }
-    
+
     func applicationWillResignActive(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(false)
-        
+
         updateShortcutItems()
     }
-    
+
     func applicationDidBecomeActive(_ application: UIApplication) {
         SmilieKeyboardSetIsAwfulAppActive(true)
         
         // Screen brightness may have changed while the app wasn't paying attention.
         automaticallyUpdateDarkModeEnabledIfNecessary()
-    }
-    
-    func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
-        return ForumsClient.shared.isLoggedIn
-    }
-    
-    func application(_ application: UIApplication, willEncodeRestorableStateWith coder: NSCoder) {
-        coder.encode(currentInterfaceVersion.rawValue, forKey: interfaceVersionKey)
-    }
-    
-    func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-        guard ForumsClient.shared.isLoggedIn else { return false }
-        return coder.decodeInteger(forKey: interfaceVersionKey) == currentInterfaceVersion.rawValue
-    }
-
-    func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        return rootViewControllerStack.viewControllerWithRestorationIdentifierPath(identifierComponents)
-    }
-    
-    func application(_ application: UIApplication, didDecodeRestorableStateWith coder: NSCoder) {
-        try! managedObjectContext.save()
-    }
-    
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        guard
-            ForumsClient.shared.isLoggedIn,
-            let route = try? AwfulRoute(url)
-            else { return false }
-
-        open(route: route)
-        return true
-    }
-    
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        guard let router = urlRouter, let route = userActivity.route else { return false }
-        return router.route(route)
     }
     
     func logOut() {
@@ -220,6 +174,21 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func open(route: AwfulRoute) {
         urlRouter?.route(route)
     }
+
+    /// Overload that threads scene-restoration payloads through to the router so a
+    /// freshly-constructed `PostsPageViewController` / `MessageViewController` can stage
+    /// its restored scroll fraction (and hidden-posts count) before its first render.
+    func open(
+        route: AwfulRoute,
+        pendingPostsRestoration: PendingPostsRestoration? = nil,
+        pendingMessageRestoration: PendingMessageRestoration? = nil
+    ) {
+        urlRouter?.route(
+            route,
+            pendingPostsRestoration: pendingPostsRestoration,
+            pendingMessageRestoration: pendingMessageRestoration
+        )
+    }
     
     private func updateShortcutItems() {
         guard urlRouter != nil else {
@@ -256,17 +225,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.shared.shortcutItems = shortcutItems
     }
     
-    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        guard
-            let url = URL(string: shortcutItem.type),
-            let route = try? AwfulRoute(url)
-            else { return completionHandler(false) }
-
-        open(route: route)
-        completionHandler(true)
-    }
-    
     private var _rootViewControllerStack: RootViewControllerStack?
+    var rootViewControllerStackIfLoaded: RootViewControllerStack? { _rootViewControllerStack }
     private var urlRouter: AwfulURLRouter?
     private var rootViewControllerStack: RootViewControllerStack {
         if let stack = _rootViewControllerStack { return stack }
@@ -291,7 +251,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 }
 
-private extension AppDelegate {
+extension AppDelegate {
     func setRootViewController(_ rootViewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
         guard let window = window else { return }
         UIView.transition(with: window, duration: animated ? 0.3 : 0, options: .transitionCrossDissolve, animations: { 
@@ -338,7 +298,7 @@ private extension AppDelegate {
         }
     }
 
-    private func automaticallyUpdateDarkModeEnabledIfNecessary() {
+    func automaticallyUpdateDarkModeEnabledIfNecessary() {
         guard automaticDarkTheme else { return }
 
         let shouldDarkModeBeEnabled = window?.traitCollection.userInterfaceStyle == .dark
@@ -420,19 +380,6 @@ private func megabytes(_ mb: Int) -> Int {
 private func days(_ days: Int) -> TimeInterval {
     return TimeInterval(days) * 24 * 60 * 60
 }
-
-// Value is an InterfaceVersion integer. Encoded when preserving state, and possibly useful for determining whether to decode state or to somehow migrate the preserved state.
-private let interfaceVersionKey = "AwfulInterfaceVersion"
-
-private enum InterfaceVersion: Int {
-    /// Interface for Awful 2, the version that runs on iOS 7. On iPhone, a basement-style menu is the root view controller. On iPad, a custom split view controller is the root view controller, and it hosts a vertical tab bar controller as its primary view controller.
-    case version2
-    
-    /// Interface for Awful 3, the version that runs on iOS 8. The primary view controller is a UISplitViewController on both iPhone and iPad.
-    case version3
-}
-
-private let currentInterfaceVersion: InterfaceVersion = .version3
 
 private func ignoreSilentSwitchWhenPlayingEmbeddedVideo() {
     do {

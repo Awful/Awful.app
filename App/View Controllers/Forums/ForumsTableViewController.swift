@@ -14,9 +14,10 @@ import SwiftUI
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
 
 final class ForumsTableViewController: TableViewController {
-    
+
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
+    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var listDataSource: ForumListDataSource!
@@ -117,7 +118,7 @@ final class ForumsTableViewController: TableViewController {
     }
 
     private func updateEditingState(favoriteCount: Int) {
-        navigationItem.setRightBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
+        navigationItem.setLeftBarButton(favoriteCount > 0 ? editButtonItem : nil, animated: true)
 
         if isEditing, favoriteCount == 0 {
             setEditing(false, animated: true)
@@ -129,8 +130,6 @@ final class ForumsTableViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let threadList = ThreadsTableViewController(forum: forum)
-        threadList.restorationClass = ThreadsTableViewController.self
-        threadList.restorationIdentifier = "Thread"
         navigationController?.pushViewController(threadList, animated: animated)
     }
 
@@ -139,7 +138,6 @@ final class ForumsTableViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let vc = AnnouncementViewController(announcement: announcement)
-        vc.restorationIdentifier = "Announcement"
         showDetailViewController(vc, sender: self)
     }
 
@@ -157,7 +155,6 @@ final class ForumsTableViewController: TableViewController {
         super.viewDidLoad()
 
         tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
-        tableView.restorationIdentifier = "Forums table"
         tableView.sectionFooterHeight = 0
         tableView.separatorInset.left = tableSeparatorLeftMargin
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
@@ -176,18 +173,18 @@ final class ForumsTableViewController: TableViewController {
         }()
 
         if canSendPrivateMessages {
-            navigationItem.setLeftBarButton(searchButton, animated: true)
+            navigationItem.setRightBarButton(searchButton, animated: true)
         }
-        
+
         // Add observer for changes to canSendPrivateMessages
         $canSendPrivateMessages
             .receive(on: RunLoop.main)
             .sink { [weak self] canSend in
                 guard let self else { return }
                 if canSend {
-                    navigationItem.setLeftBarButton(searchButton, animated: true)
+                    navigationItem.setRightBarButton(searchButton, animated: true)
                 } else {
-                    navigationItem.setLeftBarButton(nil, animated: true)
+                    navigationItem.setRightBarButton(nil, animated: true)
                 }
             }
             .store(in: &cancellables)
@@ -195,13 +192,22 @@ final class ForumsTableViewController: TableViewController {
             
     @objc private func searchForums() {
         let searchView = SearchHostingController()
-        searchView.restorationIdentifier = "Search view"
         if traitCollection.userInterfaceIdiom == .pad {
             searchView.modalPresentationStyle = .pageSheet
         } else {
             searchView.modalPresentationStyle = .fullScreen
         }
         present(searchView, animated: true)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let currentWidth = tableView.bounds.width
+        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+            ForumListCell.lastKnownContentViewWidth = nil
+        }
+        lastKnownTableWidth = currentWidth
     }
 
     override func themeDidChange() {
@@ -337,4 +343,10 @@ extension ForumsTableViewController {
 private enum SectionHeader {
     static let height: CGFloat = 44
     static let reuseIdentifier = "Header"
+}
+
+extension ForumsTableViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .forumList
+    }
 }

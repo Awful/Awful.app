@@ -29,14 +29,23 @@ final class ThreadComposeViewController: ComposeTextViewController {
     private var threadTagPicker: ThreadTagPickerViewController?
     private var formData: ForumsClient.PostNewThreadFormData?
     
-    /// - parameter forum: The forum in which the new thread is posted.
+    private let draft: NewThreadDraft
+    private var autoSaveWorkItem: DispatchWorkItem?
+
+    /// - parameter forum: The forum in which the new thread is posted. Loads any saved draft for
+    ///   this forum from `DraftStore` so the in-progress thread is recovered across launches.
     init(forum: Forum) {
         self.forum = forum
+        let saved = DraftStore.sharedStore().loadDraft("newThreads/\(forum.forumID)") as? NewThreadDraft
+        self.draft = saved ?? NewThreadDraft(forum: forum)
         super.init(nibName: nil, bundle: nil)
-        
+
         title = defaultTitle
         submitButtonItem.title = "Preview"
-        restorationClass = type(of: self)
+    }
+
+    deinit {
+        autoSaveWorkItem?.cancel()
     }
     
     required init?(coder: NSCoder) {
@@ -59,10 +68,21 @@ final class ThreadComposeViewController: ComposeTextViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         updateTweaks()
+        threadTag = draft.threadTag
+        secondaryThreadTag = draft.secondaryThreadTag
         updateThreadTagButtonImage()
         updateAvailableThreadTagsIfNecessary()
+
+        if !draft.subject.isEmpty {
+            fieldView.subjectField.textField.text = draft.subject
+            title = draft.subject
+        }
+        if let savedText = draft.text {
+            textView.attributedText = savedText
+            updateSubmitButtonItem()
+        }
     }
     
     override var theme: Theme {
@@ -162,8 +182,58 @@ final class ThreadComposeViewController: ComposeTextViewController {
         } else {
             title = defaultTitle
         }
-        
+
         updateSubmitButtonItem()
+        scheduleDraftAutoSave()
+    }
+
+    override func bodyTextDidChange() {
+        scheduleDraftAutoSave()
+    }
+
+    private func scheduleDraftAutoSave() {
+        autoSaveWorkItem?.cancel()
+        let work = DispatchWorkItem { [weak self] in self?.saveDraftNow() }
+        autoSaveWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
+    }
+
+    /// Synchronously runs any pending auto-save. Called on dismissal so the last keystrokes
+    /// aren't lost to the 0.5 s debounce.
+    private func flushDraftAutoSave() {
+        guard autoSaveWorkItem != nil else { return }
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        saveDraftNow()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent || isBeingDismissed {
+            flushDraftAutoSave()
+        }
+    }
+
+    private func saveDraftNow() {
+        draft.subject = fieldView.subjectField.textField.text ?? ""
+        draft.threadTag = threadTag
+        draft.secondaryThreadTag = secondaryThreadTag
+        draft.text = textView.attributedText
+        if draft.subject.isEmpty
+            && draft.threadTag == nil
+            && draft.secondaryThreadTag == nil
+            && (draft.text?.length ?? 0) == 0
+        {
+            DraftStore.sharedStore().deleteDraft(draft)
+        } else {
+            DraftStore.sharedStore().saveDraft(draft)
+        }
+    }
+
+    private func deleteDraft() {
+        autoSaveWorkItem?.cancel()
+        autoSaveWorkItem = nil
+        DraftStore.sharedStore().deleteDraft(draft)
     }
     
     private func updateAvailableThreadTagsIfNecessary() {
@@ -242,6 +312,7 @@ final class ThreadComposeViewController: ComposeTextViewController {
                     bbcode: composition
                 )
                 self.thread = thread
+                deleteDraft()
                 completion(true)
             } catch {
                 let alert = UIAlertController(title: "Network Error", error: error, handler: {
@@ -252,28 +323,6 @@ final class ThreadComposeViewController: ComposeTextViewController {
         }
     }
     
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(forum.objectKey, forKey: Keys.ForumKey.rawValue)
-        coder.encode(fieldView.subjectField.textField.text, forKey: Keys.SubjectKey.rawValue)
-        coder.encode(threadTag?.objectKey, forKey: Keys.ThreadTagKey.rawValue)
-        coder.encode(secondaryThreadTag?.objectKey, forKey: Keys.SecondaryThreadTagKey.rawValue)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        fieldView.subjectField.textField.text = coder.decodeObject(forKey: Keys.SubjectKey.rawValue) as? String
-        
-        if let tagKey = coder.decodeObject(forKey: Keys.ThreadTagKey.rawValue) as? ThreadTagKey {
-            threadTag = ThreadTag.objectForKey(objectKey: tagKey, in: forum.managedObjectContext!)
-        }
-        
-        if let secondaryTagKey = coder.decodeObject(forKey: Keys.SecondaryThreadTagKey.rawValue) as? ThreadTagKey {
-            secondaryThreadTag = ThreadTag.objectForKey(objectKey: secondaryTagKey, in: forum.managedObjectContext!)
-        }
-        
-        super.decodeRestorableState(with: coder)
-    }
 }
 
 extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
@@ -288,7 +337,8 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
         } else {
             threadTag = nil
         }
-        
+        scheduleDraftAutoSave()
+
         if availableSecondaryThreadTags?.isEmpty ?? true {
             picker.dismiss()
             focusInitialFirstResponder()
@@ -302,6 +352,7 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
         {
             secondaryThreadTag = tags[i]
         }
+        scheduleDraftAutoSave()
     }
     
     func didDismissPicker(_ picker: ThreadTagPickerViewController) {
@@ -309,24 +360,4 @@ extension ThreadComposeViewController: ThreadTagPickerViewControllerDelegate {
     }
 }
 
-extension ThreadComposeViewController: UIViewControllerRestoration {
-    static func viewController(
-        withRestorationIdentifierPath identifierComponents: [String],
-        coder: NSCoder
-    ) -> UIViewController? {
-        guard let forumKey = coder.decodeObject(forKey: Keys.ForumKey.rawValue) as? ForumKey else { return nil }
-        let forum = Forum.objectForKey(objectKey: forumKey, in: AppDelegate.instance.managedObjectContext)
-        let composeViewController = ThreadComposeViewController(forum: forum)
-        composeViewController.restorationIdentifier = identifierComponents.last
-        return composeViewController
-    }
-}
-
 private let defaultTitle = "New Thread"
-
-private enum Keys: String {
-    case ForumKey
-    case SubjectKey = "AwfulSubject"
-    case ThreadTagKey
-    case SecondaryThreadTagKey
-}

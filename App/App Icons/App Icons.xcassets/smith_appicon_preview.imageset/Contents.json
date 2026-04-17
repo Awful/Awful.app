@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "smith@2x.png",
+      "filename" : "Smith 2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,12 +26,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "smith dark@2x.png",
+      "filename" : "Smith dark 2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "smith@3x.png",
+      "filename" : "Smith 3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -42,7 +42,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "smith dark@3x.png",
+      "filename" : "Smith dark 3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
