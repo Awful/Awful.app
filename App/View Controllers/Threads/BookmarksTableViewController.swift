@@ -588,9 +588,9 @@ final class BookmarksTableViewController: TableViewController {
 
     private var currentFilter: BookmarkFilter = .all
     private var filterButton: UIBarButtonItem!
-    private var filterButtonView: UIButton!
+    private var filterButtonView: UIButton?
     private var searchButton: UIBarButtonItem!
-    private var searchButtonView: UIButton!
+    private var searchButtonView: UIButton?
     private var searchBar: UISearchBar!
     private var searchBarContainerView: UIView!
     private var isSearchVisible = false
@@ -614,36 +614,92 @@ final class BookmarksTableViewController: TableViewController {
         setupFilterButton()
         setupSearchButton()
         setupSearchBar()
-        navigationItem.leftBarButtonItem = editButtonItem
-        navigationItem.rightBarButtonItems = [filterButton, searchButton]
+
+        if #available(iOS 26.0, *),
+           UIDevice.current.userInterfaceIdiom == .pad,
+           let filterHosting = filterButton.customView,
+           let searchHosting = searchButton.customView {
+            // Combine the two right-side icons into a single customView so
+            // UINavigationBar's inter-item spacing doesn't apply between
+            // them — they end up crowded together with only the HStack
+            // spacing in between, giving the title more room.
+            let stack = UIStackView(arrangedSubviews: [searchHosting, filterHosting])
+            stack.axis = .horizontal
+            stack.spacing = 4
+            stack.alignment = .center
+            navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: stack)]
+
+            // Balance the right side so the title lands near the nav-bar
+            // center. Use a customView spacer (UINavigationBar honors an
+            // explicit customView width more reliably than .fixedSpace).
+            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
+            navigationItem.leftBarButtonItems = [editButtonItem, spacer]
+        } else {
+            navigationItem.leftBarButtonItem = editButtonItem
+            navigationItem.rightBarButtonItems = [filterButton, searchButton]
+        }
 
         themeDidChange()
     }
     
     private func setupFilterButton() {
-        filterButtonView = UIButton(type: .system)
-        filterButtonView.setImage(UIImage(systemName: "line.3.horizontal.decrease"), for: .normal)
-        filterButtonView.accessibilityLabel = LocalizedString("bookmarks.filter.button.accessibility-label")
-        filterButtonView.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        let label = LocalizedString("bookmarks.filter.button.accessibility-label")
 
-        if #available(iOS 26.0, *) {
-            filterButtonView.tintAdjustmentMode = .normal
+        if #available(iOS 26.0, *),
+           UIDevice.current.userInterfaceIdiom == .pad,
+           let image = UIImage(systemName: "line.3.horizontal.decrease") {
+            // iPad sidebar on iOS 26 renders bar buttons inside a glass panel,
+            // which tints UIButton images via vibrancy. Use the SwiftUI
+            // `.glassEffect(.identity)` path to bypass that compositing so
+            // the theme's navigationBarTextColor is preserved.
+            let hosting = NavigationController.makeSidebarImageHostingView(
+                image: image,
+                accessibilityLabel: label,
+                target: self,
+                action: #selector(filterButtonTapped)
+            )
+            filterButton = UIBarButtonItem(customView: hosting)
+        } else {
+            let button = UIButton(type: .system)
+            button.setImage(UIImage(systemName: "line.3.horizontal.decrease"), for: .normal)
+            button.accessibilityLabel = label
+            button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+
+            if #available(iOS 26.0, *) {
+                button.tintAdjustmentMode = .normal
+            }
+
+            filterButtonView = button
+            filterButton = UIBarButtonItem(customView: button)
         }
-
-        filterButton = UIBarButtonItem(customView: filterButtonView)
     }
-    
+
     private func setupSearchButton() {
-        searchButtonView = UIButton(type: .system)
-        searchButtonView.setImage(UIImage(named: "quick-look"), for: .normal)
-        searchButtonView.accessibilityLabel = LocalizedString("bookmarks.search.button.accessibility-label")
-        searchButtonView.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
+        let label = LocalizedString("bookmarks.search.button.accessibility-label")
 
-        if #available(iOS 26.0, *) {
-            searchButtonView.tintAdjustmentMode = .normal
+        if #available(iOS 26.0, *),
+           UIDevice.current.userInterfaceIdiom == .pad,
+           let image = UIImage(named: "quick-look") {
+            let hosting = NavigationController.makeSidebarImageHostingView(
+                image: image,
+                accessibilityLabel: label,
+                target: self,
+                action: #selector(searchButtonTapped)
+            )
+            searchButton = UIBarButtonItem(customView: hosting)
+        } else {
+            let button = UIButton(type: .system)
+            button.setImage(UIImage(named: "quick-look"), for: .normal)
+            button.accessibilityLabel = label
+            button.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
+
+            if #available(iOS 26.0, *) {
+                button.tintAdjustmentMode = .normal
+            }
+
+            searchButtonView = button
+            searchButton = UIBarButtonItem(customView: button)
         }
-
-        searchButton = UIBarButtonItem(customView: searchButtonView)
     }
     
     private func setupSearchBar() {
@@ -697,8 +753,9 @@ final class BookmarksTableViewController: TableViewController {
         filterMenuVC.modalTransitionStyle = .crossDissolve
         filterMenuVC.presentationController?.delegate = self
         
-        if filterButtonView.superview != nil {
-            let buttonFrameInView = view.convert(filterButtonView.bounds, from: filterButtonView)
+        let anchor: UIView? = filterButtonView ?? filterButton?.customView
+        if let anchor, anchor.superview != nil {
+            let buttonFrameInView = view.convert(anchor.bounds, from: anchor)
             filterMenuVC.setSourceButtonRect(buttonFrameInView)
         }
         
@@ -782,7 +839,7 @@ final class BookmarksTableViewController: TableViewController {
         case .textSearch(_):
             isFilterActive = true
         }
-        
+
         let isFilterMenuOpen = filterPopoverController != nil
 
         if #available(iOS 26.0, *) {

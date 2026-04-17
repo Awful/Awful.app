@@ -40,6 +40,8 @@ private struct SidebarButtonView: View {
 private struct SidebarImageButtonView: View {
     let image: Image
     let accessibilityLabel: String?
+    var pointSize: CGFloat = 20
+    var horizontalPadding: CGFloat = 2
     let action: () -> Void
 
     @SwiftUI.Environment(\.theme) private var theme
@@ -48,9 +50,14 @@ private struct SidebarImageButtonView: View {
         let color = theme[color: "navigationBarTextColor"] ?? .white
         Button(action: action) {
             image
+                .resizable()
+                .scaledToFit()
+                .frame(width: pointSize, height: pointSize)
                 .foregroundStyle(color)
         }
         .buttonStyle(.plain)
+        .frame(width: pointSize, height: pointSize)
+        .padding(.horizontal, horizontalPadding)
         .glassEffect(.identity)
         .accessibilityLabel(accessibilityLabel ?? "")
     }
@@ -95,6 +102,8 @@ final class SidebarTitleView: UIView {
             .font(.system(size: 17, weight: .semibold))
             .applyFontDesign(if: useRoundedFont)
             .foregroundStyle(swiftUIColor)
+            .lineLimit(1)
+            .truncationMode(.tail)
             .glassEffect(.identity)
 
         let hosting = UIHostingController(rootView: AnyView(content))
@@ -555,10 +564,32 @@ final class NavigationController: UINavigationController, Themeable {
         target: AnyObject?,
         action: Selector?
     ) -> UIBarButtonItem {
+        let hostingView = Self.makeSidebarImageHostingView(
+            image: image,
+            accessibilityLabel: accessibilityLabel,
+            target: target,
+            action: action
+        )
+        return UIBarButtonItem(customView: hostingView)
+    }
+
+    /// Builds a UIHostingController-hosted view wrapping `SidebarImageButtonView`
+    /// for use as a `UIBarButtonItem.customView`. Callers that need direct
+    /// access to the hosting view (e.g. to animate alpha or anchor a popover)
+    /// can use this directly instead of `makeImageBarButtonItem`.
+    @available(iOS 26.0, *)
+    static func makeSidebarImageHostingView(
+        image: UIImage,
+        accessibilityLabel: String?,
+        pointSize: CGFloat = 20,
+        target: AnyObject?,
+        action: Selector?
+    ) -> UIView {
         let swiftUIImage = Image(uiImage: image.withRenderingMode(.alwaysTemplate))
         let content = SidebarImageButtonView(
             image: swiftUIImage,
-            accessibilityLabel: accessibilityLabel
+            accessibilityLabel: accessibilityLabel,
+            pointSize: pointSize
         ) {
             if let target = target as? NSObject, let action {
                 target.perform(action, with: nil)
@@ -567,9 +598,17 @@ final class NavigationController: UINavigationController, Themeable {
 
         let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
-        let size = hosting.sizeThatFits(in: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 44))
-        hosting.view.frame = CGRect(origin: .zero, size: size)
-        return UIBarButtonItem(customView: hosting.view)
+        hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        // Enforce a tight size (image + small horizontal padding) so the
+        // bar button item doesn't reserve the hosting view's natural
+        // (often larger) fitting size.
+        let totalWidth = pointSize + 4 // 2pt padding on each side
+        NSLayoutConstraint.activate([
+            hosting.view.widthAnchor.constraint(equalToConstant: totalWidth),
+            hosting.view.heightAnchor.constraint(equalToConstant: pointSize),
+        ])
+        hosting.view.frame = CGRect(x: 0, y: 0, width: totalWidth, height: pointSize)
+        return hosting.view
     }
 
     /// Configures button appearance attributes for iOS 26 liquid glass compatibility.
