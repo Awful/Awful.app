@@ -17,9 +17,34 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
  */
 final class PostsPageView: UIView {
 
+    /// On iPad / Mac (Designed for iPad) the system safe area at the bottom can be 0
+    /// (windowed multitasking, Catalyst). Enforce a minimum so the toolbar aligns with
+    /// the sidebar's RootTabBar rather than disappearing off the bottom.
+    static let minimumPadBottomInset: CGFloat = 28
+
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     var viewHasBeenScrolledOnce: Bool = false
+
+    let immersiveModeManager = ImmersiveModeManager()
+
+    /// Effective bottom inset used to position the toolbar: honors the system safe
+    /// area on iPhone, and raises the toolbar to `minimumPadBottomInset` on iPad
+    /// so it aligns with the sidebar's RootTabBar.
+    ///
+    /// Gated to iOS 26+ because pre-26 toolbars are opaque — raising the
+    /// toolbar above the system safe area leaves a gap between the toolbar's
+    /// bottom edge and the window edge that exposes scroll content behind it.
+    /// On iOS 26 the glass material and layout read differently, so the
+    /// sidebar-alignment nudge looks correct there.
+    var effectiveBottomInset: CGFloat {
+        guard #available(iOS 26.0, *) else {
+            return layoutMargins.bottom
+        }
+        return traitCollection.userInterfaceIdiom == .pad
+            ? max(layoutMargins.bottom, Self.minimumPadBottomInset)
+            : layoutMargins.bottom
+    }
 
     /// Weak reference to the posts page view controller to avoid responder chain traversal
     weak var postsPageViewController: PostsPageViewController?
@@ -61,17 +86,21 @@ final class PostsPageView: UIView {
                 let containerMargins = refreshControlContainer.layoutMarginsGuide
                 
                 if frogAndGhostEnabled == false {
+                    // Horizontal anchors use PostsPageView's layoutMarginsGuide so the
+                    // arrow centers within the visible detail column on iPad/macOS
+                    // rather than within the full scroll-view width.
                     NSLayoutConstraint.activate([
-                        refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
-                        containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                        refreshControl.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor),
+                        layoutMarginsGuide.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
                         refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
                         containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)])
                 } else {
                     if refreshControl is PostsPageRefreshArrowView {
+                        // Same reasoning as the frog spinner below.
                         NSLayoutConstraint.activate([
-                            refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
+                            refreshControl.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor),
                             refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
-                            containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                            layoutMarginsGuide.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
                             containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
                         ])
                     }
@@ -86,6 +115,7 @@ final class PostsPageView: UIView {
                             refreshControl.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor),
                             layoutMarginsGuide.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
                             containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor),
+                            // controls frog lottie position between last post and bottom toolbar
                             refreshControl.heightAnchor.constraint(equalToConstant: 110)
                         ])
                     }
@@ -245,13 +275,8 @@ final class PostsPageView: UIView {
     private lazy var fallbackSafeAreaGradientView: GradientView = {
         let view = GradientView()
         view.isUserInteractionEnabled = false
-        if #available(iOS 26.0, *) {
-            view.alpha = 1.0
-            view.isHidden = false
-        } else {
-            view.alpha = 0.0
-            view.isHidden = true
-        }
+        view.alpha = 0.0
+        view.isHidden = true
         return view
     }()
 
@@ -270,13 +295,25 @@ final class PostsPageView: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverStatusDidChange), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
 
         toolbar.overrideUserInterfaceStyle = Theme.defaultTheme()["mode"] == "light" ? .light : .dark
-        
+
         addSubview(renderView)
-        addSubview(fallbackSafeAreaGradientView)
+        if #available(iOS 26.0, *) {
+            addSubview(immersiveModeManager.safeAreaGradientView)
+        } else {
+            addSubview(fallbackSafeAreaGradientView)
+        }
         addSubview(topBarContainer)
         addSubview(loadingViewContainer)
         addSubview(toolbar)
         renderView.scrollView.addSubview(refreshControlContainer)
+
+        immersiveModeManager.configure(
+            postsView: self,
+            navigationController: nil, // Will be set from PostsPageViewController
+            renderView: renderView,
+            toolbar: toolbar,
+            topBarContainer: topBarContainer
+        )
 
         scrollViewDelegateMux = ScrollViewDelegateMultiplexer(scrollView: renderView.scrollView)
         scrollViewDelegateMux?.addDelegate(self)
@@ -294,17 +331,12 @@ final class PostsPageView: UIView {
             width: bounds.width - layoutMargins.left - layoutMargins.right,
             height: bounds.height)
 
+        if #available(iOS 26.0, *) {
+            immersiveModeManager.updateGradientLayout(in: self)
+        }
+
         if toolbar.transform == .identity {
             let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
-            // On iPad / Mac (Designed for iPad), the system safe area at the
-            // bottom can be 0 (windowed multitasking, Catalyst), which would
-            // pin the toolbar flush against the window's bottom edge. Enforce
-            // a minimum bottom inset so the toolbar reads as aligned with the
-            // sidebar's RootTabBar instead of disappearing off the bottom.
-            let minimumPadBottomInset: CGFloat = 28
-            let effectiveBottomInset: CGFloat = traitCollection.userInterfaceIdiom == .pad
-                ? max(layoutMargins.bottom, minimumPadBottomInset)
-                : layoutMargins.bottom
             toolbar.frame = CGRect(
                 x: bounds.minX + layoutMargins.left,
                 y: bounds.maxY - effectiveBottomInset - toolbarHeight,
@@ -322,12 +354,20 @@ final class PostsPageView: UIView {
             height: refreshControlHeight)
 
         let topBarHeight = topBarContainer.layoutFittingCompressedHeight(targetWidth: bounds.width)
+
+        let normalY = bounds.minY + layoutMargins.top
+        let topBarY = immersiveModeManager.shouldPositionTopBarForImmersive()
+            ? immersiveModeManager.calculateTopBarY(normalY: normalY)
+            : normalY
+
         topBarContainer.frame = CGRect(
             x: bounds.minX + layoutMargins.left,
-            y: bounds.minY + layoutMargins.top,
+            y: topBarY,
             width: bounds.width - layoutMargins.left - layoutMargins.right,
             height: topBarHeight)
         updateTopBarContainerFrameAndScrollViewInsets()
+
+        immersiveModeManager.reapplyTransformsAfterLayout()
     }
 
     /// Assumes that various views (top bar container, refresh control container, toolbar) have been laid out.
@@ -352,7 +392,12 @@ final class PostsPageView: UIView {
 
     private func calculateBottomInset() -> CGFloat {
         let normalInset = bounds.maxY - toolbar.frame.minY
-        return normalInset
+
+        if immersiveModeManager.shouldAdjustScrollInsets() {
+            return immersiveModeManager.calculateBottomInset(fallbackInset: normalInset)
+        } else {
+            return normalInset
+        }
     }
 
     @objc private func voiceOverStatusDidChange(_ notification: Notification) {
@@ -394,6 +439,10 @@ final class PostsPageView: UIView {
         }
 
         topBar.themeDidChange(Theme.defaultTheme())
+
+        if #available(iOS 26.0, *) {
+            immersiveModeManager.safeAreaGradientView.themeDidChange()
+        }
     }
 
     // MARK: Gunk
@@ -594,6 +643,8 @@ extension PostsPageView {
 extension PostsPageView: ScrollViewDelegateExtras {
     func scrollViewDidChangeContentSize(_ scrollView: UIScrollView) {
         setNeedsLayout()
+
+        immersiveModeManager.handleScrollViewDidChangeContentSize(scrollView)
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -603,9 +654,18 @@ extension PostsPageView: ScrollViewDelegateExtras {
             renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
             viewHasBeenScrolledOnce = true
         }
+
+        immersiveModeManager.handleScrollViewWillBeginDragging(scrollView)
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+
+        immersiveModeManager.handleScrollViewWillEndDragging(
+            scrollView,
+            withVelocity: velocity,
+            targetContentOffset: targetContentOffset,
+            isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
+        )
 
         switch refreshControlState {
         case .armed, .triggered:
@@ -613,15 +673,18 @@ extension PostsPageView: ScrollViewDelegateExtras {
             break
 
         case .ready, .awaitingScrollEnd, .refreshing, .disabled:
-            switch topBarState {
-            case .hidden where velocity.y < 0:
-                topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
+            // Only handle top bar if immersive mode is disabled
+            if !immersiveModeManager.shouldPositionTopBarForImmersive() {
+                switch topBarState {
+                case .hidden where velocity.y < 0:
+                    topBarState = .appearing(fromContentOffset: scrollView.contentOffset)
 
-            case .visible where velocity.y > 0:
-                topBarState = .disappearing(fromContentOffset: scrollView.contentOffset)
+                case .visible where velocity.y > 0:
+                    topBarState = .disappearing(fromContentOffset: scrollView.contentOffset)
 
-            case .hidden, .visible, .appearing, .disappearing, .alwaysVisible:
-                break
+                case .hidden, .visible, .appearing, .disappearing, .alwaysVisible:
+                    break
+                }
             }
         }
     }
@@ -643,6 +706,12 @@ extension PostsPageView: ScrollViewDelegateExtras {
 
         if !willDecelerate {
             updateTopBarDidEndDecelerating()
+
+            immersiveModeManager.handleScrollViewDidEndDragging(
+                scrollView,
+                willDecelerate: willDecelerate,
+                isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
+            )
         }
 
         willBeginDraggingContentOffset = nil
@@ -658,6 +727,11 @@ extension PostsPageView: ScrollViewDelegateExtras {
         }
 
         updateTopBarDidEndDecelerating()
+
+        immersiveModeManager.handleScrollViewDidEndDecelerating(
+            scrollView,
+            isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
+        )
     }
 
     private func updateTopBarDidEndDecelerating() {
@@ -714,6 +788,13 @@ extension PostsPageView: ScrollViewDelegateExtras {
         case (.disabled, _), (.ready, _), (.awaitingScrollEnd, _), (.refreshing, _):
             break
         }
+
+        immersiveModeManager.handleScrollViewDidScroll(
+            scrollView,
+            isDragging: scrollView.isDragging,
+            isDecelerating: scrollView.isDecelerating,
+            isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
+        )
 
         switch topBarState {
         case .appearing, .disappearing:

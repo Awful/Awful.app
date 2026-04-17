@@ -228,6 +228,27 @@ final class NavigationController: UINavigationController, Themeable {
     var isScrolledFromTop = false
     private var lastAppliedScrollProgress: CGFloat = -1
 
+    // MARK: Scroll-driven appearance caches
+    //
+    // `updateNavigationBarTintForScrollProgress` rebuilds a UINavigationBarAppearance on
+    // every scroll delta above 0.005. Cache the expensive pieces so scroll-driven updates
+    // don't re-allocate/redraw identical resources each frame.
+    private var cachedGradientImage: UIImage?
+    private var cachedGradientImageColor: UIColor?
+    private lazy var cachedBackIndicatorTemplate: UIImage? = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate)
+    private lazy var cachedBackIndicatorLabelTinted: UIImage? = UIImage(named: "back")?.withTintColor(.label, renderingMode: .alwaysOriginal)
+
+    @available(iOS 26.0, *)
+    private func gradientBackgroundImage(from color: UIColor) -> UIImage? {
+        if let cached = cachedGradientImage, cachedGradientImageColor == color {
+            return cached
+        }
+        let image = createGradientBackgroundImage(from: color)
+        cachedGradientImage = image
+        cachedGradientImageColor = color
+        return image
+    }
+
     func statusBarEnterLightBackground() {
         isDarkContentBackground = false
         setNeedsStatusBarAppearanceUpdate()
@@ -321,6 +342,8 @@ final class NavigationController: UINavigationController, Themeable {
 
     func themeDidChange() {
         lastAppliedScrollProgress = -1
+        cachedGradientImage = nil
+        cachedGradientImageColor = nil
         updateNavigationBarAppearance(with: theme)
 
         if #available(iOS 26.0, *) {
@@ -572,13 +595,26 @@ final class NavigationController: UINavigationController, Themeable {
 
         let progressValue = CGFloat(progress.floatValue)
 
+        // Snap to the extremes: near-0 and near-1 scrolls render identically to 0 and 1,
+        // so collapse them into a single stable value. Without this, oscillations around
+        // the boundaries (e.g. 0.003 → 0.009 → 0.002) each clear the 0.005 delta gate
+        // and rebuild the appearance even though the visual result is unchanged.
+        let snappedProgress: CGFloat
+        if progressValue < ScrollProgress.atTop {
+            snappedProgress = 0
+        } else if progressValue > ScrollProgress.fullyScrolled {
+            snappedProgress = 1
+        } else {
+            snappedProgress = progressValue
+        }
+
         // Avoid redundant appearance rebuilds when progress hasn't changed.
-        if abs(progressValue - lastAppliedScrollProgress) < 0.005 {
+        if abs(snappedProgress - lastAppliedScrollProgress) < 0.005 {
             return
         }
-        lastAppliedScrollProgress = progressValue
+        lastAppliedScrollProgress = snappedProgress
 
-        updateNavigationBarBackgroundWithProgress(progressValue)
+        updateNavigationBarBackgroundWithProgress(snappedProgress)
 
         if progressValue < ScrollProgress.atTop {
             isScrolledFromTop = false
@@ -649,7 +685,7 @@ final class NavigationController: UINavigationController, Themeable {
                 return
             }
 
-            if let gradientImage = createGradientBackgroundImage(from: gradientBaseColor) {
+            if let gradientImage = gradientBackgroundImage(from: gradientBaseColor) {
                 appearance.backgroundImage = gradientImage
                 let overlayAlpha = 1.0 - progress
                 appearance.backgroundColor = opaqueColor.withAlphaComponent(overlayAlpha)
@@ -667,14 +703,11 @@ final class NavigationController: UINavigationController, Themeable {
 
     @available(iOS 26.0, *)
     private func configureBackIndicator(for appearance: UINavigationBarAppearance, progress: CGFloat) {
-        if progress > ScrollProgress.fullyScrolled {
-            if let backImage = UIImage(named: "back")?.withTintColor(.label, renderingMode: .alwaysOriginal) {
-                appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
-            }
-        } else {
-            if let backImage = UIImage(named: "back")?.withRenderingMode(.alwaysTemplate) {
-                appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
-            }
+        let backImage = progress > ScrollProgress.fullyScrolled
+            ? cachedBackIndicatorLabelTinted
+            : cachedBackIndicatorTemplate
+        if let backImage {
+            appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         }
     }
 

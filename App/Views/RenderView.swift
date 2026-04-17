@@ -645,7 +645,7 @@ extension RenderView {
             }
         }
     }
-    
+
     /// Turns each link with a `data-awful-linkified-image` attribute into a a proper `img` element.
     func loadLinkifiedImages() {
         Task {

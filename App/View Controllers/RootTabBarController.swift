@@ -86,8 +86,8 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
             tabBar.standardAppearance = barAppearance
         } else {
             barAppearance.configureWithOpaqueBackground()
-            barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]!
-            barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]!
+            barAppearance.backgroundColor = theme[uicolor: "tabBarBackgroundColor"]
+            barAppearance.shadowColor = theme[uicolor: "bottomBarTopBorderColor"]
 
             tabBar.isTranslucent = false
             tabBar.barTintColor = theme["tabBarBackgroundColor"]

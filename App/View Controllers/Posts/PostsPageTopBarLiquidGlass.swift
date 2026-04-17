@@ -75,7 +75,7 @@ final class PostsPageTopBarLiquidGlass: UIView, PostsPageTopBarProtocol {
         private let label: UILabel
 
         override init(frame: CGRect) {
-            let glassEffect = UIGlassEffect()
+            let glassEffect = UIGlassEffect(style: .clear)
             glassView = UIVisualEffectView(effect: glassEffect)
             glassView.translatesAutoresizingMaskIntoConstraints = false
             glassView.isUserInteractionEnabled = false

@@ -596,6 +596,9 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
@@ -611,6 +614,9 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
@@ -664,6 +670,9 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }()
 
@@ -675,7 +684,7 @@ final class PostsPageViewController: ViewController {
                 if self.enableHaptics {
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                 }
-                
+
                 // Get the sender and find its frame
                 if let barButtonItem = action.sender as? UIBarButtonItem,
                    let view = barButtonItem.value(forKey: "view") as? UIView {
@@ -689,6 +698,9 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Thread actions"
+        if #unavailable(iOS 26.0) {
+            item.tintColor = theme["toolbarTextColor"]
+        }
         return item
     }
 
@@ -1749,12 +1761,15 @@ final class PostsPageViewController: ViewController {
         }
 
         let appearance = UIToolbarAppearance()
-        if (postsView.toolbar.isTranslucent) {
+        if #available(iOS 26.0, *), postsView.toolbar.isTranslucent {
             appearance.configureWithDefaultBackground()
         } else {
+            // Force opaque on iOS <26. Otherwise the toolbar renders
+            // translucent on iPad iOS 18 and post content bleeds through.
+            postsView.toolbar.isTranslucent = false
             appearance.configureWithOpaqueBackground()
         }
-        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]
         appearance.shadowImage = nil
         appearance.shadowColor = nil
 
@@ -1793,6 +1808,14 @@ final class PostsPageViewController: ViewController {
         postsView.insetsLayoutMarginsFromSafeArea = false
         postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
+
+        postsView.immersiveModeManager.configure(
+            postsView: postsView,
+            navigationController: navigationController,
+            renderView: postsView.renderView,
+            toolbar: postsView.toolbar,
+            topBarContainer: postsView.topBarContainer
+        )
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPressOnPostsView))
         longPress.delegate = self
@@ -1964,6 +1987,11 @@ final class PostsPageViewController: ViewController {
         super.viewDidAppear(animated)
 
         configureUserActivityIfPossible()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        postsView.immersiveModeManager.exitImmersiveMode()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
