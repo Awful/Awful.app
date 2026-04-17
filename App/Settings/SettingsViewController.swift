@@ -6,15 +6,11 @@ import AwfulSettingsUI
 import AwfulTheming
 import Combine
 import CoreData
-import os
 import SwiftUI
-import UniformTypeIdentifiers
-
-private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SettingsViewController")
 
 final class SettingsViewController: HostingController<SettingsContainerView> {
     let managedObjectContext: NSManagedObjectContext
-    private var cacheSizeText: CurrentValueSubject<String, Never> = .init("Calculating…")
+    private var cacheSizeText: CurrentValueSubject<String, Never>!
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -38,11 +34,9 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             cacheSizeText: cacheSizeText,
             currentUser: currentUser,
             emptyCache: { box.contents.emptyCache() },
-            exportSettings: { box.contents.exportSettings() },
             goToAwfulThread: { box.contents.goToAwfulThread() },
             // Not sure how to tell for real, seems like a decent proxy?
             hasRegularSizeClassInLandscape: UIDevice.current.userInterfaceIdiom == .pad || UIScreen.main.scale > 2,
-            importSettings: { box.contents.importSettings() },
             isMac: ProcessInfo.processInfo.isMacCatalystApp,
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
@@ -57,10 +51,36 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         tabBarItem.selectedImage = UIImage(named: "cog-filled")
 
         themeDidChange()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func dataStoreDidReset() {
+        // The current User object is tied to the old store. Re-fetch (findOrCreate) so the
+        // Settings header doesn't crash when it tries to fault the invalidated object.
+        let newUser = managedObjectContext.performAndWait {
+            User.objectForKey(objectKey: UserKey(
+                userID: UserDefaults.standard.value(for: Settings.userID)!,
+                username: UserDefaults.standard.value(for: Settings.username)
+            ), in: managedObjectContext)
+        }
+        rootView = SettingsContainerView(
+            appIconDataSource: rootView.appIconDataSource,
+            cacheSizeText: rootView.cacheSizeText,
+            currentUser: newUser,
+            emptyCache: rootView.emptyCache,
+            goToAwfulThread: rootView.goToAwfulThread,
+            hasRegularSizeClassInLandscape: rootView.hasRegularSizeClassInLandscape,
+            isMac: rootView.isMac,
+            isPad: rootView.isPad,
+            logOut: rootView.logOut,
+            managedObjectContext: rootView.managedObjectContext,
+            resetSettings: rootView.resetSettings
+        )
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -71,40 +91,18 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
     private func refreshCacheSize() {
         Task {
             let size = await AppDelegate.instance.calculateCacheSize()
-            let measurement = Measurement(value: Double(size), unit: UnitInformationStorage.bytes)
-            let formatted: String
-            if size < 1_000_000 {
-                formatted = measurement.converted(to: .kilobytes).formatted(
-                    .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(0)))
-                )
-            } else {
-                formatted = measurement.converted(to: .megabytes).formatted(
-                    .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1)))
-                )
-            }
-            cacheSizeText.send(formatted)
+            cacheSizeText.send(Self.formatByteCount(size))
         }
     }
 
     func emptyCache() {
         Task {
             let sizeBefore = await AppDelegate.instance.calculateCacheSize()
-            await AppDelegate.instance.emptyCache()
+            await AppDelegate.instance.emptyCacheAndResetStore()
             let sizeAfter = await AppDelegate.instance.calculateCacheSize()
 
-            let delta = sizeBefore - sizeAfter
-            let measurement = Measurement(value: Double(max(delta, 0)), unit: UnitInformationStorage.bytes)
-            let formatted: String
-            if delta < 1_000_000 {
-                formatted = measurement.converted(to: .kilobytes).formatted(
-                    .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(0)))
-                )
-            } else {
-                formatted = measurement.converted(to: .megabytes).formatted(
-                    .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1)))
-                )
-            }
-            let message = "You cleared \(formatted)! Some system-managed files can't be removed, so a small amount of cache usage is normal."
+            let delta = max(sizeBefore - sizeAfter, 0)
+            let message = "You cleared \(Self.formatByteCount(delta))! Some system-managed files can't be removed, so a small amount of cache usage is normal."
             let alertController = UIAlertController(title: "Cache Cleared", message: message, preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in
                 self.dismiss(animated: true)
@@ -112,6 +110,19 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             self.present(alertController, animated: true)
 
             refreshCacheSize()
+        }
+    }
+
+    private static func formatByteCount(_ bytes: Int64) -> String {
+        let measurement = Measurement(value: Double(bytes), unit: UnitInformationStorage.bytes)
+        if bytes < 1_000_000 {
+            return measurement.converted(to: .kilobytes).formatted(
+                .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(0)))
+            )
+        } else {
+            return measurement.converted(to: .megabytes).formatted(
+                .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1)))
+            )
         }
     }
 
@@ -128,37 +139,6 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         present(alert, animated: true)
     }
 
-    func exportSettings() {
-        do {
-            let data = try SettingsExporter.exportSettings()
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let filename = "awful-settings-\(dateFormatter.string(from: Date())).json"
-            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
-            try data.write(to: tempURL)
-
-            let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
-            activityVC.popoverPresentationController?.sourceView = view
-            activityVC.completionWithItemsHandler = { _, _, _, _ in
-                try? FileManager.default.removeItem(at: tempURL)
-            }
-            present(activityVC, animated: true)
-        } catch {
-            Log.error("Failed to export settings: \(error)")
-            let alert = UIAlertController(title: "Export Failed", message: error.localizedDescription, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-        }
-    }
-
-    func importSettings() {
-        let types = [UTType.json]
-        let picker = UIDocumentPickerViewController(forOpeningContentTypes: types)
-        picker.delegate = self
-        picker.allowsMultipleSelection = false
-        present(picker, animated: true)
-    }
-
     func goToAwfulThread() {
         AppDelegate.instance.open(route: .threadPage(threadID: "3837546", page: .nextUnread, .seen))
     }
@@ -172,43 +152,6 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         } else {
             tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             tabBarItem.title = title
-        }
-    }
-}
-
-extension SettingsViewController: UIDocumentPickerDelegate {
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let url = urls.first else { return }
-
-        guard url.startAccessingSecurityScopedResource() else {
-            let alert = UIAlertController(title: "Import Failed", message: "Could not access the selected file.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-            return
-        }
-        defer { url.stopAccessingSecurityScopedResource() }
-
-        do {
-            let data = try Data(contentsOf: url)
-            let result = try SettingsExporter.importSettings(from: data)
-
-            var message = "Successfully applied \(result.appliedCount) setting\(result.appliedCount == 1 ? "" : "s")."
-            if result.isOlderBuild, !result.missingKeys.isEmpty {
-                message += "\n\nThis file was exported from an older version of Awful (build \(result.exportBuildNumber ?? "unknown")). \(result.missingKeys.count) newer setting\(result.missingKeys.count == 1 ? " was" : "s were") not included and will use default values."
-            }
-
-            let alert = UIAlertController(
-                title: "Settings Imported",
-                message: message,
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-        } catch {
-            Log.error("Failed to import settings: \(error)")
-            let alert = UIAlertController(title: "Import Failed", message: error.localizedDescription, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
         }
     }
 }
@@ -256,10 +199,8 @@ struct SettingsContainerView: View {
     let cacheSizeText: CurrentValueSubject<String, Never>
     @ObservedObject var currentUser: User
     let emptyCache: () -> Void
-    let exportSettings: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
-    let importSettings: () -> Void
     let isMac: Bool
     let isPad: Bool
     let logOut: () -> Void
@@ -276,10 +217,8 @@ struct SettingsContainerView: View {
             canOpenURL: UIApplication.shared.canOpenURL(_:),
             currentUsername: currentUser.username ?? "",
             emptyCache: emptyCache,
-            exportSettings: exportSettings,
             goToAwfulThread: goToAwfulThread,
             hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
-            importSettings: importSettings,
             isMac: isMac,
             isPad: isPad,
             logOut: logOut,

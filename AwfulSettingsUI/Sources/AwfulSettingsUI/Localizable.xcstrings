@@ -70,7 +70,7 @@
     "Clear Cache" : {
 
     },
-    "Clearing the cache removes all downloaded images, web data, and temporary files. Resetting settings restores all preferences to their defaults." : {
+    "Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts. Resetting settings restores all preferences to their defaults." : {
 
     },
     "Dark Mode" : {
@@ -106,9 +106,6 @@
     "Enable Haptics" : {
 
     },
-    "Export Settings" : {
-
-    },
     "Forum-Specific Themes" : {
 
     },
@@ -133,9 +130,6 @@
     "Immersive Mode" : {
 
     },
-    "Import Settings" : {
-
-    },
     "Links" : {
 
     },
@@ -143,9 +137,6 @@
 
     },
     "Log Out" : {
-
-    },
-    "Logging out erases cached forums, threads, and posts. Your settings and preferences will be preserved." : {
 
     },
     "New Smilie Picker" : {

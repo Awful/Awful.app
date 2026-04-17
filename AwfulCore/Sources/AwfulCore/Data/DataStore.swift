@@ -13,7 +13,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 
 public final class DataStore: NSObject {
     /// A directory in which the store is saved. Since stores can span multiple files, a directory is required.
-    let storeDirectoryURL: URL
+    public let storeDirectoryURL: URL
     
     /// A main-queue-concurrency-type context that is automatically saved when the application enters the background.
     public let mainManagedObjectContext: NSManagedObjectContext
@@ -165,7 +165,7 @@ public final class DataStore: NSObject {
         invalidatePruneTimer()
         operationQueue.cancelAllOperations()
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: DataStoreWillResetNotification), object: self)
+        NotificationCenter.default.post(name: .dataStoreWillReset, object: self)
         
         mainManagedObjectContext.reset()
         if let persistentStore = persistentStore {
@@ -188,7 +188,7 @@ public final class DataStore: NSObject {
         
         loadPersistentStore()
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: DataStoreDidResetNotification), object: self)
+        NotificationCenter.default.post(name: .dataStoreDidReset, object: self)
     }
 }
 
@@ -223,8 +223,13 @@ public final class LastModifiedContextObserver: NSObject {
     }
 }
 
-/// Posted when a data store (the notification's object) is about to delete its persistent data. Please relinquish any references you may have to managed objects originating from the data store, as they are now invalid.
-let DataStoreWillResetNotification = "Data store will be deleted"
+public extension Notification.Name {
+    /// Posted when a data store (the notification's object) is about to delete its persistent
+    /// data. Observers must relinquish any references to managed objects originating from the
+    /// store, as they are now invalid.
+    static let dataStoreWillReset = Notification.Name("DataStoreWillReset")
 
-/// Posted once a data store (the notification's object) has deleted its persistent data. Managed objects can once again be inserted into, fetched from, and updated in the data store.
-let DataStoreDidResetNotification = "Data store did reset"
+    /// Posted once a data store (the notification's object) has deleted its persistent data.
+    /// Managed objects can once again be inserted into, fetched from, and updated in the store.
+    static let dataStoreDidReset = Notification.Name("DataStoreDidReset")
+}

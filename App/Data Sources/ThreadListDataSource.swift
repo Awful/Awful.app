@@ -104,6 +104,19 @@ final class ThreadListDataSource: NSObject {
         tableView.register(ThreadListCell.self, forCellReuseIdentifier: threadCellIdentifier)
 
         resultsController.delegate = self
+
+        NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
+    }
+
+    @objc private func dataStoreDidReset() {
+        // The old store's objects are no longer reachable from the coordinator. Re-fetch
+        // against the fresh store so the FRC's cache stops pointing at dangling objectIDs.
+        do {
+            try resultsController.performFetch()
+        } catch {
+            Log.error("Failed to re-fetch after data store reset: \(error)")
+        }
+        tableView.reloadData()
     }
 
     func indexPath(of thread: AwfulThread) -> IndexPath? {

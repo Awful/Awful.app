@@ -45,10 +45,8 @@ public struct SettingsView: View {
     let canOpenURL: (URL) -> Bool
     let currentUsername: String
     let emptyCache: () -> Void
-    let exportSettings: () -> Void
     let goToAwfulThread: () -> Void
     let hasRegularSizeClassInLandscape: Bool
-    let importSettings: () -> Void
     let isMac: Bool
     let isPad: Bool
     let logOut: () -> Void
@@ -88,10 +86,8 @@ public struct SettingsView: View {
         canOpenURL: @escaping (URL) -> Bool,
         currentUsername: String,
         emptyCache: @escaping () -> Void,
-        exportSettings: @escaping () -> Void,
         goToAwfulThread: @escaping () -> Void,
         hasRegularSizeClassInLandscape: Bool,
-        importSettings: @escaping () -> Void,
         isMac: Bool,
         isPad: Bool,
         logOut: @escaping () -> Void,
@@ -103,10 +99,8 @@ public struct SettingsView: View {
         self.canOpenURL = canOpenURL
         self.currentUsername = currentUsername
         self.emptyCache = emptyCache
-        self.exportSettings = exportSettings
         self.goToAwfulThread = goToAwfulThread
         self.hasRegularSizeClassInLandscape = hasRegularSizeClassInLandscape
-        self.importSettings = importSettings
         self.isMac = isMac
         self.isPad = isPad
         self.logOut = logOut
@@ -135,9 +129,6 @@ public struct SettingsView: View {
                     Text(currentUsername)
                 }
                 .header()
-            } footer: {
-                Text("Logging out erases cached forums, threads, and posts. Your settings and preferences will be preserved.", bundle: .module)
-                    .footer()
             }
             .section()
 
@@ -323,13 +314,11 @@ public struct SettingsView: View {
                     }
                 }
                 Button("Reset All Settings", bundle: .module) { resetSettings() }
-                Button("Export Settings", bundle: .module) { exportSettings() }
-                Button("Import Settings", bundle: .module) { importSettings() }
             } header: {
                 Text("Data Management", bundle: .module)
                     .header()
             } footer: {
-                Text("Clearing the cache removes all downloaded images, web data, and temporary files. Resetting settings restores all preferences to their defaults.", bundle: .module)
+                Text("Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts. Resetting settings restores all preferences to their defaults.", bundle: .module)
                     .footer()
             }
             .section()
@@ -395,10 +384,8 @@ private struct SectionModifier: ViewModifier {
             canOpenURL: { _ in true },
             currentUsername: "Random Newbie",
             emptyCache: { print("emptying cache") },
-            exportSettings: { print("exporting settings") },
             goToAwfulThread: { print("navigating to Awful's thread") },
             hasRegularSizeClassInLandscape: true,
-            importSettings: { print("importing settings") },
             isMac: false,
             isPad: true,
             logOut: { print("logging out") },

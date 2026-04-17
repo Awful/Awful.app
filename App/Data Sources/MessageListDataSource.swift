@@ -36,6 +36,19 @@ final class MessageListDataSource: NSObject {
         tableView.register(MessageListCell.self, forCellReuseIdentifier: cellReuseIdentifier)
 
         resultsController.delegate = self
+
+        NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
+    }
+
+    @objc private func dataStoreDidReset() {
+        // Old store's objects are no longer reachable from the coordinator. Re-fetch so
+        // the FRC's cache stops pointing at dangling objectIDs.
+        do {
+            try resultsController.performFetch()
+        } catch {
+            Log.error("Failed to re-fetch after data store reset: \(error)")
+        }
+        tableView.reloadData()
     }
 
     func message(at indexPath: IndexPath) -> PrivateMessage {

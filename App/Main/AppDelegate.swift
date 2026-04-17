@@ -160,8 +160,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         setRootViewController(loginVC.enclosingNavigationController, animated: true) { [weak self] in
             self?._rootViewControllerStack = nil
             self?.urlRouter = nil
-            
-            self?.dataStore.deleteStoreAndReset()
         }
     }
     
@@ -170,33 +168,52 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         ImagePipeline.shared.cache.removeAll()
 
         // Clear WKWebView data (cookies, cache, localStorage, etc.)
-        let dataStore = WKWebsiteDataStore.default()
+        let webDataStore = WKWebsiteDataStore.default()
         let dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
-        await dataStore.removeData(ofTypes: dataTypes, modifiedSince: .distantPast)
+        await webDataStore.removeData(ofTypes: dataTypes, modifiedSince: .distantPast)
 
         // Clear external stylesheet cache
         PostsViewExternalStylesheetLoader.shared.clearCache()
     }
 
-    func calculateCacheSize() async -> Int64 {
-        var totalSize: Int64 = 0
-        let fileManager = FileManager.default
+    /// Clears all caches *and* deletes the Core Data store (cached forums, threads, posts).
+    /// Used by the Settings "Clear Cache" button; logout intentionally does not call this.
+    func emptyCacheAndResetStore() async {
+        await emptyCache()
 
-        // Caches directory (includes URLCache, Nuke disk cache, external stylesheet, etc.)
-        if let cachesURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
-            totalSize += Self.directorySize(at: cachesURL)
-        }
-
-        // WKWebView data is typically stored in Library/WebKit
-        if let libraryURL = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first {
-            let webKitDir = libraryURL.appendingPathComponent("WebKit", isDirectory: true)
-            totalSize += Self.directorySize(at: webKitDir)
-        }
-
-        return totalSize
+        // ForumsClient's background MOC retains objects tied to the old persistent store,
+        // so cycle its MOC around the reset — otherwise a subsequent save-notification
+        // merge tries to reach the deleted store and crashes.
+        ForumsClient.shared.managedObjectContext = nil
+        dataStore.deleteStoreAndReset()
+        ForumsClient.shared.managedObjectContext = managedObjectContext
     }
 
-    static func directorySize(at url: URL) -> Int64 {
+    func calculateCacheSize() async -> Int64 {
+        let storeDirectoryURL = dataStore.storeDirectoryURL
+        return await Task.detached(priority: .utility) {
+            var totalSize: Int64 = 0
+            let fileManager = FileManager.default
+
+            // Caches directory (includes URLCache, Nuke disk cache, external stylesheet, etc.)
+            if let cachesURL = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+                totalSize += Self.directorySize(at: cachesURL)
+            }
+
+            // WKWebView data is typically stored in Library/WebKit
+            if let libraryURL = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first {
+                let webKitDir = libraryURL.appendingPathComponent("WebKit", isDirectory: true)
+                totalSize += Self.directorySize(at: webKitDir)
+            }
+
+            // Core Data store (cached forums, threads, posts)
+            totalSize += Self.directorySize(at: storeDirectoryURL)
+
+            return totalSize
+        }.value
+    }
+
+    nonisolated static func directorySize(at url: URL) -> Int64 {
         let fileManager = FileManager.default
         guard let enumerator = fileManager.enumerator(
             at: url,

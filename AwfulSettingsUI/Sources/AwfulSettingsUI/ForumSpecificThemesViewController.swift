@@ -42,9 +42,15 @@ final class ForumSpecificThemesViewController: TableViewController {
         try! resultsController.performFetch()
 
         NotificationCenter.default.addObserver(self, selector: #selector(forumSpecificThemeDidChange), name: Theme.themeForForumDidChangeNotification, object: Theme.self)
+        NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
     }
 
     @objc private func forumSpecificThemeDidChange(_ notification: Notification) {
+        tableView.reloadData()
+    }
+
+    @objc private func dataStoreDidReset() {
+        try? resultsController.performFetch()
         tableView.reloadData()
     }
 
