@@ -28,10 +28,20 @@ final class PostsPageView: UIView {
 
     let immersiveModeManager = ImmersiveModeManager()
 
-    /// Effective bottom inset used to position the toolbar: honors the system safe area
-    /// on iPhone, and raises the toolbar to `minimumPadBottomInset` on iPad when needed.
+    /// Effective bottom inset used to position the toolbar: honors the system safe
+    /// area on iPhone, and raises the toolbar to `minimumPadBottomInset` on iPad
+    /// so it aligns with the sidebar's RootTabBar.
+    ///
+    /// Gated to iOS 26+ because pre-26 toolbars are opaque — raising the
+    /// toolbar above the system safe area leaves a gap between the toolbar's
+    /// bottom edge and the window edge that exposes scroll content behind it.
+    /// On iOS 26 the glass material and layout read differently, so the
+    /// sidebar-alignment nudge looks correct there.
     var effectiveBottomInset: CGFloat {
-        traitCollection.userInterfaceIdiom == .pad
+        guard #available(iOS 26.0, *) else {
+            return layoutMargins.bottom
+        }
+        return traitCollection.userInterfaceIdiom == .pad
             ? max(layoutMargins.bottom, Self.minimumPadBottomInset)
             : layoutMargins.bottom
     }
@@ -76,17 +86,21 @@ final class PostsPageView: UIView {
                 let containerMargins = refreshControlContainer.layoutMarginsGuide
                 
                 if frogAndGhostEnabled == false {
+                    // Horizontal anchors use PostsPageView's layoutMarginsGuide so the
+                    // arrow centers within the visible detail column on iPad/macOS
+                    // rather than within the full scroll-view width.
                     NSLayoutConstraint.activate([
-                        refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
-                        containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                        refreshControl.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor),
+                        layoutMarginsGuide.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
                         refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
                         containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)])
                 } else {
                     if refreshControl is PostsPageRefreshArrowView {
+                        // Same reasoning as the frog spinner below.
                         NSLayoutConstraint.activate([
-                            refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
+                            refreshControl.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor),
                             refreshControl.topAnchor.constraint(equalTo: containerMargins.topAnchor),
-                            containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                            layoutMarginsGuide.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
                             containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor)
                         ])
                     }

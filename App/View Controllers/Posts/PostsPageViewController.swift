@@ -1761,12 +1761,15 @@ final class PostsPageViewController: ViewController {
         }
 
         let appearance = UIToolbarAppearance()
-        if (postsView.toolbar.isTranslucent) {
+        if #available(iOS 26.0, *), postsView.toolbar.isTranslucent {
             appearance.configureWithDefaultBackground()
         } else {
+            // Force opaque on iOS <26. Otherwise the toolbar renders
+            // translucent on iPad iOS 18 and post content bleeds through.
+            postsView.toolbar.isTranslucent = false
             appearance.configureWithOpaqueBackground()
         }
-        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]!
+        appearance.backgroundColor = Theme.defaultTheme()["backgroundColor"]
         appearance.shadowImage = nil
         appearance.shadowColor = nil
 

@@ -8,8 +8,10 @@ import AwfulSettings
 
 // MARK: - ImmersiveModeManager
 
-/// Manages immersive mode behavior for posts view
-/// Handles hiding/showing navigation bars and toolbars with scroll gestures
+/// Hides and shows the navigation bar, top-bar container, and toolbar in
+/// response to scrolling on the posts page. Bars slide off-screen during
+/// normal scroll (transform-driven) and fade in via alpha when the user
+/// nears the bottom of the webview.
 @MainActor
 final class ImmersiveModeManager: NSObject {
 
@@ -25,8 +27,6 @@ final class ImmersiveModeManager: NSObject {
     private static let minScrollDelta: CGFloat = 0.5
     private static let snapToHiddenThreshold: CGFloat = 0.9
     private static let snapToVisibleThreshold: CGFloat = 0.1
-    private static let bottomSnapThreshold: CGFloat = 0.15
-    private static let bottomDistanceThreshold: CGFloat = 5.0
     private static let progressiveRevealMultiplier: CGFloat = 2.0
 
     // MARK: - Dependencies
@@ -39,7 +39,6 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Configuration
 
-    /// Whether immersive mode is enabled in settings
     @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled {
         didSet {
             if immersiveModeEnabled && !oldValue {
@@ -59,13 +58,12 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - State Properties
 
-    /// Whether scroll events should be processed for immersive mode
     private var shouldProcessScroll: Bool {
         immersiveModeEnabled
         && !UIAccessibility.isVoiceOverRunning
     }
 
-    /// Immersive mode progress (0.0 = bars fully visible, 1.0 = bars fully hidden)
+    /// 0.0 = bars fully visible, 1.0 = bars fully hidden.
     private var _immersiveProgress: CGFloat = 0.0
     private var immersiveProgress: CGFloat {
         get { _immersiveProgress }
@@ -89,15 +87,17 @@ final class ImmersiveModeManager: NSObject {
     private var isUpdatingBars = false
     private var cachedTotalBarTravelDistance: CGFloat?
 
-    // Bottom fade mode state - used instead of sliding when at bottom of scroll
+    /// Bottom fade mode: when the user nears the bottom of the webview we
+    /// reveal the bars via alpha (0 → 1) instead of the slide transform, so
+    /// the final reveal doesn't snap while the scroll view is settling.
     private var isInBottomFadeMode = false
-    private var bottomFadeProgress: CGFloat = 0.0  // 0 = transparent, 1 = opaque
+    private var bottomFadeProgress: CGFloat = 0.0
 
-    /// True while the fade-in animation kicked off by `animateIntoBottomFade()`
-    /// is still running. `updateBarsForBottomFade` checks this so later scroll
-    /// ticks (e.g. `snapToVisibleIfAtBottom` from `didEndDecelerating`) don't
-    /// hammer alpha to 1 via CATransaction.setDisableActions and cancel the
-    /// in-flight CAAnimation.
+    /// True while `animateIntoBottomFade()`'s UIView.animate is still running.
+    /// `updateBarsForBottomFade` checks this so later scroll ticks (e.g. from
+    /// `snapToVisibleIfAtBottom` on `didEndDecelerating`) don't cancel the
+    /// in-flight CAAnimation by hammering alpha to 1 via a disabled-actions
+    /// transaction.
     private var isFadingIntoBottom = false
 
     // MARK: - UI Elements
@@ -111,7 +111,6 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Computed Properties
 
-    /// Actual distance bars travel when hiding (calculated dynamically based on bar heights)
     private var totalBarTravelDistance: CGFloat {
         if let cached = cachedTotalBarTravelDistance {
             return cached
@@ -135,14 +134,12 @@ final class ImmersiveModeManager: NSObject {
         return cachedTotalBarTravelDistance ?? 100
     }
 
-    /// Check if content is scrollable enough to warrant immersive mode
     private var isContentScrollableEnoughForImmersive: Bool {
         guard let scrollView = renderView?.scrollView else { return false }
         let scrollableHeight = scrollView.contentSize.height - scrollView.bounds.height + scrollView.adjustedContentInset.bottom
         return scrollableHeight > (totalBarTravelDistance * 2)
     }
 
-    /// Configure the manager with required view references
     func configure(
         postsView: PostsPageView,
         navigationController: UINavigationController?,
@@ -160,7 +157,7 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Public Methods
 
-    /// Force exit immersive mode (useful for scroll-to-top/bottom actions)
+    /// Force-reveal bars (e.g. when leaving the posts view).
     func exitImmersiveMode() {
         guard immersiveModeEnabled else { return }
 
@@ -203,9 +200,8 @@ final class ImmersiveModeManager: NSObject {
         )
     }
 
-    /// Apply immersive transforms after layout if needed
     func reapplyTransformsAfterLayout() {
-        // Invalidate cached distance as layout may have changed bar sizes
+        // Layout may have changed bar sizes, so invalidate the cached distance.
         cachedTotalBarTravelDistance = nil
 
         if immersiveModeEnabled && immersiveProgress > 0 {
@@ -274,7 +270,6 @@ final class ImmersiveModeManager: NSObject {
         snapToVisibleIfAtBottom(scrollView, isRefreshControlArmedOrTriggered: isRefreshControlArmedOrTriggered)
     }
 
-    /// Main scroll handling logic for immersive mode
     func handleScrollViewDidScroll(
         _ scrollView: UIScrollView,
         isDragging: Bool,
@@ -284,7 +279,8 @@ final class ImmersiveModeManager: NSObject {
         guard shouldProcessScroll,
               !isRefreshControlArmedOrTriggered else { return }
 
-        // Always check for bottom, even when not actively scrolling
+        // Check for bottom proximity even when not actively scrolling so the
+        // reveal fires during momentum scrolling too.
         let distanceFromBottom = calculateDistanceFromBottom(scrollView)
         let barTravelDistance = totalBarTravelDistance
         let bottomFadeZone = barTravelDistance * Self.progressiveRevealMultiplier
@@ -300,7 +296,6 @@ final class ImmersiveModeManager: NSObject {
             return
         }
 
-        // For everything else, require active scrolling
         guard isDragging || isDecelerating else { return }
 
         let currentOffset = scrollView.contentOffset.y
@@ -324,7 +319,6 @@ final class ImmersiveModeManager: NSObject {
             return
         }
 
-        // Handle fading out when scrolling away from bottom
         if isInBottomFadeMode {
             let fadeOutDistance: CGFloat = 50.0
             let distancePastThreshold = distanceFromBottom - bottomFadeZone
@@ -340,7 +334,8 @@ final class ImmersiveModeManager: NSObject {
             }
         }
 
-        // For normal sliding behavior, ignore tiny scroll deltas
+        // Ignore tiny scroll deltas so tap-to-stop and minor rubber-band wobble
+        // don't tick progress forward.
         guard abs(scrollDelta) > Self.minScrollDelta else {
             return
         }
@@ -353,8 +348,9 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Private Methods
 
-    /// Updates the visual state of navigation bars and toolbar based on current immersive progress
-    /// Uses CATransaction.setDisableActions to prevent implicit animations during scroll-driven transforms
+    /// Drives the slide transforms during normal scroll. Wrapped in a
+    /// disabled-actions transaction so implicit CA animations don't lag the
+    /// transforms behind the scroll gesture.
     private func updateBarsForImmersiveProgress() {
         guard !isUpdatingBars else { return }
 
@@ -366,11 +362,11 @@ final class ImmersiveModeManager: NSObject {
 
         CATransaction.begin()
         CATransaction.setDisableActions(true)
+        defer { CATransaction.commit() }
 
         guard immersiveModeEnabled && immersiveProgress > 0 else {
             safeAreaGradientView.alpha = 0.0
             resetAllTransforms()
-            CATransaction.commit()
             return
         }
 
@@ -387,15 +383,13 @@ final class ImmersiveModeManager: NSObject {
             let toolbarTransform = calculateToolbarTransform()
             toolbar.transform = CGAffineTransform(translationX: 0, y: toolbarTransform)
         }
-
-        CATransaction.commit()
     }
 
-    /// Smoothly fades bars back in when entering bottom fade mode. Previously
-    /// the entry was a snap: transforms reset to identity and alpha jumped to 1
-    /// in a single non-animated pass, so the bars popped into place. This zeros
-    /// the alphas while the bars are still translated off-screen, resets the
-    /// transforms (invisible because alpha is 0), then animates alpha back to 1.
+    /// Fades bars back in when entering bottom fade mode. Snaps to
+    /// "invisible at natural position" first (alphas to 0, transforms to
+    /// identity, implicit actions suppressed) then animates alpha to 1 on
+    /// the next runloop tick so the render server has observed the 0-alpha
+    /// state before the CAAnimation starts interpolating from it.
     private func animateIntoBottomFade() {
         guard !isUpdatingBars else { return }
         isUpdatingBars = true
@@ -403,9 +397,6 @@ final class ImmersiveModeManager: NSObject {
 
         let navBar = findNavigationBar()
 
-        // Snap to the "invisible at natural position" starting state in the
-        // current runloop tick: alphas to 0 and transforms to identity, with
-        // all implicit CA actions suppressed so nothing animates yet.
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         navBar?.alpha = 0
@@ -414,35 +405,37 @@ final class ImmersiveModeManager: NSObject {
         resetAllTransforms()
         safeAreaGradientView.alpha = 0.0
         CATransaction.commit()
-        CATransaction.flush()
 
-        // Fade alpha back to 1. `isFadingIntoBottom` blocks concurrent
-        // `updateBarsForBottomFade` calls (e.g. from `didEndDecelerating`)
-        // that would otherwise snap alpha to 1 mid-animation and cancel
-        // the CAAnimation.
+        // `isFadingIntoBottom` blocks concurrent `updateBarsForBottomFade`
+        // calls (e.g. from `didEndDecelerating`) that would otherwise snap
+        // alpha to 1 mid-animation and cancel the CAAnimation.
         isFadingIntoBottom = true
-        UIView.animate(
-            withDuration: 0.3,
-            delay: 0,
-            options: [.allowUserInteraction],
-            animations: {
-                navBar?.alpha = 1
-                self.topBarContainer?.alpha = 1
-                self.toolbar?.alpha = 1
-            },
-            completion: { [weak self] _ in
-                self?.isFadingIntoBottom = false
-            }
-        )
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0,
+                options: [.allowUserInteraction],
+                animations: {
+                    navBar?.alpha = 1
+                    self.topBarContainer?.alpha = 1
+                    self.toolbar?.alpha = 1
+                },
+                completion: { [weak self] _ in
+                    self?.isFadingIntoBottom = false
+                }
+            )
+        }
     }
 
-    /// Updates bar visibility using alpha/opacity for bottom fade mode
-    /// Bars remain in their normal position (no transforms) and fade in/out
+    /// Scroll-driven alpha update while in bottom fade mode. Used for the
+    /// fade-out as the user scrolls away from the bottom; the fade-in entry
+    /// is handled by `animateIntoBottomFade()`.
     private func updateBarsForBottomFade() {
         guard !isUpdatingBars else { return }
 
-        // If the entry fade-in is still running and we'd just be snapping
-        // alpha back to 1, let the animation finish instead of cancelling it.
+        // Don't clobber the entry fade-in animation with a direct alpha=1
+        // write.
         if isFadingIntoBottom && bottomFadeProgress >= 1.0 {
             return
         }
@@ -452,6 +445,7 @@ final class ImmersiveModeManager: NSObject {
 
         CATransaction.begin()
         CATransaction.setDisableActions(true)
+        defer { CATransaction.commit() }
 
         resetAllTransforms()
 
@@ -463,23 +457,20 @@ final class ImmersiveModeManager: NSObject {
         topBarContainer?.alpha = alpha
         toolbar?.alpha = alpha
 
-        // Gradient view should be hidden when bars are visible via fade
+        // Gradient is only shown when bars are hidden via slide.
         safeAreaGradientView.alpha = 0.0
-
-        CATransaction.commit()
     }
 
-    /// Exits bottom fade mode and restores bars to hidden state via transforms
+    /// Leaves bottom fade mode and hands visibility back to the slide transforms.
     private func exitBottomFadeMode() {
         guard isInBottomFadeMode else { return }
 
         isInBottomFadeMode = false
         bottomFadeProgress = 0.0
 
-        // Restore alpha to full before applying transforms
+        // Restore alpha to 1 so the transform (not alpha) drives visibility.
         restoreBarAlphas()
 
-        // Set immersive progress to fully hidden and apply transforms
         _immersiveProgress = 1.0
         updateBarsForImmersiveProgress()
     }
@@ -497,9 +488,10 @@ final class ImmersiveModeManager: NSObject {
         guard let toolbar = toolbar else { return 0 }
 
         let toolbarHeight = toolbar.bounds.height + Self.toolbarHideOvertravel
-        // Use postsView.effectiveBottomInset to account for the iPad minimum bottom inset
-        // that raises the toolbar above the window edge. Translating by just the device
-        // safe area would leave the top of the toolbar visible on iPad.
+        // Match the inset the toolbar was laid out with — on iOS 26+ iPad this
+        // can be larger than the system safe area (see `effectiveBottomInset`),
+        // and translating by just the safe area would leave the top of the
+        // toolbar visible.
         let bottomInset = postsView?.effectiveBottomInset ?? postsView?.window?.safeAreaInsets.bottom ?? 34
         let totalDownwardDistance = toolbarHeight + bottomInset
         return totalDownwardDistance * immersiveProgress
@@ -521,14 +513,9 @@ final class ImmersiveModeManager: NSObject {
         toolbar?.alpha = 1.0
     }
 
-    /// Calculates the remaining scrollable distance from current position to the bottom of content
-    ///
-    /// The calculation accounts for:
-    /// - Content that is shorter than the scroll view bounds (uses bounds height as minimum)
-    /// - Bottom content inset (typically the toolbar height)
-    /// - Current scroll offset
-    ///
-    /// - Returns: Distance in points from current scroll position to the effective bottom
+    /// Remaining scroll distance to the effective bottom of content. Handles
+    /// content shorter than the scroll view (uses bounds height as the floor)
+    /// and accounts for the adjusted bottom inset (typically the toolbar).
     private func calculateDistanceFromBottom(_ scrollView: UIScrollView) -> CGFloat {
         let contentHeight = scrollView.contentSize.height
         let adjustedBottom = scrollView.adjustedContentInset.bottom
@@ -542,7 +529,6 @@ final class ImmersiveModeManager: NSObject {
         let distanceFromBottom = calculateDistanceFromBottom(scrollView)
         let bottomFadeZone = totalBarTravelDistance * Self.progressiveRevealMultiplier
 
-        // If near bottom, ensure bars are fully visible via fade mode
         if distanceFromBottom <= bottomFadeZone {
             let wasInBottomFadeMode = isInBottomFadeMode
             isInBottomFadeMode = true
@@ -560,13 +546,11 @@ final class ImmersiveModeManager: NSObject {
             return cached
         }
 
-        // Try to get it from the navigation controller we were configured with
         if let navBar = navigationController?.navigationBar {
             cachedNavigationBar = navBar
             return navBar
         }
 
-        // Fallback: traverse responder chain from posts view
         var responder: UIResponder? = postsView?.next
         while responder != nil {
             if let viewController = responder as? UIViewController,
@@ -577,7 +561,6 @@ final class ImmersiveModeManager: NSObject {
             responder = responder?.next
         }
 
-        // Last resort: try to get from window's root view controller
         if let window = postsView?.window,
            let rootNav = window.rootViewController as? UINavigationController {
             cachedNavigationBar = rootNav.navigationBar
