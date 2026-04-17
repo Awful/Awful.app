@@ -31,7 +31,6 @@ final class MessageListViewController: TableViewController {
     @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
     private var unreadMessageCountObserver: ManagedObjectCountObserver!
     private var folderPicker: MessageFolderPickerView?
-    private var folderPickerContainer: UIView?
     private var currentFolder: PrivateMessageFolder?
     private var allFolders: [PrivateMessageFolder] = []
     private var editToolbar: UIToolbar?
@@ -138,15 +137,8 @@ final class MessageListViewController: TableViewController {
                 self.allFolders = folders
                 self.folderPicker?.updateFolders(folders)
 
-                // Check if current folder still exists, otherwise switch to inbox
-                if let current = currentFolder {
-                    if !folders.contains(where: { $0.folderID == current.folderID }) {
-                        // Current folder was deleted, switch to inbox
-                        if let inbox = folders.first(where: { $0.folderID == "0" }) {
-                            setCurrentFolder(inbox)
-                        }
-                    }
-                } else if currentFolder == nil, let inbox = folders.first(where: { $0.folderID == "0" }) {
+                let currentFolderRemoved = currentFolder.map { c in !folders.contains(where: { $0.folderID == c.folderID }) } ?? true
+                if currentFolderRemoved, let inbox = folders.first(where: { $0.folderID == "0" }) {
                     setCurrentFolder(inbox)
                 }
             }
@@ -202,7 +194,6 @@ final class MessageListViewController: TableViewController {
             self?.moveMessage(message, to: folder)
         }
 
-        // Configure for iPad - use the message's row as source
         if let popover = alert.popoverPresentationController {
             popover.sourceView = tableView
             if let indexPath = dataSource?.indexPath(for: message) {
@@ -213,7 +204,6 @@ final class MessageListViewController: TableViewController {
         present(alert, animated: true)
     }
 
-    /// Builds a folder picker action sheet with folder options.
     private func buildFolderPickerAlert(
         message: String,
         onFolderSelected: @escaping (PrivateMessageFolder) -> Void
@@ -224,7 +214,6 @@ final class MessageListViewController: TableViewController {
             preferredStyle: .actionSheet
         )
 
-        // Add folder options, excluding the current folder
         for folder in allFolders where folder.folderID != currentFolder?.folderID {
             alert.addAction(UIAlertAction(title: displayName(for: folder), style: .default) { _ in
                 onFolderSelected(folder)
@@ -240,8 +229,7 @@ final class MessageListViewController: TableViewController {
         Task {
             do {
                 try await ForumsClient.shared.movePrivateMessage(message, toFolderID: folder.folderID)
-                // The message will automatically disappear from the current folder view
-                // due to the NSFetchedResultsController detecting the folder change
+                // The message disappears from the current folder view via the NSFetchedResultsController predicate.
             } catch {
                 if visible {
                     let alert = UIAlertController(
@@ -277,7 +265,6 @@ final class MessageListViewController: TableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Setup folder picker first, before table view configuration
         setupFolderPicker()
 
         tableView.estimatedRowHeight = 65
@@ -294,54 +281,28 @@ final class MessageListViewController: TableViewController {
     }
 
     private func setupFolderPicker() {
-        // Create a container view for the fixed header
-        let headerView = UIView()
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        headerView.isUserInteractionEnabled = true
-
-        headerView.backgroundColor = .clear
-
         let picker = MessageFolderPickerView()
         picker.delegate = self
-
         picker.applyTheme(theme)
-
         picker.translatesAutoresizingMaskIntoConstraints = false
-        picker.isUserInteractionEnabled = true
         folderPicker = picker
 
-        headerView.addSubview(picker)
-        folderPickerContainer = headerView
-
-        // Add header view to the table view's parent (which is the root view for UITableViewController)
-        // We need to add it after the table view is loaded
-        view.addSubview(headerView)
-        // Bring header to front so it appears above the table view
-        view.bringSubviewToFront(headerView)
+        // Host the picker in a tableHeaderView so it scrolls with the list and pull-to-refresh
+        // uses its natural threshold (a pinned overlay + contentInset.top offsets PullToRefresh's
+        // trigger distance).
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: LayoutConstants.folderPickerHeight))
+        container.autoresizingMask = .flexibleWidth
+        container.backgroundColor = .clear
+        container.addSubview(picker)
 
         NSLayoutConstraint.activate([
-            // Header view constraints - fixed at top
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: LayoutConstants.folderPickerHeight),
-
-            // Picker constraints
-            picker.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-            picker.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-            picker.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
+            picker.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            picker.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+            picker.centerYAnchor.constraint(equalTo: container.centerYAnchor),
         ])
 
-        // Adjust table view content to be below the header
-        // Don't use constraints on the table view itself since it's managed by UITableViewController
-        // Keep automatic adjustment for safe area but add our header height
-        tableView.contentInset.top = LayoutConstants.folderPickerHeight
-        tableView.verticalScrollIndicatorInsets.top = LayoutConstants.folderPickerHeight
-
-        // Scroll to top to ensure content starts at the right position
-        tableView.setContentOffset(CGPoint(x: 0, y: -tableView.contentInset.top), animated: false)
+        tableView.tableHeaderView = container
     }
-
 
     private func loadInitialFolder() {
         let lastFolderID = UserDefaults.standard.string(forKey: UserDefaultsKey.lastFolderID) ?? "0"
@@ -357,20 +318,15 @@ final class MessageListViewController: TableViewController {
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
-        // Takes care of toggling the button's title.
         super.setEditing(editing, animated: true)
 
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
 
-        // Toggle table view editing.
         tableView.setEditing(editing, animated: true)
-
-        // Enable multiple selection in edit mode for bulk operations
         tableView.allowsMultipleSelectionDuringEditing = editing
 
-        // Show/hide toolbar with actions when in edit mode
         if editing {
             showEditToolbar()
         } else {
@@ -378,18 +334,19 @@ final class MessageListViewController: TableViewController {
         }
     }
 
+    private var editToolbarMoveButton: UIBarButtonItem?
+    private let editToolbarHeight: CGFloat = 44
+
     private func showEditToolbar() {
         editToolbar?.removeFromSuperview()
 
-        let toolbarHeight: CGFloat = 44
+        // Host the toolbar on the nav controller's view rather than `view` (which is the
+        // tableView in a UITableViewController), since autolayout subviews of a UIScrollView
+        // don't receive width constraints reliably.
+        guard let host = navigationController?.view else { return }
 
-        // Create toolbar with initial frame for proper item layout
-        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: toolbarHeight))
+        let toolbar = UIToolbar()
         toolbar.translatesAutoresizingMaskIntoConstraints = false
-
-        let flexSpace1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let flexSpace2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let flexSpace3 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 
         let moveButton = UIBarButtonItem(
             title: LocalizedString("table-view.action.move"),
@@ -397,6 +354,8 @@ final class MessageListViewController: TableViewController {
             target: self,
             action: #selector(moveSelectedMessages)
         )
+        moveButton.tintColor = theme[uicolor: "tintColor"]
+        editToolbarMoveButton = moveButton
 
         let deleteButton = UIBarButtonItem(
             title: LocalizedString("table-view.action.delete"),
@@ -406,22 +365,24 @@ final class MessageListViewController: TableViewController {
         )
         deleteButton.tintColor = .systemRed
 
+        let flexSpace1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let flexSpace2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let flexSpace3 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([flexSpace1, moveButton, flexSpace2, deleteButton, flexSpace3], animated: false)
 
-        view.addSubview(toolbar)
+        host.addSubview(toolbar)
 
         NSLayoutConstraint.activate([
-            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            toolbar.heightAnchor.constraint(equalToConstant: toolbarHeight)
+            toolbar.leadingAnchor.constraint(equalTo: host.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: host.trailingAnchor),
+            toolbar.bottomAnchor.constraint(equalTo: host.safeAreaLayoutGuide.bottomAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: editToolbarHeight),
         ])
 
         editToolbar = toolbar
 
-        // Adjust table view content inset
         var contentInset = tableView.contentInset
-        contentInset.bottom = toolbarHeight
+        contentInset.bottom = editToolbarHeight
         tableView.contentInset = contentInset
         tableView.scrollIndicatorInsets = contentInset
     }
@@ -429,8 +390,8 @@ final class MessageListViewController: TableViewController {
     private func hideEditToolbar() {
         editToolbar?.removeFromSuperview()
         editToolbar = nil
+        editToolbarMoveButton = nil
 
-        // Reset table view content inset
         var contentInset = tableView.contentInset
         contentInset.bottom = 0
         tableView.contentInset = contentInset
@@ -450,7 +411,6 @@ final class MessageListViewController: TableViewController {
             return
         }
 
-        // Show folder picker for selected messages
         showFolderPickerForMultiple(messages: selectedRows)
     }
 
@@ -475,7 +435,7 @@ final class MessageListViewController: TableViewController {
 
         alert.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel))
         alert.addAction(UIAlertAction(title: LocalizedString("table-view.action.delete"), style: .destructive) { [weak self] _ in
-            // Collect messages first to avoid index path invalidation during iteration
+            // Collect messages up-front since deleting rows invalidates index paths.
             let messages = selectedRows.compactMap { self?.dataSource?.message(at: $0) }
             for message in messages {
                 self?.deleteMessage(message)
@@ -490,7 +450,7 @@ final class MessageListViewController: TableViewController {
         let alert = buildFolderPickerAlert(
             message: String(format: LocalizedString("private-messages-list.move-multiple.message"), indexPaths.count)
         ) { [weak self] folder in
-            // Collect messages first to avoid index path invalidation during iteration
+            // Collect messages up-front since moves shift index paths.
             let messages = indexPaths.compactMap { self?.dataSource?.message(at: $0) }
             for message in messages {
                 self?.moveMessage(message, to: folder)
@@ -498,13 +458,10 @@ final class MessageListViewController: TableViewController {
             self?.setEditing(false, animated: true)
         }
 
-        // Configure for iPad - use the Move button from editToolbar as the source
         if let popover = alert.popoverPresentationController {
-            // The Move button is at index 1 in editToolbar (after flexSpace1)
-            if let moveButton = editToolbar?.items?[1] {
+            if let moveButton = editToolbarMoveButton {
                 popover.barButtonItem = moveButton
             } else {
-                // Fallback to center of table view
                 popover.sourceView = tableView
                 popover.sourceRect = CGRect(x: tableView.bounds.midX, y: tableView.bounds.midY, width: 0, height: 0)
             }
@@ -520,17 +477,23 @@ final class MessageListViewController: TableViewController {
 
         folderPicker?.applyTheme(theme)
 
-        if let headerView = folderPickerContainer {
-            headerView.backgroundColor = .clear
-        }
-
         tableView.separatorColor = theme["listSeparatorColor"]
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         refreshIfNecessary()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // The toolbar lives on navigationController.view, so leaving edit mode
+        // before navigating away prevents it from lingering on other screens.
+        if isEditing {
+            setEditing(false, animated: false)
+        }
     }
 }
 
@@ -542,19 +505,15 @@ extension MessageListViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // In edit mode, tapping should select/deselect for bulk operations, not open the message
-        if tableView.isEditing {
-            // Selection is handled automatically by the table view in edit mode
-            return
-        }
+        // In edit mode the tap is a selection toggle, not a navigation action.
+        if tableView.isEditing { return }
 
         guard let dataSource else { return }
         let message = dataSource.message(at: indexPath)
         showMessage(message)
     }
 
-    // Disable swipe actions entirely since they don't work in edit mode
-    // and we don't want accidental deletions in normal mode
+    // Swipe-to-delete is disabled — destructive actions must go through edit mode.
     override func tableView(
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
@@ -562,13 +521,12 @@ extension MessageListViewController {
         return nil
     }
 
-    // Allow editing for all rows (for the selection circles in edit mode)
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
-    
+
+    // .none gives selection circles in edit mode instead of the default delete button.
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        // Return .none to show selection circles instead of delete buttons when multiple selection is enabled
         return .none
     }
 }
@@ -597,10 +555,7 @@ extension MessageListViewController: MessageFolderPickerViewDelegate {
     func folderPickerDidRequestManageFolders(_ picker: MessageFolderPickerView) {
         let manageFoldersVC = MessageFolderManagementViewController(managedObjectContext: managedObjectContext)
         manageFoldersVC.onFoldersChanged = { [weak self] in
-            // Reload folders when management view makes changes
-            Task {
-                await self?.loadFolders()
-            }
+            Task { await self?.loadFolders() }
         }
         let nav = NavigationController(rootViewController: manageFoldersVC)
         present(nav, animated: true)

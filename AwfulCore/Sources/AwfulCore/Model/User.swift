@@ -35,28 +35,62 @@ public class User: AwfulManagedObject, Managed {
     public override func awakeFromInsert() {
         super.awakeFromInsert()
 
-        // Initialize lastModifiedDate
         lastModifiedDate = Date()
 
-        // If userID is not set, create a placeholder based on username
-        // This happens when we only know the username (e.g., message recipients in Sent folder)
-        // The real userID will be updated when we encounter this user in a context where we have their ID
-        if userID == nil || userID.isEmpty {
+        // When we only know the username (e.g. message recipients in the Sent folder)
+        // we still need a stable userID. Generate a placeholder that can be reconciled
+        // once we encounter the same user in a context where we have their real ID.
+        if userID.isEmpty {
             if let name = username, !name.isEmpty {
-                // Create a deterministic placeholder ID based on username
-                // Prefix with "unknown-" to indicate this is a placeholder
-                userID = "unknown-\(name.lowercased().replacingOccurrences(of: " ", with: "_"))"
+                userID = "\(User.placeholderIDPrefix)\(name.lowercased().replacingOccurrences(of: " ", with: "_"))"
             } else {
-                // Fallback to a UUID if we don't even have a username
-                userID = "unknown-\(UUID().uuidString)"
+                userID = "\(User.placeholderIDPrefix)\(UUID().uuidString)"
             }
         }
     }
+
+    static let placeholderIDPrefix = "unknown-"
+
+    /// True while this user's `userID` is a synthetic placeholder generated from its username.
+    public var hasPlaceholderID: Bool { userID.hasPrefix(User.placeholderIDPrefix) }
 }
 
 extension User {
     public var avatarURL: URL? {
         return customTitleHTML.flatMap(extractAvatarURL)
+    }
+
+    /// Folds any placeholder `User` rows that share this user's username into `self`.
+    ///
+    /// Call after assigning a real `userID` to a user (e.g. after scraping their profile or a
+    /// post that identifies them). Placeholders are created by the Sent-folder PM scrape when
+    /// only a recipient's username is known; without this step they would linger in Core Data
+    /// indefinitely, accumulating duplicates alongside the real `User` row.
+    func absorbPlaceholders() {
+        guard let context = managedObjectContext,
+              let username, !username.isEmpty,
+              !hasPlaceholderID
+        else { return }
+
+        let placeholders = User.fetch(in: context) {
+            $0.predicate = NSPredicate(
+                format: "%K = %@ AND %K BEGINSWITH %@ AND self != %@",
+                #keyPath(User.username), username,
+                #keyPath(User.userID), User.placeholderIDPrefix,
+                self
+            )
+        }
+        guard !placeholders.isEmpty else { return }
+
+        for placeholder in placeholders {
+            receivedPrivateMessages.formUnion(placeholder.receivedPrivateMessages)
+            sentPrivateMessages.formUnion(placeholder.sentPrivateMessages)
+            posts.formUnion(placeholder.posts)
+            threads.formUnion(placeholder.threads)
+            threadFilters.formUnion(placeholder.threadFilters)
+            announcements.formUnion(placeholder.announcements)
+            context.delete(placeholder)
+        }
     }
 }
 

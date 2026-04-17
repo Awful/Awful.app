@@ -31,14 +31,7 @@ public class PrivateMessage: AwfulManagedObject, Managed {
     public override func awakeFromInsert() {
         super.awakeFromInsert()
 
-        // Initialize required fields with default values
         lastModifiedDate = Date()
-
-        // These booleans have defaults in Core Data model but initialize them explicitly
-        forwarded = false
-        seen = false
-        replied = false
-        isSent = false
     }
 }
 

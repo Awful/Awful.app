@@ -1502,29 +1502,13 @@ public final class ForumsClient {
             do {
                 try backgroundContext.save()
             } catch let error as NSError {
-                // Log detailed validation errors
-                logger.error("Core Data Save Error when loading folder \(folderID): \(error)")
-                logger.error("Error Code: \(error.code), Domain: \(error.domain)")
-
-                if let detailedErrors = error.userInfo[NSDetailedErrorsKey] as? [NSError] {
-                    logger.error("Detailed Errors:")
-                    for detailedError in detailedErrors {
-                        logger.error("  - Error Code: \(detailedError.code), Domain: \(detailedError.domain)")
-                        logger.error("    Description: \(detailedError.localizedDescription)")
-                        if let entity = detailedError.userInfo[NSValidationObjectErrorKey] as? NSManagedObject {
-                            logger.error("    Entity: \(entity.entity.name ?? "unknown")")
-                        }
-                        if let key = detailedError.userInfo[NSValidationKeyErrorKey] as? String {
-                            logger.error("    Key: \(key)")
-                        }
-                        if let value = detailedError.userInfo[NSValidationValueErrorKey] {
-                            logger.error("    Value: \(String(describing: value))")
-                        }
-                        if let predicate = detailedError.userInfo[NSValidationPredicateErrorKey] {
-                            logger.error("    Predicate: \(String(describing: predicate))")
-                        }
-                    }
-                }
+                // Core Data validation errors bury the per-attribute details inside NSDetailedErrorsKey.
+                let detailed = (error.userInfo[NSDetailedErrorsKey] as? [NSError])?.map { detail -> String in
+                    let entity = (detail.userInfo[NSValidationObjectErrorKey] as? NSManagedObject)?.entity.name ?? "?"
+                    let key = detail.userInfo[NSValidationKeyErrorKey] as? String ?? "?"
+                    return "\(entity).\(key): \(detail.localizedDescription)"
+                }.joined(separator: "; ")
+                logger.error("Failed to save folder \(folderID): \(error) [\(detailed ?? "")]")
                 throw error
             }
             return messages
@@ -1716,44 +1700,43 @@ public final class ForumsClient {
         _ message: PrivateMessage,
         toFolderID folderID: String
     ) async throws {
-        guard let mainContext = managedObjectContext else {
-            throw Error.missingManagedObjectContext
-        }
+        guard let backgroundContext = backgroundManagedObjectContext,
+              let messageContext = message.managedObjectContext
+        else { throw Error.missingManagedObjectContext }
 
-        let (messageID, currentFolderID) = await mainContext.perform {
+        let (messageID, currentFolderID) = await messageContext.perform {
             (message.messageID, message.folder?.folderID ?? "0")
         }
 
-        // Use the form parameters from the HTML
         let parameters = [
             "action": "dostuff",
             "thisfolder": currentFolderID,
             "folderid": folderID,
             "privatemessage[\(messageID)]": "yes",
-            "move": "Move"
+            "move": "Move",
         ]
 
         let (data, response) = try await fetch(method: .post, urlString: "private.php", parameters: parameters)
         let (document, _) = try parseHTML(data: data, response: response)
         try checkServerErrors(document)
 
-        // Update Core Data to reflect the move
-        await mainContext.perform {
-            let folders = try? PrivateMessageFolder.fetch(in: mainContext) {
+        try await backgroundContext.perform {
+            let messages = PrivateMessage.fetch(in: backgroundContext) {
+                $0.predicate = NSPredicate(format: "%K = %@", #keyPath(PrivateMessage.messageID), messageID)
+                $0.fetchLimit = 1
+            }
+            let folders = PrivateMessageFolder.fetch(in: backgroundContext) {
                 $0.predicate = NSPredicate(format: "%K = %@", #keyPath(PrivateMessageFolder.folderID), folderID)
                 $0.fetchLimit = 1
             }
+            guard let bgMessage = messages.first, let bgFolder = folders.first else { return }
 
-            if let newFolder = folders?.first {
-                message.folder = newFolder
-                message.lastModifiedDate = Date()
+            if bgMessage.folder != bgFolder { bgMessage.folder = bgFolder }
+            let isSent = folderID == "-1"
+            if bgMessage.isSent != isSent { bgMessage.isSent = isSent }
+            bgMessage.lastModifiedDate = Date()
 
-                do {
-                    try mainContext.save()
-                } catch {
-                    logger.error("Failed to update message folder locally: \(error)")
-                }
-            }
+            try backgroundContext.save()
         }
     }
 

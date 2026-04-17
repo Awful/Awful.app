@@ -16,7 +16,7 @@ final class MessageFolderPickerView: UIView {
     weak var delegate: MessageFolderPickerViewDelegate?
 
     private let segmentedControl: UISegmentedControl
-    private var customFolders: [PrivateMessageFolder] = []
+    private var allFolders: [PrivateMessageFolder] = []
     private var currentFolder: PrivateMessageFolder?
 
     override init(frame: CGRect) {
@@ -40,17 +40,15 @@ final class MessageFolderPickerView: UIView {
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
 
-        // Add touch handler for detecting taps on already-selected segment
+        // Detect taps on segment 2 when it's already selected so the menu re-opens.
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleSegmentTap(_:)))
         tapGesture.delegate = self
         segmentedControl.addGestureRecognizer(tapGesture)
 
-        // Set proportional segment widths to fit properly
         segmentedControl.apportionsSegmentWidthsByContent = true
 
-        // Make container transparent
-        self.backgroundColor = .clear
-        self.isOpaque = false
+        backgroundColor = .clear
+        isOpaque = false
 
         addSubview(segmentedControl)
 
@@ -65,32 +63,27 @@ final class MessageFolderPickerView: UIView {
     @objc private func segmentChanged() {
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            if let folder = customFolders.first(where: { $0.folderID == "0" }) {
+            if let folder = allFolders.first(where: { $0.folderID == "0" }) {
                 currentFolder = folder
                 delegate?.folderPicker(self, didSelectFolder: folder)
             }
         case 1:
-            if let folder = customFolders.first(where: { $0.folderID == "-1" }) {
+            if let folder = allFolders.first(where: { $0.folderID == "-1" }) {
                 currentFolder = folder
                 delegate?.folderPicker(self, didSelectFolder: folder)
             }
         case 2:
-            // Check if a custom folder is already set (segment shows folder name, not "Folders")
+            // If segment 2 currently displays a custom folder name, reselect that folder.
+            // Otherwise open the folders menu.
             let segmentTitle = segmentedControl.titleForSegment(at: 2) ?? ""
             let defaultTitle = LocalizedString("private-message-folder.more")
 
-            if segmentTitle == defaultTitle {
-                // No folder selected, show menu
-                showFoldersMenu()
+            if segmentTitle != defaultTitle,
+               let customFolder = allFolders.first(where: { $0.name == segmentTitle && $0.isCustom }) {
+                currentFolder = customFolder
+                delegate?.folderPicker(self, didSelectFolder: customFolder)
             } else {
-                // A custom folder name is shown - find and load it
-                if let customFolder = customFolders.first(where: { $0.name == segmentTitle && $0.isCustom }) {
-                    currentFolder = customFolder
-                    delegate?.folderPicker(self, didSelectFolder: customFolder)
-                } else {
-                    // Can't find the folder, show menu as fallback
-                    showFoldersMenu()
-                }
+                showFoldersMenu()
             }
         default:
             break
@@ -98,35 +91,24 @@ final class MessageFolderPickerView: UIView {
     }
 
     private func showFoldersMenu() {
-        // Find the view controller to present from
-        guard let viewController = self.findViewController() else {
+        guard let viewController = findViewController() else {
             restorePreviousSelection()
             return
         }
 
-        // Create an alert controller with the menu items
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        // Apply theme appearance
         let menuAppearance = Theme.defaultTheme()[string: "menuAppearance"]
         alertController.overrideUserInterfaceStyle = menuAppearance == "light" ? .light : .dark
 
-        // Get custom folders
-        let customFoldersList = customFolders.filter({ $0.isCustom })
-
-        // If there are no custom folders, only show the manage option
-        if !customFoldersList.isEmpty {
-            // Add custom folder actions
-            for folder in customFoldersList {
-                let isSelected = currentFolder?.folderID == folder.folderID
-                let title = isSelected ? "✓ \(folder.name)" : folder.name
-                alertController.addAction(UIAlertAction(title: title, style: .default) { [weak self] _ in
-                    self?.selectCustomFolder(folder)
-                })
-            }
+        for folder in allFolders where folder.isCustom {
+            let isSelected = currentFolder?.folderID == folder.folderID
+            let title = isSelected ? "✓ \(folder.name)" : folder.name
+            alertController.addAction(UIAlertAction(title: title, style: .default) { [weak self] _ in
+                self?.selectCustomFolder(folder)
+            })
         }
 
-        // Add manage folders option
         alertController.addAction(UIAlertAction(
             title: LocalizedString("private-message-folder.manage"),
             style: .default
@@ -136,25 +118,18 @@ final class MessageFolderPickerView: UIView {
             self.delegate?.folderPickerDidRequestManageFolders(self)
         })
 
-        // Add cancel action - restore selection when cancelled
         alertController.addAction(UIAlertAction(title: LocalizedString("cancel"), style: .cancel) { [weak self] _ in
             self?.restorePreviousSelection()
         })
 
-        // Configure for iPad - position from the Folders segment
         if let popover = alertController.popoverPresentationController {
             popover.sourceView = segmentedControl
-            // Calculate the rect for the third segment (index 2)
             let segmentWidth = segmentedControl.bounds.width / CGFloat(segmentedControl.numberOfSegments)
-            let thirdSegmentRect = CGRect(x: segmentWidth * 2, y: 0, width: segmentWidth, height: segmentedControl.bounds.height)
-            popover.sourceRect = thirdSegmentRect
+            popover.sourceRect = CGRect(x: segmentWidth * 2, y: 0, width: segmentWidth, height: segmentedControl.bounds.height)
             popover.permittedArrowDirections = [.up]
-
-            // Add delegate to handle dismissal
             popover.delegate = self
         }
 
-        // Present without restoring in completion - let user action or dismissal handle it
         viewController.present(alertController, animated: true)
     }
 
@@ -176,15 +151,13 @@ final class MessageFolderPickerView: UIView {
     }
 
     func updateFolders(_ folders: [PrivateMessageFolder]) {
-        self.customFolders = folders
+        self.allFolders = folders
 
-        // Check current folder still exists, otherwise switch to inbox
         if let current = currentFolder {
-            // Check if the current folder still exists
             if folders.contains(where: { $0.folderID == current.folderID }) {
                 selectFolder(current)
             } else {
-                // Current folder was deleted, switch to inbox and reset third segment title
+                // Current folder was deleted — fall back to the inbox and reset segment 2's title.
                 if segmentedControl.selectedSegmentIndex == 2 {
                     segmentedControl.setTitle(LocalizedString("private-message-folder.more"), forSegmentAt: 2)
                 }
@@ -195,15 +168,12 @@ final class MessageFolderPickerView: UIView {
             }
         }
 
-        // If there are no custom folders and the third segment shows a custom folder name,
-        // reset it to "Folders"
+        // If no custom folders remain, reset segment 2 back to the default "Folders" label.
         let hasCustomFolders = folders.contains { $0.isCustom }
-        if !hasCustomFolders && segmentedControl.numberOfSegments == 3 {
-            // Only reset if it's not already showing "Folders"
-            if let currentTitle = segmentedControl.titleForSegment(at: 2),
-               currentTitle != LocalizedString("private-message-folder.more") {
-                segmentedControl.setTitle(LocalizedString("private-message-folder.more"), forSegmentAt: 2)
-            }
+        if !hasCustomFolders, segmentedControl.numberOfSegments == 3,
+           let currentTitle = segmentedControl.titleForSegment(at: 2),
+           currentTitle != LocalizedString("private-message-folder.more") {
+            segmentedControl.setTitle(LocalizedString("private-message-folder.more"), forSegmentAt: 2)
         }
     }
 
@@ -226,7 +196,6 @@ final class MessageFolderPickerView: UIView {
 
     private func selectCustomFolder(_ folder: PrivateMessageFolder) {
         currentFolder = folder
-        // Just show the folder name when it's selected
         segmentedControl.setTitle(folder.name, forSegmentAt: 2)
         segmentedControl.selectedSegmentIndex = 2
         delegate?.folderPicker(self, didSelectFolder: folder)
@@ -259,8 +228,7 @@ final class MessageFolderPickerView: UIView {
     }
 
     @objc private func handleSegmentTap(_ gesture: UITapGestureRecognizer) {
-        // If segment 2 is already selected, show the folders menu
-        // The gesture delegate already verified we're tapping segment 2
+        // The gesture delegate has already filtered taps to segment 2.
         if segmentedControl.selectedSegmentIndex == 2 {
             showFoldersMenu()
         }
@@ -270,23 +238,17 @@ final class MessageFolderPickerView: UIView {
 // MARK: - UIGestureRecognizerDelegate
 extension MessageFolderPickerView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        // Only intercept if segment 2 is already selected and we're tapping on it
         guard segmentedControl.selectedSegmentIndex == 2 else { return false }
 
-        // Calculate which segment was tapped by checking segment frames
-        // Note: apportionsSegmentWidthsByContent makes segments have variable widths,
-        // so we can't assume equal widths. Instead, check if tap is past segments 0 and 1.
+        // apportionsSegmentWidthsByContent gives variable widths, so locate the tap by summing segment 0 & 1.
         let location = touch.location(in: segmentedControl)
         let width0 = segmentedControl.widthForSegment(at: 0)
         let width1 = segmentedControl.widthForSegment(at: 1)
 
-        // If widths are 0 (automatic), fall back to checking if tap is in rightmost third
         if width0 == 0 || width1 == 0 {
             let segmentWidth = segmentedControl.bounds.width / 3.0
             return location.x >= segmentWidth * 2
         }
-
-        // Tap is on segment 2 if it's past segments 0 and 1
         return location.x >= width0 + width1
     }
 

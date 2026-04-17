@@ -41,23 +41,28 @@ final class MessageFolderManagementViewController: TableViewController {
             action: #selector(doneButtonTapped)
         )
 
-        // Create both Edit and Add buttons
-        let editButton = editButtonItem
-        let addButton = UIBarButtonItem(
+        addButton = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
             action: #selector(addButtonTapped)
         )
-        navigationItem.rightBarButtonItems = [addButton, editButton]
+        updateNavigationItems()
 
         loadFolders()
+    }
+
+    private var addButton: UIBarButtonItem!
+
+    private func updateNavigationItems() {
+        // Edit only makes sense when there's something to delete.
+        navigationItem.rightBarButtonItems = folders.isEmpty ? [addButton] : [addButton, editButtonItem]
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
 
-        // Reload footer to update text
+        // Footer copy differs between normal and edit mode.
         if tableView.footerView(forSection: 0) != nil {
             tableView.reloadSections(IndexSet(integer: 0), with: .none)
         }
@@ -70,6 +75,10 @@ final class MessageFolderManagementViewController: TableViewController {
                 await MainActor.run {
                     self.folders = allFolders.filter { $0.isCustom }
                     self.tableView.reloadData()
+                    self.updateNavigationItems()
+                    if self.folders.isEmpty, self.isEditing {
+                        self.setEditing(false, animated: true)
+                    }
                 }
             } catch {
                 logger.error("Failed to load folders: \(error)")
@@ -107,7 +116,6 @@ final class MessageFolderManagementViewController: TableViewController {
                   folderName.count <= maxFolderNameLength else { return }
             self?.createFolder(name: folderName)
         }
-        // Start with create button disabled
         createAction.isEnabled = false
 
         let cancelAction = UIAlertAction(
@@ -122,20 +130,13 @@ final class MessageFolderManagementViewController: TableViewController {
     }
 
     @objc private func textFieldDidChange(_ textField: UITextField) {
-        // Limit to max folder name length
         if let text = textField.text, text.count > maxFolderNameLength {
             textField.text = String(text.prefix(maxFolderNameLength))
         }
 
-        // Enable/disable create button based on text length
-        if let alertController = presentedViewController as? UIAlertController,
-           let text = textField.text,
-           !text.isEmpty,
-           text.count <= maxFolderNameLength {
-            alertController.actions.first?.isEnabled = true
-        } else if let alertController = presentedViewController as? UIAlertController {
-            alertController.actions.first?.isEnabled = false
-        }
+        guard let alertController = presentedViewController as? UIAlertController else { return }
+        let text = textField.text ?? ""
+        alertController.actions.first?.isEnabled = !text.isEmpty && text.count <= maxFolderNameLength
     }
 
     private func createFolder(name: String) {
@@ -162,7 +163,6 @@ final class MessageFolderManagementViewController: TableViewController {
     private func deleteFolder(at indexPath: IndexPath) {
         let folder = folders[indexPath.row]
 
-        // Show confirmation - the server automatically moves messages to inbox when deleting a folder
         let alert = UIAlertController(
             title: LocalizedString("private-message-folder.delete-confirm-title"),
             message: LocalizedString("private-message-folder.delete-confirm-message"),
@@ -184,28 +184,29 @@ final class MessageFolderManagementViewController: TableViewController {
     private func performFolderDeletion(folder: PrivateMessageFolder, at indexPath: IndexPath) {
         Task {
             do {
-                // The server does NOT automatically move messages when deleting a folder.
-                // Messages remain in a "ghost" folder accessible by ID but invisible in the UI.
-                // We must manually move each message before deleting the folder.
+                // The server does NOT automatically move messages when deleting a folder;
+                // they remain in a ghost folder accessible by ID but invisible in the UI.
+                // Manually move each message out before deleting the folder itself.
                 let messages = try await ForumsClient.shared.listPrivateMessagesInFolder(folderID: folder.folderID)
 
-                // Get current username to determine if message was sent or received
                 let currentUsername = UserDefaults.standard.string(forKey: "username")
 
-                // Move each message: sent messages to Sent folder, received to Inbox
                 for message in messages {
                     let wasSentByCurrentUser = message.from?.username == currentUsername
                     let targetFolderID = wasSentByCurrentUser ? "-1" : "0"
                     try await ForumsClient.shared.movePrivateMessage(message, toFolderID: targetFolderID)
                 }
 
-                // Now safe to delete the folder
                 try await ForumsClient.shared.deletePrivateMessageFolder(folderID: folder.folderID, folderName: folder.name)
 
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.folders.remove(at: indexPath.row)
                     self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    self.updateNavigationItems()
+                    if self.folders.isEmpty, self.isEditing {
+                        self.setEditing(false, animated: true)
+                    }
                     self.onFoldersChanged?()
                 }
             } catch {
@@ -278,7 +279,6 @@ extension MessageFolderManagementViewController {
     }
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Only allow editing when in edit mode
         return tableView.isEditing
     }
 
@@ -288,11 +288,11 @@ extension MessageFolderManagementViewController {
         }
     }
 
+    // Disabled — deletion is only allowed in edit mode.
     override func tableView(
         _ tableView: UITableView,
         trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        // Disable swipe-to-delete - only allow deletion in edit mode
         return nil
     }
 }

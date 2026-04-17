@@ -28,7 +28,6 @@ public class PrivateMessageFolder: AwfulManagedObject, Managed {
     public override func awakeFromInsert() {
         super.awakeFromInsert()
 
-        // Initialize required string properties with empty values
         folderID = ""
         folderType = ""
         name = ""

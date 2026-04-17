@@ -53,37 +53,38 @@ internal extension PrivateMessageFolderScrapeResult {
 
         var messages: [PrivateMessage] = []
 
+        let isSentFolder = folderID == "-1"
+        // Key matches Settings.username from AwfulSettings.
+        let currentUsername = isSentFolder
+            ? UserDefaults.standard.string(forKey: "username").flatMap { $0.isEmpty ? nil : $0 }
+            : nil
+
         for rawMessage in self.messages {
             let message: PrivateMessage
             if let existing = existingMessages[rawMessage.id] {
                 message = existing
             } else {
                 message = PrivateMessage.insert(into: context)
-                // Set messageID immediately for new messages
                 message.messageID = rawMessage.id.rawValue
             }
-            rawMessage.update(message, isSentFolder: folderID == "-1")
+            rawMessage.update(message, isSentFolder: isSentFolder)
 
-            // Update lastModifiedDate when modifying the message
             message.lastModifiedDate = Date()
 
             if message.folder != folder {
                 message.folder = folder
             }
 
-            message.isSent = (folderID == "-1")
+            if message.isSent != isSentFolder {
+                message.isSent = isSentFolder
+            }
 
-            // For sent messages, set the current user as the sender
-            if folderID == "-1", message.from == nil {
-                // Key matches Settings.username from AwfulSettings
-                if let currentUsername = UserDefaults.standard.string(forKey: "username"),
-                   !currentUsername.isEmpty {
-                    let currentUser = User.findOrCreate(in: context, matching: NSPredicate(format: "%K = %@", #keyPath(User.username), currentUsername)) {
-                        $0.username = currentUsername
-                        // userID will be set by awakeFromInsert if not already present
-                    }
-                    message.from = currentUser
+            // In the Sent folder the scraper has no "from" user — we are always the sender.
+            if isSentFolder, message.from == nil, let currentUsername {
+                let currentUser = User.findOrCreate(in: context, matching: NSPredicate(format: "%K = %@", #keyPath(User.username), currentUsername)) {
+                    $0.username = currentUsername
                 }
+                message.from = currentUser
             }
 
             let threadTag: ThreadTag?
@@ -117,23 +118,16 @@ private extension PrivateMessageFolderScrapeResult.Message {
         if hasBeenSeen != message.seen { message.seen = hasBeenSeen }
         if id.rawValue != message.messageID { message.messageID = id.rawValue }
 
-        // For sent messages, senderUsername is actually the recipient
+        // In the Sent folder, the scraper reports the recipient in senderUsername.
         if isSentFolder {
-            // Store recipient username in a way we can retrieve it
-            if !senderUsername.isEmpty {
-                // Try to find or create the recipient user
-                if let context = message.managedObjectContext {
-                    let user = User.findOrCreate(in: context, matching: NSPredicate(format: "%K = %@", #keyPath(User.username), senderUsername)) {
-                        $0.username = senderUsername
-                        // userID will be set by awakeFromInsert if not already present
-                    }
-                    message.to = user
+            if !senderUsername.isEmpty, let context = message.managedObjectContext {
+                let user = User.findOrCreate(in: context, matching: NSPredicate(format: "%K = %@", #keyPath(User.username), senderUsername)) {
+                    $0.username = senderUsername
                 }
+                message.to = user
             }
-        } else {
-            if !senderUsername.isEmpty, senderUsername != message.rawFromUsername {
-                message.rawFromUsername = senderUsername
-            }
+        } else if !senderUsername.isEmpty, senderUsername != message.rawFromUsername {
+            message.rawFromUsername = senderUsername
         }
 
         if let sentDate = sentDate, sentDate != message.sentDate { message.sentDate = sentDate }
@@ -168,7 +162,6 @@ internal extension PrivateMessageScrapeResult {
 
         update(message)
 
-        // Update lastModifiedDate when modifying the message
         message.lastModifiedDate = Date()
 
         return message
