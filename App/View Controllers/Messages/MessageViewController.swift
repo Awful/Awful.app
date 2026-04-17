@@ -300,7 +300,10 @@ final class MessageViewController: ViewController {
 
                     if message.seen == false {
                         message.seen = true
-                        try message.managedObjectContext?.save()
+                        let context = message.managedObjectContext
+                        try await context?.perform {
+                            try context?.save()
+                        }
                     }
                 } catch {
                     title = ""

@@ -14,11 +14,18 @@ final class MessageListDataSource: NSObject {
     weak var deletionDelegate: MessageListDataSourceDeletionDelegate?
     private let resultsController: NSFetchedResultsController<PrivateMessage>
     private let tableView: UITableView
+    private let folder: PrivateMessageFolder?
 
-    init(managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
+    init(managedObjectContext: NSManagedObjectContext, tableView: UITableView, folder: PrivateMessageFolder?) throws {
         let fetchRequest = PrivateMessage.makeFetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(PrivateMessage.sentDate), ascending: false)]
+
+        if let folder = folder {
+            fetchRequest.predicate = NSPredicate(format: "folder == %@", folder)
+        }
+
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        self.folder = folder
 
         self.tableView = tableView
         super.init()
@@ -33,6 +40,10 @@ final class MessageListDataSource: NSObject {
 
     func message(at indexPath: IndexPath) -> PrivateMessage {
         return resultsController.object(at: indexPath)
+    }
+
+    func indexPath(for message: PrivateMessage) -> IndexPath? {
+        return resultsController.indexPath(forObject: message)
     }
 }
 
@@ -98,11 +109,16 @@ extension MessageListDataSource: UITableViewDataSource {
     private func viewModelForMessage(at indexPath: IndexPath) -> MessageListCell.ViewModel {
         let message = self.message(at: indexPath)
         let theme = Theme.defaultTheme()
-          
+
+        let displayName = message.isSent
+            ? (message.to?.username ?? "Unknown")
+            : (message.fromUsername ?? "")
+        let labelPrefix = message.isSent ? "To: " : ""
+
         return MessageListCell.ViewModel(
             backgroundColor: theme["listBackgroundColor"]!,
             selectedBackgroundColor: theme["listSelectedBackgroundColor"]!,
-            sender: NSAttributedString(string: message.fromUsername ?? "", attributes: [
+            sender: NSAttributedString(string: labelPrefix + displayName, attributes: [
                 .font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: theme[double: "messageListSenderFontSizeAdjustment"]!, weight: .semibold),
                 .foregroundColor: theme[uicolor: "listSecondaryTextColor"]!]),
             sentDate: message.sentDate ?? .distantPast,
@@ -117,7 +133,16 @@ extension MessageListDataSource: UITableViewDataSource {
                 .foregroundColor: theme[uicolor: "listTextColor"]!]),
             tagImage: .image(name: message.threadTag?.imageName, placeholder: .privateMessage),
             tagOverlayImage: {
-                if message.replied {
+                if message.isSent {
+                    let image = UIImage(named: "pmforwarded")?
+                        .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
+                        .withRenderingMode(.alwaysTemplate)
+
+                    let imageView = UIImageView(image: image)
+                    imageView.tintColor = theme["tintColor"]!
+
+                    return imageView
+                } else if message.replied {
                     let image = UIImage(named: "pmreplied")?
                         .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
                         .withRenderingMode(.alwaysTemplate)
@@ -126,7 +151,7 @@ extension MessageListDataSource: UITableViewDataSource {
                     imageView.tintColor = theme["listBackgroundColor"]!
                     
                     return imageView
-                } else if message.forwarded {
+                } else if message.forwarded && !message.isSent {
                     let image = UIImage(named: "pmforwarded")?
                         .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
                         .withRenderingMode(.alwaysTemplate)
@@ -135,7 +160,7 @@ extension MessageListDataSource: UITableViewDataSource {
                     imageView.tintColor = theme["listBackgroundColor"]!
                     
                     return imageView
-                } else if !message.seen {
+                } else if !message.seen && !message.isSent {
                     let image = UIImage(named: "newpm")
                     let imageView = UIImageView(image: image)
                     

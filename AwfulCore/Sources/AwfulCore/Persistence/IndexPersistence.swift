@@ -118,6 +118,7 @@ extension IndexScrapeResult.ScrapedForum.Moderator {
     func update(_ user: User) {
         if user.userID != userID { user.userID = userID }
         if user.username != username { user.username = username }
+        user.absorbPlaceholders()
     }
 }
 
@@ -129,6 +130,7 @@ extension IndexScrapeResult.ScrapedProfile {
             configure: { $0.userID = userID }
         )
         update(user)
+        user.absorbPlaceholders()
 
         let profile = user.profile ?? Profile.insert(into: context)
         if profile.user != user { profile.user = user }

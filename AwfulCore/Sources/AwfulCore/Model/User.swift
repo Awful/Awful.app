@@ -31,20 +31,75 @@ public class User: AwfulManagedObject, Managed {
     public override var objectKey: UserKey {
         .init(userID: userID, username: username)
     }
+
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+
+        lastModifiedDate = Date()
+
+        // When we only know the username (e.g. message recipients in the Sent folder)
+        // we still need a stable userID. Generate a placeholder that can be reconciled
+        // once we encounter the same user in a context where we have their real ID.
+        if userID.isEmpty {
+            if let name = username, !name.isEmpty {
+                userID = "\(User.placeholderIDPrefix)\(name.lowercased().replacingOccurrences(of: " ", with: "_"))"
+            } else {
+                userID = "\(User.placeholderIDPrefix)\(UUID().uuidString)"
+            }
+        }
+    }
+
+    static let placeholderIDPrefix = "unknown-"
+
+    /// True while this user's `userID` is a synthetic placeholder generated from its username.
+    public var hasPlaceholderID: Bool { userID.hasPrefix(User.placeholderIDPrefix) }
 }
 
 extension User {
     public var avatarURL: URL? {
         return customTitleHTML.flatMap(extractAvatarURL)
     }
+
+    /// Folds any placeholder `User` rows that share this user's username into `self`.
+    ///
+    /// Call after assigning a real `userID` to a user (e.g. after scraping their profile or a
+    /// post that identifies them). Placeholders are created by the Sent-folder PM scrape when
+    /// only a recipient's username is known; without this step they would linger in Core Data
+    /// indefinitely, accumulating duplicates alongside the real `User` row.
+    func absorbPlaceholders() {
+        guard let context = managedObjectContext,
+              let username, !username.isEmpty,
+              !hasPlaceholderID
+        else { return }
+
+        let placeholders = User.fetch(in: context) {
+            $0.predicate = NSPredicate(
+                format: "%K = %@ AND %K BEGINSWITH %@ AND self != %@",
+                #keyPath(User.username), username,
+                #keyPath(User.userID), User.placeholderIDPrefix,
+                self
+            )
+        }
+        guard !placeholders.isEmpty else { return }
+
+        for placeholder in placeholders {
+            receivedPrivateMessages.formUnion(placeholder.receivedPrivateMessages)
+            sentPrivateMessages.formUnion(placeholder.sentPrivateMessages)
+            posts.formUnion(placeholder.posts)
+            threads.formUnion(placeholder.threads)
+            threadFilters.formUnion(placeholder.threadFilters)
+            announcements.formUnion(placeholder.announcements)
+            context.delete(placeholder)
+        }
+    }
 }
 
 // TODO: this is very stupid, just handle it during scraping
 public func extractAvatarURL(fromCustomTitleHTML customTitleHTML: String) -> URL? {
     let document = HTMLDocument(string: customTitleHTML)
-    let img = document.firstNode(matchingParsedSelector: .cached("div > img:first-child")) ??
-        document.firstNode(matchingParsedSelector: .cached("body > img:first-child")) ??
-        document.firstNode(matchingParsedSelector: .cached("a > img:first-child"))
+    let img = document.firstNode(matchingParsedSelector: .cached("div > img:first-of-type")) ??
+        document.firstNode(matchingParsedSelector: .cached("body > img:first-of-type")) ??
+        document.firstNode(matchingParsedSelector: .cached("a > img:first-of-type"))
 
     let src = img?["data-cfsrc"] ?? img?["src"]
     return src.flatMap { URL(string: $0) }
