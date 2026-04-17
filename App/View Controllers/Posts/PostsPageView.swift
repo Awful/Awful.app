@@ -17,11 +17,24 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
  */
 final class PostsPageView: UIView {
 
+    /// On iPad / Mac (Designed for iPad) the system safe area at the bottom can be 0
+    /// (windowed multitasking, Catalyst). Enforce a minimum so the toolbar aligns with
+    /// the sidebar's RootTabBar rather than disappearing off the bottom.
+    static let minimumPadBottomInset: CGFloat = 28
+
     @FoilDefaultStorage(Settings.darkMode) private var darkMode
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     var viewHasBeenScrolledOnce: Bool = false
 
     let immersiveModeManager = ImmersiveModeManager()
+
+    /// Effective bottom inset used to position the toolbar: honors the system safe area
+    /// on iPhone, and raises the toolbar to `minimumPadBottomInset` on iPad when needed.
+    var effectiveBottomInset: CGFloat {
+        traitCollection.userInterfaceIdiom == .pad
+            ? max(layoutMargins.bottom, Self.minimumPadBottomInset)
+            : layoutMargins.bottom
+    }
 
     /// Weak reference to the posts page view controller to avoid responder chain traversal
     weak var postsPageViewController: PostsPageViewController?
@@ -245,20 +258,11 @@ final class PostsPageView: UIView {
 
     let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 44) /* somewhat arbitrary size to avoid unhelpful unsatisfiable constraints console messages */)
 
-    private var safeAreaGradientView: GradientView {
-        return immersiveModeManager.safeAreaGradientView
-    }
-
     private lazy var fallbackSafeAreaGradientView: GradientView = {
         let view = GradientView()
         view.isUserInteractionEnabled = false
-        if #available(iOS 26.0, *) {
-            view.alpha = 1.0
-            view.isHidden = false
-        } else {
-            view.alpha = 0.0
-            view.isHidden = true
-        }
+        view.alpha = 0.0
+        view.isHidden = true
         return view
     }()
 
@@ -319,15 +323,6 @@ final class PostsPageView: UIView {
 
         if toolbar.transform == .identity {
             let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
-            // On iPad / Mac (Designed for iPad), the system safe area at the
-            // bottom can be 0 (windowed multitasking, Catalyst), which would
-            // pin the toolbar flush against the window's bottom edge. Enforce
-            // a minimum bottom inset so the toolbar reads as aligned with the
-            // sidebar's RootTabBar instead of disappearing off the bottom.
-            let minimumPadBottomInset: CGFloat = 28
-            let effectiveBottomInset: CGFloat = traitCollection.userInterfaceIdiom == .pad
-                ? max(layoutMargins.bottom, minimumPadBottomInset)
-                : layoutMargins.bottom
             toolbar.frame = CGRect(
                 x: bounds.minX + layoutMargins.left,
                 y: bounds.maxY - effectiveBottomInset - toolbarHeight,
@@ -385,7 +380,7 @@ final class PostsPageView: UIView {
         let normalInset = bounds.maxY - toolbar.frame.minY
 
         if immersiveModeManager.shouldAdjustScrollInsets() {
-            return immersiveModeManager.calculateBottomInset(normalBottomInset: normalInset)
+            return immersiveModeManager.calculateBottomInset(fallbackInset: normalInset)
         } else {
             return normalInset
         }
@@ -432,7 +427,7 @@ final class PostsPageView: UIView {
         topBar.themeDidChange(Theme.defaultTheme())
 
         if #available(iOS 26.0, *) {
-            safeAreaGradientView.themeDidChange()
+            immersiveModeManager.safeAreaGradientView.themeDidChange()
         }
     }
 

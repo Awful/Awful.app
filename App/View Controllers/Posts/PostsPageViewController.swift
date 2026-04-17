@@ -596,9 +596,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Settings"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
+        if #unavailable(iOS 26.0) {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -616,9 +614,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Previous page"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
+        if #unavailable(iOS 26.0) {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -674,9 +670,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Next page"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
+        if #unavailable(iOS 26.0) {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -704,9 +698,7 @@ final class PostsPageViewController: ViewController {
             }
         ))
         item.accessibilityLabel = "Thread actions"
-        // Only set explicit tint color for iOS < 26
-        if #available(iOS 26.0, *) {
-        } else {
+        if #unavailable(iOS 26.0) {
             item.tintColor = theme["toolbarTextColor"]
         }
         return item
@@ -1814,7 +1806,6 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.addSubview(postsView, constrainEdges: .all)
 
-        // Configure the immersive mode manager with navigation controller
         postsView.immersiveModeManager.configure(
             postsView: postsView,
             navigationController: navigationController,
@@ -1995,26 +1986,9 @@ final class PostsPageViewController: ViewController {
         configureUserActivityIfPossible()
     }
 
-    func exitImmersiveMode() {
-        postsView.immersiveModeManager.exitImmersiveMode()
-        resetNavigationBarState(animated: false)
-    }
-
-    private func resetNavigationBarState(animated: Bool) {
-        // Reset navigation bar transform to identity
-        if let navigationBar = navigationController?.navigationBar {
-            navigationBar.transform = .identity
-        }
-
-        // Ensure navigation bar is not hidden
-        if navigationController?.isNavigationBarHidden == true {
-            navigationController?.setNavigationBarHidden(false, animated: animated)
-        }
-    }
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        exitImmersiveMode()
+        postsView.immersiveModeManager.exitImmersiveMode()
     }
 
     override func viewDidDisappear(_ animated: Bool) {

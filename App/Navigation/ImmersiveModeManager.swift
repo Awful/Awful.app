@@ -15,7 +15,9 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Constants
 
-    private static let bottomProximityDistance: CGFloat = 30
+    /// Extra upward travel beyond the nav bar height so it fully clears the status bar
+    /// and doesn't peek when the user scrolls near the top.
+    private static let navBarHideOvertravel: CGFloat = 30
     private static let topProximityThreshold: CGFloat = 20
     private static let minScrollDelta: CGFloat = 0.5
     private static let snapToHiddenThreshold: CGFloat = 0.9
@@ -109,13 +111,12 @@ final class ImmersiveModeManager: NSObject {
               let window = postsView.window else { return 100 }
 
         let toolbarHeight = toolbar?.bounds.height ?? 44
-        let deviceSafeAreaBottom = window.safeAreaInsets.bottom
-        let bottomDistance = toolbarHeight + deviceSafeAreaBottom
+        let bottomDistance = toolbarHeight + postsView.effectiveBottomInset
 
         if let navBar = findNavigationBar() {
             let navBarHeight = navBar.bounds.height
             let deviceSafeAreaTop = window.safeAreaInsets.top
-            let topDistance = navBarHeight + deviceSafeAreaTop + Self.bottomProximityDistance
+            let topDistance = navBarHeight + deviceSafeAreaTop + Self.navBarHideOvertravel
             cachedTotalBarTravelDistance = max(bottomDistance, topDistance)
         } else {
             cachedTotalBarTravelDistance = bottomDistance
@@ -167,16 +168,17 @@ final class ImmersiveModeManager: NSObject {
         return immersiveModeEnabled
     }
 
-    func calculateBottomInset(normalBottomInset: CGFloat) -> CGFloat {
+    /// Bottom scroll inset to use while immersive mode is enabled. Computes the static
+    /// (pre-transform) toolbar position so insets stay stable as the toolbar slides away.
+    /// - Parameter fallbackInset: Value to return when refs are unavailable.
+    func calculateBottomInset(fallbackInset: CGFloat) -> CGFloat {
         guard immersiveModeEnabled,
               let toolbar = toolbar,
               let postsView = postsView else {
-            return normalBottomInset
+            return fallbackInset
         }
 
-        let toolbarHeight = toolbar.sizeThatFits(postsView.bounds.size).height
-        let staticToolbarY = postsView.bounds.maxY - postsView.layoutMargins.bottom - toolbarHeight
-        return max(postsView.layoutMargins.bottom, postsView.bounds.maxY - staticToolbarY)
+        return postsView.effectiveBottomInset + toolbar.bounds.height
     }
 
     func updateGradientLayout(in containerView: UIView) {
@@ -425,7 +427,7 @@ final class ImmersiveModeManager: NSObject {
 
         let navBarHeight = navBar.bounds.height
         let deviceSafeAreaTop = postsView?.window?.safeAreaInsets.top ?? 44
-        let totalUpwardDistance = navBarHeight + deviceSafeAreaTop + Self.bottomProximityDistance
+        let totalUpwardDistance = navBarHeight + deviceSafeAreaTop + Self.navBarHideOvertravel
         return -totalUpwardDistance * immersiveProgress
     }
 
@@ -433,8 +435,11 @@ final class ImmersiveModeManager: NSObject {
         guard let toolbar = toolbar else { return 0 }
 
         let toolbarHeight = toolbar.bounds.height
-        let deviceSafeAreaBottom = postsView?.window?.safeAreaInsets.bottom ?? 34
-        let totalDownwardDistance = toolbarHeight + deviceSafeAreaBottom
+        // Use postsView.effectiveBottomInset to account for the iPad minimum bottom inset
+        // that raises the toolbar above the window edge. Translating by just the device
+        // safe area would leave the top of the toolbar visible on iPad.
+        let bottomInset = postsView?.effectiveBottomInset ?? postsView?.window?.safeAreaInsets.bottom ?? 34
+        let totalDownwardDistance = toolbarHeight + bottomInset
         return totalDownwardDistance * immersiveProgress
     }
 
