@@ -9,6 +9,12 @@ private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Th
 
 final class ThreadListCell: UITableViewCell {
 
+    /// The actual contentView width from the most recent layout pass.
+    /// On Mac Catalyst ("Designed for iPad"), contentView can be narrower
+    /// than the table view due to platform-specific insets, so heightForRowAt
+    /// should prefer this over tableView.bounds or safeAreaLayoutGuide.
+    static var lastKnownContentViewWidth: CGFloat?
+
     private let pageCountBackgroundView = UIView()
     private let pageCountLabel = UILabel()
     private let pageIconView = UIImageView()
@@ -112,7 +118,25 @@ final class ThreadListCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel)
+        let contentWidth = contentView.bounds.width
+        let previousWidth = ThreadListCell.lastKnownContentViewWidth
+        ThreadListCell.lastKnownContentViewWidth = contentWidth
+
+        // If the actual contentView width differs from what heightForRowAt
+        // used (first layout, or width changed), schedule a height
+        // recalculation so cells get the correct height for this width.
+        if previousWidth.map({ abs($0 - contentWidth) > 1 }) != false {
+            DispatchQueue.main.async { [weak self] in
+                guard let tableView = self?.superview as? UITableView
+                    ?? self?.superview?.superview as? UITableView else { return }
+                UIView.performWithoutAnimation {
+                    tableView.beginUpdates()
+                    tableView.endUpdates()
+                }
+            }
+        }
+
+        let layout = Layout(width: contentWidth, viewModel: viewModel)
          // Background behind the page count label, with padding and pill shape
         if viewModel.unreadCount.length > 0 {
             let backgroundPadding = UIEdgeInsets(top: -2, left: -6, bottom: -2, right: -6)
@@ -172,6 +196,11 @@ final class ThreadListCell: UITableViewCell {
             if unreadSize.width > 0 {
                 textWidth -= unreadSize.width + Layout.unreadLeftMargin
             }
+
+            // Pixel-ceil textWidth so the measurement width matches the rendered width after textRect is pixelRound'd.
+            // Without this, a title that barely wraps at textWidth may fit on one line at the slightly wider pixelCeil(textWidth),
+            // leaving a gap between the title and the subtitle row.
+            textWidth = pixelCeil(textWidth)
 
             // 2. Figure out how tall things are.
             let titleHeight = viewModel.title.boundingRect(with: CGSize(width: textWidth, height: .infinity), options: [.usesLineFragmentOrigin], context: nil).pixelRound.height

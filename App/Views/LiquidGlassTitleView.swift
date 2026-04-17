@@ -10,7 +10,7 @@ final class LiquidGlassTitleView: UIView {
     private static let lineSpacing: CGFloat = -2
     private static let horizontalPadding: CGFloat = 16
     private static let verticalPadding: CGFloat = 8
-    private static let defaultWidth: CGFloat = 320
+    private static let phoneWidth: CGFloat = 320
     private static let defaultHeight: CGFloat = 56
 
     private var visualEffectView: UIVisualEffectView = {
@@ -56,7 +56,10 @@ final class LiquidGlassTitleView: UIView {
     }
     
     private func updateTitleDisplay() {
-        guard let text = titleLabel.text, !text.isEmpty else { return }
+        guard let text = titleLabel.text, !text.isEmpty else {
+            invalidateIntrinsicContentSize()
+            return
+        }
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
@@ -69,6 +72,7 @@ final class LiquidGlassTitleView: UIView {
         ]
 
         titleLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
+        invalidateIntrinsicContentSize()
     }
 
     override init(frame: CGRect) {
@@ -102,6 +106,32 @@ final class LiquidGlassTitleView: UIView {
         titleLabel.accessibilityTraits = .header
     }
     
+    private var maxWidth: CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            if let windowWidth = window?.bounds.width {
+                return windowWidth - 400
+            }
+        }
+        return Self.phoneWidth
+    }
+
+    private func contentFittingSize() -> CGSize {
+        let maxW = maxWidth
+        let labelMaxWidth = maxW - Self.horizontalPadding * 2
+        let labelSize = titleLabel.sizeThatFits(CGSize(width: labelMaxWidth, height: .greatestFiniteMagnitude))
+        let width = min(maxW, labelSize.width + Self.horizontalPadding * 2)
+        let height = max(Self.defaultHeight, labelSize.height + Self.verticalPadding * 2)
+        return CGSize(width: width, height: height)
+    }
+
+    override var intrinsicContentSize: CGSize {
+        return contentFittingSize()
+    }
+
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return contentFittingSize()
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -109,13 +139,5 @@ final class LiquidGlassTitleView: UIView {
         visualEffectView.layer.cornerRadius = cornerRadius
         visualEffectView.layer.masksToBounds = true
         visualEffectView.layer.cornerCurve = .continuous
-    }
-
-    override var intrinsicContentSize: CGSize {
-        return CGSize(width: Self.defaultWidth, height: Self.defaultHeight)
-    }
-
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
-        return CGSize(width: Self.defaultWidth, height: Self.defaultHeight)
     }
 }

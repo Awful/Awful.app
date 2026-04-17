@@ -180,6 +180,10 @@ final class PostPreviewViewController: ViewController {
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.insertSubview(renderView, at: 0)
 
+        if #available(iOS 26.0, *) {
+            renderView.scrollView.contentInsetAdjustmentBehavior = .never
+        }
+
         let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .hideStatusElements)
         self.loadingView = loadingView
         view.addSubview(loadingView)
@@ -187,6 +191,15 @@ final class PostPreviewViewController: ViewController {
         renderPreview()
     }
     
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        if #available(iOS 26.0, *) {
+            renderView.scrollView.contentInset.top = view.safeAreaInsets.top
+            renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        }
+    }
+
     override func themeDidChange() {
         super.themeDidChange()
         

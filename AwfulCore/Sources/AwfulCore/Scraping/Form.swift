@@ -189,7 +189,7 @@ public struct Form: ScrapeResult {
         }
 
         controls = form
-            .nodes(matchingSelector: "input, select, textarea")
+            .nodes(matchingParsedSelector: .cached("input, select, textarea"))
             .flatMap(Control.makeEntries)
         encodingType = (form["enctype"] as String?).flatMap(EncodingType.init) ?? .default
         method = (form["method"] as String?).flatMap(Method.init) ?? .default
@@ -214,7 +214,7 @@ private extension Form.Control {
     static func makeEntries(from element: HTMLElement) -> [Form.Control] {
         let name = element["name"] ?? ""
 
-        let isDisabled = HTMLSelector(string: ":disabled").matchesElement(element)
+        let isDisabled = HTMLSelector.cached(":disabled").matchesElement(element)
         let lowercaseType = element["type"]?.lowercased()
 
         switch (element.tagName, lowercaseType) {
@@ -272,7 +272,7 @@ private extension Form.Control {
             let constructor = element["multiple"] == nil ? Form.Control.selectOne : Form.Control.selectMany
 
             return element
-                .nodes(matchingSelector: "option")
+                .nodes(matchingParsedSelector: .cached("option"))
                 .map { constructor(
                     name,
                     $0["value"] ?? $0.textContent,

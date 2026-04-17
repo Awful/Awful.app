@@ -71,7 +71,6 @@ final class MessageListViewController: TableViewController {
         }
         if composeViewController == nil {
             let compose = MessageComposeViewController()
-            compose.restorationIdentifier = "New message"
             compose.delegate = self
             composeViewController = compose
         }
@@ -110,12 +109,14 @@ final class MessageListViewController: TableViewController {
         }
     }
     
-    func showMessage(_ message: PrivateMessage) {
+    func showMessage(_ message: PrivateMessage, pendingRestoration: PendingMessageRestoration? = nil) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
         let viewController = MessageViewController(privateMessage: message)
-        viewController.restorationIdentifier = "Message"
+        if let pending = pendingRestoration {
+            viewController.prepareForRestoration(scrollFraction: pending.scrollFraction)
+        }
         showDetailViewController(viewController, sender: self)
     }
 
@@ -232,25 +233,14 @@ extension MessageListViewController: ComposeTextViewControllerDelegate {
     }
 }
 
-extension MessageListViewController {
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-        
-        coder.encode(composeViewController, forKey: ComposeViewControllerKey)
-    }
-    
-    override func decodeRestorableState(with coder: NSCoder) {
-        super.decodeRestorableState(with: coder)
-        
-        composeViewController = coder.decodeObject(forKey: ComposeViewControllerKey) as! MessageComposeViewController?
-        composeViewController?.delegate = self
-    }
-}
-
-private let ComposeViewControllerKey = "AwfulComposeViewController"
-
 extension MessageListViewController: MessageListDataSourceDeletionDelegate {
     func didDeleteMessage(_ message: PrivateMessage, in dataSource: MessageListDataSource) {
         deleteMessage(message)
+    }
+}
+
+extension MessageListViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        .messagesList
     }
 }

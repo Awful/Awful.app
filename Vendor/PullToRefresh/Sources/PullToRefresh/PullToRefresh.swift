@@ -277,8 +277,17 @@ private extension PullToRefresh {
         guard !isOppositeRefresherLoading, let scrollView = scrollView else {
             return
         }
-        
-        scrollView.contentOffset = previousScrollViewOffset
+
+        // Separate the system's inset contribution (translucent bars) from the manual
+        // contentInset so offset math stays correct behind translucent nav bars.
+        let systemTopInset = scrollView.effectiveContentInset.top - scrollView.contentInset.top
+
+        // previousScrollViewOffset is a *normalized* offset; convert back to raw.
+        let rawOffset = CGPoint(
+            x: previousScrollViewOffset.x - scrollView.effectiveContentInset.left,
+            y: previousScrollViewOffset.y - scrollView.effectiveContentInset.top
+        )
+        scrollView.contentOffset = rawOffset
         scrollView.bounces = false
         UIView.animate(
             withDuration: 0.3,
@@ -287,7 +296,7 @@ private extension PullToRefresh {
                 case .top:
                     let insetY = self.refreshView.frame.height + self.scrollViewDefaultInsets.top
                     scrollView.contentInset.top = insetY
-                    scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: -insetY)
+                    scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: -(insetY + systemTopInset))
                 case .bottom:
                     let insetY = self.refreshView.frame.height + self.scrollViewDefaultInsets.bottom
                     scrollView.contentInset.bottom = insetY

@@ -26,10 +26,10 @@ public struct ProfileScrapeResult: ScrapeResult {
         author = try AuthorSidebarScrapeResult(html, url: url)
 
         do {
-            let infoCell = html.firstNode(matchingSelector: "td.info")
+            let infoCell = html.firstNode(matchingParsedSelector: .cached("td.info"))
 
             gender = infoCell
-                .flatMap { $0.firstNode(matchingSelector: "p:first-of-type") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("p:first-of-type")) }
                 .map { $0.textContent }
                 .flatMap { (info) -> String? in
                     let scanner = Scanner(scraping: info)
@@ -39,50 +39,50 @@ public struct ProfileScrapeResult: ScrapeResult {
                 ?? ""
 
             about = infoCell
-                .flatMap { $0.firstNode(matchingSelector: "p:nth-of-type(2)") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("p:nth-of-type(2)")) }
                 .map { $0.innerHTML }
                 ?? ""
         }
 
         do {
-            let contactsList = html.firstNode(matchingSelector: "dl.contacts")
+            let contactsList = html.firstNode(matchingParsedSelector: .cached("dl.contacts"))
 
             canReceivePrivateMessages = contactsList
-                .map { $0.firstNode(matchingSelector: "dt.pm + dd a") != nil }
+                .map { $0.firstNode(matchingParsedSelector: .cached("dt.pm + dd a")) != nil }
                 ?? false
 
             aimName = contactsList
-                .flatMap { $0.firstNode(matchingSelector: "dt.aim + dd") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("dt.aim + dd")) }
                 .flatMap { containsContactInfo($0) ? $0.textContent : nil }
                 ?? ""
 
             icqName = contactsList
-                .flatMap { $0.firstNode(matchingSelector: "dt.icq + dd") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("dt.icq + dd")) }
                 .flatMap { containsContactInfo($0) ? $0.textContent : nil }
                 ?? ""
 
             yahooName = contactsList
-                .flatMap { $0.firstNode(matchingSelector: "dt.yahoo + dd") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("dt.yahoo + dd")) }
                 .flatMap { containsContactInfo($0) ? $0.textContent : nil }
                 ?? ""
 
             homepage = contactsList
-                .flatMap { $0.firstNode(matchingSelector: "dt.homepage + dd") }
-                .flatMap { $0.firstNode(matchingSelector: "a[href]") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("dt.homepage + dd")) }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("a[href]")) }
                 .flatMap { $0["href"] }
                 .flatMap { URL(string: $0) }
         }
 
         profilePicture = html
-            .firstNode(matchingSelector: "div.userpic img[src]")
+            .firstNode(matchingParsedSelector: .cached("div.userpic img[src]"))
             .flatMap { $0["src"] }
             .flatMap { URL(string: $0) }
 
         do {
-            let additionalList = html.firstNode(matchingSelector: "dl.additional")
+            let additionalList = html.firstNode(matchingParsedSelector: .cached("dl.additional"))
 
             postCount = additionalList
-                .flatMap { $0.firstNode(matchingSelector: "dd:nth-of-type(2)") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("dd:nth-of-type(2)")) }
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap { (text) -> Int? in
@@ -91,7 +91,7 @@ public struct ProfileScrapeResult: ScrapeResult {
             }
 
             postRate = additionalList
-                .flatMap { $0.firstNode(matchingSelector: "dd:nth-of-type(3)") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("dd:nth-of-type(3)")) }
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap { (text) -> String? in
@@ -102,7 +102,7 @@ public struct ProfileScrapeResult: ScrapeResult {
                 ?? ""
 
             lastPostDate = additionalList
-                .flatMap { $0.firstNode(matchingSelector: "dd:nth-of-type(4)") }
+                .flatMap { $0.firstNode(matchingParsedSelector: .cached("dd:nth-of-type(4)")) }
                 .flatMap { $0.children.firstObject as? HTMLNode }
                 .map { $0.textContent }
                 .flatMap(PostDateFormatter.date(from:))
@@ -127,5 +127,5 @@ public struct ProfileScrapeResult: ScrapeResult {
 
 
 private func containsContactInfo(_ dd: HTMLElement) -> Bool {
-    return dd.firstNode(matchingSelector: "span.unset") == nil
+    return dd.firstNode(matchingParsedSelector: .cached("span.unset")) == nil
 }

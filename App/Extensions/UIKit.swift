@@ -199,9 +199,6 @@ extension UIViewController {
         if let nav = navigationController { return nav }
         let nav = NavigationController(rootViewController: self)
         nav.modalPresentationStyle = modalPresentationStyle
-        if let identifier = restorationIdentifier {
-            nav.restorationIdentifier = "\(identifier) navigation"
-        }
         return nav
     }
 }

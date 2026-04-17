@@ -58,29 +58,40 @@ protocol StencilContextConvertible {
     var context: [String: Any] { get }
 }
 
-/// Loads templates from a bundle's Resources directory. Unlike `FileSystemLoader`, this loader does not assume that resources are in the root of the bundle.
+/// Loads templates from a bundle's Resources directory. Unlike `FileSystemLoader`, this loader does not assume that resources are in the root of the bundle. Parsed templates are cached so that repeated renders avoid re-lexing.
 class BundleResourceLoader: Loader {
     private let resourceURL: URL?
+    private let cache = NSCache<NSString, Template>()
 
     init(bundle: Bundle) {
         resourceURL = bundle.resourceURL
     }
 
     func loadTemplate(name: String, environment: Stencil.Environment) throws -> Template {
+        if let cached = cache.object(forKey: name as NSString) {
+            return cached
+        }
         guard let url = URL(string: name, relativeTo: resourceURL) else {
             throw TemplateDoesNotExist(templateNames: [name], loader: self)
         }
         let content = try String(contentsOf: url, encoding: .utf8)
-        return environment.templateClass.init(templateString: content, environment: environment, name: name)
+        let template = environment.templateClass.init(templateString: content, environment: environment, name: name)
+        cache.setObject(template, forKey: name as NSString)
+        return template
     }
 
     func loadTemplate(names: [String], environment: Stencil.Environment) throws -> Template {
         for name in names {
+            if let cached = cache.object(forKey: name as NSString) {
+                return cached
+            }
             guard let url = URL(string: name, relativeTo: resourceURL) else {
                 continue
             }
             let content = try String(contentsOf: url, encoding: .utf8)
-            return environment.templateClass.init(templateString: content, environment: environment, name: name)
+            let template = environment.templateClass.init(templateString: content, environment: environment, name: name)
+            cache.setObject(template, forKey: name as NSString)
+            return template
         }
 
         throw TemplateDoesNotExist(templateNames: names, loader: self)

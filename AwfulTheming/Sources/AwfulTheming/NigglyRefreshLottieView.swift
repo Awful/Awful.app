@@ -40,6 +40,11 @@ final class NigglyRefreshLottieView: UIView, Themeable {
         animationView.loopMode = .loop
         animationView.animationSpeed = 1
         animationView.translatesAutoresizingMaskIntoConstraints = false
+
+        if #available(iOS 26.0, *) {
+            animationView.alpha = 0
+        }
+
         addSubview(animationView)
 
         directionalLayoutMargins = .init(top: 6, leading: 0, bottom: 6, trailing: 0)
@@ -91,15 +96,50 @@ extension NigglyRefreshLottieView {
             case .initial:
                 view.animationView.play()
                 view.animationView.pause()
-                
-            case .releasing(let progress) where progress < 1:
-                view.animationView.pause()
-                
-            case .loading, .releasing:
+
+                if #available(iOS 26.0, *) {
+                    UIView.animate(withDuration: 0.2) { [weak view] in
+                        view?.animationView.alpha = 0
+                    }
+                }
+
+            case .releasing(let progress):
+                if progress > 0 {
+                    if #available(iOS 26.0, *) {
+                        UIView.animate(withDuration: 0.1) { [weak view] in
+                            view?.animationView.alpha = 1
+                        }
+                    }
+
+                    if progress < 1 {
+                        view.animationView.pause()
+                    } else {
+                        view.animationView.play()
+                    }
+                } else {
+                    view.animationView.pause()
+                    if #available(iOS 26.0, *) {
+                        view.animationView.alpha = 0
+                    }
+                }
+
+            case .loading:
                 view.animationView.play()
-                
+
+                if #available(iOS 26.0, *) {
+                    UIView.animate(withDuration: 0.2) { [weak view] in
+                        view?.animationView.alpha = 1
+                    }
+                }
+
             case .finished:
                 view.animationView.stop()
+
+                if #available(iOS 26.0, *) {
+                    UIView.animate(withDuration: 0.3, delay: 0.2, options: []) { [weak view] in
+                        view?.animationView.alpha = 0
+                    }
+                }
             }
         }
     }

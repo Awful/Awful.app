@@ -41,14 +41,18 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.jumpToPostEndOnDoubleTap) private var jumpToPostEndOnDoubleTap
     private var jumpToPostIDAfterLoading: String?
     private var messageViewController: MessageComposeViewController?
-    private var networkOperation: Task<Void, Never>?
+    private var cancelNetworkOperation: (() -> Void)?
     private var observers: [NSKeyValueObservation] = []
     private lazy var oEmbedFetcher: OEmbedFetcher = .init()
     private(set) var page: ThreadPage?
     @FoilDefaultStorage(Settings.pullForNext) private var pullForNext
     private var replyWorkspace: ReplyWorkspace?
-    private var restoringState = false
     private var scrollToFractionAfterLoading: CGFloat?
+    /// When true, the next `loadPage` network completion skips its usual "save current scroll
+    /// offset so we land in the same place after re-render" step. Set by `prepareForRestoration`
+    /// so a freshly restored scroll fraction isn't clobbered by the in-flight fetch that the URL
+    /// router kicked off before `SceneDelegate` could stage the restored value.
+    private var suppressNextScrollFractionPreservation = false
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
     let thread: AwfulThread
@@ -115,6 +119,7 @@ final class PostsPageViewController: ViewController {
     private var hiddenPosts = 0 {
         didSet { updateUserInterface() }
     }
+    private var hiddenPostsAfterLoading: Int?
 
     private lazy var postsView: PostsPageView = {
         let postsView = PostsPageView()
@@ -128,6 +133,7 @@ final class PostsPageViewController: ViewController {
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapPostActionButton.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchOEmbedFragment.self)
+        postsView.renderView.registerMessage(RenderView.BuiltInMessage.FetchAttachmentImage.self)
         postsView.renderView.registerMessage(RenderView.BuiltInMessage.ImageLoadProgress.self)
         postsView.topBar.goToParentForum = { [unowned self] in
             guard let forum = self.thread.forum else { return }
@@ -193,18 +199,13 @@ final class PostsPageViewController: ViewController {
         self.author = author
         super.init(nibName: nil, bundle: nil)
 
-        restorationClass = type(of: self)
-
         navigationItem.rightBarButtonItem = composeItem
 
         hidesBottomBarWhenPushed = true
     }
 
     deinit {
-        // Avoid warning in Xcode 14 beta 1 "cannot access property with a non-sendable type from a non-isolated deinit"
-        // UIViewController actually does guarantee deinit on the main queue, but the Swift compiler doesn't know that.
-        // (Also, it seems like an oversight that wrapping the access in an immediately-executed closure avoids the warning, so be prepared for more warnings here.)
-        { networkOperation?.cancel() }()
+        cancelNetworkOperation?()
     }
 
     var posts: [Post] = []
@@ -256,9 +257,8 @@ final class PostsPageViewController: ViewController {
     ) {
         flagRequest?.cancel()
         flagRequest = nil
-
-        networkOperation?.cancel()
-        networkOperation = nil
+        cancelNetworkOperation?()
+        cancelNetworkOperation = nil
 
         // prevent white flash caused by webview being opaque during refreshes
         if darkMode {
@@ -286,9 +286,7 @@ final class PostsPageViewController: ViewController {
 
             updateUserInterface()
 
-            if !restoringState {
-                hiddenPosts = 0
-            }
+            hiddenPosts = 0
 
             refetchPosts()
 
@@ -315,14 +313,12 @@ final class PostsPageViewController: ViewController {
             let firstUnreadPost: Int?
             let advertisementHTML: String
         }
-        let fetch = Task { @MainActor in
-            self.postsView.loadingView?.updateStatus("Fetching posts from server...")
+        let fetch = Task {
             let result = try await ForumsClient.shared.listPosts(in: thread, writtenBy: author, page: newPage, updateLastReadPost: updateLastReadPost)
             return FetchResult(posts: result.posts, firstUnreadPost: result.firstUnreadPost, advertisementHTML: result.advertisementHTML)
         }
-
-        networkOperation = Task { @MainActor [weak self] in
-            defer { self?.networkOperation = nil }
+        cancelNetworkOperation = { fetch.cancel() }
+        Task { [weak self] in
             do {
                 let fetchResult = try await fetch.value
                 let (posts, firstUnreadPost) = (fetchResult.posts, fetchResult.firstUnreadPost)
@@ -349,8 +345,13 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
-                    self.currentPageItem.title = "Page ? of \(pageCount)"
+                    if #available(iOS 26.0, *) {
+                        self.pageNumberView.currentPage = 0
+                        self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
+                    } else {
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
+                        self.currentPageItem.title = "Page ? of \(pageCount)"
+                    }
 
                 case .last, .nextUnread, .specific:
                     break
@@ -358,15 +359,19 @@ final class PostsPageViewController: ViewController {
 
                 self.configureUserActivityIfPossible()
 
-                if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
+                if let pendingHidden = self.hiddenPostsAfterLoading {
+                    self.hiddenPosts = pendingHidden
+                    self.hiddenPostsAfterLoading = nil
+                } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
                     self.hiddenPosts = firstUnreadPost - 1
                 }
 
-                if reloadingSamePage || renderedCachedPosts {
+                if self.suppressNextScrollFractionPreservation {
+                    self.suppressNextScrollFractionPreservation = false
+                } else if reloadingSamePage || renderedCachedPosts {
                     self.scrollToFractionAfterLoading = self.postsView.renderView.scrollView.fractionalContentOffset.y
                 }
 
-                self.postsView.loadingView?.updateStatus("Generating page...")
                 self.renderPosts()
 
                 self.updateUserInterface()
@@ -400,11 +405,11 @@ final class PostsPageViewController: ViewController {
                 switch newPage {
                 case .last where self.posts.isEmpty,
                      .nextUnread where self.posts.isEmpty:
-                    let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                     if #available(iOS 26.0, *) {
                         self.pageNumberView.currentPage = 0
                         self.pageNumberView.totalPages = self.numberOfPages > 0 ? self.numberOfPages : 0
                     } else {
+                        let pageCount = self.numberOfPages > 0 ? "\(self.numberOfPages)" : "?"
                         self.currentPageItem.title = "Page ? of \(pageCount)"
                     }
 
@@ -478,20 +483,17 @@ final class PostsPageViewController: ViewController {
 
         context["tweetTheme"] = theme[string: "postsTweetTheme"] ?? "light"
 
-        let html: String
-        do {
-            html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
-        } catch {
-            logger.error("could not render posts view HTML: \(error)")
-            html = ""
-        }
-
-        Task {
-            await postsView.renderView.eraseDocument()
-            await MainActor.run {
-                self.postsView.loadingView?.updateStatus("Rendering page...")
+        Task.detached(priority: .userInitiated) { [context] in
+            let html: String
+            do {
+                html = try StencilEnvironment.shared.renderTemplate(.postsView, context: context)
+            } catch {
+                logger.error("could not render posts view HTML: \(error)")
+                html = ""
             }
-            self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
+
+            await self.postsView.renderView.eraseDocument()
+            await self.postsView.renderView.render(html: html, baseURL: ForumsClient.shared.baseURL)
         }
     }
 
@@ -629,7 +631,7 @@ final class PostsPageViewController: ViewController {
         }
         return view
     }()
-    
+
     private lazy var currentPageItem: UIBarButtonItem = {
         let item = UIBarButtonItem(primaryAction: UIAction { [unowned self] action in
             guard self.postsView.loadingView == nil else { return }
@@ -655,7 +657,7 @@ final class PostsPageViewController: ViewController {
         } else {
             item.possibleTitles = ["2345 / 2345"]
         }
-        
+
         item.accessibilityHint = "Opens page picker"
         return item
     }()
@@ -789,7 +791,6 @@ final class PostsPageViewController: ViewController {
                 currentPageItem.setTitleTextAttributes([.font: UIFont.preferredFontForTextStyle(.body, weight: .regular)], for: .normal)
             }
         } else {
-            // Clear page display
             if #available(iOS 26.0, *) {
                 pageNumberView.currentPage = 0
                 pageNumberView.totalPages = 0
@@ -814,22 +815,12 @@ final class PostsPageViewController: ViewController {
     }
     
     private func updateToolbarItems() {
-        var toolbarItems: [UIBarButtonItem] = [settingsItem, .flexibleSpace()]
-
-        toolbarItems.append(contentsOf: [backItem, currentPageItem, forwardItem])
-        
-        toolbarItems.append(contentsOf: [.flexibleSpace(), actionsItem()])
-        postsView.toolbarItems = toolbarItems
+        postsView.toolbarItems = [settingsItem, .flexibleSpace(), backItem, currentPageItem, forwardItem, .flexibleSpace(), actionsItem()]
     }
 
     private func showLoadingView() {
         guard postsView.loadingView == nil else { return }
-        let loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
-        loadingView.updateStatus("Loading...")
-        loadingView.onDismiss = { [weak self] in
-            self?.clearLoadingMessage()
-        }
-        postsView.loadingView = loadingView
+        postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
     }
 
     private func clearLoadingMessage() {
@@ -1195,7 +1186,6 @@ final class PostsPageViewController: ViewController {
             let user = User.objectForKey(objectKey: userKey, in: self.thread.managedObjectContext!)
 
             let postsVC = PostsPageViewController(thread: self.thread, author: user)
-            postsVC.restorationIdentifier = "Just your posts"
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
 
             self.navigationController?.pushViewController(postsVC, animated: true)
@@ -1324,7 +1314,7 @@ final class PostsPageViewController: ViewController {
             present(actionSheet, animated: false)
 
             if let popover = actionSheet.popoverPresentationController {
-                popover.barButtonItem = actionsItem
+                popover.barButtonItem = actionsItem()
             }
         }
     }
@@ -1347,7 +1337,6 @@ final class PostsPageViewController: ViewController {
 
         self.dismiss(animated: false) {
             let postsVC = PostsPageViewController(thread: self.thread, author: self.selectedUser!)
-            postsVC.restorationIdentifier = "Just their posts"
             postsVC.loadPage(.first, updatingCache: true, updatingLastReadPost: true)
             self.navigationController?.pushViewController(postsVC, animated: true)
         }
@@ -1362,7 +1351,6 @@ final class PostsPageViewController: ViewController {
             let messageVC = MessageComposeViewController(recipient: self.selectedUser!)
             self.messageViewController = messageVC
             messageVC.delegate = self
-            messageVC.restorationIdentifier = "New PM from posts view"
             self.present(messageVC.enclosingNavigationController, animated: true, completion: nil)
         }
     }
@@ -1424,8 +1412,43 @@ final class PostsPageViewController: ViewController {
         func presentNewReplyWorkspace() {
             Task {
                 do {
-                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost!)
-                    let replyWorkspace = ReplyWorkspace(post: selectedPost!, bbcode: text)
+                    guard let selectedPost = selectedPost else {
+                        logger.error("Cannot edit: no post selected")
+                        return
+                    }
+
+                    let text = try await ForumsClient.shared.findBBcodeContents(of: selectedPost)
+                    let capabilities = try? await ForumsClient.shared.findEditAttachmentCapabilities(for: selectedPost)
+                    let replyWorkspace = ReplyWorkspace(post: selectedPost, bbcode: text)
+
+                    // Set attachment info and capabilities before creating the composition view controller
+                    if let editDraft = replyWorkspace.draft as? EditReplyDraft {
+                        editDraft.canAddAttachment = capabilities?.canAddAttachment ?? false
+
+                        if let attachmentInfo = capabilities?.existingAttachment {
+                            editDraft.existingAttachmentInfo = attachmentInfo
+
+                            // Fetch the attachment image
+                            do {
+                                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentInfo.id)
+                                if let image = UIImage(data: imageData) {
+                                    editDraft.existingAttachmentImage = image
+                                }
+                            } catch {
+                                logger.error("Failed to fetch attachment image for edit: \(error)")
+                                let alert = UIAlertController(
+                                    title: nil,
+                                    message: LocalizedString("posts-page.error.attachment-preview-failed"),
+                                    preferredStyle: .alert
+                                )
+                                present(alert, animated: true)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                    alert.dismiss(animated: true)
+                                }
+                            }
+                        }
+                    }
+
                     self.replyWorkspace = replyWorkspace
                     replyWorkspace.completion = replyCompletionBlock
                     present(replyWorkspace.viewController, animated: true)
@@ -1541,6 +1564,23 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    private func fetchAttachmentImage(attachmentID: String, id: String) {
+        Task {
+            do {
+                let imageData = try await ForumsClient.shared.fetchAttachmentImageByID(attachmentID: attachmentID)
+                if let image = UIImage(data: imageData), let pngData = image.pngData() {
+                    let base64 = pngData.base64EncodedString()
+                    let dataURL = "data:image/png;base64,\(base64)"
+                    await MainActor.run {
+                        postsView.renderView.didFetchAttachmentImage(id: id, dataURL: dataURL)
+                    }
+                }
+            } catch {
+                logger.error("Failed to fetch attachment image \(attachmentID): \(error)")
+            }
+        }
+    }
+
     private func presentDraftMenu(
         from source: DraftMenuSource,
         options: DraftMenuOptions
@@ -1631,6 +1671,38 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    var restorationRoute: AwfulRoute? {
+        guard let page = page, case .specific = page else { return nil }
+        if let author = author {
+            return .threadPageSingleUser(threadID: thread.threadID, userID: author.userID, page: page, .seen)
+        } else {
+            return .threadPage(threadID: thread.threadID, page: page, .seen)
+        }
+    }
+
+    var currentScrollFraction: CGFloat? {
+        guard isViewLoaded else { return nil }
+        return postsView.renderView.scrollView.fractionalContentOffset.y
+    }
+
+    var currentHiddenPosts: Int { hiddenPosts }
+
+    /// Stages a vertical scroll fraction and hidden-posts count to apply once the WKWebView
+    /// finishes rendering. Used by `SceneDelegate` to restore the user's place after iOS
+    /// terminates the scene.
+    func prepareForRestoration(scrollFraction: CGFloat?, hiddenPosts: Int?) {
+        if let scrollFraction = scrollFraction {
+            scrollToFractionAfterLoading = scrollFraction
+            // The URL router already kicked off `loadPage(updatingCache: true)`, which renders
+            // cached posts immediately and then re-renders when the network fetch completes —
+            // and that completion would otherwise overwrite the scroll fraction we just staged.
+            suppressNextScrollFractionPreservation = true
+        }
+        if let hiddenPosts = hiddenPosts {
+            hiddenPostsAfterLoading = hiddenPosts
+        }
+    }
+
     private func configureUserActivityIfPossible() {
         guard case .specific? = page, handoffEnabled else {
             userActivity = nil
@@ -1693,7 +1765,7 @@ final class PostsPageViewController: ViewController {
 
 
         if postsView.loadingView != nil {
-            postsView.loadingView = LoadingView.loadingViewWithTheme(theme, configuration: .showStatusElements)
+            postsView.loadingView = LoadingView.loadingViewWithTheme(theme)
         }
 
         let appearance = UIToolbarAppearance()
@@ -1951,86 +2023,8 @@ final class PostsPageViewController: ViewController {
         userActivity = nil
     }
 
-    override func encodeRestorableState(with coder: NSCoder) {
-        super.encodeRestorableState(with: coder)
-
-        coder.encode(thread.objectKey, forKey: Keys.threadKey)
-        if let page = page {
-            coder.encode(page.nsCoderIntValue, forKey: Keys.page)
-        }
-        coder.encode(author?.objectKey, forKey: Keys.authorUserKey)
-        coder.encode(hiddenPosts, forKey: Keys.hiddenPosts)
-        coder.encode(messageViewController, forKey: Keys.messageViewController)
-        coder.encode(advertisementHTML, forKey: Keys.advertisementHTML)
-        coder.encode(Float(postsView.renderView.scrollView.fractionalContentOffset.y), forKey: Keys.scrolledFractionOfContent)
-        coder.encode(replyWorkspace, forKey: Keys.replyWorkspace)
-    }
-
-    override func decodeRestorableState(with coder: NSCoder) {
-        restoringState = true
-
-        super.decodeRestorableState(with: coder)
-
-        messageViewController = coder.decodeObject(forKey: Keys.messageViewController) as? MessageComposeViewController
-        messageViewController?.delegate = self
-
-        hiddenPosts = coder.decodeInteger(forKey: Keys.hiddenPosts)
-        let page: ThreadPage = {
-            guard
-                coder.containsValue(forKey: Keys.page),
-                let page = ThreadPage(nsCoderIntValue: coder.decodeInteger(forKey: Keys.page))
-                else { return .specific(1) }
-            return page
-        }()
-        self.page = page
-        loadPage(page, updatingCache: false, updatingLastReadPost: true)
-        if posts.isEmpty {
-            loadPage(page, updatingCache: true, updatingLastReadPost: true)
-        }
-
-        advertisementHTML = coder.decodeObject(forKey: Keys.advertisementHTML) as? String
-        scrollToFractionAfterLoading = CGFloat(coder.decodeFloat(forKey: Keys.scrolledFractionOfContent))
-
-        replyWorkspace = coder.decodeObject(forKey: Keys.replyWorkspace) as? ReplyWorkspace
-        replyWorkspace?.completion = replyCompletionBlock
-    }
-
-    override func applicationFinishedRestoringState() {
-        super.applicationFinishedRestoringState()
-
-        restoringState = false
-    }
-
-    // MARK: Gunk
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private extension ThreadPage {
-    init?(nsCoderIntValue: Int) {
-        switch nsCoderIntValue {
-        case -2:
-            self = .last
-        case -1:
-            self = .nextUnread
-        case 1...Int.max:
-            self = .specific(nsCoderIntValue)
-        default:
-            return nil
-        }
-    }
-
-    var nsCoderIntValue: Int {
-        switch self {
-        case .last:
-            return -2
-        case .nextUnread:
-            return -1
-        case .specific(let pageNumber):
-            return pageNumber
-        }
     }
 }
 
@@ -2048,8 +2042,6 @@ extension PostsPageViewController: RenderViewDelegate {
         if embedTweets {
             view.embedTweets()
         }
-
-        // Note: Image loading tracking is set up automatically via DOMContentLoaded event in RenderView.js
 
         webViewDidLoadOnce = true
 
@@ -2073,8 +2065,7 @@ extension PostsPageViewController: RenderViewDelegate {
             postsView.renderView.scrollToFractionalOffset(fractionalOffset)
         }
 
-        // Note: Loading view is now dismissed when image loading completes (via ImageLoadProgress message)
-        // or when user taps (X) button
+        clearLoadingMessage()
     }
 
     func didReceive(message: RenderViewMessage, in view: RenderView) {
@@ -2096,6 +2087,9 @@ extension PostsPageViewController: RenderViewDelegate {
             
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
+
+        case let message as RenderView.BuiltInMessage.FetchAttachmentImage:
+            fetchAttachmentImage(attachmentID: message.attachmentID, id: message.id)
 
         case let message as RenderView.BuiltInMessage.ImageLoadProgress:
             if message.total == 0 {
@@ -2146,36 +2140,7 @@ extension PostsPageViewController: UIGestureRecognizerDelegate {
     }
 }
 
-extension PostsPageViewController: UIViewControllerRestoration {
-    static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-        let context = AppDelegate.instance.managedObjectContext
-        guard let threadKey = coder.decodeObject(forKey: Keys.threadKey) as? ThreadKey else { return nil }
-        let thread = AwfulThread.objectForKey(objectKey: threadKey, in: context)
-        let userKey = coder.decodeObject(forKey: Keys.authorUserKey) as? UserKey
-        let author: User?
-        if let userKey = userKey {
-            author = User.objectForKey(objectKey: userKey, in: context)
-        } else {
-            author = nil
-        }
-
-        let postsVC = PostsPageViewController(thread: thread, author: author)
-        postsVC.restorationIdentifier = identifierComponents.last
-        return postsVC
-    }
-}
-
-private struct Keys {
-    static let threadKey = "ThreadKey"
-    static let page = "AwfulCurrentPage"
-    static let authorUserKey = "AuthorUserKey"
-    static let hiddenPosts = "AwfulHiddenPosts"
-    static let replyViewController = "AwfulReplyViewController"
-    static let messageViewController = "AwfulMessageViewController"
-    static let advertisementHTML = "AwfulAdvertisementHTML"
-    static let scrolledFractionOfContent = "AwfulScrolledFractionOfContentSize"
-    static let replyWorkspace = "Reply workspace"
-}
+extension PostsPageViewController: RestorableLocation {}
 
 extension PostsPageViewController {
     override var keyCommands: [UIKeyCommand]? {

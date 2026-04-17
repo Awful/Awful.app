@@ -1682,6 +1682,31 @@ Awful.embedGfycat = function() {
 
 Awful.embedGfycat();
 
+// Load attachment images asynchronously
+Awful.loadAttachmentImages = function() {
+  var attachmentImages = document.querySelectorAll('img[data-awful-attachment-id]');
+  attachmentImages.forEach(function(img, index) {
+    var attachmentID = img.getAttribute('data-awful-attachment-id');
+    var callbackID = 'attachment-' + attachmentID + '-' + index + '-' + Date.now();
+    img.setAttribute('data-awful-attachment-callback-id', callbackID);
+    window.webkit.messageHandlers.fetchAttachmentImage.postMessage({
+      id: callbackID,
+      attachmentid: attachmentID
+    });
+  });
+};
+
+Awful.didFetchAttachmentImage = function(id, dataURL) {
+  var img = document.querySelector('img[data-awful-attachment-callback-id="' + id + '"]');
+  if (img && dataURL) {
+    img.src = dataURL;
+  }
+};
+
+if (document.querySelectorAll('img[data-awful-attachment-id]').length > 0) {
+  Awful.loadAttachmentImages();
+}
+
 // Set up image loading if DOM is ready (DOMContentLoaded may have already fired)
 // The early user script in RenderView.swift tracks when DOMContentLoaded fires
 if (Awful.domContentLoadedFired) {

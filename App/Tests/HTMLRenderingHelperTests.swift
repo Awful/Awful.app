@@ -64,7 +64,7 @@ final class HTMLRenderingHelperTests: XCTestCase {
             <a href="https://youtu.be" target="_blank" rel="nofollow">https://youtu.be</a>
             """)
         doc.embedVideos()
-        XCTAssertNil(doc.firstNode(matchingSelector: "iframe"))
-        XCTAssertNotNil(doc.firstNode(matchingSelector: "a"))
+        XCTAssertNil(doc.firstNode(matchingParsedSelector: .cached("iframe")))
+        XCTAssertNotNil(doc.firstNode(matchingParsedSelector: .cached("a")))
     }
 }

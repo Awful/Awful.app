@@ -78,12 +78,18 @@ final class PostsPageView: UIView {
                         ])
                     }
                     if refreshControl is GetOutFrogRefreshSpinnerView {
+                        // Horizontal anchors use PostsPageView's layoutMarginsGuide so the
+                        // frog centers within the visible detail column on iPad/macOS
+                        // (accounting for the sidebar's safe-area inset), rather than within
+                        // the full scroll-view width. PostsPageViewController keeps
+                        // postsView.layoutMargins synced with view.safeAreaInsets, so on
+                        // iPhone these margins are zero and centering is unchanged.
                         NSLayoutConstraint.activate([
-                            refreshControl.leftAnchor.constraint(equalTo: containerMargins.leftAnchor),
-                            containerMargins.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
+                            refreshControl.leftAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor),
+                            layoutMarginsGuide.rightAnchor.constraint(equalTo: refreshControl.rightAnchor),
                             containerMargins.bottomAnchor.constraint(equalTo: refreshControl.bottomAnchor),
                             // controls frog lottie position between last post and bottom toolbar
-                            refreshControl.heightAnchor.constraint(equalToConstant: 90)
+                            refreshControl.heightAnchor.constraint(equalToConstant: 110)
                         ])
                     }
                 }
@@ -301,7 +307,11 @@ final class PostsPageView: UIView {
          */
 
         renderView.frame = bounds
-        loadingViewContainer.frame = bounds
+        loadingViewContainer.frame = CGRect(
+            x: bounds.minX + layoutMargins.left,
+            y: bounds.minY,
+            width: bounds.width - layoutMargins.left - layoutMargins.right,
+            height: bounds.height)
 
         if #available(iOS 26.0, *) {
             immersiveModeManager.updateGradientLayout(in: self)
@@ -309,10 +319,19 @@ final class PostsPageView: UIView {
 
         if toolbar.transform == .identity {
             let toolbarHeight = toolbar.sizeThatFits(bounds.size).height
+            // On iPad / Mac (Designed for iPad), the system safe area at the
+            // bottom can be 0 (windowed multitasking, Catalyst), which would
+            // pin the toolbar flush against the window's bottom edge. Enforce
+            // a minimum bottom inset so the toolbar reads as aligned with the
+            // sidebar's RootTabBar instead of disappearing off the bottom.
+            let minimumPadBottomInset: CGFloat = 28
+            let effectiveBottomInset: CGFloat = traitCollection.userInterfaceIdiom == .pad
+                ? max(layoutMargins.bottom, minimumPadBottomInset)
+                : layoutMargins.bottom
             toolbar.frame = CGRect(
-                x: bounds.minX,
-                y: bounds.maxY - layoutMargins.bottom - toolbarHeight,
-                width: bounds.width,
+                x: bounds.minX + layoutMargins.left,
+                y: bounds.maxY - effectiveBottomInset - toolbarHeight,
+                width: bounds.width - layoutMargins.left - layoutMargins.right,
                 height: toolbarHeight)
         }
 
@@ -333,9 +352,9 @@ final class PostsPageView: UIView {
             : normalY
 
         topBarContainer.frame = CGRect(
-            x: bounds.minX,
+            x: bounds.minX + layoutMargins.left,
             y: topBarY,
-            width: bounds.width,
+            width: bounds.width - layoutMargins.left - layoutMargins.right,
             height: topBarHeight)
         updateTopBarContainerFrameAndScrollViewInsets()
 
