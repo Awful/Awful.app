@@ -68,6 +68,138 @@
         }
       }
     },
+    "bookmarks.filter.all" : {
+      "comment" : "Segmented control label for showing all bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.unread" : {
+      "comment" : "Segmented control label for showing only unread bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unread"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.read" : {
+      "comment" : "Segmented control label for showing only read bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.button.accessibility-label" : {
+      "comment" : "Accessibility label for the filter button in the bookmarks navigation bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter bookmarks"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.menu.accessibility-label" : {
+      "comment" : "Accessibility label for the filter menu popover.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter Menu"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.menu.accessibility-hint" : {
+      "comment" : "Accessibility hint for the filter menu popover.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter bookmarks by read status or star color"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-label" : {
+      "comment" : "Accessibility label for a star color filter button. %@ is the color name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter by %@ star"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-hint.selected" : {
+      "comment" : "Accessibility hint for a currently selected star color filter button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currently selected. Double-tap to deselect."
+          }
+        }
+      }
+    },
+    "bookmarks.filter.star.accessibility-hint.unselected" : {
+      "comment" : "Accessibility hint for an unselected star color filter button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double-tap to filter by this star color."
+          }
+        }
+      }
+    },
+    "bookmarks.search.button.accessibility-label" : {
+      "comment" : "Accessibility label for the search button in the bookmarks navigation bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search bookmarks"
+          }
+        }
+      }
+    },
+    "bookmarks.search.placeholder" : {
+      "comment" : "Placeholder text for the bookmarks search bar.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search by title or author\u2026"
+          }
+        }
+      }
+    },
     "cancel" : {
       "comment" : "Title of button that dismisses without taking any action.",
       "localizations" : {
