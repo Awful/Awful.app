@@ -74,6 +74,21 @@ final class ForumListDataSource: NSObject {
         announcementsController.delegate = self
         favoriteForumsController.delegate = self
         forumsController.delegate = self
+
+        NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
+    }
+
+    @objc private func dataStoreDidReset() {
+        // Old store's objects are no longer reachable from the coordinator. Re-fetch so
+        // the FRCs' caches stop pointing at dangling objectIDs.
+        for controller in resultsControllers {
+            do {
+                try controller.performFetch()
+            } catch {
+                logger.error("Failed to re-fetch after data store reset: \(error)")
+            }
+        }
+        tableView.reloadData()
     }
     
     private var resultsControllers: [NSFetchedResultsController<NSFetchRequestResult>] {

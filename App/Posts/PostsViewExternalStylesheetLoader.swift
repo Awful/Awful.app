@@ -165,6 +165,16 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
         }
     }
     
+    func clearCache() {
+        let fileManager = FileManager.default
+        if let contents = try? fileManager.contentsOfDirectory(at: cacheFolder, includingPropertiesForKeys: nil) {
+            for url in contents {
+                try? fileManager.removeItem(at: url)
+            }
+        }
+        stylesheet = nil
+    }
+
     private func reloadCachedStylesheet() {
         do {
             stylesheet = try String(contentsOf: cachedStylesheetURL)

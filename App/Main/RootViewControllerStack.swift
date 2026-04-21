@@ -2,6 +2,7 @@
 //
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import AwfulCore
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -70,6 +71,24 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
             .store(in: &cancellables)
 
         configureSplitViewControllerDisplayMode()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
+    }
+
+    /// Pushed detail view controllers (PostsPage, PrivateMessageView, Profile, etc.) and
+    /// any presented modals hold references to managed objects from the now-deleted store.
+    /// Unwind the UI to tab roots so rendering/interaction can't fault those dead objects.
+    @objc private func dataStoreDidReset() {
+        rootViewController.dismiss(animated: false)
+
+        for tab in tabBarController.viewControllers ?? [] {
+            (tab as? UINavigationController)?.popToRootViewController(animated: false)
+        }
+
+        if splitViewController.viewControllers.count > 1,
+           let detailNav = splitViewController.viewControllers[1] as? UINavigationController {
+            detailNav.popToRootViewController(animated: false)
+        }
     }
 
     private func createEmptyDetailNavigationController() -> UINavigationController {

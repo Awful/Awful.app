@@ -4,14 +4,13 @@ import AwfulCore
 import AwfulSettings
 import AwfulSettingsUI
 import AwfulTheming
+import Combine
 import CoreData
-import os
 import SwiftUI
-
-private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "SettingsViewController")
 
 final class SettingsViewController: HostingController<SettingsContainerView> {
     let managedObjectContext: NSManagedObjectContext
+    private var cacheSizeText: CurrentValueSubject<String, Never>!
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
@@ -28,9 +27,11 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             unowned var contents: SettingsViewController!
         }
         let box = UnownedBox()
+        let cacheSizeText = CurrentValueSubject<String, Never>("Calculating…")
 
         super.init(rootView: SettingsContainerView(
             appIconDataSource: makeAppIconDataSource(),
+            cacheSizeText: cacheSizeText,
             currentUser: currentUser,
             emptyCache: { box.contents.emptyCache() },
             goToAwfulThread: { box.contents.goToAwfulThread() },
@@ -39,8 +40,10 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
             isMac: ProcessInfo.processInfo.isMacCatalystApp,
             isPad: UIDevice.current.userInterfaceIdiom == .pad,
             logOut: { AppDelegate.instance.logOut() },
-            managedObjectContext: managedObjectContext
+            managedObjectContext: managedObjectContext,
+            resetSettings: { box.contents.resetSettings() }
         ))
+        self.cacheSizeText = cacheSizeText
         box.contents = self
 
         title = String(localized: "Settings", bundle: .module)
@@ -48,24 +51,92 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
         tabBarItem.selectedImage = UIImage(named: "cog-filled")
 
         themeDidChange()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func emptyCache() {
-        let usageBefore = Measurement(value: Double(URLCache.shared.currentDiskUsage), unit: UnitInformationStorage.bytes)
-        AppDelegate.instance.emptyCache()
-        let usageAfter = Measurement(value: Double(URLCache.shared.currentDiskUsage), unit: UnitInformationStorage.bytes)
-        let delta = (usageBefore - usageAfter).converted(to: .megabytes)
-        let message = "You cleared up \(delta.formatted(.measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1)))))! Great job, go hog wild!!"
-        let alertController = UIAlertController(title: "Cache Cleared", message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default) { action in
-            self.dismiss(animated: true)
+    @objc private func dataStoreDidReset() {
+        // The current User object is tied to the old store. Re-fetch (findOrCreate) so the
+        // Settings header doesn't crash when it tries to fault the invalidated object.
+        let newUser = managedObjectContext.performAndWait {
+            User.objectForKey(objectKey: UserKey(
+                userID: UserDefaults.standard.value(for: Settings.userID)!,
+                username: UserDefaults.standard.value(for: Settings.username)
+            ), in: managedObjectContext)
         }
-        alertController.addAction(okAction)
-        self.present(alertController, animated: true)
+        rootView = SettingsContainerView(
+            appIconDataSource: rootView.appIconDataSource,
+            cacheSizeText: rootView.cacheSizeText,
+            currentUser: newUser,
+            emptyCache: rootView.emptyCache,
+            goToAwfulThread: rootView.goToAwfulThread,
+            hasRegularSizeClassInLandscape: rootView.hasRegularSizeClassInLandscape,
+            isMac: rootView.isMac,
+            isPad: rootView.isPad,
+            logOut: rootView.logOut,
+            managedObjectContext: rootView.managedObjectContext,
+            resetSettings: rootView.resetSettings
+        )
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        refreshCacheSize()
+    }
+
+    private func refreshCacheSize() {
+        Task {
+            let size = await AppDelegate.instance.calculateCacheSize()
+            cacheSizeText.send(Self.formatByteCount(size))
+        }
+    }
+
+    func emptyCache() {
+        Task {
+            let sizeBefore = await AppDelegate.instance.calculateCacheSize()
+            await AppDelegate.instance.emptyCacheAndResetStore()
+            let sizeAfter = await AppDelegate.instance.calculateCacheSize()
+
+            let delta = max(sizeBefore - sizeAfter, 0)
+            let message = "You cleared \(Self.formatByteCount(delta))! Some system-managed files can't be removed, so a small amount of cache usage is normal."
+            let alertController = UIAlertController(title: "Cache Cleared", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                self.dismiss(animated: true)
+            })
+            self.present(alertController, animated: true)
+
+            refreshCacheSize()
+        }
+    }
+
+    private static func formatByteCount(_ bytes: Int64) -> String {
+        let measurement = Measurement(value: Double(bytes), unit: UnitInformationStorage.bytes)
+        if bytes < 1_000_000 {
+            return measurement.converted(to: .kilobytes).formatted(
+                .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(0)))
+            )
+        } else {
+            return measurement.converted(to: .megabytes).formatted(
+                .measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(1)))
+            )
+        }
+    }
+
+    func resetSettings() {
+        let alert = UIAlertController(
+            title: "Reset All Settings?",
+            message: "This will restore all preferences to their defaults. You will remain logged in.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Reset", style: .destructive) { _ in
+            UserDefaults.standard.resetPreferences()
+        })
+        present(alert, animated: true)
     }
 
     func goToAwfulThread() {
@@ -125,6 +196,7 @@ private let appIcons: [AppIconDataSource.AppIcon] = [
 /// Wrapper for observing the current `User`.
 struct SettingsContainerView: View {
     let appIconDataSource: AppIconDataSource
+    let cacheSizeText: CurrentValueSubject<String, Never>
     @ObservedObject var currentUser: User
     let emptyCache: () -> Void
     let goToAwfulThread: () -> Void
@@ -133,11 +205,15 @@ struct SettingsContainerView: View {
     let isPad: Bool
     let logOut: () -> Void
     let managedObjectContext: NSManagedObjectContext
+    let resetSettings: () -> Void
+
+    @State private var displayedCacheSize: String = "Calculating…"
 
     var body: some View {
         SettingsView(
             appIconDataSource: appIconDataSource,
             avatarURL: currentUser.avatarURL,
+            cacheSizeText: displayedCacheSize,
             canOpenURL: UIApplication.shared.canOpenURL(_:),
             currentUsername: currentUser.username ?? "",
             emptyCache: emptyCache,
@@ -145,10 +221,14 @@ struct SettingsContainerView: View {
             hasRegularSizeClassInLandscape: hasRegularSizeClassInLandscape,
             isMac: isMac,
             isPad: isPad,
-            logOut: logOut
+            logOut: logOut,
+            resetSettings: resetSettings
         )
         .environment(\.managedObjectContext, managedObjectContext)
         .themed()
+        .onReceive(cacheSizeText) { newValue in
+            displayedCacheSize = newValue
+        }
     }
 }
 

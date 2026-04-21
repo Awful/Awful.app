@@ -41,6 +41,7 @@ public struct SettingsView: View {
     @ObservedObject var appIconDataSource: AppIconDataSource
     let avatarURL: URL?
     let buildInfo = BuildInfo()
+    let cacheSizeText: String
     let canOpenURL: (URL) -> Bool
     let currentUsername: String
     let emptyCache: () -> Void
@@ -49,6 +50,7 @@ public struct SettingsView: View {
     let isMac: Bool
     let isPad: Bool
     let logOut: () -> Void
+    let resetSettings: () -> Void
     @Environment(\.managedObjectContext) var managedObjectContext
     @Environment(\.theme) var theme
 
@@ -80,6 +82,7 @@ public struct SettingsView: View {
     public init(
         appIconDataSource: AppIconDataSource,
         avatarURL: URL?,
+        cacheSizeText: String,
         canOpenURL: @escaping (URL) -> Bool,
         currentUsername: String,
         emptyCache: @escaping () -> Void,
@@ -87,10 +90,12 @@ public struct SettingsView: View {
         hasRegularSizeClassInLandscape: Bool,
         isMac: Bool,
         isPad: Bool,
-        logOut: @escaping () -> Void
+        logOut: @escaping () -> Void,
+        resetSettings: @escaping () -> Void
     ) {
         self.appIconDataSource = appIconDataSource
         self.avatarURL = avatarURL
+        self.cacheSizeText = cacheSizeText
         self.canOpenURL = canOpenURL
         self.currentUsername = currentUsername
         self.emptyCache = emptyCache
@@ -99,13 +104,13 @@ public struct SettingsView: View {
         self.isMac = isMac
         self.isPad = isPad
         self.logOut = logOut
+        self.resetSettings = resetSettings
     }
 
     public var body: some View {
         Form {
             Section {
                 Button("Log Out", bundle: .module) { logOut() }
-                Button("Empty Cache", bundle: .module) { emptyCache() }
             } header: {
                 VStack(alignment: .leading) {
                     Group {
@@ -124,9 +129,6 @@ public struct SettingsView: View {
                     Text(currentUsername)
                 }
                 .header()
-            } footer: {
-                Text("Logging out erases all cached forums, threads, and posts.", bundle: .module)
-                    .footer()
             }
             .section()
 
@@ -303,6 +305,25 @@ public struct SettingsView: View {
             .section()
 
             Section {
+                Button { emptyCache() } label: {
+                    HStack {
+                        Text("Clear Cache", bundle: .module)
+                        Spacer()
+                        Text(cacheSizeText)
+                            .foregroundStyle(theme[color: "listSecondaryText"]!)
+                    }
+                }
+                Button("Reset All Settings", bundle: .module) { resetSettings() }
+            } header: {
+                Text("Data Management", bundle: .module)
+                    .header()
+            } footer: {
+                Text("Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts. Resetting settings restores all preferences to their defaults.", bundle: .module)
+                    .footer()
+            }
+            .section()
+
+            Section {
                 NavigationLink("Acknowledgements", bundle: .module) {
                     AcknowledgementsView()
                         .navigationTitle("Acknowledgements", bundle: .module)
@@ -359,6 +380,7 @@ private struct SectionModifier: ViewModifier {
         SettingsView(
             appIconDataSource: .preview,
             avatarURL: nil,
+            cacheSizeText: "42.3 MB",
             canOpenURL: { _ in true },
             currentUsername: "Random Newbie",
             emptyCache: { print("emptying cache") },
@@ -366,7 +388,8 @@ private struct SectionModifier: ViewModifier {
             hasRegularSizeClassInLandscape: true,
             isMac: false,
             isPad: true,
-            logOut: { print("logging out") }
+            logOut: { print("logging out") },
+            resetSettings: { print("resetting settings") }
         )
         .navigationTitle(Text(verbatim: "Settings"))
         .navigationBarTitleDisplayMode(.inline)

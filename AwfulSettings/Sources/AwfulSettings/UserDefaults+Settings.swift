@@ -21,9 +21,30 @@ public extension UserDefaults {
 
 // MARK: Mass deletion
 
+private let sessionKeys: Set<String> = [
+    Settings.userID.key,
+    Settings.username.key,
+    Settings.canSendPrivateMessages.key,
+    Settings.lastOfferedPasteboardURLString.key,
+    Settings.imgurUploadMode.key,
+]
+
 public extension UserDefaults {
-    func removeAllObjectsInMainBundleDomain() {
-        guard let bundleID = Bundle.main.bundleIdentifier else { return }
-        setPersistentDomain([:], forName: bundleID)
+    /// Removes only session/auth-related keys, preserving user preferences.
+    func removeSessionObjects() {
+        for key in sessionKeys {
+            removeObject(forKey: key)
+        }
+    }
+
+    /// Removes all preference keys (everything except session/auth keys),
+    /// restoring them to their defaults. The user stays logged in.
+    ///
+    /// Keys are removed individually rather than via `setPersistentDomain`
+    /// so that KVO fires for each key and `@AppStorage` updates immediately.
+    func resetPreferences() {
+        for key in dictionaryRepresentation().keys where !sessionKeys.contains(key) {
+            removeObject(forKey: key)
+        }
     }
 }
