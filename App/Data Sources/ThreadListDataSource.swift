@@ -196,6 +196,13 @@ final class ThreadListDataSource: NSObject {
         let cellRegistration = UICollectionView.CellRegistration<ThreadListCell, NSManagedObjectID> { [weak self] cell, indexPath, _ in
             guard let self else { return }
             cell.viewModel = self.viewModelFor(threadAt: indexPath)
+            cell.accessories = [
+                .delete(displayed: .whenEditing, actionHandler: { [weak self] in
+                    guard let self else { return }
+                    let thread = self.thread(at: indexPath)
+                    self.deletionDelegate?.didDeleteThread(thread, in: self)
+                }),
+            ]
         }
 
         diffableDataSource = UICollectionViewDiffableDataSource<Int, NSManagedObjectID>(collectionView: collectionView) { collectionView, indexPath, objectID in
