@@ -54,19 +54,7 @@
 
     },
     "Back" : {
-
-    },
-    "bookmarks.title" : {
-      "comment" : "Title of the bookmarks screen, shown in the navbar and the tab bar.",
-      "extractionState" : "migrated",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bookmarks"
-          }
-        }
-      }
+      "comment" : "Back button accessibility label"
     },
     "bookmarks.filter.all" : {
       "comment" : "Segmented control label for showing all bookmarks.",
@@ -76,30 +64,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All"
-          }
-        }
-      }
-    },
-    "bookmarks.filter.unread" : {
-      "comment" : "Segmented control label for showing only unread bookmarks.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unread"
-          }
-        }
-      }
-    },
-    "bookmarks.filter.read" : {
-      "comment" : "Segmented control label for showing only read bookmarks.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Read"
           }
         }
       }
@@ -116,18 +80,6 @@
         }
       }
     },
-    "bookmarks.filter.menu.accessibility-label" : {
-      "comment" : "Accessibility label for the filter menu popover.",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filter Menu"
-          }
-        }
-      }
-    },
     "bookmarks.filter.menu.accessibility-hint" : {
       "comment" : "Accessibility hint for the filter menu popover.",
       "extractionState" : "manual",
@@ -140,14 +92,26 @@
         }
       }
     },
-    "bookmarks.filter.star.accessibility-label" : {
-      "comment" : "Accessibility label for a star color filter button. %@ is the color name.",
+    "bookmarks.filter.menu.accessibility-label" : {
+      "comment" : "Accessibility label for the filter menu popover.",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Filter by %@ star"
+            "value" : "Filter Menu"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.read" : {
+      "comment" : "Segmented control label for showing only read bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read"
           }
         }
       }
@@ -176,6 +140,30 @@
         }
       }
     },
+    "bookmarks.filter.star.accessibility-label" : {
+      "comment" : "Accessibility label for a star color filter button. %@ is the color name.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filter by %@ star"
+          }
+        }
+      }
+    },
+    "bookmarks.filter.unread" : {
+      "comment" : "Segmented control label for showing only unread bookmarks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unread"
+          }
+        }
+      }
+    },
     "bookmarks.search.button.accessibility-label" : {
       "comment" : "Accessibility label for the search button in the bookmarks navigation bar.",
       "extractionState" : "manual",
@@ -195,7 +183,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Search by title or author\u2026"
+            "value" : "Search by title or author…"
+          }
+        }
+      }
+    },
+    "bookmarks.title" : {
+      "comment" : "Title of the bookmarks screen, shown in the navbar and the tab bar.",
+      "extractionState" : "migrated",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bookmarks"
           }
         }
       }
@@ -1148,24 +1148,13 @@
         }
       }
     },
-    "private-message-folder.delete-error-title" : {
-      "comment" : "Error title when folder deletion fails",
+    "private-message-folder.delete-button" : {
+      "comment" : "Button to confirm folder deletion",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Could not delete folder"
-          }
-        }
-      }
-    },
-    "private-message-folder.delete-confirm-title" : {
-      "comment" : "Title of confirmation dialog when deleting a folder",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete Folder?"
+            "value" : "Delete"
           }
         }
       }
@@ -1181,13 +1170,24 @@
         }
       }
     },
-    "private-message-folder.delete-button" : {
-      "comment" : "Button to confirm folder deletion",
+    "private-message-folder.delete-confirm-title" : {
+      "comment" : "Title of confirmation dialog when deleting a folder",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete"
+            "value" : "Delete Folder?"
+          }
+        }
+      }
+    },
+    "private-message-folder.delete-error-title" : {
+      "comment" : "Error title when folder deletion fails",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not delete folder"
           }
         }
       }
