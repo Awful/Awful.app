@@ -4,15 +4,12 @@
 
 import UIKit
 
-final class ForumListSectionHeaderView: UITableViewHeaderFooterView {
+final class ForumListSectionHeaderView: UICollectionReusableView {
     private let sectionNameLabel = UILabel()
 
     var viewModel: ViewModel = .empty {
         didSet {
-            if backgroundView == nil {
-                backgroundView = UIView()
-            }
-            backgroundView?.backgroundColor = viewModel.backgroundColor
+            backgroundColor = viewModel.backgroundColor
             sectionNameLabel.font = viewModel.font
             sectionNameLabel.text = viewModel.sectionName
             sectionNameLabel.textColor = viewModel.textColor
@@ -34,21 +31,24 @@ final class ForumListSectionHeaderView: UITableViewHeaderFooterView {
         }
     }
 
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        
-        contentView.addSubview(sectionNameLabel)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        sectionNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(sectionNameLabel)
+
+        NSLayoutConstraint.activate([
+            sectionNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leftInset),
+            sectionNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            sectionNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: verticalPadding),
+            sectionNameLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -verticalPadding),
+        ])
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        sectionNameLabel.frame = bounds.divided(atDistance: leftInset, from: .minXEdge).remainder
-    }
 }
 
 private let leftInset: CGFloat = 18
+private let verticalPadding: CGFloat = 8

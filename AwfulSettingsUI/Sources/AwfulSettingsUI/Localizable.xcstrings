@@ -7,6 +7,16 @@
     "[timg] Large Images" : {
 
     },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "Acknowledgements" : {
 
     },

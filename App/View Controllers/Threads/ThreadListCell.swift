@@ -7,12 +7,11 @@ import UIKit
 
 private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadListCell")
 
-final class ThreadListCell: UITableViewCell {
+final class ThreadListCell: UICollectionViewListCell {
 
     /// The actual contentView width from the most recent layout pass.
     /// On Mac Catalyst ("Designed for iPad"), contentView can be narrower
-    /// than the table view due to platform-specific insets, so heightForRowAt
-    /// should prefer this over tableView.bounds or safeAreaLayoutGuide.
+    /// than the collection view due to platform-specific insets.
     static var lastKnownContentViewWidth: CGFloat?
 
     private let pageCountBackgroundView = UIView()
@@ -34,10 +33,10 @@ final class ThreadListCell: UITableViewCell {
 
     var viewModel: ViewModel = .empty {
         didSet {
-            backgroundColor = viewModel.backgroundColor
+            contentView.backgroundColor = viewModel.backgroundColor
 
             pageCountLabel.attributedText = viewModel.pageCount
-            
+
             if let color = viewModel.unreadCount.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? UIColor {
                  pageCountBackgroundView.backgroundColor = color.withAlphaComponent(0.2)
              } else {
@@ -46,7 +45,7 @@ final class ThreadListCell: UITableViewCell {
             pageCountBackgroundView.isHidden = viewModel.unreadCount.length == 0
 
             pageIconView.image = UIImage(named: "page")?.withTintColor(viewModel.pageIconColor)
-            
+
             postInfoLabel.attributedText = viewModel.postInfo
 
             ratingImageView.image = viewModel.ratingImage
@@ -94,8 +93,17 @@ final class ThreadListCell: UITableViewCell {
             unreadCount: NSAttributedString())
     }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        backgroundConfiguration = UIBackgroundConfiguration.clear()
+
+        // Stop the cell's own directional layout margins from inseting contentView —
+        // the Layout struct already accounts for outerMargin / tagRightMargin / etc.
+        preservesSuperviewLayoutMargins = false
+        directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        contentView.preservesSuperviewLayoutMargins = false
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
 
         contentView.addSubview(pageCountBackgroundView)
         contentView.addSubview(pageCountLabel)
@@ -119,22 +127,7 @@ final class ThreadListCell: UITableViewCell {
         super.layoutSubviews()
 
         let contentWidth = contentView.bounds.width
-        let previousWidth = ThreadListCell.lastKnownContentViewWidth
         ThreadListCell.lastKnownContentViewWidth = contentWidth
-
-        // If the actual contentView width differs from what heightForRowAt
-        // used (first layout, or width changed), schedule a height
-        // recalculation so cells get the correct height for this width.
-        if previousWidth.map({ abs($0 - contentWidth) > 1 }) != false {
-            DispatchQueue.main.async { [weak self] in
-                guard let tableView = self?.superview as? UITableView
-                    ?? self?.superview?.superview as? UITableView else { return }
-                UIView.performWithoutAnimation {
-                    tableView.beginUpdates()
-                    tableView.endUpdates()
-                }
-            }
-        }
 
         let layout = Layout(width: contentWidth, viewModel: viewModel)
          // Background behind the page count label, with padding and pill shape
@@ -156,10 +149,18 @@ final class ThreadListCell: UITableViewCell {
         tagImageView.frame = layout.tagImageFrame
         titleLabel.frame = layout.titleFrame
         unreadCountLabel.frame = layout.unreadCountFrame
-        
+
         // rounded corners
         tagImageView.layer.masksToBounds = true
         tagImageView.layer.cornerRadius = 3
+    }
+
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        let width = layoutAttributes.size.width
+        let height = Layout(width: width, viewModel: viewModel).height
+        attributes.size = CGSize(width: width, height: height)
+        return attributes
     }
 
     private struct Layout {
@@ -182,6 +183,9 @@ final class ThreadListCell: UITableViewCell {
         static let tagRightMargin: CGFloat = 6
         static let titleBottomMargin: CGFloat = 2
         static let unreadLeftMargin: CGFloat = 5
+        /// Extra trailing inset on the unread count badge so it (and its rounded background)
+        /// clears the vertical scroll bar indicator.
+        static let unreadTrailingPadding: CGFloat = 8
 
         init(width: CGFloat, viewModel: ViewModel) {
             // 1. See how much width we have for the text.
@@ -194,7 +198,7 @@ final class ThreadListCell: UITableViewCell {
 
             let unreadSize = viewModel.unreadCount.boundingRect(with: CGSize(width: width, height: .infinity), options: [], context: nil).pixelRound.size
             if unreadSize.width > 0 {
-                textWidth -= unreadSize.width + Layout.unreadLeftMargin
+                textWidth -= unreadSize.width + Layout.unreadLeftMargin + Layout.unreadTrailingPadding
             }
 
             // Pixel-ceil textWidth so the measurement width matches the rendered width after textRect is pixelRound'd.
@@ -250,7 +254,7 @@ final class ThreadListCell: UITableViewCell {
 
             // 4. Unread count
             unreadCountFrame = CGRect(
-                x: width - Layout.outerMargin - unreadSize.width,
+                x: width - Layout.outerMargin - Layout.unreadTrailingPadding - unreadSize.width,
                 y: (height - unreadSize.height) / 2,
                 width: unreadSize.width,
                 height: unreadSize.height)

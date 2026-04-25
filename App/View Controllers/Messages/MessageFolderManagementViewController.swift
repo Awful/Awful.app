@@ -13,7 +13,7 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 /// Maximum folder name length allowed by the SA Forums API
 private let maxFolderNameLength = 25
 
-final class MessageFolderManagementViewController: TableViewController {
+final class MessageFolderManagementViewController: CollectionViewController {
 
     private let managedObjectContext: NSManagedObjectContext
     private var folders: [PrivateMessageFolder] = []
@@ -21,19 +21,83 @@ final class MessageFolderManagementViewController: TableViewController {
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(style: .grouped)
+        super.init(collectionViewLayout: Self.makeLayout())
 
         title = LocalizedString("private-message-folder.manage-title")
+
+        cellRegistration = makeCellRegistration()
+        headerRegistration = makeHeaderRegistration()
+        footerRegistration = makeFooterRegistration()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private static func makeLayout() -> UICollectionViewLayout {
+        var config = UICollectionLayoutListConfiguration(appearance: .grouped)
+        config.headerMode = .supplementary
+        config.footerMode = .supplementary
+        config.backgroundColor = .clear
+        return CollectionViewController.makeListLayout(using: config)
+    }
+
+    private var cellRegistration: UICollectionView.CellRegistration<UICollectionViewListCell, PrivateMessageFolder>!
+    private var headerRegistration: UICollectionView.SupplementaryRegistration<UICollectionViewListCell>!
+    private var footerRegistration: UICollectionView.SupplementaryRegistration<UICollectionViewListCell>!
+
+    private func makeCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewListCell, PrivateMessageFolder> {
+        UICollectionView.CellRegistration<UICollectionViewListCell, PrivateMessageFolder> { [weak self] cell, indexPath, folder in
+            guard let self else { return }
+
+            var content = cell.defaultContentConfiguration()
+            content.text = folder.name
+            content.textProperties.color = self.theme[uicolor: "listTextColor"] ?? .label
+            cell.contentConfiguration = content
+
+            var background = UIBackgroundConfiguration.clear()
+            background.backgroundColor = self.theme["listBackgroundColor"]
+            cell.backgroundConfiguration = background
+
+            cell.selectedBackgroundColor = self.theme["listSelectedBackgroundColor"]
+
+            cell.accessories = [
+                .delete(displayed: .whenEditing, actionHandler: { [weak self, weak cell] in
+                    guard let self,
+                          let cell,
+                          let currentIndexPath = self.collectionView.indexPath(for: cell)
+                    else { return }
+                    self.deleteFolder(at: currentIndexPath)
+                })
+            ]
+        }
+    }
+
+    private func makeHeaderRegistration() -> UICollectionView.SupplementaryRegistration<UICollectionViewListCell> {
+        UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] header, _, _ in
+            guard let self else { return }
+            var content = header.defaultContentConfiguration()
+            content.text = LocalizedString("private-message-folder.custom-folders-header")
+            content.textProperties.color = self.theme[uicolor: "listSecondaryTextColor"] ?? .secondaryLabel
+            header.contentConfiguration = content
+        }
+    }
+
+    private func makeFooterRegistration() -> UICollectionView.SupplementaryRegistration<UICollectionViewListCell> {
+        UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { [weak self] footer, _, _ in
+            guard let self else { return }
+            var content = footer.defaultContentConfiguration()
+            content.text = self.isEditing
+                ? LocalizedString("private-message-folder.footer-editing")
+                : LocalizedString("private-message-folder.footer-normal")
+            content.textProperties.color = self.theme[uicolor: "listSecondaryTextColor"] ?? .secondaryLabel
+            content.textProperties.font = UIFont.preferredFont(forTextStyle: .footnote)
+            footer.contentConfiguration = content
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "FolderCell")
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .done,
@@ -60,12 +124,11 @@ final class MessageFolderManagementViewController: TableViewController {
 
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
-        tableView.setEditing(editing, animated: animated)
+        collectionView.isEditing = editing
 
-        // Footer copy differs between normal and edit mode.
-        if tableView.footerView(forSection: 0) != nil {
-            tableView.reloadSections(IndexSet(integer: 0), with: .none)
-        }
+        // Footer copy differs between normal and edit mode; reload the section
+        // so the supplementary footer re-renders with the new text.
+        collectionView.reloadSections(IndexSet(integer: 0))
     }
 
     private func loadFolders() {
@@ -74,7 +137,7 @@ final class MessageFolderManagementViewController: TableViewController {
                 let allFolders = try await ForumsClient.shared.listPrivateMessageFolders()
                 await MainActor.run {
                     self.folders = allFolders.filter { $0.isCustom }
-                    self.tableView.reloadData()
+                    self.collectionView.reloadData()
                     self.updateNavigationItems()
                     if self.folders.isEmpty, self.isEditing {
                         self.setEditing(false, animated: true)
@@ -202,7 +265,7 @@ final class MessageFolderManagementViewController: TableViewController {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.folders.remove(at: indexPath.row)
-                    self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    self.collectionView.deleteItems(at: [indexPath])
                     self.updateNavigationItems()
                     if self.folders.isEmpty, self.isEditing {
                         self.setEditing(false, animated: true)
@@ -221,78 +284,26 @@ final class MessageFolderManagementViewController: TableViewController {
             }
         }
     }
-
-    override func themeDidChange() {
-        super.themeDidChange()
-
-        tableView.separatorColor = theme["listSeparatorColor"]
-        tableView.backgroundColor = theme["backgroundColor"]
-    }
 }
 
-// MARK: UITableViewDataSource
+// MARK: UICollectionViewDataSource
 extension MessageFolderManagementViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return folders.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FolderCell", for: indexPath)
-        let folder = folders[indexPath.row]
-
-        cell.textLabel?.text = folder.name
-        cell.textLabel?.textColor = theme[uicolor: "listTextColor"]
-        cell.backgroundColor = theme["listBackgroundColor"]
-
-        let selectedView = UIView()
-        selectedView.backgroundColor = theme["listSelectedBackgroundColor"]
-        cell.selectedBackgroundView = selectedView
-
-        return cell
-    }
-}
-
-// MARK: UITableViewDelegate
-extension MessageFolderManagementViewController {
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return LocalizedString("private-message-folder.custom-folders-header")
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: folders[indexPath.row])
     }
 
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if tableView.isEditing {
-            return LocalizedString("private-message-folder.footer-editing")
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+        case UICollectionView.elementKindSectionFooter:
+            return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+        default:
+            fatalError("unexpected supplementary kind: \(kind)")
         }
-        return LocalizedString("private-message-folder.footer-normal")
-    }
-
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel?.textColor = theme[uicolor: "listSecondaryTextColor"]
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        if let footer = view as? UITableViewHeaderFooterView {
-            footer.textLabel?.textColor = theme[uicolor: "listSecondaryTextColor"]
-            footer.textLabel?.font = UIFont.preferredFont(forTextStyle: .footnote)
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return tableView.isEditing
-    }
-
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            deleteFolder(at: indexPath)
-        }
-    }
-
-    // Disabled — deletion is only allowed in edit mode.
-    override func tableView(
-        _ tableView: UITableView,
-        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
-    ) -> UISwipeActionsConfiguration? {
-        return nil
     }
 }

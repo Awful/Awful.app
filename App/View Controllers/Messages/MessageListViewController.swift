@@ -22,7 +22,7 @@ private enum UserDefaultsKey {
 }
 
 @objc(MessageListViewController)
-final class MessageListViewController: TableViewController {
+final class MessageListViewController: CollectionViewController {
 
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var dataSource: MessageListDataSource?
@@ -34,17 +34,18 @@ final class MessageListViewController: TableViewController {
     private var currentFolder: PrivateMessageFolder?
     private var allFolders: [PrivateMessageFolder] = []
     private var editToolbar: UIToolbar?
+    private var headerRegistration: UICollectionView.SupplementaryRegistration<UICollectionReusableView>!
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(nibName: nil, bundle: nil)
-        
+        super.init(collectionViewLayout: Self.makeLayout(separatorLeadingInset: 0, separatorColor: nil))
+
         title = LocalizedString("private-message-tab.title")
-        
+
         tabBarItem.accessibilityLabel = LocalizedString("private-message-tab.accessibility-label")
         tabBarItem.image = UIImage(named: "pm-icon")
         tabBarItem.selectedImage = UIImage(named: "pm-icon-filled")
-        
+
         let updateBadgeValue = { [weak self] (unreadCount: Int) -> Void in
             self?.tabBarItem?.badgeValue = unreadCount > 0
                 ? NumberFormatter.localizedString(from: unreadCount as NSNumber, number: .none)
@@ -56,12 +57,14 @@ final class MessageListViewController: TableViewController {
             predicate: NSPredicate(format: "%K == NO", #keyPath(PrivateMessage.seen)),
             didChange: updateBadgeValue)
         updateBadgeValue(unreadMessageCountObserver.count)
-        
+
         navigationItem.leftBarButtonItem = editButtonItem
         let composeItem = UIBarButtonItem(image: UIImage(named: "compose"), style: .plain, target: self, action: #selector(MessageListViewController.didTapComposeButtonItem(_:)))
         composeItem.accessibilityLabel = LocalizedString("private-message-list.compose-button.accessibility-label")
         navigationItem.rightBarButtonItem = composeItem
-        
+
+        headerRegistration = makeHeaderRegistration()
+
         themeDidChange()
     }
 
@@ -69,17 +72,77 @@ final class MessageListViewController: TableViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private static func makeLayout(separatorLeadingInset: CGFloat, separatorColor: UIColor?) -> UICollectionViewLayout {
+        var listConfig = UICollectionLayoutListConfiguration(appearance: .plain)
+        listConfig.headerMode = .supplementary
+        listConfig.headerTopPadding = 8
+        listConfig.backgroundColor = .clear
+
+        var separatorConfig = UIListSeparatorConfiguration(listAppearance: .plain)
+        separatorConfig.topSeparatorVisibility = .hidden
+        separatorConfig.bottomSeparatorInsets = NSDirectionalEdgeInsets(top: 0, leading: separatorLeadingInset, bottom: 0, trailing: 0)
+        if let separatorColor {
+            separatorConfig.color = separatorColor
+        }
+        listConfig.separatorConfiguration = separatorConfig
+
+        // Swipe-to-delete is disabled — destructive actions go through edit mode.
+        listConfig.trailingSwipeActionsConfigurationProvider = { _ in nil }
+
+        return CollectionViewController.makeListLayout(using: listConfig)
+    }
+
+    private func rebuildLayout() {
+        let inset = MessageListCell.separatorLeftInset(
+            showsTagAndRating: showThreadTags,
+            inTableWithWidth: collectionView.bounds.width
+        )
+        let color = theme[uicolor: "listSeparatorColor"]
+        collectionView.setCollectionViewLayout(
+            Self.makeLayout(separatorLeadingInset: inset, separatorColor: color),
+            animated: false
+        )
+    }
+
+    private func makeHeaderRegistration() -> UICollectionView.SupplementaryRegistration<UICollectionReusableView> {
+        UICollectionView.SupplementaryRegistration<UICollectionReusableView>(
+            elementKind: UICollectionView.elementKindSectionHeader
+        ) { [weak self] header, _, _ in
+            guard let self, let picker = self.folderPicker else { return }
+            header.backgroundColor = .clear
+
+            if picker.superview !== header {
+                picker.removeFromSuperview()
+                picker.translatesAutoresizingMaskIntoConstraints = false
+                header.addSubview(picker)
+
+                NSLayoutConstraint.activate([
+                    picker.leadingAnchor.constraint(equalTo: header.leadingAnchor),
+                    picker.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -16),
+                    picker.topAnchor.constraint(equalTo: header.topAnchor),
+                    picker.bottomAnchor.constraint(equalTo: header.bottomAnchor),
+                    picker.heightAnchor.constraint(equalToConstant: LayoutConstants.folderPickerHeight),
+                ])
+            }
+        }
+    }
+
     private func makeDataSource() -> MessageListDataSource {
         let dataSource = try! MessageListDataSource(
             managedObjectContext: managedObjectContext,
-            tableView: tableView,
-            folder: currentFolder)
+            collectionView: collectionView,
+            folder: currentFolder,
+            supplementaryViewProvider: { [weak self] collectionView, kind, indexPath in
+                guard let self, kind == UICollectionView.elementKindSectionHeader else { return nil }
+                return collectionView.dequeueConfiguredReusableSupplementary(using: self.headerRegistration, for: indexPath)
+            }
+        )
         dataSource.deletionDelegate = self
         return dataSource
     }
-    
+
     private var composeViewController: MessageComposeViewController?
-    
+
     @objc private func didTapComposeButtonItem(_ sender: UIBarButtonItem) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -94,19 +157,19 @@ final class MessageListViewController: TableViewController {
             present(compose.enclosingNavigationController, animated: true, completion: nil)
         }
     }
-    
+
     private func refreshIfNecessary() {
         if !canSendPrivateMessages { return }
 
-        if tableView.numberOfSections >= 1, tableView.numberOfRows(inSection: 0) == 0 {
+        if collectionView.numberOfSections >= 1, collectionView.numberOfItems(inSection: 0) == 0 {
             return refresh()
         }
-        
+
         if RefreshMinder.sharedMinder.shouldRefresh(.privateMessagesInbox) {
             return refresh()
         }
     }
-    
+
     @objc private func refresh() {
         startAnimatingPullToRefresh()
 
@@ -153,11 +216,11 @@ final class MessageListViewController: TableViewController {
         folderPicker?.selectFolder(folder)
 
         dataSource = makeDataSource()
-        tableView.reloadData()
+        collectionView.reloadData()
 
         UserDefaults.standard.set(folder.folderID, forKey: UserDefaultsKey.lastFolderID)
     }
-    
+
     func showMessage(_ message: PrivateMessage, pendingRestoration: PendingMessageRestoration? = nil) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -195,9 +258,9 @@ final class MessageListViewController: TableViewController {
         }
 
         if let popover = alert.popoverPresentationController {
-            popover.sourceView = tableView
+            popover.sourceView = collectionView
             if let indexPath = dataSource?.indexPath(for: message) {
-                popover.sourceRect = tableView.rectForRow(at: indexPath)
+                popover.sourceRect = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? .zero
             }
         }
 
@@ -253,27 +316,19 @@ final class MessageListViewController: TableViewController {
         }
     }
 
-    private func recalculateSeparatorInset() {
-        tableView.separatorInset.left = MessageListCell.separatorLeftInset(
-            showsTagAndRating: showThreadTags,
-            inTableWithWidth: tableView.bounds.width
-        )
-    }
-
     // MARK: View lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupFolderPicker()
 
-        tableView.estimatedRowHeight = 65
-        recalculateSeparatorInset()
+        rebuildLayout()
 
         loadInitialFolder()
 
         dataSource = makeDataSource()
-        tableView.reloadData()
+        collectionView.reloadData()
 
         pullToRefreshBlock = { [unowned self] in
             self.refresh()
@@ -284,24 +339,7 @@ final class MessageListViewController: TableViewController {
         let picker = MessageFolderPickerView()
         picker.delegate = self
         picker.applyTheme(theme)
-        picker.translatesAutoresizingMaskIntoConstraints = false
         folderPicker = picker
-
-        // Host the picker in a tableHeaderView so it scrolls with the list and pull-to-refresh
-        // uses its natural threshold (a pinned overlay + contentInset.top offsets PullToRefresh's
-        // trigger distance).
-        let container = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: LayoutConstants.folderPickerHeight))
-        container.autoresizingMask = .flexibleWidth
-        container.backgroundColor = .clear
-        container.addSubview(picker)
-
-        NSLayoutConstraint.activate([
-            picker.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
-            picker.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
-            picker.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-        ])
-
-        tableView.tableHeaderView = container
     }
 
     private func loadInitialFolder() {
@@ -316,7 +354,7 @@ final class MessageListViewController: TableViewController {
             }
         }
     }
-    
+
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: true)
 
@@ -324,8 +362,8 @@ final class MessageListViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
 
-        tableView.setEditing(editing, animated: true)
-        tableView.allowsMultipleSelectionDuringEditing = editing
+        collectionView.isEditing = editing
+        collectionView.allowsMultipleSelectionDuringEditing = editing
 
         if editing {
             showEditToolbar()
@@ -341,7 +379,7 @@ final class MessageListViewController: TableViewController {
         editToolbar?.removeFromSuperview()
 
         // Host the toolbar on the nav controller's view rather than `view` (which is the
-        // tableView in a UITableViewController), since autolayout subviews of a UIScrollView
+        // collectionView in a UICollectionViewController), since autolayout subviews of a UIScrollView
         // don't receive width constraints reliably.
         guard let host = navigationController?.view else { return }
 
@@ -381,10 +419,10 @@ final class MessageListViewController: TableViewController {
 
         editToolbar = toolbar
 
-        var contentInset = tableView.contentInset
+        var contentInset = collectionView.contentInset
         contentInset.bottom = editToolbarHeight
-        tableView.contentInset = contentInset
-        tableView.scrollIndicatorInsets = contentInset
+        collectionView.contentInset = contentInset
+        collectionView.verticalScrollIndicatorInsets = contentInset
     }
 
     private func hideEditToolbar() {
@@ -392,14 +430,14 @@ final class MessageListViewController: TableViewController {
         editToolbar = nil
         editToolbarMoveButton = nil
 
-        var contentInset = tableView.contentInset
+        var contentInset = collectionView.contentInset
         contentInset.bottom = 0
-        tableView.contentInset = contentInset
-        tableView.scrollIndicatorInsets = contentInset
+        collectionView.contentInset = contentInset
+        collectionView.verticalScrollIndicatorInsets = contentInset
     }
 
     @objc private func moveSelectedMessages() {
-        guard let selectedRows = tableView.indexPathsForSelectedRows,
+        guard let selectedRows = collectionView.indexPathsForSelectedItems,
               !selectedRows.isEmpty else {
             let alert = UIAlertController(
                 title: LocalizedString("private-messages-list.no-selection.title"),
@@ -415,7 +453,7 @@ final class MessageListViewController: TableViewController {
     }
 
     @objc private func deleteSelectedMessages() {
-        guard let selectedRows = tableView.indexPathsForSelectedRows,
+        guard let selectedRows = collectionView.indexPathsForSelectedItems,
               !selectedRows.isEmpty else {
             let alert = UIAlertController(
                 title: LocalizedString("private-messages-list.no-selection.title"),
@@ -462,8 +500,8 @@ final class MessageListViewController: TableViewController {
             if let moveButton = editToolbarMoveButton {
                 popover.barButtonItem = moveButton
             } else {
-                popover.sourceView = tableView
-                popover.sourceRect = CGRect(x: tableView.bounds.midX, y: tableView.bounds.midY, width: 0, height: 0)
+                popover.sourceView = collectionView
+                popover.sourceRect = CGRect(x: collectionView.bounds.midX, y: collectionView.bounds.midY, width: 0, height: 0)
             }
         }
 
@@ -471,15 +509,18 @@ final class MessageListViewController: TableViewController {
     }
 
     override func themeDidChange() {
+        // Rebuild the layout before super reloads so the new separator color and
+        // inset are in effect when cells are reconfigured.
+        if isViewLoaded {
+            rebuildLayout()
+        }
+
         super.themeDidChange()
 
         composeViewController?.themeDidChange()
-
         folderPicker?.applyTheme(theme)
-
-        tableView.separatorColor = theme["listSeparatorColor"]
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -497,37 +538,15 @@ final class MessageListViewController: TableViewController {
     }
 }
 
-// MARK: UITableViewDelegate
+// MARK: UICollectionViewDelegate
 extension MessageListViewController {
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let dataSource else { return UITableView.automaticDimension }
-        return dataSource.tableView(tableView, heightForRowAt: indexPath)
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // In edit mode the tap is a selection toggle, not a navigation action.
-        if tableView.isEditing { return }
+        if collectionView.isEditing { return }
 
         guard let dataSource else { return }
         let message = dataSource.message(at: indexPath)
         showMessage(message)
-    }
-
-    // Swipe-to-delete is disabled — destructive actions must go through edit mode.
-    override func tableView(
-        _ tableView: UITableView,
-        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
-    ) -> UISwipeActionsConfiguration? {
-        return nil
-    }
-
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-
-    // .none gives selection circles in edit mode instead of the default delete button.
-    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .none
     }
 }
 

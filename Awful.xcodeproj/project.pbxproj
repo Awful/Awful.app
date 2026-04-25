@@ -223,6 +223,7 @@
 		2D3D25FB2F85E50500862514 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D25FA2F85E50500862514 /* SceneDelegate.swift */; };
 		2D3D26012F85E80100862513 /* NewThreadDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26002F85E80100862513 /* NewThreadDraft.swift */; };
 		2D3D26032F85E80100862514 /* PrivateMessageDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */; };
+		2D5009F32F9C9FF300887F4B /* LoadMoreCollectionFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */; };
 		2D571B472EC83DD00026826C /* AttachmentCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B462EC83DD00026826C /* AttachmentCardView.swift */; };
 		2D571B492EC8765F0026826C /* ImmersiveModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D571B482EC876590026826C /* ImmersiveModeManager.swift */; };
 		2D62DEA42EBFE93800F7121B /* LiquidGlassTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */; };
@@ -570,6 +571,7 @@
 		2D3D25FA2F85E50500862514 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		2D3D26002F85E80100862513 /* NewThreadDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThreadDraft.swift; sourceTree = "<group>"; };
 		2D3D26022F85E80100862514 /* PrivateMessageDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateMessageDraft.swift; sourceTree = "<group>"; };
+		2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadMoreCollectionFooter.swift; sourceTree = "<group>"; };
 		2D571B462EC83DD00026826C /* AttachmentCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentCardView.swift; sourceTree = "<group>"; };
 		2D571B482EC876590026826C /* ImmersiveModeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveModeManager.swift; sourceTree = "<group>"; };
 		2D62DEA32EBFE93600F7121B /* LiquidGlassTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassTitleView.swift; sourceTree = "<group>"; };
@@ -754,6 +756,7 @@
 		1C25AC1F1F532EC400977D6F /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				2D5009F22F9C9FF300887F4B /* LoadMoreCollectionFooter.swift */,
 				1CC256B61A39A6BE003FA7A8 /* AwfulBrowser.swift */,
 				1CF280972055EB9B00913149 /* AwfulRoute.swift */,
 				1C16FBF51CBDC65C00C88BD1 /* CaseInsensitiveMatching.swift */,
@@ -1669,6 +1672,7 @@
 				2DD8209C25DDD9BF0015A90D /* CopyImageActivity.swift in Sources */,
 				2D62DEA82EBFEB2000F7121B /* GradientView.swift in Sources */,
 				1CFC996A1BD3F402001180A7 /* PostsPageRefreshArrowView.swift in Sources */,
+				2D5009F32F9C9FF300887F4B /* LoadMoreCollectionFooter.swift in Sources */,
 				1CE2B76819C2372200FDC33E /* LoginViewController.swift in Sources */,
 				1C16FBD51CBA91ED00C88BD1 /* PostsViewExternalStylesheetLoader.swift in Sources */,
 				2D2E14412F0DE929003411D7 /* MessageFolderManagementViewController.swift in Sources */,

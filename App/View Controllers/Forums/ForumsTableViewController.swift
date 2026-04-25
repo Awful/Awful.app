@@ -13,22 +13,23 @@ import SwiftUI
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumsTableViewController")
 
-final class ForumsTableViewController: TableViewController {
+final class ForumsTableViewController: CollectionViewController {
 
     private var cancellables: Set<AnyCancellable> = []
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
-    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.canSendPrivateMessages) private var canSendPrivateMessages
     private var favoriteForumCountObserver: ManagedObjectCountObserver!
     private var listDataSource: ForumListDataSource!
     let managedObjectContext: NSManagedObjectContext
     @FoilDefaultStorage(Settings.showUnreadAnnouncementsBadge) private var showUnreadAnnouncementsBadge
     private var unreadAnnouncementCountObserver: ManagedObjectCountObserver!
-    
+    private var cellRegistration: UICollectionView.CellRegistration<ForumListCell, ForumListDataSource.Item>!
+    private var headerRegistration: UICollectionView.SupplementaryRegistration<ForumListSectionHeaderView>!
+
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        super.init(style: .grouped)
-        
+        super.init(collectionViewLayout: ForumsTableViewController.makeLayout(separatorLeadingInset: tableSeparatorLeftMargin, separatorColor: nil, swipeActionsProvider: nil))
+
         title = "Forums"
         tabBarItem.image = UIImage(named: "forum-list")
         tabBarItem.selectedImage = UIImage(named: "forum-list-filled")
@@ -52,7 +53,7 @@ final class ForumsTableViewController: TableViewController {
             predicate: NSPredicate(format: "%K == NO", #keyPath(Announcement.hasBeenSeen)),
             didChange: { [weak self] unreadCount in
                 self?.updateBadgeValue(unreadCount) })
-        
+
         $showUnreadAnnouncementsBadge
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
@@ -60,20 +61,105 @@ final class ForumsTableViewController: TableViewController {
                 updateBadgeValue(unreadAnnouncementCountObserver.count)
             }
             .store(in: &cancellables)
-        
+
+        cellRegistration = makeCellRegistration()
+        headerRegistration = makeHeaderRegistration()
+
         themeDidChange()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    private static func makeLayout(
+        separatorLeadingInset: CGFloat,
+        separatorColor: UIColor?,
+        swipeActionsProvider: ((IndexPath) -> UISwipeActionsConfiguration?)?
+    ) -> UICollectionViewLayout {
+        var config = UICollectionLayoutListConfiguration(appearance: .sidebar)
+        config.headerMode = .supplementary
+        config.backgroundColor = .clear
+
+        var separatorConfig = UIListSeparatorConfiguration(listAppearance: .plain)
+        separatorConfig.bottomSeparatorInsets = NSDirectionalEdgeInsets(top: 0, leading: separatorLeadingInset, bottom: 0, trailing: 0)
+        if let separatorColor {
+            separatorConfig.color = separatorColor
+        }
+        config.separatorConfiguration = separatorConfig
+
+        if let swipeActionsProvider {
+            config.trailingSwipeActionsConfigurationProvider = { indexPath in
+                swipeActionsProvider(indexPath)
+            }
+        }
+
+        return CollectionViewController.makeListLayout(using: config)
+    }
+
+    private func rebuildLayout() {
+        let layout = ForumsTableViewController.makeLayout(
+            separatorLeadingInset: tableSeparatorLeftMargin,
+            separatorColor: theme[uicolor: "listSeparatorColor"],
+            swipeActionsProvider: { [weak self] indexPath in
+                self?.swipeActionsConfig(at: indexPath)
+            }
+        )
+        collectionView.setCollectionViewLayout(layout, animated: false)
+    }
+
+    private func swipeActionsConfig(at indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard listDataSource?.canEditItem(at: indexPath) == true else { return nil }
+        let action = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completion in
+            self?.listDataSource.deleteFavorite(at: indexPath)
+            completion(true)
+        }
+        action.image = UIImage(systemName: "star.slash")
+        return UISwipeActionsConfiguration(actions: [action])
+    }
+
+    private func makeCellRegistration() -> UICollectionView.CellRegistration<ForumListCell, ForumListDataSource.Item> {
+        UICollectionView.CellRegistration<ForumListCell, ForumListDataSource.Item> { [weak self] cell, _, item in
+            guard let self else { return }
+            cell.viewModel = self.listDataSource.viewModelFor(item: item)
+            cell.didTapExpand = { [weak self] in
+                self?.didTapDisclosureButton(in: $0)
+            }
+            cell.didTapFavorite = { [weak self] in
+                self?.didTapStarButton(in: $0)
+            }
+            // Show the inline delete accessory for favorite-forum rows in edit mode.
+            if case .favoriteForum = item {
+                cell.accessories = [.delete(displayed: .whenEditing, actionHandler: { [weak self, weak cell] in
+                    guard let self,
+                          let cell,
+                          let path = self.collectionView.indexPath(for: cell)
+                    else { return }
+                    self.listDataSource.deleteFavorite(at: path)
+                })]
+            } else {
+                cell.accessories = []
+            }
+        }
+    }
+
+    private func makeHeaderRegistration() -> UICollectionView.SupplementaryRegistration<ForumListSectionHeaderView> {
+        UICollectionView.SupplementaryRegistration<ForumListSectionHeaderView>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] header, _, indexPath in
+            guard let self else { return }
+            header.viewModel = .init(
+                backgroundColor: self.theme["listHeaderBackgroundColor"],
+                font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular),
+                sectionName: self.listDataSource.titleForSection(indexPath.section),
+                textColor: self.theme["listHeaderTextColor"])
+        }
+    }
+
     private func refreshIfNecessary() {
         if RefreshMinder.sharedMinder.shouldRefresh(.forumList) {
             refresh()
         }
     }
-    
+
     private func refresh() {
         Task {
             do {
@@ -87,7 +173,7 @@ final class ForumsTableViewController: TableViewController {
             stopAnimatingPullToRefresh()
         }
     }
-    
+
     private func migrateFavoriteForumsFromSettings() {
         // TODO: this shouldn't be the view controller's responsibility.
         // In Awful 3.2, favorite forums moved from UserDefaults to the ForumMetadata entity in Core Data.
@@ -106,7 +192,7 @@ final class ForumsTableViewController: TableViewController {
             SettingsMigration.forgetFavoriteForums(.standard)
         }
     }
-    
+
     private func updateBadgeValue(_ unreadCount: Int) {
         tabBarItem?.badgeValue = {
             guard showUnreadAnnouncementsBadge else { return nil }
@@ -124,7 +210,7 @@ final class ForumsTableViewController: TableViewController {
             setEditing(false, animated: true)
         }
     }
-    
+
     func openForum(_ forum: Forum, animated: Bool) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -148,24 +234,34 @@ final class ForumsTableViewController: TableViewController {
     override var undoManager: UndoManager? {
         return listDataSource.undoManager
     }
-    
+
     // MARK: View lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.register(ForumListSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeader.reuseIdentifier)
-        tableView.sectionFooterHeight = 0
-        tableView.separatorInset.left = tableSeparatorLeftMargin
-        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: tableBottomMargin))
+        listDataSource = try! ForumListDataSource(
+            managedObjectContext: managedObjectContext,
+            collectionView: collectionView,
+            cellRegistration: cellRegistration,
+            supplementaryViewProvider: { [weak self] cv, kind, indexPath in
+                guard let self, kind == UICollectionView.elementKindSectionHeader else { return nil }
+                return cv.dequeueConfiguredReusableSupplementary(using: self.headerRegistration, for: indexPath)
+            }
+        )
+        listDataSource.delegate = self
 
-        listDataSource = try! ForumListDataSource(managedObjectContext: managedObjectContext, tableView: tableView)
-        tableView.reloadData()
-        
+        // Now that the data source exists, rebuild the layout with a swipe-actions
+        // provider that consults it.
+        rebuildLayout()
+
+        // 14pt of bottom breathing room — equivalent of the old tableFooterView trick.
+        collectionView.contentInset.bottom = tableBottomMargin
+
         pullToRefreshBlock = { [weak self] in
             self?.refresh()
         }
-        
+
         lazy var searchButton: UIBarButtonItem = {
             let button = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchForums))
             button.isEnabled = canSendPrivateMessages
@@ -176,7 +272,6 @@ final class ForumsTableViewController: TableViewController {
             navigationItem.setRightBarButton(searchButton, animated: true)
         }
 
-        // Add observer for changes to canSendPrivateMessages
         $canSendPrivateMessages
             .receive(on: RunLoop.main)
             .sink { [weak self] canSend in
@@ -189,7 +284,7 @@ final class ForumsTableViewController: TableViewController {
             }
             .store(in: &cancellables)
     }
-            
+
     @objc private func searchForums() {
         let searchView = SearchHostingController()
         if traitCollection.userInterfaceIdiom == .pad {
@@ -203,19 +298,27 @@ final class ForumsTableViewController: TableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let currentWidth = tableView.bounds.width
-        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
+        // Reset the cached width when the collection view's width changes so any
+        // stale heights computed against the old width get re-measured.
+        let currentWidth = collectionView.bounds.width
+        if let last = ForumListCell.lastKnownContentViewWidth, abs(last - currentWidth) > 1 {
             ForumListCell.lastKnownContentViewWidth = nil
         }
-        lastKnownTableWidth = currentWidth
     }
 
     override func themeDidChange() {
-        super.themeDidChange()
+        if isViewLoaded {
+            rebuildLayout()
+        }
 
-        tableView.separatorColor = theme["listSeparatorColor"]
+        super.themeDidChange()
     }
-    
+
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        collectionView.isEditing = editing
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -235,40 +338,37 @@ final class ForumsTableViewController: TableViewController {
 
         undoManager?.removeAllActions()
     }
-    
+
     // MARK: Actions
 
-    private func didTapDisclosureButton(in cell: UITableViewCell) {
+    private func didTapDisclosureButton(in cell: UICollectionViewCell) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        guard let indexPath = tableView.indexPath(for: cell),
+        guard let indexPath = collectionView.indexPath(for: cell),
               let forum = listDataSource.item(at: indexPath) as? Forum
         else { return }
 
         if forum.metadata.showsChildrenInForumList {
             forum.collapse()
-        }
-        else {
+        } else {
             forum.expand()
         }
-        
+
         try! forum.managedObjectContext!.save()
     }
 
-    private func didTapStarButton(in cell: UITableViewCell) {
+    private func didTapStarButton(in cell: UICollectionViewCell) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
-        guard
-            let indexPath = tableView.indexPath(for: cell),
-            let forum = listDataSource.item(at: indexPath) as? Forum
-            else { return }
+        guard let indexPath = collectionView.indexPath(for: cell),
+              let forum = listDataSource.item(at: indexPath) as? Forum
+        else { return }
 
         if forum.metadata.favorite {
             forum.metadata.favorite = false
-        }
-        else {
+        } else {
             forum.metadata.favorite = true
             forum.metadata.favoriteIndex = listDataSource.nextFavoriteIndex
         }
@@ -281,52 +381,15 @@ final class ForumsTableViewController: TableViewController {
 private let tableBottomMargin: CGFloat = 14
 private let tableSeparatorLeftMargin: CGFloat = 46
 
+extension ForumsTableViewController: ForumListDataSourceDelegate {
+    func themeForCells(in dataSource: ForumListDataSource) -> Theme {
+        return theme
+    }
+}
+
+// MARK: UICollectionViewDelegate
 extension ForumsTableViewController {
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if tableView.dataSource?.tableView(tableView, numberOfRowsInSection: section) == 0 {
-            return 0
-        }
-        else {
-            return SectionHeader.height
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: SectionHeader.reuseIdentifier) as? ForumListSectionHeaderView else {
-            assertionFailure("where's the header")
-            return nil
-        }
-
-        header.viewModel = .init(
-            backgroundColor: theme["listHeaderBackgroundColor"],
-            font: UIFont.preferredFontForTextStyle(.body, fontName: nil, sizeAdjustment: 0, weight: .regular),
-            sectionName: listDataSource.titleForSection(section),
-            textColor: theme["listHeaderTextColor"])
-
-        return header
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return listDataSource.tableView(tableView, heightForRowAt: indexPath)
-    }
-    
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if let cell = cell as? ForumListCell {
-            cell.didTapExpand = { [weak self] in
-                self?.didTapDisclosureButton(in: $0)
-            }
-            
-            cell.didTapFavorite = { [weak self] in
-                self?.didTapStarButton(in: $0)
-            }
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
-        return listDataSource.tableView(tableView, targetIndexPathForMoveFromRowAt: sourceIndexPath, toProposedIndexPath: proposedDestinationIndexPath)
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch listDataSource.item(at: indexPath) {
         case let announcement as Announcement:
             openAnnouncement(announcement)
@@ -338,11 +401,10 @@ extension ForumsTableViewController {
             assertionFailure("unknown object type in forums list")
         }
     }
-}
 
-private enum SectionHeader {
-    static let height: CGFloat = 44
-    static let reuseIdentifier = "Header"
+    override func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveOfItemFromOriginalIndexPath originalIndexPath: IndexPath, atCurrentIndexPath currentIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        return listDataSource.proposedTargetIndexPath(for: originalIndexPath, proposed: proposedIndexPath)
+    }
 }
 
 extension ForumsTableViewController: RestorableLocation {

@@ -6,14 +6,14 @@ import AwfulSettings
 import UIKit
 
 /// In the Forum list, each cell represents either a favorite forum or a plain old forum.
-final class ForumListCell: UITableViewCell {
+final class ForumListCell: UICollectionViewListCell {
 
     /// The actual contentView width from the most recent layout pass.
-    /// On Mac Catalyst, contentView can be narrower than the table view
-    /// due to platform-specific insets (grouped style, safe area, etc.).
+    /// On Mac Catalyst, contentView can be narrower than the collection view
+    /// due to platform-specific insets.
     static var lastKnownContentViewWidth: CGFloat?
 
-    /// Called when the expand/collapes button is tapped.
+    /// Called when the expand/collapse button is tapped.
     var didTapExpand: ((ForumListCell) -> Void)?
 
     /// Called when the favorite star is tapped.
@@ -31,7 +31,7 @@ final class ForumListCell: UITableViewCell {
 
     var viewModel: ViewModel = .empty {
         didSet {
-            backgroundColor = viewModel.backgroundColor
+            contentView.backgroundColor = viewModel.backgroundColor
 
             switch viewModel.expansion {
             case .none:
@@ -106,8 +106,19 @@ final class ForumListCell: UITableViewCell {
         }
     }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        backgroundConfiguration = UIBackgroundConfiguration.clear()
+
+        // Stop the cell's own directional layout margins from inseting contentView.
+        // The Layout struct already accounts for explicit nameMargin / starWidth /
+        // expandWidth — letting the system add another ~8pt on each side narrows
+        // the name label and forces unnecessary wraps.
+        preservesSuperviewLayoutMargins = false
+        directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        contentView.preservesSuperviewLayoutMargins = false
+        contentView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
 
         contentView.addSubview(expandButton)
         contentView.addSubview(favoriteButton)
@@ -135,39 +146,35 @@ final class ForumListCell: UITableViewCell {
         didTapFavorite?(self)
     }
 
-    override func willTransition(to state: UITableViewCell.StateMask) {
-        super.willTransition(to: state)
+    private var isInEditingState = false
 
-        if state.contains(UITableViewCell.StateMask.showingEditControl) {
-            favoriteButton.alpha = 0
-        }
-        else {
-            favoriteButton.alpha = 1
-        }
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+
+        // Hide the favorite star while editing so the row's delete accessory has room.
+        isInEditingState = state.isEditing
+        favoriteButton.alpha = state.isEditing ? 0 : 1
+        setNeedsLayout()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
 
         let contentWidth = contentView.bounds.width
-        let previousWidth = ForumListCell.lastKnownContentViewWidth
         ForumListCell.lastKnownContentViewWidth = contentWidth
 
-        if previousWidth.map({ abs($0 - contentWidth) > 1 }) != false {
-            DispatchQueue.main.async { [weak self] in
-                guard let tableView = self?.superview as? UITableView
-                    ?? self?.superview?.superview as? UITableView else { return }
-                UIView.performWithoutAnimation {
-                    tableView.beginUpdates()
-                    tableView.endUpdates()
-                }
-            }
-        }
-
-        let layout = Layout(width: contentWidth, viewModel: viewModel, isEditing: isEditing)
+        let layout = Layout(width: contentWidth, viewModel: viewModel, isEditing: isInEditingState)
         expandButton.frame = layout.expandFrame
         favoriteButton.frame = layout.favoriteStarFrame
         nameLabel.frame = layout.nameFrame
+    }
+
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        let width = layoutAttributes.size.width
+        let height = Layout(width: width, viewModel: viewModel, isEditing: isInEditingState).height
+        attributes.size = CGSize(width: width, height: height)
+        return attributes
     }
 
     private struct Layout {
@@ -176,7 +183,7 @@ final class ForumListCell: UITableViewCell {
         let height: CGFloat
         let nameFrame: CGRect
 
-        static let expandWidth: CGFloat = 44
+        static let expandWidth: CGFloat = 30
         static let indentationMargin: CGFloat = 15
         static let minimumHeight: CGFloat = 44
         static let nameMargin: CGFloat = 8

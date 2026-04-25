@@ -4,7 +4,7 @@
 
 import UIKit
 
-final class MessageListCell: UITableViewCell {
+final class MessageListCell: UICollectionViewListCell {
 
     private let dateLabel = UILabel()
 
@@ -58,7 +58,7 @@ final class MessageListCell: UITableViewCell {
 
     var viewModel: ViewModel = .empty {
         didSet {
-            backgroundColor = viewModel.backgroundColor
+            contentView.backgroundColor = viewModel.backgroundColor
 
             dateLabel.attributedText = viewModel.sentDateRaw
 
@@ -113,8 +113,10 @@ final class MessageListCell: UITableViewCell {
             tagOverlayImage: nil)
     }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        backgroundConfiguration = UIBackgroundConfiguration.clear()
 
         contentView.addSubview(dateLabel)
         contentView.addSubview(senderLabel)
@@ -138,6 +140,14 @@ final class MessageListCell: UITableViewCell {
         tagOverlayView.frame = layout.tagOverlayFrame
     }
 
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        let width = layoutAttributes.size.width
+        let height = Layout(width: width, viewModel: viewModel).height
+        attributes.size = CGSize(width: width, height: height)
+        return attributes
+    }
+
     private struct Layout {
         let dateFrame: CGRect
         let height: CGFloat
@@ -148,6 +158,9 @@ final class MessageListCell: UITableViewCell {
 
         private static let cellHorizontalMargin: CGFloat = 8
         private static let cellVerticalMargin: CGFloat = 4
+        /// Trailing inset for the date column. Larger than `cellHorizontalMargin`
+        /// so the date clears the vertical scroll bar.
+        private static let dateRightMargin: CGFloat = 16
         private static let dateLeftMargin: CGFloat = 4
         private static let minimumHeight: CGFloat = 65
         private static let subjectTopMargin: CGFloat = 2
@@ -189,7 +202,7 @@ final class MessageListCell: UITableViewCell {
 
             // 4. Date
             dateFrame = CGRect(
-                x: width - Layout.cellHorizontalMargin - dateSize.width,
+                x: width - Layout.dateRightMargin - dateSize.width,
                 y: (height - textHeight) / 2,
                 width: dateSize.width,
                 height: dateSize.height)

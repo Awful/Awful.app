@@ -11,25 +11,41 @@ import UIKit
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ForumListDataSource")
 
 final class ForumListDataSource: NSObject {
-    private let announcementsController: NSFetchedResultsController<Announcement>
-    private var deferredDeletes: [IndexPath] = []
-    private var deferredInserts: [IndexPath] = []
-    private var deferredSectionDeletes = IndexSet()
-    private var deferredSectionInserts = IndexSet()
-    private var deferredUpdates: [IndexPath] = []
     weak var delegate: ForumListDataSourceDelegate?
+
+    private let announcementsController: NSFetchedResultsController<Announcement>
     private let favoriteForumsController: NSFetchedResultsController<ForumMetadata>
     private let forumsController: NSFetchedResultsController<Forum>
+
+    private let collectionView: UICollectionView
+    private var diffableDataSource: UICollectionViewDiffableDataSource<Section, Item>!
     private var ignoreControllerUpdates = false
-    private let tableView: UITableView
+    private var pendingSnapshotApply: DispatchWorkItem?
 
     private(set) lazy var undoManager: UndoManager = {
         let undoManager = UndoManager()
         undoManager.levelsOfUndo = 1
         return undoManager
     }()
-    
-    init(managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
+
+    enum Section: Hashable {
+        case announcements
+        case favorites
+        case forumGroup(String)
+    }
+
+    enum Item: Hashable {
+        case announcement(NSManagedObjectID)
+        case favoriteForum(NSManagedObjectID)
+        case forum(NSManagedObjectID)
+    }
+
+    init(
+        managedObjectContext: NSManagedObjectContext,
+        collectionView: UICollectionView,
+        cellRegistration: UICollectionView.CellRegistration<ForumListCell, Item>,
+        supplementaryViewProvider: @escaping (UICollectionView, String, IndexPath) -> UICollectionReusableView?
+    ) throws {
         let announcementsRequest = Announcement.makeFetchRequest()
         announcementsRequest.sortDescriptors = [
             NSSortDescriptor(key: #keyPath(Announcement.listIndex), ascending: true)]
@@ -38,7 +54,7 @@ final class ForumListDataSource: NSObject {
             managedObjectContext: managedObjectContext,
             sectionNameKeyPath: nil,
             cacheName: nil)
-        
+
         let favoriteForumsRequest = ForumMetadata.makeFetchRequest()
         favoriteForumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(ForumMetadata.favorite))
         favoriteForumsRequest.sortDescriptors = [
@@ -48,39 +64,48 @@ final class ForumListDataSource: NSObject {
             managedObjectContext: managedObjectContext,
             sectionNameKeyPath: nil,
             cacheName: nil)
-        
+
         let forumsRequest = Forum.makeFetchRequest()
         forumsRequest.predicate = NSPredicate(format: "%K == YES", #keyPath(Forum.metadata.visibleInForumList))
         forumsRequest.sortDescriptors = [
-            NSSortDescriptor(key: #keyPath(Forum.group.index), ascending: true), // section
+            NSSortDescriptor(key: #keyPath(Forum.group.index), ascending: true),
             NSSortDescriptor(key: #keyPath(Forum.index), ascending: true)]
         forumsController = NSFetchedResultsController(
             fetchRequest: forumsRequest,
             managedObjectContext: managedObjectContext,
             sectionNameKeyPath: #keyPath(Forum.group.sectionIdentifier),
             cacheName: nil)
-        
-        self.tableView = tableView
+
+        self.collectionView = collectionView
         super.init()
-        
-        try announcementsController.performFetch()
-        try favoriteForumsController.performFetch()
-        try forumsController.performFetch()
-        
-        tableView.dataSource = self
-        tableView.estimatedRowHeight = ForumListCell.estimatedHeight
-        tableView.register(ForumListCell.self, forCellReuseIdentifier: forumCellIdentifier)
-        
+
+        diffableDataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        diffableDataSource.supplementaryViewProvider = supplementaryViewProvider
+
+        diffableDataSource.reorderingHandlers.canReorderItem = { item in
+            if case .favoriteForum = item { return true }
+            return false
+        }
+        diffableDataSource.reorderingHandlers.didReorder = { [weak self] transaction in
+            self?.applyReorderTransaction(transaction)
+        }
+
         announcementsController.delegate = self
         favoriteForumsController.delegate = self
         forumsController.delegate = self
+
+        try announcementsController.performFetch()
+        try favoriteForumsController.performFetch()
+        try forumsController.performFetch()
+
+        applyCurrentSnapshot(animatingDifferences: false)
 
         NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
     }
 
     @objc private func dataStoreDidReset() {
-        // Old store's objects are no longer reachable from the coordinator. Re-fetch so
-        // the FRCs' caches stop pointing at dangling objectIDs.
         for controller in resultsControllers {
             do {
                 try controller.performFetch()
@@ -88,110 +113,161 @@ final class ForumListDataSource: NSObject {
                 logger.error("Failed to re-fetch after data store reset: \(error)")
             }
         }
-        tableView.reloadData()
+        applyCurrentSnapshot(animatingDifferences: false)
     }
-    
+
     private var resultsControllers: [NSFetchedResultsController<NSFetchRequestResult>] {
         return [announcementsController as! NSFetchedResultsController<NSFetchRequestResult>,
                 favoriteForumsController as! NSFetchedResultsController<NSFetchRequestResult>,
                 forumsController as! NSFetchedResultsController<NSFetchRequestResult>]
     }
-    
-    private func controllerAtGlobalSection(_ globalSection: Int) -> (controller: NSFetchedResultsController<NSFetchRequestResult>, localSection: Int) {
-        var section = globalSection
-        for controller in resultsControllers {
-            guard let sections = controller.sections else { continue }
-            if section < sections.count {
-                return (controller: controller, localSection: section)
+
+    private func applyCurrentSnapshot(animatingDifferences: Bool) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+
+        if let announcements = announcementsController.fetchedObjects, !announcements.isEmpty {
+            snapshot.appendSections([.announcements])
+            snapshot.appendItems(announcements.map { Item.announcement($0.objectID) }, toSection: .announcements)
+        }
+
+        if let favorites = favoriteForumsController.fetchedObjects, !favorites.isEmpty {
+            snapshot.appendSections([.favorites])
+            snapshot.appendItems(favorites.map { Item.favoriteForum($0.objectID) }, toSection: .favorites)
+        }
+
+        if let sections = forumsController.sections {
+            for sectionInfo in sections {
+                let section = Section.forumGroup(sectionInfo.name)
+                snapshot.appendSections([section])
+                if let objects = sectionInfo.objects as? [Forum] {
+                    snapshot.appendItems(objects.map { Item.forum($0.objectID) }, toSection: section)
+                }
             }
-            section -= sections.count
         }
-        
-        fatalError("section index out of bounds: \(section)")
-    }
-    
-    private func globalSectionForLocalSection(_ localSection: Int, in controller: NSFetchedResultsController<NSFetchRequestResult>) -> Int {
-        var section = localSection
-        for earlierController in resultsControllers {
-            guard controller !== earlierController else { break }
-            guard let sections = earlierController.sections else { continue }
-            section += sections.count
-        }
-        return section
+
+        diffableDataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
 
-    private func performIgnoringControllerUpdates(_ block: () -> Void) {
-        ignoreControllerUpdates = true
-        block()
-        ignoreControllerUpdates = false
+    private func scheduleSnapshotApply() {
+        // Multiple FRCs often fire updates in quick succession for the same context save
+        // (e.g. favoriting a forum updates the favorites FRC AND the forums FRC). Coalesce
+        // them into one apply per runloop tick so the diff calculates against the final
+        // state and we don't get jittery animations.
+        pendingSnapshotApply?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.applyCurrentSnapshot(animatingDifferences: true)
+        }
+        pendingSnapshotApply = workItem
+        DispatchQueue.main.async(execute: workItem)
     }
-}
 
-extension ForumListDataSource {
+    // MARK: - Public API
+
     /// - Returns: The `Announcement` or `Forum` at `indexPath`.
     func item(at indexPath: IndexPath) -> Any {
-        let (controller, localSection: section) = controllerAtGlobalSection(indexPath.section)
-        switch controller.object(at: IndexPath(row: indexPath.row, section: section)) {
-        case let announcement as Announcement:
-            return announcement
+        guard let item = diffableDataSource.itemIdentifier(for: indexPath) else {
+            fatalError("no item at \(indexPath)")
+        }
+        return objectFor(item: item)
+    }
 
-        case let forum as Forum:
-            return forum
-
-        case let metadata as ForumMetadata:
+    func objectFor(item: Item) -> Any {
+        let context = forumsController.managedObjectContext
+        switch item {
+        case .announcement(let id):
+            return context.object(with: id) as! Announcement
+        case .favoriteForum(let id):
+            // Existing API returns the forum, not the metadata.
+            let metadata = context.object(with: id) as! ForumMetadata
             return metadata.forum
-
-        default:
-            fatalError("item of unknown type in forums list")
+        case .forum(let id):
+            return context.object(with: id) as! Forum
         }
     }
-}
 
-extension ForumListDataSource {
     func titleForSection(_ section: Int) -> String {
-        let (controller: controller, localSection: localSection) = controllerAtGlobalSection(section)
-        if controller === announcementsController {
+        let snapshot = diffableDataSource.snapshot()
+        guard section < snapshot.sectionIdentifiers.count else { return "" }
+        let sectionId = snapshot.sectionIdentifiers[section]
+        switch sectionId {
+        case .announcements:
             return LocalizedString("forums-list.announcements-section-title")
-        }
-        else if controller === favoriteForumsController {
+        case .favorites:
             return LocalizedString("forums-list.favorite-forums.section-title")
-        }
-        else if controller === forumsController {
-            guard let sections = controller.sections else {
-                fatalError("something's wrong with the fetched results controller")
-            }
-
-            let sectionIdentifier = sections[localSection].name
-            return String(sectionIdentifier.dropFirst(ForumGroup.sectionIdentifierIndexLength + 1))
-        }
-        else {
-            fatalError("unknown results controller \(controller)")
+        case .forumGroup(let name):
+            return String(name.dropFirst(ForumGroup.sectionIdentifierIndexLength + 1))
         }
     }
-}
 
-extension ForumListDataSource {
     var hasFavorites: Bool {
-        let count = favoriteForumsController.fetchedObjects?.count ?? 0
-        return count > 0
+        return (favoriteForumsController.fetchedObjects?.count ?? 0) > 0
     }
 
-    private var indexPathOfLastFavorite: IndexPath {
-        guard let favoriteCount = favoriteForumsController.sections?.first?.numberOfObjects else {
-            fatalError("can't figure out how many favorite forums we have")
-        }
-        let row = favoriteCount > 0 ? favoriteCount - 1 : 0
-        let section = globalSectionForLocalSection(0, in: favoriteForumsController as! NSFetchedResultsController<NSFetchRequestResult>)
-        return IndexPath(row: row, section: section)
-    }
-    
     var nextFavoriteIndex: Int32 {
         let last = favoriteForumsController.fetchedObjects?.last
         return last.map { $0.favoriteIndex + 1 } ?? 1
     }
-}
 
-extension ForumListDataSource {
+    func canEditItem(at indexPath: IndexPath) -> Bool {
+        guard let item = diffableDataSource.itemIdentifier(for: indexPath) else { return false }
+        if case .favoriteForum = item { return true }
+        return false
+    }
+
+    func deleteFavorite(at indexPath: IndexPath) {
+        guard case .favoriteForum(let id) = diffableDataSource.itemIdentifier(for: indexPath),
+              let metadata = forumsController.managedObjectContext.object(with: id) as? ForumMetadata
+        else { return }
+        updateMetadata(metadata, setIsFavorite: false)
+    }
+
+    /// Constrain a proposed move target index path so that favorites can only
+    /// be reordered within the favorites section.
+    func proposedTargetIndexPath(for sourceIndexPath: IndexPath, proposed proposedDestination: IndexPath) -> IndexPath {
+        let snapshot = diffableDataSource.snapshot()
+        let sectionIds = snapshot.sectionIdentifiers
+
+        guard sourceIndexPath.section < sectionIds.count,
+              case .favorites = sectionIds[sourceIndexPath.section]
+        else {
+            return sourceIndexPath
+        }
+
+        if proposedDestination.section < sectionIds.count,
+           case .favorites = sectionIds[proposedDestination.section] {
+            return proposedDestination
+        }
+
+        guard let favoritesIndex = sectionIds.firstIndex(of: .favorites) else {
+            return sourceIndexPath
+        }
+
+        let favoritesItemCount = snapshot.numberOfItems(inSection: .favorites)
+
+        if proposedDestination.section > favoritesIndex {
+            return IndexPath(item: max(0, favoritesItemCount - 1), section: favoritesIndex)
+        } else {
+            return IndexPath(item: 0, section: favoritesIndex)
+        }
+    }
+
+    private func applyReorderTransaction(_ transaction: NSDiffableDataSourceTransaction<Section, Item>) {
+        let context = forumsController.managedObjectContext
+        let favoritesItems = transaction.finalSnapshot.itemIdentifiers(inSection: .favorites)
+
+        let metadatas: [ForumMetadata] = favoritesItems.compactMap { item in
+            if case .favoriteForum(let id) = item {
+                return context.object(with: id) as? ForumMetadata
+            }
+            return nil
+        }
+
+        ignoreControllerUpdates = true
+        zip(metadatas, 1...).forEach { $0.favoriteIndex = Int32($1) }
+        try! metadatas.first?.managedObjectContext?.save()
+        ignoreControllerUpdates = false
+    }
+
     private func updateMetadata(_ metadata: ForumMetadata, setIsFavorite isFavorite: Bool) {
         logger.debug("\(isFavorite ? "adding" : "removing") favorite forum \(metadata.forum.name ?? "")")
 
@@ -207,233 +283,13 @@ extension ForumListDataSource {
                 ? "forums-list.undo-action.add-favorite"
                 : "forums-list.undo-action.remove-favorite"))
     }
-}
 
-extension ForumListDataSource: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        guard !ignoreControllerUpdates else {
-            logger.debug("ignoring updates in \(controller)")
-            return
-        }
-
-        logger.debug("beginning to defer updates in \(controller)")
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-
-        guard !ignoreControllerUpdates else { return }
-        
-        logger.debug("local section \(sectionIndex) is changing…")
-        
-        let sectionIndex = globalSectionForLocalSection(sectionIndex, in: controller)
-        
-        switch type {
-        case .delete:
-            logger.debug("…it's global section \(sectionIndex) and it's getting deleted")
-            
-            deferredSectionDeletes.insert(sectionIndex)
-            
-        case .insert:
-            logger.debug("…it's global section \(sectionIndex) and it's getting inserted")
-            
-            deferredSectionInserts.insert(sectionIndex)
-            
-        case .move, .update:
-            assertionFailure("why")
-
-        @unknown default:
-            assertionFailure("handle unknown change type")
-        }
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at oldIndexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-
-        guard !ignoreControllerUpdates else { return }
-        
-        logger.debug("did change object at local old = \(oldIndexPath?.description ?? ""), local new = \(newIndexPath?.description ?? "")…")
-        
-        let oldIndexPath = oldIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
-        let newIndexPath = newIndexPath.map { IndexPath(row: $0.row, section: globalSectionForLocalSection($0.section, in: controller)) }
-        
-        switch type {
-        case .delete:
-            logger.debug("…global path = \(oldIndexPath!) and it's getting deleted")
-            
-            deferredDeletes.append(oldIndexPath!)
-            
-        case .insert:
-            logger.debug("…global path = \(newIndexPath!) and it's getting inserted")
-            
-            deferredInserts.append(newIndexPath!)
-            
-        case .move:
-            logger.debug("…global old = \(oldIndexPath!), global new = \(newIndexPath!) and it's moving")
-            
-            deferredDeletes.append(oldIndexPath!)
-            deferredInserts.append(newIndexPath!)
-            
-        case .update:
-            logger.debug("…global path = \(oldIndexPath!) and it's getting updated")
-            
-            deferredUpdates.append(oldIndexPath!)
-
-        @unknown default:
-            assertionFailure("handle unknown change type")
-        }
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        guard !ignoreControllerUpdates else {
-            logger.debug("done ignoring updates in \(controller)")
-            return
-        }
-
-        logger.debug("done with deferring updates in \(controller)")
-
-        /*
-         Yuck. Sorry. I hate delayed performs (or whatever this is called in the era of dispatch queues) but I'm not sure what else to do.
-
-         The problem we're trying to solve here is when multiple FRCs update because of the same change in the context (e.g. adding a favorite forum causes the Favorite Forums FRC to insert a row and also causes the Forums FRC to reload a row). This results in the following sequence of calls, all stemming from whatever call to save/processPendingChanges:
-
-             controllerWillChangeContent(favoriteForumsController)
-             controller…
-             controllerDidChangeContent(favoriteForumsController)
-             controllerWillChangeContent(forumsController)
-             controller…
-             controllerDidChangeContent(forumsController)
-
-         If we process this normally, we get two un-nested calls to tableView.beginUpdates()/endUpdates(), and that gives us some ugly animations. One way to fix this is to start an overarching tableView.beginUpdates() then nest the consecutive calls within. However, I couldn't think of a good way to tell how many FRCs we expect to update or when we're seeing the last FRC update for the currently-processing notification.
-
-         For the moment, it seems that all FRCs get processed in the same go-round of the run loop. So if we wait a tick, allowing however many FRCs to stack up their updates, then we can process them all at once.
-         */
-        DispatchQueue.main.async {
-
-            // This does avoid pointless table view calls, but it's also the other half of our workaround for multiple FRCs updating at once: this ensures that only one of multiple scheduled "next tick" calls actually calls tableView.beginUpdates()/endUpdates().
-            guard !self.deferredDeletes.isEmpty || !self.deferredInserts.isEmpty || !self.deferredUpdates.isEmpty
-                || !self.deferredSectionDeletes.isEmpty || !self.deferredSectionInserts.isEmpty
-                else {
-                logger.debug("no deferred updates to handle")
-                    return
-            }
-
-            logger.debug("running deferred updates")
-
-            self.tableView.beginUpdates()
-
-            self.tableView.deleteSections(self.deferredSectionDeletes, with: .fade)
-            self.tableView.insertSections(self.deferredSectionInserts, with: .fade)
-
-            self.tableView.deleteRows(at: self.deferredDeletes, with: .fade)
-            self.tableView.insertRows(at: self.deferredInserts, with: .fade)
-
-            self.tableView.reloadRows(at: self.deferredUpdates, with: .none)
-
-            self.tableView.endUpdates()
-
-            self.deferredDeletes.removeAll()
-            self.deferredInserts.removeAll()
-            self.deferredSectionDeletes.removeAll()
-            self.deferredSectionInserts.removeAll()
-            self.deferredUpdates.removeAll()
-        }
-    }
-}
-
-extension ForumListDataSource: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsControllers
-            .compactMap { $0.sections?.count }
-            .reduce(0, +)
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let (controller: controller, localSection: localSection) = controllerAtGlobalSection(section)
-        return controller.sections?[localSection].numberOfObjects ?? 0
-    }
-
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return controllerAtGlobalSection(indexPath.section).controller === favoriteForumsController
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-
-        let (controller: controller, localSection: localSection) = controllerAtGlobalSection(indexPath.section)
-
-        guard let metadata = controller.object(at: IndexPath(row: indexPath.row, section: localSection)) as? ForumMetadata else {
-            fatalError("can only delete favorites, expected a ForumMetadata")
-        }
-
-        updateMetadata(metadata, setIsFavorite: false)
-    }
-
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return controllerAtGlobalSection(indexPath.section).controller === favoriteForumsController
-    }
-
-    // This is actually a UITableViewDelegate method. Don't tell anyone…
-    func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
-
-        let favoriteSection = globalSectionForLocalSection(0, in: favoriteForumsController as! NSFetchedResultsController<NSFetchRequestResult>)
-
-        let destinationIndexPath: IndexPath = {
-            if proposedDestinationIndexPath.section > favoriteSection {
-                return indexPathOfLastFavorite
-            }
-            else if proposedDestinationIndexPath.section < favoriteSection {
-                return IndexPath(row: 0, section: favoriteSection)
-            }
-            else {
-                return proposedDestinationIndexPath
-            }
-        }()
-
-        logger.debug("trying to move \(sourceIndexPath), aiming at \(proposedDestinationIndexPath), ended up at \(destinationIndexPath)")
-
-        return destinationIndexPath
-    }
-
-    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        logger.debug("saving move from \(sourceIndexPath) to \(destinationIndexPath)")
-
-        guard sourceIndexPath != destinationIndexPath else {
-            logger.debug("…which isn't really a move, so we're done")
-            return
-        }
-
-        performIgnoringControllerUpdates {
-            var metadatas = favoriteForumsController.sections?.first?.objects as? [ForumMetadata] ?? []
-            let moved = metadatas.remove(at: sourceIndexPath.row)
-            metadatas.insert(moved, at: destinationIndexPath.row)
-            zip(metadatas, 1...).forEach { $0.favoriteIndex = Int32($1) }
-            try! metadatas.first?.managedObjectContext?.save()
-        }
-    }
-
-    // This is actually a UITableViewDelegate method.
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let viewModel = viewModelForCell(at: indexPath)
-        let tableWidth = ForumListCell.lastKnownContentViewWidth
-            ?? tableView.safeAreaLayoutGuide.layoutFrame.width
-        return ForumListCell.heightForViewModel(viewModel, inTableWithWidth: tableWidth)
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: forumCellIdentifier, for: indexPath) as? ForumListCell else {
-            fatalError("expected a ForumListCell")
-        }
-
-        cell.viewModel = viewModelForCell(at: indexPath)
-
-        return cell
-    }
-
-    private func viewModelForCell(at indexPath: IndexPath) -> ForumListCell.ViewModel {
-        let controller = controllerAtGlobalSection(indexPath.section).controller
+    func viewModelFor(item: Item) -> ForumListCell.ViewModel {
         let theme = delegate?.themeForCells(in: self) ?? Theme.defaultTheme()
 
-        // Using forum cells to show announcements out of sheer laziness.
-        switch item(at: indexPath) {
-        case let announcement as Announcement:
+        switch item {
+        case .announcement:
+            let announcement = objectFor(item: item) as! Announcement
             return ForumListCell.ViewModel(
                 backgroundColor: theme["listBackgroundColor"]!,
                 expansion: .none,
@@ -446,7 +302,8 @@ extension ForumListDataSource: UITableViewDataSource {
                 indentationLevel: 0,
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
 
-        case let forum as Forum where controller === favoriteForumsController:
+        case .favoriteForum:
+            let forum = objectFor(item: item) as! Forum
             return ForumListCell.ViewModel(
                 backgroundColor: theme["listBackgroundColor"]!,
                 expansion: .none,
@@ -459,17 +316,16 @@ extension ForumListDataSource: UITableViewDataSource {
                 indentationLevel: 0,
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
 
-        case let forum as Forum:
+        case .forum:
+            let forum = objectFor(item: item) as! Forum
             return ForumListCell.ViewModel(
                 backgroundColor: theme["listBackgroundColor"]!,
                 expansion: {
                     if forum.childForums.isEmpty {
                         return .none
-                    }
-                    else if forum.metadata.showsChildrenInForumList {
+                    } else if forum.metadata.showsChildrenInForumList {
                         return .isExpanded
-                    }
-                    else {
+                    } else {
                         return .canExpand
                     }
                 }(),
@@ -481,15 +337,17 @@ extension ForumListDataSource: UITableViewDataSource {
                     .foregroundColor: theme[uicolor: "listTextColor"]!]),
                 indentationLevel: forum.ancestors.reduce(0) { i, _ in i + 1 },
                 selectedBackgroundColor: theme["listSelectedBackgroundColor"]!)
-
-        default:
-            fatalError("unexpected item \(item as Any) in forum list")
         }
+    }
+}
+
+extension ForumListDataSource: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        guard !ignoreControllerUpdates else { return }
+        scheduleSnapshotApply()
     }
 }
 
 protocol ForumListDataSourceDelegate: AnyObject {
     func themeForCells(in dataSource: ForumListDataSource) -> Theme
 }
-
-private let forumCellIdentifier = "ForumListCell"
