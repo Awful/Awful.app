@@ -155,7 +155,9 @@ final class ForumListDataSource: NSObject {
         // state and we don't get jittery animations.
         pendingSnapshotApply?.cancel()
         let workItem = DispatchWorkItem { [weak self] in
-            self?.applyCurrentSnapshot(animatingDifferences: true)
+            guard let self else { return }
+            self.applyCurrentSnapshot(animatingDifferences: true)
+            self.pendingSnapshotApply = nil
         }
         pendingSnapshotApply = workItem
         DispatchQueue.main.async(execute: workItem)

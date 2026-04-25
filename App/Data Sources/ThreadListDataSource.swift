@@ -111,20 +111,14 @@ final class ThreadListDataSource: NSObject {
         return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
 
-    /// Update the bookmark fetch predicate in place. Prefer this over recreating
-    /// the data source on filter changes — recreating rebinds the collection
-    /// view's data source, which causes supplementary views (the search bar) to
-    /// lose their first-responder status between keystrokes.
-    ///
-    /// `animated: false` is the right call when the filter is being driven by
-    /// a search field that's currently the first responder — the snapshot apply
-    /// animation briefly dehosts the supplementary view, dropping focus and
-    /// any in-flight text input.
-    func setBookmarkFilter(_ filter: BookmarkFilter, animated: Bool = true) {
+    /// Update the bookmark fetch predicate in place and re-fetch. Prefer this
+    /// over recreating the data source: swapping the predicate is cheaper, and
+    /// recreating rebinds the collection view's data source.
+    func setBookmarkFilter(_ filter: BookmarkFilter) {
         resultsController.fetchRequest.predicate = ThreadListDataSource.bookmarksPredicate(for: filter)
         do {
             try resultsController.performFetch()
-            applyCurrentSnapshot(animatingDifferences: animated)
+            applyCurrentSnapshot(animatingDifferences: true)
         } catch {
             Log.error("Failed to re-fetch with new bookmark filter: \(error)")
         }

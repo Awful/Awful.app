@@ -600,10 +600,16 @@ final class NavigationController: UINavigationController, Themeable {
         // math only kicks in with multiple leading items; with a single item,
         // the title view is left leading-anchored. Same spacer pattern that
         // Bookmarks uses on its own leftBarButtonItems.
+        //
+        // Skip SwiftUI hosting controllers (e.g. anything pushed via a SwiftUI
+        // `NavigationLink` from the Settings tab — theme picker, app icon
+        // picker, etc.). SwiftUI manages its own back button on these and
+        // injecting our own results in two visible back chevrons.
         let hasExistingLeft = viewController.navigationItem.leftBarButtonItem != nil
             || (viewController.navigationItem.leftBarButtonItems?.isEmpty == false)
         if !hasExistingLeft,
            viewControllers.first !== viewController,
+           !Self.isHostingController(viewController),
            let backImage = UIImage(named: "back") {
             let backHosting = Self.makeSidebarImageHostingView(
                 image: backImage,
@@ -622,6 +628,21 @@ final class NavigationController: UINavigationController, Themeable {
             let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 24, height: 44)))
             viewController.navigationItem.leftBarButtonItems = [backButton, spacer]
         }
+    }
+
+    /// Walks the class hierarchy looking for `UIHostingController`. Generic
+    /// type erasure makes a direct `is UIHostingController<…>` check awkward,
+    /// so match on the class name instead. Catches both vanilla
+    /// `UIHostingController` and Awful's `HostingController` subclass.
+    private static func isHostingController(_ vc: UIViewController) -> Bool {
+        var cls: AnyClass? = type(of: vc)
+        while let c = cls {
+            if NSStringFromClass(c).contains("UIHostingController") {
+                return true
+            }
+            cls = class_getSuperclass(c)
+        }
+        return false
     }
 
     @available(iOS 26.0, *)
