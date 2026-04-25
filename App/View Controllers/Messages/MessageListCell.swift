@@ -227,12 +227,6 @@ final class MessageListCell: UICollectionViewListCell {
         }
     }
 
-    static var estimatedHeight: CGFloat { return 65 }
-
-    static func heightForViewModel(_ viewModel: ViewModel, inTableWithWidth width: CGFloat) -> CGFloat {
-        return Layout(width: width, viewModel: viewModel).height
-    }
-
     static func separatorLeftInset(showsTagAndRating: Bool, inTableWithWidth width: CGFloat) -> CGFloat {
         let viewModel = ViewModel(
             backgroundColor: .clear,

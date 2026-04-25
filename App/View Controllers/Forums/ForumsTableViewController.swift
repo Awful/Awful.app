@@ -295,17 +295,6 @@ final class ForumsTableViewController: CollectionViewController {
         present(searchView, animated: true)
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        // Reset the cached width when the collection view's width changes so any
-        // stale heights computed against the old width get re-measured.
-        let currentWidth = collectionView.bounds.width
-        if let last = ForumListCell.lastKnownContentViewWidth, abs(last - currentWidth) > 1 {
-            ForumListCell.lastKnownContentViewWidth = nil
-        }
-    }
-
     override func themeDidChange() {
         if isViewLoaded {
             rebuildLayout()

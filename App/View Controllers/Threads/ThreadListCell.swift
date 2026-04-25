@@ -9,11 +9,6 @@ private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Th
 
 final class ThreadListCell: UICollectionViewListCell {
 
-    /// The actual contentView width from the most recent layout pass.
-    /// On Mac Catalyst ("Designed for iPad"), contentView can be narrower
-    /// than the collection view due to platform-specific insets.
-    static var lastKnownContentViewWidth: CGFloat?
-
     private let pageCountBackgroundView = UIView()
     private let pageCountLabel = UILabel()
     private let pageIconView = UIImageView()
@@ -126,10 +121,7 @@ final class ThreadListCell: UICollectionViewListCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let contentWidth = contentView.bounds.width
-        ThreadListCell.lastKnownContentViewWidth = contentWidth
-
-        let layout = Layout(width: contentWidth, viewModel: viewModel)
+        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel)
          // Background behind the page count label, with padding and pill shape
         if viewModel.unreadCount.length > 0 {
             let backgroundPadding = UIEdgeInsets(top: -2, left: -6, bottom: -2, right: -6)
@@ -307,8 +299,6 @@ final class ThreadListCell: UICollectionViewListCell {
                 height: stickySize.height)
         }
     }
-
-    static var estimatedHeight: CGFloat { return 75 }
 
     static func heightForViewModel(_ viewModel: ViewModel, inTableWithWidth width: CGFloat) -> CGFloat {
         return Layout(width: width, viewModel: viewModel).height

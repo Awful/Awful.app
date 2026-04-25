@@ -8,11 +8,6 @@ import UIKit
 /// In the Forum list, each cell represents either a favorite forum or a plain old forum.
 final class ForumListCell: UICollectionViewListCell {
 
-    /// The actual contentView width from the most recent layout pass.
-    /// On Mac Catalyst, contentView can be narrower than the collection view
-    /// due to platform-specific insets.
-    static var lastKnownContentViewWidth: CGFloat?
-
     /// Called when the expand/collapse button is tapped.
     var didTapExpand: ((ForumListCell) -> Void)?
 
@@ -160,10 +155,7 @@ final class ForumListCell: UICollectionViewListCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let contentWidth = contentView.bounds.width
-        ForumListCell.lastKnownContentViewWidth = contentWidth
-
-        let layout = Layout(width: contentWidth, viewModel: viewModel, isEditing: isInEditingState)
+        let layout = Layout(width: contentView.bounds.width, viewModel: viewModel, isEditing: isInEditingState)
         expandButton.frame = layout.expandFrame
         favoriteButton.frame = layout.favoriteStarFrame
         nameLabel.frame = layout.nameFrame
@@ -215,12 +207,6 @@ final class ForumListCell: UICollectionViewListCell {
                 .insetBy(dx: Layout.nameMargin, dy: Layout.nameMargin)
                 .divided(atDistance: indentation, from: .minXEdge).remainder
         }
-    }
-
-    static var estimatedHeight: CGFloat { return Layout.minimumHeight }
-
-    static func heightForViewModel(_ viewModel: ViewModel, inTableWithWidth width: CGFloat) -> CGFloat {
-        return Layout(width: width, viewModel: viewModel, isEditing: false).height
     }
 }
 

@@ -111,8 +111,7 @@ final class LoadMoreCollectionFooter: NSObject {
 
 extension LoadMoreCollectionFooter: UICollectionViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-
-        assert(scrollView === collectionView)
+        guard scrollView === collectionView else { return }
 
         var proximityToBottom: CGFloat {
             return scrollView.contentSize.height - (targetContentOffset.pointee.y + scrollView.bounds.height)

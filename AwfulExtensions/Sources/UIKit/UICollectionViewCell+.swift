@@ -11,7 +11,9 @@ public extension UICollectionViewCell {
             selectedBackgroundView?.backgroundColor
         }
         set {
-            selectedBackgroundView = UIView()
+            if selectedBackgroundView == nil {
+                selectedBackgroundView = UIView()
+            }
             selectedBackgroundView?.backgroundColor = newValue
         }
     }
