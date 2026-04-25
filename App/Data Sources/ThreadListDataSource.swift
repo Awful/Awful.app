@@ -17,6 +17,34 @@ enum BookmarkFilter {
     case textSearch(String)
 }
 
+extension BookmarkFilter {
+    /// Returns nil for `.textSearch` so transient queries are not persisted.
+    var persistenceKey: String? {
+        switch self {
+        case .all: return "all"
+        case .unreadOnly: return "unread"
+        case .readOnly: return "read"
+        case .starCategory(let c): return "star_\(c.rawValue)"
+        case .textSearch: return nil
+        }
+    }
+
+    init(persistenceKey: String) {
+        switch persistenceKey {
+        case "unread": self = .unreadOnly
+        case "read": self = .readOnly
+        case let s where s.hasPrefix("star_"):
+            if let raw = Int16(s.dropFirst("star_".count)),
+               let cat = StarCategory(rawValue: raw) {
+                self = .starCategory(cat)
+            } else {
+                self = .all
+            }
+        default: self = .all
+        }
+    }
+}
+
 private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "ThreadListDataSource")
 
 final class ThreadListDataSource: NSObject {

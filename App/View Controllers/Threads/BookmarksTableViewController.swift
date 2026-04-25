@@ -13,6 +13,10 @@ import UIKit
 
 private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "BookmarksTableViewController")
 
+private enum UserDefaultsKey {
+    static let bookmarksFilter = "BookmarksListFilter"
+}
+
 private class FilterMenuViewController: UIViewController {
     // MARK: - Constants
     private enum Layout {
@@ -586,7 +590,12 @@ final class BookmarksTableViewController: TableViewController {
     @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
     @FoilDefaultStorage(Settings.bookmarksSortedUnread) private var sortUnreadToTop
 
-    private var currentFilter: BookmarkFilter = .all
+    private var currentFilter: BookmarkFilter = {
+        if let saved = UserDefaults.standard.string(forKey: UserDefaultsKey.bookmarksFilter) {
+            return BookmarkFilter(persistenceKey: saved)
+        }
+        return .all
+    }()
     private var filterButton: UIBarButtonItem!
     private var filterButtonView: UIButton?
     private var searchButton: UIBarButtonItem!
@@ -823,9 +832,12 @@ final class BookmarksTableViewController: TableViewController {
     
     private func applyFilter(_ filter: BookmarkFilter) {
         currentFilter = filter
+        if let key = filter.persistenceKey {
+            UserDefaults.standard.set(key, forKey: UserDefaultsKey.bookmarksFilter)
+        }
         dataSource = makeDataSource()
         tableView.reloadData()
-        
+
         updateButtonColors()
     }
     
