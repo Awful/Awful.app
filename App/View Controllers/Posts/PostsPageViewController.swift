@@ -363,7 +363,15 @@ final class PostsPageViewController: ViewController {
                     self.hiddenPosts = pendingHidden
                     self.hiddenPostsAfterLoading = nil
                 } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
-                    self.hiddenPosts = firstUnreadPost - 1
+                    let pendingTargetOnPage: Bool
+                    if let pendingPostID = self.jumpToPostIDAfterLoading {
+                        pendingTargetOnPage = self.posts.contains(where: { $0.postID == pendingPostID })
+                    } else {
+                        pendingTargetOnPage = false
+                    }
+                    if !pendingTargetOnPage {
+                        self.hiddenPosts = firstUnreadPost - 1
+                    }
                 }
 
                 if self.suppressNextScrollFractionPreservation {
@@ -2096,6 +2104,13 @@ extension PostsPageViewController: RenderViewDelegate {
                 if let i = posts.firstIndex(where: { $0.postID == postID }) {
                     readIgnoredPostAtIndex(i)
                 }
+            } else if case let .post(id: postID, _) = route,
+                      let i = posts.firstIndex(where: { $0.postID == postID })
+            {
+                if i < hiddenPosts {
+                    showHiddenSeenPosts()
+                }
+                postsView.renderView.jumpToPost(identifiedBy: postID, animated: true)
             } else {
                 AppDelegate.instance.open(route: route)
             }

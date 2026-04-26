@@ -628,8 +628,9 @@ extension RenderView {
         return CGPoint(x: max(contentOffset.x, 0), y: max(contentOffset.y, 0))
     }
     
-    /// Scrolls so the identified post begins at the top of the viewport.
-    func jumpToPost(identifiedBy postID: String) {
+    /// Scrolls so the identified post sits below the navigation bar inset.
+    /// Set `animated` to true for a smooth scroll.
+    func jumpToPost(identifiedBy postID: String, animated: Bool = false) {
         let escapedPostID: String
         do {
             escapedPostID = try escapeForEval(postID)
@@ -637,9 +638,10 @@ extension RenderView {
             logger.warning("could not JSON-escape the post ID: \(error)")
             return
         }
+        let topOffset = scrollView.contentInset.top
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))")
+                try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID), \(animated), \(topOffset))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate jumpToPostWithID")
             }
