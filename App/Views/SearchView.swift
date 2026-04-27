@@ -275,8 +275,12 @@ struct SearchView: View {
                         .padding()
                         .background(theme[color: "sheetBackgroundColor"])
                         
-                        forumSelectionList
-                            .padding(.horizontal)
+                        if model.threadID == nil {
+                            forumSelectionList
+                                .padding(.horizontal)
+                        } else {
+                            Spacer()
+                        }
                     }
                     .background(theme[color: "backgroundColor"]!.ignoresSafeArea(.all))
                     .contentShape(Rectangle())
@@ -286,7 +290,7 @@ struct SearchView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .principal) {
-                            Text("Search Forums")
+                            Text(model.threadID == nil ? "Search Forums" : "Search Thread")
                                 .font(.headline)
                                 .foregroundColor(theme[color: "navigationBarTextColor"])
                         }
@@ -341,7 +345,7 @@ struct SearchView: View {
                 
                 ZStack(alignment: .leading) {
                     if model.searchState.query.isEmpty {
-                        Text("Search forums...")
+                        Text(model.threadID == nil ? "Search forums..." : "Search thread...")
                             .foregroundColor(theme[color: "listSecondaryTextColor"])
                     }
                     
@@ -617,20 +621,23 @@ final class SearchPageViewModel: ObservableObject {
     private let isPreview: Bool
     private var searchQueryID: String?
     private let previewHTML: String?
-    
+    let threadID: String?
+
     init(
         forumSelectOptions: [ForumSelectOption] = [],
         searchHelpHints: [SearchHelpHint] = [],
         searchResults: [SearchResult] = [],
         isPreview: Bool = false,
-        previewHTML: String? = nil
+        previewHTML: String? = nil,
+        threadID: String? = nil
     ) {
         self.forumSelectOptions = forumSelectOptions
         self.searchHelpHints = searchHelpHints
         self.searchResults = searchResults
         self.isPreview = isPreview
         self.previewHTML = previewHTML
-        
+        self.threadID = threadID
+
         // Move the Task creation to after initialization
         Task { [weak self] in
             await self?.loadInitialData()
@@ -831,14 +838,19 @@ final class SearchPageViewModel: ObservableObject {
     
     func performSearch() async {
         searchState.message = ""
-        
+
         let forumIDs = forumSelectOptions
             .filter(\.isSelected)
             .map(\.value)
-        
+
+        let outgoingQuery: String = {
+            guard let threadID, !threadID.isEmpty else { return searchState.query }
+            return "threadid:\(threadID) \(searchState.query)"
+        }()
+
         do {
             let document = try await ForumsClient.shared.searchForums(
-                query: searchState.query,
+                query: outgoingQuery,
                 forumIDs: forumIDs
             )
             
@@ -935,8 +947,8 @@ extension Int {
 final class SearchHostingController: UIHostingController<AnyView> {
     private let searchModel: SearchPageViewModel
 
-    init() {
-        self.searchModel = SearchPageViewModel()
+    init(threadID: String? = nil) {
+        self.searchModel = SearchPageViewModel(threadID: threadID)
         super.init(rootView: AnyView(SearchView(model: searchModel).themed()))
     }
     

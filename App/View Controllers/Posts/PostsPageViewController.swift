@@ -113,6 +113,13 @@ final class PostsPageViewController: ViewController {
                 identifier: .init("yourPosts"),
                 handler: { [unowned self] in yourPosts(action: $0) }
             ),
+            // Search thread
+            UIAction(
+                title: "Search thread",
+                image: UIImage(named: "view-in-thread")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("searchThread"),
+                handler: { [unowned self] in searchThread(action: $0) }
+            ),
         ])
     }
 
@@ -1190,6 +1197,17 @@ final class PostsPageViewController: ViewController {
 
             self.navigationController?.pushViewController(postsVC, animated: true)
 
+        }
+    }
+
+    private func searchThread(action: UIAction) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) { [self] in
+            let searchVC = SearchHostingController(threadID: thread.threadID)
+            searchVC.modalPresentationStyle = (traitCollection.userInterfaceIdiom == .pad) ? .pageSheet : .fullScreen
+            present(searchVC, animated: true)
         }
     }
 
