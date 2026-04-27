@@ -86,6 +86,9 @@ public enum Settings {
     /// Offer to hand off the current thread page to other devices.
     public static let handoffEnabled = Setting(key: "handoff_enabled", default: false)
 
+    /// Mark post header (username, regdate, role labels) and post date as `aria-hidden` so iOS Spoken Content / VoiceOver skip them and read post bodies more directly.
+    public static let hidePostMetadataForReader = Setting(key: "hide_post_metadata_for_reader", default: false)
+
     /// Hide the sidebar in landscape orientation (assuming the display is wide enough to show the sidebar at all).
     public static let hideSidebarInLandscape = Setting(key: "hide_sidebar_in_landscape", default: false)
 

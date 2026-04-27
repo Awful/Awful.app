@@ -118,6 +118,9 @@
     "Handoff allows you to continue reading threads on nearby devices." : {
 
     },
+    "Hide Post Metadata from Screen Reader" : {
+
+    },
     "Hide Sidebar in Landscape" : {
 
     },
@@ -179,6 +182,9 @@
 
     },
     "Sidebar" : {
+
+    },
+    "Skips usernames, post dates, and join dates when iOS reads posts aloud (Speak Screen and VoiceOver)." : {
 
     },
     "Sort Unread Bookmarks First" : {

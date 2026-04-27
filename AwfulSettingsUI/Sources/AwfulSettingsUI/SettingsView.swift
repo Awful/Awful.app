@@ -23,6 +23,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.fontScale) private var fontScale
     @AppStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @AppStorage(Settings.handoffEnabled) private var handoffEnabled
+    @AppStorage(Settings.hidePostMetadataForReader) private var hidePostMetadataForReader
     @AppStorage(Settings.hideSidebarInLandscape) private var hideSidebarInLandscape
     @AppStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
     @AppStorage(Settings.loadImages) private var loadImages
@@ -157,9 +158,13 @@ public struct SettingsView: View {
                 if isPad {
                     Toggle("Enable Custom Title Post Layout", bundle: .module, isOn: $customTitlePostLayout)
                 }
+                Toggle("Hide Post Metadata from Screen Reader", bundle: .module, isOn: $hidePostMetadataForReader)
             } header: {
                 Text("Posts", bundle: .module)
                     .header()
+            } footer: {
+                Text("Skips usernames, post dates, and join dates when iOS reads posts aloud (Speak Screen and VoiceOver).", bundle: .module)
+                    .footer()
             }
             .section()
 

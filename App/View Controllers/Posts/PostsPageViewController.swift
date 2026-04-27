@@ -33,6 +33,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
+    @FoilDefaultStorage(Settings.hidePostMetadataForReader) private var hidePostMetadataForReader
     private var jumpToLastPost = false
     @FoilDefaultStorageOptional(Settings.lastOfferedPasteboardURLString) private var lastOfferedPasteboardURLString
     @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
@@ -1898,6 +1899,12 @@ final class PostsPageViewController: ViewController {
                     self.configureUserActivityIfPossible()
                 }
             }
+            .store(in: &cancellables)
+
+        $hidePostMetadataForReader
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.postsView.renderView.setHidePostMetadataForReader($0) }
             .store(in: &cancellables)
 
         $pullForNext
