@@ -62,6 +62,9 @@ public enum Settings {
     /// Turn each link to a tweet in a post into an embedded tweet.
     public static let embedTweets = Setting(key: "embed_tweets", default: true)
 
+    /// When `false`, leave video URLs as plain links instead of embedding YouTube, Vimeo, Imgur, etc. video players in posts.
+    public static let embedVideos = Setting(key: "embed_videos", default: true)
+
     /// Show custom titles for authors in the posts view (when it's wide enough).
     public static let enableCustomTitlePostLayout = Setting(key: "enable_custom_title_post_layout", default: false)
 

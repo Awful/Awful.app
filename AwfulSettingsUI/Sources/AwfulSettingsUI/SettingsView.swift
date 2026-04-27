@@ -19,6 +19,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.jumpToPostEndOnDoubleTap) private var doubleTapPostToJump
     @AppStorage(Settings.embedBlueskyPosts) private var embedBlueskyPosts
     @AppStorage(Settings.embedTweets) private var embedTweets
+    @AppStorage(Settings.embedVideos) private var embedVideos
     @AppStorage(Settings.enableHaptics) private var enableHaptics
     @AppStorage(Settings.fontScale) private var fontScale
     @AppStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
@@ -151,6 +152,7 @@ public struct SettingsView: View {
                 Toggle("Always Animate GIFs", bundle: .module, isOn: $alwaysAnimateGIFs)
                 Toggle("Embed Bluesky Posts", bundle: .module, isOn: $embedBlueskyPosts)
                 Toggle("Embed Tweets", bundle: .module, isOn: $embedTweets)
+                Toggle("Embed Videos", bundle: .module, isOn: $embedVideos)
                 Toggle("Double-Tap Post to Jump", bundle: .module, isOn: $doubleTapPostToJump)
                 Toggle("Immersive Mode", bundle: .module, isOn: $immersiveModeEnabled)
                 Toggle("Enable Haptics", bundle: .module, isOn: $enableHaptics)

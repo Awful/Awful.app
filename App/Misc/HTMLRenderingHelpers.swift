@@ -458,8 +458,51 @@ extension HTMLDocument {
                     
                     a.parent?.replace(child: a, with: videoElement)
                 }
-                            
+
             }
+        }
+    }
+
+    /**
+     Replaces video-embed elements with plain links to the underlying URL. Pair with skipping `embedVideos()` and `useHTML5VimeoPlayer()` to honour a "don't embed videos" preference.
+     */
+    func linkifyResidualVideoEmbeds() {
+        for iframe in nodes(matchingParsedSelector: .cached("iframe[src]")) {
+            guard let src = iframe["src"], !src.isEmpty else { continue }
+            let link = HTMLElement(tagName: "a", attributes: ["href": src])
+            link.textContent = src
+            iframe.parent?.replace(child: iframe, with: link)
+        }
+
+        for video in nodes(matchingParsedSelector: .cached("video")) {
+            let src = video["src"] ?? video.firstNode(matchingParsedSelector: .cached("source[src]"))?["src"]
+            guard let src, !src.isEmpty else { continue }
+            let link = HTMLElement(tagName: "a", attributes: ["href": src])
+            link.textContent = src
+            video.parent?.replace(child: video, with: link)
+        }
+
+        for param in nodes(matchingParsedSelector: .cached("div.bbcode_video object param[name='movie']")) {
+            guard
+                let value = param["value"],
+                let object = param.parentElement,
+                object.tagName == "object",
+                let div = object.parentElement,
+                div.tagName == "div",
+                div.hasClass("bbcode_video")
+            else { continue }
+
+            let href: String
+            if let sourceURL = URL(string: value),
+               let clipID = sourceURL.valueForFirstQueryItem(named: "clip_id") {
+                href = "https://vimeo.com/\(clipID)"
+            } else {
+                href = value
+            }
+
+            let link = HTMLElement(tagName: "a", attributes: ["href": href])
+            link.textContent = href
+            div.parent?.replace(child: div, with: link)
         }
     }
 }

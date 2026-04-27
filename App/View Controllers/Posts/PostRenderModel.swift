@@ -103,7 +103,10 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     document.removeEmptyEditedByParagraphs()
     document.addAttributeToBlueskyLinks()
     document.addAttributeToTweetLinks()
-    document.useHTML5VimeoPlayer()
+    let embedVideos = UserDefaults.standard.defaultingValue(for: Settings.embedVideos)
+    if embedVideos {
+        document.useHTML5VimeoPlayer()
+    }
     if let username = UserDefaults.standard.value(for: Settings.username) {
         document.identifyQuotesCitingUser(named: username, shouldHighlight: true)
         document.identifyMentionsOfUser(named: username, shouldHighlight: true)
@@ -118,7 +121,11 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
     if (ForumTweaks(ForumID(forumID))?.magicCake) == true {
         document.addMagicCakeCSS()
     }
-    document.embedVideos()
+    if embedVideos {
+        document.embedVideos()
+    } else {
+        document.linkifyResidualVideoEmbeds()
+    }
     return document.bodyElement?.innerHTML ?? ""
 }
 
