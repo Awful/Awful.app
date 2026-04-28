@@ -800,6 +800,17 @@ extension RenderView {
         }
     }
     
+    /// Marks (when `true`) or unmarks (when `false`) post header and footer with `aria-hidden="true"` so iOS Spoken Content / VoiceOver skip them.
+    func setHidePostMetadataForReader(_ hide: Bool) {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setHidePostMetadataForReader(\(hide ? "true" : "false"))")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setHidePostMetadataForReader")
+            }
+        }
+    }
+
     /// Turns all avatars on (when `true`) or off (when `false`).
     func setShowAvatars(_ showAvatars: Bool) {
         Task {

@@ -68,6 +68,7 @@ struct PostRenderModel: StencilContextConvertible {
             "beenSeen": post.beenSeen,
             "customTitleHTML": (enableCustomTitlePostLayout ? post.author?.customTitleHTML : nil) as Any,
             "hiddenAvatarURL": hiddenAvatarURL as Any,
+            "hideMetadataForReader": hidePostMetadataForReader,
             "htmlContents": htmlContents,
             "postDate": post.postDate as Any,
             "postDateRaw": postDateRaw as String,
@@ -77,7 +78,7 @@ struct PostRenderModel: StencilContextConvertible {
             "showRegdate": showRegdate,
             "visibleAvatarURL": visibleAvatarURL as Any]
     }
-    
+
     init(author: User, isOP: Bool, postDate: String, postHTML: String) {
         context = [
             "author": [
@@ -86,6 +87,7 @@ struct PostRenderModel: StencilContextConvertible {
                 "username": author.username as Any],
             "beenSeen": false,
             "hiddenAvatarURL": (showAvatars ? author.avatarURL : nil) as Any,
+            "hideMetadataForReader": hidePostMetadataForReader,
             "customTitleHTML": (enableCustomTitlePostLayout ? author.customTitleHTML : nil) as Any,
             "htmlContents": massageHTML(postHTML, isIgnored: false, forumID: ""),
             "postDate": postDate,
@@ -131,6 +133,10 @@ private func massageHTML(_ html: String, isIgnored: Bool, forumID: String) -> St
 
 private var showAvatars: Bool {
     UserDefaults.standard.defaultingValue(for: Settings.showAvatars)
+}
+
+private var hidePostMetadataForReader: Bool {
+    UserDefaults.standard.defaultingValue(for: Settings.hidePostMetadataForReader)
 }
 
 private var enableCustomTitlePostLayout: Bool {

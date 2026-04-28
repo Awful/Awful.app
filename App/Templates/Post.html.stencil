@@ -7,6 +7,7 @@
 
     <header
         class="userid-{{ author.userID|htmlEscape }} {% if customTitleHTML %} responsive {% endif %}"
+        {% if hideMetadataForReader %} aria-hidden="true" {% endif %}
         {% if hiddenAvatarURL %} data-awful-avatar="{{ hiddenAvatarURL|htmlEscape }}" {% endif %}>
 
         {% if visibleAvatarURL and not customTitleHTML %}
@@ -42,7 +43,7 @@
         {{ htmlContents }}
     </section>
 
-	<footer>
+	<footer {% if hideMetadataForReader %} aria-hidden="true" {% endif %}>
         <span class="divider{% if beenSeen %} divider-seen {% endif %}"></span>
         <span class="postdate">
             {% if postDateRaw %}

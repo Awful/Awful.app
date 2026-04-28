@@ -1612,6 +1612,23 @@ Awful.setShowAvatars = function(showAvatars) {
 
 
 /**
+ Toggles aria-hidden on post metadata so iOS Spoken Content / VoiceOver skips usernames, regdates, and post dates.
+
+ @param {boolean} hide - `true` to mark the post header and post date as aria-hidden, `false` to restore them.
+ */
+Awful.setHidePostMetadataForReader = function(hide) {
+  var els = document.querySelectorAll('post > header, post > footer');
+  Array.prototype.forEach.call(els, function(el) {
+    if (hide) {
+      el.setAttribute('aria-hidden', 'true');
+    } else {
+      el.removeAttribute('aria-hidden');
+    }
+  });
+};
+
+
+/**
  Updates the stylesheet for the currently-selected theme.
 
  @param {string} css - The replacement stylesheet from the new theme.
