@@ -397,7 +397,18 @@ final class CompositionViewController: ViewController {
         }
 
         let canAttachInEdit = (menuTree?.draft as? EditReplyDraft)?.canAddAttachment ?? false
-        if let menuTree = menuTree, menuTree.imgurUploadsEnabled || menuTree.draft is NewReplyDraft || canAttachInEdit {
+        let hasDestination: Bool = {
+            guard let menuTree = menuTree else { return false }
+            return menuTree.imgurUploadsEnabled || menuTree.draft is NewReplyDraft || canAttachInEdit
+        }()
+
+        if UIPasteboard.general.hasImages && hasDestination {
+            alert.addAction(UIAlertAction(title: "Paste Image from Clipboard", style: .default) { [weak self] _ in
+                self?.menuTree?.pasteImageFromClipboard()
+            })
+        }
+
+        if hasDestination {
             alert.addAction(UIAlertAction(title: "From Library", style: .default) { [weak self] _ in
                 self?.menuTree?.showImagePicker(.photoLibrary)
             })
