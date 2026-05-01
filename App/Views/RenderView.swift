@@ -628,8 +628,8 @@ extension RenderView {
         return CGPoint(x: max(contentOffset.x, 0), y: max(contentOffset.y, 0))
     }
     
-    /// Scrolls so the identified post begins at the top of the viewport.
-    func jumpToPost(identifiedBy postID: String) {
+    /// Scrolls so the identified post sits below `topOffset` points of chrome at the top of the viewport. Set `animated` to true for a smooth scroll.
+    func jumpToPost(identifiedBy postID: String, animated: Bool = false, topOffset: CGFloat) {
         let escapedPostID: String
         do {
             escapedPostID = try escapeForEval(postID)
@@ -639,7 +639,7 @@ extension RenderView {
         }
         Task {
             do {
-                try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID))")
+                try await webView.eval("if (window.Awful) Awful.jumpToPostWithID(\(escapedPostID), \(animated), \(topOffset))")
             } catch {
                 self.mentionError(error, explanation: "could not evaluate jumpToPostWithID")
             }
@@ -798,6 +798,17 @@ extension RenderView {
         }
     }
     
+    /// Marks (when `true`) or unmarks (when `false`) post header and footer with `aria-hidden="true"` so iOS Spoken Content / VoiceOver skip them.
+    func setHidePostMetadataForReader(_ hide: Bool) {
+        Task {
+            do {
+                try await webView.eval("if (window.Awful) Awful.setHidePostMetadataForReader(\(hide ? "true" : "false"))")
+            } catch {
+                self.mentionError(error, explanation: "could not evaluate setHidePostMetadataForReader")
+            }
+        }
+    }
+
     /// Turns all avatars on (when `true`) or off (when `false`).
     func setShowAvatars(_ showAvatars: Bool) {
         Task {

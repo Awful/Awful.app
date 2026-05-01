@@ -344,7 +344,7 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
                 self.pickingForDirectAttachment = false
                 self.useForumAttachmentForPendingImage()
             } else {
-                self.showSubmenu(imageDestinationItems(tree: self))
+                self.routePendingImage()
             }
         }
     }
@@ -358,6 +358,32 @@ extension CompositionMenuTree: UIImagePickerControllerDelegate, UINavigationCont
     
     func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController: UIPopoverPresentationController) {
         textView.becomeFirstResponder()
+    }
+
+    /// Take a UIImage from the system pasteboard and route it to the available
+    /// destination(s). No-op if the pasteboard has no image or another image is
+    /// already in flight.
+    func pasteImageFromClipboard() {
+        guard pendingImage == nil else { return }
+        guard let image = UIPasteboard.general.image else { return }
+        pendingImage = image
+        pendingImageAssetIdentifier = nil
+        routePendingImage()
+    }
+
+    /// Routes a freshly-set `pendingImage` to the appropriate destination based
+    /// on available options. Caller must have already populated `pendingImage`
+    /// and `pendingImageAssetIdentifier`.
+    private func routePendingImage() {
+        let destinations = imageDestinationItems(tree: self)
+        switch destinations.count {
+        case 0:
+            clearPendingImage()
+        case 1:
+            destinations[0].action(self)
+        default:
+            showSubmenu(destinations)
+        }
     }
 
     fileprivate func useImageHostForPendingImage() {

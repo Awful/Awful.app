@@ -62,6 +62,9 @@ public enum Settings {
     /// Turn each link to a tweet in a post into an embedded tweet.
     public static let embedTweets = Setting(key: "embed_tweets", default: true)
 
+    /// When `false`, leave video URLs as plain links instead of embedding YouTube, Vimeo, Imgur, etc. video players in posts.
+    public static let embedVideos = Setting(key: "embed_videos", default: true)
+
     /// Show custom titles for authors in the posts view (when it's wide enough).
     public static let enableCustomTitlePostLayout = Setting(key: "enable_custom_title_post_layout", default: false)
 
@@ -85,6 +88,9 @@ public enum Settings {
 
     /// Offer to hand off the current thread page to other devices.
     public static let handoffEnabled = Setting(key: "handoff_enabled", default: false)
+
+    /// Mark post header (username, regdate, role labels) and post date as `aria-hidden` so iOS Spoken Content / VoiceOver skip them and read post bodies more directly.
+    public static let hidePostMetadataForReader = Setting(key: "hide_post_metadata_for_reader", default: false)
 
     /// Hide the sidebar in landscape orientation (assuming the display is wide enough to show the sidebar at all).
     public static let hideSidebarInLandscape = Setting(key: "hide_sidebar_in_landscape", default: false)

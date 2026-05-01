@@ -1286,13 +1286,28 @@ Awful.isSpoiled = function(element) {
 
 
 /**
- Scrolls the identified post into view.
+ Scrolls the identified post into view, accounting for the navigation bar inset
+ (`topOffset`) and animating when `animated` is true. Falls back to hash navigation
+ when the element isn't in the DOM (so a late-arriving post can still resolve).
  */
-Awful.jumpToPostWithID = function(postID) {
-  // If we previously jumped to this post, we need to clear the hash in order to jump again.
-  window.location.hash = "";
+Awful.jumpToPostWithID = function(postID, animated, topOffset) {
+  var post = document.getElementById(postID);
+  if (!post) {
+    // If we previously jumped to this post, clear the hash so the same target jumps again.
+    window.location.hash = "";
+    window.location.hash = `#${postID}`;
+    return;
+  }
 
-  window.location.hash = `#${postID}`;
+  var rect = post.getBoundingClientRect();
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  var targetPosition = rect.top + scrollTop - (topOffset || 0);
+
+  if (animated) {
+    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+  } else {
+    window.scrollTo(0, targetPosition);
+  }
 };
 
 
@@ -1593,6 +1608,23 @@ Awful.setShowAvatars = function(showAvatars) {
         }
     });
   }
+};
+
+
+/**
+ Toggles aria-hidden on post metadata so iOS Spoken Content / VoiceOver skips usernames, regdates, and post dates.
+
+ @param {boolean} hide - `true` to mark the post header and post date as aria-hidden, `false` to restore them.
+ */
+Awful.setHidePostMetadataForReader = function(hide) {
+  var els = document.querySelectorAll('post > header, post > footer');
+  Array.prototype.forEach.call(els, function(el) {
+    if (hide) {
+      el.setAttribute('aria-hidden', 'true');
+    } else {
+      el.removeAttribute('aria-hidden');
+    }
+  });
 };
 
 

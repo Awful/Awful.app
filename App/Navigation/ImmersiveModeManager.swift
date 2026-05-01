@@ -2,6 +2,7 @@
 //
 //  Copyright 2025 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
+import Combine
 import Foundation
 import UIKit
 import AwfulSettings
@@ -39,21 +40,35 @@ final class ImmersiveModeManager: NSObject {
 
     // MARK: - Configuration
 
-    @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled {
-        didSet {
-            if immersiveModeEnabled && !oldValue {
-                postsView?.setNeedsLayout()
-                postsView?.layoutIfNeeded()
-            } else if !immersiveModeEnabled && oldValue {
-                immersiveProgress = 0.0
-                isInBottomFadeMode = false
-                bottomFadeProgress = 0.0
-                resetAllTransforms()
-                restoreBarAlphas()
-                safeAreaGradientView.alpha = 0.0
-                postsView?.setNeedsLayout()
+    @FoilDefaultStorage(Settings.immersiveModeEnabled) private var immersiveModeEnabled
+    private var cancellables: Set<AnyCancellable> = []
+    private var lastImmersiveModeEnabled: Bool = false
+
+    override init() {
+        super.init()
+        lastImmersiveModeEnabled = immersiveModeEnabled
+
+        $immersiveModeEnabled
+            .receive(on: RunLoop.main)
+            .sink { [weak self] newValue in
+                guard let self else { return }
+                let oldValue = lastImmersiveModeEnabled
+                guard newValue != oldValue else { return }
+                lastImmersiveModeEnabled = newValue
+                if newValue {
+                    postsView?.setNeedsLayout()
+                    postsView?.layoutIfNeeded()
+                } else {
+                    immersiveProgress = 0.0
+                    isInBottomFadeMode = false
+                    bottomFadeProgress = 0.0
+                    resetAllTransforms()
+                    restoreBarAlphas()
+                    safeAreaGradientView.alpha = 0.0
+                    postsView?.setNeedsLayout()
+                }
             }
-        }
+            .store(in: &cancellables)
     }
 
     // MARK: - State Properties
@@ -186,6 +201,14 @@ final class ImmersiveModeManager: NSObject {
         }
 
         return postsView.effectiveBottomInset + toolbar.bounds.height
+    }
+
+    func effectiveTopInset(fallback: CGFloat) -> CGFloat {
+        guard immersiveModeEnabled, immersiveProgress > 0 else { return fallback }
+        let safeAreaTop = postsView?.window?.safeAreaInsets.top
+            ?? postsView?.safeAreaInsets.top
+            ?? 0
+        return fallback - (fallback - safeAreaTop) * immersiveProgress
     }
 
     func updateGradientLayout(in containerView: UIView) {

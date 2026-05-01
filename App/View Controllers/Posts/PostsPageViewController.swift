@@ -33,6 +33,7 @@ final class PostsPageViewController: ViewController {
     @FoilDefaultStorage(Settings.fontScale) private var fontScale
     @FoilDefaultStorage(Settings.frogAndGhostEnabled) private var frogAndGhostEnabled
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
+    @FoilDefaultStorage(Settings.hidePostMetadataForReader) private var hidePostMetadataForReader
     private var jumpToLastPost = false
     @FoilDefaultStorageOptional(Settings.lastOfferedPasteboardURLString) private var lastOfferedPasteboardURLString
     @FoilDefaultStorageOptional(Settings.userID) private var loggedInUserID
@@ -112,6 +113,13 @@ final class PostsPageViewController: ViewController {
                 image: UIImage(named: "single-users-posts")!.withRenderingMode(.alwaysTemplate),
                 identifier: .init("yourPosts"),
                 handler: { [unowned self] in yourPosts(action: $0) }
+            ),
+            // Search thread
+            UIAction(
+                title: "Search thread",
+                image: UIImage(named: "view-in-thread")!.withRenderingMode(.alwaysTemplate),
+                identifier: .init("searchThread"),
+                handler: { [unowned self] in searchThread(action: $0) }
             ),
         ])
     }
@@ -363,7 +371,15 @@ final class PostsPageViewController: ViewController {
                     self.hiddenPosts = pendingHidden
                     self.hiddenPostsAfterLoading = nil
                 } else if self.hiddenPosts == 0, let firstUnreadPost = firstUnreadPost, firstUnreadPost > 0 {
-                    self.hiddenPosts = firstUnreadPost - 1
+                    let pendingTargetOnPage: Bool
+                    if let pendingPostID = self.jumpToPostIDAfterLoading {
+                        pendingTargetOnPage = self.posts.contains(where: { $0.postID == pendingPostID })
+                    } else {
+                        pendingTargetOnPage = false
+                    }
+                    if !pendingTargetOnPage {
+                        self.hiddenPosts = firstUnreadPost - 1
+                    }
                 }
 
                 if self.suppressNextScrollFractionPreservation {
@@ -430,7 +446,7 @@ final class PostsPageViewController: ViewController {
                 showHiddenSeenPosts()
             }
 
-            postsView.renderView.jumpToPost(identifiedBy: post.postID)
+            postsView.renderView.jumpToPost(identifiedBy: post.postID, topOffset: postsView.topInsetForPostFraming)
         }
     }
 
@@ -1185,6 +1201,17 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    private func searchThread(action: UIAction) {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        self.dismiss(animated: false) { [self] in
+            let searchVC = SearchHostingController(threadID: thread.threadID)
+            searchVC.modalPresentationStyle = (traitCollection.userInterfaceIdiom == .pad) ? .pageSheet : .fullScreen
+            present(searchVC, animated: true)
+        }
+    }
+
     private func bookmark(action: UIAction) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -1874,6 +1901,12 @@ final class PostsPageViewController: ViewController {
             }
             .store(in: &cancellables)
 
+        $hidePostMetadataForReader
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in self?.postsView.renderView.setHidePostMetadataForReader($0) }
+            .store(in: &cancellables)
+
         $pullForNext
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.updateUserInterface() }
@@ -2035,7 +2068,7 @@ extension PostsPageViewController: RenderViewDelegate {
         }
 
         if let postID = jumpToPostIDAfterLoading {
-            postsView.renderView.jumpToPost(identifiedBy: postID)
+            postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
         } else if let newFractionalOffset = scrollToFractionAfterLoading {
             var fractionalOffset = postsView.renderView.scrollView.fractionalContentOffset
             fractionalOffset.y = newFractionalOffset
@@ -2055,7 +2088,7 @@ extension PostsPageViewController: RenderViewDelegate {
 
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if let postID = jumpToPostIDAfterLoading {
-                postsView.renderView.jumpToPost(identifiedBy: postID)
+                postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
             } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
                 var offset = postsView.renderView.scrollView.fractionalContentOffset
                 offset.y = fraction
@@ -2096,6 +2129,13 @@ extension PostsPageViewController: RenderViewDelegate {
                 if let i = posts.firstIndex(where: { $0.postID == postID }) {
                     readIgnoredPostAtIndex(i)
                 }
+            } else if case let .post(id: postID, _) = route,
+                      let i = posts.firstIndex(where: { $0.postID == postID })
+            {
+                if i < hiddenPosts {
+                    showHiddenSeenPosts()
+                }
+                postsView.renderView.jumpToPost(identifiedBy: postID, animated: true, topOffset: postsView.topInsetForPostFraming)
             } else {
                 AppDelegate.instance.open(route: route)
             }
