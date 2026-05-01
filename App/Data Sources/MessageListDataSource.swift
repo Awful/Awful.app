@@ -13,10 +13,16 @@ private let Log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Me
 final class MessageListDataSource: NSObject {
     weak var deletionDelegate: MessageListDataSourceDeletionDelegate?
     private let resultsController: NSFetchedResultsController<PrivateMessage>
-    private let tableView: UITableView
+    private let collectionView: UICollectionView
     private let folder: PrivateMessageFolder?
+    private var diffableDataSource: UICollectionViewDiffableDataSource<Int, NSManagedObjectID>!
 
-    init(managedObjectContext: NSManagedObjectContext, tableView: UITableView, folder: PrivateMessageFolder?) throws {
+    init(
+        managedObjectContext: NSManagedObjectContext,
+        collectionView: UICollectionView,
+        folder: PrivateMessageFolder?,
+        supplementaryViewProvider: @escaping (UICollectionView, String, IndexPath) -> UICollectionReusableView?
+    ) throws {
         let fetchRequest = PrivateMessage.makeFetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: #keyPath(PrivateMessage.sentDate), ascending: false)]
 
@@ -26,16 +32,23 @@ final class MessageListDataSource: NSObject {
 
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         self.folder = folder
-
-        self.tableView = tableView
+        self.collectionView = collectionView
         super.init()
 
-        try resultsController.performFetch()
+        let cellRegistration = UICollectionView.CellRegistration<MessageListCell, NSManagedObjectID> { [weak self] cell, indexPath, _ in
+            guard let self else { return }
+            cell.viewModel = self.viewModelForMessage(at: indexPath)
+            cell.accessories = [.multiselect(displayed: .whenEditing)]
+        }
 
-        tableView.dataSource = self
-        tableView.register(MessageListCell.self, forCellReuseIdentifier: cellReuseIdentifier)
+        diffableDataSource = UICollectionViewDiffableDataSource<Int, NSManagedObjectID>(collectionView: collectionView) { collectionView, indexPath, objectID in
+            collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: objectID)
+        }
+        diffableDataSource.supplementaryViewProvider = supplementaryViewProvider
 
         resultsController.delegate = self
+        try resultsController.performFetch()
+        applyCurrentSnapshot(animatingDifferences: false)
 
         NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
     }
@@ -48,7 +61,15 @@ final class MessageListDataSource: NSObject {
         } catch {
             Log.error("Failed to re-fetch after data store reset: \(error)")
         }
-        tableView.reloadData()
+        applyCurrentSnapshot(animatingDifferences: false)
+    }
+
+    private func applyCurrentSnapshot(animatingDifferences: Bool) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>()
+        snapshot.appendSections([0])
+        let objectIDs = (resultsController.fetchedObjects ?? []).map(\.objectID)
+        snapshot.appendItems(objectIDs, toSection: 0)
+        diffableDataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
 
     func message(at indexPath: IndexPath) -> PrivateMessage {
@@ -60,65 +81,14 @@ final class MessageListDataSource: NSObject {
     }
 }
 
-private let cellReuseIdentifier = "MessageCell"
-
 extension MessageListDataSource: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
-    }
-
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        switch type {
-        case .delete:
-            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .insert:
-            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .move, .update:
-            assertionFailure("why")
-        @unknown default:
-            assertionFailure("handle unknown change type")
-        }
-    }
-
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at oldIndexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch type {
-        case .delete:
-            tableView.deleteRows(at: [oldIndexPath!], with: .fade)
-        case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .move:
-            tableView.deleteRows(at: [oldIndexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .update:
-            tableView.reloadRows(at: [oldIndexPath!], with: .none)
-        @unknown default:
-            assertionFailure("handle unknown change type")
-        }
-    }
-
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        let typedSnapshot = snapshot as NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>
+        diffableDataSource.apply(typedSnapshot, animatingDifferences: true)
     }
 }
 
-extension MessageListDataSource: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections?.first?.numberOfObjects ?? 0
-    }
-
-    // Actually UITableViewDelegate
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let viewModel = viewModelForMessage(at: indexPath)
-        let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
-        return MessageListCell.heightForViewModel(viewModel, inTableWithWidth: tableWidth)
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as! MessageListCell
-        cell.viewModel = viewModelForMessage(at: indexPath)
-        return cell
-    }
-
+extension MessageListDataSource {
     private func viewModelForMessage(at indexPath: IndexPath) -> MessageListCell.ViewModel {
         let message = self.message(at: indexPath)
         let theme = Theme.defaultTheme()
@@ -159,34 +129,29 @@ extension MessageListDataSource: UITableViewDataSource {
                     let image = UIImage(named: "pmreplied")?
                         .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
                         .withRenderingMode(.alwaysTemplate)
-                    
+
                     let imageView = UIImageView(image: image)
                     imageView.tintColor = theme["listBackgroundColor"]!
-                    
+
                     return imageView
                 } else if message.forwarded && !message.isSent {
                     let image = UIImage(named: "pmforwarded")?
                         .stroked(with: theme["listBackgroundColor"]!, thickness: 3, quality: 1)
                         .withRenderingMode(.alwaysTemplate)
-                    
+
                     let imageView = UIImageView(image: image)
                     imageView.tintColor = theme["listBackgroundColor"]!
-                    
+
                     return imageView
                 } else if !message.seen && !message.isSent {
                     let image = UIImage(named: "newpm")
                     let imageView = UIImageView(image: image)
-                    
+
                     return imageView
                 } else {
                     return nil
                 }
         }())
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let message = self.message(at: indexPath)
-        deletionDelegate?.didDeleteMessage(message, in: self)
     }
 }
 
@@ -217,4 +182,3 @@ private let sentTimeFormatter: DateFormatter = {
     formatter.timeStyle = .short
     return formatter
 }()
-

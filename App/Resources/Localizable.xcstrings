@@ -54,7 +54,7 @@
 
     },
     "Back" : {
-
+      "comment" : "Back button accessibility label"
     },
     "bookmarks.filter.all" : {
       "comment" : "Segmented control label for showing all bookmarks.",

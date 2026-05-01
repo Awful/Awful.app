@@ -7,6 +7,16 @@
     "[timg] Large Images" : {
 
     },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "Acknowledgements" : {
 
     },
@@ -86,9 +96,6 @@
 
     },
     "Default Light Theme" : {
-
-    },
-    "Done" : {
 
     },
     "Double-Tap Post to Jump" : {

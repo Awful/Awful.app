@@ -7,7 +7,6 @@ import SwiftUI
 
 struct AppIconGridView: View {
     @ObservedObject var appIconDataSource: AppIconDataSource
-    @SwiftUI.Environment(\.dismiss) private var dismiss
     @SwiftUI.Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @SwiftUI.Environment(\.theme) var theme
     
@@ -41,17 +40,6 @@ struct AppIconGridView: View {
         .navigationTitle(Text("App Icon", bundle: .module))
         .foregroundStyle(theme[color: "sheetTitleColor"]!)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    dismiss()
-                } label: {
-                    Text("Done", bundle: .module)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(theme[color: "sheetTitleColor"]!)
-                }
-            }
-        }
     }
 }
 

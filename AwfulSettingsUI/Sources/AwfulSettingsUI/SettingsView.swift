@@ -236,11 +236,11 @@ public struct SettingsView: View {
 
             Section {
                 NavigationLink("Default Light Theme", bundle: .module) {
-                    DefaultThemePickerView(mode: .light)
+                    ThemePickerView(defaultMode: .light)
                         .navigationTitle("Default Light Theme", bundle: .module)
                 }
                 NavigationLink("Default Dark Theme", bundle: .module) {
-                    DefaultThemePickerView(mode: .dark)
+                    ThemePickerView(defaultMode: .dark)
                         .navigationTitle("Default Dark Theme", bundle: .module)
                 }
                 NavigationLink("Forum-Specific Themes", bundle: .module) {

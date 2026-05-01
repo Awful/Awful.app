@@ -2,13 +2,9 @@
 //
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
-import os
 import PullToRefresh
 import SwiftUI
 import UIKit
-import WebKit
-
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "Theming")
 
 public protocol Themeable {
 
@@ -113,136 +109,168 @@ open class HostingController<Content: View>: UIHostingController<Content>, Theme
 }
 
 /**
-    A thin customization of UITableViewController that extends Theme support and adds some block-based refreshing abilities.
- 
- For load more, please see `LoadMoreFooter`.
+    A thin customization of UICollectionViewController that extends Theme support
+    and adds block-based pull-to-refresh.
+
+    For load-more pagination, see `LoadMoreCollectionFooter`.
  */
-open class TableViewController: UITableViewController, Themeable {
+open class CollectionViewController: UICollectionViewController, Themeable {
     private var viewIsLoading = false
-    
+
     public override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
-        
+
         commonInit(self)
     }
-    
-    public override init(style: UITableView.Style) {
-        super.init(style: style)
-        
+
+    public override init(collectionViewLayout layout: UICollectionViewLayout) {
+        super.init(collectionViewLayout: layout)
+
         commonInit(self)
     }
-    
+
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
-        
+
         commonInit(self)
     }
-    
+
     deinit {
         if isViewLoaded {
-            tableView.removeAllPullToRefresh()
+            collectionView.removeAllPullToRefresh()
         }
     }
-    
+
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
     open var theme: Theme {
         return Theme.defaultTheme()
     }
-    
-    /// Whether the view controller is currently visible (i.e. has received `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
+
+    /// Whether the view controller is currently visible (i.e. has received
+    /// `viewDidAppear()` without having subsequently received `viewDidDisappear()`).
     public private(set) var visible = false
-    
-    /// A block to call when the table is pulled down to refresh. If nil, no refresh control is shown.
+
+    /// A block to call when the collection is pulled down to refresh. If nil, no refresh control is shown.
     public var pullToRefreshBlock: (() -> Void)? {
         didSet {
             if pullToRefreshBlock != nil {
                 createRefreshControl()
             } else {
                 if isViewLoaded {
-                    tableView.removePullToRefresh(at: .top)
+                    collectionView.removePullToRefresh(at: .top)
                 }
             }
         }
     }
-    
+
     private func createRefreshControl() {
-        guard tableView.topPullToRefresh == nil else { return }
-        
+        guard collectionView.topPullToRefresh == nil else { return }
+
         let niggly = NigglyRefreshLottieView(theme: theme)
-        let targetSize = CGSize(width: tableView.bounds.width, height: 0)
-       
+        let targetSize = CGSize(width: collectionView.bounds.width, height: 0)
+
         niggly.bounds.size = niggly.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         niggly.autoresizingMask = .flexibleWidth
         niggly.backgroundColor = view.backgroundColor
-        
+
         pullToRefreshView = niggly
-        
+
         let animator = NigglyRefreshLottieView.RefreshAnimator(view: niggly)
-        
+
         let pullToRefresh = PullToRefresh(refreshView: niggly, animator: animator, height: niggly.bounds.height, position: .top)
         pullToRefresh.animationDuration = 0.3
         pullToRefresh.initialSpringVelocity = 0
         pullToRefresh.springDamping = 1
-        tableView.addPullToRefresh(pullToRefresh, action: { [weak self] in
+        collectionView.addPullToRefresh(pullToRefresh, action: { [weak self] in
             self?.pullToRefreshBlock?()
         })
     }
-    
+
     private weak var pullToRefreshView: UIView?
-    
+
     public func startAnimatingPullToRefresh() {
         guard isViewLoaded else { return }
-        tableView.startRefreshing(at: .top)
+        collectionView.startRefreshing(at: .top)
     }
-    
+
     public func stopAnimatingPullToRefresh() {
         guard isViewLoaded else { return }
-        tableView.endRefreshing(at: .top)
+        collectionView.endRefreshing(at: .top)
     }
-    
-    open override var refreshControl: UIRefreshControl? {
-        get { return super.refreshControl }
-        set {
-            logger.warning("we usually use the custom refresh controller")
-            super.refreshControl = newValue
-        }
-    }
-    
+
     // MARK: View lifecycle
-    
+
     open override func viewDidLoad() {
         viewIsLoading = true
-        
+
         super.viewDidLoad()
-        
+
+        // iOS 26 sidebar contexts apply default 8pt directional layout margins
+        // on the collection view. Combined with the ~13pt section content inset
+        // baked into UICollectionLayoutListConfiguration, this leaves a visible
+        // gap on the column's leading edge. Zero the margins here; subclasses
+        // that build their layout via `makeListLayout(using:)` get the matching
+        // section.contentInsets bypass automatically.
+        collectionView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        collectionView.preservesSuperviewLayoutMargins = false
+
         if pullToRefreshBlock != nil {
             createRefreshControl()
         }
-        
+
         themeDidChange()
-        
+
         viewIsLoading = false
     }
-    
+
+    /// Build a list-style compositional layout that bypasses iOS 26's automatic
+    /// ~13pt section content inset on sidebar contexts. Use this in place of
+    /// `UICollectionViewCompositionalLayout.list(using:)` for every list-based
+    /// collection view in the app — it is the only thing that lets cells span
+    /// the column's full width on iPad sidebars and Designed-for-iPad-on-Mac.
+    ///
+    /// - Parameter pinSectionHeaders: If `false`, section header supplementary
+    ///   items scroll away with the content instead of sticking to the top.
+    public static func makeListLayout(
+        using listConfig: UICollectionLayoutListConfiguration,
+        pinSectionHeaders: Bool = true
+    ) -> UICollectionViewCompositionalLayout {
+        let layoutConfig = UICollectionViewCompositionalLayoutConfiguration()
+        layoutConfig.contentInsetsReference = .none
+        return UICollectionViewCompositionalLayout(
+            sectionProvider: { _, layoutEnvironment in
+                let section = NSCollectionLayoutSection.list(using: listConfig, layoutEnvironment: layoutEnvironment)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+                if !pinSectionHeaders {
+                    for item in section.boundarySupplementaryItems where item.elementKind == UICollectionView.elementKindSectionHeader {
+                        item.pinToVisibleBounds = false
+                    }
+                }
+                return section
+            },
+            configuration: layoutConfig
+        )
+    }
+
     open func themeDidChange() {
-        view.backgroundColor = theme["backgroundColor"]
-        
+        let bg = theme[uicolor: "backgroundColor"]
+        view.backgroundColor = bg
+        collectionView.backgroundColor = bg
+
         if let pullToRefreshView {
-            pullToRefreshView.backgroundColor = view.backgroundColor
+            pullToRefreshView.backgroundColor = bg
 
             if let niggly = pullToRefreshView as? NigglyRefreshLottieView {
                 niggly.theme = theme
             }
         }
-        tableView.tableFooterView?.backgroundColor = view.backgroundColor
-        
-        tableView.indicatorStyle = theme.scrollIndicatorStyle
-        tableView.separatorColor = theme["listSeparatorColor"]
-        
+
+        collectionView.indicatorStyle = theme.scrollIndicatorStyle
+
         if !viewIsLoading {
-            tableView.reloadData()
+            collectionView.reloadData()
         }
-        
+
         if theme[bool: "showRootTabBarLabel"] == false {
             tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
             tabBarItem.title = nil
@@ -251,16 +279,16 @@ open class TableViewController: UITableViewController, Themeable {
             tabBarItem.title = title
         }
     }
-    
+
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         visible = true
     }
-    
+
     open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
+
         visible = false
     }
 
@@ -275,29 +303,22 @@ open class TableViewController: UITableViewController, Themeable {
                 return
             }
 
-            // Calculate scroll progress for smooth transition
             let topInset = scrollView.adjustedContentInset.top
             let currentOffset = scrollView.contentOffset.y
             let topPosition = -topInset
 
-            // Define transition zone (30 points for smooth fade)
             let transitionDistance: CGFloat = 30.0
 
-            // Calculate progress (0.0 = fully at top, 1.0 = fully scrolled)
             let progress: CGFloat
             if currentOffset <= topPosition {
-                // At or above the top
                 progress = 0.0
             } else if currentOffset >= topPosition + transitionDistance {
-                // Fully scrolled past transition zone
                 progress = 1.0
             } else {
-                // In transition zone - calculate smooth progress
                 let distanceFromTop = currentOffset - topPosition
                 progress = distanceFromTop / transitionDistance
             }
 
-            // Find the navigation controller and call update method if it exists
             if let navController = navigationController,
                navController.responds(to: Selector(("updateNavigationBarTintForScrollProgress:"))) {
                 navController.perform(Selector(("updateNavigationBarTintForScrollProgress:")), with: NSNumber(value: Float(progress)))
@@ -306,46 +327,200 @@ open class TableViewController: UITableViewController, Themeable {
     }
 }
 
-/// A thin customization of UICollectionViewController that extends Theme support.
-class CollectionViewController: UICollectionViewController, Themeable {
+/**
+    A `UIViewController` subclass that hosts a `UICollectionView` as a child of
+    its `view` (rather than `view == collectionView` as in `UICollectionViewController`).
+    Use this when you need sibling subviews next to the collection view — most
+    commonly a search bar pinned above it. A search bar in a UICollectionReusableView
+    supplementary view loses first responder on every `apply()` because UIKit's
+    `_resignOrRebaseFirstResponderViewWithIndexPathMapping` doesn't protect
+    supplementary views the way it protects cells; hosting the search bar outside
+    the collection view sidesteps that lifecycle entirely.
+
+    Provides the same theming, pull-to-refresh, visibility tracking, tab-bar-item
+    label management, and iOS 26 scroll-progress hook as `CollectionViewController`.
+ */
+open class HostedCollectionViewController: UIViewController, Themeable {
     private var viewIsLoading = false
-    
-    override init(nibName: String?, bundle: Bundle?) {
-        super.init(nibName: nibName, bundle: bundle)
-        
+
+    public let collectionView: UICollectionView
+
+    public init(collectionViewLayout layout: UICollectionViewLayout) {
+        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        super.init(nibName: nil, bundle: nil)
         commonInit(self)
     }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-        commonInit(self)
+
+    public required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
+
+    deinit {
+        if isViewLoaded {
+            collectionView.removeAllPullToRefresh()
+        }
+    }
+
     /// The theme to use for the view controller. Defaults to `Theme.currentTheme`.
-    var theme: Theme {
+    open var theme: Theme {
         return Theme.defaultTheme()
     }
-    
+
+    /// Whether the view controller is currently visible.
+    public private(set) var visible = false
+
+    /// A block to call when the collection is pulled down to refresh. If nil, no refresh control is shown.
+    public var pullToRefreshBlock: (() -> Void)? {
+        didSet {
+            if pullToRefreshBlock != nil {
+                createRefreshControl()
+            } else {
+                if isViewLoaded {
+                    collectionView.removePullToRefresh(at: .top)
+                }
+            }
+        }
+    }
+
+    private func createRefreshControl() {
+        guard isViewLoaded, collectionView.topPullToRefresh == nil else { return }
+
+        let niggly = NigglyRefreshLottieView(theme: theme)
+        let targetSize = CGSize(width: collectionView.bounds.width, height: 0)
+
+        niggly.bounds.size = niggly.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+        niggly.autoresizingMask = .flexibleWidth
+        niggly.backgroundColor = view.backgroundColor
+
+        pullToRefreshView = niggly
+
+        let animator = NigglyRefreshLottieView.RefreshAnimator(view: niggly)
+
+        let pullToRefresh = PullToRefresh(refreshView: niggly, animator: animator, height: niggly.bounds.height, position: .top)
+        pullToRefresh.animationDuration = 0.3
+        pullToRefresh.initialSpringVelocity = 0
+        pullToRefresh.springDamping = 1
+        collectionView.addPullToRefresh(pullToRefresh, action: { [weak self] in
+            self?.pullToRefreshBlock?()
+        })
+    }
+
+    private weak var pullToRefreshView: UIView?
+
+    public func startAnimatingPullToRefresh() {
+        guard isViewLoaded else { return }
+        collectionView.startRefreshing(at: .top)
+    }
+
+    public func stopAnimatingPullToRefresh() {
+        guard isViewLoaded else { return }
+        collectionView.endRefreshing(at: .top)
+    }
+
     // MARK: View lifecycle
-    
-    override func viewDidLoad() {
+
+    open override func loadView() {
+        let view = UIView()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+        self.view = view
+    }
+
+    open override func viewDidLoad() {
         viewIsLoading = true
-        
+
         super.viewDidLoad()
-        
+
+        // iOS 26 sidebar contexts apply default 8pt directional layout margins,
+        // matching the fix in CollectionViewController. See its comment for why.
+        collectionView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        collectionView.preservesSuperviewLayoutMargins = false
+
+        // Default delegate is the VC. Subclasses using a delegate multiplexer
+        // will overwrite this when their lazy multiplexer initializes.
+        collectionView.delegate = self
+
+        if pullToRefreshBlock != nil {
+            createRefreshControl()
+        }
+
         themeDidChange()
-        
+
         viewIsLoading = false
     }
-    
-    func themeDidChange() {
-        view.backgroundColor = theme["backgroundColor"]
-        
-        collectionView?.indicatorStyle = theme.scrollIndicatorStyle
-        
+
+    open func themeDidChange() {
+        let bg = theme[uicolor: "backgroundColor"]
+        view.backgroundColor = bg
+        collectionView.backgroundColor = bg
+
+        if let pullToRefreshView {
+            pullToRefreshView.backgroundColor = bg
+
+            if let niggly = pullToRefreshView as? NigglyRefreshLottieView {
+                niggly.theme = theme
+            }
+        }
+
+        collectionView.indicatorStyle = theme.scrollIndicatorStyle
+
         if !viewIsLoading {
-            collectionView?.reloadData()
+            collectionView.reloadData()
+        }
+
+        if theme[bool: "showRootTabBarLabel"] == false {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 9, left: 0, bottom: -9, right: 0)
+            tabBarItem.title = nil
+        } else {
+            tabBarItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tabBarItem.title = title
+        }
+    }
+
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        visible = true
+    }
+
+    open override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        visible = false
+    }
+}
+
+extension HostedCollectionViewController: UICollectionViewDelegate {
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Update navigation bar tint for iOS 26+ dynamic colors. Same logic as
+        // CollectionViewController.
+        if #available(iOS 26.0, *) {
+            guard scrollView.isDragging || scrollView.isDecelerating else { return }
+
+            let topInset = scrollView.adjustedContentInset.top
+            let currentOffset = scrollView.contentOffset.y
+            let topPosition = -topInset
+
+            let transitionDistance: CGFloat = 30.0
+
+            let progress: CGFloat
+            if currentOffset <= topPosition {
+                progress = 0.0
+            } else if currentOffset >= topPosition + transitionDistance {
+                progress = 1.0
+            } else {
+                let distanceFromTop = currentOffset - topPosition
+                progress = distanceFromTop / transitionDistance
+            }
+
+            if let navController = navigationController,
+               navController.responds(to: Selector(("updateNavigationBarTintForScrollProgress:"))) {
+                navController.perform(Selector(("updateNavigationBarTintForScrollProgress:")), with: NSNumber(value: Float(progress)))
+            }
         }
     }
 }

@@ -41,7 +41,11 @@ private struct SidebarImageButtonView: View {
     let image: Image
     let accessibilityLabel: String?
     var pointSize: CGFloat = 20
-    var horizontalPadding: CGFloat = 2
+    /// Visual horizontal offset applied to the rendered icon (and its hit
+    /// region). Used to nudge auto-replaced rightBarButtonItems toward the
+    /// trailing edge to tighten the gap to system-injected items like the
+    /// split-view sidebar toggle.
+    var visualOffsetX: CGFloat = 0
     let action: () -> Void
 
     @SwiftUI.Environment(\.theme) private var theme
@@ -57,7 +61,7 @@ private struct SidebarImageButtonView: View {
         }
         .buttonStyle(.plain)
         .frame(width: pointSize, height: pointSize)
-        .padding(.horizontal, horizontalPadding)
+        .offset(x: visualOffsetX)
         .glassEffect(.identity)
         .accessibilityLabel(accessibilityLabel ?? "")
     }
@@ -73,11 +77,22 @@ final class SidebarTitleView: UIView {
     private var currentTitle: String
     private var currentColor: UIColor
     private var useRoundedFont: Bool
+    /// When true, the title view reports a very wide intrinsic content size
+    /// so UINavigationBar gives it the full available width; the SwiftUI
+    /// content then uses an HStack with Spacers to center the text inside.
+    /// When false (the default), the title view reports the natural text
+    /// width and renders a plain Text — the bar centers a snug-fitting
+    /// title view absolutely. The wide-mode is needed for VCs whose
+    /// leading/trailing bar items are asymmetric (e.g. auto-back-button
+    /// pushed VCs in iPad sidebar mode); the natural-mode is the right
+    /// default for tab roots, which usually have balanced bar items.
+    private var fillsAvailableWidth: Bool
 
-    init(title: String, color: UIColor, roundedFont: Bool) {
+    init(title: String, color: UIColor, roundedFont: Bool, fillsAvailableWidth: Bool = false) {
         self.currentTitle = title
         self.currentColor = color
         self.useRoundedFont = roundedFont
+        self.fillsAvailableWidth = fillsAvailableWidth
         super.init(frame: .zero)
         setupHostingView()
     }
@@ -86,11 +101,16 @@ final class SidebarTitleView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(title: String, color: UIColor, roundedFont: Bool) {
-        guard title != currentTitle || color != currentColor || roundedFont != useRoundedFont else { return }
+    func update(title: String, color: UIColor, roundedFont: Bool, fillsAvailableWidth: Bool = false) {
+        guard title != currentTitle
+            || color != currentColor
+            || roundedFont != useRoundedFont
+            || fillsAvailableWidth != self.fillsAvailableWidth
+        else { return }
         currentTitle = title
         currentColor = color
         useRoundedFont = roundedFont
+        self.fillsAvailableWidth = fillsAvailableWidth
         setupHostingView()
     }
 
@@ -98,13 +118,33 @@ final class SidebarTitleView: UIView {
         hostingController?.view.removeFromSuperview()
 
         let swiftUIColor = Color(currentColor)
-        let content = Text(currentTitle)
+        let baseText = Text(currentTitle)
             .font(.system(size: 17, weight: .semibold))
             .applyFontDesign(if: useRoundedFont)
             .foregroundStyle(swiftUIColor)
             .lineLimit(1)
             .truncationMode(.tail)
-            .glassEffect(.identity)
+
+        let content: AnyView
+        if fillsAvailableWidth {
+            // HStack with leading/trailing Spacers + .frame(maxWidth: .infinity)
+            // so the title view fills the bar's available width and the Text
+            // sits at the visual center within. Long Text collapses Spacers
+            // to zero and fills + truncates trailing.
+            content = AnyView(
+                HStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    baseText
+                    Spacer(minLength: 0)
+                }
+                .frame(maxWidth: .infinity)
+                .glassEffect(.identity)
+            )
+        } else {
+            // Natural-width title — bar centers a snug-fitting title view
+            // absolutely. Used for tab roots with balanced bar items.
+            content = AnyView(baseText.glassEffect(.identity))
+        }
 
         let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
@@ -126,7 +166,18 @@ final class SidebarTitleView: UIView {
     }
 
     override var intrinsicContentSize: CGSize {
-        return hostingController?.view.intrinsicContentSize ?? .zero
+        // In wide mode, claim a width larger than any nav bar will ever be —
+        // UINavigationBar clamps to the available width between leading and
+        // trailing bar items, which is exactly what we want for VCs with
+        // asymmetric bar items. In default (natural) mode, return the
+        // hosting view's intrinsic so the bar can absolutely-center a
+        // snug-fitting title view (the right behavior for tab roots).
+        let hostingIntrinsic = hostingController?.view.intrinsicContentSize ?? .zero
+        if fillsAvailableWidth {
+            return CGSize(width: 10000, height: hostingIntrinsic.height)
+        } else {
+            return hostingIntrinsic
+        }
     }
 
     override func sizeToFit() {
@@ -387,6 +438,10 @@ final class NavigationController: UINavigationController, Themeable {
         ]
         // Use .alwaysOriginal with the color baked in to bypass the glass
         // panel's vibrancy compositing (same approach as title images).
+        // The system back button is replaced by a custom-view
+        // leftBarButtonItem in `replaceSidebarBarButtonItems` for iPad
+        // sidebar mode, so this image is only seen on iPhone (where it
+        // sits at a sensible inset by default).
         if let backImage = UIImage(named: "back")?.withTintColor(textColor, renderingMode: .alwaysOriginal) {
             sidebarAppearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         }
@@ -420,12 +475,32 @@ final class NavigationController: UINavigationController, Themeable {
             replaceSidebarBarButtonItems(for: topVC)
 
             // Custom titleView using SwiftUI Text with .glassEffect(.identity)
-            // to bypass the glass panel's vibrancy compositing.
+            // to bypass the glass panel's vibrancy compositing. Pushed VCs
+            // (i.e. anything not the root of this nav stack) get a custom
+            // back button via `replaceSidebarBarButtonItems`, which leaves
+            // the leading bar items lighter than the trailing items —
+            // UINavigationBar's centering math then drifts the title view
+            // off-center. Switching the title view to wide-mode lets it
+            // claim the full available width and visually center the text
+            // via SwiftUI Spacers, regardless of bar-item asymmetry. Tab
+            // roots (Forums, Messages, Bookmarks) keep the natural-width
+            // mode where the bar absolutely-centers a snug title view.
             let roundedFont = theme.roundedFonts
+            let fillsAvailableWidth = viewControllers.first !== topVC
             if let existing = topVC.navigationItem.titleView as? SidebarTitleView {
-                existing.update(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
+                existing.update(
+                    title: topVC.title ?? "",
+                    color: textColor,
+                    roundedFont: roundedFont,
+                    fillsAvailableWidth: fillsAvailableWidth
+                )
             } else {
-                let titleView = SidebarTitleView(title: topVC.title ?? "", color: textColor, roundedFont: roundedFont)
+                let titleView = SidebarTitleView(
+                    title: topVC.title ?? "",
+                    color: textColor,
+                    roundedFont: roundedFont,
+                    fillsAvailableWidth: fillsAvailableWidth
+                )
                 titleView.sizeToFit()
                 topVC.navigationItem.titleView = titleView
             }
@@ -510,6 +585,69 @@ final class NavigationController: UINavigationController, Themeable {
                 viewController.navigationItem.leftBarButtonItems = updated
             }
         }
+
+        // Replace the system back button with a custom-view leftBarButtonItem
+        // when there's something to pop back to and the VC hasn't claimed the
+        // leading slot itself. setBackIndicatorImage doesn't honor
+        // alignmentRectInsets in iOS 26's glass nav bar, leaving the chevron
+        // visibly more inset than the matched custom-view items (Edit, etc).
+        // Routing the back chevron through the same hosting-view path gives
+        // it the same tight leading position. Interactive pop-swipe is
+        // preserved by the existing UIGestureRecognizerDelegate.
+        //
+        // A small empty bar item is appended alongside the back button so the
+        // leading side has two bar items — UINavigationBar's title-centering
+        // math only kicks in with multiple leading items; with a single item,
+        // the title view is left leading-anchored. Same spacer pattern that
+        // Bookmarks uses on its own leftBarButtonItems.
+        //
+        // Skip SwiftUI hosting controllers (e.g. anything pushed via a SwiftUI
+        // `NavigationLink` from the Settings tab — theme picker, app icon
+        // picker, etc.). SwiftUI manages its own back button on these and
+        // injecting our own results in two visible back chevrons.
+        let hasExistingLeft = viewController.navigationItem.leftBarButtonItem != nil
+            || (viewController.navigationItem.leftBarButtonItems?.isEmpty == false)
+        if !hasExistingLeft,
+           viewControllers.first !== viewController,
+           !Self.isHostingController(viewController),
+           let backImage = UIImage(named: "back") {
+            let backHosting = Self.makeSidebarImageHostingView(
+                image: backImage,
+                accessibilityLabel: NSLocalizedString("Back", comment: "Back button accessibility label"),
+                target: self,
+                action: #selector(popOnSidebarBackTap)
+            )
+            // Two leftBarButtonItems (back + customView spacer) — multiple
+            // bar items engage UINavigationBar's title centering math
+            // (single items leave the title view leading-anchored). The
+            // title view is now told to claim full available width via
+            // its intrinsicContentSize override, so the spacer width here
+            // only influences positioning — pick a value that visually
+            // balances the trailing-side items (compose + sidebar toggle).
+            let backButton = UIBarButtonItem(customView: backHosting)
+            let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 24, height: 44)))
+            viewController.navigationItem.leftBarButtonItems = [backButton, spacer]
+        }
+    }
+
+    /// Walks the class hierarchy looking for `UIHostingController`. Generic
+    /// type erasure makes a direct `is UIHostingController<…>` check awkward,
+    /// so match on the class name instead. Catches both vanilla
+    /// `UIHostingController` and Awful's `HostingController` subclass.
+    private static func isHostingController(_ vc: UIViewController) -> Bool {
+        var cls: AnyClass? = type(of: vc)
+        while let c = cls {
+            if NSStringFromClass(c).contains("UIHostingController") {
+                return true
+            }
+            cls = class_getSuperclass(c)
+        }
+        return false
+    }
+
+    @available(iOS 26.0, *)
+    @objc private func popOnSidebarBackTap() {
+        _ = popViewController(animated: true)
     }
 
     /// Creates a custom-view bar button item using SwiftUI with
@@ -564,12 +702,19 @@ final class NavigationController: UINavigationController, Themeable {
         target: AnyObject?,
         action: Selector?
     ) -> UIBarButtonItem {
+        // Nudge the icon toward the trailing edge to tighten the gap to
+        // system-injected items (e.g. the split-view sidebar toggle), which
+        // can't be reduced through bar-item APIs.
         let hostingView = Self.makeSidebarImageHostingView(
             image: image,
             accessibilityLabel: accessibilityLabel,
+            visualOffsetX: 16,
             target: target,
             action: action
         )
+        // The icon overflows its hosting bounds because of the SwiftUI .offset;
+        // make sure UIKit doesn't clip those overflowing pixels.
+        hostingView.clipsToBounds = false
         return UIBarButtonItem(customView: hostingView)
     }
 
@@ -582,15 +727,23 @@ final class NavigationController: UINavigationController, Themeable {
         image: UIImage,
         accessibilityLabel: String?,
         pointSize: CGFloat = 20,
+        visualOffsetX: CGFloat = 0,
         target: AnyObject?,
         action: Selector?
     ) -> UIView {
         let swiftUIImage = Image(uiImage: image.withRenderingMode(.alwaysTemplate))
+        // Capture target weakly: the closure lives inside the SwiftUI view
+        // hosted by UIBarButtonItem.customView, which is owned (transitively)
+        // by the view controller — and the target is typically the same
+        // view controller (or its navigation controller). A strong capture
+        // would form a retain cycle that only breaks when the bar button is
+        // removed.
         let content = SidebarImageButtonView(
             image: swiftUIImage,
             accessibilityLabel: accessibilityLabel,
-            pointSize: pointSize
-        ) {
+            pointSize: pointSize,
+            visualOffsetX: visualOffsetX
+        ) { [weak target] in
             if let target = target as? NSObject, let action {
                 target.perform(action, with: nil)
             }
@@ -599,15 +752,15 @@ final class NavigationController: UINavigationController, Themeable {
         let hosting = UIHostingController(rootView: AnyView(content))
         hosting.view.backgroundColor = .clear
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
-        // Enforce a tight size (image + small horizontal padding) so the
-        // bar button item doesn't reserve the hosting view's natural
-        // (often larger) fitting size.
-        let totalWidth = pointSize + 4 // 2pt padding on each side
+        // Enforce a tight size so the bar button item doesn't reserve the
+        // hosting view's natural (often larger) fitting size. The system
+        // already adds inter-item spacing between bar buttons, so the
+        // customView itself doesn't need internal horizontal padding.
         NSLayoutConstraint.activate([
-            hosting.view.widthAnchor.constraint(equalToConstant: totalWidth),
+            hosting.view.widthAnchor.constraint(equalToConstant: pointSize),
             hosting.view.heightAnchor.constraint(equalToConstant: pointSize),
         ])
-        hosting.view.frame = CGRect(x: 0, y: 0, width: totalWidth, height: pointSize)
+        hosting.view.frame = CGRect(x: 0, y: 0, width: pointSize, height: pointSize)
         return hosting.view
     }
 

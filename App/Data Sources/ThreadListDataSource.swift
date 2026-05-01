@@ -54,15 +54,44 @@ final class ThreadListDataSource: NSObject {
     private let placeholder: ThreadTagLoader.Placeholder
     private let resultsController: NSFetchedResultsController<AwfulThread>
     private let showsTagAndRating: Bool
-    private let tableView: UITableView
+    private let collectionView: UICollectionView
+    private var diffableDataSource: UICollectionViewDiffableDataSource<Int, NSManagedObjectID>!
 
-    convenience init(bookmarksSortedByUnread sortedByUnread: Bool, showsTagAndRating: Bool, filter: BookmarkFilter, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
+    convenience init(
+        bookmarksSortedByUnread sortedByUnread: Bool,
+        showsTagAndRating: Bool,
+        filter: BookmarkFilter,
+        managedObjectContext: NSManagedObjectContext,
+        collectionView: UICollectionView,
+        supplementaryViewProvider: @escaping (UICollectionView, String, IndexPath) -> UICollectionReusableView?
+    ) throws {
         let fetchRequest = AwfulThread.makeFetchRequest()
+        fetchRequest.predicate = ThreadListDataSource.bookmarksPredicate(for: filter)
+        fetchRequest.sortDescriptors = {
+            var descriptors = [NSSortDescriptor(key: #keyPath(AwfulThread.bookmarkListPage), ascending: true)]
+            if sortedByUnread {
+                descriptors.append(NSSortDescriptor(key: #keyPath(AwfulThread.anyUnreadPosts), ascending: false))
+            }
+            descriptors.append(NSSortDescriptor(key: #keyPath(AwfulThread.lastPostDate), ascending: false))
+            return descriptors
+        }()
 
+        try self.init(
+            managedObjectContext: managedObjectContext,
+            fetchRequest: fetchRequest,
+            collectionView: collectionView,
+            supplementaryViewProvider: supplementaryViewProvider,
+            ignoreSticky: true,
+            showsTagAndRating: showsTagAndRating,
+            placeholder: .thread(tintColor: nil)
+        )
+    }
+
+    private static func bookmarksPredicate(for filter: BookmarkFilter) -> NSPredicate {
         var predicates = [
             NSPredicate(format: "%K == YES && %K > 0", #keyPath(AwfulThread.bookmarked), #keyPath(AwfulThread.bookmarkListPage))
         ]
-        
+
         switch filter {
         case .all:
             break
@@ -79,21 +108,31 @@ final class ThreadListDataSource: NSObject {
             predicates.append(textPredicate)
         }
 
-        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-
-        fetchRequest.sortDescriptors = {
-            var descriptors = [NSSortDescriptor(key: #keyPath(AwfulThread.bookmarkListPage), ascending: true)]
-            if sortedByUnread {
-                descriptors.append(NSSortDescriptor(key: #keyPath(AwfulThread.anyUnreadPosts), ascending: false))
-            }
-            descriptors.append(NSSortDescriptor(key: #keyPath(AwfulThread.lastPostDate), ascending: false))
-            return descriptors
-        }()
-
-        try self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest, tableView: tableView, ignoreSticky: true, showsTagAndRating: showsTagAndRating, placeholder: .thread(tintColor: nil))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
 
-    convenience init(forum: Forum, sortedByUnread: Bool, showsTagAndRating: Bool, threadTagFilter: Set<ThreadTag>, managedObjectContext: NSManagedObjectContext, tableView: UITableView) throws {
+    /// Update the bookmark fetch predicate in place and re-fetch. Prefer this
+    /// over recreating the data source: swapping the predicate is cheaper, and
+    /// recreating rebinds the collection view's data source.
+    func setBookmarkFilter(_ filter: BookmarkFilter) {
+        resultsController.fetchRequest.predicate = ThreadListDataSource.bookmarksPredicate(for: filter)
+        do {
+            try resultsController.performFetch()
+            applyCurrentSnapshot(animatingDifferences: true)
+        } catch {
+            Log.error("Failed to re-fetch with new bookmark filter: \(error)")
+        }
+    }
+
+    convenience init(
+        forum: Forum,
+        sortedByUnread: Bool,
+        showsTagAndRating: Bool,
+        threadTagFilter: Set<ThreadTag>,
+        managedObjectContext: NSManagedObjectContext,
+        collectionView: UICollectionView,
+        supplementaryViewProvider: @escaping (UICollectionView, String, IndexPath) -> UICollectionReusableView?
+    ) throws {
         let fetchRequest = AwfulThread.makeFetchRequest()
 
         fetchRequest.predicate = {
@@ -115,23 +154,59 @@ final class ThreadListDataSource: NSObject {
             return descriptors
         }()
 
-        try self.init(managedObjectContext: managedObjectContext, fetchRequest: fetchRequest, tableView: tableView, ignoreSticky: false, showsTagAndRating: showsTagAndRating, placeholder: .thread(in: forum))
+        try self.init(
+            managedObjectContext: managedObjectContext,
+            fetchRequest: fetchRequest,
+            collectionView: collectionView,
+            supplementaryViewProvider: supplementaryViewProvider,
+            ignoreSticky: false,
+            showsTagAndRating: showsTagAndRating,
+            placeholder: .thread(in: forum)
+        )
     }
 
-    private init(managedObjectContext: NSManagedObjectContext, fetchRequest: NSFetchRequest<AwfulThread>, tableView: UITableView, ignoreSticky: Bool, showsTagAndRating: Bool, placeholder: ThreadTagLoader.Placeholder) throws {
+    private init(
+        managedObjectContext: NSManagedObjectContext,
+        fetchRequest: NSFetchRequest<AwfulThread>,
+        collectionView: UICollectionView,
+        supplementaryViewProvider: @escaping (UICollectionView, String, IndexPath) -> UICollectionReusableView?,
+        ignoreSticky: Bool,
+        showsTagAndRating: Bool,
+        placeholder: ThreadTagLoader.Placeholder
+    ) throws {
         self.ignoreSticky = ignoreSticky
         self.placeholder = placeholder
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         self.showsTagAndRating = showsTagAndRating
-        self.tableView = tableView
+        self.collectionView = collectionView
         super.init()
 
-        try resultsController.performFetch()
+        // Cell registration is owned by the data source so it captures `self`
+        // (this data source). If the VC owned the registration and captured
+        // its own `dataSource` property, then during a filter change the new
+        // data source's initial snapshot apply would resolve the registration
+        // closure against the OLD data source (which still has more rows),
+        // crashing on index-out-of-bounds.
+        let cellRegistration = UICollectionView.CellRegistration<ThreadListCell, NSManagedObjectID> { [weak self] cell, indexPath, _ in
+            guard let self else { return }
+            cell.viewModel = self.viewModelFor(threadAt: indexPath)
+            cell.accessories = [
+                .delete(displayed: .whenEditing, actionHandler: { [weak self] in
+                    guard let self else { return }
+                    let thread = self.thread(at: indexPath)
+                    self.deletionDelegate?.didDeleteThread(thread, in: self)
+                }),
+            ]
+        }
 
-        tableView.dataSource = self
-        tableView.register(ThreadListCell.self, forCellReuseIdentifier: threadCellIdentifier)
+        diffableDataSource = UICollectionViewDiffableDataSource<Int, NSManagedObjectID>(collectionView: collectionView) { collectionView, indexPath, objectID in
+            collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: objectID)
+        }
+        diffableDataSource.supplementaryViewProvider = supplementaryViewProvider
 
         resultsController.delegate = self
+        try resultsController.performFetch()
+        applyCurrentSnapshot(animatingDifferences: false)
 
         NotificationCenter.default.addObserver(self, selector: #selector(dataStoreDidReset), name: .dataStoreDidReset, object: nil)
     }
@@ -144,7 +219,15 @@ final class ThreadListDataSource: NSObject {
         } catch {
             Log.error("Failed to re-fetch after data store reset: \(error)")
         }
-        tableView.reloadData()
+        applyCurrentSnapshot(animatingDifferences: false)
+    }
+
+    private func applyCurrentSnapshot(animatingDifferences: Bool) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>()
+        snapshot.appendSections([0])
+        let objectIDs = (resultsController.fetchedObjects ?? []).map(\.objectID)
+        snapshot.appendItems(objectIDs, toSection: 0)
+        diffableDataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
 
     func indexPath(of thread: AwfulThread) -> IndexPath? {
@@ -154,68 +237,12 @@ final class ThreadListDataSource: NSObject {
     func thread(at indexPath: IndexPath) -> AwfulThread {
         return resultsController.object(at: indexPath)
     }
-}
 
-extension ThreadListDataSource: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
-    }
-
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        switch type {
-        case .delete:
-            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .insert:
-            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .move, .update:
-            assertionFailure("why")
-        @unknown default:
-            assertionFailure("handle unknown change type")
-        }
-    }
-
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at oldIndexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch type {
-        case .delete:
-            tableView.deleteRows(at: [oldIndexPath!], with: .fade)
-        case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .move:
-            tableView.deleteRows(at: [oldIndexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .update:
-            tableView.reloadRows(at: [oldIndexPath!], with: .none)
-        @unknown default:
-            assertionFailure("handle unknown change type")
-        }
-    }
-
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
-    }
-}
-
-extension ThreadListDataSource: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func numberOfThreads(in section: Int) -> Int {
         return resultsController.sections?.first?.numberOfObjects ?? 0
     }
 
-    // This is actually a UITableViewDelegate method.
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let viewModel = viewModelForCell(at: indexPath)
-        let tableWidth = ThreadListCell.lastKnownContentViewWidth
-            ?? tableView.safeAreaLayoutGuide.layoutFrame.width
-
-        return ThreadListCell.heightForViewModel(viewModel, inTableWithWidth: tableWidth)
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: threadCellIdentifier, for: indexPath) as! ThreadListCell
-        cell.viewModel = viewModelForCell(at: indexPath)
-        return cell
-    }
-
-    private func viewModelForCell(at indexPath: IndexPath) -> ThreadListCell.ViewModel {
+    func viewModelFor(threadAt indexPath: IndexPath) -> ThreadListCell.ViewModel {
         let thread = resultsController.object(at: indexPath)
         let theme = delegate?.themeForItem(at: indexPath, in: self) ?? .defaultTheme()
         let tweaks = thread.forum.flatMap { ForumTweaks(ForumID($0.forumID)) }
@@ -246,7 +273,7 @@ extension ThreadListDataSource: UITableViewDataSource {
                 if let tweaks = tweaks, tweaks.showRatingsAsThreadTags {
                     return nil
                 }
-                
+
                 return thread.ratingImageName.flatMap {
                     if $0 != "Vote0" {
                         return UIImage(named: "Vote0")!
@@ -299,18 +326,14 @@ extension ThreadListDataSource: UITableViewDataSource {
                     .font: UIFont.preferredFontForTextStyle(.caption1, fontName: theme["listFontName"], sizeAdjustment: 1, weight: .semibold), .foregroundColor: color])
         }())
     }
-
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return deletionDelegate != nil
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let thread = self.thread(at: indexPath)
-        deletionDelegate?.didDeleteThread(thread, in: self)
-    }
 }
 
-private let threadCellIdentifier = "ThreadListCell"
+extension ThreadListDataSource: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        let typedSnapshot = snapshot as NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>
+        diffableDataSource.apply(typedSnapshot, animatingDifferences: true)
+    }
+}
 
 protocol ThreadListDataSourceDelegate: AnyObject {
     func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme

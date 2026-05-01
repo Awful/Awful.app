@@ -1,4 +1,4 @@
-//  ThemePickerViewController.swift
+//  ThemePickerView.swift
 //
 //  Copyright 2019 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
@@ -7,135 +7,114 @@ import AwfulTheming
 import SwiftUI
 import UIKit
 
-final class ThemePickerViewController: TableViewController {
+/// Wraps `.scrollContentBackground(.hidden)` (iOS 16+) so the surrounding
+/// container's background can show through; on iOS 15 it's a no-op.
+private struct HiddenScrollBackground: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.scrollContentBackground(.hidden)
+        } else {
+            content
+        }
+    }
+}
 
-    private let forumID: String?
-    private let mode: Theme.Mode
-    private let settingsKey: String
+/// Hide iOS 26's scroll-edge effect on all edges so dark cells don't fade
+/// into a visible light gradient at the tab-bar overlap. No-op on earlier iOS.
+private struct HiddenScrollEdgeEffect: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.scrollEdgeEffectHidden(true)
+        } else {
+            content
+        }
+    }
+}
+
+
+
+/// A simple SwiftUI list of available themes. Each row is themed using its
+/// own colours so the user can preview the look. Tapping a row records the
+/// selection (either as the default light/dark theme or as a forum-specific
+/// override).
+struct ThemePickerView: View {
+
+    let forumID: String?
+    let mode: Theme.Mode
+
     private let themes = Theme.allThemes
+    private let settingsKey: String
+
+    @State private var selectedThemeName: String
 
     init(defaultMode mode: Theme.Mode) {
-        forumID = nil
+        self.forumID = nil
         self.mode = mode
-
+        let key: String
         switch mode {
-        case .dark:
-            settingsKey = Settings.defaultDarkThemeName.key
-        case .light:
-            settingsKey = Settings.defaultLightThemeName.key
+        case .dark: key = Settings.defaultDarkThemeName.key
+        case .light: key = Settings.defaultLightThemeName.key
         }
-
-        super.init(style: .plain)
+        self.settingsKey = key
+        self._selectedThemeName = State(initialValue: UserDefaults.standard.string(forKey: key) ?? "")
     }
 
     init(forumID: String, mode: Theme.Mode) {
         self.forumID = forumID
         self.mode = mode
-        settingsKey = Theme.defaultsKeyForForum(identifiedBy: forumID, mode: mode)
-        super.init(style: .plain)
+        let key = Theme.defaultsKeyForForum(identifiedBy: forumID, mode: mode)
+        self.settingsKey = key
+        self._selectedThemeName = State(initialValue: UserDefaults.standard.string(forKey: key) ?? "")
     }
 
-    deinit {
-        UserDefaults.standard.removeObserver(self, forKeyPath: settingsKey, context: &KVOContext)
+    var body: some View {
+        List(themes, id: \.name) { theme in
+            row(for: theme)
+                .listRowBackground(
+                    Color(theme[uicolor: "listBackgroundColor"] ?? .systemBackground)
+                )
+        }
+        .listStyle(.plain)
+        .modifier(HiddenScrollBackground())
+        .modifier(HiddenScrollEdgeEffect())
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        tableView.hideExtraneousSeparators()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-
-        UserDefaults.standard.addObserver(self, forKeyPath: settingsKey, options: [], context: &KVOContext)
+    @ViewBuilder
+    private func row(for theme: Theme) -> some View {
+        let textColor = Color(theme[uicolor: "listTextColor"] ?? .label)
+        HStack {
+            Text(theme.descriptiveName)
+                .font(font(for: theme))
+                .foregroundStyle(textColor)
+            Spacer()
+            if theme.name == selectedThemeName {
+                Image(systemName: "checkmark")
+                    .foregroundStyle(textColor)
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            select(theme)
+        }
     }
 
-    private func setSelectedTheme(name: String?) {
-        let newIndexPath = themes
-            .firstIndex { $0.name == name }
-            .map { IndexPath(row: $0, section: 0) }
-        let oldIndexPaths = tableView.visibleCells
-            .filter { $0.accessoryType == .checkmark }
-            .compactMap { tableView.indexPath(for: $0) }
-        tableView.reloadRows(at: [newIndexPath].compactMap { $0 } + oldIndexPaths, with: .none)
-    }
-
-    private func fontForRow(at indexPath: IndexPath) -> UIFont {
+    private func font(for theme: Theme) -> Font {
         let descriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .subheadline)
         guard
-            let fontName = themes[indexPath.row][string: "listFontName"]
-                ?? descriptor.object(forKey: .name) as? String
-            else { fatalError("couldn't find font name") }
-        return UIFont(name: fontName, size: descriptor.pointSize)!
-    }
-
-    // MARK: KVO
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        guard context == &KVOContext else {
-            return super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+            let fontName = theme[string: "listFontName"] ?? descriptor.object(forKey: .name) as? String,
+            let uiFont = UIFont(name: fontName, size: descriptor.pointSize)
+        else {
+            return .subheadline
         }
-
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-            self.setSelectedTheme(name: UserDefaults.standard.string(forKey: self.settingsKey))
-        }
+        return Font(uiFont)
     }
 
-    // MARK: UITableViewDataSource and UITableViewDelegate
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return themes.count
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let text = themes[indexPath.row].name
-        let tableWidth = tableView.safeAreaLayoutGuide.layoutFrame.width
-        let maxSize = CGSize(width: tableWidth - 40, height: .greatestFiniteMagnitude)
-        let fittingSize = (text as NSString).boundingRect(with: maxSize, options: .usesLineFragmentOrigin, attributes: [.font: fontForRow(at: indexPath)], context: nil)
-        return max(44, floor(fittingSize.height + 16))
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let theme = themes[indexPath.row]
-
-        cell.backgroundColor = theme["listBackgroundColor"]
-        cell.textLabel?.textColor = theme["listTextColor"]
-        cell.selectedBackgroundColor = theme["listSelectedBackgroundColor"]
-
-        cell.textLabel?.font = fontForRow(at: indexPath)
-        cell.textLabel?.text = theme.descriptiveName
-
-        cell.accessoryType = UserDefaults.standard.string(forKey: settingsKey) == theme.name ? .checkmark : .none
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        if let forumID = forumID {
-            Theme.setThemeName(themes[indexPath.row].name, forForumIdentifiedBy: forumID, modes: [mode])
+    private func select(_ theme: Theme) {
+        selectedThemeName = theme.name
+        if let forumID {
+            Theme.setThemeName(theme.name, forForumIdentifiedBy: forumID, modes: [mode])
         } else {
-            UserDefaults.standard.set(themes[indexPath.row].name, forKey: settingsKey)
+            UserDefaults.standard.set(theme.name, forKey: settingsKey)
         }
-    }
-
-    // MARK: - Gunk
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-private var KVOContext = 0
-
-struct DefaultThemePickerView: UIViewControllerRepresentable {
-    let mode: Theme.Mode
-
-    func makeUIViewController(context: Context) -> ThemePickerViewController {
-        .init(defaultMode: mode)
-    }
-
-    func updateUIViewController(_ uiViewController: ThemePickerViewController, context: Context) {
-        // nop
     }
 }

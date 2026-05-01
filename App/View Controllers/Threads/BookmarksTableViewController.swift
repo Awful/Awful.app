@@ -32,7 +32,7 @@ private class FilterMenuViewController: UIViewController {
         static let shadowRadius: CGFloat = 20
         static let shadowOpacity: Float = 0.15
     }
-    
+
     // MARK: - Properties
     private let segmentedControl: UISegmentedControl
     private let stackView: UIStackView
@@ -42,7 +42,7 @@ private class FilterMenuViewController: UIViewController {
     private let onFilterSelected: (BookmarkFilter) -> Void
     private let enableHaptics: Bool
     var onDismiss: (() -> Void)?
-    
+
     private var visualEffectView: UIVisualEffectView?
     private lazy var contentContainerView: UIView = {
         let view = UIView()
@@ -54,52 +54,52 @@ private class FilterMenuViewController: UIViewController {
         view.layer.shadowOpacity = Layout.shadowOpacity
         view.layer.shadowRadius = Layout.shadowRadius
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
-        
+
         return view
     }()
     private var sourceButtonRect: CGRect?
     private var positioningConstraints: [NSLayoutConstraint] = []
     private var colorButtons: [UIButton] = []
-    
+
     init(currentFilter: BookmarkFilter, theme: Theme, enableHaptics: Bool, onFilterSelected: @escaping (BookmarkFilter) -> Void) {
         self.currentFilter = currentFilter
         self.theme = theme
         self.enableHaptics = enableHaptics
         self.onFilterSelected = onFilterSelected
         self.starCategories = Array(StarCategory.allCases.filter { $0 != .none })
-        
+
         self.segmentedControl = UISegmentedControl(items: [
             LocalizedString("bookmarks.filter.all"),
             LocalizedString("bookmarks.filter.unread"),
             LocalizedString("bookmarks.filter.read"),
         ])
-        
+
         switch currentFilter {
         case .all: segmentedControl.selectedSegmentIndex = 0
         case .unreadOnly: segmentedControl.selectedSegmentIndex = 1
         case .readOnly: segmentedControl.selectedSegmentIndex = 2
         default: segmentedControl.selectedSegmentIndex = 0
         }
-        
+
         self.stackView = UIStackView()
-        
+
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     func setSourceButtonRect(_ rect: CGRect) {
         sourceButtonRect = rect
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setupUI() {
         view.backgroundColor = UIColor.black.withAlphaComponent(Layout.backdropOpacity)
-        
+
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backdropTapped(_:)))
         view.addGestureRecognizer(tapGesture)
-        
+
         view.addSubview(contentContainerView)
 
         // Use glass effect for iOS 26+ when accessibility allows, otherwise solid background
@@ -109,12 +109,12 @@ private class FilterMenuViewController: UIViewController {
             effectView.translatesAutoresizingMaskIntoConstraints = false
             effectView.layer.cornerRadius = Layout.cornerRadius
             effectView.layer.masksToBounds = true
-            
+
             let themeMode = theme[string: "mode"]
             effectView.overrideUserInterfaceStyle = themeMode == "dark" ? .dark : .light
-            
+
             visualEffectView = effectView
-            
+
             contentContainerView.addSubview(effectView)
             NSLayoutConstraint.activate([
                 effectView.topAnchor.constraint(equalTo: contentContainerView.topAnchor),
@@ -127,7 +127,7 @@ private class FilterMenuViewController: UIViewController {
             contentContainerView.layer.masksToBounds = true
         }
     }
-    
+
     @objc private func backdropTapped(_ gesture: UITapGestureRecognizer) {
         let location = gesture.location(in: view)
         if !contentContainerView.frame.contains(location) {
@@ -165,7 +165,7 @@ private class FilterMenuViewController: UIViewController {
             }
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -175,14 +175,14 @@ private class FilterMenuViewController: UIViewController {
         view.accessibilityViewIsModal = true
         contentContainerView.accessibilityLabel = LocalizedString("bookmarks.filter.menu.accessibility-label")
         contentContainerView.accessibilityHint = LocalizedString("bookmarks.filter.menu.accessibility-hint")
-        
+
         contentContainerView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         contentContainerView.alpha = 0
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         if UIAccessibility.isReduceMotionEnabled {
             UIView.animate(withDuration: 0.2) { [weak self] in
                 self?.contentContainerView.transform = .identity
@@ -202,14 +202,14 @@ private class FilterMenuViewController: UIViewController {
             )
         }
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if positioningConstraints.isEmpty {
             positionContentContainer()
         }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isBeingDismissed || isMovingFromParent {
@@ -218,13 +218,13 @@ private class FilterMenuViewController: UIViewController {
             colorButtons.forEach { $0.isHidden = true }
         }
     }
-    
+
     private func setupContent() {
         segmentedControl.backgroundColor = theme["navigationBarBackgroundColor"]
         segmentedControl.selectedSegmentTintColor = theme["tintColor"]
         segmentedControl.layer.cornerRadius = Layout.segmentedControlHeight / 2
         segmentedControl.clipsToBounds = true
-        
+
         if let textColor = theme[uicolor: "listTextColor"] {
             segmentedControl.setTitleTextAttributes([
                 .foregroundColor: textColor,
@@ -238,42 +238,42 @@ private class FilterMenuViewController: UIViewController {
             ], for: .selected)
         }
         segmentedControl.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
-        
+
         stackView.axis = .vertical
         stackView.spacing = Layout.verticalSpacing
         stackView.alignment = .center
         stackView.distribution = .equalCentering
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         if #available(iOS 26.0, *), let effectView = visualEffectView {
             effectView.contentView.addSubview(stackView)
         } else {
             contentContainerView.addSubview(stackView)
         }
-        
+
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             segmentedControl.heightAnchor.constraint(equalToConstant: Layout.segmentedControlHeight),
             segmentedControl.widthAnchor.constraint(equalToConstant: Layout.containerWidth - 2 * Layout.contentPadding)
         ])
-        
+
         stackView.addArrangedSubview(segmentedControl)
-        
+
         if !starCategories.isEmpty {
             let colorGridView = UIView()
             stackView.addArrangedSubview(colorGridView)
-            
+
             let gridWidth = 3 * Layout.colorButtonSize + 2 * Layout.colorButtonSpacing
             let gridHeight = 2 * Layout.colorButtonSize + Layout.verticalSpacing
-            
+
             for (index, category) in starCategories.enumerated() {
                 let button = createColorButton(for: category)
                 colorButtons.append(button)
                 colorGridView.addSubview(button)
-                
+
                 let row = index / 3
                 let col = index % 3
-                
+
                 button.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
                     button.widthAnchor.constraint(equalToConstant: Layout.colorButtonSize),
@@ -282,14 +282,14 @@ private class FilterMenuViewController: UIViewController {
                     button.topAnchor.constraint(equalTo: colorGridView.topAnchor, constant: CGFloat(row) * (Layout.colorButtonSize + Layout.verticalSpacing))
                 ])
             }
-            
+
             colorGridView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 colorGridView.heightAnchor.constraint(equalToConstant: gridHeight),
                 colorGridView.widthAnchor.constraint(equalToConstant: gridWidth)
             ])
         }
-        
+
         if #available(iOS 26.0, *), let effectView = visualEffectView {
             NSLayoutConstraint.activate([
                 stackView.centerYAnchor.constraint(equalTo: effectView.contentView.centerYAnchor),
@@ -309,7 +309,7 @@ private class FilterMenuViewController: UIViewController {
                 stackView.bottomAnchor.constraint(lessThanOrEqualTo: contentContainerView.bottomAnchor, constant: -Layout.contentPadding)
             ])
         }
-        
+
         preferredContentSize = CGSize(width: Layout.containerWidth, height: Layout.containerHeight)
     }
 
@@ -321,13 +321,14 @@ private class FilterMenuViewController: UIViewController {
 
         let containerX = max(16, min(sourceRect.maxX - Layout.containerWidth, view.bounds.width - Layout.containerWidth - 16))
 
-        let navBarBottom = navigationController?.navigationBar.frame.maxY ?? 100
-        let safeAreaTop = view.safeAreaInsets.top
-        let containerY = max(navBarBottom + 8, safeAreaTop + 8)
+        // Anchor just below the source button. If there's not enough room, flip
+        // above. The presented modal has no navigationController, so don't fall
+        // back to a hardcoded nav-bar-bottom — that produces a large dead zone.
+        let containerY = sourceRect.maxY + 8
         let finalY = (containerY + Layout.containerHeight > view.bounds.height - 44)
-            ? sourceRect.minY - Layout.containerHeight - 8
+            ? max(view.safeAreaInsets.top + 8, sourceRect.minY - Layout.containerHeight - 8)
             : containerY
-        
+
         NSLayoutConstraint.deactivate(positioningConstraints)
         positioningConstraints = [
             contentContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: containerX),
@@ -337,7 +338,7 @@ private class FilterMenuViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(positioningConstraints)
     }
-    
+
     private func centerContentContainer() {
         NSLayoutConstraint.deactivate(positioningConstraints)
         positioningConstraints = [
@@ -346,7 +347,7 @@ private class FilterMenuViewController: UIViewController {
             contentContainerView.widthAnchor.constraint(equalToConstant: Layout.containerWidth),
             contentContainerView.heightAnchor.constraint(equalToConstant: Layout.containerHeight)
         ]
-        
+
         NSLayoutConstraint.activate(positioningConstraints)
     }
 
@@ -378,11 +379,11 @@ private class FilterMenuViewController: UIViewController {
             colorKey = "unreadBadgeBlueColor"
             colorName = "Blue"
         }
-        
+
         if let color = theme[uicolor: colorKey] {
             button.backgroundColor = color
         }
-        
+
         button.layer.cornerRadius = Layout.colorButtonSize / 2
         button.clipsToBounds = false
 
@@ -392,13 +393,13 @@ private class FilterMenuViewController: UIViewController {
             }
             return false
         }()
-        
+
         button.accessibilityLabel = String(format: LocalizedString("bookmarks.filter.star.accessibility-label"), colorName)
         button.accessibilityHint = isSelected
             ? LocalizedString("bookmarks.filter.star.accessibility-hint.selected")
             : LocalizedString("bookmarks.filter.star.accessibility-hint.unselected")
         button.accessibilityTraits = isSelected ? [.button, .selected] : .button
-        
+
         if isSelected {
             button.layer.borderWidth = 3
             button.layer.borderColor = theme[uicolor: "tintColor"]?.cgColor ?? UIColor.systemBlue.cgColor
@@ -410,12 +411,12 @@ private class FilterMenuViewController: UIViewController {
             button.layer.borderWidth = 0
             button.layer.shadowOpacity = 0
         }
-        
+
         button.addTarget(self, action: #selector(colorButtonTouchDown(_:)), for: .touchDown)
         button.addTarget(self, action: #selector(colorButtonTouchUp(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
         button.addTarget(self, action: #selector(colorButtonTapped(_:)), for: .touchUpInside)
         button.tag = Int(category.rawValue)
-        
+
         return button
     }
 
@@ -434,7 +435,7 @@ private class FilterMenuViewController: UIViewController {
                 }
             )
         }
-        
+
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }
@@ -458,7 +459,7 @@ private class FilterMenuViewController: UIViewController {
             )
         }
     }
-    
+
     @objc private func colorButtonTapped(_ sender: UIButton) {
         let category = StarCategory(rawValue: Int16(sender.tag)) ?? .orange
 
@@ -522,17 +523,17 @@ private class FilterMenuViewController: UIViewController {
         case .starCategory(_): segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
         default: segmentedControl.selectedSegmentIndex = 0
         }
-        
+
         for button in colorButtons {
             let category = StarCategory(rawValue: Int16(button.tag)) ?? .orange
-            
+
             let isSelected = {
                 if case .starCategory(let currentCategory) = currentFilter {
                     return currentCategory == category
                 }
                 return false
             }()
-            
+
             let colorName = {
                 switch category {
                 case .orange: return "Orange"
@@ -544,13 +545,13 @@ private class FilterMenuViewController: UIViewController {
                 case .none: return "Blue"
                 }
             }()
-            
+
             button.accessibilityLabel = String(format: LocalizedString("bookmarks.filter.star.accessibility-label"), colorName)
             button.accessibilityHint = isSelected
                 ? LocalizedString("bookmarks.filter.star.accessibility-hint.selected")
                 : LocalizedString("bookmarks.filter.star.accessibility-hint.unselected")
             button.accessibilityTraits = isSelected ? [.button, .selected] : .button
-            
+
             UIView.animate(
                 withDuration: 0.3,
                 delay: 0,
@@ -577,18 +578,32 @@ private class FilterMenuViewController: UIViewController {
     }
 }
 
-final class BookmarksTableViewController: TableViewController {
-    
+final class BookmarksTableViewController: HostedCollectionViewController {
+
     private var cancellables: Set<AnyCancellable> = []
     private var dataSource: ThreadListDataSource?
-    private var lastKnownTableWidth: CGFloat = 0
     @FoilDefaultStorage(Settings.enableHaptics) private var enableHaptics
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
     private var latestPage = 0
-    private var loadMoreFooter: LoadMoreFooter?
+    private var loadMoreFooter: LoadMoreCollectionFooter?
     private let managedObjectContext: NSManagedObjectContext
     @FoilDefaultStorage(Settings.showThreadTags) private var showThreadTags
     @FoilDefaultStorage(Settings.bookmarksSortedUnread) private var sortUnreadToTop
+    private let searchBar: UISearchBar = {
+        let bar = UISearchBar()
+        bar.placeholder = LocalizedString("bookmarks.search.placeholder")
+        bar.showsCancelButton = true
+        bar.searchBarStyle = .minimal
+        bar.alpha = 0
+        return bar
+    }()
+    private let searchBarContainer: UIView = {
+        let view = UIView()
+        view.clipsToBounds = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    private var searchBarHeightConstraint: NSLayoutConstraint!
 
     private var currentFilter: BookmarkFilter = {
         if let saved = UserDefaults.standard.string(forKey: UserDefaultsKey.bookmarksFilter) {
@@ -600,21 +615,18 @@ final class BookmarksTableViewController: TableViewController {
     private var filterButtonView: UIButton?
     private var searchButton: UIBarButtonItem!
     private var searchButtonView: UIButton?
-    private var searchBar: UISearchBar!
-    private var searchBarContainerView: UIView!
     private var isSearchVisible = false
     private var filterPopoverController: UIViewController?
-    
 
     private lazy var multiplexer: ScrollViewDelegateMultiplexer = {
-        return ScrollViewDelegateMultiplexer(scrollView: tableView)
+        return ScrollViewDelegateMultiplexer(scrollView: collectionView)
     }()
 
     init(managedObjectContext: NSManagedObjectContext) {
         self.managedObjectContext = managedObjectContext
-        
-        super.init(style: .plain)
-        
+
+        super.init(collectionViewLayout: BookmarksTableViewController.makeLayout(separatorLeadingInset: 0, separatorColor: nil))
+
         title = LocalizedString("bookmarks.title")
 
         tabBarItem.image = UIImage(named: "bookmarks")
@@ -622,7 +634,6 @@ final class BookmarksTableViewController: TableViewController {
 
         setupFilterButton()
         setupSearchButton()
-        setupSearchBar()
 
         if #available(iOS 26.0, *),
            UIDevice.current.userInterfaceIdiom == .pad,
@@ -639,8 +650,7 @@ final class BookmarksTableViewController: TableViewController {
             navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: stack)]
 
             // Balance the right side so the title lands near the nav-bar
-            // center. Use a customView spacer (UINavigationBar honors an
-            // explicit customView width more reliably than .fixedSpace).
+            // center.
             let spacer = UIBarButtonItem(customView: UIView(frame: CGRect(x: 0, y: 0, width: 72, height: 44)))
             navigationItem.leftBarButtonItems = [editButtonItem, spacer]
         } else {
@@ -650,7 +660,52 @@ final class BookmarksTableViewController: TableViewController {
 
         themeDidChange()
     }
-    
+
+    private static func makeLayout(separatorLeadingInset: CGFloat, separatorColor: UIColor?) -> UICollectionViewLayout {
+        var config = UICollectionLayoutListConfiguration(appearance: .plain)
+        config.backgroundColor = .clear
+
+        var separatorConfig = UIListSeparatorConfiguration(listAppearance: .plain)
+        separatorConfig.bottomSeparatorInsets = NSDirectionalEdgeInsets(top: 0, leading: separatorLeadingInset, bottom: 0, trailing: 0)
+        if let separatorColor {
+            separatorConfig.color = separatorColor
+        }
+        config.separatorConfiguration = separatorConfig
+
+        return CollectionViewController.makeListLayout(using: config)
+    }
+
+    private func rebuildLayout() {
+        let inset = ThreadListCell.separatorLeftInset(showsTagAndRating: showThreadTags, inTableWithWidth: collectionView.bounds.width)
+
+        var config = UICollectionLayoutListConfiguration(appearance: .plain)
+        config.backgroundColor = .clear
+
+        var separatorConfig = UIListSeparatorConfiguration(listAppearance: .plain)
+        separatorConfig.bottomSeparatorInsets = NSDirectionalEdgeInsets(top: 0, leading: inset, bottom: 0, trailing: 0)
+        if let color = theme[uicolor: "listSeparatorColor"] {
+            separatorConfig.color = color
+        }
+        config.separatorConfiguration = separatorConfig
+
+        config.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
+            guard let self, self.collectionView.isEditing else { return nil }
+            let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete")) { [weak self] _, _, completion in
+                guard let self, let thread = self.dataSource?.thread(at: indexPath) else {
+                    completion(false); return
+                }
+                self.setThread(thread, isBookmarked: false)
+                completion(true)
+            }
+            let configuration = UISwipeActionsConfiguration(actions: [delete])
+            configuration.performsFirstActionWithFullSwipe = false
+            return configuration
+        }
+
+        let layout = CollectionViewController.makeListLayout(using: config)
+        collectionView.setCollectionViewLayout(layout, animated: false)
+    }
+
     private func setupFilterButton() {
         let label = LocalizedString("bookmarks.filter.button.accessibility-label")
 
@@ -710,32 +765,12 @@ final class BookmarksTableViewController: TableViewController {
             searchButton = UIBarButtonItem(customView: button)
         }
     }
-    
-    private func setupSearchBar() {
-        searchBar = UISearchBar()
-        searchBar.delegate = self
-        searchBar.placeholder = LocalizedString("bookmarks.search.placeholder")
-        searchBar.showsCancelButton = true
-        searchBar.searchBarStyle = .minimal
-        searchBar.isHidden = true
-        
-        searchBarContainerView = UIView()
-        searchBarContainerView.addSubview(searchBar)
-        
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: searchBarContainerView.topAnchor, constant: 8),
-            searchBar.leadingAnchor.constraint(equalTo: searchBarContainerView.leadingAnchor, constant: 16),
-            searchBar.trailingAnchor.constraint(equalTo: searchBarContainerView.trailingAnchor, constant: -16),
-            searchBar.heightAnchor.constraint(equalToConstant: 44)
-        ])
-    }
-    
+
     @objc private func filterButtonTapped() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }
-        
+
         if let existingPopover = filterPopoverController {
             existingPopover.dismiss(animated: true) { [weak self] in
                 self?.filterPopoverController = nil
@@ -743,7 +778,7 @@ final class BookmarksTableViewController: TableViewController {
             }
             return
         }
-        
+
         let filterMenuVC = FilterMenuViewController(
             currentFilter: currentFilter,
             theme: theme,
@@ -757,90 +792,72 @@ final class BookmarksTableViewController: TableViewController {
             self?.filterPopoverController = nil
             self?.updateButtonColors()
         }
-        
+
         filterMenuVC.modalPresentationStyle = .overCurrentContext
         filterMenuVC.modalTransitionStyle = .crossDissolve
         filterMenuVC.presentationController?.delegate = self
-        
+
         let anchor: UIView? = filterButtonView ?? filterButton?.customView
         if let anchor, anchor.superview != nil {
             let buttonFrameInView = view.convert(anchor.bounds, from: anchor)
             filterMenuVC.setSourceButtonRect(buttonFrameInView)
         }
-        
+
         filterPopoverController = filterMenuVC
         updateButtonColors()
         present(filterMenuVC, animated: false)
     }
-    
+
     @objc private func searchButtonTapped() {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }
-        
+
         toggleSearchBar()
     }
-    
+
     private func toggleSearchBar() {
+        isSearchVisible.toggle()
+
         if !isSearchVisible {
-            isSearchVisible = true
-            searchBar.isHidden = false
-            searchBar.alpha = 0
-
-            searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
-            tableView.tableHeaderView = searchBarContainerView
-            updateButtonColors()
-
-            UIView.animate(
-                withDuration: 0.4,
-                delay: 0,
-                usingSpringWithDamping: 0.8,
-                initialSpringVelocity: 0.3,
-                options: [.curveEaseInOut],
-                animations: {
-                    self.searchBarContainerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 52)
-                    self.tableView.tableHeaderView = self.searchBarContainerView
-                    self.searchBar.alpha = 1.0
-                },
-                completion: { _ in
-                    self.searchBar.becomeFirstResponder()
-                }
-            )
-        } else {
-            isSearchVisible = false
             searchBar.resignFirstResponder()
             searchBar.text = ""
             applyFilter(.all)
-
-            UIView.animate(
-                withDuration: 0.3,
-                delay: 0,
-                usingSpringWithDamping: 0.9,
-                initialSpringVelocity: 0.1,
-                options: [.curveEaseInOut],
-                animations: {
-                    self.searchBarContainerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 0)
-                    self.tableView.tableHeaderView = self.searchBarContainerView
-                    self.searchBar.alpha = 0.0
-                },
-                completion: { _ in
-                    self.searchBar.isHidden = true
-                }
-            )
         }
+
+        updateButtonColors()
+
+        UIView.animate(
+            withDuration: 0.4,
+            delay: 0,
+            usingSpringWithDamping: 0.8,
+            initialSpringVelocity: 0.3,
+            options: [.curveEaseInOut],
+            animations: { [weak self] in
+                guard let self else { return }
+                self.searchBarHeightConstraint.constant = self.isSearchVisible ? 52 : 0
+                self.searchBar.alpha = self.isSearchVisible ? 1 : 0
+                self.view.layoutIfNeeded()
+            },
+            completion: { [weak self] _ in
+                guard let self else { return }
+                if self.isSearchVisible {
+                    self.searchBar.becomeFirstResponder()
+                }
+            }
+        )
     }
-    
+
     private func applyFilter(_ filter: BookmarkFilter) {
         currentFilter = filter
         if let key = filter.persistenceKey {
             UserDefaults.standard.set(key, forKey: UserDefaultsKey.bookmarksFilter)
         }
-        dataSource = makeDataSource()
-        tableView.reloadData()
+        dataSource?.setBookmarkFilter(filter)
 
         updateButtonColors()
     }
-    
+
     private func updateButtonColors() {
         let isFilterActive: Bool
         switch currentFilter {
@@ -878,9 +895,8 @@ final class BookmarksTableViewController: TableViewController {
             let normalColor = theme[uicolor: "navigationBarTextColor"]
 
             let filterColor = (isFilterActive || isFilterMenuOpen) ? selectedColor : normalColor
-
             let searchColor = isSearchVisible ? selectedColor : normalColor
-            
+
             filterButton?.tintColor = filterColor
             filterButtonView?.tintColor = filterColor
 
@@ -903,6 +919,15 @@ final class BookmarksTableViewController: TableViewController {
         }
     }
 
+    private func applySearchBarTheme() {
+        searchBarContainer.backgroundColor = theme["listBackgroundColor"]
+        searchBar.barTintColor = theme["listBackgroundColor"]
+        searchBar.backgroundColor = theme["listBackgroundColor"]
+        searchBar.searchTextField.backgroundColor = theme["navigationBarBackgroundColor"]
+        searchBar.searchTextField.textColor = theme["listTextColor"]
+        searchBar.tintColor = theme["tintColor"]
+    }
+
     deinit {
         if isViewLoaded {
             multiplexer.removeDelegate(self)
@@ -915,12 +940,14 @@ final class BookmarksTableViewController: TableViewController {
             showsTagAndRating: showThreadTags,
             filter: currentFilter,
             managedObjectContext: managedObjectContext,
-            tableView: tableView
+            collectionView: collectionView,
+            supplementaryViewProvider: { _, _, _ in nil }
         )
+        dataSource.delegate = self
         dataSource.deletionDelegate = self
         return dataSource
     }
-    
+
     private func loadPage(page: Int) {
         if enableHaptics {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
@@ -939,7 +966,7 @@ final class BookmarksTableViewController: TableViewController {
                     } else {
                         disableLoadMore()
                     }
-                    
+
                     loadMoreFooter?.didFinish()
                 }
             } catch {
@@ -954,38 +981,76 @@ final class BookmarksTableViewController: TableViewController {
             }
         }
     }
-    
+
     private func enableLoadMore() {
         guard loadMoreFooter == nil else { return }
-        
-        loadMoreFooter = LoadMoreFooter(tableView: tableView, multiplexer: multiplexer, loadMore: { [weak self] loadMoreFooter in
+
+        loadMoreFooter = LoadMoreCollectionFooter(collectionView: collectionView, multiplexer: multiplexer, loadMore: { [weak self] _ in
             guard let self = self else { return }
             self.loadPage(page: self.latestPage + 1)
         })
     }
-    
+
     private func disableLoadMore() {
-        loadMoreFooter?.removeFromTableView()
+        loadMoreFooter?.removeFromCollectionView()
         loadMoreFooter = nil
     }
-    
+
     // MARK: View lifecycle
-    
+
+    override func loadView() {
+        // Custom view hierarchy:
+        //   view
+        //   ├── searchBarContainer (height 0 when hidden, 52 when shown)
+        //   │   └── searchBar
+        //   └── collectionView (top pinned to searchBarContainer.bottom)
+        // Hosting the search bar OUTSIDE the collection view sidesteps UIKit's
+        // `_resignOrRebaseFirstResponderViewWithIndexPathMapping`, which silently
+        // resigns first responder on supplementary views during every snapshot
+        // apply (UIKit only protects cells, not supplementary views).
+        let containerView = UIView()
+
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBarContainer.addSubview(searchBar)
+
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+
+        containerView.addSubview(searchBarContainer)
+        containerView.addSubview(collectionView)
+
+        searchBarHeightConstraint = searchBarContainer.heightAnchor.constraint(equalToConstant: 0)
+
+        NSLayoutConstraint.activate([
+            searchBarContainer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            searchBarContainer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            searchBarContainer.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor),
+            searchBarHeightConstraint,
+
+            searchBar.topAnchor.constraint(equalTo: searchBarContainer.topAnchor, constant: 8),
+            searchBar.leadingAnchor.constraint(equalTo: searchBarContainer.leadingAnchor, constant: 16),
+            searchBar.trailingAnchor.constraint(equalTo: searchBarContainer.trailingAnchor, constant: -16),
+            searchBar.heightAnchor.constraint(equalToConstant: 44),
+
+            collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: searchBarContainer.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+        ])
+
+        self.view = containerView
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        searchBar.delegate = self
+        applySearchBarTheme()
+
         multiplexer.addDelegate(self)
 
-        tableView.insetsContentViewsToSafeArea = false
-        tableView.hideExtraneousSeparators()
-
-        searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
-        searchBarContainerView.clipsToBounds = true
-        tableView.tableHeaderView = searchBarContainerView
-
         dataSource = makeDataSource()
-        tableView.reloadData()
-        
+        rebuildLayout()
+
         pullToRefreshBlock = { [weak self] in self?.refresh() }
 
         $handoffEnabled
@@ -999,7 +1064,7 @@ final class BookmarksTableViewController: TableViewController {
             .sink { [weak self] _ in
                 guard let self else { return }
                 dataSource = makeDataSource()
-                tableView.reloadData()
+                rebuildLayout()
             }
             .store(in: &cancellables)
     }
@@ -1011,20 +1076,14 @@ final class BookmarksTableViewController: TableViewController {
             UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         }
 
-        tableView.setEditing(editing, animated: true)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        let currentWidth = tableView.bounds.width
-        if lastKnownTableWidth != 0 && lastKnownTableWidth != currentWidth {
-            ThreadListCell.lastKnownContentViewWidth = nil
-        }
-        lastKnownTableWidth = currentWidth
+        collectionView.isEditing = editing
     }
 
     override func themeDidChange() {
+        if isViewLoaded {
+            rebuildLayout()
+        }
+
         super.themeDidChange()
 
         loadMoreFooter?.themeDidChange()
@@ -1034,122 +1093,93 @@ final class BookmarksTableViewController: TableViewController {
         }
         updateButtonColors()
 
-        if let searchBar = searchBar {
-            searchBarContainerView.backgroundColor = theme["listBackgroundColor"]
-            searchBar.barTintColor = theme["listBackgroundColor"]
-            searchBar.backgroundColor = theme["listBackgroundColor"]
-            searchBar.searchTextField.backgroundColor = theme["navigationBarBackgroundColor"]
-            searchBar.searchTextField.textColor = theme["listTextColor"]
-            searchBar.tintColor = theme["tintColor"]
+        if isViewLoaded {
+            applySearchBarTheme()
         }
-        
+
         let themeMode = theme[string: "mode"]
         let userInterfaceStyle: UIUserInterfaceStyle = themeMode == "light" ? .light : .dark
-        
-        overrideUserInterfaceStyle = userInterfaceStyle
-        tableView.overrideUserInterfaceStyle = userInterfaceStyle
-        view.overrideUserInterfaceStyle = userInterfaceStyle
-        
-        filterButtonView?.overrideUserInterfaceStyle = userInterfaceStyle
 
-        tableView.separatorColor = theme["listSeparatorColor"]
-        
-        tableView.separatorInset.left = ThreadListCell.separatorLeftInset(
-            showsTagAndRating: showThreadTags,
-            inTableWithWidth: tableView.bounds.width
-        )
+        overrideUserInterfaceStyle = userInterfaceStyle
+        collectionView.overrideUserInterfaceStyle = userInterfaceStyle
+        view.overrideUserInterfaceStyle = userInterfaceStyle
+
+        filterButtonView?.overrideUserInterfaceStyle = userInterfaceStyle
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         prepareUserActivity()
-        
-        if tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 {
+
+        if collectionView.numberOfSections > 0, collectionView.numberOfItems(inSection: 0) > 0 {
             enableLoadMore()
         }
-        
+
         becomeFirstResponder()
-        
-        if tableView.numberOfSections == 0
-            || tableView.numberOfRows(inSection: 0) == 0
+
+        if collectionView.numberOfSections == 0
+            || collectionView.numberOfItems(inSection: 0) == 0
             || RefreshMinder.sharedMinder.shouldRefresh(.bookmarks)
         {
             refresh()
         }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         undoManager.removeAllActions()
-        
+
         resignFirstResponder()
     }
-    
+
     // MARK: Actions
 
     private func refresh() {
-        // Snap any in-flight search bar animation to its terminal state so
-        // pull-to-refresh doesn't fight the spring animation.
-        if isSearchVisible, searchBarContainerView.frame.height != 52 {
-            searchBarContainerView.layer.removeAllAnimations()
-            searchBar.layer.removeAllAnimations()
-            searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 52)
-            searchBar.alpha = 1.0
-            tableView.tableHeaderView = searchBarContainerView
-        } else if !isSearchVisible, !searchBar.isHidden {
-            searchBarContainerView.layer.removeAllAnimations()
-            searchBar.layer.removeAllAnimations()
-            searchBarContainerView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
-            searchBar.alpha = 0.0
-            searchBar.isHidden = true
-            tableView.tableHeaderView = searchBarContainerView
-        }
-
         startAnimatingPullToRefresh()
         loadPage(page: 1)
     }
-    
+
     // MARK: Handoff
-    
+
     private func prepareUserActivity() {
         guard handoffEnabled else {
             userActivity = nil
             return
         }
-        
+
         userActivity = NSUserActivity(activityType: Handoff.ActivityType.listingThreads)
         userActivity?.needsSave = true
     }
-    
+
     override func updateUserActivityState(_ activity: NSUserActivity) {
         activity.route = .bookmarks
         activity.title = LocalizedString("handoff.bookmarks-title")
 
         logger.debug("handoff activity set: \(activity.activityType) with \(activity.userInfo ?? [:])")
     }
-    
+
     // MARK: Undo
-    
+
     override var canBecomeFirstResponder: Bool {
         return true
     }
-    
+
     override var undoManager: UndoManager {
         return _undoManager
     }
-    
+
     private let _undoManager: UndoManager = {
         let undoManager = UndoManager()
         undoManager.levelsOfUndo = 1
         return undoManager
     }()
-    
+
     @objc private func setThread(_ thread: AwfulThread, isBookmarked: Bool) {
         (undoManager.prepare(withInvocationTarget: self) as AnyObject).setThread(thread, isBookmarked: !isBookmarked)
         undoManager.setActionName("Delete")
-        
+
         thread.bookmarked = false
 
         Task { [weak self] in
@@ -1161,55 +1191,27 @@ final class BookmarksTableViewController: TableViewController {
             }
         }
     }
-    
+
     // MARK: Gunk
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-// MARK: UITableViewDelegate
+// MARK: UICollectionViewDelegate
 extension BookmarksTableViewController {
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return dataSource!.tableView(tableView, heightForRowAt: indexPath)
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let thread = dataSource!.thread(at: indexPath)
         let postsViewController = PostsPageViewController(thread: thread)
         // SA: For an unread thread, the Forums will interpret "next unread page" to mean "last page", which is not very helpful.
         let targetPage = thread.beenSeen ? ThreadPage.nextUnread : .first
         postsViewController.loadPage(targetPage, updatingCache: true, updatingLastReadPost: true)
         showDetailViewController(postsViewController, sender: self)
-        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+        collectionView.deselectItem(at: indexPath, animated: true)
     }
 
-    override func tableView(
-        _ tableView: UITableView,
-        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
-    ) -> UISwipeActionsConfiguration? {
-        if tableView.isEditing {
-            let delete = UIContextualAction(style: .destructive, title: LocalizedString("table-view.action.delete"), handler: { action, view, completion in
-                guard let thread = self.dataSource?.thread(at: indexPath) else { return }
-                self.setThread(thread, isBookmarked: false)
-                completion(true)
-            })
-            let config = UISwipeActionsConfiguration(actions: [delete])
-            config.performsFirstActionWithFullSwipe = false
-            return config
-        }
-        return nil
-    }
-
-    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        if tableView.isEditing {
-            return .delete
-        }
-        return .none
-    }
-
-    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let configuration = UIContextMenuConfiguration.makeFromThreadList(
             for: dataSource!.thread(at: indexPath),
             presenter: self
@@ -1218,6 +1220,12 @@ extension BookmarksTableViewController {
             configuration.preferredMenuElementOrder = .fixed
         }
         return configuration
+    }
+}
+
+extension BookmarksTableViewController: ThreadListDataSourceDelegate {
+    func themeForItem(at indexPath: IndexPath, in dataSource: ThreadListDataSource) -> Theme {
+        return theme
     }
 }
 
