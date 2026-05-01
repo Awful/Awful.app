@@ -203,6 +203,14 @@ final class ImmersiveModeManager: NSObject {
         return postsView.effectiveBottomInset + toolbar.bounds.height
     }
 
+    func effectiveTopInset(fallback: CGFloat) -> CGFloat {
+        guard immersiveModeEnabled, immersiveProgress > 0 else { return fallback }
+        let safeAreaTop = postsView?.window?.safeAreaInsets.top
+            ?? postsView?.safeAreaInsets.top
+            ?? 0
+        return fallback - (fallback - safeAreaTop) * immersiveProgress
+    }
+
     func updateGradientLayout(in containerView: UIView) {
         guard #available(iOS 26.0, *) else { return }
 

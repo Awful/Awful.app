@@ -46,6 +46,12 @@ final class PostsPageView: UIView {
             : layoutMargins.bottom
     }
 
+    var topInsetForPostFraming: CGFloat {
+        immersiveModeManager.effectiveTopInset(
+            fallback: renderView.scrollView.contentInset.top
+        )
+    }
+
     /// Weak reference to the posts page view controller to avoid responder chain traversal
     weak var postsPageViewController: PostsPageViewController?
     

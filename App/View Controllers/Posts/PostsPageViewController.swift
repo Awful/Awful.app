@@ -446,7 +446,7 @@ final class PostsPageViewController: ViewController {
                 showHiddenSeenPosts()
             }
 
-            postsView.renderView.jumpToPost(identifiedBy: post.postID)
+            postsView.renderView.jumpToPost(identifiedBy: post.postID, topOffset: postsView.topInsetForPostFraming)
         }
     }
 
@@ -2068,7 +2068,7 @@ extension PostsPageViewController: RenderViewDelegate {
         }
 
         if let postID = jumpToPostIDAfterLoading {
-            postsView.renderView.jumpToPost(identifiedBy: postID)
+            postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
         } else if let newFractionalOffset = scrollToFractionAfterLoading {
             var fractionalOffset = postsView.renderView.scrollView.fractionalContentOffset
             fractionalOffset.y = newFractionalOffset
@@ -2088,7 +2088,7 @@ extension PostsPageViewController: RenderViewDelegate {
 
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if let postID = jumpToPostIDAfterLoading {
-                postsView.renderView.jumpToPost(identifiedBy: postID)
+                postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
             } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
                 var offset = postsView.renderView.scrollView.fractionalContentOffset
                 offset.y = fraction
@@ -2135,7 +2135,7 @@ extension PostsPageViewController: RenderViewDelegate {
                 if i < hiddenPosts {
                     showHiddenSeenPosts()
                 }
-                postsView.renderView.jumpToPost(identifiedBy: postID, animated: true)
+                postsView.renderView.jumpToPost(identifiedBy: postID, animated: true, topOffset: postsView.topInsetForPostFraming)
             } else {
                 AppDelegate.instance.open(route: route)
             }
