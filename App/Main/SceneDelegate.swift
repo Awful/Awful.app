@@ -3,6 +3,7 @@
 //  Copyright 2026 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulSettings
 import AwfulTheming
 import CoreData
 import os
@@ -13,23 +14,24 @@ private let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: 
 /// Dedicated `NSUserActivity.activityType` for scene state restoration. Distinct from the
 /// `Handoff.ActivityType` values so the restoration payload can carry any `AwfulRoute`
 /// (including list tabs like `.bookmarks` / `.forumList`) without having to fit into Handoff's
-/// narrower schema.
-private let restorationActivityType = "com.awfulapp.Awful.activity.scene-restoration"
+/// narrower schema. Must be present in `Info.plist`'s `NSUserActivityTypes` array — types
+/// missing from that array are silently dropped by iOS on restore.
+let restorationActivityType = "com.awfulapp.Awful.activity.scene-restoration"
 
 /// `NSUserActivity.userInfo` key carrying the restored primary route's `httpURL` string.
-private let restorationPrimaryRouteKey = "AwfulRestorationPrimaryRoute"
+let restorationPrimaryRouteKey = "AwfulRestorationPrimaryRoute"
 
 /// `NSUserActivity.userInfo` key carrying the vertical scroll fraction (Double, 0...1) for a
 /// restored `PostsPageViewController` or `MessageViewController`.
-private let restorationScrollFractionKey = "AwfulRestorationScrollFraction"
+let restorationScrollFractionKey = "AwfulRestorationScrollFraction"
 
 /// `NSUserActivity.userInfo` key carrying the `hiddenPosts` count for a restored
 /// `PostsPageViewController`.
-private let restorationHiddenPostsKey = "AwfulRestorationHiddenPosts"
+let restorationHiddenPostsKey = "AwfulRestorationHiddenPosts"
 
 /// `NSUserActivity.userInfo` key carrying the swipe-from-right-edge unpop stack for the visible
 /// primary `NavigationController`, encoded as an array of `AwfulRoute.httpURL` strings.
-private let restorationUnpopRoutesKey = "AwfulRestorationUnpopRoutes"
+let restorationUnpopRoutesKey = "AwfulRestorationUnpopRoutes"
 
 /// `NSUserActivity.userInfo` key carrying the selected sidebar tab's root route (e.g.
 /// `.forumList` / `.bookmarks` / `.messagesList` / `.settings`), encoded as its `httpURL`
@@ -38,13 +40,21 @@ private let restorationUnpopRoutesKey = "AwfulRestorationUnpopRoutes"
 /// On iPhone this records the tab the primary navigation stack was rooted at, which we
 /// re-select on replay before pushing the detail route so `showPostsViewController` lands
 /// in the right tab's nav stack.
-private let restorationSidebarTabKey = "AwfulRestorationSidebarTab"
+let restorationSidebarTabKey = "AwfulRestorationSidebarTab"
 
 /// `NSUserActivity.userInfo` key carrying the deepest non-root `RestorableLocation` on the
 /// selected tab's navigation stack (e.g. `.forum(id:)` when the user had drilled into a
 /// specific forum's thread list). Replayed between the sidebar tab selection and the detail
 /// route so the mid-stack view (thread list) is rebuilt before the leaf (thread detail).
-private let restorationPrimaryDeepRouteKey = "AwfulRestorationPrimaryDeepRoute"
+let restorationPrimaryDeepRouteKey = "AwfulRestorationPrimaryDeepRoute"
+
+/// `NSUserActivity.userInfo` key for the topmost-visible post's ID. Anchoring on a stable
+/// post identifier survives both content growth and rotation between save and restore.
+let restorationAnchorPostIDKey = "AwfulRestorationAnchorPostID"
+
+/// `NSUserActivity.userInfo` key for the pixel offset above the anchor post's top edge
+/// (Double, positive = scrolled into the post). Combined with `restorationAnchorPostIDKey`.
+let restorationAnchorDeltaKey = "AwfulRestorationAnchorDelta"
 
 /// `UserDefaults` key for a fallback copy of the scene's most recent restoration activity.
 ///
@@ -53,7 +63,7 @@ private let restorationPrimaryDeepRouteKey = "AwfulRestorationPrimaryDeepRoute"
 /// so a subsequent crash or `Stop` from Xcode leaves `session.stateRestorationActivity` nil and
 /// restoration silently fails. We work around this by snapshotting the same payload into
 /// `UserDefaults` on every background transition, and falling back to it on cold launch.
-private let restorationFallbackDefaultsKey = "AwfulSceneRestorationFallback"
+let restorationFallbackDefaultsKey = "AwfulSceneRestorationFallback"
 
 /// Single window scene delegate. Adopting `UIScene` is what gives us iOS-managed state restoration
 /// on iOS 13+: when the system kills our scene to reclaim memory, it will replay the
@@ -62,6 +72,8 @@ private let restorationFallbackDefaultsKey = "AwfulSceneRestorationFallback"
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+
+    @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
 
     private var openCopiedURLController: OpenCopiedURLController?
 
@@ -97,6 +109,13 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let urlContext = connectionOptions.urlContexts.first,
            let route = try? AwfulRoute(urlContext.url) {
             pendingLaunchRoute = route
+        } else if let restorationActivity = connectionOptions.userActivities
+                    .first(where: { $0.activityType == restorationActivityType })
+        {
+            // Either `connectionOptions.userActivities.first` or `session.stateRestorationActivity`
+            // can carry the restoration activity (Apple's canonical pattern). Without this match
+            // the next branch's Handoff-only `userActivity.route` would drop it.
+            pendingRestorationActivity = restorationActivity
         } else if let userActivity = connectionOptions.userActivities.first,
                   let route = userActivity.route {
             pendingLaunchRoute = route
@@ -132,9 +151,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func snapshotFallback(for scene: UIScene) {
         if let activity = stateRestorationActivity(for: scene) {
             saveFallbackRestorationActivity(activity)
-        } else {
-            clearFallbackRestorationActivity()
         }
+        // Don't clear the fallback when the current snapshot is empty (e.g. user on the
+        // Leper's Colony tab, or a modal as topmost) — wiping a good earlier snapshot
+        // would leave cold launch with no saved location. Fallback is cleared on logout
+        // and after a successful replay instead.
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -167,6 +188,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             logger.debug("restoring scene to \(activity.activityType)")
             let savedFraction = (activity.userInfo?[restorationScrollFractionKey] as? Double).map { CGFloat($0) }
             let savedHiddenPosts = activity.userInfo?[restorationHiddenPostsKey] as? Int
+            let savedAnchorPostID = activity.userInfo?[restorationAnchorPostIDKey] as? String
+            let savedAnchorDelta = (activity.userInfo?[restorationAnchorDeltaKey] as? Double).map { CGFloat($0) }
             let savedUnpopRoutes = (activity.userInfo?[restorationUnpopRoutesKey] as? [String])?
                 .compactMap(URL.init(string:))
                 .compactMap { try? AwfulRoute($0) } ?? []
@@ -207,7 +230,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         route: route,
                         pendingPostsRestoration: PendingPostsRestoration(
                             scrollFraction: savedFraction,
-                            hiddenPosts: savedHiddenPosts
+                            hiddenPosts: savedHiddenPosts,
+                            anchorPostID: savedAnchorPostID,
+                            anchorDelta: savedAnchorDelta
                         )
                     )
                 case .message:
@@ -263,6 +288,11 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
               let route = stack.currentRestorationRoute
         else { return nil }
         let activity = NSUserActivity(activityType: restorationActivityType)
+        // `isEligibleForHandoff` defaults to `true`, so this assignment is load-bearing —
+        // gate on the same setting as per-VC Handoff activities.
+        activity.isEligibleForHandoff = handoffEnabled
+        activity.isEligibleForSearch = false
+        activity.isEligibleForPrediction = false
         activity.addUserInfoEntries(from: [restorationPrimaryRouteKey: route.httpURL.absoluteString])
         if let tabRoute = stack.currentSidebarTabRoute {
             activity.addUserInfoEntries(from: [restorationSidebarTabKey: tabRoute.httpURL.absoluteString])
@@ -276,6 +306,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             var extras: [AnyHashable: Any] = [restorationHiddenPostsKey: topPosts.currentHiddenPosts]
             if let fraction = topPosts.currentScrollFraction {
                 extras[restorationScrollFractionKey] = Double(fraction)
+            }
+            if let anchor = topPosts.currentScrollAnchor {
+                extras[restorationAnchorPostIDKey] = anchor.postID
+                extras[restorationAnchorDeltaKey] = Double(anchor.deltaY)
             }
             activity.addUserInfoEntries(from: extras)
         } else if let topMessage = stack.topMessageViewController,
@@ -293,7 +327,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 /// Persists the given restoration activity's payload to `UserDefaults` as a fallback for
 /// scenarios where iOS never calls `stateRestorationActivity(for:)` (Xcode Stop, crash in
 /// background). Only plist-safe keys are written.
-private func saveFallbackRestorationActivity(_ activity: NSUserActivity) {
+func saveFallbackRestorationActivity(_ activity: NSUserActivity) {
     guard let userInfo = activity.userInfo else {
         UserDefaults.standard.removeObject(forKey: restorationFallbackDefaultsKey)
         return
@@ -307,7 +341,7 @@ private func saveFallbackRestorationActivity(_ activity: NSUserActivity) {
 }
 
 /// Reconstructs an `NSUserActivity` from the `UserDefaults` fallback, if present.
-private func loadFallbackRestorationActivity() -> NSUserActivity? {
+func loadFallbackRestorationActivity() -> NSUserActivity? {
     guard let payload = UserDefaults.standard.dictionary(forKey: restorationFallbackDefaultsKey),
           let activityType = payload["activityType"] as? String
     else { return nil }
@@ -318,7 +352,7 @@ private func loadFallbackRestorationActivity() -> NSUserActivity? {
     return activity
 }
 
-private func clearFallbackRestorationActivity() {
+func clearFallbackRestorationActivity() {
     UserDefaults.standard.removeObject(forKey: restorationFallbackDefaultsKey)
 }
 

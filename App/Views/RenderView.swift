@@ -657,6 +657,22 @@ extension RenderView {
         }
     }
     
+    /// Returns the topmost-visible post's ID and the pixel offset of the viewport top above its top edge (positive = scrolled into the post).
+    func topVisiblePost() async -> (postID: String, deltaY: CGFloat)? {
+        let result: Any?
+        do {
+            result = try await webView.eval("if (window.Awful) Awful.topVisiblePost()")
+        } catch {
+            mentionError(error, explanation: "could not evaluate topVisiblePost")
+            return nil
+        }
+        guard let dict = result as? [String: Any],
+              let postID = dict["postID"] as? String,
+              let deltaY = dict["deltaY"] as? Double
+        else { return nil }
+        return (postID, CGFloat(deltaY))
+    }
+
     /// Returns the frame of the post at the given render view point, in render view coordinates.
     func findPostFrame(at renderViewPoint: CGPoint) async -> CGRect? {
         let point = convertToWebDocument(renderViewPoint: renderViewPoint)

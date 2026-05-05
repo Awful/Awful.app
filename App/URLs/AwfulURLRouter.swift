@@ -17,6 +17,8 @@ import UIKit
 struct PendingPostsRestoration {
     let scrollFraction: CGFloat?
     let hiddenPosts: Int?
+    let anchorPostID: String?
+    let anchorDelta: CGFloat?
 }
 
 /// Scroll fraction staged by scene-restoration for an incoming `.message` route. Applied to
@@ -262,7 +264,9 @@ struct AwfulURLRouter {
         if let pending = pendingRestoration {
             postsVC.prepareForRestoration(
                 scrollFraction: pending.scrollFraction,
-                hiddenPosts: pending.hiddenPosts
+                hiddenPosts: pending.hiddenPosts,
+                anchorPostID: pending.anchorPostID,
+                anchorDelta: pending.anchorDelta
             )
         }
 

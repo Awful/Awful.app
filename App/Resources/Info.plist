@@ -75,6 +75,7 @@
 		<string>com.awfulapp.Awful.activity.browsing-posts</string>
 		<string>com.awfulapp.Awful.activity.listing-threads</string>
 		<string>com.awfulapp.Awful.activity.reading-message</string>
+		<string>com.awfulapp.Awful.activity.scene-restoration</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

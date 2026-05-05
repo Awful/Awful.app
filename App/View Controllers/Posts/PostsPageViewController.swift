@@ -54,6 +54,19 @@ final class PostsPageViewController: ViewController {
     /// so a freshly restored scroll fraction isn't clobbered by the in-flight fetch that the URL
     /// router kicked off before `SceneDelegate` could stage the restored value.
     private var suppressNextScrollFractionPreservation = false
+
+    /// Topmost-visible post, refreshed asynchronously on scroll-stop. Read synchronously
+    /// when iOS asks for a state-restoration activity; survives content growth and rotation,
+    /// unlike a normalized scroll fraction.
+    private var cachedAnchorPostID: String?
+    private var cachedAnchorDeltaY: CGFloat?
+    private var refreshAnchorTask: Task<Void, Never>?
+
+    /// Anchor staged by `prepareForRestoration`, consumed in `didFinishRenderingHTML`.
+    /// Demoted to nil in `loadPage`'s network completion when the saved post isn't on the
+    /// loaded page, so the existing first-unread fallback takes over.
+    private var anchorPostIDAfterLoading: String?
+    private var anchorDeltaAfterLoading: CGFloat?
     @FoilDefaultStorage(Settings.showAvatars) private var showAvatars
     @FoilDefaultStorage(Settings.loadImages) private var showImages
     let thread: AwfulThread
@@ -279,6 +292,9 @@ final class PostsPageViewController: ViewController {
         jumpToPostIDAfterLoading = nil
         scrollToFractionAfterLoading = nil
         jumpToLastPost = false
+        // Anchor is page-scoped; cleared for the same reason as scrollToFractionAfterLoading.
+        anchorPostIDAfterLoading = nil
+        anchorDeltaAfterLoading = nil
 
         // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
         var newPage = newPage
@@ -366,6 +382,18 @@ final class PostsPageViewController: ViewController {
                 }
 
                 self.configureUserActivityIfPossible()
+
+                // If the staged anchor isn't on the loaded page (rolled over, filter
+                // excludes, deleted), drop everything so the first-unread fallback below
+                // takes over.
+                if let stagedAnchorID = self.anchorPostIDAfterLoading,
+                   !self.posts.contains(where: { $0.postID == stagedAnchorID })
+                {
+                    self.scrollToFractionAfterLoading = nil
+                    self.hiddenPostsAfterLoading = nil
+                    self.anchorPostIDAfterLoading = nil
+                    self.anchorDeltaAfterLoading = nil
+                }
 
                 if let pendingHidden = self.hiddenPostsAfterLoading {
                     self.hiddenPosts = pendingHidden
@@ -1706,10 +1734,43 @@ final class PostsPageViewController: ViewController {
 
     var currentHiddenPosts: Int { hiddenPosts }
 
-    /// Stages a vertical scroll fraction and hidden-posts count to apply once the WKWebView
-    /// finishes rendering. Used by `SceneDelegate` to restore the user's place after iOS
-    /// terminates the scene.
-    func prepareForRestoration(scrollFraction: CGFloat?, hiddenPosts: Int?) {
+    var currentScrollAnchor: (postID: String, deltaY: CGFloat)? {
+        if let postID = cachedAnchorPostID, let delta = cachedAnchorDeltaY {
+            return (postID, delta)
+        }
+        return nil
+    }
+
+    /// Caches the topmost-visible post asynchronously; read synchronously when iOS asks
+    /// for a state-restoration activity.
+    func refreshRestorationAnchor() {
+        refreshAnchorTask?.cancel()
+        refreshAnchorTask = Task { [weak self] in
+            guard let self else { return }
+            let result = await self.postsView.renderView.topVisiblePost()
+            if Task.isCancelled { return }
+            if let result {
+                self.cachedAnchorPostID = result.postID
+                self.cachedAnchorDeltaY = result.deltaY
+            } else {
+                self.cachedAnchorPostID = nil
+                self.cachedAnchorDeltaY = nil
+            }
+        }
+    }
+
+    /// Stages restoration state to apply once the WKWebView finishes rendering. The anchor
+    /// is preferred over `scrollFraction` (kept as fallback for activities from older builds).
+    func prepareForRestoration(
+        scrollFraction: CGFloat?,
+        hiddenPosts: Int?,
+        anchorPostID: String? = nil,
+        anchorDelta: CGFloat? = nil
+    ) {
+        if let anchorPostID {
+            anchorPostIDAfterLoading = anchorPostID
+            anchorDeltaAfterLoading = anchorDelta
+        }
         if let scrollFraction = scrollFraction {
             scrollToFractionAfterLoading = scrollFraction
             // The URL router already kicked off `loadPage(updatingCache: true)`, which renders
@@ -2069,6 +2130,16 @@ extension PostsPageViewController: RenderViewDelegate {
 
         if let postID = jumpToPostIDAfterLoading {
             postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
+        } else if let anchorID = anchorPostIDAfterLoading,
+                  posts.contains(where: { $0.postID == anchorID })
+        {
+            // (chrome - deltaY) reproduces the saved scroll position. Staged values stay
+            // set so the tweet-loaded callback can re-apply after layout shifts.
+            let delta = anchorDeltaAfterLoading ?? 0
+            postsView.renderView.jumpToPost(
+                identifiedBy: anchorID,
+                topOffset: postsView.topInsetForPostFraming - delta
+            )
         } else if let newFractionalOffset = scrollToFractionAfterLoading {
             var fractionalOffset = postsView.renderView.scrollView.fractionalContentOffset
             fractionalOffset.y = newFractionalOffset
@@ -2076,6 +2147,9 @@ extension PostsPageViewController: RenderViewDelegate {
         }
 
         clearLoadingMessage()
+
+        // Capture an initial anchor so backgrounding before any scroll still produces an anchored save.
+        refreshRestorationAnchor()
     }
 
     func didReceive(message: RenderViewMessage, in view: RenderView) {
@@ -2089,6 +2163,16 @@ extension PostsPageViewController: RenderViewDelegate {
         case is RenderView.BuiltInMessage.DidFinishLoadingTweets:
             if let postID = jumpToPostIDAfterLoading {
                 postsView.renderView.jumpToPost(identifiedBy: postID, topOffset: postsView.topInsetForPostFraming)
+            } else if let anchorID = anchorPostIDAfterLoading,
+                      posts.contains(where: { $0.postID == anchorID })
+            {
+                let delta = anchorDeltaAfterLoading ?? 0
+                postsView.renderView.jumpToPost(
+                    identifiedBy: anchorID,
+                    topOffset: postsView.topInsetForPostFraming - delta
+                )
+                anchorPostIDAfterLoading = nil
+                anchorDeltaAfterLoading = nil
             } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
                 var offset = postsView.renderView.scrollView.fractionalContentOffset
                 offset.y = fraction

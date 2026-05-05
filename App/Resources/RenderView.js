@@ -1322,6 +1322,23 @@ Awful.postElementAtPoint = function(x, y) {
 
 
 /**
+ Returns the topmost-visible post's ID and the pixel offset of the viewport top above its top edge (positive = scrolled into the post). Used by scene state restoration.
+ */
+Awful.topVisiblePost = function() {
+  var posts = document.querySelectorAll(SELECTORS.POST_ELEMENTS);
+  for (var i = 0; i < posts.length; i++) {
+    var post = posts[i];
+    var rect = post.getBoundingClientRect();
+    // Use bottom (not top) so a partially-scrolled-past post still anchors to itself.
+    if (rect.bottom > 0 && post.id) {
+      return { postID: post.id, deltaY: -rect.top };
+    }
+  }
+  return null;
+};
+
+
+/**
  Turns all links with `data-awful-linkified-image` attributes into img elements.
  */
 Awful.loadLinkifiedImages = function() {

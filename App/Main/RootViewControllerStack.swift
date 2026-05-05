@@ -48,6 +48,14 @@ final class RootViewControllerStack: NSObject, AwfulSplitViewControllerDelegate 
 
         tabBarController.viewControllers = [forums, bookmarks, lepers, settings].map { $0.enclosingNavigationController }
 
+        // Defeat UIKit's legacy auto-restoration of selectedIndex; scene-activity replay
+        // is the only intended source of tab selection.
+        tabBarController.restorationIdentifier = nil
+        for case let nav as UINavigationController in tabBarController.viewControllers ?? [] {
+            nav.restorationIdentifier = nil
+            nav.viewControllers.first?.restorationIdentifier = nil
+        }
+
         let emptyNavigationController = createEmptyDetailNavigationController()
         emptyNavigationController.pushViewController(EmptyViewController(), animated: false)
 

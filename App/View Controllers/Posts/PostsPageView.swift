@@ -718,6 +718,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
                 willDecelerate: willDecelerate,
                 isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
             )
+
+            postsPageViewController?.refreshRestorationAnchor()
         }
 
         willBeginDraggingContentOffset = nil
@@ -738,6 +740,8 @@ extension PostsPageView: ScrollViewDelegateExtras {
             scrollView,
             isRefreshControlArmedOrTriggered: refreshControlState.isArmedOrTriggered
         )
+
+        postsPageViewController?.refreshRestorationAnchor()
     }
 
     private func updateTopBarDidEndDecelerating() {
