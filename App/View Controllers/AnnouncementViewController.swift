@@ -91,7 +91,9 @@ final class AnnouncementViewController: ViewController {
     }
 
     private func updateScrollViewContentInsets() {
+        renderView.scrollView.contentInset.top = view.safeAreaInsets.top
         renderView.scrollView.contentInset.bottom = view.safeAreaInsets.bottom
+        renderView.scrollView.scrollIndicatorInsets = renderView.scrollView.contentInset
     }
 
     // MARK: Lifecycle
@@ -99,8 +101,11 @@ final class AnnouncementViewController: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        extendedLayoutIncludesOpaqueBars = true
+
         renderView.frame = CGRect(origin: .zero, size: view.bounds.size)
         renderView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        renderView.scrollView.contentInsetAdjustmentBehavior = .never
         view.insertSubview(renderView, at: 0)
 
         renderView.registerMessage(RenderView.BuiltInMessage.DidTapAuthorHeader.self)
@@ -167,8 +172,8 @@ final class AnnouncementViewController: ViewController {
         messageViewController?.themeDidChange()
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         updateScrollViewContentInsets()
     }
 
