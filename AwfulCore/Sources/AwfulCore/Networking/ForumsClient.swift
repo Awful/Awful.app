@@ -376,6 +376,7 @@ public final class ForumsClient {
         let result = try ThreadListScrapeResult(document, url: url)
         let backgroundThreads = try await backgroundContext.perform {
             let threads = try result.upsert(into: backgroundContext)
+            _ = try result.upsertAnnouncements(into: backgroundContext)
 
             AwfulThread.fetch(in: backgroundContext) {
                 let threadIDsToIgnore = threads.map { $0.threadID }

@@ -957,6 +957,7 @@ final class BookmarksTableViewController: HostedCollectionViewController {
                 let threads = try await ForumsClient.shared.listBookmarkedThreads(page: page)
                 latestPage = page
                 RefreshMinder.sharedMinder.didRefresh(.bookmarks)
+                RefreshMinder.sharedMinder.didRefresh(.announcements)
 
                 await MainActor.run {
                     stopAnimatingPullToRefresh()
