@@ -111,10 +111,10 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             pendingLaunchRoute = route
         } else if let restorationActivity = connectionOptions.userActivities
                     .first(where: { $0.activityType == restorationActivityType })
+                    ?? session.stateRestorationActivity
+                    ?? loadFallbackRestorationActivity()
         {
-            // Either `connectionOptions.userActivities.first` or `session.stateRestorationActivity`
-            // can carry the restoration activity (Apple's canonical pattern). Without this match
-            // the next branch's Handoff-only `userActivity.route` would drop it.
+            // Saved restoration must beat any Handoff activity: iOS surfaces the scene's last-set per-VC `window.userActivity` via `userActivities.first` on cold launch even hours after the user navigated away, so the Handoff branch below would otherwise route to a stale message/thread/threadlist instead of saved state.
             pendingRestorationActivity = restorationActivity
         } else if let userActivity = connectionOptions.userActivities.first,
                   let route = userActivity.route {
@@ -123,10 +123,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                   let url = URL(string: shortcutItem.type),
                   let route = try? AwfulRoute(url) {
             pendingLaunchRoute = route
-        } else if let activity = session.stateRestorationActivity {
-            pendingRestorationActivity = activity
-        } else {
-            pendingRestorationActivity = loadFallbackRestorationActivity()
         }
     }
 

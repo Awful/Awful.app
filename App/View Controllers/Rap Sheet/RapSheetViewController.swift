@@ -294,3 +294,10 @@ final class RapSheetViewController: CollectionViewController {
         return NSAttributedString(attributedString: mutableReason)
     }
 }
+
+extension RapSheetViewController: RestorableLocation {
+    var restorationRoute: AwfulRoute? {
+        // Only the tab-root (user == nil) instance needs to advertise a route; user-specific rap sheets are pushed/presented on top of a parent that already conforms, so walking past them is correct.
+        user == nil ? .lepersColony : nil
+    }
+}
