@@ -139,7 +139,7 @@ struct AwfulURLRouter {
                     overlay.dismiss(true) {
                         guard let thread = post.thread else { return }
                         let postsVC = PostsPageViewController(thread: thread)
-                        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: true)
+                        postsVC.loadPage(page, updatingCache: true, updatingLastReadPost: updateLastRead)
                         postsVC.scrollPostToVisible(post)
                         _ = self.showPostsViewController(postsVC)
                     }
