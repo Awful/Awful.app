@@ -62,6 +62,14 @@ final class PostsPageViewController: ViewController {
     private var cachedAnchorDeltaY: CGFloat?
     private var refreshAnchorTask: Task<Void, Never>?
 
+    /// Keeps the loading view up briefly after render when the first posts contain tweet/Bluesky
+    /// embeds, so their layout-shifting reflow happens behind the throbber instead of in the
+    /// user's face. Cleared early once tweets settle, or on the next page load.
+    private var loadingHoldTask: Task<Void, Never>?
+    private static let loadingHoldDuration: TimeInterval = 2
+    /// How many of the first visible posts to scan for embeds when deciding whether to hold.
+    private static let embedScanPostCount = 10
+
     /// Anchor staged by `prepareForRestoration`, consumed in `didFinishRenderingHTML`.
     /// Demoted to nil in `loadPage`'s network completion when the saved post isn't on the
     /// loaded page, so the existing first-unread fallback takes over.
@@ -227,6 +235,7 @@ final class PostsPageViewController: ViewController {
 
     deinit {
         cancelNetworkOperation?()
+        loadingHoldTask?.cancel()
     }
 
     var posts: [Post] = []
@@ -295,6 +304,10 @@ final class PostsPageViewController: ViewController {
         // Anchor is page-scoped; cleared for the same reason as scrollToFractionAfterLoading.
         anchorPostIDAfterLoading = nil
         anchorDeltaAfterLoading = nil
+        // Cancel any embed loading-view hold from a previous load so it can't dismiss the
+        // fresh loading view we're about to show.
+        loadingHoldTask?.cancel()
+        loadingHoldTask = nil
 
         // SA: When filtering the thread by a single user, the "goto=lastpost" redirect ignores the user filter, so we'll do our best to guess.
         var newPage = newPage
@@ -860,7 +873,44 @@ final class PostsPageViewController: ViewController {
     }
 
     private func clearLoadingMessage() {
+        loadingHoldTask?.cancel()
+        loadingHoldTask = nil
         postsView.loadingView = nil
+    }
+
+    /// Dismisses the loading view after a render or image-load completes, but if the first
+    /// visible posts contain embeds, keeps it up for `loadingHoldDuration` so the embeds can
+    /// reflow behind the throbber. Restoration can render twice (cached then network);
+    /// restarting the hold on each render keeps the view up across that transition.
+    private func dismissLoadingViewAfterRender() {
+        guard postsView.loadingView != nil else { return }
+        guard firstVisiblePostsContainEmbed() else {
+            clearLoadingMessage()
+            return
+        }
+        loadingHoldTask?.cancel()
+        loadingHoldTask = Task { [weak self] in
+            try? await Task.sleep(timeInterval: Self.loadingHoldDuration)
+            guard let self, !Task.isCancelled else { return }
+            self.clearLoadingMessage()
+        }
+    }
+
+    /// Whether any of the first visible posts links to a tweet or Bluesky post that we'd embed.
+    /// A cheap substring scan (not the full HTMLReader pass) — good enough to decide whether to
+    /// briefly hold the loading view.
+    private func firstVisiblePostsContainEmbed() -> Bool {
+        guard embedTweets || embedBlueskyPosts else { return false }
+        for post in posts.dropFirst(hiddenPosts).prefix(Self.embedScanPostCount) {
+            guard let html = post.innerHTML else { continue }
+            if embedTweets, html.contains("/status/"), html.contains("twitter.com/") || html.contains("x.com/") {
+                return true
+            }
+            if embedBlueskyPosts, html.contains("bsky.app/"), html.contains("/post/") {
+                return true
+            }
+        }
+        return false
     }
 
     private func loadNextPageOrRefresh() {
@@ -1783,6 +1833,16 @@ final class PostsPageViewController: ViewController {
         }
     }
 
+    /// Abandons any staged scroll-restoration target so user scrolling isn't fought by
+    /// re-anchoring when embeds finish loading. Called when the user begins dragging, after
+    /// which their scroll position wins for the rest of the page's lifetime.
+    func cancelPendingScrollRestoration() {
+        jumpToPostIDAfterLoading = nil
+        anchorPostIDAfterLoading = nil
+        anchorDeltaAfterLoading = nil
+        scrollToFractionAfterLoading = nil
+    }
+
     private func configureUserActivityIfPossible() {
         guard case .specific? = page, handoffEnabled else {
             userActivity = nil
@@ -2146,7 +2206,7 @@ extension PostsPageViewController: RenderViewDelegate {
             postsView.renderView.scrollToFractionalOffset(fractionalOffset)
         }
 
-        clearLoadingMessage()
+        dismissLoadingViewAfterRender()
 
         // Capture an initial anchor so backgrounding before any scroll still produces an anchored save.
         refreshRestorationAnchor()
@@ -2166,19 +2226,23 @@ extension PostsPageViewController: RenderViewDelegate {
             } else if let anchorID = anchorPostIDAfterLoading,
                       posts.contains(where: { $0.postID == anchorID })
             {
+                // Re-anchor to the same stable post on every tweet-settle so the viewport
+                // stays put as embeds reflow. We deliberately keep the staged anchor set
+                // (rather than clearing it after the first event) so later widget loads
+                // don't fall through to the drifting fraction fallback below. The staged
+                // target is abandoned in `cancelPendingScrollRestoration()` once the user
+                // begins dragging, so this never fights a user scroll.
                 let delta = anchorDeltaAfterLoading ?? 0
                 postsView.renderView.jumpToPost(
                     identifiedBy: anchorID,
                     topOffset: postsView.topInsetForPostFraming - delta
                 )
-                anchorPostIDAfterLoading = nil
-                anchorDeltaAfterLoading = nil
             } else if let fraction = scrollToFractionAfterLoading, fraction > 0 {
                 var offset = postsView.renderView.scrollView.fractionalContentOffset
                 offset.y = fraction
                 postsView.renderView.scrollToFractionalOffset(offset)
             }
-            
+
         case let message as RenderView.BuiltInMessage.FetchOEmbedFragment:
             fetchOEmbed(url: message.url, id: message.id)
 
@@ -2187,15 +2251,15 @@ extension PostsPageViewController: RenderViewDelegate {
 
         case let message as RenderView.BuiltInMessage.ImageLoadProgress:
             if message.total == 0 {
-                // No images to load, dismiss immediately
-                clearLoadingMessage()
+                // No images to load; dismiss (respecting any embed hold).
+                dismissLoadingViewAfterRender()
             } else {
                 let statusText = "Downloading images: \(message.loaded)/\(message.total)"
                 postsView.loadingView?.updateStatus(statusText)
 
-                // Dismiss loading view when all images are done
+                // Dismiss loading view when all images are done (respecting any embed hold).
                 if message.complete {
-                    clearLoadingMessage()
+                    dismissLoadingViewAfterRender()
                 }
             }
 

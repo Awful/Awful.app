@@ -31,6 +31,7 @@ public struct SettingsView: View {
     @AppStorage(Settings.openTwitterLinksInTwitter) private var openLinksInTwitter
     @AppStorage(Settings.openYouTubeLinksInYouTube) private var openLinksInYouTube
     @AppStorage(Settings.pullForNext) private var pullForNextPage
+    @AppStorage(Settings.restoreLastThreadOnLaunch) private var restoreLastThreadOnLaunch
     @AppStorage(Settings.showAvatars) private var showAvatars
     @AppStorage(Settings.showThreadTags) private var showThreadTags
     @AppStorage(Settings.showUnreadAnnouncementsBadge) private var showUnreadAnnouncementsBadge
@@ -256,6 +257,14 @@ public struct SettingsView: View {
                     .header()
             } footer: {
                 Text("Awful can automatically switch between light and dark themes alongside iOS.", bundle: .module)
+                    .footer()
+            }
+            .section()
+
+            Section {
+                Toggle("Restore Last Thread on Launch", bundle: .module, isOn: $restoreLastThreadOnLaunch)
+            } footer: {
+                Text("When on, Awful reopens the thread you were last reading when you relaunch. When off, Awful returns to the tab you were last using.", bundle: .module)
                     .footer()
             }
             .section()

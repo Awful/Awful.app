@@ -656,6 +656,10 @@ extension PostsPageView: ScrollViewDelegateExtras {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         willBeginDraggingContentOffset = scrollView.contentOffset
 
+        // The user is taking over: stop any restoration re-anchoring so it can't yank the
+        // viewport back as embeds finish loading further down the page.
+        postsPageViewController?.cancelPendingScrollRestoration()
+
         if darkMode, !viewHasBeenScrolledOnce {
             renderView.toggleOpaqueToFixIOS15ScrollThumbColor(setOpaqueTo: true)
             viewHasBeenScrolledOnce = true

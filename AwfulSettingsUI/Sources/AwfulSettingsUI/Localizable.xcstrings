@@ -179,6 +179,9 @@
     "Reset All Settings" : {
 
     },
+    "Restore Last Thread on Launch" : {
+
+    },
     "Scale Text %@%%" : {
 
     },
@@ -219,6 +222,9 @@
 
     },
     "What to open when tapping an external link. Long-press any link for more options." : {
+
+    },
+    "When on, Awful reopens the thread you were last reading when you relaunch. When off, Awful returns to the tab you were last using." : {
 
     }
   },

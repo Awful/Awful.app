@@ -113,6 +113,9 @@ public enum Settings {
     /// Pull up from the bottom of a page of posts to go to the next page.
     public static let pullForNext = Setting(key: "pull_for_next", default: true)
 
+    /// On launch, reopen the thread the user was last reading (restoring its page and scroll position). When `false`, state restoration returns to the last-used tab without reopening the thread.
+    public static let restoreLastThreadOnLaunch = Setting(key: "restore_last_thread_on_launch", default: true)
+
     /// Show avatars for authors in the posts view.
     public static let showAvatars = Setting(key: "show_avatars", default: true)
 

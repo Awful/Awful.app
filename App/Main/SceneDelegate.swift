@@ -74,6 +74,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     @FoilDefaultStorage(Settings.handoffEnabled) private var handoffEnabled
+    @FoilDefaultStorage(Settings.restoreLastThreadOnLaunch) private var restoreLastThreadOnLaunch
 
     private var openCopiedURLController: OpenCopiedURLController?
 
@@ -195,6 +196,17 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let savedPrimaryDeepRoute = (activity.userInfo?[restorationPrimaryDeepRouteKey] as? String)
                 .flatMap(URL.init(string:))
                 .flatMap { try? AwfulRoute($0) }
+            // When the user has opted out of reopening the last thread, restore only the
+            // last-used tab and skip the detail route, mid-stack depth, scroll state, and
+            // unpop stack. A nil tab route (older activity) leaves the default launch tab.
+            if !restoreLastThreadOnLaunch {
+                DispatchQueue.main.async {
+                    if let savedTabRoute {
+                        AppDelegate.instance.open(route: savedTabRoute)
+                    }
+                }
+                return
+            }
             DispatchQueue.main.async {
                 // Select the sidebar tab FIRST so the detail-route push (below) lands in
                 // the correct context: on iPad `showPostsViewController` pushes into the
