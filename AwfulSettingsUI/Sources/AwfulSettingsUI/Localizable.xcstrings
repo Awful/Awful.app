@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "\"Anonymous\" submits images to Imgur without a user account. Imgur may delete these uploads without warning. Using an Imgur account is recommended." : {
 
     },
@@ -17,6 +20,22 @@
         }
       }
     },
+    "%lld lines" : {
+
+    },
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "0" : {
+
+    },
     "Acknowledgements" : {
 
     },
@@ -30,6 +49,9 @@
 
     },
     "App Icon" : {
+
+    },
+    "Apply" : {
 
     },
     "appname=%@ build=%@" : {
@@ -71,6 +93,12 @@
     "Awful is made possible by these fantastic projects. Thank you!" : {
 
     },
+    "Based on" : {
+
+    },
+    "Cancel" : {
+
+    },
     "Check Clipboard for URL" : {
 
     },
@@ -81,6 +109,12 @@
 
     },
     "Clearing the cache removes downloaded images, web data, and cached forums, threads, and posts. Resetting settings restores all preferences to their defaults." : {
+
+    },
+    "Custom Theme" : {
+
+    },
+    "Custom Theme Editor" : {
 
     },
     "Dark Mode" : {
@@ -101,6 +135,9 @@
     "Double-Tap Post to Jump" : {
 
     },
+    "Edit Stylesheet" : {
+
+    },
     "Embed Bluesky Posts" : {
 
     },
@@ -114,6 +151,12 @@
 
     },
     "Enable Haptics" : {
+
+    },
+    "Export Theme" : {
+
+    },
+    "Find" : {
 
     },
     "Forum-Specific Themes" : {
@@ -143,6 +186,12 @@
     "Immersive Mode" : {
 
     },
+    "Import Error" : {
+
+    },
+    "Import Theme" : {
+
+    },
     "Links" : {
 
     },
@@ -156,6 +205,9 @@
 
     },
     "Off" : {
+
+    },
+    "OK" : {
 
     },
     "Open Twitter in Twitter" : {
@@ -182,7 +234,25 @@
     "Restore Last Thread on Launch" : {
 
     },
+    "Replace Custom Theme?" : {
+
+    },
+    "Replace with %@" : {
+
+    },
+    "Reset" : {
+
+    },
+    "Reset All to Defaults" : {
+
+    },
+    "Reset Custom Theme?" : {
+
+    },
     "Scale Text %@%%" : {
+
+    },
+    "Search fonts" : {
 
     },
     "Show Avatars" : {
@@ -206,6 +276,21 @@
     "Sort Unread Threads First" : {
 
     },
+    "Start from Existing Theme…" : {
+
+    },
+    "Start from Theme" : {
+
+    },
+    "Starting Point" : {
+
+    },
+    "Stylesheet" : {
+
+    },
+    "System Default" : {
+
+    },
     "Tabs" : {
 
     },
@@ -215,10 +300,25 @@
     "Themes" : {
 
     },
+    "This will remove all your customizations and revert to the default theme values." : {
+
+    },
+    "This will replace all your current custom theme values with the selected theme's values." : {
+
+    },
     "Threads" : {
 
     },
     "Unread Announcements Badge" : {
+
+    },
+    "Using bundled default stylesheet" : {
+
+    },
+    "Value" : {
+
+    },
+    "WebView Stylesheet" : {
 
     },
     "What to open when tapping an external link. Long-press any link for more options." : {
