@@ -121,6 +121,7 @@
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
 		1C5E98292B4B5FAE00D891CD /* AwfulExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5E98282B4B5FAE00D891CD /* AwfulExtensions */; };
 		1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */; };
+		AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */ = {isa = PBXBuildFile; productRef = AC10AC10AC10AC10AC100003 /* AwfulGlossary */; };
 		1C6821A91F113A760083F204 /* AnnouncementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6821A81F113A760083F204 /* AnnouncementViewController.swift */; };
 		1C6B2A9A272F992E00671F0C /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6B2A99272F992E00671F0C /* Nuke */; };
 		1C6BDD26265CB337005475CE /* HTMLReader in Frameworks */ = {isa = PBXBuildFile; productRef = 1C6BDD25265CB337005475CE /* HTMLReader */; };
@@ -396,6 +397,7 @@
 		1C2C1F131CEE90D900CD27DD /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C2DC7331DCEA177005040FD /* PotentiallyObjectionableStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PotentiallyObjectionableStickers.plist; sourceTree = "<group>"; };
 		1C2F1B7E2B8BD05D00808818 /* AwfulSettingsUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulSettingsUI; sourceTree = "<group>"; };
+		AC10AC10AC10AC10AC100002 /* AwfulGlossary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AwfulGlossary; sourceTree = "<group>"; };
 		1C353C061E416FE200CCBA51 /* SpriteSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteSheetView.swift; sourceTree = "<group>"; };
 		1C397C8D1BC9B12F00CA7FD5 /* UIContextMenuConfiguration+ThreadListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIContextMenuConfiguration+ThreadListItem.swift"; sourceTree = "<group>"; };
 		1C397C9A1BCC333D00CA7FD5 /* ResourceURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceURLProtocol.swift; sourceTree = "<group>"; };
@@ -647,6 +649,7 @@
 				306F740B2D90AA01000717BC /* KeychainAccess in Frameworks */,
 				1C5345212B8BF48F001DA96A /* ScrollViewDelegateMultiplexer in Frameworks */,
 				1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */,
+				AC10AC10AC10AC10AC100001 /* AwfulGlossary in Frameworks */,
 				1CB0B9AB2AEF668500678615 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1222,6 +1225,7 @@
 				1CDAC85F2AE10966006CEE88 /* AwfulScraping */,
 				1C13FF0A2B54978300B39A0D /* AwfulSettings */,
 				1C2F1B7E2B8BD05D00808818 /* AwfulSettingsUI */,
+				AC10AC10AC10AC10AC100002 /* AwfulGlossary */,
 				1C1F0F132B8B091600F097D3 /* AwfulTheming */,
 				1C15334D20708EFF0021A2BD /* Config */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -1376,6 +1380,7 @@
 				1C5E98282B4B5FAE00D891CD /* AwfulExtensions */,
 				1C13FF0D2B549FBE00B39A0D /* AwfulSettings */,
 				1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */,
+				AC10AC10AC10AC10AC100003 /* AwfulGlossary */,
 				1C1F0F152B8B0AD700F097D3 /* AwfulTheming */,
 				1C53451D2B8BF3A7001DA96A /* PSMenuItem */,
 				1C5345202B8BF48F001DA96A /* ScrollViewDelegateMultiplexer */,
@@ -2044,6 +2049,10 @@
 		1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AwfulSettingsUI;
+		};
+		AC10AC10AC10AC10AC100003 /* AwfulGlossary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AwfulGlossary;
 		};
 		1C6B2A99272F992E00671F0C /* Nuke */ = {
 			isa = XCSwiftPackageProductDependency;

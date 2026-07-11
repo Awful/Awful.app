@@ -3,6 +3,7 @@
 //  Copyright 2014 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import AwfulGlossary
 import AwfulSettings
 import AwfulTheming
 import Combine
@@ -268,19 +269,34 @@ final class ForumsTableViewController: CollectionViewController {
             return button
         }()
 
-        if canSendPrivateMessages {
-            navigationItem.setRightBarButton(searchButton, animated: true)
+        // An overflow menu (currently just SAclopedia) so more items can be added here over time.
+        let glossaryAction = UIAction(
+            title: "SAclopedia",
+            image: UIImage(systemName: "book.closed")
+        ) { [weak self] _ in
+            self?.showGlossary()
         }
+        let moreButton = UIBarButtonItem(
+            title: nil,
+            image: UIImage(systemName: "ellipsis.circle"),
+            primaryAction: nil,
+            menu: UIMenu(title: "", children: [glossaryAction])
+        )
+        moreButton.accessibilityLabel = "More"
+
+        // The overflow menu is available to everyone; Search is gated on PM privileges.
+        // Right-bar items are ordered right-to-left, so Search keeps its familiar rightmost spot.
+        func rightBarButtons(canSearch: Bool) -> [UIBarButtonItem] {
+            canSearch ? [searchButton, moreButton] : [moreButton]
+        }
+
+        navigationItem.setRightBarButtonItems(rightBarButtons(canSearch: canSendPrivateMessages), animated: true)
 
         $canSendPrivateMessages
             .receive(on: RunLoop.main)
             .sink { [weak self] canSend in
                 guard let self else { return }
-                if canSend {
-                    navigationItem.setRightBarButton(searchButton, animated: true)
-                } else {
-                    navigationItem.setRightBarButton(nil, animated: true)
-                }
+                navigationItem.setRightBarButtonItems(rightBarButtons(canSearch: canSend), animated: true)
             }
             .store(in: &cancellables)
     }
@@ -293,6 +309,16 @@ final class ForumsTableViewController: CollectionViewController {
             searchView.modalPresentationStyle = .fullScreen
         }
         present(searchView, animated: true)
+    }
+
+    @objc private func showGlossary() {
+        let glossary = GlossaryHostingController()
+        if traitCollection.userInterfaceIdiom == .pad {
+            glossary.modalPresentationStyle = .pageSheet
+        } else {
+            glossary.modalPresentationStyle = .fullScreen
+        }
+        present(glossary, animated: true)
     }
 
     override func themeDidChange() {
