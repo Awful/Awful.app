@@ -7,6 +7,9 @@
     "%@" : {
 
     },
+    "%lld" : {
+
+    },
     "%lld of %lld" : {
       "localizations" : {
         "en" : {
@@ -32,7 +35,16 @@
         }
       }
     },
+    "Add" : {
+
+    },
     "Add Bookmark" : {
+
+    },
+    "Add Smilie" : {
+
+    },
+    "Add Text" : {
 
     },
     "Added Bookmark" : {
@@ -210,6 +222,9 @@
           }
         }
       }
+    },
+    "Cancel" : {
+
     },
     "compose.accessibility-label" : {
       "comment" : "Accessibility label of compose button in posts screen.",
@@ -540,6 +555,9 @@
     "Edit" : {
       "comment" : "Edit button"
     },
+    "Enter text" : {
+
+    },
     "Example searches:" : {
 
     },
@@ -601,6 +619,9 @@
 
     },
     "Froggo (purple)" : {
+
+    },
+    "Generating screenshot…" : {
 
     },
     "Ghost" : {
@@ -1280,6 +1301,9 @@
         }
       }
     },
+    "Preview" : {
+
+    },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
       "extractionState" : "migrated",
@@ -1600,6 +1624,12 @@
           }
         }
       }
+    },
+    "Screenshot" : {
+
+    },
+    "Screenshot Posts" : {
+
     },
     "Search" : {
 

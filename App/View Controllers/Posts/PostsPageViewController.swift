@@ -142,6 +142,13 @@ final class PostsPageViewController: ViewController {
                 identifier: .init("searchThread"),
                 handler: { [unowned self] in searchThread(action: $0) }
             ),
+            // Screenshot
+            UIAction(
+                title: "Screenshot Post(s)",
+                image: UIImage(systemName: "camera.viewfinder"),
+                identifier: .init("screenshotPosts"),
+                handler: { [unowned self] _ in screenshotPosts() }
+            ),
         ])
     }
 
@@ -1288,6 +1295,21 @@ final class PostsPageViewController: ViewController {
             searchVC.modalPresentationStyle = (traitCollection.userInterfaceIdiom == .pad) ? .pageSheet : .fullScreen
             present(searchVC, animated: true)
         }
+    }
+
+    private func screenshotPosts() {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        let visiblePosts = posts.count > hiddenPosts ? Array(posts[hiddenPosts...]) : posts
+        guard !visiblePosts.isEmpty else { return }
+        let screenshotterVC = ScreenshotterViewController(posts: visiblePosts, theme: theme)
+        if traitCollection.userInterfaceIdiom == .pad {
+            screenshotterVC.modalPresentationStyle = .pageSheet
+        }
+        // Present from the root to avoid being constrained to a split view column
+        let presenter = view.window?.rootViewController ?? self
+        presenter.present(screenshotterVC, animated: true)
     }
 
     private func bookmark(action: UIAction) {
