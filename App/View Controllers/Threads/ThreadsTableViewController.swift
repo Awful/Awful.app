@@ -91,17 +91,19 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
             guard let self else { return }
             header.backgroundColor = .clear
 
-            if self.filterButton.superview !== header {
-                self.filterButton.removeFromSuperview()
-                self.filterButton.translatesAutoresizingMaskIntoConstraints = false
-                header.addSubview(self.filterButton)
+            if self.headerStack.superview !== header {
+                self.headerStack.removeFromSuperview()
+                header.addSubview(self.headerStack)
                 NSLayoutConstraint.activate([
-                    self.filterButton.leadingAnchor.constraint(equalTo: header.leadingAnchor),
-                    self.filterButton.trailingAnchor.constraint(equalTo: header.trailingAnchor),
-                    self.filterButton.topAnchor.constraint(equalTo: header.topAnchor),
-                    self.filterButton.bottomAnchor.constraint(equalTo: header.bottomAnchor),
+                    self.headerStack.leadingAnchor.constraint(equalTo: header.leadingAnchor),
+                    self.headerStack.trailingAnchor.constraint(equalTo: header.trailingAnchor),
+                    self.headerStack.topAnchor.constraint(equalTo: header.topAnchor),
+                    self.headerStack.bottomAnchor.constraint(equalTo: header.bottomAnchor),
                 ])
             }
+            // Configure contents only (no layout invalidation) — this runs during a layout pass, so the
+            // fresh header measures the banner correctly on this pass.
+            self.configureArchivesBanner()
         }
     }
 
@@ -145,6 +147,9 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
                 RefreshMinder.sharedMinder.didRefresh(.announcements)
 
                 updateComposeBarButtonItem()
+
+                // The load just refreshed ForumsClient's archives mirror; reflect it in the banner.
+                refreshArchivesBanner()
             } catch {
                 let alert = UIAlertController(networkError: error)
                 present(alert, animated: true)
@@ -198,6 +203,21 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
             rebuildLayout()
         }
         .store(in: &cancellables)
+
+        // When the archived timeframe is set/removed (from this list's banner or elsewhere), the
+        // thread list is now stale. Update the banner and reload the visible list right away. Every
+        // forum's refresh state is forgotten app-wide (see AppDelegate), so off-screen lists reload
+        // when revisited.
+        NotificationCenter.default.publisher(for: ForumsClient.archivesTimeframeDidChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                refreshArchivesBanner()
+                if visible {
+                    refresh()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     override func themeDidChange() {
@@ -210,6 +230,7 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         loadMoreFooter?.themeDidChange()
 
         updateFilterButton()
+        refreshArchivesBanner()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -219,6 +240,8 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
             enableLoadMore()
             updateFilterButton()
         }
+
+        refreshArchivesBanner()
 
         prepareUserActivity()
 
@@ -291,6 +314,28 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         return button
     }()
 
+    /// A full-width maroon banner shown below the filter button when archives ("time machine") mode is
+    /// active. Tapping it reopens the archives sheet, pre-filled with the current timeframe.
+    private lazy var archivesBanner: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.7
+        label.isHidden = true
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapArchivesBanner)))
+        label.heightAnchor.constraint(greaterThanOrEqualToConstant: 32).isActive = true
+        return label
+    }()
+
+    private lazy var headerStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [filterButton, archivesBanner])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
     private lazy var threadTagPicker: ThreadTagPickerViewController = {
         let imageNames = self.forum.threadTags.array
             .filter { ($0 as! ThreadTag).imageName != nil }
@@ -315,6 +360,54 @@ final class ThreadsTableViewController: CollectionViewController, ComposeTextVie
         filterButton.setTitle(title, for: .normal)
         filterButton.titleLabel?.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .medium)
         filterButton.tintColor = theme["tintColor"]
+    }
+
+    // MARK: Archives banner
+
+    /// Sets the banner's text, colors, and visibility from the current archives state. Does *not*
+    /// invalidate layout, so it's safe to call from the header-registration closure (during layout).
+    private func configureArchivesBanner() {
+        if let timeframe = ForumsClient.shared.currentArchivesTimeframe {
+            archivesBanner.text = Self.archivesBannerText(timeframe)
+            archivesBanner.isHidden = false
+        } else {
+            archivesBanner.isHidden = true
+        }
+        archivesBanner.backgroundColor = theme[uicolor: "archivesBannerBackgroundColor"]
+        archivesBanner.textColor = theme[uicolor: "archivesBannerTextColor"]
+        archivesBanner.font = UIFont.preferredFontForTextStyle(.body, sizeAdjustment: -2.5, weight: .semibold)
+    }
+
+    /// Reconfigures the banner and re-measures the self-sizing header (for state/theme changes that
+    /// happen while the header is already on screen).
+    private func refreshArchivesBanner() {
+        configureArchivesBanner()
+        if isViewLoaded {
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
+    }
+
+    /// "Archives view: {…}" with the three valid shapes: year only, month + year, or month + day + year.
+    static func archivesBannerText(_ timeframe: ArchivesTimeframe) -> String {
+        let date: String
+        if let month = timeframe.month, (1...12).contains(month) {
+            let monthName = Calendar.current.monthSymbols[month - 1]
+            if let day = timeframe.day {
+                date = "\(monthName) \(day), \(timeframe.year)"
+            } else {
+                date = "\(monthName) \(timeframe.year)"
+            }
+        } else {
+            date = String(timeframe.year)
+        }
+        return "Archives view: \(date)"
+    }
+
+    @objc private func didTapArchivesBanner() {
+        if enableHaptics {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        }
+        present(ArchivesHostingController(), animated: true)
     }
 
     // MARK: ThreadTagPickerViewControllerDelegate

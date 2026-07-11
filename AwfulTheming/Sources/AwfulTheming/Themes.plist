@@ -101,6 +101,10 @@
 			<string>#838383</string>
 			<key>listHeaderBackgroundColor</key>
 			<string>#e4e4e4</string>
+			<key>archivesBannerBackgroundColor</key>
+			<string>#800000</string>
+			<key>archivesBannerTextColor</key>
+			<string>#ffffff</string>
 			<key>listTextColor</key>
 			<string>#000000</string>
 			<key>listSecondaryTextColor</key>

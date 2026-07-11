@@ -3,6 +3,7 @@
 //  Copyright 2016 Awful Contributors. CC BY-NC-SA 3.0 US https://github.com/Awful/Awful.app
 
 import AwfulCore
+import CoreData
 import Foundation
 
 final class RefreshMinder {
@@ -35,6 +36,22 @@ final class RefreshMinder {
     func forgetForum(_ forum: Forum) {
         forum.lastRefresh = nil
         forum.lastFilteredRefresh = nil
+    }
+
+    /// Clears every forum's thread-list refresh timestamps so each reloads the next time it's viewed.
+    /// Used when the archives timeframe changes — that invalidates the cached (wrong-timeframe) threads
+    /// for every forum, not just the one on screen.
+    func forgetAllForums(in context: NSManagedObjectContext) {
+        let request = NSFetchRequest<Forum>(entityName: Forum.entityName)
+        request.predicate = NSPredicate(format: "lastRefresh != nil OR lastFilteredRefresh != nil")
+        guard let forums = try? context.fetch(request), !forums.isEmpty else { return }
+        for forum in forums {
+            forum.lastRefresh = nil
+            forum.lastFilteredRefresh = nil
+        }
+        if context.hasChanges {
+            try? context.save()
+        }
     }
     
     func forgetEverything() {

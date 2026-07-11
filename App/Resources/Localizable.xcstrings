@@ -62,6 +62,12 @@
         }
       }
     },
+    "Any" : {
+
+    },
+    "Archives" : {
+
+    },
     "Author Profile" : {
 
     },
@@ -211,6 +217,9 @@
           }
         }
       }
+    },
+    "Browse the forums as they were on a past date. This locks every forum to the selected timeframe until you return to live." : {
+
     },
     "cancel" : {
       "comment" : "Title of button that dismisses without taking any action.",
@@ -538,6 +547,9 @@
 
     },
     "Cute" : {
+
+    },
+    "Day" : {
 
     },
     "Doggo" : {
@@ -921,6 +933,9 @@
     "Mark Unread" : {
 
     },
+    "Month" : {
+
+    },
     "No smilies found" : {
 
     },
@@ -1114,6 +1129,9 @@
         }
       }
     },
+    "Preview" : {
+
+    },
     "private-message-folder.add-message" : {
       "comment" : "Message in new folder dialog",
       "localizations" : {
@@ -1300,9 +1318,6 @@
           }
         }
       }
-    },
-    "Preview" : {
-
     },
     "private-message-list.compose-button.accessibility-label" : {
       "comment" : "Text read by VoiceOver for compose button in private messages list.",
@@ -1829,6 +1844,9 @@
 
     },
     "V" : {
+
+    },
+    "Year" : {
 
     }
   },
