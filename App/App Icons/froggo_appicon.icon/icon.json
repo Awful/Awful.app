@@ -8,48 +8,6 @@
   },
   "groups" : [
     {
-      "blend-mode" : "normal",
-      "blur-material" : null,
-      "hidden" : false,
-      "layers" : [
-        {
-          "blend-mode" : "normal",
-          "fill" : {
-            "solid" : "display-p3:0.75344,0.15349,0.15349,1.00000"
-          },
-          "glass" : true,
-          "hidden-specializations" : [
-            {
-              "value" : false
-            },
-            {
-              "appearance" : "light",
-              "value" : false
-            }
-          ],
-          "image-name" : "mouth inner3.svg",
-          "name" : "mouth inner3",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              12
-            ]
-          }
-        }
-      ],
-      "name" : "Group",
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0.4
-      },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.45000000000000007
-      }
-    },
-    {
       "blur-material" : null,
       "hidden" : false,
       "layers" : [
@@ -102,6 +60,38 @@
     },
     {
       "blend-mode" : "normal",
+      "blur-material" : null,
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "display-p3:0.80000,0.16000,0.16000,1.00000"
+          },
+          "hidden" : false,
+          "image-name" : "numouth.svg",
+          "name" : "numouth",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              12
+            ]
+          }
+        }
+      ],
+      "name" : "Group",
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.2
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.45000000000000007
+      }
+    },
+    {
+      "blend-mode" : "normal",
       "blur-material" : 1,
       "hidden" : false,
       "layers" : [
@@ -119,7 +109,7 @@
         },
         {
           "fill" : {
-            "solid" : "srgb:0.09176,0.19996,0.00220,1.00000"
+            "solid" : "srgb:0.18356,0.40000,0.00440,1.00000"
           },
           "glass" : false,
           "hidden" : false,

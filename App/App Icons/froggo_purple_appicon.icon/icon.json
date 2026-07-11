@@ -7,12 +7,44 @@
     {
       "appearance" : "light",
       "value" : {
-        "solid" : "srgb:0.34624,0.18748,0.55283,1.00000"
+        "linear-gradient" : [
+          "srgb:0.34510,0.18824,0.55294,1.00000",
+          "display-p3:1.00000,0.66667,0.86275,1.00000"
+        ]
       }
     }
   ],
   "groups" : [
     {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "display-p3:0.70000,0.10451,0.11443,1.00000"
+          },
+          "hidden" : false,
+          "image-name" : "numouth.svg",
+          "name" : "numouth",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              12
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.37
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.26
+      }
+    },
+    {
+      "blur-material" : null,
+      "hidden" : false,
       "layers" : [
         {
           "hidden" : false,
@@ -25,29 +57,7 @@
               0
             ]
           }
-        }
-      ],
-      "position" : {
-        "scale" : 1.14,
-        "translation-in-points" : [
-          0,
-          0
-        ]
-      },
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
-      },
-      "specular" : false,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.1
-      }
-    },
-    {
-      "blur-material" : null,
-      "hidden" : false,
-      "layers" : [
+        },
         {
           "blend-mode" : "normal",
           "glass" : true,
@@ -85,13 +95,44 @@
     },
     {
       "blur-material" : 0.5,
+      "hidden" : false,
       "layers" : [
         {
           "hidden" : false,
-          "image-name" : "skin purple.svg",
-          "name" : "skin purple"
+          "image-name" : "skin purple2.svg",
+          "name" : "skin purple2",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              3
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "solid" : "display-p3:0.32349,0.19507,0.53223,1.00000"
+          },
+          "glass" : false,
+          "hidden" : false,
+          "image-name" : "nose.svg",
+          "name" : "nose",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              -144
+            ]
+          }
         }
       ],
+      "position" : {
+        "scale" : 1.001,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.5
@@ -100,32 +141,6 @@
       "translucency" : {
         "enabled" : true,
         "value" : 0.4
-      }
-    },
-    {
-      "blur-material" : null,
-      "layers" : [
-        {
-          "hidden" : false,
-          "image-name" : "mouth inner purple.svg",
-          "name" : "mouth inner purple"
-        }
-      ],
-      "position" : {
-        "scale" : 1.14,
-        "translation-in-points" : [
-          0,
-          0
-        ]
-      },
-      "shadow" : {
-        "kind" : "layer-color",
-        "opacity" : 0
-      },
-      "specular" : false,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.1
       }
     }
   ],
