@@ -89,6 +89,15 @@ public enum Settings {
     /// Offer to hand off the current thread page to other devices.
     public static let handoffEnabled = Setting(key: "handoff_enabled", default: false)
 
+    /// Whether the logged-in user owns the Archives upgrade (access to old posts/threads).
+    public static let hasArchives = Setting(key: "has_archives_upgrade", default: false)
+
+    /// Whether the logged-in user owns the No-Ads upgrade (removes site advertisements).
+    public static let hasNoAds = Setting(key: "has_no_ads_upgrade", default: false)
+
+    /// Whether the logged-in user owns the Platinum upgrade (grants private messaging, search, and image uploads).
+    public static let hasPlatinum = Setting(key: "has_platinum_upgrade", default: false)
+
     /// Mark post header (username, regdate, role labels) and post date as `aria-hidden` so iOS Spoken Content / VoiceOver skip them and read post bodies more directly.
     public static let hidePostMetadataForReader = Setting(key: "hide_post_metadata_for_reader", default: false)
 

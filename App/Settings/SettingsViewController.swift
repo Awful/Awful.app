@@ -86,6 +86,15 @@ final class SettingsViewController: HostingController<SettingsContainerView> {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         refreshCacheSize()
+        refreshAccountFeaturesOnAppear()
+    }
+
+    /// Fetch the latest account features whenever Settings is shown so the displayed upgrade
+    /// status reflects reality immediately rather than waiting for the background timer. Errors
+    /// are ignored — the last-known stored values remain, and the timer will retry.
+    private func refreshAccountFeaturesOnAppear() {
+        guard ForumsClient.shared.isLoggedIn else { return }
+        Task { try? await refreshAccountFeatures() }
     }
 
     private func refreshCacheSize() {

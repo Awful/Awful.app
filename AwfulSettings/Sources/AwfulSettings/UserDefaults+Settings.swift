@@ -25,6 +25,9 @@ private let sessionKeys: Set<String> = [
     Settings.userID.key,
     Settings.username.key,
     Settings.canSendPrivateMessages.key,
+    Settings.hasPlatinum.key,
+    Settings.hasArchives.key,
+    Settings.hasNoAds.key,
     Settings.lastOfferedPasteboardURLString.key,
     Settings.imgurUploadMode.key,
 ]

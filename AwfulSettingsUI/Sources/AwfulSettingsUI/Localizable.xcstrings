@@ -84,6 +84,9 @@
         }
       }
     },
+    "Archives" : {
+
+    },
     "Automatic Dark Mode" : {
 
     },
@@ -153,6 +156,9 @@
     "Enable Haptics" : {
 
     },
+    "Enabled" : {
+
+    },
     "Export Theme" : {
 
     },
@@ -204,6 +210,12 @@
     "New Smilie Picker" : {
 
     },
+    "No Ads" : {
+
+    },
+    "Not purchased" : {
+
+    },
     "Off" : {
 
     },
@@ -214,6 +226,9 @@
 
     },
     "Open YouTube in YouTube" : {
+
+    },
+    "Platinum" : {
 
     },
     "Post feedback, bug reports, and feature suggestions. Do not contact anyone who works for Something Awful about this app." : {
@@ -228,12 +243,6 @@
     "Pull for Next Page" : {
 
     },
-    "Reset All Settings" : {
-
-    },
-    "Restore Last Thread on Launch" : {
-
-    },
     "Replace Custom Theme?" : {
 
     },
@@ -243,10 +252,16 @@
     "Reset" : {
 
     },
+    "Reset All Settings" : {
+
+    },
     "Reset All to Defaults" : {
 
     },
     "Reset Custom Theme?" : {
+
+    },
+    "Restore Last Thread on Launch" : {
 
     },
     "Scale Text %@%%" : {
@@ -310,6 +325,9 @@
 
     },
     "Unread Announcements Badge" : {
+
+    },
+    "Upgrades detected on your Something Awful account." : {
 
     },
     "Using bundled default stylesheet" : {
