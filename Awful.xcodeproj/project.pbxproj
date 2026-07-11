@@ -11,15 +11,12 @@
 		1AB84FDA2ADC611B00E7334D /* ghost.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1AB84FD72ADC611B00E7334D /* ghost.svg */; };
 		1AB84FDB2ADC611B00E7334D /* pumpkin.svg in Resources */ = {isa = PBXBuildFile; fileRef = 1AB84FD82ADC611B00E7334D /* pumpkin.svg */; };
 		1C0060A3217025A600E5329A /* HTMLRenderingHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */; };
-		1C26000A2026050100000001 /* SceneRestorationFallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C26000A2026050100000002 /* SceneRestorationFallbackTests.swift */; };
 		1C0060A52170347300E5329A /* HTMLReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0060A42170347300E5329A /* HTMLReader.swift */; };
 		1C04DEBE2B92FB8A0067957F /* App Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */; };
 		1C09BFF01A09D485007C11F5 /* InAppActionCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFEF1A09D485007C11F5 /* InAppActionCollectionViewLayout.swift */; };
 		1C09BFF21A09F86A007C11F5 /* InAppActionCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */; };
 		1C0D7FFC1CF0A7A3003EE2D1 /* AwfulURLRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */; };
 		1C0D7FFE1CF38CA2003EE2D1 /* PostsPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */; };
-		6FDFDD5EDA73CAB878C6B73C /* PostScreenshotter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */; };
-		F7DD3BB290F57E0EF4014ECD /* ScreenshotterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */; };
 		1C0D80001CF9FE70003EE2D1 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */; };
 		1C0D80021CF9FE79003EE2D1 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */; };
 		1C0D80041CF9FE81003EE2D1 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */; };
@@ -75,6 +72,7 @@
 		1C25AC4D1F5768D200977D6F /* ManagedObjectCountObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */; };
 		1C25AC4F1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */; };
 		1C25AC521F57784A00977D6F /* AnnouncementListRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25AC511F57784A00977D6F /* AnnouncementListRefresher.swift */; };
+		1C26000A2026050100000001 /* SceneRestorationFallbackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C26000A2026050100000002 /* SceneRestorationFallbackTests.swift */; };
 		1C273AA021C1DC25002875A9 /* RenderView-AllFrames.js in Resources */ = {isa = PBXBuildFile; fileRef = 1C273A9F21C1DC25002875A9 /* RenderView-AllFrames.js */; };
 		1C29BD4922505AD500E1217A /* ThemeNameTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */; };
 		1C29BD532251208200E1217A /* quote-post.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C29BD522251208200E1217A /* quote-post.png */; };
@@ -124,7 +122,6 @@
 		1C5C81BF22DA336A00EFD8A9 /* ChromeActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */; };
 		1C5E98292B4B5FAE00D891CD /* AwfulExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 1C5E98282B4B5FAE00D891CD /* AwfulExtensions */; };
 		1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */; };
-		1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C66AA0D19DD3E91001B9A41 /* NeedsFullAccessView.xib */; };
 		1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C66AA1719DDF8DD001B9A41 /* NeedsFullAccessView.m */; };
 		1C67313C2B55CE0600A8CF6F /* AwfulSettingsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C67313B2B55CE0600A8CF6F /* AwfulSettingsUI */; };
@@ -245,6 +242,7 @@
 		30E0C51E2E35C89D0030DC0A /* SmiliePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5192E35C89D0030DC0A /* SmiliePickerView.swift */; };
 		30E0C51F2E35C89D0030DC0A /* SmilieSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C51A2E35C89D0030DC0A /* SmilieSearchViewModel.swift */; };
 		30E0C5202E35C89D0030DC0A /* SmilieGridItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E0C5182E35C89D0030DC0A /* SmilieGridItem.swift */; };
+		6FDFDD5EDA73CAB878C6B73C /* PostScreenshotter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */; };
 		83410EF219A582B8002CD019 /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83410EF119A582B8002CD019 /* DateFormatters.swift */; };
 		8C0F4F561682CCFA00E25D7E /* macinyos-heading-center.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F541682CCFA00E25D7E /* macinyos-heading-center.png */; };
 		8C0F4F571682CCFA00E25D7E /* macinyos-heading-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 8C0F4F551682CCFA00E25D7E /* macinyos-heading-right.png */; };
@@ -273,16 +271,10 @@
 		8FC356EF2132F5C1006EE1A5 /* amberpos-ins.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */; };
 		F4233C591917C77900482BD0 /* bg_menu.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F4233C581917C77900482BD0 /* bg_menu.jpg */; };
 		F4B3645819165D5100CCE1EF /* SecondaryTags.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4B3645719165D5100CCE1EF /* SecondaryTags.plist */; };
+		F7DD3BB290F57E0EF4014ECD /* ScreenshotterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1C66A9EE19DD3939001B9A41;
-			remoteInfo = "Smilie Keyboard";
-		};
 		1C9AEBC8210C3B2300C9A567 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -319,7 +311,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1C66A9F919DD393A001B9A41 /* SmilieKeyboard.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,7 +322,6 @@
 		1AB84FD72ADC611B00E7334D /* ghost.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ghost.svg; sourceTree = "<group>"; };
 		1AB84FD82ADC611B00E7334D /* pumpkin.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = pumpkin.svg; sourceTree = "<group>"; };
 		1C0060A2217025A600E5329A /* HTMLRenderingHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLRenderingHelperTests.swift; sourceTree = "<group>"; };
-		1C26000A2026050100000002 /* SceneRestorationFallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneRestorationFallbackTests.swift; sourceTree = "<group>"; };
 		1C0060A42170347300E5329A /* HTMLReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLReader.swift; sourceTree = "<group>"; };
 		1C0396372AE1059F00ABF9FA /* PullToRefresh */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PullToRefresh; sourceTree = "<group>"; };
 		1C04DEBD2B92FB8A0067957F /* App Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "App Icons.xcassets"; sourceTree = "<group>"; };
@@ -340,8 +330,6 @@
 		1C09BFF11A09F86A007C11F5 /* InAppActionCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InAppActionCollectionView.swift; sourceTree = "<group>"; };
 		1C0D7FFB1CF0A7A3003EE2D1 /* AwfulURLRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AwfulURLRouter.swift; sourceTree = "<group>"; };
 		1C0D7FFD1CF38CA2003EE2D1 /* PostsPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageViewController.swift; sourceTree = "<group>"; };
-		1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreenshotter.swift; sourceTree = "<group>"; };
-		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		1C0D7FFF1CF9FE70003EE2D1 /* Toolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
 		1C0D80011CF9FE79003EE2D1 /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		1C0D80031CF9FE81003EE2D1 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -402,6 +390,7 @@
 		1C25AC4C1F5768D200977D6F /* ManagedObjectCountObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObjectCountObserver.swift; sourceTree = "<group>"; };
 		1C25AC4E1F576BC600977D6F /* ContextObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContextObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
 		1C25AC511F57784A00977D6F /* AnnouncementListRefresher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnouncementListRefresher.swift; sourceTree = "<group>"; };
+		1C26000A2026050100000002 /* SceneRestorationFallbackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneRestorationFallbackTests.swift; sourceTree = "<group>"; };
 		1C273A9F21C1DC25002875A9 /* RenderView-AllFrames.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "RenderView-AllFrames.js"; sourceTree = "<group>"; };
 		1C29BD4822505AD500E1217A /* ThemeNameTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeNameTransformer.swift; sourceTree = "<group>"; };
 		1C29BD522251208200E1217A /* quote-post.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quote-post.png"; sourceTree = "<group>"; };
@@ -460,7 +449,6 @@
 		1C5C2C5222D2579D00EA5A80 /* TUSafariActivity.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TUSafariActivity.bundle; sourceTree = "<group>"; };
 		1C5C2C5822D2586D00EA5A80 /* ARChromeActivity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ARChromeActivity.xcassets; sourceTree = "<group>"; };
 		1C5C81BE22DA336A00EFD8A9 /* ChromeActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromeActivity.swift; sourceTree = "<group>"; };
-		1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SmilieKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C66A9F219DD393A001B9A41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C66A9F319DD393A001B9A41 /* KeyboardViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardViewController.h; sourceTree = "<group>"; };
 		1C66A9F419DD393A001B9A41 /* KeyboardViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyboardViewController.m; sourceTree = "<group>"; };
@@ -545,6 +533,7 @@
 		1CF6786D201E8F45009A9640 /* MessageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageListCell.swift; sourceTree = "<group>"; };
 		1CFC99691BD3F402001180A7 /* PostsPageRefreshArrowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsPageRefreshArrowView.swift; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* AwfulDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwfulDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DE60C98634B2C3A47AEE07C /* PostScreenshotter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreenshotter.swift; sourceTree = "<group>"; };
 		2D0BB35827F440AF00242D2A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D10A3842E05C35700544F91 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		2D19BA3229C330A2009DD94F /* mainthrobber60.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mainthrobber60.json; sourceTree = "<group>"; };
@@ -621,6 +610,7 @@
 		8CEBABEC16800A9300680935 /* macinyos-postactions-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-postactions-bg.png"; sourceTree = "<group>"; };
 		8CF740EE1681376600C219E4 /* macinyos-heading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "macinyos-heading.png"; sourceTree = "<group>"; };
 		8FC356EE2132F5C1006EE1A5 /* amberpos-ins.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "amberpos-ins.gif"; sourceTree = "<group>"; };
+		BEA873B27D6269867FC99B16 /* ScreenshotterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotterViewController.swift; sourceTree = "<group>"; };
 		F4233C581917C77900482BD0 /* bg_menu.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_menu.jpg; sourceTree = "<group>"; };
 		F4B3645719165D5100CCE1EF /* SecondaryTags.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondaryTags.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -632,14 +622,6 @@
 			files = (
 				1C47122F2664CE4E00E5AA74 /* WebArchive in Frameworks */,
 				1C47122C2664CB8C00E5AA74 /* Smilies in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9EC19DD3939001B9A41 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C1F8A2D2664BDF4003EA62C /* Smilies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,7 +694,6 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* AwfulDebug.app */,
-				1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */,
 				1C3A143319DFC5D10022C44C /* SmilieExtractor.app */,
 				1C9AEBC3210C3B2200C9A567 /* AwfulTests.xctest */,
 			);
@@ -1236,7 +1217,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* Awful */ = {
+		29B97314FDCFA39411CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				1C3857A115675AFE0078AF95 /* App */,
@@ -1351,26 +1332,6 @@
 			productReference = 1C3A143319DFC5D10022C44C /* SmilieExtractor.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */;
-			buildPhases = (
-				1C66A9EB19DD3939001B9A41 /* Sources */,
-				1C66A9EC19DD3939001B9A41 /* Frameworks */,
-				1C66A9ED19DD3939001B9A41 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SmilieKeyboard;
-			packageProductDependencies = (
-				1C1F8A2C2664BDF4003EA62C /* Smilies */,
-			);
-			productName = "Smilie Keyboard";
-			productReference = 1C66A9EF19DD3939001B9A41 /* SmilieKeyboard.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		1C9AEBC2210C3B2200C9A567 /* AwfulTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C9AEBCA210C3B2300C9A567 /* Build configuration list for PBXNativeTarget "AwfulTests" */;
@@ -1405,7 +1366,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1C66A9F719DD393A001B9A41 /* PBXTargetDependency */,
 			);
 			name = Awful;
 			packageProductDependencies = (
@@ -1484,13 +1444,13 @@
 				en,
 				Base,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* Awful */;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
 			packageReferences = (
 				1CCBDFF822CB02D500E1BE6A /* XCRemoteSwiftPackageReference "HTMLReader" */,
-				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */,
+				1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */,
 				1CD72E65265C7FD600FF3BF4 /* XCRemoteSwiftPackageReference "FLAnimatedImage" */,
 				1C6B2A98272F992E00671F0C /* XCRemoteSwiftPackageReference "Nuke" */,
-				2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */,
 				306F74092D90AA01000717BC /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
@@ -1499,7 +1459,6 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Awful */,
 				1C9AEBC2210C3B2200C9A567 /* AwfulTests */,
-				1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */,
 				1C3A143219DFC5D10022C44C /* SmilieExtractor */,
 			);
 		};
@@ -1514,15 +1473,6 @@
 				1C3A144119DFC5D10022C44C /* Main.storyboard in Resources */,
 				1C3A144619DFC5D10022C44C /* LaunchScreen.xib in Resources */,
 				1CA56FEB1A009BDF009A91AE /* PotentiallyObjectionableTexts.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9ED19DD3939001B9A41 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C66AA0F19DD4577001B9A41 /* NeedsFullAccessView.xib in Resources */,
-				1CF521752C228E76009712A7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1629,15 +1579,6 @@
 				1C3A143E19DFC5D10022C44C /* ViewController.m in Sources */,
 				1C3A143B19DFC5D10022C44C /* AppDelegate.m in Sources */,
 				1C3A143819DFC5D10022C44C /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1C66A9EB19DD3939001B9A41 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1C66A9F519DD393A001B9A41 /* KeyboardViewController.m in Sources */,
-				1C66AA1819DDF8DD001B9A41 /* NeedsFullAccessView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1813,12 +1754,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1C66A9F719DD393A001B9A41 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			platformFilter = ios;
-			target = 1C66A9EE19DD3939001B9A41 /* SmilieKeyboard */;
-			targetProxy = 1C66A9F619DD393A001B9A41 /* PBXContainerItemProxy */;
-		};
 		1C9AEBC9210C3B2300C9A567 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1D6058900D05DD3D006BFB54 /* Awful */;
@@ -1851,12 +1786,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spankykong.awful.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1866,33 +1802,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = "Smilies Extra/Extractor/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.awfulapp.Awful.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spankykong.awful.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		1C66A9FD19DD393A001B9A41 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug.SmilieKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
-			};
-			name = Debug;
-		};
-		1C66A9FE19DD393A001B9A41 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "Smilies Extra/Keyboard/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.SmilieKeyboard;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Release;
 		};
@@ -1908,8 +1825,9 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = App/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
@@ -1928,8 +1846,9 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				INFOPLIST_FILE = App/Tests/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.Awful.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwfulDebug.app/AwfulDebug";
 			};
@@ -1940,9 +1859,10 @@
 			baseConfigurationReference = 1CC065F32D66ECD3002BB6A0 /* Awful-Debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_SHORT_VERSION = 5.5;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful.debug;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = AwfulDebug;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1956,9 +1876,10 @@
 			baseConfigurationReference = 1CC065F42D66ED00002BB6A0 /* Awful-Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_SHORT_VERSION = 5.5;
+				DEVELOPMENT_TEAM = HYV8H97F7J;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = App/Resources/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = com.awfulapp.Awful;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spankykong.awful;
 				PRODUCT_MODULE_NAME = Awful;
 				PRODUCT_NAME = Awful;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -2003,15 +1924,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		1C66A9FC19DD393A001B9A41 /* Build configuration list for PBXNativeTarget "SmilieKeyboard" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1C66A9FD19DD393A001B9A41 /* Debug */,
-				1C66A9FE19DD393A001B9A41 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		1C9AEBCA210C3B2300C9A567 /* Build configuration list for PBXNativeTarget "AwfulTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2042,7 +1954,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */ = {
+		1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stencilproject/Stencil.git";
 			requirement = {
@@ -2074,7 +1986,7 @@
 				minimumVersion = 1.0.16;
 			};
 		};
-		2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+		2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
 			requirement = {
@@ -2107,7 +2019,7 @@
 		};
 		1C453F272338457A007AC6CD /* Stencil */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil" */;
+			package = 1C453F262338457A007AC6CD /* XCRemoteSwiftPackageReference "Stencil.git" */;
 			productName = Stencil;
 		};
 		1C4712292664CB8000E5AA74 /* Smilies */ = {
@@ -2171,7 +2083,7 @@
 		};
 		2D265F8E292CB447001336ED /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			package = 2D265F8D292CB447001336ED /* XCRemoteSwiftPackageReference "lottie-ios.git" */;
 			productName = Lottie;
 		};
 		306F740A2D90AA01000717BC /* KeychainAccess */ = {
