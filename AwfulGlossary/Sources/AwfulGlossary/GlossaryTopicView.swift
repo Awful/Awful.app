@@ -58,7 +58,7 @@ struct GlossaryTopicView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Exit", action: glossaryExit)
-                    .foregroundColor(theme[color: "navigationBarTextColor"])
+                    .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
             }
             // The `if` lives inside the ToolbarItem's ViewBuilder (iOS 15-safe); a conditional
             // *ToolbarContent* would require iOS 16.
@@ -69,7 +69,7 @@ struct GlossaryTopicView: View {
                     } label: {
                         Image(systemName: "shuffle")
                     }
-                    .foregroundColor(theme[color: "navigationBarTextColor"])
+                    .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
                     .accessibilityLabel("Random Topic")
                 }
             }

@@ -40,13 +40,13 @@ struct ArchivesView: View {
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel", action: onExit)
-                        .foregroundColor(theme[color: "navigationBarTextColor"])
+                        .liquidGlassBarButtonColor(theme[color: "navigationBarTextColor"])
                 }
             }
             .background(NavigationConfigurator(theme: theme))
         }
         .navigationViewStyle(.stack)
-        .tint(theme[color: "tintColor"])
+        .liquidGlassNavigationTint(theme[color: "tintColor"])
         .applyFontDesign(if: theme.roundedFonts)
         .task { await model.load() }
     }
@@ -259,6 +259,12 @@ final class ArchivesHostingController: UIHostingController<AnyView> {
         if let sheet = sheetPresentationController {
             sheet.detents = [.medium(), .large()]
             sheet.prefersGrabberVisible = true
+            // On iPad the medium detent is too short to fit the whole form — the bottom
+            // "Return to Live Forums" button gets cut off on iPad mini — so open at the large
+            // detent there. iPhone keeps the medium default and can still drag up.
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                sheet.selectedDetentIdentifier = .large
+            }
         }
     }
 

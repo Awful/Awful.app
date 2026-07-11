@@ -78,13 +78,13 @@ public struct GlossaryRootView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Exit", action: onExit)
-                        .foregroundColor(theme[color: "navigationBarTextColor"])
+                        .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
                 }
             }
             .background(NavigationConfigurator(theme: theme))
         }
         .navigationViewStyle(.stack)
-        .tint(theme[color: "tintColor"])
+        .glossaryNavigationTint(theme[color: "tintColor"])
         .environment(\.glossaryExit, onExit)
     }
 }

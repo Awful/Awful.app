@@ -59,7 +59,7 @@ struct GlossaryLetterView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Exit", action: glossaryExit)
-                    .foregroundColor(theme[color: "navigationBarTextColor"])
+                    .glossaryBarButtonColor(theme[color: "navigationBarTextColor"])
             }
         }
         .task {
