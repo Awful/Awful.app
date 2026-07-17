@@ -19,7 +19,7 @@
       "layers" : [
         {
           "fill" : {
-            "solid" : "display-p3:0.70000,0.10451,0.11443,1.00000"
+            "solid" : "display-p3:0.60000,0.00000,0.01000,1.00000"
           },
           "hidden" : false,
           "image-name" : "numouth.svg",
@@ -35,11 +35,11 @@
       ],
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.37
+        "opacity" : 0.05
       },
       "translucency" : {
         "enabled" : true,
-        "value" : 0.26
+        "value" : 0.4
       }
     },
     {
